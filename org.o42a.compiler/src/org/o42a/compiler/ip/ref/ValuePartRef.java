@@ -165,7 +165,9 @@ public final class ValuePartRef extends ObjectConstructor {
 
 			return ValuePartRef.this.valuePart.valuePart(
 					ValuePartRef.this,
-					selfPath.rescoper(this, getScope()).update(definitions));
+					selfPath.bind(this, getScope())
+					.rescoper()
+					.update(definitions));
 		}
 
 		@Override

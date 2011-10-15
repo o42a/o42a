@@ -24,7 +24,6 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -62,8 +61,8 @@ public final class Wrapper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
-		location.getContext().getLogger().notReproducible(location);
+	public Rescoper reproduce(Reproducer reproducer) {
+		reproducer.getLogger().notReproducible(this.wrapped);
 		return null;
 	}
 

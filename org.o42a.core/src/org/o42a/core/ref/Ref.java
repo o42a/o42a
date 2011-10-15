@@ -272,7 +272,7 @@ public abstract class Ref extends Statement {
 		final Path path = getPath();
 
 		if (path != null) {
-			return path.rescoper(this, getScope());
+			return path.bind(this, getScope()).rescoper();
 		}
 
 		return new RefRescoper(this);

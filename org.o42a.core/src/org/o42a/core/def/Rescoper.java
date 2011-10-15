@@ -28,7 +28,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.impl.Rescoped;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 
@@ -130,9 +129,7 @@ public abstract class Rescoper {
 
 	public abstract void resolveAll(Resolver resolver);
 
-	public abstract Rescoper reproduce(
-			LocationInfo location,
-			Reproducer reproducer);
+	public abstract Rescoper reproduce(Reproducer reproducer);
 
 	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
 

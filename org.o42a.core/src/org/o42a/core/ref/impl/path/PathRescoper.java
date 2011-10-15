@@ -29,7 +29,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -37,9 +36,9 @@ public final class PathRescoper extends Rescoper {
 
 	private final BoundPath path;
 
-	public PathRescoper(LocationInfo location, Path path, Scope finalScope) {
-		super(finalScope);
-		this.path = path.bind(location, finalScope);
+	public PathRescoper(BoundPath path) {
+		super(path.getOrigin());
+		this.path = path;
 	}
 
 	@Override
@@ -110,18 +109,19 @@ public final class PathRescoper extends Rescoper {
 			final Path newPath = pathRescoper.getPath().getRawPath().append(
 					getPath().getRawPath());
 
-			return new PathRescoper(this.path, newPath, other.getFinalScope());
+			return new PathRescoper(
+					newPath.bind(this.path, other.getFinalScope()));
 		}
 
 		return super.and(other);
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+	public Rescoper reproduce(Reproducer reproducer) {
 
 		final Scope scope = reproducer.getScope();
 		final PathReproduction pathReproduction =
-				getPath().getRawPath().reproduce(location, reproducer);
+				getPath().reproduce(reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -129,9 +129,9 @@ public final class PathRescoper extends Rescoper {
 		if (pathReproduction.isUnchanged()) {
 			if (!reproducer.isTopLevel()) {
 				return new PathRescoper(
-						this.path,
-						pathReproduction.getExternalPath(),
-						scope);
+						pathReproduction.getExternalPath().bind(
+								this.path,
+								scope));
 			}
 			// Top-level reproducer`s scope is not compatible with path
 			// and requires rescoping.
@@ -139,9 +139,7 @@ public final class PathRescoper extends Rescoper {
 		}
 
 		final PathRescoper reproducedPart = new PathRescoper(
-				this.path,
-				pathReproduction.getReproducedPath(),
-				scope);
+				pathReproduction.getReproducedPath().bind(this.path, scope));
 
 		return startWithPrefix(reproducer, pathReproduction)
 				.and(reproducedPart);
@@ -210,9 +208,10 @@ public final class PathRescoper extends Rescoper {
 			return phraseRescoper;
 		}
 
-		return externalPath.rescoper(
+		return externalPath.bind(
 				this.path,
 				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
+				.rescoper()
 				.and(phraseRescoper);
 	}
 

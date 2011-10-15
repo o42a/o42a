@@ -26,7 +26,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -72,7 +71,7 @@ public final class RefRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+	public Rescoper reproduce(Reproducer reproducer) {
 
 		final Ref ref = this.ref.reproduce(reproducer);
 

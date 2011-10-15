@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
@@ -29,22 +30,24 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.impl.path.AbsolutePathStartFinder;
-import org.o42a.core.ref.impl.path.AbsolutePathTracker;
-import org.o42a.core.ref.impl.path.PathTracker;
+import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Deferred;
 
 
 public class BoundPath extends Location {
 
-	private final Scope origin;
+	private final Deferred<Scope> deferredOrigin;
+	private Scope origin;
 	private final Path rawPath;
 	private Path path;
 
@@ -53,12 +56,25 @@ public class BoundPath extends Location {
 
 	BoundPath(LocationInfo location, Scope origin, Path rawPath) {
 		super(location);
+		this.deferredOrigin = null;
 		this.origin = origin;
 		this.rawPath = rawPath;
 	}
 
+	BoundPath(
+			LocationInfo location,
+			Deferred<Scope> deferredOrigin,
+			Path rawPath) {
+		super(location);
+		this.deferredOrigin = deferredOrigin;
+		this.rawPath = rawPath;
+	}
+
 	public final Scope getOrigin() {
-		return this.origin;
+		if (this.origin != null) {
+			return this.origin;
+		}
+		return this.origin = this.deferredOrigin.get();
 	}
 
 	public final Path getPath() {
@@ -113,6 +129,17 @@ public class BoundPath extends Location {
 		return walkPath(resolver, start, walker);
 	}
 
+	public Rescoper rescoper() {
+		if (!isAbsolute() && getSteps().length == 0) {
+			return transparentRescoper(getOrigin());
+		}
+		return new PathRescoper(this);
+	}
+
+	public final PathReproduction reproduce(Reproducer reproducer) {
+		return getKind().reproduce(reproducer, this);
+	}
+
 	public final HostOp write(CodeDirs dirs, HostOp start) {
 		if (isAbsolute()) {
 			return writeAbolute(dirs);
@@ -157,7 +184,9 @@ public class BoundPath extends Location {
 	}
 
 	public String toString(int length) {
-		return getRawPath().toString(getOrigin(), length);
+		return getRawPath().toString(
+				this.origin != null ? this.origin : this.deferredOrigin,
+				length);
 	}
 
 	private PathTracker startWalk(

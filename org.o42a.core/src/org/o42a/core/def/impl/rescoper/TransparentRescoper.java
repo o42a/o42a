@@ -27,7 +27,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -83,7 +82,7 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+	public Rescoper reproduce(Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 		return new TransparentRescoper(reproducer.getScope());
 	}

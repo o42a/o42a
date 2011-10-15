@@ -132,7 +132,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 			return null;
 		}
 
-		final Rescoper rescoper = getRescoper().reproduce(this, reproducer);
+		final Rescoper rescoper = getRescoper().reproduce(reproducer);
 
 		if (rescoper == null) {
 			return null;

@@ -107,7 +107,8 @@ public final class AbsolutePathTarget extends Ref {
 				ancestor = artifact.materialize().type().getAncestor();
 			}
 
-			return ancestor.rescope(upPath.rescoper(location, getScope()));
+			return ancestor.rescope(
+					upPath.bind(location, getScope()).rescoper());
 		}
 
 		final Path dematerializedPath = path.dematerialize();

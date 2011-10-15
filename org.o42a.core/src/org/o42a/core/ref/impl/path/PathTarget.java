@@ -224,20 +224,17 @@ public final class PathTarget extends Ref {
 
 		final Path fullPath = getPath();
 		final Ref start;
-		final Path path;
+		final BoundPath path = getBoundPath();
 
 		if (fullPath == null) {
 			start = this.start;
-			path = this.path;
 		} else if (fullPath.isAbsolute()) {
 			return fullPath.target(this, reproducer.distribute());
 		} else {
 			start = null;
-			path = fullPath;
 		}
 
-		final PathReproduction pathReproduction =
-				path.reproduce(this, reproducer);
+		final PathReproduction pathReproduction = path.reproduce(reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -401,13 +398,13 @@ public final class PathTarget extends Ref {
 
 	private Rescoper pathRescoper(Ref start, Path path) {
 		if (start == null) {
-			return path.rescoper(this, getScope());
+			return path.bind(this, getScope()).rescoper();
 		}
 
 		final Scope startScope =
 				start.resolve(getScope().dummyResolver()).getScope();
 
-		return path.rescoper(this, startScope).and(start.toRescoper());
+		return path.bind(this, startScope).rescoper().and(start.toRescoper());
 	}
 
 	private static final class Op extends RefOp {
