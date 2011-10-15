@@ -26,7 +26,6 @@ import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
@@ -84,11 +83,11 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public Rescoper reproduce(LocationInfo location, Reproducer reproducer) {
+	public Rescoper reproduce(Reproducer reproducer) {
 		getFinalScope().assertCompatible(reproducer.getReproducingScope());
 
 		final Rescoper firstRescoper =
-				this.first.reproduce(location, reproducer);
+				this.first.reproduce(reproducer);
 
 		if (firstRescoper == null) {
 			return null;
@@ -108,7 +107,7 @@ public final class CompoundRescoper extends Rescoper {
 		}
 
 		final Rescoper secondRescoper =
-				this.second.reproduce(location, secondReproducer);
+				this.second.reproduce(secondReproducer);
 
 		if (secondRescoper == null) {
 			return null;

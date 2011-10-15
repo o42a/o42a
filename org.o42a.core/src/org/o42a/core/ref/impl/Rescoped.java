@@ -109,7 +109,7 @@ public final class Rescoped extends Ref {
 			return null;
 		}
 
-		final Rescoper rescoper = this.rescoper.reproduce(this, reproducer);
+		final Rescoper rescoper = this.rescoper.reproduce(reproducer);
 
 		if (rescoper == null) {
 			return null;

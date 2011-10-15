@@ -58,10 +58,9 @@ public enum PathKind {
 
 		@Override
 		protected PathReproduction reproduce(
-				LocationInfo location,
 				Reproducer reproducer,
-				Path path) {
-			return reproduceRelative(location, reproducer, path);
+				BoundPath path) {
+			return reproduceRelative(reproducer, path);
 		}
 
 	},
@@ -79,10 +78,9 @@ public enum PathKind {
 
 		@Override
 		protected PathReproduction reproduce(
-				LocationInfo location,
 				Reproducer reproducer,
-				Path path) {
-			return unchangedPath(path);
+				BoundPath path) {
+			return unchangedPath(path.getPath());
 		}
 
 	};
@@ -104,14 +102,12 @@ public enum PathKind {
 			Ref start);
 
 	protected abstract PathReproduction reproduce(
-			LocationInfo location,
 			Reproducer reproducer,
-			Path path);
+			BoundPath path);
 
 	private static PathReproduction reproduceRelative(
-			LocationInfo location,
 			Reproducer reproducer,
-			Path path) {
+			BoundPath path) {
 
 		Scope toScope = reproducer.getScope();
 		final Step[] steps = path.getSteps();
@@ -137,7 +133,7 @@ public enum PathKind {
 
 			final Step step = steps[i];
 			final PathReproduction reproduction =
-					step.reproduce(location, reproducer, toScope);
+					step.reproduce(path, reproducer, toScope);
 
 			if (reproduction == null) {
 				return null;
@@ -149,7 +145,7 @@ public enum PathKind {
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final PathResolution resolution =
-					reproducedPath.bind(location, toScope).resolve(
+					reproducedPath.bind(path, toScope).resolve(
 							pathResolver(dummyUser()),
 							toScope);
 
@@ -178,11 +174,11 @@ public enum PathKind {
 	}
 
 	private static PathReproduction partiallyReproducedPath(
-			Path path,
+			BoundPath path,
 			Path reproduced,
 			int firstUnchangedIdx) {
 		if (firstUnchangedIdx == 0) {
-			return unchangedPath(path);
+			return unchangedPath(path.getPath());
 		}
 
 		final Step[] steps = path.getSteps();

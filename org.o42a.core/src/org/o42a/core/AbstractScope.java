@@ -139,7 +139,7 @@ public abstract class AbstractScope implements Scope {
 		assert path != null :
 				"Can not rescope from " + fromScope + " to " + toScope;
 
-		return path.rescoper(location, toScope);
+		return path.bind(location, toScope).rescoper();
 	}
 
 	public static boolean contains(Scope scope, Scope other) {

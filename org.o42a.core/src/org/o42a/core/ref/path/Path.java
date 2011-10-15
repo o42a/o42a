@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.core.ref.path.Step.MATERIALIZE;
@@ -31,17 +30,15 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ModuleStep;
-import org.o42a.core.ref.impl.path.PathRescoper;
 import org.o42a.core.ref.impl.path.PathTarget;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Deferred;
 
 
 public final class Path {
@@ -210,13 +207,6 @@ public final class Path {
 		return new Path(getKind(), newSteps);
 	}
 
-	public Rescoper rescoper(LocationInfo location, Scope finalScope) {
-		if (!isAbsolute() && getSteps().length == 0) {
-			return transparentRescoper(finalScope);
-		}
-		return new PathRescoper(location, this, finalScope);
-	}
-
 	public Ref target(
 			LocationInfo location,
 			Distributor distributor,
@@ -235,6 +225,10 @@ public final class Path {
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
+		return new BoundPath(location, origin, this);
+	}
+
+	public final BoundPath bind(LocationInfo location, Deferred<Scope> origin) {
 		return new BoundPath(location, origin, this);
 	}
 
@@ -265,12 +259,6 @@ public final class Path {
 		newSteps[lastIdx] = rebuilt;
 
 		return new Path(getKind(), newSteps);
-	}
-
-	public final PathReproduction reproduce(
-			LocationInfo location,
-			Reproducer reproducer) {
-		return getKind().reproduce(location, reproducer, this);
 	}
 
 	@Override

@@ -100,9 +100,9 @@ public final class MemberOverride extends Sample {
 		final Obj object = getObject();
 		final ValueStruct<?, ?> valueStruct = object.value().getValueStruct();
 		final Scope scope = object.getScope();
-		final Rescoper rescoper = scope.getEnclosingScopePath().rescoper(
+		final Rescoper rescoper = scope.getEnclosingScopePath().bind(
 				this,
-				scope.getEnclosingScope());
+				scope.getEnclosingScope()).rescoper();
 
 		return valueStruct.rescope(rescoper);
 	}
