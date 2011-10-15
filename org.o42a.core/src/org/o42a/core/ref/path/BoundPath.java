@@ -117,16 +117,7 @@ public class BoundPath extends Location {
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
-		if (isAbsolute()) {
-			return walkPath(
-					resolver,
-					start.getContext().getRoot().getScope(),
-					walker);
-		}
-
-		start.assertDerivedFrom(getOrigin());
-
-		return walkPath(resolver, start, walker);
+		return walkPath(getPath(), resolver, start, walker);
 	}
 
 	public Rescoper rescoper() {
@@ -189,26 +180,63 @@ public class BoundPath extends Location {
 				length);
 	}
 
-	private PathTracker startWalk(
+	private PathResolution walkPath(
+			Path path,
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
-		if (!isAbsolute()) {
-			if (!walker.start(this, start)) {
+
+		final Scope startFrom;
+		final PathTracker tracker;
+
+		if (path.isAbsolute()) {
+			startFrom = start.getContext().getRoot().getScope();
+			if (!walker.root(this, startFrom)) {
 				return null;
 			}
-			return new PathTracker(resolver, walker);
+			if (resolver.toUser().isDummy()) {
+				tracker = new PathTracker(resolver, walker);
+			} else {
+				tracker = new AbsolutePathTracker(
+					resolver,
+					walker,
+					startIndex(start.getContext()));
+			}
+		} else {
+			startFrom = start;
+			startFrom.assertDerivedFrom(getOrigin());
+			if (!walker.start(this, startFrom)) {
+				return null;
+			}
+			tracker = new PathTracker(resolver, walker);
 		}
-		if (!walker.root(this, start)) {
+
+		final Step[] steps = path.getSteps();
+		Container result = startFrom.getContainer();
+		Scope prev = startFrom;
+
+		for (int i = 0; i < steps.length; ++i) {
+			result = steps[i].resolve(
+					tracker.nextResolver(),
+					this,
+					i,
+					prev,
+					tracker);
+			if (tracker.isAborted()) {
+				return NO_PATH_RESOLUTION;
+			}
+			if (result == null) {
+				tracker.abortedAt(prev, steps[i]);
+				return PATH_RESOLUTION_ERROR;
+			}
+			prev = result.getScope();
+		}
+
+		if (!tracker.done(result)) {
 			return null;
 		}
-		if (resolver.toUser().isDummy()) {
-			return new PathTracker(resolver, walker);
-		}
-		return new AbsolutePathTracker(
-				resolver,
-				walker,
-				startIndex(start.getContext()));
+
+		return pathResolution(this, result);
 	}
 
 	private int startIndex(CompilerContext context) {
@@ -238,61 +266,45 @@ public class BoundPath extends Location {
 		this.startObject = walker.getStartObject();
 	}
 
-	private PathResolution walkPath(
-			PathResolver resolver,
-			Scope start,
-			PathWalker walker) {
+	private Path rebuild() {
 
-		final PathTracker tracker = startWalk(resolver, start, walker);
+		final Path rawPath = getRawPath();
+		final Step[] rawSteps = rawPath.getSteps();
 
-		if (tracker == null) {
-			return null;
+		if (rawSteps.length <= 1) {
+			return rawPath;
 		}
 
-		final Step[] steps = getSteps();
-		Container result = start.getContainer();
-		Scope prev = start;
+		final Step[] steps = removeOddFragments();
 
-		for (int i = 0; i < steps.length; ++i) {
-			result = steps[i].resolve(
-					tracker.nextResolver(),
-					this,
-					i,
-					prev,
-					tracker);
-			if (tracker.isAborted()) {
-				return NO_PATH_RESOLUTION;
-			}
-			if (result == null) {
-				tracker.abortedAt(prev, steps[i]);
-				return PATH_RESOLUTION_ERROR;
-			}
-			prev = result.getScope();
+		if (steps.length <= 1) {
+			return new Path(rawPath.getKind(), steps);
 		}
 
-		if (!tracker.done(result)) {
-			return null;
-		}
-
-		return pathResolution(this, result);
-	}
-
-	Path rebuild() {
-
-		final Step[] steps = this.rawPath.getSteps();
 		final Step[] rebuilt = rebuild(steps);
 
-		if (rebuilt == steps) {
-			return this.rawPath;
+		if (rebuilt == rawSteps) {
+			return rawPath;
 		}
 
-		return new Path(getKind(), rebuilt);
+		return new Path(rawPath.getKind(), rebuilt);
+	}
+
+	private Step[] removeOddFragments() {
+
+		final OddPathFragmentRemover remover =
+				new OddPathFragmentRemover(getRawPath());
+
+		walkPath(
+				getRawPath(),
+				pathResolver(dummyUser()),
+				getOrigin(),
+				remover);
+
+		return remover.removeOddFragments();
 	}
 
 	private static Step[] rebuild(Step[] steps) {
-		if (steps.length <= 1) {
-			return steps;
-		}
 
 		final Step[] rebuiltSteps = new Step[steps.length];
 		Step prev = rebuiltSteps[0] = steps[0];
