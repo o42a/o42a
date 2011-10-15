@@ -99,15 +99,21 @@ public class ArrayUtil {
 	}
 
 	public static <T> T[] remove(T[] array, int index) {
+		return remove(array, index, index + 1);
+	}
+
+	public static <T> T[] remove(T[] array, int from, int to) {
+		assert to >= from :
+			"Range end is smaller the range start";
 
 		@SuppressWarnings("unchecked")
 		final T[] newArray = (T[]) Array.newInstance(
 				array.getClass().getComponentType(),
-				array.length - 1);
+				array.length - (to - from));
 
 
-		arraycopy(array, 0, newArray, 0, index);
-		arraycopy(array, index + 1, newArray, index, newArray.length - index);
+		arraycopy(array, 0, newArray, 0, from);
+		arraycopy(array, to, newArray, from, array.length - to);
 
 		return newArray;
 	}

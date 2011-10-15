@@ -24,7 +24,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.array.Array;
@@ -37,7 +36,6 @@ import org.o42a.core.value.ValueType;
 public class ArrayDerivationTest extends CompilerTestCase {
 
 	@Test
-	@Ignore
 	public void inherit() {
 		compile(
 				"A := [`1, 2, 3]",
