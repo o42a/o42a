@@ -36,9 +36,7 @@ import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 
@@ -61,7 +59,7 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public PathWalker path(LocationInfo location, Path path) {
+	public PathWalker path(LocationInfo location, BoundPath path) {
 		return this;
 	}
 
@@ -84,12 +82,12 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean root(Path path, Scope root) {
+	public boolean root(BoundPath path, Scope root) {
 		return unexpectedAbsolutePath();
 	}
 
 	@Override
-	public boolean start(Path path, Scope start) {
+	public boolean start(BoundPath path, Scope start) {
 		return true;
 	}
 

@@ -112,6 +112,7 @@ public enum PathKind {
 			LocationInfo location,
 			Reproducer reproducer,
 			Path path) {
+
 		Scope toScope = reproducer.getScope();
 		final Step[] steps = path.getSteps();
 		final int len = steps.length;
@@ -147,9 +148,10 @@ public enum PathKind {
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
-			final PathResolution resolution = reproducedPath.resolve(
-					pathResolver(location, dummyUser()),
-					toScope);
+			final PathResolution resolution =
+					reproducedPath.bind(toScope).resolve(
+							pathResolver(location, dummyUser()),
+							toScope);
 
 			if (!resolution.isResolved()) {
 				return null;

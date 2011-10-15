@@ -86,7 +86,7 @@ public class MemberStep extends Step {
 	@Override
 	public Container resolve(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker) {
@@ -164,7 +164,7 @@ public class MemberStep extends Step {
 
 	protected Member resolveMember(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start) {
 
@@ -208,7 +208,7 @@ public class MemberStep extends Step {
 
 	private Container unresolved(
 			LocationInfo location,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start) {
 		start.getContext().getLogger().unresolved(

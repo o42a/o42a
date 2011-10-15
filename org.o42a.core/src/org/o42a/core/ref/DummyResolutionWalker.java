@@ -22,7 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.LocationInfo;
 
@@ -30,7 +30,7 @@ import org.o42a.core.source.LocationInfo;
 public class DummyResolutionWalker implements ResolutionWalker {
 
 	@Override
-	public PathWalker path(LocationInfo location, Path path) {
+	public PathWalker path(LocationInfo location, BoundPath path) {
 		return PathWalker.DUMMY_PATH_WALKER;
 	}
 

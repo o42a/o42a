@@ -27,6 +27,7 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
@@ -150,13 +151,17 @@ public class MemberById extends Wrap {
 		if (found.isAbsolute()) {
 			return found;
 		}
-		if (enclosing.getScope() == container.getScope()) {
+
+		final Scope enclosingScope = enclosing.getScope();
+
+		if (enclosingScope == container.getScope()) {
 			return found;
 		}
 
-		final PathResolution pathResolution = found.resolve(
-				pathResolver(enclosing, dummyUser()),
-				enclosing.getScope());
+		final PathResolution pathResolution =
+				found.bind(enclosingScope).resolve(
+						pathResolver(enclosing, dummyUser()),
+						enclosingScope);
 
 		if (!pathResolution.isResolved()) {
 			return null;

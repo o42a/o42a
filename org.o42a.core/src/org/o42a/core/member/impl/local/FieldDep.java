@@ -133,7 +133,7 @@ public final class FieldDep extends Dep {
 	@Override
 	protected Container resolveDep(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Obj object,
 			LocalScope enclosingLocal,

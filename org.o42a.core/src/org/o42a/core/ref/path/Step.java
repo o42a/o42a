@@ -48,7 +48,7 @@ public abstract class Step {
 
 	public abstract Container resolve(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker);

@@ -36,11 +36,11 @@ import org.o42a.core.st.Reproducer;
 
 public final class PathRescoper extends Rescoper {
 
-	private final Path path;
+	private final BoundPath path;
 
 	public PathRescoper(Path path, Scope finalScope) {
 		super(finalScope);
-		this.path = path.rebuild();
+		this.path = path.bind(finalScope);
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public final class PathRescoper extends Rescoper {
 		return this.path.isAbsolute();
 	}
 
-	public final Path getPath() {
+	public final BoundPath getPath() {
 		return this.path;
 	}
 
@@ -87,7 +87,7 @@ public final class PathRescoper extends Rescoper {
 	@Override
 	public Ref rescopeRef(Ref ref) {
 
-		final Path newPath = ref.appendToPath(this.path);
+		final Path newPath = ref.appendToPath(getPath().getRawPath());
 
 		if (newPath != null) {
 			return newPath.target(
@@ -108,7 +108,8 @@ public final class PathRescoper extends Rescoper {
 		if (other instanceof PathRescoper) {
 
 			final PathRescoper pathRescoper = (PathRescoper) other;
-			final Path newPath = pathRescoper.path.append(this.path);
+			final Path newPath = pathRescoper.getPath().getRawPath().append(
+					getPath().getRawPath());
 
 			return new PathRescoper(newPath, other.getFinalScope());
 		}
@@ -121,7 +122,7 @@ public final class PathRescoper extends Rescoper {
 
 		final Scope scope = reproducer.getScope();
 		final PathReproduction pathReproduction =
-				this.path.reproduce(location, reproducer);
+				getPath().getRawPath().reproduce(location, reproducer);
 
 		if (pathReproduction == null) {
 			return null;

@@ -22,30 +22,22 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
-import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
-import static org.o42a.core.ref.path.PathResolution.pathResolution;
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.impl.path.ModuleStep;
+import org.o42a.core.ref.impl.path.PathRescoper;
+import org.o42a.core.ref.impl.path.PathTarget;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -93,10 +85,6 @@ public final class Path {
 	private final PathKind kind;
 	private final Step[] steps;
 
-	private CompilerContext context;
-	private Obj startObject;
-	private int startIndex;
-
 	Path(PathKind kind, Step... steps) {
 		this.kind = kind;
 		this.steps = steps;
@@ -117,22 +105,6 @@ public final class Path {
 
 	public final Step[] getSteps() {
 		return this.steps;
-	}
-
-	public final PathResolution resolve(
-			PathResolver resolver,
-			Scope start) {
-		return walk(resolver, start, DUMMY_PATH_WALKER);
-	}
-
-	public PathResolution walk(
-			PathResolver resolver,
-			Scope start,
-			PathWalker walker) {
-		return walkPath(
-				resolver,
-				isAbsolute() ? start.getContext().getRoot().getScope() : start,
-				walker);
 	}
 
 	public Path append(Step step) {
@@ -262,15 +234,8 @@ public final class Path {
 		return new PathTarget(location, distributor, this);
 	}
 
-	public Path rebuild() {
-
-		final Step[] rebuilt = rebuild(this.steps);
-
-		if (rebuilt == this.steps) {
-			return this;
-		}
-
-		return new Path(getKind(), rebuilt);
+	public final BoundPath bind(Scope origin) {
+		return new BoundPath(origin, this);
 	}
 
 	public Path rebuildWithRef(Ref followingRef) {
@@ -278,7 +243,7 @@ public final class Path {
 		final Path path = followingRef.getPath();
 
 		if (path != null) {
-			return append(path).rebuild();
+			return append(path);
 		}
 
 		final int length = this.steps.length;
@@ -306,43 +271,6 @@ public final class Path {
 			LocationInfo location,
 			Reproducer reproducer) {
 		return getKind().reproduce(location, reproducer, this);
-	}
-
-	public final HostOp write(CodeDirs dirs, HostOp start) {
-		if (isAbsolute()) {
-			return writeAbolute(dirs);
-		}
-
-		HostOp found = start;
-
-		for (int i = 0; i < this.steps.length; ++i) {
-			found = this.steps[i].write(dirs, found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
-	}
-
-	public final HostOp writeAbolute(CodeDirs dirs) {
-		assert isAbsolute() :
-			this + " is not absolute path";
-
-		final CodeBuilder builder = dirs.getBuilder();
-		final CompilerContext context = builder.getContext();
-		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
-		HostOp found = start.op(builder, dirs.code());
-		final Step[] steps = getSteps();
-
-		for (int i = startIndex(context); i < steps.length; ++i) {
-			found = steps[i].write(dirs, found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
 	}
 
 	@Override
@@ -373,8 +301,18 @@ public final class Path {
 	}
 
 	public String toString(int length) {
+		return toString(null, length);
+	}
+
+	String toString(Object origin, int length) {
 		if (length == 0) {
-			return isAbsolute() ? "</>" : "<>";
+			if (isAbsolute()) {
+				return "</>";
+			}
+			if (origin != null) {
+				return "<(" + origin + ")>";
+			}
+			return "<>";
 		}
 
 		final StringBuilder out = new StringBuilder();
@@ -384,10 +322,12 @@ public final class Path {
 			final Step step = this.steps[i];
 
 			if (i == 0) {
-				if (!isAbsolute() || step.getPathKind().isStatic()) {
-					out.append('<');
-				} else {
+				if (origin != null) {
+					out.append("<(").append(origin).append(")/");
+				} else if (isAbsolute()) {
 					out.append("</");
+				} else {
+					out.append('<');
 				}
 			} else {
 				out.append('/');
@@ -400,138 +340,12 @@ public final class Path {
 		return out.toString();
 	}
 
-	private PathTracker startWalk(
-			PathResolver resolver,
-			Scope start,
-			PathWalker walker) {
-		if (!isAbsolute()) {
-			if (!walker.start(this, start)) {
-				return null;
-			}
-			return new PathTracker(resolver, walker);
-		}
-		if (!walker.root(this, start)) {
-			return null;
-		}
-		if (resolver.toUser().isDummy()) {
-			return new PathTracker(resolver, walker);
-		}
-		return new AbsolutePathTracker(
-				resolver,
-				walker,
-				startIndex(start.getContext()));
-	}
-
-	private int startIndex(CompilerContext context) {
-		if (this.startObject == null || !this.context.compatible(context)) {
-			findStart(context);
-		}
-		return this.startIndex;
-	}
-
-	private Obj startObject(CompilerContext context) {
-		if (this.startObject == null || !this.context.compatible(context)) {
-			findStart(context);
-		}
-		return this.startObject;
-	}
-
-	private void findStart(CompilerContext context) {
-
-		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
-
-		walk(
-				pathResolver(context, dummyUser()),
-				context.getRoot().getScope(),
-				walker);
-
-		this.context = context;
-		this.startIndex = walker.getStartIndex();
-		this.startObject = walker.getStartObject();
-	}
-
 	private static boolean assertStepsNotNull(Step[] steps) {
 		for (Step step : steps) {
 			assert step != null :
 				"Path step is null";
 		}
 		return true;
-	}
-
-	private PathResolution walkPath(
-			PathResolver resolver,
-			Scope start,
-			PathWalker walker) {
-
-		final PathTracker tracker = startWalk(resolver, start, walker);
-
-		if (tracker == null) {
-			return null;
-		}
-
-		Container result = start.getContainer();
-		Scope prev = start;
-
-		for (int i = 0; i < this.steps.length; ++i) {
-			result = this.steps[i].resolve(
-					tracker.nextResolver(),
-					this,
-					i,
-					prev,
-					tracker);
-			if (tracker.isAborted()) {
-				return NO_PATH_RESOLUTION;
-			}
-			if (result == null) {
-				tracker.abortedAt(prev, this.steps[i]);
-				return PATH_RESOLUTION_ERROR;
-			}
-			prev = result.getScope();
-		}
-
-		if (!tracker.done(result)) {
-			return null;
-		}
-
-		return pathResolution(this, result);
-	}
-
-	private Step[] rebuild(Step[] steps) {
-		if (steps.length <= 1) {
-			return steps;
-		}
-
-		final Step[] rebuiltSteps = new Step[steps.length];
-		Step prev = rebuiltSteps[0] = steps[0];
-		int nextIdx = 1;
-		int rebuiltIdx = 0;
-
-		for (;;) {
-
-			final Step next = steps[nextIdx];
-			final Step rebuilt = next.rebuild(prev);
-
-			if (rebuilt != null) {
-				rebuiltSteps[rebuiltIdx] = prev = rebuilt;
-				if (++nextIdx >= steps.length) {
-					break;
-				}
-				continue;
-			}
-
-			rebuiltSteps[++rebuiltIdx] = prev = next;
-			if (++nextIdx >= steps.length) {
-				break;
-			}
-		}
-
-		final int rebuiltLen = rebuiltIdx + 1;
-
-		if (rebuiltLen == steps.length) {
-			return steps;
-		}
-
-		return rebuild(ArrayUtil.clip(rebuiltSteps, rebuiltLen));
 	}
 
 }

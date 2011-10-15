@@ -22,7 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.LocationInfo;
 
@@ -31,7 +31,7 @@ public interface ResolutionWalker {
 
 	ResolutionWalker DUMMY_RESOLUTION_WALKER = new DummyResolutionWalker();
 
-	PathWalker path(LocationInfo location, Path path);
+	PathWalker path(LocationInfo location, BoundPath path);
 
 	boolean newObject(ScopeInfo location, Obj object);
 
