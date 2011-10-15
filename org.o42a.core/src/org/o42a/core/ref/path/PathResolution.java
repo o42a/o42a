@@ -30,14 +30,14 @@ public final class PathResolution {
 	static final PathResolution NO_PATH_RESOLUTION =
 			new PathResolution(false);
 
-	static PathResolution pathResolution(Path path, Container result) {
+	static PathResolution pathResolution(BoundPath path, Container result) {
 		if (result == null) {
 			return PATH_RESOLUTION_ERROR;
 		}
 		return new PathResolution(path, result);
 	}
 
-	private final Path path;
+	private final BoundPath path;
 	private final Container result;
 	private final boolean error;
 
@@ -47,7 +47,7 @@ public final class PathResolution {
 		this.error = error;
 	}
 
-	private PathResolution(Path path, Container result) {
+	private PathResolution(BoundPath path, Container result) {
 		this.path = path;
 		this.result = result;
 		this.error = false;

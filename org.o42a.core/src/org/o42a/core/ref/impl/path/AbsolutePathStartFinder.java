@@ -29,9 +29,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 
 
 public final class AbsolutePathStartFinder implements PathWalker {
@@ -50,13 +48,13 @@ public final class AbsolutePathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean root(Path path, Scope root) {
+	public boolean root(BoundPath path, Scope root) {
 		this.startObject = root.toObject();
 		return false;
 	}
 
 	@Override
-	public boolean start(Path path, Scope start) {
+	public boolean start(BoundPath path, Scope start) {
 		throw new UnsupportedOperationException();
 	}
 

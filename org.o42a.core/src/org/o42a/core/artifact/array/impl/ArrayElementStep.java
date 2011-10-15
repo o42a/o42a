@@ -67,7 +67,7 @@ public class ArrayElementStep extends Step {
 	@Override
 	public Container resolve(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker) {

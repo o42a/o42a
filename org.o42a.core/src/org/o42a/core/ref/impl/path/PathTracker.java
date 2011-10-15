@@ -50,12 +50,12 @@ public class PathTracker implements PathWalker {
 	}
 
 	@Override
-	public final boolean root(Path path, Scope root) {
+	public final boolean root(BoundPath path, Scope root) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public final boolean start(Path path, Scope start) {
+	public final boolean start(BoundPath path, Scope start) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -32,6 +32,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.type.TypeRef;
@@ -41,14 +42,14 @@ import org.o42a.core.st.Reproducer;
 
 public final class AbsolutePathTarget extends Ref {
 
-	private final Path path;
+	private final BoundPath path;
 
 	public AbsolutePathTarget(
 			LocationInfo location,
 			Distributor distributor,
 			Path path) {
 		super(location, distributor);
-		this.path = path;
+		this.path = path.bind(getScope());
 	}
 
 	@Override
@@ -63,7 +64,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public final Path getPath() {
-		return this.path;
+		return this.path.getPath();
 	}
 
 	@Override
@@ -92,9 +93,10 @@ public final class AbsolutePathTarget extends Ref {
 			return errorRef(this, distribute()).toTypeRef();
 		}
 
-		final Path upPath = this.path.cutArtifact();
+		final Path path = this.path.getRawPath();
+		final Path upPath = path.cutArtifact();
 
-		if (upPath != this.path) {
+		if (upPath != path) {
 
 			final TypeRef ancestor;
 			final TypeRef typeRef = artifact.getTypeRef();
@@ -108,9 +110,9 @@ public final class AbsolutePathTarget extends Ref {
 			return ancestor.rescope(upPath.rescoper(getScope()));
 		}
 
-		final Path dematerializedPath = this.path.dematerialize();
+		final Path dematerializedPath = path.dematerialize();
 
-		if (this.path == dematerializedPath) {
+		if (path == dematerializedPath) {
 			return super.ancestor(location);
 		}
 
@@ -123,9 +125,10 @@ public final class AbsolutePathTarget extends Ref {
 	@Override
 	public Ref materialize() {
 
-		final Path materialized = this.path.materialize();
+		final Path path = this.path.getRawPath();
+		final Path materialized = path.materialize();
 
-		if (materialized == this.path) {
+		if (materialized == path) {
 			return this;
 		}
 
@@ -137,7 +140,7 @@ public final class AbsolutePathTarget extends Ref {
 		return new AbsolutePathTarget(
 				this,
 				reproducer.distribute(),
-				this.path);
+				this.path.getRawPath());
 	}
 
 	@Override

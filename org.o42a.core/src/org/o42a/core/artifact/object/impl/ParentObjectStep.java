@@ -53,7 +53,7 @@ public final class ParentObjectStep extends MemberStep {
 	@Override
 	public Container resolve(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker) {

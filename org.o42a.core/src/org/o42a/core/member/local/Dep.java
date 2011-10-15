@@ -70,7 +70,7 @@ public abstract class Dep extends Step {
 	@Override
 	public Container resolve(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker) {
@@ -110,7 +110,7 @@ public abstract class Dep extends Step {
 
 	protected abstract Container resolveDep(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			int index,
 			Obj object,
 			LocalScope enclosingLocal,

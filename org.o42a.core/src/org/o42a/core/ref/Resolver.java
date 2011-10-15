@@ -110,7 +110,7 @@ public class Resolver implements UserInfo, LocationInfo {
 
 	public final Resolution path(
 			PathResolver resolver,
-			Path path,
+			BoundPath path,
 			Scope start) {
 
 		final PathWalker pathWalker = this.walker.path(resolver, path);

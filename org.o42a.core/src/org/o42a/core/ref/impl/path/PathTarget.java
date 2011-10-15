@@ -34,9 +34,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathReproduction;
-import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -47,6 +45,7 @@ public final class PathTarget extends Ref {
 
 	private final Path path;
 	private final Ref start;
+	private BoundPath boundPath;
 	private Holder<Path> fullPath;
 
 	public PathTarget(
@@ -55,9 +54,10 @@ public final class PathTarget extends Ref {
 			Path path,
 			Ref start) {
 		super(location, distributor);
-		this.path = path.rebuild();
+		this.path = path;
 		this.start = start;
 		if (start == null) {
+			this.boundPath = path.bind(getScope());
 			this.fullPath = new Holder<Path>(path);
 		}
 	}
@@ -95,7 +95,7 @@ public final class PathTarget extends Ref {
 			return null;
 		}
 
-		final Path fullPath = startPath.append(this.path).rebuild();
+		final Path fullPath = startPath.append(this.path);
 
 		this.fullPath = new Holder<Path>(fullPath);
 
@@ -211,7 +211,7 @@ public final class PathTarget extends Ref {
 		}
 
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;
-		final Path rescopePath = pathRescoper.getPath();
+		final Path rescopePath = pathRescoper.getPath().getRawPath();
 
 		return rescopePath.append(this.path).target(
 				this,
@@ -325,12 +325,30 @@ public final class PathTarget extends Ref {
 		return new Op(host, this);
 	}
 
+	private BoundPath getBoundPath() {
+		if (this.boundPath != null) {
+			return this.boundPath;
+		}
+
+		final Path fullPath = getPath();
+
+		if (fullPath != null) {
+			return this.boundPath = fullPath.bind(getScope());
+		}
+
+		return this.boundPath = this.path.bind(
+				this.start.resolve(getScope().dummyResolver()).getScope());
+	}
+
 	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
 
 		final Path fullPath = getPath();
 
 		if (fullPath != null) {
-			return resolver.path(pathResolver, fullPath, resolver.getScope());
+			return resolver.path(
+					pathResolver,
+					getBoundPath(),
+					resolver.getScope());
 		}
 
 		final Resolution start = this.start.resolve(resolver);
@@ -342,7 +360,7 @@ public final class PathTarget extends Ref {
 			return start;
 		}
 
-		return resolver.path(pathResolver, this.path, start.getScope());
+		return resolver.path(pathResolver, getBoundPath(), start.getScope());
 	}
 
 	private PathTarget reproducePart(
@@ -409,7 +427,7 @@ public final class PathTarget extends Ref {
 				start = host();
 			}
 
-			return ref.path.write(dirs, start);
+			return ref.getBoundPath().write(dirs, start);
 		}
 
 	}

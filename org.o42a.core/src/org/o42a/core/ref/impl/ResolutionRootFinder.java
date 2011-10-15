@@ -32,9 +32,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -64,7 +62,7 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public PathWalker path(LocationInfo location, Path path) {
+	public PathWalker path(LocationInfo location, BoundPath path) {
 		if (path.isAbsolute()) {
 			this.root = this.root.getContext().getRoot();
 			return null;
@@ -104,12 +102,12 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean root(Path path, Scope root) {
+	public boolean root(BoundPath path, Scope root) {
 		throw new IllegalStateException();
 	}
 
 	@Override
-	public boolean start(Path path, Scope start) {
+	public boolean start(BoundPath path, Scope start) {
 		return true;
 	}
 

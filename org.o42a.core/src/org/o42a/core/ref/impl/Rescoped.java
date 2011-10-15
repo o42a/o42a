@@ -77,7 +77,7 @@ public final class Rescoped extends Ref {
 		if (path != null) {
 			return resolver.path(
 					pathResolver(this, resolver),
-					path,
+					path.bind(getScope()),
 					getScope());
 		}
 

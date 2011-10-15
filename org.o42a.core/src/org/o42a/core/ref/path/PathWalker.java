@@ -34,9 +34,9 @@ public interface PathWalker {
 
 	PathWalker DUMMY_PATH_WALKER = DummyPathWalker.INSTANCE;
 
-	boolean root(Path path, Scope root);
+	boolean root(BoundPath path, Scope root);
 
-	boolean start(Path path, Scope start);
+	boolean start(BoundPath path, Scope start);
 
 	boolean module(Step step, Obj module);
 

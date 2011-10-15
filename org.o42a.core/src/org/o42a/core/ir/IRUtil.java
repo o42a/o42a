@@ -35,7 +35,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 
@@ -153,9 +153,10 @@ public class IRUtil {
 				enclosingObjectScope);
 		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
 
-		clause.pathInObject().walk(
+		clause.pathInObject().bind(enclosingObjectScope).walk(
 				pathResolver(scope,dummyUser()),
-				enclosingObjectScope, writer);
+				enclosingObjectScope,
+				writer);
 
 		return writer.id;
 	}
@@ -174,12 +175,12 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean root(Path path, Scope root) {
+		public boolean root(BoundPath path, Scope root) {
 			throw new IllegalStateException();
 		}
 
 		@Override
-		public boolean start(Path path, Scope start) {
+		public boolean start(BoundPath path, Scope start) {
 			return true;
 		}
 
