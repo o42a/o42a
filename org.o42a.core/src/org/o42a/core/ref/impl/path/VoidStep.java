@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -67,7 +69,7 @@ public class VoidStep extends Step {
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
-		return null;
+		return unchangedPath(toPath());
 	}
 
 	@Override
@@ -78,6 +80,11 @@ public class VoidStep extends Step {
 				builder.getContext().getVoid();
 
 		return voidObject.ir(dirs.getGenerator()).op(builder, dirs.code());
+	}
+
+	@Override
+	public String toString() {
+		return "VOID";
 	}
 
 }
