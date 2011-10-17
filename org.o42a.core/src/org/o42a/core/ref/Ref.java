@@ -205,7 +205,11 @@ public abstract class Ref extends Statement {
 		if (isKnownStatic()) {
 			return this;
 		}
-		return new StaticRef(this);
+
+		final Rescoper rescoper =
+				Path.SELF_PATH.bindStatically(this, getScope()).rescoper();
+
+		return rescope(rescoper);
 	}
 
 	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
