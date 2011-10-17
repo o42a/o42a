@@ -29,6 +29,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 
 
 final class FixedRef extends Ref {
@@ -54,6 +55,11 @@ final class FixedRef extends Ref {
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return resolver.staticArtifact(this, this.self);
+	}
+
+	@Override
+	public Value<?> value(Resolver resolver) {
+		return this.self.materialize().value().value(resolver);
 	}
 
 	@Override
