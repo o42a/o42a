@@ -32,7 +32,9 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -119,6 +121,13 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		this.enclosed = this.enclosedBeforeRoot;
 		this.inheritant = this.inheritantBeforeRoot;
 		return updateContainer(module, module);
+	}
+
+	@Override
+	public boolean staticScope(Step step, Scope scope) {
+		return updateContainer(
+				scope.getContainer(),
+				scope.getContainer());
 	}
 
 	@Override

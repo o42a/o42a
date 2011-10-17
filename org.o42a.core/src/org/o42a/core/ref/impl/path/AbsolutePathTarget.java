@@ -63,13 +63,13 @@ public final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
-	public final Path getPath() {
-		return this.path.getPath();
+	public boolean isStatic() {
+		return true;
 	}
 
 	@Override
-	public boolean isStatic() {
-		return true;
+	public final Path getPath() {
+		return this.path.getPath();
 	}
 
 	@Override
@@ -190,7 +190,7 @@ public final class AbsolutePathTarget extends Ref {
 
 			final AbsolutePathTarget ref = (AbsolutePathTarget) getRef();
 
-			return ref.path.writeAbolute(dirs);
+			return ref.path.writeStatic(dirs);
 		}
 
 	}

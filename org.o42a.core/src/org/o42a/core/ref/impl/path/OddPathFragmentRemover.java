@@ -60,6 +60,11 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
+	public boolean staticScope(Step step, Scope scope) {
+		return skip();
+	}
+
+	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
 
 		final Scope enclosingScope = enclosing.getScope();

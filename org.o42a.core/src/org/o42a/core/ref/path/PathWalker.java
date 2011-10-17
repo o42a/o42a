@@ -40,6 +40,8 @@ public interface PathWalker {
 
 	boolean module(Step step, Obj module);
 
+	boolean staticScope(Step step, Scope scope);
+
 	boolean up(Container enclosed, Step step, Container enclosing);
 
 	boolean member(Container container, Step step, Member member);

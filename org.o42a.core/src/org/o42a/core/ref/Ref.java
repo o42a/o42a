@@ -108,7 +108,7 @@ public abstract class Ref extends Statement {
 		final Path path = getPath();
 
 		if (path != null) {
-			return path.isAbsolute();
+			return path.isStatic();
 		}
 
 		return false;

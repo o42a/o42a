@@ -42,7 +42,7 @@ import org.o42a.core.st.Reproducer;
 
 public enum PathKind {
 
-	RELATIVE_PATH() {
+	RELATIVE_PATH(false) {
 
 		@Override
 		protected Ref target(
@@ -65,7 +65,7 @@ public enum PathKind {
 
 	},
 
-	ABSOLUTE_PATH() {
+	ABSOLUTE_PATH(true) {
 
 		@Override
 		protected Ref target(
@@ -85,10 +85,14 @@ public enum PathKind {
 
 	};
 
-	private final Path emptyPath = new Path(this);
+	private final Path emptyPath;
 
-	public final boolean isStatic() {
-		return this != RELATIVE_PATH;
+	PathKind(boolean isStatic) {
+		this.emptyPath = new Path(this, isStatic);
+	}
+
+	public final boolean isAbsolute() {
+		return this == ABSOLUTE_PATH;
 	}
 
 	public final Path emptyPath() {
@@ -161,6 +165,7 @@ public enum PathKind {
 						reproduction.getExternalPath().append(
 								new Path(
 										RELATIVE_PATH,
+										path.isStatic(),
 										copyOfRange(
 												steps,
 												i + 1,
@@ -195,7 +200,8 @@ public enum PathKind {
 				reproducedSteps.length,
 				stepsLeft);
 
-		return reproducedPath(new Path(RELATIVE_PATH, newSteps));
+		return reproducedPath(
+				new Path(RELATIVE_PATH, path.isStatic(), newSteps));
 	}
 
 }

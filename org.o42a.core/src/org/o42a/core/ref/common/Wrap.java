@@ -57,6 +57,14 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
+	public boolean isKnownStatic() {
+		if (this.wrapped != null) {
+			return this.wrapped.isKnownStatic();
+		}
+		return super.isKnownStatic();
+	}
+
+	@Override
 	public final boolean isStatic() {
 		return wrapped().isStatic();
 	}
@@ -104,7 +112,7 @@ public abstract class Wrap extends Ref {
 		if (this.wrapped != null) {
 			return this.wrapped.toStatic();
 		}
-		return super.toStatic();
+		return new StaticWrap();
 	}
 
 	@Override
@@ -224,6 +232,31 @@ public abstract class Wrap extends Ref {
 		@Override
 		protected TypeRef resolveWrapped() {
 			return Wrap.this.wrapped().ancestor(this);
+		}
+
+	}
+
+	private final class StaticWrap extends Wrap {
+
+		StaticWrap() {
+			super(Wrap.this, Wrap.this.distribute());
+		}
+
+		@Override
+		public String toString() {
+
+			final Ref wrapped = getWrapped();
+
+			if (wrapped != null) {
+				return wrapped.toString();
+			}
+
+			return '&' + super.toString();
+		}
+
+		@Override
+		protected Ref resolveWrapped() {
+			return Wrap.this.wrapped().toStatic();
 		}
 
 	}

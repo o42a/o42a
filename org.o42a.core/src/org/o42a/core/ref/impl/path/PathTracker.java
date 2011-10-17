@@ -65,6 +65,11 @@ public class PathTracker implements PathWalker {
 	}
 
 	@Override
+	public boolean staticScope(Step step, Scope scope) {
+		return walk(this.walker.staticScope(step, scope));
+	}
+
+	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
 		return walk(this.walker.up(enclosed, step, enclosing));
 	}

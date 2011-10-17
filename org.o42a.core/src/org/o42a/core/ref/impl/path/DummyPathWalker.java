@@ -27,7 +27,9 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 
 
 public final class DummyPathWalker implements PathWalker {
@@ -49,6 +51,11 @@ public final class DummyPathWalker implements PathWalker {
 
 	@Override
 	public boolean module(Step step, Obj module) {
+		return true;
+	}
+
+	@Override
+	public boolean staticScope(Step step, Scope scope) {
 		return true;
 	}
 

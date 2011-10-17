@@ -43,7 +43,7 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public boolean isStatic() {
-		return this.path.isAbsolute();
+		return this.path.isStatic();
 	}
 
 	public final BoundPath getPath() {
