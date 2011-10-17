@@ -33,9 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.ModuleStep;
-import org.o42a.core.ref.impl.path.PathTarget;
-import org.o42a.core.ref.impl.path.StaticStep;
+import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
@@ -46,6 +44,8 @@ public final class Path {
 
 	public static final Path ROOT_PATH = ABSOLUTE_PATH.emptyPath();
 	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
+	public static final Path VOID_PATH =
+			new Path(ABSOLUTE_PATH, true, new VoidStep());
 
 	public static Path absolutePath(
 			CompilerContext context,
