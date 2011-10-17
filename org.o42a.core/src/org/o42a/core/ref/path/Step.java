@@ -71,7 +71,10 @@ public abstract class Step {
 	}
 
 	public final Path toPath() {
-		return new Path(getPathKind(), this);
+		return new Path(
+				getPathKind(),
+				getStepKind() == StepKind.STATIC_STEP,
+				this);
 	}
 
 	public abstract HostOp write(CodeDirs dirs, HostOp start);

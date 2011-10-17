@@ -94,6 +94,11 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
+	public boolean staticScope(Step step, Scope scope) {
+		return unexpectedAbsolutePath();
+	}
+
+	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
 		if (this.outcome != null) {
 			return invalidOutcome();

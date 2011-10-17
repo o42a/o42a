@@ -35,6 +35,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ModuleStep;
 import org.o42a.core.ref.impl.path.PathTarget;
+import org.o42a.core.ref.impl.path.StaticStep;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
@@ -68,22 +69,24 @@ public final class Path {
 	}
 
 	public static Path modulePath(String moduleId) {
-		return new Path(ABSOLUTE_PATH, new ModuleStep(moduleId));
+		return new Path(ABSOLUTE_PATH, true, new ModuleStep(moduleId));
 	}
 
 	public static Path memberPath(MemberKey memberKey) {
-		return new Path(RELATIVE_PATH, new MemberStep(memberKey));
+		return new Path(RELATIVE_PATH, false, new MemberStep(memberKey));
 	}
 
 	public static Path materializePath() {
-		return new Path(RELATIVE_PATH, MATERIALIZE);
+		return new Path(RELATIVE_PATH, false, MATERIALIZE);
 	}
 
 	private final PathKind kind;
 	private final Step[] steps;
+	private final boolean isStatic;
 
-	Path(PathKind kind, Step... steps) {
+	Path(PathKind kind, boolean isStatic, Step... steps) {
 		this.kind = kind;
+		this.isStatic = kind.isAbsolute() ? true : isStatic;
 		this.steps = steps;
 		assert assertStepsNotNull(steps);
 	}
@@ -93,11 +96,15 @@ public final class Path {
 	}
 
 	public final boolean isAbsolute() {
-		return getKind() == PathKind.ABSOLUTE_PATH;
+		return getKind().isAbsolute();
+	}
+
+	public final boolean isStatic() {
+		return this.isStatic;
 	}
 
 	public final boolean isSelf() {
-		return this.steps.length == 0 && !isAbsolute();
+		return this.steps.length == 0 && !isStatic();
 	}
 
 	public final Step[] getSteps() {
@@ -110,13 +117,13 @@ public final class Path {
 
 		final PathKind pathKind = step.getPathKind();
 
-		if (pathKind.isStatic()) {
-			return new Path(pathKind, step);
+		if (pathKind.isAbsolute()) {
+			return new Path(pathKind, true, step);
 		}
 
 		final Step[] newSteps = ArrayUtil.append(this.steps, step);
 
-		return new Path(getKind(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public Path append(MemberKey memberKey) {
@@ -146,7 +153,7 @@ public final class Path {
 
 		final Step[] newSteps = Arrays.copyOf(steps, lastIdx);
 
-		return new Path(getKind(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public Path materialize() {
@@ -187,7 +194,7 @@ public final class Path {
 
 		final Step[] newSteps = Arrays.copyOf(this.steps, lastIdx);
 
-		return new Path(getKind(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public Path arrayItem(Ref indexRef) {
@@ -204,7 +211,7 @@ public final class Path {
 
 		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
 
-		return new Path(getKind(), newSteps);
+		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
 	public Ref target(
@@ -221,7 +228,7 @@ public final class Path {
 	}
 
 	public Ref target(LocationInfo location, Distributor distributor) {
-		return new PathTarget(location, distributor, this);
+		return new PathTarget(location, distributor, this, null);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -230,6 +237,30 @@ public final class Path {
 
 	public final BoundPath bind(LocationInfo location, Deferred<Scope> origin) {
 		return new BoundPath(location, origin, this);
+	}
+
+	public final BoundPath bindStatically(LocationInfo location, Scope origin) {
+		if (isStatic()) {
+			return bind(location, origin);
+		}
+
+		final Step[] steps =
+				ArrayUtil.prepend(new StaticStep(origin), getSteps());
+
+		return new Path(getKind(), true, steps).bind(location, origin);
+	}
+
+	public final BoundPath bindStatically(
+			LocationInfo location,
+			Deferred<Scope> origin) {
+		if (isStatic()) {
+			return bind(location, origin);
+		}
+
+		final Step[] steps =
+				ArrayUtil.prepend(new StaticStep(origin), getSteps());
+
+		return new Path(getKind(), true, steps).bind(location, origin);
 	}
 
 	public Path rebuildWithRef(Ref followingRef) {
@@ -258,7 +289,7 @@ public final class Path {
 
 		newSteps[lastIdx] = rebuilt;
 
-		return new Path(getKind(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	@Override
@@ -293,31 +324,23 @@ public final class Path {
 	}
 
 	String toString(Object origin, int length) {
-		if (length == 0) {
-			if (isAbsolute()) {
-				return "</>";
-			}
-			if (origin != null) {
-				return "<(" + origin + ")>";
-			}
-			return "<>";
-		}
 
 		final StringBuilder out = new StringBuilder();
+
+		if (isAbsolute()) {
+			out.append("</");
+		} else {
+			out.append('<');
+		}
+		if (origin != null) {
+			out.append('[').append(origin).append("] ");
+		}
 
 		for (int i = 0; i < length; ++i) {
 
 			final Step step = this.steps[i];
 
-			if (i == 0) {
-				if (origin != null) {
-					out.append("<(").append(origin).append(")/");
-				} else if (isAbsolute()) {
-					out.append("</");
-				} else {
-					out.append('<');
-				}
-			} else {
+			if (i != 0) {
 				out.append('/');
 			}
 

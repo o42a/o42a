@@ -38,6 +38,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.Deferred;
 import org.o42a.util.Holder;
 
 
@@ -62,19 +63,38 @@ public final class PathTarget extends Ref {
 		}
 	}
 
-	public PathTarget(
+	private PathTarget(
 			LocationInfo location,
 			Distributor distributor,
-			Path path) {
-		this(location, distributor, path, null);
+			BoundPath path,
+			Ref start) {
+		super(location, distributor);
+		this.path = path.getRawPath();
+		this.start = start;
+		this.boundPath = path;
+		if (start == null) {
+			this.fullPath = new Holder<Path>(this.path);
+		}
+	}
+
+	public final Ref getStart() {
+		return this.start;
+	}
+
+	@Override
+	public boolean isKnownStatic() {
+		if (this.path.isStatic()) {
+			return true;
+		}
+		return this.start != null && this.start.isKnownStatic();
 	}
 
 	@Override
 	public boolean isStatic() {
-		if (this.start != null) {
-			return this.start.isStatic();
+		if (this.path.isStatic()) {
+			return true;
 		}
-		return false;
+		return this.start != null && this.start.isKnownStatic();
 	}
 
 	@Override
@@ -190,9 +210,6 @@ public final class PathTarget extends Ref {
 		if (materialized == path) {
 			return this;
 		}
-		if (start == null) {
-			return new PathTarget(this, distribute(), materialized);
-		}
 
 		return new PathTarget(this, distribute(), materialized, start);
 	}
@@ -216,6 +233,29 @@ public final class PathTarget extends Ref {
 		return rescopePath.append(this.path).target(
 				this,
 				distributeIn(rescoper.getFinalScope().getContainer()));
+	}
+
+	@Override
+	public Ref toStatic() {
+		if (isKnownStatic()) {
+			return this;
+		}
+		if (this.boundPath != null) {
+			return new PathTarget(
+					this,
+					distribute(),
+					this.boundPath.toStatic(),
+					getStart());
+		}
+
+		final BoundPath staticPath =
+				this.path.bindStatically(this, new PathStart());
+
+		return new PathTarget(
+				this,
+				distribute(),
+				staticPath.getRawPath(),
+				getStart());
 	}
 
 	@Override
@@ -365,14 +405,16 @@ public final class PathTarget extends Ref {
 			Reproducer reproducer,
 			Ref start,
 			Path path) {
+
+		final Ref newStart;
+
 		if (start == null) {
-			return new PathTarget(this, reproducer.distribute(), path);
-		}
-
-		final Ref newStart = start.reproduce(reproducer);
-
-		if (newStart == null) {
-			return null;
+			newStart = null;
+		} else {
+			newStart = start.reproduce(reproducer);
+			if (newStart == null) {
+				return null;
+			}
 		}
 
 		return new PathTarget(this, reproducer.distribute(), path, newStart);
@@ -407,6 +449,21 @@ public final class PathTarget extends Ref {
 		return path.bind(this, startScope).rescoper().and(start.toRescoper());
 	}
 
+	private final class PathStart implements Deferred<Scope> {
+
+		@Override
+		public Scope get() {
+			return getStart().resolve(
+					getScope().dummyResolver()).getScope();
+		}
+
+		@Override
+		public String toString() {
+			return getStart().toString();
+		}
+
+	}
+
 	private static final class Op extends RefOp {
 
 		Op(HostOp host, PathTarget ref) {
@@ -417,15 +474,18 @@ public final class PathTarget extends Ref {
 		public HostOp target(CodeDirs dirs) {
 
 			final PathTarget ref = (PathTarget) getRef();
+			final BoundPath boundPath = ref.getBoundPath();
 			final HostOp start;
 
-			if (ref.start != null) {
+			if (ref.getPath() != null) {
+				start = host();
+			} else if (ref.start != null && !boundPath.isStatic()) {
 				start = ref.start.op(host()).target(dirs);
 			} else {
 				start = host();
 			}
 
-			return ref.getBoundPath().write(dirs, start);
+			return boundPath.write(dirs, start);
 		}
 
 	}

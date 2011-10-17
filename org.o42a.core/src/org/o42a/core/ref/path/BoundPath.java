@@ -99,6 +99,10 @@ public class BoundPath extends Location {
 		return getRawPath().isAbsolute();
 	}
 
+	public final boolean isStatic() {
+		return getRawPath().isStatic();
+	}
+
 	public final boolean isSelf() {
 		return getPath().isSelf();
 	}
@@ -121,7 +125,7 @@ public class BoundPath extends Location {
 	}
 
 	public Rescoper rescoper() {
-		if (!isAbsolute() && getSteps().length == 0) {
+		if (!isStatic() && getSteps().length == 0) {
 			return transparentRescoper(getOrigin());
 		}
 		return new PathRescoper(this);
@@ -131,9 +135,21 @@ public class BoundPath extends Location {
 		return getKind().reproduce(reproducer, this);
 	}
 
+	public final BoundPath toStatic() {
+		if (isStatic()) {
+			return this;
+		}
+
+		if (this.origin != null) {
+			return getRawPath().bindStatically(this, this.origin);
+		}
+
+		return getRawPath().bindStatically(this, this.deferredOrigin);
+	}
+
 	public final HostOp write(CodeDirs dirs, HostOp start) {
-		if (isAbsolute()) {
-			return writeAbolute(dirs);
+		if (isStatic()) {
+			return writeStatic(dirs);
 		}
 
 		final Step[] steps = getSteps();
@@ -149,9 +165,9 @@ public class BoundPath extends Location {
 		return found;
 	}
 
-	public final HostOp writeAbolute(CodeDirs dirs) {
-		assert isAbsolute() :
-			this + " is not absolute path";
+	public final HostOp writeStatic(CodeDirs dirs) {
+		assert isStatic() :
+			this + " is not a static path";
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final CompilerContext context = builder.getContext();
@@ -255,12 +271,9 @@ public class BoundPath extends Location {
 
 	private void findStart(CompilerContext context) {
 
-		final AbsolutePathStartFinder walker = new AbsolutePathStartFinder();
+		final StaticPathStartFinder walker = new StaticPathStartFinder();
 
-		walk(
-				pathResolver(dummyUser()),
-				context.getRoot().getScope(),
-				walker);
+		walk(pathResolver(dummyUser()), getOrigin(), walker);
 
 		this.startIndex = walker.getStartIndex();
 		this.startObject = walker.getStartObject();
@@ -278,7 +291,7 @@ public class BoundPath extends Location {
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(rawPath.getKind(), steps);
+			return new Path(rawPath.getKind(), isStatic(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -287,7 +300,7 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(rawPath.getKind(), rebuilt);
+		return new Path(rawPath.getKind(), isStatic(), rebuilt);
 	}
 
 	private Step[] removeOddFragments() {

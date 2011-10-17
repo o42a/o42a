@@ -27,7 +27,9 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 
 
 public class CompoundPathWalker implements PathWalker {
@@ -73,6 +75,18 @@ public class CompoundPathWalker implements PathWalker {
 
 		for (PathWalker walker : getWalkers()) {
 			proceed = walker.module(step, module) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
+	public boolean staticScope(Step step, Scope scope) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.staticScope(step, scope) & proceed;
 		}
 
 		return proceed;
