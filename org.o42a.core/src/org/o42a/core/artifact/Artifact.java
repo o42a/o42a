@@ -25,6 +25,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Holder;
@@ -112,7 +113,9 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		if (this.self != null) {
 			return this.self;
 		}
-		return this.self = new SelfRef(this);
+		return this.self = Path.SELF_PATH.bindStatically(
+				this,
+				getScope()).getPath().target(this, distribute());
 	}
 
 	public boolean isAbstract() {
