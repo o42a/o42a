@@ -55,11 +55,11 @@ public abstract class Sample extends Scoped {
 	public abstract StaticTypeRef getExplicitAscendant();
 
 	public final ObjectType type(UserInfo user) {
-		return getTypeRef().type(user);
+		return getObject().type().useBy(user);
 	}
 
 	public final Obj typeObject(UserInfo user) {
-		return getTypeRef().typeObject(user);
+		return type(user).getObject();
 	}
 
 	public final void deriveMembers(ObjectMembers members) {

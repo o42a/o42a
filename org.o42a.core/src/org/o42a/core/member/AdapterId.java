@@ -130,7 +130,7 @@ public final class AdapterId extends MemberId {
 
 		final Obj object = adapterTypeScope.toObject();
 
-		return object.fixedRef(scope.distribute()).toStaticTypeRef();
+		return object.selfRef().toStaticTypeRef().rescope(scope);
 	}
 
 	@Override

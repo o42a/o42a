@@ -163,7 +163,8 @@ public class Root extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
-				getContext().getVoid().fixedRef(
+				Path.VOID_PATH.target(
+						this,
 						getScope().getEnclosingScope().distribute())
 						.toStaticTypeRef());
 	}

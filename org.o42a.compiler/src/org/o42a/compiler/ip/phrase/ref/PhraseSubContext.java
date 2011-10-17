@@ -244,7 +244,7 @@ class PhraseSubContext extends PhraseContext {
 
 		declaration =
 				declaration.override()
-				.setDeclaredIn(origin.fixedRef(distributor).toStaticTypeRef())
+				.setDeclaredIn(origin.selfRef().toStaticTypeRef())
 				.setVisibility(overridden.getVisibility());
 
 		if (getClause().toPlainClause().isPrototype()) {
