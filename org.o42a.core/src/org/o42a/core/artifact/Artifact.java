@@ -115,10 +115,6 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return this.self = new SelfRef(this);
 	}
 
-	public final Ref fixedRef(Distributor distributor) {
-		return new FixedRef(distributor, this);
-	}
-
 	public boolean isAbstract() {
 
 		final Field<?> field = getScope().toField();

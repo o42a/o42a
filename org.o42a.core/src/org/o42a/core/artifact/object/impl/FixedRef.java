@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.artifact.object.impl;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -32,11 +33,11 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
 
-final class FixedRef extends Ref {
+public final class FixedRef extends Ref {
 
-	private final Artifact<?> self;
+	private final Obj self;
 
-	FixedRef(Distributor distributor, Artifact<?> self) {
+	public FixedRef(Distributor distributor, Obj self) {
 		super(self, distributor);
 		this.self = self;
 	}
@@ -59,7 +60,7 @@ final class FixedRef extends Ref {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return this.self.materialize().value().value(resolver);
+		return this.self.value().value(resolver);
 	}
 
 	@Override

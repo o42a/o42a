@@ -492,6 +492,10 @@ public abstract class Obj
 		return new ObjectEnv(this);
 	}
 
+	public final Ref fixedRef(Distributor distributor) {
+		return new FixedRef(distributor, this);
+	}
+
 	public final void assertDerivedFrom(Obj type) {
 		assert type().derivedFrom(type.type()) :
 			this + " is not derived from " + type;

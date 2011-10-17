@@ -229,9 +229,8 @@ class PhraseSubContext extends PhraseContext {
 					location,
 					distributor,
 					adapterId(
-							overriddenKey.getAdapterId().getAdapterTypeScope()
-							.getArtifact().fixedRef(distributor)
-							.toStaticTypeRef()));
+							overriddenKey.getAdapterId().adapterType(
+									distributor.getScope())));
 		} else {
 			declaration = fieldDeclaration(
 					location,
