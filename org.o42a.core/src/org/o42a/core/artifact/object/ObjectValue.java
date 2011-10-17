@@ -102,10 +102,11 @@ public final class ObjectValue implements UseInfo {
 
 	public Value<?> value(Resolver resolver) {
 		getObject().assertCompatible(resolver.getScope());
+		explicitUseBy(resolver);
 
 		final Value<?> result;
 
-		if (resolver == getObject().getScope()) {
+		if (resolver.getScope() == getObject().getScope()) {
 			result = getValue();
 		} else {
 			result = getDefinitions().value(resolver);
