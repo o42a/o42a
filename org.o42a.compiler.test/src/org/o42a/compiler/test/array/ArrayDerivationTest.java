@@ -99,4 +99,33 @@ public class ArrayDerivationTest extends CompilerTestCase {
 				is(3L));
 	}
 
+	@Test
+	public void expressionArrayItem() {
+		compile(
+				"A := void(",
+				"  F := `1",
+				"  G := `2",
+				"  Field := [(`integer) f + g]",
+				")",
+				"B := a(f = 2; g = 4)");
+
+		final Obj bField = field("b", "field").toObject();
+
+		final ArrayValueStruct arraySruct =
+				(ArrayValueStruct) bField.value().getValueStruct();
+
+		assertTrue(arraySruct.isConstant());
+		assertThat(
+				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				is(bField.getContext().getIntrinsics().getInteger()));
+
+		final Array array = definiteValue(bField);
+		final ArrayItem[] items = array.items(bField.getScope());
+
+		assertThat(items.length, is(1));
+		assertThat(
+				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				is(6L));
+	}
+
 }
