@@ -187,7 +187,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getSteps().length);
+		return toString(getRawPath().getSteps().length);
 	}
 
 	public String toString(int length) {
