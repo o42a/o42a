@@ -21,10 +21,10 @@ package org.o42a.core.artifact.object.impl.sample;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -104,13 +104,13 @@ public final class MemberOverride extends Sample {
 	private ValueStruct<?, ?> valueStruct() {
 
 		final Obj object = getObject();
-		final ValueStruct<?, ?> valueStruct = object.value().getValueStruct();
-		final Scope scope = object.getScope();
-		final Rescoper rescoper = scope.getEnclosingScopePath().bind(
+		final Path memberPath =
+				this.overriddenMember.getKey().toPath().materialize();
+		final Rescoper rescoper = memberPath.bind(
 				this,
-				scope.getEnclosingScope()).rescoper();
+				object.getScope().getEnclosingScope()).rescoper();
 
-		return valueStruct.rescope(rescoper);
+		return object.value().getValueStruct().rescope(rescoper);
 	}
 
 }
