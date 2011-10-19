@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,56 +21,70 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
+import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
-import org.o42a.ast.Node;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
 
 
-public class ParentRef extends Wrap {
+public class RefInterpreter {
 
-	private final Interpreter ip;
-	private final String name;
+	public static Path enclosingModulePath(Container of) {
 
-	public ParentRef(
-			Interpreter ip,
-			CompilerContext context,
-			Node node,
-			String name,
-			Distributor distributor) {
-		super(new Location(context, node), distributor);
-		this.ip = ip;
-		this.name = name;
-	}
+		Container container = of;
 
-	@Override
-	public String toString() {
-		if (this.name == null) {
-			return super.toString();
+		if (container.getScope().isTopScope()) {
+			return ROOT_PATH;
 		}
-		return this.name + "::";
+
+		Path result = null;
+
+		for (;;) {
+
+			final Container enclosing =
+					container.getScope().getEnclosingContainer();
+
+			if (enclosing.getScope().isTopScope()) {
+				if (result == null) {
+					return SELF_PATH;
+				}
+				return result;
+			}
+
+			final Path enclosingScopePath =
+					container.getScope().getEnclosingScopePath();
+
+			if (result == null) {
+				result = enclosingScopePath;
+			} else {
+				result = result.append(enclosingScopePath);
+			}
+
+			container = enclosing;
+		}
 	}
 
-	@Override
-	protected Ref resolveWrapped() {
+	public static Path parentPath(
+			Interpreter ip,
+			LocationInfo location,
+			String name,
+			Container of) {
 
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
 		Container nested = null;
-		Container container = getContainer();
+		Container container = of;
 
 		for (;;) {
-			if (match(container) && !skip(nested)) {
-				return path.append(parentPath).target(this, distribute());
+			if (match(name, container) && !skip(ip, nested)) {
+				return path.append(parentPath);
 			}
 
 			nested = container;
@@ -78,16 +92,16 @@ public class ParentRef extends Wrap {
 			final Container parent = container.getParentContainer();
 
 			if (parent == null) {
-				unresolved();
-				return errorRef(this);
+				unresolvedParent(location, name);
+				return null;
 			}
 
 			final Scope scope = container.getScope();
 			final Path enclosingScopePath = scope.getEnclosingScopePath();
 
 			if (enclosingScopePath == null) {
-				unresolved();
-				return errorRef(this);
+				unresolvedParent(location, name);
+				return null;
 			}
 
 			if (scope == parent.getScope()) {
@@ -115,25 +129,63 @@ public class ParentRef extends Wrap {
 		}
 	}
 
-	private boolean match(Container container) {
+	public static Path clauseObjectPath(LocationInfo location, Scope of) {
+
+		Scope scope = of;
+		Path path = Path.SELF_PATH;
+
+		for (;;) {
+
+			final Clause clause = scope.getContainer().toClause();
+
+			if (clause == null) {
+
+				final Obj object = scope.toObject();
+
+				if (object == null) {
+					location.getContext().getLogger().error(
+							"unresolved_object_intrinsic",
+							location,
+							"Enclosing object not found");
+					return null;
+				}
+
+				return path;
+			}
+
+			final Scope enclosingScope = scope.getEnclosingScope();
+
+			if (enclosingScope == null) {
+				return null;
+			}
+
+			path = path.append(scope.getEnclosingScopePath());
+			scope = enclosingScope;
+		}
+	}
+
+	private RefInterpreter() {
+	}
+
+	private static boolean match(String name, Container container) {
 
 		final Member member = container.toMember();
 
 		if (member == null) {
 			return false;
 		}
-		if (this.name == null) {
+		if (name == null) {
 			return true;
 		}
 
-		return this.name.equals(member.getKey().getName());
+		return name.equals(member.getKey().getName());
 	}
 
-	private boolean skip(Container nested) {
+	private static boolean skip(Interpreter ip, Container nested) {
 		if (nested == null) {
 			return false;
 		}
-		if (this.ip == CLAUSE_DECL_IP) {
+		if (ip == CLAUSE_DECL_IP) {
 			return false;
 		}
 		// Top-level expression clause
@@ -141,12 +193,12 @@ public class ParentRef extends Wrap {
 		return prototypeExpressionClause(nested);
 	}
 
-	public void unresolved() {
-		getLogger().error(
+	private static void unresolvedParent(LocationInfo location, String name) {
+		location.getContext().getLogger().error(
 				"unresolved_parent",
-				this,
+				location,
 				"Enclosing member '%s' can not be found",
-				this.name);
+				name);
 	}
 
 }
