@@ -84,6 +84,10 @@ public abstract class Step {
 		return getClass().getSimpleName();
 	}
 
+	protected PathFragment getPathFragment() {
+		return null;
+	}
+
 	protected Step rebuild(Step prev) {
 		return null;
 	}

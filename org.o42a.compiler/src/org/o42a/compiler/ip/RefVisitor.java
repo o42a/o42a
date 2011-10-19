@@ -176,7 +176,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					location(p, ref.getName()),
 					p,
 					ip().memberName(ref.getName().getName()),
-					declaredIn));
+					declaredIn).toRef());
 		}
 
 		@Override

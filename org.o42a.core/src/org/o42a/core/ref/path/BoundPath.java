@@ -92,15 +92,15 @@ public class BoundPath extends Location {
 	}
 
 	public final PathKind getKind() {
-		return getRawPath().getKind();
+		return getPath().getKind();
 	}
 
 	public final boolean isAbsolute() {
-		return getRawPath().isAbsolute();
+		return getPath().isAbsolute();
 	}
 
 	public final boolean isStatic() {
-		return getRawPath().isStatic();
+		return getPath().isStatic();
 	}
 
 	public final boolean isSelf() {
@@ -109,6 +109,10 @@ public class BoundPath extends Location {
 
 	public final Step[] getSteps() {
 		return getPath().getSteps();
+	}
+
+	public final Step[] getRawSteps() {
+		return getRawPath().getSteps();
 	}
 
 	public final PathResolution resolve(
@@ -125,7 +129,7 @@ public class BoundPath extends Location {
 	}
 
 	public Rescoper rescoper() {
-		if (!isStatic() && getSteps().length == 0) {
+		if (!getRawPath().isStatic() && getRawSteps().length == 0) {
 			return transparentRescoper(getOrigin());
 		}
 		return new PathRescoper(this);
@@ -136,7 +140,7 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath toStatic() {
-		if (isStatic()) {
+		if (getRawPath().isStatic()) {
 			return this;
 		}
 
@@ -187,7 +191,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getRawPath().getSteps().length);
+		return toString(getRawSteps().length);
 	}
 
 	public String toString(int length) {
@@ -201,6 +205,7 @@ public class BoundPath extends Location {
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
+		this.path = path;
 
 		final Scope startFrom;
 		final PathTracker tracker;
@@ -227,12 +232,66 @@ public class BoundPath extends Location {
 			tracker = new PathTracker(resolver, walker);
 		}
 
-		final Step[] steps = path.getSteps();
+		Step[] steps = this.path.getSteps();
 		Container result = startFrom.getContainer();
 		Scope prev = startFrom;
+		int i = 0;
 
-		for (int i = 0; i < steps.length; ++i) {
-			result = steps[i].resolve(
+		while (i < steps.length) {
+
+			final Step step = steps[i];
+			final PathFragment fragment = step.getPathFragment();
+
+			if (fragment != null) {
+				// Build path fragment and replace current step with it.
+
+				final Path replacement = fragment.expand(this, i, prev);
+
+				if (replacement == null) {
+					// Error occurred.
+					steps = ArrayUtil.replace(
+							steps,
+							i,
+							steps.length,
+							new Step[] {ErrorStep.ERROR_STEP});
+					this.path = new Path(
+							this.path.getKind(),
+							this.path.isStatic(),
+							steps);
+					return null;
+				}
+
+				final Step[] replacementSteps = replacement.getSteps();
+
+				if (replacement.isAbsolute()) {
+					// Replacement is an absolute path.
+					// Replace all steps from the very first to the current one.
+					steps = ArrayUtil.replace(
+							steps,
+							0,
+							i + 1,
+							replacementSteps);
+					this.path = new Path(PathKind.ABSOLUTE_PATH, true, steps);
+					// Continue from the ROOT.
+					prev = start.getContext().getRoot().getScope();
+					i = 0;
+				} else {
+					// Replacement is a relative path.
+					// Replace the current step.
+					steps = ArrayUtil.replace(
+							steps,
+							i,
+							i + 1,
+							replacementSteps);
+					this.path = new Path(
+							this.path.getKind(),
+							this.path.isStatic() || replacement.isStatic(),
+							steps);
+				}
+				// Do not change the current index.
+				continue;
+			}
+			result = step.resolve(
 					tracker.nextResolver(),
 					this,
 					i,
@@ -245,6 +304,7 @@ public class BoundPath extends Location {
 				tracker.abortedAt(prev, steps[i]);
 				return PATH_RESOLUTION_ERROR;
 			}
+			++i;
 			prev = result.getScope();
 		}
 
@@ -284,14 +344,14 @@ public class BoundPath extends Location {
 		final Path rawPath = getRawPath();
 		final Step[] rawSteps = rawPath.getSteps();
 
-		if (rawSteps.length <= 1) {
+		if (rawSteps.length == 0) {
 			return rawPath;
 		}
 
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(rawPath.getKind(), isStatic(), steps);
+			return new Path(getKind(), isStatic(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -300,13 +360,13 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(rawPath.getKind(), isStatic(), rebuilt);
+		return new Path(getKind(), isStatic(), rebuilt);
 	}
 
 	private Step[] removeOddFragments() {
 
 		final OddPathFragmentRemover remover =
-				new OddPathFragmentRemover(getRawPath());
+				new OddPathFragmentRemover(this);
 
 		walkPath(
 				getRawPath(),

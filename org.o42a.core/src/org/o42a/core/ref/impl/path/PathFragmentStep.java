@@ -19,43 +19,26 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.Deferred;
 
 
-public class StaticStep extends Step {
+public final class PathFragmentStep extends Step {
 
-	private final Deferred<Scope> deferredScope;
-	private Scope scope;
+	private final PathFragment fragment;
 
-	public StaticStep(Scope scope) {
-		this.deferredScope = null;
-		this.scope = scope;
-	}
-
-	public StaticStep(Deferred<Scope> deferredScope) {
-		this.deferredScope = deferredScope;
-	}
-
-	public final Scope getScope() {
-		if (this.scope != null) {
-			return this.scope;
-		}
-		return this.scope = this.deferredScope.get();
+	public PathFragmentStep(PathFragment fragment) {
+		this.fragment = fragment;
 	}
 
 	@Override
 	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
+		return StepKind.FRAGMENT_STEP;
 	}
 
 	@Override
@@ -65,7 +48,7 @@ public class StaticStep extends Step {
 
 	@Override
 	public Step materialize() {
-		return null;
+		return MATERIALIZE;
 	}
 
 	@Override
@@ -75,14 +58,7 @@ public class StaticStep extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-
-		final Scope scope = getScope();
-
-		scope.assertCompatible(start);
-
-		walker.staticScope(this, this.scope);
-
-		return scope.getContainer();
+		throw unresolved();
 	}
 
 	@Override
@@ -90,25 +66,30 @@ public class StaticStep extends Step {
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
-		getScope().assertCompatible(reproducer.getReproducingScope());
-		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
+		throw unresolved();
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-		// This should only be called for object scope.
-
-		final ObjectIR ir = getScope().toObject().ir(dirs.getGenerator());
-
-		return ir.op(dirs.getBuilder(), dirs.code());
+		throw unresolved();
 	}
 
 	@Override
 	public String toString() {
-		if (this.scope != null) {
-			return '<' + this.scope.toString() + '>';
+		if (this.fragment == null) {
+			return "(?)";
 		}
-		return '<' + this.deferredScope.toString() + '>';
+		return '(' + this.fragment.toString() + ')';
+	}
+
+	@Override
+	protected PathFragment getPathFragment() {
+		return this.fragment;
+	}
+
+	private IllegalStateException unresolved() {
+		return new IllegalStateException(
+				"Path fragment not resolved yet: " + this);
 	}
 
 }

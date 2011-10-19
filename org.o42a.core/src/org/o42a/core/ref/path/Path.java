@@ -34,6 +34,8 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
@@ -70,10 +72,6 @@ public final class Path {
 
 	public static Path modulePath(String moduleId) {
 		return new Path(ABSOLUTE_PATH, true, new ModuleStep(moduleId));
-	}
-
-	public static Path memberPath(MemberKey memberKey) {
-		return new Path(RELATIVE_PATH, false, new MemberStep(memberKey));
 	}
 
 	public static Path materializePath() {
@@ -130,6 +128,12 @@ public final class Path {
 		assert memberKey != null :
 			"Member key not specified";
 		return append(new MemberStep(memberKey));
+	}
+
+	public Path append(PathFragment fragment) {
+		assert fragment != null :
+			"Path fragment not specified";
+		return append(new PathFragmentStep(fragment));
 	}
 
 	public Path cutArtifact() {
@@ -214,7 +218,7 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public Ref target(
+	public final Ref target(
 			LocationInfo location,
 			Distributor distributor,
 			Ref start) {
@@ -227,8 +231,20 @@ public final class Path {
 		return getKind().target(location, distributor, this, start);
 	}
 
-	public Ref target(LocationInfo location, Distributor distributor) {
-		return new PathTarget(location, distributor, this, null);
+	public final Ref target(LocationInfo location, Distributor distributor) {
+		return getKind().target(location, distributor, this, null);
+	}
+
+	public final TypeRef typeRef(
+			LocationInfo location,
+			Distributor distributor) {
+		return target(location, distributor).toTypeRef();
+	}
+
+	public final StaticTypeRef staticTypeRef(
+			LocationInfo location,
+			Distributor distributor) {
+		return target(location, distributor).toStaticTypeRef();
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {

@@ -145,14 +145,12 @@ public final class PathTarget extends Ref {
 		}
 
 		final Path fullPath = getPath();
-		final Path path;
+		final Path path = getBoundPath().getPath();
 		final Ref start;
 
 		if (fullPath != null) {
-			path = fullPath;
 			start = null;
 		} else {
-			path = this.path;
 			start = this.start;
 		}
 
