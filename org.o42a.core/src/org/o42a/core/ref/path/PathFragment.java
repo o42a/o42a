@@ -19,22 +19,20 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.core.Scope;
+import org.o42a.core.ref.impl.path.PathFragmentStep;
 
-public enum StepKind {
 
-	STATIC_STEP,
-	ARTIFACT_STEP,
-	MATERIALIZER_STEP,
-	MEMBER_STEP,
-	PARENT_STEP,
-	FRAGMENT_STEP;
+public abstract class PathFragment {
 
-	public final boolean isArtifact() {
-		return this == ARTIFACT_STEP;
+	public abstract Path expand(BoundPath path, int index, Scope start);
+
+	public final Step toStep() {
+		return new PathFragmentStep(this);
 	}
 
-	public final boolean isMaterializer() {
-		return this == MATERIALIZER_STEP;
+	public final Path toPath() {
+		return toStep().toPath();
 	}
 
 }

@@ -157,7 +157,7 @@ public final class ObjectType implements UserInfo {
 
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
-		this.runtimeConstructionUses.useBy(type.runtimeConstructionUses());
+		runtimeConstructionUses().useBy(type.runtimeConstructionUses());
 	}
 
 	public void resolveAll() {

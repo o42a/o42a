@@ -19,43 +19,27 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.Deferred;
 
 
-public class StaticStep extends Step {
+public class ErrorStep extends Step {
 
-	private final Deferred<Scope> deferredScope;
-	private Scope scope;
+	public static final ErrorStep ERROR_STEP = new ErrorStep();
 
-	public StaticStep(Scope scope) {
-		this.deferredScope = null;
-		this.scope = scope;
-	}
-
-	public StaticStep(Deferred<Scope> deferredScope) {
-		this.deferredScope = deferredScope;
-	}
-
-	public final Scope getScope() {
-		if (this.scope != null) {
-			return this.scope;
-		}
-		return this.scope = this.deferredScope.get();
+	private ErrorStep() {
 	}
 
 	@Override
 	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
+		return StepKind.ARTIFACT_STEP;
 	}
 
 	@Override
@@ -75,14 +59,8 @@ public class StaticStep extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-
-		final Scope scope = getScope();
-
-		scope.assertCompatible(start);
-
-		walker.staticScope(this, this.scope);
-
-		return scope.getContainer();
+		// Error could not be resolved.
+		return null;
 	}
 
 	@Override
@@ -90,25 +68,18 @@ public class StaticStep extends Step {
 			LocationInfo location,
 			Reproducer reproducer,
 			Scope scope) {
-		getScope().assertCompatible(reproducer.getReproducingScope());
-		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
+		return unchangedPath(toPath());
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-		// This should only be called for object scope.
-
-		final ObjectIR ir = getScope().toObject().ir(dirs.getGenerator());
-
-		return ir.op(dirs.getBuilder(), dirs.code());
+		throw new UnsupportedOperationException(
+				"Error path step can not be written");
 	}
 
 	@Override
 	public String toString() {
-		if (this.scope != null) {
-			return '<' + this.scope.toString() + '>';
-		}
-		return '<' + this.deferredScope.toString() + '>';
+		return "ERROR";
 	}
 
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import java.util.ArrayList;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -27,21 +29,22 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.Step;
 import org.o42a.util.ArrayUtil;
 
 
 public class OddPathFragmentRemover implements PathWalker {
 
-	private final Step[] steps;
-	private final Scope[] entries;
-	private final int[] removeUpto;
-	private int index;
+	private static final Entry NO_ENTRY = new Entry(null);
 
-	public OddPathFragmentRemover(Path path) {
-		this.steps = path.getSteps();
-		this.entries = new Scope[this.steps.length];
-		this.removeUpto = new int[this.steps.length];
+	private final BoundPath path;
+	private final ArrayList<Entry> entries;
+
+	public OddPathFragmentRemover(BoundPath path) {
+		this.path = path;
+		this.entries = new ArrayList<Entry>(path.getRawSteps().length);
 	}
 
 	@Override
@@ -56,52 +59,55 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return skip();
+		return skip(step);
 	}
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return skip();
+		return skip(step);
 	}
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
+		handlePathTrimming(step);
 
 		final Scope enclosingScope = enclosing.getScope();
+		final int size = this.entries.size();
 
-		for (int i = 0; i < this.index; ++i) {
-			if (this.entries[i] == enclosingScope) {
-				this.removeUpto[i] = this.index;
+		for (Entry entry : this.entries) {
+			if (entry.checkRemove(enclosingScope, size)) {
 				break;
 			}
 		}
 
-		return skip();
+		this.entries.add(NO_ENTRY);
+
+		return true;
 	}
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
-		return enter(container.getScope());
+		return enter(step, container.getScope());
 	}
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return enter(array.getScope());
+		return enter(step, array.getScope());
 	}
 
 	@Override
 	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return skip();
+		return skip(step);
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return skip();
+		return skip(step);
 	}
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return skip();
+		return skip(step);
 	}
 
 	@Override
@@ -115,13 +121,14 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	public Step[] removeOddFragments() {
 
-		Step[] result = this.steps;
+		final int size = this.entries.size();
+		Step[] result = this.path.getSteps();
 		int delta = 0;
 		int i = 0;
 
-		while (i < this.removeUpto.length) {
+		while (i < size) {
 
-			final int removeUpto = this.removeUpto[i];
+			final int removeUpto = this.entries.get(i).removeUpTo;
 
 			if (removeUpto <= 0) {
 				++i;
@@ -138,14 +145,56 @@ public class OddPathFragmentRemover implements PathWalker {
 		return result;
 	}
 
-	private boolean skip() {
-		++this.index;
+	private boolean skip(Step step) {
+		handlePathTrimming(step);
+		this.entries.add(NO_ENTRY);
 		return true;
 	}
 
-	private boolean enter(Scope entry) {
-		this.entries[this.index++] = entry;
+	private boolean enter(Step step, Scope start) {
+		handlePathTrimming(step);
+		this.entries.add(new Entry(start));
 		return true;
+	}
+
+	private void handlePathTrimming(Step step) {
+		if (this.path.getSteps()[0] == step) {
+			// This can happen when some PathFragment is absolute.
+			// In this case the beginning of the Path gets trimmed
+			// and step index starts over from zero.
+			this.entries.clear();
+		}
+	}
+
+	private static final class Entry {
+
+		private final Scope start;
+		private int removeUpTo;
+
+
+		Entry(Scope start) {
+			this.start = start;
+		}
+
+		public boolean checkRemove(Scope scope, int index) {
+			if (this.start != scope) {
+				return false;
+			}
+			this.removeUpTo = index;
+			return true;
+		}
+
+		@Override
+		public String toString() {
+			if (this.start == null) {
+				return "-";
+			}
+			if (this.removeUpTo == 0) {
+				return this.start.toString();
+			}
+			return this.start + "..." + this.removeUpTo;
+		}
+
 	}
 
 }
