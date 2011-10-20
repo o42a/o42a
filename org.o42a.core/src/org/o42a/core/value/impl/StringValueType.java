@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.SingleValueType;
@@ -40,8 +40,9 @@ public final class StringValueType extends SingleValueType<String> {
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getString();
+	public Path path(Intrinsics intrinsics) {
+		return Path.ROOT_PATH.append(
+				intrinsics.getString().getScope().toField().getKey());
 	}
 
 }

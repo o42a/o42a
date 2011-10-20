@@ -21,6 +21,7 @@ package org.o42a.core.artifact.array.impl;
 
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
 
@@ -44,11 +45,17 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
+	public Path path(Intrinsics intrinsics) {
+
+		final Obj array;
+
 		if (!isConstant()) {
-			return intrinsics.getArray();
+			array = intrinsics.getArray();
+		} else {
+			array = intrinsics.getConstantArray();
 		}
-		return intrinsics.getConstantArray();
+
+		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
 	}
 
 }
