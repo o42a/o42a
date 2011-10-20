@@ -19,7 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.SingleValueType;
@@ -40,7 +40,7 @@ public class NoneValueType extends SingleValueType<Void> {
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
+	public Path path(Intrinsics intrinsics) {
 		throw new UnsupportedOperationException("Type NONE does not exist");
 	}
 

@@ -19,14 +19,8 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.ref.Ref.voidRef;
-
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
 
@@ -45,19 +39,9 @@ public final class VoidValueType extends SingleValueType<Void> {
 	}
 
 	@Override
-	public Obj wrapper(Intrinsics intrinsics) {
-		return intrinsics.getVoid();
-	}
-
-	@Override
-	public StaticTypeRef typeRef(
-			LocationInfo location,
-			Scope scope,
-			ValueStructFinder valueStructFinder) {
-
-		final Ref voidRef = voidRef(location, scope.distribute());
-
-		return voidRef.toStaticTypeRef(valueStructFinder);
+	public Path path(Intrinsics intrinsics) {
+		return Path.ROOT_PATH.append(
+				intrinsics.getVoidField().getKey());
 	}
 
 }

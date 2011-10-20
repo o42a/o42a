@@ -38,6 +38,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.Deferred;
 
@@ -124,13 +125,13 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public Path append(MemberKey memberKey) {
+	public final Path append(MemberKey memberKey) {
 		assert memberKey != null :
 			"Member key not specified";
 		return append(new MemberStep(memberKey));
 	}
 
-	public Path append(PathFragment fragment) {
+	public final Path append(PathFragment fragment) {
 		assert fragment != null :
 			"Path fragment not specified";
 		return append(new PathFragmentStep(fragment));
@@ -201,7 +202,11 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public Path arrayItem(Ref indexRef) {
+	public final Path ancestor() {
+		return append(new AncestorStep());
+	}
+
+	public final Path arrayItem(Ref indexRef) {
 		return append(new ArrayElementStep(indexRef));
 	}
 
@@ -241,10 +246,24 @@ public final class Path {
 		return target(location, distributor).toTypeRef();
 	}
 
+	public final TypeRef typeRef(
+			LocationInfo location,
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(location, distributor).toTypeRef(valueStructFinder);
+	}
+
 	public final StaticTypeRef staticTypeRef(
 			LocationInfo location,
 			Distributor distributor) {
 		return target(location, distributor).toStaticTypeRef();
+	}
+
+	public final StaticTypeRef staticTypeRef(
+			LocationInfo location,
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(location, distributor).toStaticTypeRef(valueStructFinder);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {

@@ -66,29 +66,7 @@ public class AncestorRef extends Wrap {
 		final Path path = this.ref.getPath();
 
 		if (path != null) {
-
-			final Path upPath = path.cutArtifact();
-
-			if (upPath != path) {
-
-				assert artifact != null :
-					this + " is not resolved to artifact";
-
-				final TypeRef ancestor;
-				final TypeRef typeRef = artifact.getTypeRef();
-
-				if (typeRef != null) {
-					ancestor = typeRef;
-				} else {
-					ancestor = artifact.materialize().type().getAncestor();
-				}
-
-				final TypeRef rescopedAncestor =
-						ancestor.rescope(
-								upPath.bind(this, getScope()).rescoper());
-
-				return rescopedAncestor.getRescopedRef();
-			}
+			return path.ancestor().target(this, distribute());
 		}
 
 		final Obj object = artifact.toObject();
@@ -99,22 +77,11 @@ public class AncestorRef extends Wrap {
 		}
 
 		final TypeRef ancestor = object.type().getAncestor();
-		final Rescoper rescoper;
 		final Path objectEnclosingPath =
 				object.getScope().getEnclosingScopePath();
-
-		if (path != null) {
-			rescoper =
-					path.append(objectEnclosingPath)
-					.bind(this, getScope())
-					.rescoper();
-		} else {
-
-			final Ref ancestorScopeRef =
-					objectEnclosingPath.target(this, distribute(), this.ref);
-
-			rescoper = ancestorScopeRef.toRescoper();
-		}
+		final Ref ancestorScopeRef =
+				objectEnclosingPath.target(this, distribute(), this.ref);
+		final Rescoper rescoper = ancestorScopeRef.toRescoper();
 
 		return ancestor.rescope(rescoper).getRef();
 	}
