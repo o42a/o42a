@@ -19,26 +19,26 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.array.ArrayElement;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
 
-public class PathTracker implements PathWalker {
+public abstract class PathTracker implements PathWalker, ExpansionContext {
 
+	private final BoundPath path;
 	protected final PathResolver initialResolver;
 	private final PathWalker walker;
 	private boolean aborted;
 
-	public PathTracker(PathResolver resolver, PathWalker walker) {
+	public PathTracker(BoundPath path, PathResolver resolver, PathWalker walker) {
+		this.path = path;
 		this.initialResolver = resolver;
 		this.walker = walker;
+	}
+
+	@Override
+	public BoundPath getPath() {
+		return this.path;
 	}
 
 	public PathResolver nextResolver() {
@@ -47,6 +47,14 @@ public class PathTracker implements PathWalker {
 
 	public final boolean isAborted() {
 		return this.aborted;
+	}
+
+	public void setAbsolute(Scope root) {
+	}
+
+	@Override
+	public boolean replay(PathWalker walker) {
+		throw new IllegalStateException();
 	}
 
 	@Override
@@ -60,56 +68,15 @@ public class PathTracker implements PathWalker {
 	}
 
 	@Override
-	public boolean module(Step step, Obj module) {
-		return walk(this.walker.module(step, module));
-	}
-
-	@Override
-	public boolean staticScope(Step step, Scope scope) {
-		return walk(this.walker.staticScope(step, scope));
-	}
-
-	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
-		return walk(this.walker.up(enclosed, step, enclosing));
-	}
-
-	@Override
-	public boolean member(Container container, Step step, Member member) {
-		return walk(this.walker.member(container, step, member));
-	}
-
-	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return walk(this.walker.arrayElement(array, step, element));
-	}
-
-	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return walk(this.walker.fieldDep(object, step, dependency));
-	}
-
-	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return walk(this.walker.refDep(object, step, dependency));
-	}
-
-	@Override
-	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return walk(this.walker.materialize(artifact, step, result));
-	}
-
-	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
-		this.walker.abortedAt(last, brokenStep);
+		walker().abortedAt(last, brokenStep);
 	}
 
-	@Override
-	public boolean done(Container result) {
-		return walk(this.walker.done(result));
+	protected final PathWalker walker() {
+		return this.walker;
 	}
 
-	boolean walk(boolean succeed) {
+	protected boolean walk(boolean succeed) {
 		this.aborted = !succeed;
 		return succeed;
 	}

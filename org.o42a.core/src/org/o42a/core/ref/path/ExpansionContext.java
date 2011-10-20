@@ -19,23 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.impl.path.PathFragmentStep;
 
+public interface ExpansionContext {
 
-public abstract class PathFragment {
+	BoundPath getPath();
 
-	public abstract Path expand(
-			ExpansionContext context,
-			int index,
-			Scope start);
-
-	public final Step toStep() {
-		return new PathFragmentStep(this);
-	}
-
-	public final Path toPath() {
-		return toStep().toPath();
-	}
+	boolean replay(PathWalker pathWalker);
 
 }
