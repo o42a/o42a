@@ -125,7 +125,7 @@ public class BoundPath extends Location {
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
-		return walkPath(getPath(), resolver, start, walker);
+		return walkPath(getPath(), resolver, start, walker, false);
 	}
 
 	public Rescoper rescoper() {
@@ -204,24 +204,33 @@ public class BoundPath extends Location {
 			Path path,
 			PathResolver resolver,
 			Scope start,
-			PathWalker walker) {
+			PathWalker walker,
+			boolean expand) {
 		this.path = path;
 
 		final Scope startFrom;
 		final PathTracker tracker;
 
-		if (path.isAbsolute()) {
-			startFrom = start.getContext().getRoot().getScope();
+		if (isAbsolute()) {
+			startFrom = root(start);
 			if (!walker.root(this, startFrom)) {
 				return null;
 			}
-			if (resolver.toUser().isDummy()) {
-				tracker = new PathTracker(resolver, walker);
+			if (expand) {
+				tracker = new PathRecorder(
+						this,
+						resolver,
+						walker,
+						startFrom,
+						true);
+			} else if (resolver.toUser().isDummy()) {
+				tracker = new SimplePathTracker(this, resolver, walker);
 			} else {
-				tracker = new AbsolutePathTracker(
-					resolver,
-					walker,
-					startIndex(start.getContext()));
+				tracker = new StaticPathTracker(
+						this,
+						resolver,
+						walker,
+						startIndex(start.getContext()));
 			}
 		} else {
 			startFrom = start;
@@ -229,7 +238,22 @@ public class BoundPath extends Location {
 			if (!walker.start(this, startFrom)) {
 				return null;
 			}
-			tracker = new PathTracker(resolver, walker);
+			if (expand) {
+				tracker = new PathRecorder(
+						this,
+						resolver,
+						walker,
+						startFrom,
+						false);
+			} else if (!isStatic() || resolver.toUser().isDummy()) {
+				tracker = new SimplePathTracker(this, resolver, walker);
+			} else {
+				tracker = new StaticPathTracker(
+						this,
+						resolver,
+						walker,
+						startIndex(start.getContext()));
+			}
 		}
 
 		Step[] steps = this.path.getSteps();
@@ -245,7 +269,7 @@ public class BoundPath extends Location {
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.
 
-				final Path replacement = fragment.expand(this, i, prev);
+				final Path replacement = fragment.expand(tracker, i, prev);
 
 				if (replacement == null) {
 					// Error occurred.
@@ -258,6 +282,7 @@ public class BoundPath extends Location {
 							this.path.getKind(),
 							this.path.isStatic(),
 							steps);
+					tracker.abortedAt(prev, step);
 					return null;
 				}
 
@@ -265,16 +290,19 @@ public class BoundPath extends Location {
 
 				if (replacement.isAbsolute()) {
 					// Replacement is an absolute path.
-					// Replace all steps from the very first to the current one.
+					// Replace all steps from the very first to the current
+					// one.
 					steps = ArrayUtil.replace(
 							steps,
 							0,
 							i + 1,
 							replacementSteps);
-					this.path = new Path(PathKind.ABSOLUTE_PATH, true, steps);
+					this.path =
+							new Path(PathKind.ABSOLUTE_PATH, true, steps);
 					// Continue from the ROOT.
-					prev = start.getContext().getRoot().getScope();
+					prev = root(start);
 					i = 0;
+					tracker.setAbsolute(prev);
 				} else {
 					// Replacement is a relative path.
 					// Replace the current step.
@@ -301,7 +329,7 @@ public class BoundPath extends Location {
 				return NO_PATH_RESOLUTION;
 			}
 			if (result == null) {
-				tracker.abortedAt(prev, steps[i]);
+				tracker.abortedAt(prev, step);
 				return PATH_RESOLUTION_ERROR;
 			}
 			++i;
@@ -313,6 +341,10 @@ public class BoundPath extends Location {
 		}
 
 		return pathResolution(this, result);
+	}
+
+	private final Scope root(Scope start) {
+		return start.getContext().getRoot().getScope();
 	}
 
 	private int startIndex(CompilerContext context) {
@@ -372,7 +404,8 @@ public class BoundPath extends Location {
 				getRawPath(),
 				pathResolver(dummyUser()),
 				getOrigin(),
-				remover);
+				remover,
+				true);
 
 		return remover.removeOddFragments();
 	}

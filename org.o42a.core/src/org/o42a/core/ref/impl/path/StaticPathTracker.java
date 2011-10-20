@@ -21,19 +21,21 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.path.PathWalker;
 
 
-public final class AbsolutePathTracker extends PathTracker {
+public final class StaticPathTracker extends SimplePathTracker {
 
 	private int beforeStart;
 
-	public AbsolutePathTracker(
+	public StaticPathTracker(
+			BoundPath path,
 			PathResolver resolver,
 			PathWalker walker,
 			int startIndex) {
-		super(resolver, walker);
+		super(path, resolver, walker);
 		this.beforeStart = startIndex;
 	}
 
@@ -46,7 +48,7 @@ public final class AbsolutePathTracker extends PathTracker {
 	}
 
 	@Override
-	boolean walk(boolean succeed) {
+	protected boolean walk(boolean succeed) {
 		--this.beforeStart;
 		return super.walk(succeed);
 	}
