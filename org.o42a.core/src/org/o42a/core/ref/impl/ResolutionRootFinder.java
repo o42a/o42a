@@ -184,8 +184,25 @@ public final class ResolutionRootFinder
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		// Materialized object is not a root.
-		return false;
+		// Materialized artifact is not a root, unless it is an object.
+		return artifact.toObject() != null;
+	}
+
+	@Override
+	public boolean newObject(Step step, Obj object) {
+
+		final Resolver ancestorResolver =
+				this.root.getScope().walkingResolver(dummyUser(), this);
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return false;
+		}
+
+		final Resolution ancestorResolution =
+				ancestor.getRef().resolve(ancestorResolver);
+
+		return ancestorResolution != null;
 	}
 
 	@Override

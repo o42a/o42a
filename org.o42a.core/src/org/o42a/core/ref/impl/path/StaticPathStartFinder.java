@@ -114,6 +114,11 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
+	public boolean newObject(Step step, Obj object) {
+		return set(object);
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 	}
 
