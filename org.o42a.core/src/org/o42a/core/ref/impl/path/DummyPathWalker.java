@@ -90,6 +90,11 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
+	public boolean newObject(Step step, Obj object) {
+		return true;
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 	}
 

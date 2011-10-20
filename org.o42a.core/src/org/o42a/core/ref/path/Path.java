@@ -210,6 +210,10 @@ public final class Path {
 		return append(new ArrayElementStep(indexRef));
 	}
 
+	public final Path newObject(ObjectConstructor constructor) {
+		return append(constructor.toStep());
+	}
+
 	public Path append(Path path) {
 		assert path != null :
 			"Path to append not specified";

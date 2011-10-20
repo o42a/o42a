@@ -184,7 +184,15 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
+		if (artifact.toObject().toClause() != null) {
+			return true;
+		}
 		return invalidClauseReused();
+	}
+
+	@Override
+	public boolean newObject(Step step, Obj object) {
+		return notClause();
 	}
 
 	@Override

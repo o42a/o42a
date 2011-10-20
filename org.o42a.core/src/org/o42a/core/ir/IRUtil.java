@@ -232,6 +232,11 @@ public class IRUtil {
 		}
 
 		@Override
+		public boolean newObject(Step step, Obj object) {
+			throw new IllegalStateException();
+		}
+
+		@Override
 		public void abortedAt(Scope last, Step brokenStep) {
 		}
 

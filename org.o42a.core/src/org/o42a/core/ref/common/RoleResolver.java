@@ -204,6 +204,11 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
+	public boolean newObject(Step step, Obj object) {
+		return mayProceedInsidePrototype();
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 		this.insidePrototype = false;
 	}

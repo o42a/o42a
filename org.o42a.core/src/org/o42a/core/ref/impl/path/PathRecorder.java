@@ -177,6 +177,16 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
+	public boolean newObject(final Step step, final Obj object) {
+		return record(new Record() {
+			@Override
+			public boolean replay(PathWalker walker) {
+				return walker.newObject(step, object);
+			}
+		});
+	}
+
+	@Override
 	public void abortedAt(final Scope last, final Step brokenStep) {
 		this.records.add(new Record() {
 			@Override

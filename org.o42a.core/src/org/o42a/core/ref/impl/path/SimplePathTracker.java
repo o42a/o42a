@@ -80,6 +80,11 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
+	public boolean newObject(Step step, Obj object) {
+		return walk(walker().newObject(step, object));
+	}
+
+	@Override
 	public boolean done(Container result) {
 		return walk(walker().done(result));
 	}

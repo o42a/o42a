@@ -165,6 +165,18 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
+	public boolean newObject(Step step, Obj object) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.newObject(step, object) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 		for (PathWalker walker : getWalkers()) {
 			walker.abortedAt(last, brokenStep);
