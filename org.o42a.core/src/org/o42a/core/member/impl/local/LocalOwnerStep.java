@@ -54,8 +54,8 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override

@@ -28,16 +28,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.impl.path.AncestorStep;
+import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
+import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
 public abstract class Step {
-
-	public static final MaterializerStep MATERIALIZE =
-			MaterializerStep.INSTANCE;
 
 	public abstract StepKind getStepKind();
 
@@ -47,7 +46,7 @@ public abstract class Step {
 		return null;
 	}
 
-	public abstract Step materialize();
+	public abstract boolean isMaterial();
 
 	public abstract Container resolve(
 			PathResolver resolver,

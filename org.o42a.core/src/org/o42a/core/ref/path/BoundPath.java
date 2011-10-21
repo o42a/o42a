@@ -455,6 +455,9 @@ public class BoundPath extends Location {
 	}
 
 	private static Step[] rebuild(Step[] steps) {
+		if (steps.length <= 1) {
+			return steps;
+		}
 
 		final Step[] rebuiltSteps = new Step[steps.length];
 		Step prev = rebuiltSteps[0] = steps[0];

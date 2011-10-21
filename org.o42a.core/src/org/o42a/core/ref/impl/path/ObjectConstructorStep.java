@@ -53,8 +53,8 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override

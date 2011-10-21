@@ -49,8 +49,8 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return MATERIALIZE;
+	public boolean isMaterial() {
+		return false;
 	}
 
 	@Override
