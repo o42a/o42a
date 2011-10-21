@@ -75,8 +75,8 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override

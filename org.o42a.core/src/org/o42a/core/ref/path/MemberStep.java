@@ -70,19 +70,16 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
+	public boolean isMaterial() {
 
 		final Member member = firstDeclaration();
 		final Field<?> field = member.toField(dummyUser());
 
 		if (field == null) {
-			return null;
-		}
-		if (field.getArtifactKind().isObject()) {
-			return null;
+			return true;
 		}
 
-		return MATERIALIZE;
+		return field.getArtifactKind().isObject();
 	}
 
 	@Override

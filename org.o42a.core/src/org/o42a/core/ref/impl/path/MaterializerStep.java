@@ -37,7 +37,7 @@ import org.o42a.core.st.Reproducer;
 
 public final class MaterializerStep extends Step {
 
-	public static final MaterializerStep INSTANCE =
+	public static final MaterializerStep MATERIALIZER_STEP =
 			new MaterializerStep();
 
 	private MaterializerStep() {
@@ -54,8 +54,8 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -93,6 +93,14 @@ public final class MaterializerStep extends Step {
 	@Override
 	public String toString() {
 		return "*";
+	}
+
+	@Override
+	protected Step rebuild(Step prev) {
+		if (prev.isMaterial()) {
+			return prev;
+		}
+		return null;
 	}
 
 	@Override

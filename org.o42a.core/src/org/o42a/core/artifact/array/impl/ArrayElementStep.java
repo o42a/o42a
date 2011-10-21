@@ -62,8 +62,8 @@ public class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return MATERIALIZE;
+	public boolean isMaterial() {
+		return false;
 	}
 
 	@Override

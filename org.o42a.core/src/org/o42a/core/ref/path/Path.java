@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.impl.path.MaterializerStep.MATERIALIZER_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
@@ -77,7 +77,7 @@ public final class Path {
 	}
 
 	public static Path materializePath() {
-		return new Path(RELATIVE_PATH, false, MATERIALIZE);
+		return new Path(RELATIVE_PATH, false, MATERIALIZER_STEP);
 	}
 
 	private final PathKind kind;
@@ -171,13 +171,12 @@ public final class Path {
 		}
 
 		final Step lastStep = this.steps[length - 1];
-		final Step materializer = lastStep.materialize();
 
-		if (materializer == null) {
+		if (lastStep.isMaterial()) {
 			return this;
 		}
 
-		return append(materializer);
+		return append(MATERIALIZER_STEP);
 	}
 
 	public Path dematerialize() {

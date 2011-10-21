@@ -84,11 +84,8 @@ public final class FieldDep extends Dep {
 	}
 
 	@Override
-	public Step materialize() {
-		if (getDepField().getArtifactKind().isObject()) {
-			return null;
-		}
-		return MATERIALIZE;
+	public boolean isMaterial() {
+		return getDepField().getArtifactKind().isObject();
 	}
 
 	@Override

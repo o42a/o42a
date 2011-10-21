@@ -84,8 +84,8 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
