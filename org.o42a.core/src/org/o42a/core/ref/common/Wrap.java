@@ -43,6 +43,7 @@ import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.log.Loggable;
 
 
+@Deprecated
 public abstract class Wrap extends Ref {
 
 	private Ref wrapped;
