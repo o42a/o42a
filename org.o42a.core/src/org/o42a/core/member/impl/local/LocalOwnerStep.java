@@ -102,7 +102,7 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev) {
+	protected Step rebuild(Step prev, Path restPath) {
 		return prev.combineWithLocalOwner(this.local.getOwner());
 	}
 

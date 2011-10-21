@@ -138,6 +138,7 @@ public final class Path {
 		return append(new PathFragmentStep(fragment));
 	}
 
+	@Deprecated
 	public Path cutArtifact() {
 
 		final Step[] steps = dematerialize().getSteps();
@@ -179,6 +180,7 @@ public final class Path {
 		return append(MATERIALIZER_STEP);
 	}
 
+	@Deprecated
 	public Path dematerialize() {
 
 		final int length = this.steps.length;
@@ -325,6 +327,7 @@ public final class Path {
 		return lastStep.fieldDefinition(bound, distributor);
 	}
 
+	@Deprecated
 	public Path rebuildWithRef(Ref followingRef) {
 
 		final Path path = followingRef.getPath();

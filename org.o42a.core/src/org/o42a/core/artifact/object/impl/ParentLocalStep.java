@@ -99,6 +99,14 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	public Step combineWithObjectConstructor(
+			ObjectConstructor constructor,
+			Path restPath) {
+		return ((ObjectArtifact) this.object).addRefDep(
+				restPath.target(constructor, constructor.distribute()));
+	}
+
+	@Override
 	public Step combineWithRef(Ref ref) {
 		return ((ObjectArtifact) this.object).addRefDep(ref);
 	}
