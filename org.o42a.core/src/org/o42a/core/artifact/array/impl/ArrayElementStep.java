@@ -162,8 +162,7 @@ public class ArrayElementStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 
 		final Ref indexRef = this.indexRef.reproduce(reproducer);
 

@@ -64,8 +64,7 @@ public final class PathFragmentStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		throw unresolved();
 	}
 

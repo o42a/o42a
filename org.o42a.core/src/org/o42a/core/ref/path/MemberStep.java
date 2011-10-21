@@ -105,12 +105,11 @@ public class MemberStep extends Step {
 	@Override
 	public final PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 
 		final Scope origin = this.memberKey.getOrigin();
 
-		return reproduce(location, reproducer, origin, scope);
+		return reproduce(location, reproducer, origin, reproducer.getScope());
 	}
 
 	@Override

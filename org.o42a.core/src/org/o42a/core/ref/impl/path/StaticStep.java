@@ -88,8 +88,7 @@ public class StaticStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
 		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
 	}

@@ -55,8 +55,7 @@ public abstract class Step {
 
 	public abstract PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope);
+			Reproducer reproducer);
 
 	public Step combineWithMember(MemberKey memberKey) {
 		return null;
