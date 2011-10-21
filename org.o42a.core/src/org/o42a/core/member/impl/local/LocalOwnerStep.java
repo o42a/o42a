@@ -78,9 +78,9 @@ public final class LocalOwnerStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(scope.toLocal().getEnclosingScopePath());
+			Reproducer reproducer) {
+		return reproducedPath(
+				reproducer.getScope().toLocal().getEnclosingScopePath());
 	}
 
 	@Override

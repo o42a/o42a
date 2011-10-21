@@ -88,8 +88,7 @@ public final class ModuleStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 

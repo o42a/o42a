@@ -22,7 +22,6 @@ package org.o42a.core.member.impl.local;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
@@ -81,9 +80,10 @@ public final class EnclosingOwnerDep extends Dep {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(new EnclosingOwnerDep(scope.toObject()).toPath());
+			Reproducer reproducer) {
+		return reproducedPath(
+				new EnclosingOwnerDep(reproducer.getScope().toObject())
+				.toPath());
 	}
 
 	@Override

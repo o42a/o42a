@@ -76,8 +76,7 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		this.constructor.assertCompatible(reproducer.getReproducingScope());
 
 		final ObjectConstructor reproduced =

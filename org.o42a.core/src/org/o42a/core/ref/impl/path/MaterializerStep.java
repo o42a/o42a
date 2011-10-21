@@ -78,8 +78,7 @@ public final class MaterializerStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return reproducedPath(toPath());
 	}
 

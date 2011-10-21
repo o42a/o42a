@@ -23,7 +23,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -93,10 +92,11 @@ public final class FieldDep extends Dep {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return reproducedPath(
-				new FieldDep(scope.toObject(), getDepField().getKey())
+				new FieldDep(
+						reproducer.getScope().toObject(),
+						getDepField().getKey())
 				.toPath());
 	}
 

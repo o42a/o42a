@@ -104,9 +104,8 @@ public final class ParentLocalStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(scope.getScope().getEnclosingScopePath());
+			Reproducer reproducer) {
+		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
 	}
 
 	@Override
