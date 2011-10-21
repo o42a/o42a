@@ -61,16 +61,21 @@ public abstract class ObjectConstructor extends Placed {
 		super(location, distributor);
 	}
 
+	public final Obj getConstructed() {
+		if (this.constructed != null) {
+			return this.constructed;
+		}
+		return this.constructed = createObject();
+	}
+
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	public final Obj resolve(Scope scope) {
 		if (scope == getScope()) {
-			return construct();
+			return getConstructed();
 		}
 		return propagate(scope);
 	}
-
-	public abstract ObjectConstructor reproduce(Reproducer reproducer);
 
 	public final Step toStep() {
 		return new ObjectConstructorStep(this);
@@ -90,6 +95,8 @@ public abstract class ObjectConstructor extends Placed {
 		return new ObjectFieldDefinition(path, distributor);
 	}
 
+	public abstract ObjectConstructor reproduce(Reproducer reproducer);
+
 	public ObjectOp write(CodeDirs dirs, HostOp host) {
 
 		final CodeBuilder builder = dirs.getBuilder();
@@ -101,7 +108,7 @@ public abstract class ObjectConstructor extends Placed {
 				+ this + ", while " + local.getBuilder() + " expected";
 		}
 
-		final Obj sample = construct();
+		final Obj sample = getConstructed();
 
 		if (!sample.type().runtimeConstruction().isUsedBy(
 				dirs.getGenerator())) {
@@ -144,13 +151,6 @@ public abstract class ObjectConstructor extends Placed {
 		return new Propagated(scope, this, sample);
 	}
 
-	private Obj construct() {
-		if (this.constructed != null) {
-			return this.constructed;
-		}
-		return this.constructed = createObject();
-	}
-
 	private Obj propagate(Scope scope) {
 		if (this.propagated == null) {
 			this.propagated = new IdentityHashMap<Scope, Obj>();
@@ -163,7 +163,7 @@ public abstract class ObjectConstructor extends Placed {
 			}
 		}
 
-		final Obj propagated = propagateObject(scope, construct());
+		final Obj propagated = propagateObject(scope, getConstructed());
 
 		this.propagated.put(scope, propagated);
 
@@ -171,7 +171,7 @@ public abstract class ObjectConstructor extends Placed {
 	}
 
 	protected ObjectOp buildAncestor(CodeDirs dirs) {
-		return dirs.getBuilder().objectAncestor(dirs, construct());
+		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
 	}
 
 	private Function<ObjectRefFunc> ancestorFunc(CodeBuilder enclosing) {
