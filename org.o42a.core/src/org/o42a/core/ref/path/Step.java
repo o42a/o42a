@@ -28,9 +28,8 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.MaterializerStep;
-import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
-import org.o42a.core.ref.impl.path.PathFieldDefinition;
+import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -93,6 +92,14 @@ public abstract class Step {
 
 	protected Step rebuild(Step prev) {
 		return null;
+	}
+
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return path.getRawPath().append(new AncestorStep())
+				.typeRef(location, distributor);
 	}
 
 	protected abstract FieldDefinition fieldDefinition(

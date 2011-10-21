@@ -66,7 +66,9 @@ public class AncestorRef extends Wrap {
 		final Path path = this.ref.getPath();
 
 		if (path != null) {
-			return path.ancestor().target(this, distribute());
+			return path.bind(this, getScope())
+					.ancestor(this, distribute())
+					.getRescopedRef();
 		}
 
 		final Obj object = artifact.toObject();

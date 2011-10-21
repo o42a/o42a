@@ -28,6 +28,7 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -36,6 +37,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -113,6 +115,21 @@ public class BoundPath extends Location {
 
 	public final Step[] getRawSteps() {
 		return getRawPath().getSteps();
+	}
+
+	public TypeRef ancestor(LocationInfo location, Distributor distributor) {
+
+		final Step[] steps = getRawSteps();
+
+		if (steps.length == 0) {
+			return new AncestorStep().toPath().typeRef(
+					location,
+					distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.ancestor(this, location, distributor);
 	}
 
 	public final BoundPath materialize() {

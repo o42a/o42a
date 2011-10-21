@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -94,6 +95,23 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
 		return this.constructor.write(dirs, start);
+	}
+
+	@Override
+	public String toString() {
+		if (this.constructor == null) {
+			return super.toString();
+		}
+		return "(" + this.constructor.toString() + ')';
+	}
+
+	@Override
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return this.constructor.ancestor(location)
+				.rescope(path.cut(1).rescoper());
 	}
 
 	@Override

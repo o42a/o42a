@@ -78,7 +78,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return getPath().ancestor().typeRef(location, distribute());
+		return this.path.ancestor(location, distribute());
 	}
 
 	@Override

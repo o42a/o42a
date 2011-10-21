@@ -30,6 +30,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -92,6 +93,14 @@ public final class MaterializerStep extends Step {
 	@Override
 	public String toString() {
 		return "*";
+	}
+
+	@Override
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return path.cut(1).ancestor(location, distributor);
 	}
 
 	@Override

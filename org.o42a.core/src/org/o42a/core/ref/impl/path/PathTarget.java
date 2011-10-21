@@ -147,7 +147,7 @@ public final class PathTarget extends Ref {
 		final Path fullPath = getPath();
 
 		if (fullPath != null) {
-			return fullPath.ancestor().typeRef(location, distribute());
+			return getBoundPath().ancestor(location, distribute());
 		}
 
 		final Path path = getBoundPath().getPath();
