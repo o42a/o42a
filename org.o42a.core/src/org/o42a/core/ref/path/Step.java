@@ -67,6 +67,11 @@ public abstract class Step {
 		return null;
 	}
 
+	public Step combineWithObjectConstructor(ObjectConstructor constructor, Path restPath) {
+		return null;
+	}
+
+	@Deprecated
 	public Step combineWithRef(Ref ref) {
 		return null;
 	}
@@ -89,7 +94,7 @@ public abstract class Step {
 		return null;
 	}
 
-	protected Step rebuild(Step prev) {
+	protected Step rebuild(Step prev, Path restPath) {
 		return null;
 	}
 

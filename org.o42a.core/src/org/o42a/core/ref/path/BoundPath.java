@@ -27,6 +27,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
+import java.util.Arrays;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -454,7 +456,7 @@ public class BoundPath extends Location {
 		return remover.removeOddFragments();
 	}
 
-	private static Step[] rebuild(Step[] steps) {
+	private Step[] rebuild(Step[] steps) {
 		if (steps.length <= 1) {
 			return steps;
 		}
@@ -467,7 +469,15 @@ public class BoundPath extends Location {
 		for (;;) {
 
 			final Step next = steps[nextIdx];
-			final Step rebuilt = next.rebuild(prev);
+			final Step rebuilt = next.rebuild(
+					prev,
+					new Path(
+							getKind(),
+							isStatic(),
+							Arrays.copyOfRange(
+									steps,
+									nextIdx + 1,
+									steps.length)));
 
 			if (rebuilt != null) {
 				rebuiltSteps[rebuiltIdx] = prev = rebuilt;
