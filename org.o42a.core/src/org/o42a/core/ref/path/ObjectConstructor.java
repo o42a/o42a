@@ -47,6 +47,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ObjectConstructorStep;
 import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -59,6 +60,8 @@ public abstract class ObjectConstructor extends Placed {
 	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
+
+	public abstract TypeRef ancestor(LocationInfo location);
 
 	public final Obj resolve(Scope scope) {
 		if (scope == getScope()) {

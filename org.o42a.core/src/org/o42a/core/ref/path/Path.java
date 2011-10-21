@@ -211,10 +211,6 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public final Path ancestor() {
-		return append(new AncestorStep());
-	}
-
 	public final Path arrayItem(Ref indexRef) {
 		return append(new ArrayElementStep(indexRef));
 	}

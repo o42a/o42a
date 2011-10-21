@@ -19,15 +19,13 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -35,7 +33,7 @@ import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-public class Call extends ObjectConstructor {
+public class Call extends org.o42a.core.ref.path.ObjectConstructor {
 
 	private final AscendantsDefinition ascendants;
 	private final BlockBuilder definitions;
@@ -64,7 +62,17 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return FieldDefinition.fieldDefinition(
+				this,
+				this.ascendants,
+				this.definitions);
+	}
+
+	@Override
+	public Call reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
@@ -96,14 +104,6 @@ public class Call extends ObjectConstructor {
 		out.append(')');
 
 		return out.toString();
-	}
-
-	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return fieldDefinition(
-				this,
-				this.ascendants,
-				this.definitions);
 	}
 
 	@Override
