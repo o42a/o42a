@@ -32,6 +32,7 @@ import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -202,6 +203,14 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
+	public final Path cut(int stepsToCut) {
+
+		final Step[] newSteps =
+				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
+
+		return new Path(getKind(), isStatic(), newSteps);
+	}
+
 	public final Path ancestor() {
 		return append(new AncestorStep());
 	}
@@ -300,6 +309,25 @@ public final class Path {
 				ArrayUtil.prepend(new StaticStep(origin), getSteps());
 
 		return new Path(getKind(), true, steps).bind(location, origin);
+	}
+
+	public final FieldDefinition fieldDefinition(
+			LocationInfo location,
+			Distributor distributor) {
+
+		final BoundPath bound = bind(location, distributor.getScope());
+		final Step[] steps = getSteps();
+
+		if (steps.length == 0) {
+			if (isAbsolute()) {
+				return new ObjectFieldDefinition(bound, distributor);
+			}
+			return new PathFieldDefinition(bound, distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.fieldDefinition(bound, distributor);
 	}
 
 	public Path rebuildWithRef(Ref followingRef) {

@@ -112,7 +112,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		return new PathTargetDefinition(this);
+		return getPath().fieldDefinition(this, distribute());
 	}
 
 	@Override

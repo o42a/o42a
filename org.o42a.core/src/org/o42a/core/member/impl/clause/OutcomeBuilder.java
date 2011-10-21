@@ -190,7 +190,7 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean newObject(Step step, Obj object) {
+	public boolean object(Step step, Obj object) {
 		return invalidOutcome();
 	}
 

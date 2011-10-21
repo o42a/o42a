@@ -165,12 +165,12 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean newObject(Step step, Obj object) {
+	public boolean object(Step step, Obj object) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.newObject(step, object) & proceed;
+			proceed = walker.object(step, object) & proceed;
 		}
 
 		return proceed;

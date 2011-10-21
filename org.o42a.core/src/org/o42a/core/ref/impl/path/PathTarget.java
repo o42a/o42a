@@ -335,6 +335,9 @@ public final class PathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
+		if (this.start == null) {
+			return this.path.fieldDefinition(this, distribute());
+		}
 		return new PathTargetDefinition(this);
 	}
 

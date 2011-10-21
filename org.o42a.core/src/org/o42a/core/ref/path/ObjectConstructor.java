@@ -42,8 +42,10 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ObjectConstructorStep;
+import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -77,6 +79,12 @@ public abstract class ObjectConstructor extends Placed {
 
 	public final Ref toRef() {
 		return toPath().target(this, distribute());
+	}
+
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ObjectFieldDefinition(path, distributor);
 	}
 
 	public ObjectOp write(CodeDirs dirs, HostOp host) {

@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -31,6 +32,7 @@ import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
@@ -133,6 +135,13 @@ public final class ParentLocalStep extends Step {
 	@Override
 	public String toString() {
 		return "ParentLocal[" + this.object + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class OpaqueLocalOp implements HostOp {

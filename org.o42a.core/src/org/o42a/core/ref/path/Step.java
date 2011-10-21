@@ -20,13 +20,17 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.MaterializerStep;
+import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
+import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -89,6 +93,22 @@ public abstract class Step {
 
 	protected Step rebuild(Step prev) {
 		return null;
+	}
+
+	protected abstract FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor);
+
+	protected final FieldDefinition defaultFieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new PathFieldDefinition(path, distributor);
+	}
+
+	protected final FieldDefinition objectFieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ObjectFieldDefinition(path, distributor);
 	}
 
 }

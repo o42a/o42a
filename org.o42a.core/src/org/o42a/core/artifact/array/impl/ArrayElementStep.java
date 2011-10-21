@@ -23,6 +23,7 @@ import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
@@ -31,6 +32,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -157,6 +159,13 @@ public class ArrayElementStep extends Step {
 		walker.arrayElement(array, this, item);
 
 		return item.getContainer();
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
 	}
 
 	@Override

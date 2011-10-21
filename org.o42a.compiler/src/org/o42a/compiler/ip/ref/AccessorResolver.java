@@ -182,7 +182,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean newObject(Step step, Obj object) {
+	public boolean object(Step step, Obj object) {
 		this.owner = false;
 		this.declaration &=
 				object.getContext().declarationsVisibleFrom(
