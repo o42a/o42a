@@ -23,9 +23,11 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -104,6 +106,13 @@ public final class RefDep extends Dep {
 						getDepRef(),
 						this.name)
 				.toPath());
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	@Override

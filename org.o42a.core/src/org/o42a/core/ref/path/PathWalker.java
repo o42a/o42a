@@ -54,7 +54,7 @@ public interface PathWalker {
 
 	boolean materialize(Artifact<?> artifact, Step step, Obj result);
 
-	boolean newObject(Step step, Obj object);
+	boolean object(Step step, Obj object);
 
 	void abortedAt(Scope last, Step brokenStep);
 

@@ -115,6 +115,33 @@ public class BoundPath extends Location {
 		return getRawPath().getSteps();
 	}
 
+	public final BoundPath materialize() {
+
+		final Path rawPath = getRawPath();
+		final Path materialized = rawPath.materialize();
+
+		if (rawPath == materialized) {
+			return this;
+		}
+
+		if (this.origin != null) {
+			return materialized.bind(this, this.origin);
+		}
+
+		return materialized.bind(this, this.deferredOrigin);
+	}
+
+	public final BoundPath cut(int stepsToCut) {
+
+		final Path newPath = getRawPath().cut(stepsToCut);
+
+		if (this.origin != null) {
+			return newPath.bind(this, this.origin);
+		}
+
+		return newPath.bind(this, this.deferredOrigin);
+	}
+
 	public final PathResolution resolve(
 			PathResolver resolver,
 			Scope start) {

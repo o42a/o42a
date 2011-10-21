@@ -232,7 +232,7 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean newObject(Step step, Obj object) {
+		public boolean object(Step step, Obj object) {
 			throw new IllegalStateException();
 		}
 

@@ -23,11 +23,13 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.DepKind;
 import org.o42a.core.member.local.LocalScope;
@@ -128,6 +130,13 @@ public final class FieldDep extends Dep {
 			return super.toString();
 		}
 		return "Dep[" + this.depField + " of " + getObject() + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	@Override

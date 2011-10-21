@@ -177,11 +177,11 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public boolean newObject(final Step step, final Obj object) {
+	public boolean object(final Step step, final Obj object) {
 		return record(new Record() {
 			@Override
 			public boolean replay(PathWalker walker) {
-				return walker.newObject(step, object);
+				return walker.object(step, object);
 			}
 		});
 	}
