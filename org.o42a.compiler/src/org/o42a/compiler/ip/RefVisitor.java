@@ -22,7 +22,6 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.compiler.ip.ref.RefInterpreter.parentPath;
-import static org.o42a.compiler.ip.ref.ValuePartRef.valuePartRef;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
@@ -33,7 +32,6 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.MemberById;
 import org.o42a.compiler.ip.ref.MemberRef;
-import org.o42a.compiler.ip.ref.OverriddenEx;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
@@ -97,7 +95,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		if ("object".equals(ref.getName().getName())) {
 			return objectIntrinsic(ref, p);
 		}
-		return valuePartRef(ref, p);
+		return super.visitIntrinsicRef(ref, p);
 	}
 
 	@Override
@@ -275,10 +273,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			if (!this.overridden) {
 				return this.owner;
 			}
-			return new OverriddenEx(
-					this.owner,
-					this.owner.distribute(),
-					this.owner);
+			throw new UnsupportedOperationException();
 		}
 
 		public final Owner memberRefOwner(

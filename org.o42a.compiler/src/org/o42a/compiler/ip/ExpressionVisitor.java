@@ -32,7 +32,7 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.compiler.ip.operator.LogicalOperatorRef;
+import org.o42a.compiler.ip.operator.LogicalExpression;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
@@ -101,7 +101,11 @@ public final class ExpressionVisitor
 		case NOT:
 		case KNOWN:
 		case UNKNOWN:
-			return new LogicalOperatorRef(ip(), p.getContext(), expression, p);
+			return new LogicalExpression(
+					ip(),
+					p.getContext(),
+					expression,
+					p).toRef();
 		}
 
 		return super.visitUnary(expression, p);
@@ -121,7 +125,11 @@ public final class ExpressionVisitor
 					"Invalid array initializer. Array item type is missing");
 			return errorRef(location(p, brackets), p);
 		}
-		return new ArrayConstructor(this.ip, p.getContext(), brackets, p);
+		return new ArrayConstructor(
+				this.ip,
+				p.getContext(),
+				brackets,
+				p).toRef();
 	}
 
 	@Override

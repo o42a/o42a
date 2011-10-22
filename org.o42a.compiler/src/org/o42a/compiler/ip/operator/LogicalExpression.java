@@ -34,7 +34,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -45,12 +45,12 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public class LogicalOperatorRef extends ObjectConstructor {
+public class LogicalExpression extends ObjectConstructor {
 
 	private final UnaryNode node;
 	private Ref operand;
 
-	public LogicalOperatorRef(
+	public LogicalExpression(
 			Interpreter ip,
 			CompilerContext context,
 			UnaryNode node,
@@ -62,8 +62,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 				distribute());
 	}
 
-	private LogicalOperatorRef(
-			LogicalOperatorRef prototype,
+	private LogicalExpression(
+			LogicalExpression prototype,
 			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
 		this.node = prototype.node;
@@ -76,8 +76,8 @@ public class LogicalOperatorRef extends ObjectConstructor {
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
-		return new LogicalOperatorRef(this, reproducer);
+	public LogicalExpression reproduce(Reproducer reproducer) {
+		return new LogicalExpression(this, reproducer);
 	}
 
 	@Override
@@ -90,15 +90,15 @@ public class LogicalOperatorRef extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new Res(this);
+		return new LogicalResult(this);
 	}
 
-	private static final class Res extends BuiltinObject {
+	private static final class LogicalResult extends BuiltinObject {
 
-		private final LogicalOperatorRef ref;
+		private final LogicalExpression ref;
 		private Ref operand;
 
-		Res(LogicalOperatorRef ref) {
+		LogicalResult(LogicalExpression ref) {
 			super(ref, ref.distributeIn(ref.getContainer()), ValueStruct.VOID);
 			this.ref = ref;
 		}
