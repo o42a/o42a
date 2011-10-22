@@ -43,6 +43,7 @@ class BackendModule : public Module {
 	std::vector<PATypeHolder *> types;
 	Constant *stackSaveFunc;
 	Constant *stackRestoreFunc;
+	bool hostMachine;
 
 	explicit BackendModule(StringRef ModuleID, LLVMContext &context);
 
