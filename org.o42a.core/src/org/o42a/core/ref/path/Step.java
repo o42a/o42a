@@ -23,8 +23,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.AncestorStep;
@@ -65,7 +64,7 @@ public abstract class Step {
 				this);
 	}
 
-	public abstract HostOp write(CodeDirs dirs, HostOp start);
+	public abstract PathOp op(PathOp start);
 
 	@Override
 	public String toString() {

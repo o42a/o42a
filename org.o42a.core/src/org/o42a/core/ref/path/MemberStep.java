@@ -28,6 +28,8 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -112,20 +114,8 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Member firstDeclaration = firstDeclaration();
-
-		if (firstDeclaration.toLocal(dummyUser()) != null) {
-			// Member is a local scope.
-			return start;
-		}
-
-		assert firstDeclaration.toField(dummyUser()) != null :
-			"Field expected: " + firstDeclaration;
-
-		// Member is field.
-		return start.field(dirs, this.memberKey);
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -214,6 +204,31 @@ public class MemberStep extends Step {
 				path,
 				path.toString(index + 1));
 		return null;
+	}
+
+	private static final class Op extends StepOp<MemberStep> {
+
+		Op(PathOp start, MemberStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Member firstDeclaration = getStep().firstDeclaration();
+
+			if (firstDeclaration.toLocal(dummyUser()) != null) {
+				// Member is a local scope.
+				return host();
+			}
+
+			assert firstDeclaration.toField(dummyUser()) != null :
+				"Field expected: " + firstDeclaration;
+
+			// Member is field.
+			return start().field(dirs, getStep().getMemberKey());
+		}
+
 	}
 
 }

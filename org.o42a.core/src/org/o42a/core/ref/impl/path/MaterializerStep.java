@@ -28,6 +28,9 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
@@ -86,8 +89,8 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-		return start.materialize(dirs);
+	public PathOp op(PathOp start) {
+		return new Op(start);
 	}
 
 	@Override
@@ -118,6 +121,45 @@ public final class MaterializerStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return path.cut(1).getRawPath().fieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends PathOp {
+
+		Op(PathOp start) {
+			super(start);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+			op().writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return op().writeValue(dirs);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			return op().target(dirs).materialize(dirs);
+		}
+
+		@Override
+		public String toString() {
+
+			final HostOp host = host();
+
+			if (host == null) {
+				return super.toString();
+			}
+
+			return '(' + host.toString() + ")*";
+		}
+
+		private final PathOp op() {
+			return (PathOp) host();
+		}
+
 	}
 
 }

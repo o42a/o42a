@@ -25,8 +25,8 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -144,11 +144,21 @@ public final class AbsolutePathTarget extends Ref {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public void writeLogicalValue(CodeDirs dirs) {
+			target(dirs).writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return target(dirs.dirs()).writeValue(dirs);
+		}
+
+		@Override
+		public PathOp target(CodeDirs dirs) {
 
 			final AbsolutePathTarget ref = (AbsolutePathTarget) getRef();
 
-			return ref.path.writeStatic(dirs);
+			return ref.path.staticOp(dirs);
 		}
 
 	}

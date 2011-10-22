@@ -28,8 +28,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -469,7 +469,17 @@ public final class PathTarget extends Ref {
 		}
 
 		@Override
-		public HostOp target(CodeDirs dirs) {
+		public void writeLogicalValue(CodeDirs dirs) {
+			target(dirs).writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return target(dirs.dirs()).writeValue(dirs);
+		}
+
+		@Override
+		public PathOp target(CodeDirs dirs) {
 
 			final PathTarget ref = (PathTarget) getRef();
 			final BoundPath boundPath = ref.getBoundPath();
@@ -483,7 +493,7 @@ public final class PathTarget extends Ref {
 				start = host();
 			}
 
-			return boundPath.write(dirs, start);
+			return boundPath.op(dirs, start);
 		}
 
 	}

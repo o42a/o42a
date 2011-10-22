@@ -155,7 +155,7 @@ public final class PathRescoper extends Rescoper {
 
 		final CodeDirs subDirs =
 				dirs.begin("rescope_by_path", "Resccope to " + this.path);
-		final HostOp result = this.path.write(subDirs, host);
+		final HostOp result = this.path.op(subDirs, host);
 
 		subDirs.end();
 

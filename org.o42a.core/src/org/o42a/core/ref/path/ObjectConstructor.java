@@ -42,6 +42,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ObjectConstructorStep;
@@ -97,52 +98,8 @@ public abstract class ObjectConstructor extends Placed {
 
 	public abstract ObjectConstructor reproduce(Reproducer reproducer);
 
-	public ObjectOp write(CodeDirs dirs, HostOp host) {
-
-		final CodeBuilder builder = dirs.getBuilder();
-		final LocalOp local = host.toLocal();
-
-		if (local != null) {
-			assert local.getBuilder() == builder :
-				"Wrong builder used when instantiating local object: "
-				+ this + ", while " + local.getBuilder() + " expected";
-		}
-
-		final Obj sample = getConstructed();
-
-		if (!sample.type().runtimeConstruction().isUsedBy(
-				dirs.getGenerator())) {
-
-			final ObjOp target =
-					sample.ir(dirs.getGenerator()).op(builder, dirs.code());
-
-			if (dirs.isDebug()) {
-				dirs.code().dumpName(
-						"Static object: ",
-						target.toData(dirs.code()));
-			}
-			if (local != null) {
-				target.fillDeps(dirs, sample);
-			}
-
-			return target;
-		}
-
-		final ObjectOp object = host.toObject(dirs);
-
-		if (object != null) {
-			return builder.newObject(
-					dirs,
-					object,
-					ancestorFunc(builder).getPointer().op(null, dirs.code()),
-					sample);
-		}
-
-		return builder.newObject(
-				dirs,
-				null,
-				buildAncestor(dirs),
-				sample);
+	public PathOp op(PathOp host) {
+		return new Op(host);
 	}
 
 	protected abstract Obj createObject();
@@ -247,6 +204,70 @@ public abstract class ObjectConstructor extends Placed {
 		@Override
 		protected Definitions explicitDefinitions() {
 			return emptyDefinitions(this, getScope());
+		}
+
+	}
+
+	private final class Op extends PathOp {
+
+		public Op(PathOp start) {
+			super(start);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			final CodeBuilder builder = dirs.getBuilder();
+			final LocalOp local = host().toLocal();
+
+			if (local != null) {
+				assert local.getBuilder() == builder :
+					"Wrong builder used when instantiating local object: "
+					+ this + ", while " + local.getBuilder() + " expected";
+			}
+
+			final Obj sample = getConstructed();
+
+			if (!sample.type().runtimeConstruction().isUsedBy(
+					dirs.getGenerator())) {
+
+				final ObjOp target = sample.ir(dirs.getGenerator()).op(
+						builder,
+						dirs.code());
+
+				if (dirs.isDebug()) {
+					dirs.code().dumpName(
+							"Static object: ",
+							target.toData(dirs.code()));
+				}
+				if (local != null) {
+					target.fillDeps(dirs, sample);
+				}
+
+				return target;
+			}
+
+			final ObjectOp object = host().toObject(dirs);
+
+			if (object != null) {
+				return builder.newObject(
+						dirs,
+						object,
+						ancestorFunc(builder).getPointer().op(
+								null,
+								dirs.code()),
+						sample);
+			}
+
+			return builder.newObject(
+					dirs,
+					null,
+					buildAncestor(dirs),
+					sample);
+		}
+
+		@Override
+		public String toString() {
+			return ObjectConstructor.this.toString();
 		}
 
 	}

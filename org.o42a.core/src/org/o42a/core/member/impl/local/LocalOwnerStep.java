@@ -28,6 +28,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.*;
@@ -86,14 +88,8 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final LocalOp local = start.toLocal();
-
-		assert local != null :
-			start + " is not local";
-
-		return local.getBuilder().owner();
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -111,6 +107,25 @@ public final class LocalOwnerStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<LocalOwnerStep> {
+
+		Op(PathOp start, LocalOwnerStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final LocalOp local = start().toLocal();
+
+			assert local != null :
+				start() + " is not local";
+
+			return local.getBuilder().owner();
+		}
+
 	}
 
 }
