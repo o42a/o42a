@@ -64,7 +64,7 @@ public final class PathRebuilder implements LocationInfo {
 				this.path.isStatic(),
 				Arrays.copyOfRange(
 						this.steps,
-						this.nextIdx + 1,
+						this.nextIdx,
 						this.steps.length));
 	}
 
