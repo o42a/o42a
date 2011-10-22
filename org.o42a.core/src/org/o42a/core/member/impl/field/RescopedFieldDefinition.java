@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl;
+package org.o42a.core.member.impl.field;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
@@ -33,14 +33,17 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-final class RescopedDefinition extends FieldDefinition {
+public final class RescopedFieldDefinition extends FieldDefinition {
 
-	private final Rescoped ref;
+	private final Rescoper rescoper;
 	private final FieldDefinition definition;
 
-	RescopedDefinition(Rescoped ref, FieldDefinition definition) {
-		super(ref, ref.distribute());
-		this.ref = ref;
+	public RescopedFieldDefinition(FieldDefinition definition, Rescoper rescoper) {
+		super(
+				definition,
+				definition.distributeIn(
+						rescoper.getFinalScope().getContainer()));
+		this.rescoper = rescoper;
 		this.definition = definition;
 	}
 
@@ -65,7 +68,7 @@ final class RescopedDefinition extends FieldDefinition {
 	}
 
 	private final Rescoper getRescoper() {
-		return this.ref.getRescoper();
+		return this.rescoper;
 	}
 
 	private final class RescopedObjectDefiner implements ObjectDefiner {

@@ -21,6 +21,7 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
@@ -228,6 +229,10 @@ public abstract class Ref extends Statement {
 			return this;
 		}
 		return new RescopedRef(this, rescoper);
+	}
+
+	public Ref upgradeScope(Scope scope) {
+		return rescope(upgradeRescoper(getScope(), scope));
 	}
 
 	public final TypeRef toTypeRef() {

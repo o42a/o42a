@@ -19,13 +19,17 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.impl.field.DefaultFieldDefinition;
 import org.o42a.core.member.impl.field.InvalidFieldDefinition;
+import org.o42a.core.member.impl.field.RescopedFieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -74,6 +78,17 @@ public abstract class FieldDefinition extends Placed {
 	public abstract void defineObject(ObjectDefiner definer);
 
 	public abstract void defineLink(LinkDefiner definer);
+
+	public final FieldDefinition rescope(Rescoper rescoper) {
+		if (rescoper.isTransparent()) {
+			return this;
+		}
+		return new RescopedFieldDefinition(this, rescoper);
+	}
+
+	public final FieldDefinition upgradeScope(Scope toScope) {
+		return rescope(upgradeRescoper(getScope(), toScope));
+	}
 
 	protected static ArtifactKind<?> artifactKind(Ref ref) {
 		return ArtifactKind.OBJECT;

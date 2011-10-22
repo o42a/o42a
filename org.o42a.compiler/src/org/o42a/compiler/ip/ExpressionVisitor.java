@@ -155,7 +155,7 @@ public final class ExpressionVisitor
 				return super.visitAscendants(ascendants, p);
 			}
 
-			return ancestor.getAncestor().getRef();
+			return ancestor.getAncestor().getRescopedRef();
 		}
 
 		return ascendants(ip(), ascendants, p).toRef();

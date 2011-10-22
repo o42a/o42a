@@ -231,6 +231,21 @@ public final class PathTarget extends Ref {
 	}
 
 	@Override
+	public Ref upgradeScope(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+		if (this.start != null) {
+			return super.upgradeScope(scope);
+		}
+		return new PathTarget(
+				this,
+				distributeIn(scope.getContainer()),
+				getBoundPath(),
+				null);
+	}
+
+	@Override
 	public Ref toStatic() {
 		if (isKnownStatic()) {
 			return this;

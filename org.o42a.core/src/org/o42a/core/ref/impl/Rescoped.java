@@ -170,7 +170,7 @@ public final class Rescoped extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		return new RescopedDefinition(this, this.ref.toFieldDefinition());
+		return this.ref.toFieldDefinition().rescope(getRescoper());
 	}
 
 	@Override
