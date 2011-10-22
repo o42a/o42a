@@ -106,8 +106,8 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev, Path restPath) {
-		return prev.combineWithObjectConstructor(this.constructor, restPath);
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combineWithObjectConstructor(this.constructor);
 	}
 
 	@Override

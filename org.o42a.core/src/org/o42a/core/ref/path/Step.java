@@ -59,23 +59,6 @@ public abstract class Step {
 			LocationInfo location,
 			Reproducer reproducer);
 
-	public Step combineWithMember(MemberKey memberKey) {
-		return null;
-	}
-
-	public Step combineWithLocalOwner(Obj owner) {
-		return null;
-	}
-
-	public Step combineWithObjectConstructor(ObjectConstructor constructor, Path restPath) {
-		return null;
-	}
-
-	@Deprecated
-	public Step combineWithRef(Ref ref) {
-		return null;
-	}
-
 	public final Path toPath() {
 		return new Path(
 				getPathKind(),
@@ -94,7 +77,26 @@ public abstract class Step {
 		return null;
 	}
 
-	protected Step rebuild(Step prev, Path restPath) {
+	protected void rebuild(PathRebuilder rebuilder) {
+	}
+
+	protected void combineWithMember(
+			PathRebuilder rebuilder,
+			MemberKey memberKey) {
+	}
+
+	protected void combineWithLocalOwner(
+			PathRebuilder rebuilder,
+			Obj owner) {
+	}
+
+	protected void combineWithObjectConstructor(
+			PathRebuilder rebuilder,
+			ObjectConstructor constructor) {
+	}
+
+	@Deprecated
+	protected Step combineWithRef(Ref ref) {
 		return null;
 	}
 

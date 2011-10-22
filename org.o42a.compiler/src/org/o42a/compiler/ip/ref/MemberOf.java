@@ -33,7 +33,7 @@ import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.common.RoleResolver;
-import org.o42a.core.ref.path.ExpansionContext;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -55,7 +55,7 @@ public class MemberOf extends PlacedPathFragment {
 	}
 
 	@Override
-	public Path expand(ExpansionContext context, int index, Scope owner) {
+	public Path expand(PathExpander expander, int index, Scope owner) {
 
 		final Scope scope = getScope();
 		final AccessorResolver accessorResolver = new AccessorResolver();
@@ -63,7 +63,7 @@ public class MemberOf extends PlacedPathFragment {
 		final CompoundPathWalker walker =
 				new CompoundPathWalker(roleResolver, accessorResolver);
 
-		if (!context.replay(walker)) {
+		if (!expander.replay(walker)) {
 			if (!roleResolver.getRole().atLeast(Role.INSTANCE)) {
 				Role.INSTANCE.reportMisuseBy(this, owner);
 			}

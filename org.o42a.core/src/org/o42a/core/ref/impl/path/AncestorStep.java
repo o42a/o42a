@@ -22,7 +22,7 @@ package org.o42a.core.ref.impl.path;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.path.ExpansionContext;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
@@ -32,7 +32,7 @@ import org.o42a.core.value.ValueType;
 public class AncestorStep extends PathFragment {
 
 	@Override
-	public Path expand(ExpansionContext context, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final Artifact<?> artifact = start.getArtifact();
 

@@ -25,10 +25,7 @@ import org.o42a.core.ref.impl.path.PathFragmentStep;
 
 public abstract class PathFragment {
 
-	public abstract Path expand(
-			ExpansionContext context,
-			int index,
-			Scope start);
+	public abstract Path expand(PathExpander expander, int index, Scope start);
 
 	public final Step toStep() {
 		return new PathFragmentStep(this);

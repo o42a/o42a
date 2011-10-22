@@ -20,7 +20,7 @@
 package org.o42a.core.ref.path;
 
 
-public interface ExpansionContext {
+public interface PathExpander {
 
 	BoundPath getPath();
 
