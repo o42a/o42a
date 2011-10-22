@@ -169,11 +169,6 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return invalidOutcome();
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return invalidOutcome();
 	}

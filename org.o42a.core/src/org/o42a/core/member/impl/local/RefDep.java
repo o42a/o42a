@@ -26,7 +26,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.ref.Ref;
@@ -59,23 +58,18 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public Object getKey() {
+	public final Object getDepKey() {
 		return this.depRef;
 	}
 
 	@Override
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	@Override
-	public final Artifact<?> getTarget() {
+	public final Artifact<?> getDepTarget() {
 		return this.target;
-	}
-
-	@Override
-	public final Field<?> getDepField() {
-		return null;
 	}
 
 	@Override

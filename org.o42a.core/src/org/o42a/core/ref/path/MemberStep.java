@@ -156,11 +156,6 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-		rebuilder.combineWithMember(this.memberKey);
-	}
-
-	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {

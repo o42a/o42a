@@ -33,7 +33,6 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -210,11 +209,6 @@ public class IRUtil {
 				Obj array,
 				Step step,
 				ArrayElement element) {
-			throw new IllegalStateException();
-		}
-
-		@Override
-		public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
 			throw new IllegalStateException();
 		}
 

@@ -25,7 +25,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.DepKind;
@@ -55,18 +54,13 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public Object getKey() {
+	public Object getDepKey() {
 		return null;
 	}
 
 	@Override
-	public final Artifact<?> getTarget() {
+	public final Artifact<?> getDepTarget() {
 		return this.target;
-	}
-
-	@Override
-	public final Field<?> getDepField() {
-		return null;
 	}
 
 	@Override

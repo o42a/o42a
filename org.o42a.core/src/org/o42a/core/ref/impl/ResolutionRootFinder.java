@@ -28,7 +28,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
@@ -158,13 +157,6 @@ public final class ResolutionRootFinder
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
 		this.root = array;
-		return false;
-	}
-
-	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		// Treat the enclosing local scope as resolution root.
-		this.root = object.getScope().getEnclosingScope().toLocal();
 		return false;
 	}
 

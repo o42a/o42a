@@ -65,11 +65,6 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return walk(walker().fieldDep(object, step, dependency));
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return walk(walker().refDep(object, step, dependency));
 	}

@@ -22,15 +22,17 @@ package org.o42a.core.ref.path;
 import java.util.Arrays;
 
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.log.Loggable;
 
 
-public final class PathRebuilder {
+public final class PathRebuilder implements LocationInfo {
 
 	private final BoundPath path;
 	private final Step[] steps;
-	private Step prev;
+	private Step previousStep;
 	private int nextIdx;
 
 	private final Step[] rebuiltSteps;
@@ -41,12 +43,22 @@ public final class PathRebuilder {
 		this.path = path;
 		this.steps = steps;
 		this.rebuiltSteps = new Step[steps.length];
-		this.prev = this.rebuiltSteps[0] = steps[0];
+		this.previousStep = this.rebuiltSteps[0] = steps[0];
 		this.nextIdx = 1;
 		this.rebuiltIdx = 0;
 	}
 
-	public Path restPath() {
+	@Override
+	public final Loggable getLoggable() {
+		return this.path.getLoggable();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.path.getContext();
+	}
+
+	public final Path restPath() {
 		return new Path(
 				this.path.getKind(),
 				this.path.isStatic(),
@@ -56,30 +68,21 @@ public final class PathRebuilder {
 						this.steps.length));
 	}
 
-	public final void combineWithMember(MemberKey memberKey) {
-		this.prev.combineWithMember(this, memberKey);
-	}
-
 	public final void combineWithLocalOwner(Obj owner) {
-		this.prev.combineWithLocalOwner(this, owner);
-	}
-
-	public final void combineWithObjectConstructor(
-			ObjectConstructor constructor) {
-		this.prev.combineWithObjectConstructor(this, constructor);
+		this.previousStep.combineWithLocalOwner(this, owner);
 	}
 
 	public final Step getPreviousStep() {
-		return this.prev;
+		return this.previousStep;
 	}
 
 	public final void replace(Step rebuilt) {
-		this.rebuiltSteps[this.rebuiltIdx] = this.prev = rebuilt;
+		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
 		this.replacement = 1;
 	}
 
 	public final void replaceRest(Step rebuilt) {
-		this.rebuiltSteps[this.rebuiltIdx] = this.prev = rebuilt;
+		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
 		this.replacement = 2;
 	}
 
@@ -97,7 +100,7 @@ public final class PathRebuilder {
 				}
 				continue;
 			}
-			this.rebuiltSteps[++this.rebuiltIdx] = this.prev = next;
+			this.rebuiltSteps[++this.rebuiltIdx] = this.previousStep = next;
 			if (++this.nextIdx >= this.steps.length) {
 				break;
 			}
@@ -119,6 +122,13 @@ public final class PathRebuilder {
 	private boolean rebuild(Step next) {
 		this.replacement = 0;
 		next.rebuild(this);
+
+		if (this.replacement > 0) {
+			return true;
+		}
+
+		getPreviousStep().combineWith(this, next);
+
 		return this.replacement > 0;
 	}
 

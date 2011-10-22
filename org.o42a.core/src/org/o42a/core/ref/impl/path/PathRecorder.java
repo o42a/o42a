@@ -27,7 +27,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -133,19 +132,6 @@ public class PathRecorder extends PathTracker {
 			@Override
 			public boolean replay(PathWalker walker) {
 				return walker.arrayElement(array, step, element);
-			}
-		});
-	}
-
-	@Override
-	public boolean fieldDep(
-			final Obj object,
-			final Step step,
-			final Field<?> dependency) {
-		return record(new Record() {
-			@Override
-			public boolean replay(PathWalker walker) {
-				return walker.fieldDep(object, step, dependency);
 			}
 		});
 	}

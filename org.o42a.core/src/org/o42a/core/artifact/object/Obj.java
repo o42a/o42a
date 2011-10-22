@@ -46,7 +46,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
-import org.o42a.core.member.impl.local.FieldDep;
 import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
@@ -627,12 +626,6 @@ public abstract class Obj
 	}
 
 	@Override
-	protected final Dep addFieldDep(MemberKey memberKey) {
-		assert getContext().fullResolution().assertIncomplete();
-		return addDep(new FieldDep(this, memberKey));
-	}
-
-	@Override
 	protected Dep addEnclosingOwnerDep(Obj owner) {
 		assert getContext().fullResolution().assertIncomplete();
 
@@ -790,7 +783,7 @@ public abstract class Obj
 
 	private Dep addDep(Dep dep) {
 
-		final Object key = dep.getKey();
+		final Object key = dep.getDepKey();
 		final Dep found = this.deps.put(key, dep);
 
 		if (found == null) {
