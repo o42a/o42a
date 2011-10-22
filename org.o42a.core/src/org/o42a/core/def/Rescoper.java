@@ -39,6 +39,9 @@ public abstract class Rescoper {
 	}
 
 	public static Rescoper upgradeRescoper(Scope fromScope, Scope toScope) {
+		if (fromScope == toScope) {
+			return transparentRescoper(fromScope);
+		}
 		toScope.assertDerivedFrom(fromScope);
 		return new UpgradeRescoper(fromScope, toScope);
 	}

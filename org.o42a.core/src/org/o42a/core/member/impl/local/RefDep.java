@@ -26,6 +26,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.ref.Ref;
@@ -106,7 +107,17 @@ public final class RefDep extends Dep {
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
+
+		final Path prefix =
+				path.getRawPath()
+				.cut(1)
+				.append(getObject().getScope().getEnclosingScopePath());
+		final Rescoper rescoper =
+				prefix.bind(path, path.getOrigin()).rescoper();
+
+		return getDepRef().toFieldDefinition()
+				.rescope(rescoper)
+				.upgradeScope(distributor.getScope());
 	}
 
 	@Override

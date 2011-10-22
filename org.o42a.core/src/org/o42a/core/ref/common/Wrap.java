@@ -89,6 +89,7 @@ public abstract class Wrap extends Ref {
 
 	@Override
 	public final Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		return wrapped().resolve(resolver);
 	}
 

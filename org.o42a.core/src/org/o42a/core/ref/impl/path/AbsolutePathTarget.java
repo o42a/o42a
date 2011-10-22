@@ -24,6 +24,7 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -49,6 +50,14 @@ public final class AbsolutePathTarget extends Ref {
 			Path path) {
 		super(location, distributor);
 		this.path = path.bind(this, getScope());
+	}
+
+	private AbsolutePathTarget(
+			LocationInfo location,
+			Distributor distributor,
+			BoundPath path) {
+		super(location, distributor);
+		this.path = path;
 	}
 
 	@Override
@@ -92,6 +101,17 @@ public final class AbsolutePathTarget extends Ref {
 		}
 
 		return new AbsolutePathTarget(this, distribute(), materialized);
+	}
+
+	@Override
+	public Ref upgradeScope(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+		return new AbsolutePathTarget(
+				this,
+				distributeIn(scope.getContainer()),
+				this.path);
 	}
 
 	@Override
