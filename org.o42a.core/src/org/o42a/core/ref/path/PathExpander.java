@@ -17,38 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.path;
-
-import static org.o42a.util.use.User.dummyUser;
-
-import org.o42a.core.ref.path.PathResolver;
-import org.o42a.core.ref.path.PathWalker;
+package org.o42a.core.ref.path;
 
 
-public final class AbsolutePathTracker extends PathTracker {
+public interface PathExpander {
 
-	private int beforeStart;
+	BoundPath getPath();
 
-	public AbsolutePathTracker(
-			PathResolver resolver,
-			PathWalker walker,
-			int startIndex) {
-		super(resolver, walker);
-		this.beforeStart = startIndex;
-	}
-
-	@Override
-	public PathResolver nextResolver() {
-		if (this.beforeStart > 0) {
-			return this.initialResolver.resolveBy(dummyUser());
-		}
-		return super.nextResolver();
-	}
-
-	@Override
-	boolean walk(boolean succeed) {
-		--this.beforeStart;
-		return super.walk(succeed);
-	}
+	boolean replay(PathWalker pathWalker);
 
 }

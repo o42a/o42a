@@ -24,9 +24,7 @@ import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
-import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -34,9 +32,10 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-final class ClauseInstantiation extends Wrap {
+final class ClauseInstantiation extends ObjectConstructor {
 
 	private final ClauseInstance instance;
+	private AscendantsDefinition ascendants;
 
 	ClauseInstantiation(
 			ClauseInstance instance,
@@ -47,64 +46,58 @@ final class ClauseInstantiation extends Wrap {
 		this.instance = instance;
 	}
 
+	private ClauseInstantiation(
+			ClauseInstance instance,
+			Distributor distributor,
+			AscendantsDefinition ascendants) {
+		super(
+				new Location(distributor.getContext(), instance.getLocation()),
+				distributor);
+		this.instance = instance;
+		this.ascendants = ascendants;
+	}
+
+	@Override
+	public TypeRef ancestor(LocationInfo location) {
+		return getAscendants().getAncestor();
+	}
+
+	@Override
+	public ClauseInstantiation reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final AscendantsDefinition ascendants =
+				this.ascendants.reproduce(reproducer);
+
+		if (ascendants == null) {
+			return null;
+		}
+
+		return new ClauseInstantiation(
+				this.instance,
+				reproducer.distribute(),
+				ascendants);
+	}
+
 	@Override
 	public String toString() {
 		return this.instance.toString();
 	}
 
 	@Override
-	protected Ref resolveWrapped() {
-
-		final AscendantsDefinition ascendants =
-				this.instance.getContext().ascendants(this, distribute());
-
-		return new ClauseConstructor(this.instance, distribute(), ascendants);
+	protected Obj createObject() {
+		return new InstantiationObject(
+				this.instance,
+				distribute(),
+				getAscendants());
 	}
 
-	private static final class ClauseConstructor extends ObjectConstructor {
-
-		private final ClauseInstance instance;
-		private final AscendantsDefinition ascendants;
-
-		ClauseConstructor(
-				ClauseInstance instance,
-				Distributor distributor,
-				AscendantsDefinition ascendants) {
-			super(instance.getLocation(), distributor);
-			this.instance = instance;
-			this.ascendants = ascendants;
+	private AscendantsDefinition getAscendants() {
+		if (this.ascendants != null) {
+			return this.ascendants;
 		}
-
-		@Override
-		public TypeRef ancestor(LocationInfo location) {
-			return this.ascendants.getAncestor();
-		}
-
-		@Override
-		protected Obj createObject() {
-			return new InstantiationObject(
-					this.instance,
-					distribute(),
-					this.ascendants);
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-
-			final AscendantsDefinition ascendants =
-					this.ascendants.reproduce(reproducer);
-
-			if (ascendants == null) {
-				return null;
-			}
-
-			return new ClauseConstructor(
-					this.instance,
-					reproducer.distribute(),
-					ascendants);
-		}
-
+		return this.ascendants =
+				this.instance.getContext().ascendants(this, distribute());
 	}
 
 	private static final class InstantiationObject extends DefinedObject {

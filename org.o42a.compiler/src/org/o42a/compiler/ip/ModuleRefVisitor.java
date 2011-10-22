@@ -21,6 +21,7 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -29,7 +30,6 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.RefVisitor.Owner;
-import org.o42a.compiler.ip.ref.ModuleRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -94,7 +94,9 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 		@Override
 		protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
-			return new ModuleRef(location(p, moduleRef), p);
+			return enclosingModulePath(p.getContainer()).target(
+					location(p, moduleRef),
+					p);
 		}
 
 	}

@@ -174,17 +174,6 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		if (!mayProceedInsidePrototype()) {
-			return false;
-		}
-		if (dependency.isPrototype()) {
-			this.insidePrototype = true;
-		}
-		return true;
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
@@ -201,6 +190,11 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
 		return true;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		return mayProceedInsidePrototype();
 	}
 
 	@Override

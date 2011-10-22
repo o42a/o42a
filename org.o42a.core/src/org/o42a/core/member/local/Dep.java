@@ -26,7 +26,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -59,11 +58,9 @@ public abstract class Dep extends Step {
 		return this.object;
 	}
 
-	public abstract Object getKey();
+	public abstract Object getDepKey();
 
-	public abstract Artifact<?> getTarget();
-
-	public abstract Field<?> getDepField();
+	public abstract Artifact<?> getDepTarget();
 
 	public abstract Ref getDepRef();
 

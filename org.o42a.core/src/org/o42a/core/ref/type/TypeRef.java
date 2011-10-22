@@ -32,6 +32,7 @@ import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.RescopableRef;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
@@ -54,6 +55,16 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	public abstract boolean isStatic();
 
 	public abstract Ref getUntachedRef();
+
+	public Path getPath() {
+
+		final Path path = getRescopedRef().getPath();
+
+		assert path != null :
+			"Not a path: " + this;
+
+		return path;
+	}
 
 	public final TypeRef getAncestor() {
 		if (this.ancestor != null) {

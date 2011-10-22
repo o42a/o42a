@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -79,48 +78,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-
-		final Resolution resolution = getResolution();
-
-		if (resolution.isError()) {
-			return errorRef(location, distribute()).toTypeRef();
-		}
-
-		final Artifact<?> artifact = resolution.toArtifact();
-
-		if (artifact == null) {
-			getLogger().notArtifact(resolution);
-			return errorRef(location, distribute()).toTypeRef();
-		}
-
-		final Path path = this.path.getRawPath();
-		final Path upPath = path.cutArtifact();
-
-		if (upPath != path) {
-
-			final TypeRef ancestor;
-			final TypeRef typeRef = artifact.getTypeRef();
-
-			if (typeRef != null) {
-				ancestor = typeRef;
-			} else {
-				ancestor = artifact.materialize().type().getAncestor();
-			}
-
-			return ancestor.rescope(
-					upPath.bind(location, getScope()).rescoper());
-		}
-
-		final Path dematerializedPath = path.dematerialize();
-
-		if (path == dematerializedPath) {
-			return super.ancestor(location);
-		}
-
-		final Ref dematerialized =
-				dematerializedPath.target(location, distribute());
-
-		return dematerialized.ancestor(location);
+		return this.path.ancestor(location, distribute());
 	}
 
 	@Override
@@ -154,7 +112,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		return new PathTargetDefinition(this);
+		return getPath().fieldDefinition(this, distribute());
 	}
 
 	@Override

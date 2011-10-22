@@ -26,7 +26,8 @@ public enum StepKind {
 	ARTIFACT_STEP,
 	MATERIALIZER_STEP,
 	MEMBER_STEP,
-	PARENT_STEP;
+	PARENT_STEP,
+	FRAGMENT_STEP;
 
 	public final boolean isArtifact() {
 		return this == ARTIFACT_STEP;

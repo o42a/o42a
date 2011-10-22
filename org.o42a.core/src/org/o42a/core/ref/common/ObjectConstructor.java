@@ -41,6 +41,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
+@Deprecated
 public abstract class ObjectConstructor extends Ref {
 
 	private Obj constructed;

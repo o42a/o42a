@@ -104,7 +104,7 @@ public final class ClauseInstance {
 	}
 
 	public Ref instantiateObject(Distributor distributor) {
-		return new ClauseInstantiation(this, distributor);
+		return new ClauseInstantiation(this, distributor).toRef();
 	}
 
 	@Override

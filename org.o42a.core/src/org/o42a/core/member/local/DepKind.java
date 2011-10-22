@@ -25,7 +25,6 @@ import org.o42a.core.ref.path.StepKind;
 
 public enum DepKind {
 
-	FIELD_DEP(StepKind.ARTIFACT_STEP, PathKind.RELATIVE_PATH),
 	ENCLOSING_OWNER_DEP(StepKind.PARENT_STEP, PathKind.RELATIVE_PATH),
 	REF_DEP(StepKind.ARTIFACT_STEP, PathKind.RELATIVE_PATH);
 

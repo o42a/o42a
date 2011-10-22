@@ -24,12 +24,14 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -68,19 +70,16 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
+	public boolean isMaterial() {
 
 		final Member member = firstDeclaration();
 		final Field<?> field = member.toField(dummyUser());
 
 		if (field == null) {
-			return null;
-		}
-		if (field.getArtifactKind().isObject()) {
-			return null;
+			return true;
 		}
 
-		return MATERIALIZE;
+		return field.getArtifactKind().isObject();
 	}
 
 	@Override
@@ -105,12 +104,11 @@ public class MemberStep extends Step {
 	@Override
 	public final PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 
 		final Scope origin = this.memberKey.getOrigin();
 
-		return reproduce(location, reproducer, origin, scope);
+		return reproduce(location, reproducer, origin, reproducer.getScope());
 	}
 
 	@Override
@@ -158,8 +156,10 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev) {
-		return prev.combineWithMember(this.memberKey);
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	protected Member resolveMember(
