@@ -45,7 +45,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -55,19 +55,19 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.UserInfo;
 
 
-public final class ComparisonRef extends ObjectConstructor {
+public final class ComparisonExpression extends ObjectConstructor {
 
 	private static final MemberId COMPARISON = fieldName("_cmp");
 
 	private final Interpreter ip;
 	private final BinaryNode node;
-	private final ComparisonRef prototype;
+	private final ComparisonExpression prototype;
 	private final Reproducer reproducer;
 	private ComparisonOperator operator;
 	private Ref phrase;
 	private byte error;
 
-	public ComparisonRef(
+	public ComparisonExpression(
 			Interpreter ip,
 			BinaryNode node,
 			Distributor distributor) {
@@ -78,8 +78,8 @@ public final class ComparisonRef extends ObjectConstructor {
 		this.reproducer = null;
 	}
 
-	private ComparisonRef(
-			ComparisonRef prototype,
+	private ComparisonExpression(
+			ComparisonExpression prototype,
 			Reproducer reproducer) {
 		super(prototype, reproducer.distribute());
 		this.ip = prototype.ip;
@@ -108,8 +108,8 @@ public final class ComparisonRef extends ObjectConstructor {
 	}
 
 	@Override
-	public ComparisonRef reproduce(Reproducer reproducer) {
-		return new ComparisonRef(this, reproducer);
+	public ComparisonExpression reproduce(Reproducer reproducer) {
+		return new ComparisonExpression(this, reproducer);
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public final class ComparisonRef extends ObjectConstructor {
 			return this.phrase = binary.getPhrase().toRef();
 		}
 		// Build prototype`s phrase.
-		this.prototype.getResolution().toObject().resolveMembers(false);
+		this.prototype.getConstructed().resolveMembers(false);
 		// Reproduce prototype`s phrase.
 		return this.phrase = this.prototype.getPhrase().reproduce(
 				this.reproducer.distributeBy(distributor));
@@ -165,10 +165,10 @@ public final class ComparisonRef extends ObjectConstructor {
 
 	private final class ComparisonResult extends BuiltinObject {
 
-		private final ComparisonRef ref;
+		private final ComparisonExpression ref;
 		private MemberKey comparisonKey;
 
-		ComparisonResult(ComparisonRef ref) {
+		ComparisonResult(ComparisonExpression ref) {
 			super(ref, ref.distribute(), ValueStruct.VOID);
 			this.ref = ref;
 		}
