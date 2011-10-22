@@ -34,7 +34,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.ref.common.PlacedPathFragment;
-import org.o42a.core.ref.path.ExpansionContext;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -83,7 +83,7 @@ public class MemberById extends PlacedPathFragment {
 	}
 
 	@Override
-	public Path expand(ExpansionContext context, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final Obj declaredIn;
 

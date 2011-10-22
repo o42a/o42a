@@ -156,8 +156,8 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev, Path restPath) {
-		return prev.combineWithMember(this.memberKey);
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combineWithMember(this.memberKey);
 	}
 
 	@Override

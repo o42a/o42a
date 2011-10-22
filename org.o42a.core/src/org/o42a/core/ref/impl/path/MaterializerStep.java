@@ -96,11 +96,13 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev, Path restPath) {
+	protected void rebuild(PathRebuilder rebuilder) {
+
+		final Step prev = rebuilder.getPreviousStep();
+
 		if (prev.isMaterial()) {
-			return prev;
+			rebuilder.replace(prev);
 		}
-		return null;
 	}
 
 	@Override

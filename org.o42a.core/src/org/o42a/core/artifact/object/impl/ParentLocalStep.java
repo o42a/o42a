@@ -89,29 +89,6 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public Step combineWithMember(MemberKey memberKey) {
-		return ((ObjectArtifact) this.object).addFieldDep(memberKey);
-	}
-
-	@Override
-	public Step combineWithLocalOwner(Obj owner) {
-		return ((ObjectArtifact) this.object).addEnclosingOwnerDep(owner);
-	}
-
-	@Override
-	public Step combineWithObjectConstructor(
-			ObjectConstructor constructor,
-			Path restPath) {
-		return ((ObjectArtifact) this.object).addRefDep(
-				restPath.target(constructor, constructor.distribute()));
-	}
-
-	@Override
-	public Step combineWithRef(Ref ref) {
-		return ((ObjectArtifact) this.object).addRefDep(ref);
-	}
-
-	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
@@ -146,10 +123,45 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	public void combineWithMember(
+			PathRebuilder rebuilder,
+			MemberKey memberKey) {
+		rebuilder.replace(object().addFieldDep(memberKey));
+	}
+
+	@Override
+	public void combineWithLocalOwner(
+			PathRebuilder rebuilder,
+			Obj owner) {
+		rebuilder.replace(object().addEnclosingOwnerDep(owner));
+	}
+
+	@Override
+	public void combineWithObjectConstructor(
+			PathRebuilder rebuilder,
+			ObjectConstructor constructor) {
+
+		final Ref ref = rebuilder.restPath().target(
+				constructor,
+				constructor.distribute());
+
+		rebuilder.replaceRest(object().addRefDep(ref));
+	}
+
+	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Step combineWithRef(Ref ref) {
+		return object().addRefDep(ref);
+	}
+
+	private final ObjectArtifact object() {
+		return this.object;
 	}
 
 	private static final class OpaqueLocalOp implements HostOp {

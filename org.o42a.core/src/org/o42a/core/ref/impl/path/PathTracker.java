@@ -23,7 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.path.*;
 
 
-public abstract class PathTracker implements PathWalker, ExpansionContext {
+public abstract class PathTracker implements PathWalker, PathExpander {
 
 	private final BoundPath path;
 	protected final PathResolver initialResolver;
