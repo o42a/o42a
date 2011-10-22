@@ -88,7 +88,8 @@ BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		functionPassManager(NULL),
 		types(),
 		stackSaveFunc(NULL),
-		stackRestoreFunc(NULL) {
+		stackRestoreFunc(NULL),
+		hostMachine(false) {
 }
 
 BackendModule::~BackendModule() {
@@ -128,7 +129,19 @@ bool BackendModule::isDebugEnabled() {
 }
 
 BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
-	return new BackendModule(ModuleID, *new LLVMContext());
+
+	BackendModule *backend = new BackendModule(ModuleID, *new LLVMContext());
+
+	std::string triple = backend->getTargetTriple();
+
+	if (triple.empty()) {
+		backend->hostMachine = true;
+		backend->setTargetTriple(sys::getHostTriple());
+	}
+
+	backend->setDataLayout(backend->getTargetData().getStringRepresentation());
+
+	return backend;
 }
 
 const TargetData &BackendModule::getTargetData() const {
@@ -221,44 +234,6 @@ bool BackendModule::writeCode() {
 
 	OTRACE("========== " << this->getModuleIdentifier() << " generation\n");
 
-	PassManager pm;
-
-	std::string triple = getTargetTriple();
-	std::string features;
-
-	if (triple.empty()) {
-		triple = sys::getHostTriple();
-
-		StringMap<bool> featureMap;
-		SubtargetFeatures f;
-
-		f.getDefaultSubtargetFeatures(sys::getHostCPUName(), Triple(triple));
-
-		f.setCPU(sys::getHostCPUName());
-		if (sys::getHostCPUFeatures(featureMap)) {
-			for (StringMapIterator<bool> it = featureMap.begin();
-					it != featureMap.end();) {
-				f.AddFeature(it->getKey(), it->getValue());
-			}
-		}
-
-		features = f.getString();
-	}
-
-	std::string error =
-			std::string("Target not supported: ").append(triple);
-
-	ODEBUG("Emitting code for " << triple << " (" << features << ")\n");
-
-	const Target *const target = TargetRegistry::lookupTarget(triple, error);
-
-	if (!target) {
-		return false;
-	}
-
-	TargetMachine *const machine =
-			target->createTargetMachine(getTargetTriple(), features);
-
 	formatted_raw_ostream *out;
 	std::auto_ptr<formatted_raw_ostream> outPtr;
 
@@ -298,15 +273,57 @@ bool BackendModule::writeCode() {
 		}
 	}
 
+	PassManager pm;
+
 	if (fileType == TargetMachine::CGFT_Null) {
 		pm.add(createPrintModulePass(out, false));
-	} else if (machine->addPassesToEmitFile(
-			pm,
-			*out,
-			fileType,
-			CodeGenOpt::Default)) {
-		errs() << "Can not emit code\n";
-		return false;
+	} else {
+
+		std::string triple = getTargetTriple();
+		std::string features;
+
+		if (this->hostMachine) {
+
+			StringMap<bool> featureMap;
+			SubtargetFeatures f;
+
+			f.getDefaultSubtargetFeatures(
+					sys::getHostCPUName(),
+					Triple(triple));
+			f.setCPU(sys::getHostCPUName());
+			if (sys::getHostCPUFeatures(featureMap)) {
+				for (StringMapIterator<bool> it = featureMap.begin();
+						it != featureMap.end();) {
+					f.AddFeature(it->getKey(), it->getValue());
+				}
+			}
+
+			features = f.getString();
+		}
+
+		std::string error =
+				std::string("Target not supported: ").append(triple);
+
+		ODEBUG("Emitting code for " << triple << " (" << features << ")\n");
+
+		const Target *const target =
+				TargetRegistry::lookupTarget(triple, error);
+
+		if (!target) {
+			return false;
+		}
+
+		TargetMachine *const machine =
+				target->createTargetMachine(getTargetTriple(), features);
+
+		if (machine->addPassesToEmitFile(
+				pm,
+				*out,
+				fileType,
+				CodeGenOpt::Default)) {
+			errs() << "Can not emit code\n";
+			return false;
+		}
 	}
 
 	pm.run(*this);
