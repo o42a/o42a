@@ -39,6 +39,8 @@ public interface PathWalker {
 
 	boolean module(Step step, Obj module);
 
+	boolean skip(Step step, Scope scope);
+
 	boolean staticScope(Step step, Scope scope);
 
 	boolean up(Container enclosed, Step step, Container enclosing);

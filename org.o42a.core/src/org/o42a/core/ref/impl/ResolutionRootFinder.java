@@ -118,6 +118,11 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
+	public boolean skip(Step step, Scope scope) {
+		return true;
+	}
+
+	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		this.root = this.root.getContext().getRoot();
 		return false;

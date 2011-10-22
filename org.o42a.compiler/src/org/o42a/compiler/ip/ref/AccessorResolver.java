@@ -105,6 +105,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		this.ownerBeforeRoot = this.owner;
 		this.declarationBeforeRoot = this.declaration;
 		this.enclosedBeforeRoot = this.enclosed;
+		this.inheritantBeforeRoot = this.inheritant;
 		return updateContainer(root.getContainer(), root.getContainer());
 	}
 
@@ -120,6 +121,11 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 		this.enclosed = this.enclosedBeforeRoot;
 		this.inheritant = this.inheritantBeforeRoot;
 		return updateContainer(module, module);
+	}
+
+	@Override
+	public boolean skip(Step step, Scope scope) {
+		return true;
 	}
 
 	@Override

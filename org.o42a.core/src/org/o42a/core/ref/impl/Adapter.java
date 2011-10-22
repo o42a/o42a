@@ -20,114 +20,95 @@
 package org.o42a.core.ref.impl;
 
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.value.Value.voidValue;
+import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.common.Wrap;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathExpander;
+import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.log.Loggable;
 
 
-public final class Adapter extends Wrap {
+public final class Adapter extends PathFragment {
 
-	private final Ref ref;
+	private final CompilerContext context;
+	private final Loggable loggable;
 	private final StaticTypeRef adapterType;
 
-	public Adapter(LocationInfo location, Ref ref, StaticTypeRef adapterType) {
-		super(location, ref.distribute());
-		this.ref = ref;
+	public Adapter(LocationInfo location, StaticTypeRef adapterType) {
+		this.context = location.getContext();
+		this.loggable = location.getLoggable();
 		this.adapterType = adapterType;
 	}
 
+	public final StaticTypeRef getAdapterType() {
+		return this.adapterType;
+	}
+
 	@Override
-	protected Ref resolveWrapped() {
+	public Path expand(PathExpander expander, int index, Scope start) {
 
-		final Resolution resolution = this.ref.getResolution();
+		final Path path = path(start);
 
-		if (resolution.isError()) {
-			return errorRef(resolution);
+		if (!castToVoid(start)) {
+			return path;
 		}
 
-		final ObjectType objectType = resolution.materialize().type();
+		return path.append(CAST_TO_VOID);
+	}
+
+	private Path path(Scope start) {
+
+		final ObjectType objectType = start.getArtifact().materialize().type();
 
 		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
-			return this.ref;
+			return Path.SELF_PATH;
 		}
 
 		final Member adapterMember =
 				objectType.getObject().member(adapterId(this.adapterType));
 
 		if (adapterMember == null) {
-			getLogger().incompatible(this.ref, this.adapterType);
-			return errorRef(this);
+			this.context.getLogger().incompatible(
+					this.loggable,
+					this.adapterType);
+			return null;
 		}
 
-		final Path adapterPath = adapterMember.getKey().toPath();
-
-		return adapterPath.target(this, distribute(), this.ref);
+		return adapterMember.getKey().toPath();
 	}
 
-	@Override
-	protected RefOp createOp(HostOp host) {
+	private boolean castToVoid(Scope start) {
 
-		final RefOp op = super.createOp(host);
 		final ValueType<?> adapterValueType =
-				this.adapterType.typeObject(dummyUser()).value().getValueType();
+				getAdapterType().typeObject(dummyUser())
+				.value()
+				.getValueType();
 
 		if (!adapterValueType.isVoid()) {
-			return op;
+			return false;
 		}
 
-		final ValueType<?> valueType =
-				this.ref.getResolution().materialize().value().getValueType();
+		final Artifact<?> artifact = start.getArtifact();
+		final TypeRef typeRef = artifact.getTypeRef();
+		final ValueType<?> valueType;
 
-		if (valueType.isVoid()) {
-			return op;
+		if (typeRef != null) {
+			valueType = typeRef.getValueType();
+		} else {
+			valueType = artifact.toObject().value().getValueType();
 		}
 
-		return new CastToVoidOp(host, this, op);
-	}
-
-	private static final class CastToVoidOp extends RefOp {
-
-		private final RefOp op;
-
-		CastToVoidOp(HostOp host, Ref ref, RefOp op) {
-			super(host, ref);
-			this.op = op;
-		}
-
-		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-			this.op.writeLogicalValue(dirs);
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs) {
-			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
-
-			writeLogicalValue(dirs.dirs());
-
-			return voidValue().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		public HostOp target(CodeDirs dirs) {
-			return this.op.target(dirs);
-		}
-
+		return valueType.isVoid();
 	}
 
 }

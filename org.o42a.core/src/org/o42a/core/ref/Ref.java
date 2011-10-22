@@ -214,7 +214,13 @@ public abstract class Ref extends Statement {
 	}
 
 	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
-		return new Adapter(location, this, adapterType);
+
+		final Adapter adapter = new Adapter(location, adapterType);
+
+		return adapter.toPath().target(
+				location,
+				distribute(),
+				materialize());
 	}
 
 	public final Ref rescope(Scope toScope) {
