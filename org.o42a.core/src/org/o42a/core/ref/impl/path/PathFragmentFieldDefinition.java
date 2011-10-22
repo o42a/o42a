@@ -27,12 +27,14 @@ import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.path.BoundPath;
 
 
-final class PathFragmentFieldDefinition extends FieldDefinition {
+public final class PathFragmentFieldDefinition extends FieldDefinition {
 
 	private final BoundPath path;
 	private FieldDefinition definition;
 
-	PathFragmentFieldDefinition(BoundPath path, Distributor distributor) {
+	public PathFragmentFieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
 		super(path, distributor);
 		this.path = path;
 	}
