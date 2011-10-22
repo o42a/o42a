@@ -25,8 +25,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
@@ -93,8 +92,8 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-		return this.constructor.write(dirs, start);
+	public PathOp op(PathOp start) {
+		return this.constructor.op(start);
 	}
 
 	@Override

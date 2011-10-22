@@ -27,6 +27,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -96,12 +98,8 @@ public class StaticStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-		// This should only be called for object scope.
-
-		final ObjectIR ir = getScope().toObject().ir(dirs.getGenerator());
-
-		return ir.op(dirs.getBuilder(), dirs.code());
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -117,6 +115,24 @@ public class StaticStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<StaticStep> {
+
+		Op(PathOp start, StaticStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			// This should only be called for object scope.
+
+			final ObjectIR ir =
+					getStep().getScope().toObject().ir(getGenerator());
+
+			return ir.op(getBuilder(), dirs.code());
+		}
+
 	}
 
 }

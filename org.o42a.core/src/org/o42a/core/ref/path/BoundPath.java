@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
@@ -36,6 +37,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -195,16 +197,16 @@ public class BoundPath extends Location {
 		return getRawPath().bindStatically(this, this.deferredOrigin);
 	}
 
-	public final HostOp write(CodeDirs dirs, HostOp start) {
+	public final PathOp op(CodeDirs dirs, HostOp start) {
 		if (isStatic()) {
-			return writeStatic(dirs);
+			return staticOp(dirs);
 		}
 
 		final Step[] steps = getSteps();
-		HostOp found = start;
+		PathOp found = hostPathOp(start);
 
 		for (int i = 0; i < steps.length; ++i) {
-			found = steps[i].write(dirs, found);
+			found = steps[i].op(found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}
@@ -213,18 +215,18 @@ public class BoundPath extends Location {
 		return found;
 	}
 
-	public final HostOp writeStatic(CodeDirs dirs) {
+	public final PathOp staticOp(CodeDirs dirs) {
 		assert isStatic() :
 			this + " is not a static path";
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final CompilerContext context = builder.getContext();
 		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
-		HostOp found = start.op(builder, dirs.code());
+		PathOp found = hostPathOp(start.op(builder, dirs.code()));
 		final Step[] steps = getSteps();
 
 		for (int i = startIndex(context); i < steps.length; ++i) {
-			found = steps[i].write(dirs, found);
+			found = steps[i].op(found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
 			}

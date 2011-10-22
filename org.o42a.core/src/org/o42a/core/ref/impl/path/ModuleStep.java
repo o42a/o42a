@@ -28,6 +28,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
@@ -95,13 +97,8 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Obj module =
-				start.getContext().getIntrinsics().getModule(this.moduleId);
-		final ObjectIR moduleIR = module.ir(start.getGenerator());
-
-		return moduleIR.op(start.getBuilder(), dirs.code());
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -136,6 +133,24 @@ public final class ModuleStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return objectFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<ModuleStep> {
+
+		Op(PathOp start, ModuleStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Obj module = getContext().getIntrinsics().getModule(
+					getStep().getModuleId());
+			final ObjectIR moduleIR = module.ir(getGenerator());
+
+			return moduleIR.op(getBuilder(), dirs.code());
+		}
+
 	}
 
 }
