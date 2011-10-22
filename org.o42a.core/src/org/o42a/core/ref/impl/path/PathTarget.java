@@ -145,17 +145,12 @@ public final class PathTarget extends Ref {
 		}
 
 		final Path fullPath = getPath();
-		final Path path;
-		final Ref start;
 
 		if (fullPath != null) {
-			path = fullPath;
-			start = null;
-		} else {
-			path = this.path;
-			start = this.start;
+			return getBoundPath().ancestor(location, distribute());
 		}
 
+		final Path path = getBoundPath().getPath();
 		final Path upPath = path.cutArtifact();
 
 		if (upPath != path) {
@@ -169,7 +164,7 @@ public final class PathTarget extends Ref {
 				ancestor = artifact.materialize().type().getAncestor();
 			}
 
-			return ancestor.rescope(pathRescoper(start, upPath));
+			return ancestor.rescope(pathRescoper(this.start, upPath));
 		}
 
 		final Path dematerializedPath = path.dematerialize();
@@ -180,11 +175,11 @@ public final class PathTarget extends Ref {
 
 		final Ref dematerialized;
 
-		if (start == null) {
+		if (this.start == null) {
 			dematerialized = dematerializedPath.target(this, distribute());
 		} else {
 			dematerialized =
-					dematerializedPath.target(this, distribute(), start);
+					dematerializedPath.target(this, distribute(), this.start);
 		}
 
 		return dematerialized.ancestor(location);
@@ -340,6 +335,9 @@ public final class PathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
+		if (this.start == null) {
+			return this.path.fieldDefinition(this, distribute());
+		}
 		return new PathTargetDefinition(this);
 	}
 

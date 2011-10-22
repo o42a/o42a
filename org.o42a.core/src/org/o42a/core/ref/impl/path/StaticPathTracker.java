@@ -17,30 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ref.impl.path;
 
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.PathWalker;
 
 
-public final class DirectiveValueType extends SingleValueType<Directive> {
+public final class StaticPathTracker extends SimplePathTracker {
 
-	public static final DirectiveValueType INSTANCE = new DirectiveValueType();
+	private int beforeStart;
 
-	private DirectiveValueType() {
-		super("directive");
+	public StaticPathTracker(
+			BoundPath path,
+			PathResolver resolver,
+			PathWalker walker,
+			int startIndex) {
+		super(path, resolver, walker);
+		this.beforeStart = startIndex;
 	}
 
 	@Override
-	public SingleValueStruct<Directive> struct() {
-		return ValueStruct.DIRECTIVE;
+	public PathResolver nextResolver() {
+		if (this.beforeStart > 0) {
+			return this.initialResolver.resolveBy(dummyUser());
+		}
+		return super.nextResolver();
 	}
 
 	@Override
-	public Path path(Intrinsics intrinsics) {
-		return Path.ROOT_PATH.append(
-				intrinsics.getDirective().getScope().toField().getKey());
+	protected boolean walk(boolean succeed) {
+		--this.beforeStart;
+		return super.walk(succeed);
 	}
 
 }

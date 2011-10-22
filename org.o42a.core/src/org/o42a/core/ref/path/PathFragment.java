@@ -17,30 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ref.path;
 
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ref.impl.path.PathFragmentStep;
 
 
-public final class DirectiveValueType extends SingleValueType<Directive> {
+public abstract class PathFragment {
 
-	public static final DirectiveValueType INSTANCE = new DirectiveValueType();
+	public abstract Path expand(PathExpander expander, int index, Scope start);
 
-	private DirectiveValueType() {
-		super("directive");
+	public final Step toStep() {
+		return new PathFragmentStep(this);
 	}
 
-	@Override
-	public SingleValueStruct<Directive> struct() {
-		return ValueStruct.DIRECTIVE;
-	}
-
-	@Override
-	public Path path(Intrinsics intrinsics) {
-		return Path.ROOT_PATH.append(
-				intrinsics.getDirective().getScope().toField().getKey());
+	public final Path toPath() {
+		return toStep().toPath();
 	}
 
 }

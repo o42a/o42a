@@ -20,6 +20,8 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
+import static org.o42a.compiler.ip.ref.RefInterpreter.parentPath;
 import static org.o42a.compiler.ip.ref.ValuePartRef.valuePartRef;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -29,7 +31,9 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.compiler.ip.ref.*;
+import org.o42a.compiler.ip.ref.MemberById;
+import org.o42a.compiler.ip.ref.MemberRef;
+import org.o42a.compiler.ip.ref.OverriddenEx;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
@@ -62,9 +66,11 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		case SELF:
 			return SELF_PATH.target(location, p);
 		case PARENT:
-			return new ParentRef(ip(), p.getContext(), ref, null, p);
+			return parentPath(ip(), location, null, p.getContainer())
+					.target(location, p);
 		case MODULE:
-			return new ModuleRef(location(p, ref), p);
+			return enclosingModulePath(p.getContainer())
+					.target(location, p);
 		case ROOT:
 			return ROOT_PATH.target(location(p, ref), p);
 		}
@@ -76,12 +82,14 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	@Override
 	public Ref visitParentRef(ParentRefNode ref, Distributor p) {
-		return new ParentRef(
+
+		final Location location = location(p, ref);
+
+		return parentPath(
 				ip(),
-				p.getContext(),
-				ref,
+				location,
 				ref.getName().getName(),
-				p);
+				p.getContainer()).target(location, p);
 	}
 
 	@Override
@@ -176,7 +184,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					location(p, ref.getName()),
 					p,
 					ip().memberName(ref.getName().getName()),
-					declaredIn));
+					declaredIn).toRef());
 		}
 
 		@Override
@@ -223,14 +231,15 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		@Override
 		public Owner visitParentRef(ParentRefNode ref, Distributor p) {
 
-			final Ref parentRef = new ParentRef(
-					ip(),
-					p.getContext(),
-					ref,
-					ref.getName().getName(),
-					p);
+			final Location location = location(p, ref);
 
-			return new Owner(parentRef, false);
+			return new Owner(
+					parentPath(
+							ip(),
+							location,
+							ref.getName().getName(),
+							p.getContainer()).target(location, p),
+					false);
 		}
 
 		@Override

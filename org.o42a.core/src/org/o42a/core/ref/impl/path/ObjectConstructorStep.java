@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -35,17 +34,17 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public final class MaterializerStep extends Step {
+public class ObjectConstructorStep extends Step {
 
-	public static final MaterializerStep MATERIALIZER_STEP =
-			new MaterializerStep();
+	private final ObjectConstructor constructor;
 
-	private MaterializerStep() {
+	public ObjectConstructorStep(ObjectConstructor constructor) {
+		this.constructor = constructor;
 	}
 
 	@Override
 	public StepKind getStepKind() {
-		return StepKind.MATERIALIZER_STEP;
+		return StepKind.ARTIFACT_STEP;
 	}
 
 	@Override
@@ -66,43 +65,44 @@ public final class MaterializerStep extends Step {
 			Scope start,
 			PathWalker walker) {
 
-		final Artifact<?> artifact = start.getArtifact();
+		final Obj object = this.constructor.resolve(start);
 
-		assert artifact != null :
-			"Can not materialize " + start;
+		if (object == null) {
+			return null;
+		}
 
-		final Obj result = artifact.materialize();
+		walker.object(this, object);
 
-		walker.materialize(artifact, this, result);
-
-		return result;
+		return object;
 	}
 
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
-		return reproducedPath(toPath());
+		this.constructor.assertCompatible(reproducer.getReproducingScope());
+
+		final ObjectConstructor reproduced =
+				this.constructor.reproduce(reproducer);
+
+		if (reproduced == null) {
+			return null;
+		}
+
+		return reproducedPath(reproduced.toPath());
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-		return start.materialize(dirs);
+		return this.constructor.write(dirs, start);
 	}
 
 	@Override
 	public String toString() {
-		return "*";
-	}
-
-	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-
-		final Step prev = rebuilder.getPreviousStep();
-
-		if (prev.isMaterial()) {
-			rebuilder.replace(prev);
+		if (this.constructor == null) {
+			return super.toString();
 		}
+		return "(" + this.constructor.toString() + ')';
 	}
 
 	@Override
@@ -110,14 +110,15 @@ public final class MaterializerStep extends Step {
 			BoundPath path,
 			LocationInfo location,
 			Distributor distributor) {
-		return path.cut(1).ancestor(location, distributor);
+		return this.constructor.ancestor(location)
+				.rescope(path.cut(1).rescoper());
 	}
 
 	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return path.cut(1).getRawPath().fieldDefinition(path, distributor);
+		return this.constructor.fieldDefinition(path, distributor);
 	}
 
 }

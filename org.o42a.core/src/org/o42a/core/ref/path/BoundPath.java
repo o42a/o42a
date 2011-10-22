@@ -28,6 +28,7 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
@@ -36,6 +37,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -92,15 +94,15 @@ public class BoundPath extends Location {
 	}
 
 	public final PathKind getKind() {
-		return getRawPath().getKind();
+		return getPath().getKind();
 	}
 
 	public final boolean isAbsolute() {
-		return getRawPath().isAbsolute();
+		return getPath().isAbsolute();
 	}
 
 	public final boolean isStatic() {
-		return getRawPath().isStatic();
+		return getPath().isStatic();
 	}
 
 	public final boolean isSelf() {
@@ -109,6 +111,52 @@ public class BoundPath extends Location {
 
 	public final Step[] getSteps() {
 		return getPath().getSteps();
+	}
+
+	public final Step[] getRawSteps() {
+		return getRawPath().getSteps();
+	}
+
+	public TypeRef ancestor(LocationInfo location, Distributor distributor) {
+
+		final Step[] steps = getRawSteps();
+
+		if (steps.length == 0) {
+			return new AncestorStep().toPath().typeRef(
+					location,
+					distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.ancestor(this, location, distributor);
+	}
+
+	public final BoundPath materialize() {
+
+		final Path rawPath = getRawPath();
+		final Path materialized = rawPath.materialize();
+
+		if (rawPath == materialized) {
+			return this;
+		}
+
+		if (this.origin != null) {
+			return materialized.bind(this, this.origin);
+		}
+
+		return materialized.bind(this, this.deferredOrigin);
+	}
+
+	public final BoundPath cut(int stepsToCut) {
+
+		final Path newPath = getRawPath().cut(stepsToCut);
+
+		if (this.origin != null) {
+			return newPath.bind(this, this.origin);
+		}
+
+		return newPath.bind(this, this.deferredOrigin);
 	}
 
 	public final PathResolution resolve(
@@ -121,11 +169,11 @@ public class BoundPath extends Location {
 			PathResolver resolver,
 			Scope start,
 			PathWalker walker) {
-		return walkPath(getPath(), resolver, start, walker);
+		return walkPath(getPath(), resolver, start, walker, false);
 	}
 
 	public Rescoper rescoper() {
-		if (!isStatic() && getSteps().length == 0) {
+		if (!getRawPath().isStatic() && getRawSteps().length == 0) {
 			return transparentRescoper(getOrigin());
 		}
 		return new PathRescoper(this);
@@ -136,7 +184,7 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath toStatic() {
-		if (isStatic()) {
+		if (getRawPath().isStatic()) {
 			return this;
 		}
 
@@ -187,7 +235,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getRawPath().getSteps().length);
+		return toString(getRawSteps().length);
 	}
 
 	public String toString(int length) {
@@ -200,23 +248,33 @@ public class BoundPath extends Location {
 			Path path,
 			PathResolver resolver,
 			Scope start,
-			PathWalker walker) {
+			PathWalker walker,
+			boolean expand) {
+		this.path = path;
 
 		final Scope startFrom;
 		final PathTracker tracker;
 
-		if (path.isAbsolute()) {
-			startFrom = start.getContext().getRoot().getScope();
+		if (isAbsolute()) {
+			startFrom = root(start);
 			if (!walker.root(this, startFrom)) {
 				return null;
 			}
-			if (resolver.toUser().isDummy()) {
-				tracker = new PathTracker(resolver, walker);
+			if (expand) {
+				tracker = new PathRecorder(
+						this,
+						resolver,
+						walker,
+						startFrom,
+						true);
+			} else if (resolver.toUser().isDummy()) {
+				tracker = new SimplePathTracker(this, resolver, walker);
 			} else {
-				tracker = new AbsolutePathTracker(
-					resolver,
-					walker,
-					startIndex(start.getContext()));
+				tracker = new StaticPathTracker(
+						this,
+						resolver,
+						walker,
+						startIndex(start.getContext()));
 			}
 		} else {
 			startFrom = start;
@@ -224,15 +282,88 @@ public class BoundPath extends Location {
 			if (!walker.start(this, startFrom)) {
 				return null;
 			}
-			tracker = new PathTracker(resolver, walker);
+			if (expand) {
+				tracker = new PathRecorder(
+						this,
+						resolver,
+						walker,
+						startFrom,
+						false);
+			} else if (!isStatic() || resolver.toUser().isDummy()) {
+				tracker = new SimplePathTracker(this, resolver, walker);
+			} else {
+				tracker = new StaticPathTracker(
+						this,
+						resolver,
+						walker,
+						startIndex(start.getContext()));
+			}
 		}
 
-		final Step[] steps = path.getSteps();
+		Step[] steps = this.path.getSteps();
 		Container result = startFrom.getContainer();
 		Scope prev = startFrom;
+		int i = 0;
 
-		for (int i = 0; i < steps.length; ++i) {
-			result = steps[i].resolve(
+		while (i < steps.length) {
+
+			final Step step = steps[i];
+			final PathFragment fragment = step.getPathFragment();
+
+			if (fragment != null) {
+				// Build path fragment and replace current step with it.
+
+				final Path replacement = fragment.expand(tracker, i, prev);
+
+				if (replacement == null) {
+					// Error occurred.
+					steps = ArrayUtil.replace(
+							steps,
+							i,
+							steps.length,
+							new Step[] {ErrorStep.ERROR_STEP});
+					this.path = new Path(
+							this.path.getKind(),
+							this.path.isStatic(),
+							steps);
+					tracker.abortedAt(prev, step);
+					return null;
+				}
+
+				final Step[] replacementSteps = replacement.getSteps();
+
+				if (replacement.isAbsolute()) {
+					// Replacement is an absolute path.
+					// Replace all steps from the very first to the current
+					// one.
+					steps = ArrayUtil.replace(
+							steps,
+							0,
+							i + 1,
+							replacementSteps);
+					this.path =
+							new Path(PathKind.ABSOLUTE_PATH, true, steps);
+					// Continue from the ROOT.
+					prev = root(start);
+					i = 0;
+					tracker.setAbsolute(prev);
+				} else {
+					// Replacement is a relative path.
+					// Replace the current step.
+					steps = ArrayUtil.replace(
+							steps,
+							i,
+							i + 1,
+							replacementSteps);
+					this.path = new Path(
+							this.path.getKind(),
+							this.path.isStatic() || replacement.isStatic(),
+							steps);
+				}
+				// Do not change the current index.
+				continue;
+			}
+			result = step.resolve(
 					tracker.nextResolver(),
 					this,
 					i,
@@ -242,9 +373,10 @@ public class BoundPath extends Location {
 				return NO_PATH_RESOLUTION;
 			}
 			if (result == null) {
-				tracker.abortedAt(prev, steps[i]);
+				tracker.abortedAt(prev, step);
 				return PATH_RESOLUTION_ERROR;
 			}
+			++i;
 			prev = result.getScope();
 		}
 
@@ -253,6 +385,10 @@ public class BoundPath extends Location {
 		}
 
 		return pathResolution(this, result);
+	}
+
+	private final Scope root(Scope start) {
+		return start.getContext().getRoot().getScope();
 	}
 
 	private int startIndex(CompilerContext context) {
@@ -284,14 +420,14 @@ public class BoundPath extends Location {
 		final Path rawPath = getRawPath();
 		final Step[] rawSteps = rawPath.getSteps();
 
-		if (rawSteps.length <= 1) {
+		if (rawSteps.length == 0) {
 			return rawPath;
 		}
 
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(rawPath.getKind(), isStatic(), steps);
+			return new Path(getKind(), isStatic(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -300,56 +436,29 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(rawPath.getKind(), isStatic(), rebuilt);
+		return new Path(getKind(), isStatic(), rebuilt);
 	}
 
 	private Step[] removeOddFragments() {
 
 		final OddPathFragmentRemover remover =
-				new OddPathFragmentRemover(getRawPath());
+				new OddPathFragmentRemover(this);
 
 		walkPath(
 				getRawPath(),
 				pathResolver(dummyUser()),
 				getOrigin(),
-				remover);
+				remover,
+				true);
 
 		return remover.removeOddFragments();
 	}
 
-	private static Step[] rebuild(Step[] steps) {
-
-		final Step[] rebuiltSteps = new Step[steps.length];
-		Step prev = rebuiltSteps[0] = steps[0];
-		int nextIdx = 1;
-		int rebuiltIdx = 0;
-
-		for (;;) {
-
-			final Step next = steps[nextIdx];
-			final Step rebuilt = next.rebuild(prev);
-
-			if (rebuilt != null) {
-				rebuiltSteps[rebuiltIdx] = prev = rebuilt;
-				if (++nextIdx >= steps.length) {
-					break;
-				}
-				continue;
-			}
-
-			rebuiltSteps[++rebuiltIdx] = prev = next;
-			if (++nextIdx >= steps.length) {
-				break;
-			}
-		}
-
-		final int rebuiltLen = rebuiltIdx + 1;
-
-		if (rebuiltLen == steps.length) {
+	private Step[] rebuild(Step[] steps) {
+		if (steps.length <= 1) {
 			return steps;
 		}
-
-		return rebuild(ArrayUtil.clip(rebuiltSteps, rebuiltLen));
+		return new PathRebuilder(this, steps).rebuild();
 	}
 
 }

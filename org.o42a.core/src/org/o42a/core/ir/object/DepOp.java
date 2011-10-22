@@ -26,14 +26,12 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.DepIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
 
@@ -69,7 +67,7 @@ public class DepOp extends IROp implements HostOp {
 	@Override
 	public ObjectOp toObject(CodeDirs dirs) {
 
-		final Artifact<?> target = getDep().getTarget();
+		final Artifact<?> target = getDep().getDepTarget();
 		final Obj object = target.toObject();
 
 		if (object == null) {
@@ -98,7 +96,7 @@ public class DepOp extends IROp implements HostOp {
 	public ObjectOp materialize(CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final Artifact<?> target = getDep().getTarget();
+		final Artifact<?> target = getDep().getDepTarget();
 
 		return anonymousObject(
 				getBuilder(),
@@ -127,12 +125,6 @@ public class DepOp extends IROp implements HostOp {
 		final Code code = dirs.code();
 
 		switch (getDep().getDepKind()) {
-		case FIELD_DEP:
-
-			final Field<?> depField = getDep().getDepField();
-			final LclOp field = builder.host().field(dirs, depField.getKey());
-
-			return field.materialize(dirs).toData(code);
 		case ENCLOSING_OWNER_DEP:
 			return builder.owner().toData(code);
 		case REF_DEP:

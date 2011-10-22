@@ -29,7 +29,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.BoundPath;
@@ -155,14 +154,6 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		this.owner = false;
-		this.enclosed = false;
-		this.inheritant = false;
-		return true;
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		this.owner = false;
 		this.enclosed = false;
@@ -176,6 +167,17 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 			return true;
 		}
 		updateDeclaration(artifact.getContainer(), result);
+		this.enclosed = false;
+		this.inheritant = false;
+		return true;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		this.owner = false;
+		this.declaration &=
+				object.getContext().declarationsVisibleFrom(
+						object.getContext());
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;

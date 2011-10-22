@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -25,76 +25,63 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 
 
-public final class DummyPathWalker implements PathWalker {
+public class SimplePathTracker extends PathTracker {
 
-	public static final DummyPathWalker INSTANCE = new DummyPathWalker();
-
-	private DummyPathWalker() {
-	}
-
-	@Override
-	public boolean root(BoundPath path, Scope start) {
-		return true;
-	}
-
-	@Override
-	public boolean start(BoundPath path, Scope start) {
-		return true;
+	public SimplePathTracker(
+			BoundPath path,
+			PathResolver resolver,
+			PathWalker walker) {
+		super(path, resolver, walker);
 	}
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return true;
+		return walk(walker().module(step, module));
 	}
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return true;
+		return walk(walker().staticScope(step, scope));
 	}
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
-		return true;
+		return walk(walker().up(enclosed, step, enclosing));
 	}
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
-		return true;
+		return walk(walker().member(container, step, member));
 	}
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return true;
+		return walk(walker().arrayElement(array, step, element));
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return true;
+		return walk(walker().refDep(object, step, dependency));
 	}
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return true;
+		return walk(walker().materialize(artifact, step, result));
 	}
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		return true;
-	}
-
-	@Override
-	public void abortedAt(Scope last, Step brokenStep) {
+		return walk(walker().object(step, object));
 	}
 
 	@Override
 	public boolean done(Container result) {
-		return true;
+		return walk(walker().done(result));
 	}
 
 }

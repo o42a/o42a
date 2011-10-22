@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,33 +19,28 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public final class MaterializerStep extends Step {
+public final class PathFragmentStep extends Step {
 
-	public static final MaterializerStep MATERIALIZER_STEP =
-			new MaterializerStep();
+	private final PathFragment fragment;
 
-	private MaterializerStep() {
+	public PathFragmentStep(PathFragment fragment) {
+		this.fragment = fragment;
 	}
 
 	@Override
 	public StepKind getStepKind() {
-		return StepKind.MATERIALIZER_STEP;
+		return StepKind.FRAGMENT_STEP;
 	}
 
 	@Override
@@ -55,7 +50,7 @@ public final class MaterializerStep extends Step {
 
 	@Override
 	public boolean isMaterial() {
-		return true;
+		return false;
 	}
 
 	@Override
@@ -65,59 +60,44 @@ public final class MaterializerStep extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-
-		final Artifact<?> artifact = start.getArtifact();
-
-		assert artifact != null :
-			"Can not materialize " + start;
-
-		final Obj result = artifact.materialize();
-
-		walker.materialize(artifact, this, result);
-
-		return result;
+		throw unresolved();
 	}
 
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			Reproducer reproducer) {
-		return reproducedPath(toPath());
+		throw unresolved();
 	}
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp start) {
-		return start.materialize(dirs);
+		throw unresolved();
 	}
 
 	@Override
 	public String toString() {
-		return "*";
-	}
-
-	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-
-		final Step prev = rebuilder.getPreviousStep();
-
-		if (prev.isMaterial()) {
-			rebuilder.replace(prev);
+		if (this.fragment == null) {
+			return "(?)";
 		}
+		return '(' + this.fragment.toString() + ')';
 	}
 
 	@Override
-	protected TypeRef ancestor(
-			BoundPath path,
-			LocationInfo location,
-			Distributor distributor) {
-		return path.cut(1).ancestor(location, distributor);
+	protected PathFragment getPathFragment() {
+		return this.fragment;
 	}
 
 	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return path.cut(1).getRawPath().fieldDefinition(path, distributor);
+		return new PathFragmentFieldDefinition(path, distributor);
+	}
+
+	private IllegalStateException unresolved() {
+		return new IllegalStateException(
+				"Path fragment not resolved yet: " + this);
 	}
 
 }

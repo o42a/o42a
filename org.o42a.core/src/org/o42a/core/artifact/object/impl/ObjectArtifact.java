@@ -23,7 +23,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
 
@@ -45,8 +44,6 @@ public abstract class ObjectArtifact extends Artifact<Obj> {
 	protected ObjectArtifact(ArtifactScope<Obj> scope, Obj sample) {
 		super(scope, sample);
 	}
-
-	protected abstract Dep addFieldDep(MemberKey memberKey);
 
 	protected abstract Dep addEnclosingOwnerDep(Obj owner);
 

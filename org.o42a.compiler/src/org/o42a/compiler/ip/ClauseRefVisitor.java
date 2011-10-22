@@ -21,12 +21,15 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.clauseObjectPath;
+import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.compiler.ip.ref.ClauseObjectRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.Location;
 
 
 final class ClauseRefVisitor extends RefVisitor {
@@ -39,7 +42,15 @@ final class ClauseRefVisitor extends RefVisitor {
 
 	@Override
 	protected Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
-		return new ClauseObjectRef(location(p, ref), p);
+
+		final Location location = location(p, ref);
+		final Path path = clauseObjectPath(location, p.getScope());
+
+		if (path == null) {
+			return errorRef(location, p);
+		}
+
+		return path.target(location, p);
 	}
 
 	@Override

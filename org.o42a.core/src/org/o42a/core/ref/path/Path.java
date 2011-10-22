@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.impl.path.MaterializerStep.MATERIALIZER_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
@@ -32,10 +32,14 @@ import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.Deferred;
 
@@ -72,12 +76,8 @@ public final class Path {
 		return new Path(ABSOLUTE_PATH, true, new ModuleStep(moduleId));
 	}
 
-	public static Path memberPath(MemberKey memberKey) {
-		return new Path(RELATIVE_PATH, false, new MemberStep(memberKey));
-	}
-
 	public static Path materializePath() {
-		return new Path(RELATIVE_PATH, false, MATERIALIZE);
+		return new Path(RELATIVE_PATH, false, MATERIALIZER_STEP);
 	}
 
 	private final PathKind kind;
@@ -126,12 +126,19 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public Path append(MemberKey memberKey) {
+	public final Path append(MemberKey memberKey) {
 		assert memberKey != null :
 			"Member key not specified";
 		return append(new MemberStep(memberKey));
 	}
 
+	public final Path append(PathFragment fragment) {
+		assert fragment != null :
+			"Path fragment not specified";
+		return append(new PathFragmentStep(fragment));
+	}
+
+	@Deprecated
 	public Path cutArtifact() {
 
 		final Step[] steps = dematerialize().getSteps();
@@ -165,15 +172,15 @@ public final class Path {
 		}
 
 		final Step lastStep = this.steps[length - 1];
-		final Step materializer = lastStep.materialize();
 
-		if (materializer == null) {
+		if (lastStep.isMaterial()) {
 			return this;
 		}
 
-		return append(materializer);
+		return append(MATERIALIZER_STEP);
 	}
 
+	@Deprecated
 	public Path dematerialize() {
 
 		final int length = this.steps.length;
@@ -197,8 +204,20 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public Path arrayItem(Ref indexRef) {
+	public final Path cut(int stepsToCut) {
+
+		final Step[] newSteps =
+				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
+
+		return new Path(getKind(), isStatic(), newSteps);
+	}
+
+	public final Path arrayItem(Ref indexRef) {
 		return append(new ArrayElementStep(indexRef));
+	}
+
+	public final Path newObject(ObjectConstructor constructor) {
+		return append(constructor.toStep());
 	}
 
 	public Path append(Path path) {
@@ -214,7 +233,7 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public Ref target(
+	public final Ref target(
 			LocationInfo location,
 			Distributor distributor,
 			Ref start) {
@@ -227,8 +246,34 @@ public final class Path {
 		return getKind().target(location, distributor, this, start);
 	}
 
-	public Ref target(LocationInfo location, Distributor distributor) {
-		return new PathTarget(location, distributor, this, null);
+	public final Ref target(LocationInfo location, Distributor distributor) {
+		return getKind().target(location, distributor, this, null);
+	}
+
+	public final TypeRef typeRef(
+			LocationInfo location,
+			Distributor distributor) {
+		return target(location, distributor).toTypeRef();
+	}
+
+	public final TypeRef typeRef(
+			LocationInfo location,
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(location, distributor).toTypeRef(valueStructFinder);
+	}
+
+	public final StaticTypeRef staticTypeRef(
+			LocationInfo location,
+			Distributor distributor) {
+		return target(location, distributor).toStaticTypeRef();
+	}
+
+	public final StaticTypeRef staticTypeRef(
+			LocationInfo location,
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(location, distributor).toStaticTypeRef(valueStructFinder);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -263,6 +308,26 @@ public final class Path {
 		return new Path(getKind(), true, steps).bind(location, origin);
 	}
 
+	public final FieldDefinition fieldDefinition(
+			LocationInfo location,
+			Distributor distributor) {
+
+		final BoundPath bound = bind(location, distributor.getScope());
+		final Step[] steps = getSteps();
+
+		if (steps.length == 0) {
+			if (isAbsolute()) {
+				return new ObjectFieldDefinition(bound, distributor);
+			}
+			return new PathFieldDefinition(bound, distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.fieldDefinition(bound, distributor);
+	}
+
+	@Deprecated
 	public Path rebuildWithRef(Ref followingRef) {
 
 		final Path path = followingRef.getPath();

@@ -33,7 +33,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.clause.ReusedClause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.BoundPath;
@@ -173,18 +172,21 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return invalidClauseReused();
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return invalidClauseReused();
 	}
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
+		if (artifact.toObject().toClause() != null) {
+			return true;
+		}
 		return invalidClauseReused();
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		return notClause();
 	}
 
 	@Override

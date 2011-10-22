@@ -22,11 +22,13 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -45,8 +47,8 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -59,7 +61,7 @@ public class VoidStep extends Step {
 
 		final Obj voidObject = start.getContext().getVoid();
 
-		walker.staticScope(this, voidObject.getScope());
+		walker.object(this, voidObject);
 
 		return voidObject;
 	}
@@ -67,8 +69,7 @@ public class VoidStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 
@@ -85,6 +86,13 @@ public class VoidStep extends Step {
 	@Override
 	public String toString() {
 		return "VOID";
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
 	}
 
 }

@@ -20,21 +20,22 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.MaterializerStep;
+import org.o42a.core.ref.impl.path.AncestorStep;
+import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
+import org.o42a.core.ref.impl.path.PathFieldDefinition;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
 public abstract class Step {
-
-	public static final MaterializerStep MATERIALIZE =
-			MaterializerStep.INSTANCE;
 
 	public abstract StepKind getStepKind();
 
@@ -44,7 +45,7 @@ public abstract class Step {
 		return null;
 	}
 
-	public abstract Step materialize();
+	public abstract boolean isMaterial();
 
 	public abstract Container resolve(
 			PathResolver resolver,
@@ -55,20 +56,7 @@ public abstract class Step {
 
 	public abstract PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope);
-
-	public Step combineWithMember(MemberKey memberKey) {
-		return null;
-	}
-
-	public Step combineWithLocalOwner(Obj owner) {
-		return null;
-	}
-
-	public Step combineWithRef(Ref ref) {
-		return null;
-	}
+			Reproducer reproducer);
 
 	public final Path toPath() {
 		return new Path(
@@ -84,8 +72,48 @@ public abstract class Step {
 		return getClass().getSimpleName();
 	}
 
-	protected Step rebuild(Step prev) {
+	protected PathFragment getPathFragment() {
 		return null;
+	}
+
+	protected void rebuild(PathRebuilder rebuilder) {
+	}
+
+	protected void combineWith(PathRebuilder rebuilder, Step next) {
+	}
+
+	protected void combineWithLocalOwner(
+			PathRebuilder rebuilder,
+			Obj owner) {
+	}
+
+	@Deprecated
+	protected Step combineWithRef(Ref ref) {
+		return null;
+	}
+
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return path.getRawPath().append(new AncestorStep())
+				.typeRef(location, distributor);
+	}
+
+	protected abstract FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor);
+
+	protected final FieldDefinition defaultFieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new PathFieldDefinition(path, distributor);
+	}
+
+	protected final FieldDefinition objectFieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ObjectFieldDefinition(path, distributor);
 	}
 
 }
