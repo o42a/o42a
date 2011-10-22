@@ -122,6 +122,10 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		return type != null ? type.getObject() : null;
 	}
 
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
 	public abstract ValueStruct<?, ?> getValueStruct();
 
 	public abstract TypeRef setValueStruct(ValueStructFinder valueStructFinder);

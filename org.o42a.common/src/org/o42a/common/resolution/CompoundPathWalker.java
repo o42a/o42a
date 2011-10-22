@@ -80,6 +80,18 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
+	public boolean skip(Step step, Scope scope) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.skip(step, scope) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
 	public boolean staticScope(Step step, Scope scope) {
 
 		boolean proceed = true;
