@@ -27,7 +27,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -93,11 +92,6 @@ public class OddPathFragmentRemover implements PathWalker {
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
 		return enter(step, array.getScope());
-	}
-
-	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return skip(step);
 	}
 
 	@Override

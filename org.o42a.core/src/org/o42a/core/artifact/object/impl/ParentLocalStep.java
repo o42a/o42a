@@ -123,10 +123,13 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public void combineWithMember(
-			PathRebuilder rebuilder,
-			MemberKey memberKey) {
-		rebuilder.replace(object().addFieldDep(memberKey));
+	protected void combineWith(PathRebuilder rebuilder, Step next) {
+
+		final Ref ref = rebuilder.restPath().target(
+				rebuilder,
+				this.object.distributeIn(this.object.getEnclosingContainer()));
+
+		rebuilder.replaceRest(object().addRefDep(ref));
 	}
 
 	@Override
@@ -134,18 +137,6 @@ public final class ParentLocalStep extends Step {
 			PathRebuilder rebuilder,
 			Obj owner) {
 		rebuilder.replace(object().addEnclosingOwnerDep(owner));
-	}
-
-	@Override
-	public void combineWithObjectConstructor(
-			PathRebuilder rebuilder,
-			ObjectConstructor constructor) {
-
-		final Ref ref = rebuilder.restPath().target(
-				constructor,
-				constructor.distribute());
-
-		rebuilder.replaceRest(object().addRefDep(ref));
 	}
 
 	@Override

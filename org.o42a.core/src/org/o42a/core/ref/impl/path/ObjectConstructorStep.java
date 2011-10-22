@@ -106,11 +106,6 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-		rebuilder.combineWithObjectConstructor(this.constructor);
-	}
-
-	@Override
 	protected TypeRef ancestor(
 			BoundPath path,
 			LocationInfo location,

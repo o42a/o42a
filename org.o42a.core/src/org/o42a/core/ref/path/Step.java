@@ -25,7 +25,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.AncestorStep;
@@ -80,19 +79,12 @@ public abstract class Step {
 	protected void rebuild(PathRebuilder rebuilder) {
 	}
 
-	protected void combineWithMember(
-			PathRebuilder rebuilder,
-			MemberKey memberKey) {
+	protected void combineWith(PathRebuilder rebuilder, Step next) {
 	}
 
 	protected void combineWithLocalOwner(
 			PathRebuilder rebuilder,
 			Obj owner) {
-	}
-
-	protected void combineWithObjectConstructor(
-			PathRebuilder rebuilder,
-			ObjectConstructor constructor) {
 	}
 
 	@Deprecated

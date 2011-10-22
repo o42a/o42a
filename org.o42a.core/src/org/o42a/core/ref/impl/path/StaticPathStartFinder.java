@@ -96,14 +96,6 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(
-			Obj object,
-			Step step,
-			Field<?> dependency) {
-		return unreachable();
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return unreachable();
 	}
