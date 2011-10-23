@@ -25,8 +25,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class ConstantObject<T> extends Obj {
@@ -36,11 +36,11 @@ public final class ConstantObject<T> extends Obj {
 	public ConstantObject(
 			LocationInfo location,
 			Distributor enclosing,
-			ValueStruct<?, T> valueStruct,
+			SingleValueType<T> valueType,
 			T value) {
 		super(location, enclosing);
-		setValueStruct(valueStruct);
-		this.value = valueStruct.constantValue(value);
+		setValueStruct(valueType.struct());
+		this.value = valueType.constantValue(value);
 	}
 
 	public final Value<T> getValue() {

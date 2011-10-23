@@ -27,10 +27,13 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 
 
 public class ObjectConstructorStep extends Step {
@@ -73,6 +76,13 @@ public class ObjectConstructorStep extends Step {
 		walker.object(this, object);
 
 		return object;
+	}
+
+	@Override
+	public ValueAdapter valueAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct) {
+		return this.constructor.valueAdapter(ref, expectedStruct);
 	}
 
 	@Override

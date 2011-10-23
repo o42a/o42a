@@ -30,7 +30,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public final class ArrayItem extends ArrayElement {
@@ -42,7 +42,7 @@ public final class ArrayItem extends ArrayElement {
 		super(
 				valueRef,
 				valueRef.distribute(),
-				ValueStruct.INTEGER.constantRef(
+				ValueType.INTEGER.constantRef(
 						valueRef,
 						valueRef.distribute(),
 						Long.valueOf(index)));
