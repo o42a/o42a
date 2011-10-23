@@ -174,7 +174,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final Path path = getScope().getEnclosingScopePath();
 
-		return this.string = path.target(this, distribute());
+		return this.string = path.bind(this, getScope()).target(distribute());
 	}
 
 	private Ref from() {
@@ -184,7 +184,8 @@ final class SubString extends AnnotatedBuiltin {
 
 		final MemberKey fromKey = field("from", Accessor.DECLARATION).getKey();
 
-		return this.from = fromKey.toPath().target(this, distribute());
+		return this.from =
+				fromKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
 	private Ref to() {
@@ -194,7 +195,8 @@ final class SubString extends AnnotatedBuiltin {
 
 		final MemberKey toKey = field("to", Accessor.DECLARATION).getKey();
 
-		return this.to = toKey.toPath().target(this, distribute());
+		return this.to =
+				toKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
 }

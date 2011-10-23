@@ -25,6 +25,8 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -44,19 +46,8 @@ public final class AbsolutePathTarget extends Ref {
 
 	private final BoundPath path;
 
-	public AbsolutePathTarget(
-			LocationInfo location,
-			Distributor distributor,
-			Path path) {
-		super(location, distributor);
-		this.path = path.bind(this, getScope());
-	}
-
-	private AbsolutePathTarget(
-			LocationInfo location,
-			Distributor distributor,
-			BoundPath path) {
-		super(location, distributor);
+	public AbsolutePathTarget(BoundPath path, Distributor distributor) {
+		super(path, distributor);
 		this.path = path;
 	}
 
@@ -114,7 +105,23 @@ public final class AbsolutePathTarget extends Ref {
 			return this;
 		}
 
-		return new PathTarget(this, distribute(), materialized);
+		return materialized.target(distribute());
+	}
+
+	@Override
+	public Ref rescope(Rescoper rescoper) {
+		if (rescoper instanceof UpgradeRescoper) {
+			return upgradeScope(((UpgradeRescoper) rescoper).getFinalScope());
+		}
+		if (!(rescoper instanceof PathRescoper)) {
+			return super.rescope(rescoper);
+		}
+
+		final PathRescoper pathRescoper = (PathRescoper) rescoper;
+		final BoundPath rescopePath = pathRescoper.getPath();
+
+		return rescopePath.append(this.path.getRawPath()).target(
+				distributeIn(rescoper.getFinalScope().getContainer()));
 	}
 
 	@Override
@@ -122,18 +129,12 @@ public final class AbsolutePathTarget extends Ref {
 		if (getScope() == scope) {
 			return this;
 		}
-		return new AbsolutePathTarget(
-				this,
-				distributeIn(scope.getContainer()),
-				this.path);
+		return this.path.target(distributeIn(scope.getContainer()));
 	}
 
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
-		return new AbsolutePathTarget(
-				this,
-				reproducer.distribute(),
-				this.path.getRawPath());
+		return this;
 	}
 
 	@Override
@@ -146,7 +147,7 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		return getPath().fieldDefinition(this, distribute());
+		return this.path.fieldDefinition(distribute());
 	}
 
 	@Override

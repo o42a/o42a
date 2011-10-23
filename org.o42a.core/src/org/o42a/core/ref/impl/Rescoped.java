@@ -65,6 +65,10 @@ public final class Rescoped extends Ref {
 		return getResolution().isConstant();
 	}
 
+	public final Ref getRef() {
+		return this.ref;
+	}
+
 	public final Rescoper getRescoper() {
 		return this.rescoper;
 	}

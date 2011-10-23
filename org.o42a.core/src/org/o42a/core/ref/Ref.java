@@ -64,8 +64,9 @@ public abstract class Ref extends Statement {
 		final Field<Obj> wrapperField =
 				location.getContext().getIntrinsics().getVoidField();
 
-		return ROOT_PATH.append(
-				wrapperField.getKey()).target(location, distributor);
+		return ROOT_PATH.append(wrapperField.getKey())
+				.bind(location, distributor.getScope())
+				.target(distributor);
 	}
 
 	public static Ref falseRef(LocationInfo location, Distributor distributor) {
@@ -74,15 +75,15 @@ public abstract class Ref extends Statement {
 		final Path falsePath = ROOT_PATH.append(
 				falseObject.getScope().toMember().getKey());
 
-		return falsePath.target(location, distributor);
+		return falsePath.bind(location, distributor.getScope())
+				.target(distributor);
 	}
 
 	public static Ref errorRef(LocationInfo location, Distributor distributor) {
 		return ErrorStep.ERROR_STEP.toPath().bindStatically(
 				location,
 				distributor.getScope())
-				.getRawPath()
-				.target(location, distributor);
+				.target(distributor);
 	}
 
 	private Logical logical;
@@ -197,11 +198,9 @@ public abstract class Ref extends Statement {
 			return this;
 		}
 
-		return getPath().append(materializationPath).target(this, distribute());
-	}
-
-	public Path appendToPath(Path path) {
-		return path.rebuildWithRef(this);
+		return getPath().append(materializationPath)
+				.bind(this, getScope())
+				.target(distribute());
 	}
 
 	@Override
@@ -222,9 +221,10 @@ public abstract class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType);
 
-		return materialize().getPath().append(adapter.toPath()).target(
-				location,
-				distribute());
+		return materialize().getPath()
+				.append(adapter.toPath())
+				.bind(location, getScope())
+				.target(distribute());
 	}
 
 	public final Ref rescope(Scope toScope) {

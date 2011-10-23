@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -45,11 +46,8 @@ public final class PathTarget extends Ref {
 
 	private final BoundPath path;
 
-	public PathTarget(
-			LocationInfo location,
-			Distributor distributor,
-			BoundPath path) {
-		super(location, distributor);
+	public PathTarget(BoundPath path, Distributor distributor) {
+		super(path, distributor);
 		this.path = path;
 	}
 
@@ -107,20 +105,22 @@ public final class PathTarget extends Ref {
 			return this;
 		}
 
-		return new PathTarget(this, distribute(), materialized);
+		return materialized.target(distribute());
 	}
 
 	@Override
 	public Ref rescope(Rescoper rescoper) {
+		if (rescoper instanceof UpgradeRescoper) {
+			return upgradeScope(((UpgradeRescoper) rescoper).getFinalScope());
+		}
 		if (!(rescoper instanceof PathRescoper)) {
 			return super.rescope(rescoper);
 		}
 
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;
-		final Path rescopePath = pathRescoper.getPath().getRawPath();
+		final BoundPath rescopePath = pathRescoper.getPath();
 
 		return rescopePath.append(this.path.getRawPath()).target(
-				this,
 				distributeIn(rescoper.getFinalScope().getContainer()));
 	}
 
@@ -129,10 +129,7 @@ public final class PathTarget extends Ref {
 		if (getScope() == scope) {
 			return this;
 		}
-		return new PathTarget(
-				this,
-				distributeIn(scope.getContainer()),
-				this.path);
+		return this.path.target(distributeIn(scope.getContainer()));
 	}
 
 	@Override
@@ -140,7 +137,7 @@ public final class PathTarget extends Ref {
 		if (isKnownStatic()) {
 			return this;
 		}
-		return new PathTarget(this, distribute(), this.path.toStatic());
+		return this.path.toStatic().target(distribute());
 	}
 
 	@Override
@@ -150,7 +147,7 @@ public final class PathTarget extends Ref {
 		final BoundPath path = this.path;
 
 		if (this.path.isAbsolute()) {
-			return this.path.getPath().target(this, reproducer.distribute());
+			return this.path.target(reproducer.distribute());
 		}
 
 		final PathReproduction pathReproduction = path.reproduce(reproducer);
@@ -172,18 +169,16 @@ public final class PathTarget extends Ref {
 					reproducer.getPhrasePrefix().getPath().materialize());
 		}
 
-		final PathTarget reproducedPart = reproducePart(
-				reproducer,
-				pathReproduction.getReproducedPath());
-
 		if (!pathReproduction.isOutOfClause()) {
-			return reproducedPart;
+			return reproducePart(
+					reproducer,
+					pathReproduction.getReproducedPath());
 		}
 
 		return startWithPrefix(
 				reproducer,
 				pathReproduction,
-				reproducedPart.getPath().append(
+				pathReproduction.getReproducedPath().append(
 						reproducer.getPhrasePrefix().getPath().materialize()));
 	}
 
@@ -202,7 +197,7 @@ public final class PathTarget extends Ref {
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		return this.path.getRawPath().fieldDefinition(this, distribute());
+		return this.path.fieldDefinition(distribute());
 	}
 
 	@Override
@@ -228,11 +223,9 @@ public final class PathTarget extends Ref {
 		return resolver.path(pathResolver, this.path, resolver.getScope());
 	}
 
-	private PathTarget reproducePart(Reproducer reproducer, Path path) {
-		return new PathTarget(
-				this,
-				reproducer.distribute(),
-				path.bind(this, reproducer.getScope()));
+	private Ref reproducePart(Reproducer reproducer, Path path) {
+		return path.bind(this, reproducer.getScope()).target(
+				reproducer.distribute());
 	}
 
 	private Ref startWithPrefix(
@@ -243,12 +236,13 @@ public final class PathTarget extends Ref {
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {
-			return phrasePrefix.target(this, reproducer.distribute());
+			return phrasePrefix.bind(this, reproducer.getScope()).target(
+					reproducer.distribute());
 		}
 
-		return phrasePrefix.append(externalPath).target(
-				this,
-				reproducer.distribute());
+		return phrasePrefix.append(externalPath)
+				.bind(this, reproducer.getScope())
+				.target(reproducer.distribute());
 	}
 
 	private static final class Op extends RefOp {

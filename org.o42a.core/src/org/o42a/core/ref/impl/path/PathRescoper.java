@@ -85,15 +85,10 @@ public final class PathRescoper extends Rescoper {
 	@Override
 	public Ref rescopeRef(Ref ref) {
 
-		final Path newPath = ref.appendToPath(getPath().getRawPath());
+		final BoundPath newPath = getPath().append(ref.getPath());
 
-		if (newPath != null) {
-			return newPath.target(
-					ref,
-					ref.distributeIn(getFinalScope().getContainer()));
-		}
-
-		return super.rescopeRef(ref);
+		return newPath.target(
+				ref.distributeIn(getFinalScope().getContainer()));
 	}
 
 	@Override

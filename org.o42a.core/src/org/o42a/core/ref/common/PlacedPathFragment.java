@@ -85,11 +85,11 @@ public abstract class PlacedPathFragment
 	}
 
 	public Ref toRef() {
-		return toPath().target(this, distribute());
+		return toPath().bind(this, getScope()).target(distribute());
 	}
 
 	public TypeRef toTypeRef() {
-		return toPath().typeRef(this, distribute());
+		return toPath().bind(this, getScope()).typeRef(distribute());
 	}
 
 	@Override

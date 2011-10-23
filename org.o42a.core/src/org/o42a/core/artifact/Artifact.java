@@ -113,9 +113,10 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		if (this.self != null) {
 			return this.self;
 		}
-		return this.self = Path.SELF_PATH.bindStatically(
-				this,
-				getScope()).getPath().target(this, distribute());
+		return this.self =
+				Path.SELF_PATH
+				.bindStatically(this, getScope())
+				.target(distribute());
 	}
 
 	public boolean isAbstract() {

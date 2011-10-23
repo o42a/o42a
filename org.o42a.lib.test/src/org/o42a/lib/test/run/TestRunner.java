@@ -128,9 +128,9 @@ final class TestRunner extends Obj {
 		final Path pathFromLocal =
 				localScope.getEnclosingScopePath().append(testPath);
 
-		statements.expression(pathFromLocal.target(
-				sentence,
-				statements.nextDistributor()));
+		statements.expression(
+				pathFromLocal.bind(sentence, statements.getScope())
+				.target(statements.nextDistributor()));
 	}
 
 	private static String testName(
@@ -212,9 +212,8 @@ final class TestRunner extends Obj {
 			final Path objectPath = localScope.getEnclosingScopePath();
 			final Path testPath = objectPath.append(this.testKey);
 
-			return testPath.target(
-					location,
-					localScope.distribute()).toTypeRef();
+			return testPath.bind(location, localScope)
+					.target(localScope.distribute()).toTypeRef();
 		}
 
 		@Override

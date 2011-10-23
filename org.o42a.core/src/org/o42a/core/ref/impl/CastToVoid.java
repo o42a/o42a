@@ -85,7 +85,7 @@ final class CastToVoid extends Step {
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return path.cut(1).getRawPath().fieldDefinition(path, distributor);
+		return path.cut(1).fieldDefinition(distributor);
 	}
 
 	private static final class Op extends StepOp<CastToVoid> {

@@ -99,11 +99,6 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final Path appendToPath(Path path) {
-		return wrapped().appendToPath(path);
-	}
-
-	@Override
 	public final Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return wrapped().reproduce(reproducer);

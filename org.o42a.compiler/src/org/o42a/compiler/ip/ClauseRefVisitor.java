@@ -50,7 +50,7 @@ final class ClauseRefVisitor extends RefVisitor {
 			return errorRef(location, p);
 		}
 
-		return path.target(location, p);
+		return path.bind(location, p.getScope()).target(p);
 	}
 
 	@Override

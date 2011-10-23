@@ -71,7 +71,7 @@ public abstract class SingleValueType<T>
 				location,
 				distributor.getScope());
 
-		return path.getRawPath().target(location, distributor);
+		return path.target(distributor);
 	}
 
 	public final ValueDef constantDef(

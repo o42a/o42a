@@ -38,12 +38,17 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
@@ -70,7 +75,7 @@ public class BoundPath extends Location {
 		if (this.path != null) {
 			return this.path;
 		}
-		return this.path = rebuild();
+		return this.path = rebuildPath();
 	}
 
 	public final Path getRawPath() {
@@ -104,19 +109,36 @@ public class BoundPath extends Location {
 		return getRawPath().getSteps();
 	}
 
+	public final BoundPath rebuild() {
+		getPath();
+		return this;
+	}
+
 	public TypeRef ancestor(LocationInfo location, Distributor distributor) {
 
 		final Step[] steps = getRawSteps();
 
 		if (steps.length == 0) {
-			return new AncestorStep().toPath().typeRef(
+			return new AncestorStep().toPath().bind(
 					location,
-					distributor);
+					distributor.getScope()).typeRef(distributor);
 		}
 
 		final Step lastStep = steps[steps.length - 1];
 
 		return lastStep.ancestor(this, location, distributor);
+	}
+
+	public BoundPath append(Step step) {
+		return getRawPath().append(step).bind(this, getOrigin());
+	}
+
+	public final BoundPath append(MemberKey memberKey) {
+		return getRawPath().append(memberKey).bind(this, getOrigin());
+	}
+
+	public final BoundPath append(PathFragment fragment) {
+		return getRawPath().append(fragment).bind(this, getOrigin());
 	}
 
 	public final BoundPath materialize() {
@@ -131,11 +153,20 @@ public class BoundPath extends Location {
 		return materialized.bind(this, this.origin);
 	}
 
+	public final BoundPath arrayItem(Ref indexRef) {
+		return getRawPath().arrayItem(indexRef).bind(this, getOrigin());
+	}
+
+	public final BoundPath newObject(ObjectConstructor constructor) {
+		return getRawPath().newObject(constructor).bind(this, getOrigin());
+	}
+
+	public final BoundPath append(Path path) {
+		return getRawPath().append(path).bind(this, getOrigin());
+	}
+
 	public final BoundPath cut(int stepsToCut) {
-
-		final Path newPath = getRawPath().cut(stepsToCut);
-
-		return newPath.bind(this, this.origin);
+		return getRawPath().cut(stepsToCut).bind(this, this.origin);
 	}
 
 	public final PathResolution resolve(
@@ -149,6 +180,46 @@ public class BoundPath extends Location {
 			Scope start,
 			PathWalker walker) {
 		return walkPath(getPath(), resolver, start, walker, false);
+	}
+
+	public final Ref target(Distributor distributor) {
+		return getRawPath().getKind().target(this, distributor);
+	}
+
+	public final TypeRef typeRef(Distributor distributor) {
+		return target(distributor).toTypeRef();
+	}
+
+	public final TypeRef typeRef(
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(distributor).toTypeRef(valueStructFinder);
+	}
+
+	public final StaticTypeRef staticTypeRef(Distributor distributor) {
+		return target(distributor).toStaticTypeRef();
+	}
+
+	public final StaticTypeRef staticTypeRef(
+			Distributor distributor,
+			ValueStructFinder valueStructFinder) {
+		return target(distributor).toStaticTypeRef(valueStructFinder);
+	}
+
+	public final FieldDefinition fieldDefinition(Distributor distributor) {
+
+		final Step[] steps = getRawSteps();
+
+		if (steps.length == 0) {
+			if (isAbsolute()) {
+				return new ObjectFieldDefinition(this, distributor);
+			}
+			return new PathFieldDefinition(this, distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.fieldDefinition(this, distributor);
 	}
 
 	public Rescoper rescoper() {
@@ -390,7 +461,7 @@ public class BoundPath extends Location {
 		this.startObject = walker.getStartObject();
 	}
 
-	private Path rebuild() {
+	private Path rebuildPath() {
 
 		final Path rawPath = getRawPath();
 		final Step[] rawSteps = rawPath.getSteps();

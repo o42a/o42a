@@ -80,9 +80,9 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			LocationInfo location,
 			Scope scope,
 			ValueStructFinder valueStructFinder) {
-		return path(location.getContext().getIntrinsics()).staticTypeRef(
-				location,
-				scope.distribute(),
+		return path(location.getContext().getIntrinsics())
+				.bind(location, scope)
+				.staticTypeRef(scope.distribute(),
 				valueStructFinder);
 	}
 
