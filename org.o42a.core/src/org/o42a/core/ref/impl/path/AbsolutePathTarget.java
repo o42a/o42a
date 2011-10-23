@@ -108,14 +108,13 @@ public final class AbsolutePathTarget extends Ref {
 	@Override
 	public Ref materialize() {
 
-		final Path path = this.path.getRawPath();
-		final Path materialized = path.materialize();
+		final BoundPath materialized = this.path.materialize();
 
-		if (materialized == path) {
+		if (materialized == this.path) {
 			return this;
 		}
 
-		return new AbsolutePathTarget(this, distribute(), materialized);
+		return new PathTarget(this, distribute(), materialized);
 	}
 
 	@Override

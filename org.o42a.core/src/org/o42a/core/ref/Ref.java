@@ -185,7 +185,7 @@ public abstract class Ref extends Statement {
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
 	public TypeRef ancestor(LocationInfo location) {
-		return new AncestorRef(location, this).toTypeRef();
+		return getPath().bind(this, getScope()).ancestor(this, distribute());
 	}
 
 	public Ref materialize() {
@@ -197,7 +197,7 @@ public abstract class Ref extends Statement {
 			return this;
 		}
 
-		return materializationPath.target(this, distribute(), this);
+		return getPath().append(materializationPath).target(this, distribute());
 	}
 
 	public Path appendToPath(Path path) {
@@ -222,10 +222,9 @@ public abstract class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType);
 
-		return adapter.toPath().target(
+		return materialize().getPath().append(adapter.toPath()).target(
 				location,
-				distribute(),
-				materialize());
+				distribute());
 	}
 
 	public final Ref rescope(Scope toScope) {

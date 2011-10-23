@@ -233,21 +233,8 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public final Ref target(
-			LocationInfo location,
-			Distributor distributor,
-			Ref start) {
-		if (start == null) {
-			return target(location, distributor);
-		}
-
-		start.assertCompatibleScope(distributor);
-
-		return getKind().target(location, distributor, this, start);
-	}
-
 	public final Ref target(LocationInfo location, Distributor distributor) {
-		return getKind().target(location, distributor, this, null);
+		return getKind().target(location, distributor, this);
 	}
 
 	public final TypeRef typeRef(
