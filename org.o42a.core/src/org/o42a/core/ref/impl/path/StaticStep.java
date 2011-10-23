@@ -33,28 +33,18 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.Deferred;
 
 
 public class StaticStep extends Step {
 
-	private final Deferred<Scope> deferredScope;
-	private Scope scope;
+	private final Scope scope;
 
 	public StaticStep(Scope scope) {
-		this.deferredScope = null;
 		this.scope = scope;
 	}
 
-	public StaticStep(Deferred<Scope> deferredScope) {
-		this.deferredScope = deferredScope;
-	}
-
 	public final Scope getScope() {
-		if (this.scope != null) {
-			return this.scope;
-		}
-		return this.scope = this.deferredScope.get();
+		return this.scope;
 	}
 
 	@Override
@@ -104,10 +94,10 @@ public class StaticStep extends Step {
 
 	@Override
 	public String toString() {
-		if (this.scope != null) {
-			return '<' + this.scope.toString() + '>';
+		if (this.scope == null) {
+			return super.toString();
 		}
-		return '<' + this.deferredScope.toString() + '>';
+		return '<' + this.scope.toString() + '>';
 	}
 
 	@Override

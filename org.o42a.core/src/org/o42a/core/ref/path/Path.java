@@ -41,7 +41,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Deferred;
 
 
 public final class Path {
@@ -267,24 +266,7 @@ public final class Path {
 		return new BoundPath(location, origin, this);
 	}
 
-	public final BoundPath bind(LocationInfo location, Deferred<Scope> origin) {
-		return new BoundPath(location, origin, this);
-	}
-
 	public final BoundPath bindStatically(LocationInfo location, Scope origin) {
-		if (isStatic()) {
-			return bind(location, origin);
-		}
-
-		final Step[] steps =
-				ArrayUtil.prepend(new StaticStep(origin), getSteps());
-
-		return new Path(getKind(), true, steps).bind(location, origin);
-	}
-
-	public final BoundPath bindStatically(
-			LocationInfo location,
-			Deferred<Scope> origin) {
 		if (isStatic()) {
 			return bind(location, origin);
 		}
