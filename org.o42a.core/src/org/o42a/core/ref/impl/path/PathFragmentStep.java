@@ -91,7 +91,7 @@ public final class PathFragmentStep extends Step {
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return new PathFragmentFieldDefinition(path, distributor);
+		return this.fragment.fieldDefinition(path, distributor);
 	}
 
 	private IllegalStateException unresolved() {

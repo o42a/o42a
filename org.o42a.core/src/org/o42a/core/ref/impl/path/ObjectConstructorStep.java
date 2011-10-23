@@ -72,7 +72,9 @@ public class ObjectConstructorStep extends Step {
 		if (object == null) {
 			return null;
 		}
-
+		if (resolver.isFullResolution()) {
+			object.resolveAll();
+		}
 		walker.object(this, object);
 
 		return object;

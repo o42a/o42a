@@ -202,6 +202,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
+			phrase(distribute()).resolveAll(resolver);
 
 			final UserInfo user = resolver;
 			final Field<?> field =
