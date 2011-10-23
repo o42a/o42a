@@ -31,10 +31,11 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.MemberById;
-import org.o42a.compiler.ip.ref.MemberRef;
+import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -280,11 +281,15 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 				LocationInfo location,
 				MemberId memberId,
 				StaticTypeRef declaredIn) {
-			return wrap(new MemberRef(
+
+			final MemberOf memberOf = new MemberOf(
 					location,
-					this.owner,
+					this.owner.distribute(),
 					memberId,
-					declaredIn));
+					declaredIn);
+			final Path path = this.owner.getPath().append(memberOf);
+
+			return wrap(path.target(location, this.owner.distribute()));
 		}
 
 		@Override
