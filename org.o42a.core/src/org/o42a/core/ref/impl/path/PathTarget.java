@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
@@ -40,63 +39,28 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Deferred;
-import org.o42a.util.Holder;
 
 
 public final class PathTarget extends Ref {
 
-	private final Path path;
-	private final Ref start;
-	private BoundPath boundPath;
-	private Holder<Path> fullPath;
+	private final BoundPath path;
 
 	public PathTarget(
 			LocationInfo location,
 			Distributor distributor,
-			Path path,
-			Ref start) {
+			BoundPath path) {
 		super(location, distributor);
 		this.path = path;
-		this.start = start;
-		if (start == null) {
-			this.boundPath = path.bind(this, getScope());
-			this.fullPath = new Holder<Path>(path);
-		}
-	}
-
-	private PathTarget(
-			LocationInfo location,
-			Distributor distributor,
-			BoundPath path,
-			Ref start) {
-		super(location, distributor);
-		this.path = path.getRawPath();
-		this.start = start;
-		this.boundPath = path;
-		if (start == null) {
-			this.fullPath = new Holder<Path>(this.path);
-		}
-	}
-
-	public final Ref getStart() {
-		return this.start;
 	}
 
 	@Override
 	public boolean isKnownStatic() {
-		if (this.path.isStatic()) {
-			return true;
-		}
-		return this.start != null && this.start.isKnownStatic();
+		return this.path.getRawPath().isStatic();
 	}
 
 	@Override
 	public boolean isStatic() {
-		if (this.path.isStatic()) {
-			return true;
-		}
-		return this.start != null && this.start.isKnownStatic();
+		return this.path.isStatic();
 	}
 
 	@Override
@@ -106,22 +70,7 @@ public final class PathTarget extends Ref {
 
 	@Override
 	public Path getPath() {
-		if (this.fullPath != null) {
-			return this.fullPath.get();
-		}
-
-		final Path startPath = this.start.getPath();
-
-		if (startPath == null) {
-			this.fullPath = new Holder<Path>(null);
-			return null;
-		}
-
-		final Path fullPath = startPath.append(this.path);
-
-		this.fullPath = new Holder<Path>(fullPath);
-
-		return fullPath;
+		return this.path.getRawPath();
 	}
 
 	@Override
@@ -133,7 +82,7 @@ public final class PathTarget extends Ref {
 	@Override
 	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
 
-		final Step[] steps = getBoundPath().getSteps();
+		final Step[] steps = this.path.getSteps();
 
 		if (steps.length == 0) {
 			return super.valueAdapter(expectedStruct);
@@ -146,94 +95,23 @@ public final class PathTarget extends Ref {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-
-		final Resolution resolution = getResolution();
-
-		if (resolution.isError()) {
-			return errorRef(this, distribute()).toTypeRef();
-		}
-
-		final Artifact<?> artifact = resolution.toArtifact();
-
-		if (artifact == null) {
-			getLogger().notArtifact(resolution);
-			return errorRef(this, distribute()).toTypeRef();
-		}
-
-		final Path fullPath = getPath();
-
-		if (fullPath != null) {
-			return getBoundPath().ancestor(location, distribute());
-		}
-
-		final Path path = getBoundPath().getPath();
-		final Path upPath = path.cutArtifact();
-
-		if (upPath != path) {
-
-			final TypeRef ancestor;
-			final TypeRef typeRef = artifact.getTypeRef();
-
-			if (typeRef != null) {
-				ancestor = typeRef;
-			} else {
-				ancestor = artifact.materialize().type().getAncestor();
-			}
-
-			return ancestor.rescope(pathRescoper(this.start, upPath));
-		}
-
-		final Path dematerializedPath = path.dematerialize();
-
-		if (path == dematerializedPath) {
-			return super.ancestor(location);
-		}
-
-		final Ref dematerialized;
-
-		if (this.start == null) {
-			dematerialized = dematerializedPath.target(this, distribute());
-		} else {
-			dematerialized =
-					dematerializedPath.target(this, distribute(), this.start);
-		}
-
-		return dematerialized.ancestor(location);
+		return this.path.ancestor(location, distribute());
 	}
 
 	@Override
 	public Ref materialize() {
 
-		final Path fullPath = getPath();
-		final Path path;
-		final Ref start;
+		final BoundPath materialized = this.path.materialize();
 
-		if (fullPath != null) {
-			path = fullPath;
-			start = null;
-		} else {
-			path = this.path;
-			start = this.start;
-		}
-
-		final Path materialized = path.materialize();
-
-		if (materialized == path) {
+		if (materialized == this.path) {
 			return this;
 		}
 
-		return new PathTarget(this, distribute(), materialized, start);
+		return new PathTarget(this, distribute(), materialized);
 	}
 
 	@Override
 	public Ref rescope(Rescoper rescoper) {
-		if (this.start != null) {
-			return this.path.target(
-					this,
-					distributeIn(rescoper.getFinalScope().getContainer()),
-					this.start.rescope(rescoper));
-		}
-
 		if (!(rescoper instanceof PathRescoper)) {
 			return super.rescope(rescoper);
 		}
@@ -241,7 +119,7 @@ public final class PathTarget extends Ref {
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;
 		final Path rescopePath = pathRescoper.getPath().getRawPath();
 
-		return rescopePath.append(this.path).target(
+		return rescopePath.append(this.path.getRawPath()).target(
 				this,
 				distributeIn(rescoper.getFinalScope().getContainer()));
 	}
@@ -251,14 +129,10 @@ public final class PathTarget extends Ref {
 		if (getScope() == scope) {
 			return this;
 		}
-		if (this.start != null) {
-			return super.upgradeScope(scope);
-		}
 		return new PathTarget(
 				this,
 				distributeIn(scope.getContainer()),
-				getBoundPath(),
-				null);
+				this.path);
 	}
 
 	@Override
@@ -266,38 +140,17 @@ public final class PathTarget extends Ref {
 		if (isKnownStatic()) {
 			return this;
 		}
-		if (this.boundPath != null) {
-			return new PathTarget(
-					this,
-					distribute(),
-					this.boundPath.toStatic(),
-					getStart());
-		}
-
-		final BoundPath staticPath =
-				this.path.bindStatically(this, new PathStart());
-
-		return new PathTarget(
-				this,
-				distribute(),
-				staticPath.getRawPath(),
-				getStart());
+		return new PathTarget(this, distribute(), this.path.toStatic());
 	}
 
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Path fullPath = getPath();
-		final Ref start;
-		final BoundPath path = getBoundPath();
+		final BoundPath path = this.path;
 
-		if (fullPath == null) {
-			start = this.start;
-		} else if (fullPath.isAbsolute()) {
-			return fullPath.target(this, reproducer.distribute());
-		} else {
-			start = null;
+		if (this.path.isAbsolute()) {
+			return this.path.getPath().target(this, reproducer.distribute());
 		}
 
 		final PathReproduction pathReproduction = path.reproduce(reproducer);
@@ -309,36 +162,34 @@ public final class PathTarget extends Ref {
 			if (!reproducer.isTopLevel()) {
 				return reproducePart(
 						reproducer,
-						start,
 						pathReproduction.getExternalPath());
 			}
 			// Top-level reproducer`s scope is not compatible with path
 			// and requires rescoping.
-			return startrWithPrefix(
+			return startWithPrefix(
 					reproducer,
 					pathReproduction,
-					reproducer.getPhrasePrefix().materialize());
+					reproducer.getPhrasePrefix().getPath().materialize());
 		}
 
 		final PathTarget reproducedPart = reproducePart(
 				reproducer,
-				start,
 				pathReproduction.getReproducedPath());
 
 		if (!pathReproduction.isOutOfClause()) {
 			return reproducedPart;
 		}
 
-		return startrWithPrefix(
+		return startWithPrefix(
 				reproducer,
 				pathReproduction,
-				reproducer.getPhrasePrefix().materialize().rescope(
-						reproducedPart.toRescoper()));
+				reproducedPart.getPath().append(
+						reproducer.getPhrasePrefix().getPath().materialize()));
 	}
 
 	@Override
 	public Rescoper toRescoper() {
-		return pathRescoper(this.start, this.path);
+		return this.path.rescoper();
 	}
 
 	@Override
@@ -346,44 +197,26 @@ public final class PathTarget extends Ref {
 		if (this.path == null) {
 			return super.toString();
 		}
-		if (this.fullPath != null) {
-
-			final Path fullPath = this.fullPath.get();
-
-			if (fullPath != null) {
-				return fullPath.toString();
-			}
-		}
-		if (this.start == null) {
-			return this.path.toString();
-		}
-		return this.start + ":" + this.path;
-	}
-
-	protected final Path path() {
-		return this.path;
+		return this.path.toString();
 	}
 
 	@Override
 	protected FieldDefinition createFieldDefinition() {
-		if (this.start == null) {
-			return this.path.fieldDefinition(this, distribute());
-		}
-		return new PathTargetDefinition(this);
+		return this.path.getRawPath().fieldDefinition(this, distribute());
 	}
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		if (this.start != null) {
-			this.start.resolveAll(resolver);
-		}
 		resolve(resolver, fullPathResolver(resolver)).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver, valuePathResolver(resolver)).resolveValues(
-				resolver);
+
+		final Resolution resolution =
+				resolve(resolver, valuePathResolver(resolver));
+
+		resolution.resolveValues(resolver);
 	}
 
 	@Override
@@ -391,106 +224,31 @@ public final class PathTarget extends Ref {
 		return new Op(host, this);
 	}
 
-	private BoundPath getBoundPath() {
-		if (this.boundPath != null) {
-			return this.boundPath;
-		}
-
-		final Path fullPath = getPath();
-
-		if (fullPath != null) {
-			return this.boundPath = fullPath.bind(this, getScope());
-		}
-
-		return this.boundPath = this.path.bind(
-				this,
-				this.start.resolve(getScope().dummyResolver()).getScope());
-	}
-
 	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
-
-		final Path fullPath = getPath();
-
-		if (fullPath != null) {
-			return resolver.path(
-					pathResolver,
-					getBoundPath(),
-					resolver.getScope());
-		}
-
-		final Resolution start = this.start.resolve(resolver);
-
-		if (start == null) {
-			return null;
-		}
-		if (start.isError()) {
-			return start;
-		}
-
-		return resolver.path(pathResolver, getBoundPath(), start.getScope());
+		return resolver.path(pathResolver, this.path, resolver.getScope());
 	}
 
-	private PathTarget reproducePart(
-			Reproducer reproducer,
-			Ref start,
-			Path path) {
-
-		final Ref newStart;
-
-		if (start == null) {
-			newStart = null;
-		} else {
-			newStart = start.reproduce(reproducer);
-			if (newStart == null) {
-				return null;
-			}
-		}
-
-		return new PathTarget(this, reproducer.distribute(), path, newStart);
+	private PathTarget reproducePart(Reproducer reproducer, Path path) {
+		return new PathTarget(
+				this,
+				reproducer.distribute(),
+				path.bind(this, reproducer.getScope()));
 	}
 
-	private Ref startrWithPrefix(
+	private Ref startWithPrefix(
 			Reproducer reproducer,
 			PathReproduction pathReproduction,
-			Ref phrasePrefix) {
+			Path phrasePrefix) {
 
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {
-			return phrasePrefix;
+			return phrasePrefix.target(this, reproducer.distribute());
 		}
 
-		return new PathTarget(
+		return phrasePrefix.append(externalPath).target(
 				this,
-				reproducer.distribute(),
-				externalPath,
-				phrasePrefix);
-	}
-
-	private Rescoper pathRescoper(Ref start, Path path) {
-		if (start == null) {
-			return path.bind(this, getScope()).rescoper();
-		}
-
-		final Scope startScope =
-				start.resolve(getScope().dummyResolver()).getScope();
-
-		return path.bind(this, startScope).rescoper().and(start.toRescoper());
-	}
-
-	private final class PathStart implements Deferred<Scope> {
-
-		@Override
-		public Scope get() {
-			return getStart().resolve(
-					getScope().dummyResolver()).getScope();
-		}
-
-		@Override
-		public String toString() {
-			return getStart().toString();
-		}
-
+				reproducer.distribute());
 	}
 
 	private static final class Op extends RefOp {
@@ -513,18 +271,8 @@ public final class PathTarget extends Ref {
 		public PathOp target(CodeDirs dirs) {
 
 			final PathTarget ref = (PathTarget) getRef();
-			final BoundPath boundPath = ref.getBoundPath();
-			final HostOp start;
 
-			if (ref.getPath() != null) {
-				start = host();
-			} else if (ref.start != null && !boundPath.isStatic()) {
-				start = ref.start.op(host()).target(dirs);
-			} else {
-				start = host();
-			}
-
-			return boundPath.op(dirs, start);
+			return ref.path.op(dirs, host());
 		}
 
 	}

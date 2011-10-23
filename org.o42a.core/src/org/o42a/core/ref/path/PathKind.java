@@ -53,12 +53,11 @@ public enum PathKind {
 		protected Ref target(
 				LocationInfo location,
 				Distributor distributor,
-				Path path,
-				Ref start) {
-			if (start != null && path.isSelf()) {
-				return start;
-			}
-			return new PathTarget(location, distributor, path, start);
+				Path path) {
+			return new PathTarget(
+					location,
+					distributor,
+					path.bind(location, distributor.getScope()));
 		}
 
 		@Override
@@ -76,8 +75,7 @@ public enum PathKind {
 		protected Ref target(
 				LocationInfo location,
 				Distributor distributor,
-				Path path,
-				Ref start) {
+				Path path) {
 			return new AbsolutePathTarget(location, distributor, path);
 		}
 
@@ -107,8 +105,7 @@ public enum PathKind {
 	protected abstract Ref target(
 			LocationInfo location,
 			Distributor distributor,
-			Path path,
-			Ref start);
+			Path path);
 
 	protected abstract PathReproduction reproduce(
 			Reproducer reproducer,
