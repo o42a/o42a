@@ -44,6 +44,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.impl.*;
 import org.o42a.core.ref.impl.cond.RefCondition;
+import org.o42a.core.ref.impl.path.ErrorStep;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
 import org.o42a.core.ref.path.Path;
@@ -77,7 +78,11 @@ public abstract class Ref extends Statement {
 	}
 
 	public static Ref errorRef(LocationInfo location, Distributor distributor) {
-		return new ErrorRef(location, distributor);
+		return ErrorStep.ERROR_STEP.toPath().bindStatically(
+				location,
+				distributor.getScope())
+				.getRawPath()
+				.target(location, distributor);
 	}
 
 	private Logical logical;
