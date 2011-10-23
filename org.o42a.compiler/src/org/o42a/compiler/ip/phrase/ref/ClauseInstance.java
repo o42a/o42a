@@ -28,6 +28,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -103,8 +104,8 @@ public final class ClauseInstance {
 		}
 	}
 
-	public Ref instantiateObject(Distributor distributor) {
-		return new ClauseInstantiation(this, distributor).toRef();
+	public Path instantiateObject(Distributor distributor) {
+		return new ClauseInstantiation(this, distributor).toPath();
 	}
 
 	@Override

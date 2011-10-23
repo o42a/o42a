@@ -226,11 +226,11 @@ public abstract class ObjectConstructor extends Placed {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-			final CodeBuilder builder = dirs.getBuilder();
+
 			final LocalOp local = host().toLocal();
 
 			if (local != null) {
-				assert local.getBuilder() == builder :
+				assert local.getBuilder() == getBuilder() :
 					"Wrong builder used when instantiating local object: "
 					+ this + ", while " + local.getBuilder() + " expected";
 			}
@@ -241,7 +241,7 @@ public abstract class ObjectConstructor extends Placed {
 					dirs.getGenerator())) {
 
 				final ObjOp target = sample.ir(dirs.getGenerator()).op(
-						builder,
+						getBuilder(),
 						dirs.code());
 
 				if (dirs.isDebug()) {
@@ -259,16 +259,16 @@ public abstract class ObjectConstructor extends Placed {
 			final ObjectOp object = host().toObject(dirs);
 
 			if (object != null) {
-				return builder.newObject(
+				return getBuilder().newObject(
 						dirs,
 						object,
-						ancestorFunc(builder).getPointer().op(
+						ancestorFunc(getBuilder()).getPointer().op(
 								null,
 								dirs.code()),
 						sample);
 			}
 
-			return builder.newObject(
+			return getBuilder().newObject(
 					dirs,
 					null,
 					buildAncestor(dirs),

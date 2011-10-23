@@ -21,21 +21,20 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.Wrap;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.*;
 
 
-class PhraseRef extends Wrap {
+class PhraseFragment extends PathFragment {
 
 	private final Phrase phrase;
 
-	PhraseRef(Phrase phrase) {
-		super(phrase, phrase.distribute());
+	PhraseFragment(Phrase phrase) {
 		this.phrase = phrase;
 	}
 
@@ -44,35 +43,39 @@ class PhraseRef extends Wrap {
 	}
 
 	@Override
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		// This is called before path resolution.
+		return new Definition(
+				this.phrase,
+				super.fieldDefinition(path, distributor));
+	}
+
+	@Override
+	public Path expand(PathExpander expander, int index, Scope start) {
+		return buildPath(this.phrase);
+	}
+
+	@Override
 	public String toString() {
 		return this.phrase.toString();
 	}
 
-	@Override
-	protected Ref resolveWrapped() {
-		return buildRef(this.phrase);
-	}
-
-	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return new Definition(this.phrase, super.createFieldDefinition());
-	}
-
-	private Ref buildRef(Phrase phrase) {
+	private Path buildPath(Phrase phrase) {
 
 		final MainPhraseContext context = phrase.getMainContext();
-		final Ref ref;
+		final Path path;
 
 		if (!context.createsObject()) {
-			ref = context.standaloneRef();
+			path = context.standalone();
 		} else {
-			ref = new PhraseConstructor(phrase);
+			path = new PhraseConstructor(phrase).toPath();
 		}
 
-		final Path outcome = context.getOutcome();
-		final Ref result = outcome.target(ref, ref.distribute(), ref);
+		final Path result = path.append(context.getOutcome());
 		final PhraseTerminator terminator = context.getTerminator();
-		final Ref terminated;
+		final Path terminated;
 
 		if (terminator == null) {
 			terminated = result;
@@ -86,7 +89,7 @@ class PhraseRef extends Wrap {
 			return terminated;
 		}
 
-		return buildRef(phrase.asPrefix(terminated, nextPart));
+		return buildPath(phrase.asPrefix(terminated, nextPart));
 	}
 
 	private static final class Definition extends FieldDefinition {
