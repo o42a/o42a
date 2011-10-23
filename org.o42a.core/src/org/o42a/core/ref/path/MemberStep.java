@@ -50,14 +50,6 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		if (firstDeclaration().toField(dummyUser()) != null) {
-			return StepKind.ARTIFACT_STEP;
-		}
-		return StepKind.MEMBER_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}

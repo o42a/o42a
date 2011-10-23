@@ -47,11 +47,6 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.ABSOLUTE_PATH;
 	}

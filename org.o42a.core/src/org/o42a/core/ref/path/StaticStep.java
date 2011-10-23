@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.path;
+package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -30,26 +30,20 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public class StaticStep extends Step {
+final class StaticStep extends Step {
 
 	private final Scope scope;
 
-	public StaticStep(Scope scope) {
+	StaticStep(Scope scope) {
 		this.scope = scope;
 	}
 
 	public final Scope getScope() {
 		return this.scope;
-	}
-
-	@Override
-	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
 	}
 
 	@Override
@@ -85,6 +79,11 @@ public class StaticStep extends Step {
 			Reproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
 		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
+	}
+
+	@Override
+	public Path toPath() {
+		return new Path(getPathKind(), true, this);
 	}
 
 	@Override

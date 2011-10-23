@@ -48,11 +48,6 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.PARENT_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}

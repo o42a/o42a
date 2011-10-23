@@ -43,13 +43,8 @@ public abstract class Dep extends Step {
 	}
 
 	@Override
-	public final StepKind getStepKind() {
-		return getDepKind().getStepKind();
-	}
-
-	@Override
 	public final PathKind getPathKind() {
-		return getDepKind().getPathKind();
+		return PathKind.RELATIVE_PATH;
 	}
 
 	public final DepKind getDepKind() {

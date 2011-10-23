@@ -19,29 +19,10 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.ref.path.PathKind;
-import org.o42a.core.ref.path.StepKind;
-
 
 public enum DepKind {
 
-	ENCLOSING_OWNER_DEP(StepKind.PARENT_STEP, PathKind.RELATIVE_PATH),
-	REF_DEP(StepKind.ARTIFACT_STEP, PathKind.RELATIVE_PATH);
-
-	private final StepKind stepKind;
-	private final PathKind pathKind;
-
-	DepKind(StepKind stepKind, PathKind pathKind) {
-		this.stepKind = stepKind;
-		this.pathKind = pathKind;
-	}
-
-	public final StepKind getStepKind() {
-		return this.stepKind;
-	}
-
-	public final PathKind getPathKind() {
-		return this.pathKind;
-	}
+	ENCLOSING_OWNER_DEP,
+	REF_DEP
 
 }

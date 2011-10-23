@@ -38,11 +38,6 @@ import org.o42a.core.st.Reproducer;
 public class VoidStep extends Step {
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.ABSOLUTE_PATH;
 	}
