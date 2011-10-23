@@ -45,13 +45,11 @@ import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Deferred;
 
 
 public class BoundPath extends Location {
 
-	private final Deferred<Scope> deferredOrigin;
-	private Scope origin;
+	private final Scope origin;
 	private final Path rawPath;
 	private Path path;
 
@@ -60,25 +58,12 @@ public class BoundPath extends Location {
 
 	BoundPath(LocationInfo location, Scope origin, Path rawPath) {
 		super(location);
-		this.deferredOrigin = null;
 		this.origin = origin;
 		this.rawPath = rawPath;
 	}
 
-	BoundPath(
-			LocationInfo location,
-			Deferred<Scope> deferredOrigin,
-			Path rawPath) {
-		super(location);
-		this.deferredOrigin = deferredOrigin;
-		this.rawPath = rawPath;
-	}
-
 	public final Scope getOrigin() {
-		if (this.origin != null) {
-			return this.origin;
-		}
-		return this.origin = this.deferredOrigin.get();
+		return this.origin;
 	}
 
 	public final Path getPath() {
@@ -143,22 +128,14 @@ public class BoundPath extends Location {
 			return this;
 		}
 
-		if (this.origin != null) {
-			return materialized.bind(this, this.origin);
-		}
-
-		return materialized.bind(this, this.deferredOrigin);
+		return materialized.bind(this, this.origin);
 	}
 
 	public final BoundPath cut(int stepsToCut) {
 
 		final Path newPath = getRawPath().cut(stepsToCut);
 
-		if (this.origin != null) {
-			return newPath.bind(this, this.origin);
-		}
-
-		return newPath.bind(this, this.deferredOrigin);
+		return newPath.bind(this, this.origin);
 	}
 
 	public final PathResolution resolve(
@@ -189,12 +166,7 @@ public class BoundPath extends Location {
 		if (getRawPath().isStatic()) {
 			return this;
 		}
-
-		if (this.origin != null) {
-			return getRawPath().bindStatically(this, this.origin);
-		}
-
-		return getRawPath().bindStatically(this, this.deferredOrigin);
+		return getRawPath().bindStatically(this, this.origin);
 	}
 
 	public final PathOp op(CodeDirs dirs, HostOp start) {
@@ -241,9 +213,10 @@ public class BoundPath extends Location {
 	}
 
 	public String toString(int length) {
-		return getRawPath().toString(
-				this.origin != null ? this.origin : this.deferredOrigin,
-				length);
+		if (this.rawPath == null) {
+			return super.toString();
+		}
+		return getRawPath().toString(this.origin, length);
 	}
 
 	private PathResolution walkPath(
