@@ -43,11 +43,6 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.SKIP_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}

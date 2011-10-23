@@ -137,31 +137,6 @@ public final class Path {
 		return append(new PathFragmentStep(fragment));
 	}
 
-	@Deprecated
-	public Path cutArtifact() {
-
-		final Step[] steps = dematerialize().getSteps();
-		final int length = steps.length;
-
-		if (length == 0) {
-			return this;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = steps[lastIdx];
-
-		if (!lastStep.getStepKind().isArtifact()) {
-			return this;
-		}
-		if (lastIdx == 0) {
-			return getKind().emptyPath();
-		}
-
-		final Step[] newSteps = Arrays.copyOf(steps, lastIdx);
-
-		return new Path(getKind(), isStatic(), newSteps);
-	}
-
 	public Path materialize() {
 
 		final int length = this.steps.length;
@@ -177,30 +152,6 @@ public final class Path {
 		}
 
 		return append(MATERIALIZER_STEP);
-	}
-
-	@Deprecated
-	public Path dematerialize() {
-
-		final int length = this.steps.length;
-
-		if (length == 0) {
-			return this;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = this.steps[lastIdx];
-
-		if (!lastStep.getStepKind().isMaterializer()) {
-			return this;
-		}
-		if (lastIdx == 0) {
-			return getKind().emptyPath();
-		}
-
-		final Step[] newSteps = Arrays.copyOf(this.steps, lastIdx);
-
-		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public final Path cut(int stepsToCut) {

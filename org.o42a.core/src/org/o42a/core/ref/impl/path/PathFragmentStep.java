@@ -38,11 +38,6 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.FRAGMENT_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}

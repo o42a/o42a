@@ -38,8 +38,6 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class Step {
 
-	public abstract StepKind getStepKind();
-
 	public abstract PathKind getPathKind();
 
 	public String getName() {
@@ -67,11 +65,8 @@ public abstract class Step {
 			LocationInfo location,
 			Reproducer reproducer);
 
-	public final Path toPath() {
-		return new Path(
-				getPathKind(),
-				getStepKind() == StepKind.STATIC_STEP,
-				this);
+	public Path toPath() {
+		return new Path(getPathKind(), false, this);
 	}
 
 	public abstract PathOp op(PathOp start);
