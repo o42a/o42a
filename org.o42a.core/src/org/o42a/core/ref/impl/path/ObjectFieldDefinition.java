@@ -43,17 +43,12 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.addImplicitSample(
-				this.path.getRawPath().staticTypeRef(
-						this,
-						distribute()));
+		definer.addImplicitSample(this.path.staticTypeRef(distribute()));
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(
-				this.path.getRawPath().target(this, distribute()),
-				null);
+		definer.setTargetRef(this.path.target(distribute()), null);
 	}
 
 	@Override

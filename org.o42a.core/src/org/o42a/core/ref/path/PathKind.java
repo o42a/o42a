@@ -50,14 +50,8 @@ public enum PathKind {
 	RELATIVE_PATH(false) {
 
 		@Override
-		protected Ref target(
-				LocationInfo location,
-				Distributor distributor,
-				Path path) {
-			return new PathTarget(
-					location,
-					distributor,
-					path.bind(location, distributor.getScope()));
+		protected Ref target(BoundPath path, Distributor distributor) {
+			return new PathTarget(path, distributor);
 		}
 
 		@Override
@@ -72,11 +66,8 @@ public enum PathKind {
 	ABSOLUTE_PATH(true) {
 
 		@Override
-		protected Ref target(
-				LocationInfo location,
-				Distributor distributor,
-				Path path) {
-			return new AbsolutePathTarget(location, distributor, path);
+		protected Ref target(BoundPath path, Distributor distributor) {
+			return new AbsolutePathTarget(path, distributor);
 		}
 
 		@Override
@@ -102,10 +93,7 @@ public enum PathKind {
 		return this.emptyPath;
 	}
 
-	protected abstract Ref target(
-			LocationInfo location,
-			Distributor distributor,
-			Path path);
+	protected abstract Ref target(BoundPath path, Distributor distributor);
 
 	protected abstract PathReproduction reproduce(
 			Reproducer reproducer,

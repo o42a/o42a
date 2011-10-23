@@ -85,18 +85,18 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	}
 
 	protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
-		return modulePath(moduleRef.getName().getName()).target(
-				location(p, moduleRef),
-				p);
+		return modulePath(moduleRef.getName().getName())
+				.bind(location(p, moduleRef), p.getScope())
+				.target(p);
 	}
 
 	private static final class SameModuleRefVisitor extends ModuleRefVisitor {
 
 		@Override
 		protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
-			return enclosingModulePath(p.getContainer()).target(
-					location(p, moduleRef),
-					p);
+			return enclosingModulePath(p.getContainer())
+					.bind(location(p, moduleRef), p.getScope())
+					.target(p);
 		}
 
 	}

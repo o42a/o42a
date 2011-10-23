@@ -43,14 +43,17 @@ public final class PathFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAncestor(this.path.getRawPath().typeRef(this, distribute()));
+		definer.setAncestor(this.path.typeRef(distribute()));
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
+
+		final Distributor distributor = distribute();
+
 		definer.setTargetRef(
-				this.path.getRawPath().materialize().target(this, distribute()),
-				this.path.getRawPath().typeRef(this, distribute()));
+				this.path.materialize().target(distributor),
+				this.path.typeRef(distributor));
 	}
 
 	@Override

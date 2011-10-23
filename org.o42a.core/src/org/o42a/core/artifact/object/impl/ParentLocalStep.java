@@ -119,9 +119,11 @@ public final class ParentLocalStep extends Step {
 	@Override
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
 
-		final Ref ref = rebuilder.restPath().target(
-				rebuilder,
-				this.object.distributeIn(this.object.getEnclosingContainer()));
+		final Container enclosingContainer =
+				this.object.getEnclosingContainer();
+		final Ref ref = rebuilder.restPath()
+				.bind(rebuilder, enclosingContainer.getScope())
+				.target(this.object.distributeIn(enclosingContainer));
 
 		rebuilder.replaceRest(object().addRefDep(ref));
 	}
@@ -138,11 +140,6 @@ public final class ParentLocalStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
-	}
-
-	@Override
-	protected Step combineWithRef(Ref ref) {
-		return object().addRefDep(ref);
 	}
 
 	private final ObjectArtifact object() {

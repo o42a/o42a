@@ -73,7 +73,9 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public final NextClause clauseById(LocationInfo location, ClauseId clauseId) {
+	public final NextClause clauseById(
+			LocationInfo location,
+			ClauseId clauseId) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
@@ -199,11 +201,12 @@ class PhraseSubContext extends PhraseContext {
 				final Path instancePath =
 						instance.instantiateObject(distributor);
 
-				ref = instancePath.target(
+				ref = instancePath.bind(
 						new Location(
 								distributor.getContext(),
 								instance.getLocation()),
-						distributor);
+						statements.getScope())
+						.target(distributor);
 			}
 			if (ref == null) {
 				continue;

@@ -63,15 +63,17 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		case IMPLIED:
 			break;
 		case SELF:
-			return SELF_PATH.target(location, p);
+			return SELF_PATH.bind(location, p.getScope()).target(p);
 		case PARENT:
 			return parentPath(ip(), location, null, p.getContainer())
-					.target(location, p);
+					.bind(location, p.getScope())
+					.target(p);
 		case MODULE:
 			return enclosingModulePath(p.getContainer())
-					.target(location, p);
+					.bind(location, p.getScope())
+					.target(p);
 		case ROOT:
-			return ROOT_PATH.target(location(p, ref), p);
+			return ROOT_PATH.bind(location, p.getScope()).target(p);
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -83,12 +85,13 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 	public Ref visitParentRef(ParentRefNode ref, Distributor p) {
 
 		final Location location = location(p, ref);
-
-		return parentPath(
+		final Path parentPath = parentPath(
 				ip(),
 				location,
 				ref.getName().getName(),
-				p.getContainer()).target(location, p);
+				p.getContainer());
+
+		return parentPath.bind(location, p.getScope()).target(p);
 	}
 
 	@Override
@@ -231,13 +234,14 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		public Owner visitParentRef(ParentRefNode ref, Distributor p) {
 
 			final Location location = location(p, ref);
+			final Path parentPath = parentPath(
+					ip(),
+					location,
+					ref.getName().getName(),
+					p.getContainer());
 
 			return new Owner(
-					parentPath(
-							ip(),
-							location,
-							ref.getName().getName(),
-							p.getContainer()).target(location, p),
+					parentPath.bind(location, p.getScope()).target(p),
 					false);
 		}
 
@@ -289,7 +293,8 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					declaredIn);
 			final Path path = this.owner.getPath().append(memberOf);
 
-			return wrap(path.target(location, this.owner.distribute()));
+			return wrap(path.bind(location, this.owner.getScope())
+					.target(this.owner.distribute()));
 		}
 
 		@Override

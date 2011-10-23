@@ -26,20 +26,17 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.*;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.ref.impl.path.ModuleStep;
+import org.o42a.core.ref.impl.path.PathFragmentStep;
+import org.o42a.core.ref.impl.path.VoidStep;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
@@ -154,14 +151,6 @@ public final class Path {
 		return append(MATERIALIZER_STEP);
 	}
 
-	public final Path cut(int stepsToCut) {
-
-		final Step[] newSteps =
-				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
-
-		return new Path(getKind(), isStatic(), newSteps);
-	}
-
 	public final Path arrayItem(Ref indexRef) {
 		return append(new ArrayElementStep(indexRef));
 	}
@@ -183,34 +172,12 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public final Ref target(LocationInfo location, Distributor distributor) {
-		return getKind().target(location, distributor, this);
-	}
+	public final Path cut(int stepsToCut) {
 
-	public final TypeRef typeRef(
-			LocationInfo location,
-			Distributor distributor) {
-		return target(location, distributor).toTypeRef();
-	}
+		final Step[] newSteps =
+				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
 
-	public final TypeRef typeRef(
-			LocationInfo location,
-			Distributor distributor,
-			ValueStructFinder valueStructFinder) {
-		return target(location, distributor).toTypeRef(valueStructFinder);
-	}
-
-	public final StaticTypeRef staticTypeRef(
-			LocationInfo location,
-			Distributor distributor) {
-		return target(location, distributor).toStaticTypeRef();
-	}
-
-	public final StaticTypeRef staticTypeRef(
-			LocationInfo location,
-			Distributor distributor,
-			ValueStructFinder valueStructFinder) {
-		return target(location, distributor).toStaticTypeRef(valueStructFinder);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -226,55 +193,6 @@ public final class Path {
 				ArrayUtil.prepend(new StaticStep(origin), getSteps());
 
 		return new Path(getKind(), true, steps).bind(location, origin);
-	}
-
-	public final FieldDefinition fieldDefinition(
-			LocationInfo location,
-			Distributor distributor) {
-
-		final BoundPath bound = bind(location, distributor.getScope());
-		final Step[] steps = getSteps();
-
-		if (steps.length == 0) {
-			if (isAbsolute()) {
-				return new ObjectFieldDefinition(bound, distributor);
-			}
-			return new PathFieldDefinition(bound, distributor);
-		}
-
-		final Step lastStep = steps[steps.length - 1];
-
-		return lastStep.fieldDefinition(bound, distributor);
-	}
-
-	@Deprecated
-	public Path rebuildWithRef(Ref followingRef) {
-
-		final Path path = followingRef.getPath();
-
-		if (path != null) {
-			return append(path);
-		}
-
-		final int length = this.steps.length;
-
-		if (length == 0) {
-			return null;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = this.steps[lastIdx];
-		final Step rebuilt = lastStep.combineWithRef(followingRef);
-
-		if (rebuilt == null) {
-			return null;
-		}
-
-		final Step[] newSteps = this.steps.clone();
-
-		newSteps[lastIdx] = rebuilt;
-
-		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	@Override

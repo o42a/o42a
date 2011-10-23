@@ -91,17 +91,11 @@ public abstract class Step {
 			Obj owner) {
 	}
 
-	@Deprecated
-	protected Step combineWithRef(Ref ref) {
-		return null;
-	}
-
 	protected TypeRef ancestor(
 			BoundPath path,
 			LocationInfo location,
 			Distributor distributor) {
-		return path.getRawPath().append(new AncestorStep())
-				.typeRef(location, distributor);
+		return path.append(new AncestorStep()).typeRef(distributor);
 	}
 
 	protected abstract FieldDefinition fieldDefinition(

@@ -162,11 +162,13 @@ public class Root extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
 		return new Ascendants(this).setAncestor(
-				Path.VOID_PATH.target(
-						this,
-						getScope().getEnclosingScope().distribute())
-						.toStaticTypeRef());
+				Path.VOID_PATH
+				.bind(this, enclosingScope)
+				.staticTypeRef(enclosingScope.distribute()));
 	}
 
 	@Override

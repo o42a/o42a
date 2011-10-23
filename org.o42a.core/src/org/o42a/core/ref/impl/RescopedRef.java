@@ -40,8 +40,16 @@ public final class RescopedRef extends Wrap {
 				new RescopedDistrubutor(
 						ref,
 						rescoper.getFinalScope()));
-		this.ref = ref;
-		this.rescoper = rescoper;
+		if (ref instanceof Rescoped) {
+
+			final Rescoped rescoped = (Rescoped) ref;
+
+			this.ref = rescoped.getRef();
+			this.rescoper = rescoped.getRescoper().and(rescoper);
+		} else {
+			this.ref = ref;
+			this.rescoper = rescoper;
+		}
 	}
 
 	@Override

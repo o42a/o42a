@@ -130,7 +130,9 @@ public class Phrase extends Placed {
 	}
 
 	public final Ref toRef() {
-		return new PhraseFragment(this).toPath().target(this, distribute());
+		return new PhraseFragment(this).toPath()
+				.bind(this, getScope())
+				.target(distribute());
 	}
 
 	public final void build() {
@@ -145,7 +147,8 @@ public class Phrase extends Placed {
 
 		final Phrase newPhrase = new Phrase(this.ip, this, distribute());
 
-		newPhrase.setAncestor(prefix.typeRef(this, distribute()));
+		newPhrase.setAncestor(
+				prefix.bind(this, getScope()).typeRef(distribute()));
 		newPhrase.prefix.append(nextPart);
 		newPhrase.last = this.last;
 

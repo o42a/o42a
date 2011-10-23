@@ -103,7 +103,7 @@ public abstract class ObjectConstructor extends Placed {
 	}
 
 	public final Ref toRef() {
-		return toPath().target(this, distribute());
+		return toPath().bind(this, getScope()).target(distribute());
 	}
 
 	public abstract ObjectConstructor reproduce(Reproducer reproducer);
