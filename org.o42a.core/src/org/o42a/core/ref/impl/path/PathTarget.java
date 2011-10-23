@@ -38,6 +38,8 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Deferred;
 import org.o42a.util.Holder;
 
@@ -126,6 +128,20 @@ public final class PathTarget extends Ref {
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return resolve(resolver, pathResolver(resolver));
+	}
+
+	@Override
+	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
+
+		final Step[] steps = getBoundPath().getSteps();
+
+		if (steps.length == 0) {
+			return super.valueAdapter(expectedStruct);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.valueAdapter(this, expectedStruct);
 	}
 
 	@Override

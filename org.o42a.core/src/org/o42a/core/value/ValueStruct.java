@@ -20,7 +20,6 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
@@ -98,25 +97,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return this.unknownValue;
 	}
 
-	public final Ref constantRef(
-			LocationInfo location,
-			Distributor distributor,
-			T value) {
-		return new ConstantRef<T>(location, distributor, this, value);
-	}
-
 	public final ValueDef constantDef(
 			Obj source,
 			LocationInfo location,
 			T value) {
 		return new ConstantValueDef<T>(source, location, constantValue(value));
-	}
-
-	public final Obj constantObject(
-			LocationInfo location,
-			Distributor enclosing,
-			T value) {
-		return new ConstantObject<T>(location, enclosing, this, value);
 	}
 
 	public final Definitions noValueDefinitions(

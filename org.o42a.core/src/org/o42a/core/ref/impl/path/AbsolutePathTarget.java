@@ -32,12 +32,12 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class AbsolutePathTarget extends Ref {
@@ -82,7 +82,22 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 		return resolve(resolver, pathResolver(resolver));
+	}
+
+	@Override
+	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
+
+		final Step[] steps = this.path.getSteps();
+
+		if (steps.length == 0) {
+			return super.valueAdapter(expectedStruct);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.valueAdapter(this, expectedStruct);
 	}
 
 	@Override

@@ -23,8 +23,11 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.impl.Constant;
 
 
 public abstract class SingleValueType<T>
@@ -61,14 +64,21 @@ public abstract class SingleValueType<T>
 			LocationInfo location,
 			Distributor distributor,
 			T value) {
-		return struct().constantRef(location, distributor, value);
+
+		final Constant<T> constant =
+				new Constant<T>(location, distributor, this, value);
+		final BoundPath path = constant.toPath().bindStatically(
+				location,
+				distributor.getScope());
+
+		return path.getPath().target(location, distributor);
 	}
 
-	public final Obj constantObject(
+	public final ValueDef constantDef(
+			Obj source,
 			LocationInfo location,
-			Distributor enclosing,
 			T value) {
-		return struct().constantObject(location, enclosing, value);
+		return struct().constantDef(source, location, value);
 	}
 
 	public final Definitions noValueDefinitions(

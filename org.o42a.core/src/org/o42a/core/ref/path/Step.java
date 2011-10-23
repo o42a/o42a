@@ -32,6 +32,8 @@ import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Step {
@@ -52,6 +54,14 @@ public abstract class Step {
 			int index,
 			Scope start,
 			PathWalker walker);
+
+	public ValueAdapter valueAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct) {
+		return ref.valueStruct(ref.getScope()).defaultAdapter(
+				ref,
+				expectedStruct);
+	}
 
 	public abstract PathReproduction reproduce(
 			LocationInfo location,

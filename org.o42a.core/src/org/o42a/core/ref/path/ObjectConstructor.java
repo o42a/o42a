@@ -51,6 +51,8 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class ObjectConstructor extends Placed {
@@ -78,6 +80,20 @@ public abstract class ObjectConstructor extends Placed {
 		return propagate(scope);
 	}
 
+	public ValueAdapter valueAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct) {
+		return ref.valueStruct(ref.getScope()).defaultAdapter(
+				ref,
+				expectedStruct);
+	}
+
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ObjectFieldDefinition(path, distributor);
+	}
+
 	public final Step toStep() {
 		return new ObjectConstructorStep(this);
 	}
@@ -88,12 +104,6 @@ public abstract class ObjectConstructor extends Placed {
 
 	public final Ref toRef() {
 		return toPath().target(this, distribute());
-	}
-
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new ObjectFieldDefinition(path, distributor);
 	}
 
 	public abstract ObjectConstructor reproduce(Reproducer reproducer);
