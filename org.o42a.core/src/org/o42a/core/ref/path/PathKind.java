@@ -115,7 +115,7 @@ public enum PathKind {
 			final Step step = steps[i];
 			final PathReproduction reproduction = step.reproduce(
 					path,
-					new StepReproducer(reproducer, fromScope, toScope));
+					stepReproducer(reproducer, fromScope, toScope));
 
 			if (reproduction == null) {
 				return null;
@@ -167,6 +167,20 @@ public enum PathKind {
 		}
 
 		return reproducedPath(reproduced);
+	}
+
+	private static Reproducer stepReproducer(
+			Reproducer reproducer,
+			Scope fromScope,
+			Scope toScope) {
+
+		final Reproducer existing = reproducer.reproducerOf(fromScope);
+
+		if (existing != null) {
+			return existing;
+		}
+
+		return new StepReproducer(reproducer, fromScope, toScope);
 	}
 
 	private static PathReproduction partiallyReproducedPath(
@@ -235,7 +249,7 @@ public enum PathKind {
 			if (reproducingScope == getReproducingScope()) {
 				return this;
 			}
-			return null;
+			return this.reproducer.reproducerOf(reproducingScope);
 		}
 
 		@Override
