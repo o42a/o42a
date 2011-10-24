@@ -39,6 +39,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -112,18 +113,26 @@ public abstract class AbstractScope implements Scope {
 		return STRICT_CONSTRUCTION;
 	}
 
-	public static Path pathTo(Scope scope, Scope targetScope) {
-		if (scope == targetScope) {
-			return Path.SELF_PATH;
+	public static BoundPath pathTo(
+			LocationInfo location,
+			Scope fromScope,
+			Scope toScope) {
+		if (fromScope == toScope) {
+			return Path.SELF_PATH.bind(location, fromScope);
 		}
 
-		final Path pathToEnclosing = pathToEnclosing(scope, targetScope);
+		final Path pathToEnclosing = pathToEnclosing(fromScope, toScope);
 
 		if (pathToEnclosing != null) {
-			return pathToEnclosing;
+			return pathToEnclosing.bind(location, fromScope);
 		}
 
-		return pathToMember(scope, targetScope);
+		final Path pathToMember = pathToMember(fromScope, toScope);
+
+		assert pathToMember != null :
+			"Can not rescope from " + fromScope + " to " + toScope;
+
+		return pathToMember.bind(location, fromScope);
 	}
 
 	public static Rescoper rescoperTo(
@@ -133,13 +142,7 @@ public abstract class AbstractScope implements Scope {
 		if (fromScope == toScope) {
 			return transparentRescoper(toScope);
 		}
-
-		final Path path = toScope.pathTo(fromScope);
-
-		assert path != null :
-				"Can not rescope from " + fromScope + " to " + toScope;
-
-		return path.bind(location, toScope).rescoper();
+		return toScope.pathTo(location, fromScope).rescoper();
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
@@ -306,8 +309,8 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final Path pathTo(Scope targetScope) {
-		return pathTo(this, targetScope);
+	public final BoundPath pathTo(LocationInfo location, Scope targetScope) {
+		return pathTo(location, this, targetScope);
 	}
 
 	@Override

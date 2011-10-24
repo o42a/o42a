@@ -33,6 +33,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -109,7 +110,7 @@ public interface Scope extends PlaceInfo {
 
 	CompilerLogger getLogger();
 
-	Path pathTo(Scope targetScope);
+	BoundPath pathTo(LocationInfo location, Scope targetScope);
 
 	Rescoper rescoperTo(LocationInfo location, Scope toScope);
 
