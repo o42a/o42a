@@ -31,7 +31,7 @@ import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRefWrap;
@@ -71,7 +71,7 @@ public abstract class Wrap extends Ref {
 	}
 
 	@Override
-	public final Path getPath() {
+	public final BoundPath getPath() {
 		return wrapped().getPath();
 	}
 

@@ -34,7 +34,9 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -67,8 +69,8 @@ public final class AbsolutePathTarget extends Ref {
 	}
 
 	@Override
-	public final Path getPath() {
-		return this.path.getPath();
+	public final BoundPath getPath() {
+		return this.path;
 	}
 
 	@Override
@@ -120,7 +122,7 @@ public final class AbsolutePathTarget extends Ref {
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;
 		final BoundPath rescopePath = pathRescoper.getPath();
 
-		return rescopePath.append(this.path.getRawPath()).target(
+		return rescopePath.append(this.path).target(
 				distributeIn(rescoper.getFinalScope().getContainer()));
 	}
 

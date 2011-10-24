@@ -35,7 +35,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -76,13 +76,10 @@ public final class Rescoped extends Ref {
 	@Override
 	public Resolution resolve(Resolver resolver) {
 
-		final Path path = getPath();
+		final BoundPath path = getPath();
 
 		if (path != null) {
-			return resolver.path(
-					pathResolver(resolver),
-					path.bind(this, getScope()),
-					getScope());
+			return resolver.path(pathResolver(resolver), path, getScope());
 		}
 
 		final Resolver rescoped = this.rescoper.rescope(resolver);

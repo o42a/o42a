@@ -165,6 +165,10 @@ public class BoundPath extends Location {
 		return getRawPath().append(path).bind(this, getOrigin());
 	}
 
+	public final BoundPath append(BoundPath path) {
+		return append(path.getRawPath());
+	}
+
 	public final BoundPath cut(int stepsToCut) {
 		return getRawPath().cut(stepsToCut).bind(this, this.origin);
 	}
@@ -208,7 +212,28 @@ public class BoundPath extends Location {
 
 	public final FieldDefinition fieldDefinition(Distributor distributor) {
 
-		final Step[] steps = getRawSteps();
+		// It is essential to use the last unresolved step,
+		// as it can be an unexpanded path fragment,
+		// which field definition can perform additional tasks.
+		// One example is phrase.
+		final Step[] steps = this.rawPath.getSteps();
+
+		if (steps.length == 0) {
+			if (isAbsolute()) {
+				return new ObjectFieldDefinition(this, distributor);
+			}
+			return new PathFieldDefinition(this, distributor);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.fieldDefinition(this, distributor);
+	}
+
+	public final FieldDefinition rebuiltFieldDefinition(
+			Distributor distributor) {
+
+		final Step[] steps = getSteps();
 
 		if (steps.length == 0) {
 			if (isAbsolute()) {

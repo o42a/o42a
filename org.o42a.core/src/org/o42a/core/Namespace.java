@@ -228,10 +228,10 @@ public class Namespace extends AbstractContainer {
 				return this.path.getPath();
 			}
 
-			final Path path = this.ref.getPath();
+			final BoundPath path = this.ref.getPath();
 
 			if (path != null) {
-				this.path = path.bind(this.ref, getScope());
+				this.path = path;
 				return this.path.getPath();
 			}
 			if (this.container != null) {
@@ -310,7 +310,7 @@ public class Namespace extends AbstractContainer {
 			if (!getAlias().equals(memberId.getName())) {
 				return null;
 			}
-			return this.ref.getPath();
+			return this.ref.getPath().getPath();
 		}
 
 		@Override
