@@ -187,7 +187,7 @@ public class BoundPath extends Location {
 	}
 
 	public final Ref target(Distributor distributor) {
-		return getRawPath().getKind().target(this, distributor);
+		return new Ref(this, distributor);
 	}
 
 	public final TypeRef typeRef(Distributor distributor) {
@@ -274,26 +274,6 @@ public class BoundPath extends Location {
 		PathOp found = hostPathOp(start);
 
 		for (int i = 0; i < steps.length; ++i) {
-			found = steps[i].op(found);
-			if (found == null) {
-				throw new IllegalStateException(toString(i + 1) + " not found");
-			}
-		}
-
-		return found;
-	}
-
-	public final PathOp staticOp(CodeDirs dirs) {
-		assert isStatic() :
-			this + " is not a static path";
-
-		final CodeBuilder builder = dirs.getBuilder();
-		final CompilerContext context = builder.getContext();
-		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
-		PathOp found = hostPathOp(start.op(builder, dirs.code()));
-		final Step[] steps = getSteps();
-
-		for (int i = startIndex(context); i < steps.length; ++i) {
 			found = steps[i].op(found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");
@@ -530,6 +510,24 @@ public class BoundPath extends Location {
 			return steps;
 		}
 		return new PathRebuilder(this, steps).rebuild();
+	}
+
+	private final PathOp staticOp(CodeDirs dirs) {
+
+		final CodeBuilder builder = dirs.getBuilder();
+		final CompilerContext context = builder.getContext();
+		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
+		PathOp found = hostPathOp(start.op(builder, dirs.code()));
+		final Step[] steps = getSteps();
+
+		for (int i = startIndex(context); i < steps.length; ++i) {
+			found = steps[i].op(found);
+			if (found == null) {
+				throw new IllegalStateException(toString(i + 1) + " not found");
+			}
+		}
+
+		return found;
 	}
 
 }
