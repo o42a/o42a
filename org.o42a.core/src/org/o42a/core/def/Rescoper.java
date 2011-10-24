@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.impl.rescoper.*;
 import org.o42a.core.ir.HostOp;
@@ -65,6 +66,8 @@ public abstract class Rescoper {
 	public boolean isTransparent() {
 		return false;
 	}
+
+	public abstract <R extends Rescopable<R>> R update(R rescopable);
 
 	public Definitions update(Definitions definitions) {
 
@@ -111,10 +114,6 @@ public abstract class Rescoper {
 	public abstract Resolver rescope(Resolver resolver);
 
 	public abstract Scope updateScope(Scope scope);
-
-	public <D extends Def<D>> D updateDef(D def) {
-		return def.rescope(this);
-	}
 
 	public Rescoper and(Rescoper other) {
 		if (other.isTransparent()) {

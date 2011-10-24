@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def.impl.rescoper;
 
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -40,6 +41,11 @@ public final class UpgradeRescoper extends Rescoper {
 	@Override
 	public boolean isStatic() {
 		return true;
+	}
+
+	@Override
+	public <R extends Rescopable<R>> R update(R rescopable) {
+		return rescopable.upgradeScope(getFinalScope());
 	}
 
 	@Override
