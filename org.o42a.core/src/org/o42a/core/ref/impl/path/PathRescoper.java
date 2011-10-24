@@ -101,11 +101,11 @@ public final class PathRescoper extends Rescoper {
 		if (other instanceof PathRescoper) {
 
 			final PathRescoper pathRescoper = (PathRescoper) other;
-			final Path newPath = pathRescoper.getPath().getRawPath().append(
-					getPath().getRawPath());
+			final Path newPath =
+					pathRescoper.getPath().getRawPath().append(getPath());
 
 			return new PathRescoper(
-					newPath.bind(this.path, other.getFinalScope()));
+					newPath.bind(getPath(), other.getFinalScope()));
 		}
 
 		return super.and(other);

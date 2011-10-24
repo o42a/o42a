@@ -47,6 +47,7 @@ import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.path.ErrorStep;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -112,7 +113,7 @@ public abstract class Ref extends Statement {
 			return true;
 		}
 
-		final Path path = getPath();
+		final BoundPath path = getPath();
 
 		if (path != null) {
 			return path.isStatic();
@@ -121,7 +122,7 @@ public abstract class Ref extends Statement {
 		return false;
 	}
 
-	public Path getPath() {
+	public BoundPath getPath() {
 		return null;
 	}
 
@@ -186,7 +187,7 @@ public abstract class Ref extends Statement {
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
 	public TypeRef ancestor(LocationInfo location) {
-		return getPath().bind(this, getScope()).ancestor(this, distribute());
+		return getPath().ancestor(this, distribute());
 	}
 
 	public Ref materialize() {
@@ -198,9 +199,7 @@ public abstract class Ref extends Statement {
 			return this;
 		}
 
-		return getPath().append(materializationPath)
-				.bind(this, getScope())
-				.target(distribute());
+		return getPath().append(materializationPath).target(distribute());
 	}
 
 	@Override
@@ -221,9 +220,8 @@ public abstract class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType);
 
-		return materialize().getPath()
+		return getPath().materialize()
 				.append(adapter.toPath())
-				.bind(location, getScope())
 				.target(distribute());
 	}
 
@@ -288,10 +286,10 @@ public abstract class Ref extends Statement {
 
 	public Rescoper toRescoper() {
 
-		final Path path = getPath();
+		final BoundPath path = getPath();
 
 		if (path != null) {
-			return path.bind(this, getScope()).rescoper();
+			return path.rescoper();
 		}
 
 		return new RefRescoper(this);

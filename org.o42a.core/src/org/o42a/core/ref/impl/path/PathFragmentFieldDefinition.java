@@ -69,8 +69,7 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 
 		this.path.rebuild();
 
-		return this.definition =
-				this.path.rebuild().fieldDefinition(distribute());
+		return this.definition = this.path.rebuiltFieldDefinition(distribute());
 	}
 
 }

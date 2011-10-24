@@ -67,8 +67,8 @@ public final class PathTarget extends Ref {
 	}
 
 	@Override
-	public Path getPath() {
-		return this.path.getRawPath();
+	public final BoundPath getPath() {
+		return this.path;
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public final class PathTarget extends Ref {
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;
 		final BoundPath rescopePath = pathRescoper.getPath();
 
-		return rescopePath.append(this.path.getRawPath()).target(
+		return rescopePath.append(this.path).target(
 				distributeIn(rescoper.getFinalScope().getContainer()));
 	}
 
@@ -166,7 +166,10 @@ public final class PathTarget extends Ref {
 			return startWithPrefix(
 					reproducer,
 					pathReproduction,
-					reproducer.getPhrasePrefix().getPath().materialize());
+					reproducer.getPhrasePrefix()
+					.getPath()
+					.getRawPath()
+					.materialize());
 		}
 
 		if (!pathReproduction.isOutOfClause()) {
@@ -179,7 +182,10 @@ public final class PathTarget extends Ref {
 				reproducer,
 				pathReproduction,
 				pathReproduction.getReproducedPath().append(
-						reproducer.getPhrasePrefix().getPath().materialize()));
+						reproducer.getPhrasePrefix()
+						.getPath()
+						.getRawPath()
+						.materialize()));
 	}
 
 	@Override

@@ -108,12 +108,10 @@ public final class RefDep extends Dep {
 			BoundPath path,
 			Distributor distributor) {
 
-		final Path prefix =
-				path.getRawPath()
-				.cut(1)
+		final BoundPath prefix =
+				path.cut(1)
 				.append(getObject().getScope().getEnclosingScopePath());
-		final Rescoper rescoper =
-				prefix.bind(path, path.getOrigin()).rescoper();
+		final Rescoper rescoper = prefix.rescoper();
 
 		return getDepRef().toFieldDefinition()
 				.rescope(rescoper)

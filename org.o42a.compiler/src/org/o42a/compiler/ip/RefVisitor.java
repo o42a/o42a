@@ -291,7 +291,8 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					this.owner.distribute(),
 					memberId,
 					declaredIn);
-			final Path path = this.owner.getPath().append(memberOf);
+			final Path path =
+					this.owner.getPath().getRawPath().append(memberOf);
 
 			return wrap(path.bind(location, this.owner.getScope())
 					.target(this.owner.distribute()));
