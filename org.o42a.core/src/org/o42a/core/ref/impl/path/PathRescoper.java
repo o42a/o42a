@@ -27,7 +27,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
@@ -86,15 +85,6 @@ public final class PathRescoper extends Rescoper {
 		}
 
 		return found.getResult().getScope().walkingResolver(resolver);
-	}
-
-	@Override
-	public Ref rescopeRef(Ref ref) {
-
-		final BoundPath newPath = getPath().append(ref.getPath());
-
-		return newPath.target(
-				ref.distributeIn(getFinalScope().getContainer()));
 	}
 
 	@Override
