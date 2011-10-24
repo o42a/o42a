@@ -33,13 +33,10 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.Arrays;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.AbsolutePathTarget;
-import org.o42a.core.ref.impl.path.PathTarget;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Statements;
@@ -48,11 +45,6 @@ import org.o42a.core.st.sentence.Statements;
 public enum PathKind {
 
 	RELATIVE_PATH(false) {
-
-		@Override
-		protected Ref target(BoundPath path, Distributor distributor) {
-			return new PathTarget(path, distributor);
-		}
 
 		@Override
 		protected PathReproduction reproduce(
@@ -64,11 +56,6 @@ public enum PathKind {
 	},
 
 	ABSOLUTE_PATH(true) {
-
-		@Override
-		protected Ref target(BoundPath path, Distributor distributor) {
-			return new AbsolutePathTarget(path, distributor);
-		}
 
 		@Override
 		protected PathReproduction reproduce(
@@ -92,8 +79,6 @@ public enum PathKind {
 	public final Path emptyPath() {
 		return this.emptyPath;
 	}
-
-	protected abstract Ref target(BoundPath path, Distributor distributor);
 
 	protected abstract PathReproduction reproduce(
 			Reproducer reproducer,

@@ -25,7 +25,6 @@ import org.o42a.core.ref.path.BoundPath;
 
 public interface Rescopable<R> extends ScopeInfo {
 
-	@Deprecated
 	R rescope(Rescoper rescoper);
 
 	R rescope(BoundPath path);

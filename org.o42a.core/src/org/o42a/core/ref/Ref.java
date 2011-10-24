@@ -21,8 +21,10 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
@@ -44,13 +46,11 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefLogical;
-import org.o42a.core.ref.impl.ValueFieldDefinition;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.path.ErrorStep;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
 import org.o42a.core.ref.impl.type.DefaultTypeRef;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -60,7 +60,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.*;
 
 
-public abstract class Ref extends Statement implements Rescopable<Ref> {
+public class Ref extends Statement implements Rescopable<Ref> {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
@@ -89,43 +89,29 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 				.target(distributor);
 	}
 
+	private final BoundPath path;
 	private Logical logical;
 	private RefOp op;
 
-	public Ref(LocationInfo location, Distributor distributor) {
-		this(location, distributor, null);
+	public Ref(BoundPath path, Distributor distributor) {
+		super(path, distributor);
+		this.path = path;
 	}
 
-	protected Ref(
-			LocationInfo location,
-			Distributor distributor,
-			Logical logical) {
-		super(location, distributor);
-		this.logical = logical;
+	public final boolean isConstant() {
+		return isStatic() && getResolution().isConstant();
 	}
 
-	public abstract boolean isConstant();
-
-	public boolean isKnownStatic() {
-		return false;
+	public final boolean isKnownStatic() {
+		return getPath().getRawPath().isStatic();
 	}
 
-	public boolean isStatic() {
-		if (isKnownStatic()) {
-			return true;
-		}
-
-		final BoundPath path = getPath();
-
-		if (path != null) {
-			return path.isStatic();
-		}
-
-		return false;
+	public final boolean isStatic() {
+		return getPath().isStatic();
 	}
 
-	public BoundPath getPath() {
-		return null;
+	public final BoundPath getPath() {
+		return this.path;
 	}
 
 	public final ValueType<?> getValueType() {
@@ -160,7 +146,10 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 		return new RefDefiner(this, env);
 	}
 
-	public abstract Resolution resolve(Resolver resolver);
+	public Resolution resolve(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+		return resolve(resolver, pathResolver(resolver));
+	}
 
 	public final Value<?> getValue() {
 		return value(getScope().dummyResolver());
@@ -171,8 +160,17 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 				.value().explicitUseBy(resolver).getValue();
 	}
 
-	public ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
-		return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
+	public final ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
+
+		final Step[] steps = getPath().getSteps();
+
+		if (steps.length == 0) {
+			return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
+		}
+
+		final Step lastStep = steps[steps.length - 1];
+
+		return lastStep.valueAdapter(this, expectedStruct);
 	}
 
 	/**
@@ -188,34 +186,97 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 	 *
 	 * @return ancestor reference or <code>null</code> if can not be determined.
 	 */
-	public TypeRef ancestor(LocationInfo location) {
-		return getPath().ancestor(this, distribute());
+	public final TypeRef ancestor(LocationInfo location) {
+		return getPath().ancestor(location, distribute());
 	}
 
-	public Ref materialize() {
+	public final Ref materialize() {
 
-		final Resolution resolution = getResolution();
-		final Path materializationPath = resolution.materializationPath();
+		final BoundPath path = getPath();
+		final BoundPath materialized = path.materialize();
 
-		if (materializationPath.isSelf()) {
+		if (materialized == path) {
 			return this;
 		}
 
-		return getPath().append(materializationPath).target(distribute());
+		return materialized.target(distribute());
 	}
 
 	@Override
-	public abstract Ref reproduce(Reproducer reproducer);
+	public Ref reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
 
-	public Ref toStatic() {
+		final BoundPath path = getPath();
+
+		if (path.isAbsolute()) {
+			return path.target(reproducer.distribute());
+		}
+
+		final PathReproduction pathReproduction = path.reproduce(reproducer);
+
+		if (pathReproduction == null) {
+			return null;
+		}
+		if (pathReproduction.isUnchanged()) {
+			if (!reproducer.isTopLevel()) {
+				return reproducePart(
+						reproducer,
+						pathReproduction.getExternalPath());
+			}
+			// Top-level reproducer`s scope is not compatible with path
+			// and requires rescoping.
+			return startWithPrefix(
+					reproducer,
+					pathReproduction,
+					reproducer.getPhrasePrefix()
+					.getPath()
+					.getRawPath()
+					.materialize());
+		}
+
+		if (!pathReproduction.isOutOfClause()) {
+			return reproducePart(
+					reproducer,
+					pathReproduction.getReproducedPath());
+		}
+
+		return startWithPrefix(
+				reproducer,
+				pathReproduction,
+				pathReproduction.getReproducedPath().append(
+						reproducer.getPhrasePrefix()
+						.getPath()
+						.getRawPath()
+						.materialize()));
+	}
+
+	private Ref reproducePart(Reproducer reproducer, Path path) {
+		return path.bind(this, reproducer.getScope()).target(
+				reproducer.distribute());
+	}
+
+	private Ref startWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction,
+			Path phrasePrefix) {
+
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phrasePrefix.bind(this, reproducer.getScope()).target(
+					reproducer.distribute());
+		}
+
+		return phrasePrefix.append(externalPath)
+				.bind(this, reproducer.getScope())
+				.target(reproducer.distribute());
+	}
+
+	public final Ref toStatic() {
 		if (isKnownStatic()) {
 			return this;
 		}
-
-		final Rescoper rescoper =
-				Path.SELF_PATH.bindStatically(this, getScope()).rescoper();
-
-		return rescope(rescoper);
+		return getPath().toStatic().target(distribute());
 	}
 
 	public final Ref adapt(LocationInfo location, StaticTypeRef adapterType) {
@@ -235,14 +296,22 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 	}
 
 	@Override
-	public Ref rescope(BoundPath path) {
+	public final Ref rescope(Rescoper rescoper) {
+		return rescoper.update(this);
+	}
+
+	@Override
+	public final Ref rescope(BoundPath path) {
 		return path.append(getPath()).target(
 				distributeIn(path.getOrigin().getContainer()));
 	}
 
 	@Override
-	public Ref upgradeScope(Scope scope) {
-		return rescope(upgradeRescoper(getScope(), scope));
+	public final Ref upgradeScope(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+		return getPath().target(distributeIn(scope.getContainer()));
 	}
 
 	public final TypeRef toTypeRef() {
@@ -282,11 +351,11 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 				vsFinder.toValueStruct());
 	}
 
-	public TargetRef toTargetRef(TypeRef typeRef) {
+	public final TargetRef toTargetRef(TypeRef typeRef) {
 		return targetRef(this, typeRef);
 	}
 
-	public Rescoper toRescoper() {
+	public final Rescoper toRescoper() {
 		return getPath().rescoper();
 	}
 
@@ -295,7 +364,7 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 	}
 
 	public final FieldDefinition toFieldDefinition() {
-		return createFieldDefinition();
+		return getPath().fieldDefinition(distribute());
 	}
 
 	public final RefOp op(HostOp host) {
@@ -308,16 +377,34 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 
 		assert assertFullyResolved();
 
-		return this.op = createOp(host);
+		return this.op = new RefOp(host, this);
 	}
 
-	protected abstract FieldDefinition createFieldDefinition();
-
-	protected final FieldDefinition defaultFieldDefinition() {
-		return new ValueFieldDefinition(this);
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
+		return this.path.toString();
 	}
 
-	protected abstract RefOp createOp(HostOp host);
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		resolve(resolver, fullPathResolver(resolver)).resolveAll();
+	}
+
+	@Override
+	protected void fullyResolveValues(Resolver resolver) {
+
+		final Resolution resolution =
+				resolve(resolver, valuePathResolver(resolver));
+
+		resolution.resolveValues(resolver);
+	}
+
+	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
+		return resolver.path(pathResolver, getPath(), resolver.getScope());
+	}
 
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
