@@ -147,7 +147,7 @@ public final class ObjectValue implements UseInfo {
 		if (wrapped != object) {
 			return this.explicitDefinitions =
 					wrapperPath(object.getScope(), wrapped.getScope())
-					.rescoper().update(wrapped.value().getDefinitions());
+					.toRescoper().update(wrapped.value().getDefinitions());
 		}
 
 		this.explicitDefinitions = object.explicitDefinitions();

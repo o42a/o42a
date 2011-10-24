@@ -202,7 +202,7 @@ public final class PathRescoper extends Rescoper {
 		return externalPath.bind(
 				this.path,
 				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
-				.rescoper()
+				.toRescoper()
 				.and(phraseRescoper);
 	}
 
