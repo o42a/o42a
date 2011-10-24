@@ -23,7 +23,9 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
-import org.o42a.core.def.impl.rescoper.*;
+import org.o42a.core.def.impl.rescoper.CompoundRescoper;
+import org.o42a.core.def.impl.rescoper.TransparentRescoper;
+import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
@@ -45,10 +47,6 @@ public abstract class Rescoper {
 		}
 		toScope.assertDerivedFrom(fromScope);
 		return new UpgradeRescoper(fromScope, toScope);
-	}
-
-	public static Rescoper wrapper(Scope scope, Scope wrapped) {
-		return new Wrapper(scope, wrapped);
 	}
 
 	private final Scope finalScope;

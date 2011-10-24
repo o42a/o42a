@@ -21,7 +21,7 @@ package org.o42a.core.artifact.object;
 
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.core.def.Rescoper.wrapper;
+import static org.o42a.core.def.impl.Wrapper.wrapperPath;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -146,8 +146,8 @@ public final class ObjectValue implements UseInfo {
 
 		if (wrapped != object) {
 			return this.explicitDefinitions =
-					wrapper(object.getScope(), wrapped.getScope())
-					.update(wrapped.value().getDefinitions());
+					wrapperPath(object.getScope(), wrapped.getScope())
+					.rescoper().update(wrapped.value().getDefinitions());
 		}
 
 		this.explicitDefinitions = object.explicitDefinitions();
