@@ -22,15 +22,9 @@ package org.o42a.core.member.impl.field;
 import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.ref.path.Path;
 
 
 public final class ObjectFieldWrap extends FieldWrap<Obj> {
@@ -63,12 +57,12 @@ public final class ObjectFieldWrap extends FieldWrap<Obj> {
 
 	private static final class Wrap extends ObjectWrap {
 
-		Wrap(ObjectFieldWrap scope, Obj sample) {
-			super(scope, sample);
+		Wrap(ObjectFieldWrap scope) {
+			super(scope, scope.getWrapped().getArtifact());
 		}
 
-		Wrap(ObjectFieldWrap scope) {
-			super(scope);
+		Wrap(ObjectFieldWrap scope, Obj sample) {
+			super(scope, sample);
 		}
 
 		@Override
@@ -80,75 +74,22 @@ public final class ObjectFieldWrap extends FieldWrap<Obj> {
 		protected Ascendants buildAscendants() {
 
 			final Ascendants ascendants = new Ascendants(this);
+			final Obj propagatedFrom = getPropagatedFrom();
+			final Path path =
+					propagatedFrom.getScope()
+					.getEnclosingScopePath()
+					.append(propagatedFrom.selfRef().getPath());
 
-			return ascendants.setAncestor(new AncestorRef(this).toTypeRef());
+			return ascendants.addImplicitSample(
+					path.bind(
+							this,
+							propagatedFrom.getScope().getEnclosingScope())
+					.staticTypeRef(
+							getScope().getEnclosingScope().distribute()));
 		}
 
 		private ObjectFieldWrap field() {
 			return (ObjectFieldWrap) getScope();
-		}
-
-	}
-
-	private static final class AncestorRef extends Ref {
-
-		private final Wrap wrap;
-
-		AncestorRef(Wrap wrap) {
-			super(
-					wrap,
-					wrap.distributeIn(wrap.getScope().getEnclosingContainer()));
-			this.wrap = wrap;
-		}
-
-		@Override
-		public boolean isConstant() {
-			return getResolution().isConstant();
-		}
-
-		@Override
-		public boolean isKnownStatic() {
-			return true;
-		}
-
-		@Override
-		public Resolution resolve(Resolver resolver) {
-			assertScopeIs(resolver.getScope());
-			return resolver.artifactPart(
-					this,
-					this.wrap,
-					field().getInterface().getArtifact());
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			getLogger().notReproducible(this);
-			return null;
-		}
-
-		@Override
-		protected FieldDefinition createFieldDefinition() {
-			return defaultFieldDefinition();
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			resolve(resolver).resolveAll();
-		}
-
-		@Override
-		protected void fullyResolveValues(Resolver resolver) {
-			resolve(resolver).resolveValues(resolver);
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			throw new UnsupportedOperationException();
-		}
-
-		private ObjectFieldWrap field() {
-			return this.wrap.field();
 		}
 
 	}

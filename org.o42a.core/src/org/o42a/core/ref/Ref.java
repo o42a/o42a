@@ -31,7 +31,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Rescoper;
-import org.o42a.core.def.impl.rescoper.RefRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -285,14 +284,7 @@ public abstract class Ref extends Statement {
 	}
 
 	public Rescoper toRescoper() {
-
-		final BoundPath path = getPath();
-
-		if (path != null) {
-			return path.rescoper();
-		}
-
-		return new RefRescoper(this);
+		return getPath().rescoper();
 	}
 
 	public final Statement toCondition() {

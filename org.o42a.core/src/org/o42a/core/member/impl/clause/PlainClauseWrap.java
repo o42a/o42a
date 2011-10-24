@@ -25,18 +25,12 @@ import static org.o42a.core.def.Rescoper.wrapper;
 import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -156,12 +150,13 @@ public final class PlainClauseWrap extends PlainClause {
 
 	private static final class Wrap extends ObjectWrap {
 
-		Wrap(PlainClauseWrap scope, Obj sample) {
-			super(scope, sample);
+		Wrap(PlainClauseWrap scope) {
+			super(scope, scope.getWrapped().getArtifact());
+			System.err.println("(!) " + this);
 		}
 
-		Wrap(PlainClauseWrap scope) {
-			super(scope);
+		Wrap(PlainClauseWrap scope, Obj sample) {
+			super(scope, sample);
 		}
 
 		@Override
@@ -178,71 +173,18 @@ public final class PlainClauseWrap extends PlainClause {
 		protected Ascendants buildAscendants() {
 
 			final Ascendants ascendants = new Ascendants(this);
+			final Obj propagatedFrom = getPropagatedFrom();
+			final Path path =
+					propagatedFrom.getScope()
+					.getEnclosingScopePath()
+					.append(propagatedFrom.selfRef().getPath());
 
-			return ascendants.setAncestor(new AncestorRef(this).toTypeRef());
-		}
-
-	}
-
-	private static final class AncestorRef extends Ref {
-
-		private final Wrap wrap;
-
-		AncestorRef(Wrap wrap) {
-			super(
-					wrap,
-					wrap.distributeIn(wrap.getScope().getEnclosingContainer()));
-			this.wrap = wrap;
-		}
-
-		@Override
-		public boolean isConstant() {
-			return getResolution().isConstant();
-		}
-
-		@Override
-		public boolean isKnownStatic() {
-			return true;
-		}
-
-		@Override
-		public Resolution resolve(Resolver resolver) {
-			assertScopeIs(resolver.getScope());
-			return resolver.artifactPart(
-					this,
-					this.wrap,
-					field().getInterface().getObject());
-		}
-
-		@Override
-		public Ref reproduce(Reproducer reproducer) {
-			assertCompatible(reproducer.getReproducingScope());
-			getLogger().notReproducible(this);
-			return null;
-		}
-
-		@Override
-		protected FieldDefinition createFieldDefinition() {
-			return defaultFieldDefinition();
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			resolve(resolver).resolveAll();
-		}
-
-		@Override
-		protected void fullyResolveValues(Resolver resolver) {
-			resolve(resolver).resolveValues(resolver);
-		}
-
-		@Override
-		protected RefOp createOp(HostOp host) {
-			throw new UnsupportedOperationException();
-		}
-
-		private PlainClauseWrap field() {
-			return this.wrap.toClause();
+			return ascendants.addImplicitSample(
+					path.bind(
+							this,
+							propagatedFrom.getScope().getEnclosingScope())
+					.staticTypeRef(
+							getScope().getEnclosingScope().distribute()));
 		}
 
 	}
