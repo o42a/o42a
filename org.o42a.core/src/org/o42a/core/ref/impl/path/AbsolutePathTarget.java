@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.impl.rescoper.CompoundRescoper;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
@@ -112,11 +113,14 @@ public final class AbsolutePathTarget extends Ref {
 
 	@Override
 	public Ref rescope(Rescoper rescoper) {
+		if (rescoper.isTransparent()) {
+			return this;
+		}
 		if (rescoper instanceof UpgradeRescoper) {
 			return upgradeScope(((UpgradeRescoper) rescoper).getFinalScope());
 		}
-		if (!(rescoper instanceof PathRescoper)) {
-			return super.rescope(rescoper);
+		if (rescoper instanceof CompoundRescoper) {
+			return rescoper.update((Ref) this);
 		}
 
 		final PathRescoper pathRescoper = (PathRescoper) rescoper;

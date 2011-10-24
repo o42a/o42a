@@ -42,7 +42,9 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.impl.*;
+import org.o42a.core.ref.impl.Adapter;
+import org.o42a.core.ref.impl.RefLogical;
+import org.o42a.core.ref.impl.ValueFieldDefinition;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.path.ErrorStep;
 import org.o42a.core.ref.impl.type.DefaultStaticTypeRef;
@@ -230,14 +232,6 @@ public abstract class Ref extends Statement implements Rescopable<Ref> {
 			return this;
 		}
 		return rescope(getScope().rescoperTo(this, toScope));
-	}
-
-	@Override
-	public Ref rescope(Rescoper rescoper) {
-		if (rescoper.isTransparent()) {
-			return this;
-		}
-		return new RescopedRef(this, rescoper);
 	}
 
 	@Override

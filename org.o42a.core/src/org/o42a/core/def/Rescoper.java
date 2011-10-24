@@ -28,9 +28,7 @@ import org.o42a.core.def.impl.rescoper.TransparentRescoper;
 import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.impl.Rescoped;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 
@@ -118,13 +116,6 @@ public abstract class Rescoper {
 			return this;
 		}
 		return new CompoundRescoper(this, other);
-	}
-
-	public Ref rescopeRef(Ref ref) {
-		return new Rescoped(
-				ref,
-				this,
-				ref.distributeIn(getFinalScope().getContainer()));
 	}
 
 	public abstract void resolveAll(Resolver resolver);
