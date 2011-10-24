@@ -66,6 +66,7 @@ public abstract class Obj
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
+	private Obj wrapped;
 	private ObjectType type;
 	private ObjectValue value;
 	private int depNameSeq;
@@ -164,8 +165,11 @@ public abstract class Obj
 		return this;
 	}
 
-	public Obj getWrapped() {
-		return this;
+	public final Obj getWrapped() {
+		if (this.wrapped != null) {
+			return this.wrapped;
+		}
+		return this.wrapped = findWrapped();
 	}
 
 	public final ObjectType type() {
@@ -507,6 +511,28 @@ public abstract class Obj
 		return this.ir = createIR(generator);
 	}
 
+	protected Obj findWrapped() {
+
+		final Field<?> field = getScope().toField();
+
+		if (field == null) {
+			return this;
+		}
+
+		final Obj enclosingObject =
+				getScope().getEnclosingScope().getArtifact().materialize();
+		final Obj enclosingWrapped = enclosingObject.getWrapped();
+
+		if (enclosingWrapped == enclosingObject) {
+			return this;
+		}
+
+		return enclosingWrapped.member(
+				field.getKey()).toField(dummyUser())
+				.getArtifact()
+				.materialize();
+	}
+
 	protected final void resolve() {
 		type().resolve(false);
 	}
@@ -665,6 +691,13 @@ public abstract class Obj
 
 	@Override
 	protected void fullyResolve() {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			wrapped.type().wrapBy(type());
+			wrapped.resolveAll();
+		}
 		type().resolveAll();
 		if (isClone()) {
 			return;
@@ -675,10 +708,23 @@ public abstract class Obj
 	}
 
 	protected void fullyResolveDefinitions() {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			wrapped.value().wrapBy(value());
+		}
 		value().getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			return wrapped.ir(generator);
+		}
+
 		return new ObjectIR(generator, this);
 	}
 

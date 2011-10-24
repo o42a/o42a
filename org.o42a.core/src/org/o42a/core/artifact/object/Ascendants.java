@@ -121,7 +121,8 @@ public class Ascendants
 			final ConstructionMode ancestorMode =
 					ancestor.getConstructionMode();
 
-			if (!ancestorMode.isProhibited()) {
+			if (enclosingMode.ordinal() > ancestorMode.ordinal()
+					&& !ancestorMode.isProhibited()) {
 				return ancestorMode;
 			}
 		}
