@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -48,6 +49,11 @@ public final class PathRescoper extends Rescoper {
 
 	public final BoundPath getPath() {
 		return this.path;
+	}
+
+	@Override
+	public <R extends Rescopable<R>> R update(R rescopable) {
+		return rescopable.rescope(getPath());
 	}
 
 	@Override

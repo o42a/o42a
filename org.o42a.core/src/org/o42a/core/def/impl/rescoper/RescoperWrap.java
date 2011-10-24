@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def.impl.rescoper;
 
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -40,6 +41,11 @@ public abstract class RescoperWrap extends Rescoper {
 	@Override
 	public final boolean isStatic() {
 		return wrapped().isStatic();
+	}
+
+	@Override
+	public <R extends Rescopable<R>> R update(R rescopable) {
+		return wrapped().update(rescopable);
 	}
 
 	@Override

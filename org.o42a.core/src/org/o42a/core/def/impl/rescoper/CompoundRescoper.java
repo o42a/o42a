@@ -19,8 +19,8 @@
 */
 package org.o42a.core.def.impl.rescoper;
 
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Def;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
@@ -43,6 +43,11 @@ public final class CompoundRescoper extends Rescoper {
 	@Override
 	public boolean isStatic() {
 		return this.first.isStatic() && this.second.isStatic();
+	}
+
+	@Override
+	public <R extends Rescopable<R>> R update(R rescopable) {
+		return this.second.update(this.first.update(rescopable));
 	}
 
 	@Override
@@ -70,11 +75,6 @@ public final class CompoundRescoper extends Rescoper {
 	@Override
 	public Scope updateScope(Scope scope) {
 		return this.second.updateScope(this.first.updateScope(scope));
-	}
-
-	@Override
-	public <D extends Def<D>> D updateDef(D def) {
-		return this.second.updateDef(this.first.updateDef(def));
 	}
 
 	@Override

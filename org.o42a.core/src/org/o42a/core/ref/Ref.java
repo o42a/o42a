@@ -27,6 +27,7 @@ import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
+import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
@@ -57,7 +58,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.*;
 
 
-public abstract class Ref extends Statement {
+public abstract class Ref extends Statement implements Rescopable<Ref> {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
@@ -231,6 +232,7 @@ public abstract class Ref extends Statement {
 		return rescope(getScope().rescoperTo(this, toScope));
 	}
 
+	@Override
 	public Ref rescope(Rescoper rescoper) {
 		if (rescoper.isTransparent()) {
 			return this;
@@ -238,6 +240,13 @@ public abstract class Ref extends Statement {
 		return new RescopedRef(this, rescoper);
 	}
 
+	@Override
+	public Ref rescope(BoundPath path) {
+		return path.append(getPath()).target(
+				distributeIn(path.getOrigin().getContainer()));
+	}
+
+	@Override
 	public Ref upgradeScope(Scope scope) {
 		return rescope(upgradeRescoper(getScope(), scope));
 	}
