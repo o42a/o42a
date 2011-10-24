@@ -145,7 +145,7 @@ public abstract class Def<D extends Def<D>>
 
 	@Override
 	public D rescope(BoundPath path) {
-		return rescope(path.rescoper());
+		return rescope(path.toRescoper());
 	}
 
 	@Override

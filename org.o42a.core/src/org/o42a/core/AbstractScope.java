@@ -142,7 +142,7 @@ public abstract class AbstractScope implements Scope {
 		if (fromScope == toScope) {
 			return transparentRescoper(toScope);
 		}
-		return toScope.pathTo(location, fromScope).rescoper();
+		return toScope.pathTo(location, fromScope).toRescoper();
 	}
 
 	public static boolean contains(Scope scope, Scope other) {

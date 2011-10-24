@@ -108,7 +108,7 @@ public final class MemberOverride extends Sample {
 				this.overriddenMember.getKey().toPath().materialize();
 		final Rescoper rescoper = memberPath.bind(
 				this,
-				object.getScope().getEnclosingScope()).rescoper();
+				object.getScope().getEnclosingScope()).toRescoper();
 
 		return object.value().getValueStruct().rescope(rescoper);
 	}

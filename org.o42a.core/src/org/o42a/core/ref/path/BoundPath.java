@@ -247,7 +247,7 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public Rescoper rescoper() {
+	public Rescoper toRescoper() {
 		if (!getRawPath().isStatic() && getRawSteps().length == 0) {
 			return transparentRescoper(getOrigin());
 		}

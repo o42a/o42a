@@ -114,6 +114,17 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		return this.path;
 	}
 
+	public final BoundPath bindPath() {
+
+		final BoundPath path = getPath();
+
+		if (path.getOrigin() == getScope()) {
+			return path;
+		}
+
+		return path.getRawPath().bind(this, getScope());
+	}
+
 	public final ValueType<?> getValueType() {
 
 		final ValueStruct<?, ?> valueStruct = valueStruct(getScope());
@@ -356,7 +367,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 	}
 
 	public final Rescoper toRescoper() {
-		return getPath().rescoper();
+		return bindPath().toRescoper();
 	}
 
 	public final Statement toCondition() {

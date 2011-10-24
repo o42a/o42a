@@ -71,7 +71,7 @@ class PhraseConstructor extends ObjectConstructor {
 
 		final PhraseFieldDefinition definition =
 				new PhraseFieldDefinition(this.phrase);
-		final Rescoper rescoper = path.cut(1).rescoper();
+		final Rescoper rescoper = path.cut(1).toRescoper();
 
 		return definition.rescope(rescoper);
 	}

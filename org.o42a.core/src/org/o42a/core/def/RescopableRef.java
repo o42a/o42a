@@ -97,7 +97,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 
 	@Override
 	public R rescope(BoundPath path) {
-		return rescope(path.rescoper());
+		return rescope(path.toRescoper());
 	}
 
 	@Override
