@@ -19,13 +19,10 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.Accessor;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.Wrap;
 import org.o42a.intrinsic.CompilerIntrinsics;
 
 
@@ -33,27 +30,12 @@ public class ModuleNamespace extends Namespace {
 
 	public ModuleNamespace(CompilerIntrinsics intrinsics) {
 		super(intrinsics.getTop(), intrinsics.getTop());
-		useNamespace(new RootRef(intrinsics));
+		useNamespace(ROOT_PATH.bind(this, getScope()));
 	}
 
 	@Override
 	protected boolean accessibleBy(Accessor accessor) {
 		return true;
-	}
-
-	private static final class RootRef extends Wrap {
-
-		RootRef(CompilerIntrinsics intrinsics) {
-			super(
-					intrinsics.getTop(),
-					declarativeDistributor(intrinsics.getTop()));
-		}
-
-		@Override
-		protected Ref resolveWrapped() {
-			return ROOT_PATH.target(this, distribute());
-		}
-
 	}
 
 }

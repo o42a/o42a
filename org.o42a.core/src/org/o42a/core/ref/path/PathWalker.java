@@ -25,7 +25,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.DummyPathWalker;
 
@@ -40,6 +39,8 @@ public interface PathWalker {
 
 	boolean module(Step step, Obj module);
 
+	boolean skip(Step step, Scope scope);
+
 	boolean staticScope(Step step, Scope scope);
 
 	boolean up(Container enclosed, Step step, Container enclosing);
@@ -48,11 +49,11 @@ public interface PathWalker {
 
 	boolean arrayElement(Obj array, Step step, ArrayElement element);
 
-	boolean fieldDep(Obj object, Step step, Field<?> dependency);
-
 	boolean refDep(Obj object, Step step, Ref dependency);
 
 	boolean materialize(Artifact<?> artifact, Step step, Obj result);
+
+	boolean object(Step step, Obj object);
 
 	void abortedAt(Scope last, Step brokenStep);
 

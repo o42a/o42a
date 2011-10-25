@@ -19,25 +19,25 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.impl.path.MaterializerStep.MATERIALIZER_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.Step.MATERIALIZE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.ref.impl.path.ModuleStep;
+import org.o42a.core.ref.impl.path.PathFragmentStep;
+import org.o42a.core.ref.impl.path.VoidStep;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Deferred;
 
 
 public final class Path {
@@ -72,12 +72,8 @@ public final class Path {
 		return new Path(ABSOLUTE_PATH, true, new ModuleStep(moduleId));
 	}
 
-	public static Path memberPath(MemberKey memberKey) {
-		return new Path(RELATIVE_PATH, false, new MemberStep(memberKey));
-	}
-
 	public static Path materializePath() {
-		return new Path(RELATIVE_PATH, false, MATERIALIZE);
+		return new Path(RELATIVE_PATH, false, MATERIALIZER_STEP);
 	}
 
 	private final PathKind kind;
@@ -126,34 +122,16 @@ public final class Path {
 		return new Path(getKind(), isStatic(), newSteps);
 	}
 
-	public Path append(MemberKey memberKey) {
+	public final Path append(MemberKey memberKey) {
 		assert memberKey != null :
 			"Member key not specified";
 		return append(new MemberStep(memberKey));
 	}
 
-	public Path cutArtifact() {
-
-		final Step[] steps = dematerialize().getSteps();
-		final int length = steps.length;
-
-		if (length == 0) {
-			return this;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = steps[lastIdx];
-
-		if (!lastStep.getStepKind().isArtifact()) {
-			return this;
-		}
-		if (lastIdx == 0) {
-			return getKind().emptyPath();
-		}
-
-		final Step[] newSteps = Arrays.copyOf(steps, lastIdx);
-
-		return new Path(getKind(), isStatic(), newSteps);
+	public final Path append(PathFragment fragment) {
+		assert fragment != null :
+			"Path fragment not specified";
+		return append(new PathFragmentStep(fragment));
 	}
 
 	public Path materialize() {
@@ -165,40 +143,20 @@ public final class Path {
 		}
 
 		final Step lastStep = this.steps[length - 1];
-		final Step materializer = lastStep.materialize();
 
-		if (materializer == null) {
+		if (lastStep.isMaterial()) {
 			return this;
 		}
 
-		return append(materializer);
+		return append(MATERIALIZER_STEP);
 	}
 
-	public Path dematerialize() {
-
-		final int length = this.steps.length;
-
-		if (length == 0) {
-			return this;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = this.steps[lastIdx];
-
-		if (!lastStep.getStepKind().isMaterializer()) {
-			return this;
-		}
-		if (lastIdx == 0) {
-			return getKind().emptyPath();
-		}
-
-		final Step[] newSteps = Arrays.copyOf(this.steps, lastIdx);
-
-		return new Path(getKind(), isStatic(), newSteps);
-	}
-
-	public Path arrayItem(Ref indexRef) {
+	public final Path arrayItem(Ref indexRef) {
 		return append(new ArrayElementStep(indexRef));
+	}
+
+	public final Path newObject(ObjectConstructor constructor) {
+		return append(constructor.toStep());
 	}
 
 	public Path append(Path path) {
@@ -214,28 +172,19 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public Ref target(
-			LocationInfo location,
-			Distributor distributor,
-			Ref start) {
-		if (start == null) {
-			return target(location, distributor);
-		}
-
-		start.assertCompatibleScope(distributor);
-
-		return getKind().target(location, distributor, this, start);
+	public final Path append(BoundPath path) {
+		return append(path.getRawPath());
 	}
 
-	public Ref target(LocationInfo location, Distributor distributor) {
-		return new PathTarget(location, distributor, this, null);
+	public final Path cut(int stepsToCut) {
+
+		final Step[] newSteps =
+				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
+
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
-		return new BoundPath(location, origin, this);
-	}
-
-	public final BoundPath bind(LocationInfo location, Deferred<Scope> origin) {
 		return new BoundPath(location, origin, this);
 	}
 
@@ -250,46 +199,10 @@ public final class Path {
 		return new Path(getKind(), true, steps).bind(location, origin);
 	}
 
-	public final BoundPath bindStatically(
-			LocationInfo location,
-			Deferred<Scope> origin) {
-		if (isStatic()) {
-			return bind(location, origin);
-		}
-
-		final Step[] steps =
-				ArrayUtil.prepend(new StaticStep(origin), getSteps());
-
-		return new Path(getKind(), true, steps).bind(location, origin);
-	}
-
-	public Path rebuildWithRef(Ref followingRef) {
-
-		final Path path = followingRef.getPath();
-
-		if (path != null) {
-			return append(path);
-		}
-
-		final int length = this.steps.length;
-
-		if (length == 0) {
-			return null;
-		}
-
-		final int lastIdx = length - 1;
-		final Step lastStep = this.steps[lastIdx];
-		final Step rebuilt = lastStep.combineWithRef(followingRef);
-
-		if (rebuilt == null) {
-			return null;
-		}
-
-		final Step[] newSteps = this.steps.clone();
-
-		newSteps[lastIdx] = rebuilt;
-
-		return new Path(getKind(), isStatic(), newSteps);
+	public final PrefixPath toPrefix(Scope start) {
+		assert start != null :
+			"Prefix start not specified";
+		return new PrefixPath(start, this);
 	}
 
 	@Override

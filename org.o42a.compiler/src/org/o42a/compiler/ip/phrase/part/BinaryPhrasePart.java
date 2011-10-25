@@ -74,7 +74,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		return getPhrase().getAncestor().getRef().rescope(
+		return getPhrase().getAncestor().getRescopedRef().rescope(
 				distributor.getScope());
 	}
 
@@ -88,7 +88,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 		final Statements<?> statements =
 				definition.propose(this).alternative(this);
 
-		statements.selfAssign(getPhrase().getAncestor().getRef());
+		statements.selfAssign(getPhrase().getAncestor().getRescopedRef());
 	}
 
 	@Override

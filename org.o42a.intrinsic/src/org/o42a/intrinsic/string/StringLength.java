@@ -93,7 +93,7 @@ final class StringLength extends AnnotatedBuiltin {
 
 		final Path path = getScope().getEnclosingScopePath();
 
-		return this.string = path.target(this, distribute());
+		return this.string = path.bind(this, getScope()).target(distribute());
 	}
 
 }

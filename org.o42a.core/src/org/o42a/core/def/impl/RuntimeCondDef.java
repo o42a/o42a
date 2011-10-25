@@ -19,13 +19,13 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 

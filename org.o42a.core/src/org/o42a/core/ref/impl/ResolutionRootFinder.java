@@ -23,24 +23,22 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 
 
-public final class ResolutionRootFinder
-		implements ResolutionWalker, PathWalker {
+public final class ResolutionRootFinder implements PathWalker {
 
 	public static Scope resolutionRoot(TypeRef typeRef) {
 
@@ -64,58 +62,28 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public PathWalker path(BoundPath path) {
-		if (path.isStatic()) {
-			this.root = this.root.getContext().getRoot();
-			return null;
-		}
-		return this;
-	}
-
-	@Override
-	public boolean newObject(ScopeInfo location, Obj object) {
-
-		final Resolver ancestorResolver =
-				this.root.getScope().walkingResolver(dummyUser(), this);
-		final TypeRef ancestor = object.type().getAncestor();
-
-		if (ancestor == null) {
-			return false;
-		}
-
-		final Resolution ancestorResolution =
-				ancestor.getRef().resolve(ancestorResolver);
-
-		return ancestorResolution != null;
-	}
-
-	@Override
-	public boolean artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		return false;
-	}
-
-	@Override
-	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
+	public boolean root(BoundPath path, Scope root) {
 		this.root = this.root.getContext().getRoot();
 		return false;
 	}
 
 	@Override
-	public boolean root(BoundPath path, Scope root) {
-		throw new IllegalStateException();
-	}
-
-	@Override
 	public boolean start(BoundPath path, Scope start) {
-		return true;
+		if (!path.isStatic()) {
+			return true;
+		}
+		this.root = this.root.getContext().getRoot();
+		return false;
 	}
 
 	@Override
 	public boolean module(Step step, Obj module) {
 		throw new IllegalStateException();
+	}
+
+	@Override
+	public boolean skip(Step step, Scope scope) {
+		return true;
 	}
 
 	@Override
@@ -162,13 +130,6 @@ public final class ResolutionRootFinder
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		// Treat the enclosing local scope as resolution root.
-		this.root = object.getScope().getEnclosingScope().toLocal();
-		return false;
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope local =
@@ -184,8 +145,25 @@ public final class ResolutionRootFinder
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		// Materialized object is not a root.
-		return false;
+		// Materialized artifact is not a root, unless it is an object.
+		return artifact.toObject() != null;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+
+		final Resolver ancestorResolver =
+				this.root.getScope().walkingResolver(dummyUser(), this);
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return false;
+		}
+
+		final Resolution ancestorResolution =
+				ancestor.getRef().resolve(ancestorResolver);
+
+		return ancestorResolution != null;
 	}
 
 	@Override

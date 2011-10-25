@@ -24,14 +24,15 @@ import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.def.RescopableRef;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.RescopableRef;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
@@ -54,6 +55,16 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	public abstract boolean isStatic();
 
 	public abstract Ref getUntachedRef();
+
+	public final BoundPath getPath() {
+
+		final BoundPath path = getRescopedRef().getPath();
+
+		assert path != null :
+			"Not a path: " + this;
+
+		return path;
+	}
 
 	public final TypeRef getAncestor() {
 		if (this.ancestor != null) {
@@ -109,6 +120,10 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		final ObjectType type = type(user);
 
 		return type != null ? type.getObject() : null;
+	}
+
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
 	}
 
 	public abstract ValueStruct<?, ?> getValueStruct();

@@ -37,6 +37,7 @@ import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Block;
@@ -72,7 +73,9 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public final NextClause clauseById(LocationInfo location, ClauseId clauseId) {
+	public final NextClause clauseById(
+			LocationInfo location,
+			ClauseId clauseId) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,
@@ -193,7 +196,17 @@ class PhraseSubContext extends PhraseContext {
 			if (plainClause != null && plainClause.isSubstitution()) {
 				ref = substitute(statements.nextDistributor());
 			} else {
-				ref = instance.instantiateObject(statements.nextDistributor());
+
+				final Distributor distributor = statements.nextDistributor();
+				final Path instancePath =
+						instance.instantiateObject(distributor);
+
+				ref = instancePath.bind(
+						new Location(
+								distributor.getContext(),
+								instance.getLocation()),
+						statements.getScope())
+						.target(distributor);
 			}
 			if (ref == null) {
 				continue;

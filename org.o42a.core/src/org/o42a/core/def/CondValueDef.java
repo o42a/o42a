@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;

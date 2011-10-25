@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
@@ -77,7 +77,7 @@ public final class RescopedLogical extends Logical {
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		this.logical.write(dirs, this.rescoper.rescope(dirs, host));
+		this.logical.write(dirs, this.rescoper.write(dirs, host));
 	}
 
 	@Override

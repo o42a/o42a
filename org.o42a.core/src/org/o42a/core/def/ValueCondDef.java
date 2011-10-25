@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 

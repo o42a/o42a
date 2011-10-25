@@ -159,7 +159,7 @@ final class StringChar extends AnnotatedBuiltin {
 
 		final Path path = getScope().getEnclosingScopePath();
 
-		return this.string = path.target(this, distribute());
+		return this.string = path.bind(this, getScope()).target(distribute());
 	}
 
 	private Ref index() {
@@ -170,7 +170,8 @@ final class StringChar extends AnnotatedBuiltin {
 		final MemberKey indexKey =
 				field("index", Accessor.DECLARATION).getKey();
 
-		return this.index = indexKey.toPath().target(this, distribute());
+		return this.index =
+				indexKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
 }

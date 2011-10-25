@@ -90,10 +90,8 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 				fieldName("print_to_console").key(enclosingScope).toPath();
 
 		return new Ascendants(this).setAncestor(
-				printToConsole.target(
-						this,
-						enclosingScope.distribute())
-				.toTypeRef());
+				printToConsole.bind(this, enclosingScope)
+				.typeRef(enclosingScope.distribute()));
 	}
 
 	private Ref text() {
@@ -103,7 +101,8 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 		final MemberKey key = field("text", Accessor.DECLARATION).getKey();
 
-		return this.text = key.toPath().target(this, distribute());
+		return this.text =
+				key.toPath().bind(this, getScope()).target(distribute());
 	}
 
 	private FuncPtr<PrintFunc> printFunc(Generator generator) {

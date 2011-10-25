@@ -21,15 +21,13 @@ package org.o42a.core.artifact.link.impl;
 
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
 
-import org.o42a.core.artifact.common.ObjectWrap;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.ConstructionMode;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.*;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
 
 
-public class LinkTarget extends ObjectWrap {
+public class LinkTarget extends Obj {
 
 	private final Link link;
 
@@ -44,6 +42,11 @@ public class LinkTarget extends ObjectWrap {
 	}
 
 	@Override
+	public boolean isPropagated() {
+		return getWrapped().isPropagated();
+	}
+
+	@Override
 	public ConstructionMode getConstructionMode() {
 		return STRICT_CONSTRUCTION;
 	}
@@ -54,7 +57,7 @@ public class LinkTarget extends ObjectWrap {
 	}
 
 	@Override
-	protected Obj createWrapped() {
+	protected Obj findWrapped() {
 
 		final Resolver resolver =
 				getScope().getEnclosingScope().newResolver(content());
@@ -65,6 +68,15 @@ public class LinkTarget extends ObjectWrap {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(this.link.getTypeRef());
+	}
+
+	@Override
+	protected void declareMembers(ObjectMembers members) {
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return null;
 	}
 
 }

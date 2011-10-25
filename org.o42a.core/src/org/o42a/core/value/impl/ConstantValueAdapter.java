@@ -27,53 +27,66 @@ import org.o42a.core.def.CondDef;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
 
-public class ConstantValueAdapter<T> extends ValueAdapter {
+final class ConstantValueAdapter<T> extends ValueAdapter {
 
-	private ConstantRef<T> ref;
+	private final LocationInfo location;
+	private final Scope scope;
+	private final SingleValueType<T> valueType;
+	private final T constant;
 
-	public ConstantValueAdapter(ConstantRef<T> ref) {
-		this.ref = ref;
-	}
-
-	public final ConstantRef<T> ref() {
-		return this.ref;
+	ConstantValueAdapter(
+			LocationInfo location,
+			Scope scope,
+			SingleValueType<T> valueType,
+			T constant) {
+		this.location = location;
+		this.scope = scope;
+		this.valueType = valueType;
+		this.constant = constant;
 	}
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ref().valueStruct(scope);
+		return this.valueType.struct();
 	}
 
 	@Override
 	public ValueDef valueDef() {
-
-		final Value<T> value =
-				ref().getValueStruct().constantValue(ref().getConstant());
-
-		return new ConstantValueDef<T>(sourceOf(ref()), ref(), value);
+		return this.valueType.struct().constantDef(
+				sourceOf(this.scope),
+				this.location,
+				this.constant);
 	}
 
 	@Override
 	public CondDef condDef() {
-		return logicalTrue(this.ref, this.ref.getScope()).toCondDef();
+		return logicalTrue(this.location, this.scope).toCondDef();
 	}
 
 	@Override
 	public Logical logical(Scope scope) {
-		return ref().rescope(scope).getLogical();
+		return logicalTrue(this.location, scope);
 	}
 
 	@Override
 	public Value<?> initialValue(LocalResolver resolver) {
-		return ref().value(resolver);
+		return this.valueType.constantValue(this.constant);
 	}
 
 	@Override
 	public LogicalValue initialLogicalValue(LocalResolver resolver) {
-		return ref().value(resolver).getCondition().toLogicalValue();
+		return LogicalValue.TRUE;
 	}
 
+	@Override
+	public String toString() {
+		if (this.constant == null) {
+			return "null";
+		}
+		return this.valueType.struct().valueString(this.constant);
+	}
 }
