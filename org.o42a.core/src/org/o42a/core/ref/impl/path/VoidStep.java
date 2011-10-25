@@ -22,11 +22,14 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -35,18 +38,13 @@ import org.o42a.core.st.Reproducer;
 public class VoidStep extends Step {
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.ABSOLUTE_PATH;
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -59,7 +57,7 @@ public class VoidStep extends Step {
 
 		final Obj voidObject = start.getContext().getVoid();
 
-		walker.staticScope(this, voidObject.getScope());
+		walker.object(this, voidObject);
 
 		return voidObject;
 	}
@@ -67,24 +65,41 @@ public class VoidStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final CodeBuilder builder = dirs.getBuilder();
-		final Obj voidObject =
-				builder.getContext().getVoid();
-
-		return voidObject.ir(dirs.getGenerator()).op(builder, dirs.code());
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
 	public String toString() {
 		return "VOID";
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<VoidStep> {
+
+		Op(PathOp start, VoidStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Obj voidObject = getContext().getVoid();
+
+			return voidObject.ir(getGenerator()).op(getBuilder(), dirs.code());
+		}
+
 	}
 
 }

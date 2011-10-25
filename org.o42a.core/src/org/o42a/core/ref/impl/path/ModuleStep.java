@@ -22,11 +22,15 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -43,11 +47,6 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.STATIC_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.ABSOLUTE_PATH;
 	}
@@ -57,8 +56,8 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -88,19 +87,13 @@ public final class ModuleStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Obj module =
-				start.getContext().getIntrinsics().getModule(this.moduleId);
-		final ObjectIR moduleIR = module.ir(start.getGenerator());
-
-		return moduleIR.op(start.getBuilder(), dirs.code());
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -128,6 +121,31 @@ public final class ModuleStep extends Step {
 	@Override
 	public String toString() {
 		return "<" + this.moduleId + '>';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<ModuleStep> {
+
+		Op(PathOp start, ModuleStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Obj module = getContext().getIntrinsics().getModule(
+					getStep().getModuleId());
+			final ObjectIR moduleIR = module.ir(getGenerator());
+
+			return moduleIR.op(getBuilder(), dirs.code());
+		}
+
 	}
 
 }

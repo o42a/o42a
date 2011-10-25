@@ -35,7 +35,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -47,7 +46,7 @@ import org.o42a.core.st.sentence.Statements;
 final class MainPhraseContext extends PhraseContext {
 
 	private int createsObject;
-	private boolean standaloneRef;
+	private boolean standalone;
 	private PhraseContext nextContext;
 	private Ascendants implicitAscendants;
 	private PhraseContinuation nextPart;
@@ -84,8 +83,8 @@ final class MainPhraseContext extends PhraseContext {
 		return this.createsObject > 0;
 	}
 
-	public Ref standaloneRef() {
-		this.standaloneRef = true;
+	public Path standalone() {
+		this.standalone = true;
 
 		final ClauseInstance[] instances = this.nextContext.getInstances();
 
@@ -120,7 +119,7 @@ final class MainPhraseContext extends PhraseContext {
 		if (createsObject()) {
 			return scope.getEnclosingScopePath();
 		}
-		if (this.standaloneRef) {
+		if (this.standalone) {
 
 			final Path enclosingScopePath = scope.getEnclosingScopePath();
 

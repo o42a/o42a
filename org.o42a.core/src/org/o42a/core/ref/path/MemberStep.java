@@ -24,12 +24,16 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -43,14 +47,6 @@ public class MemberStep extends Step {
 			throw new NullPointerException("Field key not specified");
 		}
 		this.memberKey = memberKey;
-	}
-
-	@Override
-	public StepKind getStepKind() {
-		if (firstDeclaration().toField(dummyUser()) != null) {
-			return StepKind.ARTIFACT_STEP;
-		}
-		return StepKind.MEMBER_STEP;
 	}
 
 	@Override
@@ -68,19 +64,16 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
+	public boolean isMaterial() {
 
 		final Member member = firstDeclaration();
 		final Field<?> field = member.toField(dummyUser());
 
 		if (field == null) {
-			return null;
-		}
-		if (field.getArtifactKind().isObject()) {
-			return null;
+			return true;
 		}
 
-		return MATERIALIZE;
+		return field.getArtifactKind().isObject();
 	}
 
 	@Override
@@ -105,29 +98,16 @@ public class MemberStep extends Step {
 	@Override
 	public final PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 
 		final Scope origin = this.memberKey.getOrigin();
 
-		return reproduce(location, reproducer, origin, scope);
+		return reproduce(location, reproducer, origin, reproducer.getScope());
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final Member firstDeclaration = firstDeclaration();
-
-		if (firstDeclaration.toLocal(dummyUser()) != null) {
-			// Member is a local scope.
-			return start;
-		}
-
-		assert firstDeclaration.toField(dummyUser()) != null :
-			"Field expected: " + firstDeclaration;
-
-		// Member is field.
-		return start.field(dirs, this.memberKey);
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -158,8 +138,10 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev) {
-		return prev.combineWithMember(this.memberKey);
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	protected Member resolveMember(
@@ -214,6 +196,31 @@ public class MemberStep extends Step {
 				path,
 				path.toString(index + 1));
 		return null;
+	}
+
+	private static final class Op extends StepOp<MemberStep> {
+
+		Op(PathOp start, MemberStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final Member firstDeclaration = getStep().firstDeclaration();
+
+			if (firstDeclaration.toLocal(dummyUser()) != null) {
+				// Member is a local scope.
+				return host();
+			}
+
+			assert firstDeclaration.toField(dummyUser()) != null :
+				"Field expected: " + firstDeclaration;
+
+			// Member is field.
+			return start().field(dirs, getStep().getMemberKey());
+		}
+
 	}
 
 }

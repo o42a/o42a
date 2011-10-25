@@ -20,7 +20,8 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.ValuePartRef.valuePartRef;
+import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
+import static org.o42a.compiler.ip.ref.RefInterpreter.parentPath;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
@@ -29,10 +30,12 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.compiler.ip.ref.*;
+import org.o42a.compiler.ip.ref.MemberById;
+import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -60,13 +63,17 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		case IMPLIED:
 			break;
 		case SELF:
-			return SELF_PATH.target(location, p);
+			return SELF_PATH.bind(location, p.getScope()).target(p);
 		case PARENT:
-			return new ParentRef(ip(), p.getContext(), ref, null, p);
+			return parentPath(ip(), location, null, p.getContainer())
+					.bind(location, p.getScope())
+					.target(p);
 		case MODULE:
-			return new ModuleRef(location(p, ref), p);
+			return enclosingModulePath(p.getContainer())
+					.bind(location, p.getScope())
+					.target(p);
 		case ROOT:
-			return ROOT_PATH.target(location(p, ref), p);
+			return ROOT_PATH.bind(location, p.getScope()).target(p);
 		}
 
 		p.getContext().getLogger().unresolvedScope(ref, type.getSign());
@@ -76,12 +83,15 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	@Override
 	public Ref visitParentRef(ParentRefNode ref, Distributor p) {
-		return new ParentRef(
+
+		final Location location = location(p, ref);
+		final Path parentPath = parentPath(
 				ip(),
-				p.getContext(),
-				ref,
+				location,
 				ref.getName().getName(),
-				p);
+				p.getContainer());
+
+		return parentPath.bind(location, p.getScope()).target(p);
 	}
 
 	@Override
@@ -89,7 +99,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		if ("object".equals(ref.getName().getName())) {
 			return objectIntrinsic(ref, p);
 		}
-		return valuePartRef(ref, p);
+		return super.visitIntrinsicRef(ref, p);
 	}
 
 	@Override
@@ -176,7 +186,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					location(p, ref.getName()),
 					p,
 					ip().memberName(ref.getName().getName()),
-					declaredIn));
+					declaredIn).toRef());
 		}
 
 		@Override
@@ -223,14 +233,16 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		@Override
 		public Owner visitParentRef(ParentRefNode ref, Distributor p) {
 
-			final Ref parentRef = new ParentRef(
+			final Location location = location(p, ref);
+			final Path parentPath = parentPath(
 					ip(),
-					p.getContext(),
-					ref,
+					location,
 					ref.getName().getName(),
-					p);
+					p.getContainer());
 
-			return new Owner(parentRef, false);
+			return new Owner(
+					parentPath.bind(location, p.getScope()).target(p),
+					false);
 		}
 
 		@Override
@@ -266,21 +278,24 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			if (!this.overridden) {
 				return this.owner;
 			}
-			return new OverriddenEx(
-					this.owner,
-					this.owner.distribute(),
-					this.owner);
+			throw new UnsupportedOperationException();
 		}
 
 		public final Owner memberRefOwner(
 				LocationInfo location,
 				MemberId memberId,
 				StaticTypeRef declaredIn) {
-			return wrap(new MemberRef(
+
+			final MemberOf memberOf = new MemberOf(
 					location,
-					this.owner,
+					this.owner.distribute(),
 					memberId,
-					declaredIn));
+					declaredIn);
+			final Path path =
+					this.owner.getPath().getRawPath().append(memberOf);
+
+			return wrap(path.bind(location, this.owner.getScope())
+					.target(this.owner.distribute()));
 		}
 
 		@Override

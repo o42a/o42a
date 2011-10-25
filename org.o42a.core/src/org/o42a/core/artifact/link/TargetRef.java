@@ -19,10 +19,9 @@
 */
 package org.o42a.core.artifact.link;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
 
-import org.o42a.core.def.RescopableRef;
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -30,6 +29,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
@@ -115,7 +115,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	public RefOp ref(CodeDirs dirs, ObjOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+		final HostOp rescopedHost = getRescoper().write(dirs, host);
 
 		return getRef().op(rescopedHost);
 	}
@@ -200,7 +200,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 			assert assertFullyResolved();
 			this.targetRef.getRef().getLogical().write(
 					dirs,
-					this.targetRef.getRescoper().rescope(dirs, host));
+					this.targetRef.getRescoper().write(dirs, host));
 		}
 
 		@Override

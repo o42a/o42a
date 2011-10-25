@@ -19,15 +19,15 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.util.use.UserInfo;
 
 
 public class LocalResolver extends Resolver {
 
-	LocalResolver(LocalScope scope, UserInfo user, ResolutionWalker walker) {
+	LocalResolver(LocalScope scope, UserInfo user, PathWalker walker) {
 		super(scope, user, walker);
 	}
 
@@ -60,7 +60,7 @@ public class LocalResolver extends Resolver {
 		@Override
 		protected LocalResolver createResolver(
 				UserInfo user,
-				ResolutionWalker walker) {
+				PathWalker walker) {
 			return new LocalResolver(getScope().toLocal(), user, walker);
 		}
 

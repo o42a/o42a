@@ -19,21 +19,23 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def<D extends Def<D>> implements SourceInfo {
+public abstract class Def<D extends Def<D>>
+		implements SourceInfo, Rescopable<D> {
 
 	public static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
@@ -128,6 +130,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return this.hasPrerequisite;
 	}
 
+	@Override
 	public D rescope(Rescoper rescoper) {
 
 		final Rescoper oldRescoper = getRescoper();
@@ -140,6 +143,12 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return create(newRescoper, rescoper);
 	}
 
+	@Override
+	public D prefixWith(PrefixPath prefix) {
+		return rescope(prefix.toRescoper());
+	}
+
+	@Override
 	public D upgradeScope(Scope scope) {
 		if (scope == getScope()) {
 			return self();
@@ -151,7 +160,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		if (getScope() == scope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(this, scope));
+		return rescope(getScope().rescoperTo(scope));
 	}
 
 	public void resolveAll(Resolver resolver) {

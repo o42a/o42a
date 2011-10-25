@@ -21,9 +21,11 @@ package org.o42a.core.value;
 
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.Rescoper;
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
 
@@ -76,7 +78,17 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public SingleValueStruct<T> rescope(Rescoper rescoper) {
+	public final SingleValueStruct<T> rescope(Rescoper rescoper) {
+		return this;
+	}
+
+	@Override
+	public final SingleValueStruct<T> prefixWith(PrefixPath prefix) {
+		return this;
+	}
+
+	@Override
+	public final SingleValueStruct<T> upgradeScope(Scope toScope) {
 		return this;
 	}
 

@@ -20,10 +20,8 @@
 package org.o42a.core.artifact.array.impl;
 
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -33,9 +31,9 @@ final class RtArrayElementConstructor extends ObjectConstructor {
 
 	private final RtArrayElement element;
 
-	RtArrayElementConstructor(RtArrayElement elementm) {
-		super(elementm, elementm.getEnclosingScope().distribute());
-		this.element = elementm;
+	RtArrayElementConstructor(RtArrayElement element) {
+		super(element, element.getEnclosingScope().distribute());
+		this.element = element;
 	}
 
 	@Override
@@ -44,7 +42,7 @@ final class RtArrayElementConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
+	public RtArrayElementConstructor reproduce(Reproducer reproducer) {
 		reproducer.getLogger().notReproducible(this);
 		return null;
 	}
@@ -63,7 +61,7 @@ final class RtArrayElementConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	protected RefOp createOp(HostOp host) {
+	public PathOp op(PathOp host) {
 		return new RtArrayElementOp(host, this);
 	}
 

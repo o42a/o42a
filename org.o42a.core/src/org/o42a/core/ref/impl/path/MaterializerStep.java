@@ -22,28 +22,28 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
 public final class MaterializerStep extends Step {
 
-	public static final MaterializerStep INSTANCE =
+	public static final MaterializerStep MATERIALIZER_STEP =
 			new MaterializerStep();
 
 	private MaterializerStep() {
-	}
-
-	@Override
-	public StepKind getStepKind() {
-		return StepKind.MATERIALIZER_STEP;
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -68,8 +68,6 @@ public final class MaterializerStep extends Step {
 
 		assert artifact != null :
 			"Can not materialize " + start;
-		assert artifact.getKind() != ArtifactKind.OBJECT :
-			"An attempt to materialize object " + start;
 
 		final Obj result = artifact.materialize();
 
@@ -81,19 +79,82 @@ public final class MaterializerStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 		return reproducedPath(toPath());
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-		return start.materialize(dirs);
+	public PathOp op(PathOp start) {
+		return new Op(start);
 	}
 
 	@Override
 	public String toString() {
 		return "*";
+	}
+
+	@Override
+	protected void rebuild(PathRebuilder rebuilder) {
+
+		final Step prev = rebuilder.getPreviousStep();
+
+		if (prev.isMaterial()) {
+			rebuilder.replace(prev);
+		}
+	}
+
+	@Override
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return path.cut(1).ancestor(location, distributor);
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return path.cut(1).fieldDefinition(distributor);
+	}
+
+	private static final class Op extends PathOp {
+
+		Op(PathOp start) {
+			super(start);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+			op().writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return op().writeValue(dirs);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			return op().target(dirs).materialize(dirs);
+		}
+
+		@Override
+		public String toString() {
+
+			final HostOp host = host();
+
+			if (host == null) {
+				return super.toString();
+			}
+
+			return '(' + host.toString() + ")*";
+		}
+
+		private final PathOp op() {
+			return (PathOp) host();
+		}
+
 	}
 
 }

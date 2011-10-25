@@ -19,18 +19,18 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectValue;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -50,18 +50,13 @@ public class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.ARTIFACT_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override
-	public Step materialize() {
-		return MATERIALIZE;
+	public boolean isMaterial() {
+		return false;
 	}
 
 	@Override
@@ -150,8 +145,7 @@ public class ArrayElementStep extends Step {
 			}
 		}
 
-		final Ref indexRef = this.indexRef.rescope(
-				upgradeRescoper(this.indexRef.getScope(), start));
+		final Ref indexRef = this.indexRef.upgradeScope(start);
 		final RtArrayElement item = new RtArrayElement(indexRef);
 
 		walker.arrayElement(array, this, item);
@@ -160,10 +154,16 @@ public class ArrayElementStep extends Step {
 	}
 
 	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
+			Reproducer reproducer) {
 
 		final Ref indexRef = this.indexRef.reproduce(reproducer);
 
@@ -179,7 +179,7 @@ public class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
+	public PathOp op(PathOp start) {
 		// TODO Auto-generated method stub
 		return null;
 	}

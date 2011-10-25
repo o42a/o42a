@@ -116,7 +116,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 				field(this.operandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
-		return this.operand = path.target(this, distribute());
+		return this.operand = path.bind(this, getScope()).target(distribute());
 	}
 
 }

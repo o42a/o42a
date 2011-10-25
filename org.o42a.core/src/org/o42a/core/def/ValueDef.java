@@ -24,6 +24,7 @@ import static org.o42a.core.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.def.Definitions.NO_REQUIREMENTS;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -182,7 +183,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	public ValOp write(ValDirs dirs, HostOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs.dirs(), host);
+		final HostOp rescopedHost = getRescoper().write(dirs.dirs(), host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(

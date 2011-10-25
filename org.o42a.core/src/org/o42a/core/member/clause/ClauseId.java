@@ -252,10 +252,9 @@ public enum ClauseId {
 		if (!hasAdapterType()) {
 			return null;
 		}
-
-		final Path adapterPath = adapterPath(location.getContext());
-
-		return adapterPath.target(location, distributor).toStaticTypeRef();
+		return adapterPath(location.getContext())
+				.bind(location, distributor.getScope())
+				.staticTypeRef(distributor);
 	}
 
 	public abstract Path adapterPath(CompilerContext context);

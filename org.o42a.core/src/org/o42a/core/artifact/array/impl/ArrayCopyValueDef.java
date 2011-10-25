@@ -19,17 +19,17 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.value.Value.falseValue;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;

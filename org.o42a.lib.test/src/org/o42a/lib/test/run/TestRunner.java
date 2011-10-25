@@ -32,8 +32,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -112,7 +111,7 @@ final class TestRunner extends Obj {
 					sentence,
 					statements.nextDistributor(),
 					name,
-					field.getKey()));
+					field.getKey()).toRef());
 			return;
 		}
 
@@ -129,9 +128,9 @@ final class TestRunner extends Obj {
 		final Path pathFromLocal =
 				localScope.getEnclosingScopePath().append(testPath);
 
-		statements.expression(pathFromLocal.target(
-				sentence,
-				statements.nextDistributor()));
+		statements.expression(
+				pathFromLocal.bind(sentence, statements.getScope())
+				.target(statements.nextDistributor()));
 	}
 
 	private static String testName(
@@ -213,13 +212,12 @@ final class TestRunner extends Obj {
 			final Path objectPath = localScope.getEnclosingScopePath();
 			final Path testPath = objectPath.append(this.testKey);
 
-			return testPath.target(
-					location,
-					localScope.distribute()).toTypeRef();
+			return testPath.bind(location, localScope)
+					.target(localScope.distribute()).toTypeRef();
 		}
 
 		@Override
-		public Ref reproduce(Reproducer reproducer) {
+		public ObjectConstructor reproduce(Reproducer reproducer) {
 			return new RunTest(
 					this,
 					reproducer.distribute(),

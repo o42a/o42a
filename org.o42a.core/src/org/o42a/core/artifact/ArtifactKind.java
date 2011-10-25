@@ -41,7 +41,11 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	public static final ArtifactKind<Link> VARIABLE = new LinkKind(true);
 
 	public boolean isObject() {
-		return is(OBJECT) || is(LINK);
+		return is(OBJECT);
+	}
+
+	public boolean isLink() {
+		return !is(OBJECT);
 	}
 
 	public boolean isVariable() {

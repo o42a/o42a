@@ -22,11 +22,15 @@ package org.o42a.core.member.impl.local;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -42,18 +46,13 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.PARENT_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -78,20 +77,14 @@ public final class LocalOwnerStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(scope.toLocal().getEnclosingScopePath());
+			Reproducer reproducer) {
+		return reproducedPath(
+				reproducer.getScope().toLocal().getEnclosingScopePath());
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final LocalOp local = start.toLocal();
-
-		assert local != null :
-			start + " is not local";
-
-		return local.getBuilder().owner();
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	@Override
@@ -100,8 +93,34 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	protected Step rebuild(Step prev) {
-		return prev.combineWithLocalOwner(this.local.getOwner());
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combineWithLocalOwner(this.local.getOwner());
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	private static final class Op extends StepOp<LocalOwnerStep> {
+
+		Op(PathOp start, LocalOwnerStep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final LocalOp local = start().toLocal();
+
+			assert local != null :
+				start() + " is not local";
+
+			return local.getBuilder().owner();
+		}
+
 	}
 
 }

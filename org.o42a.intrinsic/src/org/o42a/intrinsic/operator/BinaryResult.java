@@ -140,7 +140,8 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 				field(this.leftOperandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
-		return this.leftOperand = path.target(this, distribute());
+		return this.leftOperand =
+				path.bind(this, getScope()).target(distribute());
 	}
 
 	private final Ref rightOperand() {
@@ -152,7 +153,8 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 				field(this.rightOperandName, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath();
 
-		return this.rightOperand = path.target(this, distribute());
+		return this.rightOperand =
+				path.bind(this, getScope()).target(distribute());
 	}
 
 }
