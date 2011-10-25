@@ -81,16 +81,10 @@ public final class PathRescoper extends Rescoper {
 	public Resolver rescope(Resolver resolver) {
 
 		final BoundPath path = getBoundPath();
-		final PathWalker pathWalker = resolver.getWalker().path(path);
-
-		if (pathWalker == null) {
-			return null;
-		}
-
 		final PathResolution found = path.walk(
 				pathResolver(resolver),
 				resolver.getScope(),
-				pathWalker);
+				resolver.getWalker());
 
 		if (!found.isResolved()) {
 			return null;

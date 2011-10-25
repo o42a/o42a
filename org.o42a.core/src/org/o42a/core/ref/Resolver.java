@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.ResolutionWalker.DUMMY_RESOLUTION_WALKER;
+import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
@@ -44,9 +46,9 @@ public class Resolver implements UserInfo, LocationInfo {
 
 	private final Scope scope;
 	private final User user;
-	private final ResolutionWalker walker;
+	private final PathWalker walker;
 
-	protected Resolver(Scope scope, UserInfo user, ResolutionWalker walker) {
+	protected Resolver(Scope scope, UserInfo user, PathWalker walker) {
 		this.scope = scope;
 		this.user = user.toUser();
 		this.walker = walker;
@@ -74,7 +76,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		return this.scope;
 	}
 
-	public final ResolutionWalker getWalker() {
+	public final PathWalker getWalker() {
 		return this.walker;
 	}
 
@@ -88,7 +90,7 @@ public class Resolver implements UserInfo, LocationInfo {
 	}
 
 	public Resolver newResolver() {
-		if (this.walker == DUMMY_RESOLUTION_WALKER) {
+		if (this.walker == DUMMY_PATH_WALKER) {
 			return this;
 		}
 		return getScope().newResolver(this);
@@ -113,14 +115,8 @@ public class Resolver implements UserInfo, LocationInfo {
 			BoundPath path,
 			Scope start) {
 
-		final PathWalker pathWalker = this.walker.path(path);
-
-		if (pathWalker == null) {
-			return null;
-		}
-
 		final PathResolution pathResolution =
-				path.walk(resolver.resolveBy(this), start, pathWalker);
+				path.walk(resolver.resolveBy(this), start, getWalker());
 
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
@@ -130,41 +126,6 @@ public class Resolver implements UserInfo, LocationInfo {
 		}
 
 		return containerResolution(path, pathResolution.getResult());
-	}
-
-	public final Resolution newObject(ScopeInfo location, Obj object) {
-		if (object == null) {
-			return noResolution(location);
-		}
-		if (!this.walker.newObject(location, object)) {
-			return null;
-		}
-		return objectResolution(location, object);
-	}
-
-	public final Resolution artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		if (part == null) {
-			return noResolution(location);
-		}
-		if (!this.walker.artifactPart(location, artifact, part)) {
-			return null;
-		}
-		return artifactResolution(location, part);
-	}
-
-	public final Resolution staticArtifact(
-			LocationInfo location,
-			Artifact<?> artifact) {
-		if (artifact == null) {
-			return noResolution(location);
-		}
-		if (!this.walker.staticArtifact(location, artifact)) {
-			return null;
-		}
-		return artifactResolution(location, artifact);
 	}
 
 	@Override
@@ -187,7 +148,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		@Override
 		protected Resolver createResolver(
 				UserInfo user,
-				ResolutionWalker walker) {
+				PathWalker walker) {
 			return new Resolver(getScope(), user, walker);
 		}
 

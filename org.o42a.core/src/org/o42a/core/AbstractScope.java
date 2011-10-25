@@ -35,10 +35,10 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.util.use.UserInfo;
@@ -261,9 +261,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final Resolver walkingResolver(
-			UserInfo user,
-			ResolutionWalker walker) {
+	public final Resolver walkingResolver(UserInfo user, PathWalker walker) {
 		return this.resolverFactory.walkingResolver(user, walker);
 	}
 

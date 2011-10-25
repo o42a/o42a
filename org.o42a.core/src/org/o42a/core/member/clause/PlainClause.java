@@ -33,10 +33,10 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.util.use.UserInfo;
 
@@ -161,7 +161,7 @@ public abstract class PlainClause
 	@Override
 	public final Resolver walkingResolver(
 			UserInfo user,
-			ResolutionWalker walker) {
+			PathWalker walker) {
 		return this.resolverFactory.walkingResolver(user, walker);
 	}
 
