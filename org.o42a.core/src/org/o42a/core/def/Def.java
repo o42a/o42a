@@ -19,8 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;

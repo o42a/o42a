@@ -22,9 +22,9 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
+import org.o42a.core.Rescopable;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Rescopable;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;

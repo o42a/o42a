@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;

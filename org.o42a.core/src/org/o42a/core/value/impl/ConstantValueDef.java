@@ -19,11 +19,11 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
+import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;

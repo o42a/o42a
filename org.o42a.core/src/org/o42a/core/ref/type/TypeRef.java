@@ -24,14 +24,14 @@ import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.def.RescopableRef;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;

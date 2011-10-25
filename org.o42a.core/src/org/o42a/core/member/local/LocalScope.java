@@ -28,7 +28,6 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
