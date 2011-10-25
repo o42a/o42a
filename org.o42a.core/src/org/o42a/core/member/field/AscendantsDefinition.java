@@ -21,8 +21,8 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
+import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.AscendantsBuilder;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;

@@ -19,12 +19,12 @@
 */
 package org.o42a.core.member.impl.field;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;

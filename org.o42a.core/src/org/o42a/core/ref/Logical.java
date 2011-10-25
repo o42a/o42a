@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.def.CondDef;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;

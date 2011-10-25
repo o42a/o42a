@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;

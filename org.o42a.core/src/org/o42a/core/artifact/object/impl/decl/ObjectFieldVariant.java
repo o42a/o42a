@@ -19,17 +19,14 @@
 */
 package org.o42a.core.artifact.object.impl.decl;
 
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Container;
-import org.o42a.core.Namespace;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Logical;

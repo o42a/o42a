@@ -25,12 +25,9 @@ import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.AbstractScope;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;

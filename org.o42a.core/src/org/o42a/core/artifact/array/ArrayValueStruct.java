@@ -20,10 +20,10 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;

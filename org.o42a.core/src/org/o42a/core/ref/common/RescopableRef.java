@@ -17,11 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core.ref.common;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
+import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;

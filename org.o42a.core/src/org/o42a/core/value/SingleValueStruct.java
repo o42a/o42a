@@ -21,8 +21,8 @@ package org.o42a.core.value;
 
 import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;

@@ -20,8 +20,8 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.PlaceInfo;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.PathRescoper;
 import org.o42a.core.source.LocationInfo;

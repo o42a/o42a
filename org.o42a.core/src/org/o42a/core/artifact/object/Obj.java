@@ -39,7 +39,6 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.impl.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
-import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -28,12 +28,9 @@ import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescopable;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;

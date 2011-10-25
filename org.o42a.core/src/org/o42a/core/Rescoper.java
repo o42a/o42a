@@ -17,19 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def;
+package org.o42a.core;
 
-import static org.o42a.core.def.Definitions.emptyDefinitions;
-
-import org.o42a.core.Scope;
-import org.o42a.core.def.impl.rescoper.CompoundRescoper;
-import org.o42a.core.def.impl.rescoper.TransparentRescoper;
-import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.impl.rescoper.CompoundRescoper;
+import org.o42a.core.ref.impl.rescoper.TransparentRescoper;
+import org.o42a.core.ref.impl.rescoper.UpgradeRescoper;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Rescoper {
@@ -63,46 +59,6 @@ public abstract class Rescoper {
 	}
 
 	public abstract <R extends Rescopable<R>> R update(R rescopable);
-
-	public Definitions update(Definitions definitions) {
-
-		final Scope resultScope = updateScope(definitions.getScope());
-
-		if (definitions.isEmpty()) {
-			return emptyDefinitions(definitions, resultScope);
-		}
-
-		final CondDefs requirements = definitions.requirements();
-		final CondDefs newRequirements = requirements.rescope(this);
-		final CondDefs conditions = definitions.conditions();
-		final CondDefs newConditions = conditions.rescope(this);
-		final ValueDefs claims = definitions.claims();
-		final ValueDefs newClaims = claims.rescope(this);
-		final ValueDefs propositions = definitions.propositions();
-		final ValueDefs newPropositions = propositions.rescope(this);
-		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
-		final ValueStruct<?, ?> newValueStruct =
-				valueStruct != null ? valueStruct.rescope(this) : null;
-
-		if (resultScope == definitions.getScope()
-				// This may fail when there is no definitions.
-				&& valueStruct == newValueStruct
-				&& requirements == newRequirements
-				&& conditions == newConditions
-				&& claims == newClaims
-				&& propositions == newPropositions) {
-			return definitions;
-		}
-
-		return new Definitions(
-				definitions,
-				resultScope,
-				newValueStruct,
-				newRequirements,
-				newConditions,
-				newClaims,
-				newPropositions);
-	}
 
 	public abstract Scope rescope(Scope scope);
 

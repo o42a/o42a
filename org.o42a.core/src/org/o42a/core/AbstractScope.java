@@ -21,10 +21,10 @@ package org.o42a.core;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableSet;
+import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
-import static org.o42a.core.def.Rescoper.transparentRescoper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +32,6 @@ import java.util.Set;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;

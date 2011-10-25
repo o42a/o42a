@@ -25,7 +25,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;

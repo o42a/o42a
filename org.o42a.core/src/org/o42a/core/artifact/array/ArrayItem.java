@@ -20,12 +20,12 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.impl.ArrayItemIR;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;

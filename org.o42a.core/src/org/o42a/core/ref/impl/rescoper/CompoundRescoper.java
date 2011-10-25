@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def.impl.rescoper;
+package org.o42a.core.ref.impl.rescoper;
 
+import org.o42a.core.Rescopable;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescopable;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
@@ -48,11 +47,6 @@ public final class CompoundRescoper extends Rescoper {
 	@Override
 	public <R extends Rescopable<R>> R update(R rescopable) {
 		return this.second.update(this.first.update(rescopable));
-	}
-
-	@Override
-	public Definitions update(Definitions definitions) {
-		return this.second.update(this.first.update(definitions));
 	}
 
 	@Override

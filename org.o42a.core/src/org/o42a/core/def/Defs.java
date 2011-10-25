@@ -25,6 +25,7 @@ import static org.o42a.core.def.DefKind.PROPOSITION;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.ref.Resolver;
