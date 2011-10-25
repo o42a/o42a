@@ -571,7 +571,7 @@ public abstract class Obj
 
 		final Scope scope = getScope();
 		final Rescoper rescoper =
-				scope.getEnclosingScope().rescoperTo(this, scope);
+				scope.getEnclosingScope().rescoperTo(scope);
 
 		return ancestorValueStruct.rescope(rescoper);
 	}

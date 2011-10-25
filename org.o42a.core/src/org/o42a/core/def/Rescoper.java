@@ -21,7 +21,6 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
-import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.impl.rescoper.CompoundRescoper;
 import org.o42a.core.def.impl.rescoper.TransparentRescoper;

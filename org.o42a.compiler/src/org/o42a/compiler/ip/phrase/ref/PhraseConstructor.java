@@ -23,11 +23,11 @@ import org.o42a.core.Distributor;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -71,9 +71,9 @@ class PhraseConstructor extends ObjectConstructor {
 
 		final PhraseFieldDefinition definition =
 				new PhraseFieldDefinition(this.phrase);
-		final Rescoper rescoper = path.cut(1).toRescoper();
+		final PrefixPath prefix = path.cut(1).toPrefix(distributor.getScope());
 
-		return definition.rescope(rescoper);
+		return definition.prefixWith(prefix);
 	}
 
 	@Override

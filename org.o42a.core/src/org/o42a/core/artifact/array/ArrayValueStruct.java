@@ -20,12 +20,14 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
@@ -135,6 +137,20 @@ public final class ArrayValueStruct
 	public ArrayValueStruct rescope(Rescoper rescoper) {
 		return new ArrayValueStruct(
 				this.itemTypeRef.rescope(rescoper),
+				isConstant());
+	}
+
+	@Override
+	public ArrayValueStruct prefixWith(PrefixPath prefix) {
+		return new ArrayValueStruct(
+				this.itemTypeRef.prefixWith(prefix),
+				isConstant());
+	}
+
+	@Override
+	public ArrayValueStruct upgradeScope(Scope toScope) {
+		return new ArrayValueStruct(
+				this.itemTypeRef.upgradeScope(toScope),
 				isConstant());
 	}
 

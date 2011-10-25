@@ -22,9 +22,9 @@ package org.o42a.core.artifact.object.impl.sample;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
@@ -106,11 +106,10 @@ public final class MemberOverride extends Sample {
 		final Obj object = getObject();
 		final Path memberPath =
 				this.overriddenMember.getKey().toPath().materialize();
-		final Rescoper rescoper = memberPath.bind(
-				this,
-				object.getScope().getEnclosingScope()).toRescoper();
+		final PrefixPath prefix =
+				memberPath.toPrefix(object.getScope().getEnclosingScope());
 
-		return object.value().getValueStruct().rescope(rescoper);
+		return object.value().getValueStruct().prefixWith(prefix);
 	}
 
 }

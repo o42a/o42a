@@ -117,7 +117,7 @@ public class ObjectConstructorStep extends Step {
 			LocationInfo location,
 			Distributor distributor) {
 		return this.constructor.ancestor(location)
-				.rescope(path.cut(1).toRescoper());
+				.prefixWith(path.cut(1).toPrefix(distributor.getScope()));
 	}
 
 	@Override

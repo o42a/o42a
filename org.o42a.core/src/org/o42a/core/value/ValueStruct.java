@@ -23,7 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
+import org.o42a.core.def.Rescopable;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
@@ -35,7 +35,7 @@ import org.o42a.core.value.impl.*;
 
 
 public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
-		implements ValueStructFinder {
+		implements ValueStructFinder, Rescopable<S> {
 
 	public static final SingleValueStruct<Void> VOID =
 			VoidValueStruct.INSTANCE;
@@ -137,20 +137,17 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract boolean isScoped();
 
-	public abstract ValueStruct<S, T> rescope(Rescoper rescoper);
-
-	public abstract ValueStruct<S, T> reproduce(Reproducer reproducer);
+	public abstract S reproduce(Reproducer reproducer);
 
 	@Override
-	public final ValueStruct<S, T> valueStructBy(
-			Ref ref,
-			ValueStruct<?, ?> defaultStruct) {
-		return this;
+	public final S valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct) {
+		return toValueStruct();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public final ValueStruct<S, T> toValueStruct() {
-		return this;
+	public final S toValueStruct() {
+		return (S) this;
 	}
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {

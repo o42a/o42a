@@ -17,17 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core;
+package org.o42a.core.def;
 
-import org.o42a.core.def.Rescoper;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.Scope;
+import org.o42a.core.ref.path.PrefixPath;
 
 
-public interface Rescopable<R> extends ScopeInfo {
+public interface Rescopable<R> {
 
 	R rescope(Rescoper rescoper);
 
-	R rescope(BoundPath path);
+	R prefixWith(PrefixPath prefix);
 
 	R upgradeScope(Scope toScope);
 

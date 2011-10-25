@@ -19,7 +19,9 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -27,7 +29,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
@@ -35,7 +37,7 @@ import org.o42a.util.use.UserInfo;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>
-		implements Rescopable<R> {
+		implements ScopeInfo, Rescopable<R> {
 
 	private final Rescoper rescoper;
 	private boolean allResolved;
@@ -96,8 +98,8 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	}
 
 	@Override
-	public R rescope(BoundPath path) {
-		return rescope(path.toRescoper());
+	public R prefixWith(PrefixPath prefix) {
+		return rescope(prefix.toRescoper());
 	}
 
 	@Override
@@ -112,7 +114,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		if (getScope() == scope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(this, scope));
+		return rescope(getScope().rescoperTo(scope));
 	}
 
 	public void resolveAll(Resolver resolver) {

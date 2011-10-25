@@ -199,6 +199,12 @@ public final class Path {
 		return new Path(getKind(), true, steps).bind(location, origin);
 	}
 
+	public final PrefixPath toPrefix(Scope start) {
+		assert start != null :
+			"Prefix start not specified";
+		return new PrefixPath(start, this);
+	}
+
 	@Override
 	public int hashCode() {
 		return Arrays.hashCode(this.steps);

@@ -41,8 +41,8 @@ import org.o42a.core.member.impl.local.PropagatedLocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -282,13 +282,13 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final BoundPath pathTo(LocationInfo location, Scope targetScope) {
-		return AbstractScope.pathTo(location, this, targetScope);
+	public final PrefixPath pathTo(Scope targetScope) {
+		return AbstractScope.pathTo(this, targetScope);
 	}
 
 	@Override
-	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
-		return AbstractScope.rescoperTo(location, this, toScope);
+	public final Rescoper rescoperTo(Scope toScope) {
+		return AbstractScope.rescoperTo(this, toScope);
 	}
 
 	@Override
