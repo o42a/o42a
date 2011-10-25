@@ -127,11 +127,6 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public Member wrap(MemberOwner owner, UserInfo user, Member inherited) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	protected void merge(Member member) {
 		throw new UnsupportedOperationException();
 	}

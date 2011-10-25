@@ -25,22 +25,19 @@ import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.AbstractScope;
-import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.util.use.UserInfo;
 
 
@@ -164,7 +161,7 @@ public abstract class PlainClause
 	@Override
 	public final Resolver walkingResolver(
 			UserInfo user,
-			ResolutionWalker walker) {
+			PathWalker walker) {
 		return this.resolverFactory.walkingResolver(user, walker);
 	}
 
@@ -294,13 +291,13 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Path pathTo(Scope targetScope) {
+	public final PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
 	}
 
 	@Override
-	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
-		return AbstractScope.rescoperTo(location, this, toScope);
+	public final Rescoper rescoperTo(Scope toScope) {
+		return AbstractScope.rescoperTo(this, toScope);
 	}
 
 	@Override

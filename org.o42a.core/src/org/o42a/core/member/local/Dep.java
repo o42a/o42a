@@ -26,7 +26,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -42,13 +43,8 @@ public abstract class Dep extends Step {
 	}
 
 	@Override
-	public final StepKind getStepKind() {
-		return getDepKind().getStepKind();
-	}
-
-	@Override
 	public final PathKind getPathKind() {
-		return getDepKind().getPathKind();
+		return PathKind.RELATIVE_PATH;
 	}
 
 	public final DepKind getDepKind() {
@@ -59,11 +55,9 @@ public abstract class Dep extends Step {
 		return this.object;
 	}
 
-	public abstract Object getKey();
+	public abstract Object getDepKey();
 
-	public abstract Artifact<?> getTarget();
-
-	public abstract Field<?> getDepField();
+	public abstract Artifact<?> getDepTarget();
 
 	public abstract Ref getDepRef();
 
@@ -98,14 +92,8 @@ public abstract class Dep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
-
-		final ObjectOp object = start.toObject(dirs);
-
-		assert object != null :
-			"Not an object: " + start;
-
-		return object.dep(dirs, this);
+	public PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	protected abstract Container resolveDep(
@@ -115,5 +103,24 @@ public abstract class Dep extends Step {
 			Obj object,
 			LocalScope enclosingLocal,
 			PathWalker walker);
+
+	private static final class Op extends StepOp<Dep> {
+
+		Op(PathOp start, Dep step) {
+			super(start, step);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+
+			final ObjectOp object = start().toObject(dirs);
+
+			assert object != null :
+				"Not an object: " + start();
+
+			return object.dep(dirs, getStep());
+		}
+
+	}
 
 }

@@ -28,7 +28,6 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
@@ -38,10 +37,11 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.member.impl.local.LocalOwnerStep;
 import org.o42a.core.member.impl.local.PropagatedLocalScope;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathWalker;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -193,7 +193,7 @@ public abstract class LocalScope
 	@Override
 	public final LocalResolver walkingResolver(
 			UserInfo user,
-			ResolutionWalker walker) {
+			PathWalker walker) {
 		return resolverFactory().walkingResolver(user, walker);
 	}
 
@@ -281,13 +281,13 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Path pathTo(Scope targetScope) {
+	public final PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
 	}
 
 	@Override
-	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
-		return AbstractScope.rescoperTo(location, this, toScope);
+	public final Rescoper rescoperTo(Scope toScope) {
+		return AbstractScope.rescoperTo(this, toScope);
 	}
 
 	@Override

@@ -39,14 +39,12 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.impl.*;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
-import org.o42a.core.member.impl.local.FieldDep;
 import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
@@ -67,6 +65,7 @@ public abstract class Obj
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
+	private Obj wrapped;
 	private ObjectType type;
 	private ObjectValue value;
 	private int depNameSeq;
@@ -165,8 +164,11 @@ public abstract class Obj
 		return this;
 	}
 
-	public Obj getWrapped() {
-		return this;
+	public final Obj getWrapped() {
+		if (this.wrapped != null) {
+			return this.wrapped;
+		}
+		return this.wrapped = findWrapped();
 	}
 
 	public final ObjectType type() {
@@ -508,6 +510,28 @@ public abstract class Obj
 		return this.ir = createIR(generator);
 	}
 
+	protected Obj findWrapped() {
+
+		final Field<?> field = getScope().toField();
+
+		if (field == null) {
+			return this;
+		}
+
+		final Obj enclosingObject =
+				getScope().getEnclosingScope().getArtifact().materialize();
+		final Obj enclosingWrapped = enclosingObject.getWrapped();
+
+		if (enclosingWrapped == enclosingObject) {
+			return this;
+		}
+
+		return enclosingWrapped.member(
+				field.getKey()).toField(dummyUser())
+				.getArtifact()
+				.materialize();
+	}
+
 	protected final void resolve() {
 		type().resolve(false);
 	}
@@ -546,7 +570,7 @@ public abstract class Obj
 
 		final Scope scope = getScope();
 		final Rescoper rescoper =
-				scope.getEnclosingScope().rescoperTo(this, scope);
+				scope.getEnclosingScope().rescoperTo(scope);
 
 		return ancestorValueStruct.rescope(rescoper);
 	}
@@ -627,12 +651,6 @@ public abstract class Obj
 	}
 
 	@Override
-	protected final Dep addFieldDep(MemberKey memberKey) {
-		assert getContext().fullResolution().assertIncomplete();
-		return addDep(new FieldDep(this, memberKey));
-	}
-
-	@Override
 	protected Dep addEnclosingOwnerDep(Obj owner) {
 		assert getContext().fullResolution().assertIncomplete();
 
@@ -672,6 +690,13 @@ public abstract class Obj
 
 	@Override
 	protected void fullyResolve() {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			wrapped.type().wrapBy(type());
+			wrapped.resolveAll();
+		}
 		type().resolveAll();
 		if (isClone()) {
 			return;
@@ -682,10 +707,23 @@ public abstract class Obj
 	}
 
 	protected void fullyResolveDefinitions() {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			wrapped.value().wrapBy(value());
+		}
 		value().getDefinitions().resolveAll();
 	}
 
 	protected ObjectIR createIR(Generator generator) {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			return wrapped.ir(generator);
+		}
+
 		return new ObjectIR(generator, this);
 	}
 
@@ -790,7 +828,7 @@ public abstract class Obj
 
 	private Dep addDep(Dep dep) {
 
-		final Object key = dep.getKey();
+		final Object key = dep.getDepKey();
 		final Dep found = this.deps.put(key, dep);
 
 		if (found == null) {

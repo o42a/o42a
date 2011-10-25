@@ -92,7 +92,8 @@ public class ConsoleModule extends AnnotatedModule {
 		final Path adapterPath =
 				mainAdapterId.key(mainModule.getScope()).toPath();
 		final Ref adapterRef =
-				adapterPath.target(mainAdapter, mainModule.distribute());
+				adapterPath.bind(mainAdapter, mainMember.getScope())
+				.target(mainModule.distribute());
 
 		if (!main.isPrototype()) {
 			this.main = main;

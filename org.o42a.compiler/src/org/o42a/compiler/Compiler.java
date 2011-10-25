@@ -89,7 +89,9 @@ public class Compiler implements SourceCompiler {
 			String string) {
 		if (string == null) {
 			return new PathWithAlias(
-					modulePath(moduleId).target(location, scope.distribute()),
+					modulePath(moduleId)
+					.bind(location, scope)
+					.target(scope.distribute()),
 					moduleId);
 		}
 

@@ -69,6 +69,12 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
+	public boolean skip(Step step, Scope scope) {
+		++this.index;
+		return true;
+	}
+
+	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return set(scope.toObject());
 	}
@@ -96,14 +102,6 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(
-			Obj object,
-			Step step,
-			Field<?> dependency) {
-		return unreachable();
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return unreachable();
 	}
@@ -111,6 +109,11 @@ public final class StaticPathStartFinder implements PathWalker {
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
 		return set(result);
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		return set(object);
 	}
 
 	@Override

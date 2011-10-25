@@ -21,40 +21,30 @@ package org.o42a.core.ref.path;
 
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
+import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
-import org.o42a.core.Distributor;
+import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.AbsolutePathTarget;
-import org.o42a.core.ref.impl.path.PathTarget;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.Statements;
 
 
 public enum PathKind {
 
 	RELATIVE_PATH(false) {
-
-		@Override
-		protected Ref target(
-				LocationInfo location,
-				Distributor distributor,
-				Path path,
-				Ref start) {
-			if (start != null && path.isSelf()) {
-				return start;
-			}
-			return new PathTarget(location, distributor, path, start);
-		}
 
 		@Override
 		protected PathReproduction reproduce(
@@ -66,15 +56,6 @@ public enum PathKind {
 	},
 
 	ABSOLUTE_PATH(true) {
-
-		@Override
-		protected Ref target(
-				LocationInfo location,
-				Distributor distributor,
-				Path path,
-				Ref start) {
-			return new AbsolutePathTarget(location, distributor, path);
-		}
 
 		@Override
 		protected PathReproduction reproduce(
@@ -99,12 +80,6 @@ public enum PathKind {
 		return this.emptyPath;
 	}
 
-	protected abstract Ref target(
-			LocationInfo location,
-			Distributor distributor,
-			Path path,
-			Ref start);
-
 	protected abstract PathReproduction reproduce(
 			Reproducer reproducer,
 			BoundPath path);
@@ -113,7 +88,6 @@ public enum PathKind {
 			Reproducer reproducer,
 			BoundPath path) {
 
-		Scope toScope = reproducer.getScope();
 		final Step[] steps = path.getSteps();
 		final int len = steps.length;
 
@@ -131,13 +105,17 @@ public enum PathKind {
 			return unchangedPath(SELF_PATH);
 		}
 
+		final PathResolver resolver = pathResolver(dummyUser());
+		Scope fromScope = reproducer.getReproducingScope();
+		Scope toScope = reproducer.getScope();
 		Path reproduced = SELF_PATH;
 
 		for (int i = 0; i < len; ++i) {
 
 			final Step step = steps[i];
-			final PathReproduction reproduction =
-					step.reproduce(path, reproducer, toScope);
+			final PathReproduction reproduction = step.reproduce(
+					path,
+					stepReproducer(reproducer, fromScope, toScope));
 
 			if (reproduction == null) {
 				return null;
@@ -173,9 +151,36 @@ public enum PathKind {
 			}
 
 			toScope = resolution.getResult().getScope();
+
+			final Container resolvedStep = step.resolve(
+					resolver,
+					path,
+					i,
+					fromScope,
+					DUMMY_PATH_WALKER);
+
+			if (resolvedStep == null) {
+				return null;
+			}
+
+			fromScope = resolvedStep.getScope();
 		}
 
 		return reproducedPath(reproduced);
+	}
+
+	private static Reproducer stepReproducer(
+			Reproducer reproducer,
+			Scope fromScope,
+			Scope toScope) {
+
+		final Reproducer existing = reproducer.reproducerOf(fromScope);
+
+		if (existing != null) {
+			return existing;
+		}
+
+		return new StepReproducer(reproducer, fromScope, toScope);
 	}
 
 	private static PathReproduction partiallyReproducedPath(
@@ -202,6 +207,59 @@ public enum PathKind {
 
 		return reproducedPath(
 				new Path(RELATIVE_PATH, path.isStatic(), newSteps));
+	}
+
+	private static final class StepReproducer extends Reproducer {
+
+		private final Reproducer reproducer;
+
+		StepReproducer(
+				Reproducer reproducer,
+				Scope reproducingScope,
+				Scope scope) {
+			super(
+					reproducingScope,
+					reproducer.distribute().distributeIn(
+							scope.getContainer()));
+			this.reproducer = reproducer;
+		}
+
+		@Override
+		public Ref getPhrasePrefix() {
+			return this.reproducer.getPhrasePrefix();
+		}
+
+		@Override
+		public boolean phraseCreatesObject() {
+			return this.reproducer.phraseCreatesObject();
+		}
+
+		@Override
+		public MemberRegistry getMemberRegistry() {
+			return noDeclarations();
+		}
+
+		@Override
+		public Statements<?> getStatements() {
+			return null;
+		}
+
+		@Override
+		public Reproducer reproducerOf(Scope reproducingScope) {
+			if (reproducingScope == getReproducingScope()) {
+				return this;
+			}
+			return this.reproducer.reproducerOf(reproducingScope);
+		}
+
+		@Override
+		public void applyClause(
+				LocationInfo location,
+				Statements<?> statements,
+				Clause clause) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

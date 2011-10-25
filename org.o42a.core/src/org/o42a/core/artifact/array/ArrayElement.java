@@ -19,14 +19,14 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;

@@ -26,8 +26,6 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.impl.clause.GroupClauseWrap;
-import org.o42a.core.member.impl.clause.PlainClauseWrap;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.source.Location;
@@ -189,26 +187,6 @@ public abstract class MemberClause extends Member {
 	@Override
 	public Member propagateTo(MemberOwner owner) {
 		return toClause().propagate(owner).toMember();
-	}
-
-	@Override
-	public Member wrap(MemberOwner owner, UserInfo user, Member inherited) {
-		switch (getDeclaration().getKind()) {
-		case GROUP:
-			return new GroupClauseWrap(
-					owner,
-					inherited.toClause().toGroupClause(),
-					toClause().toGroupClause()).toMember();
-		case EXPRESSION:
-		case OVERRIDER:
-			return new PlainClauseWrap(
-					owner,
-					inherited.toClause().toPlainClause(),
-					toClause().toPlainClause()).toMember();
-		}
-
-		throw new IllegalStateException(
-				"Can not wrap " + getDeclaration().getKind());
 	}
 
 	@Override

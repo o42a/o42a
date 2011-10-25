@@ -19,15 +19,10 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.ref.path.Path.ROOT_PATH;
-
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.source.LocationInfo;
@@ -75,7 +70,7 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
 	public abstract boolean isVariable();
 
-	public abstract Obj wrapper(Intrinsics intrinsics);
+	public abstract Path path(Intrinsics intrinsics);
 
 	public final StaticTypeRef typeRef(LocationInfo location, Scope scope) {
 		return typeRef(location, scope, null);
@@ -85,15 +80,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			LocationInfo location,
 			Scope scope,
 			ValueStructFinder valueStructFinder) {
-
-		final Distributor distributor = scope.distribute();
-		final Field<Obj> wrapperField =
-				wrapper(location.getContext().getIntrinsics())
-				.getScope().toField().toKind(ArtifactKind.OBJECT);
-
-		return ROOT_PATH.append(wrapperField.getKey())
-				.target(location, distributor)
-				.toStaticTypeRef(valueStructFinder);
+		return path(location.getContext().getIntrinsics())
+				.bind(location, scope)
+				.staticTypeRef(scope.distribute(),
+				valueStructFinder);
 	}
 
 	@Override

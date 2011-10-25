@@ -24,7 +24,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.array.ArrayElement;
@@ -33,14 +32,15 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.source.LocationInfo;
 
 
-public class RoleResolver implements ResolutionWalker, PathWalker {
+public class RoleResolver implements PathWalker {
 
 	public static Role expectedRoleOf(Ref ref, Scope scope, Role expectedRole) {
 		ref.assertCompatible(scope);
@@ -94,30 +94,6 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public PathWalker path(BoundPath path) {
-		return this;
-	}
-
-	@Override
-	public boolean newObject(ScopeInfo location, Obj object) {
-		return mayProceedInsidePrototype();
-	}
-
-	@Override
-	public boolean artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		return mayProceedInsidePrototype();
-	}
-
-	@Override
-	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
-		this.insidePrototype = false;
-		return true;
-	}
-
-	@Override
 	public boolean root(BoundPath path, Scope root) {
 		this.insidePrototype = false;
 		return true;
@@ -131,6 +107,11 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean module(Step step, Obj module) {
 		this.insidePrototype = false;
+		return true;
+	}
+
+	@Override
+	public boolean skip(Step step, Scope scope) {
 		return true;
 	}
 
@@ -174,17 +155,6 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		if (!mayProceedInsidePrototype()) {
-			return false;
-		}
-		if (dependency.isPrototype()) {
-			this.insidePrototype = true;
-		}
-		return true;
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
@@ -201,6 +171,11 @@ public class RoleResolver implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
 		return true;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		return mayProceedInsidePrototype();
 	}
 
 	@Override

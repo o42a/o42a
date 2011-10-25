@@ -21,19 +21,20 @@ package org.o42a.core.artifact.object.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
@@ -47,18 +48,13 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.PARENT_STEP;
-	}
-
-	@Override
 	public PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
@@ -82,31 +78,15 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public HostOp write(CodeDirs dirs, HostOp start) {
+	public PathOp op(PathOp start) {
 		return new OpaqueLocalOp(start);
-	}
-
-	@Override
-	public Step combineWithMember(MemberKey memberKey) {
-		return ((ObjectArtifact) this.object).addFieldDep(memberKey);
-	}
-
-	@Override
-	public Step combineWithLocalOwner(Obj owner) {
-		return ((ObjectArtifact) this.object).addEnclosingOwnerDep(owner);
-	}
-
-	@Override
-	public Step combineWithRef(Ref ref) {
-		return ((ObjectArtifact) this.object).addRefDep(ref);
 	}
 
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(scope.getScope().getEnclosingScopePath());
+			Reproducer reproducer) {
+		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
 	}
 
 	@Override
@@ -136,36 +116,44 @@ public final class ParentLocalStep extends Step {
 		return "ParentLocal[" + this.object + ']';
 	}
 
-	private static final class OpaqueLocalOp implements HostOp {
+	@Override
+	protected void combineWith(PathRebuilder rebuilder, Step next) {
 
-		private final HostOp host;
+		final Container enclosingContainer =
+				this.object.getEnclosingContainer();
+		final Ref ref = rebuilder.restPath()
+				.bind(rebuilder, enclosingContainer.getScope())
+				.target(this.object.distributeIn(enclosingContainer));
+
+		rebuilder.replaceRest(object().addRefDep(ref));
+	}
+
+	@Override
+	public void combineWithLocalOwner(
+			PathRebuilder rebuilder,
+			Obj owner) {
+		rebuilder.replace(object().addEnclosingOwnerDep(owner));
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	private final ObjectArtifact object() {
+		return this.object;
+	}
+
+	private static final class OpaqueLocalOp extends PathOp {
 
 		OpaqueLocalOp(HostOp host) {
-			this.host = host;
-		}
-
-		@Override
-		public Generator getGenerator() {
-			return this.host.getGenerator();
-		}
-
-		@Override
-		public CodeBuilder getBuilder() {
-			return this.host.getBuilder();
-		}
-
-		@Override
-		public CompilerContext getContext() {
-			return this.host.getContext();
+			super(host);
 		}
 
 		@Override
 		public ObjectOp toObject(CodeDirs dirs) {
-			return null;
-		}
-
-		@Override
-		public LocalOp toLocal() {
 			return null;
 		}
 
@@ -183,12 +171,31 @@ public final class ParentLocalStep extends Step {
 
 		@Override
 		public void assign(CodeDirs dirs, HostOp value) {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException(
+					"Can not assign to " + this);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+			throw new UnsupportedOperationException(
+					"Can not write logical value of " + this);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			throw new UnsupportedOperationException(
+					"Can not write value of " + this);
+		}
+
+		@Override
+		public HostOp target(CodeDirs dirs) {
+			throw new UnsupportedOperationException(
+					"Can not operate with " + this);
 		}
 
 		@Override
 		public String toString() {
-			return "OpaqueParentLocal[" + this.host + ']';
+			return "OpaqueParentLocal[" + host() + ']';
 		}
 
 	}

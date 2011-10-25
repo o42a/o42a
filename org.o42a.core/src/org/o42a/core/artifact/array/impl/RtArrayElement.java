@@ -64,10 +64,10 @@ public class RtArrayElement extends ArrayElement {
 		@Override
 		protected TargetRef buildTargetRef() {
 
-			final RtArrayElementConstructor ref =
+			final RtArrayElementConstructor element =
 					new RtArrayElementConstructor(this.element);
 
-			return ref.toTargetRef(this.element.getTypeRef());
+			return element.toRef().toTargetRef(this.element.getTypeRef());
 		}
 
 	}

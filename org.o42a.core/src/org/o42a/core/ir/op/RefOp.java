@@ -26,7 +26,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
-public abstract class RefOp {
+public class RefOp {
 
 	private final HostOp host;
 	private final Ref ref;
@@ -63,6 +63,8 @@ public abstract class RefOp {
 		return target(dirs.dirs()).materialize(dirs.dirs()).writeValue(dirs);
 	}
 
-	public abstract HostOp target(CodeDirs dirs);
+	public HostOp target(CodeDirs dirs) {
+		return getRef().getPath().op(dirs, host());
+	}
 
 }

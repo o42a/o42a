@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.*;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -143,7 +144,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+		final HostOp rescopedHost = getRescoper().write(dirs, host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);

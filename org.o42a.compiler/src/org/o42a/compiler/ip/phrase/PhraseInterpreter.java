@@ -29,7 +29,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.SampleSpecVisitor;
-import org.o42a.compiler.ip.operator.ComparisonRef;
+import org.o42a.compiler.ip.operator.ComparisonExpression;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
@@ -89,7 +89,7 @@ public final class PhraseInterpreter {
 		if (node.getOperator().isArithmetic()) {
 			return binaryPhrase(ip, node, distributor).getPhrase().toRef();
 		}
-		return new ComparisonRef(ip, node, distributor);
+		return new ComparisonExpression(ip, node, distributor).toRef();
 	}
 
 	public static BinaryPhrasePart binaryPhrase(

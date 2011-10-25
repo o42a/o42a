@@ -118,6 +118,33 @@ public class ArrayUtil {
 		return newArray;
 	}
 
+	public static <T> T[] replace(
+			T[] array,
+			int from,
+			int to,
+			T[] replacement) {
+
+		assert to >= from :
+			"Range end is smaller the range start";
+
+		@SuppressWarnings("unchecked")
+		final T[] newArray = (T[]) Array.newInstance(
+				array.getClass().getComponentType(),
+				array.length - (to - from) + replacement.length);
+
+
+		arraycopy(array, 0, newArray, 0, from);
+		arraycopy(replacement, 0, newArray, from, replacement.length);
+		arraycopy(
+				array,
+				to,
+				newArray,
+				from + replacement.length,
+				array.length - to);
+
+		return newArray;
+	}
+
 	private ArrayUtil() {
 	}
 

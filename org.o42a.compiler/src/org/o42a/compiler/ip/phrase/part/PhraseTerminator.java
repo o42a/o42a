@@ -19,13 +19,13 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 
 
 public interface PhraseTerminator {
 
 	boolean requiresInstance();
 
-	Ref terminate(Ref ref);
+	Path terminate(Path path);
 
 }

@@ -19,17 +19,14 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.def.Rescoper.upgradeRescoper;
+import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import java.util.IdentityHashMap;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 

@@ -23,7 +23,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
@@ -34,13 +33,12 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 
 
-public class OutcomeBuilder implements ResolutionWalker, PathWalker {
+public class OutcomeBuilder implements PathWalker {
 
 	private final LocationInfo location;
 	private Container container;
@@ -56,29 +54,6 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public PathWalker path(BoundPath path) {
-		return this;
-	}
-
-	@Override
-	public boolean newObject(ScopeInfo location, Obj object) {
-		return invalidOutcome();
-	}
-
-	@Override
-	public boolean artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		return invalidOutcome();
-	}
-
-	@Override
-	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
-		return invalidOutcome();
-	}
-
-	@Override
 	public boolean root(BoundPath path, Scope root) {
 		return unexpectedAbsolutePath();
 	}
@@ -91,6 +66,11 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	@Override
 	public boolean module(Step step, Obj module) {
 		return unexpectedAbsolutePath();
+	}
+
+	@Override
+	public boolean skip(Step step, Scope scope) {
+		return true;
 	}
 
 	@Override
@@ -169,11 +149,6 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return invalidOutcome();
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return invalidOutcome();
 	}
@@ -187,6 +162,11 @@ public class OutcomeBuilder implements ResolutionWalker, PathWalker {
 		this.outcome = this.outcome.materialize();
 
 		return true;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
+		return invalidOutcome();
 	}
 
 	@Override

@@ -19,21 +19,21 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import java.util.Collection;
 
-import org.o42a.core.Scope;
-import org.o42a.core.Scoped;
-import org.o42a.core.def.impl.rescoper.UpgradeRescoper;
+import org.o42a.core.*;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 import org.o42a.util.log.LogInfo;
 
 
-public class Definitions extends Scoped {
+public class Definitions extends Scoped implements Rescopable<Definitions> {
 
 	static final CondDefs NO_REQUIREMENTS = new CondDefs(REQUIREMENT);
 	static final CondDefs NO_CONDITIONS = new CondDefs(CONDITION);
@@ -465,18 +465,60 @@ public class Definitions extends Scoped {
 				claims().unclaim(propositions()));
 	}
 
+	@Override
+	public Definitions rescope(Rescoper rescoper) {
+
+		final Scope resultScope = rescoper.updateScope(getScope());
+
+		if (isEmpty()) {
+			return emptyDefinitions(this, resultScope);
+		}
+
+		final CondDefs requirements = requirements();
+		final CondDefs newRequirements = requirements.rescope(rescoper);
+		final CondDefs conditions = conditions();
+		final CondDefs newConditions = conditions.rescope(rescoper);
+		final ValueDefs claims = claims();
+		final ValueDefs newClaims = claims.rescope(rescoper);
+		final ValueDefs propositions = propositions();
+		final ValueDefs newPropositions = propositions.rescope(rescoper);
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final ValueStruct<?, ?> newValueStruct =
+				valueStruct != null ? valueStruct.rescope(rescoper) : null;
+
+		if (resultScope == getScope()
+				// This may fail when there is no definitions.
+				&& valueStruct == newValueStruct
+				&& requirements == newRequirements
+				&& conditions == newConditions
+				&& claims == newClaims
+				&& propositions == newPropositions) {
+			return this;
+		}
+
+		return new Definitions(
+				this,
+				resultScope,
+				newValueStruct,
+				newRequirements,
+				newConditions,
+				newClaims,
+				newPropositions);
+	}
+
+	@Override
+	public Definitions prefixWith(PrefixPath prefix) {
+		return rescope(prefix.toRescoper());
+	}
+
+	@Override
 	public Definitions upgradeScope(Scope scope) {
 		if (scope == getScope()) {
 			return this;
 		}
 		assertCompatible(scope);
 
-		final Definitions result =
-				new UpgradeRescoper(getScope(), scope).update(this);
-
-		result.assertScopeIs(scope);
-
-		return result;
+		return rescope(upgradeRescoper(getScope(), scope));
 	}
 
 	public Definitions requirementPart(LocationInfo location) {
