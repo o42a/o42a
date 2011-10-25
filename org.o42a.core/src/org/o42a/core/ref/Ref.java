@@ -29,10 +29,10 @@ import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
-import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Rescopable;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
@@ -112,17 +112,6 @@ public class Ref extends Statement implements Rescopable<Ref> {
 
 	public final BoundPath getPath() {
 		return this.path;
-	}
-
-	public final BoundPath bindPath() {
-
-		final BoundPath path = getPath();
-
-		if (path.getOrigin() == getScope()) {
-			return path;
-		}
-
-		return path.getRawPath().bind(this, getScope());
 	}
 
 	public final ValueType<?> getValueType() {
@@ -303,7 +292,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		if (getScope() == toScope) {
 			return this;
 		}
-		return rescope(getScope().rescoperTo(this, toScope));
+		return rescope(getScope().rescoperTo(toScope));
 	}
 
 	@Override
@@ -312,9 +301,8 @@ public class Ref extends Statement implements Rescopable<Ref> {
 	}
 
 	@Override
-	public final Ref rescope(BoundPath path) {
-		return path.append(getPath()).target(
-				distributeIn(path.getOrigin().getContainer()));
+	public final Ref prefixWith(PrefixPath prefix) {
+		return prefix.append(getPath()).target(this);
 	}
 
 	@Override
@@ -366,8 +354,12 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		return targetRef(this, typeRef);
 	}
 
+	public final PrefixPath toPrefixPath() {
+		return getPath().toPrefix(getScope());
+	}
+
 	public final Rescoper toRescoper() {
-		return bindPath().toRescoper();
+		return toPrefixPath().toRescoper();
 	}
 
 	public final Statement toCondition() {

@@ -31,13 +31,14 @@ import org.o42a.core.st.Reproducer;
 
 public class Wrapper extends Step {
 
-	public static BoundPath wrapperPath(
+	public static PrefixPath wrapperPrefix(
 			Scope wrapperScope,
 			Scope wrappedScope) {
 
 		final Wrapper wrapper = new Wrapper(wrapperScope, wrappedScope);
 
-		return wrapper.toPath().bindStatically(wrapperScope, wrapperScope);
+		return wrapper.toPath().bindStatically(wrapperScope, wrapperScope)
+				.toPrefix(wrapperScope);
 	}
 
 	private final Scope wrapperScope;

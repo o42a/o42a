@@ -27,7 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -144,8 +144,8 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	@Override
-	public D rescope(BoundPath path) {
-		return rescope(path.toRescoper());
+	public D prefixWith(PrefixPath prefix) {
+		return rescope(prefix.toRescoper());
 	}
 
 	@Override
@@ -160,7 +160,7 @@ public abstract class Def<D extends Def<D>>
 		if (getScope() == scope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(this, scope));
+		return rescope(getScope().rescoperTo(scope));
 	}
 
 	public void resolveAll(Resolver resolver) {

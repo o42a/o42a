@@ -85,7 +85,7 @@ public class LocalDef extends ValueDef {
 		this.block = block;
 		this.definer = definer;
 		this.explicit = explicit;
-		this.localRescoper = block.getScope().rescoperTo(this, getOwnerScope());
+		this.localRescoper = block.getScope().rescoperTo(getOwnerScope());
 	}
 
 	private LocalDef(LocalDef prototype, Rescoper rescoper) {

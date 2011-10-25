@@ -26,16 +26,20 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.def.Rescopable;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.member.impl.field.DefaultFieldDefinition;
 import org.o42a.core.member.impl.field.InvalidFieldDefinition;
 import org.o42a.core.member.impl.field.RescopedFieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public abstract class FieldDefinition extends Placed {
+public abstract class FieldDefinition
+		extends Placed
+		implements Rescopable<FieldDefinition> {
 
 	public static FieldDefinition invalidDefinition(
 			LocationInfo location,
@@ -79,6 +83,7 @@ public abstract class FieldDefinition extends Placed {
 
 	public abstract void defineLink(LinkDefiner definer);
 
+	@Override
 	public final FieldDefinition rescope(Rescoper rescoper) {
 		if (rescoper.isTransparent()) {
 			return this;
@@ -86,6 +91,12 @@ public abstract class FieldDefinition extends Placed {
 		return new RescopedFieldDefinition(this, rescoper);
 	}
 
+	@Override
+	public FieldDefinition prefixWith(PrefixPath prefix) {
+		return rescope(prefix.toRescoper());
+	}
+
+	@Override
 	public final FieldDefinition upgradeScope(Scope toScope) {
 		return rescope(upgradeRescoper(getScope(), toScope));
 	}

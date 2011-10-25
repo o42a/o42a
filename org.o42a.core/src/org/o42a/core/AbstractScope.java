@@ -39,10 +39,9 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -113,18 +112,15 @@ public abstract class AbstractScope implements Scope {
 		return STRICT_CONSTRUCTION;
 	}
 
-	public static BoundPath pathTo(
-			LocationInfo location,
-			Scope fromScope,
-			Scope toScope) {
+	public static PrefixPath pathTo(Scope fromScope, Scope toScope) {
 		if (fromScope == toScope) {
-			return Path.SELF_PATH.bind(location, fromScope);
+			return Path.SELF_PATH.toPrefix(fromScope);
 		}
 
 		final Path pathToEnclosing = pathToEnclosing(fromScope, toScope);
 
 		if (pathToEnclosing != null) {
-			return pathToEnclosing.bind(location, fromScope);
+			return pathToEnclosing.toPrefix(fromScope);
 		}
 
 		final Path pathToMember = pathToMember(fromScope, toScope);
@@ -132,17 +128,16 @@ public abstract class AbstractScope implements Scope {
 		assert pathToMember != null :
 			"Can not rescope from " + fromScope + " to " + toScope;
 
-		return pathToMember.bind(location, fromScope);
+		return pathToMember.toPrefix(fromScope);
 	}
 
 	public static Rescoper rescoperTo(
-			LocationInfo location,
 			Scope fromScope,
 			Scope toScope) {
 		if (fromScope == toScope) {
 			return transparentRescoper(toScope);
 		}
-		return toScope.pathTo(location, fromScope).toRescoper();
+		return toScope.pathTo(fromScope).toRescoper();
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
@@ -309,13 +304,13 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final BoundPath pathTo(LocationInfo location, Scope targetScope) {
-		return pathTo(location, this, targetScope);
+	public final PrefixPath pathTo(Scope targetScope) {
+		return pathTo(this, targetScope);
 	}
 
 	@Override
-	public final Rescoper rescoperTo(LocationInfo location, Scope toScope) {
-		return rescoperTo(location, this, toScope);
+	public final Rescoper rescoperTo(Scope toScope) {
+		return rescoperTo(this, toScope);
 	}
 
 	@Override

@@ -19,9 +19,9 @@
 */
 package org.o42a.core.def.impl.rescoper;
 
-import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.def.Rescopable;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;

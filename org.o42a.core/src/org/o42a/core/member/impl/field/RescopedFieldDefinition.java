@@ -38,7 +38,9 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	private final Rescoper rescoper;
 	private final FieldDefinition definition;
 
-	public RescopedFieldDefinition(FieldDefinition definition, Rescoper rescoper) {
+	public RescopedFieldDefinition(
+			FieldDefinition definition,
+			Rescoper rescoper) {
 		super(
 				definition,
 				definition.distributeIn(

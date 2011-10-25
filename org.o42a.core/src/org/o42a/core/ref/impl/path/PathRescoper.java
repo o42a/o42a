@@ -22,8 +22,8 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
-import org.o42a.core.Rescopable;
 import org.o42a.core.Scope;
+import org.o42a.core.def.Rescopable;
 import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -34,31 +34,43 @@ import org.o42a.core.st.Reproducer;
 
 public final class PathRescoper extends Rescoper {
 
-	private final BoundPath path;
+	private final PrefixPath prefix;
+	private BoundPath boundPath;
 
-	public PathRescoper(BoundPath path) {
-		super(path.getOrigin());
-		this.path = path;
+	public PathRescoper(PrefixPath prefix) {
+		super(prefix.getStart());
+		this.prefix = prefix;
 	}
 
 	@Override
 	public boolean isStatic() {
-		return this.path.isStatic();
+		return this.prefix.getPrefix().isStatic();
 	}
 
-	public final BoundPath getPath() {
-		return this.path;
+	public final BoundPath getBoundPath() {
+		if (this.boundPath != null) {
+			return this.boundPath;
+		}
+		return this.boundPath = this.prefix.bind(this.prefix.getStart());
+	}
+
+	public final PrefixPath getPrefix() {
+		return this.prefix;
+	}
+
+	public final Path getPath() {
+		return getPrefix().getPrefix();
 	}
 
 	@Override
 	public <R extends Rescopable<R>> R update(R rescopable) {
-		return rescopable.rescope(getPath());
+		return rescopable.prefixWith(getPrefix());
 	}
 
 	@Override
 	public Scope rescope(Scope scope) {
 
-		final PathResolution found = this.path.resolve(
+		final PathResolution found = getBoundPath().resolve(
 				pathResolver(scope.dummyResolver()),
 				scope);
 
@@ -68,14 +80,14 @@ public final class PathRescoper extends Rescoper {
 	@Override
 	public Resolver rescope(Resolver resolver) {
 
-		final PathWalker pathWalker =
-				resolver.getWalker().path(this.path);
+		final BoundPath path = getBoundPath();
+		final PathWalker pathWalker = resolver.getWalker().path(path);
 
 		if (pathWalker == null) {
 			return null;
 		}
 
-		final PathResolution found = this.path.walk(
+		final PathResolution found = path.walk(
 				pathResolver(resolver),
 				resolver.getScope(),
 				pathWalker);
@@ -97,11 +109,9 @@ public final class PathRescoper extends Rescoper {
 		if (other instanceof PathRescoper) {
 
 			final PathRescoper pathRescoper = (PathRescoper) other;
-			final Path newPath =
-					pathRescoper.getPath().getRawPath().append(getPath());
+			final Path newPath = pathRescoper.getPath().append(getPath());
 
-			return new PathRescoper(
-					newPath.bind(getPath(), other.getFinalScope()));
+			return new PathRescoper(newPath.toPrefix(other.getFinalScope()));
 		}
 
 		return super.and(other);
@@ -112,7 +122,7 @@ public final class PathRescoper extends Rescoper {
 
 		final Scope scope = reproducer.getScope();
 		final PathReproduction pathReproduction =
-				getPath().reproduce(reproducer);
+				getBoundPath().reproduce(reproducer);
 
 		if (pathReproduction == null) {
 			return null;
@@ -120,9 +130,7 @@ public final class PathRescoper extends Rescoper {
 		if (pathReproduction.isUnchanged()) {
 			if (!reproducer.isTopLevel()) {
 				return new PathRescoper(
-						pathReproduction.getExternalPath().bind(
-								this.path,
-								scope));
+						pathReproduction.getExternalPath().toPrefix(scope));
 			}
 			// Top-level reproducer`s scope is not compatible with path
 			// and requires rescoping.
@@ -130,7 +138,7 @@ public final class PathRescoper extends Rescoper {
 		}
 
 		final PathRescoper reproducedPart = new PathRescoper(
-				pathReproduction.getReproducedPath().bind(this.path, scope));
+				pathReproduction.getReproducedPath().toPrefix(scope));
 
 		return startWithPrefix(reproducer, pathReproduction)
 				.and(reproducedPart);
@@ -138,15 +146,15 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public void resolveAll(Resolver resolver) {
-		this.path.resolve(fullPathResolver(resolver), resolver.getScope());
+		getBoundPath().resolve(fullPathResolver(resolver), resolver.getScope());
 	}
 
 	@Override
 	public HostOp rescope(CodeDirs dirs, HostOp host) {
 
 		final CodeDirs subDirs =
-				dirs.begin("rescope_by_path", "Resccope to " + this.path);
-		final HostOp result = this.path.op(subDirs, host);
+				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);
+		final HostOp result = getBoundPath().op(subDirs, host);
 
 		subDirs.end();
 
@@ -155,7 +163,7 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public int hashCode() {
-		return this.path.hashCode();
+		return this.prefix.hashCode();
 	}
 
 	@Override
@@ -172,10 +180,7 @@ public final class PathRescoper extends Rescoper {
 
 		final PathRescoper other = (PathRescoper) obj;
 
-		if (getFinalScope() != other.getFinalScope()) {
-			return false;
-		}
-		if (!this.path.equals(other.path)) {
+		if (!this.prefix.equals(other.prefix)) {
 			return false;
 		}
 
@@ -184,7 +189,7 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public String toString() {
-		return "RescopeTo[" + this.path + ']';
+		return "RescopeTo[" + this.prefix + ']';
 	}
 
 	private Rescoper startWithPrefix(
@@ -199,8 +204,7 @@ public final class PathRescoper extends Rescoper {
 			return phraseRescoper;
 		}
 
-		return externalPath.bind(
-				this.path,
+		return externalPath.toPrefix(
 				phraseRescoper.rescope(phraseRescoper.getFinalScope()))
 				.toRescoper()
 				.and(phraseRescoper);

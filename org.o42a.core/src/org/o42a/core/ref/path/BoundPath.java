@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.def.Rescoper.transparentRescoper;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
@@ -32,7 +31,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -247,15 +245,13 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public Rescoper toRescoper() {
-		if (!getRawPath().isStatic() && getRawSteps().length == 0) {
-			return transparentRescoper(getOrigin());
-		}
-		return new PathRescoper(this);
-	}
-
 	public final PathReproduction reproduce(Reproducer reproducer) {
 		return getKind().reproduce(reproducer, this);
+	}
+
+	public final PrefixPath toPrefix(Scope start) {
+		start.assertCompatible(start);
+		return getRawPath().toPrefix(start);
 	}
 
 	public final BoundPath toStatic() {
