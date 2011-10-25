@@ -25,8 +25,9 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -64,7 +65,19 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+
+		final PhraseFieldDefinition definition =
+				new PhraseFieldDefinition(this.phrase);
+		final PrefixPath prefix = path.cut(1).toPrefix(distributor.getScope());
+
+		return definition.prefixWith(prefix);
+	}
+
+	@Override
+	public PhraseConstructor reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
@@ -87,12 +100,6 @@ class PhraseConstructor extends ObjectConstructor {
 				this.phrase.getMainContext(),
 				distribute(),
 				this.ascendants);
-	}
-
-
-	@Override
-	protected FieldDefinition createFieldDefinition() {
-		return new PhraseFieldDefinition(this.phrase);
 	}
 
 	private static final class PhraseObject extends DefinedObject {

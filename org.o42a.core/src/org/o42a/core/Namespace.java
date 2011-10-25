@@ -19,6 +19,9 @@
 */
 package org.o42a.core;
 
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.util.use.User.dummyUser;
+
 import java.util.ArrayList;
 
 import org.o42a.core.artifact.Accessor;
@@ -32,6 +35,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 
@@ -52,6 +56,10 @@ public class Namespace extends AbstractContainer {
 	}
 
 	public void useNamespace(Ref path) {
+		this.uses.add(new NsUse(path));
+	}
+
+	public void useNamespace(BoundPath path) {
 		this.uses.add(new NsUse(path));
 	}
 
@@ -199,10 +207,16 @@ public class Namespace extends AbstractContainer {
 	private class NsUse {
 
 		protected final Ref ref;
+		private BoundPath path;
 		private Container container;
 
 		NsUse(Ref ref) {
 			this.ref = ref;
+		}
+
+		NsUse(BoundPath path) {
+			this.path = path;
+			this.ref = null;
 		}
 
 		public int getPriority() {
@@ -210,11 +224,18 @@ public class Namespace extends AbstractContainer {
 		}
 
 		public Path getPath() {
+			if (this.path != null) {
+				return this.path.getPath();
+			}
 
-			final Path path = this.ref.getPath();
+			final BoundPath path = this.ref.getPath();
 
-			if (path != null || this.container != null) {
-				return path;
+			if (path != null) {
+				this.path = path;
+				return this.path.getPath();
+			}
+			if (this.container != null) {
+				return null;
 			}
 
 			this.ref.getLogger().notPath(this.ref);
@@ -229,7 +250,12 @@ public class Namespace extends AbstractContainer {
 			if (this.container != null) {
 				return this.container;
 			}
-			return this.container = container(this.ref);
+			if (this.ref != null) {
+				return this.container = container(this.ref);
+			}
+			return this.container =
+					this.path.resolve(pathResolver(dummyUser()), getScope())
+					.getResult();
 		}
 
 		public Path findField(
@@ -284,7 +310,7 @@ public class Namespace extends AbstractContainer {
 			if (!getAlias().equals(memberId.getName())) {
 				return null;
 			}
-			return this.ref.getPath();
+			return this.ref.getPath().getPath();
 		}
 
 		@Override

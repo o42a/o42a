@@ -25,6 +25,7 @@ import static org.o42a.core.def.DefKind.PROPOSITION;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.ref.Resolver;
@@ -293,7 +294,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		for (int i = 0; i < items.length; ++i) {
 
 			final D def = items[i];
-			final D newDef = rescoper.updateDef(def);
+			final D newDef = rescoper.update(def);
 
 			newDef.assertScopeIs(rescoper.getFinalScope());
 			if (def == newDef) {
@@ -308,7 +309,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 			System.arraycopy(items, 0, newItems, 0, i);
 			newItems[i++] = newDef;
 			for (;i < items.length; ++i) {
-				newItems[i] = rescoper.updateDef(items[i]);
+				newItems[i] = rescoper.update(items[i]);
 			}
 
 			return create(getDefKind(), newItems);

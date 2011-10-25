@@ -30,7 +30,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.ObjectConstructor;
+import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -80,7 +80,6 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.node.getInterface();
 	}
 
-	@Override
 	public final boolean isConstant() {
 
 		final InterfaceNode interfaceNode = getInterfaceNode();
@@ -111,7 +110,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public Ref reproduce(Reproducer reproducer) {
+	public ArrayConstructor reproduce(Reproducer reproducer) {
 		return new ArrayConstructor(this, reproducer);
 	}
 
@@ -121,7 +120,7 @@ public class ArrayConstructor extends ObjectConstructor {
 			return new ArrayObject(this, typeByItems());
 		}
 
-		final ArrayObject object = (ArrayObject) getResolution().toObject();
+		final ArrayObject object = (ArrayObject) getConstructed();
 
 		return new ArrayObject(this, this.reproducer, object);
 	}
@@ -156,13 +155,13 @@ public class ArrayConstructor extends ObjectConstructor {
 		final InterfaceNode iface = this.node.getInterface();
 
 		if (iface == null) {
-			return this.valueStructFinder = new ArrayStructByItems();
+			return this.valueStructFinder = new ArrayStructByItems(toRef());
 		}
 
 		final TypeNode type = iface.getType();
 
 		if (type == null) {
-			return this.valueStructFinder = new ArrayStructByItems();
+			return this.valueStructFinder = new ArrayStructByItems(toRef());
 		}
 
 		final TypeRef itemTypeRef =
@@ -178,13 +177,19 @@ public class ArrayConstructor extends ObjectConstructor {
 						iface.getKind().getType() == DefinitionKind.LINK);
 	}
 
-	private final class ArrayStructByItems implements ValueStructFinder {
+	private static final class ArrayStructByItems implements ValueStructFinder {
+
+		private final Ref arrayRef;
+
+		public ArrayStructByItems(Ref arrayRef) {
+			this.arrayRef = arrayRef;
+		}
 
 		@Override
 		public ValueStruct<?, ?> valueStructBy(
 				Ref ref,
 				ValueStruct<?, ?> defaultStruct) {
-			return valueStruct(getScope());
+			return this.arrayRef.valueStruct(this.arrayRef.getScope());
 		}
 
 		@Override

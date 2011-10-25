@@ -19,9 +19,6 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.artifact.ArtifactKind.LINK;
-import static org.o42a.core.artifact.ArtifactKind.OBJECT;
-import static org.o42a.core.artifact.ArtifactKind.VARIABLE;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -38,8 +35,6 @@ import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
-import org.o42a.core.member.impl.field.LinkFieldWrap;
-import org.o42a.core.member.impl.field.ObjectFieldWrap;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -199,36 +194,6 @@ public abstract class MemberField extends Member {
 	@Override
 	public void resolveAll() {
 		toField(dummyUser()).getArtifact().resolveAll();
-	}
-
-	@Override
-	public MemberField wrap(
-			MemberOwner owner,
-			UserInfo user,
-			Member inherited) {
-
-		final ArtifactKind<?> artifactKind = toField(user).getArtifactKind();
-
-		if (artifactKind == OBJECT) {
-			return new ObjectFieldWrap(
-					owner,
-					inherited.toField(user).toKind(OBJECT),
-					toField(user).toKind(OBJECT)).toMember();
-		}
-		if (artifactKind == LINK) {
-			return new LinkFieldWrap(
-					getMemberOwner(),
-					inherited.toField(user).toKind(LINK),
-					toField(user).toKind(LINK)).toMember();
-		}
-		if (artifactKind == VARIABLE) {
-			return new LinkFieldWrap(
-					getMemberOwner(),
-					inherited.toField(user).toKind(VARIABLE),
-					toField(user).toKind(VARIABLE)).toMember();
-		}
-
-		throw new IllegalStateException("Can not wrap " + this);
 	}
 
 	@Override

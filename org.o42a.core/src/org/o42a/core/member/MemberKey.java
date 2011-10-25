@@ -20,9 +20,9 @@
 package org.o42a.core.member;
 
 import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
-import static org.o42a.core.ref.path.Path.memberPath;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.path.MemberStep;
 import org.o42a.core.ref.path.Path;
 
 
@@ -120,7 +120,7 @@ public class MemberKey {
 	}
 
 	public final Path toPath() {
-		return memberPath(this);
+		return new MemberStep(this).toPath();
 	}
 
 	@Override
@@ -135,7 +135,7 @@ public class MemberKey {
 		result =
 				prime * result
 				+ ((this.origin == null) ? 0 : this.origin.hashCode());
-		
+
 		return result;
 	}
 

@@ -95,7 +95,7 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 				this,
 				distribute(),
 				this.ascendants,
-				this.definitions);
+				this.definitions).toRef();
 	}
 
 }

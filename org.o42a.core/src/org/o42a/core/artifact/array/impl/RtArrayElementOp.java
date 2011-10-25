@@ -23,25 +23,14 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.source.CompilerContext;
 
 
-final class RtArrayElementOp extends RefOp implements HostOp {
+final class RtArrayElementOp extends PathOp {
 
-	RtArrayElementOp(HostOp host, RtArrayElementConstructor ref) {
-		super(host, ref);
-	}
-
-	@Override
-	public HostOp target(CodeDirs dirs) {
-		return this;
-	}
-
-	@Override
-	public CompilerContext getContext() {
-		return getRef().getContext();
+	RtArrayElementOp(PathOp host, RtArrayElementConstructor element) {
+		super(host);
 	}
 
 	@Override
@@ -69,6 +58,12 @@ final class RtArrayElementOp extends RefOp implements HostOp {
 	public void assign(CodeDirs dirs, HostOp value) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public HostOp target(CodeDirs dirs) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

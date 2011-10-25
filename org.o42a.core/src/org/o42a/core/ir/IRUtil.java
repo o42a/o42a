@@ -33,7 +33,6 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -190,6 +189,11 @@ public class IRUtil {
 		}
 
 		@Override
+		public boolean skip(Step step, Scope scope) {
+			return true;
+		}
+
+		@Override
 		public boolean staticScope(Step step, Scope scope) {
 			return true;
 		}
@@ -214,11 +218,6 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-			throw new IllegalStateException();
-		}
-
-		@Override
 		public boolean refDep(Obj object, Step step, Ref dependency) {
 			throw new IllegalStateException();
 		}
@@ -228,6 +227,11 @@ public class IRUtil {
 				Artifact<?> artifact,
 				Step step,
 				Obj result) {
+			throw new IllegalStateException();
+		}
+
+		@Override
+		public boolean object(Step step, Obj object) {
 			throw new IllegalStateException();
 		}
 

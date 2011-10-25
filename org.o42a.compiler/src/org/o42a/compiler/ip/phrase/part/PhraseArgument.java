@@ -154,15 +154,8 @@ public class PhraseArgument extends PhraseContinuation {
 		}
 
 		@Override
-		public Ref terminate(Ref ref) {
-
-			final Path itemPath =
-					Path.SELF_PATH.arrayItem(PhraseArgument.this.value);
-
-			return itemPath.target(
-					PhraseArgument.this,
-					ref.distribute(),
-					ref);
+		public Path terminate(Path path) {
+			return path.arrayItem(PhraseArgument.this.value);
 		}
 
 		@Override

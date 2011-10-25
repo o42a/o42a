@@ -46,11 +46,6 @@ public final class ParentObjectStep extends MemberStep {
 	}
 
 	@Override
-	public StepKind getStepKind() {
-		return StepKind.PARENT_STEP;
-	}
-
-	@Override
 	public Container resolve(
 			PathResolver resolver,
 			BoundPath path,

@@ -22,10 +22,10 @@ package org.o42a.core.member.impl.local;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
+import org.o42a.core.Distributor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.DepKind;
 import org.o42a.core.member.local.LocalScope;
@@ -54,18 +54,13 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public Object getKey() {
+	public Object getDepKey() {
 		return null;
 	}
 
 	@Override
-	public final Artifact<?> getTarget() {
+	public final Artifact<?> getDepTarget() {
 		return this.target;
-	}
-
-	@Override
-	public final Field<?> getDepField() {
-		return null;
 	}
 
 	@Override
@@ -74,16 +69,17 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public Step materialize() {
-		return null;
+	public boolean isMaterial() {
+		return true;
 	}
 
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
-			Scope scope) {
-		return reproducedPath(new EnclosingOwnerDep(scope.toObject()).toPath());
+			Reproducer reproducer) {
+		return reproducedPath(
+				new EnclosingOwnerDep(reproducer.getScope().toObject())
+				.toPath());
 	}
 
 	@Override
@@ -114,6 +110,13 @@ public final class EnclosingOwnerDep extends Dep {
 			return super.toString();
 		}
 		return "Dep[<owner> of " + getObject() + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	@Override

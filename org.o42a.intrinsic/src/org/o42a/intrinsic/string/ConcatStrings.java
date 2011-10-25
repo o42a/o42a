@@ -107,7 +107,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final MemberKey fromKey = field("what", Accessor.DECLARATION).getKey();
 
-		return this.what = fromKey.toPath().target(this, distribute());
+		return this.what =
+				fromKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
 	private Ref with() {
@@ -117,7 +118,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final MemberKey toKey = field("with", Accessor.DECLARATION).getKey();
 
-		return this.with = toKey.toPath().target(this, distribute());
+		return this.with =
+				toKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
 }

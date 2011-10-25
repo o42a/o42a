@@ -33,15 +33,15 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.common.Wrap;
+import org.o42a.core.ref.common.PlacedPathFragment;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberById extends Wrap {
+public class MemberById extends PlacedPathFragment {
 
 	public static boolean prototypeExpressionClause(Container container) {
 
@@ -83,22 +83,7 @@ public class MemberById extends Wrap {
 	}
 
 	@Override
-	public String toString() {
-
-		final Ref wrapped = getWrapped();
-
-		if (wrapped != null) {
-			return wrapped.toString();
-		}
-		if (this.memberId == null) {
-			return super.toString();
-		}
-
-		return this.memberId.toString();
-	}
-
-	@Override
-	protected Ref resolveWrapped() {
+	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final Obj declaredIn;
 
@@ -108,13 +93,15 @@ public class MemberById extends Wrap {
 			declaredIn = null;
 		}
 
-		final Path path = path(getContainer(), declaredIn, false);
+		return path(getContainer(), declaredIn, false);
+	}
 
-		if (path == null) {
-			return errorRef(this);
+	@Override
+	public String toString() {
+		if (this.memberId == null) {
+			return super.toString();
 		}
-
-		return path.target(this, distribute());
+		return this.memberId.toString();
 	}
 
 	private Path path(

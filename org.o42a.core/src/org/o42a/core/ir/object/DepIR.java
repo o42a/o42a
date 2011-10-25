@@ -28,7 +28,6 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.local.Dep;
 
 
@@ -81,16 +80,10 @@ public class DepIR {
 
 	private CodeId localId() {
 		switch (getDep().getDepKind()) {
-		case FIELD_DEP:
-
-			final FieldIR<?> depFieldIR =
-					getDep().getDepField().ir(getGenerator());
-
-			return getGenerator().id("F").sub(depFieldIR.getId().getLocal());
 		case ENCLOSING_OWNER_DEP:
 			return getGenerator().id("O");
 		case REF_DEP:
-			return getGenerator().id("R").anonymous(getDep().getName());
+			return getGenerator().id("D").anonymous(getDep().getName());
 		}
 
 		throw new IllegalStateException(

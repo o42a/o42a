@@ -25,7 +25,6 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -55,6 +54,11 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
+	public boolean skip(Step step, Scope scope) {
+		return true;
+	}
+
+	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return true;
 	}
@@ -75,17 +79,17 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean fieldDep(Obj object, Step step, Field<?> dependency) {
-		return true;
-	}
-
-	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return true;
 	}
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
+		return true;
+	}
+
+	@Override
+	public boolean object(Step step, Obj object) {
 		return true;
 	}
 

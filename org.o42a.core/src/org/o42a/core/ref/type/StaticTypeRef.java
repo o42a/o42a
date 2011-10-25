@@ -21,9 +21,9 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.def.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;

@@ -203,11 +203,6 @@ public abstract class Member extends Placed {
 
 	public abstract void resolveAll();
 
-	public abstract Member wrap(
-			MemberOwner owner,
-			UserInfo user,
-			Member inherited);
-
 	@Override
 	public String toString() {
 		if (!isOverride()) {
