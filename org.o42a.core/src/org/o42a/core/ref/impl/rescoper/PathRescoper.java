@@ -60,6 +60,9 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public <R extends Rescopable<R>> R update(R rescopable) {
+		if (getPath().isSelf()) {
+			return rescopable.upgradeScope(getFinalScope());
+		}
 		return rescopable.prefixWith(getPrefix());
 	}
 
@@ -139,6 +142,9 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public HostOp write(CodeDirs dirs, HostOp host) {
+		if (getPath().isSelf()) {
+			return host;
+		}
 
 		final CodeDirs subDirs =
 				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);
