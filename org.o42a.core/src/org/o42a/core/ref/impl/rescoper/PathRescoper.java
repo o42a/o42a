@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.path;
+package org.o42a.core.ref.impl.rescoper;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -40,11 +40,6 @@ public final class PathRescoper extends Rescoper {
 	public PathRescoper(PrefixPath prefix) {
 		super(prefix.getStart());
 		this.prefix = prefix;
-	}
-
-	@Override
-	public boolean isStatic() {
-		return this.prefix.getPrefix().isStatic();
 	}
 
 	public final BoundPath getBoundPath() {
@@ -144,7 +139,7 @@ public final class PathRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
+	public HostOp write(CodeDirs dirs, HostOp host) {
 
 		final CodeDirs subDirs =
 				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);

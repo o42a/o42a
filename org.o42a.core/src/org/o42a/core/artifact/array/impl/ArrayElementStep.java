@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -146,8 +145,7 @@ public class ArrayElementStep extends Step {
 			}
 		}
 
-		final Ref indexRef = this.indexRef.rescope(
-				upgradeRescoper(this.indexRef.getScope(), start));
+		final Ref indexRef = this.indexRef.upgradeScope(start);
 		final RtArrayElement item = new RtArrayElement(indexRef);
 
 		walker.arrayElement(array, this, item);

@@ -183,7 +183,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	public ValOp write(ValDirs dirs, HostOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs.dirs(), host);
+		final HostOp rescopedHost = getRescoper().write(dirs.dirs(), host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(

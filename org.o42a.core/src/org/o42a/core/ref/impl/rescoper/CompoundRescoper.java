@@ -40,11 +40,6 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public boolean isStatic() {
-		return this.first.isStatic() && this.second.isStatic();
-	}
-
-	@Override
 	public <R extends Rescopable<R>> R update(R rescopable) {
 		return this.second.update(this.first.update(rescopable));
 	}
@@ -118,10 +113,10 @@ public final class CompoundRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
-		return this.first.rescope(
+	public HostOp write(CodeDirs dirs, HostOp host) {
+		return this.first.write(
 				dirs,
-				this.second.rescope(dirs, host));
+				this.second.write(dirs, host));
 	}
 
 	@Override

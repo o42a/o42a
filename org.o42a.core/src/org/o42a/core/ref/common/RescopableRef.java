@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.common;
 
+import static org.o42a.core.Rescoper.upgradeRescoper;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
@@ -105,7 +107,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		if (scope == getScope()) {
 			return self();
 		}
-		return rescope(Rescoper.upgradeRescoper(getScope(), scope));
+		return rescope(upgradeRescoper(getScope(), scope));
 	}
 
 	public R rescope(Scope scope) {
@@ -159,7 +161,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 
 	public RefOp op(CodeDirs dirs, HostOp host) {
 
-		final HostOp rescoped = getRescoper().rescope(dirs, host);
+		final HostOp rescoped = getRescoper().write(dirs, host);
 
 		return getRef().op(rescoped);
 	}

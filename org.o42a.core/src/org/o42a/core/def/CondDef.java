@@ -144,7 +144,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+		final HostOp rescopedHost = getRescoper().write(dirs, host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);

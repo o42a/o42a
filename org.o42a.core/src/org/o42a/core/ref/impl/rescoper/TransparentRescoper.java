@@ -35,11 +35,6 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public boolean isStatic() {
-		return true;
-	}
-
-	@Override
 	public boolean isTransparent() {
 		return true;
 	}
@@ -80,7 +75,7 @@ public final class TransparentRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
+	public HostOp write(CodeDirs dirs, HostOp host) {
 		return host;
 	}
 

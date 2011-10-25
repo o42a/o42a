@@ -52,8 +52,6 @@ public abstract class Rescoper {
 		return this.finalScope;
 	}
 
-	public abstract boolean isStatic();
-
 	public boolean isTransparent() {
 		return false;
 	}
@@ -77,6 +75,6 @@ public abstract class Rescoper {
 
 	public abstract Rescoper reproduce(Reproducer reproducer);
 
-	public abstract HostOp rescope(CodeDirs dirs, HostOp host);
+	public abstract HostOp write(CodeDirs dirs, HostOp host);
 
 }
