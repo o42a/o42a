@@ -305,7 +305,7 @@ public class BoundPath extends Location {
 		if (isAbsolute()) {
 			startFrom = root(start);
 			if (!walker.root(this, startFrom)) {
-				return null;
+				return NO_PATH_RESOLUTION;
 			}
 			if (expand) {
 				tracker = new PathRecorder(
@@ -327,7 +327,7 @@ public class BoundPath extends Location {
 			startFrom = start;
 			startFrom.assertDerivedFrom(getOrigin());
 			if (!walker.start(this, startFrom)) {
-				return null;
+				return NO_PATH_RESOLUTION;
 			}
 			if (expand) {
 				tracker = new PathRecorder(
@@ -428,7 +428,7 @@ public class BoundPath extends Location {
 		}
 
 		if (!tracker.done(result)) {
-			return null;
+			return NO_PATH_RESOLUTION;
 		}
 
 		return pathResolution(this, result);

@@ -23,7 +23,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
@@ -34,7 +33,6 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -42,7 +40,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 
 
-final class ClauseReuser implements ResolutionWalker, PathWalker {
+final class ClauseReuser implements PathWalker {
 
 	private final LocationInfo location;
 	private final boolean reuseContents;
@@ -57,29 +55,6 @@ final class ClauseReuser implements ResolutionWalker, PathWalker {
 
 	public ReusedClause getReused() {
 		return this.reused;
-	}
-
-	@Override
-	public PathWalker path(BoundPath path) {
-		return this;
-	}
-
-	@Override
-	public boolean newObject(ScopeInfo location, Obj object) {
-		return notClause();
-	}
-
-	@Override
-	public boolean artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		return notClause();
-	}
-
-	@Override
-	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
-		return unexpectedAbsolutePath();
 	}
 
 	@Override

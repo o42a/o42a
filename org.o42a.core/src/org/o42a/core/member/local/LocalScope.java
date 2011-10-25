@@ -37,10 +37,10 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.member.impl.local.LocalOwnerStep;
 import org.o42a.core.member.impl.local.PropagatedLocalScope;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -193,7 +193,7 @@ public abstract class LocalScope
 	@Override
 	public final LocalResolver walkingResolver(
 			UserInfo user,
-			ResolutionWalker walker) {
+			PathWalker walker) {
 		return resolverFactory().walkingResolver(user, walker);
 	}
 

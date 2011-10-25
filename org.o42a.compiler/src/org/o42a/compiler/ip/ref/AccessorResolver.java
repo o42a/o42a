@@ -23,31 +23,23 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.ResolutionWalker;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.core.source.LocationInfo;
 
 
-final class AccessorResolver implements ResolutionWalker, PathWalker {
+final class AccessorResolver implements PathWalker {
 
 	private boolean owner = true;
 	private boolean declaration = true;
 	private boolean enclosed = true;
 	private boolean inheritant = true;
-
-	private boolean ownerBeforeRoot;
-	private boolean declarationBeforeRoot;
-	private boolean enclosedBeforeRoot;
-	private boolean inheritantBeforeRoot;
 
 	public AccessorResolver() {
 	}
@@ -69,43 +61,7 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 	}
 
 	@Override
-	public PathWalker path(BoundPath path) {
-		return this;
-	}
-
-	@Override
-	public boolean newObject(ScopeInfo location, Obj object) {
-		this.owner = false;
-		this.declaration &=
-				object.getContext().declarationsVisibleFrom(
-						location.getContext());
-		this.enclosed = false;
-		this.inheritant = false;
-		return true;
-	}
-
-	@Override
-	public boolean artifactPart(
-			LocationInfo location,
-			Artifact<?> artifact,
-			Artifact<?> part) {
-		updateContainer(artifact.getContainer(), part.getContainer());
-		return true;
-	}
-
-	@Override
-	public boolean staticArtifact(LocationInfo location, Artifact<?> artifact) {
-		return updateContainer(
-				artifact.getContainer(),
-				artifact.getContainer());
-	}
-
-	@Override
 	public boolean root(BoundPath path, Scope root) {
-		this.ownerBeforeRoot = this.owner;
-		this.declarationBeforeRoot = this.declaration;
-		this.enclosedBeforeRoot = this.enclosed;
-		this.inheritantBeforeRoot = this.inheritant;
 		return updateContainer(root.getContainer(), root.getContainer());
 	}
 
@@ -116,10 +72,6 @@ final class AccessorResolver implements ResolutionWalker, PathWalker {
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		this.owner = this.ownerBeforeRoot;
-		this.declaration = this.declarationBeforeRoot;
-		this.enclosed = this.enclosedBeforeRoot;
-		this.inheritant = this.inheritantBeforeRoot;
 		return updateContainer(module, module);
 	}
 

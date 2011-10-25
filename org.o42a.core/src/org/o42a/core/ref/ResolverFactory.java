@@ -19,10 +19,11 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.ResolutionWalker.DUMMY_RESOLUTION_WALKER;
+import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.util.use.UserInfo;
 
 
@@ -44,18 +45,18 @@ public abstract class ResolverFactory<R extends Resolver> {
 			return this.dummyResolver;
 		}
 		return this.dummyResolver =
-				createResolver(dummyUser(), DUMMY_RESOLUTION_WALKER);
+				createResolver(dummyUser(), DUMMY_PATH_WALKER);
 	}
 
 	public final R newResolver(UserInfo user) {
 		if (user.toUser().isDummy()) {
 			return dummyResolver();
 		}
-		return createResolver(user, DUMMY_RESOLUTION_WALKER);
+		return createResolver(user, DUMMY_PATH_WALKER);
 	}
 
-	public final R walkingResolver(UserInfo user, ResolutionWalker walker) {
-		if (walker == null || walker == DUMMY_RESOLUTION_WALKER) {
+	public final R walkingResolver(UserInfo user, PathWalker walker) {
+		if (walker == null || walker == DUMMY_PATH_WALKER) {
 			return newResolver(user);
 		}
 		return createResolver(user, walker);
@@ -69,6 +70,6 @@ public abstract class ResolverFactory<R extends Resolver> {
 		return "ResolverFactory[" + this.scope + ']';
 	}
 
-	protected abstract R createResolver(UserInfo user, ResolutionWalker walker);
+	protected abstract R createResolver(UserInfo user, PathWalker walker);
 
 }
