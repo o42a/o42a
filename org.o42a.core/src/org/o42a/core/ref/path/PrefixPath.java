@@ -63,9 +63,6 @@ public final class PrefixPath {
 	}
 
 	public final Rescoper toRescoper() {
-		if (!this.prefix.isStatic() && this.prefix.isSelf()) {
-			return Rescoper.transparentRescoper(getStart());
-		}
 		return new PathRescoper(this);
 	}
 

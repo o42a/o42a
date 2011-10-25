@@ -25,6 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
 
@@ -37,6 +38,11 @@ public final class TransparentRescoper extends Rescoper {
 	@Override
 	public boolean isTransparent() {
 		return true;
+	}
+
+	@Override
+	public Path getPath() {
+		return Path.SELF_PATH;
 	}
 
 	@Override
