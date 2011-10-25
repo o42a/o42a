@@ -115,7 +115,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	public RefOp ref(CodeDirs dirs, ObjOp host) {
 
-		final HostOp rescopedHost = getRescoper().rescope(dirs, host);
+		final HostOp rescopedHost = getRescoper().write(dirs, host);
 
 		return getRef().op(rescopedHost);
 	}
@@ -200,7 +200,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 			assert assertFullyResolved();
 			this.targetRef.getRef().getLogical().write(
 					dirs,
-					this.targetRef.getRescoper().rescope(dirs, host));
+					this.targetRef.getRescoper().write(dirs, host));
 		}
 
 		@Override

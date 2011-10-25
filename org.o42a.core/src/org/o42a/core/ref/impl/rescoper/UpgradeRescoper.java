@@ -39,11 +39,6 @@ public final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public boolean isStatic() {
-		return true;
-	}
-
-	@Override
 	public <R extends Rescopable<R>> R update(R rescopable) {
 		return rescopable.upgradeScope(getFinalScope());
 	}
@@ -71,9 +66,9 @@ public final class UpgradeRescoper extends Rescoper {
 			return super.and(other);
 		}
 
-		final UpgradeRescoper filter2 = (UpgradeRescoper) other;
+		final UpgradeRescoper rescoper2 = (UpgradeRescoper) other;
 
-		if (filter2.fromScope != getFinalScope()) {
+		if (rescoper2.fromScope != getFinalScope()) {
 			return super.and(other);
 		}
 
@@ -91,7 +86,7 @@ public final class UpgradeRescoper extends Rescoper {
 	}
 
 	@Override
-	public HostOp rescope(CodeDirs dirs, HostOp host) {
+	public HostOp write(CodeDirs dirs, HostOp host) {
 
 		final CodeDirs subDirs = dirs.begin(
 				"upgrade_scope",
