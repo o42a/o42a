@@ -22,9 +22,8 @@ package org.o42a.core;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.impl.rescoper.CompoundRescoper;
 import org.o42a.core.ref.impl.rescoper.TransparentRescoper;
-import org.o42a.core.ref.impl.rescoper.UpgradeRescoper;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
 
@@ -39,7 +38,7 @@ public abstract class Rescoper {
 			return transparentRescoper(fromScope);
 		}
 		toScope.assertDerivedFrom(fromScope);
-		return new UpgradeRescoper(fromScope, toScope);
+		return Path.SELF_PATH.toPrefix(toScope).toRescoper();
 	}
 
 	private final Scope finalScope;
@@ -56,6 +55,8 @@ public abstract class Rescoper {
 		return false;
 	}
 
+	public abstract Path getPath();
+
 	public abstract <R extends Rescopable<R>> R update(R rescopable);
 
 	public abstract Scope rescope(Scope scope);
@@ -64,12 +65,7 @@ public abstract class Rescoper {
 
 	public abstract Scope updateScope(Scope scope);
 
-	public Rescoper and(Rescoper other) {
-		if (other.isTransparent()) {
-			return this;
-		}
-		return new CompoundRescoper(this, other);
-	}
+	public abstract Rescoper and(Rescoper other);
 
 	public abstract void resolveAll(Resolver resolver);
 

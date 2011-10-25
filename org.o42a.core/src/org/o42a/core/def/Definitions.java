@@ -517,7 +517,6 @@ public class Definitions extends Scoped implements Rescopable<Definitions> {
 			return this;
 		}
 		assertCompatible(scope);
-
 		return rescope(upgradeRescoper(getScope(), scope));
 	}
 

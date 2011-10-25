@@ -49,10 +49,11 @@ public final class PathRescoper extends Rescoper {
 		return this.boundPath = this.prefix.bind(this.prefix.getStart());
 	}
 
-	public final PrefixPath getPrefix() {
+	public final PrefixPath getPrefix()  {
 		return this.prefix;
 	}
 
+	@Override
 	public final Path getPath() {
 		return getPrefix().getPrefix();
 	}
@@ -95,15 +96,13 @@ public final class PathRescoper extends Rescoper {
 
 	@Override
 	public Rescoper and(Rescoper other) {
-		if (other instanceof PathRescoper) {
-
-			final PathRescoper pathRescoper = (PathRescoper) other;
-			final Path newPath = pathRescoper.getPath().append(getPath());
-
-			return new PathRescoper(newPath.toPrefix(other.getFinalScope()));
+		if (other.isTransparent()) {
+			return this;
 		}
 
-		return super.and(other);
+		final Path newPath = other.getPath().append(getPath());
+
+		return new PathRescoper(newPath.toPrefix(other.getFinalScope()));
 	}
 
 	@Override
