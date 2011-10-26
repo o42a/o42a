@@ -37,7 +37,6 @@ import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Block;
@@ -168,7 +167,7 @@ class PhraseSubContext extends PhraseContext {
 		statements.statement(builder.build());
 	}
 
-	private Ref substitute(Distributor distributor) {
+	Ref substitute(Distributor distributor) {
 
 		final ClauseInstance instance = getInstances()[0];
 		final Ref substitution = instance.substitute(distributor);
@@ -190,24 +189,9 @@ class PhraseSubContext extends PhraseContext {
 
 		for (ClauseInstance instance : getInstances()) {
 
-			final Ref ref;
-			final PlainClause plainClause = getClause().toPlainClause();
+			final Ref ref =
+					instance.instantiateObject(statements.nextDistributor());
 
-			if (plainClause != null && plainClause.isSubstitution()) {
-				ref = substitute(statements.nextDistributor());
-			} else {
-
-				final Distributor distributor = statements.nextDistributor();
-				final Path instancePath =
-						instance.instantiateObject(distributor);
-
-				ref = instancePath.bind(
-						new Location(
-								distributor.getContext(),
-								instance.getLocation()),
-						statements.getScope())
-						.target(distributor);
-			}
 			if (ref == null) {
 				continue;
 			}

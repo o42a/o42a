@@ -34,10 +34,10 @@ public class ClauseReuseTest extends CompilerTestCase {
 	public void reuseObject() {
 		compile(
 				"A := string(",
-				"  Foo := 1.",
-				"  <*[foo value] | $object$> foo = *.",
-				"  <bar> (<*'value'>).",
-				").",
+				"  Foo := 1",
+				"  <*[foo value] | $object$> foo = *",
+				"  <bar> (<*'value'> ())",
+				")",
 				"B := a[2]bar'b'.");
 
 		final Field<?> b = field("b");
@@ -51,13 +51,13 @@ public class ClauseReuseTest extends CompilerTestCase {
 	public void reuseGroup() {
 		compile(
 				"A := string(",
-				"  Foo := 1.",
-				"  <*[foo value] | group> foo = *.",
+				"  Foo := 1",
+				"  <*[foo value] | group> foo = *",
 				"  <*group> (",
-				"    <bar> (<*'value'>).",
+				"    <bar> (<*'value'> ())",
 				"  )",
-				").",
-				"B := a[2]bar'b'.");
+				")",
+				"B := a[2]bar'b'");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");

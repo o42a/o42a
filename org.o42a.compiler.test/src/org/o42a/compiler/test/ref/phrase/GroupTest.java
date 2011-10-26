@@ -34,8 +34,8 @@ public class GroupTest extends CompilerTestCase {
 	public void group() {
 		compile(
 				"A := integer(",
-				"  <*[arg]>",
-				").",
+				"  <*[arg]> ()",
+				")",
 				"B := A[2]");
 
 		final Field<?> b = field("b");
@@ -49,9 +49,9 @@ public class GroupTest extends CompilerTestCase {
 				"A := void(",
 				"  Foo := 1.",
 				"  <Set> foo = *(",
-				"    <*[value]>",
+				"    <*[value]> = ()",
 				"  )",
-				").",
+				")",
 				"B := A() set[2]");
 
 		final Field<?> b = field("b");
@@ -66,9 +66,9 @@ public class GroupTest extends CompilerTestCase {
 				"A := void(",
 				"  Foo := 1.",
 				"  <*implied> foo = *(",
-				"    <*[value]>",
+				"    <*[value]> = ()",
 				"  )",
-				").",
+				")",
 				"B := A[2]");
 
 		final Field<?> b = field("b");
@@ -82,9 +82,9 @@ public class GroupTest extends CompilerTestCase {
 		compile(
 				"A := integer(",
 				"  <Set> (",
-				"    <*[value]>",
+				"    <*[value]> ()",
 				"  )",
-				").",
+				")",
 				"B := A() set[2]");
 
 		final Field<?> b = field("b");
@@ -98,10 +98,10 @@ public class GroupTest extends CompilerTestCase {
 				"A := integer(",
 				"  <*> (",
 				"    <*> (",
-				"      <*[value]>",
+				"      <*[value]> ()",
 				"    )",
 				"  )",
-				").",
+				")",
 				"B := A[2]");
 
 		final Field<?> b = field("b");
@@ -118,7 +118,7 @@ public class GroupTest extends CompilerTestCase {
 				"      <*[value]> = integer()",
 				"    )",
 				"  )",
-				").",
+				")",
 				"B := A[2]");
 
 		final Field<?> b = field("b");
@@ -131,9 +131,9 @@ public class GroupTest extends CompilerTestCase {
 		compile(
 				"A := integer(",
 				"  <*implicit> (",
-				"    <*[value]>",
+				"    <*[value]> ()",
 				"  )",
-				").",
+				")",
 				"B := A[2]");
 
 		final Field<?> b = field("b");

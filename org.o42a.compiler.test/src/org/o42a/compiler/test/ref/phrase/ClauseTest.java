@@ -91,7 +91,7 @@ public class ClauseTest extends CompilerTestCase {
 	@Test
 	public void implicit() {
 		compile(
-				"A := string(<*implicit> = string(<*''>))",
+				"A := string(<*implicit> = string(<*''> ()))",
 				"B := a 'b'");
 
 		final Field<?> b = field("b");

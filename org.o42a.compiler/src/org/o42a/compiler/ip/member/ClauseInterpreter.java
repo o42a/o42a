@@ -40,9 +40,7 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.Location;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.sentence.Group;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -80,16 +78,13 @@ public class ClauseInterpreter {
 					statements);
 		} else {
 
-			final Group group = statements.group(
-					new Location(context, declarator),
-					declaration.setKind(ClauseKind.GROUP));
+			final ClauseBuilder builder = statements.clause(declaration);
 
-			if (group == null) {
+			if (builder == null) {
 				return;
 			}
 
-			declare(group.getBuilder(), declarator);
-			result = group.parentheses();
+			result = declare(builder.substitution(), declarator).build();
 		}
 
 		if (result != null) {
