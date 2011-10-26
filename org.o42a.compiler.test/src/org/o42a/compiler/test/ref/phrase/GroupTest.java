@@ -49,7 +49,7 @@ public class GroupTest extends CompilerTestCase {
 				"A := void(",
 				"  Foo := 1.",
 				"  <Set> foo = *(",
-				"    <*[value]> = ()",
+				"    <*[value]> ()",
 				"  )",
 				")",
 				"B := A() set[2]");
@@ -66,7 +66,7 @@ public class GroupTest extends CompilerTestCase {
 				"A := void(",
 				"  Foo := 1.",
 				"  <*implied> foo = *(",
-				"    <*[value]> = ()",
+				"    <*[value]> ()",
 				"  )",
 				")",
 				"B := A[2]");
