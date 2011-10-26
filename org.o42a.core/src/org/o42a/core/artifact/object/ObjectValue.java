@@ -269,6 +269,9 @@ public final class ObjectValue implements UseInfo {
 	final void setValueStruct(ValueStruct<?, ?> valueStruct) {
 		if (valueStruct != null) {
 			this.valueStruct = valueStruct;
+			if (valueStruct.isScoped()) {
+				valueStruct.toScoped().assertSameScope(getObject());
+			}
 		}
 	}
 

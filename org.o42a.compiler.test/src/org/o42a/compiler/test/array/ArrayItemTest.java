@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Tests
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,15 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.phrase.part;
+package org.o42a.compiler.test.array;
 
-import org.o42a.core.ref.Ref;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.value.ValueType;
 
 
-public interface PhraseTerminator {
+public class ArrayItemTest extends CompilerTestCase {
 
-	boolean requiresInstance();
+	@Test
+	public void constantArrayItem() {
+		compile(
+				"Array := [`1, 2, 3]",
+				"Item := array[1]");
 
-	Ref terminate(Ref prefix);
+		assertThat(definiteValue(field("item"), ValueType.INTEGER), is(2L));
+	}
 
 }

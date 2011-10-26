@@ -19,9 +19,12 @@
 */
 package org.o42a.core.artifact.array;
 
+import static org.o42a.core.Rescoper.upgradeRescoper;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
 import org.o42a.core.ir.value.ValueStructIR;
@@ -129,8 +132,8 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public final boolean isScoped() {
-		return true;
+	public final ScopeInfo toScoped() {
+		return getItemTypeRef();
 	}
 
 	@Override
@@ -180,6 +183,45 @@ public final class ArrayValueStruct
 		out.append(this.itemTypeRef).append(']');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Value<Array> rescopeValue(Value<Array> value, Rescoper rescoper) {
+		if (rescoper.isTransparent()) {
+			return value;
+		}
+		if (value.isDefinite() && !value.isFalse()) {
+			return value.getDefiniteValue().rescope(rescoper).toValue();
+		}
+
+		final ArrayValueStruct initialStruct =
+				(ArrayValueStruct) value.getValueStruct();
+		final ArrayValueStruct rescopedStruct =
+				initialStruct.rescope(rescoper);
+
+		if (!value.isDefinite()) {
+			return rescopedStruct.runtimeValue();
+		}
+		if (value.isUnknown()) {
+			return rescopedStruct.unknownValue();
+		}
+
+		return rescopedStruct.falseValue();
+	}
+
+	@Override
+	protected Value<Array> prefixValueWith(
+			Value<Array> value,
+			PrefixPath prefix) {
+		return value.rescope(prefix.toRescoper());
+	}
+
+	@Override
+	protected Value<Array> upgradeValueScope(
+			Value<Array> value,
+			Scope toScope) {
+		return value.rescope(
+				upgradeRescoper(getItemTypeRef().getScope(), toScope));
 	}
 
 	@Override

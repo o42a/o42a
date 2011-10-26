@@ -27,11 +27,13 @@ import java.util.IdentityHashMap;
 import org.o42a.core.*;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 
 
-public final class Array extends Placed {
+public final class Array extends Placed implements Rescopable<Array> {
 
 	private final Obj origin;
 	private final Obj owner;
@@ -131,6 +133,32 @@ public final class Array extends Placed {
 		return new Array(this, distributor, valueStruct, items);
 	}
 
+	@Override
+	public Array rescope(Rescoper rescoper) {
+		return rescoper.update(this);
+	}
+
+	@Override
+	public Array prefixWith(PrefixPath prefix) {
+
+		final Rescoper rescoper = prefix.toRescoper();
+
+		return new Array(
+				this,
+				distributeIn(prefix.getStart().getContainer()),
+				getValueStruct().rescope(rescoper),
+				rescopeItems(rescoper));
+	}
+
+	@Override
+	public final Array upgradeScope(Scope toScope) {
+		return propagateTo(toScope);
+	}
+
+	public final Value<Array> toValue() {
+		return getValueStruct().constantValue(this);
+	}
+
 	private static Obj owner(Scope scope) {
 
 		final Obj owner = scope.toObject();
@@ -150,6 +178,20 @@ public final class Array extends Placed {
 			final ArrayItem oldItem = this.items[i];
 
 			newItems[i] = oldItem.propagateTo(scope, rescoper);
+		}
+
+		return newItems;
+	}
+
+	private ArrayItem[] rescopeItems(Rescoper rescoper) {
+
+		final ArrayItem[] newItems = new ArrayItem[this.items.length];
+
+		for (int i = 0; i < newItems.length; ++i) {
+
+			final ArrayItem oldItem = this.items[i];
+
+			newItems[i] = oldItem.rescope(rescoper);
 		}
 
 		return newItems;

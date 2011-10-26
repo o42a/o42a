@@ -28,7 +28,7 @@ import org.o42a.util.ArrayUtil;
 
 public class NextClause implements Cloneable {
 
-	private static final NextClause[] NO_IMPLIED = new NextClause[0];
+	private static final NextClause[] NO_IMPLICIT = new NextClause[0];
 
 	public static NextClause errorClause(Object reason) {
 		assert reason != null :
@@ -77,7 +77,7 @@ public class NextClause implements Cloneable {
 	private final Clause clause;
 	private final PartsAsPrefix partsAsPrefix;
 	private Clause container;
-	private NextClause[] implicit;
+	private NextClause[] implicit = NO_IMPLICIT;
 
 	private NextClause(MemberId memberId, Clause clause, Clause container) {
 		this.memberId = memberId;
@@ -88,10 +88,9 @@ public class NextClause implements Cloneable {
 			this.partsAsPrefix = NOT_PREFIX;
 		}
 		this.container = container;
-		this.implicit = NO_IMPLIED;
 	}
 
-	public NextClause(PartsAsPrefix partsAsPrefix) {
+	NextClause(PartsAsPrefix partsAsPrefix) {
 		this.memberId = null;
 		this.clause = null;
 		this.partsAsPrefix = partsAsPrefix;

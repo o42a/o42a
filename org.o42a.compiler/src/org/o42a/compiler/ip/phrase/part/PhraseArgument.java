@@ -29,7 +29,7 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -154,8 +154,12 @@ public class PhraseArgument extends PhraseContinuation {
 		}
 
 		@Override
-		public Path terminate(Path path) {
-			return path.arrayItem(PhraseArgument.this.value);
+		public Ref terminate(Ref prefix) {
+
+			final BoundPath itemPath =
+					prefix.getPath().arrayItem(PhraseArgument.this.value);
+
+			return itemPath.target(prefix.distribute());
 		}
 
 		@Override

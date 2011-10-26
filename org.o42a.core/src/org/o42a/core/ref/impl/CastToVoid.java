@@ -59,7 +59,6 @@ final class CastToVoid extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-		System.err.println("(!)");
 		walker.skip(this, start);
 		return start.getContainer();
 	}

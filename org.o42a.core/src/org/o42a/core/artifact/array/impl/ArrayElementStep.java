@@ -42,11 +42,12 @@ import org.o42a.core.value.ValueType;
 
 public class ArrayElementStep extends Step {
 
-	private final Ref indexRef;
+	private final Ref initialIndexRef;
+	private Ref indexRef;
 	private boolean error;
 
 	public ArrayElementStep(Ref indexRef) {
-		this.indexRef = indexRef;
+		this.initialIndexRef = indexRef;
 	}
 
 	@Override
@@ -68,6 +69,9 @@ public class ArrayElementStep extends Step {
 			PathWalker walker) {
 		if (this.error) {
 			return null;
+		}
+		if (this.indexRef == null) {
+			this.indexRef = this.initialIndexRef.rescope(start);
 		}
 
 		final Obj array = start.toObject();
@@ -126,7 +130,7 @@ public class ArrayElementStep extends Step {
 				final ArrayItem[] items =
 						arrayVal.getDefiniteValue().items(start);
 
-				if (items.length >= itemIdx) {
+				if (itemIdx >= items.length) {
 					path.getLogger().error(
 							"invalid_array_index",
 							this.indexRef,
