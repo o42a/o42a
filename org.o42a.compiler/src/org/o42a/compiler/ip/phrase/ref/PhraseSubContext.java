@@ -167,7 +167,7 @@ class PhraseSubContext extends PhraseContext {
 		statements.statement(builder.build());
 	}
 
-	Ref substitute(Distributor distributor) {
+	private Ref substitute(Distributor distributor) {
 
 		final ClauseInstance instance = getInstances()[0];
 		final Ref substitution = instance.substitute(distributor);
