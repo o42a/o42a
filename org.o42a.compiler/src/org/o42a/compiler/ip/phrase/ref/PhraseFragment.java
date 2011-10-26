@@ -68,7 +68,7 @@ class PhraseFragment extends PathFragment {
 		final Path path;
 
 		if (!context.createsObject()) {
-			path = context.standalone();
+			path = context.standalone().getPath().getRawPath();
 		} else {
 			path = new PhraseConstructor(phrase).toPath();
 		}

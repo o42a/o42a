@@ -20,5 +20,5 @@
 Number :=> void
 ===============
 
-// Unary + does not modify number.
+// Unary + returns the number passed as operand.
 <@Operators: plus>

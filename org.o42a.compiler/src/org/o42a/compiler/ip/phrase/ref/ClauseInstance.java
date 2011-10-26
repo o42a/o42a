@@ -27,8 +27,10 @@ import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -104,8 +106,22 @@ public final class ClauseInstance {
 		}
 	}
 
-	public Path instantiateObject(Distributor distributor) {
-		return new ClauseInstantiation(this, distributor).toPath();
+	public Ref instantiateObject(Distributor distributor) {
+
+		final PlainClause plainClause =
+				getContext().getClause().toPlainClause();
+
+		if (plainClause != null && plainClause.isSubstitution()) {
+			return substitute(distributor);
+		}
+
+		final Path instancePath =
+				new ClauseInstantiation(this, distributor).toPath();
+
+		return instancePath.bind(
+				new Location(distributor.getContext(), getLocation()),
+				distributor.getScope())
+				.target(distributor);
 	}
 
 	@Override

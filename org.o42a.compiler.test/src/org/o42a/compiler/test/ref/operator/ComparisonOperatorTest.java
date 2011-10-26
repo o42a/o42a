@@ -34,7 +34,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: equals | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a == void");
@@ -51,7 +51,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: equals | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a <> void");
@@ -68,7 +68,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a < 2");
@@ -85,7 +85,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a <= 2");
@@ -102,7 +102,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a > 2");
@@ -119,7 +119,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a >= 2");
@@ -136,7 +136,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a == 2");
@@ -153,7 +153,7 @@ public class ComparisonOperatorTest extends CompilerTestCase {
 				"A := void(",
 				"  <*Cmp> Compare(",
 				"    <@Operators: compare | cmp> Left = void",
-				"    <@Operators: operand>",
+				"    <@Operators: operand> ()",
 				"  )",
 				")",
 				"B := a <> 2");

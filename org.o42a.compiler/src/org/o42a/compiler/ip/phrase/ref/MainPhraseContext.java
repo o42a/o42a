@@ -35,6 +35,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -83,7 +84,7 @@ final class MainPhraseContext extends PhraseContext {
 		return this.createsObject > 0;
 	}
 
-	public Path standalone() {
+	public Ref standalone() {
 		this.standalone = true;
 
 		final ClauseInstance[] instances = this.nextContext.getInstances();

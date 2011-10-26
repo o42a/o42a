@@ -32,6 +32,19 @@ import org.o42a.core.value.ValueType;
 public class SubstitutionClauseTest extends CompilerTestCase {
 
 	@Test
+	public void topLevelSubstitution() {
+		compile(
+				"A := void(",
+				"  <*[arg]>",
+				")",
+				"B := a[2]");
+
+		final Field<?> b = field("b");
+
+		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
 	public void selfAssignment() {
 		compile(
 				"A := integer(",

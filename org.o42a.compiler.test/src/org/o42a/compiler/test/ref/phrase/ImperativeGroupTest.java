@@ -35,9 +35,9 @@ public class ImperativeGroupTest extends CompilerTestCase {
 		compile(
 				"A := integer(",
 				"  <*> {",
-				"    <*[arg]>",
+				"    <*[arg]> ()",
 				"  }",
-				").",
+				")",
 				"B := A[5]");
 
 		final Field<?> b = field("b");
