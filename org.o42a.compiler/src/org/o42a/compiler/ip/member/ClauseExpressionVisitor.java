@@ -38,8 +38,6 @@ class ClauseExpressionVisitor
 
 	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
 			new ClauseExpressionVisitor();
-	static final ClauseExpressionVisitor CLAUSE_SELF_ASSIGNMENT_VISITOR =
-			new ClauseSelfAssignmentVisitor();
 
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
@@ -99,21 +97,6 @@ class ClauseExpressionVisitor
 						location(p, expression),
 						p.distribute(),
 						ref.toTypeRef()));
-	}
-
-	private static final class ClauseSelfAssignmentVisitor
-			extends ClauseExpressionVisitor {
-
-		@Override
-		public ClauseBuilder visitParentheses(
-				ParenthesesNode parentheses,
-				ClauseBuilder p) {
-			if (parentheses.getContent().length == 0) {
-				return p.substitution();
-			}
-			return super.visitParentheses(parentheses, p);
-		}
-
 	}
 
 	private static final class PhrasePrefixVisitor

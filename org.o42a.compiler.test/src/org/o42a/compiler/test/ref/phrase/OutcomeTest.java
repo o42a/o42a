@@ -64,7 +64,7 @@ public class OutcomeTest extends CompilerTestCase {
 				"  )",
 				"  <*'' = f: g> F = *(",
 				"    <G> G = *(",
-				"       <*[]> = ()",
+				"       <*[]> ()",
 				"    )",
 				"  )",
 				")",
