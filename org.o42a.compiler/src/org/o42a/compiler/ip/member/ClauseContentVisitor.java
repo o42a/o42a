@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.addContent;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_EXPRESSION_VISITOR;
-import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_SELF_ASSIGNMENT_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -151,7 +150,7 @@ final class ClauseContentVisitor
 		return buildExpression(
 				builder.assignment(),
 				value,
-				CLAUSE_SELF_ASSIGNMENT_VISITOR);
+				CLAUSE_EXPRESSION_VISITOR);
 	}
 
 	@Override

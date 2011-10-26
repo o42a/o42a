@@ -48,7 +48,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 	public void selfAssignment() {
 		compile(
 				"A := integer(",
-				"  <*[arg]> = ()",
+				"  <*[arg]> ()",
 				")",
 				"B := a[2]");
 

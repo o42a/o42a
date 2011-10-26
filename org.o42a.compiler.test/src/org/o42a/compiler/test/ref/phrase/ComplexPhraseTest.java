@@ -40,7 +40,7 @@ public class ComplexPhraseTest extends CompilerTestCase {
 	public void phraseAsPhrasePrefix2() {
 		compile(
 				"Str :=> string(",
-				"  <*''> = ()",
+				"  <*''> ()",
 				")",
 				"A := (str 'abc')[1]");
 
