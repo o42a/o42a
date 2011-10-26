@@ -22,14 +22,18 @@ package org.o42a.core.value;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.Rescopable;
+import org.o42a.core.Rescoper;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 
 
-public abstract class Value<T> {
+public abstract class Value<T> implements Rescopable<Value<T>> {
 
 	public static final Value<Void> voidValue() {
 		return ValueType.VOID.constantValue(Void.VOID);
@@ -76,6 +80,21 @@ public abstract class Value<T> {
 	public abstract Condition getCondition();
 
 	public abstract T getDefiniteValue();
+
+	@Override
+	public final Value<T> rescope(Rescoper rescoper) {
+		return getValueStruct().rescopeValue(this, rescoper);
+	}
+
+	@Override
+	public Value<T> prefixWith(PrefixPath prefix) {
+		return getValueStruct().prefixValueWith(this, prefix);
+	}
+
+	@Override
+	public final Value<T> upgradeScope(Scope toScope) {
+		return getValueStruct().upgradeValueScope(this, toScope);
+	}
 
 	public abstract Val val(Generator generator);
 

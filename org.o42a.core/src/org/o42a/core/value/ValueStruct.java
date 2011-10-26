@@ -20,14 +20,14 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Rescopable;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -135,9 +135,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct);
 
-	public abstract boolean isScoped();
-
-	public abstract S reproduce(Reproducer reproducer);
+	public final boolean isScoped() {
+		return toScoped() != null;
+	}
 
 	@Override
 	public final S valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct) {
@@ -149,6 +149,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public final S toValueStruct() {
 		return (S) this;
 	}
+
+	public abstract ScopeInfo toScoped();
+
+	public abstract S reproduce(Reproducer reproducer);
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
@@ -176,6 +180,18 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		return this.ir = createIR(generator);
 	}
+
+	protected abstract Value<T> rescopeValue(
+			Value<T> value,
+			Rescoper rescoper);
+
+	protected abstract Value<T> prefixValueWith(
+			Value<T> value,
+			PrefixPath prefix);
+
+	protected abstract Value<T> upgradeValueScope(
+			Value<T> value,
+			Scope toScope);
 
 	protected abstract void resolveAll(Value<T> value, Resolver resolver);
 

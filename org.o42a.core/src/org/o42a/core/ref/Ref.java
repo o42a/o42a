@@ -153,8 +153,12 @@ public class Ref extends Statement implements Rescopable<Ref> {
 	}
 
 	public Value<?> value(Resolver resolver) {
-		return resolve(resolver).materialize()
-				.value().explicitUseBy(resolver).getValue();
+		return resolve(resolver)
+				.materialize()
+				.value()
+				.explicitUseBy(resolver)
+				.getValue()
+				.rescope(toRescoper());
 	}
 
 	public final ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {

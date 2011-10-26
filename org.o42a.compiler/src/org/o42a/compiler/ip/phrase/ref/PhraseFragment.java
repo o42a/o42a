@@ -27,6 +27,7 @@ import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
 
@@ -65,17 +66,20 @@ class PhraseFragment extends PathFragment {
 	private Path buildPath(Phrase phrase) {
 
 		final MainPhraseContext context = phrase.getMainContext();
-		final Path path;
+		final Ref ref;
 
 		if (!context.createsObject()) {
-			path = context.standalone().getPath().getRawPath();
+			ref = context.standalone();
 		} else {
-			path = new PhraseConstructor(phrase).toPath();
+			ref = new PhraseConstructor(phrase).toRef();
 		}
 
-		final Path result = path.append(context.getOutcome());
+		final Ref result =
+				ref.getPath()
+				.append(context.getOutcome())
+				.target(ref.distribute());
 		final PhraseTerminator terminator = context.getTerminator();
-		final Path terminated;
+		final Ref terminated;
 
 		if (terminator == null) {
 			terminated = result;
@@ -86,7 +90,7 @@ class PhraseFragment extends PathFragment {
 		final PhraseContinuation nextPart = context.getNextPart();
 
 		if (nextPart == null) {
-			return terminated;
+			return terminated.getPath().getRawPath();
 		}
 
 		return buildPath(phrase.asPrefix(terminated, nextPart));

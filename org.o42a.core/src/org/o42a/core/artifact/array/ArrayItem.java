@@ -19,7 +19,10 @@
 */
 package org.o42a.core.artifact.array;
 
+import static org.o42a.core.Rescoper.upgradeRescoper;
+
 import org.o42a.codegen.Generator;
+import org.o42a.core.Rescopable;
 import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
@@ -29,11 +32,14 @@ import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public final class ArrayItem extends ArrayElement {
+public final class ArrayItem
+		extends ArrayElement
+		implements Rescopable<ArrayItem> {
 
 	private final int index;
 	private final Ref valueRef;
@@ -85,6 +91,24 @@ public final class ArrayItem extends ArrayElement {
 	@Override
 	public final ArrayItem getLastDefinition() {
 		return (ArrayItem) super.getLastDefinition();
+	}
+
+	@Override
+	public ArrayItem rescope(Rescoper rescoper) {
+		return rescoper.update(this);
+	}
+
+	@Override
+	public ArrayItem prefixWith(PrefixPath prefix) {
+		return new ArrayItem(getIndex(), getValueRef().prefixWith(prefix));
+	}
+
+	@Override
+	public ArrayItem upgradeScope(Scope toScope) {
+		if (getScope() == toScope) {
+			return this;
+		}
+		return propagateTo(toScope, upgradeRescoper(getScope(), toScope));
 	}
 
 	public void resolveAll(Resolver resolver) {

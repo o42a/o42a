@@ -23,6 +23,7 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
 import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -73,8 +74,8 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public boolean isScoped() {
-		return false;
+	public final ScopeInfo toScoped() {
+		return null;
 	}
 
 	@Override
@@ -107,6 +108,23 @@ public abstract class SingleValueStruct<T>
 		}
 
 		return valueType.toString();
+	}
+
+	@Override
+	protected final Value<T> rescopeValue(Value<T> value, Rescoper rescoper) {
+		return value;
+	}
+
+	@Override
+	protected final Value<T> prefixValueWith(
+			Value<T> value,
+			PrefixPath prefix) {
+		return value;
+	}
+
+	@Override
+	protected final Value<T> upgradeValueScope(Value<T> value, Scope toScope) {
+		return value;
 	}
 
 	@Override

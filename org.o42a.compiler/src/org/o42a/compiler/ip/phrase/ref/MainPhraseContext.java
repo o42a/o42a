@@ -87,6 +87,10 @@ final class MainPhraseContext extends PhraseContext {
 	public Ref standalone() {
 		this.standalone = true;
 
+		if (this.nextContext == null) {
+			return getPhrase().getPrefix().getAncestor().getRescopedRef();
+		}
+
 		final ClauseInstance[] instances = this.nextContext.getInstances();
 
 		assert instances.length == 1 :
