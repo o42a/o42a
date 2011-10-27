@@ -21,7 +21,6 @@ package org.o42a.core.artifact.object.impl.decl;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.MemberRegistry;
@@ -47,11 +46,6 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		super(variant, reproducer.distribute());
 		this.variant = variant;
 		this.reproducer = reproducer;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return this.variant.getField().getArtifactKind();
 	}
 
 	@Override

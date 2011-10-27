@@ -23,7 +23,6 @@ import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
@@ -105,11 +104,6 @@ class PhraseFragment extends PathFragment {
 			super(definition, definition.distribute());
 			this.phrase = phrase;
 			this.definition = definition;
-		}
-
-		@Override
-		public ArtifactKind<?> determineArtifactKind() {
-			return this.definition.determineArtifactKind();
 		}
 
 		@Override
