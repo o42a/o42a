@@ -139,7 +139,7 @@ public class PhraseArgument extends PhraseContinuation {
 		final ValueType<?> valueType =
 				typeRef.typeObject(dummyUser()).value().getValueType();
 
-		if (valueType == ValueType.ARRAY) {
+		if (valueType == ValueType.VAR_ARRAY) {
 			return true;
 		}
 

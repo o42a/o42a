@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link ArrayValueTypeObject}.
+ * o42a sources for {@link VariableArrayValueTypeObject}.
  * 
- * File: root/array.o42a
+ * File: root/variable_array.o42a
  */
-public final class ArrayValueTypeObject$$Sources implements AnnotatedSources {
+public final class VariableArrayValueTypeObject$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public ArrayValueTypeObject$$Sources(AnnotatedSources parent) {
+	public VariableArrayValueTypeObject$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,7 +28,7 @@ public final class ArrayValueTypeObject$$Sources implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"array.o42a");
+				"variable_array.o42a");
 	}
 
 	@Override

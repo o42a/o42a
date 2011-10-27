@@ -49,7 +49,7 @@ public abstract class Intrinsics {
 
 	public abstract Obj getString();
 
-	public abstract Obj getArray();
+	public abstract Obj getVariableArray();
 
 	public abstract Obj getConstantArray();
 

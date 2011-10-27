@@ -95,7 +95,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void qualifiedArray() {
+	public void qualifiedVariableArray() {
 		compile("A := `[(``integer) 1, 2, 3]");
 
 		final Link a = field("a").getArtifact().toLink();
@@ -118,7 +118,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unqualifiedArray() {
+	public void unqualifiedVariableArray() {
 		compile("A := `[``1, 2, 3]");
 
 		final Link a = field("a").getArtifact().toLink();

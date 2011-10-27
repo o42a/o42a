@@ -70,10 +70,10 @@ public class DefByArrayTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void buildArray() {
+	public void buildVariableArray() {
 		compile(
 				"A := [`\"a\", \"b\", \"c\"]",
-				"B := array & [string](",
+				"B := variable array & [string](",
 				"  = A",
 				")");
 
