@@ -98,7 +98,7 @@ public class ArrayConstructor extends ObjectConstructor {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		if (!isConstant()) {
-			return ValueType.ARRAY.typeRef(
+			return ValueType.VAR_ARRAY.typeRef(
 					location,
 					getScope(),
 					valueStructFinder());

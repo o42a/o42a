@@ -17,5 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Constant array :=> &array
-=========================
+package org.o42a.intrinsic.array;
+
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.intrinsic.root.Root;
+
+
+@SourcePath(relativeTo = Root.class, value = "variable_array.o42a")
+public class VariableArrayValueTypeObject
+		extends AbstractArrayValueTypeObject {
+
+	public VariableArrayValueTypeObject(
+			MemberOwner owner,
+			AnnotatedSources sources) {
+		super(owner, sources, false);
+	}
+
+}

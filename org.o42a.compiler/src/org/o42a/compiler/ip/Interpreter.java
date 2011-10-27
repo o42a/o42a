@@ -308,7 +308,7 @@ public enum Interpreter {
 			final ValueType<?> valueType = defaultStruct.getValueType();
 			final boolean constant;
 
-			if (valueType == ValueType.ARRAY) {
+			if (valueType == ValueType.VAR_ARRAY) {
 				constant = false;
 			} else if (valueType == ValueType.CONST_ARRAY) {
 				constant = true;

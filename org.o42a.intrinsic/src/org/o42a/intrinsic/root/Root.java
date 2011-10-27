@@ -47,7 +47,7 @@ import org.o42a.util.io.URLSource;
 
 
 @SourcePath("root.o42a")
-@RelatedSources({"number.o42a", "operators.o42a"})
+@RelatedSources({"number.o42a", "array.o42a", "operators.o42a"})
 public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
@@ -68,7 +68,7 @@ public class Root extends Obj {
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
-	private Obj arrayObject;
+	private Obj variableArrayObject;
 	private Obj constantArrayObject;
 
 	private DeclarativeBlock definition;
@@ -134,12 +134,12 @@ public class Root extends Obj {
 				field("string").substance(dummyUser()).toObject();
 	}
 
-	public final Obj getArray() {
-		if (this.arrayObject != null) {
-			return this.arrayObject;
+	public final Obj getVariableArray() {
+		if (this.variableArrayObject != null) {
+			return this.variableArrayObject;
 		}
-		return this.arrayObject =
-				field("array").substance(dummyUser()).toObject();
+		return this.variableArrayObject =
+				field("variable_array").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getConstantArray() {

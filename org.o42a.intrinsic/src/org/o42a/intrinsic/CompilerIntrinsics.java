@@ -126,8 +126,8 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
-	public Obj getArray() {
-		return this.root.getArray();
+	public Obj getVariableArray() {
+		return this.root.getVariableArray();
 	}
 
 	@Override

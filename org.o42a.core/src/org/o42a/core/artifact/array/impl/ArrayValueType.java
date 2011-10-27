@@ -50,7 +50,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		final Obj array;
 
 		if (!isConstant()) {
-			array = intrinsics.getArray();
+			array = intrinsics.getVariableArray();
 		} else {
 			array = intrinsics.getConstantArray();
 		}

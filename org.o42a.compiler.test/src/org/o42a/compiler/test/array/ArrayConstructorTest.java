@@ -95,7 +95,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void qualifiedArray() {
+	public void qualifiedVariableArray() {
 		compile("A := [(``integer) 1, 2, 3]");
 
 		final Obj a = field("a").toObject();
@@ -118,7 +118,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unqualifiedArray() {
+	public void unqualifiedVariableArray() {
 		compile("A := [``1, 2, 3]");
 
 		final Obj a = field("a").toObject();

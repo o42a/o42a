@@ -42,7 +42,7 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	public static final SingleValueType<Directive> DIRECTIVE =
 			DirectiveValueType.INSTANCE;
 
-	public static final ValueType<ArrayValueStruct> ARRAY =
+	public static final ValueType<ArrayValueStruct> VAR_ARRAY =
 			new ArrayValueType(false);
 	public static final ValueType<ArrayValueStruct> CONST_ARRAY =
 			new ArrayValueType(true);

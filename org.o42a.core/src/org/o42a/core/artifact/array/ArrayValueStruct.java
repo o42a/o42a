@@ -44,7 +44,7 @@ public final class ArrayValueStruct
 
 	public ArrayValueStruct(TypeRef itemTypeRef, boolean constant) {
 		super(
-				constant ? ValueType.CONST_ARRAY : ValueType.ARRAY,
+				constant ? ValueType.CONST_ARRAY : ValueType.VAR_ARRAY,
 				Array.class);
 		this.itemTypeRef = itemTypeRef;
 	}
@@ -103,7 +103,7 @@ public final class ArrayValueStruct
 
 		final ValueType<?> valueType = other.getValueType();
 
-		if (valueType != ValueType.ARRAY
+		if (valueType != ValueType.VAR_ARRAY
 				&& valueType != ValueType.CONST_ARRAY) {
 			return false;
 		}
