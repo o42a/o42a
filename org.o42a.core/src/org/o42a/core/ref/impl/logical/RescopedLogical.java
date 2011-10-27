@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -31,12 +31,12 @@ import org.o42a.core.value.LogicalValue;
 public final class RescopedLogical extends Logical {
 
 	private final Logical logical;
-	private final Rescoper rescoper;
+	private final PrefixPath prefix;
 
-	public RescopedLogical(Logical logical, Rescoper rescoper) {
-		super(logical, rescoper.getFinalScope());
+	public RescopedLogical(Logical logical, PrefixPath prefix) {
+		super(logical, prefix.getStart());
 		this.logical = logical;
-		this.rescoper = rescoper;
+		this.prefix = prefix;
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public final class RescopedLogical extends Logical {
 	@Override
 	public LogicalValue logicalValue(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.logical.logicalValue(this.rescoper.rescope(resolver));
+		return this.logical.logicalValue(this.prefix.rescope(resolver));
 	}
 
 	@Override
@@ -57,27 +57,22 @@ public final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public Logical rescope(Rescoper rescoper) {
+	public Logical prefixWith(PrefixPath prefix) {
 
-		final Rescoper oldRescoper = this.rescoper;
+		final PrefixPath oldPrefix = this.prefix;
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
 
-		if (rescoper.getFinalScope() == oldRescoper.getFinalScope()) {
+		if (newPrefix == oldPrefix) {
 			return this;
 		}
 
-		final Rescoper newRescoper = oldRescoper.and(rescoper);
-
-		if (newRescoper.equals(oldRescoper)) {
-			return this;
-		}
-
-		return new RescopedLogical(this.logical, newRescoper);
+		return new RescopedLogical(this.logical, newPrefix);
 	}
 
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		this.logical.write(dirs, this.rescoper.write(dirs, host));
+		this.logical.write(dirs, this.prefix.write(dirs, host));
 	}
 
 	@Override
@@ -87,8 +82,8 @@ public final class RescopedLogical extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.rescoper.resolveAll(resolver);
-		this.logical.resolveAll(this.rescoper.rescope(resolver));
+		this.prefix.resolveAll(resolver);
+		this.logical.resolveAll(this.prefix.rescope(resolver));
 	}
 
 }

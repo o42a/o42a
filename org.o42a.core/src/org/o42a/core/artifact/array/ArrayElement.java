@@ -19,16 +19,16 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -56,15 +56,15 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 		this(
 				enclosing,
 				propagatedFrom,
-				upgradeRescoper(propagatedFrom.getEnclosingScope(), enclosing));
+				upgradePrefix(propagatedFrom, enclosing));
 	}
 
 	ArrayElement(
 			Scope enclosing,
 			ArrayElement propagatedFrom,
-			Rescoper rescoper) {
+			PrefixPath prefix) {
 		super(enclosing, propagatedFrom);
-		this.indexRef = propagatedFrom.getIndexRef().rescope(rescoper);
+		this.indexRef = propagatedFrom.getIndexRef().prefixWith(prefix);
 		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :
 			"Enclosing scope is not object: " + enclosing.getScope();

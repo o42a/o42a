@@ -19,10 +19,9 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -40,21 +40,21 @@ public final class RefValueDef extends ValueDef {
 	private final Ref ref;
 
 	public RefValueDef(Ref ref) {
-		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
+		super(sourceOf(ref), ref, emptyPrefix(ref.getScope()));
 		this.ref = ref;
 	}
 
-	private RefValueDef(RefValueDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private RefValueDef(RefValueDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.ref = prototype.ref;
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
 
-		final Scope scope = getRescoper().rescope(getScope());
+		final Scope scope = getPrefix().rescope(getScope());
 
-		return this.ref.valueStruct(scope).rescope(getRescoper());
+		return this.ref.valueStruct(scope).prefixWith(getPrefix());
 	}
 
 	@Override
@@ -84,9 +84,9 @@ public final class RefValueDef extends ValueDef {
 
 	@Override
 	protected RefValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new RefValueDef(this, rescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
+		return new RefValueDef(this, prefix);
 	}
 
 	@Override

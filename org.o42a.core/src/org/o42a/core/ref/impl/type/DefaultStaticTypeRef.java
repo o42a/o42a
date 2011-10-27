@@ -21,8 +21,8 @@ package org.o42a.core.ref.impl.type;
 
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
@@ -41,10 +41,10 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 	public DefaultStaticTypeRef(
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper,
+			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
-		super(rescoper);
+		super(prefix);
 		this.fixedRef = ref.toStatic();
 		this.untouchedRef = untouchedRef;
 		ref.assertSameScope(untouchedRef);
@@ -87,7 +87,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 
 		assert defaultValueStruct.assertAssignableFrom(valueStruct);
 
-		return this.valueStruct = valueStruct.rescope(getRescoper());
+		return this.valueStruct = valueStruct.prefixWith(getPrefix());
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 		return new DefaultStaticTypeRef(
 				getRef(),
 				getUntachedRef(),
-				getRescoper(),
+				getPrefix(),
 				vsFinder,
 				valueStruct);
 	}
@@ -122,21 +122,21 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 
 	@Override
 	protected DefaultStaticTypeRef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
 
 		final ValueStruct<?, ?> valueStruct;
 
 		if (this.valueStruct == null) {
 			valueStruct = null;
 		} else {
-			valueStruct = this.valueStruct.rescope(additionalRescoper);
+			valueStruct = this.valueStruct.prefixWith(additionalPrefix);
 		}
 
 		return new DefaultStaticTypeRef(
 				getRef(),
 				getUntachedRef(),
-				rescoper,
+				prefix,
 				this.valueStructFinder,
 				valueStruct);
 	}
@@ -147,7 +147,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper) {
+			PrefixPath prefix) {
 
 		final ValueStruct<?, ?> valueStruct;
 
@@ -163,7 +163,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 		return new DefaultStaticTypeRef(
 				ref,
 				untouchedRef,
-				rescoper,
+				prefix,
 				this.valueStructFinder,
 				valueStruct);
 	}

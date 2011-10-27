@@ -21,9 +21,9 @@ package org.o42a.core.ref.impl.type;
 
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -41,10 +41,10 @@ public final class DefaultTypeRef extends TypeRef {
 
 	public DefaultTypeRef(
 			Ref ref,
-			Rescoper rescoper,
+			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
-		super(rescoper);
+		super(prefix);
 		this.ref = ref;
 		this.valueStructFinder = valueStructFinder;
 		this.valueStruct = valueStruct;
@@ -90,7 +90,7 @@ public final class DefaultTypeRef extends TypeRef {
 
 		assert defaultValueStruct.assertAssignableFrom(valueStruct);
 
-		return this.valueStruct = valueStruct.rescope(getRescoper());
+		return this.valueStruct = valueStruct.prefixWith(getPrefix());
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public final class DefaultTypeRef extends TypeRef {
 
 		return new DefaultTypeRef(
 				getRef(),
-				getRescoper(),
+				getPrefix(),
 				vsFinder,
 				valueStruct);
 	}
@@ -119,7 +119,7 @@ public final class DefaultTypeRef extends TypeRef {
 		return new DefaultStaticTypeRef(
 				getRef(),
 				getUntachedRef(),
-				getRescoper(),
+				getPrefix(),
 				this.valueStructFinder,
 				this.valueStruct);
 	}
@@ -134,20 +134,20 @@ public final class DefaultTypeRef extends TypeRef {
 
 	@Override
 	protected DefaultTypeRef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
 
 		final ValueStruct<?, ?> valueStruct;
 
 		if (this.valueStruct == null) {
 			valueStruct = null;
 		} else {
-			valueStruct = this.valueStruct.rescope(additionalRescoper);
+			valueStruct = this.valueStruct.prefixWith(additionalPrefix);
 		}
 
 		return new DefaultTypeRef(
 				getRef(),
-				rescoper,
+				prefix,
 				this.valueStructFinder,
 				valueStruct);
 	}
@@ -158,7 +158,7 @@ public final class DefaultTypeRef extends TypeRef {
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper) {
+			PrefixPath prefix) {
 		assert ref == untouchedRef :
 			ref + " should be the same as " + untouchedRef;
 
@@ -175,7 +175,7 @@ public final class DefaultTypeRef extends TypeRef {
 
 		return new DefaultTypeRef(
 				ref,
-				rescoper,
+				prefix,
 				this.valueStructFinder,
 				valueStruct);
 	}

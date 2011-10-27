@@ -286,11 +286,6 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Rescoper rescoperTo(Scope toScope) {
-		return AbstractScope.rescoperTo(this, toScope);
-	}
-
-	@Override
 	public final Distributor distribute() {
 		return Placed.distribute(this);
 	}

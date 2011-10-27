@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.impl.field;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
@@ -28,6 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -35,17 +35,16 @@ import org.o42a.core.st.sentence.BlockBuilder;
 
 public final class RescopedFieldDefinition extends FieldDefinition {
 
-	private final Rescoper rescoper;
+	private final PrefixPath prefix;
 	private final FieldDefinition definition;
 
 	public RescopedFieldDefinition(
 			FieldDefinition definition,
-			Rescoper rescoper) {
+			PrefixPath prefix) {
 		super(
 				definition,
-				definition.distributeIn(
-						rescoper.getFinalScope().getContainer()));
-		this.rescoper = rescoper;
+				definition.distributeIn(prefix.getStart().getContainer()));
+		this.prefix = prefix;
 		this.definition = definition;
 	}
 
@@ -65,12 +64,25 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public FieldDefinition prefixWith(PrefixPath prefix) {
+
+		final PrefixPath oldPrefix = this.prefix;
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
+
+		if (oldPrefix == newPrefix) {
+			return this;
+		}
+
+		return new RescopedFieldDefinition(this.definition, newPrefix);
+	}
+
+	@Override
 	public String toString() {
 		return this.definition.toString();
 	}
 
-	private final Rescoper getRescoper() {
-		return this.rescoper;
+	private final PrefixPath getPrefix() {
+		return this.prefix;
 	}
 
 	private final class RescopedObjectDefiner implements ObjectDefiner {
@@ -93,7 +105,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 
 		@Override
 		public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
-			this.definer.setAncestor(explicitAncestor.rescope(getRescoper()));
+			this.definer.setAncestor(explicitAncestor.prefixWith(getPrefix()));
 			return this;
 		}
 
@@ -101,7 +113,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		public ObjectDefiner addExplicitSample(
 				StaticTypeRef explicitAscendant) {
 			this.definer.addExplicitSample(
-					explicitAscendant.rescope(getRescoper()));
+					explicitAscendant.prefixWith(getPrefix()));
 			return this;
 		}
 
@@ -109,7 +121,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		public ObjectDefiner addImplicitSample(
 				StaticTypeRef implicitAscendant) {
 			this.definer.addImplicitSample(
-					implicitAscendant.rescope(getRescoper()));
+					implicitAscendant.prefixWith(getPrefix()));
 			return this;
 		}
 
@@ -162,9 +174,9 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		@Override
 		public void setTargetRef(Ref targetRef, TypeRef defaultType) {
 			this.definer.setTargetRef(
-					targetRef.rescope(getRescoper()),
+					targetRef.prefixWith(getPrefix()),
 					defaultType != null
-					? defaultType.rescope(getRescoper()): null);
+					? defaultType.prefixWith(getPrefix()): null);
 		}
 
 		@Override

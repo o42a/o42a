@@ -24,7 +24,6 @@ import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
@@ -33,6 +32,7 @@ import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
@@ -48,8 +48,8 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
 
-	public TypeRef(Rescoper rescoper) {
-		super(rescoper);
+	public TypeRef(PrefixPath prefix) {
+		super(prefix);
 	}
 
 	public abstract boolean isStatic();
@@ -73,7 +73,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 		final TypeRef ancestor = getUntachedRef().ancestor(this);
 
-		return this.ancestor = ancestor.rescope(getRescoper());
+		return this.ancestor = ancestor.prefixWith(getPrefix());
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -167,7 +167,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,
-			Rescoper rescoper) {
+			PrefixPath prefix) {
 
 		final Ref untouchedRef;
 
@@ -185,7 +185,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 				rescopedReproducer,
 				ref,
 				untouchedRef,
-				rescoper);
+				prefix);
 	}
 
 	protected abstract TypeRef createReproduction(
@@ -193,7 +193,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper);
+			PrefixPath prefix);
 
 	protected final Usable usable() {
 		return this.usable;

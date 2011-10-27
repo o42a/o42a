@@ -21,7 +21,6 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ir.HostOp;
@@ -29,14 +28,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 
 
 public abstract class StaticTypeRef extends TypeRef {
 
-	public StaticTypeRef(Rescoper rescoper) {
-		super(rescoper);
+	public StaticTypeRef(PrefixPath prefix) {
+		super(prefix);
 	}
 
 	@Override
@@ -54,18 +54,18 @@ public abstract class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public StaticTypeRef rescope(Rescoper rescoper) {
-		return (StaticTypeRef) super.rescope(rescoper);
+	public final StaticTypeRef prefixWith(PrefixPath prefix) {
+		return (StaticTypeRef) super.prefixWith(prefix);
+	}
+
+	@Override
+	public final StaticTypeRef upgradeScope(Scope toScope) {
+		return (StaticTypeRef) super.upgradeScope(toScope);
 	}
 
 	@Override
 	public final StaticTypeRef rescope(Scope scope) {
 		return (StaticTypeRef) super.rescope(scope);
-	}
-
-	@Override
-	public final StaticTypeRef upgradeScope(Scope scope) {
-		return (StaticTypeRef) super.upgradeScope(scope);
 	}
 
 	@Override
@@ -116,8 +116,8 @@ public abstract class StaticTypeRef extends TypeRef {
 
 	@Override
 	protected abstract StaticTypeRef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix);
 
 	@Override
 	protected abstract StaticTypeRef createReproduction(
@@ -125,7 +125,7 @@ public abstract class StaticTypeRef extends TypeRef {
 			Reproducer rescopedReproducer,
 			Ref ref,
 			Ref untouchedRef,
-			Rescoper rescoper);
+			PrefixPath prefix);
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {

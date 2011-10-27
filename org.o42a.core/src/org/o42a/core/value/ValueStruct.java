@@ -20,7 +20,8 @@
 package org.o42a.core.value;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
@@ -35,7 +36,7 @@ import org.o42a.core.value.impl.*;
 
 
 public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
-		implements ValueStructFinder, Rescopable<S> {
+		implements ValueStructFinder {
 
 	public static final SingleValueStruct<Void> VOID =
 			VoidValueStruct.INSTANCE;
@@ -139,6 +140,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return toScoped() != null;
 	}
 
+	public abstract S prefixWith(PrefixPath prefix);
+
+	public abstract S upgradeScope(Scope toScope);
+
 	@Override
 	public final S valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct) {
 		return toValueStruct();
@@ -181,17 +186,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return this.ir = createIR(generator);
 	}
 
-	protected abstract Value<T> rescopeValue(
-			Value<T> value,
-			Rescoper rescoper);
-
 	protected abstract Value<T> prefixValueWith(
 			Value<T> value,
 			PrefixPath prefix);
-
-	protected abstract Value<T> upgradeValueScope(
-			Value<T> value,
-			Scope toScope);
 
 	protected abstract void resolveAll(Value<T> value, Resolver resolver);
 

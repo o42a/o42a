@@ -19,12 +19,11 @@
 */
 package org.o42a.core.artifact.array.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.value.Value.falseValue;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
@@ -35,6 +34,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 
 
@@ -70,7 +70,7 @@ final class ArrayCopyValueDef extends ValueDef {
 			return resultStruct.runtimeValue();
 		}
 
-		final Rescoper rescoper = ref.toRescoper();
+		final PrefixPath prefix = ref.toPrefix();
 		final Array array = sourceStruct.cast(value).getDefiniteValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
@@ -78,7 +78,7 @@ final class ArrayCopyValueDef extends ValueDef {
 		for (int i = 0; i < items.length; ++i) {
 
 			final Ref valueRef = items[i].getValueRef();
-			final Ref defValueRef = valueRef.rescope(rescoper);
+			final Ref defValueRef = valueRef.prefixWith(prefix);
 
 			defItems[i] = new ArrayItem(i, defValueRef);
 		}
@@ -87,7 +87,7 @@ final class ArrayCopyValueDef extends ValueDef {
 				new Array(
 						array,
 						array.distributeIn(ref.getContainer()),
-						array.getValueStruct().rescope(rescoper),
+						array.getValueStruct().prefixWith(prefix),
 						defItems));
 
 		return result;
@@ -99,13 +99,13 @@ final class ArrayCopyValueDef extends ValueDef {
 	private ArrayValueStruct toStruct;
 
 	ArrayCopyValueDef(Ref ref, boolean toConstant) {
-		super(sourceOf(ref), ref, transparentRescoper(ref.getScope()));
+		super(sourceOf(ref), ref, emptyPrefix(ref.getScope()));
 		this.ref = ref;
 		this.toConstant = toConstant;
 	}
 
-	private ArrayCopyValueDef(ArrayCopyValueDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private ArrayCopyValueDef(ArrayCopyValueDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.ref = prototype.ref;
 		this.toConstant = prototype.toConstant;
 	}
@@ -144,8 +144,8 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new ArrayCopyValueDef(this, rescoper);
+	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
+		return new ArrayCopyValueDef(this, prefix);
 	}
 
 	@Override
@@ -164,11 +164,11 @@ final class ArrayCopyValueDef extends ValueDef {
 			return this.fromStruct;
 		}
 
-		final Scope scope = getRescoper().rescope(getScope());
+		final Scope scope = getPrefix().rescope(getScope());
 
 		return this.fromStruct =
-				(ArrayValueStruct) this.ref.valueStruct(scope).rescope(
-						getRescoper());
+				(ArrayValueStruct) this.ref.valueStruct(scope).prefixWith(
+						getPrefix());
 	}
 
 }

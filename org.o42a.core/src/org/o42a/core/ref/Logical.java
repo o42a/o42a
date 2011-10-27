@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.def.CondDef;
@@ -31,6 +30,7 @@ import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.logical.*;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -403,8 +403,8 @@ public abstract class Logical extends Scoped {
 		return new LogicalCondDef(this);
 	}
 
-	public Logical rescope(Rescoper rescoper) {
-		return new RescopedLogical(this, rescoper);
+	public Logical prefixWith(PrefixPath prefix) {
+		return new RescopedLogical(this, prefix);
 	}
 
 	public final void resolveAll(Resolver resolver) {

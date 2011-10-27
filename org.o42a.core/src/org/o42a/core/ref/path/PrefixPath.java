@@ -19,10 +19,18 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.*;
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+
+import org.o42a.core.PlaceInfo;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.rescoper.PathRescoper;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
 
 
 public final class PrefixPath {
@@ -38,6 +46,7 @@ public final class PrefixPath {
 
 	private final Scope start;
 	private final Path prefix;
+	private BoundPath boundPath;
 
 	PrefixPath(Scope start, Path prefix) {
 		this.start = start;
@@ -56,12 +65,32 @@ public final class PrefixPath {
 		return getPrefix().isSelf();
 	}
 
+	public final boolean emptyFor(ScopeInfo scoped) {
+		return isEmpty() && getStart() == scoped.getScope();
+	}
+
 	public final PrefixPath append(Path path) {
+		if (path.isSelf()) {
+			return this;
+		}
 		return getPrefix().append(path).toPrefix(getStart());
 	}
 
 	public final PrefixPath append(BoundPath path) {
 		return append(path.getRawPath());
+	}
+
+	public final PrefixPath and(PrefixPath other) {
+		if (other.isEmpty()) {
+			if (other.getStart() == getStart()) {
+				return this;
+			}
+			getStart().assertCompatible(other.getStart());
+		}
+
+		final Path newPath = other.getPrefix().append(getPrefix());
+
+		return newPath.toPrefix(other.getStart());
 	}
 
 	public final BoundPath bind(LocationInfo location) {
@@ -73,8 +102,79 @@ public final class PrefixPath {
 				.target(location.distributeIn(getStart().getContainer()));
 	}
 
-	public final Rescoper toRescoper() {
-		return new PathRescoper(this);
+	public Scope rescope(Scope scope) {
+
+		final PathResolution found = getBoundPath().resolve(
+				pathResolver(scope.dummyResolver()),
+				scope);
+
+		return found.isResolved() ? found.getResult().getScope() : null;
+	}
+
+	public Resolver rescope(Resolver resolver) {
+
+		final BoundPath path = getBoundPath();
+		final PathResolution found = path.walk(
+				pathResolver(resolver),
+				resolver.getScope(),
+				resolver.getWalker());
+
+		if (!found.isResolved()) {
+			return null;
+		}
+
+		return found.getResult().getScope().walkingResolver(resolver);
+	}
+
+	public PrefixPath reproduce(Reproducer reproducer) {
+
+		final Scope scope = reproducer.getScope();
+		final BoundPath boundPath = getBoundPath();
+
+		if (boundPath.isSelf() || boundPath.isAbsolute()) {
+			return boundPath.getPath()
+					.toPrefix(reproducer.getScope());
+		}
+
+		final PathReproduction pathReproduction =
+				boundPath.reproduce(reproducer);
+
+		if (pathReproduction == null) {
+			return null;
+		}
+		if (pathReproduction.isUnchanged()) {
+			if (!reproducer.isTopLevel()) {
+				return pathReproduction.getExternalPath().toPrefix(scope);
+			}
+			// Top-level reproducer`s scope is not compatible with path
+			// and requires rescoping.
+			return startWithPrefix(reproducer, pathReproduction);
+		}
+
+		final Path reproducedPart = pathReproduction.getReproducedPath();
+
+		return startWithPrefix(reproducer, pathReproduction)
+				.append(reproducedPart);
+	}
+
+	public final void resolveAll(Resolver resolver) {
+		bind(getStart()).resolve(
+				fullPathResolver(resolver),
+				resolver.getScope());
+	}
+
+	public HostOp write(CodeDirs dirs, HostOp host) {
+		if (getPrefix().isSelf()) {
+			return host;
+		}
+
+		final CodeDirs subDirs =
+				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);
+		final HostOp result = getBoundPath().op(subDirs, host);
+
+		subDirs.end();
+
+		return result;
 	}
 
 	@Override
@@ -119,6 +219,30 @@ public final class PrefixPath {
 			return super.toString();
 		}
 		return this.prefix.toString(this.start, this.prefix.getSteps().length);
+	}
+
+	private BoundPath getBoundPath() {
+		if (this.boundPath != null) {
+			return this.boundPath;
+		}
+		return this.boundPath = bind(getStart());
+	}
+
+	private PrefixPath startWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction) {
+
+		final PrefixPath phrasePrefix =
+				reproducer.getPhrasePrefix().materialize().toPrefix();
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phrasePrefix;
+		}
+
+		return externalPath
+				.toPrefix(phrasePrefix.rescope(phrasePrefix.getStart()))
+				.append(phrasePrefix.getPrefix());
 	}
 
 }

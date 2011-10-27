@@ -25,7 +25,9 @@ import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import java.util.Set;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.AbstractScope;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.ScopeIR;
@@ -293,11 +295,6 @@ public abstract class PlainClause
 	@Override
 	public final PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
-	}
-
-	@Override
-	public final Rescoper rescoperTo(Scope toScope) {
-		return AbstractScope.rescoperTo(this, toScope);
 	}
 
 	@Override

@@ -19,12 +19,14 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import java.util.IdentityHashMap;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.path.PrefixPath;
@@ -33,7 +35,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 
 
-public final class Array extends Placed implements Rescopable<Array> {
+public final class Array extends Placed {
 
 	private final Obj origin;
 	private final Obj owner;
@@ -58,10 +60,10 @@ public final class Array extends Placed implements Rescopable<Array> {
 		this.origin = from.getOrigin();
 		this.owner = owner;
 
-		final Rescoper rescoper = upgradeRescoper(from.getScope(), getScope());
+		final PrefixPath prefix = upgradePrefix(from, getScope());
 
-		this.valueStruct = from.getValueStruct().rescope(rescoper);
-		this.items = from.propagateItems(owner.getScope(), rescoper);
+		this.valueStruct = from.getValueStruct().prefixWith(prefix);
+		this.items = from.propagateItems(owner.getScope(), prefix);
 	}
 
 	public final Obj getOrigin() {
@@ -133,26 +135,18 @@ public final class Array extends Placed implements Rescopable<Array> {
 		return new Array(this, distributor, valueStruct, items);
 	}
 
-	@Override
-	public Array rescope(Rescoper rescoper) {
-		return rescoper.update(this);
-	}
-
-	@Override
 	public Array prefixWith(PrefixPath prefix) {
-
-		final Rescoper rescoper = prefix.toRescoper();
-
+		if (prefix.isEmpty()) {
+			if (prefix.getStart() == getScope()) {
+				return this;
+			}
+			return propagateTo(prefix.getStart());
+		}
 		return new Array(
 				this,
 				distributeIn(prefix.getStart().getContainer()),
-				getValueStruct().rescope(rescoper),
-				rescopeItems(rescoper));
-	}
-
-	@Override
-	public final Array upgradeScope(Scope toScope) {
-		return propagateTo(toScope);
+				getValueStruct().prefixWith(prefix),
+				prefixItems(prefix));
 	}
 
 	public final Value<Array> toValue() {
@@ -169,7 +163,7 @@ public final class Array extends Placed implements Rescopable<Array> {
 		return owner;
 	}
 
-	private ArrayItem[] propagateItems(Scope scope, Rescoper rescoper) {
+	private ArrayItem[] propagateItems(Scope scope, PrefixPath prefix) {
 
 		final ArrayItem[] newItems = new ArrayItem[this.items.length];
 
@@ -177,13 +171,13 @@ public final class Array extends Placed implements Rescopable<Array> {
 
 			final ArrayItem oldItem = this.items[i];
 
-			newItems[i] = oldItem.propagateTo(scope, rescoper);
+			newItems[i] = oldItem.propagateTo(scope, prefix);
 		}
 
 		return newItems;
 	}
 
-	private ArrayItem[] rescopeItems(Rescoper rescoper) {
+	private ArrayItem[] prefixItems(PrefixPath prefix) {
 
 		final ArrayItem[] newItems = new ArrayItem[this.items.length];
 
@@ -191,7 +185,7 @@ public final class Array extends Placed implements Rescopable<Array> {
 
 			final ArrayItem oldItem = this.items[i];
 
-			newItems[i] = oldItem.rescope(rescoper);
+			newItems[i] = oldItem.prefixWith(prefix);
 		}
 
 		return newItems;
