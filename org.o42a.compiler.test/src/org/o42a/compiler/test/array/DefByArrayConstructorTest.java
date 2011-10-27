@@ -39,9 +39,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildConstantArray() {
 		compile(
-				"A := constant array & [string](",
-				"  = [`\"a\", \"b\", \"c\"]",
-				")");
+				"A := constant array & [string][`",
+				"  \"a\", \"b\", \"c\"",
+				"]");
 
 		final Obj a = field("a").toObject();
 
@@ -71,9 +71,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildVariableArray() {
 		compile(
-				"A := variable array & [string](",
-				"  = [`\"a\", \"b\", \"c\"]",
-				")");
+				"A := variable array & [string][`",
+				"  \"a\", \"b\", \"c\"",
+				"]");
 
 		final Obj a = field("a").toObject();
 
