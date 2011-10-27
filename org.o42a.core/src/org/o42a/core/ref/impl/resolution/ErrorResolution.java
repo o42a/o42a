@@ -23,11 +23,8 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.value.Directive.SKIP_DIRECTIVE;
 
 import org.o42a.core.Container;
-import org.o42a.core.PlaceInfo;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -74,15 +71,6 @@ public final class ErrorResolution extends Resolution {
 	@Override
 	public final Path materializationPath() {
 		return SELF_PATH;
-	}
-
-	@Override
-	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-		return null;
 	}
 
 	@Override

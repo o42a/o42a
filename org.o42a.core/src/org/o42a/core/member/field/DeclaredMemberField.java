@@ -67,10 +67,8 @@ final class DeclaredMemberField extends MemberField {
 			kind = ArtifactKind.VARIABLE;
 		} else if (getDeclaration().isLink()) {
 			kind = ArtifactKind.LINK;
-		} else if (getDeclaration().isAdapter()) {
-			kind = ArtifactKind.OBJECT;
 		} else {
-			kind = this.builder.getDefinition().determineArtifactKind();
+			kind = ArtifactKind.OBJECT;
 		}
 
 		validateArtifactKind(kind);

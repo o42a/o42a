@@ -20,11 +20,9 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.*;
@@ -105,12 +103,6 @@ public abstract class Resolution implements ScopeInfo {
 	public abstract Obj materialize();
 
 	public abstract Path materializationPath();
-
-	public abstract Path member(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn);
 
 	public abstract void resolveAll();
 

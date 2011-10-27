@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.impl.field;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Ascendants;
@@ -46,11 +45,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 				definition.distributeIn(prefix.getStart().getContainer()));
 		this.prefix = prefix;
 		this.definition = definition;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return this.definition.determineArtifactKind();
 	}
 
 	@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
@@ -34,11 +33,6 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 	public ObjectFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
 		this.path = path.materialize();
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return ArtifactKind.OBJECT;
 	}
 
 	@Override

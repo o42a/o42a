@@ -21,10 +21,7 @@ package org.o42a.core.ref.impl.resolution;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
-import org.o42a.core.PlaceInfo;
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.use.UserInfo;
@@ -59,24 +56,6 @@ public final class ObjectResolution extends Resolution {
 	@Override
 	public final Path materializationPath() {
 		return SELF_PATH;
-	}
-
-	@Override
-	public Path member(
-			PlaceInfo user,
-			Accessor accessor,
-			MemberId memberId,
-			Obj declaredIn) {
-
-		final Obj owner = toArtifact();
-		final Path found = owner.member(user, accessor, memberId, declaredIn);
-
-		if (found == null) {
-			user.getContext().getLogger().unresolved(user, memberId);
-			return null;
-		}
-
-		return found;
 	}
 
 	@Override
