@@ -153,6 +153,36 @@ public final class Array extends Placed {
 		return getValueStruct().constantValue(this);
 	}
 
+	@Override
+	public String toString() {
+		if (this.items == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		if (isConstant()) {
+			out.append("[(`");
+		} else {
+			out.append("[(``");
+		}
+		out.append(getValueStruct().getItemTypeRef());
+
+		if (this.items.length == 0) {
+			return out.append(")]").toString();
+		}
+
+		out.append(") ");
+
+		for (ArrayItem item : this.items) {
+			out.append(item.getValueRef());
+		}
+
+		out.append(']');
+
+		return out.toString();
+	}
+
 	private static Obj owner(Scope scope) {
 
 		final Obj owner = scope.toObject();

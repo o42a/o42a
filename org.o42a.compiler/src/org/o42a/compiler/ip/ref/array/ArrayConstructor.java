@@ -115,6 +115,19 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public String toString() {
+		if (this.node == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		this.node.printContent(out);
+
+		return out.toString();
+	}
+
+	@Override
 	protected Obj createObject() {
 		if (this.reproducedFrom == null) {
 			return new ArrayObject(this, typeByItems());

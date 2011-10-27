@@ -25,6 +25,8 @@ import static org.o42a.util.string.StringCodec.canonicalName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.field.DefinitionKind;
+import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -61,11 +63,29 @@ final class PhraseClauseKeyVisitor
 	public ClauseDeclaration visitBrackets(
 			BracketsNode brackets,
 			Distributor p) {
+
+		final InterfaceNode iface = brackets.getInterface();
+
+		if (iface == null) {
+			return clauseDeclaration(
+					location(p, this.phrase),
+					p,
+					extractName(p.getContext(), brackets),
+					ClauseId.ARGUMENT);
+		}
+
+		if (iface.getType() != null) {
+			p.getLogger().invalidDeclaration(iface.getType());
+		} else if (iface.getOpening() != null) {
+			p.getLogger().invalidDeclaration(iface.getOpening());
+		}
+
 		return clauseDeclaration(
 				location(p, this.phrase),
 				p,
 				extractName(p.getContext(), brackets),
-				ClauseId.ARGUMENT);
+				iface.getKind().getType() == DefinitionKind.LINK
+				? ClauseId.CONSTANT_ARRAY : ClauseId.VARIABLE_ARRAY);
 	}
 
 	@Override
