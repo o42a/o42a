@@ -19,7 +19,6 @@
 */
 package org.o42a.core.artifact.link.impl.decl;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
@@ -36,11 +35,6 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 		super(variant, reproducer.distribute());
 		this.variant = variant;
 		this.reproducer = reproducer;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return this.variant.getField().getArtifactKind();
 	}
 
 	@Override

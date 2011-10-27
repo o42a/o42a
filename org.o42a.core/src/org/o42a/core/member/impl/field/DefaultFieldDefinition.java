@@ -20,11 +20,9 @@
 package org.o42a.core.member.impl.field;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
@@ -43,21 +41,6 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 		super(location, scope);
 		this.ascendants = ascendants;
 		this.definitions = definitions;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		if (this.ascendants.getSamples().length != 0) {
-			return ArtifactKind.OBJECT;
-		}
-
-		final TypeRef ancestor = this.ascendants.getAncestor();
-
-		if (ancestor == null || !ancestor.validate()) {
-			return null;
-		}
-
-		return artifactKind(ancestor.getRef());
 	}
 
 	@Override

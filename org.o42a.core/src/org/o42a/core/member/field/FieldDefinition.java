@@ -25,11 +25,9 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.impl.field.DefaultFieldDefinition;
 import org.o42a.core.member.impl.field.InvalidFieldDefinition;
 import org.o42a.core.member.impl.field.RescopedFieldDefinition;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -73,8 +71,6 @@ public abstract class FieldDefinition extends Placed {
 		return true;
 	}
 
-	public abstract ArtifactKind<?> determineArtifactKind();
-
 	public abstract void defineObject(ObjectDefiner definer);
 
 	public abstract void defineLink(LinkDefiner definer);
@@ -92,10 +88,5 @@ public abstract class FieldDefinition extends Placed {
 		}
 		return prefixWith(upgradePrefix(this, toScope));
 	}
-
-	protected static ArtifactKind<?> artifactKind(Ref ref) {
-		return ArtifactKind.OBJECT;
-	}
-
 
 }
