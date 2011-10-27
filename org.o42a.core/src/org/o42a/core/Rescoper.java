@@ -19,10 +19,12 @@
 */
 package org.o42a.core;
 
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.impl.rescoper.TransparentRescoper;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.Reproducer;
 
@@ -30,15 +32,14 @@ import org.o42a.core.st.Reproducer;
 public abstract class Rescoper {
 
 	public static Rescoper transparentRescoper(Scope finalScope) {
-		return new TransparentRescoper(finalScope);
+		return emptyPrefix(finalScope).toRescoper();
 	}
 
 	public static Rescoper upgradeRescoper(Scope fromScope, Scope toScope) {
 		if (fromScope == toScope) {
 			return transparentRescoper(fromScope);
 		}
-		toScope.assertDerivedFrom(fromScope);
-		return Path.SELF_PATH.toPrefix(toScope).toRescoper();
+		return upgradePrefix(fromScope, toScope).toRescoper();
 	}
 
 	private final Scope finalScope;

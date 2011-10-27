@@ -103,7 +103,13 @@ public final class PathRescoper extends Rescoper {
 			return this;
 		}
 
-		final Path newPath = other.getPath().append(getPath());
+		final Path otherPath = other.getPath();
+
+		if (otherPath.isSelf()) {
+			getFinalScope().assertCompatible(other.getFinalScope());
+		}
+
+		final Path newPath = otherPath.append(getPath());
 
 		return new PathRescoper(newPath.toPrefix(other.getFinalScope()));
 	}
@@ -112,8 +118,16 @@ public final class PathRescoper extends Rescoper {
 	public Rescoper reproduce(Reproducer reproducer) {
 
 		final Scope scope = reproducer.getScope();
+		final BoundPath boundPath = getBoundPath();
+
+		if (boundPath.isSelf() || boundPath.isAbsolute()) {
+			return boundPath.getPath()
+					.toPrefix(reproducer.getScope())
+					.toRescoper();
+		}
+
 		final PathReproduction pathReproduction =
-				getBoundPath().reproduce(reproducer);
+				boundPath.reproduce(reproducer);
 
 		if (pathReproduction == null) {
 			return null;

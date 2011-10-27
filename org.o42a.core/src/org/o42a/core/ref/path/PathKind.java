@@ -92,16 +92,6 @@ public enum PathKind {
 		final int len = steps.length;
 
 		if (len == 0) {
-
-			final Clause clause =
-					reproducer.getReproducingScope()
-					.getContainer()
-					.toClause();
-
-			if (clause == null) {
-				return outOfClausePath(SELF_PATH, SELF_PATH);
-			}
-
 			return unchangedPath(SELF_PATH);
 		}
 
