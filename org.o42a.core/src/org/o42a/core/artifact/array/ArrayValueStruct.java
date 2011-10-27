@@ -19,10 +19,9 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
@@ -137,24 +136,21 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public ArrayValueStruct rescope(Rescoper rescoper) {
-		return new ArrayValueStruct(
-				this.itemTypeRef.rescope(rescoper),
-				isConstant());
-	}
-
-	@Override
 	public ArrayValueStruct prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(toScoped())) {
+			return this;
+		}
 		return new ArrayValueStruct(
-				this.itemTypeRef.prefixWith(prefix),
+				getItemTypeRef().prefixWith(prefix),
 				isConstant());
 	}
 
 	@Override
 	public ArrayValueStruct upgradeScope(Scope toScope) {
-		return new ArrayValueStruct(
-				this.itemTypeRef.upgradeScope(toScope),
-				isConstant());
+		if (toScoped().getScope() == toScope) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(toScoped(), toScope));
 	}
 
 	@Override
@@ -186,19 +182,28 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	protected Value<Array> rescopeValue(Value<Array> value, Rescoper rescoper) {
-		if (rescoper.isTransparent()) {
-			return value;
-		}
+	protected Value<Array> prefixValueWith(
+			Value<Array> value,
+			PrefixPath prefix) {
 		if (value.isDefinite() && !value.isFalse()) {
-			return value.getDefiniteValue().rescope(rescoper).toValue();
+
+			final Array array = value.getDefiniteValue();
+
+			if (prefix.emptyFor(array)) {
+				return value;
+			}
+
+			return array.prefixWith(prefix).toValue();
 		}
 
 		final ArrayValueStruct initialStruct =
 				(ArrayValueStruct) value.getValueStruct();
 		final ArrayValueStruct rescopedStruct =
-				initialStruct.rescope(rescoper);
+				initialStruct.prefixWith(prefix);
 
+		if (initialStruct == rescopedStruct) {
+			return value;
+		}
 		if (!value.isDefinite()) {
 			return rescopedStruct.runtimeValue();
 		}
@@ -207,21 +212,6 @@ public final class ArrayValueStruct
 		}
 
 		return rescopedStruct.falseValue();
-	}
-
-	@Override
-	protected Value<Array> prefixValueWith(
-			Value<Array> value,
-			PrefixPath prefix) {
-		return value.rescope(prefix.toRescoper());
-	}
-
-	@Override
-	protected Value<Array> upgradeValueScope(
-			Value<Array> value,
-			Scope toScope) {
-		return value.rescope(
-				upgradeRescoper(getItemTypeRef().getScope(), toScope));
 	}
 
 	@Override

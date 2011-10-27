@@ -19,10 +19,12 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.impl.field.DefaultFieldDefinition;
 import org.o42a.core.member.impl.field.InvalidFieldDefinition;
@@ -33,9 +35,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
-public abstract class FieldDefinition
-		extends Placed
-		implements Rescopable<FieldDefinition> {
+public abstract class FieldDefinition extends Placed {
 
 	public static FieldDefinition invalidDefinition(
 			LocationInfo location,
@@ -79,26 +79,23 @@ public abstract class FieldDefinition
 
 	public abstract void defineLink(LinkDefiner definer);
 
-	@Override
-	public final FieldDefinition rescope(Rescoper rescoper) {
-		if (rescoper.isTransparent()) {
+	public FieldDefinition prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
 			return this;
 		}
-		return new RescopedFieldDefinition(this, rescoper);
+		return new RescopedFieldDefinition(this, prefix);
 	}
 
-	@Override
-	public FieldDefinition prefixWith(PrefixPath prefix) {
-		return rescope(prefix.toRescoper());
-	}
-
-	@Override
 	public final FieldDefinition upgradeScope(Scope toScope) {
-		return rescope(upgradeRescoper(getScope(), toScope));
+		if (toScope == getScope()) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(this, toScope));
 	}
 
 	protected static ArtifactKind<?> artifactKind(Ref ref) {
 		return ArtifactKind.OBJECT;
 	}
+
 
 }

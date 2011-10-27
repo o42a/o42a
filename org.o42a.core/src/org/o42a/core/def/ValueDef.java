@@ -24,13 +24,13 @@ import static org.o42a.core.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.def.Definitions.NO_REQUIREMENTS;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
@@ -40,12 +40,12 @@ public abstract class ValueDef extends Def<ValueDef> {
 	private Value<?> constantValue;
 	private CondDef condition;
 
-	public ValueDef(Obj source, LocationInfo location, Rescoper rescoper) {
-		super(source, location, DefKind.PROPOSITION, rescoper);
+	public ValueDef(Obj source, LocationInfo location, PrefixPath prefix) {
+		super(source, location, DefKind.PROPOSITION, prefix);
 	}
 
-	protected ValueDef(ValueDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	protected ValueDef(ValueDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 	}
 
 	public final boolean isClaim() {
@@ -82,7 +82,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		}
 
 		final Resolver resolver =
-				getRescoper().rescope(getScope().dummyResolver());
+				getPrefix().rescope(getScope().dummyResolver());
 
 		return this.constantValue = calculateValue(resolver);
 	}
@@ -119,7 +119,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public final Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getRescoper().rescope(resolver);
+		final Resolver rescoped = getPrefix().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -150,7 +150,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return getValueStruct().unknownValue();
 		}
 
-		return value.rescope(getRescoper());
+		return value.prefixWith(getPrefix());
 	}
 
 	@Override
@@ -183,7 +183,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	public ValOp write(ValDirs dirs, HostOp host) {
 
-		final HostOp rescopedHost = getRescoper().write(dirs.dirs(), host);
+		final HostOp rescopedHost = getPrefix().write(dirs.dirs(), host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(

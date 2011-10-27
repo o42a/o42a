@@ -19,12 +19,12 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -34,15 +34,15 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(def.getSource(), def.getLocation(), def.getRescoper());
+		super(def.getSource(), def.getLocation(), def.getPrefix());
 		this.def = def;
 		update(
 				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
 				def.hasPrerequisite());
 	}
 
-	private CondValueDef(CondValueDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private CondValueDef(CondValueDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.def = prototype.def;
 	}
 
@@ -63,8 +63,8 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new CondValueDef(this, rescoper);
+	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
+		return new CondValueDef(this, prefix);
 	}
 
 	@Override

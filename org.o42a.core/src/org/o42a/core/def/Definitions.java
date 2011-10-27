@@ -19,13 +19,14 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import java.util.Collection;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.Scoped;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
@@ -33,7 +34,7 @@ import org.o42a.core.value.*;
 import org.o42a.util.log.LogInfo;
 
 
-public class Definitions extends Scoped implements Rescopable<Definitions> {
+public class Definitions extends Scoped {
 
 	static final CondDefs NO_REQUIREMENTS = new CondDefs(REQUIREMENT);
 	static final CondDefs NO_CONDITIONS = new CondDefs(CONDITION);
@@ -465,26 +466,28 @@ public class Definitions extends Scoped implements Rescopable<Definitions> {
 				claims().unclaim(propositions()));
 	}
 
-	@Override
-	public Definitions rescope(Rescoper rescoper) {
+	public Definitions prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
 
-		final Scope resultScope = rescoper.updateScope(getScope());
+		final Scope resultScope = prefix.getStart();
 
 		if (isEmpty()) {
 			return emptyDefinitions(this, resultScope);
 		}
 
 		final CondDefs requirements = requirements();
-		final CondDefs newRequirements = requirements.rescope(rescoper);
+		final CondDefs newRequirements = requirements.prefixWith(prefix);
 		final CondDefs conditions = conditions();
-		final CondDefs newConditions = conditions.rescope(rescoper);
+		final CondDefs newConditions = conditions.prefixWith(prefix);
 		final ValueDefs claims = claims();
-		final ValueDefs newClaims = claims.rescope(rescoper);
+		final ValueDefs newClaims = claims.prefixWith(prefix);
 		final ValueDefs propositions = propositions();
-		final ValueDefs newPropositions = propositions.rescope(rescoper);
+		final ValueDefs newPropositions = propositions.prefixWith(prefix);
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
 		final ValueStruct<?, ?> newValueStruct =
-				valueStruct != null ? valueStruct.rescope(rescoper) : null;
+				valueStruct != null ? valueStruct.prefixWith(prefix) : null;
 
 		if (resultScope == getScope()
 				// This may fail when there is no definitions.
@@ -506,18 +509,11 @@ public class Definitions extends Scoped implements Rescopable<Definitions> {
 				newPropositions);
 	}
 
-	@Override
-	public Definitions prefixWith(PrefixPath prefix) {
-		return rescope(prefix.toRescoper());
-	}
-
-	@Override
 	public Definitions upgradeScope(Scope scope) {
 		if (scope == getScope()) {
 			return this;
 		}
-		assertCompatible(scope);
-		return rescope(upgradeRescoper(getScope(), scope));
+		return prefixWith(upgradePrefix(this, scope));
 	}
 
 	public Definitions requirementPart(LocationInfo location) {

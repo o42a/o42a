@@ -25,10 +25,10 @@ import static org.o42a.core.def.DefKind.PROPOSITION;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.util.ArrayUtil;
 
 
@@ -284,7 +284,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return create(PROPOSITION, newPropositions);
 	}
 
-	final S rescope(Rescoper rescoper) {
+	final S prefixWith(PrefixPath prefix) {
 		if (isEmpty()) {
 			return self();
 		}
@@ -294,9 +294,9 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		for (int i = 0; i < items.length; ++i) {
 
 			final D def = items[i];
-			final D newDef = rescoper.update(def);
+			final D newDef = def.prefixWith(prefix);
 
-			newDef.assertScopeIs(rescoper.getFinalScope());
+			newDef.assertScopeIs(prefix.getStart());
 			if (def == newDef) {
 				continue;
 			}
@@ -309,7 +309,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 			System.arraycopy(items, 0, newItems, 0, i);
 			newItems[i++] = newDef;
 			for (;i < items.length; ++i) {
-				newItems[i] = rescoper.update(items[i]);
+				newItems[i] = items[i].prefixWith(prefix);
 			}
 
 			return create(getDefKind(), newItems);

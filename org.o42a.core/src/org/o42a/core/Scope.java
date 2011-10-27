@@ -110,8 +110,6 @@ public interface Scope extends PlaceInfo {
 
 	PrefixPath pathTo(Scope targetScope);
 
-	Rescoper rescoperTo(Scope toScope);
-
 	boolean contains(Scope other);
 
 	ScopeIR ir(Generator generator);

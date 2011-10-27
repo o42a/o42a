@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
-import org.o42a.core.*;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -37,23 +39,23 @@ import org.o42a.util.use.UserInfo;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>
-		implements ScopeInfo, Rescopable<R> {
+		implements ScopeInfo {
 
-	private final Rescoper rescoper;
+	private final PrefixPath prefix;
 	private boolean allResolved;
 	private Ref rescopedRef;
 
-	public RescopableRef(Rescoper rescoper) {
-		this.rescoper = rescoper;
+	public RescopableRef(PrefixPath prefix) {
+		this.prefix = prefix;
 	}
 
 	@Override
 	public final Scope getScope() {
-		return this.rescoper.getFinalScope();
+		return this.prefix.getStart();
 	}
 
-	public final Rescoper getRescoper() {
-		return this.rescoper;
+	public final PrefixPath getPrefix() {
+		return this.prefix;
 	}
 
 	public abstract Ref getRef();
@@ -66,7 +68,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		if (this.rescopedRef != null) {
 			return this.rescopedRef;
 		}
-		return this.rescopedRef = getRef().rescope(getRescoper());
+		return this.rescopedRef = getRef().prefixWith(getPrefix());
 	}
 
 	public final Artifact<?> artifact(UserInfo user) {
@@ -77,52 +79,48 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 	}
 
 	public final Resolution resolve(Resolver resolver) {
-		return getRef().resolve(getRescoper().rescope(resolver));
+		return getRef().resolve(getPrefix().rescope(resolver));
 	}
 
 	public final Value<?> value(Resolver resolver) {
-		return getRef().value(getRescoper().rescope(resolver));
+		return getRef().value(getPrefix().rescope(resolver));
 	}
 
-	@Override
-	public R rescope(Rescoper rescoper) {
-
-		final Rescoper oldRescoper = getRescoper();
-		final Rescoper newRescoper = oldRescoper.and(rescoper);
-
-		if (newRescoper.equals(oldRescoper)) {
-			return self();
-		}
-
-		return create(newRescoper, rescoper);
-	}
-
-	@Override
 	public R prefixWith(PrefixPath prefix) {
-		return rescope(prefix.toRescoper());
-	}
-
-	@Override
-	public R upgradeScope(Scope scope) {
-		if (scope == getScope()) {
+		if (prefix.emptyFor(this)) {
 			return self();
 		}
-		return rescope(upgradeRescoper(getScope(), scope));
+
+		final PrefixPath oldPrefix = getPrefix();
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
+
+		if (newPrefix == oldPrefix) {
+			return self();
+		}
+
+		return create(newPrefix, prefix);
+	}
+
+	public R upgradeScope(Scope toScope) {
+		if (toScope == getScope()) {
+			return self();
+		}
+		return prefixWith(upgradePrefix(this, toScope));
 	}
 
 	public R rescope(Scope scope) {
 		if (getScope() == scope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(scope));
+		return prefixWith(scope.pathTo(getScope()));
 	}
 
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getRescoper().resolveAll(resolver);
-			fullyResolve(getRescoper().rescope(resolver));
+			getPrefix().resolveAll(resolver);
+			fullyResolve(getPrefix().rescope(resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -132,7 +130,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		assertCompatible(reproducer.getReproducingScope());
 
 		final Scope rescoped =
-				getRescoper().rescope(reproducer.getReproducingScope());
+				getPrefix().rescope(reproducer.getReproducingScope());
 		final Reproducer rescopedReproducer = reproducer.reproducerOf(rescoped);
 
 		if (rescopedReproducer == null) {
@@ -140,9 +138,9 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 			return null;
 		}
 
-		final Rescoper rescoper = getRescoper().reproduce(reproducer);
+		final PrefixPath prefix = getPrefix().reproduce(reproducer);
 
-		if (rescoper == null) {
+		if (prefix == null) {
 			return null;
 		}
 
@@ -156,12 +154,12 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 				reproducer,
 				rescopedReproducer,
 				ref,
-				rescoper);
+				prefix);
 	}
 
 	public RefOp op(CodeDirs dirs, HostOp host) {
 
-		final HostOp rescoped = getRescoper().write(dirs, host);
+		final HostOp rescoped = getPrefix().write(dirs, host);
 
 		return getRef().op(rescoped);
 	}
@@ -197,9 +195,7 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 		return (R) this;
 	}
 
-	protected abstract R create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper);
+	protected abstract R create(PrefixPath prefix, PrefixPath additionalPrefix);
 
 	protected abstract void fullyResolve(Resolver resolver);
 
@@ -207,6 +203,6 @@ public abstract class RescopableRef<R extends RescopableRef<R>>
 			Reproducer reproducer,
 			Reproducer rescopedReproducer,
 			Ref ref,
-			Rescoper rescoper);
+			PrefixPath prefix);
 
 }

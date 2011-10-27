@@ -21,7 +21,6 @@ package org.o42a.core;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.unmodifiableSet;
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
@@ -128,15 +127,6 @@ public abstract class AbstractScope implements Scope {
 			"Can not rescope from " + fromScope + " to " + toScope;
 
 		return pathToMember.toPrefix(fromScope);
-	}
-
-	public static Rescoper rescoperTo(
-			Scope fromScope,
-			Scope toScope) {
-		if (fromScope == toScope) {
-			return transparentRescoper(toScope);
-		}
-		return toScope.pathTo(fromScope).toRescoper();
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
@@ -303,11 +293,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public final PrefixPath pathTo(Scope targetScope) {
 		return pathTo(this, targetScope);
-	}
-
-	@Override
-	public final Rescoper rescoperTo(Scope toScope) {
-		return rescoperTo(this, toScope);
 	}
 
 	@Override

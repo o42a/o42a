@@ -19,10 +19,9 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
@@ -36,6 +35,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
@@ -73,28 +73,28 @@ public class LocalDef extends ValueDef {
 	private final ImperativeBlock block;
 	private final Definer definer;
 	private final boolean explicit;
-	private final Rescoper localRescoper;
+	private final PrefixPath localPrefix;
 
 	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
 			Definer definer,
 			boolean explicit) {
-		super(sourceOf(block), block, transparentRescoper(ownerScope));
+		super(sourceOf(block), block, emptyPrefix(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
 		this.definer = definer;
 		this.explicit = explicit;
-		this.localRescoper = block.getScope().rescoperTo(getOwnerScope());
+		this.localPrefix = getOwnerScope().pathTo(block.getScope());
 	}
 
-	private LocalDef(LocalDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private LocalDef(LocalDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
 		this.definer = prototype.definer;
 		this.explicit = prototype.explicit;
-		this.localRescoper = prototype.localRescoper;
+		this.localPrefix = prototype.localPrefix;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class LocalDef extends ValueDef {
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
 
-		final Scope scope = this.localRescoper.rescope(getScope());
+		final Scope scope = this.localPrefix.rescope(getScope());
 
 		assert scope.toLocal() != null :
 			"Not a local scope: " + scope;
@@ -120,7 +120,7 @@ public class LocalDef extends ValueDef {
 			return null;
 		}
 
-		return valueStruct.rescope(this.localRescoper).rescope(getRescoper());
+		return valueStruct.prefixWith(this.localPrefix).prefixWith(getPrefix());
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class LocalDef extends ValueDef {
 	protected Value<?> calculateValue(Resolver resolver) {
 
 		final LocalScope local =
-				this.localRescoper.rescope(resolver).getScope().toLocal();
+				this.localPrefix.rescope(resolver.getScope()).toLocal();
 
 		assert local != null :
 			"Not a local scope: " + resolver;
@@ -182,13 +182,13 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected LocalDef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new LocalDef(this, rescoper);
+	protected LocalDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
+		return new LocalDef(this, prefix);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		getBlock().resolveValues(this.localRescoper.rescope(resolver));
+		getBlock().resolveValues(this.localPrefix.rescope(resolver));
 	}
 
 	@Override
@@ -246,7 +246,7 @@ public class LocalDef extends ValueDef {
 			assertCompatible(resolver.getScope());
 
 			final Resolver localResolver =
-					this.def.localRescoper.rescope(resolver);
+					this.def.localPrefix.rescope(resolver);
 			final LocalScope local = localResolver.getScope().toLocal();
 
 			assert local != null :
@@ -272,7 +272,8 @@ public class LocalDef extends ValueDef {
 					dirs.begin("local_logical", "Local logical: " + this);
 
 			final Obj owner = this.def.getOwnerScope().toObject();
-			final ValueStruct<?, ?> valueStruct = owner.value().getValueStruct();
+			final ValueStruct<?, ?> valueStruct =
+					owner.value().getValueStruct();
 			final ValDirs valDirs = subDirs.value(valueStruct, "local_val");
 
 			this.def.writeValue(valDirs, host);

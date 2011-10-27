@@ -50,6 +50,7 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -569,10 +570,10 @@ public abstract class Obj
 		}
 
 		final Scope scope = getScope();
-		final Rescoper rescoper =
-				scope.getEnclosingScope().rescoperTo(scope);
+		final PrefixPath prefix =
+				scope.getEnclosingScopePath().toPrefix(scope);
 
-		return ancestorValueStruct.rescope(rescoper);
+		return ancestorValueStruct.prefixWith(prefix);
 	}
 
 	protected Definitions overrideDefinitions(

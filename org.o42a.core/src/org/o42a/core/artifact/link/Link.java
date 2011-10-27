@@ -137,7 +137,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 			Role.INSTANCE.checkUseBy(
 					this,
 					this.targetRef.getRef(),
-					this.targetRef.getRescoper().rescope(
+					this.targetRef.getPrefix().rescope(
 							this.targetRef.getScope()));
 		}
 
@@ -146,7 +146,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 		Role.PROTOTYPE.checkUseBy(
 				this,
 				typeRef.getRef(),
-				typeRef.getRescoper().rescope(typeRef.getScope()));
+				typeRef.getPrefix().rescope(typeRef.getScope()));
 
 		final TypeRelation relation =
 				typeRef.relationTo(this.targetRef.toTypeRef());

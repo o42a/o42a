@@ -19,11 +19,7 @@
 */
 package org.o42a.core.artifact.array;
 
-import static org.o42a.core.Rescoper.upgradeRescoper;
-
 import org.o42a.codegen.Generator;
-import org.o42a.core.Rescopable;
-import org.o42a.core.Rescoper;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.impl.ArrayItemIR;
@@ -37,9 +33,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueType;
 
 
-public final class ArrayItem
-		extends ArrayElement
-		implements Rescopable<ArrayItem> {
+public final class ArrayItem extends ArrayElement {
 
 	private final int index;
 	private final Ref valueRef;
@@ -59,10 +53,10 @@ public final class ArrayItem
 	private ArrayItem(
 			Scope enclosing,
 			ArrayItem propagatedFrom,
-			Rescoper rescoper) {
-		super(enclosing, propagatedFrom, rescoper);
+			PrefixPath prefix) {
+		super(enclosing, propagatedFrom, prefix);
 		this.index = propagatedFrom.getIndex();
-		this.valueRef = propagatedFrom.getValueRef().rescope(rescoper);
+		this.valueRef = propagatedFrom.getValueRef().prefixWith(prefix);
 	}
 
 	public final int getIndex() {
@@ -93,22 +87,14 @@ public final class ArrayItem
 		return (ArrayItem) super.getLastDefinition();
 	}
 
-	@Override
-	public ArrayItem rescope(Rescoper rescoper) {
-		return rescoper.update(this);
-	}
-
-	@Override
 	public ArrayItem prefixWith(PrefixPath prefix) {
-		return new ArrayItem(getIndex(), getValueRef().prefixWith(prefix));
-	}
-
-	@Override
-	public ArrayItem upgradeScope(Scope toScope) {
-		if (getScope() == toScope) {
-			return this;
+		if (prefix.isEmpty()) {
+			if (prefix.getStart() == getScope()) {
+				return this;
+			}
+			return propagateTo(prefix.getStart(), prefix);
 		}
-		return propagateTo(toScope, upgradeRescoper(getScope(), toScope));
+		return new ArrayItem(getIndex(), getValueRef().prefixWith(prefix));
 	}
 
 	public void resolveAll(Resolver resolver) {
@@ -132,8 +118,8 @@ public final class ArrayItem
 		return new ArrayItemIR(generator, this);
 	}
 
-	ArrayItem propagateTo(Scope scope, Rescoper rescoper) {
-		return new ArrayItem(scope, this, rescoper);
+	ArrayItem propagateTo(Scope scope, PrefixPath prefix) {
+		return new ArrayItem(scope, this, prefix);
 	}
 
 	private static final class ItemLink extends Link {

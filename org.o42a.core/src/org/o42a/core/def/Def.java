@@ -19,8 +19,8 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
-import static org.o42a.core.Rescoper.upgradeRescoper;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
@@ -34,8 +34,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def<D extends Def<D>>
-		implements SourceInfo, Rescopable<D> {
+public abstract class Def<D extends Def<D>> implements SourceInfo {
 
 	public static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
@@ -57,7 +56,7 @@ public abstract class Def<D extends Def<D>>
 		return local.getOwner();
 	}
 
-	private final Rescoper rescoper;
+	private final PrefixPath prefix;
 	private final Obj source;
 	private final LocationInfo location;
 	private DefKind kind;
@@ -71,16 +70,16 @@ public abstract class Def<D extends Def<D>>
 			Obj source,
 			LocationInfo location,
 			DefKind kind,
-			Rescoper rescoper) {
-		this.rescoper = rescoper;
+			PrefixPath prefix) {
+		this.prefix = prefix;
 		this.location = location;
 		this.source = source;
 		this.kind = kind;
 		this.hasPrerequisite = false;
 	}
 
-	Def(D prototype, Rescoper rescoper) {
-		this.rescoper = rescoper;
+	Def(D prototype, PrefixPath prefix) {
+		this.prefix = prefix;
 		this.source = prototype.source;
 		this.location = prototype.location;
 		this.kind = prototype.kind;
@@ -92,11 +91,11 @@ public abstract class Def<D extends Def<D>>
 
 	@Override
 	public final Scope getScope() {
-		return this.rescoper.getFinalScope();
+		return this.prefix.getStart();
 	}
 
-	public final Rescoper getRescoper() {
-		return this.rescoper;
+	public final PrefixPath getPrefix() {
+		return this.prefix;
 	}
 
 	@Override
@@ -130,52 +129,45 @@ public abstract class Def<D extends Def<D>>
 		return this.hasPrerequisite;
 	}
 
-	@Override
-	public D rescope(Rescoper rescoper) {
+	public final D prefixWith(PrefixPath prefix) {
 
-		final Rescoper oldRescoper = getRescoper();
-		final Rescoper newRescoper = oldRescoper.and(rescoper);
+		final PrefixPath oldPrefix = getPrefix();
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
 
-		if (newRescoper.equals(oldRescoper)) {
+		if (newPrefix == oldPrefix) {
 			return self();
 		}
 
-		return create(newRescoper, rescoper);
+		return create(newPrefix, prefix);
 	}
 
-	@Override
-	public D prefixWith(PrefixPath prefix) {
-		return rescope(prefix.toRescoper());
-	}
-
-	@Override
-	public D upgradeScope(Scope scope) {
-		if (scope == getScope()) {
+	public final D upgradeScope(Scope toScope) {
+		if (toScope == getScope()) {
 			return self();
 		}
-		return rescope(upgradeRescoper(getScope(), scope));
+		return prefixWith(upgradePrefix(this, toScope));
 	}
 
-	public D rescope(Scope scope) {
-		if (getScope() == scope) {
+	public final D rescope(Scope toScope) {
+		if (getScope() == toScope) {
 			return self();
 		}
-		return rescope(getScope().rescoperTo(scope));
+		return prefixWith(toScope.pathTo(getScope()));
 	}
 
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getRescoper().resolveAll(resolver);
-			fullyResolve(getRescoper().rescope(resolver));
+			getPrefix().resolveAll(resolver);
+			fullyResolve(getPrefix().rescope(resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}
 	}
 
 	public final Logical fullLogical() {
-		return getLogical().rescope(getRescoper());
+		return getLogical().prefixWith(getPrefix());
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
@@ -307,8 +299,8 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	protected abstract D create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix);
 
 	protected abstract void fullyResolve(Resolver resolver);
 
@@ -358,7 +350,7 @@ public abstract class Def<D extends Def<D>>
 	}
 
 	private final D copy() {
-		return create(getRescoper(), transparentRescoper(getScope()));
+		return create(getPrefix(), emptyPrefix(getScope()));
 	}
 
 }

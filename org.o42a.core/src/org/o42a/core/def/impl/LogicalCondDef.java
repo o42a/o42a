@@ -19,13 +19,13 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 
 
 public final class LogicalCondDef extends CondDef {
@@ -36,12 +36,12 @@ public final class LogicalCondDef extends CondDef {
 		super(
 				sourceOf(logical),
 				logical,
-				transparentRescoper(logical.getScope()));
+				emptyPrefix(logical.getScope()));
 		this.logical = logical;
 	}
 
-	private LogicalCondDef(LogicalCondDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private LogicalCondDef(LogicalCondDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.logical = prototype.logical;
 	}
 
@@ -62,9 +62,9 @@ public final class LogicalCondDef extends CondDef {
 
 	@Override
 	protected CondDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new LogicalCondDef(this, rescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
+		return new LogicalCondDef(this, prefix);
 	}
 
 	@Override

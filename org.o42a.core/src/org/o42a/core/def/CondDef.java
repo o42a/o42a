@@ -21,12 +21,12 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.Definitions.*;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.LogicalValue;
@@ -36,12 +36,12 @@ public abstract class CondDef extends Def<CondDef> {
 
 	private ValueDef value;
 
-	public CondDef(Obj source, LocationInfo location, Rescoper rescoper) {
-		super(source, location, DefKind.CONDITION, rescoper);
+	public CondDef(Obj source, LocationInfo location, PrefixPath prefix) {
+		super(source, location, DefKind.CONDITION, prefix);
 	}
 
-	protected CondDef(CondDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	protected CondDef(CondDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 	}
 
 	public final boolean isRequirement() {
@@ -100,7 +100,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final Condition condition(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getRescoper().rescope(resolver);
+		final Resolver rescoped = getPrefix().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -144,7 +144,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final HostOp rescopedHost = getRescoper().write(dirs, host);
+		final HostOp rescopedHost = getPrefix().write(dirs, host);
 
 		if (hasPrerequisite()) {
 			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);

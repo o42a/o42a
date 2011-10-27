@@ -19,11 +19,10 @@
 */
 package org.o42a.common.def;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -43,12 +43,12 @@ public class BuiltinValueDef extends ValueDef {
 		super(
 				builtin.toObject(),
 				builtin,
-				transparentRescoper(builtin.toObject().getScope()));
+				emptyPrefix(builtin.toObject().getScope()));
 		this.builtin = builtin;
 	}
 
-	private BuiltinValueDef(BuiltinValueDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private BuiltinValueDef(BuiltinValueDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.builtin = prototype.builtin;
 	}
 
@@ -79,9 +79,9 @@ public class BuiltinValueDef extends ValueDef {
 
 	@Override
 	protected BuiltinValueDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new BuiltinValueDef(this, rescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
+		return new BuiltinValueDef(this, prefix);
 	}
 
 	@Override

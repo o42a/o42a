@@ -21,8 +21,8 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.AscendantsBuilder;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -133,25 +133,25 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 				this.samples);
 	}
 
-	public AscendantsDefinition rescope(Rescoper rescoper) {
+	public AscendantsDefinition prefixWith(PrefixPath prefix) {
 
 		final TypeRef ancestor;
 
 		if (this.ancestor == null) {
 			ancestor = null;
 		} else {
-			ancestor = this.ancestor.rescope(rescoper);
+			ancestor = this.ancestor.prefixWith(prefix);
 		}
 
 		final StaticTypeRef[] samples = new StaticTypeRef[this.samples.length];
 
 		for (int i = 0; i < samples.length; ++i) {
-			samples[i] = this.samples[i].rescope(rescoper);
+			samples[i] = this.samples[i].prefixWith(prefix);
 		}
 
 		return create(
 				this,
-				distributeIn(rescoper.getFinalScope().getContainer()),
+				distributeIn(prefix.getStart().getContainer()),
 				ancestor,
 				samples);
 	}

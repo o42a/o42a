@@ -19,10 +19,9 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -30,6 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -41,17 +41,17 @@ public final class ConstantValueDef<T> extends ValueDef {
 	private ValueStruct<?, T> valueStruct;
 
 	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
-		super(source, location, transparentRescoper(source.getScope()));
+		super(source, location, emptyPrefix(source.getScope()));
 		this.value = value;
 	}
 
 	ConstantValueDef(ConstantObject<T> source) {
-		super(source, source, transparentRescoper(source.getScope()));
+		super(source, source, emptyPrefix(source.getScope()));
 		this.value = source.getValue();
 	}
 
-	private ConstantValueDef(ConstantValueDef<T> prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private ConstantValueDef(ConstantValueDef<T> prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.value = prototype.value;
 	}
 
@@ -61,7 +61,7 @@ public final class ConstantValueDef<T> extends ValueDef {
 			return this.valueStruct;
 		}
 		return this.valueStruct =
-				this.value.getValueStruct().rescope(getRescoper());
+				this.value.getValueStruct().prefixWith(getPrefix());
 	}
 
 	@Override
@@ -90,8 +90,8 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(Rescoper rescoper, Rescoper additionalRescoper) {
-		return new ConstantValueDef<T>(this, rescoper);
+	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
+		return new ConstantValueDef<T>(this, prefix);
 	}
 
 	@Override

@@ -19,16 +19,18 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.*;
+import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
@@ -57,7 +59,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.*;
 
 
-public class Ref extends Statement implements Rescopable<Ref> {
+public class Ref extends Statement {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
 
@@ -124,7 +126,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		final ValueStruct<?, ?> valueStruct =
 				resolution.materialize().value().getValueStruct();
 
-		return valueStruct.rescope(toRescoper());
+		return valueStruct.prefixWith(toPrefix());
 	}
 
 	public final Logical getLogical() {
@@ -158,7 +160,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 				.value()
 				.explicitUseBy(resolver)
 				.getValue()
-				.rescope(toRescoper());
+				.prefixWith(toPrefix());
 	}
 
 	public final ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
@@ -294,29 +296,25 @@ public class Ref extends Statement implements Rescopable<Ref> {
 				.target(distribute());
 	}
 
+	public final Ref prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
+		return prefix.append(getPath()).target(this);
+	}
+
+	public final Ref upgradeScope(Scope toScope) {
+		if (getScope() == toScope) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(this, toScope));
+	}
+
 	public final Ref rescope(Scope toScope) {
 		if (getScope() == toScope) {
 			return this;
 		}
-		return rescope(getScope().rescoperTo(toScope));
-	}
-
-	@Override
-	public final Ref rescope(Rescoper rescoper) {
-		return rescoper.update(this);
-	}
-
-	@Override
-	public final Ref prefixWith(PrefixPath prefix) {
-		return prefix.append(getPath()).target(this);
-	}
-
-	@Override
-	public final Ref upgradeScope(Scope scope) {
-		if (getScope() == scope) {
-			return this;
-		}
-		return getPath().target(distributeIn(scope.getContainer()));
+		return prefixWith(toScope.pathTo(getScope()));
 	}
 
 	public final TypeRef toTypeRef() {
@@ -335,7 +333,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 
 		return new DefaultTypeRef(
 				this,
-				transparentRescoper(getScope()),
+				emptyPrefix(getScope()),
 				vsFinder,
 				vsFinder.toValueStruct());
 	}
@@ -351,7 +349,7 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		return new DefaultStaticTypeRef(
 				this,
 				this,
-				transparentRescoper(getScope()),
+				emptyPrefix(getScope()),
 				vsFinder,
 				vsFinder.toValueStruct());
 	}
@@ -360,12 +358,8 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		return targetRef(this, typeRef);
 	}
 
-	public final PrefixPath toPrefixPath() {
+	public final PrefixPath toPrefix() {
 		return getPath().toPrefix(getScope());
-	}
-
-	public final Rescoper toRescoper() {
-		return toPrefixPath().toRescoper();
 	}
 
 	public final Statement toCondition() {

@@ -19,15 +19,15 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.core.Rescoper.transparentRescoper;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
-import org.o42a.core.Rescoper;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.PrefixPath;
 
 
 public final class RuntimeCondDef extends CondDef {
@@ -40,12 +40,12 @@ public final class RuntimeCondDef extends CondDef {
 				 * as this definition is not explicit. */
 				definitions.getContext().getVoid(),
 				definitions,
-				transparentRescoper(definitions.getScope()));
+				emptyPrefix(definitions.getScope()));
 		this.definitions = definitions;
 	}
 
-	private RuntimeCondDef(RuntimeCondDef prototype, Rescoper rescoper) {
-		super(prototype, rescoper);
+	private RuntimeCondDef(RuntimeCondDef prototype, PrefixPath prefix) {
+		super(prototype, prefix);
 		this.definitions = prototype.definitions;
 	}
 
@@ -70,9 +70,9 @@ public final class RuntimeCondDef extends CondDef {
 
 	@Override
 	protected RuntimeCondDef create(
-			Rescoper rescoper,
-			Rescoper additionalRescoper) {
-		return new RuntimeCondDef(this, rescoper);
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
+		return new RuntimeCondDef(this, prefix);
 	}
 
 	@Override
