@@ -19,15 +19,22 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.PlaceInfo;
-import org.o42a.core.Rescoper;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.rescoper.PathRescoper;
 import org.o42a.core.source.LocationInfo;
 
 
 public final class PrefixPath {
+
+	public static PrefixPath emptyPrefix(Scope finalScope) {
+		return Path.SELF_PATH.toPrefix(finalScope);
+	}
+
+	public static PrefixPath upgradePrefix(ScopeInfo scoped, Scope toScope) {
+		scoped.assertCompatible(toScope);
+		return Path.SELF_PATH.toPrefix(toScope);
+	}
 
 	private final Scope start;
 	private final Path prefix;
@@ -43,6 +50,10 @@ public final class PrefixPath {
 
 	public final Path getPrefix() {
 		return this.prefix;
+	}
+
+	public final boolean isEmpty() {
+		return getPrefix().isSelf();
 	}
 
 	public final PrefixPath append(Path path) {

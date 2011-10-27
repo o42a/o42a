@@ -212,6 +212,11 @@ public class Ref extends Statement implements Rescopable<Ref> {
 		if (path.isAbsolute()) {
 			return path.target(reproducer.distribute());
 		}
+		if (path.isSelf()) {
+			return path.getPath()
+					.bind(this, reproducer.getScope())
+					.target(reproducer.distribute());
+		}
 
 		final PathReproduction pathReproduction = path.reproduce(reproducer);
 
