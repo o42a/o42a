@@ -186,7 +186,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		final Obj object = resolved.toObject();
 
 		if (object != null) {
-			return new ObjectResolution(object);
+			return objectResolution(location, object);
 		}
 
 		return new ArtifactResolution(resolved);

@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
@@ -33,11 +32,6 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	PhraseFieldDefinition(Phrase phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return ArtifactKind.OBJECT;
 	}
 
 	@Override

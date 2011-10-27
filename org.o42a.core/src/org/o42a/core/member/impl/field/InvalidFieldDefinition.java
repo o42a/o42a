@@ -20,7 +20,6 @@
 package org.o42a.core.member.impl.field;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
@@ -38,11 +37,6 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	@Override
 	public boolean isValid() {
 		return false;
-	}
-
-	@Override
-	public ArtifactKind<?> determineArtifactKind() {
-		return null;
 	}
 
 	@Override
