@@ -25,8 +25,10 @@ import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.field.InterfaceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
 
 
@@ -58,6 +60,19 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 
 	@Override
 	public Phrase visitBrackets(BracketsNode brackets, Phrase p) {
+
+		final InterfaceNode iface = brackets.getInterface();
+
+		if (iface != null) {
+
+			final ArrayConstructor array = new ArrayConstructor(
+					p.ip(),
+					p.getContext(),
+					brackets,
+					p.distribute());
+
+			return p.array(array).getPhrase();
+		}
 
 		final ArgumentNode[] arguments = brackets.getArguments();
 

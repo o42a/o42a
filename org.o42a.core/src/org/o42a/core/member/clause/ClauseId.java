@@ -72,6 +72,40 @@ public enum ClauseId {
 
 	},
 
+	CONSTANT_ARRAY(true) {
+
+		@Override
+		public Path adapterPath(CompilerContext context) {
+			return absolutePath(context, "clauses", "constant_array");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "[`]";
+			}
+			return "[`" + name + ']';
+		}
+
+	},
+
+	VARIABLE_ARRAY(true) {
+
+		@Override
+		public Path adapterPath(CompilerContext context) {
+			return absolutePath(context, "clauses", "variable_array");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "[``]";
+			}
+			return "[``" + name + ']';
+		}
+
+	},
+
 	IMPERATIVE(false) {
 
 		@Override

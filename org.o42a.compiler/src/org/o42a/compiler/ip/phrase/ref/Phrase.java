@@ -23,6 +23,7 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
+import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.artifact.object.Ascendants;
@@ -102,6 +103,11 @@ public class Phrase extends Placed {
 	public final PhraseArgument argument(Ref value) {
 		value.assertSameScope(this);
 		return append(this.last.argument(value, value));
+	}
+
+	public final PhraseArray array(ArrayConstructor array) {
+		array.assertSameScope(this);
+		return append(this.last.array(array));
 	}
 
 	public final PhraseString string(LocationInfo location, String string) {

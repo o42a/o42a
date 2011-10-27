@@ -173,7 +173,7 @@ public final class ArrayValueStruct
 		if (isConstant()) {
 			out.append("Constant array[");
 		} else {
-			out.append("Array[");
+			out.append("Variable array[");
 		}
 
 		out.append(this.itemTypeRef).append(']');

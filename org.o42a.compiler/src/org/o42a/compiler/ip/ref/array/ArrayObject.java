@@ -82,6 +82,14 @@ final class ArrayObject extends Obj {
 	}
 
 	@Override
+	public String toString() {
+		if (this.constructor == null) {
+			return super.toString();
+		}
+		return this.constructor.toString();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(
 				this.constructor.ancestor(this));

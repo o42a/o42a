@@ -101,6 +101,15 @@ public final class ArrayItem extends ArrayElement {
 		getValueRef().resolveValues(resolver);
 	}
 
+	@Override
+	public String toString() {
+		if (this.valueRef == null) {
+			return super.toString();
+		}
+		return getEnclosingScope()
+				+ "[" + getIndex() + " = " + getValueRef() + ']';
+	}
+
 	protected ArrayItem reproduce(Array array, Reproducer reproducer) {
 		getEnclosingScope().assertCompatible(reproducer.getReproducingScope());
 
