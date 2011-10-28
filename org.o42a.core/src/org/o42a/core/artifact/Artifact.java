@@ -185,7 +185,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	protected A findCloneOf() {
-		if (getScope().isClone()) {
+		if (!getScope().isClone()) {
 			return null;
 		}
 		return getKind().cast(getScope().getLastDefinition().getArtifact());

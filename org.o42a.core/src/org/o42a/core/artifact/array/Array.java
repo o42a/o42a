@@ -22,8 +22,6 @@ package org.o42a.core.artifact.array;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
-import java.util.IdentityHashMap;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
@@ -37,11 +35,11 @@ import org.o42a.core.value.Value;
 
 public final class Array extends Placed {
 
-	private final Obj origin;
+	private final Array origin;
+	private final PrefixPath prefix;
 	private final Obj owner;
 	private final ArrayValueStruct valueStruct;
 	private final ArrayItem[] items;
-	private IdentityHashMap<Scope, Array> clones;
 
 	public Array(
 			LocationInfo location,
@@ -49,25 +47,29 @@ public final class Array extends Placed {
 			ArrayValueStruct valueStruct,
 			ArrayItem[] items) {
 		super(location, distributor);
-		this.origin = this.owner = owner(distributor.getScope());
+		this.origin = this;
+		this.prefix = PrefixPath.emptyPrefix(distributor.getScope());
+		this.owner = owner(distributor.getScope());
 		valueStruct.getItemTypeRef().assertSameScope(distributor);
 		this.valueStruct = valueStruct;
 		this.items = items;
 	}
 
-	private Array(Array from, Obj owner) {
-		super(from, from.distributeIn(owner));
+	private Array(Array from, PrefixPath prefix) {
+		super(from, from.distributeIn(prefix.getStart().getContainer()));
 		this.origin = from.getOrigin();
-		this.owner = owner;
-
-		final PrefixPath prefix = upgradePrefix(from, getScope());
-
+		this.prefix = from.getPrefix().and(prefix);
+		this.owner = owner(prefix.getStart());
 		this.valueStruct = from.getValueStruct().prefixWith(prefix);
-		this.items = from.propagateItems(owner.getScope(), prefix);
+		this.items = from.prefixItems(prefix);
 	}
 
-	public final Obj getOrigin() {
+	public final Array getOrigin() {
 		return this.origin;
+	}
+
+	public final PrefixPath getPrefix() {
+		return this.prefix;
 	}
 
 	public final Obj getOwner() {
@@ -83,32 +85,7 @@ public final class Array extends Placed {
 	}
 
 	public final ArrayItem[] items(Scope scope) {
-		return propagateTo(scope).items;
-	}
-
-	public Array propagateTo(Scope scope) {
-		if (scope == getScope()) {
-			return this;
-		}
-
-		assertCompatible(scope);
-
-		if (this.clones != null) {
-
-			final Array clone = this.clones.get(scope);
-
-			if (clone != null) {
-				return clone;
-			}
-		} else {
-			this.clones = new IdentityHashMap<Scope, Array>();
-		}
-
-		final Array clone = new Array(this, owner(scope));
-
-		this.clones.put(scope, clone);
-
-		return clone;
+		return upgradeScope(scope).items;
 	}
 
 	public Array reproduce(Reproducer reproducer) {
@@ -135,18 +112,18 @@ public final class Array extends Placed {
 		return new Array(this, distributor, valueStruct, items);
 	}
 
-	public Array prefixWith(PrefixPath prefix) {
-		if (prefix.isEmpty()) {
-			if (prefix.getStart() == getScope()) {
-				return this;
-			}
-			return propagateTo(prefix.getStart());
+	public final Array prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
 		}
-		return new Array(
-				this,
-				distributeIn(prefix.getStart().getContainer()),
-				getValueStruct().prefixWith(prefix),
-				prefixItems(prefix));
+		return new Array(this, prefix);
+	}
+
+	public final Array upgradeScope(Scope toScope) {
+		if (toScope == getScope()) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(this, toScope));
 	}
 
 	public final Value<Array> toValue() {
@@ -191,20 +168,6 @@ public final class Array extends Placed {
 			"Enclosing scope is not object: " + scope;
 
 		return owner;
-	}
-
-	private ArrayItem[] propagateItems(Scope scope, PrefixPath prefix) {
-
-		final ArrayItem[] newItems = new ArrayItem[this.items.length];
-
-		for (int i = 0; i < newItems.length; ++i) {
-
-			final ArrayItem oldItem = this.items[i];
-
-			newItems[i] = oldItem.propagateTo(scope, prefix);
-		}
-
-		return newItems;
 	}
 
 	private ArrayItem[] prefixItems(PrefixPath prefix) {
