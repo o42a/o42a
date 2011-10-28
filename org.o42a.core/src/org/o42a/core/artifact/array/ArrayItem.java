@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.array.impl.ArrayItemIR;
 import org.o42a.core.artifact.link.Link;
@@ -48,15 +47,6 @@ public final class ArrayItem extends ArrayElement {
 						Long.valueOf(index)));
 		this.index = index;
 		this.valueRef = valueRef;
-	}
-
-	private ArrayItem(
-			Scope enclosing,
-			ArrayItem propagatedFrom,
-			PrefixPath prefix) {
-		super(enclosing, propagatedFrom, prefix);
-		this.index = propagatedFrom.getIndex();
-		this.valueRef = propagatedFrom.getValueRef().prefixWith(prefix);
 	}
 
 	public final int getIndex() {
@@ -88,11 +78,8 @@ public final class ArrayItem extends ArrayElement {
 	}
 
 	public ArrayItem prefixWith(PrefixPath prefix) {
-		if (prefix.isEmpty()) {
-			if (prefix.getStart() == getScope()) {
-				return this;
-			}
-			return propagateTo(prefix.getStart(), prefix);
+		if (prefix.emptyFor(this)) {
+			return this;
 		}
 		return new ArrayItem(getIndex(), getValueRef().prefixWith(prefix));
 	}
@@ -125,10 +112,6 @@ public final class ArrayItem extends ArrayElement {
 	@Override
 	protected ScopeIR createIR(Generator generator) {
 		return new ArrayItemIR(generator, this);
-	}
-
-	ArrayItem propagateTo(Scope scope, PrefixPath prefix) {
-		return new ArrayItem(scope, this, prefix);
 	}
 
 	private static final class ItemLink extends Link {
