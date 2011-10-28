@@ -231,13 +231,11 @@ public final class ArrayValueStruct
 	@Override
 	protected ValueStructIR<ArrayValueStruct, Array> createIR(
 			Generator generator) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayValueStructIR(generator, this);
 	}
 
 	private final ArrayValueType arrayValueType() {
 		return (ArrayValueType) getValueType();
 	}
-
 
 }

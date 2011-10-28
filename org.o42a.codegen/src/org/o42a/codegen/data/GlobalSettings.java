@@ -67,6 +67,11 @@ public final class GlobalSettings {
 		return this;
 	}
 
+	public final GlobalSettings setConstant(boolean constant) {
+		this.constant = constant;
+		return this;
+	}
+
 	public final GlobalSettings set(GlobalSettings settings) {
 		this.exported = settings.exported;
 		this.constant = settings.constant;

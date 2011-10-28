@@ -23,10 +23,12 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.*;
 import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
+import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
@@ -324,6 +326,22 @@ public final class ValOp extends IROp implements CondOp {
 			return;
 		}
 		dirs.go(code, this);
+	}
+
+	public void use(Code code) {
+
+		final FuncPtr<ValUseFunc> func =
+				code.getGenerator().externalFunction("o42a_val_use", VAL_USE);
+
+		func.op(null, code).call(code, this);
+	}
+
+	public void unuse(Code code) {
+
+		final FuncPtr<ValUseFunc> func =
+				code.getGenerator().externalFunction("o42a_val_unuse", VAL_USE);
+
+		func.op(null, code).call(code, this);
 	}
 
 	@Override
