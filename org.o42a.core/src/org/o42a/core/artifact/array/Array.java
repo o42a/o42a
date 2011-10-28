@@ -27,6 +27,8 @@ import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.impl.ArrayContentReproducer;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.value.array.ArrayIR;
+import org.o42a.core.ir.value.array.ArrayIRGenerator;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -40,6 +42,7 @@ public final class Array extends Placed {
 	private final Obj owner;
 	private final ArrayValueStruct valueStruct;
 	private final ArrayItem[] items;
+	private ArrayIR ir;
 
 	public Array(
 			LocationInfo location,
@@ -82,6 +85,10 @@ public final class Array extends Placed {
 
 	public final boolean isConstant() {
 		return this.valueStruct.isConstant();
+	}
+
+	public final ArrayItem[] getItems() {
+		return this.items;
 	}
 
 	public final ArrayItem[] items(Scope scope) {
@@ -128,6 +135,14 @@ public final class Array extends Placed {
 
 	public final Value<Array> toValue() {
 		return getValueStruct().constantValue(this);
+	}
+
+	public final ArrayIR ir(ArrayIRGenerator generator) {
+		if (this.ir != null
+				&& this.ir.getGenerator() == generator.getGenerator()) {
+			return this.ir;
+		}
+		return this.ir = new ArrayIR(generator, this);
 	}
 
 	@Override

@@ -44,6 +44,7 @@ public class ArrayElementStep extends Step {
 
 	private final Ref initialIndexRef;
 	private Ref indexRef;
+	private ArrayValueStruct arrayStruct;
 	private boolean error;
 
 	public ArrayElementStep(Ref indexRef) {
@@ -80,8 +81,18 @@ public class ArrayElementStep extends Step {
 			"Not an array object: " + start;
 
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
+
+		if (resolver.isFullResolution()) {
+			array.value().resolveAll(resolver);
+		}
+
 		final ArrayValueStruct arrayStruct =
 				ArrayValueStruct.class.cast(arrayValue.getValueStruct());
+
+		if (this.arrayStruct == null) {
+			this.arrayStruct = arrayStruct;
+		}
+
 		final Resolution indexResolution =
 				this.indexRef.resolve(start.newResolver(resolver));
 
@@ -184,8 +195,7 @@ public class ArrayElementStep extends Step {
 
 	@Override
 	public PathOp op(PathOp start) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayElementOp(start, this.arrayStruct, this.indexRef);
 	}
 
 	@Override

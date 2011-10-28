@@ -22,14 +22,12 @@ package org.o42a.core.ir.value;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
 import static org.o42a.core.ir.value.Val.STATIC_FLAG;
-import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.value.ValueStruct;
@@ -104,18 +102,18 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		if (value.ptr().getAllocClass().isStatic()) {
 			return;
 		}
-		use(code, target);
+		target.use(code);
 	}
 
 	@Override
 	protected void assign(Code code, ValOp target, Val value) {
-		unuse(code, target);
+		target.unuse(code);
 		initialize(code, target, value);
 	}
 
 	@Override
 	protected void assign(Code code, ValOp target, ValOp value) {
-		unuse(code, target);
+		target.unuse(code);
 		initialize(code, target, value);
 	}
 
@@ -131,22 +129,6 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		}
 
 		return result;
-	}
-
-	private static void use(Code code, ValOp val) {
-
-		final FuncPtr<ValUseFunc> func =
-				code.getGenerator().externalFunction("o42a_val_use", VAL_USE);
-
-		func.op(null, code).call(code, val);
-	}
-
-	private static void unuse(Code code, ValOp val) {
-
-		final FuncPtr<ValUseFunc> func =
-				code.getGenerator().externalFunction("o42a_val_unuse", VAL_USE);
-
-		func.op(null, code).call(code, val);
 	}
 
 }
