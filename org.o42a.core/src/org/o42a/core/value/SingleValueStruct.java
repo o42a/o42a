@@ -23,11 +23,15 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.impl.ConstantValueDef;
 
 
 public abstract class SingleValueStruct<T>
@@ -42,6 +46,14 @@ public abstract class SingleValueStruct<T>
 	@Override
 	public SingleValueType<T> getValueType() {
 		return (SingleValueType<T>) super.getValueType();
+	}
+
+	@Override
+	public final ValueDef constantDef(
+			Obj source,
+			LocationInfo location,
+			T value) {
+		return new ConstantValueDef<T>(source, location, compilerValue(value));
 	}
 
 	@Override
@@ -102,6 +114,11 @@ public abstract class SingleValueStruct<T>
 		}
 
 		return valueType.toString();
+	}
+
+	@Override
+	protected final ValueKnowledge valueKnowledge(T value) {
+		return ValueKnowledge.KNOWN_VALUE;
 	}
 
 	@Override

@@ -60,17 +60,19 @@ final class StringChar extends AnnotatedBuiltin {
 		final Value<?> stringValue = string().value(resolver);
 		final Value<?> indexValue = index().value(resolver);
 
-		if (stringValue.isFalse() || indexValue.isFalse()) {
+		if (stringValue.getKnowledge().isFalse()
+				|| indexValue.getKnowledge().isFalse()) {
 			return ValueType.STRING.falseValue();
 		}
-		if (!stringValue.isDefinite() || !indexValue.isDefinite()) {
+		if (!stringValue.getKnowledge().isKnown()
+				|| !indexValue.getKnowledge().isKnown()) {
 			return ValueType.STRING.runtimeValue();
 		}
 
 		final String string =
-				ValueType.STRING.cast(stringValue).getDefiniteValue();
+				ValueType.STRING.cast(stringValue).getCompilerValue();
 		final long index =
-				ValueType.INTEGER.cast(indexValue).getDefiniteValue();
+				ValueType.INTEGER.cast(indexValue).getCompilerValue();
 
 		if (index < 0 || index >= string.length()) {
 			resolver.getLogger().error(

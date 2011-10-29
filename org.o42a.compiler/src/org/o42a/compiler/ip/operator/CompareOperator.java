@@ -71,12 +71,12 @@ abstract class CompareOperator extends ComparisonOperator {
 
 	@Override
 	public final boolean result(Value<?> value) {
-		if (value.isFalse()) {
+		if (value.getKnowledge().isFalse()) {
 			return false;
 		}
 
 		final Long compareResult =
-				ValueStruct.INTEGER.cast(value).getDefiniteValue();
+				ValueStruct.INTEGER.cast(value).getCompilerValue();
 
 		return compare(compareResult);
 	}

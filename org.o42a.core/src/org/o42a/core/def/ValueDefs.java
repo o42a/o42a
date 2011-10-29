@@ -19,8 +19,6 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.value.Value.unknownValue;
-
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -54,12 +52,12 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 			final Value<?> constantValue = def.getConstantValue();
 
-			if (!constantValue.isUnknown()) {
+			if (!constantValue.getKnowledge().hasUnknownCondition()) {
 				return this.constant = constantValue;
 			}
 		}
 
-		return this.constant = unknownValue();
+		return this.constant = getValueStruct().unknownValue();
 	}
 
 	public final Value<?> value(Resolver resolver) {
@@ -67,7 +65,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 			final Value<?> value = def.value(resolver);
 
-			if (!value.isUnknown()) {
+			if (!value.getKnowledge().hasUnknownCondition()) {
 				return value;
 			}
 		}

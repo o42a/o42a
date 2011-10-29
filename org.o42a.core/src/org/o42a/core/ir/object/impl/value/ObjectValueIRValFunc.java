@@ -89,7 +89,7 @@ public abstract class ObjectValueIRValFunc
 
 		final Value<?> constant = getConstant();
 
-		if (constant.isDefinite()) {
+		if (constant.getKnowledge().isKnown()) {
 			return this.finalValue = constant;
 		}
 
@@ -120,7 +120,7 @@ public abstract class ObjectValueIRValFunc
 		final Code code = subDirs.code();
 		final Value<?> finalValue = getFinal();
 
-		if (finalValue.isDefinite()) {
+		if (finalValue.getKnowledge().isKnown()) {
 			code.debug(suffix() + " = " + finalValue.valueString());
 
 			final ValOp result = finalValue.op(subDirs.getBuilder(), code);
@@ -198,8 +198,8 @@ public abstract class ObjectValueIRValFunc
 
 		final Value<?> constant = defs().getConstant();
 
-		if (!constant.isDefinite()) {
-			return constant;
+		if (!constant.getKnowledge().isKnown()) {
+			return getValueStruct().runtimeValue();
 		}
 		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
 			return constant;
@@ -217,12 +217,16 @@ public abstract class ObjectValueIRValFunc
 
 	@Override
 	protected void create() {
+		if (canStub() && !getObject().value().isUsedBy(getGenerator())) {
+			stub(stubFunc());
+			return;
+		}
 
 		final Value<?> finalValue = getFinal();
 
-		if (finalValue.isDefinite()) {
-			if (finalValue.isFalse()) {
-				if (finalValue.isUnknown()) {
+		if (finalValue.getKnowledge().isKnown()) {
+			if (finalValue.getKnowledge().isFalse()) {
+				if (finalValue.getKnowledge().hasUnknownCondition()) {
 					reuse(unknownValFunc());
 				} else {
 					reuse(falseValFunc());
@@ -231,10 +235,6 @@ public abstract class ObjectValueIRValFunc
 			}
 			if (getValueStruct().isVoid()) {
 				reuse(voidValFunc());
-				return;
-			}
-			if (canStub()) {
-				stub(stubFunc());
 				return;
 			}
 		}
@@ -247,6 +247,7 @@ public abstract class ObjectValueIRValFunc
 		set(getGenerator().newFunction().create(getId(), OBJECT_VAL, this));
 	}
 
+	@Override
 	protected boolean canStub() {
 		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
 			return false;
@@ -302,7 +303,7 @@ public abstract class ObjectValueIRValFunc
 
 		final Value<?> finalValue = getFinal();
 
-		if (finalValue.isDefinite()) {
+		if (finalValue.getKnowledge().isKnown()) {
 
 			final Code code = dirs.code();
 			final ValOp result = finalValue.op(dirs.getBuilder(), code);

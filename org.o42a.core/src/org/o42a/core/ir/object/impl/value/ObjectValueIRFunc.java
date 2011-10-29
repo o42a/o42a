@@ -112,6 +112,8 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 		return size;
 	}
 
+	protected abstract boolean canStub();
+
 	protected abstract void create();
 
 	private int addSource(SourceInfo[] destination, int at, SourceInfo source) {

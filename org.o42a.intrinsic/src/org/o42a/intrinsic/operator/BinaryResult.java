@@ -76,17 +76,19 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		final Value<?> leftValue = leftOperand().value(resolver);
 		final Value<?> rightValue = rightOperand().value(resolver);
 
-		if (leftValue.isFalse() || rightValue.isFalse()) {
+		if (leftValue.getKnowledge().isFalse()
+				|| rightValue.getKnowledge().isFalse()) {
 			return getResultStruct().falseValue();
 		}
-		if (!leftValue.isDefinite() || !rightValue.isDefinite()) {
+		if (!leftValue.getKnowledge().isKnown()
+				|| !rightValue.getKnowledge().isKnown()) {
 			return getResultStruct().runtimeValue();
 		}
 
 		final L left =
-				getLeftOperandStruct().cast(leftValue).getDefiniteValue();
+				getLeftOperandStruct().cast(leftValue).getCompilerValue();
 		final R right =
-				getRightOperandStruct().cast(rightValue).getDefiniteValue();
+				getRightOperandStruct().cast(rightValue).getCompilerValue();
 
 		final T result = calculate(resolver, left, right);
 
@@ -94,7 +96,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 			return getResultStruct().falseValue();
 		}
 
-		return getResultStruct().constantValue(result);
+		return getResultStruct().compilerValue(result);
 	}
 
 	@Override

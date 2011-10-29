@@ -45,9 +45,11 @@ public abstract class Value<T> {
 	}
 
 	private final ValueStruct<?, T> valueStruct;
+	private final ValueKnowledge knowledge;
 
-	public Value(ValueStruct<?, T> valueStruct) {
+	public Value(ValueStruct<?, T> valueStruct, ValueKnowledge knowledge) {
 		this.valueStruct = valueStruct;
+		this.knowledge = knowledge;
 	}
 
 	public final ValueType<?> getValueType() {
@@ -58,25 +60,15 @@ public abstract class Value<T> {
 		return this.valueStruct;
 	}
 
-	public final boolean isFalse() {
-		return getCondition().isFalse();
-	}
-
-	public final boolean isUnknown() {
-		return getCondition().isUnknown();
-	}
-
-	public final boolean isDefinite() {
-		return getCondition().isConstant();
-	}
-
 	public final boolean isVoid() {
 		return getValueType() == ValueType.VOID;
 	}
 
-	public abstract Condition getCondition();
+	public final ValueKnowledge getKnowledge() {
+		return this.knowledge;
+	}
 
-	public abstract T getDefiniteValue();
+	public abstract T getCompilerValue();
 
 	public Value<T> prefixWith(PrefixPath prefix) {
 		return getValueStruct().prefixValueWith(this, prefix);
@@ -91,8 +83,8 @@ public abstract class Value<T> {
 	}
 
 	public final ValOp op(CodeBuilder builder, Code code) {
-		assert isDefinite() :
-			"An attempt to create an indefinite value constant";
+		assert getKnowledge().isInitiallyKnown() :
+			"An attempt to create an IR for initially unknown value";
 
 		final Generator generator = code.getGenerator();
 		final Ptr<ValType.Op> ptr = valPtr(generator);
@@ -102,13 +94,13 @@ public abstract class Value<T> {
 
 	public String valueString() {
 
-		final Condition condition = getCondition();
+		final Condition condition = getKnowledge().getCondition();
 
 		if (!condition.isTrue()) {
 			return condition.toString();
 		}
 
-		return getValueStruct().valueString(getDefiniteValue());
+		return getValueStruct().valueString(getCompilerValue());
 	}
 
 	@Override

@@ -70,7 +70,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 		final Value<?> claim = getValueIR().claim().getConstant();
 
-		if (!claim.isUnknown()) {
+		if (!claim.getKnowledge().hasUnknownCondition()) {
 			return claim;
 		}
 
@@ -81,8 +81,9 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	protected Value<?> determineFinal() {
 		if (!getValueIR().requirement().getFinal().isConstant()
 				|| !getValueIR().condition().getFinal().isConstant()
-				|| !getValueIR().claim().getFinal().isDefinite()
-				|| !getValueIR().proposition().getFinal().isDefinite()) {
+				|| !getValueIR().claim().getFinal().getKnowledge().isKnown()
+				|| !getValueIR().proposition().getFinal()
+				.getKnowledge().isKnown()) {
 			return getValueStruct().runtimeValue();
 		}
 
@@ -92,7 +93,11 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 	@Override
 	protected boolean canStub() {
-		return false;
+		return getValueIR().requirement().canStub()
+				&& getValueIR().condition().canStub()
+				&& getValueIR().claim().canStub()
+				&& getValueIR().requirement().canStub()
+				&& !getObject().value().isUsedBy(getGenerator());
 	}
 
 	@Override
@@ -108,8 +113,8 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		final ObjectClaimFunc claim = valueIR.claim();
 		final Value<?> finalClaim = claim.getFinal();
 
-		if (finalClaim.isDefinite()) {
-			if (finalClaim.getCondition() == Condition.FALSE) {
+		if (finalClaim.getKnowledge().isKnown()) {
+			if (finalClaim.getKnowledge().getCondition() == Condition.FALSE) {
 				reused = falseValFunc();
 			} else {
 				reused = valueIR.proposition().getNotStub();
@@ -117,7 +122,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 					return;
 				}
 			}
-		} else if (!valueIR.proposition().getFinal().isUnknown()) {
+		} else if (!valueIR.proposition().getFinal().getKnowledge().isKnown()) {
 			return;
 		} else {
 			reused = claim.getNotStub();

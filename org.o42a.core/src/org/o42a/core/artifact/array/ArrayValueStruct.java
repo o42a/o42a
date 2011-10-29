@@ -24,14 +24,18 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
+import org.o42a.core.artifact.array.impl.ArrayConstantValueDef;
 import org.o42a.core.artifact.array.impl.ArrayValueAdapter;
 import org.o42a.core.artifact.array.impl.ArrayValueType;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
@@ -66,6 +70,14 @@ public final class ArrayValueStruct
 
 	public final TypeRef getItemTypeRef() {
 		return this.itemTypeRef;
+	}
+
+	@Override
+	public final ValueDef constantDef(
+			Obj source,
+			LocationInfo location,
+			Array value) {
+		return new ArrayConstantValueDef(source, location, this, value);
 	}
 
 	@Override
@@ -182,12 +194,17 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	protected ValueKnowledge valueKnowledge(Array value) {
+		return value.getValueKnowledge();
+	}
+
+	@Override
 	protected Value<Array> prefixValueWith(
 			Value<Array> value,
 			PrefixPath prefix) {
-		if (value.isDefinite() && !value.isFalse()) {
+		if (value.getKnowledge().hasCompilerValue()) {
 
-			final Array array = value.getDefiniteValue();
+			final Array array = value.getCompilerValue();
 
 			if (prefix.emptyFor(array)) {
 				return value;
@@ -204,10 +221,10 @@ public final class ArrayValueStruct
 		if (initialStruct == rescopedStruct) {
 			return value;
 		}
-		if (!value.isDefinite()) {
+		if (!value.getKnowledge().isKnownToCompiler()) {
 			return rescopedStruct.runtimeValue();
 		}
-		if (value.isUnknown()) {
+		if (value.getKnowledge().getCondition().isUnknown()) {
 			return rescopedStruct.unknownValue();
 		}
 
@@ -217,10 +234,10 @@ public final class ArrayValueStruct
 	@Override
 	protected void resolveAll(Value<Array> value, Resolver resolver) {
 		getItemTypeRef().resolveAll(resolver);
-		if (value.isDefinite() && !value.isFalse()) {
+		if (value.getKnowledge().hasCompilerValue()) {
 
 			final ArrayItem[] items =
-					value.getDefiniteValue().items(resolver.getScope());
+					value.getCompilerValue().items(resolver.getScope());
 
 			for (ArrayItem item : items) {
 				item.resolveAll(resolver);

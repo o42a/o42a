@@ -994,6 +994,12 @@ o42a_cond_t o42a_obj_cond_unknown(O42A_PARAMS o42a_obj_t *const object) {
 	O42A_RETURN O42A_UNKNOWN;
 }
 
+o42a_cond_t o42a_obj_cond_stub(O42A_PARAMS o42a_obj_t *const object) {
+	O42A_ENTER(return O42A_FALSE);
+	o42a_error_print(O42A_ARGS "Object condition stub invoked");
+	O42A_RETURN O42A_UNKNOWN;
+}
+
 
 void o42a_obj_val_false(
 		O42A_PARAMS

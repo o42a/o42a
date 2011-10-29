@@ -21,6 +21,7 @@ package org.o42a.core.artifact.array;
 
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
@@ -33,6 +34,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 
 
 public final class Array extends Placed {
@@ -43,6 +45,8 @@ public final class Array extends Placed {
 	private final ArrayValueStruct valueStruct;
 	private final ArrayItem[] items;
 	private ArrayIR ir;
+	private ValueKnowledge valueKnowledge;
+	private boolean hasStaticItems;
 
 	public Array(
 			LocationInfo location,
@@ -65,6 +69,8 @@ public final class Array extends Placed {
 		this.owner = owner(prefix.getStart());
 		this.valueStruct = from.getValueStruct().prefixWith(prefix);
 		this.items = from.prefixItems(prefix);
+		this.valueKnowledge = from.getValueKnowledge();
+		this.hasStaticItems = from.hasStaticItems();
 	}
 
 	public final Array getOrigin() {
@@ -85,6 +91,16 @@ public final class Array extends Placed {
 
 	public final boolean isConstant() {
 		return this.valueStruct.isConstant();
+	}
+
+	public final ValueKnowledge getValueKnowledge() {
+		analyseItems();
+		return this.valueKnowledge;
+	}
+
+	public final boolean hasStaticItems() {
+		analyseItems();
+		return this.hasStaticItems;
 	}
 
 	public final ArrayItem[] getItems() {
@@ -134,7 +150,7 @@ public final class Array extends Placed {
 	}
 
 	public final Value<Array> toValue() {
-		return getValueStruct().constantValue(this);
+		return getValueStruct().compilerValue(this);
 	}
 
 	public final ArrayIR ir(ArrayIRGenerator generator) {
@@ -173,6 +189,53 @@ public final class Array extends Placed {
 		out.append(']');
 
 		return out.toString();
+	}
+
+	private void analyseItems() {
+		if (this.valueKnowledge != null) {
+			return;
+		}
+
+		boolean runtime = false;
+		boolean staticItems = true;
+
+		for (ArrayItem item : getItems()) {
+			if (!runtime) {
+
+				final Obj itemObject =
+						item.getValueRef().getResolution().materialize();
+
+				if (itemObject.getConstructionMode().isRuntime()) {
+					runtime = true;
+					if (!staticItems) {
+						break;
+					}
+				}
+			}
+			if (staticItems && !item.getValueRef().isStatic()) {
+				staticItems = false;
+				if (runtime) {
+					break;
+				}
+			}
+		}
+
+		if (staticItems) {
+			this.hasStaticItems = true;
+		}
+		if (runtime) {
+			if (isConstant()) {
+				this.valueKnowledge = RUNTIME_CONSTRUCTED_VALUE;
+			} else {
+				this.valueKnowledge = VARIABLE_VALUE;
+			}
+		} else {
+			if (isConstant()) {
+				this.valueKnowledge = KNOWN_VALUE;
+			} else {
+				this.valueKnowledge = INITIALLY_KNOWN_VALUE;
+			}
+		}
 	}
 
 	private static Obj owner(Scope scope) {

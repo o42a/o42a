@@ -23,27 +23,25 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class ConstantValue<T> extends Value<T> {
+public final class CompilerValue<T> extends Value<T> {
 
 	private final T value;
 
-	public ConstantValue(ValueStruct<?, T> valueStruct, T value) {
-		super(valueStruct);
+	public CompilerValue(
+			ValueStruct<?, T> valueStruct,
+			ValueKnowledge knowledge,
+			T value) {
+		super(valueStruct, knowledge);
 		this.value = value;
 	}
 
 	@Override
-	public Condition getCondition() {
-		return Condition.TRUE;
-	}
-
-	@Override
-	public T getDefiniteValue() {
+	public T getCompilerValue() {
 		return this.value;
 	}
 

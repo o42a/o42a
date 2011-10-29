@@ -83,7 +83,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	@Override
 	public LogicalValue initialLogicalValue(LocalResolver resolver) {
-		return ref().value(resolver).getCondition().toLogicalValue();
+		return ref().value(resolver).getKnowledge().toLogicalValue();
 	}
 
 }

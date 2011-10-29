@@ -142,13 +142,13 @@ final class TestRunner extends Obj {
 				test.field("name").substance(dummyUser()).toObject();
 		final Value<?> nameValue = nameObject.value().getValue();
 
-		if (!nameValue.isDefinite()) {
+		if (!nameValue.getKnowledge().isKnown()) {
 			sentence.getLogger().indefiniteValue(nameObject);
 		} else {
-			if (!nameValue.isFalse()) {
+			if (!nameValue.getKnowledge().isFalse()) {
 
 				final String name =
-						ValueType.STRING.cast(nameValue).getDefiniteValue();
+						ValueType.STRING.cast(nameValue).getCompilerValue();
 
 				if (!name.isEmpty()) {
 					return name;

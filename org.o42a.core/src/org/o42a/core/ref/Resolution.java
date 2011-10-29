@@ -89,7 +89,7 @@ public abstract class Resolution implements ScopeInfo {
 		final Value<Directive> value = ValueStruct.DIRECTIVE.cast(
 				materialized.value().explicitUseBy(resolver).getValue());
 
-		if (!value.isDefinite()) {
+		if (!value.getKnowledge().isKnown()) {
 			resolver.getLogger().error(
 					"runtime_directive",
 					this,
@@ -97,7 +97,7 @@ public abstract class Resolution implements ScopeInfo {
 			return null;
 		}
 
-		return value.getDefiniteValue();
+		return value.getCompilerValue();
 	}
 
 	public abstract Obj materialize();

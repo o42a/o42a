@@ -148,7 +148,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 					.value()
 					.getDefinitions()
 					.value(resolver)
-					.getCondition()
+					.getKnowledge()
 					.toLogicalValue();
 
 			return new ExecuteCommand(this, logicalValue);

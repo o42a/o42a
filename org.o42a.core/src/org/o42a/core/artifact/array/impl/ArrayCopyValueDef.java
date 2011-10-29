@@ -59,10 +59,10 @@ final class ArrayCopyValueDef extends ValueDef {
 		final ArrayValueStruct resultStruct =
 				sourceStruct.setConstant(toConstant);
 
-		if (value.isFalse()) {
+		if (value.getKnowledge().isFalse()) {
 			return resultStruct.falseValue();
 		}
-		if (!value.isDefinite()) {
+		if (!value.getKnowledge().isKnownToCompiler()) {
 			return resultStruct.runtimeValue();
 		}
 		if (!sourceStruct.isConstant()) {
@@ -71,7 +71,7 @@ final class ArrayCopyValueDef extends ValueDef {
 		}
 
 		final PrefixPath prefix = ref.toPrefix();
-		final Array array = sourceStruct.cast(value).getDefiniteValue();
+		final Array array = sourceStruct.cast(value).getCompilerValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
 
@@ -83,7 +83,7 @@ final class ArrayCopyValueDef extends ValueDef {
 			defItems[i] = new ArrayItem(i, defValueRef);
 		}
 
-		final Value<Array> result = sourceStruct.constantValue(
+		final Value<Array> result = sourceStruct.compilerValue(
 				new Array(
 						array,
 						array.distributeIn(ref.getContainer()),

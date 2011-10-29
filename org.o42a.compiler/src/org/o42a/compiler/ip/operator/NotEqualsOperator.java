@@ -43,7 +43,7 @@ final class NotEqualsOperator extends ComparisonOperator {
 
 	@Override
 	public boolean result(Value<?> value) {
-		return value.isFalse();
+		return value.getKnowledge().isFalse();
 	}
 
 	@Override

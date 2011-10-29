@@ -82,8 +82,15 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return ((ValueStruct<?, ?>) this) == NONE;
 	}
 
-	public final Value<T> constantValue(T value) {
-		return new ConstantValue<T>(this, value);
+	public final Value<T> compilerValue(T value) {
+
+		final ValueKnowledge knowledge = valueKnowledge(value);
+
+		assert knowledge.hasCompilerValue() :
+			"Incomplete knowledge (" + knowledge
+			+ ") about value " + valueString(value);
+
+		return new CompilerValue<T>(this, knowledge, value);
 	}
 
 	public final Value<T> runtimeValue() {
@@ -98,12 +105,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return this.unknownValue;
 	}
 
-	public final ValueDef constantDef(
+	public abstract ValueDef constantDef(
 			Obj source,
 			LocationInfo location,
-			T value) {
-		return new ConstantValueDef<T>(source, location, constantValue(value));
-	}
+			T value);
 
 	public final Definitions noValueDefinitions(
 			LocationInfo location,
@@ -185,6 +190,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		return this.ir = createIR(generator);
 	}
+
+	protected abstract ValueKnowledge valueKnowledge(T value);
 
 	protected abstract Value<T> prefixValueWith(
 			Value<T> value,

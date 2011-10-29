@@ -26,8 +26,8 @@ import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -37,17 +37,12 @@ public final class FalseValue<T> extends Value<T> {
 	private static Generator cachedGenerator;
 
 	public FalseValue(ValueStruct<?, T> valueStruct) {
-		super(valueStruct);
+		super(valueStruct, ValueKnowledge.FALSE_VALUE);
 	}
 
 	@Override
-	public T getDefiniteValue() {
+	public T getCompilerValue() {
 		return null;
-	}
-
-	@Override
-	public Condition getCondition() {
-		return Condition.FALSE;
 	}
 
 	@Override
@@ -69,11 +64,6 @@ public final class FalseValue<T> extends Value<T> {
 						FALSE_VAL);
 
 		return cachedPtr = global.getPointer();
-	}
-
-	@Override
-	public String toString() {
-		return '(' + getValueType().toString() + ") false";
 	}
 
 }
