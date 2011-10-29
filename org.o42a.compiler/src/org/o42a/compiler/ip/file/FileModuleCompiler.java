@@ -57,15 +57,15 @@ public final class FileModuleCompiler
 
 		final Ascendants result = super.buildAscendants(ascendants);
 
-		if (result.isEmpty()) {
-			result.setAncestor(ValueType.VOID.typeRef(
-					new Location(
-							getContext(),
-							getSection().getTitle().getNode()),
-					result.getScope().getEnclosingScope()));
+		if (!result.isEmpty()) {
+			return result;
 		}
 
-		return result;
+		return result.setAncestor(ValueType.VOID.typeRef(
+				new Location(
+						getContext(),
+						getSection().getTitle().getNode()),
+				result.getScope().getEnclosingScope()));
 	}
 
 	@Override
