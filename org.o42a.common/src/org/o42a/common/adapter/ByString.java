@@ -48,15 +48,15 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 		final Value<?> inputValue = input().value(resolver);
 
-		if (inputValue.isFalse()) {
+		if (inputValue.getKnowledge().isFalse()) {
 			return value().getValueStruct().falseValue();
 		}
-		if (!inputValue.isDefinite()) {
+		if (!inputValue.getKnowledge().isKnown()) {
 			return value().getValueStruct().runtimeValue();
 		}
 
 		final String input =
-				ValueStruct.STRING.cast(inputValue).getDefiniteValue();
+				ValueStruct.STRING.cast(inputValue).getCompilerValue();
 		final T result = byString(input(), resolver, input);
 
 		if (result == null) {
@@ -67,7 +67,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		final ValueStruct<?, T> valueType =
 				(ValueStruct<?, T>) value().getValueStruct();
 
-		return valueType.constantValue(result);
+		return valueType.compilerValue(result);
 	}
 
 	@Override

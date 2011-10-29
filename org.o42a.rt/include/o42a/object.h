@@ -715,6 +715,8 @@ o42a_cond_t o42a_obj_cond_true(O42A_DECLS o42a_obj_t *);
 
 o42a_cond_t o42a_obj_cond_unknown(O42A_DECLS o42a_obj_t *);
 
+o42a_cond_t o42a_obj_cond_stub(O42A_DECLS o42a_obj_t *);
+
 
 void o42a_obj_val_false(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 

@@ -162,8 +162,11 @@ public class ObjectValueIR {
 		final Resolver resolver = definitions.getScope().dummyResolver();
 		final Value<?> value = definitions.value(resolver);
 
-		switch (value.getCondition()) {
+		switch (value.getKnowledge().getCondition()) {
 		case TRUE:
+			if (!value.getKnowledge().isInitiallyKnown()) {
+				return INDEFINITE_VAL;
+			}
 			return value.val(getGenerator());
 		case RUNTIME:
 			return INDEFINITE_VAL;

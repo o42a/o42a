@@ -229,7 +229,7 @@ public class Definitions extends Scoped {
 	}
 
 	public final boolean isConstant() {
-		return getConstant().isDefinite();
+		return getConstant().getKnowledge().isKnown();
 	}
 
 	public final Value<?> getConstant() {
@@ -261,7 +261,7 @@ public class Definitions extends Scoped {
 
 		final Value<?> claim = claims().getConstant();
 
-		if (!claim.isUnknown()) {
+		if (!claim.getKnowledge().hasUnknownCondition()) {
 			return claim;
 		}
 
@@ -329,7 +329,7 @@ public class Definitions extends Scoped {
 
 		final Value<?> claim = claims().value(resolver);
 
-		if (!claim.isUnknown()) {
+		if (!claim.getKnowledge().hasUnknownCondition()) {
 			return claim;
 		}
 

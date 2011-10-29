@@ -17,11 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 
+import org.o42a.core.artifact.array.Array;
+import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
@@ -32,41 +34,59 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 
 
-public final class ConstantValueDef<T> extends ValueDef {
+public class ArrayConstantValueDef extends ValueDef {
 
-	private final Value<T> value;
+	private final Value<Array> value;
+	private ArrayValueStruct valueStruct;
 
-	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
-		super(source, location, emptyPrefix(source.getScope()));
-		this.value = value;
+	public ArrayConstantValueDef(
+			Obj source,
+			LocationInfo location,
+			ArrayValueStruct valueStruct,
+			Array value) {
+		super(source, location, emptyPrefix(valueStruct.toScoped().getScope()));
+		this.value = valueStruct.compilerValue(value);
 	}
 
-	ConstantValueDef(ConstantObject<T> source) {
-		super(source, source, emptyPrefix(source.getScope()));
-		this.value = source.getValue();
-	}
-
-	private ConstantValueDef(ConstantValueDef<T> prototype, PrefixPath prefix) {
+	private ArrayConstantValueDef(
+			ArrayConstantValueDef prototype,
+			PrefixPath prefix) {
 		super(prototype, prefix);
 		this.value = prototype.value;
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.value.getValueStruct();
+	public ArrayValueStruct getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+
+		final ArrayValueStruct valueStruct =
+				(ArrayValueStruct) this.value.getValueStruct();
+
+		return this.valueStruct = valueStruct.prefixWith(getPrefix());
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return true;
+
+		final Array array = this.value.getCompilerValue();
+
+		return array.isConstant() && array.hasStaticItems();
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return this.value;
+	}
+
+	@Override
+	protected ArrayConstantValueDef create(
+			PrefixPath prefix,
+			PrefixPath additionalPrefix) {
+		return new ArrayConstantValueDef(this, prefix);
 	}
 
 	@Override
@@ -85,23 +105,19 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new ConstantValueDef<T>(this, prefix);
-	}
-
-	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.value.resolveAll(resolver);
 	}
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.value.op(dirs.getBuilder(), dirs.code());
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	protected String name() {
-		return "ConstantValueDef";
+		return "ArrayConstantValueDef";
 	}
 
 }

@@ -58,24 +58,24 @@ final class SubString extends AnnotatedBuiltin {
 		final Value<?> fromValue = from().value(resolver);
 		final Value<?> toValue = to().value(resolver);
 
-		if (stringValue.isFalse()
-				|| fromValue.isFalse()
-				|| toValue.isFalse()) {
+		if (stringValue.getKnowledge().isFalse()
+				|| fromValue.getKnowledge().isFalse()
+				|| toValue.getKnowledge().isFalse()) {
 			return ValueType.STRING.falseValue();
 		}
-		if (!stringValue.isDefinite()) {
+		if (!stringValue.getKnowledge().isKnown()) {
 			return ValueType.STRING.runtimeValue();
 		}
 
 		final String string =
-				ValueType.STRING.cast(stringValue).getDefiniteValue();
+				ValueType.STRING.cast(stringValue).getCompilerValue();
 		final int length = string.length();
 		final long from;
 		final long to;
 		boolean ok = true;
 
-		if (fromValue.isDefinite()) {
-			from = ValueType.INTEGER.cast(fromValue).getDefiniteValue();
+		if (fromValue.getKnowledge().isKnown()) {
+			from = ValueType.INTEGER.cast(fromValue).getCompilerValue();
 			if (from < 0 || from > length) {
 				resolver.getLogger().error(
 						"invalid_substr_from",
@@ -87,8 +87,8 @@ final class SubString extends AnnotatedBuiltin {
 		} else {
 			from = -1L;
 		}
-		if (toValue.isDefinite()) {
-			to = ValueType.INTEGER.cast(toValue).getDefiniteValue();
+		if (toValue.getKnowledge().isKnown()) {
+			to = ValueType.INTEGER.cast(toValue).getCompilerValue();
 			if (to < 0 || to > length) {
 				resolver.getLogger().error(
 						"invalid_substr_to",

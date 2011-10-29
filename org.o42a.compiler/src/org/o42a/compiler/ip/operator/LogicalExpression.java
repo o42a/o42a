@@ -108,28 +108,28 @@ public class LogicalExpression extends ObjectConstructor {
 
 			final Value<?> value = operand().value(resolver);
 
-			if (!value.isDefinite()) {
+			if (!value.getKnowledge().isKnown()) {
 				return ValueType.VOID.runtimeValue();
 			}
 
 			switch (this.ref.node.getOperator()) {
 			case NOT:
-				if (value.isFalse()) {
+				if (value.getKnowledge().isFalse()) {
 					return Value.voidValue();
 				}
 				return Value.falseValue();
 			case IS_TRUE:
-				if (value.isFalse()) {
+				if (value.getKnowledge().isFalse()) {
 					return Value.falseValue();
 				}
 				return Value.voidValue();
 			case KNOWN:
-				if (value.isUnknown()) {
+				if (value.getKnowledge().hasUnknownCondition()) {
 					return Value.falseValue();
 				}
 				return Value.voidValue();
 			case UNKNOWN:
-				if (value.isUnknown()) {
+				if (value.getKnowledge().hasUnknownCondition()) {
 					return Value.voidValue();
 				}
 				return Value.falseValue();

@@ -53,17 +53,19 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		final Value<?> whatValue = what().value(resolver);
 		final Value<?> withValue = with().value(resolver);
 
-		if (whatValue.isFalse() || withValue.isFalse()) {
+		if (whatValue.getKnowledge().isFalse()
+				|| withValue.getKnowledge().isFalse()) {
 			return ValueType.STRING.falseValue();
 		}
-		if (!whatValue.isDefinite() || !withValue.isDefinite()) {
+		if (!whatValue.getKnowledge().isKnown()
+				|| !withValue.getKnowledge().isKnown()) {
 			return ValueType.STRING.runtimeValue();
 		}
 
 		final String what =
-				ValueType.STRING.cast(whatValue).getDefiniteValue();
+				ValueType.STRING.cast(whatValue).getCompilerValue();
 		final String with =
-				ValueType.STRING.cast(withValue).getDefiniteValue();
+				ValueType.STRING.cast(withValue).getCompilerValue();
 
 		return ValueType.STRING.constantValue(what + with);
 	}

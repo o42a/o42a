@@ -26,8 +26,8 @@ import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -37,17 +37,12 @@ public final class UnknownValue<T> extends Value<T> {
 	private static Generator cachedGenerator;
 
 	public UnknownValue(ValueStruct<?, T> valueStruct) {
-		super(valueStruct);
+		super(valueStruct, ValueKnowledge.UNKNOWN_VALUE);
 	}
 
 	@Override
-	public T getDefiniteValue() {
+	public T getCompilerValue() {
 		return null;
-	}
-
-	@Override
-	public Condition getCondition() {
-		return Condition.UNKNOWN;
 	}
 
 	@Override
@@ -69,11 +64,6 @@ public final class UnknownValue<T> extends Value<T> {
 						UNKNOWN_VAL);
 
 		return cachedPtr = global.getPointer();
-	}
-
-	@Override
-	public String toString() {
-		return '(' + getValueType().toString() + ") unknown";
 	}
 
 }

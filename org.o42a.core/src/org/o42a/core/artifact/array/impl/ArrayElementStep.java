@@ -115,12 +115,12 @@ public class ArrayElementStep extends Step {
 		final Value<Long> arrayIndexVal =
 				ValueType.INTEGER.cast(indexValue.getValue());
 
-		if (arrayIndexVal.isDefinite()) {
-			if (arrayIndexVal.isFalse()) {
+		if (arrayIndexVal.getKnowledge().isKnown()) {
+			if (arrayIndexVal.getKnowledge().isFalse()) {
 				return null;
 			}
 
-			final long itemIdx = arrayIndexVal.getDefiniteValue();
+			final long itemIdx = arrayIndexVal.getCompilerValue();
 
 			if (itemIdx < 0) {
 				path.getLogger().error(
@@ -133,13 +133,13 @@ public class ArrayElementStep extends Step {
 			final Value<Array> arrayVal =
 					arrayStruct.cast(arrayValue.getValue());
 
-			if (arrayVal.isDefinite()) {
-				if (arrayVal.isFalse()) {
+			if (arrayVal.getKnowledge().isKnownToCompiler()) {
+				if (arrayVal.getKnowledge().isFalse()) {
 					return null;
 				}
 
 				final ArrayItem[] items =
-						arrayVal.getDefiniteValue().items(start);
+						arrayVal.getCompilerValue().items(start);
 
 				if (itemIdx >= items.length) {
 					path.getLogger().error(

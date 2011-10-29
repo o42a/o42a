@@ -60,12 +60,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalseValue(aValue);
-		assertThat(aValue.getDefiniteValue(), nullValue());
+		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalseValue(bValue);
-		assertThat(bValue.getDefiniteValue(), nullValue());
+		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
 	@Test
@@ -77,12 +77,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 		final Value<?> aValue = valueOf(field("a"));
 
 		assertFalseValue(aValue);
-		assertThat(aValue.getDefiniteValue(), nullValue());
+		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
 		assertFalseValue(bValue);
-		assertThat(bValue.getDefiniteValue(), nullValue());
+		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
 	@Test
@@ -94,17 +94,17 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalse(aValue.isDefinite());
-		assertThat(aValue.getCondition(), is(Condition.RUNTIME));
-		assertFalse(aValue.getCondition().isConstant());
-		assertThat(aValue.getDefiniteValue(), nullValue());
+		assertFalse(aValue.getKnowledge().isKnownToCompiler());
+		assertThat(aValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
+		assertFalse(aValue.getKnowledge().getCondition().isConstant());
+		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalse(bValue.isDefinite());
-		assertThat(bValue.getCondition(), is(Condition.RUNTIME));
-		assertFalse(bValue.getCondition().isConstant());
-		assertThat(bValue.getDefiniteValue(), nullValue());
+		assertFalse(bValue.getKnowledge().isKnownToCompiler());
+		assertThat(bValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
+		assertFalse(bValue.getKnowledge().getCondition().isConstant());
+		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
 	@Test
@@ -116,17 +116,17 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 
 		final Value<?> aValue = valueOf(field("a"));
 
-		assertFalse(aValue.isDefinite());
-		assertThat(aValue.getCondition(), is(Condition.RUNTIME));
-		assertFalse(aValue.getCondition().isConstant());
-		assertThat(aValue.getDefiniteValue(), nullValue());
+		assertFalse(aValue.getKnowledge().isKnownToCompiler());
+		assertThat(aValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
+		assertFalse(aValue.getKnowledge().getCondition().isConstant());
+		assertThat(aValue.getCompilerValue(), nullValue());
 
 		final Value<?> bValue = valueOf(field("b"));
 
-		assertFalse(bValue.isDefinite());
-		assertThat(bValue.getCondition(), is(Condition.RUNTIME));
-		assertFalse(bValue.getCondition().isConstant());
-		assertThat(bValue.getDefiniteValue(), nullValue());
+		assertFalse(bValue.getKnowledge().isKnownToCompiler());
+		assertThat(bValue.getKnowledge().getCondition(), is(Condition.RUNTIME));
+		assertFalse(bValue.getKnowledge().getCondition().isConstant());
+		assertThat(bValue.getCompilerValue(), nullValue());
 	}
 
 }

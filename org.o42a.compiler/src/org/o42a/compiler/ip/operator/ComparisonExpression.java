@@ -189,7 +189,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 					field.getArtifact().toObject().value()
 					.explicitUseBy(resolver).getValue();
 
-			if (!value.isDefinite()) {
+			if (!value.getKnowledge().isKnown()) {
 				// Value could not be determined at compile-time.
 				// Result will be determined at run time.
 				return ValueType.VOID.runtimeValue();

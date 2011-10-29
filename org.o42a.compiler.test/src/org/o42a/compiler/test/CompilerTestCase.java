@@ -101,11 +101,17 @@ public abstract class CompilerTestCase {
 
 		final Value<?> value = valueOf(artifact);
 
-		assertTrue("Value is not definite: " + value, value.isDefinite());
-		assertFalse("Value is unknown: " + value, value.isUnknown());
-		assertFalse("Value is false: " + value, value.isFalse());
+		assertTrue(
+				"Value is not definite: " + value,
+				value.getKnowledge().isKnownToCompiler());
+		assertFalse(
+				"Value is unknown: " + value,
+				value.getKnowledge().hasUnknownCondition());
+		assertFalse(
+				"Value is false: " + value,
+				value.getKnowledge().isFalse());
 
-		final Object definiteValue = value.getDefiniteValue();
+		final Object definiteValue = value.getCompilerValue();
 
 		assertNotNull(artifact + " has not definite value", definiteValue);
 
@@ -124,11 +130,17 @@ public abstract class CompilerTestCase {
 
 		final Value<?> value = valueOf(artifact, valueStruct);
 
-		assertTrue("Value is not definite: " + value, value.isDefinite());
-		assertFalse("Value is unknown: " + value, value.isUnknown());
-		assertFalse("Value is false: " + value, value.isFalse());
+		assertTrue(
+				"Value is not definite: " + value,
+				value.getKnowledge().isKnownToCompiler());
+		assertFalse(
+				"Value is unknown: " + value,
+				value.getKnowledge().hasUnknownCondition());
+		assertFalse(
+				"Value is false: " + value,
+				value.getKnowledge().isFalse());
 
-		final Object definiteValue = value.getDefiniteValue();
+		final Object definiteValue = value.getCompilerValue();
 
 		assertNotNull(artifact + " has not definite value", definiteValue);
 
@@ -156,7 +168,9 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertTrueValue(Value<?> value) {
-		assertTrue(value + " is not true", value.getCondition().isTrue());
+		assertTrue(
+				value + " is not true",
+				value.getKnowledge().getCondition().isTrue());
 	}
 
 	public static void assertFalseValue(LogicalValue condition) {
@@ -164,20 +178,28 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertFalseValue(Value<?> value) {
-		assertTrue(value + " is not false", value.isFalse());
+		assertTrue(
+				value + " is not false",
+				value.getKnowledge().isFalse());
 	}
 
 	public static void assertKnownValue(Value<?> value) {
-		assertFalse(value + " is unknown", value.isUnknown());
+		assertFalse(
+				value + " is unknown",
+				value.getKnowledge().hasUnknownCondition());
 	}
 
 	public static void assertRuntimeValue(Value<?> value) {
 		assertKnownValue(value);
-		assertTrue(value + " is definite", !value.isDefinite());
+		assertFalse(
+				value + " is definite",
+				value.getKnowledge().isKnownToCompiler());
 	}
 
 	public static void assertUnknownValue(Value<?> value) {
-		assertTrue(value + " is known", value.isUnknown());
+		assertTrue(
+				value + " is known",
+				value.getKnowledge().hasUnknownCondition());
 	}
 
 	public static void assertTrueVoid(Field<?> field) {

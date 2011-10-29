@@ -20,7 +20,6 @@
 package org.o42a.compiler.test.ref;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -69,7 +68,7 @@ public class RuntimeValueTest extends CompilerTestCase {
 		final Obj object = field.getArtifact().materialize();
 
 		assertEquals(ValueType.INTEGER, object.value().getValueType());
-		assertFalse(object.value().getValue().isDefinite());
+		assertRuntimeValue(object.value().getValue());
 	}
 
 }

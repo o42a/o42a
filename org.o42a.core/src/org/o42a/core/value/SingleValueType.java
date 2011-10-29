@@ -45,7 +45,7 @@ public abstract class SingleValueType<T>
 	public abstract SingleValueStruct<T> struct();
 
 	public final Value<T> constantValue(T value) {
-		return struct().constantValue(value);
+		return struct().compilerValue(value);
 	}
 
 	public final Value<T> runtimeValue() {

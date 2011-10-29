@@ -185,6 +185,11 @@ public abstract class ObjectValueIRCondFunc
 
 	@Override
 	protected void create() {
+		if (canStub() && !getObject().value().isUsedBy(getGenerator())) {
+			stub(stubFunc());
+			return;
+		}
+
 		createFinal();
 		if (isReused()) {
 			return;
@@ -196,6 +201,14 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		set(getGenerator().newFunction().create(getId(), OBJECT_COND, this));
+	}
+
+	@Override
+	protected boolean canStub() {
+		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
+			return false;
+		}
+		return !part().accessed().isUsedBy(getGenerator());
 	}
 
 	protected void reuse() {
@@ -447,6 +460,12 @@ public abstract class ObjectValueIRCondFunc
 	private FuncPtr<ObjectCondFunc> unknownFunc() {
 		return getGenerator().externalFunction(
 				"o42a_obj_cond_unknown",
+				OBJECT_COND);
+	}
+
+	private FuncPtr<ObjectCondFunc> stubFunc() {
+		return getGenerator().externalFunction(
+				"o42a_obj_cond_stub",
 				OBJECT_COND);
 	}
 

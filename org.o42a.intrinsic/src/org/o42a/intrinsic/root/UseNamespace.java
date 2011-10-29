@@ -65,7 +65,7 @@ public class UseNamespace extends DirectiveObject {
 				moduleField.getArtifact().materialize()
 				.value().explicitUseBy(context).getValue();
 
-		if (!moduleValue.isDefinite()) {
+		if (!moduleValue.getKnowledge().isKnown()) {
 			getLogger().unresolvedValue(
 					moduleField,
 					moduleField.getDisplayName());
@@ -80,7 +80,7 @@ public class UseNamespace extends DirectiveObject {
 				objectField.getArtifact().materialize()
 				.value().explicitUseBy(context).getValue();
 
-		if (!objectValue.isDefinite()) {
+		if (!objectValue.getKnowledge().isKnown()) {
 			getLogger().unresolvedValue(
 					objectField,
 					objectField.getDisplayName());
@@ -109,12 +109,12 @@ public class UseNamespace extends DirectiveObject {
 	}
 
 	private static String stringValue(Value<?> value) {
-		if (value.isFalse()) {
+		if (value.getKnowledge().isFalse()) {
 			return null;
 		}
 
 		final String string =
-				ValueType.STRING.cast(value).getDefiniteValue().trim();
+				ValueType.STRING.cast(value).getCompilerValue().trim();
 
 		if (string.isEmpty()) {
 			return null;

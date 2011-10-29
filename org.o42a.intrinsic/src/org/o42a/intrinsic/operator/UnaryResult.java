@@ -64,22 +64,22 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 		final Value<?> operandValue = operand().value(resolver);
 
-		if (operandValue.isFalse()) {
+		if (operandValue.getKnowledge().isFalse()) {
 			return getResultStruct().falseValue();
 		}
-		if (!operandValue.isDefinite()) {
+		if (!operandValue.getKnowledge().isKnown()) {
 			return getResultStruct().runtimeValue();
 		}
 
 		final O operand =
-				getOperandStruct().cast(operandValue).getDefiniteValue();
+				getOperandStruct().cast(operandValue).getCompilerValue();
 		final T result = calculate(operand);
 
 		if (result == null) {
 			return getResultStruct().falseValue();
 		}
 
-		return getResultStruct().constantValue(result);
+		return getResultStruct().compilerValue(result);
 	}
 
 	@Override
