@@ -33,8 +33,8 @@ import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.common.RoleResolver;
-import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -97,6 +97,12 @@ public class MemberOf extends PlacedPathFragment {
 				? this.declaredIn.typeObject(dummyUser()) : null);
 
 		if (memberPath == null) {
+			getLogger().error(
+					"undefined_member",
+					this,
+					"Member '%s' is not defined in '%s'",
+					this.memberId,
+					container);
 			return null;
 		}
 
