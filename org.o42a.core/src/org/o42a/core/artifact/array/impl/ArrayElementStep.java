@@ -21,6 +21,8 @@ package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import java.util.IdentityHashMap;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -46,6 +48,8 @@ public class ArrayElementStep extends Step {
 	private Ref indexRef;
 	private ArrayValueStruct arrayStruct;
 	private boolean error;
+	private RtArrayElement rtElement;
+	private IdentityHashMap<Scope, RtArrayElement> rtElements;
 
 	public ArrayElementStep(Ref indexRef) {
 		this.initialIndexRef = indexRef;
@@ -160,19 +164,11 @@ public class ArrayElementStep extends Step {
 			}
 		}
 
-		final Ref indexRef = this.indexRef.upgradeScope(start);
-		final RtArrayElement item = new RtArrayElement(indexRef);
+		final RtArrayElement element = rtElement(start);
 
-		walker.arrayElement(array, this, item);
+		walker.arrayElement(array, this, element);
 
-		return item.getContainer();
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return objectFieldDefinition(path, distributor);
+		return element.getContainer();
 	}
 
 	@Override
@@ -204,6 +200,41 @@ public class ArrayElementStep extends Step {
 			return super.toString();
 		}
 		return "[" + this.initialIndexRef + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	private RtArrayElement rtElement(Scope start) {
+		if (this.rtElement == null) {
+
+			final Ref indexRef = this.indexRef.upgradeScope(start);
+
+			return this.rtElement = new RtArrayElement(indexRef);
+		}
+		if (start == this.rtElement.getEnclosingScope()) {
+			return this.rtElement;
+		}
+		if (this.rtElements == null) {
+			this.rtElements = new IdentityHashMap<Scope, RtArrayElement>();
+		} else {
+
+			final RtArrayElement cachedElement = this.rtElements.get(start);
+
+			if (cachedElement != null) {
+				return cachedElement;
+			}
+		}
+
+		final RtArrayElement element = this.rtElement.propagateTo(start);
+
+		this.rtElements.put(start, element);
+
+		return element;
 	}
 
 }
