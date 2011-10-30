@@ -56,7 +56,7 @@ public abstract class Globals {
 		}
 		return this.nullPtr = new Ptr<AnyOp>(
 				getGenerator().id("null"),
-				getGenerator().getGlobals().dataWriter().nullPtr(),
+				dataWriter().nullPtr(),
 				true,
 				true);
 	}
@@ -67,7 +67,7 @@ public abstract class Globals {
 		}
 		return this.nullDataPtr = new Ptr<DataOp>(
 				getGenerator().id("null"),
-				getGenerator().getGlobals().dataWriter().nullDataPtr(),
+				dataWriter().nullDataPtr(),
 				true,
 				true);
 	}
@@ -75,7 +75,7 @@ public abstract class Globals {
 	public final <S extends StructOp<S>> Ptr<S> nullPtr(Type<S> type) {
 		return new Ptr<S>(
 				type.getId().detail("null"),
-				getGenerator().getGlobals().dataWriter().nullPtr(type),
+				dataWriter().nullPtr(type),
 				true,
 				true);
 	}

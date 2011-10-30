@@ -27,7 +27,6 @@ import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.value.ValueStruct;
@@ -95,27 +94,6 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 			T value,
 			byte[] binary,
 			DataAlignment alignment);
-
-	@Override
-	protected void initialize(Code code, ValOp target, ValOp value) {
-		store(code, target, value);
-		if (value.ptr().getAllocClass().isStatic()) {
-			return;
-		}
-		target.use(code);
-	}
-
-	@Override
-	protected void assign(Code code, ValOp target, Val value) {
-		target.unuse(code);
-		initialize(code, target, value);
-	}
-
-	@Override
-	protected void assign(Code code, ValOp target, ValOp value) {
-		target.unuse(code);
-		initialize(code, target, value);
-	}
 
 	private static long bytesToLong(byte[] bytes) {
 

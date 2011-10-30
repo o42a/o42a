@@ -27,8 +27,11 @@ import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -69,10 +72,14 @@ public class ArrayConstantValueDef extends ValueDef {
 		return this.valueStruct = valueStruct.prefixWith(getPrefix());
 	}
 
+	public final Array getArray() {
+		return this.value.getCompilerValue();
+	}
+
 	@Override
 	protected boolean hasConstantValue() {
 
-		final Array array = this.value.getCompilerValue();
+		final Array array = getArray();
 
 		return array.isConstant() && array.hasStaticItems();
 	}
@@ -111,8 +118,21 @@ public class ArrayConstantValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		// TODO Auto-generated method stub
-		return null;
+		if (hasConstantValue()) {
+			return this.value.op(dirs.getBuilder(), dirs.code());
+		}
+
+		final ArrayValueType valueType = (ArrayValueType) getValueType();
+		final ArrayValueTypeIR valueTypeIR = valueType.ir(dirs.getGenerator());
+		final ArrayIR arrayIR = getArray().ir(valueTypeIR);
+		final ObjectOp array =
+				getArray().getPrefix()
+				.write(dirs.dirs(), host)
+				.materialize(dirs.dirs());
+		final ObjectValFunc constructor =
+				arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
+
+		return constructor.call(dirs, array);
 	}
 
 	@Override

@@ -34,6 +34,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.DataAlignment;
 
 
 public final class ValOp extends IROp implements CondOp {
@@ -263,7 +264,7 @@ public final class ValOp extends IROp implements CondOp {
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
-		getStoreMode().store(code, this, value);
+		getStoreMode().storage(this).storeVal(code, this, value);
 
 		return this;
 	}
@@ -283,7 +284,7 @@ public final class ValOp extends IROp implements CondOp {
 		assert getValueStruct().assignableFrom(value.getValueStruct()) :
 			"Can not store " + value + " in " + this;
 
-		getStoreMode().store(code, this, value);
+		getStoreMode().storage(this).storeCopy(code, this, value);
 
 		return this;
 	}
@@ -306,6 +307,25 @@ public final class ValOp extends IROp implements CondOp {
 		value(null, code).toFp64(null, code).store(code, value);
 		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
 
+		return this;
+	}
+
+	public final ValOp storeNull(Code code) {
+		getStoreMode().storage(this).storeNull(code, this);
+		return this;
+	}
+
+	public final ValOp store(
+			Code code,
+			AnyOp pointer,
+			DataAlignment alignment,
+			Int32op length) {
+		getStoreMode().storage(this).storePtr(
+				code,
+				this,
+				pointer,
+				alignment,
+				length);
 		return this;
 	}
 

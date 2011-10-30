@@ -19,14 +19,17 @@
 */
 package org.o42a.core.ir.value.array;
 
+import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
 import static org.o42a.core.ir.value.Val.STATIC_FLAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.array.Array;
+import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
@@ -34,21 +37,22 @@ import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
 
 public class ArrayIR {
 
-	private final Generator generator;
+	private final ArrayIRGenerator generator;
 	private final CodeId id;
 	private final Array array;
 	private Val val;
 	private Ptr<ValType.Op> valPtr;
 	private ArrayItemsStruct items;
+	private FuncPtr<ObjectValFunc> constructor;
 
 	public ArrayIR(ArrayIRGenerator generator, Array array) {
-		this.generator = generator.getGenerator();
+		this.generator = generator;
 		this.id = generator.nextId();
 		this.array = array;
 	}
 
 	public final Generator getGenerator() {
-		return this.generator;
+		return this.generator.getGenerator();
 	}
 
 	public final Array getArray() {
@@ -64,12 +68,19 @@ public class ArrayIR {
 			return this.val;
 		}
 
+		final Array array = getArray();
+
+		if (array.isEmpty()) {
+			return this.val =
+					new Val(array.getValueStruct(), CONDITION_FLAG, 0, 0L);
+		}
+
 		final ArrayItemsStruct items = getItems();
 		final Data<Op> itemsData = items.data(getGenerator());
 		final DataLayout itemsLayout = itemsData.getLayout();
 
 		return this.val = new Val(
-				getArray().getValueStruct(),
+				array.getValueStruct(),
 				CONDITION_FLAG | EXTERNAL_FLAG | STATIC_FLAG
 				| (itemsLayout.getAlignmentShift() << 8),
 				items.getItems().length,
@@ -92,6 +103,9 @@ public class ArrayIR {
 	}
 
 	public final ArrayItemsStruct getItems() {
+		assert !getArray().isEmpty() :
+			"Empty array doesn't have any items";
+
 		if (this.items != null) {
 			return this.items;
 		}
@@ -104,6 +118,26 @@ public class ArrayIR {
 		.allocateStruct(this.items);
 
 		return this.items;
+	}
+
+	public final FuncPtr<ObjectValFunc> getConstructor() {
+		if (this.constructor != null) {
+			return this.constructor;
+		}
+
+		final Array origin = getArray().getOrigin();
+
+		if (origin != getArray()) {
+			return this.constructor =
+					origin.ir(this.generator).getConstructor();
+		}
+
+		return this.constructor =
+				getGenerator().newFunction().dontExport().create(
+						getId().detail("constructor"),
+						OBJECT_VAL,
+						new ArrayConstructorBuilder(this))
+				.getPointer();
 	}
 
 	@Override

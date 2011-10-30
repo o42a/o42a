@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.array.impl;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.path.Path;
@@ -29,6 +30,7 @@ import org.o42a.core.value.ValueType;
 public class ArrayValueType extends ValueType<ArrayValueStruct> {
 
 	private final boolean constant;
+	private ArrayValueTypeIR ir;
 
 	public ArrayValueType(boolean constant) {
 		super(constant ? "const_array" : "array");
@@ -56,6 +58,13 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		}
 
 		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
+	}
+
+	public final ArrayValueTypeIR ir(Generator generator) {
+		if (this.ir != null && this.ir.getGenerator() == generator) {
+			return this.ir;
+		}
+		return this.ir = new ArrayValueTypeIR(generator, this);
 	}
 
 }

@@ -73,6 +73,10 @@ public final class Array extends Placed {
 		this.hasStaticItems = from.hasStaticItems();
 	}
 
+	public final boolean isOrigin() {
+		return getOrigin() == this;
+	}
+
 	public final Array getOrigin() {
 		return this.origin;
 	}
@@ -105,6 +109,14 @@ public final class Array extends Placed {
 
 	public final ArrayItem[] getItems() {
 		return this.items;
+	}
+
+	public final int length() {
+		return getItems().length;
+	}
+
+	public final boolean isEmpty() {
+		return length() == 0;
 	}
 
 	public final ArrayItem[] items(Scope scope) {
