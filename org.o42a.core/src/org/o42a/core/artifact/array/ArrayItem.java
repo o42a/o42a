@@ -21,7 +21,6 @@ package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.array.impl.ArrayItemIR;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.ScopeIR;
@@ -111,7 +110,7 @@ public final class ArrayItem extends ArrayElement {
 
 	@Override
 	protected ScopeIR createIR(Generator generator) {
-		return new ArrayItemIR(generator, this);
+		throw new UnsupportedOperationException();
 	}
 
 	private static final class ItemLink extends Link {

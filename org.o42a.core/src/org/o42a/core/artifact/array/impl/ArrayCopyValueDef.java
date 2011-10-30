@@ -19,11 +19,13 @@
 */
 package org.o42a.core.artifact.array.impl;
 
+import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.value.Value.falseValue;
 
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
@@ -32,6 +34,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValCopyFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -155,8 +158,26 @@ final class ArrayCopyValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final ArrayValueStruct fromValueStruct = fromValueStruct();
+
+		if (fromValueStruct.isConstant() && getValueStruct().isConstant()) {
+			// Constant array can be copied by reference.
+			return this.ref.op(host).writeValue(dirs);
+		}
+
+		final ValDirs fromDirs = dirs.dirs().value(fromValueStruct);
+		final ValOp from = this.ref.op(host).writeValue(fromDirs);
+
+		final FuncPtr<ValCopyFunc> func =
+				dirs.getGenerator().externalFunction(
+						"o42a_array_copy",
+						VAL_COPY);
+
+		func.op(null, dirs.code()).copy(dirs, from);
+		fromDirs.done();
+
+		return dirs.value();
 	}
 
 	private final ArrayValueStruct fromValueStruct() {

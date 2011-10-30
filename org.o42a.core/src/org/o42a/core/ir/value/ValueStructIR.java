@@ -22,15 +22,20 @@ package org.o42a.core.ir.value;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.DataAlignment;
 
 
 public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	private final Generator generator;
 	private final S valueStruct;
+	private ValueStorageIR tempStorage;
+	private ValueStorageIR initialStorage;
+	private ValueStorageIR assignmentStorage;
 
 	public ValueStructIR(Generator generator, S valueStruct) {
 		this.generator = generator;
@@ -69,61 +74,210 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return this.valueStruct + " IR";
 	}
 
-	protected void store(Code code, ValOp target, Val value) {
-		target.flags(null, code).store(code, code.int32(value.getFlags()));
-		if (!value.getCondition()) {
-			return;
+	protected final ValueStorageIR getTempStorage() {
+		if (this.tempStorage != null) {
+			return this.tempStorage;
 		}
-		if (hasLength()) {
-			target.length(null, code)
-			.store(code, code.int32(value.getLength()));
+		return this.tempStorage = createTempStorage();
+	}
+
+	protected final ValueStorageIR getInitialStorage() {
+		if (this.initialStorage != null) {
+			return this.initialStorage;
 		}
-		if (hasValue()) {
+		return this.initialStorage = createInitialStorage();
+	}
 
-			final Ptr<AnyOp> pointer = value.getPointer();
+	protected final ValueStorageIR getAssignmentStorage() {
+		if (this.assignmentStorage != null) {
+			return this.assignmentStorage;
+		}
+		return this.assignmentStorage = createTempStorage();
+	}
 
-			if (pointer != null) {
-				target.value(null, code)
-				.toPtr(null, code)
-				.store(code, pointer.op(null, code));
-			} else {
-				target.rawValue(null, code).store(
-						code,
-						code.int64(value.getValue()));
+	protected ValueStorageIR createTempStorage() {
+		return new TempStorageIR();
+	}
+
+	protected ValueStorageIR createInitialStorage() {
+		return new InitialStorageIR();
+	}
+
+	protected ValueStorageIR createAssignmentStorage() {
+		return new AssignmentStorageIR();
+	}
+
+	private final class TempStorageIR implements ValueStorageIR {
+
+		@Override
+		public void storeVal(Code code, ValOp target, Val value) {
+			target.flags(null, code).store(code, code.int32(value.getFlags()));
+			if (!value.getCondition()) {
+				return;
+			}
+			if (hasLength()) {
+				target.length(null, code)
+				.store(code, code.int32(value.getLength()));
+			}
+			if (hasValue()) {
+
+				final Ptr<AnyOp> pointer = value.getPointer();
+
+				if (pointer != null) {
+					target.value(null, code)
+					.toPtr(null, code)
+					.store(code, pointer.op(null, code));
+				} else {
+					target.rawValue(null, code).store(
+							code,
+							code.int64(value.getValue()));
+				}
 			}
 		}
-	}
 
-	protected void store(Code code, ValOp target, ValOp value) {
-		target.flags(null, code).store(
-				code,
-				value.flags(null, code).load(null, code));
-		if (hasLength()) {
-			target.length(null, code).store(
+		@Override
+		public void storeCopy(Code code, ValOp target, ValOp value) {
+			target.flags(null, code).store(
 					code,
-					value.length(null, code).load(null, code));
+					value.flags(null, code).load(null, code));
+			if (hasLength()) {
+				target.length(null, code).store(
+						code,
+						value.length(null, code).load(null, code));
+			}
+			if (hasValue()) {
+				target.rawValue(null, code).store(
+						code,
+						value.rawValue(null, code).load(null, code));
+			}
 		}
-		if (hasValue()) {
-			target.rawValue(null, code).store(
+
+		@Override
+		public void storePtr(
+				Code code,
+				ValOp target,
+				AnyOp pointer,
+				DataAlignment alignment,
+				Int32op length) {
+			assert hasLength() :
+				"Can not store pointer to value of scalar type: "
+				+ getValueStruct();
+			target.value(null, code)
+			.toPtr(null, code)
+			.store(code, code.nullPtr());
+			target.flags(null, code)
+			.store(code, code.int32(
+					Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
+					| (alignment.getShift() << 8)));
+			target.length(null, code).store(code, length);
+		}
+
+		@Override
+		public void storeNull(Code code, ValOp target) {
+			assert hasLength() :
+				"Can not store pointer to value of scalar type: "
+				+ getValueStruct();
+			target.value(null, code)
+			.toPtr(null, code)
+			.store(code, code.nullPtr());
+			target.flags(null, code)
+			.store(code, code.int32(Val.CONDITION_FLAG));
+			target.length(null, code).store(code, code.int32(0));
+		}
+
+	}
+
+	private final class InitialStorageIR implements ValueStorageIR {
+
+		@Override
+		public void storeVal(Code code, ValOp target, Val value) {
+			getTempStorage().storeVal(code, target, value);
+		}
+
+		@Override
+		public void storeCopy(Code code, ValOp target, ValOp value) {
+			getTempStorage().storeCopy(code, target, value);
+			if (hasLength() && !value.ptr().getAllocClass().isStatic()) {
+				target.use(code);
+			}
+		}
+
+		@Override
+		public void storePtr(
+				Code code,
+				ValOp target,
+				AnyOp pointer,
+				DataAlignment alignment,
+				Int32op length) {
+			getTempStorage().storePtr(
 					code,
-					value.rawValue(null, code).load(null, code));
+					target,
+					pointer,
+					alignment,
+					length);
+			if (hasLength()) {
+				target.use(code);
+			}
 		}
+
+		@Override
+		public void storeNull(Code code, ValOp target) {
+			assert hasLength() :
+				"Can not store pointer to value of scalar type: "
+				+ getValueStruct();
+			target.value(null, code)
+			.toPtr(null, code)
+			.store(code, code.nullPtr());
+			target.flags(null, code)
+			.store(code, code.int32(Val.CONDITION_FLAG));
+		}
+
 	}
 
-	protected void initialize(Code code, ValOp target, Val value) {
-		store(code, target, value);
-	}
+	private final class AssignmentStorageIR implements ValueStorageIR {
 
-	protected void initialize(Code code, ValOp target, ValOp value) {
-		store(code, target, value);
-	}
+		@Override
+		public void storeVal(Code code, ValOp target, Val value) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getInitialStorage().storeVal(code, target, value);
+		}
 
-	protected void assign(Code code, ValOp target, Val value) {
-		store(code, target, value);
-	}
+		@Override
+		public void storeCopy(Code code, ValOp target, ValOp value) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getInitialStorage().storeCopy(code, target, value);
+		}
 
-	protected void assign(Code code, ValOp target, ValOp value) {
-		store(code, target, value);
+		@Override
+		public void storePtr(
+				Code code,
+				ValOp target,
+				AnyOp pointer,
+				DataAlignment alignment,
+				Int32op length) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getInitialStorage().storePtr(
+					code,
+					target,
+					pointer,
+					alignment,
+					length);
+		}
+
+		@Override
+		public void storeNull(Code code, ValOp target) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getTempStorage().storeNull(code, target);
+		}
+
 	}
 
 }

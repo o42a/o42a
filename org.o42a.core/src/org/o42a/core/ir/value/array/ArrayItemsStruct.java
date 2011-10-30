@@ -47,6 +47,11 @@ public class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 		this.items = new DataRec[arrayIR.getArray().getItems().length];
 	}
 
+	@Override
+	public boolean isDebuggable() {
+		return false;
+	}
+
 	public final DataRec[] getItems() {
 		return this.items;
 	}

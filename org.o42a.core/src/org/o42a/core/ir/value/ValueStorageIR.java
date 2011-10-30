@@ -19,49 +19,25 @@
 */
 package org.o42a.core.ir.value;
 
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.Int32op;
+import org.o42a.util.DataAlignment;
 
 
-public enum ValStoreMode {
+public interface ValueStorageIR {
 
-	TEMP_VAL_STORE() {
+	void storeVal(Code code, ValOp target, Val value);
 
-		@Override
-		ValueStorageIR storage(ValOp target) {
+	void storeCopy(Code code, ValOp target, ValOp value);
 
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
+	void storePtr(
+			Code code,
+			ValOp target,
+			AnyOp pointer,
+			DataAlignment alignment,
+			Int32op length);
 
-			return ir.getTempStorage();
-		}
-
-	},
-
-	INITIAL_VAL_STORE() {
-
-		@Override
-		ValueStorageIR storage(ValOp target) {
-
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
-
-			return ir.getInitialStorage();
-		}
-
-	},
-
-	ASSIGNMENT_VAL_STORE() {
-
-		@Override
-		ValueStorageIR storage(ValOp target) {
-
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
-
-			return ir.getAssignmentStorage();
-		}
-
-	};
-
-	abstract ValueStorageIR storage(ValOp target);
+	void storeNull(Code code, ValOp target);
 
 }

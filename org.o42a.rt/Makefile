@@ -65,6 +65,7 @@ objects += $(srcdir)/string.o
 objects += $(srcdir)/error.o
 objects += $(srcdir)/integer.o
 objects += $(srcdir)/float.o
+objects += $(srcdir)/array.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
@@ -144,6 +145,13 @@ $(srcdir)/float.*.o : $(common_deps)
 $(srcdir)/float.*.o : $(headersdir)/string.h
 $(srcdir)/float.*.o : $(headersdir)/float.h
 $(srcdir)/float.%.o : $(srcdir)/float.c
+	$(call compile)
+
+$(srcdir)/array.*.o : $(common_deps)
+$(srcdir)/array.*.o : $(headersdir)/memory.h
+$(srcdir)/array.*.o : $(headersdir)/object.h
+$(srcdir)/array.*.o : $(headersdir)/array.h
+$(srcdir)/array.%.o : $(srcdir)/array.c
 	$(call compile)
 
 $(srcdir)/object.*.o : $(common_deps)
