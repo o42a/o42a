@@ -122,7 +122,7 @@ final class ArrayElementOp extends PathOp {
 		.go(code, dirs.falseDir());
 	}
 
-	private AnyRecOp itemPtr(ValDirs dirs, Int64op index) {
+	private AnyRecOp itemRec(ValDirs dirs, Int64op index) {
 
 		final ValOp array =
 				host().materialize(dirs.dirs()).writeValue(dirs);
@@ -143,9 +143,12 @@ final class ArrayElementOp extends PathOp {
 	private ObjectOp loadItem(ValDirs dirs, Int64op index) {
 
 		final Code code = dirs.code();
-		final AnyRecOp itemPtr = itemPtr(dirs, index);
-		final DataOp item =
-				itemPtr.load(code.id("item"), code).toData(null, code);
+		final AnyRecOp itemRec = itemRec(dirs, index);
+		final AnyOp itemPtr = itemRec.load(code.id("item"), code);
+
+		itemPtr.isNull(null, code).go(code, dirs.falseDir());
+
+		final DataOp item = itemPtr.toData(null, code);
 		final Obj itemAscendant =
 				this.arrayStruct
 				.getItemTypeRef()
@@ -156,12 +159,12 @@ final class ArrayElementOp extends PathOp {
 
 	private void assignItem(Int64op index, ValDirs arrayDirs, HostOp value) {
 
-		final AnyRecOp itemPtr = itemPtr(arrayDirs, index);
+		final AnyRecOp itemRec = itemRec(arrayDirs, index);
 		final Code code = arrayDirs.code();
 
 		// TODO implement array element type checking.
 
-		itemPtr.store(code, value.materialize(arrayDirs.dirs()).toAny(code));
+		itemRec.store(code, value.materialize(arrayDirs.dirs()).toAny(code));
 	}
 
 }
