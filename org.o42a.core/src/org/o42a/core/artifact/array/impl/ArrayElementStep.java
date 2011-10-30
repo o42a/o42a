@@ -200,7 +200,10 @@ public class ArrayElementStep extends Step {
 
 	@Override
 	public String toString() {
-		return "[" + this.indexRef + ']';
+		if (this.initialIndexRef == null) {
+			return super.toString();
+		}
+		return "[" + this.initialIndexRef + ']';
 	}
 
 }

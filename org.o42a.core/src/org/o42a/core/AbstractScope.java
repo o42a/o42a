@@ -124,7 +124,7 @@ public abstract class AbstractScope implements Scope {
 		final Path pathToMember = pathToMember(fromScope, toScope);
 
 		assert pathToMember != null :
-			"Can not rescope from " + fromScope + " to " + toScope;
+			"Can not build path from " + fromScope + " to " + toScope;
 
 		return pathToMember.toPrefix(fromScope);
 	}
