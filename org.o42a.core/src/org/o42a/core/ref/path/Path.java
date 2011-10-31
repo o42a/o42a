@@ -172,10 +172,6 @@ public final class Path {
 		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
-	public final Path append(BoundPath path) {
-		return append(path.getRawPath());
-	}
-
 	public final Path cut(int stepsToCut) {
 
 		final Step[] newSteps =

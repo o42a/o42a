@@ -124,10 +124,11 @@ public class Namespace extends AbstractContainer {
 			Obj declaredIn) {
 		if (accessibleBy(accessor)) {
 
-			final Path found = findInNs(user, accessor, memberId, declaredIn);
+			final BoundPath found =
+					findInNs(user, accessor, memberId, declaredIn);
 
 			if (found != null) {
-				return found;
+				return found.toPath();
 			}
 		}
 
@@ -159,7 +160,7 @@ public class Namespace extends AbstractContainer {
 		return container;
 	}
 
-	private Path findInNs(
+	private BoundPath findInNs(
 			PlaceInfo user,
 			Accessor accessor,
 			MemberId memberId,
@@ -171,12 +172,12 @@ public class Namespace extends AbstractContainer {
 			object.resolveMembers(memberId.containsAdapterId());
 		}
 
-		Path result = null;
+		BoundPath result = null;
 		int resultPriority = 0;
 
 		for (NsUse use : this.uses) {
 
-			final Path found =
+			final BoundPath found =
 					use.findField(user, accessor, memberId, declaredIn);
 
 			if (found == null) {
@@ -223,16 +224,15 @@ public class Namespace extends AbstractContainer {
 			return 1;
 		}
 
-		public Path getPath() {
+		public BoundPath getPath() {
 			if (this.path != null) {
-				return this.path.getPath();
+				return this.path;
 			}
 
 			final BoundPath path = this.ref.getPath();
 
 			if (path != null) {
-				this.path = path;
-				return this.path.getPath();
+				return this.path = path;
 			}
 			if (this.container != null) {
 				return null;
@@ -258,7 +258,7 @@ public class Namespace extends AbstractContainer {
 					.getResult();
 		}
 
-		public Path findField(
+		public BoundPath findField(
 				PlaceInfo user,
 				Accessor accessor,
 				MemberId memberId,
@@ -299,7 +299,7 @@ public class Namespace extends AbstractContainer {
 		}
 
 		@Override
-		public Path findField(
+		public BoundPath findField(
 				PlaceInfo user,
 				Accessor accessor,
 				MemberId memberId,
@@ -310,7 +310,7 @@ public class Namespace extends AbstractContainer {
 			if (!getAlias().equals(memberId.getName())) {
 				return null;
 			}
-			return this.ref.getPath().getPath();
+			return this.ref.getPath();
 		}
 
 		@Override

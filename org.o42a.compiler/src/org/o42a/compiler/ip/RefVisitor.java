@@ -35,6 +35,7 @@ import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
@@ -291,10 +292,10 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 					this.owner.distribute(),
 					memberId,
 					declaredIn);
-			final Path path =
-					this.owner.getPath().getRawPath().append(memberOf);
+			final BoundPath path =
+					this.owner.getPath().append(memberOf);
 
-			return wrap(path.bind(location, this.owner.getScope())
+			return wrap(path.setLocation(location)
 					.target(this.owner.distribute()));
 		}
 

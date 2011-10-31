@@ -102,7 +102,7 @@ public class Ref extends Statement {
 	}
 
 	public final boolean isKnownStatic() {
-		return getPath().getRawPath().isStatic();
+		return getPath().isKnownStatic();
 	}
 
 	public final boolean isStatic() {
@@ -165,13 +165,11 @@ public class Ref extends Statement {
 
 	public final ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
 
-		final Step[] steps = getPath().getSteps();
+		final Step lastStep = getPath().lastStep();
 
-		if (steps.length == 0) {
+		if (lastStep == null) {
 			return valueStruct(getScope()).defaultAdapter(this, expectedStruct);
 		}
-
-		final Step lastStep = steps[steps.length - 1];
 
 		return lastStep.valueAdapter(this, expectedStruct);
 	}
@@ -215,7 +213,7 @@ public class Ref extends Statement {
 			return path.target(reproducer.distribute());
 		}
 		if (path.isSelf()) {
-			return path.getPath()
+			return Path.SELF_PATH
 					.bind(this, reproducer.getScope())
 					.target(reproducer.distribute());
 		}
@@ -238,7 +236,6 @@ public class Ref extends Statement {
 					pathReproduction,
 					reproducer.getPhrasePrefix()
 					.getPath()
-					.getRawPath()
 					.materialize());
 		}
 
@@ -251,11 +248,9 @@ public class Ref extends Statement {
 		return startWithPrefix(
 				reproducer,
 				pathReproduction,
-				pathReproduction.getReproducedPath().append(
-						reproducer.getPhrasePrefix()
-						.getPath()
-						.getRawPath()
-						.materialize()));
+				pathReproduction.getReproducedPath()
+				.bind(this, reproducer.getScope())
+				.append(reproducer.getPhrasePrefix().getPath().materialize()));
 	}
 
 	private Ref reproducePart(Reproducer reproducer, Path path) {
@@ -266,17 +261,15 @@ public class Ref extends Statement {
 	private Ref startWithPrefix(
 			Reproducer reproducer,
 			PathReproduction pathReproduction,
-			Path phrasePrefix) {
+			BoundPath phrasePrefix) {
 
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {
-			return phrasePrefix.bind(this, reproducer.getScope()).target(
-					reproducer.distribute());
+			return phrasePrefix.target(reproducer.distribute());
 		}
 
 		return phrasePrefix.append(externalPath)
-				.bind(this, reproducer.getScope())
 				.target(reproducer.distribute());
 	}
 
@@ -300,7 +293,10 @@ public class Ref extends Statement {
 		if (prefix.emptyFor(this)) {
 			return this;
 		}
-		return prefix.append(getPath()).target(this);
+
+		final BoundPath path = getPath().prefixWith(prefix);
+
+		return path.target(distributeIn(prefix.getStart().getContainer()));
 	}
 
 	public final Ref upgradeScope(Scope toScope) {
