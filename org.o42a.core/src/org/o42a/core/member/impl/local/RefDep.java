@@ -130,8 +130,7 @@ public final class RefDep extends Dep {
 				enclosingLocal.newResolver(resolver);
 
 		if (resolver.isFullResolution()) {
-			if (resolver.isValueResolution()
-					&& index == path.getSteps().length - 1) {
+			if (resolver.isValueResolution() && index == path.length() - 1) {
 				// Resolve only the last value.
 				this.depRef.resolveValues(localResolver);
 			} else {

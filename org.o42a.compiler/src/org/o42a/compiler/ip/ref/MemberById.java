@@ -34,9 +34,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.ref.common.PlacedPathFragment;
-import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathResolution;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -83,7 +81,7 @@ public class MemberById extends PlacedPathFragment {
 	}
 
 	@Override
-	public Path expand(PathExpander expander, int index, Scope start) {
+	public BoundPath expand(PathExpander expander, int index, Scope start) {
 
 		final Obj declaredIn;
 
@@ -93,7 +91,7 @@ public class MemberById extends PlacedPathFragment {
 			declaredIn = null;
 		}
 
-		return path(getContainer(), declaredIn, false);
+		return path(getContainer(), declaredIn, false).bind(this, start);
 	}
 
 	@Override

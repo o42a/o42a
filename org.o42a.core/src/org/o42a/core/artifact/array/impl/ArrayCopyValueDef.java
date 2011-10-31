@@ -21,7 +21,6 @@ package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.value.Value.falseValue;
 
@@ -138,7 +137,7 @@ final class ArrayCopyValueDef extends ValueDef {
 
 	@Override
 	protected Logical buildLogical() {
-		return runtimeLogical(this, this.ref.getScope());
+		return this.ref.getLogical();
 	}
 
 	@Override
@@ -158,15 +157,12 @@ final class ArrayCopyValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-
-		final ArrayValueStruct fromValueStruct = fromValueStruct();
-
-		if (fromValueStruct.isConstant() && getValueStruct().isConstant()) {
+		if (fromConstToConst()) {
 			// Constant array can be copied by reference.
 			return this.ref.op(host).writeValue(dirs);
 		}
 
-		final ValDirs fromDirs = dirs.dirs().value(fromValueStruct);
+		final ValDirs fromDirs = dirs.dirs().value(fromValueStruct());
 		final ValOp from = this.ref.op(host).writeValue(fromDirs);
 
 		final FuncPtr<ValCopyFunc> func =
@@ -178,6 +174,10 @@ final class ArrayCopyValueDef extends ValueDef {
 		fromDirs.done();
 
 		return dirs.value();
+	}
+
+	private final boolean fromConstToConst() {
+		return fromValueStruct().isConstant() && getValueStruct().isConstant();
 	}
 
 	private final ArrayValueStruct fromValueStruct() {

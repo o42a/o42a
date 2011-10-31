@@ -57,27 +57,12 @@ public final class PrefixPath {
 		return this.start;
 	}
 
-	public final Path getPrefix() {
-		return this.prefix;
-	}
-
 	public final boolean isEmpty() {
 		return getPrefix().isSelf();
 	}
 
 	public final boolean emptyFor(ScopeInfo scoped) {
 		return isEmpty() && getStart() == scoped.getScope();
-	}
-
-	public final PrefixPath append(Path path) {
-		if (path.isSelf()) {
-			return this;
-		}
-		return getPrefix().append(path).toPrefix(getStart());
-	}
-
-	public final PrefixPath append(BoundPath path) {
-		return append(path.getRawPath());
 	}
 
 	public final PrefixPath and(PrefixPath other) {
@@ -132,8 +117,7 @@ public final class PrefixPath {
 		final BoundPath boundPath = getBoundPath();
 
 		if (boundPath.isSelf() || boundPath.isAbsolute()) {
-			return boundPath.getPath()
-					.toPrefix(reproducer.getScope());
+			return boundPath.toPrefix(reproducer.getScope());
 		}
 
 		final PathReproduction pathReproduction =
@@ -221,11 +205,22 @@ public final class PrefixPath {
 		return this.prefix.toString(this.start, this.prefix.getSteps().length);
 	}
 
-	private BoundPath getBoundPath() {
+	final BoundPath getBoundPath() {
 		if (this.boundPath != null) {
 			return this.boundPath;
 		}
 		return this.boundPath = bind(getStart());
+	}
+
+	private final Path getPrefix() {
+		return this.prefix;
+	}
+
+	private final PrefixPath append(Path path) {
+		if (path.isSelf()) {
+			return this;
+		}
+		return getPrefix().append(path).toPrefix(getStart());
 	}
 
 	private PrefixPath startWithPrefix(

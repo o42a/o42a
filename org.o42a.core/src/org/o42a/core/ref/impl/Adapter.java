@@ -27,9 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -38,7 +36,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
-public final class Adapter extends PathFragment {
+public final class Adapter extends PathFragment implements LocationInfo {
 
 	private final CompilerContext context;
 	private final Loggable loggable;
@@ -50,15 +48,28 @@ public final class Adapter extends PathFragment {
 		this.adapterType = adapterType;
 	}
 
+	@Override
+	public Loggable getLoggable() {
+		return this.loggable;
+	}
+
+	@Override
+	public CompilerContext getContext() {
+		return this.context;
+	}
+
 	public final StaticTypeRef getAdapterType() {
 		return this.adapterType;
 	}
 
 	@Override
-	public Path expand(PathExpander expander, int index, Scope start) {
+	public BoundPath expand(PathExpander expander, int index, Scope start) {
 
-		final Path path = path(start);
+		final BoundPath path = path(start);
 
+		if (path == null) {
+			return null;
+		}
 		if (!castToVoid(start)) {
 			return path;
 		}
@@ -66,12 +77,12 @@ public final class Adapter extends PathFragment {
 		return path.append(CAST_TO_VOID);
 	}
 
-	private Path path(Scope start) {
+	private BoundPath path(Scope start) {
 
 		final ObjectType objectType = start.getArtifact().materialize().type();
 
 		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
-			return Path.SELF_PATH;
+			return Path.SELF_PATH.bind(this, start);
 		}
 
 		final Member adapterMember =
@@ -84,7 +95,7 @@ public final class Adapter extends PathFragment {
 			return null;
 		}
 
-		return adapterMember.getKey().toPath();
+		return adapterMember.getKey().toPath().bind(this, start);
 	}
 
 	private boolean castToVoid(Scope start) {

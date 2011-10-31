@@ -65,22 +65,15 @@ public class BoundPath extends Location {
 		this.rawPath = rawPath;
 	}
 
+	private BoundPath(LocationInfo location, BoundPath prototype) {
+		super(location);
+		this.origin = prototype.origin;
+		this.rawPath = prototype.rawPath;
+		this.path = prototype.path;
+	}
+
 	public final Scope getOrigin() {
 		return this.origin;
-	}
-
-	public final Path getPath() {
-		if (this.path != null) {
-			return this.path;
-		}
-		return this.path = rebuildPath();
-	}
-
-	public final Path getRawPath() {
-		if (this.path != null) {
-			return this.path;
-		}
-		return this.rawPath;
 	}
 
 	public final PathKind getKind() {
@@ -95,16 +88,46 @@ public class BoundPath extends Location {
 		return getPath().isStatic();
 	}
 
+	public final boolean isKnownStatic() {
+		return getRawPath().isStatic();
+	}
+
 	public final boolean isSelf() {
 		return getPath().isSelf();
 	}
 
-	public final Step[] getSteps() {
-		return getPath().getSteps();
+	public final int length() {
+		return getSteps().length;
 	}
 
-	public final Step[] getRawSteps() {
-		return getRawPath().getSteps();
+	public final int rawLength() {
+		return getRawSteps().length;
+	}
+
+	public final Step firstStep() {
+
+		final Step[] steps = getSteps();
+
+		if (steps.length == 0) {
+			return null;
+		}
+
+		return steps[0];
+	}
+
+	public final Step lastStep() {
+
+		final Step[] steps = getSteps();
+
+		if (steps.length == 0) {
+			return null;
+		}
+
+		return steps[steps.length - 1];
+	}
+
+	public final BoundPath setLocation(LocationInfo location) {
+		return new BoundPath(location, this);
 	}
 
 	public final BoundPath rebuild() {
@@ -165,6 +188,13 @@ public class BoundPath extends Location {
 
 	public final BoundPath append(BoundPath path) {
 		return append(path.getRawPath());
+	}
+
+	public final BoundPath prefixWith(PrefixPath prefix) {
+		if (prefix.isEmpty()) {
+			return this;
+		}
+		return prefix.getBoundPath().append(this);
 	}
 
 	public final BoundPath cut(int stepsToCut) {
@@ -261,6 +291,10 @@ public class BoundPath extends Location {
 		return getRawPath().bindStatically(this, this.origin);
 	}
 
+	public Path toPath() {
+		return getPath();
+	}
+
 	public final PathOp op(CodeDirs dirs, HostOp start) {
 		if (isStatic()) {
 			return staticOp(dirs);
@@ -289,6 +323,28 @@ public class BoundPath extends Location {
 			return super.toString();
 		}
 		return getRawPath().toString(this.origin, length);
+	}
+
+	final Path getPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.path = rebuildPath();
+	}
+
+	final Step[] getSteps() {
+		return getPath().getSteps();
+	}
+
+	private final Path getRawPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.rawPath;
+	}
+
+	private final Step[] getRawSteps() {
+		return getRawPath().getSteps();
 	}
 
 	private PathResolution walkPath(
@@ -360,7 +416,8 @@ public class BoundPath extends Location {
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.
 
-				final Path replacement = fragment.expand(tracker, i, prev);
+				final BoundPath replacement =
+						fragment.expand(tracker, i, prev);
 
 				if (replacement == null) {
 					// Error occurred.
@@ -498,7 +555,7 @@ public class BoundPath extends Location {
 				remover,
 				true);
 
-		return remover.removeOddFragments();
+		return remover.removeOddFragments(getSteps());
 	}
 
 	private Step[] rebuild(Step[] steps) {

@@ -46,7 +46,7 @@ public class PathRecorder extends PathTracker {
 		super(path, resolver, walker);
 		this.start = start;
 		this.absolute = absolute;
-		this.records = new ArrayList<Record>(path.getSteps().length);
+		this.records = new ArrayList<Record>(path.length());
 	}
 
 	@Override
