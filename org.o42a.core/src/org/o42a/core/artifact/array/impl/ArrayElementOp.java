@@ -128,11 +128,13 @@ final class ArrayElementOp extends PathOp {
 
 		final Code code = dirs.code();
 		final AnyRecOp items =
-				array.value(code.id("items_ptr"), code)
+				array.value(code.id("items_rec_ptr"), code)
+				.toPtr(null, code)
+				.load(code.id("items_rec"), code)
 				.toPtr(null, code);
 
 		return items.offset(
-				code.id("item_ptr"),
+				code.id("item_rec"),
 				code,
 				index.toInt32(null, code));
 	}
