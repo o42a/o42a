@@ -145,8 +145,7 @@ public class MemberById extends PlacedPathFragment {
 
 		final PathResolution pathResolution =
 				found.bind(this, enclosingScope).resolve(
-						pathResolver(dummyUser()),
-						enclosingScope);
+						pathResolver(enclosingScope, dummyUser()));
 
 		if (!pathResolution.isResolved()) {
 			return null;

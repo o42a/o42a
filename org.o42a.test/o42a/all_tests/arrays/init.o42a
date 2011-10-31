@@ -25,5 +25,5 @@ Array := [`1, 2, 3]
 
 {
   Assert [array] "Constant array does not exist"
-  //Assert [array[1] == 2] "Constant array item is wrong"
+  Assert [array[1] == 2] "Constant array item is wrong"
 }

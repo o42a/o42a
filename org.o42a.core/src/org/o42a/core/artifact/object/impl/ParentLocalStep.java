@@ -147,8 +147,8 @@ public final class ParentLocalStep extends Step {
 
 	private static final class OpaqueLocalOp extends PathOp {
 
-		OpaqueLocalOp(HostOp host) {
-			super(host);
+		OpaqueLocalOp(PathOp start) {
+			super(start);
 		}
 
 		@Override

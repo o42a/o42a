@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.core.Container;
@@ -110,13 +113,10 @@ public class Resolver implements UserInfo, LocationInfo {
 		return new ErrorResolution(new Scoped(location, getScope()));
 	}
 
-	public final Resolution path(
-			PathResolver resolver,
-			BoundPath path,
-			Scope start) {
+	public final Resolution path(PathResolver resolver, BoundPath path) {
 
 		final PathResolution pathResolution =
-				path.walk(resolver.resolveBy(this), start, getWalker());
+				path.walk(resolver.resolveBy(this), getWalker());
 
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
@@ -126,6 +126,18 @@ public class Resolver implements UserInfo, LocationInfo {
 		}
 
 		return containerResolution(path, pathResolution.getResult());
+	}
+
+	public final PathResolver toPathResolver() {
+		return pathResolver(getScope(), this);
+	}
+
+	public final PathResolver toFullPathResolver() {
+		return fullPathResolver(getScope(), this);
+	}
+
+	public final PathResolver toValuePathResolver() {
+		return valuePathResolver(getScope(), this);
 	}
 
 	@Override

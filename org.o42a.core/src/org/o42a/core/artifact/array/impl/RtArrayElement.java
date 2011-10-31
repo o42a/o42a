@@ -31,22 +31,12 @@ import org.o42a.core.ref.Ref;
 
 public class RtArrayElement extends ArrayElement {
 
-	private RtArrayElement propagatedFrom;
+	private final Ref indexRef;
 	private ItemLink artifact;
 
-	public RtArrayElement(Ref indexRef) {
-		super(indexRef, indexRef.distribute(), indexRef);
-	}
-
-	private RtArrayElement(Scope scope, RtArrayElement propagatedFrom) {
-		super(
-				propagatedFrom,
-				propagatedFrom.distributeIn(scope.getContainer()),
-				propagatedFrom.getIndexRef().upgradeScope(scope));
-	}
-
-	public RtArrayElement propagateTo(Scope scope) {
-		return new RtArrayElement(scope, this);
+	public RtArrayElement(Scope arrayScope, Ref indexRef) {
+		super(indexRef, indexRef.distributeIn(arrayScope.getContainer()));
+		this.indexRef = indexRef;
 	}
 
 	@Override
@@ -54,11 +44,15 @@ public class RtArrayElement extends ArrayElement {
 		if (this.artifact != null) {
 			return this.artifact;
 		}
-		if (this.propagatedFrom != null) {
-			return this.artifact = new ItemLink(this);
+		return this.artifact = new ItemLink(this);
+	}
+
+	@Override
+	public String toString() {
+		if (this.indexRef == null) {
+			return super.toString();
 		}
-		return this.artifact =
-				this.propagatedFrom.getArtifact().propagateTo(this);
+		return getEnclosingScope() + "[" + this.indexRef + ']';
 	}
 
 	@Override
@@ -79,15 +73,6 @@ public class RtArrayElement extends ArrayElement {
 					new RtArrayElementConstructor(element)
 					.toRef()
 					.toTargetRef(element.getTypeRef());
-		}
-
-		private ItemLink(RtArrayElement element, ItemLink propagatedFrom) {
-			super(element, propagatedFrom);
-			this.targetRef = propagatedFrom.targetRef.upgradeScope(element);
-		}
-
-		public ItemLink propagateTo(RtArrayElement element) {
-			return new ItemLink(element, this);
 		}
 
 		@Override

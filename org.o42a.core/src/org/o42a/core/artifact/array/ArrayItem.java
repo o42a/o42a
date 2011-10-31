@@ -28,7 +28,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueType;
 
 
 public final class ArrayItem extends ArrayElement {
@@ -37,13 +36,7 @@ public final class ArrayItem extends ArrayElement {
 	private final Ref valueRef;
 
 	public ArrayItem(int index, Ref valueRef) {
-		super(
-				valueRef,
-				valueRef.distribute(),
-				ValueType.INTEGER.constantRef(
-						valueRef,
-						valueRef.distribute(),
-						Long.valueOf(index)));
+		super(valueRef, valueRef.distribute());
 		this.index = index;
 		this.valueRef = valueRef;
 	}
@@ -92,8 +85,7 @@ public final class ArrayItem extends ArrayElement {
 		if (this.valueRef == null) {
 			return super.toString();
 		}
-		return getEnclosingScope()
-				+ "[" + getIndex() + " = " + getValueRef() + ']';
+		return getEnclosingScope() + "[" + getIndex() + "]: " + getValueRef();
 	}
 
 	protected ArrayItem reproduce(Array array, Reproducer reproducer) {

@@ -24,7 +24,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -32,16 +31,10 @@ import org.o42a.core.source.LocationInfo;
 
 public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 
-	private final Ref indexRef;
 	private final Obj owner;
 
-	public ArrayElement(
-			LocationInfo location,
-			Distributor enclosing,
-			Ref indexRef) {
+	public ArrayElement(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
-		indexRef.assertScopeIs(enclosing.getScope());
-		this.indexRef = indexRef;
 		this.owner = enclosing.getScope().toObject();
 		assert this.owner != null :
 			"Enclosing scope is not object: " + enclosing.getScope();
@@ -61,10 +54,6 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 
 	public final TypeRef getTypeRef() {
 		return getArrayStruct().getItemTypeRef();
-	}
-
-	public final Ref getIndexRef() {
-		return this.indexRef;
 	}
 
 	@Override
@@ -97,14 +86,6 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 		}
 		return getArtifact().materialize().type().derivedFrom(
 				other.getArtifact().materialize().type());
-	}
-
-	@Override
-	public String toString() {
-		if (this.indexRef == null) {
-			return super.toString();
-		}
-		return getEnclosingScope() + "[" + this.indexRef + "]";
 	}
 
 }

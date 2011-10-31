@@ -19,29 +19,42 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.core.Scope;
 import org.o42a.util.use.*;
 
 
 public final class PathResolver implements UserInfo {
 
-	public static PathResolver pathResolver(UserInfo user) {
-		return new PathResolver(user.toUser(), (byte) -1);
+	public static PathResolver pathResolver(
+			Scope pathStart,
+			UserInfo user) {
+		return new PathResolver(pathStart, user.toUser(), (byte) -1);
 	}
 
-	public static PathResolver fullPathResolver(UserInfo user) {
-		return new PathResolver(user.toUser(), (byte) 0);
+	public static PathResolver fullPathResolver(
+			Scope pathStart,
+			UserInfo user) {
+		return new PathResolver(pathStart, user.toUser(), (byte) 0);
 	}
 
-	public static PathResolver valuePathResolver(UserInfo user) {
-		return new PathResolver(user.toUser(), (byte) 1);
+	public static PathResolver valuePathResolver(
+			Scope pathStart,
+			UserInfo user) {
+		return new PathResolver(pathStart, user.toUser(), (byte) 1);
 	}
 
+	private final Scope pathStart;
 	private final User user;
 	private final byte fullResolution;
 
-	private PathResolver(User user, byte fullResolution) {
+	private PathResolver(Scope pathStart, User user, byte fullResolution) {
+		this.pathStart = pathStart;
 		this.user = user;
 		this.fullResolution = fullResolution;
+	}
+
+	public final Scope getPathStart() {
+		return this.pathStart;
 	}
 
 	public final boolean isFullResolution() {
@@ -71,7 +84,10 @@ public final class PathResolver implements UserInfo {
 		if (user.toUser() == this.user) {
 			return this;
 		}
-		return new PathResolver(user.toUser(), this.fullResolution);
+		return new PathResolver(
+				getPathStart(),
+				user.toUser(),
+				this.fullResolution);
 	}
 
 	@Override

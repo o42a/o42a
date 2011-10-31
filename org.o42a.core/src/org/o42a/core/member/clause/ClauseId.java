@@ -310,7 +310,7 @@ public enum ClauseId {
 					clauseId.adapterPath(adapterType.getContext())
 					.bind(adapterType, start);
 			final PathResolution adapterResolution =
-					adapterPath.resolve(pathResolver(dummyUser()), start);
+					adapterPath.resolve(pathResolver(start, dummyUser()));
 
 			if (type == adapterResolution.getArtifact().toObject()) {
 				return clauseId;

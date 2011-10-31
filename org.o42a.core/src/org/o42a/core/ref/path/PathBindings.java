@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,29 @@ public final class PathBindings {
 			return "PathBindings{}";
 		}
 		return "PathBindings" + this.bindings;
+	}
+
+	PathBindings addBinding(PathBinding<?> binding) {
+
+		final Map<PathBinding<?>, PathBinding<?>> bindings;
+
+		if (this.bindings == null) {
+			bindings = Collections.<PathBinding<?>, PathBinding<?>>singletonMap(
+					binding,
+					binding);
+		} else {
+
+			final HashMap<PathBinding<?>, PathBinding<?>> newBindings =
+					new HashMap<PathBinding<?>, PathBinding<?>>(
+							this.bindings.size() + 1);
+
+			newBindings.putAll(this.bindings);
+			newBindings.put(binding, binding);
+
+			bindings = Collections.unmodifiableMap(newBindings);
+		}
+
+		return new PathBindings(bindings);
 	}
 
 	PathBindings prefixWith(PrefixPath prefix) {

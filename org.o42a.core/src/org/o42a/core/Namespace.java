@@ -254,7 +254,7 @@ public class Namespace extends AbstractContainer {
 				return this.container = container(this.ref);
 			}
 			return this.container =
-					this.path.resolve(pathResolver(dummyUser()), getScope())
+					this.path.resolve(pathResolver(getScope(), dummyUser()))
 					.getResult();
 		}
 

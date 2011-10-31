@@ -32,6 +32,7 @@ import java.util.Arrays;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.array.impl.ArrayIndex;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -156,7 +157,11 @@ public class BoundPath extends Location {
 		return lastStep.ancestor(this, location, distributor);
 	}
 
-	public BoundPath append(Step step) {
+	public final BoundPath addBinding(PathBinding<?> binding) {
+		return getRawPath().addBinding(binding).bind(this, getOrigin());
+	}
+
+	public final BoundPath append(Step step) {
 		return getRawPath().append(step).bind(this, getOrigin());
 	}
 
@@ -181,7 +186,7 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath arrayItem(Ref indexRef) {
-		return getRawPath().arrayItem(indexRef).bind(this, getOrigin());
+		return new ArrayIndex(indexRef).appendToPath(this);
 	}
 
 	public final BoundPath newObject(ObjectConstructor constructor) {
@@ -219,17 +224,12 @@ public class BoundPath extends Location {
 		return getRawPath().cut(stepsToCut).bind(this, this.origin);
 	}
 
-	public final PathResolution resolve(
-			PathResolver resolver,
-			Scope start) {
-		return walk(resolver, start, DUMMY_PATH_WALKER);
+	public final PathResolution resolve(PathResolver resolver) {
+		return walk(resolver, DUMMY_PATH_WALKER);
 	}
 
-	public PathResolution walk(
-			PathResolver resolver,
-			Scope start,
-			PathWalker walker) {
-		return walkPath(getPath(), resolver, start, walker, false);
+	public PathResolution walk(PathResolver resolver, PathWalker walker) {
+		return walkPath(getPath(), resolver, walker, false);
 	}
 
 	public final Ref target(Distributor distributor) {
@@ -318,11 +318,11 @@ public class BoundPath extends Location {
 
 	public final PathOp op(CodeDirs dirs, HostOp start) {
 		if (isStatic()) {
-			return staticOp(dirs);
+			return staticOp(dirs, start);
 		}
 
 		final Step[] steps = getSteps();
-		PathOp found = hostPathOp(start);
+		PathOp found = hostPathOp(this, start, start);
 
 		for (int i = 0; i < steps.length; ++i) {
 			found = steps[i].op(found);
@@ -371,9 +371,9 @@ public class BoundPath extends Location {
 	private PathResolution walkPath(
 			Path path,
 			PathResolver resolver,
-			Scope start,
 			PathWalker walker,
 			boolean expand) {
+		final Scope start = resolver.getPathStart();
 		this.path = path;
 
 		final Scope startFrom;
@@ -551,7 +551,7 @@ public class BoundPath extends Location {
 
 		final StaticPathStartFinder walker = new StaticPathStartFinder();
 
-		walk(pathResolver(dummyUser()), getOrigin(), walker);
+		walk(pathResolver(getOrigin(), dummyUser()), walker);
 
 		this.startIndex = walker.getStartIndex();
 		this.startObject = walker.getStartObject();
@@ -605,8 +605,7 @@ public class BoundPath extends Location {
 
 		walkPath(
 				getRawPath(),
-				pathResolver(dummyUser()),
-				getOrigin(),
+				pathResolver(getOrigin(), dummyUser()),
 				remover,
 				true);
 
@@ -620,12 +619,14 @@ public class BoundPath extends Location {
 		return new PathRebuilder(this, steps).rebuild();
 	}
 
-	private final PathOp staticOp(CodeDirs dirs) {
+	private final PathOp staticOp(CodeDirs dirs, HostOp start) {
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final CompilerContext context = builder.getContext();
-		final ObjectIR start = startObject(context).ir(dirs.getGenerator());
-		PathOp found = hostPathOp(start.op(builder, dirs.code()));
+		final ObjectIR firstObject =
+				startObject(context).ir(dirs.getGenerator());
+		PathOp found =
+				hostPathOp(this, start, firstObject.op(builder, dirs.code()));
 		final Step[] steps = getSteps();
 
 		for (int i = startIndex(context); i < steps.length; ++i) {

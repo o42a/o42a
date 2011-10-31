@@ -19,9 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
-
 import org.o42a.core.PlaceInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -96,8 +93,7 @@ public final class PrefixPath {
 	public Scope rescope(Scope scope) {
 
 		final PathResolution found = getBoundPath().resolve(
-				pathResolver(scope.dummyResolver()),
-				scope);
+				scope.dummyResolver().toPathResolver());
 
 		return found.isResolved() ? found.getResult().getScope() : null;
 	}
@@ -106,8 +102,7 @@ public final class PrefixPath {
 
 		final BoundPath path = getBoundPath();
 		final PathResolution found = path.walk(
-				pathResolver(resolver),
-				resolver.getScope(),
+				resolver.toPathResolver(),
 				resolver.getWalker());
 
 		if (!found.isResolved()) {
@@ -150,9 +145,9 @@ public final class PrefixPath {
 	}
 
 	public final void resolveAll(Resolver resolver) {
-		bind(getStart()).resolve(
-				fullPathResolver(resolver),
-				resolver.getScope());
+		bind(getStart()).walk(
+				resolver.toFullPathResolver(),
+				resolver.getWalker());
 	}
 
 	public HostOp write(CodeDirs dirs, HostOp host) {
