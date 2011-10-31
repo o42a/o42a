@@ -30,7 +30,7 @@ final class RtArrayElementObject extends Obj {
 	private final RtArrayElement element;
 
 	public RtArrayElementObject(RtArrayElement element) {
-		super(element, element.distribute());
+		super(element, element.distributeIn(element.getEnclosingContainer()));
 		this.element = element;
 	}
 

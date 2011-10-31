@@ -115,7 +115,7 @@ public class ArrayIR {
 		.newGlobal()
 		.dontExport()
 		.setConstant(getArray().isConstant())
-		.allocateStruct(this.items);
+		.struct(this.items);
 
 		return this.items;
 	}

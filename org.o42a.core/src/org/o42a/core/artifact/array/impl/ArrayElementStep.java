@@ -33,6 +33,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -89,8 +90,13 @@ final class ArrayElementStep extends Step {
 			this.arrayStruct = arrayStruct;
 		}
 
-		final Resolution indexResolution =
-				indexRef.resolve(resolver.getPathStart().newResolver(resolver));
+		final Resolver indexResolver =
+				resolver.getPathStart().newResolver(resolver);
+		final Resolution indexResolution = indexRef.resolve(indexResolver);
+
+		if (resolver.isFullResolution()) {
+			indexRef.resolveValues(indexResolver);
+		}
 
 		if (indexResolution.isError()) {
 			return null;

@@ -161,7 +161,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		}
 
 		final Resolution ancestorResolution =
-				ancestor.getRef().resolve(ancestorResolver);
+				ancestor.getRescopedRef().resolve(ancestorResolver);
 
 		return ancestorResolution != null;
 	}
