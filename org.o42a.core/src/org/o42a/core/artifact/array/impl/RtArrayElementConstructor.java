@@ -22,9 +22,9 @@ package org.o42a.core.artifact.array.impl;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 final class RtArrayElementConstructor extends ObjectConstructor {
@@ -42,7 +42,7 @@ final class RtArrayElementConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public RtArrayElementConstructor reproduce(Reproducer reproducer) {
+	public RtArrayElementConstructor reproduce(PathReproducer reproducer) {
 		reproducer.getLogger().notReproducible(this);
 		return null;
 	}

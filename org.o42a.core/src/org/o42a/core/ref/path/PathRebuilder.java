@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
+
 import java.util.Arrays;
 
 import org.o42a.core.artifact.object.Obj;
@@ -61,6 +63,7 @@ public final class PathRebuilder implements LocationInfo {
 	public final Path restPath() {
 		return new Path(
 				this.path.getKind(),
+				NO_PATH_BINDINGS,
 				this.path.isStatic(),
 				Arrays.copyOfRange(
 						this.steps,

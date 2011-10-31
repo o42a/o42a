@@ -218,7 +218,9 @@ public class Ref extends Statement {
 					.target(reproducer.distribute());
 		}
 
-		final PathReproduction pathReproduction = path.reproduce(reproducer);
+		final PathReproducer pathReproducer = path.reproducer(reproducer);
+		final PathReproduction pathReproduction =
+				pathReproducer.reproducePath();
 
 		if (pathReproduction == null) {
 			return null;
@@ -242,13 +244,15 @@ public class Ref extends Statement {
 		if (!pathReproduction.isOutOfClause()) {
 			return reproducePart(
 					reproducer,
-					pathReproduction.getReproducedPath());
+					pathReproducer.reproduceBindings(
+							pathReproduction.getReproducedPath()));
 		}
 
 		return startWithPrefix(
 				reproducer,
 				pathReproduction,
-				pathReproduction.getReproducedPath()
+				pathReproducer.reproduceBindings(
+						pathReproduction.getReproducedPath())
 				.bind(this, reproducer.getScope())
 				.append(reproducer.getPhrasePrefix().getPath().materialize()));
 	}

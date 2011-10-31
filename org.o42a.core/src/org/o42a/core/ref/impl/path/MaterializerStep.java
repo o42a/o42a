@@ -35,7 +35,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public final class MaterializerStep extends Step {
@@ -79,7 +78,7 @@ public final class MaterializerStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		return reproducedPath(toPath());
 	}
 

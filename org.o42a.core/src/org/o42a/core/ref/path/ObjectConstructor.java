@@ -50,7 +50,6 @@ import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
@@ -106,7 +105,7 @@ public abstract class ObjectConstructor extends Placed {
 		return toPath().bind(this, getScope()).target(distribute());
 	}
 
-	public abstract ObjectConstructor reproduce(Reproducer reproducer);
+	public abstract ObjectConstructor reproduce(PathReproducer reproducer);
 
 	public PathOp op(PathOp host) {
 		return new Op(host);
