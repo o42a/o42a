@@ -39,7 +39,6 @@ public final class StaticPathStartFinder implements PathWalker {
 	private int index;
 	private Obj startObject;
 	private int startIndex;
-	private boolean unreachable;
 
 	public final Obj getStartObject() {
 		return this.startObject;
@@ -63,15 +62,12 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		this.startObject = module;
-		this.startIndex = ++this.index;
-		return true;
+		return set(module);
 	}
 
 	@Override
 	public boolean skip(Step step, Scope scope) {
-		++this.index;
-		return true;
+		return skip();
 	}
 
 	@Override
@@ -90,7 +86,7 @@ public final class StaticPathStartFinder implements PathWalker {
 		final Field<?> field = member.toField(dummyUser());
 
 		if (field == null) {
-			return unreachable();
+			return skip();
 		}
 
 		return set(field.toObject());
@@ -98,12 +94,12 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return unreachable();
+		return skip();
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return unreachable();
+		return skip();
 	}
 
 	@Override
@@ -126,19 +122,21 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	private final boolean set(Obj object) {
-		if (object == null || this.unreachable) {
+		if (object == null) {
 			++this.index;
 			return true;
+		}
+		if (object.getConstructionMode().isRuntime()) {
+			return false;
 		}
 		this.startObject = object;
 		this.startIndex = ++this.index;
 		return true;
 	}
 
-	private final boolean unreachable() {
-		this.unreachable = true;
+	private final boolean skip() {
 		++this.index;
-		return true;
+		return false;
 	}
 
 }
