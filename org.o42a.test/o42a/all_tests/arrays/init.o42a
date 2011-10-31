@@ -23,7 +23,11 @@ Init := test
 ============
 Array := [`1, 2, 3]
 
-{
+Run tests
+
+Constant access := test{
   Assert [array] "Constant array does not exist"
   Assert [array[1] == 2] "Constant array item is wrong"
+  Assert [array[rt-integer '0'] == 1]
+  _ "Constant array item access by run-time index failed"
 }

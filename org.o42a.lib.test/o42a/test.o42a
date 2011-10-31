@@ -38,6 +38,8 @@ Test :=> void(
   */
   Name := string(False)
 
+  <*> (<*{}> (). = Void)
+
 )
 
 /*
