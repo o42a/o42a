@@ -21,9 +21,6 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
@@ -147,7 +144,7 @@ public class Ref extends Statement {
 
 	public Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return resolve(resolver, pathResolver(resolver));
+		return resolve(resolver, resolver.toPathResolver());
 	}
 
 	public final Value<?> getValue() {
@@ -393,20 +390,20 @@ public class Ref extends Statement {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver, fullPathResolver(resolver)).resolveAll();
+		resolve(resolver, resolver.toFullPathResolver()).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
 
 		final Resolution resolution =
-				resolve(resolver, valuePathResolver(resolver));
+				resolve(resolver, resolver.toValuePathResolver());
 
 		resolution.resolveValues(resolver);
 	}
 
 	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
-		return resolver.path(pathResolver, getPath(), resolver.getScope());
+		return resolver.path(pathResolver, getPath());
 	}
 
 	@Override

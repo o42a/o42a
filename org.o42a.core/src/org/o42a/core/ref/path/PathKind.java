@@ -93,8 +93,8 @@ public enum PathKind {
 			return unchangedPath(SELF_PATH);
 		}
 
-		final PathResolver resolver = pathResolver(dummyUser());
 		Scope fromScope = reproducer.getReproducingScope();
+		final PathResolver resolver = pathResolver(fromScope, dummyUser());
 		Scope toScope = reproducer.getScope();
 		Path reproduced = SELF_PATH;
 
@@ -110,17 +110,13 @@ public enum PathKind {
 			}
 			if (reproduction.isUnchanged()) {
 				// Left the rest of the path unchanged too.
-				return partiallyReproducedPath(
-						path,
-						reproduced,
-						i);
+				return partiallyReproducedPath(path, reproduced, i);
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
 			final PathResolution resolution =
-					reproducedPath.bind(path, toScope).resolve(
-							pathResolver(dummyUser()),
-							toScope);
+					reproducedPath.bind(path, toScope)
+					.resolve(pathResolver(toScope, dummyUser()));
 
 			if (!resolution.isResolved()) {
 				return null;

@@ -28,11 +28,9 @@ import static org.o42a.util.use.User.dummyUser;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.impl.ArrayElementStep;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ModuleStep;
 import org.o42a.core.ref.impl.path.PathFragmentStep;
 import org.o42a.core.ref.impl.path.VoidStep;
@@ -170,10 +168,6 @@ public final class Path {
 		return append(MATERIALIZER_STEP);
 	}
 
-	public final Path arrayItem(Ref indexRef) {
-		return append(new ArrayElementStep(indexRef));
-	}
-
 	public final Path newObject(ObjectConstructor constructor) {
 		return append(constructor.toStep());
 	}
@@ -267,7 +261,15 @@ public final class Path {
 		return true;
 	}
 
-	final Path prefixWith(PrefixPath prefix) {
+	final Path addBinding(PathBinding<?> binding) {
+		return new Path(
+				getKind(),
+				getBindings().addBinding(binding),
+				isStatic(),
+				getSteps());
+	}
+
+	Path prefixWith(PrefixPath prefix) {
 		if (prefix.isEmpty()) {
 			return this;
 		}

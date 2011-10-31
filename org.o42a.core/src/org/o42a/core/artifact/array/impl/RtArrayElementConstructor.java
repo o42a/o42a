@@ -62,10 +62,7 @@ final class RtArrayElementConstructor extends ObjectConstructor {
 
 	@Override
 	public PathOp op(PathOp host) {
-		return new ArrayElementOp(
-				host,
-				this.element.getArrayStruct(),
-				this.element.getIndexRef());
+		throw new UnsupportedOperationException();
 	}
 
 }

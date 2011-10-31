@@ -21,8 +21,6 @@ package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
-import java.util.IdentityHashMap;
-
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -41,17 +39,14 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-public class ArrayElementStep extends Step {
+final class ArrayElementStep extends Step {
 
-	private final Ref initialIndexRef;
-	private Ref indexRef;
+	private final PathBinding<Ref> index;
 	private ArrayValueStruct arrayStruct;
 	private boolean error;
-	private RtArrayElement rtElement;
-	private IdentityHashMap<Scope, RtArrayElement> rtElements;
 
-	public ArrayElementStep(Ref indexRef) {
-		this.initialIndexRef = indexRef;
+	ArrayElementStep(PathBinding<Ref> index) {
+		this.index = index;
 	}
 
 	@Override
@@ -74,10 +69,8 @@ public class ArrayElementStep extends Step {
 		if (this.error) {
 			return null;
 		}
-		if (this.indexRef == null) {
-			this.indexRef = this.initialIndexRef.rescope(start);
-		}
 
+		final Ref indexRef = indexRef(path);
 		final Obj array = start.toObject();
 
 		assert array != null :
@@ -97,7 +90,7 @@ public class ArrayElementStep extends Step {
 		}
 
 		final Resolution indexResolution =
-				this.indexRef.resolve(start.newResolver(resolver));
+				indexRef.resolve(resolver.getPathStart().newResolver(resolver));
 
 		if (indexResolution.isError()) {
 			return null;
@@ -110,7 +103,7 @@ public class ArrayElementStep extends Step {
 			this.error = true;
 			path.getLogger().error(
 					"non_integer_array_index",
-					this.indexRef,
+					indexRef,
 					"Array index should be integer");
 			return null;
 		}
@@ -128,7 +121,7 @@ public class ArrayElementStep extends Step {
 			if (itemIdx < 0) {
 				path.getLogger().error(
 						"negative_array_index",
-						this.indexRef,
+						indexRef,
 						"Negative array index");
 				return null;
 			}
@@ -147,7 +140,7 @@ public class ArrayElementStep extends Step {
 				if (itemIdx >= items.length) {
 					path.getLogger().error(
 							"invalid_array_index",
-							this.indexRef,
+							indexRef,
 							"Array index %d is too big."
 							+ " Array has only %d elements",
 							itemIdx,
@@ -163,7 +156,7 @@ public class ArrayElementStep extends Step {
 			}
 		}
 
-		final RtArrayElement element = rtElement(start);
+		final RtArrayElement element = rtElement(resolver, path, start);
 
 		walker.arrayElement(array, this, element);
 
@@ -175,14 +168,13 @@ public class ArrayElementStep extends Step {
 			LocationInfo location,
 			PathReproducer reproducer) {
 
-		final Ref indexRef =
-				this.indexRef.reproduce(reproducer.getReproducer());
+		final PathBinding<Ref> index = reproducer.reproduce(this.index);
 
-		if (indexRef == null) {
+		if (index == null) {
 			return null;
 		}
 
-		final ArrayElementStep step = new ArrayElementStep(indexRef);
+		final ArrayElementStep step = new ArrayElementStep(index);
 
 		step.error = this.error;
 
@@ -191,15 +183,18 @@ public class ArrayElementStep extends Step {
 
 	@Override
 	public PathOp op(PathOp start) {
-		return new ArrayElementOp(start, this.arrayStruct, this.indexRef);
+		return new ArrayElementOp(
+				start,
+				this.arrayStruct,
+				indexRef(start.getPath()));
 	}
 
 	@Override
 	public String toString() {
-		if (this.initialIndexRef == null) {
+		if (this.index == null) {
 			return super.toString();
 		}
-		return "[" + this.initialIndexRef + ']';
+		return "[" + this.index + ']';
 	}
 
 	@Override
@@ -209,32 +204,19 @@ public class ArrayElementStep extends Step {
 		return objectFieldDefinition(path, distributor);
 	}
 
-	private RtArrayElement rtElement(Scope start) {
-		if (this.rtElement == null) {
+	private final Ref indexRef(BoundPath path) {
+		return path.getBindings().boundOf(this.index);
+	}
 
-			final Ref indexRef = this.indexRef.upgradeScope(start);
+	private RtArrayElement rtElement(
+			PathResolver resolver,
+			BoundPath path,
+			Scope start) {
 
-			return this.rtElement = new RtArrayElement(indexRef);
-		}
-		if (start == this.rtElement.getEnclosingScope()) {
-			return this.rtElement;
-		}
-		if (this.rtElements == null) {
-			this.rtElements = new IdentityHashMap<Scope, RtArrayElement>();
-		} else {
+		final Ref indexRef =
+				indexRef(path).upgradeScope(resolver.getPathStart());
 
-			final RtArrayElement cachedElement = this.rtElements.get(start);
-
-			if (cachedElement != null) {
-				return cachedElement;
-			}
-		}
-
-		final RtArrayElement element = this.rtElement.propagateTo(start);
-
-		this.rtElements.put(start, element);
-
-		return element;
+		return new RtArrayElement(start, indexRef);
 	}
 
 }

@@ -121,8 +121,8 @@ public final class Constant<T> extends ObjectConstructor {
 
 		private final Constant<T> constant;
 
-		Op(HostOp host, Constant<T> constant) {
-			super(host);
+		Op(PathOp start, Constant<T> constant) {
+			super(start);
 			this.constant = constant;
 		}
 

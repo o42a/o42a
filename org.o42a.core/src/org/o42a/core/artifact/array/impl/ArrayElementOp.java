@@ -41,11 +41,8 @@ final class ArrayElementOp extends PathOp {
 	private final ArrayValueStruct arrayStruct;
 	private final Ref indexRef;
 
-	ArrayElementOp(
-			PathOp host,
-			ArrayValueStruct arrayStruct,
-			Ref indexRef) {
-		super(host);
+	ArrayElementOp(PathOp start, ArrayValueStruct arrayStruct, Ref indexRef) {
+		super(start);
 		this.arrayStruct = arrayStruct;
 		this.indexRef = indexRef;
 	}
