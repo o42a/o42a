@@ -32,7 +32,6 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public final class EnclosingOwnerDep extends Dep {
@@ -76,7 +75,7 @@ public final class EnclosingOwnerDep extends Dep {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		return reproducedPath(
 				new EnclosingOwnerDep(reproducer.getScope().toObject())
 				.toPath());

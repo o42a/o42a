@@ -32,9 +32,9 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.ValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
 
@@ -86,7 +86,7 @@ public final class Constant<T> extends ObjectConstructor {
 	}
 
 	@Override
-	public Constant<T> reproduce(Reproducer reproducer) {
+	public Constant<T> reproduce(PathReproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new Constant<T>(
 				this,

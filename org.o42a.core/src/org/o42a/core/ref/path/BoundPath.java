@@ -27,6 +27,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.util.use.User.dummyUser;
 
+import java.util.Arrays;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -94,6 +96,10 @@ public class BoundPath extends Location {
 
 	public final boolean isSelf() {
 		return getPath().isSelf();
+	}
+
+	public final PathBindings getBindings() {
+		return getRawPath().getBindings();
 	}
 
 	public final int length() {
@@ -183,7 +189,14 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath append(Path path) {
-		return getRawPath().append(path).bind(this, getOrigin());
+		if (path.getBindings().isEmpty()) {
+			return getRawPath().append(path).bind(this, getOrigin());
+		}
+
+		final PrefixPath prefix = toPrefix(getOrigin());
+		final Path newPath = path.prefixWith(prefix);
+
+		return newPath.bind(this, getOrigin());
 	}
 
 	public final BoundPath append(BoundPath path) {
@@ -191,10 +204,15 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath prefixWith(PrefixPath prefix) {
-		if (prefix.isEmpty()) {
+
+		final Path oldPath = getRawPath();
+		final Path newPath = oldPath.prefixWith(prefix);
+
+		if (oldPath == newPath) {
 			return this;
 		}
-		return prefix.getBoundPath().append(this);
+
+		return newPath.bind(this, prefix.getStart());
 	}
 
 	public final BoundPath cut(int stepsToCut) {
@@ -275,12 +293,15 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public final PathReproduction reproduce(Reproducer reproducer) {
-		return getKind().reproduce(reproducer, this);
+	public final PathReproducer reproducer(Reproducer reproducer) {
+		return new PathReproducer(reproducer, this);
 	}
 
 	public final PrefixPath toPrefix(Scope start) {
 		start.assertCompatible(start);
+		if (start == getOrigin()) {
+			return new PrefixPath(start, getRawPath(), this);
+		}
 		return getRawPath().toPrefix(start);
 	}
 
@@ -336,7 +357,7 @@ public class BoundPath extends Location {
 		return getPath().getSteps();
 	}
 
-	private final Path getRawPath() {
+	final Path getRawPath() {
 		if (this.path != null) {
 			return this.path;
 		}
@@ -428,6 +449,7 @@ public class BoundPath extends Location {
 							new Step[] {ErrorStep.ERROR_STEP});
 					this.path = new Path(
 							this.path.getKind(),
+							this.path.getBindings(),
 							this.path.isStatic(),
 							steps);
 					tracker.abortedAt(prev, step);
@@ -435,6 +457,18 @@ public class BoundPath extends Location {
 				}
 
 				final Step[] replacementSteps = replacement.getSteps();
+				final PathBindings replacementBindings;
+
+				if (replacement.getBindings().isEmpty()) {
+					replacementBindings = this.path.getBindings();
+				} else {
+
+					final PrefixPath replacementPrefix = toPrefix(i);
+
+					replacementBindings =
+							replacement.getRawPath().getBindings().prefixWith(
+									replacementPrefix);
+				}
 
 				if (replacement.isAbsolute()) {
 					// Replacement is an absolute path.
@@ -445,8 +479,11 @@ public class BoundPath extends Location {
 							0,
 							i + 1,
 							replacementSteps);
-					this.path =
-							new Path(PathKind.ABSOLUTE_PATH, true, steps);
+					this.path = new Path(
+							PathKind.ABSOLUTE_PATH,
+							replacementBindings,
+							true,
+							steps);
 					// Continue from the ROOT.
 					prev = root(start);
 					i = 0;
@@ -461,6 +498,7 @@ public class BoundPath extends Location {
 							replacementSteps);
 					this.path = new Path(
 							this.path.getKind(),
+							replacementBindings,
 							this.path.isStatic() || replacement.isStatic(),
 							steps);
 				}
@@ -531,7 +569,11 @@ public class BoundPath extends Location {
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), steps);
+			return new Path(
+					getKind(),
+					this.path.getBindings(),
+					isStatic(),
+					steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -540,7 +582,20 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(getKind(), isStatic(), rebuilt);
+		return new Path(
+				getKind(),
+				this.path.getBindings(),
+				isStatic(),
+				rebuilt);
+	}
+
+	private PrefixPath toPrefix(int length) {
+
+		final Step[] steps = Arrays.copyOf(getSteps(), length);
+		final Path path =
+				new Path(getKind(), getPath().getBindings(), isStatic(), steps);
+
+		return path.toPrefix(getOrigin());
 	}
 
 	private Step[] removeOddFragments() {

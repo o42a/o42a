@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -31,7 +32,6 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 final class StaticStep extends Step {
@@ -76,14 +76,14 @@ final class StaticStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
 		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
 	}
 
 	@Override
 	public Path toPath() {
-		return new Path(getPathKind(), true, this);
+		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
 	}
 
 	@Override

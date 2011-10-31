@@ -37,7 +37,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
@@ -174,9 +173,10 @@ public class ArrayElementStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 
-		final Ref indexRef = this.indexRef.reproduce(reproducer);
+		final Ref indexRef =
+				this.indexRef.reproduce(reproducer.getReproducer());
 
 		if (indexRef == null) {
 			return null;

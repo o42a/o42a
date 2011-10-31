@@ -46,6 +46,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -108,8 +109,8 @@ public final class ComparisonExpression extends ObjectConstructor {
 	}
 
 	@Override
-	public ComparisonExpression reproduce(Reproducer reproducer) {
-		return new ComparisonExpression(this, reproducer);
+	public ComparisonExpression reproduce(PathReproducer reproducer) {
+		return new ComparisonExpression(this, reproducer.getReproducer());
 	}
 
 	@Override

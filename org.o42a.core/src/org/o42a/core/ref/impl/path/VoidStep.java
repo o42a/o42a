@@ -32,7 +32,6 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public class VoidStep extends Step {
@@ -57,7 +56,7 @@ public class VoidStep extends Step {
 
 		final Obj voidObject = start.getContext().getVoid();
 
-		walker.object(this, voidObject);
+		walker.module(this, voidObject);
 
 		return voidObject;
 	}
@@ -65,7 +64,7 @@ public class VoidStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 

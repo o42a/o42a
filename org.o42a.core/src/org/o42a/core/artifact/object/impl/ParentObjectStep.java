@@ -32,7 +32,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
 
@@ -105,7 +104,7 @@ public final class ParentObjectStep extends MemberStep {
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
+			PathReproducer reproducer,
 			Scope origin,
 			Scope scope) {
 

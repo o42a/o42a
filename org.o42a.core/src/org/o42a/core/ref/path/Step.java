@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -31,7 +33,6 @@ import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
@@ -63,10 +64,10 @@ public abstract class Step {
 
 	public abstract PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer);
+			PathReproducer reproducer);
 
 	public Path toPath() {
-		return new Path(getPathKind(), false, this);
+		return new Path(getPathKind(), NO_PATH_BINDINGS, false, this);
 	}
 
 	public abstract PathOp op(PathOp start);

@@ -27,9 +27,9 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
@@ -73,11 +73,11 @@ public class Call extends ObjectConstructor {
 	}
 
 	@Override
-	public Call reproduce(Reproducer reproducer) {
+	public Call reproduce(PathReproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
-				this.ascendants.reproduce(reproducer);
+				this.ascendants.reproduce(reproducer.getReproducer());
 
 		if (ascendants == null) {
 			return null;

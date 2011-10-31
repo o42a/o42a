@@ -35,6 +35,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -76,8 +77,8 @@ public class LogicalExpression extends ObjectConstructor {
 	}
 
 	@Override
-	public LogicalExpression reproduce(Reproducer reproducer) {
-		return new LogicalExpression(this, reproducer);
+	public LogicalExpression reproduce(PathReproducer reproducer) {
+		return new LogicalExpression(this, reproducer.getReproducer());
 	}
 
 	@Override

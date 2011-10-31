@@ -35,7 +35,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public class MemberStep extends Step {
@@ -98,7 +97,7 @@ public class MemberStep extends Step {
 	@Override
 	public final PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 
 		final Scope origin = this.memberKey.getOrigin();
 
@@ -162,7 +161,7 @@ public class MemberStep extends Step {
 
 	protected PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer,
+			PathReproducer reproducer,
 			Scope origin,
 			Scope scope) {
 

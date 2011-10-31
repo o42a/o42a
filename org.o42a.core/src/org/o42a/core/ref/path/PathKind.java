@@ -23,6 +23,7 @@ import static java.lang.System.arraycopy;
 import static java.util.Arrays.copyOfRange;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -48,9 +49,8 @@ public enum PathKind {
 
 		@Override
 		protected PathReproduction reproduce(
-				Reproducer reproducer,
-				BoundPath path) {
-			return reproduceRelative(reproducer, path);
+				PathReproducer reproducer) {
+			return reproduceRelative(reproducer);
 		}
 
 	},
@@ -59,9 +59,8 @@ public enum PathKind {
 
 		@Override
 		protected PathReproduction reproduce(
-				Reproducer reproducer,
-				BoundPath path) {
-			return unchangedPath(path.getPath());
+				PathReproducer reproducer) {
+			return unchangedPath(reproducer.getReproducingPath().getPath());
 		}
 
 	};
@@ -69,7 +68,7 @@ public enum PathKind {
 	private final Path emptyPath;
 
 	PathKind(boolean isStatic) {
-		this.emptyPath = new Path(this, isStatic);
+		this.emptyPath = new Path(this, NO_PATH_BINDINGS, isStatic);
 	}
 
 	public final boolean isAbsolute() {
@@ -81,13 +80,12 @@ public enum PathKind {
 	}
 
 	protected abstract PathReproduction reproduce(
-			Reproducer reproducer,
-			BoundPath path);
+			PathReproducer reproducer);
 
 	private static PathReproduction reproduceRelative(
-			Reproducer reproducer,
-			BoundPath path) {
+			PathReproducer reproducer) {
 
+		final BoundPath path = reproducer.getReproducingPath();
 		final Step[] steps = path.getSteps();
 		final int len = steps.length;
 
@@ -112,7 +110,10 @@ public enum PathKind {
 			}
 			if (reproduction.isUnchanged()) {
 				// Left the rest of the path unchanged too.
-				return partiallyReproducedPath(path, reproduced, i);
+				return partiallyReproducedPath(
+						path,
+						reproduced,
+						i);
 			}
 
 			final Path reproducedPath = reproduction.getReproducedPath();
@@ -133,6 +134,7 @@ public enum PathKind {
 						reproduction.getExternalPath().append(
 								new Path(
 										RELATIVE_PATH,
+										NO_PATH_BINDINGS,
 										path.isStatic(),
 										copyOfRange(
 												steps,
@@ -159,18 +161,24 @@ public enum PathKind {
 		return reproducedPath(reproduced);
 	}
 
-	private static Reproducer stepReproducer(
-			Reproducer reproducer,
+	private static PathReproducer stepReproducer(
+			PathReproducer reproducer,
 			Scope fromScope,
 			Scope toScope) {
 
-		final Reproducer existing = reproducer.reproducerOf(fromScope);
+		final Reproducer existing =
+				reproducer.getReproducer().reproducerOf(fromScope);
 
 		if (existing != null) {
-			return existing;
+			return new PathReproducer(existing, reproducer);
 		}
 
-		return new StepReproducer(reproducer, fromScope, toScope);
+		return new PathReproducer(
+				new StepReproducer(
+						reproducer.getReproducer(),
+						fromScope,
+						toScope),
+				reproducer);
 	}
 
 	private static PathReproduction partiallyReproducedPath(
@@ -195,8 +203,11 @@ public enum PathKind {
 				reproducedSteps.length,
 				stepsLeft);
 
-		return reproducedPath(
-				new Path(RELATIVE_PATH, path.isStatic(), newSteps));
+		return reproducedPath(new Path(
+				RELATIVE_PATH,
+				NO_PATH_BINDINGS,
+				path.isStatic(),
+				newSteps));
 	}
 
 	private static final class StepReproducer extends Reproducer {

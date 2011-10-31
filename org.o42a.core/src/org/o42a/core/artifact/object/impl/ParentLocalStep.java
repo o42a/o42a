@@ -36,7 +36,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 
 
 public final class ParentLocalStep extends Step {
@@ -85,7 +84,7 @@ public final class ParentLocalStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
 	}
 

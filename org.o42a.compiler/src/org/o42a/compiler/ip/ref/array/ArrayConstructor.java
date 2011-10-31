@@ -31,6 +31,7 @@ import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -110,8 +111,8 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public ArrayConstructor reproduce(Reproducer reproducer) {
-		return new ArrayConstructor(this, reproducer);
+	public ArrayConstructor reproduce(PathReproducer reproducer) {
+		return new ArrayConstructor(this, reproducer.getReproducer());
 	}
 
 	@Override

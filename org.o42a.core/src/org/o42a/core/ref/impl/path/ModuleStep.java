@@ -35,7 +35,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
-import org.o42a.core.st.Reproducer;
 
 
 public final class ModuleStep extends Step {
@@ -87,7 +86,7 @@ public final class ModuleStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 

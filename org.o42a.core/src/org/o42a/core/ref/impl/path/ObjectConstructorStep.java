@@ -31,7 +31,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
@@ -85,7 +84,7 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
-			Reproducer reproducer) {
+			PathReproducer reproducer) {
 		this.constructor.assertCompatible(reproducer.getReproducingScope());
 
 		final ObjectConstructor reproduced =
