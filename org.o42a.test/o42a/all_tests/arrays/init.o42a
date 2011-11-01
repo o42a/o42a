@@ -27,7 +27,14 @@ Run tests
 
 Constant access := test{
   Assert [array] "Constant array does not exist"
+  Assert [array[1]] "Constant array item is false"
   Assert [array[1] == 2] "Constant array item is wrong"
-  Assert [array[rt-integer '0'] == 1]
+  Assert [array[rt-integer '2']]
   _ "Constant array item access by run-time index failed"
+  Assert [array[rt-integer '2'] == 3]
+  _ "Constant array item accessed by run-time index is wrong"
+  Assert [--array[rt-integer '-1']]
+  _ "Constant array item access by negative index didn't failed"
+  Assert [--array[rt-integer '10']]
+  _ "Constant array item access by wrong index didn't failed"
 }
