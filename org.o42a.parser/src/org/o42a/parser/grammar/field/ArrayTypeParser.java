@@ -52,7 +52,7 @@ public class ArrayTypeParser implements Parser<ArrayTypeNode> {
 				closing(context, opening);
 
 		return context.acceptComments(
-				true,
+				false,
 				new ArrayTypeNode(this.ancestor, opening, itemType, closing));
 	}
 
