@@ -26,9 +26,9 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class AbstractArrayValueTypeObject extends ValueTypeObject {
+public abstract class ArrayValueTypeObject extends ValueTypeObject {
 
-	public AbstractArrayValueTypeObject(
+	public ArrayValueTypeObject(
 			MemberOwner owner,
 			AnnotatedSources sources,
 			boolean constant) {

@@ -123,7 +123,7 @@ public class Ref extends Statement {
 		final ValueStruct<?, ?> valueStruct =
 				resolution.materialize().value().getValueStruct();
 
-		return valueStruct.prefixWith(toPrefix());
+		return valueStruct.prefixWith(getPath().toPrefix(scope));
 	}
 
 	public final Logical getLogical() {
@@ -157,7 +157,7 @@ public class Ref extends Statement {
 				.value()
 				.explicitUseBy(resolver)
 				.getValue()
-				.prefixWith(toPrefix());
+				.prefixWith(getPath().toPrefix(resolver.getScope()));
 	}
 
 	public final ValueAdapter valueAdapter(ValueStruct<?, ?> expectedStruct) {
@@ -353,10 +353,6 @@ public class Ref extends Statement {
 
 	public final TargetRef toTargetRef(TypeRef typeRef) {
 		return targetRef(this, typeRef);
-	}
-
-	public final PrefixPath toPrefix() {
-		return getPath().toPrefix(getScope());
 	}
 
 	public final Statement toCondition() {

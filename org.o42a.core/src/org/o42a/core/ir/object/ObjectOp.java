@@ -166,7 +166,9 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	@Override
 	public final ValOp writeValue(ValDirs dirs) {
-		assert dirs.getValueStruct().assertIs(getValueStruct());
+		assert dirs.getValueType() == getValueStruct().getValueType() :
+			"Wrong value type: " + getValueType()
+			+ ", but " + dirs.getValueType() + " expected";
 
 		final Code code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code).op(

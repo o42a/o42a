@@ -72,7 +72,7 @@ final class ArrayCopyValueDef extends ValueDef {
 			return resultStruct.runtimeValue();
 		}
 
-		final PrefixPath prefix = ref.toPrefix();
+		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
 		final Array array = sourceStruct.cast(value).getCompilerValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
