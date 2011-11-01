@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.local;
 
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
@@ -36,8 +36,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -74,7 +72,7 @@ public final class RefLclOp extends LclOp {
 	}
 
 	@Override
-	public ObjOp toObject(CodeDirs dirs) {
+	public ObjectOp toObject(CodeDirs dirs) {
 
 		final Obj object = getArtifact().toObject();
 
@@ -98,24 +96,19 @@ public final class RefLclOp extends LclOp {
 	}
 
 	@Override
-	public ObjOp materialize(CodeDirs dirs) {
+	public ObjectOp materialize(CodeDirs dirs) {
 		return target(dirs);
 	}
 
-	public ObjOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs) {
 
 		final Code code = dirs.code();
 		final Obj ascendant = getAscendant();
-		final ObjectBodyIR ascendantBodyType =
-				ascendant.ir(getGenerator()).getBodyType();
 		final DataOp objectPtr = ptr().object(code).load(null, code);
 
 		objectPtr.isNull(null, code).go(code, dirs.falseDir());
 
-		return objectPtr.to(null, code, ascendantBodyType).op(
-				getBuilder(),
-				ascendant,
-				DERIVED);
+		return anonymousObject(getBuilder(), objectPtr, ascendant);
 	}
 
 	@Override

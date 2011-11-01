@@ -1,0 +1,44 @@
+/*
+    Tests
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+Use namespace 'Console'
+Use namespace 'Test'
+
+Assignment := test
+==================
+
+Array := [``"a", "b", "c"]
+
+{
+  Assert [array[1] == "b"] "Wrong array initialization"
+  
+  Array[1] = "new"
+  Assert [array[1] == "new"] "Wrong value assigned to array item"
+  Assert [array[2] == "c"] "Non-assigned array item altered"
+  
+  Array[rt-integer '2'] = "new2"
+  Assert [array[2] == "new2"]
+  _ "Wrong value assigned to array item with run-time index"
+  
+  Array[rt-integer '-1'] = "invalid" |
+  assert [void] "Assignment to array item with negative index didn't failed"
+  
+  Array[rt-integer '10'] = "invalid" |
+  assert [void] "Assignment to array item with wrong index didn't failed"
+}
