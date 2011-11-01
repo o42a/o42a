@@ -125,6 +125,7 @@ final class ArrayElementStep extends Step {
 			final long itemIdx = arrayIndexVal.getCompilerValue();
 
 			if (itemIdx < 0) {
+				this.error = true;
 				path.getLogger().error(
 						"negative_array_index",
 						indexRef,
@@ -144,6 +145,7 @@ final class ArrayElementStep extends Step {
 						arrayVal.getCompilerValue().items(start);
 
 				if (itemIdx >= items.length) {
+					this.error = true;
 					path.getLogger().error(
 							"invalid_array_index",
 							indexRef,

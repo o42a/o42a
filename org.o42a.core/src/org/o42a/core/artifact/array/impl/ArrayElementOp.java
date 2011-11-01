@@ -93,7 +93,7 @@ final class ArrayElementOp extends PathOp {
 	private Int64op loadIndex(ValDirs dirs) {
 
 		final ValOp indexVal =
-				this.indexRef.op(host()).writeValue(dirs);
+				this.indexRef.op(pathStart()).writeValue(dirs);
 		final Code code = dirs.code();
 		final Int64op index = indexVal.rawValue(
 				dirs.id("idx"),
