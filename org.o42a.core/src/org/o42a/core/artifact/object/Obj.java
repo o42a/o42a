@@ -519,8 +519,14 @@ public abstract class Obj
 			return this;
 		}
 
-		final Obj enclosingObject =
-				getScope().getEnclosingScope().getArtifact().materialize();
+		final Artifact<?> enclosingArtifact =
+				getScope().getEnclosingScope().getArtifact();
+
+		if (enclosingArtifact == null) {
+			return this;
+		}
+
+		final Obj enclosingObject = enclosingArtifact.materialize();
 		final Obj enclosingWrapped = enclosingObject.getWrapped();
 
 		if (enclosingWrapped == enclosingObject) {
