@@ -25,9 +25,9 @@ Array := [`1, 2, 3]
 
 Run tests
 
-Constant access := test{
-  Assert [array] "Constant array does not exist"
-  Assert [array[1]] "Constant array item is false"
+Constant := test{
+  Assert [array] "Constant array access failed"
+  Assert [array[1]] "Constant array item access failed"
   Assert [array[1] == 2] "Constant array item is wrong"
   Assert [array[rt-integer '2']]
   _ "Constant array item access by run-time index failed"
@@ -37,4 +37,21 @@ Constant access := test{
   _ "Constant array item access by negative index didn't failed"
   Assert [--array[rt-integer '10']]
   _ "Constant array item access by wrong index didn't failed"
+}
+
+
+Var-array := [``4, 5, 6, 7]
+
+Variable := test{
+  Assert [var-array] "Variable array access failed"
+  Assert [var-array[0]] "Variable array item access failed"
+  Assert [var-array[1] == 5] "Variable array item is wrong"
+  Assert [var-array[rt-integer '2']]
+  _ "Variable array item access by run-time index failed"
+  Assert [var-array[rt-integer '3'] == 7]
+  _ "Variable array item accessed by run-time index is wrong"
+  Assert [--var-array[rt-integer '-1']]
+  _ "Variable array item access by negative index didn't failed"
+  Assert [--var-array[rt-integer '10']]
+  _ "Variable array item access by wrong index didn't failed"
 }
