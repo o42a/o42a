@@ -165,6 +165,10 @@ public abstract class Obj
 		return this;
 	}
 
+	public final boolean isWrapper() {
+		return getWrapped() != this;
+	}
+
 	public final Obj getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;
@@ -816,7 +820,8 @@ public abstract class Obj
 		final boolean abstractAllowed =
 				isAbstract()
 				|| isPrototype()
-				|| toClause() != null;
+				|| toClause() != null
+				|| isWrapper();
 
 		for (Member member : getMembers()) {
 			if (!abstractAllowed && member.isAbstract()) {

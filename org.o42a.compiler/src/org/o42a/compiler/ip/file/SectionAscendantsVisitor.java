@@ -20,10 +20,12 @@
 package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 
 import org.o42a.ast.expression.*;
+import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -32,10 +34,17 @@ import org.o42a.core.ref.Ref;
 final class SectionAscendantsVisitor
 		extends AbstractExpressionVisitor<AscendantsDefinition, Distributor> {
 
-	public static final SectionAscendantsVisitor SECTION_ASCENDANTS_VISITOR =
-			new SectionAscendantsVisitor();
+	public static final
+	SectionAscendantsVisitor DECLARATION_SECTION_ASCENDANTS_VISITOR =
+			new SectionAscendantsVisitor(false);
+	public static final
+	SectionAscendantsVisitor OVERRIDER_SECTION_ASCENDANTS_VISITOR =
+			new SectionAscendantsVisitor(true);
 
-	private SectionAscendantsVisitor() {
+	private final boolean overrider;
+
+	private SectionAscendantsVisitor(boolean overrider) {
+		this.overrider = overrider;
 	}
 
 	@Override
@@ -43,6 +52,14 @@ final class SectionAscendantsVisitor
 			AscendantsNode ascendants,
 			Distributor p) {
 		return parseAscendants(PLAIN_IP, ascendants, p);
+	}
+
+	@Override
+	public AscendantsDefinition visitScopeRef(ScopeRefNode ref, Distributor p) {
+		if (this.overrider) {
+			return new AscendantsDefinition(location(p, ref), p);
+		}
+		return super.visitScopeRef(ref, p);
 	}
 
 	@Override

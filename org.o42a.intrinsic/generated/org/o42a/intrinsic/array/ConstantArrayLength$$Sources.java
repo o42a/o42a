@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link ConstantArrayValueTypeObject}.
+ * o42a sources for {@link ConstantArrayLength}.
  * 
- * File: root/constant_array.o42a
+ * File: root/constant_array/length.o42a
  */
-public final class ConstantArrayValueTypeObject$$Sources implements AnnotatedSources {
+public final class ConstantArrayLength$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public ConstantArrayValueTypeObject$$Sources(AnnotatedSources parent) {
+	public ConstantArrayLength$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,17 +28,12 @@ public final class ConstantArrayValueTypeObject$$Sources implements AnnotatedSou
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"constant_array.o42a");
+				"length.o42a");
 	}
 
 	@Override
 	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
-			new org.o42a.intrinsic.array.ConstantArrayLength(
-					owner,
-					new org.o42a.intrinsic.array.ConstantArrayLength$$Sources(this))
-			.getScope().toField(),
-		};
+		return new Field<?>[0];
 	}
 
 }

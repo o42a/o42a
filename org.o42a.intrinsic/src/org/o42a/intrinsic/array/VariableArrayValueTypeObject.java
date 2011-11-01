@@ -27,7 +27,7 @@ import org.o42a.intrinsic.root.Root;
 
 @SourcePath(relativeTo = Root.class, value = "variable_array.o42a")
 public class VariableArrayValueTypeObject
-		extends AbstractArrayValueTypeObject {
+		extends ArrayValueTypeObject {
 
 	public VariableArrayValueTypeObject(
 			MemberOwner owner,

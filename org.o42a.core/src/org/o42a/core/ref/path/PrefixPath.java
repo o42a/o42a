@@ -235,7 +235,10 @@ public final class PrefixPath {
 			PathReproduction pathReproduction) {
 
 		final PrefixPath phrasePrefix =
-				reproducer.getPhrasePrefix().materialize().toPrefix();
+				reproducer.getPhrasePrefix()
+				.materialize()
+				.getPath()
+				.toPrefix(reproducer.getPhrasePrefix().getScope());
 		final Path externalPath = pathReproduction.getExternalPath();
 
 		if (externalPath.isSelf()) {

@@ -21,9 +21,10 @@ Use namespace 'Test'
 
 Init := test
 ============
-Array := [`1, 2, 3]
-
 Run tests
+
+
+Array := [`1, 2, 3]
 
 Constant := test{
   Assert [array] "Constant array access failed"
