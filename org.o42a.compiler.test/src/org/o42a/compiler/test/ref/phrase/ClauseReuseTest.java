@@ -38,7 +38,7 @@ public class ClauseReuseTest extends CompilerTestCase {
 				"  <*[foo value] | $object$> foo = *",
 				"  <bar> (<*'value'> ())",
 				")",
-				"B := a[2]bar'b'.");
+				"B := a[2]bar'b'");
 
 		final Field<?> b = field("b");
 		final Field<?> foo = field(b, "foo");
@@ -90,13 +90,13 @@ public class ClauseReuseTest extends CompilerTestCase {
 	public void reuseParent() {
 		compile(
 				"A := void(",
-				"  Foo := \"a\".",
-				"  Bar := \"b\".",
+				"  Foo := \"a\"",
+				"  Bar := \"b\"",
 				"  <*Group> (",
-				"    <*'' | group> Foo = *.",
-				"    <*[] | group> Bar = *.",
-				"  ).",
-				").",
+				"    <*'' | group> Foo = ()",
+				"    <*[] | group> Bar = ()",
+				"  )",
+				")",
 				"B := a 'c' [\"d\"]");
 
 		final Field<?> b = field("b");
