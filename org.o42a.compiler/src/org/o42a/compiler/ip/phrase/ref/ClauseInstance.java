@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
@@ -85,11 +84,7 @@ public final class ClauseInstance {
 			return null;
 		}
 
-		final PhraseContinuation continuation = content[0];
-
-		noContinuationAfterSubstitution();
-
-		return continuation.substitute(distributor);
+		return content[0].substitute(distributor);
 	}
 
 	public final BlockBuilder getDefinition() {
@@ -163,19 +158,6 @@ public final class ClauseInstance {
 
 	final PhraseSubContext subContext(Clause clause) {
 		return this.subContexts.get(clause.getKey());
-	}
-
-	private void noContinuationAfterSubstitution() {
-
-		final Iterator<? extends PhraseSubContext> subContexts =
-				this.context.subContexts().iterator();
-
-		if (subContexts.hasNext()) {
-			this.context.getLogger().error(
-					"prohibited_phrase_continuation_after_substitution",
-					subContexts.next().getLocation(),
-					"Substitution clause should be the last in the phrase");
-		}
 	}
 
 	private static final class Definition extends BlockBuilder {
