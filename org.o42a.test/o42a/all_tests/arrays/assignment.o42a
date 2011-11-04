@@ -17,7 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Use namespace 'Console'
 Use namespace 'Test'
 
 Assignment := test
@@ -36,9 +35,11 @@ Array := [``"a", "b", "c"]
   Assert [array[2] == "new2"]
   _ "Wrong value assigned to array item with run-time index"
   
-  Array[rt-integer '-1'] = "invalid" |
-  assert [void] "Assignment to array item with negative index didn't failed"
+  Array[rt-integer '-1'] = "invalid",
+  fail "Assignment to array item with negative index didn't failed" |
+  void
   
-  Array[rt-integer '10'] = "invalid" |
-  assert [void] "Assignment to array item with wrong index didn't failed"
+  Array[rt-integer '10'] = "invalid",
+  fail "Assignment to array item with wrong index didn't failed" |
+  void
 }
