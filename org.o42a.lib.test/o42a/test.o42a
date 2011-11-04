@@ -42,6 +42,20 @@ Test :=> void(
 
 )
 
+/* Failure message. */
+Fail :=> void(
+  <*> {
+    <*> Print error(
+      <*[]> Text = ()
+      <*''> Text = ()
+    )
+    Print error(
+      Text = "\n"
+    )
+    = Void
+  }
+)
+
 /*
   Assertion.
 
@@ -67,7 +81,7 @@ Assert :=> void(
   Message := `"Error"
   
   {
-    --Condition? Print error [message] nl
+    --Condition? Fail [message]
     = Void
   }
 
