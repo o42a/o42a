@@ -6,6 +6,7 @@ syntax: glob
 **/*.s
 **/*.o
 **/*.so
+*/*.tar*
 
 syntax: regexp
 ^target$
