@@ -21,13 +21,14 @@ package org.o42a.ast;
 
 import java.io.Serializable;
 
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.*;
 
 
 public class FixedPosition
 		extends Position
-		implements LoggablePosition, Cloneable, Serializable {
+		implements SourcePosition, Cloneable, Serializable {
 
 	private static final long serialVersionUID = 6809375589547367813L;
 

@@ -20,19 +20,21 @@
 package org.o42a.util.log;
 
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
 public final class Logs {
 
 	private static final StartVisitor START_VISITOR = new StartVisitor();
 
-	public static LoggablePosition start(LogInfo loggable) {
+	public static SourcePosition start(LogInfo loggable) {
 		return loggable.getLoggable().accept(START_VISITOR, null);
 	}
 
 	public static void printPosition(
 			StringBuilder out,
-			LoggablePosition position,
+			SourcePosition position,
 			boolean withFile) {
 		if (withFile) {
 
@@ -51,27 +53,27 @@ public final class Logs {
 	}
 
 	private static final class StartVisitor
-			implements LoggableVisitor<LoggablePosition, Void> {
+			implements LoggableVisitor<SourcePosition, Void> {
 
 		@Override
-		public LoggablePosition visitSource(LoggableSource source, Void p) {
+		public SourcePosition visitSource(Source source, Void p) {
 			return null;
 		}
 
 		@Override
-		public LoggablePosition visitPosition(
-				LoggablePosition position,
+		public SourcePosition visitPosition(
+				SourcePosition position,
 				Void p) {
 			return position;
 		}
 
 		@Override
-		public LoggablePosition visitRange(LoggableRange range, Void p) {
+		public SourcePosition visitRange(SourceRange range, Void p) {
 			return range.getStart();
 		}
 
 		@Override
-		public LoggablePosition visitData(LoggableData data, Void p) {
+		public SourcePosition visitData(LoggableData data, Void p) {
 			return null;
 		}
 

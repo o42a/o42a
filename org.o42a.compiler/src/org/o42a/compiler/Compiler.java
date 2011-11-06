@@ -39,9 +39,9 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.StringSource;
-import org.o42a.util.log.LoggablePosition;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Logs;
 
@@ -202,7 +202,7 @@ public class Compiler implements SourceCompiler {
 
 		if (location != null) {
 
-			final LoggablePosition start = Logs.start(location);
+			final SourcePosition start = Logs.start(location);
 
 			if (start != null) {
 				worker = new ParserWorker(

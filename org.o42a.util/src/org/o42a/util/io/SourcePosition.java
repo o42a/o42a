@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.log;
+package org.o42a.util.io;
 
-import org.o42a.util.io.Source;
+import org.o42a.util.log.Loggable;
 
 
-public interface LoggablePosition extends Loggable {
+public interface SourcePosition extends Loggable {
 
 	Source source();
 
