@@ -44,6 +44,7 @@ final class FileSourceReader extends SourceReader {
 	private final ByteBuffer bytes;
 	private final CharBuffer chars;
 	private long offset;
+	private boolean eof;
 
 	FileSourceReader(FileSource source) throws IOException {
 		super(source);
@@ -80,15 +81,14 @@ final class FileSourceReader extends SourceReader {
 					return -1;
 				}
 				this.bytes.flip();
+				this.eof = this.channel.position() >= this.channel.size();
 			}
 
 			// Decode single char.
 			this.chars.clear();
 
-			final CoderResult result = this.decoder.decode(
-					this.bytes,
-					this.chars,
-					this.channel.position() >= this.channel.size());
+			final CoderResult result =
+					this.decoder.decode(this.bytes, this.chars, this.eof);
 
 			if (result.isError()) {
 				continue;
