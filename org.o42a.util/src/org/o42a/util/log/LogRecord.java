@@ -25,8 +25,8 @@ import java.util.Formattable;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
 
-import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
 
 
 public class LogRecord implements Formattable {

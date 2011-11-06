@@ -39,8 +39,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.*;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
-import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.StringSource;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Logs;
@@ -207,11 +207,7 @@ public class Compiler implements SourceCompiler {
 			if (start != null) {
 				worker = new ParserWorker(
 						source,
-						new FixedPosition(
-								start.source(),
-								start.line(),
-								start.column(),
-								start.offset()));
+						new FixedPosition(start));
 			} else {
 				worker = new ParserWorker(source);
 			}

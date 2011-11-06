@@ -26,6 +26,7 @@ import java.io.IOException;
 import org.o42a.ast.Node;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.SeparatorNodes;
+import org.o42a.util.io.SourceReader;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Severity;
@@ -40,6 +41,7 @@ public final class ParserContext {
 	private final Expectations expectations;
 	private final Log log;
 	private int hasErrors;
+	private long pendingOffset;
 	private byte pending;
 
 	ParserContext(
@@ -99,19 +101,21 @@ public final class ParserContext {
 		}
 
 		final int from =
-				(int) (this.firstUnaccepted.offset()
-						- this.worker.position().offset());
-		final StringBuilder unacceptedText =
-				this.worker.unacceptedText();
+				(int) (this.firstUnaccepted.charOffset()
+						- this.worker.pos().charOffset());
+		final UnacceptedChars unacceptedChars =
+				this.worker.unacceptedChars();
 
 		for (int i = from, l = from + accept; i < l; ++i) {
-			this.firstUnaccepted.move(unacceptedText.charAt(i));
+			this.firstUnaccepted.move(
+					unacceptedChars.offset(i),
+					unacceptedChars.get(i));
 		}
 
 		if (this.firstUnaccepted == this.worker.position()) {
-			unacceptedText.replace(0, accept, "");
+			unacceptedChars.accept(accept);
 		}
-		if (this.firstUnaccepted.offset > this.current.offset) {
+		if (this.firstUnaccepted.charOffset() > this.current.charOffset()) {
 			this.current.set(this.firstUnaccepted);
 			this.pending = 0;
 		}
@@ -123,43 +127,49 @@ public final class ParserContext {
 		}
 		skip();
 
-		final StringBuilder unacceptedText =
-				this.worker.unacceptedText();
+		final UnacceptedChars unacceptedChars =
+				this.worker.unacceptedChars();
 
 		for (;;) {
 
 			final long idx =
-					current().offset() - this.worker.position().offset();
-			final char ch;
+					this.current.charOffset() - this.worker.pos().charOffset();
+			final long offset;
+			final int ch;
 
-			if (idx < unacceptedText.length()) {
-				ch = unacceptedText.charAt((int) idx);
+			if (idx < unacceptedChars.length()) {
+				offset = unacceptedChars.offset((int) idx);
+				ch = unacceptedChars.get((int) idx);
 			} else {
 
 				final int charCode;
 
 				try {
-					charCode = this.worker.in().read();
+
+					final SourceReader in = this.worker.in();
+
+					charCode = in.read();
+					offset = in.offset();
 				} catch (IOException e) {
 					getLogger().ioError(current(), e.getLocalizedMessage());
 					return -1;
 				}
 
 				if (charCode < 0) {
-					this.worker.setEOF(current().offset());
+					this.worker.setEOF(this.current.charOffset());
 					return -1;
 				}
 
 				ch = (char) charCode;
-				unacceptedText.append(ch);
+				unacceptedChars.append(offset, ch);
 			}
 
-			final char c;
+			final int c;
 
 			// handle newline for different OSes
 			if (ch == '\n') {
-				if (this.current.lastChar == '\r') {// \r\n
-					this.current.move('\n');
+				if (this.current.lastChar() == '\r') {// \r\n
+					this.current.move(offset, '\n');
 					continue;// handle \r\n as one \n
 				}
 				c = ch;
@@ -170,6 +180,7 @@ public final class ParserContext {
 			}
 
 			this.pending = 1;
+			this.pendingOffset = offset;
 
 			return this.worker.setLastChar(c);
 		}
@@ -177,7 +188,7 @@ public final class ParserContext {
 
 	public void skip() {
 		if (this.pending > 0) {
-			this.current.move((char) this.worker.lastChar());
+			this.current.move(this.pendingOffset, this.worker.lastChar());
 			this.pending = 0;
 		}
 	}
@@ -225,8 +236,8 @@ public final class ParserContext {
 	}
 
 	public final int unaccepted() {
-		return (int) (this.current.offset()
-				- this.firstUnaccepted.offset() + this.pending);
+		return (int) (this.current.charOffset()
+				- this.firstUnaccepted.charOffset() + this.pending);
 	}
 
 	public final int lastChar() {
@@ -234,7 +245,7 @@ public final class ParserContext {
 	}
 
 	public final boolean isEOF() {
-		return isFailed() || current().offset() >= this.worker.eof();
+		return isFailed() || this.current.charOffset() >= this.worker.eof();
 	}
 
 	public final ParserLogger getLogger() {
@@ -289,7 +300,7 @@ public final class ParserContext {
 			return null;
 		}
 
-		final long start = firstUnaccepted.offset;
+		final long start = firstUnaccepted.charOffset();
 		final ParserContext context = new ParserContext(
 				this.worker,
 				parser,
@@ -314,11 +325,11 @@ public final class ParserContext {
 
 	private long pop(ParserContext complete, long start) {
 
-		final long accepted = complete.firstUnaccepted.offset - start;
+		final long accepted = complete.firstUnaccepted.charOffset() - start;
 
 		if (accepted > 0) {
-			if (complete.firstUnaccepted.offset
-					> this.current.offset) {
+			if (complete.firstUnaccepted.charOffset()
+					> this.current.charOffset()) {
 				this.current.set(complete.firstUnaccepted);
 				this.pending = 0;
 			}

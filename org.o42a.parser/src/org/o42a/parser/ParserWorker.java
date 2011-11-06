@@ -34,7 +34,7 @@ public class ParserWorker {
 	private SourceReader in;
 	private final WorkerPos position;// first un-accepted position
 	private final ParserContext root;
-	private final StringBuilder unacceptedText = new StringBuilder();
+	private final UnacceptedChars unacceptedChars = new UnacceptedChars();
 	private int lastChar = Integer.MIN_VALUE;
 	private long eof = Long.MAX_VALUE;
 	private Logger logger = DEFAULT_LOGGER;
@@ -87,8 +87,12 @@ public class ParserWorker {
 		return this.in;
 	}
 
-	final StringBuilder unacceptedText() {
-		return this.unacceptedText;
+	final WorkerPos pos() {
+		return this.position;
+	}
+
+	final UnacceptedChars unacceptedChars() {
+		return this.unacceptedChars;
 	}
 
 	final int lastChar() {
