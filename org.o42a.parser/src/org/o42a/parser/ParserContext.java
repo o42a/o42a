@@ -21,12 +21,53 @@ package org.o42a.parser;
 
 import static org.o42a.parser.Grammar.separator;
 
+import java.io.IOException;
+
 import org.o42a.ast.Node;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.SeparatorNodes;
+import org.o42a.util.log.LogRecord;
+import org.o42a.util.log.Logger;
+import org.o42a.util.log.Severity;
 
 
-public abstract class ParserContext {
+public final class ParserContext {
+
+	private final ParserWorker worker;
+	private final Parser<?> parser;
+	private final WorkerPos current;
+	private final WorkerPos firstUnaccepted;
+	private final Expectations expectations;
+	private final Log log;
+	private int hasErrors;
+	private byte pending;
+
+	ParserContext(
+			ParserWorker worker,
+			Parser<?> parser,
+			WorkerPos current,
+			WorkerPos firstUnaccepted) {
+		this.worker = worker;
+		this.parser = parser;
+		this.current = current.clone();
+		this.firstUnaccepted = firstUnaccepted;
+		this.expectations = expectNothing();
+		this.log = new Log(this);
+	}
+
+	ParserContext(
+			ParserWorker worker,
+			Parser<?> parser,
+			WorkerPos current,
+			WorkerPos firstUnaccepted,
+			Expectations expectations) {
+		this.worker = worker;
+		this.parser = parser;
+		this.current = current.clone();
+		this.firstUnaccepted = firstUnaccepted;
+		this.expectations = expectations.setContext(this);
+		this.log = new Log(this);
+	}
 
 	public final <T> T parse(Parser<T> parser) {
 		return parse(parser, getExpectations());
@@ -44,11 +85,102 @@ public abstract class ParserContext {
 		acceptBut(isEOF() ? 0 : 1);
 	}
 
-	public abstract void acceptBut(int charsLeft);
+	public void acceptBut(int charsLeft) {
 
-	public abstract int next();
+		final int unaccepted = unaccepted();
+		int accept = unaccepted - charsLeft;
 
-	public abstract void skip();
+		if (accept < 0) {
+			getLogger().cantAccept(current(), charsLeft, unaccepted);
+			accept = unaccepted;
+		}
+		if (accept == 0) {
+			return;
+		}
+
+		final int from =
+				(int) (this.firstUnaccepted.offset()
+						- this.worker.position().offset());
+		final StringBuilder unacceptedText =
+				this.worker.unacceptedText();
+
+		for (int i = from, l = from + accept; i < l; ++i) {
+			this.firstUnaccepted.move(unacceptedText.charAt(i));
+		}
+
+		if (this.firstUnaccepted == this.worker.position()) {
+			unacceptedText.replace(0, accept, "");
+		}
+		if (this.firstUnaccepted.offset > this.current.offset) {
+			this.current.set(this.firstUnaccepted);
+			this.pending = 0;
+		}
+	}
+
+	public int next() {
+		if (isEOF()) {
+			return -1;
+		}
+		skip();
+
+		final StringBuilder unacceptedText =
+				this.worker.unacceptedText();
+
+		for (;;) {
+
+			final long idx =
+					current().offset() - this.worker.position().offset();
+			final char ch;
+
+			if (idx < unacceptedText.length()) {
+				ch = unacceptedText.charAt((int) idx);
+			} else {
+
+				final int charCode;
+
+				try {
+					charCode = this.worker.in().read();
+				} catch (IOException e) {
+					getLogger().ioError(current(), e.getLocalizedMessage());
+					return -1;
+				}
+
+				if (charCode < 0) {
+					this.worker.setEOF(current().offset());
+					return -1;
+				}
+
+				ch = (char) charCode;
+				unacceptedText.append(ch);
+			}
+
+			final char c;
+
+			// handle newline for different OSes
+			if (ch == '\n') {
+				if (this.current.lastChar == '\r') {// \r\n
+					this.current.move('\n');
+					continue;// handle \r\n as one \n
+				}
+				c = ch;
+			} else if (ch == '\r') {
+				c = '\n';// always handle \r as \n
+			} else {
+				c = ch;
+			}
+
+			this.pending = 1;
+
+			return this.worker.setLastChar(c);
+		}
+	}
+
+	public void skip() {
+		if (this.pending > 0) {
+			this.current.move((char) this.worker.lastChar());
+			this.pending = 0;
+		}
+	}
 
 	public final SeparatorNodes skipComments(boolean allowNewLine) {
 		return push(separator(allowNewLine));
@@ -84,21 +216,38 @@ public abstract class ParserContext {
 		return node;
 	}
 
-	public abstract Position current();
+	public final Position current() {
+		return this.current;
+	}
 
-	public abstract Position firstUnaccepted();
+	public final Position firstUnaccepted() {
+		return this.firstUnaccepted;
+	}
 
-	public abstract int unaccepted();
+	public final int unaccepted() {
+		return (int) (this.current.offset()
+				- this.firstUnaccepted.offset() + this.pending);
+	}
 
-	public abstract int lastChar();
+	public final int lastChar() {
+		return this.worker.lastChar();
+	}
 
-	public abstract boolean isEOF();
+	public final boolean isEOF() {
+		return isFailed() || current().offset() >= this.worker.eof();
+	}
 
-	public abstract ParserLogger getLogger();
+	public final ParserLogger getLogger() {
+		return this.log;
+	}
 
-	public abstract boolean hasErrors();
+	public final boolean hasErrors() {
+		return this.hasErrors > 0;
+	}
 
-	public abstract Expectations getExpectations();
+	public final Expectations getExpectations() {
+		return this.expectations;
+	}
 
 	public final Expectations expectNothing() {
 		return new Expectations(this);
@@ -120,8 +269,104 @@ public abstract class ParserContext {
 		return getExpectations().asExpected(this);
 	}
 
-	protected abstract <T> T parse(Parser<T> parser, Expectations expectations);
+	protected <T> T parse(Parser<T> parser, Expectations expectations) {
+		return parse(parser, expectations, this.firstUnaccepted);
+	}
 
-	protected abstract <T> T push(Parser<T> parser, Expectations expectations);
+	protected <T> T push(Parser<T> parser, Expectations expectations) {
+		return parse(parser, expectations, this.firstUnaccepted.clone());
+	}
+
+	private boolean isFailed() {
+		return this.hasErrors > 1;
+	}
+
+	private <T> T parse(
+			Parser<T> parser,
+			Expectations expectations,
+			WorkerPos firstUnaccepted) {
+		if (isEOF()) {
+			return null;
+		}
+
+		final long start = firstUnaccepted.offset;
+		final ParserContext context = new ParserContext(
+				this.worker,
+				parser,
+				this.current,
+				firstUnaccepted,
+				expectations);
+		final T result;
+		final long accepted;
+
+		try {
+			result = parser.parse(context);
+		} finally {
+			accepted = pop(context, start);
+		}
+
+		if (accepted == 0 && result != null) {
+			context.getLogger().notAccepted(current());
+		}
+
+		return result;
+	}
+
+	private long pop(ParserContext complete, long start) {
+
+		final long accepted = complete.firstUnaccepted.offset - start;
+
+		if (accepted > 0) {
+			if (complete.firstUnaccepted.offset
+					> this.current.offset) {
+				this.current.set(complete.firstUnaccepted);
+				this.pending = 0;
+			}
+		}
+		if (complete.hasErrors > this.hasErrors) {
+			this.hasErrors = complete.hasErrors;
+		}
+
+		return accepted;
+	}
+
+	final void setCurrent(WorkerPos position) {
+		this.current.set(position);
+	}
+
+	private final class Log extends ParserLogger {
+
+		private final ParserContext context;
+
+		Log(ParserContext context) {
+			this.context = context;
+		}
+
+		@Override
+		public void log(LogRecord record) {
+
+			final int ordinal = record.getSeverity().ordinal();
+
+			if (ordinal >= Severity.ERROR.ordinal()) {
+				if (ordinal <= Severity.FATAL.ordinal()) {
+					this.context.hasErrors = 2;
+				} else {
+					this.context.hasErrors = 1;
+				}
+			}
+			super.log(record);
+		}
+
+		@Override
+		protected Logger getLogger() {
+			return this.context.worker.getLogger();
+		}
+
+		@Override
+		protected Object getSource() {
+			return this.context.parser.getClass().getSimpleName();
+		}
+
+	}
 
 }
