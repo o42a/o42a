@@ -74,7 +74,7 @@
 	
 	<target name="jdwp" depends="package-deps">
 		<java
-			jar="${root.dir}/target/org.o42a.cl-${project.version}.jar"
+			jar="${root.dir}/target/org.o42a.cl-${o42a_release}.jar"
 			fork="true">
 			<jvmarg line="-Djava.library.path=${root.dir}/target"/>
 			<jvmarg line="-ea:org.o42a..."/>
