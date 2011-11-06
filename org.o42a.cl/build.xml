@@ -58,7 +58,7 @@
 		</path>
 		<regexpmapper
 			from="${root.dir}/(.*)$$"
-			to="\1-${project.version}.jar"
+			to="\1-${o42a_release}.jar"
 			handledirsep="true"/>
 	</pathconvert>
 

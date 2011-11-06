@@ -27,7 +27,7 @@
 
 	<property 
 		name="jar.file"
-		value="${target.dir}/${ant.project.name}-${project.version}.jar"/>
+		value="${target.dir}/${ant.project.name}-${o42a_release}.jar"/>
 
 	<property name="compile.deps" value=""/>
 	<property name="compile.classpath" value=""/>

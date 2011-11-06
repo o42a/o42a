@@ -25,7 +25,8 @@
 	<property name="root.dir" location="${build.dir}/.."/>
 	<property name="target.dir" location="${root.dir}/target"/>
 
-	<property file="${build.dir}/o42a.properties" />
+	<property file="${build.dir}/o42a.release"/>
+	<property file="${build.dir}/o42a.properties"/>
 	<property file="${build.dir}/o42a.default.properties"/>
 
 </project>
