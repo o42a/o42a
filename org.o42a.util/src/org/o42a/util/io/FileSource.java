@@ -21,14 +21,18 @@ package org.o42a.util.io;
 
 import static org.o42a.util.string.StringUtil.removeLeadingChars;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 
 public class FileSource extends Source {
 
+	private static final String DEFAULT_ENCODING = "UTF-8";
+
 	private final File root;
 	private final File file;
 	private final String name;
+	private String encoding = DEFAULT_ENCODING;
 
 	public FileSource(String name, File root, String path) {
 		assert root.isDirectory() :
@@ -72,9 +76,17 @@ public class FileSource extends Source {
 		return !this.file.isFile();
 	}
 
+	public final String getEncoding() {
+		return this.encoding;
+	}
+
+	public final void setEncoding(String encoding) {
+		this.encoding = encoding != null ? encoding : DEFAULT_ENCODING;
+	}
+
 	@Override
-	public Reader open() throws IOException {
-		return new InputStreamReader(new FileInputStream(getFile()), "UTF-8");
+	public SourceReader open() throws IOException {
+		return new FileSourceReader(this);
 	}
 
 	private String name(String path) {

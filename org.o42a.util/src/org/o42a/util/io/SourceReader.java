@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,30 +19,34 @@
 */
 package org.o42a.util.io;
 
+import java.io.Closeable;
 import java.io.IOException;
 
-import org.o42a.util.log.LogInfo;
-import org.o42a.util.log.Loggable;
 
 
-public abstract class Source implements LogInfo {
+public abstract class SourceReader implements Closeable {
 
-	private final LoggableSource loggable = new LoggableSource(this);
+	private final Source source;
 
-	public abstract String getName();
-
-	public abstract boolean isEmpty();
-
-	public abstract SourceReader open() throws IOException;
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
+	public SourceReader(Source source) {
+		assert source != null :
+			"Source not specified";
+		this.source = source;
 	}
+
+	public final Source source() {
+		return this.source;
+	}
+
+	public abstract long offset();
+
+	public abstract int read() throws IOException;
 
 	@Override
 	public String toString() {
-		return getName();
+		if (this.source == null) {
+			return super.toString();
+		}
+		return this.source.toString() + '(' + offset() + ')';
 	}
-
 }

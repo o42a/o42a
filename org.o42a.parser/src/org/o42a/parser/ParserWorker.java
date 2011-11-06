@@ -22,10 +22,10 @@ package org.o42a.parser;
 import static org.o42a.util.log.Logger.DEFAULT_LOGGER;
 
 import java.io.IOException;
-import java.io.Reader;
 
 import org.o42a.ast.Position;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourceReader;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.Severity;
@@ -33,7 +33,7 @@ import org.o42a.util.log.Severity;
 
 public class ParserWorker {
 
-	private Reader in;
+	private SourceReader in;
 	private final Pos position;// first un-accepted position
 	private final Context root;
 	private final StringBuilder unacceptedText = new StringBuilder();
@@ -82,7 +82,7 @@ public class ParserWorker {
 		}
 	}
 
-	private final Reader in() throws IOException {
+	private final SourceReader in() throws IOException {
 		if (this.in == null) {
 			this.in = this.source.open();
 		}

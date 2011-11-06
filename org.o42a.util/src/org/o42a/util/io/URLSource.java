@@ -22,8 +22,6 @@ package org.o42a.util.io;
 import static org.o42a.util.string.StringUtil.removeLeadingChars;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -88,8 +86,8 @@ public class URLSource extends Source {
 	}
 
 	@Override
-	public Reader open() throws IOException {
-		return new InputStreamReader(getURL().openStream(), "UTF-8");
+	public SourceReader open() throws IOException {
+		return new URLSourceReader(this);
 	}
 
 	private String name(String path) {
