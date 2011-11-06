@@ -21,9 +21,11 @@ package org.o42a.ast;
 
 import java.io.Serializable;
 
-import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.*;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.log.LogReason;
+import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
 public class FixedPosition
@@ -50,6 +52,14 @@ public class FixedPosition
 		this.line = line;
 		this.column = column;
 		this.offset = offset;
+	}
+
+	public FixedPosition(SourcePosition position) {
+		this(
+				position.source(),
+				position.line(),
+				position.column(),
+				position.offset());
 	}
 
 	FixedPosition(Position position) {

@@ -28,14 +28,15 @@ final class WorkerPos extends Position implements Cloneable {
 	private Source source;
 	private int line;
 	private int column;
-	long offset;
-	char lastChar;
+	private long offset;
+	private long charOffset;
+	private int lastChar;
 
 	WorkerPos(Source source) {
 		this.source = source;
 		this.line = 1;
 		this.column = 1;
-		this.offset = 0;
+		this.charOffset = 0;
 	}
 
 	WorkerPos(Source source, Position start) {
@@ -43,6 +44,7 @@ final class WorkerPos extends Position implements Cloneable {
 		this.line = start.line();
 		this.column = start.column();
 		this.offset = start.offset();
+		this.charOffset = 0;
 	}
 
 	@Override
@@ -61,7 +63,7 @@ final class WorkerPos extends Position implements Cloneable {
 	}
 
 	@Override
-	public long offset() {
+	public final long offset() {
 		return this.offset;
 	}
 
@@ -74,16 +76,26 @@ final class WorkerPos extends Position implements Cloneable {
 		}
 	}
 
+	final long charOffset() {
+		return this.charOffset;
+	}
+
+	final int lastChar() {
+		return this.lastChar;
+	}
+
 	void set(WorkerPos position) {
 		this.source = position.source;
 		this.line = position.line;
 		this.column = position.column;
 		this.offset = position.offset;
+		this.charOffset = position.charOffset;
 		this.lastChar = position.lastChar;
 	}
 
-	void move(char c) {
-		this.offset++;
+	void move(long offset, int c) {
+		this.offset = offset;
+		this.charOffset++;
 		if (c == '\r') {
 			this.line++;
 			this.column = 1;
