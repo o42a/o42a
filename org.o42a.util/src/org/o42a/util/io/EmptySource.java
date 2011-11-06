@@ -20,7 +20,6 @@
 package org.o42a.util.io;
 
 import java.io.IOException;
-import java.io.Reader;
 
 
 public class EmptySource extends Source {
@@ -42,7 +41,7 @@ public class EmptySource extends Source {
 	}
 
 	@Override
-	public Reader open() throws IOException {
+	public SourceReader open() throws IOException {
 		throw new IOException(this.name + " is empty source");
 	}
 

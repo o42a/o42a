@@ -19,40 +19,57 @@
 */
 package org.o42a.util.io;
 
+import static java.lang.Character.isHighSurrogate;
+import static java.lang.Character.isLowSurrogate;
+import static java.lang.Character.toCodePoint;
+
 import java.io.IOException;
 
 
-public class StringSource extends Source {
+final class StringSourceReader extends SourceReader {
 
-	private final String name;
 	private final String string;
+	private int offset;
 
-	public StringSource(String name, String string) {
-		assert name != null :
-			"Source name not specified";
-		assert string != null :
-			"Source text string not specified";
-		this.name = name;
-		this.string = string;
+	StringSourceReader(StringSource source) {
+		super(source);
+		this.string = source.getString();
 	}
 
 	@Override
-	public final String getName() {
-		return this.name;
+	public long offset() {
+		return this.offset;
 	}
 
 	@Override
-	public boolean isEmpty() {
-		return getString().isEmpty();
-	}
+	public int read() throws IOException {
 
-	public final String getString() {
-		return this.string;
+		char highSurrogate = 0;
+
+		for (;;) {
+			if (this.offset >= this.string.length()) {
+				return -1;
+			}
+
+			final char c = this.string.charAt(this.offset++);
+
+			if (isHighSurrogate(c)) {
+				highSurrogate = c;
+				continue;
+			}
+			if (isLowSurrogate(c)) {
+				if (highSurrogate == 0) {
+					continue;
+				}
+				return toCodePoint(highSurrogate, c);
+			}
+
+			return c;
+		}
 	}
 
 	@Override
-	public SourceReader open() throws IOException {
-		return new StringSourceReader(this);
+	public void close() throws IOException {
 	}
 
 }
