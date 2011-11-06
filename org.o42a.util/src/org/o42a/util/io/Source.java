@@ -24,7 +24,6 @@ import java.io.Reader;
 
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableSource;
 
 
 public abstract class Source implements LogInfo {

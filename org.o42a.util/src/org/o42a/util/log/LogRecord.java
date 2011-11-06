@@ -25,6 +25,7 @@ import java.util.Formattable;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
 
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.Source;
 
 
@@ -109,7 +110,7 @@ public class LogRecord implements Formattable {
 
 	public static void formatPosition(
 			StringBuilder out,
-			LoggablePosition position,
+			SourcePosition position,
 			boolean withFile) {
 		if (withFile) {
 

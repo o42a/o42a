@@ -33,11 +33,6 @@ public final class LoggableData extends AbstractLoggable<LoggableData> {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this;
-	}
-
-	@Override
 	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
 		return visitor.visitData(this, p);
 	}

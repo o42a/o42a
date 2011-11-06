@@ -19,14 +19,18 @@
 */
 package org.o42a.util.log;
 
+import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
+
 
 public interface LoggableVisitor<R, P> {
 
-	R visitSource(LoggableSource source, P p);
+	R visitSource(Source source, P p);
 
-	R visitPosition(LoggablePosition position, P p);
+	R visitPosition(SourcePosition position, P p);
 
-	R visitRange(LoggableRange range, P p);
+	R visitRange(SourceRange range, P p);
 
 	R visitData(LoggableData data, P p);
 

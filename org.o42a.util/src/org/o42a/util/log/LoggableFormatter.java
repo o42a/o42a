@@ -23,6 +23,8 @@ import java.util.Formattable;
 import java.util.Formatter;
 
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
 final class LoggableFormatter implements LoggableVisitor<Void, Formatter> {
@@ -39,13 +41,13 @@ final class LoggableFormatter implements LoggableVisitor<Void, Formatter> {
 	}
 
 	@Override
-	public Void visitSource(LoggableSource source, Formatter p) {
-		p.format(" at %s", source.getSource());
+	public Void visitSource(Source source, Formatter p) {
+		p.format(" at %s", source);
 		return null;
 	}
 
 	@Override
-	public Void visitPosition(LoggablePosition position, Formatter p) {
+	public Void visitPosition(SourcePosition position, Formatter p) {
 
 		final StringBuilder out = new StringBuilder();
 
@@ -56,11 +58,11 @@ final class LoggableFormatter implements LoggableVisitor<Void, Formatter> {
 	}
 
 	@Override
-	public Void visitRange(LoggableRange range, Formatter p) {
+	public Void visitRange(SourceRange range, Formatter p) {
 
 		final StringBuilder out = new StringBuilder();
-		final LoggablePosition start = range.getStart();
-		final LoggablePosition end = range.getEnd();
+		final SourcePosition start = range.getStart();
+		final SourcePosition end = range.getEnd();
 		final Source src1 = start.source();
 		final Source src2 = end.source();
 		final boolean withSource;

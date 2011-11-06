@@ -17,17 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.log;
+package org.o42a.util.io;
 
-import org.o42a.util.io.Source;
+import org.o42a.util.log.AbstractLoggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
-public final class LoggableSource implements Loggable, Cloneable {
+final class LoggableSource extends AbstractLoggable<LoggableSource> {
 
 	private final Source source;
-	private LogReason reason;
 
-	public LoggableSource(Source source) {
+	LoggableSource(Source source) {
 		this.source = source;
 	}
 
@@ -36,35 +36,8 @@ public final class LoggableSource implements Loggable, Cloneable {
 	}
 
 	@Override
-	public final Loggable getLoggable() {
-		return this;
-	}
-
-	@Override
-	public final LogReason getReason() {
-		return this.reason;
-	}
-
-	@Override
-	public LoggableSource setReason(LogReason reason) {
-		if (reason == null) {
-			return this;
-		}
-
-		final LoggableSource clone = clone();
-
-		if (this.reason == null) {
-			clone.reason = reason;
-		} else {
-			clone.reason = this.reason.setNext(reason);
-		}
-
-		return clone;
-	}
-
-	@Override
 	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitSource(this, p);
+		return visitor.visitSource(getSource(), p);
 	}
 
 	@Override
@@ -78,15 +51,6 @@ public final class LoggableSource implements Loggable, Cloneable {
 			return super.toString();
 		}
 		return this.source.toString();
-	}
-
-	@Override
-	protected LoggableSource clone() {
-		try {
-			return (LoggableSource) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
 	}
 
 }

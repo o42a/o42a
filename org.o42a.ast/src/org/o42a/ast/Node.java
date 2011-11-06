@@ -21,10 +21,10 @@ package org.o42a.ast;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.util.log.LoggableRange;
+import org.o42a.util.io.SourceRange;
 
 
-public interface Node extends LoggableRange {
+public interface Node extends SourceRange {
 
 	@Override
 	FixedPosition getStart();

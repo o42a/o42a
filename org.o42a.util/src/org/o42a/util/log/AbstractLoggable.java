@@ -29,13 +29,18 @@ public abstract class AbstractLoggable<L extends AbstractLoggable<L>>
 	}
 
 	@Override
-	public LogReason getReason() {
+	public final Loggable getLoggable() {
+		return this;
+	}
+
+	@Override
+	public final LogReason getReason() {
 		return this.reason;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public L setReason(LogReason reason) {
+	public final L setReason(LogReason reason) {
 		if (reason == null) {
 			return (L) this;
 		}
