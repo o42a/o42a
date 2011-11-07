@@ -35,20 +35,22 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 		JNIEnv *env,
 		jclass,
 		jlong modulePtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jbyteArray data,
 		jint start,
 		jint end,
 		jboolean isConstant) {
 
 	Module *const module = from_ptr<Module>(modulePtr);
-	jStringRef name(env, id);
 	jByteArray array(env, data);
 	size_t length = end - start;
 	const Type *const itemType = Type::getInt8Ty(module->getContext());
 	const ArrayType *const type = ArrayType::get(itemType, length);
 	GlobalVariable *const global =
-			cast<GlobalVariable>(module->getOrInsertGlobal(name, type));
+			cast<GlobalVariable>(module->getOrInsertGlobal(
+					StringRef(from_ptr<char>(id), idLen),
+					type));
 
 	global->setConstant(isConstant);
 	global->setLinkage(GlobalValue::PrivateLinkage);
@@ -106,19 +108,20 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStruct(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong typePtr,
 		jboolean constant,
 		jboolean exported) {
 
 	Module *module = from_ptr<Module>(modulePtr);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
-	jStringRef name(env, id);
-	GlobalVariable *global =
-			cast<GlobalVariable>(module->getOrInsertGlobal(name, type->get()));
+	GlobalVariable *global = cast<GlobalVariable>(module->getOrInsertGlobal(
+			StringRef(from_ptr<char>(id), idLen),
+			type->get()));
 
 	global->setConstant(constant);
 	global->setLinkage(
@@ -129,10 +132,11 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong typePtr,
 		jlong typeDataPtr,
 		jboolean packed) {
@@ -148,12 +152,8 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType(
 
 	cast<OpaqueType>(type->get())->refineAbstractTypeTo(newType);
 	newType = cast<StructType>(type->get());
-	if (id) {
 
-		jStringRef name(env, id);
-
-		module->addTypeName(name, newType);
-	}
+	module->addTypeName(StringRef(from_ptr<char>(id), idLen), newType);
 
 	return to_ptr(newType);
 }

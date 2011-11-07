@@ -35,12 +35,12 @@ jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 		JNIEnv *env,
 		jclass,
 		jlong modulePtr,
-		jstring name,
+		jlong id,
+		jint idLen,
 		jlong returnTypePtr,
 		jlongArray paramPtrs) {
 
 	Module *module = from_ptr<Module>(modulePtr);
-	jStringRef signatureName(env, name);
 	const Type *returnType = from_ptr<const Type>(returnTypePtr);
 	jArray<jlongArray, jlong> paramArray(env, paramPtrs);
 	const size_t numParams = paramArray.length();
@@ -52,36 +52,38 @@ jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 
 	FunctionType *result = FunctionType::get(returnType, params, false);
 
-	module->addTypeName(signatureName, result);
+	module->addTypeName(StringRef(from_ptr<char>(id), idLen), result);
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jstring name,
+		jlong id,
+		jint idLen,
 		jlong typePtr) {
 
 	Module *module = from_ptr<Module>(modulePtr);
-	jStringRef funcName(env, name);
 	FunctionType *type = from_ptr<FunctionType>(typePtr);
-	Constant *function = module->getOrInsertFunction(funcName, type);
+	Constant *function = module->getOrInsertFunction(
+			StringRef(from_ptr<char>(id), idLen),
+			type);
 
 	return to_ptr(function);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jstring name,
+		jlong id,
+		jint idLen,
 		jlong funcTypePtr,
 		jboolean exported) {
 
 	Module *module = from_ptr<Module>(modulePtr);
-	jStringRef funcName(env, name);
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
 	GlobalValue::LinkageTypes linkageType =
 			exported
@@ -89,7 +91,7 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 	Function *function = Function::Create(
 			type,
 			linkageType,
-			Twine(funcName.data()),
+			StringRef(from_ptr<char>(id), idLen),
 			module);
 
 	function->setDoesNotThrow(true);
@@ -138,7 +140,8 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		JNIEnv *env,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong functionPtr,
 		jlongArray argPtrs) {
 
@@ -156,8 +159,11 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 	Value *result;
 
 	if (id) {
-		jStringRef name(env, id);
-		result = builder.CreateCall(callee, args.begin(), args.end(), name);
+		result = builder.CreateCall(
+				callee,
+				args.begin(),
+				args.end(),
+				StringRef(from_ptr<char>(id), idLen));
 	} else {
 		result = builder.CreateCall(callee, args.begin(), args.end());
 	}

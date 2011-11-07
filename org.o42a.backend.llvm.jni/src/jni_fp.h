@@ -10,122 +10,122 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    neg
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_neg
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    add
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_add
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    sub
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_sub
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    mul
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_mul
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    div
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_div
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    rem
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_rem
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    eq
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_eq
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    ne
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_ne
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    gt
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_gt
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    ge
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_ge
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    lt
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_lt
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    le
- * Signature: (JLjava/lang/String;JJ)J
+ * Signature: (JJIJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_le
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    fp2int
- * Signature: (JLjava/lang/String;JB)J
+ * Signature: (JJIJB)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2int
-  (JNIEnv *, jclass, jlong, jstring, jlong, jbyte);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jbyte);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    fp2fp32
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_FpLLOp
  * Method:    fp2fp64
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 #ifdef __cplusplus
 }

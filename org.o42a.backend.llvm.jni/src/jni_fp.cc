@@ -29,267 +29,308 @@ using namespace llvm;
 
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_neg(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFNeg(value, name);
+	Value *result = builder.CreateFNeg(
+			value,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_add(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFAdd(op1, op2, name);
+	Value *result = builder.CreateFAdd(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_sub(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFSub(op1, op2, name);
+	Value *result = builder.CreateFSub(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_mul(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFMul(op1, op2, name);
+	Value *result = builder.CreateFMul(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_div(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFDiv(op1, op2, name);
+	Value *result = builder.CreateFDiv(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_rem(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFRem(op1, op2, name);
+	Value *result = builder.CreateFRem(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_eq(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpOEQ(op1, op2, name);
+	Value *result = builder.CreateFCmpOEQ(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ne(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpONE(op1, op2, name);
+	Value *result = builder.CreateFCmpONE(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_gt(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpOGT(op1, op2, name);
+	Value *result = builder.CreateFCmpOGT(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ge(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpOGE(op1, op2, name);
+	Value *result = builder.CreateFCmpOGE(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_lt(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpOLT(op1, op2, name);
+	Value *result = builder.CreateFCmpOLT(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_le(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong op1ptr,
 		jlong op2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFCmpOLE(op1, op2, name);
+	Value *result = builder.CreateFCmpOLE(
+			op1,
+			op2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2int(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong valuePtr,
 		jbyte intBits) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
 	Value *result = builder.CreateFPToSI(
 			value,
 			IntegerType::get(block->getContext(), intBits),
-			name);
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFPCast(value, builder.getFloatTy(), name);
+	Value *result = builder.CreateFPCast(
+			value,
+			builder.getFloatTy(),
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong valuePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	jStringRef name(env, id);
 	Value *value = from_ptr<Value>(valuePtr);
 	IRBuilder<> builder(block);
-	Value *result = builder.CreateFPCast(value, builder.getDoubleTy(), name);
+	Value *result = builder.CreateFPCast(
+			value,
+			builder.getDoubleTy(),
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }

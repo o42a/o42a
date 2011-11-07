@@ -146,50 +146,50 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocatePtr
- * Signature: (JLjava/lang/String;)J
+ * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocatePtr
-  (JNIEnv *, jclass, jlong, jstring);
+  (JNIEnv *, jclass, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocateStructPtr
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocateStruct
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocateStruct
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    phi2
- * Signature: (JLjava/lang/String;JJJJ)J
+ * Signature: (JJIJJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phi2
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    phiN
- * Signature: (JLjava/lang/String;[J)J
+ * Signature: (JJI[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN
-  (JNIEnv *, jclass, jlong, jstring, jlongArray);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlongArray);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    select
- * Signature: (JLjava/lang/String;JJJ)J
+ * Signature: (JJIJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_select
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode

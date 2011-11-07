@@ -273,57 +273,66 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id) {
+		jlong id,
+		jint idLen) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
-	jStringRef name(env, id);
-	Value *result = builder.CreateAlloca(builder.getInt8PtrTy(), 0, name);
+	Value *result = builder.CreateAlloca(
+			builder.getInt8PtrTy(),
+			0,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
-	jStringRef name(env, id);
-	Value *result =
-			builder.CreateAlloca(type->get()->getPointerTo(), 0, name);
+	Value *result = builder.CreateAlloca(
+			type->get()->getPointerTo(),
+			0,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
-	jStringRef name(env, id);
-	Value *result = builder.CreateAlloca(type->get(), 0, name);
+	Value *result = builder.CreateAlloca(
+			type->get(),
+			0,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong block1ptr,
 		jlong value1ptr,
 		jlong block2ptr,
@@ -335,8 +344,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	BasicBlock *block1 = from_ptr<BasicBlock>(block1ptr);
 	Value *value2 = from_ptr<Value>(value2ptr);
 	BasicBlock *block2 = from_ptr<BasicBlock>(block2ptr);
-	jStringRef name(env, id);
-	PHINode *phi = builder.CreatePHI(value1->getType(), name);
+	PHINode *phi = builder.CreatePHI(
+			value1->getType(),
+			StringRef(from_ptr<char>(id), idLen));
 
 	phi->addIncoming(value1, block1);
 	phi->addIncoming(value2, block2);
@@ -348,17 +358,17 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 		JNIEnv *env,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlongArray blockAndValuePtrs) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	jInt64Array blocksAndValues(env, blockAndValuePtrs);
 	size_t len = blocksAndValues.length();
-	jStringRef name(env, id);
 	PHINode *phi = builder.CreatePHI(
 			from_ptr<Value>(blocksAndValues[1])->getType(),
-			name);
+			StringRef(from_ptr<char>(id), idLen));
 
 	for (size_t i = 0; i < len; i += 2) {
 		phi->addIncoming(
@@ -370,10 +380,11 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_select(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jstring id,
+		jlong id,
+		jint idLen,
 		jlong conditionPtr,
 		jlong truePtr,
 		jlong falsePtr) {
@@ -383,8 +394,11 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 	Value *condition = from_ptr<Value>(conditionPtr);
 	Value *value1 = from_ptr<Value>(truePtr);
 	Value *value2 = from_ptr<Value>(falsePtr);
-	jStringRef name(env, id);
-	Value *result = builder.CreateSelect(condition, value1, value2, name);
+	Value *result = builder.CreateSelect(
+			condition,
+			value1,
+			value2,
+			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
 }

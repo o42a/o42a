@@ -19,9 +19,12 @@
 */
 package org.o42a.backend.llvm.code.op;
 
+import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
+import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.*;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
@@ -53,105 +56,157 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 	@Override
 	public AnyRecLLOp toPtr(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "any");
 
 		return new AnyRecLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toPtr(nextPtr, resultId.getId(), getNativePtr()));
+				toPtr(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr()));
 	}
 
 	@Override
 	public Int8recLLOp toInt8(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "int8");
 
 		return new Int8recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 8));
+				toInt(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 8));
 	}
 
 	@Override
 	public Int16recLLOp toInt16(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "int16");
 
 		return new Int16recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 16));
+				toInt(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 16));
 	}
 
 	@Override
 	public Int32recLLOp toInt32(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "int32");
 
 		return new Int32recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 32));
+				toInt(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 32));
 	}
 
 	@Override
 	public Int64recLLOp toInt64(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "int64");
 
 		return new Int64recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(nextPtr, resultId.getId(), getNativePtr(), (byte) 64));
+				toInt(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr(),
+						(byte) 64));
 	}
 
 	@Override
 	public Fp32recLLOp toFp32(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "fp32");
 
 		return new Fp32recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toFp32(nextPtr, resultId.getId(), getNativePtr()));
+				toFp32(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr()));
 	}
 
 	@Override
 	public Fp64recLLOp toFp64(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "fp64");
 
 		return new Fp64recLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toFp64(nextPtr, resultId.getId(), getNativePtr()));
+				toFp64(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr()));
 	}
 
 	@Override
 	public RelRecLLOp toRel(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = castId(id, code, "rel");
 
 		return new RelRecLLOp(
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toRelPtr(nextPtr, resultId.getId(), getNativePtr()));
+				toRelPtr(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr()));
 	}
 
 	@Override
