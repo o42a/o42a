@@ -65,9 +65,11 @@ public class LLVMDataAllocator implements DataAllocator {
 			int start,
 			int end) {
 
+		final NativeBuffer ids = getModule().ids();
 		final long nativePtr = binaryConstant(
 				getModulePtr(),
-				id.getId(),
+				ids.writeCodeId(id),
+				ids.length(),
 				data,
 				start,
 				end,
@@ -77,7 +79,9 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> begin(SubData<S> data, Type<S> type) {
+	public <S extends StructOp<S>> DataAllocation<S> begin(
+			SubData<S> data,
+			Type<S> type) {
 		return new TypeLLAlloc<S>(
 				getModule(),
 				createType(getModulePtr()),
@@ -140,9 +144,13 @@ public class LLVMDataAllocator implements DataAllocator {
 				container(data.getPointer().getAllocation());
 
 		if (!allocation.isTypeAllocated()) {
+
+			final NativeBuffer ids = getModule().ids();
+
 			allocation.setUniqueTypePtr(refineType(
 					getModulePtr(),
-					data.getInstance().getId().getId(),
+					ids.writeCodeId(data.getInstance().getId()),
+					ids.length(),
 					allocation.getTypePtr(),
 					allocation.getTypeDataPtr(),
 					data.getInstance().isPacked()));
@@ -167,17 +175,21 @@ public class LLVMDataAllocator implements DataAllocator {
 		assert allocation.llvmId().getGlobalId().equals(global.getId()) :
 			"Error closing global data " + global;
 
+		final NativeBuffer ids = getModule().ids();
+
 		if (!allocation.isTypeAllocated()) {
 			allocation.setUniqueTypePtr(refineType(
 					getModulePtr(),
-					global.getId().detail("type").toString(),
+					ids.writeCodeId(global.getId().detail("type")),
+					ids.length(),
 					allocation.getTypePtr(),
 					allocation.getTypeDataPtr(),
 					global.getInstance().isPacked()));
 		}
 		allocation.setNativePtr(allocateGlobal(
 				getModulePtr(),
-				global.getId().getId(),
+				ids.writeCodeId(global.getId()),
+				ids.length(),
 				allocation.getTypePtr(),
 				global.isConstant(),
 				global.isExported()));
@@ -195,9 +207,12 @@ public class LLVMDataAllocator implements DataAllocator {
 			+ ", but " + type.pointer(type.getGenerator()).getAllocation()
 			+ " expected";
 
+		final NativeBuffer ids = getModule().ids();
+
 		allocation.setUniqueTypePtr(refineType(
 				getModulePtr(),
-				type.codeId(type.getGenerator()).getId(),
+				ids.writeCodeId(type.codeId(type.getGenerator())),
+				ids.length(),
 				allocation.getTypePtr(),
 				allocation.getTypeDataPtr(),
 				type.isPacked()));
@@ -424,7 +439,8 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private static native long binaryConstant(
 			long modulePtr,
-			String id,
+			long id,
+			int idLen,
 			byte[] data,
 			int start,
 			int end,
@@ -441,14 +457,16 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private static native long allocateGlobal(
 			long modulePtr,
-			String id,
+			long id,
+			int idLen,
 			long typePtr,
 			boolean constant,
 			boolean exported);
 
 	private static native long refineType(
 			long modulePtr,
-			String id,
+			long id,
+			int idLen,
 			long typePtr,
 			long typeDataPtr,
 			boolean packed);

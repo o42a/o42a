@@ -19,13 +19,14 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
+import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.FuncLLOp;
 import org.o42a.backend.llvm.code.op.PtrLLOp;
 import org.o42a.backend.llvm.code.rec.*;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLDAlloc;
 import org.o42a.codegen.CodeId;
@@ -77,109 +78,118 @@ public class LLStruct<S extends StructOp<S>>
 	@Override
 	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new AnyRecLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Int8recLLOp int8(CodeId id, Code code, Int8rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Int8recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Int16recLLOp int16(CodeId id, Code code, Int16rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Int16recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Int32recLLOp int32(CodeId id, Code code, Int32rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Int32recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Int64recLLOp int64(CodeId id, Code code, Int64rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Int64recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Fp32recLLOp fp32(CodeId id, Code code, Fp32rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Fp32recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public Fp64recLLOp fp64(CodeId id, Code code, Fp64rec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new Fp64recLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public AnyRecLLOp ptr(CodeId id, Code code, AnyRec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new AnyRecLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public DataRecLLOp ptr(CodeId id, Code code, DataRec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new DataRecLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
@@ -188,26 +198,28 @@ public class LLStruct<S extends StructOp<S>>
 			Code code,
 			StructRec<SS> field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new StructRecLLOp<SS>(
 				id,
 				AUTO_ALLOC_CLASS,
 				field.getType(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
 	public RelRecLLOp relPtr(CodeId id, Code code, RelRec field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new RelRecLLOp(
 				id,
 				getAllocClass(),
 				nextPtr,
-				field(nextPtr, id, field));
+				field(id, llvm, nextPtr, field));
 	}
 
 	@Override
@@ -216,14 +228,15 @@ public class LLStruct<S extends StructOp<S>>
 			Code code,
 			Type<SS> field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return field.op(new LLStruct<SS>(
 				id,
 				getAllocClass(),
 				field,
 				nextPtr,
-				field(nextPtr, id, field.pointer(code.getGenerator()))));
+				field(id, llvm, nextPtr, field.pointer(code.getGenerator()))));
 	}
 
 	@Override
@@ -232,13 +245,14 @@ public class LLStruct<S extends StructOp<S>>
 			Code code,
 			FuncRec<F> field) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final long nextPtr = llvm.nextPtr();
 
 		return new FuncLLOp<F>(
 				id,
 				CONSTANT_ALLOC_CLASS,
 				nextPtr,
-				field(nextPtr, id, field),
+				field(id, llvm, nextPtr, field),
 				field.getSignature());
 	}
 
@@ -257,15 +271,23 @@ public class LLStruct<S extends StructOp<S>>
 		return "(" + this.type.getType().getId() + "*) " + getId();
 	}
 
-	private final long field(long blockPtr, CodeId id, Data<?> field) {
-		return field(blockPtr, id, field.getPointer());
+	private final long field(
+			CodeId id,
+			LLCode code,
+			long blockPtr,
+			Data<?> field) {
+		return field(id, code, blockPtr, field.getPointer());
 	}
 
-	private final long field(long blockPtr, CodeId id, Ptr<?> pointer) {
+	private final long field(
+			CodeId id,
+			LLCode code,
+			long blockPtr,
+			Ptr<?> pointer) {
 
 		final LLDAlloc<?> allocation =
 				(LLDAlloc<?>) pointer.getAllocation();
-		final long field = field(blockPtr, id, allocation);
+		final long field = field(id, code, blockPtr, allocation);
 
 		assert field != 0L :
 			pointer + " is not inside of " + this.type.getType();
@@ -274,8 +296,9 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	private long field(
-			long blockPtr,
 			CodeId id,
+			LLCode code,
+			long blockPtr,
 			LLDAlloc<?> allocation) {
 
 		final ContainerLLDAlloc<?> enclosing = allocation.getEnclosing();
@@ -283,17 +306,22 @@ public class LLStruct<S extends StructOp<S>>
 		if (enclosing == null) {
 			return 0L;
 		}
+
+		final NativeBuffer ids = code.getModule().ids();
+
 		if (enclosing.getTypePtr() == this.type.getTypePtr()) {
 			return field(
 					blockPtr,
-					id.getId(),
+					ids.writeCodeId(id),
+					ids.length(),
 					getNativePtr(),
 					allocation.llvmId().getIndex());
 		}
 
 		final CodeId enclosingId =
 				id.detail("enc").detail(enclosing.getType().getId());
-		final long enclosingField = field(blockPtr, enclosingId, enclosing);
+		final long enclosingField =
+				field(enclosingId, code, blockPtr, enclosing);
 
 		if (enclosingField == 0L) {
 			return 0L;
@@ -303,7 +331,8 @@ public class LLStruct<S extends StructOp<S>>
 
 		return field(
 				blockPtr,
-				enclosingId.anonymous(index).toString(),
+				ids.writeCodeId(enclosingId.anonymous(index)),
+				ids.length(),
 				enclosingField,
 				index);
 	}

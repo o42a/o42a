@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    binaryConstant
- * Signature: (JLjava/lang/String;[BIIZ)J
+ * Signature: (JJI[BIIZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant
-  (JNIEnv *, jclass, jlong, jstring, jbyteArray, jint, jint, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jint, jbyteArray, jint, jint, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -42,18 +42,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_alloca
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateGlobal
- * Signature: (JLjava/lang/String;JZZ)J
+ * Signature: (JJIJZZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateGlobal
-  (JNIEnv *, jclass, jlong, jstring, jlong, jboolean, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jboolean, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    refineType
- * Signature: (JLjava/lang/String;JJZ)J
+ * Signature: (JJIJJZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator

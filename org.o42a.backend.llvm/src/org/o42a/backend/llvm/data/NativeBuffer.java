@@ -42,6 +42,11 @@ public final class NativeBuffer {
 	}
 
 	public final long writeCodeId(CodeId id) {
+		if (id == null) {
+			this.buffer.rewind();
+			this.buffer.limit(0);
+			return 0L;
+		}
 		id.write(reset(id.length()));
 		return this.nativePtr;
 	}

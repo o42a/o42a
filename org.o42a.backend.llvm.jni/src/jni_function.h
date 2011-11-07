@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_LLSignatureWriter
  * Method:    createSignature
- * Signature: (JLjava/lang/String;J[J)J
+ * Signature: (JJIJ[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlongArray);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlongArray);
 
 #ifdef __cplusplus
 }
@@ -29,18 +29,18 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_LLFunction
  * Method:    externFunction
- * Signature: (JLjava/lang/String;J)J
+ * Signature: (JJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_externFunction
-  (JNIEnv *, jclass, jlong, jstring, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLFunction
  * Method:    createFunction
- * Signature: (JLjava/lang/String;JZ)J
+ * Signature: (JJIJZ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_createFunction
-  (JNIEnv *, jclass, jlong, jstring, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLFunction
@@ -72,10 +72,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLFunc
  * Method:    call
- * Signature: (JLjava/lang/String;J[J)J
+ * Signature: (JJIJ[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLFunc_call
-  (JNIEnv *, jclass, jlong, jstring, jlong, jlongArray);
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlongArray);
 
 #ifdef __cplusplus
 }

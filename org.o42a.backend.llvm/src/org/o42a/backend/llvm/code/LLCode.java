@@ -310,8 +310,12 @@ public abstract class LLCode implements CodeWriter {
 			targetBlockPtrs[i] = nextPtr;
 		}
 
-		final long targetPtr =
-				phiN(nextPtr(), this.code.opId(null).getId(), blocksAndAddrs);
+		final NativeBuffer ids = getModule().ids();
+		final long targetPtr = phiN(
+				nextPtr(),
+				ids.writeCodeId(this.code.opId(null)),
+				ids.length(),
+				blocksAndAddrs);
 
 		return new LLMultiCodePos(targetPtr, targetBlockPtrs);
 	}
@@ -443,25 +447,31 @@ public abstract class LLCode implements CodeWriter {
 		final ContainerLLDAlloc<S> type =
 				(ContainerLLDAlloc<S>) allocation;
 		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
 
 		return type.getType().op(new LLStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				type,
 				nextPtr,
-				allocateStruct(nextPtr, id.getId(), type.getTypePtr())));
+				allocateStruct(
+						nextPtr,
+						ids.writeCodeId(id),
+						id.length(),
+						type.getTypePtr())));
 	}
 
 	@Override
 	public AnyRecLLOp allocatePtr(CodeId id) {
 
 		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
 
 		return new AnyRecLLOp(
 				id,
 				AUTO_ALLOC_CLASS,
 				nextPtr,
-				allocatePtr(nextPtr, id.toString()));
+				allocatePtr(nextPtr, ids.writeCodeId(id), ids.length()));
 	}
 
 	@Override
@@ -472,13 +482,18 @@ public abstract class LLCode implements CodeWriter {
 		final ContainerLLDAlloc<S> alloc =
 				(ContainerLLDAlloc<S>) allocation;
 		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
 
 		return new StructRecLLOp<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				alloc.getType(),
 				nextPtr,
-				allocateStructPtr(nextPtr, id.getId(), alloc.getTypePtr()));
+				allocateStructPtr(
+						nextPtr,
+						ids.writeCodeId(id),
+						id.length(),
+						alloc.getTypePtr()));
 	}
 
 	@Override
@@ -495,13 +510,15 @@ public abstract class LLCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 		final LLOp<O> o1 = llvm(op1);
 		final LLOp<O> o2 = llvm(op2);
+		final NativeBuffer ids = getModule().ids();
 
 		return o1.create(
 				id,
 				nextPtr,
 				phi2(
 						nextPtr,
-						id.getId(),
+						ids.writeCodeId(id),
+						ids.length(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
 						o2.getBlockPtr(),
@@ -519,13 +536,15 @@ public abstract class LLCode implements CodeWriter {
 		final long nextPtr = nextPtr();
 		final CodeId selectId =
 				id != null ? id : condition.getId().sub("select");
+		final NativeBuffer ids = getModule().ids();
 
 		return trueOp.create(
 				id,
 				nextPtr,
 				select(
 						nextPtr,
-						selectId.getId(),
+						ids.writeCodeId(selectId),
+						ids.length(),
 						condition.getNativePtr(),
 						trueOp.getNativePtr(),
 						falseOp.getNativePtr()));
@@ -593,8 +612,8 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long createBlock(
 			long functionPtr,
-			long idPtr,
-			int idLength);
+			long id,
+			int idLen);
 
 	static native long stackSave(long blockPtr);
 
@@ -637,21 +656,25 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long allocatePtr(
 			long blockPtr,
-			String id);
+			long id,
+			int idLen);
 
 	private static native long allocateStructPtr(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long typePtr);
 
 	private static native long allocateStruct(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long typePtr);
 
 	private static native long phi2(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long block1ptr,
 			long value1,
 			long block2ptr,
@@ -659,12 +682,14 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long phiN(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long[] blockAndValuePtrs);
 
 	private static native long select(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long conditionPtr,
 			long truePtr,
 			long flsePtr);

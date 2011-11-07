@@ -24,6 +24,7 @@ import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -192,9 +193,13 @@ public final class LLFunction<F extends Func<F>>
 
 	@Override
 	protected long createFirtsBlock() {
+
+		final NativeBuffer ids = getFunction().getModule().ids();
+
 		this.functionPtr = createFunction(
 				getModule().getNativePtr(),
-				getId().getId(),
+				ids.writeCodeId(getId()),
+				ids.length(),
 				getModule().nativePtr(this.function.getSignature()),
 				this.function.isExported());
 		return createBlock(this, getId());
@@ -202,12 +207,14 @@ public final class LLFunction<F extends Func<F>>
 
 	static native long externFunction(
 			long modulePtr,
-			String name,
+			long id,
+			int idLen,
 			long signaturePtr);
 
 	private static native long createFunction(
 			long modulePtr,
-			String name,
+			long id,
+			int idLen,
 			long funcTypePtr,
 			boolean exported);
 

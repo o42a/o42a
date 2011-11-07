@@ -23,12 +23,10 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.rec.RecCOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.IntOp;
-import org.o42a.codegen.code.op.RecOp;
 
 
 public abstract class IntCOp<O extends IntOp<O>, T extends Number>
@@ -37,34 +35,6 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 	public IntCOp(CCode<?> code, O underlying, T constant) {
 		super(code, underlying, constant);
-	}
-
-	@Override
-	public final O atomicAdd(CodeId id, Code code, RecOp<?, O> to) {
-
-		final CCode<?> ccode = cast(code);
-		@SuppressWarnings("unchecked")
-		final RecCOp<?, O, T> cto = (RecCOp<?, O, T>) to;
-		final O underlyingSum = getUnderlying().atomicAdd(
-				id,
-				ccode.getUnderlying(),
-				cto.getUnderlying());
-
-		return create(ccode, underlyingSum, null);
-	}
-
-	@Override
-	public final O atomicSub(CodeId id, Code code, RecOp<?, O> from) {
-
-		final CCode<?> ccode = cast(code);
-		@SuppressWarnings("unchecked")
-		final RecCOp<?, O, T> cfrom = (RecCOp<?, O, T>) from;
-		final O underlyingDiff = getUnderlying().atomicSub(
-				id,
-				ccode.getUnderlying(),
-				cfrom.getUnderlying());
-
-		return create(ccode, underlyingDiff, null);
 	}
 
 	@Override

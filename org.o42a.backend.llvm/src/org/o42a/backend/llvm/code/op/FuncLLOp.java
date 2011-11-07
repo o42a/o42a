@@ -19,9 +19,12 @@
 */
 package org.o42a.backend.llvm.code.op;
 
+import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
+import org.o42a.backend.llvm.code.LLCode;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -54,14 +57,20 @@ public final class FuncLLOp<F extends Func<F>>
 	@Override
 	public final F load(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId = derefId(id, code);
 
 		return getSignature().op(new LLFunc<F>(
 				resultId,
 				getSignature(),
 				nextPtr,
-				load(nextPtr, resultId.getId(), getNativePtr())));
+				load(
+						nextPtr,
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override

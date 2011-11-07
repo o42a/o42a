@@ -24,7 +24,9 @@ import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
+import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
@@ -61,7 +63,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 	@Override
 	public void call(Code code, Op... args) {
-		call(nextPtr(code), null, args);
+		call(null, code, nextPtr(code), args);
 	}
 
 	@Override
@@ -69,7 +71,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Int8llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Int8llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Int16llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Int16llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -85,7 +87,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Int32llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Int32llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -93,7 +95,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Int64llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Int64llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -101,7 +103,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Fp32llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Fp32llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -109,7 +111,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new Fp64llOp(id, nextPtr, call(nextPtr, id, args));
+		return new Fp64llOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -117,7 +119,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final long nextPtr = nextPtr(code);
 
-		return new BoolLLOp(id, nextPtr, call(nextPtr, id, args));
+		return new BoolLLOp(id, nextPtr, call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -129,7 +131,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				id,
 				getAllocClass(),
 				nextPtr,
-				call(nextPtr, id, args));
+				call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -141,7 +143,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				id,
 				getAllocClass(),
 				nextPtr,
-				call(nextPtr, id, args));
+				call(id, code, nextPtr, args));
 	}
 
 	@Override
@@ -158,11 +160,12 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				AUTO_ALLOC_CLASS,
 				type,
 				nextPtr,
-				call(nextPtr, id, args)));
+				call(id, code, nextPtr, args)));
 	}
 
-	private long call(long blockPtr, CodeId id, Op[] args) {
+	private long call(CodeId id, Code code, long blockPtr, Op[] args) {
 
+		final NativeBuffer ids = LLCode.llvm(code).getModule().ids();
 		final long[] argPtrs = new long[args.length];
 
 		for (int i = 0; i < args.length; ++i) {
@@ -171,14 +174,16 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		return call(
 				blockPtr,
-				id != null ? id.toString() : null,
+				ids.writeCodeId(id),
+				ids.length(),
 				getNativePtr(),
 				argPtrs);
 	}
 
 	private static native long call(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long functionPtr,
 			long[] argPtrs);
 

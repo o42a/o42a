@@ -19,10 +19,12 @@
 */
 package org.o42a.backend.llvm.code.op;
 
+import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
+import org.o42a.backend.llvm.code.LLCode;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
@@ -64,7 +66,9 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 	@Override
 	public AnyLLOp offset(CodeId id, Code code, PtrOp<?> from) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId;
 
 		if (id != null) {
@@ -79,7 +83,8 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 				nextPtr,
 				offsetBy(
 						nextPtr,
-						resultId.getId(),
+						ids.writeCodeId(resultId),
+						ids.length(),
 						nativePtr(from),
 						getNativePtr()));
 	}
@@ -99,7 +104,8 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 
 	private static native long offsetBy(
 			long blockPtr,
-			String id,
+			long id,
+			int idLen,
 			long fromPtr,
 			long byPtr);
 

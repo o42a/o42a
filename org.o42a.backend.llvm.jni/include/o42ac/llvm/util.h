@@ -33,27 +33,6 @@ inline jlong to_ptr(const void* object) {
 	return reinterpret_cast<jlong>(object);
 }
 
-class jStringRef : public StringRef {
-
-	JNIEnv *const env;
-	jstring const string;
-
-public:
-
-	jStringRef(JNIEnv *_env, jstring _string) :
-		StringRef(
-				_env->GetStringUTFChars(_string, NULL),
-				_env->GetStringUTFLength(_string)),
-		env(_env),
-		string(_string) {
-	}
-
-	inline ~jStringRef() {
-		this->env->ReleaseStringUTFChars(this->string, data());
-	}
-
-};
-
 template<typename X, typename I> class jArrayBase {
 protected:
 

@@ -22,12 +22,15 @@ package org.o42a.backend.llvm.code;
 import static org.o42a.backend.llvm.id.LLVMId.extenFuncId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.backend.*;
+import org.o42a.codegen.code.backend.CodeBackend;
+import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
@@ -61,9 +64,11 @@ public class LLVMCodeBackend implements CodeBackend {
 			CodeId id,
 			Signature<F> signature) {
 
+		final NativeBuffer ids = this.module.ids();
 		final long functionPtr = LLFunction.externFunction(
 				this.module.getNativePtr(),
-				id.getId(),
+				ids.writeCodeId(id),
+				ids.length(),
 				getModule().nativePtr(signature));
 
 		return new LLFAlloc<F>(
