@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    bufferPtr
+ * Signature: (Ljava/nio/ByteBuffer;)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_bufferPtr
+  (JNIEnv *, jclass, jobject);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    parseArgs
  * Signature: ([[B)V
  */
@@ -42,10 +50,10 @@ JNIEXPORT jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabl
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    createModule
- * Signature: (Ljava/lang/String;)J
+ * Signature: (JI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_createModule
-  (JNIEnv *, jclass, jstring);
+  (JNIEnv *, jclass, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule

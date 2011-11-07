@@ -29,6 +29,7 @@ import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLSignature;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
@@ -43,11 +44,13 @@ public final class LLVMModule {
 	private final String id;
 	private final String inputFilename;
 	private final String inputEncoding;
-	private final long nativePtr;
+	private long nativePtr;
 
 	private final LLVMDataAllocator dataAllocator;
 	private final LLVMDataWriter dataWriter;
 	private final LLVMCodeBackend codeBackend;
+
+	private final NativeBuffer ids;
 
 	private long voidType;
 	private long int8type;
@@ -75,17 +78,22 @@ public final class LLVMModule {
 
 		this.inputEncoding = decodeArg(inputEncoding());
 
-		this.nativePtr = createModule(this.id);
-		assert this.nativePtr != 0 :
-			"Failed to create LLVM module " + id;
+		this.ids = new NativeBuffer(512);
 
 		this.dataAllocator = new LLVMDataAllocator(this);
 		this.dataWriter = new LLVMDataWriter(this);
 		this.codeBackend = new LLVMCodeBackend(this);
+
 	}
 
 	public final void init(LLVMGenerator generator) {
 		this.generator = generator;
+		this.nativePtr = createModule(
+				ids().writeCodeId(generator.id(this.id)),
+				ids().length());
+
+		assert this.nativePtr != 0 :
+			"Failed to create LLVM module " + this.id;
 	}
 
 	public final LLVMGenerator getGenerator() {
@@ -122,6 +130,14 @@ public final class LLVMModule {
 
 	public final LLVMCodeBackend codeBackend() {
 		return this.codeBackend;
+	}
+
+	public final NativeBuffer ids() {
+		return this.ids;
+	}
+
+	public static final void writeCodeId(CodeId id, ByteBuffer out) {
+		id.write(out);
 	}
 
 	public final long voidType() {
@@ -232,6 +248,8 @@ public final class LLVMModule {
 		destroy();
 	}
 
+	static native long bufferPtr(ByteBuffer buffer);
+
 	private static native void parseArgs(byte[][] args);
 
 	private static native byte[] inputFilename();
@@ -240,7 +258,7 @@ public final class LLVMModule {
 
 	private static native boolean debugEnabled();
 
-	private static native long createModule(String id);
+	private static native long createModule(long id, int idLen);
 
 	private static native boolean write(long modulePtr);
 

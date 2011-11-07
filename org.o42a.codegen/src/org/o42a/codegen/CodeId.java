@@ -19,6 +19,10 @@
 */
 package org.o42a.codegen;
 
+import static org.o42a.util.string.StringCodec.writeASCII;
+
+import java.nio.ByteBuffer;
+
 
 public abstract class CodeId implements Cloneable {
 
@@ -88,6 +92,14 @@ public abstract class CodeId implements Cloneable {
 
 	public boolean compatibleWith(CodeIdFactory factory) {
 		return false;
+	}
+
+	public final int length() {
+		return getId().length();
+	}
+
+	public final void write(ByteBuffer out) {
+		writeASCII(getId(), out);
 	}
 
 	@Override

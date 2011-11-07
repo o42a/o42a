@@ -103,12 +103,12 @@ static cl::alias ShortOutFormat(
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
-		targetData(NULL),
-		functionPassManager(NULL),
+		targetData(),
+		functionPassManager(),
 		types(),
-		stackSaveFunc(NULL),
-		stackRestoreFunc(NULL),
-		hostMachine(false) {
+		stackSaveFunc(),
+		stackRestoreFunc(),
+		hostMachine() {
 }
 
 BackendModule::~BackendModule() {

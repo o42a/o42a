@@ -69,7 +69,7 @@ public:
 
 	Constant *getStackRestoreFunc();
 
-	bool validateFunction(Function*);
+	bool validateFunction(Function *);
 
 	bool writeCode();
 

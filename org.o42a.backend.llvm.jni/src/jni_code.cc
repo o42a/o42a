@@ -33,13 +33,14 @@ using namespace llvm;
 
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
 		jlong functionPtr,
-		jstring id) {
+		jlong idData,
+		jint idLength) {
 
 	Function *function = from_ptr<Function>(functionPtr);
-	jStringRef blockId(env, id);
+	StringRef blockId(from_ptr<char>(idData), idLength);
 
 	BasicBlock *block =
 			BasicBlock::Create(function->getContext(), blockId, function);

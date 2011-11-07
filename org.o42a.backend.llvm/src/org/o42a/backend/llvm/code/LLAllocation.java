@@ -54,7 +54,7 @@ final class LLAllocation extends LLCode implements AllocationWriter {
 
 	@Override
 	protected long createFirtsBlock() {
-		return createBlock(getFunction().getFunctionPtr(), getId().getId());
+		return createBlock(getFunction(), getId());
 	}
 
 }

@@ -24,14 +24,14 @@ import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 
 import org.o42a.util.DataAlignment;
 
 
 public class StringCodec {
+
+	private static final char MAX_ASCII_CHAR = 0x7f;
 
 	public static boolean canonicalName(String in, StringBuilder out) {
 
@@ -278,16 +278,35 @@ public class StringCodec {
 		return result;
 	}
 
-	public static byte[] nullTermASCIIString(String string) {
+	public static void writeASCII(CharSequence string, ByteBuffer out) {
 
-		final CharsetEncoder encoder = Charset.forName("ASCII").newEncoder();
+		final int length = string.length();
+
+		for (int i = 0; i < length; ++i) {
+
+			final char c = string.charAt(i);
+
+			assert c < MAX_ASCII_CHAR :
+				"Not an ASCII character: " + c;
+
+			out.put((byte) c);
+		}
+	}
+
+	public static byte[] nullTermASCIIString(CharSequence string) {
+
 		final int length = string.length();
 		final byte[] result = new byte[length + 1];
 
-		final CharBuffer chars = CharBuffer.wrap(string);
-		final ByteBuffer bytes = ByteBuffer.wrap(result);
+		for (int i = 0; i < length; ++i) {
 
-		encoder.encode(chars, bytes, true);
+			final char c = string.charAt(i);
+
+			assert c < MAX_ASCII_CHAR :
+				"Not an ASCII character: " + c;
+
+			result[i] = (byte) c;
+		}
 
 		return result;
 	}

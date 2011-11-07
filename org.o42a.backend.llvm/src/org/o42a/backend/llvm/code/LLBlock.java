@@ -40,7 +40,7 @@ final class LLBlock extends LLCode {
 
 	@Override
 	protected long createFirtsBlock() {
-		return createBlock(getFunction().getFunctionPtr(), getId().getId());
+		return createBlock(getFunction(), getId());
 	}
 
 }
