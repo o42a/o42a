@@ -55,6 +55,8 @@ public:
 
 	static const std::string *getInputFilename();
 
+	static const std::string *getInputEncoding();
+
 	static bool isDebugEnabled();
 
 	static BackendModule *createBackend(StringRef &ModuleID);

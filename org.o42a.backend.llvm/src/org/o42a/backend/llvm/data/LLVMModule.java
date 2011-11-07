@@ -26,8 +26,8 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 import org.o42a.backend.llvm.LLVMGenerator;
-import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.code.LLSignature;
+import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -41,7 +41,8 @@ public final class LLVMModule {
 	}
 
 	private final String id;
-	private String inputFilename;
+	private final String inputFilename;
+	private final String inputEncoding;
 	private final long nativePtr;
 
 	private final LLVMDataAllocator dataAllocator;
@@ -72,6 +73,8 @@ public final class LLVMModule {
 			this.id = "module";
 		}
 
+		this.inputEncoding = decodeArg(inputEncoding());
+
 		this.nativePtr = createModule(this.id);
 		assert this.nativePtr != 0 :
 			"Failed to create LLVM module " + id;
@@ -81,7 +84,7 @@ public final class LLVMModule {
 		this.codeBackend = new LLVMCodeBackend(this);
 	}
 
-	public void init(LLVMGenerator generator) {
+	public final void init(LLVMGenerator generator) {
 		this.generator = generator;
 	}
 
@@ -89,19 +92,23 @@ public final class LLVMModule {
 		return this.generator;
 	}
 
-	public String getId() {
+	public final String getId() {
 		return this.id;
 	}
 
-	public String getInputFilename() {
+	public final String getInputFilename() {
 		return this.inputFilename;
 	}
 
-	public boolean isDebug() {
+	public final String getInputEncoding() {
+		return this.inputEncoding;
+	}
+
+	public final boolean isDebug() {
 		return debugEnabled();
 	}
 
-	public long getNativePtr() {
+	public final long getNativePtr() {
 		return this.nativePtr;
 	}
 
@@ -228,6 +235,8 @@ public final class LLVMModule {
 	private static native void parseArgs(byte[][] args);
 
 	private static native byte[] inputFilename();
+
+	private static native byte[] inputEncoding();
 
 	private static native boolean debugEnabled();
 

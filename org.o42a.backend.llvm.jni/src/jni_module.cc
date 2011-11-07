@@ -84,6 +84,29 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputFilename(
 	return array;
 }
 
+jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputEncoding(
+		JNIEnv *env,
+		jclass) {
+
+	const std::string *encoding = o42ac::BackendModule::getInputEncoding();
+
+	if (!encoding) {
+		return NULL;
+	}
+
+	const size_t len = encoding->length();
+	jbyteArray array = env->NewByteArray(len);
+	jbyte *items = env->GetByteArrayElements(array, NULL);
+
+	for (size_t i = 0; i < len; ++i) {
+		items[i] = encoding->at(i);
+	}
+
+	env->ReleaseByteArrayElements(array, items, JNI_COMMIT);
+
+	return array;
+}
+
 jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
 		JNIEnv *,
 		jclass) {

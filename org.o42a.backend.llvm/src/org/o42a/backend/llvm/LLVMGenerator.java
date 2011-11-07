@@ -47,6 +47,10 @@ public class LLVMGenerator extends AbstractGenerator {
 		return this.module.getInputFilename();
 	}
 
+	public final String getInputEncoding() {
+		return this.module.getInputEncoding();
+	}
+
 	@Override
 	public DataAllocator dataAllocator() {
 		return this.module.dataAllocator();

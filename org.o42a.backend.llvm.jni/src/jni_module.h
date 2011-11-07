@@ -25,6 +25,14 @@ JNIEXPORT jbyteArray JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_inputFil
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    inputEncoding
+ * Signature: ()[B
+ */
+JNIEXPORT jbyteArray JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_inputEncoding
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    debugEnabled
  * Signature: ()Z
  */
