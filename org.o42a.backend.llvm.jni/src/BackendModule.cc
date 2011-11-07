@@ -45,17 +45,23 @@ using namespace llvm;
 
 namespace o42ac {
 
-static cl::opt<std::string> OutputFilename(
-		"o",
-		cl::Prefix,
-		cl::ValueRequired,
-		cl::desc("Output file name. Print to standard output if omitted."),
-		cl::value_desc("output file"));
-
 static cl::opt<std::string> InputFilename(
 		cl::Positional,
-		cl::desc("Input file name."),
+		cl::desc("Input file name"),
 		cl::value_desc("input file"));
+
+static cl::opt<std::string> InputEncoding(
+		"encoding",
+		cl::Optional,
+		cl::ValueRequired,
+		cl::desc("Encoding of input files (UTF-8 by default)"),
+		cl::value_desc("encoding"));
+
+static cl::alias ShortInputEncoding(
+		"E",
+		cl::aliasopt(InputEncoding),
+		cl::Prefix,
+		cl::desc("Alias of -encoding option"));
 
 static cl::opt<cl::boolOrDefault> Debug(
 		"rt-debug",
@@ -63,8 +69,15 @@ static cl::opt<cl::boolOrDefault> Debug(
 		cl::desc(
 				"Whether compiled code contains run-time debug info. "
 				"Disabled by default. "
-				"Enabled if value is omitted."),
+				"Enabled if value is omitted"),
 		cl::value_desc("0/1"));
+
+static cl::opt<std::string> OutputFilename(
+		"o",
+		cl::Prefix,
+		cl::ValueRequired,
+		cl::desc("Output file name. Print to standard output if omitted"),
+		cl::value_desc("output file"));
 
 enum OutputFormat {
 	OUTF_LL,
@@ -81,6 +94,12 @@ static cl::opt<OutputFormat> OutFormat(
 				clEnumValN(OUTF_ASM, "s", "assembly"),
 				clEnumValN(OUTF_OBJ, "o", "object (the default)"),
 				clEnumValEnd));
+
+static cl::alias ShortOutFormat(
+		"F",
+		cl::aliasopt(OutFormat),
+		cl::Prefix,
+		cl::desc("Alias of -format option"));
 
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
@@ -119,6 +138,13 @@ const std::string *BackendModule::getInputFilename() {
 		return NULL;
 	}
 	return &InputFilename;
+}
+
+const std::string *BackendModule::getInputEncoding() {
+	if (!InputEncoding.getNumOccurrences()) {
+		return NULL;
+	}
+	return &InputEncoding;
 }
 
 bool BackendModule::isDebugEnabled() {

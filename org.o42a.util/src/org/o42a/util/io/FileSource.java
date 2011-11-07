@@ -34,6 +34,10 @@ public class FileSource extends Source {
 	private final String name;
 	private String encoding = DEFAULT_ENCODING;
 
+	public FileSource(File root, String path) {
+		this((String) null, root, path);
+	}
+
 	public FileSource(String name, File root, String path) {
 		assert root.isDirectory() :
 			"Root is not a directory: " + root;
