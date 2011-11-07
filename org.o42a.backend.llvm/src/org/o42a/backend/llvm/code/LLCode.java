@@ -26,6 +26,7 @@ import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
 import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
@@ -568,9 +569,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	private long createNextBlock() {
-		return createBlock(
-				getFunction().getFunctionPtr(),
-				getId().getId() + '-' + (++this.blockIdx));
+		return createBlock(getFunction(), getId().anonymous(++this.blockIdx));
 	}
 
 	private long setNextPtr(final long nextPtr) {
@@ -582,7 +581,20 @@ public abstract class LLCode implements CodeWriter {
 		this.blockPtr = 0;
 	}
 
-	static native long createBlock(long functionPtr, String name);
+	static long createBlock(LLFunction<?> function, CodeId id) {
+
+		final NativeBuffer ids = function.getModule().ids();
+
+		return createBlock(
+				function.getFunctionPtr(),
+				ids.writeCodeId(id),
+				ids.length());
+	}
+
+	private static native long createBlock(
+			long functionPtr,
+			long idPtr,
+			int idLength);
 
 	static native long stackSave(long blockPtr);
 

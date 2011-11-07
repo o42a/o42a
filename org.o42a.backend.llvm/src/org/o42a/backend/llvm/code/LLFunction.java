@@ -197,7 +197,7 @@ public final class LLFunction<F extends Func<F>>
 				getId().getId(),
 				getModule().nativePtr(this.function.getSignature()),
 				this.function.isExported());
-		return createBlock(this.functionPtr, getId().getId());
+		return createBlock(this, getId());
 	}
 
 	static native long externFunction(

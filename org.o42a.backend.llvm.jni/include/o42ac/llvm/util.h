@@ -17,11 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <jni.h>
-#include "llvm/ADT/StringRef.h"
-
 #ifndef O42AC_LLVM_UTIL_H
 #define O42AC_LLVM_UTIL_H
+
+#include <jni.h>
+#include "llvm/ADT/StringRef.h"
 
 using namespace llvm;
 

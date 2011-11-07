@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    createBlock
- * Signature: (JLjava/lang/String;)J
+ * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_createBlock
-  (JNIEnv *, jclass, jlong, jstring);
+  (JNIEnv *, jclass, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode

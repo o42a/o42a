@@ -32,6 +32,13 @@
 using namespace llvm;
 
 
+jlong Java_org_o42a_backend_llvm_data_LLVMModule_bufferPtr(
+		JNIEnv *env,
+		jclass,
+		jobject buffer) {
+	return to_ptr(env->GetDirectBufferAddress(buffer));
+}
+
 void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
 		JNIEnv *env,
 		jclass,
@@ -114,11 +121,12 @@ jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
-		JNIEnv *env,
+		JNIEnv *,
 		jclass,
-		jstring id) {
+		jlong id,
+		jint idLen) {
 
-	jStringRef moduleId(env, id);
+	StringRef moduleId(from_ptr<char>(id), idLen);
 	o42ac::BackendModule *module =
 			o42ac::BackendModule::createBackend(moduleId);
 
