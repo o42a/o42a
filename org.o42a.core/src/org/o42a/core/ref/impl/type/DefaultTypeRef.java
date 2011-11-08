@@ -182,7 +182,7 @@ public final class DefaultTypeRef extends TypeRef {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		validate();
+		type(resolver);
 		this.ref.resolveAll(resolver);
 	}
 
