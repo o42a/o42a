@@ -128,6 +128,10 @@ public final class AdapterId extends MemberId {
 			return null;
 		}
 
+		if (this.adapterType != null) {
+			return this.adapterType.upgradeScope(scope);
+		}
+
 		final Obj object = adapterTypeScope.toObject();
 
 		return object.selfRef().toStaticTypeRef().rescope(scope);

@@ -23,11 +23,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
@@ -71,11 +67,6 @@ public abstract class StaticTypeRef extends TypeRef {
 	@Override
 	public StaticTypeRef reproduce(Reproducer reproducer) {
 		return (StaticTypeRef) super.reproduce(reproducer);
-	}
-
-	@Override
-	public final RefOp op(CodeDirs dirs, HostOp host) {
-		return ref().op(host);
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {
@@ -126,18 +117,5 @@ public abstract class StaticTypeRef extends TypeRef {
 			Ref ref,
 			Ref untouchedRef,
 			PrefixPath prefix);
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		type(resolver);
-
-		final Ref ref = ref();
-
-		ref.resolveAll(ref.getScope().walkingResolver(resolver));
-	}
-
-	private Ref ref() {
-		return typeObject(dummyUser()).selfRef();
-	}
 
 }
