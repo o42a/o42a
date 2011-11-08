@@ -49,8 +49,10 @@ public final class ObjectValue implements UseInfo {
 	private final ValuePart claim;
 	private final ValuePart proposition;
 
-	private Usable usable;
-	private Usable explicitUsable;
+	private Usable uses;
+	private Usable clonesUses;
+	private Usable explicitUses;
+	private Usable clonesExplicitUses;
 
 	private boolean fullyResolved;
 
@@ -87,10 +89,10 @@ public final class ObjectValue implements UseInfo {
 
 	@Override
 	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		if (this.usable == null) {
+		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.usable.getUseBy(useCase);
+		return this.uses.getUseBy(useCase);
 	}
 
 	public final Value<?> getValue() {
@@ -230,7 +232,7 @@ public final class ObjectValue implements UseInfo {
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			explicitUsable().useBy(user);
+			explicitUses().useBy(user);
 		}
 		return this;
 	}
@@ -279,25 +281,66 @@ public final class ObjectValue implements UseInfo {
 		}
 	}
 
-	final Usable usable() {
-		if (this.usable != null) {
-			return this.usable;
+	final Usable uses() {
+		if (this.uses != null) {
+			return this.uses;
 		}
 
-		this.usable = simpleUsable(this);
-		getObject().content().useBy(this.usable);
+		final Obj cloneOf = getObject().getCloneOf();
 
-		return this.usable;
+		if (cloneOf != null) {
+			this.uses = cloneOf.value().clonesUses();
+		} else {
+			this.uses = simpleUsable("ValueOf", this.object);
+		}
+		getObject().content().useBy(this.uses);
+
+		return this.uses;
 	}
 
-	final Usable explicitUsable() {
-		if (this.explicitUsable != null) {
-			return this.explicitUsable;
+	final Usable explicitUses() {
+		if (this.explicitUses != null) {
+			return this.explicitUses;
 		}
 
-		this.explicitUsable = simpleUsable("ValueOf", this.object);
+		final Obj cloneOf = getObject().getCloneOf();
 
-		return this.explicitUsable;
+		if (cloneOf != null) {
+			return this.explicitUses = cloneOf.value().clonesExplicitUses();
+		}
+
+		return this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
+	}
+
+	private final Usable clonesUses() {
+		if (this.clonesUses != null) {
+			return this.clonesUses;
+		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesUses = cloneOf.value().clonesUses();
+		}
+
+		return this.clonesUses =
+				simpleUsable("ClonesValuesOf", this.object);
+	}
+
+	private final Usable clonesExplicitUses() {
+		if (this.clonesExplicitUses != null) {
+			return this.clonesExplicitUses;
+		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesExplicitUses =
+					cloneOf.value().clonesExplicitUses();
+		}
+
+		return this.clonesExplicitUses =
+				simpleUsable("ExplicitClonesValuesOf", this.object);
 	}
 
 	private Definitions getAncestorDefinitions() {

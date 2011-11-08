@@ -36,6 +36,7 @@ import org.o42a.util.use.UseInfo;
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	private ArtifactContent content;
+	private ArtifactContent clonesContent;
 	private Ref self;
 	private boolean allResolved;
 	private final A propagatedFrom;
@@ -141,7 +142,28 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		if (this.content != null) {
 			return this.content;
 		}
-		return this.content = new ArtifactContent(this);
+
+		final Artifact<?> cloneOf = getCloneOf();
+
+		if (cloneOf != null) {
+			return this.content = cloneOf.clonesContent();
+		}
+
+		return this.content = new ArtifactContent(this, false);
+	}
+
+	public final ArtifactContent clonesContent() {
+		if (this.clonesContent != null) {
+			return this.clonesContent;
+		}
+
+		final Artifact<?> cloneOf = getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesContent = cloneOf.clonesContent();
+		}
+
+		return this.clonesContent = new ArtifactContent(this, true);
 	}
 
 	public abstract UseInfo fieldUses();

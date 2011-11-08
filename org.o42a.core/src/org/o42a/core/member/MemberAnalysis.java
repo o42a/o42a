@@ -188,20 +188,22 @@ public class MemberAnalysis implements UseInfo {
 			return null;
 		}
 
-		this.runtimeConstructionUses =
-				new MemberUses("RuntimeConstructionOf", getMember());
-
+		final boolean declaration = member.getFirstDeclaration() == member;
 		final Obj owner = member.getMemberOwner().toObject();
 
-		if (owner == null) {
-			// Owner is not an object (i.e. it is local).
-			// Local objects always constructed at run time.
-			this.runtimeConstructionUses.useBy(getDeclarationAnalysis());
-		} else if (field.isClone()) {
-			// Clones are always constructed at run time.
-			this.runtimeConstructionUses.useBy(getDeclarationAnalysis());
+		if (owner == null || field.isClone()) {
+			// Clones and local objects are always constructed at run time.
+			if (declaration) {
+				this.runtimeConstructionUses =
+						new MemberUses("RuntimeConstructionOf", getMember());
+			} else {
+				this.runtimeConstructionUses =
+						getDeclarationAnalysis().runtimeConstructionUses();
+			}
 		} else {
 			// Run time construction status derived from owner.
+			this.runtimeConstructionUses =
+					new MemberUses("RuntimeConstructionOf", getMember());
 			this.runtimeConstructionUses.useBy(
 					owner.type().runtimeConstruction());
 		}
