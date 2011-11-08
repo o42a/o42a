@@ -488,7 +488,7 @@ public abstract class Obj
 	}
 
 	@Override
-	public UseInfo fieldUses() {
+	public final UseInfo fieldUses() {
 		if (this.fieldUses != null) {
 			return this.fieldUses;
 		}
@@ -633,10 +633,6 @@ public abstract class Obj
 		assert assertImplicitSamples(samples);
 
 		if (samples.length != 1) {
-			assert !getScope().isClone() :
-				"Scope " + getScope() + " is clone, but "
-				+ this + " is not, because it has multipole samples: "
-				+ Arrays.toString(samples);
 			return null;
 		}
 
@@ -764,7 +760,7 @@ public abstract class Obj
 		}
 
 		final ObjectType type =
-				type().useBy(scope.toObject().value().usable());
+				type().useBy(scope.toObject().value().uses());
 		boolean hasExplicitAncestor =
 				type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = this.type.getSamples();

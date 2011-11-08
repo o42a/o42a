@@ -40,8 +40,10 @@ public final class ObjectType implements UserInfo {
 	private final Obj object;
 	private Obj lastDefinition;
 	private Usable uses;
+	private Usable clonesUses;
 	private Usable runtimeConstructionUses;
 	private Usable derivationUses;
+	private Usable clonesDerivationUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -230,23 +232,47 @@ public final class ObjectType implements UserInfo {
 			return this.uses;
 		}
 
-		this.uses = simpleUsable(this);
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			this.uses = cloneOf.type().clonesUses();
+		} else {
+			this.uses = simpleUsable(this);
+		}
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
 	}
 
-	private final Usable runtimeConstructionUses() {
+	private final Usable clonesUses() {
+		if (this.clonesUses != null) {
+			return this.clonesUses;
+		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesUses = cloneOf.type().clonesUses();
+		}
+
+		return this.clonesUses = simpleUsable("ClonesOf", this);
+	}
+
+	private Usable runtimeConstructionUses() {
 		if (this.runtimeConstructionUses != null) {
 			return this.runtimeConstructionUses;
 		}
 
 		final Obj object = getObject();
-		final Scope enclosingScope =
-				object.getScope().getEnclosingScope();
+		final Obj cloneOf = object.getCloneOf();
 
-		this.runtimeConstructionUses =
-				simpleUsable("RuntimeConstructionOf", getObject());
+		if (cloneOf != null) {
+			this.runtimeConstructionUses =
+					cloneOf.type().runtimeConstructionUses();
+		} else {
+			this.runtimeConstructionUses =
+					simpleUsable("RuntimeConstructionOf", getObject());
+		}
 
 		final Member member = object.toMember();
 
@@ -257,6 +283,8 @@ public final class ObjectType implements UserInfo {
 		} else {
 
 			final Obj enclosingObject;
+			final Scope enclosingScope =
+					object.getScope().getEnclosingScope();
 			final LocalScope enclosingLocal = enclosingScope.toLocal();
 
 			if (enclosingLocal != null) {
@@ -274,13 +302,6 @@ public final class ObjectType implements UserInfo {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
-
-			final Obj cloneOf = object.getCloneOf();
-
-			if (cloneOf != null) {
-				cloneOf.type().runtimeConstructionUses().useBy(
-						this.runtimeConstructionUses);
-			}
 			if (getObject().getConstructionMode().isRuntime()) {
 				this.runtimeConstructionUses.useBy(getObject().content());
 			}
@@ -295,7 +316,29 @@ public final class ObjectType implements UserInfo {
 		if (this.derivationUses != null) {
 			return this.derivationUses;
 		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.derivationUses = cloneOf.type().clonesDerivationUses();
+		}
+
 		return this.derivationUses = simpleUsable("DerivationOf", getObject());
+	}
+
+	private final Usable clonesDerivationUses() {
+		if (this.clonesDerivationUses != null) {
+			return this.clonesDerivationUses;
+		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesDerivationUses = cloneOf.type().derivationUses();
+		}
+
+		return this.clonesDerivationUses =
+				simpleUsable("ClonesDerivationOf", getObject());
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

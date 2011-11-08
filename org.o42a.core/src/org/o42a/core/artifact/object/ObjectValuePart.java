@@ -124,8 +124,8 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		}
 
 		this.usedBy = simpleUsable(this);
-		getObjectValue().usable().useBy(this.usedBy);
-		this.usedBy.useBy(getObjectValue().explicitUsable());
+		getObjectValue().uses().useBy(this.usedBy);
+		this.usedBy.useBy(getObjectValue().explicitUses());
 
 		return this.usedBy;
 	}

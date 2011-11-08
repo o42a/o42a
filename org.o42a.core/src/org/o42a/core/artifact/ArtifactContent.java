@@ -28,9 +28,11 @@ public class ArtifactContent implements UserInfo {
 
 	private final Artifact<?> artifact;
 	private Usable usable;
+	private final boolean clonesContent;
 
-	ArtifactContent(Artifact<?> artifact) {
+	ArtifactContent(Artifact<?> artifact, boolean clonesContent) {
 		this.artifact = artifact;
+		this.clonesContent = clonesContent;
 	}
 
 	public final Artifact<?> getArtifact() {
@@ -67,7 +69,13 @@ public class ArtifactContent implements UserInfo {
 		if (this.artifact == null) {
 			return super.toString();
 		}
-		return "Content[" + this.artifact + ']';
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(this.clonesContent ? "ClonesContent[" : "Content[");
+		out.append(this.artifact).append(']');
+
+		return out.toString();
 	}
 
 	private final Usable usable() {
