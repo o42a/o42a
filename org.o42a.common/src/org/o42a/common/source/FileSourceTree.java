@@ -56,6 +56,7 @@ public class FileSourceTree extends SourceTree<FileSource> {
 				parent.getRoot(),
 				childDir(parent.getFile()),
 				path));
+		getSource().setCharset(parent.getCharset());
 	}
 
 	public FileSourceTree(FileSourceTree parent, String path) {

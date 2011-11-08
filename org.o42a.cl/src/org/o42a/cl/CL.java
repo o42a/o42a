@@ -85,11 +85,10 @@ public class CL {
 
 		try {
 
-			final FileSource rootSource = rootSource(llvmGenerator);
 			final CL instance = new CL(generator);
 
 			try {
-				instance.compile(rootSource);
+				instance.compile(rootSource(llvmGenerator));
 			} catch (Throwable e) {
 				e.printStackTrace();
 				System.exit(COMPILATION_FAILED);
@@ -100,7 +99,7 @@ public class CL {
 		}
 	}
 
-	private static FileSource rootSource(final LLVMGenerator llvmGenerator) {
+	private static FileSource rootSource(LLVMGenerator llvmGenerator) {
 
 		final String path = llvmGenerator.getInputFilename();
 

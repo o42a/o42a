@@ -28,10 +28,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
-
 
 
 final class FileSourceReader extends SourceReader {
@@ -50,7 +48,7 @@ final class FileSourceReader extends SourceReader {
 		super(source);
 		this.stream = new FileInputStream(source.getFile());
 		this.channel = this.stream.getChannel();
-		this.decoder = Charset.forName(source.getEncoding()).newDecoder();
+		this.decoder = source.getCharset().newDecoder();
 
 		final long size = this.stream.getChannel().size();
 
