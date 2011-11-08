@@ -22,7 +22,6 @@ package org.o42a.core.artifact.object.impl;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
-import static org.o42a.util.use.Usable.simpleUsable;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -32,13 +31,9 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.use.Usable;
-import org.o42a.util.use.UserInfo;
 
 
 public final class ParentObjectStep extends MemberStep {
-
-	private Usable proxyUser;
 
 	public ParentObjectStep(MemberKey memberKey) {
 		super(memberKey);
@@ -58,16 +53,11 @@ public final class ParentObjectStep extends MemberStep {
 			"Attempt to obtain parent of object, but "
 			+ start + " is not an object";
 
-		if (!object.membersResolved()) {
+		if (!resolver.isFullResolution() && !object.membersResolved()) {
 
 			final Scope self = getMemberKey().getOrigin();
 
 			if (start == self) {
-				// Create proxy to not forget the user.
-				if (this.proxyUser == null) {
-					this.proxyUser = simpleUsable("Proxy", this);
-				}
-				this.proxyUser.useBy(resolver);
 
 				final Container result = self.getEnclosingContainer();
 
@@ -77,24 +67,13 @@ public final class ParentObjectStep extends MemberStep {
 			}
 		}
 
-		final UserInfo proxiedUser;
-
-		if (this.proxyUser == null) {
-			proxiedUser = resolver;
-		} else {
-			// Proxy exists. Use it instead of user.
-			this.proxyUser.useBy(resolver);
-			proxiedUser = this.proxyUser;
-		}
-
-		final Member member =
-				resolveMember(resolver, path, index, start);
+		final Member member = resolveMember(resolver, path, index, start);
 
 		if (member == null) {
 			return null;
 		}
 
-		final Container result = member.substance(proxiedUser);
+		final Container result = member.substance(resolver);
 
 		walker.up(object, this, result);
 

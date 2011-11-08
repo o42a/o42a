@@ -129,11 +129,11 @@ public abstract class StaticTypeRef extends TypeRef {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
+		type(resolver);
 
 		final Ref ref = ref();
 
 		ref.resolveAll(ref.getScope().walkingResolver(resolver));
-		validate();
 	}
 
 	private Ref ref() {

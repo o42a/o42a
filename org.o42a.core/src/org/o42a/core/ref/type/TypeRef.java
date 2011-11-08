@@ -21,7 +21,6 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
-import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
@@ -38,13 +37,11 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.Holder;
-import org.o42a.util.use.Usable;
 import org.o42a.util.use.UserInfo;
 
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {
 
-	private final Usable usable = simpleUsable("UsableTypeRef", this);
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
 
@@ -88,12 +85,14 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 	}
 
 	public ObjectType type(UserInfo user) {
-		usable().useBy(user);
 		if (this.type != null) {
-			return this.type.get();
+
+			final ObjectType type = this.type.get();
+
+			return type != null ? type.useBy(user) : null;
 		}
 
-		final Artifact<?> artifact = artifact(usable());
+		final Artifact<?> artifact = artifact(user);
 
 		if (artifact == null) {
 			this.type = new Holder<ObjectType>(null);
@@ -108,7 +107,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return null;
 		}
 
-		final ObjectType result = object.type().useBy(usable());
+		final ObjectType result = object.type().useBy(user);
 
 		this.type = new Holder<ObjectType>(result);
 
@@ -194,10 +193,6 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			Ref ref,
 			Ref untouchedRef,
 			PrefixPath prefix);
-
-	protected final Usable usable() {
-		return this.usable;
-	}
 
 	private TypeRelation relationTo(
 			TypeRef other,
