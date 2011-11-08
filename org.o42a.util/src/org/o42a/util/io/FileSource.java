@@ -23,16 +23,17 @@ import static org.o42a.util.string.StringUtil.removeLeadingChars;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 
 public class FileSource extends Source {
 
-	private static final String DEFAULT_ENCODING = "UTF-8";
+	private static final Charset DEFAULT_CHARSET = Charset.forName("UTF-8");
 
 	private final File root;
 	private final File file;
 	private final String name;
-	private String encoding = DEFAULT_ENCODING;
+	private Charset charset;
 
 	public FileSource(File root, String path) {
 		this((String) null, root, path);
@@ -48,6 +49,7 @@ public class FileSource extends Source {
 
 	public FileSource(FileSource parent, String path) {
 		this(parent.getRoot(), parent.getFile(), path);
+		setCharset(parent.getCharset());
 	}
 
 	public FileSource(File root, File relativeTo, String path) {
@@ -80,12 +82,24 @@ public class FileSource extends Source {
 		return !this.file.isFile();
 	}
 
+	public final Charset getCharset() {
+		return this.charset;
+	}
+
+	public final void setCharset(Charset charset) {
+		this.charset = charset != null ? charset : DEFAULT_CHARSET;
+	}
+
 	public final String getEncoding() {
-		return this.encoding;
+		return this.charset.name();
 	}
 
 	public final void setEncoding(String encoding) {
-		this.encoding = encoding != null ? encoding : DEFAULT_ENCODING;
+		if (encoding != null) {
+			this.charset = Charset.forName(encoding);
+		} else {
+			this.charset = DEFAULT_CHARSET;
+		}
 	}
 
 	@Override
