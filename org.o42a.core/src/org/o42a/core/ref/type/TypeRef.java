@@ -29,6 +29,7 @@ import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
@@ -185,6 +186,12 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 				ref,
 				untouchedRef,
 				prefix);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getRef().resolveAll(resolver);
+		type(resolver);
 	}
 
 	protected abstract TypeRef createReproduction(

@@ -22,7 +22,6 @@ package org.o42a.core.ref.impl.type;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -178,12 +177,6 @@ public final class DefaultTypeRef extends TypeRef {
 				prefix,
 				this.valueStructFinder,
 				valueStruct);
-	}
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		type(resolver);
-		this.ref.resolveAll(resolver);
 	}
 
 }

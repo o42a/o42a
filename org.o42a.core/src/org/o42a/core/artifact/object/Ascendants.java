@@ -178,11 +178,9 @@ public class Ascendants
 				getScope().getEnclosingScope().newResolver(user);
 
 		if (ancestor != null) {
-			ancestor.type(user);
 			ancestor.resolveAll(resolver);
 		}
 		for (Sample sample : getSamples()) {
-			sample.type(user);
 			sample.resolveAll(resolver);
 		}
 	}
