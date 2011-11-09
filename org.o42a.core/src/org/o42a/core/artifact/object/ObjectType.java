@@ -180,7 +180,9 @@ public final class ObjectType implements UserInfo {
 		derivationUses().useBy(derived.content());
 		runtimeConstructionUses().useBy(
 				derived.type().runtimeConstructionUses());
-		trackAscendantDefsUsage(derived);
+		if (!derived.isClone()) {
+			trackAscendantDefsUsage(derived);
+		}
 	}
 
 	protected void useAsSample(Sample sample) {
@@ -191,8 +193,10 @@ public final class ObjectType implements UserInfo {
 		derivationUses().useBy(sampleObject.content());
 		runtimeConstructionUses().useBy(
 				sampleObject.type().runtimeConstructionUses());
-		trackAscendantDefsUsage(sampleObject);
-		trackAncestorDefsUpdates(sampleObject);
+		if (!sampleObject.isClone()) {
+			trackAscendantDefsUsage(sampleObject);
+			trackAncestorDefsUpdates(sampleObject);
+		}
 	}
 
 	final ObjectResolution getResolution() {
