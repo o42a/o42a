@@ -188,6 +188,9 @@ public class ObjectIR  {
 		if (this.struct != null) {
 			return this.struct;
 		}
+		if (getObject().isClone()) {
+			getObject().pin();
+		}
 
 		assert getObject().assertFullyResolved();
 
