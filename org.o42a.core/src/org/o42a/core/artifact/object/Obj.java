@@ -841,6 +841,10 @@ public abstract class Obj
 						this,
 						member.getDisplayName());
 			}
+			if (member.isClone() && member.toMemberField() == null) {
+				// Only field clones require full resolution.
+				continue;
+			}
 			member.resolveAll();
 		}
 	}
