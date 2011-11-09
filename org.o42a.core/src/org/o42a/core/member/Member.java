@@ -109,6 +109,13 @@ public abstract class Member extends Placed {
 		if (this.analysis != null) {
 			return this.analysis;
 		}
+
+		final Member lastDefinition = getLastDefinition();
+
+		if (lastDefinition != this) {
+			return this.analysis = lastDefinition.getAnalysis();
+		}
+
 		return this.analysis = new MemberAnalysis(this);
 	}
 
@@ -182,6 +189,10 @@ public abstract class Member extends Placed {
 		}
 
 		return this.lastDefinition = overridden[0].getLastDefinition();
+	}
+
+	public final boolean isClone() {
+		return getLastDefinition() != this;
 	}
 
 	public Set<CompilerContext> getAllContexts() {
