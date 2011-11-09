@@ -43,6 +43,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.ObjectConstructorStep;
@@ -118,9 +119,7 @@ public abstract class ObjectConstructor extends Placed {
 	}
 
 	private Obj propagate(Scope scope) {
-		if (this.propagated == null) {
-			this.propagated = new IdentityHashMap<Scope, Obj>();
-		} else {
+		if (this.propagated != null) {
 
 			final Obj cached = this.propagated.get(scope);
 
@@ -129,15 +128,20 @@ public abstract class ObjectConstructor extends Placed {
 			}
 		}
 
-		final Obj propagated = propagateObject(scope, getConstructed());
-
-		this.propagated.put(scope, propagated);
-
-		return propagated;
+		return propagateObject(scope, getConstructed());
 	}
 
-	protected ObjectOp buildAncestor(CodeDirs dirs) {
-		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
+	private void pinPropagated(Propagated propagated) {
+		if (this.propagated == null) {
+			this.propagated = new IdentityHashMap<Scope, Obj>();
+		}
+
+		final Obj pinned = this.propagated.put(
+				propagated.getScope().getEnclosingScope(),
+				propagated);
+
+		assert pinned == null || pinned == propagated :
+			propagated + " already pinned";
 	}
 
 	private Function<ObjectRefFunc> ancestorFunc(CodeBuilder enclosing) {
@@ -182,17 +186,35 @@ public abstract class ObjectConstructor extends Placed {
 		}
 	}
 
+	private ObjectOp buildAncestor(CodeDirs dirs) {
+		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
+	}
+
 	private static final class Propagated extends Obj {
 
+		private final ObjectConstructor constructor;
 		private final StaticTypeRef propagatedFrom;
 
-		Propagated(Scope scope, ObjectConstructor propagatedFrom, Obj sample) {
+		Propagated(Scope scope, ObjectConstructor constructor, Obj sample) {
 			super(
-					propagatedFrom.distributeIn(scope.getContainer()),
+					constructor.distributeIn(scope.getContainer()),
 					sample);
+			this.constructor = constructor;
 			this.propagatedFrom =
-					propagatedFrom.toRef().toStaticTypeRef().upgradeScope(
-							scope);
+					constructor.toRef()
+					.toStaticTypeRef()
+					.upgradeScope(scope);
+		}
+
+		@Override
+		public void pin() {
+			this.constructor.pinPropagated(this);
+
+			final Member member = getEnclosingContainer().toMember();
+
+			if (member.isPropagated()) {
+				member.pin();
+			}
 		}
 
 		@Override

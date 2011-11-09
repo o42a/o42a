@@ -495,6 +495,15 @@ public abstract class Obj
 		return this.fieldUses = new FieldUses(this);
 	}
 
+	public void pin() {
+
+		final Member member = toMember();
+
+		if (member != null) {
+			member.pin();
+		}
+	}
+
 	public StatementEnv definitionEnv() {
 		return new ObjectEnv(this);
 	}
