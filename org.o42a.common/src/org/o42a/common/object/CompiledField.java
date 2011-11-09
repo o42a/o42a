@@ -38,9 +38,9 @@ public final class CompiledField extends ObjectField {
 		this.compiler = compiler;
 	}
 
-	private CompiledField(MemberOwner owner, CompiledField sample) {
-		super(owner, sample);
-		this.compiler = sample.compiler;
+	private CompiledField(MemberOwner owner, CompiledField propagatedFrom) {
+		super(owner, propagatedFrom);
+		this.compiler = propagatedFrom.compiler;
 	}
 
 	public final FieldCompiler getCompiler() {

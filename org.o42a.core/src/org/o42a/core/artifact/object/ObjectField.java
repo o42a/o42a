@@ -38,18 +38,18 @@ public abstract class ObjectField extends Field<Obj> {
 		((MemberObjectField) toMember()).init(this);
 	}
 
-	protected ObjectField(MemberOwner owner, ObjectField overridden) {
+	protected ObjectField(MemberOwner owner, ObjectField propagatedFrom) {
 		super(
 				new Location(
 						owner.getContext(),
 						owner.getLoggable().setReason(
 								logDeclaration(
-										overridden.getLastDefinition()))),
+										propagatedFrom.getLastDefinition()))),
 				owner,
-				overridden,
+				propagatedFrom,
 				null,
 				OverrideMode.PROPAGATE);
-		setFieldArtifact(propagateArtifact(overridden));
+		setFieldArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	protected ObjectField(

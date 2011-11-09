@@ -48,19 +48,19 @@ public abstract class DeclaredField<
 
 	protected DeclaredField(
 			MemberOwner owner,
-			DeclaredField<A, V> overridden) {
+			DeclaredField<A, V> propagatedFrom) {
 		super(
 				new Location(
 						owner.getContext(),
 						owner.getLoggable().setReason(
 								logDeclaration(
-										overridden.getLastDefinition()))),
+										propagatedFrom.getLastDefinition()))),
 				owner,
-				overridden,
+				propagatedFrom,
 				null,
 				OverrideMode.PROPAGATE);
-		this.artifactKind = overridden.artifactKind;
-		setFieldArtifact(propagateArtifact(overridden));
+		this.artifactKind = propagatedFrom.artifactKind;
+		setFieldArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	@Override

@@ -193,7 +193,12 @@ public abstract class MemberField extends Member {
 
 	@Override
 	public void resolveAll() {
-		toField(dummyUser()).getArtifact().resolveAll();
+
+		final Artifact<?> artifact = toField(dummyUser()).getArtifact();
+
+		useSubstanceBy(artifact.content());
+		useNestedBy(artifact.fieldUses());
+		artifact.resolveAll();
 	}
 
 	@Override
@@ -286,11 +291,6 @@ public abstract class MemberField extends Member {
 
 	protected final MemberField[] getMergedWith() {
 		return this.mergedWith;
-	}
-
-	protected final void setArtifact(Artifact<?> artifact) {
-		useSubstanceBy(artifact.content());
-		useNestedBy(artifact.fieldUses());
 	}
 
 	private MemberKey overrideField() {

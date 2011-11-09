@@ -210,10 +210,10 @@ public abstract class ObjectConstructor extends Placed {
 		public void pin() {
 			this.constructor.pinPropagated(this);
 
-			final Member member = getEnclosingContainer().toMember();
+			final Member enclosingMember = getEnclosingContainer().toMember();
 
-			if (member.isPropagated()) {
-				member.pin();
+			if (enclosingMember.isPropagated()) {
+				enclosingMember.pin(getScope().getEnclosingScope());
 			}
 		}
 
