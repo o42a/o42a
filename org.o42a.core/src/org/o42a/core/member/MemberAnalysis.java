@@ -145,33 +145,48 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	final void useBy(UseInfo user) {
-		if (this.memberUses == null) {
-			this.memberUses = new MemberUses("MemberUses", getMember());
-			if (getMember().isOverride()) {
-				getDeclarationAnalysis().useBy(this.memberUses);
-			}
-		}
-		this.memberUses.useBy(user);
+		memberUses().useBy(user);
 	}
 
 	final void useSubstanceBy(UseInfo user) {
-		if (this.substanceUses == null) {
-			this.substanceUses = new MemberUses("SubstanceUses", getMember());
-			if (getMember().isOverride()) {
-				getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
-			}
-		}
-		this.substanceUses.useBy(user);
+		substanceUses().useBy(user);
 	}
 
 	final void useNestedBy(UseInfo user) {
-		if (this.nestedUses == null) {
-			this.nestedUses = new MemberUses("NestedUses", getMember());
-			if (getMember().isOverride()) {
-				getDeclarationAnalysis().useNestedBy(this.nestedUses);
-			}
+		nestedUses().useBy(user);
+	}
+
+	private MemberUses memberUses() {
+		if (this.memberUses != null) {
+			return this.memberUses;
 		}
-		this.nestedUses.useBy(user);
+		this.memberUses = new MemberUses("MemberUses", getMember());
+		if (getMember().isOverride()) {
+			getDeclarationAnalysis().useBy(this.memberUses);
+		}
+		return this.memberUses;
+	}
+
+	private MemberUses substanceUses() {
+		if (this.substanceUses != null) {
+			return this.substanceUses;
+		}
+		this.substanceUses = new MemberUses("SubstanceUses", getMember());
+		if (getMember().isOverride()) {
+			getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
+		}
+		return this.substanceUses;
+	}
+
+	private MemberUses nestedUses() {
+		if (this.nestedUses != null) {
+			return this.nestedUses;
+		}
+		this.nestedUses = new MemberUses("NestedUses", getMember());
+		if (getMember().isOverride()) {
+			getDeclarationAnalysis().useNestedBy(this.nestedUses);
+		}
+		return this.nestedUses;
 	}
 
 	private MemberUses runtimeConstructionUses() {
