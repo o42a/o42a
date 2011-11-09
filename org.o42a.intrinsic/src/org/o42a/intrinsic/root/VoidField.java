@@ -36,8 +36,8 @@ final class VoidField extends ObjectField {
 		setFieldArtifact(getContext().getVoid());
 	}
 
-	private VoidField(MemberOwner owner, VoidField sample) {
-		super(owner, sample);
+	private VoidField(MemberOwner owner, VoidField propagatedFrom) {
+		super(owner, propagatedFrom);
 	}
 
 	@Override

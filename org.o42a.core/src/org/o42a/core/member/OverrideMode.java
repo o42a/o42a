@@ -38,15 +38,6 @@ public enum OverrideMode {
 			return true;
 		}
 
-	},
-
-	WRAP() {
-
-		@Override
-		public boolean propagation(Member overriddenMember) {
-			return false;
-		}
-
 	};
 
 	public abstract boolean propagation(Member overriddenMember);

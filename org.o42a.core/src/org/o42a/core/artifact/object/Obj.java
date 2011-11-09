@@ -49,9 +49,8 @@ import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.impl.path.ObjectStep;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.StatementEnv;
@@ -487,6 +486,14 @@ public abstract class Obj
 		return scopePathStep.toPath();
 	}
 
+	public final Ref staticRef(Scope scope) {
+
+		final BoundPath path =
+				new ObjectStep(this).toPath().bindStatically(this, scope);
+
+		return path.target(distributeIn(scope.getContainer()));
+	}
+
 	@Override
 	public final UseInfo fieldUses() {
 		if (this.fieldUses != null) {
@@ -500,7 +507,7 @@ public abstract class Obj
 		final Member member = toMember();
 
 		if (member != null) {
-			member.pin();
+			member.pin(getScope());
 		}
 	}
 

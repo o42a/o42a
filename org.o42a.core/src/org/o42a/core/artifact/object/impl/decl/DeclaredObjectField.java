@@ -42,8 +42,10 @@ public class DeclaredObjectField
 		super(member, ArtifactKind.OBJECT);
 	}
 
-	private DeclaredObjectField(MemberOwner owner, DeclaredObjectField sample) {
-		super(owner, sample);
+	private DeclaredObjectField(
+			MemberOwner owner,
+			DeclaredObjectField propagatedFrom) {
+		super(owner, propagatedFrom);
 	}
 
 	@Override

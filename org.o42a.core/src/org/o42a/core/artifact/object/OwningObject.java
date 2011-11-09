@@ -35,7 +35,6 @@ public class OwningObject extends MemberOwner {
 
 	@Override
 	protected void pinMember(Member member) {
-		// TODO pin object member.
 		if (getObject().isClone()) {
 			getObject().pin();
 		}

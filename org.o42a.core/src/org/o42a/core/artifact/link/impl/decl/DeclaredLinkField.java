@@ -31,7 +31,8 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVariant> {
+public final class DeclaredLinkField
+		extends DeclaredField<Link, LinkFieldVariant> {
 
 	private boolean invalid;
 	private FieldDefinition definition;
@@ -42,8 +43,10 @@ public final class DeclaredLinkField extends DeclaredField<Link, LinkFieldVarian
 		super(member, artifactKind);
 	}
 
-	private DeclaredLinkField(MemberOwner owner, DeclaredLinkField sample) {
-		super(owner, sample);
+	private DeclaredLinkField(
+			MemberOwner owner,
+			DeclaredLinkField propagatedFrom) {
+		super(owner, propagatedFrom);
 	}
 
 	@Override
