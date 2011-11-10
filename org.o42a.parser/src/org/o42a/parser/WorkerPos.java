@@ -21,7 +21,6 @@ package org.o42a.parser;
 
 import org.o42a.ast.Position;
 import org.o42a.util.io.Source;
-import org.o42a.util.io.SourcePosition;
 
 
 final class WorkerPos extends Position implements Cloneable {
@@ -37,14 +36,6 @@ final class WorkerPos extends Position implements Cloneable {
 		this.source = source;
 		this.line = 1;
 		this.column = 1;
-		this.charOffset = 0;
-	}
-
-	WorkerPos(Source source, SourcePosition start) {
-		this.source = start.source();
-		this.line = start.line();
-		this.column = start.column();
-		this.offset = start.offset();
 		this.charOffset = 0;
 	}
 
