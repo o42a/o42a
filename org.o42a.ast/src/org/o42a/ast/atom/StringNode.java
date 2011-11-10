@@ -21,7 +21,7 @@ package org.o42a.ast.atom;
 
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
-import org.o42a.ast.Position;
+import org.o42a.util.io.SourcePosition;
 
 
 public class StringNode extends AbstractAtomNode {
@@ -52,7 +52,7 @@ public class StringNode extends AbstractAtomNode {
 	public StringNode(
 			SignNode<Quote> openingQuotationMark,
 			String text,
-			Position end) {
+			SourcePosition end) {
 		super(openingQuotationMark.getStart(), end);
 		this.openingQuotationMark = openingQuotationMark;
 		this.text = text;

@@ -21,12 +21,12 @@ package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.ref;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.OutcomeNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 final class OutcomeParser implements Parser<OutcomeNode> {
@@ -42,7 +42,7 @@ final class OutcomeParser implements Parser<OutcomeNode> {
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.acceptAll();
 
@@ -50,7 +50,7 @@ final class OutcomeParser implements Parser<OutcomeNode> {
 				true,
 				new SignNode<OutcomeNode.Prefix>(
 						start,
-						context.current(),
+						context.current().fix(),
 						OutcomeNode.Prefix.IS));
 		final RefNode value = context.parse(ref());
 

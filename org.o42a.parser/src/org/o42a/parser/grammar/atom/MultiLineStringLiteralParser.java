@@ -19,12 +19,12 @@
 */
 package org.o42a.parser.grammar.atom;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.atom.StringNode.Quote;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 final class MultiLineStringLiteralParser implements Parser<StringNode> {
@@ -32,7 +32,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 	@Override
 	public StringNode parse(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		if (context.next() != '\\') {
 			return null;
@@ -57,7 +57,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 		context.skip();
 
 		final SignNode<Quote> opening =
-				new SignNode<Quote>(start, context.current(), quote);
+				new SignNode<Quote>(start, context.current().fix(), quote);
 		final SignNode<Quote> closing;
 		boolean multiline = false;
 		boolean nl = false;
@@ -90,7 +90,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 			}
 			if (c == closingQuote) {
 
-				final FixedPosition closingStart = context.current().fix();
+				final SourcePosition closingStart = context.current().fix();
 				final int next = context.next();
 
 				if (next != '\\') {
@@ -102,7 +102,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 				context.acceptAll();
 				closing = new SignNode<Quote>(
 						closingStart,
-						context.current(),
+						context.current().fix(),
 						opening.getType().getClosing());
 				break;
 			}
@@ -112,7 +112,7 @@ final class MultiLineStringLiteralParser implements Parser<StringNode> {
 				return new StringNode(
 						opening,
 						text.toString(),
-						context.current());
+						context.current().fix());
 			}
 
 			line.append((char) c);

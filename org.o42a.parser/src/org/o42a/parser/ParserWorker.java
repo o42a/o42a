@@ -25,6 +25,7 @@ import java.io.IOException;
 
 import org.o42a.ast.Position;
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceReader;
 import org.o42a.util.log.Logger;
 
@@ -46,7 +47,7 @@ public class ParserWorker {
 		this.root = new ParserContext(this, null, this.position, this.position);
 	}
 
-	public ParserWorker(Source source, Position start) {
+	public ParserWorker(Source source, SourcePosition start) {
 		this.source = source;
 		this.position = new WorkerPos(source, start);
 		this.root = new ParserContext(this, null, this.position, this.position);

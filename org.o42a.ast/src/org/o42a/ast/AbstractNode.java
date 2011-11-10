@@ -22,13 +22,11 @@ package org.o42a.ast;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.util.io.Source;
-import org.o42a.util.log.LogReason;
-import org.o42a.util.log.Loggable;
-import org.o42a.util.log.LoggableVisitor;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
-public abstract class AbstractNode implements Node, Cloneable {
+public abstract class AbstractNode implements Node {
 
 	public static Node lastNode(Node... nodes) {
 		if (nodes == null || nodes.length == 0) {
@@ -57,24 +55,21 @@ public abstract class AbstractNode implements Node, Cloneable {
 		return null;
 	}
 
-	public static final FixedPosition start(Node... nodes) {
+	public static final SourcePosition start(Node... nodes) {
 		return firstNode(nodes).getStart();
 	}
 
-	public static final FixedPosition end(Node... nodes) {
+	public static final SourcePosition end(Node... nodes) {
 		return lastNode(nodes).getEnd();
 	}
 
 	private static final CommentNode[] NO_COMMENTS = new CommentNode[0];
 
-	private final FixedPosition start;
-	private final FixedPosition end;
+	private SourceRange range;
 	private CommentNode[] comments = NO_COMMENTS;
-	private LogReason reason;
 
-	public AbstractNode(Position start, Position end) {
-		this.start = start.fix();
-		this.end = end.fix();
+	public AbstractNode(SourcePosition start, SourcePosition end) {
+		this.range = new SourceRange(start, end);
 	}
 
 	public AbstractNode(Node...nodes) {
@@ -82,50 +77,23 @@ public abstract class AbstractNode implements Node, Cloneable {
 	}
 
 	@Override
-	public FixedPosition getStart() {
-		return this.start;
+	public final SourcePosition getStart() {
+		return this.range.getStart();
 	}
 
 	@Override
-	public FixedPosition getEnd() {
-		return this.end;
+	public final SourcePosition getEnd() {
+		return this.range.getEnd();
 	}
 
 	@Override
-	public CommentNode[] getComments() {
+	public final CommentNode[] getComments() {
 		return this.comments;
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this;
-	}
-
-	@Override
-	public LogReason getReason() {
-		return this.reason;
-	}
-
-	@Override
-	public AbstractNode setReason(LogReason reason) {
-		if (reason == null) {
-			return this;
-		}
-
-		final AbstractNode clone = clone();
-
-		if (this.reason == null) {
-			clone.reason = reason;
-		} else {
-			clone.reason = this.reason.setNext(reason);
-		}
-
-		return clone;
-	}
-
-	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitRange(this, p);
+	public final SourceRange getLoggable() {
+		return this.range;
 	}
 
 	@Override
@@ -171,42 +139,6 @@ public abstract class AbstractNode implements Node, Cloneable {
 	}
 
 	@Override
-	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-
-		result = prime * result + this.end.hashCode();
-		result = prime * result + this.start.hashCode();
-
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-
-		final AbstractNode other = (AbstractNode) obj;
-
-		if (!this.end.equals(other.end)) {
-			return false;
-		}
-		if (!this.start.equals(other.start)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -217,31 +149,16 @@ public abstract class AbstractNode implements Node, Cloneable {
 	}
 
 	@Override
-	public void printRange(StringBuilder out) {
-
-		final Source src1 = this.start.source();
-		final Source src2 = this.end.source();
-		final boolean withSource;
-
-		if (src1 == null) {
-			withSource = src2 != null;
-		} else {
-			withSource = !src1.equals(src2);
-		}
-
-		this.start.print(out, true);
-		out.append("..");
-		this.end.print(out, withSource);
-	}
-
-	@Override
 	public void printNode(StringBuilder out) {
 		out.append(nodeType());
 		out.append('[');
-		printRange(out);
+		getLoggable().print(out);
 		out.append("] ");
 		printContent(out);
 	}
+
+	@Override
+	public abstract void printContent(StringBuilder out);
 
 	@Override
 	protected AbstractNode clone() {

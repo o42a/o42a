@@ -19,11 +19,11 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ScopeRefParser implements Parser<ScopeRefNode> {
@@ -36,7 +36,7 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 	@Override
 	public ScopeRefNode parse(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 		final ScopeType type;
 
 		switch (context.next()) {
@@ -75,7 +75,7 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 
 		return context.acceptComments(
 				false,
-				new ScopeRefNode(start, context.current(), type));
+				new ScopeRefNode(start, context.current().fix(), type));
 	}
 
 }

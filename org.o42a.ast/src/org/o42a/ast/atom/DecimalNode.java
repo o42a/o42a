@@ -19,9 +19,9 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.ast.Position;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public class DecimalNode
@@ -30,7 +30,10 @@ public class DecimalNode
 
 	private final String number;
 
-	public DecimalNode(Position start, Position end, String number) {
+	public DecimalNode(
+			SourcePosition start,
+			SourcePosition end,
+			String number) {
 		super(start, end);
 		this.number = number;
 	}

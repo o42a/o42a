@@ -28,6 +28,6 @@ public interface Loggable extends LogInfo {
 
 	<R, P> R accept(LoggableVisitor<R, P> visitor, P p);
 
-	void printContent(StringBuilder out);
+	void print(StringBuilder out);
 
 }

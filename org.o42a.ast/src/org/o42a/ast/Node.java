@@ -21,16 +21,15 @@ package org.o42a.ast;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
-import org.o42a.util.io.SourceRange;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.log.LogInfo;
 
 
-public interface Node extends SourceRange {
+public interface Node extends LogInfo {
 
-	@Override
-	FixedPosition getStart();
+	SourcePosition getStart();
 
-	@Override
-	FixedPosition getEnd();
+	SourcePosition getEnd();
 
 	CommentNode[] getComments();
 
@@ -42,8 +41,8 @@ public interface Node extends SourceRange {
 
 	String nodeType();
 
-	void printRange(StringBuilder out);
-
 	void printNode(StringBuilder out);
+
+	void printContent(StringBuilder out);
 
 }

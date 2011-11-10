@@ -19,11 +19,11 @@
 */
 package org.o42a.parser.grammar.file;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.file.LineType;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class LineParser<L extends LineType>
@@ -43,11 +43,11 @@ public abstract class LineParser<L extends LineType>
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.skip();
 
-		FixedPosition end = context.current().fix();
+		SourcePosition end = context.current().fix();
 
 		while (context.next() == this.lineChar) {
 			context.skip();

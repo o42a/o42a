@@ -21,11 +21,11 @@ package org.o42a.parser.grammar.atom;
 
 import static org.o42a.parser.Grammar.isDigit;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
 public class DecimalParser implements Parser<DecimalNode> {
@@ -38,9 +38,9 @@ public class DecimalParser implements Parser<DecimalNode> {
 	@Override
 	public DecimalNode parse(ParserContext context) {
 
-		FixedPosition spaceStart = null;
+		SourcePosition spaceStart = null;
 		boolean wrongSpace = false;
-		FixedPosition start = null;
+		SourcePosition start = null;
 		StringBuilder number = null;
 
 		for (;;) {
@@ -54,7 +54,9 @@ public class DecimalParser implements Parser<DecimalNode> {
 				} else {
 					if (wrongSpace) {
 						context.getLogger().invalidSpaceInNumber(
-								new EmptyNode(spaceStart, context.current()));
+								new SourceRange(
+										spaceStart,
+										context.current().fix()));
 						wrongSpace = false;
 					}
 					spaceStart = null;
@@ -77,7 +79,7 @@ public class DecimalParser implements Parser<DecimalNode> {
 
 			final DecimalNode result = new DecimalNode(
 					start,
-					context.firstUnaccepted(),
+					context.firstUnaccepted().fix(),
 					number.toString());
 
 			return context.acceptComments(false, result);

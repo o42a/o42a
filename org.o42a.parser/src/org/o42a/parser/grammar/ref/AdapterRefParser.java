@@ -21,13 +21,13 @@ package org.o42a.parser.grammar.ref;
 
 import static org.o42a.parser.grammar.ref.RefParser.REF;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.ref.AdapterRefNode.Qualifier;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class AdapterRefParser implements Parser<AdapterRefNode> {
@@ -105,7 +105,7 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 				return null;
 			}
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 
 			if (context.next() != '@') {
 				return null;
@@ -116,7 +116,7 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 					false,
 					new SignNode<Qualifier>(
 							start,
-							context.current(),
+							context.current().fix(),
 							Qualifier.FIELD_NAME));
 		}
 

@@ -19,13 +19,13 @@
 */
 package org.o42a.parser.grammar.file;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
-class OddParser implements Parser<EmptyNode> {
+class OddParser implements Parser<SourceRange> {
 
 	public static final OddParser ODD = new OddParser();
 
@@ -33,10 +33,10 @@ class OddParser implements Parser<EmptyNode> {
 	}
 
 	@Override
-	public EmptyNode parse(ParserContext context) {
+	public SourceRange parse(ParserContext context) {
 
-		FixedPosition start = null;
-		FixedPosition end;
+		SourcePosition start = null;
+		SourcePosition end;
 
 		for (;;) {
 
@@ -63,7 +63,7 @@ class OddParser implements Parser<EmptyNode> {
 			}
 		}
 
-		final EmptyNode result = new EmptyNode(start, end);
+		final SourceRange result = new SourceRange(start, end);
 
 		context.getLogger().odd(result);
 

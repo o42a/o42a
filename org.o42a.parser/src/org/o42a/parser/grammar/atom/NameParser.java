@@ -25,11 +25,11 @@ import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
 public class NameParser implements Parser<NameNode> {
@@ -45,9 +45,9 @@ public class NameParser implements Parser<NameNode> {
 	@Override
 	public NameNode parse(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 		final StringBuilder name = new StringBuilder();
-		FixedPosition whitespace = null;
+		SourcePosition whitespace = null;
 		int hyphen = 0;
 
 		for (;;) {
@@ -61,7 +61,9 @@ public class NameParser implements Parser<NameNode> {
 				context.push(whitespace(false));
 				if (hyphen == NON_BREAKING_HYPHEN) {
 					context.getLogger().discouragingWhitespace(
-							new EmptyNode(whitespace, context.current()));
+							new SourceRange(
+									whitespace,
+									context.current().fix()));
 				}
 				continue;
 			}
@@ -81,7 +83,9 @@ public class NameParser implements Parser<NameNode> {
 						break;
 					}
 					context.getLogger().discouragingWhitespace(
-							new EmptyNode(whitespace, context.current()));
+							new SourceRange(
+									whitespace,
+									context.current().fix()));
 				}
 				hyphen = c;
 				continue;
@@ -135,7 +139,7 @@ public class NameParser implements Parser<NameNode> {
 		if (name.length() != 0) {
 			return new NameNode(
 					start,
-					context.firstUnaccepted(),
+					context.firstUnaccepted().fix(),
 					name.toString());
 		}
 

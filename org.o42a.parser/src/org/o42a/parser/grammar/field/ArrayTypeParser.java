@@ -21,13 +21,13 @@ package org.o42a.parser.grammar.field;
 
 import static org.o42a.parser.grammar.field.TypeParser.TYPE;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.ArrayTypeNode;
 import org.o42a.ast.field.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ArrayTypeParser implements Parser<ArrayTypeNode> {
@@ -58,7 +58,7 @@ public class ArrayTypeParser implements Parser<ArrayTypeNode> {
 
 	private SignNode<BracketsNode.Bracket> opening(ParserContext context) {
 
-		final FixedPosition openingStart = context.current().fix();
+		final SourcePosition openingStart = context.current().fix();
 
 		context.acceptAll();
 
@@ -66,7 +66,7 @@ public class ArrayTypeParser implements Parser<ArrayTypeNode> {
 				true,
 				new SignNode<BracketsNode.Bracket>(
 						openingStart,
-						context.current(),
+						context.current().fix(),
 						BracketsNode.Bracket.OPENING_BRACKET));
 	}
 
@@ -80,13 +80,13 @@ public class ArrayTypeParser implements Parser<ArrayTypeNode> {
 			return null;
 		}
 
-		final FixedPosition closingStart = context.current().fix();
+		final SourcePosition closingStart = context.current().fix();
 
 		context.acceptAll();
 
 		return new SignNode<BracketsNode.Bracket>(
 				closingStart,
-				context.current(),
+				context.current().fix(),
 				BracketsNode.Bracket.CLOSING_BRACKET);
 	}
 

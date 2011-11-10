@@ -21,12 +21,12 @@ package org.o42a.parser.grammar.ref;
 
 import static org.o42a.parser.grammar.atom.NameParser.NAME;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.ParentRefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ParentRefParser implements Parser<ParentRefNode> {
@@ -49,7 +49,7 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		if (context.next() != ':') {
 			return null;
@@ -63,7 +63,7 @@ public class ParentRefParser implements Parser<ParentRefNode> {
 		final SignNode<ParentRefNode.Qualifier> qualifier =
 				new SignNode<ParentRefNode.Qualifier>(
 						start,
-						context.current(),
+						context.current().fix(),
 						ParentRefNode.Qualifier.PARENT);
 
 		return context.acceptComments(

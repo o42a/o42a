@@ -124,7 +124,7 @@ public abstract class PlacedPathFragment
 
 		if (loggable != null) {
 			out.append("]:[");
-			loggable.printContent(out);
+			loggable.print(out);
 		}
 		out.append(']');
 

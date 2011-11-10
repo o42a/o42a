@@ -19,7 +19,6 @@
 */
 package org.o42a.parser.grammar.sentence;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -27,6 +26,7 @@ import org.o42a.ast.sentence.SentenceType;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class SentenceParser implements Parser<SentenceNode> {
@@ -65,7 +65,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 		@Override
 		public SignNode<SentenceType> parse(ParserContext context) {
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 			final SentenceType sentenceType;
 
 			switch(context.next()) {
@@ -86,7 +86,7 @@ public class SentenceParser implements Parser<SentenceNode> {
 
 			final SignNode<SentenceType> result = new SignNode<SentenceType>(
 					start,
-					context.current(),
+					context.current().fix(),
 					sentenceType);
 
 			return context.acceptComments(true, result);

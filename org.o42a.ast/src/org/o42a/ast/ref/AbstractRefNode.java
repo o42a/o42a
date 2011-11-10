@@ -20,18 +20,18 @@
 package org.o42a.ast.ref;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.Position;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.AscendantSpecNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.TypeNodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class AbstractRefNode
 		extends AbstractExpressionNode
 		implements RefNode {
 
-	public AbstractRefNode(Position start, Position end) {
+	public AbstractRefNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 	}
 

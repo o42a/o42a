@@ -21,10 +21,10 @@ package org.o42a.parser.grammar.atom;
 
 import static org.o42a.parser.Grammar.whitespace;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class CommentParser implements Parser<CommentNode> {
@@ -44,7 +44,7 @@ public class CommentParser implements Parser<CommentNode> {
 			return null;// not a first comment symbol
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 		final boolean multiline;
 
 		switch (context.next()) {
@@ -92,7 +92,7 @@ public class CommentParser implements Parser<CommentNode> {
 
 		final CommentNode comment = new CommentNode(
 				start,
-				context.firstUnaccepted(),
+				context.firstUnaccepted().fix(),
 				multiline,
 				text.toString());
 

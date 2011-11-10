@@ -19,14 +19,17 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.ast.*;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.Node;
+import org.o42a.ast.NodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class AbstractAtomNode
 		extends AbstractNode
 		implements AtomNode {
 
-	public AbstractAtomNode(Position start, Position end) {
+	public AbstractAtomNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 	}
 

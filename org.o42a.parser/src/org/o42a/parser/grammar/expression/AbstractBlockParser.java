@@ -19,7 +19,6 @@
 */
 package org.o42a.parser.grammar.expression;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
@@ -27,6 +26,7 @@ import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class AbstractBlockParser<
@@ -48,12 +48,12 @@ public abstract class AbstractBlockParser<
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.skip();
 
 		final SignNode<S> opening =
-				new SignNode<S>(start, context.current(), this.opening);
+				new SignNode<S>(start, context.current().fix(), this.opening);
 
 		context.skipComments(true, opening);
 
@@ -72,13 +72,13 @@ public abstract class AbstractBlockParser<
 
 		if (c == this.closing.getSign().charAt(0)) {
 
-			final FixedPosition closingStart = context.current().fix();
+			final SourcePosition closingStart = context.current().fix();
 
 			context.acceptAll();
 
 			final SignNode<S> closing = new SignNode<S>(
 					closingStart,
-					context.current(),
+					context.current().fix(),
 					this.closing);
 
 			closing.addComments(separators);

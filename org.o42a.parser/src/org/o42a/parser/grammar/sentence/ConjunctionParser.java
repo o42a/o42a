@@ -24,7 +24,6 @@ import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -32,6 +31,7 @@ import org.o42a.ast.sentence.SerialNode.Separator;
 import org.o42a.ast.statement.EllipsisNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.*;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ConjunctionParser implements Parser<SerialNode[]> {
@@ -60,7 +60,7 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 		for (;;) {
 
 			final SeparatorNodes separators = context.skipComments(true);
-			final FixedPosition statementStart = context.current().fix();
+			final SourcePosition statementStart = context.current().fix();
 			final StatementNode stat =
 					expectations.parse(this.grammar.statement());
 			final SerialNode statement;
@@ -80,12 +80,12 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				}
 				statements.add(statement);
 
-				final FixedPosition separatorStart = context.current().fix();
+				final SourcePosition separatorStart = context.current().fix();
 
 				context.acceptAll();
 				separator = new SignNode<Separator>(
 						separatorStart,
-						context.current(),
+						context.current().fix(),
 						Separator.THEN);
 				context.acceptAll();
 				context.acceptComments(true, separator);

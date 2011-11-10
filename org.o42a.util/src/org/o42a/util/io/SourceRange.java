@@ -19,13 +19,97 @@
 */
 package org.o42a.util.io;
 
-import org.o42a.util.log.Loggable;
+import org.o42a.util.log.AbstractLoggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
-public interface SourceRange extends Loggable {
+public final class SourceRange extends AbstractLoggable<SourceRange> {
 
-	SourcePosition getStart();
+	private final SourcePosition start;
+	private final SourcePosition end;
 
-	SourcePosition getEnd();
+	public SourceRange(SourcePosition start, SourcePosition end) {
+		this.start = start;
+		this.end = end;
+	}
+
+	public final SourcePosition getStart() {
+		return this.start;
+	}
+
+	public final SourcePosition getEnd() {
+		return this.end;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+		return visitor.visitRange(this, p);
+	}
+
+	@Override
+	public void print(StringBuilder out) {
+
+		final Source src1 = this.start.source();
+		final Source src2 = this.end.source();
+		final boolean withSource;
+
+		if (src1 == null) {
+			withSource = src2 != null;
+		} else {
+			withSource = !src1.equals(src2);
+		}
+
+		this.start.print(out, true);
+		out.append("..");
+		this.end.print(out, withSource);
+	}
+
+	@Override
+	public int hashCode() {
+
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + this.start.hashCode();
+		result = prime * result + this.end.hashCode();
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final SourceRange other = (SourceRange) obj;
+
+		if (!this.start.equals(other.start)) {
+			return false;
+		}
+		if (!this.end.equals(other.end)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('[');
+		print(out);
+		out.append(']');
+
+		return out.toString();
+	}
 
 }

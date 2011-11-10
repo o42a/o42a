@@ -19,10 +19,10 @@
 */
 package org.o42a.ast.expression;
 
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ParenthesesNode
@@ -43,7 +43,7 @@ public class ParenthesesNode
 		this.closing = closing;
 	}
 
-	public ParenthesesNode(Position start, Position end) {
+	public ParenthesesNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 		this.opening = null;
 		this.content = new SentenceNode[0];

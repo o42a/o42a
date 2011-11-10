@@ -21,8 +21,6 @@ package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.*;
 
-import org.o42a.ast.EmptyNode;
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -36,6 +34,8 @@ import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.parser.grammar.field.DeclaratorParser;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 
 
 public class StatementParser implements Parser<StatementNode> {
@@ -49,11 +49,11 @@ public class StatementParser implements Parser<StatementNode> {
 	@Override
 	public StatementNode parse(ParserContext context) {
 
-		FixedPosition firstUnexpected = null;
+		SourcePosition firstUnexpected = null;
 
 		for (;;) {
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 			final StatementNode statement = parseStatement(context);
 
 			if (statement != null) {
@@ -185,13 +185,13 @@ public class StatementParser implements Parser<StatementNode> {
 
 	private static void logUnexpected(
 			ParserContext context,
-			FixedPosition firstUnexpected,
-			FixedPosition current) {
+			SourcePosition firstUnexpected,
+			SourcePosition current) {
 		if (firstUnexpected == null) {
 			return;
 		}
 		context.getLogger().syntaxError(
-				new EmptyNode(firstUnexpected, current));
+				new SourceRange(firstUnexpected, current));
 	}
 
 }

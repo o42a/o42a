@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.ref;
 import static org.o42a.parser.grammar.atom.NameParser.NAME;
 import static org.o42a.parser.grammar.ref.RefParser.REF;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -30,6 +29,7 @@ import org.o42a.ast.ref.*;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class MemberRefParser implements Parser<MemberRefNode> {
@@ -97,7 +97,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 				return null;
 			}
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 
 			context.acceptAll();
 
@@ -105,7 +105,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 					false,
 					new SignNode<Qualifier>(
 							start,
-							context.current(),
+							context.current().fix(),
 							Qualifier.MEMBER_NAME));
 		}
 
@@ -120,7 +120,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 				return null;
 			}
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 
 			if (context.next() == '@') {
 				// adapter reference
@@ -133,7 +133,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 					false,
 					new SignNode<MemberRetention>(
 							start,
-							context.current(),
+							context.current().fix(),
 							MemberRetention.DECLARED_IN));
 		}
 

@@ -21,7 +21,6 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.util.string.Characters.MINUS;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
@@ -29,6 +28,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class BinaryExpressionParser implements Parser<BinaryNode> {
@@ -88,7 +88,7 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 		@Override
 		public SignNode<BinaryOperator> parse(ParserContext context) {
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 			final BinaryOperator operator;
 
 			switch (context.next()) {
