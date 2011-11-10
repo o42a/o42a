@@ -26,7 +26,6 @@ import static org.o42a.compiler.ip.Interpreter.addSentence;
 import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -39,13 +38,15 @@ import org.o42a.core.member.field.*;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
-final class Section {
+final class Section implements LogInfo {
 
 	private final AbstractDefinitionCompiler<?> compiler;
-	private final Node node;
-	private final SectionNode sectionNode;
+	private final Loggable loggable;
+	private SectionNode sectionNode;
 	private final SectionTitle title;
 	private final SectionTag tag;
 	private LocationInfo location;
@@ -64,7 +65,7 @@ final class Section {
 		this.compiler = compiler;
 		this.sectionNode = sectionNode;
 		this.title = new SectionTitle(this, aboveTitle);
-		this.node = sectionLocation(sectionNode);
+		this.loggable = sectionLoggable(sectionNode);
 		this.tag = sectionTag(sectionNode);
 	}
 
@@ -76,8 +77,9 @@ final class Section {
 		return getCompiler().getSource();
 	}
 
-	public final Node getNode() {
-		return this.node;
+	@Override
+	public final Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	public final SectionNode getSectionNode() {
@@ -112,7 +114,7 @@ final class Section {
 
 	public final Section use() {
 		return useBy(getSource().getSectionFactory().sectionContext(
-				getNode(),
+				this,
 				getTag()));
 	}
 
@@ -120,7 +122,7 @@ final class Section {
 		assert !isUsed() :
 			"Section already used: " + this;
 
-		this.location = new Location(context, getNode());
+		this.location = new Location(context, this);
 
 		return this;
 	}
@@ -158,13 +160,14 @@ final class Section {
 				new DefaultStatementVisitor(PLAIN_IP, getContext()),
 				definition,
 				getSectionNode());
+		this.sectionNode = null;
 	}
 
 	public void done() {
 		if (!isUsed()) {
 			getSource().getLogger().error(
 					"redundant_section",
-					getNode(),
+					this,
 					"Section never included");
 		}
 	}
@@ -218,27 +221,27 @@ final class Section {
 
 	@Override
 	public String toString() {
-		if (this.sectionNode == null) {
+		if (this.loggable == null) {
 			return super.toString();
 		}
-		return this.sectionNode.toString();
+		return "Section[" + this.tag + "]:" + this.loggable;
 	}
 
-	private static Node sectionLocation(SectionNode node) {
+	private static Loggable sectionLoggable(SectionNode node) {
 
 		final SubTitleNode subTitle = node.getSubTitle();
 
 		if (subTitle == null) {
-			return node;
+			return node.getLoggable();
 		}
 
 		final SentenceNode title = node.getTitle();
 
 		if (title != null) {
-			return title;
+			return title.getLoggable();
 		}
 
-		return subTitle;
+		return subTitle.getLoggable();
 	}
 
 	private SectionTag sectionTag(SectionNode node) {

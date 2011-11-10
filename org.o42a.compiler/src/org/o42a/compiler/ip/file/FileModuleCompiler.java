@@ -62,9 +62,7 @@ public final class FileModuleCompiler
 		}
 
 		return result.setAncestor(ValueType.VOID.typeRef(
-				new Location(
-						getContext(),
-						getSection().getTitle().getNode()),
+				new Location(getContext(), getSection().getTitle()),
 				result.getScope().getEnclosingScope()));
 	}
 
@@ -93,7 +91,7 @@ public final class FileModuleCompiler
 		if (sectionNodes.length > 1) {
 			getLogger().error(
 					"redundant_module_section",
-					SectionTitle.node(sectionNodes[1]),
+					SectionTitle.titleLoggable(sectionNodes[1]),
 					"Module should not contain more than one section");
 		}
 
