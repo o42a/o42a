@@ -24,7 +24,6 @@ import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.DECLARATION_SEC
 import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.OVERRIDER_SECTION_ASCENDANTS_VISITOR;
 import static org.o42a.core.member.MemberId.fieldName;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
@@ -42,12 +41,14 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.DefinitionSource;
 import org.o42a.core.source.Location;
 import org.o42a.util.io.SourceFileName;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.log.Loggable;
 
 
-final class SectionTitle {
+final class SectionTitle implements LogInfo {
 
 	private final Section section;
-	private final Node node;
+	private final Loggable loggable;
 	private final DeclaratorNode declaratorNode;
 
 	SectionTitle(Section section, SectionTitle aboveTitle) {
@@ -55,7 +56,7 @@ final class SectionTitle {
 
 		final SectionNode sectionNode = section.getSectionNode();
 
-		this.node = node(sectionNode);
+		this.loggable = titleLoggable(sectionNode);
 
 		if (sectionNode.getTitle() != null) {
 			this.declaratorNode = sectionNode.getDeclarator();
@@ -66,8 +67,9 @@ final class SectionTitle {
 		}
 	}
 
-	public final Node getNode() {
-		return this.node;
+	@Override
+	public final Loggable getLoggable() {
+		return this.loggable;
 	}
 
 	public final DeclaratorNode getDeclaratorNode() {
@@ -108,7 +110,7 @@ final class SectionTitle {
 	public AscendantsDefinition ascendants(Distributor distributor) {
 		if (isImplicit()) {
 			return new AscendantsDefinition(
-					new Location(distributor.getContext(), getNode()),
+					new Location(distributor.getContext(), this),
 					distributor);
 		}
 
@@ -116,7 +118,7 @@ final class SectionTitle {
 
 		if (definition == null) {
 			return new AscendantsDefinition(
-					new Location(distributor.getContext(), getNode()),
+					new Location(distributor.getContext(), this),
 					distributor);
 		}
 
@@ -133,33 +135,33 @@ final class SectionTitle {
 
 	@Override
 	public String toString() {
-		if (this.node == null) {
+		if (this.loggable == null) {
 			return super.toString();
 		}
-		return this.node.toString();
+		return this.loggable.toString();
 	}
 
-	static Node node(SectionNode sectionNode) {
+	static Loggable titleLoggable(SectionNode sectionNode) {
 
 		final DeclaratorNode declaratorNode = sectionNode.getDeclarator();
 
 		if (declaratorNode != null) {
-			return declaratorNode;
+			return declaratorNode.getLoggable();
 		}
 
 		final SentenceNode titleNode = sectionNode.getTitle();
 
 		if (titleNode != null) {
-			return titleNode;
+			return titleNode.getLoggable();
 		}
 
 		final SubTitleNode subTitleNode = sectionNode.getSubTitle();
 
 		if (subTitleNode != null) {
-			return subTitleNode;
+			return subTitleNode.getLoggable();
 		}
 
-		return sectionNode;
+		return sectionNode.getLoggable();
 	}
 
 	private FieldDeclaration implicitFieldDeclaration(Distributor distributor) {
@@ -171,7 +173,7 @@ final class SectionTitle {
 		}
 
 		return FieldDeclaration.fieldDeclaration(
-				new Location(distributor.getContext(), getNode()),
+				new Location(distributor.getContext(), this),
 				distributor,
 				fieldName(fieldName));
 	}
@@ -199,14 +201,14 @@ final class SectionTitle {
 		if (fileName.isAdapter()) {
 			getLogger().error(
 					"missing_adapter_section_title",
-					getNode(),
+					this,
 					"Section title required for adapter");
 			return null;
 		}
 		if (fileName.isOverride()) {
 			getLogger().error(
 					"missing_override_section_title",
-					getNode(),
+					this,
 					"Section title required when overriding field");
 			return null;
 		}

@@ -63,7 +63,7 @@ public class FileFieldCompiler
 		if (sectionNodes.length > 1) {
 			getLogger().error(
 					"redundant_field_section",
-					SectionTitle.node(sectionNodes[1]),
+					SectionTitle.titleLoggable(sectionNodes[1]),
 					"Field source filed should not contain"
 					+ " more than one section");
 		}

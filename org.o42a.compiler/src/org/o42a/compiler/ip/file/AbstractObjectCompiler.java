@@ -50,7 +50,7 @@ public abstract class AbstractObjectCompiler
 		if (this.loggable != null) {
 			return this.loggable;
 		}
-		return this.loggable = getSection().getNode().getLoggable();
+		return this.loggable = getSection().getLoggable().getLoggable();
 	}
 
 	public final Section getSection() {

@@ -119,7 +119,7 @@ public class Call extends ObjectConstructor {
 	private static final class CallObject extends DefinedObject {
 
 		private final AscendantsDefinition ascendants;
-		private final BlockBuilder definitions;
+		private BlockBuilder definitions;
 
 		CallObject(
 				LocationInfo location,
@@ -156,6 +156,7 @@ public class Call extends ObjectConstructor {
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
 			this.definitions.buildBlock(definition);
+			this.definitions = null;
 		}
 
 	}
