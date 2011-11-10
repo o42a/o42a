@@ -10,7 +10,7 @@ green=$'\033[0;32m'
 red=$'\033[0;31m'
 white=$'\033[1;37m'
 
-O42A_RELEASE="0.1.1"
+O42A_RELEASE="0.1.2"
 JAR_DIR=${JAR_DIR:-"$(dirname $0)/target"}
 LIB_DIR=${LIB_DIR:-"$(dirname $0)/target"}
 DEBUG_LDFLAGS=${DEBUG_LDFLAGS:-"-l:${LIB_DIR}/libo42a_debug.so"}
