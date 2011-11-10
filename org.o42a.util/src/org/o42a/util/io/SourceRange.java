@@ -19,11 +19,12 @@
 */
 package org.o42a.util.io;
 
-import org.o42a.util.log.AbstractLoggable;
-import org.o42a.util.log.LoggableVisitor;
+import java.util.Formatter;
+
+import org.o42a.util.log.Loggable;
 
 
-public final class SourceRange extends AbstractLoggable<SourceRange> {
+public final class SourceRange extends Loggable {
 
 	private final SourcePosition start;
 	private final SourcePosition end;
@@ -42,26 +43,22 @@ public final class SourceRange extends AbstractLoggable<SourceRange> {
 	}
 
 	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitRange(this, p);
+	public void formatTo(
+			Formatter formatter,
+			int flags,
+			int width,
+			int precision) {
+		formatter.format("%s..", this.start);
+		this.end.formatTo(
+				formatter,
+				!this.start.source().equals(this.end.source()));
 	}
 
 	@Override
 	public void print(StringBuilder out) {
-
-		final Source src1 = this.start.source();
-		final Source src2 = this.end.source();
-		final boolean withSource;
-
-		if (src1 == null) {
-			withSource = src2 != null;
-		} else {
-			withSource = !src1.equals(src2);
-		}
-
 		this.start.print(out, true);
 		out.append("..");
-		this.end.print(out, withSource);
+		this.end.print(out, !this.start.source().equals(this.end.source()));
 	}
 
 	@Override

@@ -19,11 +19,12 @@
 */
 package org.o42a.util.io;
 
-import org.o42a.util.log.AbstractLoggable;
-import org.o42a.util.log.LoggableVisitor;
+import java.util.Formatter;
+
+import org.o42a.util.log.Loggable;
 
 
-public final class SourcePosition extends AbstractLoggable<SourcePosition> {
+public final class SourcePosition extends Loggable {
 
 	private final Source source;
 	private final int line;
@@ -65,8 +66,19 @@ public final class SourcePosition extends AbstractLoggable<SourcePosition> {
 	}
 
 	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitPosition(this, p);
+	public void formatTo(
+			Formatter formatter,
+			int flags,
+			int width,
+			int precision) {
+		formatTo(formatter, true);
+	}
+
+	public void formatTo(Formatter formatter, boolean withFile) {
+		if (withFile) {
+			formatter.format("%s:", source().getName());
+		}
+		formatter.format("%d,%d(%d)", line(), column(), offset());
 	}
 
 	@Override
@@ -122,16 +134,6 @@ public final class SourcePosition extends AbstractLoggable<SourcePosition> {
 		}
 
 		return true;
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		print(out, true);
-
-		return out.toString();
 	}
 
 }

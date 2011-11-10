@@ -19,11 +19,12 @@
 */
 package org.o42a.util.io;
 
-import org.o42a.util.log.AbstractLoggable;
-import org.o42a.util.log.LoggableVisitor;
+import java.util.Formatter;
+
+import org.o42a.util.log.Loggable;
 
 
-final class LoggableSource extends AbstractLoggable<LoggableSource> {
+final class LoggableSource extends Loggable {
 
 	private final Source source;
 
@@ -36,8 +37,12 @@ final class LoggableSource extends AbstractLoggable<LoggableSource> {
 	}
 
 	@Override
-	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
-		return visitor.visitSource(getSource(), p);
+	public void formatTo(
+			Formatter formatter,
+			int flags,
+			int width,
+			int precision) {
+		formatter.format("%s", this.source);
 	}
 
 	@Override

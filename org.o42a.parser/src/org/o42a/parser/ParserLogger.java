@@ -229,7 +229,6 @@ public abstract class ParserLogger implements Logger {
 			LogInfo location,
 			Object... args) {
 		log(new LogRecord(
-				getSource(),
 				severity,
 				"parser." + code,
 				defaultMessage,

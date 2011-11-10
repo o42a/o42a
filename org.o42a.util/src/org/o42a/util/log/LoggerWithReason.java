@@ -33,7 +33,6 @@ public final class LoggerWithReason implements Logger {
 	@Override
 	public void log(LogRecord record) {
 		this.logger.log(new LogRecord(
-				record.getSource(),
 				record.getSeverity(),
 				record.getCode(),
 				record.getMessage(),

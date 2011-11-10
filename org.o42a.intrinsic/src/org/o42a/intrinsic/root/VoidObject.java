@@ -41,9 +41,7 @@ import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.io.EmptySource;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.LoggableData;
 
 
 public final class VoidObject extends BuiltinObject {
@@ -90,17 +88,16 @@ public final class VoidObject extends BuiltinObject {
 
 		final VoidContext context = new VoidContext(topScope.getContext());
 
-		return new VoidScope(
-				new Location(context, new LoggableData(context)),
-				topScope.distribute());
+		return new VoidScope(context, topScope.distribute());
 	}
 
 	private static final class VoidContext extends CompilerContext {
 
-		private final EmptySource source = new EmptySource("void");
+		private final Source source;
 
 		VoidContext(CompilerContext topContext) {
 			super(topContext, DECLARATION_LOGGER);
+			this.source = topContext.getSource();
 		}
 
 		@Override

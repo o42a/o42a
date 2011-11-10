@@ -26,8 +26,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.Location;
-import org.o42a.util.log.LoggableData;
 
 
 public class AdapterTest extends CompilerTestCase {
@@ -42,7 +40,7 @@ public class AdapterTest extends CompilerTestCase {
 				"a := void(@Adapter := adapter)");
 
 		final Ref adapter = this.a.selfRef().adapt(
-				new Location(this.a.getContext(), new LoggableData(this)),
+				this.a.getContext(),
 				this.adapterType.selfRef().toStaticTypeRef());
 
 		assertThat(adapter, notNullValue());
