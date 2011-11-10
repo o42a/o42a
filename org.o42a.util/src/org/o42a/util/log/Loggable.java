@@ -19,15 +19,57 @@
 */
 package org.o42a.util.log;
 
+import java.util.Formattable;
 
-public interface Loggable extends LogInfo {
 
-	LogReason getReason();
+public abstract class Loggable implements LogInfo, Formattable, Cloneable {
 
-	Loggable setReason(LogReason reason);
+	private LogReason reason;
 
-	<R, P> R accept(LoggableVisitor<R, P> visitor, P p);
+	@Override
+	public final Loggable getLoggable() {
+		return this;
+	}
 
-	void print(StringBuilder out);
+	public final LogReason getReason() {
+		return this.reason;
+	}
+
+	public Loggable setReason(LogReason reason) {
+		if (reason == null) {
+			return this;
+		}
+
+		final Loggable clone = clone();
+
+		if (this.reason == null) {
+			clone.reason = reason;
+		} else {
+			clone.reason = this.reason.setNext(reason);
+		}
+
+		return clone;
+	}
+
+	public abstract void print(StringBuilder out);
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		print(out);
+
+		return out.toString();
+	}
+
+	@Override
+	protected Loggable clone() {
+		try {
+			return (Loggable) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 
 }

@@ -532,7 +532,6 @@ public class CompilerLogger implements Logger {
 			LogInfo location,
 			Object... args) {
 		log(new LogRecord(
-				getSource(),
 				severity,
 				"compiler." + code,
 				defaultMessage,

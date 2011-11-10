@@ -20,7 +20,6 @@
 package org.o42a.util.log;
 
 import static org.o42a.util.log.LogRecord.NO_ARGS;
-import static org.o42a.util.log.LoggableFormatter.format;
 
 import java.util.Formattable;
 import java.util.Formatter;
@@ -92,7 +91,7 @@ public class LogReason implements LogInfo, Formattable, Cloneable {
 			int width,
 			int precision) {
 		formatter.format(getMessage(), getArgs());
-		format(formatter, this.loggable);
+		formatter.format(" %s", this.loggable);
 	}
 
 	@Override

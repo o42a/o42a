@@ -19,14 +19,9 @@
 */
 package org.o42a.util.log;
 
-import static org.o42a.util.log.LoggableFormatter.format;
-
 import java.util.Formattable;
 import java.util.Formatter;
 import java.util.IllegalFormatException;
-
-import org.o42a.util.io.Source;
-import org.o42a.util.io.SourcePosition;
 
 
 public class LogRecord implements Formattable {
@@ -34,29 +29,22 @@ public class LogRecord implements Formattable {
 	static final Object[] NO_ARGS = new Object[0];
 
 	private final Severity severity;
-	private final Object source;
 	private final String code;
 	private final String message;
 	private final Loggable loggable;
 	private final Object[] args;
 
 	public LogRecord(
-			Object source,
 			Severity severity,
 			String code,
 			String message,
 			Loggable loggable,
 			Object... args) {
 		this.severity = severity;
-		this.source = source;
 		this.code = code != null ? code : severity.toString();
 		this.message = message != null ? message : severity.toString();
 		this.loggable = loggable;
 		this.args = args != null ? args : NO_ARGS;
-	}
-
-	public Object getSource() {
-		return this.source;
 	}
 
 	public Severity getSeverity() {
@@ -86,15 +74,8 @@ public class LogRecord implements Formattable {
 			int width,
 			int precision)
 	throws IllegalFormatException {
-
-		final Object source = getSource();
-
-		if (source != null) {
-			formatter.format("%s: ", source);
-		}
-
 		formatter.format(getMessage(), getArgs());
-		format(formatter, this.loggable);
+		formatter.format(" at %s", getLoggable());
 	}
 
 	@Override
@@ -106,23 +87,6 @@ public class LogRecord implements Formattable {
 		formatter.format("%s", this);
 
 		return out.toString();
-	}
-
-	public static void formatPosition(
-			StringBuilder out,
-			SourcePosition position,
-			boolean withFile) {
-		if (withFile) {
-
-			final Source source = position.source();
-
-			if (source != null) {
-				out.append(source.getName()).append(':');
-			}
-		}
-
-		out.append(position.line()).append(',').append(position.column());
-		out.append('(').append(position.offset()).append(')');
 	}
 
 }
