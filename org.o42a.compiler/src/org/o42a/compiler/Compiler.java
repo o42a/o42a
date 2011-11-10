@@ -41,8 +41,9 @@ import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.StringSource;
+import org.o42a.util.log.LogReason;
 import org.o42a.util.log.Logger;
-import org.o42a.util.log.Logs;
+import org.o42a.util.log.LoggerWithReason;
 
 
 public class Compiler implements SourceCompiler {
@@ -177,7 +178,7 @@ public class Compiler implements SourceCompiler {
 	private FileNode parseModule(DefinitionSource source) {
 
 		final FileNode moduleNode =
-				parse(file(), null, source.getLogger(), source.getSource());
+				parse(file(), source.getLogger(), source.getSource());
 
 		if (moduleNode != null) {
 			return moduleNode;
@@ -188,29 +189,12 @@ public class Compiler implements SourceCompiler {
 		return new FileNode(position, position);
 	}
 
-	private <T> T parse(
-			Parser<T> parser,
-			LocationInfo location,
-			Logger logger,
-			Source source) {
+	private <T> T parse(Parser<T> parser, Logger logger, Source source) {
 		if (source.isEmpty()) {
 			return null;
 		}
 
-		final ParserWorker worker;
-
-		if (location != null) {
-
-			final SourcePosition start = Logs.start(location);
-
-			if (start != null) {
-				worker = new ParserWorker(source, start);
-			} else {
-				worker = new ParserWorker(source);
-			}
-		} else {
-			worker = new ParserWorker(source);
-		}
+		final ParserWorker worker = new ParserWorker(source);
 
 		worker.setLogger(logger);
 		try {
@@ -232,10 +216,12 @@ public class Compiler implements SourceCompiler {
 			CompilerLogger logger,
 			String string) {
 
+		final LoggerWithReason log = new LoggerWithReason(
+				logger,
+				new LogReason("compiler.location", "Location", location));
 		final RefNode node = parse(
 				parser,
-				location,
-				logger,
+				log,
 				new StringSource(string, string));
 
 		if (node == null) {
