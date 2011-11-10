@@ -19,13 +19,13 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.AscendantRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class AscendantRefParser implements Parser<AscendantRefNode> {
@@ -45,14 +45,14 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 			return null;
 		}
 
-		final FixedPosition prefixStart = context.current().fix();
+		final SourcePosition prefixStart = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<AscendantRefNode.Boundary> prefix =
 				new SignNode<AscendantRefNode.Boundary>(
 						prefixStart,
-						context.current(),
+						context.current().fix(),
 						AscendantRefNode.Boundary.CIRCUMFLEX);
 
 		context.acceptComments(false, prefix);
@@ -63,14 +63,14 @@ public class AscendantRefParser implements Parser<AscendantRefNode> {
 			return new AscendantRefNode(this.overridden, prefix, null, null);
 		}
 
-		final FixedPosition suffixStart = context.current().fix();
+		final SourcePosition suffixStart = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<AscendantRefNode.Boundary> suffix =
 				new SignNode<AscendantRefNode.Boundary>(
 						suffixStart,
-						context.current(),
+						context.current().fix(),
 						AscendantRefNode.Boundary.CIRCUMFLEX);
 
 		return context.acceptComments(

@@ -20,6 +20,7 @@
 package org.o42a.ast;
 
 import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
@@ -34,8 +35,8 @@ public abstract class Position implements LogInfo {
 
 	public abstract long offset();
 
-	public FixedPosition fix() {
-		return new FixedPosition(this);
+	public SourcePosition fix() {
+		return new SourcePosition(source(), line(), column(), offset());
 	}
 
 	@Override
@@ -52,13 +53,10 @@ public abstract class Position implements LogInfo {
 		final Position other = (Position) obj;
 		final Source source = source();
 
-		if (source == null) {
-			return other.source() == null;
-		}
-		if (!source.equals(other.source())) {
+		if (offset() != other.offset()) {
 			return false;
 		}
-		if (offset() != other.offset()) {
+		if (!source.equals(other.source())) {
 			return false;
 		}
 
@@ -70,11 +68,11 @@ public abstract class Position implements LogInfo {
 
 		final int prime = 31;
 		final Source source = source();
-		final long position = offset();
+		final long offset = offset();
 		int result = 1;
 
-		result = prime * result + ((source == null) ? 0 : source.hashCode());
-		result = prime * result + (int) (position ^ (position >>> 32));
+		result = prime * result + source.hashCode();
+		result = prime * result + (int) (offset ^ (offset >>> 32));
 
 		return result;
 	}

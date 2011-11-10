@@ -19,16 +19,16 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.ast.Position;
 import org.o42a.ast.expression.ClauseNode;
 import org.o42a.ast.expression.ClauseNodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public class NameNode extends AbstractAtomNode implements ClauseNode {
 
 	private final String name;
 
-	public NameNode(Position start, Position end, String name) {
+	public NameNode(SourcePosition start, SourcePosition end, String name) {
 		super(start, end);
 		this.name = name;
 	}

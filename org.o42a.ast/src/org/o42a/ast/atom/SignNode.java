@@ -21,7 +21,7 @@ package org.o42a.ast.atom;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
+import org.o42a.util.io.SourcePosition;
 
 
 public class SignNode<S extends SignType>
@@ -30,7 +30,7 @@ public class SignNode<S extends SignType>
 
 	private final S type;
 
-	public SignNode(Position start, Position end, S type) {
+	public SignNode(SourcePosition start, SourcePosition end, S type) {
 		super(start, end);
 		this.type = type;
 	}

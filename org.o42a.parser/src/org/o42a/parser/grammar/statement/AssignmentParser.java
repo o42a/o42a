@@ -21,13 +21,13 @@ package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.AssignmentNode.AssignmentOperator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class AssignmentParser implements Parser<AssignmentNode> {
@@ -44,14 +44,14 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 			return null;
 		}
 
-		final FixedPosition operatorStart = context.current().fix();
+		final SourcePosition operatorStart = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<AssignmentOperator> operator =
 				new SignNode<AssignmentOperator>(
 						operatorStart,
-						context.current(),
+						context.current().fix(),
 						AssignmentOperator.ASSIGN);
 
 		context.acceptComments(false, operator);

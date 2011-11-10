@@ -21,13 +21,13 @@ package org.o42a.parser.grammar.statement;
 
 import static org.o42a.parser.Grammar.braces;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracesNode;
 import org.o42a.ast.statement.NamedBlockNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class NamedBlockParser implements Parser<NamedBlockNode> {
@@ -41,7 +41,7 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 	@Override
 	public NamedBlockNode parse(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		if (context.next() != ':') {
 			return null;
@@ -52,7 +52,7 @@ public class NamedBlockParser implements Parser<NamedBlockNode> {
 		final SignNode<NamedBlockNode.Separator> separator =
 				new SignNode<NamedBlockNode.Separator>(
 						start,
-						context.current(),
+						context.current().fix(),
 						NamedBlockNode.Separator.COLON);
 
 		context.skipComments(true, separator);

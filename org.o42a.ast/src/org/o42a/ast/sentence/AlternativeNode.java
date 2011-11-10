@@ -21,9 +21,9 @@ package org.o42a.ast.sentence;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.util.io.SourcePosition;
 
 
 public class AlternativeNode extends AbstractNode {
@@ -39,7 +39,7 @@ public class AlternativeNode extends AbstractNode {
 		this.conjunction = conjunction;
 	}
 
-	public AlternativeNode(Position start, Position end) {
+	public AlternativeNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 		this.separator = null;
 		this.conjunction = new SerialNode[0];

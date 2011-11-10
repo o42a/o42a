@@ -114,7 +114,7 @@ public class Scoped extends Location implements ScopeInfo {
 
 		if (loggable != null) {
 			out.append("]:[");
-			loggable.printContent(out);
+			loggable.print(out);
 		}
 		out.append(']');
 

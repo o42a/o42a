@@ -41,7 +41,7 @@ final class LoggableSource extends AbstractLoggable<LoggableSource> {
 	}
 
 	@Override
-	public void printContent(StringBuilder out) {
+	public void print(StringBuilder out) {
 		out.append(this.source);
 	}
 

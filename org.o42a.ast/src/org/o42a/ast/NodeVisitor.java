@@ -111,10 +111,6 @@ public abstract class NodeVisitor<R, P>
 		return visitAny(file, p);
 	}
 
-	public R visitEmpty(EmptyNode node, P p) {
-		return visitAny(node, p);
-	}
-
 	protected R visitAtom(AtomNode atom, P p) {
 		return visitAny(atom, p);
 	}

@@ -199,7 +199,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 		if (loggable != null) {
 			out.append("]:[");
-			loggable.printContent(out);
+			loggable.print(out);
 		}
 		out.append(']');
 

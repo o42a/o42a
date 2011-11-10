@@ -25,11 +25,11 @@ import static org.o42a.parser.grammar.file.SubTitleParser.SUB_TITLE;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 final class SectionContentParser implements Parser<ContentWithNextTitle> {
@@ -62,7 +62,7 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 				continue;
 			}
 
-			final FixedPosition sentenceEnd = sentence.getEnd();
+			final SourcePosition sentenceEnd = sentence.getEnd();
 			final SentenceNode title;
 
 			if (context.current().line() - sentenceEnd.line() > 1) {

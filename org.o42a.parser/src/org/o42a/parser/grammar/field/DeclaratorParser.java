@@ -22,13 +22,13 @@ package org.o42a.parser.grammar.field;
 import static org.o42a.ast.field.DeclarationTarget.*;
 import static org.o42a.parser.grammar.field.InterfaceParser.INTERFACE;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.*;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class DeclaratorParser implements Parser<DeclaratorNode> {
@@ -86,7 +86,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 		@Override
 		public SignNode<DeclarationTarget> parse(ParserContext context) {
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 			final boolean override;
 
 			switch (context.next()) {
@@ -143,7 +143,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			final SignNode<DeclarationTarget> assignment =
 					new SignNode<DeclarationTarget>(
 							start,
-							context.firstUnaccepted(),
+							context.firstUnaccepted().fix(),
 							type);
 
 			return context.acceptComments(false, assignment);

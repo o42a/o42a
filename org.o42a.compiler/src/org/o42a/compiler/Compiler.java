@@ -27,7 +27,6 @@ import static org.o42a.parser.Grammar.*;
 
 import java.io.IOException;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -112,8 +111,8 @@ public class Compiler implements SourceCompiler {
 					node.accept(PLAIN_IP.refVisitor(), scope.distribute()));
 		}
 
-		final FixedPosition pos =
-				new FixedPosition(location.getContext().getSource());
+		final SourcePosition pos =
+				new SourcePosition(location.getContext().getSource());
 		final MemberRefNode ownerNode = new MemberRefNode(
 				null,
 				null,
@@ -184,7 +183,7 @@ public class Compiler implements SourceCompiler {
 			return moduleNode;
 		}
 
-		final FixedPosition position = new FixedPosition(source.getSource());
+		final SourcePosition position = new SourcePosition(source.getSource());
 
 		return new FileNode(position, position);
 	}
@@ -205,9 +204,7 @@ public class Compiler implements SourceCompiler {
 			final SourcePosition start = Logs.start(location);
 
 			if (start != null) {
-				worker = new ParserWorker(
-						source,
-						new FixedPosition(start));
+				worker = new ParserWorker(source, start);
 			} else {
 				worker = new ParserWorker(source);
 			}

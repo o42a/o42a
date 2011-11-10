@@ -21,12 +21,12 @@ package org.o42a.parser.grammar.clause;
 
 import static org.o42a.parser.Grammar.ref;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 final class ReusedClauseParser implements Parser<ReusedClauseNode> {
@@ -42,21 +42,21 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<ReusedClauseNode.Separator> separator =
 				new SignNode<ReusedClauseNode.Separator>(
 						start,
-						context.current(),
+						context.current().fix(),
 						ReusedClauseNode.Separator.OR);
 
 		context.acceptComments(true, separator);
 
 		if (context.next() == '*') {
 
-			final FixedPosition asteriskStart = context.current().fix();
+			final SourcePosition asteriskStart = context.current().fix();
 
 			context.acceptAll();
 
@@ -67,7 +67,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 							null,
 							new SignNode<ReusedClauseNode.ReuseContents>(
 									asteriskStart,
-									context.current(),
+									context.current().fix(),
 									ReusedClauseNode.ReuseContents.ASTERISK)));
 		}
 
@@ -79,7 +79,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 
 		if (context.next() == '*') {
 
-			final FixedPosition asteriskStart = context.current().fix();
+			final SourcePosition asteriskStart = context.current().fix();
 
 			context.acceptAll();
 
@@ -90,7 +90,7 @@ final class ReusedClauseParser implements Parser<ReusedClauseNode> {
 							clause,
 							new SignNode<ReusedClauseNode.ReuseContents>(
 									asteriskStart,
-									context.current(),
+									context.current().fix(),
 									ReusedClauseNode.ReuseContents.ASTERISK)));
 		}
 

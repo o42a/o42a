@@ -19,17 +19,119 @@
 */
 package org.o42a.util.io;
 
-import org.o42a.util.log.Loggable;
+import org.o42a.util.log.AbstractLoggable;
+import org.o42a.util.log.LoggableVisitor;
 
 
-public interface SourcePosition extends Loggable {
+public final class SourcePosition extends AbstractLoggable<SourcePosition> {
 
-	Source source();
+	private final Source source;
+	private final int line;
+	private final int column;
+	private final long offset;
 
-	int line();
+	public SourcePosition(Source source) {
+		assert source != null :
+			"Source not specified";
+		this.source = source;
+		this.line = 1;
+		this.column = 0;
+		this.offset = 0;
+	}
 
-	int column();
+	public SourcePosition(Source source, int line, int column, long offset) {
+		assert source != null :
+			"Source not specified";
+		this.source = source;
+		this.line = line;
+		this.column = column;
+		this.offset = offset;
+	}
 
-	long offset();
+	public final Source source() {
+		return this.source;
+	}
+
+	public final int line() {
+		return this.line;
+	}
+
+	public final int column() {
+		return this.column;
+	}
+
+	public final long offset() {
+		return this.offset;
+	}
+
+	@Override
+	public <R, P> R accept(LoggableVisitor<R, P> visitor, P p) {
+		return visitor.visitPosition(this, p);
+	}
+
+	@Override
+	public void print(StringBuilder out) {
+		print(out, true);
+	}
+
+	public void print(StringBuilder out, boolean withFile) {
+		if (withFile) {
+
+			final Source source = source();
+
+			if (source != null) {
+				out.append(source.getName()).append(':');
+			}
+		}
+
+		out.append(line()).append(',').append(column());
+		out.append('(').append(offset()).append(')');
+	}
+
+	@Override
+	public int hashCode() {
+
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + (int) (this.offset ^ (this.offset >>> 32));
+		result = prime * result + this.source.hashCode();
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final SourcePosition other = (SourcePosition) obj;
+
+		if (this.offset != other.offset) {
+			return false;
+		}
+		if (!this.source.equals(other.source)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		print(out, true);
+
+		return out.toString();
+	}
 
 }

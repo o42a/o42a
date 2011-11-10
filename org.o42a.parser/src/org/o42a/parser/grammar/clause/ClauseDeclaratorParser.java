@@ -26,7 +26,6 @@ import static org.o42a.parser.grammar.clause.ClauseRequirementParser.CLAUSE_REQU
 import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
 import static org.o42a.parser.grammar.clause.ReusedClauseParser.REUSED_CLAUSE;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.*;
 import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
@@ -37,6 +36,7 @@ import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
@@ -83,14 +83,14 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 	private SignNode<ClauseDeclaratorNode.Parenthesis> opening(
 			ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.skip();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
 				new SignNode<ClauseDeclaratorNode.Parenthesis>(
 						start,
-						context.current(),
+						context.current().fix(),
 						ClauseDeclaratorNode.Parenthesis.OPENING);
 
 		return context.skipComments(true, opening);
@@ -146,14 +146,14 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return null;
 		}
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<ClauseDeclaratorNode.Parenthesis> closing =
 				new SignNode<ClauseDeclaratorNode.Parenthesis>(
 						start,
-						context.current(),
+						context.current().fix(),
 						ClauseDeclaratorNode.Parenthesis.CLOSING);
 
 		return context.acceptComments(false, closing);

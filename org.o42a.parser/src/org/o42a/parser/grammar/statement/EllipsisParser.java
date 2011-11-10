@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.statement;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 import static org.o42a.util.string.Characters.HORIZONTAL_ELLIPSIS;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.MemberRefNode;
@@ -30,6 +29,7 @@ import org.o42a.ast.statement.EllipsisNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class EllipsisParser implements Parser<EllipsisNode> {
@@ -42,7 +42,7 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 	@Override
 	public EllipsisNode parse(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		switch (context.next()) {
 		case HORIZONTAL_ELLIPSIS:
@@ -64,7 +64,7 @@ public class EllipsisParser implements Parser<EllipsisNode> {
 		final SignNode<EllipsisNode.Mark> mark =
 				new SignNode<EllipsisNode.Mark>(
 						start,
-						context.current(),
+						context.current().fix(),
 						EllipsisNode.Mark.ELLIPSIS);
 
 		context.acceptComments(false, mark);

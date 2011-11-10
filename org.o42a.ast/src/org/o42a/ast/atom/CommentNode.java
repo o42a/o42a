@@ -21,7 +21,7 @@ package org.o42a.ast.atom;
 
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 
-import org.o42a.ast.Position;
+import org.o42a.util.io.SourcePosition;
 
 
 public class CommentNode extends AbstractAtomNode {
@@ -48,8 +48,8 @@ public class CommentNode extends AbstractAtomNode {
 	private final String text;
 
 	public CommentNode(
-			Position start,
-			Position end,
+			SourcePosition start,
+			SourcePosition end,
 			boolean multiline,
 			String text) {
 		super(start, end);

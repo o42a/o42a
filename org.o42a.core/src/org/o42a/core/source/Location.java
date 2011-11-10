@@ -70,7 +70,7 @@ public class Location implements LocationInfo {
 
 		if (loggable != null) {
 			out.append("]:");
-			loggable.printContent(out);
+			loggable.print(out);
 		} else {
 			out.append(']');
 		}

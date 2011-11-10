@@ -19,12 +19,12 @@
 */
 package org.o42a.parser.grammar.clause;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode.Requirement;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 import org.o42a.util.string.Characters;
 
 
@@ -41,7 +41,7 @@ final class ClauseRequirementParser
 	public SignNode<Requirement> parse(ParserContext context) {
 
 		final int next = context.next();
-		final FixedPosition start;
+		final SourcePosition start;
 		final ClauseDeclaratorNode.Requirement requirement;
 
 		switch (next) {
@@ -74,7 +74,7 @@ final class ClauseRequirementParser
 				true,
 				new SignNode<ClauseDeclaratorNode.Requirement>(
 						start,
-						context.current(),
+						context.current().fix(),
 						requirement));
 	}
 

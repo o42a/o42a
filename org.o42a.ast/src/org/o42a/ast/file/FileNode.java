@@ -21,7 +21,7 @@ package org.o42a.ast.file;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
+import org.o42a.util.io.SourcePosition;
 
 
 public class FileNode extends AbstractNode {
@@ -35,7 +35,7 @@ public class FileNode extends AbstractNode {
 		this.sections = sections;
 	}
 
-	public FileNode(Position start, Position end) {
+	public FileNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 		this.header = null;
 		this.sections = new SectionNode[0];

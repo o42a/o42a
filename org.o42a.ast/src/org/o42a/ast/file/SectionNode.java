@@ -21,7 +21,6 @@ package org.o42a.ast.file;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -30,6 +29,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.util.io.SourcePosition;
 
 
 public class SectionNode
@@ -83,7 +83,7 @@ public class SectionNode
 		this.content = content;
 	}
 
-	public SectionNode(Position start, Position end) {
+	public SectionNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 		this.title = null;
 		this.subTitle = null;

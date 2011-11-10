@@ -20,7 +20,6 @@
 package org.o42a.ast.ref;
 
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
@@ -28,12 +27,16 @@ import org.o42a.ast.expression.AscendantSpecNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.field.TypeNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ScopeRefNode extends SignNode<ScopeType>
 		implements RefNode, ClauseKeyNode {
 
-	public ScopeRefNode(Position start, Position end, ScopeType type) {
+	public ScopeRefNode(
+			SourcePosition start,
+			SourcePosition end,
+			ScopeType type) {
 		super(start, end, type);
 	}
 

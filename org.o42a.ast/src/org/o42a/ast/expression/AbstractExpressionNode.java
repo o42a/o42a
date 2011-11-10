@@ -20,16 +20,16 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.Position;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class AbstractExpressionNode
 		extends AbstractStatementNode
 		implements ExpressionNode {
 
-	public AbstractExpressionNode(Position start, Position end) {
+	public AbstractExpressionNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 	}
 

@@ -21,12 +21,12 @@ package org.o42a.parser.grammar.ref;
 
 import static org.o42a.parser.grammar.atom.NameParser.NAME;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
@@ -43,14 +43,14 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 			return null;
 		}
 
-		final FixedPosition prefixStart = context.current().fix();
+		final SourcePosition prefixStart = context.current().fix();
 
 		context.skip();
 
 		final SignNode<IntrinsicRefNode.Boundary> prefix =
 				new SignNode<IntrinsicRefNode.Boundary>(
 						prefixStart,
-						context.current(),
+						context.current().fix(),
 						IntrinsicRefNode.Boundary.DOLLAR);
 
 		context.skipComments(false, prefix);
@@ -65,14 +65,14 @@ public class IntrinsicRefParser implements Parser<IntrinsicRefNode> {
 			return null;
 		}
 
-		final FixedPosition suffixStart = context.current().fix();
+		final SourcePosition suffixStart = context.current().fix();
 
 		context.acceptAll();
 
 		final SignNode<IntrinsicRefNode.Boundary> suffix =
 				new SignNode<IntrinsicRefNode.Boundary>(
 						suffixStart,
-						context.current(),
+						context.current().fix(),
 						IntrinsicRefNode.Boundary.DOLLAR);
 
 		return context.acceptComments(

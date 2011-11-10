@@ -21,9 +21,9 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.util.io.SourcePosition;
 
 
 public class ArgumentNode extends AbstractNode {
@@ -31,7 +31,7 @@ public class ArgumentNode extends AbstractNode {
 	private final SignNode<Separator> separator;
 	private final ExpressionNode value;
 
-	public ArgumentNode(Position start) {
+	public ArgumentNode(SourcePosition start) {
 		super(start, start);
 		this.separator = null;
 		this.value = null;

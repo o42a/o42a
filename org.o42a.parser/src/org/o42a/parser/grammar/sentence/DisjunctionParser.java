@@ -21,13 +21,13 @@ package org.o42a.parser.grammar.sentence;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.AlternativeNode.Separator;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.parser.*;
+import org.o42a.util.io.SourcePosition;
 
 
 public class DisjunctionParser implements Parser<AlternativeNode[]> {
@@ -49,7 +49,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 		for (;;) {
 
 			final SeparatorNodes separators = context.skipComments(true);
-			final FixedPosition conjunctionStart = context.current().fix();
+			final SourcePosition conjunctionStart = context.current().fix();
 			final SerialNode[] alt =
 					expectations.parse(this.grammar.conjunction());
 			final AlternativeNode alternative;
@@ -60,7 +60,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 						alt != null ? alt : new SerialNode[0]);
 			} else {
 
-				final FixedPosition start = context.current().fix();
+				final SourcePosition start = context.current().fix();
 
 				alternative = new AlternativeNode(start, start);
 			}
@@ -84,12 +84,12 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 			}
 			alternatives.add(alternative);
 
-			final FixedPosition separatorStart = context.current().fix();
+			final SourcePosition separatorStart = context.current().fix();
 
 			context.acceptAll();
 			separatorSign = new SignNode<Separator>(
 					separatorStart,
-					context.current(),
+					context.current().fix(),
 					separator);
 			context.acceptComments(true, separatorSign);
 		}

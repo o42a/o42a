@@ -24,13 +24,13 @@ import static org.o42a.parser.grammar.field.ArrayTypeParser.ARRAY_TYPE;
 
 import java.util.ArrayList;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.AscendantNode.Separator;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class AscendantsParser implements Parser<AscendantsNode> {
@@ -93,14 +93,14 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 				return null;
 			}
 
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 
 			context.acceptAll();
 
 			final SignNode<Separator> separator =
 					new SignNode<Separator>(
 							start,
-							context.current(),
+							context.current().fix(),
 							Separator.SAMPLE);
 
 			context.acceptComments(false, separator);

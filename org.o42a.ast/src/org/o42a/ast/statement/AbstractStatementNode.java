@@ -19,14 +19,17 @@
 */
 package org.o42a.ast.statement;
 
-import org.o42a.ast.*;
+import org.o42a.ast.AbstractNode;
+import org.o42a.ast.Node;
+import org.o42a.ast.NodeVisitor;
+import org.o42a.util.io.SourcePosition;
 
 
 public abstract class AbstractStatementNode
 		extends AbstractNode
 		implements StatementNode {
 
-	public AbstractStatementNode(Position start, Position end) {
+	public AbstractStatementNode(SourcePosition start, SourcePosition end) {
 		super(start, end);
 	}
 

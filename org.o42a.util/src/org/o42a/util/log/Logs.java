@@ -32,23 +32,6 @@ public final class Logs {
 		return loggable.getLoggable().accept(START_VISITOR, null);
 	}
 
-	public static void printPosition(
-			StringBuilder out,
-			SourcePosition position,
-			boolean withFile) {
-		if (withFile) {
-
-			final Source source = position.source();
-
-			if (source != null) {
-				out.append(source.getName()).append(':');
-			}
-		}
-
-		out.append(position.line()).append(',').append(position.column());
-		out.append('(').append(position.offset()).append(')');
-	}
-
 	private Logs() {
 	}
 

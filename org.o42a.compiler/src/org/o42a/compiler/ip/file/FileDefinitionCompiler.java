@@ -101,13 +101,13 @@ public class FileDefinitionCompiler
 			if (tag.isImplicit()) {
 				getLogger().error(
 						"duplicate_implicit_section",
-						section.getNode().setReason(
+						section.getNode().getLoggable().setReason(
 								logAnother(existing.getNode())),
 						"Section without tag already present in this file");
 			} else {
 				getLogger().error(
 						"duplicate_section",
-						section.getNode().setReason(
+						section.getNode().getLoggable().setReason(
 								logAnother(existing.getNode())),
 						"Section '%s' already present in this file",
 						tag);

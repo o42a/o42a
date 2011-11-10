@@ -38,7 +38,7 @@ public final class LoggableData extends AbstractLoggable<LoggableData> {
 	}
 
 	@Override
-	public void printContent(StringBuilder out) {
+	public void print(StringBuilder out) {
 		out.append(this.data);
 	}
 

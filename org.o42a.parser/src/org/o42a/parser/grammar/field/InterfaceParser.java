@@ -21,7 +21,6 @@ package org.o42a.parser.grammar.field;
 
 import static org.o42a.parser.grammar.field.TypeParser.TYPE;
 
-import org.o42a.ast.FixedPosition;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
 import org.o42a.ast.field.DefinitionKind;
@@ -29,6 +28,7 @@ import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.field.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class InterfaceParser implements Parser<InterfaceNode> {
@@ -61,13 +61,13 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 
 	private InterfaceNode parseInterfaceWithType(ParserContext context) {
 
-		final FixedPosition start = context.current().fix();
+		final SourcePosition start = context.current().fix();
 
 		context.skip();
 
 		final SignNode<Parenthesis> opening = new SignNode<Parenthesis>(
 				start,
-				context.current(),
+				context.current().fix(),
 				Parenthesis.OPENING_PARENTHESIS);
 		final SignNode<DefinitionKind> kind = context.push(DEFINITION_KIND);
 
@@ -88,13 +88,13 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			context.getLogger().notClosed(opening, "(");
 		} else {
 
-			final FixedPosition closingStart = context.current().fix();
+			final SourcePosition closingStart = context.current().fix();
 
 			context.acceptAll();
 
 			closing = new SignNode<Parenthesis>(
 					closingStart,
-					context.current(),
+					context.current().fix(),
 					Parenthesis.CLOSING_PARENTHESIS);
 		}
 
@@ -113,7 +113,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			}
 
 			final DefinitionKind targetKind;
-			final FixedPosition start = context.current().fix();
+			final SourcePosition start = context.current().fix();
 
 			if (context.next() == '`') {
 				targetKind = DefinitionKind.VARIABLE;
@@ -126,7 +126,7 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			final SignNode<DefinitionKind> result =
 					new SignNode<DefinitionKind>(
 							start,
-							context.firstUnaccepted(),
+							context.firstUnaccepted().fix(),
 							targetKind);
 
 			return context.acceptComments(false, result);

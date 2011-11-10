@@ -21,10 +21,10 @@ package org.o42a.ast.sentence;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
-import org.o42a.ast.Position;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.util.io.SourcePosition;
 
 
 public class SerialNode extends AbstractNode {
@@ -32,7 +32,7 @@ public class SerialNode extends AbstractNode {
 	private final SignNode<Separator> separator;
 	private final StatementNode statement;
 
-	public SerialNode(Position position) {
+	public SerialNode(SourcePosition position) {
 		super(position, position);
 		this.separator = null;
 		this.statement = null;
