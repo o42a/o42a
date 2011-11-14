@@ -22,7 +22,6 @@ package org.o42a.core.member.impl.clause;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.local.LocalRegistry;
@@ -61,14 +60,14 @@ public final class DeclaredGroupClause
 		this.builder = builder;
 	}
 
-	private DeclaredGroupClause(
-			MemberOwner owner,
-			DeclaredGroupClause overridden) {
-		super(owner, overridden);
-		this.builder = overridden.builder;
-		this.definition = overridden.definition;
-		this.imperative = overridden.imperative;
-		this.localScope = overridden.localScope;
+	DeclaredGroupClause(
+			MemberClause clause,
+			DeclaredGroupClause propagatedFrom) {
+		super(clause, propagatedFrom);
+		this.builder = propagatedFrom.builder;
+		this.definition = propagatedFrom.definition;
+		this.imperative = propagatedFrom.imperative;
+		this.localScope = propagatedFrom.localScope;
 	}
 
 	@Override
@@ -215,11 +214,6 @@ public final class DeclaredGroupClause
 	protected void fullyResolve() {
 		super.fullyResolve();
 		validate();
-	}
-
-	@Override
-	protected GroupClause propagate(MemberOwner owner) {
-		return new DeclaredGroupClause(owner, this);
 	}
 
 	final ClauseBuilder getBuilder() {

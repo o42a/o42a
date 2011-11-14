@@ -31,7 +31,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.member.*;
+import org.o42a.core.member.MemberContainer;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -59,9 +61,9 @@ public abstract class PlainClause
 			"Plain clause expected";
 	}
 
-	protected PlainClause(MemberOwner owner, PlainClause overridden) {
-		super(owner, overridden);
-		setClauseObject(propagateClauseObject(overridden));
+	protected PlainClause(MemberClause member, PlainClause propagatedFrom) {
+		super(member);
+		setClauseObject(propagateClauseObject(propagatedFrom));
 	}
 
 	@Override
@@ -311,9 +313,6 @@ public abstract class PlainClause
 	protected void fullyResolve() {
 		getObject().resolveAll();
 	}
-
-	@Override
-	protected abstract PlainClause propagate(MemberOwner owner);
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
 

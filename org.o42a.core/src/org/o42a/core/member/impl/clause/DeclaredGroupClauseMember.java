@@ -20,6 +20,7 @@
 package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.MemberClause;
@@ -40,6 +41,11 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	}
 
 	@Override
+	public MemberClause propagateTo(MemberOwner owner) {
+		return new Propagated(owner, this);
+	}
+
+	@Override
 	protected void merge(Member member) {
 
 		final Clause clause = member.toClause();
@@ -50,6 +56,26 @@ final class DeclaredGroupClauseMember extends MemberClause {
 		}
 
 		this.clause.merge(clause);
+	}
+
+	private static final class Propagated
+			extends OverriddenMemberClause<DeclaredGroupClause> {
+
+		private Propagated(MemberOwner owner, MemberClause propagatedFrom) {
+			super(owner, propagatedFrom);
+		}
+
+		@Override
+		public MemberClause propagateTo(MemberOwner owner) {
+			return new Propagated(owner, this);
+		}
+
+		@Override
+		protected DeclaredGroupClause propagateClause(
+				DeclaredGroupClause propagatedFrom) {
+			return new DeclaredGroupClause(this, propagatedFrom);
+		}
+
 	}
 
 }

@@ -27,7 +27,9 @@ import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.ArrayUtil;
@@ -35,19 +37,16 @@ import org.o42a.util.ArrayUtil;
 
 public abstract class GroupClause extends Clause implements Container {
 
-	private final Container enclosingContainer;
 	private Clause[] subClauses;
 
 	public GroupClause(MemberClause member) {
 		super(member);
 		assert member.getDeclaration().getKind() == ClauseKind.GROUP :
 			"Attempt to create group instead of plain clause";
-		this.enclosingContainer = member.getContainer();
 	}
 
-	protected GroupClause(MemberOwner owner, GroupClause overridden) {
-		super(owner, overridden);
-		this.enclosingContainer = owner.getContainer();
+	protected GroupClause(MemberClause clause, GroupClause propagatedFroms) {
+		super(clause);
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public final Container getEnclosingContainer() {
-		return this.enclosingContainer;
+		return toMember().getContainer();
 	}
 
 	@Override
@@ -128,12 +127,12 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public final Artifact<?> toArtifact() {
-		return this.enclosingContainer.toArtifact();
+		return getEnclosingContainer().toArtifact();
 	}
 
 	@Override
 	public final Obj toObject() {
-		return this.enclosingContainer.toObject();
+		return getEnclosingContainer().toObject();
 	}
 
 	@Override
@@ -143,17 +142,17 @@ public abstract class GroupClause extends Clause implements Container {
 
 	@Override
 	public final LocalScope toLocal() {
-		return this.enclosingContainer.toLocal();
+		return getEnclosingContainer().toLocal();
 	}
 
 	@Override
 	public Namespace toNamespace() {
-		return this.enclosingContainer.toNamespace();
+		return getEnclosingContainer().toNamespace();
 	}
 
 	@Override
 	public Member member(MemberKey memberKey) {
-		return this.enclosingContainer.member(memberKey);
+		return getEnclosingContainer().member(memberKey);
 	}
 
 	@Override
@@ -167,14 +166,14 @@ public abstract class GroupClause extends Clause implements Container {
 		}
 
 		if (memberId.getEnclosingId() == null) {
-			return this.enclosingContainer.member(
+			return getEnclosingContainer().member(
 					user,
 					accessor,
 					getDeclaration().getMemberId().append(memberId),
 					declaredIn);
 		}
 
-		return this.enclosingContainer.member(
+		return getEnclosingContainer().member(
 				user,
 				accessor,
 				memberId, declaredIn);
@@ -192,7 +191,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 		if (memberId.getEnclosingId() == null) {
 
-			final Path foundInGroup = this.enclosingContainer.findMember(
+			final Path foundInGroup = getEnclosingContainer().findMember(
 					user,
 					accessor,
 					getDeclaration().getMemberId().append(memberId),
@@ -203,7 +202,7 @@ public abstract class GroupClause extends Clause implements Container {
 			}
 		}
 
-		return this.enclosingContainer.findMember(
+		return getEnclosingContainer().findMember(
 				user,
 				accessor,
 				memberId,
@@ -213,9 +212,6 @@ public abstract class GroupClause extends Clause implements Container {
 	@Override
 	protected void fullyResolve() {
 	}
-
-	@Override
-	protected abstract GroupClause propagate(MemberOwner owner);
 
 	@Override
 	protected Path buildPathInObject() {

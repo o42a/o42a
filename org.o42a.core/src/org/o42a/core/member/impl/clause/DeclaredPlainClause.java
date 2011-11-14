@@ -25,7 +25,6 @@ import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.path.Path;
@@ -53,15 +52,15 @@ public final class DeclaredPlainClause extends PlainClause {
 		this.builder = builder;
 	}
 
-	private DeclaredPlainClause(
-			MemberOwner owner,
-			DeclaredPlainClause overridden) {
-		super(owner, overridden);
-		this.builder = overridden.builder;
+	DeclaredPlainClause(
+			MemberClause clause,
+			DeclaredPlainClause propagatedFrom) {
+		super(clause, propagatedFrom);
+		this.builder = propagatedFrom.builder;
 		this.definition =
-				new Holder<ClauseDefinition>(overridden.getDefinition());
-		this.overridden = overridden.getOverridden();
-		this.reused = overridden.getReusedClauses();
+				new Holder<ClauseDefinition>(propagatedFrom.getDefinition());
+		this.overridden = propagatedFrom.getOverridden();
+		this.reused = propagatedFrom.getReusedClauses();
 	}
 
 	public final ClauseBuilder getBuilder() {
@@ -172,11 +171,6 @@ public final class DeclaredPlainClause extends PlainClause {
 						clauseId);
 			}
 		}
-	}
-
-	@Override
-	protected PlainClause propagate(MemberOwner owner) {
-		return new DeclaredPlainClause(owner, this);
 	}
 
 	@Override
