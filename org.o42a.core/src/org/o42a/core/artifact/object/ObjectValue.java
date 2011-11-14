@@ -306,10 +306,14 @@ public final class ObjectValue implements UseInfo {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			return this.explicitUses = cloneOf.value().clonesExplicitUses();
+			this.explicitUses = cloneOf.value().clonesExplicitUses();
+			clonesUses().useBy(this.explicitUses);
+		} else {
+			this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
+			uses().useBy(this.explicitUses);
 		}
 
-		return this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
+		return this.explicitUses;
 	}
 
 	private final Usable clonesUses() {
@@ -323,8 +327,10 @@ public final class ObjectValue implements UseInfo {
 			return this.clonesUses = cloneOf.value().clonesUses();
 		}
 
-		return this.clonesUses =
-				simpleUsable("ClonesValuesOf", this.object);
+		this.clonesUses = simpleUsable("ClonesValuesOf", this.object);
+		uses().useBy(this.clonesUses);
+
+		return this.clonesUses;
 	}
 
 	private final Usable clonesExplicitUses() {

@@ -259,7 +259,10 @@ public final class ObjectType implements UserInfo {
 			return this.clonesUses = cloneOf.type().clonesUses();
 		}
 
-		return this.clonesUses = simpleUsable("ClonesOf", this);
+		this.clonesUses = simpleUsable("ClonesOf", this);
+		uses().useBy(this.clonesUses);
+
+		return this.clonesUses;
 	}
 
 	private Usable runtimeConstructionUses() {
@@ -341,8 +344,11 @@ public final class ObjectType implements UserInfo {
 			return this.clonesDerivationUses = cloneOf.type().derivationUses();
 		}
 
-		return this.clonesDerivationUses =
+		this.clonesDerivationUses =
 				simpleUsable("ClonesDerivationOf", getObject());
+		derivationUses().useBy(this.clonesDerivationUses);
+
+		return this.clonesDerivationUses;
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
