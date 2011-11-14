@@ -1,5 +1,5 @@
 /*
-    Intrinsics
+    Compiler Core
     Copyright (C) 2011 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,42 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.intrinsic.root;
+package org.o42a.core.artifact.object.impl;
 
-import static org.o42a.core.member.MemberId.fieldName;
-import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectField;
+import org.o42a.core.artifact.object.impl.decl.DeclaredObjectField;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.impl.field.OverriddenMemberField;
 
 
-final class VoidField extends ObjectField {
+public class OverriddenMemberObjectField
+		extends OverriddenMemberField<DeclaredObjectField> {
 
-	VoidField(Root root) {
-		super(
-				root.toMemberOwner(),
-				fieldDeclaration(root, root.distribute(), fieldName("void")));
-		setFieldArtifact(getContext().getVoid());
-	}
-
-	private VoidField(MemberField member, VoidField propagatedFrom) {
-		super(member, propagatedFrom);
+	public OverriddenMemberObjectField(
+			MemberOwner owner,
+			MemberField propagatedFrom) {
+		super(owner, propagatedFrom);
 	}
 
 	@Override
-	public Obj getArtifact() {
-		return getFieldArtifact();
+	public OverriddenMemberObjectField propagateTo(MemberOwner owner) {
+		return new OverriddenMemberObjectField(owner, this);
 	}
 
 	@Override
-	public String toString() {
-		return "$$void";
-	}
-
-	@Override
-	protected VoidField propagate(MemberField member) {
-		return new VoidField(member, this);
+	protected DeclaredObjectField propagateField(
+			DeclaredObjectField propagatedFrom) {
+		return new DeclaredObjectField(this, propagatedFrom);
 	}
 
 }

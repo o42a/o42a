@@ -38,9 +38,9 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.use.UserInfo;
 
@@ -61,8 +61,8 @@ public final class ScopeField extends ObjectField {
 		setFieldArtifact(owner.getScope().getEnclosingContainer().toObject());
 	}
 
-	private ScopeField(MemberOwner owner, ScopeField overridden) {
-		super(owner, owner, overridden);
+	private ScopeField(MemberField member, ScopeField overridden) {
+		super(member, overridden, false);
 		this.overridden = overridden;
 	}
 
@@ -117,8 +117,8 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	protected ScopeField propagate(MemberOwner owner) {
-		return new ScopeField(owner, this);
+	protected ObjectField propagate(MemberField member) {
+		return new ScopeField(member, this);
 	}
 
 	@Override

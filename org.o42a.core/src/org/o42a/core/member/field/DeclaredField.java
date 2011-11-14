@@ -20,7 +20,6 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,9 +29,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.impl.field.FieldInclusions;
-import org.o42a.core.source.Location;
 
 
 public abstract class DeclaredField<
@@ -48,18 +45,9 @@ public abstract class DeclaredField<
 		this.artifactKind = artifactKind;
 	}
 
-	protected DeclaredField(
-			MemberOwner owner,
-			DeclaredField<A, V> propagatedFrom) {
-		super(
-				new Location(
-						owner.getContext(),
-						owner.getLoggable().setReason(
-								logDeclaration(
-										propagatedFrom.getLastDefinition()))),
-				owner,
-				propagatedFrom);
-		this.artifactKind = propagatedFrom.artifactKind;
+	protected DeclaredField(MemberField member, Field<A> propagatedFrom) {
+		super(member);
+		this.artifactKind = propagatedFrom.getArtifactKind();
 		setFieldArtifact(propagateArtifact(propagatedFrom));
 	}
 
@@ -149,8 +137,7 @@ public abstract class DeclaredField<
 
 	protected abstract void merge(DeclaredField<A, V> other);
 
-	@Override
-	protected abstract DeclaredField<A, V> propagate(MemberOwner owner);
+	protected abstract A propagateArtifact(Field<A> propagatedFrom);
 
 	FieldVariant<A> variant(
 			FieldDeclaration declaration,

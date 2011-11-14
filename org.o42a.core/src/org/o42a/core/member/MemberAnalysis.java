@@ -112,10 +112,7 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	public String reasonNotFound(Generator generator) {
-
-		final Field<?> field = getMember().toField(dummyUser());
-
-		if (field == null) {
+		if (getMember().toMemberField() == null) {
 			return "not a field";
 		}
 
@@ -248,7 +245,7 @@ public class MemberAnalysis implements UseInfo {
 
 		final Member member = getMember();
 
-		if (member.toField(dummyUser()) == null) {
+		if (member.toMemberField() == null) {
 			// Member is not field (e.g. it is a clause).
 			// No need to track derivation.
 			return null;

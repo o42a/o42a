@@ -61,15 +61,13 @@ public abstract class MemberField extends Member {
 		this.declaration = declaration;
 	}
 
-	MemberField(
+	protected MemberField(
 			LocationInfo location,
 			MemberOwner owner,
-			Field<?> field,
 			MemberField propagatedFrom) {
 		super(
 				location,
 				propagatedFrom.distributeIn(owner.getContainer()), owner);
-		this.field = field;
 		this.key = propagatedFrom.getKey();
 		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
@@ -78,10 +76,6 @@ public abstract class MemberField extends Member {
 						distribute(),
 						propagatedFrom.getDeclaration())
 				.override();
-	}
-
-	public final boolean isAdapter() {
-		return getDeclaration().isAdapter();
 	}
 
 	@Override
@@ -93,10 +87,30 @@ public abstract class MemberField extends Member {
 		return this.declaration;
 	}
 
+	public abstract ArtifactKind<?> getArtifactKind();
+
 	@Override
 	public final Visibility getVisibility() {
 		getKey();
 		return this.visibility;
+	}
+
+	public final boolean isAdapter() {
+		return getDeclaration().isAdapter();
+	}
+
+	@Override
+	public final boolean isAbstract() {
+		return getDeclaration().isAbstract();
+	}
+
+	public final boolean isPrototype() {
+		return getDeclaration().isPrototype();
+	}
+
+	@Override
+	public final boolean isOverride() {
+		return getDeclaration().isOverride();
 	}
 
 	@Override
@@ -153,19 +167,7 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public boolean isOverride() {
-		return this.declaration.isOverride();
-	}
-
-	@Override
-	public final boolean isAbstract() {
-		return getDeclaration().isAbstract();
-	}
-
-	@Override
-	public Member getPropagatedFrom() {
-		return null;
-	}
+	public abstract MemberField getPropagatedFrom();
 
 	@Override
 	public final Set<CompilerContext> getAllContexts() {
@@ -180,12 +182,7 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public MemberField propagateTo(MemberOwner owner) {
-
-		final Field<?> field = toField(owner.getScope().dummyResolver());
-
-		return field.propagateTo(owner).toMember();
-	}
+	public abstract MemberField propagateTo(MemberOwner owner);
 
 	@Override
 	public void resolveAll() {
@@ -216,7 +213,7 @@ public abstract class MemberField extends Member {
 
 		if (isPropagated()) {
 			out.append(", ");
-			if (toField(dummyUser()).isClone()) {
+			if (isClone()) {
 				out.append("clone of ");
 				out.append(getLastDefinition().getDisplayPath());
 			} else {
@@ -269,10 +266,6 @@ public abstract class MemberField extends Member {
 		} else {
 			this.mergedWith = ArrayUtil.append(this.mergedWith, memberField);
 		}
-	}
-
-	protected ArtifactKind<?> determineArtifactKind() {
-		return toField(dummyUser()).getArtifactKind();
 	}
 
 	protected final void setField(UserInfo user, Field<?> field) {

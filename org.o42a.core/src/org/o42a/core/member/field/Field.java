@@ -31,7 +31,6 @@ import org.o42a.core.member.*;
 import org.o42a.core.member.impl.field.FieldContainer;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
@@ -47,17 +46,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 	public Field(MemberField member) {
 		this.member = member;
-	}
-
-	protected Field(
-			LocationInfo location,
-			MemberOwner owner,
-			Field<A> propagatedFrom) {
-		this.member = new OverriddenMemberField(
-				location,
-				owner,
-				this,
-				propagatedFrom.toMember());
 	}
 
 	@Override
@@ -237,7 +225,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	public final boolean isAdapter() {
-		return getDeclaration().isAdapter();
+		return this.member.isAdapter();
 	}
 
 	public final boolean isAbstract() {
@@ -245,19 +233,11 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	public final boolean isPrototype() {
-		return getDeclaration().isPrototype();
+		return this.member.isPrototype();
 	}
 
 	public final boolean isOverride() {
 		return this.member.isOverride();
-	}
-
-	public final Field<A> propagateTo(MemberOwner owner) {
-		if (getEnclosingScope() == owner.getScope()) {
-			return this;
-		}
-		owner.getScope().assertDerivedFrom(getEnclosingScope());
-		return propagate(owner);
 	}
 
 	@Override
@@ -306,10 +286,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	protected final A getFieldArtifact() {
 		return this.artifact;
 	}
-
-	protected abstract Field<A> propagate(MemberOwner owner);
-
-	protected abstract A propagateArtifact(Field<A> overridden);
 
 	protected void merge(Field<?> field) {
 		throw new UnsupportedOperationException(

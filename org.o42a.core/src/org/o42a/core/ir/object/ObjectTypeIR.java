@@ -22,7 +22,6 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
 
@@ -39,7 +38,7 @@ import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 
 
 public final class ObjectTypeIR implements Content<ObjectIRType> {
@@ -166,7 +165,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 		for (Member member : objectIR.getObject().getMembers()) {
 
-			final Field<?> field = member.toField(dummyUser());
+			final MemberField field = member.toMemberField();
 
 			if (field == null) {
 				continue;

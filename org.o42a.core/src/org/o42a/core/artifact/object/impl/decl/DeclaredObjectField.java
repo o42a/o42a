@@ -28,7 +28,6 @@ import org.o42a.core.artifact.common.OwnerMemberRegistry;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.*;
 
 
@@ -42,10 +41,8 @@ public class DeclaredObjectField
 		super(member, ArtifactKind.OBJECT);
 	}
 
-	private DeclaredObjectField(
-			MemberOwner owner,
-			DeclaredObjectField propagatedFrom) {
-		super(owner, propagatedFrom);
+	public DeclaredObjectField(MemberField member, Field<Obj> propagatedFrom) {
+		super(member, propagatedFrom);
 	}
 
 	@Override
@@ -70,11 +67,6 @@ public class DeclaredObjectField
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		return new ObjectFieldVariant(this, declaration, definition);
-	}
-
-	@Override
-	protected DeclaredObjectField propagate(MemberOwner owner) {
-		return new DeclaredObjectField(owner, this);
 	}
 
 	@Override

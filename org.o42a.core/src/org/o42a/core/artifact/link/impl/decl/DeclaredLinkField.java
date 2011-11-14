@@ -26,7 +26,6 @@ import java.util.List;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -43,10 +42,8 @@ public final class DeclaredLinkField
 		super(member, artifactKind);
 	}
 
-	private DeclaredLinkField(
-			MemberOwner owner,
-			DeclaredLinkField propagatedFrom) {
-		super(owner, propagatedFrom);
+	DeclaredLinkField(MemberField member, Field<Link> propagatedFrom) {
+		super(member, propagatedFrom);
 	}
 
 	@Override
@@ -69,11 +66,6 @@ public final class DeclaredLinkField
 	@Override
 	protected void merge(DeclaredField<Link, LinkFieldVariant> other) {
 		getLogger().ambiguousMember(other, getDisplayName());
-	}
-
-	@Override
-	protected DeclaredLinkField propagate(MemberOwner owner) {
-		return new DeclaredLinkField(owner, this);
 	}
 
 	@Override
