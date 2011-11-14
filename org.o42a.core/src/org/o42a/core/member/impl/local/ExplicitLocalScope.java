@@ -145,7 +145,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			// Member not found.
 			return null;
 		}
-		if (member.toClause() != null) {
+		if (member.toMemberClause() != null) {
 			// Clauses are available from outside the local scope.
 			return member.getKey().toPath();
 		}
@@ -270,7 +270,7 @@ public final class ExplicitLocalScope extends LocalScope {
 		} else {
 			getLogger().ambiguousClause(
 					member,
-					member.toClause().getDisplayName());
+					member.toMemberClause().getDisplayName());
 		}
 
 		return false;

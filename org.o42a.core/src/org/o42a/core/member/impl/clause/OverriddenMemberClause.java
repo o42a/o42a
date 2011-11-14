@@ -17,23 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 
 
-final class OverriddenMemberClause extends MemberClause {
+public abstract class OverriddenMemberClause<C extends Clause>
+		extends MemberClause {
 
-	private final Clause clause;
 	private final MemberClause propagatedFrom;
+	private C clause;
 
-	OverriddenMemberClause(
+	public OverriddenMemberClause(
 			MemberOwner owner,
-			Clause clause,
 			MemberClause propagatedFrom) {
 		super(owner, propagatedFrom);
-		this.clause = clause;
 		this.propagatedFrom = propagatedFrom;
 	}
 
@@ -42,9 +43,18 @@ final class OverriddenMemberClause extends MemberClause {
 		return this.propagatedFrom;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Clause toClause() {
-		return this.clause;
+	public final C toClause() {
+		if (this.clause != null) {
+			return this.clause;
+		}
+
+		final C propagatedClause = (C) getPropagatedFrom().toClause();
+
+		return this.clause = propagateClause(propagatedClause);
 	}
+
+	protected abstract C propagateClause(C propagatedFrom);
 
 }

@@ -84,13 +84,9 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public final Visibility getVisibility() {
-
-		final Clause clause = toClause();
-
-		if (clause != null) {
+		if (toMemberClause() != null) {
 			return Visibility.PUBLIC;
 		}
-
 		return Visibility.PRIVATE;
 	}
 

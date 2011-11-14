@@ -168,7 +168,7 @@ public class MemberStep extends Step {
 		final Member member = origin.getContainer().member(this.memberKey);
 
 		if (origin.getContainer().toClause() == null
-				&& member.toClause() == null) {
+				&& member.toMemberClause() == null) {
 			// Neither clause, nor member of clause.
 			// Return unchanged.
 			return unchangedPath(toPath());

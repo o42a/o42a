@@ -44,16 +44,16 @@ public abstract class MemberClause extends Member {
 		this.declaration = declaration;
 	}
 
-	MemberClause(MemberOwner owner, MemberClause overridden) {
+	protected MemberClause(MemberOwner owner, MemberClause propagatedFrom) {
 		super(
 				new Location(
 						owner.getContext(),
 						owner.getLoggable().setReason(logDeclaration(
-								overridden.getLastDefinition()))),
-				overridden.distributeIn(owner.getContainer()),
+								propagatedFrom.getLastDefinition()))),
+				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
-		this.key = overridden.getKey();
-		this.declaration = overridden.declaration.overrideBy(this);
+		this.key = propagatedFrom.getKey();
+		this.declaration = propagatedFrom.declaration.overrideBy(this);
 	}
 
 	public final ClauseDeclaration getDeclaration() {
@@ -182,9 +182,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Member propagateTo(MemberOwner owner) {
-		return toClause().propagate(owner).toMember();
-	}
+	public abstract MemberClause propagateTo(MemberOwner owner);
 
 	@Override
 	public void resolveAll() {
