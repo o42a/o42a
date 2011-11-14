@@ -42,6 +42,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
 
@@ -236,7 +237,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		for (Member declared : ascendant.getMembers()) {
 
-			final Field<?> declaredField = declared.toField(dummyUser());
+			final MemberField declaredField = declared.toMemberField();
 
 			if (declaredField == null) {
 				continue;
@@ -262,11 +263,11 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 	}
 
-	private boolean generateField(Field<?> declaredField, Field<?> field) {
+	private boolean generateField(MemberField declaredField, Field<?> field) {
 
 		final Generator generator = getGenerator();
 		final MemberAnalysis declarationAnalysis =
-				declaredField.toMember().getAnalysis();
+				declaredField.getAnalysis();
 
 		if (!declarationAnalysis.isUsedBy(generator)) {
 			// Field is never used. Skip generation.

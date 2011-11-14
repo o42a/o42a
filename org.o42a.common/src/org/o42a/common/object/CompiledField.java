@@ -23,6 +23,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectField;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.source.FieldCompiler;
 
 
@@ -38,8 +39,8 @@ public final class CompiledField extends ObjectField {
 		this.compiler = compiler;
 	}
 
-	private CompiledField(MemberOwner owner, CompiledField propagatedFrom) {
-		super(owner, propagatedFrom);
+	private CompiledField(MemberField member, CompiledField propagatedFrom) {
+		super(member, propagatedFrom);
 		this.compiler = propagatedFrom.compiler;
 	}
 
@@ -60,8 +61,8 @@ public final class CompiledField extends ObjectField {
 	}
 
 	@Override
-	protected CompiledField propagate(MemberOwner owner) {
-		return new CompiledField(owner, this);
+	protected CompiledField propagate(MemberField member) {
+		return new CompiledField(member, this);
 	}
 
 	final void init(Obj object) {

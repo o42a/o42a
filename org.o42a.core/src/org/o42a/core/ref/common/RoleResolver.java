@@ -29,7 +29,7 @@ import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
@@ -137,7 +137,7 @@ public class RoleResolver implements PathWalker {
 			return updateRole(Role.NONE);
 		}
 
-		final Field<?> field = member.toField(dummyUser());
+		final MemberField field = member.toMemberField();
 
 		if (field != null && field.isPrototype()) {
 			this.insidePrototype = true;

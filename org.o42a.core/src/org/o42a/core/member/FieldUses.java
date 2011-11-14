@@ -19,9 +19,6 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.util.use.User.dummyUser;
-
-import org.o42a.core.member.field.Field;
 import org.o42a.util.use.*;
 
 
@@ -45,10 +42,7 @@ public class FieldUses implements UseInfo {
 		}
 
 		for (Member member : getContainer().getMembers()) {
-
-			final Field<?> field = member.toField(dummyUser());
-
-			if (field == null) {
+			if (member.toMemberField() == null) {
 				continue;
 			}
 			if (this.tracker.useBy(member.getAnalysis())) {

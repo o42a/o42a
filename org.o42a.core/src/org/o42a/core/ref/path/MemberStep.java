@@ -21,7 +21,6 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
@@ -32,8 +31,8 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -66,7 +65,7 @@ public class MemberStep extends Step {
 	public boolean isMaterial() {
 
 		final Member member = firstDeclaration();
-		final Field<?> field = member.toField(dummyUser());
+		final MemberField field = member.toMemberField();
 
 		if (field == null) {
 			return true;

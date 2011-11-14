@@ -31,7 +31,7 @@ import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
@@ -128,12 +128,11 @@ public class OutcomeBuilder implements PathWalker {
 			}
 		}
 
-		final Field<?> field = member.toField(dummyUser());
+		final MemberField field = member.toMemberField();
 
 		if (field == null) {
 			return invalidOutcome();
 		}
-
 		if (!initOutcome()) {
 			return false;
 		}

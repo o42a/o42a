@@ -22,7 +22,10 @@ package org.o42a.core.member.field;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.link.impl.decl.OverriddenMemberLinkField;
+import org.o42a.core.artifact.object.impl.OverriddenMemberObjectField;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 
 
 final class DeclaredMemberField extends MemberField {
@@ -36,6 +39,7 @@ final class DeclaredMemberField extends MemberField {
 		this.builder = builder;
 	}
 
+	@Override
 	public ArtifactKind<?> getArtifactKind() {
 		if (this.artifactKind != null) {
 			return this.artifactKind;
@@ -51,13 +55,29 @@ final class DeclaredMemberField extends MemberField {
 	}
 
 	@Override
+	public final MemberField getPropagatedFrom() {
+		return null;
+	}
+
+	@Override
+	public MemberField propagateTo(MemberOwner owner) {
+
+		final ArtifactKind<?> artifactKind = getArtifactKind();
+
+		if (artifactKind.isLink()) {
+			return new OverriddenMemberLinkField(owner, this);
+		}
+
+		return new OverriddenMemberObjectField(owner, this);
+	}
+
 	protected ArtifactKind<?> determineArtifactKind() {
 
 		ArtifactKind<?> kind;
 		final Member[] overridden = getOverridden();
 
 		if (overridden.length > 0) {
-			kind = overridden[0].toField(dummyUser()).getArtifact().getKind();
+			kind = overridden[0].toMemberField().getArtifactKind();
 		} else if (getDeclaration().isVariable()) {
 			kind = ArtifactKind.VARIABLE;
 		} else if (getDeclaration().isLink()) {
@@ -101,7 +121,7 @@ final class DeclaredMemberField extends MemberField {
 			MemberField member,
 			ArtifactKind<?> expectedKind) {
 
-		final ArtifactKind<?> memberKind = member.determineArtifactKind();
+		final ArtifactKind<?> memberKind = member.getArtifactKind();
 
 		if (memberKind == null) {
 			return expectedKind;
