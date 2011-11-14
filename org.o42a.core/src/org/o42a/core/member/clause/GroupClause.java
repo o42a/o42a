@@ -45,12 +45,8 @@ public abstract class GroupClause extends Clause implements Container {
 		this.enclosingContainer = member.getContainer();
 	}
 
-	protected GroupClause(
-			MemberOwner owner,
-			Clause overridden,
-			Clause wrapped,
-			OverrideMode mode) {
-		super(owner, overridden, wrapped, mode);
+	protected GroupClause(MemberOwner owner, GroupClause overridden) {
+		super(owner, overridden);
 		this.enclosingContainer = owner.getContainer();
 	}
 

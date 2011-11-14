@@ -35,11 +35,6 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	}
 
 	@Override
-	public final MemberClause getWrapped() {
-		return null;
-	}
-
-	@Override
 	public final DeclaredGroupClause toClause() {
 		return this.clause;
 	}

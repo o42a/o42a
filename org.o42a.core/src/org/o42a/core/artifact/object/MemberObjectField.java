@@ -34,11 +34,6 @@ final class MemberObjectField extends MemberField {
 	}
 
 	@Override
-	public final MemberField getWrapped() {
-		return null;
-	}
-
-	@Override
 	protected Field<?> createField() {
 		throw new UnsupportedOperationException();
 	}

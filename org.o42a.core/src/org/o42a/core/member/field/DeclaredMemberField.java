@@ -51,11 +51,6 @@ final class DeclaredMemberField extends MemberField {
 	}
 
 	@Override
-	public final MemberField getWrapped() {
-		return null;
-	}
-
-	@Override
 	protected ArtifactKind<?> determineArtifactKind() {
 
 		ArtifactKind<?> kind;

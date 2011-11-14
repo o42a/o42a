@@ -60,16 +60,8 @@ public abstract class PlainClause
 	}
 
 	protected PlainClause(MemberOwner owner, PlainClause overridden) {
-		this(owner, overridden, null, OverrideMode.PROPAGATE);
+		super(owner, overridden);
 		setClauseObject(propagateClauseObject(overridden));
-	}
-
-	protected PlainClause(
-			MemberOwner owner,
-			Clause overridden,
-			Clause wrapped,
-			OverrideMode mode) {
-		super(owner, overridden, wrapped, mode);
 	}
 
 	@Override

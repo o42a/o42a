@@ -52,16 +52,12 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	protected Field(
 			LocationInfo location,
 			MemberOwner owner,
-			Field<A> overridden,
-			Field<A> wrapped,
-			OverrideMode mode) {
+			Field<A> propagatedFrom) {
 		this.member = new OverriddenMemberField(
 				location,
 				owner,
 				this,
-				overridden.toMember(),
-				wrapped != null ? wrapped.toMember() : null,
-				mode.propagation(overridden.toMember()));
+				propagatedFrom.toMember());
 	}
 
 	@Override
