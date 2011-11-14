@@ -35,7 +35,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -44,7 +43,6 @@ import org.o42a.util.ArrayUtil;
 
 public final class ExplicitLocalScope extends LocalScope {
 
-	private final ExplicitMemberLocal member;
 	private final String name;
 	private final HashMap<MemberId, Member> members =
 			new HashMap<MemberId, Member>();
@@ -59,9 +57,12 @@ public final class ExplicitLocalScope extends LocalScope {
 			Distributor distributor,
 			Obj owner,
 			String name) {
-		super(location, owner);
+		super(new ExplicitMemberLocal(
+				location,
+				distributor,
+				owner.toMemberOwner()));
 		this.name = name;
-		this.member = new ExplicitMemberLocal(this, distributor);
+		((ExplicitMemberLocal) toMember()).init(this);
 	}
 
 	public ExplicitLocalScope(
@@ -69,10 +70,12 @@ public final class ExplicitLocalScope extends LocalScope {
 			Distributor distributor,
 			Obj owner,
 			ExplicitLocalScope reproducedFrom) {
-		super(location, owner);
+		super(new ExplicitMemberLocal(
+				location,
+				distributor,
+				owner.toMemberOwner()));
 		this.name = reproducedFrom.getName();
-		this.member =
-				new ExplicitMemberLocal(this, distributor, reproducedFrom);
+		((ExplicitMemberLocal) toMember()).initReproduced(this, reproducedFrom);
 	}
 
 	@Override
@@ -122,11 +125,6 @@ public final class ExplicitLocalScope extends LocalScope {
 		}
 
 		return this.implicitClauses = implicitClauses;
-	}
-
-	@Override
-	public MemberLocal toMember() {
-		return this.member;
 	}
 
 	@Override
@@ -229,14 +227,6 @@ public final class ExplicitLocalScope extends LocalScope {
 			this.ir = new LocalIR(generator, this);
 		}
 		return this.ir;
-	}
-
-	@Override
-	public String toString() {
-		if (this.member == null) {
-			return super.toString();
-		}
-		return this.member.toString();
 	}
 
 	@Override

@@ -22,51 +22,27 @@ package org.o42a.core.member.impl.local;
 import static org.o42a.core.member.MemberId.localName;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
 
 final class ExplicitMemberLocal extends MemberLocal {
 
-	private final LocalScope localScope;
-	private final MemberId id;
-	private final MemberKey key;
-
-	ExplicitMemberLocal(LocalScope localScope, Distributor distributor) {
-		super(localScope, distributor, localScope.getOwner().toMemberOwner());
-		this.localScope = localScope;
-
-		final MemberId localId = localName(this.localScope.getName());
-		final Member member = getContainer().toMember();
-
-		if (member != null
-				&& member.getContainer().getScope() == getScope()) {
-			this.id = member.getId().append(localId);
-		} else {
-
-			assert getContainer().toObject() == this.localScope.getOwner() :
-				"Wrong local scope container: " + getContainer();
-
-			this.id = localId;
-		}
-
-		this.key = this.id.key(getScope());
-	}
+	private LocalScope local;
+	private MemberId id;
+	private MemberKey key;
 
 	ExplicitMemberLocal(
-			LocalScope localScope,
+			LocationInfo localation,
 			Distributor distributor,
-			LocalScope reproducedFrom) {
-		super(localScope, distributor, localScope.getOwner().toMemberOwner());
-		this.localScope = localScope;
-		this.id =
-				reproducedFrom.toMember().getKey().getMemberId()
-				.reproduceFrom(reproducedFrom);
-		this.key = this.id.key(getScope());
+			OwningObject owner) {
+		super(localation, distributor, owner);
 	}
 
 	@Override
@@ -87,7 +63,37 @@ final class ExplicitMemberLocal extends MemberLocal {
 	@Override
 	public LocalScope toLocal(UserInfo user) {
 		use(user);
-		return this.localScope;
+		return this.local;
+	}
+
+	final void init(ExplicitLocalScope local) {
+		this.local = local;
+
+		final MemberId localId = localName(local.getName());
+		final Member member = getContainer().toMember();
+
+		if (member != null
+				&& member.getContainer().getScope() == getScope()) {
+			this.id = member.getId().append(localId);
+		} else {
+
+			assert getContainer().toObject() == local.getOwner() :
+				"Wrong local scope container: " + getContainer();
+
+			this.id = localId;
+		}
+
+		this.key = this.id.key(getScope());
+	}
+
+	final void initReproduced(
+			ExplicitLocalScope local,
+			LocalScope reproducedFrom) {
+		this.local = local;
+		this.id =
+				reproducedFrom.toMember().getKey().getMemberId()
+				.reproduceFrom(reproducedFrom);
+		this.key = this.id.key(getScope());
 	}
 
 	private void use(UserInfo user) {

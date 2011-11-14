@@ -19,49 +19,53 @@
 */
 package org.o42a.core.member.impl.local;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.util.use.User;
 import org.o42a.util.use.UserInfo;
 
 
-final class PropagatedMemberLocal extends MemberLocal {
+public final class PropagatedMemberLocal extends MemberLocal {
 
-	private final PropagatedLocalScope localScope;
-	private final LocalScope overridden;
+	private final MemberLocal propagatedFrom;
+	private PropagatedLocalScope local;
 
-	PropagatedMemberLocal(
-			PropagatedLocalScope localScope,
-			LocalScope overridden) {
-		super(
-				localScope,
-				localScope.getOwner().distribute(),
-				localScope.getOwner().toMemberOwner());
-		this.localScope = localScope;
-		this.overridden = overridden;
+	public PropagatedMemberLocal(
+			MemberOwner owner,
+			MemberLocal propagatedFrom) {
+		super(owner, propagatedFrom);
+		this.propagatedFrom = propagatedFrom;
 	}
 
 	@Override
 	public MemberId getId() {
-		return this.localScope.explicit.toMember().getId();
+		return this.propagatedFrom.getId();
 	}
 
 	@Override
 	public MemberKey getKey() {
-		return this.localScope.explicit.toMember().getKey();
+		return this.propagatedFrom.getKey();
 	}
 
 	@Override
 	public Member getPropagatedFrom() {
-		return this.overridden.toMember();
+		return this.propagatedFrom;
 	}
 
 	@Override
 	public LocalScope toLocal(UserInfo user) {
 		use(user);
-		return this.localScope;
+		return local();
+	}
+
+	private final PropagatedLocalScope local() {
+		if (this.local != null) {
+			return this.local;
+		}
+		return this.local = new PropagatedLocalScope(
+				this,
+				getPropagatedFrom().toLocal(User.dummyUser()));
 	}
 
 	private void use(UserInfo user) {

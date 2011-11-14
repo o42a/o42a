@@ -208,12 +208,12 @@ public class MemberStep extends Step {
 
 			final Member firstDeclaration = getStep().firstDeclaration();
 
-			if (firstDeclaration.toLocal(dummyUser()) != null) {
+			if (firstDeclaration.toMemberLocal() != null) {
 				// Member is a local scope.
 				return host();
 			}
 
-			assert firstDeclaration.toField(dummyUser()) != null :
+			assert firstDeclaration.toMemberField() != null :
 				"Field expected: " + firstDeclaration;
 
 			// Member is field.
