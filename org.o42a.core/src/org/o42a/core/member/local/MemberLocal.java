@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
@@ -31,6 +32,8 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.impl.local.PropagatedMemberLocal;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.use.UserInfo;
 
@@ -42,6 +45,16 @@ public abstract class MemberLocal extends Member {
 			Distributor distributor,
 			OwningObject owner) {
 		super(location, distributor, owner);
+	}
+
+	protected MemberLocal(MemberOwner owner, MemberLocal propagatedFrom) {
+		super(
+				new Location(
+						owner.getContext(),
+						owner.getLoggable().setReason(logDeclaration(
+								propagatedFrom.getLastDefinition()))),
+				propagatedFrom.distributeIn(owner.getContainer()),
+				owner);
 	}
 
 	public final Obj getOwner() {
@@ -101,15 +114,14 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final Member propagateTo(MemberOwner owner) {
+	public final MemberLocal propagateTo(MemberOwner owner) {
 
 		final Obj ownerObject = owner.getContainer().toObject();
 
 		assert ownerObject != null :
 			ownerObject + " is not object";
 
-		return toLocal(owner.getScope().dummyResolver())
-				.propagateTo(ownerObject).toMember();
+		return new PropagatedMemberLocal(owner, this);
 	}
 
 	@Override

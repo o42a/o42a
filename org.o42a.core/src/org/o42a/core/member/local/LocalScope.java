@@ -36,7 +36,6 @@ import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.member.impl.local.LocalOwnerStep;
-import org.o42a.core.member.impl.local.PropagatedLocalScope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -44,7 +43,6 @@ import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
@@ -59,18 +57,16 @@ public abstract class LocalScope
 		return localScope.explicit();
 	}
 
-	private final CompilerContext context;
-	private final Loggable loggable;
+	private final MemberLocal member;
 	private final Obj owner;
 	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
 	private final ResolverFactory<LocalResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 
-	public LocalScope(LocationInfo location, Obj owner) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
-		this.owner = owner;
+	public LocalScope(MemberLocal member) {
+		this.member = member;
+		this.owner = member.getContainer().toObject();
 		this.ownerScopePath = new LocalOwnerStep(this).toPath();
 		this.resolverFactory = new LocalResolver.Factory(this);
 	}
@@ -87,17 +83,17 @@ public abstract class LocalScope
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.context;
+		return this.member.getContext();
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.loggable;
+		return this.member.getLoggable();
 	}
 
 	@Override
 	public final CompilerLogger getLogger() {
-		return this.context.getLogger();
+		return this.member.getLogger();
 	}
 
 	@Override
@@ -198,7 +194,9 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public abstract MemberLocal toMember();
+	public final MemberLocal toMember() {
+		return this.member;
+	}
 
 	@Override
 	public final Artifact<?> toArtifact() {
@@ -331,12 +329,11 @@ public abstract class LocalScope
 	}
 
 	@Override
-	protected final LocalScope propagateTo(Obj owner) {
-		if (owner == getOwner()) {
-			return this;
+	public String toString() {
+		if (this.member == null) {
+			return super.toString();
 		}
-		owner.assertDerivedFrom(getOwner());
-		return new PropagatedLocalScope(this, owner);
+		return this.member.toString();
 	}
 
 	protected final ResolverFactory<LocalResolver> resolverFactory() {

@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.impl.local;
 
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
-
 import java.util.Collection;
 
 import org.o42a.codegen.Generator;
@@ -33,26 +31,19 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
 public final class PropagatedLocalScope extends LocalScope {
 
-	final ExplicitLocalScope explicit;
-	private final PropagatedMemberLocal member;
+	private final ExplicitLocalScope explicit;
 
-	public PropagatedLocalScope(LocalScope overridden, Obj owner) {
-		super(
-				new Location(
-						owner.getContext(),
-						owner.getLoggable().setReason(
-								logDeclaration(explicitLocal(overridden)))),
-				owner);
-		this.explicit = explicitLocal(overridden);
-		this.member = new PropagatedMemberLocal(this, overridden);
+	public PropagatedLocalScope(
+			PropagatedMemberLocal member,
+			LocalScope propagatedFrom) {
+		super(member);
+		this.explicit = explicitLocal(propagatedFrom);
 	}
 
 	@Override
@@ -78,11 +69,6 @@ public final class PropagatedLocalScope extends LocalScope {
 	@Override
 	public Clause[] getImplicitClauses() {
 		return this.explicit.getImplicitClauses();
-	}
-
-	@Override
-	public MemberLocal toMember() {
-		return this.member;
 	}
 
 	@Override
@@ -122,14 +108,6 @@ public final class PropagatedLocalScope extends LocalScope {
 	@Override
 	public LocalIR ir(Generator generator) {
 		return explicit().ir(generator);
-	}
-
-	@Override
-	public String toString() {
-		if (this.member == null) {
-			return super.toString();
-		}
-		return this.member.toString();
 	}
 
 	@Override

@@ -20,9 +20,7 @@
 package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.GroupClause;
-import org.o42a.core.member.local.LocalScope;
 
 
 public abstract class LocalScopeClauseBase implements Scope {
@@ -32,8 +30,6 @@ public abstract class LocalScopeClauseBase implements Scope {
 	public final GroupClause toClause() {
 		return this.clause;
 	}
-
-	protected abstract LocalScope propagateTo(Obj owner);
 
 	final void setClause(GroupClause clause) {
 		this.clause = clause;
