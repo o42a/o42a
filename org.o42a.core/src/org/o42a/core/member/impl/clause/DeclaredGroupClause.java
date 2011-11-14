@@ -21,7 +21,9 @@ package org.o42a.core.member.impl.clause;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.*;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -62,7 +64,7 @@ public final class DeclaredGroupClause
 	private DeclaredGroupClause(
 			MemberOwner owner,
 			DeclaredGroupClause overridden) {
-		super(owner, overridden, null, OverrideMode.PROPAGATE);
+		super(owner, overridden);
 		this.builder = overridden.builder;
 		this.definition = overridden.definition;
 		this.imperative = overridden.imperative;

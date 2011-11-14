@@ -65,19 +65,18 @@ public abstract class MemberField extends Member {
 			LocationInfo location,
 			MemberOwner owner,
 			Field<?> field,
-			MemberField overridden,
-			boolean propagated) {
+			MemberField propagatedFrom) {
 		super(
 				location,
-				overridden.distributeIn(owner.getContainer()), owner);
+				propagatedFrom.distributeIn(owner.getContainer()), owner);
 		this.field = field;
-		this.key = overridden.getKey();
-		this.visibility = overridden.getVisibility();
+		this.key = propagatedFrom.getKey();
+		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
 				new FieldDeclaration(
-						overridden,
+						propagatedFrom,
 						distribute(),
-						overridden.getDeclaration())
+						propagatedFrom.getDeclaration())
 				.override();
 	}
 
@@ -110,9 +109,6 @@ public abstract class MemberField extends Member {
 		}
 		return this.key = declareNewField();
 	}
-
-	@Override
-	public abstract MemberField getWrapped();
 
 	@Override
 	public final MemberField toMemberField() {

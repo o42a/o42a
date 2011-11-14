@@ -132,9 +132,6 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public abstract MemberClause getWrapped();
-
-	@Override
 	public final MemberField toMemberField() {
 		return null;
 	}

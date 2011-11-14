@@ -26,29 +26,19 @@ import org.o42a.core.source.LocationInfo;
 
 final class OverriddenMemberField extends MemberField {
 
-	private final MemberField wrapped;
 	private final MemberField propagatedFrom;
 
 	OverriddenMemberField(
 			LocationInfo location,
 			MemberOwner owner,
 			Field<?> field,
-			MemberField overridden,
-			MemberField wrapped,
-			boolean propagated) {
+			MemberField propagatedFrom) {
 		super(
 				location,
 				owner,
 				field,
-				overridden,
-				propagated);
-		this.wrapped = wrapped;
-		this.propagatedFrom = propagated ? overridden : null;
-	}
-
-	@Override
-	public final MemberField getWrapped() {
-		return this.wrapped;
+				propagatedFrom);
+		this.propagatedFrom = propagatedFrom;
 	}
 
 	@Override

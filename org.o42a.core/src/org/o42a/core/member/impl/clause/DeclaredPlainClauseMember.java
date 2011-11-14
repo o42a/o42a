@@ -35,11 +35,6 @@ final class DeclaredPlainClauseMember extends MemberClause {
 	}
 
 	@Override
-	public final MemberClause getWrapped() {
-		return null;
-	}
-
-	@Override
 	public final DeclaredPlainClause toClause() {
 		return this.clause;
 	}

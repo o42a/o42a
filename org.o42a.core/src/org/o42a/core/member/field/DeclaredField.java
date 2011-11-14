@@ -28,7 +28,9 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Inclusions;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.impl.field.FieldInclusions;
 import org.o42a.core.source.Location;
 
@@ -56,9 +58,7 @@ public abstract class DeclaredField<
 								logDeclaration(
 										propagatedFrom.getLastDefinition()))),
 				owner,
-				propagatedFrom,
-				null,
-				OverrideMode.PROPAGATE);
+				propagatedFrom);
 		this.artifactKind = propagatedFrom.artifactKind;
 		setFieldArtifact(propagateArtifact(propagatedFrom));
 	}

@@ -24,7 +24,6 @@ import static org.o42a.core.source.CompilerLogger.logDeclaration;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.impl.decl.PropagatedObject;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.OverrideMode;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.source.Location;
@@ -39,26 +38,22 @@ public abstract class ObjectField extends Field<Obj> {
 	}
 
 	protected ObjectField(MemberOwner owner, ObjectField propagatedFrom) {
-		super(
+		this(
 				new Location(
 						owner.getContext(),
 						owner.getLoggable().setReason(
 								logDeclaration(
 										propagatedFrom.getLastDefinition()))),
 				owner,
-				propagatedFrom,
-				null,
-				OverrideMode.PROPAGATE);
+				propagatedFrom);
 		setFieldArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	protected ObjectField(
 			LocationInfo location,
 			MemberOwner owner,
-			Field<Obj> overridden,
-			Field<Obj> wrapped,
-			OverrideMode mode) {
-		super(location, owner, overridden, wrapped, mode);
+			Field<Obj> propagatedFrom) {
+		super(location, owner, propagatedFrom);
 	}
 
 	@Override
