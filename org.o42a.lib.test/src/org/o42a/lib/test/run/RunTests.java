@@ -28,7 +28,7 @@ import org.o42a.common.object.SourcePath;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
@@ -74,13 +74,13 @@ public class RunTests extends DirectiveObject {
 
 		for (Member member : object.getMembers()) {
 
-			final Field<?> field = member.toField(user);
+			final MemberField field = member.toMemberField();
 
 			if (field == null) {
 				continue;
 			}
 
-			runTest(module, user, sentence, field);
+			runTest(module, user, sentence, field.toField(user));
 		}
 
 		final Statements<?> terminator =

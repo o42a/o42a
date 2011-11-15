@@ -23,7 +23,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
 
@@ -192,7 +192,7 @@ public class MemberAnalysis implements UseInfo {
 		}
 
 		final Member member = getMember();
-		final Field<?> field = member.toField(dummyUser());
+		final MemberField field = member.toMemberField();
 
 		if (field == null) {
 			// Member is not field (e.g. it is a clause).
@@ -200,12 +200,11 @@ public class MemberAnalysis implements UseInfo {
 			return null;
 		}
 
-		final boolean declaration = member.getFirstDeclaration() == member;
 		final Obj owner = member.getMemberOwner().toObject();
 
-		if (owner == null || field.isClone()) {
-			// Clones and local objects are always constructed at run time.
-			if (declaration) {
+		if (owner == null) {
+			// Local objects are always constructed at run time.
+			if (member.getFirstDeclaration() == member) {
 				this.runtimeConstructionUses =
 						new MemberUses("RuntimeConstructionOf", getMember());
 			} else {
@@ -220,7 +219,8 @@ public class MemberAnalysis implements UseInfo {
 					owner.type().runtimeConstruction());
 		}
 
-		final Obj target = field.getArtifact().materialize();
+		final Obj target =
+				field.substance(dummyUser()).toArtifact().materialize();
 
 		if (target.getConstructionMode().isRuntime()) {
 			this.runtimeConstructionUses.useBy(target.content());
