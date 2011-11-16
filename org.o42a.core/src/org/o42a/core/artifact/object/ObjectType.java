@@ -30,6 +30,7 @@ import java.util.Map;
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
@@ -285,8 +286,12 @@ public final class ObjectType implements UserInfo {
 
 		if (member != null) {
 			// Detect run time construction mode by member.
-			this.runtimeConstructionUses.useBy(
-					member.getAnalysis().runtimeConstruction());
+			final MemberField field = member.toMemberField();
+
+			if (field != null) {
+				this.runtimeConstructionUses.useBy(
+						field.getAnalysis().runtimeConstruction());
+			}
 		} else {
 
 			final Obj enclosingObject;

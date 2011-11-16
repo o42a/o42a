@@ -55,7 +55,6 @@ public final class PropagatedMemberLocal extends MemberLocal {
 
 	@Override
 	public LocalScope toLocal(UserInfo user) {
-		use(user);
 		return local();
 	}
 
@@ -66,11 +65,6 @@ public final class PropagatedMemberLocal extends MemberLocal {
 		return this.local = new PropagatedLocalScope(
 				this,
 				getPropagatedFrom().toLocal(User.dummyUser()));
-	}
-
-	private void use(UserInfo user) {
-		useBy(user);
-		useSubstanceBy(user);
 	}
 
 }

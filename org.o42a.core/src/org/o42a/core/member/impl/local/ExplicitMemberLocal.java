@@ -62,7 +62,6 @@ final class ExplicitMemberLocal extends MemberLocal {
 
 	@Override
 	public LocalScope toLocal(UserInfo user) {
-		use(user);
 		return this.local;
 	}
 
@@ -94,11 +93,6 @@ final class ExplicitMemberLocal extends MemberLocal {
 				reproducedFrom.toMember().getKey().getMemberId()
 				.reproduceFrom(reproducedFrom);
 		this.key = this.id.key(getScope());
-	}
-
-	private void use(UserInfo user) {
-		useBy(user);
-		useSubstanceBy(user);
 	}
 
 }

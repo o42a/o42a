@@ -38,8 +38,8 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
-import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldAnalysis;
 
 
 public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
@@ -105,7 +105,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 			return;
 		}
 
-		final MemberAnalysis analysis = getField().toMember().getAnalysis();
+		final FieldAnalysis analysis = getField().toMember().getAnalysis();
 
 		if (!analysis.runtimeConstruction().isUsedBy(getGenerator())) {
 			this.constructor = getType().constructorStub();

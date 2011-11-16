@@ -33,8 +33,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldAnalysis;
 
 
 public abstract class Fld {
@@ -129,7 +129,7 @@ public abstract class Fld {
 
 	protected boolean mayOmit() {
 
-		final MemberAnalysis declarationAnalysis =
+		final FieldAnalysis declarationAnalysis =
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
 		return !declarationAnalysis.derivation().isUsedBy(getGenerator());

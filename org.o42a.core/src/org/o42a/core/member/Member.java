@@ -35,7 +35,6 @@ import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.use.UseInfo;
 import org.o42a.util.use.UserInfo;
 
 
@@ -47,7 +46,6 @@ public abstract class Member extends Placed {
 
 	private final MemberOwner owner;
 
-	private MemberAnalysis analysis;
 	private Member firstDeclaration;
 	private Member lastDefinition;
 	private Member[] overridden;
@@ -101,20 +99,6 @@ public abstract class Member extends Placed {
 		out.append(getDisplayName());
 
 		return out.toString();
-	}
-
-	public final MemberAnalysis getAnalysis() {
-		if (this.analysis != null) {
-			return this.analysis;
-		}
-
-		final Member lastDefinition = getLastDefinition();
-
-		if (lastDefinition != this) {
-			return this.analysis = lastDefinition.getAnalysis();
-		}
-
-		return this.analysis = new MemberAnalysis(this);
 	}
 
 	public abstract MemberField toMemberField();
@@ -243,24 +227,6 @@ public abstract class Member extends Placed {
 		}
 
 		return out.toString();
-	}
-
-	protected final void useBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
-			return;
-		}
-		getAnalysis().useBy(user);
-	}
-
-	protected final void useSubstanceBy(UserInfo user) {
-		if (user.toUser().isDummy()) {
-			return;
-		}
-		getAnalysis().useSubstanceBy(user);
-	}
-
-	protected final void useNestedBy(UseInfo user) {
-		getAnalysis().useNestedBy(user);
 	}
 
 	protected abstract void merge(Member member);

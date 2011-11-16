@@ -30,6 +30,11 @@ class OwningLocal extends MemberOwner {
 		super(local);
 	}
 
+	@Override
+	public final Obj getOwner() {
+		return getLocal().getOwner();
+	}
+
 	public final LocalScope getLocal() {
 		return getContainer().toLocal();
 	}

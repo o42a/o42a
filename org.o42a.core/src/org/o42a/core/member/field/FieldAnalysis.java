@@ -17,36 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.member.field;
 
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
 
 
-public class MemberAnalysis implements UseInfo {
+public class FieldAnalysis implements UseInfo {
 
 	private final UseTracker tracker = new UseTracker();
-	private final Member member;
+	private final MemberField member;
 	private MemberUses memberUses;
 	private MemberUses substanceUses;
 	private MemberUses nestedUses;
 	private MemberUses runtimeConstructionUses;
 	private MemberUses derivationUses;
 
-	MemberAnalysis(Member member) {
+	FieldAnalysis(MemberField member) {
 		this.member = member;
 	}
 
-	public final Member getMember() {
+	public final MemberField getMember() {
 		return this.member;
 	}
 
-	public final MemberAnalysis getDeclarationAnalysis() {
+	public final FieldAnalysis getDeclarationAnalysis() {
 		return getMember().getFirstDeclaration().getAnalysis();
 	}
 
@@ -112,9 +111,6 @@ public class MemberAnalysis implements UseInfo {
 	}
 
 	public String reasonNotFound(Generator generator) {
-		if (getMember().toMemberField() == null) {
-			return "not a field";
-		}
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
@@ -191,42 +187,23 @@ public class MemberAnalysis implements UseInfo {
 			return this.runtimeConstructionUses;
 		}
 
-		final Member member = getMember();
-		final MemberField field = member.toMemberField();
+		final MemberField member = getMember();
+		final Obj owner = member.getMemberOwner().getOwner();
 
-		if (field == null) {
-			// Member is not field (e.g. it is a clause).
-			// No need to track a run-time construction.
-			return null;
-		}
-
-		final Obj owner = member.getMemberOwner().toObject();
-
-		if (owner == null) {
-			// Local objects are always constructed at run time.
-			if (member.getFirstDeclaration() == member) {
-				this.runtimeConstructionUses =
-						new MemberUses("RuntimeConstructionOf", getMember());
-			} else {
-				this.runtimeConstructionUses =
-						getDeclarationAnalysis().runtimeConstructionUses();
-			}
-		} else {
-			// Run time construction status derived from owner.
-			this.runtimeConstructionUses =
-					new MemberUses("RuntimeConstructionOf", getMember());
-			this.runtimeConstructionUses.useBy(
-					owner.type().runtimeConstruction());
-		}
+		// Run time construction status derived from owner.
+		this.runtimeConstructionUses =
+				new MemberUses("RuntimeConstructionOf", getMember());
+		this.runtimeConstructionUses.useBy(
+				owner.type().runtimeConstruction());
 
 		final Obj target =
-				field.substance(dummyUser()).toArtifact().materialize();
+				member.substance(dummyUser()).toArtifact().materialize();
 
 		if (target.getConstructionMode().isRuntime()) {
 			this.runtimeConstructionUses.useBy(target.content());
 		}
 
-		final Member lastDefinition = member.getLastDefinition();
+		final MemberField lastDefinition = member.getLastDefinition();
 
 		if (lastDefinition != member) {
 			lastDefinition.getAnalysis().runtimeConstructionUses().useBy(
@@ -243,24 +220,16 @@ public class MemberAnalysis implements UseInfo {
 			return this.derivationUses;
 		}
 
-		final Member member = getMember();
-
-		if (member.toMemberField() == null) {
-			// Member is not field (e.g. it is a clause).
-			// No need to track derivation.
-			return null;
-		}
+		final MemberField member = getMember();
 
 		this.derivationUses = new MemberUses("DerivationOf", getMember());
 
-		final Obj owner = member.getMemberOwner().toObject();
+		final Obj owner = member.getMemberOwner().getOwner();
 
-		if (owner != null) {
-			// If owner derived then member derived too.
-			this.derivationUses.useBy(owner.type().derivation());
-		}
+		// If owner derived then member derived too.
+		this.derivationUses.useBy(owner.type().derivation());
 
-		final Member firstDeclaration = member.getFirstDeclaration();
+		final MemberField firstDeclaration = member.getFirstDeclaration();
 
 		if (firstDeclaration != member) {
 			firstDeclaration.getAnalysis().derivationUses().useBy(
