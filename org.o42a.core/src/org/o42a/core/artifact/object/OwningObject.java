@@ -29,6 +29,11 @@ public class OwningObject extends MemberOwner {
 		super(object);
 	}
 
+	@Override
+	public final Obj getOwner() {
+		return getObject();
+	}
+
 	public final Obj getObject() {
 		return getContainer().toObject();
 	}

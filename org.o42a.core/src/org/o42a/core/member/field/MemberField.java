@@ -56,6 +56,8 @@ public abstract class MemberField extends Member {
 	private MemberField[] mergedWith = NO_MERGED;
 	private HashSet<CompilerContext> allContexts;
 
+	private FieldAnalysis analysis;
+
 	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
 		this.declaration = declaration;
@@ -125,6 +127,30 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
+	public final MemberField getFirstDeclaration() {
+		return super.getFirstDeclaration().toMemberField();
+	}
+
+	@Override
+	public final MemberField getLastDefinition() {
+		return super.getLastDefinition().toMemberField();
+	}
+
+	public final FieldAnalysis getAnalysis() {
+		if (this.analysis != null) {
+			return this.analysis;
+		}
+
+		final MemberField lastDefinition = getLastDefinition();
+
+		if (lastDefinition != this) {
+			return this.analysis = lastDefinition.getAnalysis();
+		}
+
+		return this.analysis = new FieldAnalysis(this);
+	}
+
+	@Override
 	public final MemberField toMemberField() {
 		return this;
 	}
@@ -142,7 +168,7 @@ public abstract class MemberField extends Member {
 	@Override
 	public final Field<?> toField(UserInfo user) {
 		if (this.field != null) {
-			use(user);
+			useBy(user);
 			return this.field;
 		}
 
@@ -189,8 +215,8 @@ public abstract class MemberField extends Member {
 
 		final Artifact<?> artifact = toField(dummyUser()).getArtifact();
 
-		useSubstanceBy(artifact.content());
-		useNestedBy(artifact.fieldUses());
+		getAnalysis().useSubstanceBy(artifact.content());
+		getAnalysis().useNestedBy(artifact.fieldUses());
 		artifact.resolveAll();
 	}
 
@@ -270,7 +296,7 @@ public abstract class MemberField extends Member {
 
 	protected final void setField(UserInfo user, Field<?> field) {
 		this.field = field;
-		use(user);
+		useBy(user);
 		for (MemberField merged : getMergedWith()) {
 			mergeField(merged);
 		}
@@ -367,8 +393,11 @@ public abstract class MemberField extends Member {
 		this.field.merge(member.toField(dummyUser()));
 	}
 
-	private void use(UserInfo user) {
-		useBy(user);
+	private void useBy(UserInfo user) {
+		if (user.toUser().isDummy()) {
+			return;
+		}
+		getAnalysis().useBy(user);
 	}
 
 }

@@ -59,6 +59,8 @@ public abstract class MemberOwner implements PlaceInfo {
 		return getScope().getPlace();
 	}
 
+	public abstract Obj getOwner();
+
 	public final Obj toObject() {
 		return getContainer().toObject();
 	}

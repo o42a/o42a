@@ -39,9 +39,9 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberAnalysis;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
@@ -266,7 +266,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private boolean generateField(MemberField declaredField, Field<?> field) {
 
 		final Generator generator = getGenerator();
-		final MemberAnalysis declarationAnalysis =
+		final FieldAnalysis declarationAnalysis =
 				declaredField.getAnalysis();
 
 		if (!declarationAnalysis.isUsedBy(generator)) {
@@ -303,7 +303,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return out.append(": no such member").toString();
 		}
 
-		final MemberAnalysis analysis = member.getAnalysis();
+		final MemberField field = member.toMemberField();
+
+		if (field == null) {
+			return out.append(": not a field").toString();
+		}
+
+		final FieldAnalysis analysis = field.getAnalysis();
 
 		out.append(": ").append(analysis.reasonNotFound(getGenerator()));
 

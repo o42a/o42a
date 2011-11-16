@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member;
 
+import org.o42a.core.member.field.MemberField;
 import org.o42a.util.use.*;
 
 
@@ -42,10 +43,13 @@ public class FieldUses implements UseInfo {
 		}
 
 		for (Member member : getContainer().getMembers()) {
-			if (member.toMemberField() == null) {
+
+			final MemberField field = member.toMemberField();
+
+			if (field == null) {
 				continue;
 			}
-			if (this.tracker.useBy(member.getAnalysis())) {
+			if (this.tracker.useBy(field.getAnalysis())) {
 				return this.tracker.getUseFlag();
 			}
 		}
