@@ -30,7 +30,6 @@ import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
@@ -45,7 +44,7 @@ public final class ExplicitLocalScope extends LocalScope {
 	private final String name;
 	private final HashMap<MemberId, Member> members =
 			new HashMap<MemberId, Member>();
-	private Clause[] implicitClauses;
+	private MemberClause[] implicitClauses;
 	private ImperativeBlock block;
 	private byte hasSubClauses;
 	private boolean allResolved;
@@ -98,23 +97,20 @@ public final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Clause[] getImplicitClauses() {
+	public MemberClause[] getImplicitClauses() {
 		if (this.implicitClauses != null) {
 			return this.implicitClauses;
 		}
 
-		Clause[] implicitClauses = new Clause[0];
+		MemberClause[] implicitClauses = new MemberClause[0];
 
 		for (Member member : getMembers()) {
 
-			final MemberClause memberClause = member.toClause();
+			final MemberClause clause = member.toClause();
 
-			if (memberClause == null) {
+			if (clause == null) {
 				continue;
 			}
-
-			final Clause clause = memberClause.clause();
-
 			this.hasSubClauses = 1;
 			if (!clause.isImplicit()) {
 				continue;
@@ -174,7 +170,7 @@ public final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Clause clause(MemberId memberId, Obj declaredIn) {
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
 
 		if (declaredIn != null) {
 			return null;
@@ -187,7 +183,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			return null;
 		}
 
-		return member.toClause().clause();
+		return member.toClause();
 	}
 
 	@Override

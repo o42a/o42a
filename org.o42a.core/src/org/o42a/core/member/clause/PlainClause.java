@@ -171,9 +171,9 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public Clause clause(MemberId memberId, Obj declaredIn) {
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
 
-		final Clause clause = getObject().clause(memberId, declaredIn);
+		final MemberClause clause = getObject().clause(memberId, declaredIn);
 
 		if (clause == null) {
 			return null;
@@ -192,8 +192,7 @@ public abstract class PlainClause
 				.clause()
 				.toPlainClause();
 
-		if (original.getObject().getScope()
-				!= clause.toMember().getKey().getOrigin()) {
+		if (original.getObject().getScope() != clause.getKey().getOrigin()) {
 			return null;
 		}
 
@@ -234,7 +233,7 @@ public abstract class PlainClause
 	public abstract boolean isPrototype();
 
 	@Override
-	public Clause[] getSubClauses() {
+	public MemberClause[] getSubClauses() {
 		return getObject().getExplicitClauses();
 	}
 

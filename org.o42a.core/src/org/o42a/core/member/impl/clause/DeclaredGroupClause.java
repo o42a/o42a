@@ -163,7 +163,7 @@ public final class DeclaredGroupClause
 	}
 
 	@Override
-	public Clause clause(MemberId memberId, Obj declaredIn) {
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
 		return groupClause(memberId, declaredIn);
 	}
 
