@@ -165,7 +165,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected final Obj targetType(Obj bodyType) {
 
 		final Field<?> actual =
-				bodyType.member(getField().getKey()).toField(dummyUser());
+				bodyType.member(getField().getKey())
+				.toField()
+				.field(dummyUser());
 		final Artifact<?> artifact = actual.getArtifact();
 		final Obj object = artifact.toObject();
 

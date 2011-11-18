@@ -74,13 +74,13 @@ public class RunTests extends DirectiveObject {
 
 		for (Member member : object.getMembers()) {
 
-			final MemberField field = member.toMemberField();
+			final MemberField field = member.toField();
 
 			if (field == null) {
 				continue;
 			}
 
-			runTest(module, user, sentence, field.toField(user));
+			runTest(module, user, sentence, field.toField().field(user));
 		}
 
 		final Statements<?> terminator =

@@ -110,7 +110,7 @@ public abstract class GroupClause extends Clause implements Container {
 
 		for (Member member : members) {
 
-			final Clause clause = member.toClause();
+			final MemberClause clause = member.toClause();
 
 			if (clause == null) {
 				continue;
@@ -119,7 +119,7 @@ public abstract class GroupClause extends Clause implements Container {
 				continue;
 			}
 
-			subClauses = ArrayUtil.append(subClauses, clause);
+			subClauses = ArrayUtil.append(subClauses, clause.clause());
 		}
 
 		return this.subClauses = subClauses;

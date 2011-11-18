@@ -128,7 +128,7 @@ public class OutcomeBuilder implements PathWalker {
 			}
 		}
 
-		final MemberField field = member.toMemberField();
+		final MemberField field = member.toField();
 
 		if (field == null) {
 			return invalidOutcome();

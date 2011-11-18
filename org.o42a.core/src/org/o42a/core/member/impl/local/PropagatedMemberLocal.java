@@ -20,7 +20,6 @@
 package org.o42a.core.member.impl.local;
 
 import org.o42a.core.member.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 
 
@@ -52,17 +51,13 @@ public final class PropagatedMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public LocalScope toLocal() {
-		return local();
-	}
-
-	private final PropagatedLocalScope local() {
+	public final PropagatedLocalScope local() {
 		if (this.local != null) {
 			return this.local;
 		}
 		return this.local = new PropagatedLocalScope(
 				this,
-				getPropagatedFrom().toLocal());
+				getPropagatedFrom().toLocal().local());
 	}
 
 }

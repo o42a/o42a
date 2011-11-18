@@ -31,6 +31,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
@@ -106,11 +107,14 @@ public final class ExplicitLocalScope extends LocalScope {
 
 		for (Member member : getMembers()) {
 
-			final Clause clause = member.toClause();
+			final MemberClause memberClause = member.toClause();
 
-			if (clause == null) {
+			if (memberClause == null) {
 				continue;
 			}
+
+			final Clause clause = memberClause.clause();
+
 			this.hasSubClauses = 1;
 			if (!clause.isImplicit()) {
 				continue;
@@ -141,7 +145,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			// Member not found.
 			return null;
 		}
-		if (member.toMemberClause() != null) {
+		if (member.toClause() != null) {
 			// Clauses are available from outside the local scope.
 			return member.getKey().toPath();
 		}
@@ -183,7 +187,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			return null;
 		}
 
-		return member.toClause();
+		return member.toClause().clause();
 	}
 
 	@Override
@@ -251,14 +255,14 @@ public final class ExplicitLocalScope extends LocalScope {
 
 		this.members.put(memberId, old);
 
-		final MemberField field = old.toMemberField();
+		final MemberField field = old.toField();
 
 		if (field != null) {
 			getLogger().ambiguousMember(member, field.getDisplayName());
 		} else {
 			getLogger().ambiguousClause(
 					member,
-					member.toMemberClause().getDisplayName());
+					member.toClause().getDisplayName());
 		}
 
 		return false;

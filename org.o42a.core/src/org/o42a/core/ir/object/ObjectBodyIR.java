@@ -237,7 +237,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		for (Member declared : ascendant.getMembers()) {
 
-			final MemberField declaredField = declared.toMemberField();
+			final MemberField declaredField = declared.toField();
 
 			if (declaredField == null) {
 				continue;
@@ -247,7 +247,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final Field<?> field =
-					object.member(declaredField.getKey()).toField(dummyUser());
+					object.member(declaredField.getKey())
+					.toField()
+					.field(dummyUser());
 
 			if (!generateField(declaredField, field)) {
 				continue;
@@ -303,7 +305,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			return out.append(": no such member").toString();
 		}
 
-		final MemberField field = member.toMemberField();
+		final MemberField field = member.toField();
 
 		if (field == null) {
 			return out.append(": not a field").toString();

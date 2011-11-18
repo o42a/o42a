@@ -26,11 +26,8 @@ import java.util.*;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
-import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -101,17 +98,11 @@ public abstract class Member extends Placed {
 		return out.toString();
 	}
 
-	public abstract MemberField toMemberField();
+	public abstract MemberField toField();
 
-	public abstract MemberClause toMemberClause();
+	public abstract MemberClause toClause();
 
-	public abstract MemberLocal toMemberLocal();
-
-	public abstract Field<?> toField(UserInfo user);
-
-	public abstract LocalScope toLocal();
-
-	public abstract Clause toClause();
+	public abstract MemberLocal toLocal();
 
 	public abstract Container substance(UserInfo user);
 

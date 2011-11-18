@@ -60,7 +60,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public LocalScope toLocal() {
+	public LocalScope local() {
 		return this.local;
 	}
 

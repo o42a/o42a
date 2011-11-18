@@ -132,7 +132,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
 		final Field<A> original =
-				member.toField(dummyUser()).toKind(getArtifactKind());
+				member.toField().field(dummyUser()).toKind(getArtifactKind());
 
 		assert original.getArtifact().getKind() == getArtifact().getKind() :
 			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
@@ -152,7 +152,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 	@Override
 	public final Field<A> getFirstDeclaration() {
-		return this.member.getFirstDeclaration().toField(dummyUser())
+		return this.member.getFirstDeclaration().toField().field(dummyUser())
 				.toKind(getArtifactKind());
 	}
 
@@ -164,7 +164,7 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	 */
 	@Override
 	public final Field<A> getLastDefinition() {
-		return this.member.getLastDefinition().toField(dummyUser())
+		return this.member.getLastDefinition().toField().field(dummyUser())
 				.toKind(getArtifactKind());
 	}
 
@@ -299,12 +299,16 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	@SuppressWarnings("unchecked")
 	private Field<A>[] overriddenFields() {
 
+		final ArtifactKind<A> artifactKind = getArtifactKind();
 		final Member[] overriddenMembers = this.member.getOverridden();
 		final Field<A>[] overridden = new Field[overriddenMembers.length];
 
 		for (int i = 0; i < overridden.length; ++i) {
 			overridden[i] =
-					(Field<A>) overriddenMembers[i].toField(dummyUser());
+					overriddenMembers[i]
+					.toField()
+					.field(dummyUser())
+					.toKind(artifactKind);
 		}
 
 		return overridden;

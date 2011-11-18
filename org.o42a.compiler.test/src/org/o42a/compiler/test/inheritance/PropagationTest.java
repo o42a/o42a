@@ -75,10 +75,12 @@ public class PropagationTest extends CompilerTestCase {
 
 		final Field<?> aFooScope =
 				aFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
-				.toField(USE_CASE);
+				.toField()
+				.field(USE_CASE);
 		final Field<?> bFooScope =
 				bFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
-				.toField(USE_CASE);
+				.toField()
+				.field(USE_CASE);
 
 		assertThat(
 				aFooScope.getArtifact(),

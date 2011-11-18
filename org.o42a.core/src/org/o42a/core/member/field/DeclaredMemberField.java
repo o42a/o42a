@@ -77,7 +77,7 @@ final class DeclaredMemberField extends MemberField {
 		final Member[] overridden = getOverridden();
 
 		if (overridden.length > 0) {
-			kind = overridden[0].toMemberField().getArtifactKind();
+			kind = overridden[0].toField().getArtifactKind();
 		} else if (getDeclaration().isVariable()) {
 			kind = ArtifactKind.VARIABLE;
 		} else if (getDeclaration().isLink()) {
@@ -110,7 +110,7 @@ final class DeclaredMemberField extends MemberField {
 	}
 
 	final DeclaredField<?, ?> toDeclaredField() {
-		return (DeclaredField<?, ?>) toField(dummyUser());
+		return (DeclaredField<?, ?>) toField().field(dummyUser());
 	}
 
 	final void setStatement(FieldDeclarationStatement statement) {

@@ -137,7 +137,7 @@ public class RoleResolver implements PathWalker {
 			return updateRole(Role.NONE);
 		}
 
-		final MemberField field = member.toMemberField();
+		final MemberField field = member.toField();
 
 		if (field != null && field.isPrototype()) {
 			this.insidePrototype = true;

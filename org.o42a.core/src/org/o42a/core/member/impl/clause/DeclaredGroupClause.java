@@ -43,7 +43,7 @@ public final class DeclaredGroupClause
 
 	public static DeclaredGroupClause declaredGroupClause(
 			ClauseBuilder builder) {
-		return new DeclaredGroupClauseMember(builder).toClause();
+		return new DeclaredGroupClauseMember(builder).clause();
 	}
 
 	private final ClauseBuilder builder;

@@ -126,7 +126,11 @@ public abstract class PlainClause
 
 	@Override
 	public PlainClause getFirstDeclaration() {
-		return toMember().getFirstDeclaration().toClause().toPlainClause();
+		return toMember()
+				.getFirstDeclaration()
+				.toClause()
+				.clause()
+				.toPlainClause();
 	}
 
 	@Override
@@ -181,8 +185,12 @@ public abstract class PlainClause
 
 		final MemberKey key = toMember().getKey();
 		final PlainClause original =
-				key.getOrigin().getContainer().member(key)
-				.toClause().toPlainClause();
+				key.getOrigin()
+				.getContainer()
+				.member(key)
+				.toClause()
+				.clause()
+				.toPlainClause();
 
 		if (original.getObject().getScope()
 				!= clause.toMember().getKey().getOrigin()) {

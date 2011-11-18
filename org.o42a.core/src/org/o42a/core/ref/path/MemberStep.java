@@ -65,7 +65,7 @@ public class MemberStep extends Step {
 	public boolean isMaterial() {
 
 		final Member member = firstDeclaration();
-		final MemberField field = member.toMemberField();
+		final MemberField field = member.toField();
 
 		if (field == null) {
 			return true;
@@ -167,7 +167,7 @@ public class MemberStep extends Step {
 		final Member member = origin.getContainer().member(this.memberKey);
 
 		if (origin.getContainer().toClause() == null
-				&& member.toMemberClause() == null) {
+				&& member.toClause() == null) {
 			// Neither clause, nor member of clause.
 			// Return unchanged.
 			return unchangedPath(toPath());
@@ -207,12 +207,12 @@ public class MemberStep extends Step {
 
 			final Member firstDeclaration = getStep().firstDeclaration();
 
-			if (firstDeclaration.toMemberLocal() != null) {
+			if (firstDeclaration.toLocal() != null) {
 				// Member is a local scope.
 				return host();
 			}
 
-			assert firstDeclaration.toMemberField() != null :
+			assert firstDeclaration.toField() != null :
 				"Field expected: " + firstDeclaration;
 
 			// Member is field.

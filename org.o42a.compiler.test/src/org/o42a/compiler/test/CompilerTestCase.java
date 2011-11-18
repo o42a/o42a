@@ -287,7 +287,7 @@ public abstract class CompilerTestCase {
 			return null;
 		}
 
-		final Field<?> field = member.toField(USE_CASE);
+		final Field<?> field = member.toField().field(USE_CASE);
 
 		assertNotNull(member + " is not a field", field);
 

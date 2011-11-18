@@ -185,7 +185,8 @@ public final class ComparisonExpression extends ObjectConstructor {
 			final Field<?> field =
 					resolver.getContainer()
 					.member(this.comparisonKey)
-					.toField(resolver);
+					.toField()
+					.field(resolver);
 			final Value<?> value =
 					field.getArtifact().toObject().value()
 					.explicitUseBy(resolver).getValue();
@@ -207,8 +208,11 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 			final UserInfo user = resolver;
 			final Field<?> field =
-					resolver.getScope().toObject()
-					.member(this.comparisonKey).toField(user);
+					resolver.getScope()
+					.toObject()
+					.member(this.comparisonKey)
+					.toField()
+					.field(user);
 
 			field.getArtifact().toObject().value().resolveAll(user);
 		}

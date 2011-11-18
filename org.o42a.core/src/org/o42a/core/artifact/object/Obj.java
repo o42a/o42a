@@ -43,6 +43,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
 import org.o42a.core.member.impl.local.RefDep;
@@ -209,7 +210,7 @@ public abstract class Obj
 
 		for (Member member : getMembers()) {
 
-			final Clause clause = member.toClause();
+			final MemberClause clause = member.toClause();
 
 			if (clause == null) {
 				continue;
@@ -224,7 +225,8 @@ public abstract class Obj
 				continue;
 			}
 
-			explicitClauses = ArrayUtil.append(explicitClauses, clause);
+			explicitClauses =
+					ArrayUtil.append(explicitClauses, clause.clause());
 		}
 
 		return this.explicitClauses = explicitClauses;
@@ -457,7 +459,7 @@ public abstract class Obj
 			return null;
 		}
 
-		return found.toClause();
+		return found.toClause().clause();
 	}
 
 	@Override
@@ -553,8 +555,9 @@ public abstract class Obj
 			return this;
 		}
 
-		return enclosingWrapped.member(
-				field.getKey()).toField(dummyUser())
+		return enclosingWrapped.member(field.getKey())
+				.toField()
+				.field(dummyUser())
 				.getArtifact()
 				.materialize();
 	}
@@ -841,7 +844,7 @@ public abstract class Obj
 						this,
 						member.getDisplayName());
 			}
-			if (member.isClone() && member.toMemberField() == null) {
+			if (member.isClone() && member.toField() == null) {
 				// Only field clones require full resolution.
 				continue;
 			}

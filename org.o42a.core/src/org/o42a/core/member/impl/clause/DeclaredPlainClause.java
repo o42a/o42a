@@ -36,7 +36,7 @@ import org.o42a.util.Holder;
 public final class DeclaredPlainClause extends PlainClause {
 
 	public static DeclaredPlainClause plainClause(ClauseBuilder builder) {
-		return new DeclaredPlainClauseMember(builder).toClause();
+		return new DeclaredPlainClauseMember(builder).clause();
 	}
 
 	private final ClauseBuilder builder;

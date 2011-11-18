@@ -165,7 +165,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 		for (Member member : objectIR.getObject().getMembers()) {
 
-			final MemberField field = member.toMemberField();
+			final MemberField field = member.toField();
 
 			if (field == null) {
 				continue;

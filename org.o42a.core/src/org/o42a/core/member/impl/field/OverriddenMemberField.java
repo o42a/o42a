@@ -65,7 +65,8 @@ public abstract class OverriddenMemberField<F extends Field<?>>
 	protected final F createField() {
 
 		@SuppressWarnings("unchecked")
-		final F propagatedFrom = (F) getPropagatedFrom().toField(dummyUser());
+		final F propagatedFrom =
+				(F) getPropagatedFrom().toField().field(dummyUser());
 
 		return propagateField(propagatedFrom);
 	}
