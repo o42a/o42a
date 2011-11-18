@@ -36,7 +36,7 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	}
 
 	@Override
-	public final DeclaredGroupClause toClause() {
+	public final DeclaredGroupClause clause() {
 		return this.clause;
 	}
 
@@ -48,7 +48,7 @@ final class DeclaredGroupClauseMember extends MemberClause {
 	@Override
 	protected void merge(Member member) {
 
-		final Clause clause = member.toClause();
+		final Clause clause = member.toClause().clause();
 
 		if (clause == null) {
 			getContext().getLogger().notClauseDeclaration(member);

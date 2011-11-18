@@ -286,7 +286,7 @@ public final class ObjectType implements UserInfo {
 
 		if (member != null) {
 			// Detect run time construction mode by member.
-			final MemberField field = member.toMemberField();
+			final MemberField field = member.toField();
 
 			if (field != null) {
 				this.runtimeConstructionUses.useBy(

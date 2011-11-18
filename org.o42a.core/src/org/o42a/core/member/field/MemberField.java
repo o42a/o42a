@@ -33,9 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
-import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -128,12 +126,12 @@ public abstract class MemberField extends Member {
 
 	@Override
 	public final MemberField getFirstDeclaration() {
-		return super.getFirstDeclaration().toMemberField();
+		return super.getFirstDeclaration().toField();
 	}
 
 	@Override
 	public final MemberField getLastDefinition() {
-		return super.getLastDefinition().toMemberField();
+		return super.getLastDefinition().toField();
 	}
 
 	public final FieldAnalysis getAnalysis() {
@@ -150,23 +148,7 @@ public abstract class MemberField extends Member {
 		return this.analysis = new FieldAnalysis(this);
 	}
 
-	@Override
-	public final MemberField toMemberField() {
-		return this;
-	}
-
-	@Override
-	public final MemberClause toMemberClause() {
-		return null;
-	}
-
-	@Override
-	public final MemberLocal toMemberLocal() {
-		return null;
-	}
-
-	@Override
-	public final Field<?> toField(UserInfo user) {
+	public final Field<?> field(UserInfo user) {
 		if (this.field != null) {
 			useBy(user);
 			return this.field;
@@ -178,18 +160,23 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public final LocalScope toLocal() {
+	public final MemberField toField() {
+		return this;
+	}
+
+	@Override
+	public final MemberClause toClause() {
 		return null;
 	}
 
 	@Override
-	public final Clause toClause() {
+	public final MemberLocal toLocal() {
 		return null;
 	}
 
 	@Override
 	public final Container substance(UserInfo user) {
-		return toField(user).getContainer();
+		return field(user).getContainer();
 	}
 
 	@Override
@@ -213,7 +200,7 @@ public abstract class MemberField extends Member {
 	@Override
 	public void resolveAll() {
 
-		final Artifact<?> artifact = toField(dummyUser()).getArtifact();
+		final Artifact<?> artifact = field(dummyUser()).getArtifact();
 
 		getAnalysis().useSubstanceBy(artifact.content());
 		getAnalysis().useNestedBy(artifact.fieldUses());
@@ -266,7 +253,7 @@ public abstract class MemberField extends Member {
 	@Override
 	protected void merge(Member member) {
 
-		final MemberField memberField = member.toMemberField();
+		final MemberField memberField = member.toField();
 
 		if (memberField == null) {
 			getLogger().error(
@@ -390,7 +377,7 @@ public abstract class MemberField extends Member {
 	}
 
 	private void mergeField(MemberField member) {
-		this.field.merge(member.toField(dummyUser()));
+		this.field.merge(member.field(dummyUser()));
 	}
 
 	private void useBy(UserInfo user) {

@@ -149,7 +149,7 @@ public abstract class Clause implements PlaceInfo {
 		assert enclosingMember != null :
 			"Member " + enclosingKey + " not found in " + enclosingScope;
 
-		this.enclosingClause = enclosingMember.toClause();
+		this.enclosingClause = enclosingMember.toClause().clause();
 
 		assert this.enclosingClause != null :
 			enclosingMember + " is not a clause";

@@ -44,7 +44,7 @@ public class FieldUses implements UseInfo {
 
 		for (Member member : getContainer().getMembers()) {
 
-			final MemberField field = member.toMemberField();
+			final MemberField field = member.toField();
 
 			if (field == null) {
 				continue;

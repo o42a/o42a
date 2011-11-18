@@ -62,7 +62,7 @@ public class UseObject extends DirectiveObject {
 
 		final Obj object = directive.getResolution().materialize();
 		final Field<?> moduleField =
-				object.member(this.moduleKey).toField(context);
+				object.member(this.moduleKey).toField().field(context);
 		final Value<?> moduleValue =
 				moduleField.getArtifact().materialize()
 				.value().explicitUseBy(context).getValue();
@@ -77,7 +77,7 @@ public class UseObject extends DirectiveObject {
 		final String moduleId = stringValue(moduleValue);
 
 		final Field<?> objectField =
-				object.member(this.objectKey).toField(context);
+				object.member(this.objectKey).toField().field(context);
 		final Value<?> objectValue =
 				objectField.getArtifact().materialize()
 				.value().explicitUseBy(context).getValue();
@@ -97,7 +97,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Field<?> aliasField =
-				object.member(this.aliasKey).toField(context);
+				object.member(this.aliasKey).toField().field(context);
 		final Value<?> aliasValue =
 				aliasField.getArtifact().materialize()
 				.value().explicitUseBy(context).getValue();

@@ -103,7 +103,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 		return new LocalFieldOp(
 				builder,
 				this,
-				this.member.toField(dummyUser()));
+				this.member.toField().field(dummyUser()));
 	}
 
 	private FieldDefinition reproduceDefinition(Reproducer reproducer) {
@@ -141,7 +141,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 			final Member member =
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
-			final Field<?> field = member.toField(resolver);
+			final Field<?> field = member.toField().field(resolver);
 			final LogicalValue logicalValue =
 					field.getArtifact()
 					.materialize()

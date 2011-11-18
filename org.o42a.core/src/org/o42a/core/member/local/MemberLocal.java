@@ -27,9 +27,7 @@ import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
-import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.MemberClause;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.local.PropagatedMemberLocal;
 import org.o42a.core.source.Location;
@@ -65,38 +63,30 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final MemberField toMemberField() {
+	public final MemberField toField() {
 		return null;
 	}
 
 	@Override
-	public final MemberClause toMemberClause() {
+	public final MemberClause toClause() {
 		return null;
 	}
 
 	@Override
-	public final MemberLocal toMemberLocal() {
+	public final MemberLocal toLocal() {
 		return this;
 	}
 
-	@Override
-	public final Field<?> toField(UserInfo user) {
-		return null;
-	}
-
-	@Override
-	public final Clause toClause() {
-		return toLocal().toClause();
-	}
+	public abstract LocalScope local();
 
 	@Override
 	public final LocalScope substance(UserInfo user) {
-		return toLocal();
+		return local();
 	}
 
 	@Override
 	public final Visibility getVisibility() {
-		if (toMemberClause() != null) {
+		if (toClause() != null) {
 			return Visibility.PUBLIC;
 		}
 		return Visibility.PRIVATE;
@@ -125,7 +115,7 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public void resolveAll() {
-		toLocal().resolveAll();
+		local().resolveAll();
 	}
 
 	@Override

@@ -83,7 +83,7 @@ public final class StaticPathStartFinder implements PathWalker {
 	@Override
 	public boolean member(Container container, Step step, Member member) {
 
-		final MemberField field = member.toMemberField();
+		final MemberField field = member.toField();
 
 		if (field == null) {
 			return skip();

@@ -236,7 +236,7 @@ class PhraseSubContext extends PhraseContext {
 
 		final Obj origin = overriddenKey.getOrigin().toObject();
 		final MemberField overridden =
-				origin.member(overriddenKey).toMemberField();
+				origin.member(overriddenKey).toField();
 
 		declaration =
 				declaration.override()

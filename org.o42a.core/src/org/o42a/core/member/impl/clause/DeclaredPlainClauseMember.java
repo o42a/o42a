@@ -36,7 +36,7 @@ final class DeclaredPlainClauseMember extends MemberClause {
 	}
 
 	@Override
-	public final DeclaredPlainClause toClause() {
+	public final DeclaredPlainClause clause() {
 		return this.clause;
 	}
 
@@ -48,7 +48,7 @@ final class DeclaredPlainClauseMember extends MemberClause {
 	@Override
 	protected void merge(Member member) {
 
-		final Clause clause = member.toClause();
+		final Clause clause = member.toClause().clause();
 
 		if (clause == null) {
 			getContext().getLogger().notClauseDeclaration(member);

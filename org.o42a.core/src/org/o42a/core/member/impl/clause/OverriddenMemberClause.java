@@ -43,14 +43,15 @@ public abstract class OverriddenMemberClause<C extends Clause>
 		return this.propagatedFrom;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public final C toClause() {
+	public final C clause() {
 		if (this.clause != null) {
 			return this.clause;
 		}
 
-		final C propagatedClause = (C) getPropagatedFrom().toClause();
+		@SuppressWarnings("unchecked")
+		final C propagatedClause =
+				(C) getPropagatedFrom().toClause().clause();
 
 		return this.clause = propagateClause(propagatedClause);
 	}

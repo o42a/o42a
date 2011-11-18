@@ -80,7 +80,7 @@ public final class LocalOp implements HostOp {
 	public LclOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Field<?> field =
-				getScope().member(memberKey).toField(dummyUser());
+				getScope().member(memberKey).toField().field(dummyUser());
 		final FieldIR<?> fieldIR = field.ir(getGenerator());
 
 		return fieldIR.getLocal();

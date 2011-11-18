@@ -132,7 +132,7 @@ final class ClauseReuser implements PathWalker {
 			}
 		}
 
-		final Clause clause = member.toClause();
+		final Clause clause = member.toClause().clause();
 
 		if (clause == null) {
 			return notClause();

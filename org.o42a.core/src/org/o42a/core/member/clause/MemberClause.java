@@ -24,9 +24,7 @@ import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.source.Location;
 import org.o42a.util.use.UserInfo;
@@ -131,28 +129,20 @@ public abstract class MemberClause extends Member {
 		return this.aliasKeys = aliasKeys;
 	}
 
+	public abstract Clause clause();
+
 	@Override
-	public final MemberField toMemberField() {
+	public final MemberField toField() {
 		return null;
 	}
 
 	@Override
-	public final MemberClause toMemberClause() {
+	public final MemberClause toClause() {
 		return this;
 	}
 
 	@Override
-	public final MemberLocal toMemberLocal() {
-		return null;
-	}
-
-	@Override
-	public final Field<?> toField(UserInfo user) {
-		return null;
-	}
-
-	@Override
-	public final LocalScope toLocal() {
+	public final MemberLocal toLocal() {
 		return null;
 	}
 
@@ -172,8 +162,8 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public Container substance(UserInfo user) {
-		return toClause().getContainer();
+	public final Container substance(UserInfo user) {
+		return clause().getContainer();
 	}
 
 	@Override
@@ -186,7 +176,7 @@ public abstract class MemberClause extends Member {
 
 	@Override
 	public void resolveAll() {
-		toClause().resolveAll();
+		clause().resolveAll();
 	}
 
 	@Override

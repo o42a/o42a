@@ -83,7 +83,7 @@ final class TestRunner extends Obj {
 		}
 
 		final Artifact<?> adapterArtifact =
-				adapterMember.toField(user).getArtifact();
+				adapterMember.toField().field(user).getArtifact();
 
 		if (!adapterArtifact.isValid()) {
 			return;
