@@ -152,7 +152,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public final LocalScope toLocal(UserInfo user) {
+	public final LocalScope toLocal() {
 		return null;
 	}
 

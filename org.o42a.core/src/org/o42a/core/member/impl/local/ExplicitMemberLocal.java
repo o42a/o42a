@@ -29,7 +29,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.use.UserInfo;
 
 
 final class ExplicitMemberLocal extends MemberLocal {
@@ -61,7 +60,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public LocalScope toLocal(UserInfo user) {
+	public LocalScope toLocal() {
 		return this.local;
 	}
 
