@@ -22,8 +22,6 @@ package org.o42a.core.member.impl.local;
 import org.o42a.core.member.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
 
 
 public final class PropagatedMemberLocal extends MemberLocal {
@@ -54,7 +52,7 @@ public final class PropagatedMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public LocalScope toLocal(UserInfo user) {
+	public LocalScope toLocal() {
 		return local();
 	}
 
@@ -64,7 +62,7 @@ public final class PropagatedMemberLocal extends MemberLocal {
 		}
 		return this.local = new PropagatedLocalScope(
 				this,
-				getPropagatedFrom().toLocal(User.dummyUser()));
+				getPropagatedFrom().toLocal());
 	}
 
 }

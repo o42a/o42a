@@ -109,7 +109,7 @@ public abstract class Member extends Placed {
 
 	public abstract Field<?> toField(UserInfo user);
 
-	public abstract LocalScope toLocal(UserInfo user);
+	public abstract LocalScope toLocal();
 
 	public abstract Clause toClause();
 

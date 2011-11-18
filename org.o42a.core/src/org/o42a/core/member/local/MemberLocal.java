@@ -20,7 +20,6 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.source.CompilerLogger.logDeclaration;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Obj;
@@ -87,12 +86,12 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public final Clause toClause() {
-		return toLocal(dummyUser()).toClause();
+		return toLocal().toClause();
 	}
 
 	@Override
 	public final LocalScope substance(UserInfo user) {
-		return toLocal(user);
+		return toLocal();
 	}
 
 	@Override
@@ -126,7 +125,7 @@ public abstract class MemberLocal extends Member {
 
 	@Override
 	public void resolveAll() {
-		toLocal(dummyUser()).resolveAll();
+		toLocal().resolveAll();
 	}
 
 	@Override

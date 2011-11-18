@@ -178,7 +178,7 @@ public abstract class MemberField extends Member {
 	}
 
 	@Override
-	public final LocalScope toLocal(UserInfo user) {
+	public final LocalScope toLocal() {
 		return null;
 	}
 
