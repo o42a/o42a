@@ -23,7 +23,7 @@ package org.o42a.core.member.clause;
 public final class ReusedClause {
 
 	private final Clause container;
-	private final Clause clause;
+	private final MemberClause clause;
 	private final boolean reuseContents;
 
 	public ReusedClause() {
@@ -34,7 +34,7 @@ public final class ReusedClause {
 
 	public ReusedClause(
 			Clause container,
-			Clause clause,
+			MemberClause clause,
 			boolean reuseContents) {
 		this.container = container;
 		this.clause = clause;
@@ -49,7 +49,7 @@ public final class ReusedClause {
 		return this.clause == null;
 	}
 
-	public final Clause getClause() {
+	public final MemberClause getClause() {
 		return this.clause;
 	}
 
@@ -79,7 +79,7 @@ public final class ReusedClause {
 		if (this.clause.isImplicit()) {
 			return true;
 		}
-		if (reuseContents && !this.clause.hasContinuation()) {
+		if (reuseContents && !this.clause.clause().hasContinuation()) {
 			this.clause.getLogger().error(
 					"empty_clause_contents_reused",
 					this.clause,

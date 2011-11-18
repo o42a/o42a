@@ -27,9 +27,9 @@ public interface ClauseContainer {
 
 	boolean hasSubClauses();
 
-	Clause[] getImplicitClauses();
+	MemberClause[] getImplicitClauses();
 
-	Clause clause(MemberId memberId, Obj declaredIn);
+	MemberClause clause(MemberId memberId, Obj declaredIn);
 
 	Clause toClause();
 

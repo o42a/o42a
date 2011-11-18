@@ -54,10 +54,6 @@ public abstract class MemberClause extends Member {
 		this.declaration = propagatedFrom.declaration.overrideBy(this);
 	}
 
-	public final ClauseDeclaration getDeclaration() {
-		return this.declaration;
-	}
-
 	@Override
 	public final MemberId getId() {
 		return this.declaration.getMemberId();
@@ -127,6 +123,18 @@ public abstract class MemberClause extends Member {
 		}
 
 		return this.aliasKeys = aliasKeys;
+	}
+
+	public final ClauseDeclaration getDeclaration() {
+		return this.declaration;
+	}
+
+	public final ClauseKind getKind() {
+		return getDeclaration().getKind();
+	}
+
+	public final boolean isImplicit() {
+		return getDeclaration().isImplicit();
 	}
 
 	public abstract Clause clause();

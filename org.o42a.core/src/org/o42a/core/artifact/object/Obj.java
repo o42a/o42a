@@ -79,8 +79,8 @@ public abstract class Obj
 			new LinkedHashMap<Object, Dep>();
 
 	private ObjectMembers objectMembers;
-	private Clause[] explicitClauses;
-	private Clause[] implicitClauses;
+	private MemberClause[] explicitClauses;
+	private MemberClause[] implicitClauses;
 
 	private FieldUses fieldUses;
 
@@ -200,12 +200,12 @@ public abstract class Obj
 		return this.members.values();
 	}
 
-	public Clause[] getExplicitClauses() {
+	public MemberClause[] getExplicitClauses() {
 		if (this.explicitClauses != null) {
 			return this.explicitClauses;
 		}
 
-		Clause[] explicitClauses = new Clause[0];
+		MemberClause[] explicitClauses = new MemberClause[0];
 		final Scope origin = getScope();
 
 		for (Member member : getMembers()) {
@@ -225,8 +225,7 @@ public abstract class Obj
 				continue;
 			}
 
-			explicitClauses =
-					ArrayUtil.append(explicitClauses, clause.clause());
+			explicitClauses = ArrayUtil.append(explicitClauses, clause);
 		}
 
 		return this.explicitClauses = explicitClauses;
@@ -253,14 +252,14 @@ public abstract class Obj
 	}
 
 	@Override
-	public Clause[] getImplicitClauses() {
+	public MemberClause[] getImplicitClauses() {
 		if (this.implicitClauses != null) {
 			return this.implicitClauses;
 		}
 
-		Clause[] implicitClauses = new Clause[0];
+		MemberClause[] implicitClauses = new MemberClause[0];
 
-		for (Clause clause : getExplicitClauses()) {
+		for (MemberClause clause : getExplicitClauses()) {
 			if (clause.isImplicit()) {
 				implicitClauses = ArrayUtil.append(implicitClauses, clause);
 			}
@@ -449,7 +448,7 @@ public abstract class Obj
 	}
 
 	@Override
-	public Clause clause(MemberId memberId, Obj declaredIn) {
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
 
 		// Clauses are always accessible to public.
 		final Member found =
@@ -459,7 +458,7 @@ public abstract class Obj
 			return null;
 		}
 
-		return found.toClause().clause();
+		return found.toClause();
 	}
 
 	@Override

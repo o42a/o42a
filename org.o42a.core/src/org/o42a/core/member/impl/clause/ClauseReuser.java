@@ -29,9 +29,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.ClauseKind;
-import org.o42a.core.member.clause.ReusedClause;
+import org.o42a.core.member.clause.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -132,7 +130,7 @@ final class ClauseReuser implements PathWalker {
 			}
 		}
 
-		final Clause clause = member.toClause().clause();
+		final MemberClause clause = member.toClause();
 
 		if (clause == null) {
 			return notClause();
@@ -176,7 +174,7 @@ final class ClauseReuser implements PathWalker {
 	@Override
 	public boolean done(Container result) {
 		if (this.reused != null) {
-			assert this.reused.getClause() == result.toClause() :
+			assert this.reused.getClause() == result.toMember() :
 				"Wrong path resolution: " + result + ", but "
 				+ this.reused + " expected";
 			return true;
@@ -187,7 +185,10 @@ final class ClauseReuser implements PathWalker {
 		final Clause clause = result.toClause();
 
 		if (clause != null) {
-			this.reused = new ReusedClause(clause, clause, this.reuseContents);
+			this.reused = new ReusedClause(
+					clause,
+					clause.toMember(),
+					this.reuseContents);
 		} else {
 			assert result.toObject() != null :
 				"Object expected: " + result;

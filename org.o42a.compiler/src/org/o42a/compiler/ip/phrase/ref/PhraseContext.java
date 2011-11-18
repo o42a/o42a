@@ -191,16 +191,17 @@ public abstract class PhraseContext {
 			MemberId memberId,
 			Object what) {
 
-		final Clause found = container.clause(memberId, null);
+		final MemberClause found = container.clause(memberId, null);
 
 		if (found != null) {
-			return nextClause(memberId, found, container.toClause());
+			return nextClause(memberId, found.clause(), container.toClause());
 		}
 
-		for (Clause implicit : container.getImplicitClauses()) {
+		for (MemberClause implicit : container.getImplicitClauses()) {
 
+			final Clause implicitClause = implicit.clause();
 			final NextClause foundInImplicit = findClause(
-					implicit.getClauseContainer(),
+					implicitClause.getClauseContainer(),
 					location,
 					memberId,
 					what);
@@ -209,7 +210,7 @@ public abstract class PhraseContext {
 				return foundInImplicit.setImplicit(
 						nextClause(
 								implicit.getKey().getMemberId(),
-								implicit,
+								implicitClause,
 								container.toClause()));
 			}
 		}
@@ -237,16 +238,16 @@ public abstract class PhraseContext {
 						what);
 			} else if (reusedClause.reuseContents()) {
 				found = findClause(
-						reusedClause.getClause().getClauseContainer(),
+						reusedClause.getClause().clause().getClauseContainer(),
 						location,
 						memberId,
 						what).setContainer(reusedClause.getContainer());
 			} else {
 
-				final Clause c = reusedClause.getClause();
+				final MemberClause c = reusedClause.getClause();
 
-				if (c.toMember().getId().getLocalId().equals(memberId)) {
-					found = nextClause(memberId, c);
+				if (c.getId().getLocalId().equals(memberId)) {
+					found = nextClause(memberId, c.clause());
 				} else {
 					found = clauseNotFound(what);
 				}

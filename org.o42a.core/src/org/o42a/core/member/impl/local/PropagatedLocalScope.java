@@ -29,7 +29,7 @@ import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -67,7 +67,7 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Clause[] getImplicitClauses() {
+	public MemberClause[] getImplicitClauses() {
 		return this.explicit.getImplicitClauses();
 	}
 
@@ -87,7 +87,7 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Clause clause(MemberId memberId, Obj declaredIn) {
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
 		return this.explicit.clause(memberId, declaredIn);
 	}
 

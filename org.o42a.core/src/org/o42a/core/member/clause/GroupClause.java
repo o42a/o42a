@@ -37,7 +37,7 @@ import org.o42a.util.ArrayUtil;
 
 public abstract class GroupClause extends Clause implements Container {
 
-	private Clause[] subClauses;
+	private MemberClause[] subClauses;
 
 	public GroupClause(MemberClause member) {
 		super(member);
@@ -94,15 +94,15 @@ public abstract class GroupClause extends Clause implements Container {
 	}
 
 	@Override
-	public Clause[] getSubClauses() {
+	public MemberClause[] getSubClauses() {
 		if (this.subClauses != null) {
 			return this.subClauses;
 		}
 		if (getLocalScope() != null) {
-			return this.subClauses = new Clause[0];
+			return this.subClauses = new MemberClause[0];
 		}
 
-		Clause[] subClauses = new Clause[0];
+		MemberClause[] subClauses = new MemberClause[0];
 
 		final MemberKey key = getKey();
 		final Collection<? extends Member> members =
@@ -119,7 +119,7 @@ public abstract class GroupClause extends Clause implements Container {
 				continue;
 			}
 
-			subClauses = ArrayUtil.append(subClauses, clause.clause());
+			subClauses = ArrayUtil.append(subClauses, clause);
 		}
 
 		return this.subClauses = subClauses;
@@ -236,7 +236,7 @@ public abstract class GroupClause extends Clause implements Container {
 		return enclosingClause.pathInObject().append(member.getKey());
 	}
 
-	protected Clause groupClause(MemberId memberId, Obj declaredIn) {
+	protected MemberClause groupClause(MemberId memberId, Obj declaredIn) {
 
 		final ClauseContainer clauseContainer;
 		final Container container = getEnclosingScope().getContainer();

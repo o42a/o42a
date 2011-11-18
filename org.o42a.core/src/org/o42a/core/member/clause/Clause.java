@@ -38,21 +38,22 @@ public abstract class Clause implements PlaceInfo {
 
 	protected static final ReusedClause[] NOTHING_REUSED = new ReusedClause[0];
 
-	public static boolean validateImplicitSubClauses(Clause[] subClauses) {
+	public static boolean validateImplicitSubClauses(
+			MemberClause[] subClauses) {
 
-		final HashMap<MemberId, Clause> explicitClauses =
-				new HashMap<MemberId, Clause>();
+		final HashMap<MemberId, MemberClause> explicitClauses =
+				new HashMap<MemberId, MemberClause>();
 
 		return validateImplicitSubClauses(explicitClauses, subClauses);
 	}
 
 	private static boolean validateImplicitSubClauses(
-			HashMap<MemberId, Clause> explicitClauses,
-			Clause[] subClauses) {
+			HashMap<MemberId, MemberClause> explicitClauses,
+			MemberClause[] subClauses) {
 
 		boolean result = true;
 
-		for (Clause subClause : subClauses) {
+		for (MemberClause subClause : subClauses) {
 			if (!validateClause(explicitClauses, subClause)) {
 				result = false;
 			}
@@ -62,8 +63,8 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	private static boolean validateClause(
-			HashMap<MemberId, Clause> explicitClauses,
-			Clause clause) {
+			HashMap<MemberId, MemberClause> explicitClauses,
+			MemberClause clause) {
 
 		final MemberId memberId = clause.getKey().getMemberId().getLocalId();
 
@@ -73,10 +74,10 @@ public abstract class Clause implements PlaceInfo {
 		if (clause.isImplicit()) {
 			return validateImplicitSubClauses(
 					explicitClauses,
-					clause.getSubClauses());
+					clause.clause().getSubClauses());
 		}
 
-		final Clause conflicting = explicitClauses.put(memberId, clause);
+		final MemberClause conflicting = explicitClauses.put(memberId, clause);
 
 		if (conflicting == null) {
 			return true;
@@ -91,16 +92,14 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	private final MemberClause member;
-	private final ClauseDeclaration declaration;
 	private Clause enclosingClause;
 	private Obj enclosingObject;
 	private Path pathInObject;
-	private Clause[] implicitClauses;
+	private MemberClause[] implicitClauses;
 	private boolean allResolved;
 
 	public Clause(MemberClause member) {
 		this.member = member;
-		this.declaration = member.getDeclaration();
 	}
 
 	@Override
@@ -158,7 +157,7 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	public final ClauseKind getKind() {
-		return getDeclaration().getKind();
+		return toMember().getKind();
 	}
 
 	public abstract boolean requiresInstance();
@@ -179,13 +178,13 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	public final boolean isImplicit() {
-		return getDeclaration().isImplicit();
+		return toMember().isImplicit();
 	}
 
 	public abstract boolean isMandatory();
 
 	public final ClauseDeclaration getDeclaration() {
-		return this.declaration;
+		return this.member.getDeclaration();
 	}
 
 	public final MemberKey getKey() {
@@ -210,14 +209,14 @@ public abstract class Clause implements PlaceInfo {
 
 	public abstract Path getOutcome();
 
-	public final Clause[] getImplicitClauses() {
+	public final MemberClause[] getImplicitClauses() {
 		if (this.implicitClauses != null) {
 			return this.implicitClauses;
 		}
 
-		Clause[] implicitClauses = new Clause[0];
+		MemberClause[] implicitClauses = new MemberClause[0];
 
-		for (Clause clause : getSubClauses()) {
+		for (MemberClause clause : getSubClauses()) {
 			if (clause.isImplicit()) {
 				implicitClauses = ArrayUtil.append(implicitClauses, clause);
 			}
@@ -226,7 +225,7 @@ public abstract class Clause implements PlaceInfo {
 		return this.implicitClauses = implicitClauses;
 	}
 
-	public abstract Clause[] getSubClauses();
+	public abstract MemberClause[] getSubClauses();
 
 	public abstract ReusedClause[] getReusedClauses();
 
