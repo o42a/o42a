@@ -34,8 +34,8 @@ public class FieldAnalysis implements UseInfo {
 	private MemberUses memberUses;
 	private MemberUses substanceUses;
 	private MemberUses nestedUses;
-	private MemberUses runtimeConstructionUses;
 	private MemberUses derivationUses;
+	private MemberUses rtDerivationUses;
 
 	FieldAnalysis(MemberField member) {
 		this.member = member;
@@ -88,9 +88,9 @@ public class FieldAnalysis implements UseInfo {
 		return this.nestedUses.isUsedBy(useCase);
 	}
 
-	public final UserInfo runtimeConstruction() {
+	public final UserInfo rtDerivation() {
 
-		final MemberUses uses = runtimeConstructionUses();
+		final MemberUses uses = rtDerivationUses();
 
 		if (uses == null) {
 			return dummyUser();
@@ -182,37 +182,36 @@ public class FieldAnalysis implements UseInfo {
 		return this.nestedUses;
 	}
 
-	private MemberUses runtimeConstructionUses() {
-		if (this.runtimeConstructionUses != null) {
-			return this.runtimeConstructionUses;
+	private MemberUses rtDerivationUses() {
+		if (this.rtDerivationUses != null) {
+			return this.rtDerivationUses;
 		}
 
 		final MemberField member = getMember();
 		final Obj owner = member.getMemberOwner().getOwner();
 
 		// Run time construction status derived from owner.
-		this.runtimeConstructionUses =
-				new MemberUses("RuntimeConstructionOf", getMember());
-		this.runtimeConstructionUses.useBy(
-				owner.type().runtimeConstruction());
+		this.rtDerivationUses = new MemberUses("RtDerivationOf", getMember());
+		this.rtDerivationUses.useBy(
+				owner.type().rtDerivation());
 
 		final Obj target =
 				member.substance(dummyUser()).toArtifact().materialize();
 
 		if (target.getConstructionMode().isRuntime()) {
-			this.runtimeConstructionUses.useBy(target.content());
+			this.rtDerivationUses.useBy(target.content());
 		}
 
 		final MemberField lastDefinition = member.getLastDefinition();
 
 		if (lastDefinition != member) {
-			lastDefinition.getAnalysis().runtimeConstructionUses().useBy(
-					this.runtimeConstructionUses);
+			lastDefinition.getAnalysis().rtDerivationUses().useBy(
+					this.rtDerivationUses);
 		}
 
-		derivationUses().useBy(this.runtimeConstructionUses);
+		derivationUses().useBy(this.rtDerivationUses);
 
-		return this.runtimeConstructionUses;
+		return this.rtDerivationUses;
 	}
 
 	private MemberUses derivationUses() {

@@ -174,7 +174,7 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	protected Condition determineFinal() {
-		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
+		if (getObject().type().rtDerivation().isUsedBy(getGenerator())) {
 			return Condition.RUNTIME;
 		}
 		if (part().accessed().isUsedBy(getGenerator())) {
@@ -205,7 +205,7 @@ public abstract class ObjectValueIRCondFunc
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().runtimeConstruction().isUsedBy(getGenerator())) {
+		if (getObject().type().rtDerivation().isUsedBy(getGenerator())) {
 			return false;
 		}
 		return !part().accessed().isUsedBy(getGenerator());

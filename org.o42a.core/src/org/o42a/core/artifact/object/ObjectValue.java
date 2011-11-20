@@ -50,9 +50,9 @@ public final class ObjectValue implements UseInfo {
 	private final ValuePart proposition;
 
 	private Usable uses;
-	private Usable clonesUses;
+	private Usable rtUses;
 	private Usable explicitUses;
-	private Usable clonesExplicitUses;
+	private Usable rtExplicitUses;
 
 	private boolean fullyResolved;
 
@@ -289,7 +289,7 @@ public final class ObjectValue implements UseInfo {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.value().clonesUses();
+			this.uses = cloneOf.value().rtUses();
 		} else {
 			this.uses = simpleUsable("ValueOf", this.object);
 		}
@@ -306,8 +306,8 @@ public final class ObjectValue implements UseInfo {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.explicitUses = cloneOf.value().clonesExplicitUses();
-			clonesUses().useBy(this.explicitUses);
+			this.explicitUses = cloneOf.value().rtExplicitUses();
+			rtUses().useBy(this.explicitUses);
 		} else {
 			this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
 			uses().useBy(this.explicitUses);
@@ -316,37 +316,36 @@ public final class ObjectValue implements UseInfo {
 		return this.explicitUses;
 	}
 
-	private final Usable clonesUses() {
-		if (this.clonesUses != null) {
-			return this.clonesUses;
+	private final Usable rtUses() {
+		if (this.rtUses != null) {
+			return this.rtUses;
 		}
 
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			return this.clonesUses = cloneOf.value().clonesUses();
+			return this.rtUses = cloneOf.value().rtUses();
 		}
 
-		this.clonesUses = simpleUsable("ClonesValuesOf", this.object);
-		uses().useBy(this.clonesUses);
+		this.rtUses = simpleUsable("RtValuesOf", this.object);
+		uses().useBy(this.rtUses);
 
-		return this.clonesUses;
+		return this.rtUses;
 	}
 
-	private final Usable clonesExplicitUses() {
-		if (this.clonesExplicitUses != null) {
-			return this.clonesExplicitUses;
+	private final Usable rtExplicitUses() {
+		if (this.rtExplicitUses != null) {
+			return this.rtExplicitUses;
 		}
 
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			return this.clonesExplicitUses =
-					cloneOf.value().clonesExplicitUses();
+			return this.rtExplicitUses = cloneOf.value().rtExplicitUses();
 		}
 
-		return this.clonesExplicitUses =
-				simpleUsable("ExplicitClonesValuesOf", this.object);
+		return this.rtExplicitUses =
+				simpleUsable("RtExplicitValuesOf", this.object);
 	}
 
 	private Definitions getAncestorDefinitions() {
