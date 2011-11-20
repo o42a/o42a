@@ -41,10 +41,9 @@ public final class ObjectType implements UserInfo {
 	private final Obj object;
 	private Obj lastDefinition;
 	private Usable uses;
-	private Usable clonesUses;
-	private Usable runtimeConstructionUses;
+	private Usable rtUses;
 	private Usable derivationUses;
-	private Usable clonesDerivationUses;
+	private Usable rtDerivationUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -138,8 +137,8 @@ public final class ObjectType implements UserInfo {
 		return this;
 	}
 
-	public final UserInfo runtimeConstruction() {
-		return runtimeConstructionUses();
+	public final UserInfo rtDerivation() {
+		return rtDerivationUses();
 	}
 
 	public final UserInfo derivation() {
@@ -160,7 +159,7 @@ public final class ObjectType implements UserInfo {
 
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
-		runtimeConstructionUses().useBy(type.runtimeConstructionUses());
+		rtDerivationUses().useBy(type.rtDerivationUses());
 	}
 
 	public void resolveAll() {
@@ -179,8 +178,8 @@ public final class ObjectType implements UserInfo {
 
 	protected void useAsAncestor(Obj derived) {
 		derivationUses().useBy(derived.content());
-		runtimeConstructionUses().useBy(
-				derived.type().runtimeConstructionUses());
+		rtDerivationUses().useBy(
+				derived.type().rtDerivationUses());
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
 		}
@@ -192,8 +191,8 @@ public final class ObjectType implements UserInfo {
 				sample.getAscendants().getObject();
 
 		derivationUses().useBy(sampleObject.content());
-		runtimeConstructionUses().useBy(
-				sampleObject.type().runtimeConstructionUses());
+		rtDerivationUses().useBy(
+				sampleObject.type().rtDerivationUses());
 		if (!sampleObject.isClone()) {
 			trackAscendantDefsUsage(sampleObject);
 			trackAncestorDefsUpdates(sampleObject);
@@ -240,7 +239,7 @@ public final class ObjectType implements UserInfo {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.type().clonesUses();
+			this.uses = cloneOf.type().rtUses();
 		} else {
 			this.uses = simpleUsable(this);
 		}
@@ -249,37 +248,36 @@ public final class ObjectType implements UserInfo {
 		return this.uses;
 	}
 
-	private final Usable clonesUses() {
-		if (this.clonesUses != null) {
-			return this.clonesUses;
+	private final Usable rtUses() {
+		if (this.rtUses != null) {
+			return this.rtUses;
 		}
 
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			return this.clonesUses = cloneOf.type().clonesUses();
+			return this.rtUses = cloneOf.type().rtUses();
 		}
 
-		this.clonesUses = simpleUsable("ClonesOf", this);
-		uses().useBy(this.clonesUses);
+		this.rtUses = simpleUsable("ClonesOf", this);
+		uses().useBy(this.rtUses);
 
-		return this.clonesUses;
+		return this.rtUses;
 	}
 
-	private Usable runtimeConstructionUses() {
-		if (this.runtimeConstructionUses != null) {
-			return this.runtimeConstructionUses;
+	private Usable rtDerivationUses() {
+		if (this.rtDerivationUses != null) {
+			return this.rtDerivationUses;
 		}
 
 		final Obj object = getObject();
 		final Obj cloneOf = object.getCloneOf();
 
 		if (cloneOf != null) {
-			this.runtimeConstructionUses =
-					cloneOf.type().runtimeConstructionUses();
+			this.rtDerivationUses =
+					cloneOf.type().rtDerivationUses();
 		} else {
-			this.runtimeConstructionUses =
-					simpleUsable("RuntimeConstructionOf", getObject());
+			this.rtDerivationUses = simpleUsable("RtDerivationOf", getObject());
 		}
 
 		final Member member = object.toMember();
@@ -289,8 +287,8 @@ public final class ObjectType implements UserInfo {
 			final MemberField field = member.toField();
 
 			if (field != null) {
-				this.runtimeConstructionUses.useBy(
-						field.getAnalysis().runtimeConstruction());
+				this.rtDerivationUses.useBy(
+						field.getAnalysis().rtDerivation());
 			}
 		} else {
 
@@ -308,20 +306,20 @@ public final class ObjectType implements UserInfo {
 			if (enclosingObject != null) {
 				// Stand-alone object is constructed at run time,
 				// if enclosing object is ever derived.
-				this.runtimeConstructionUses.useBy(
+				this.rtDerivationUses.useBy(
 						enclosingObject.type().derivation());
 			} else {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
 			if (getObject().getConstructionMode().isRuntime()) {
-				this.runtimeConstructionUses.useBy(getObject().content());
+				this.rtDerivationUses.useBy(getObject().content());
 			}
 		}
 
-		derivationUses().useBy(this.runtimeConstructionUses);
+		derivationUses().useBy(this.rtDerivationUses);
 
-		return this.runtimeConstructionUses;
+		return this.rtDerivationUses;
 	}
 
 	private final Usable derivationUses() {
@@ -332,28 +330,10 @@ public final class ObjectType implements UserInfo {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			return this.derivationUses = cloneOf.type().clonesDerivationUses();
+			return this.derivationUses = cloneOf.type().rtDerivationUses();
 		}
 
 		return this.derivationUses = simpleUsable("DerivationOf", getObject());
-	}
-
-	private final Usable clonesDerivationUses() {
-		if (this.clonesDerivationUses != null) {
-			return this.clonesDerivationUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.clonesDerivationUses = cloneOf.type().derivationUses();
-		}
-
-		this.clonesDerivationUses =
-				simpleUsable("ClonesDerivationOf", getObject());
-		derivationUses().useBy(this.clonesDerivationUses);
-
-		return this.clonesDerivationUses;
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {
