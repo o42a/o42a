@@ -117,6 +117,9 @@ public final class ParentLocalStep extends Step {
 
 	@Override
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
+		if (rebuilder.isStatic()) {
+			return;
+		}
 
 		final Container enclosingContainer =
 				this.object.getEnclosingContainer();
@@ -131,6 +134,9 @@ public final class ParentLocalStep extends Step {
 	public void combineWithLocalOwner(
 			PathRebuilder rebuilder,
 			Obj owner) {
+		if (rebuilder.isStatic()) {
+			return;
+		}
 		rebuilder.replace(object().addEnclosingOwnerDep(owner));
 	}
 
