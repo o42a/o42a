@@ -38,6 +38,7 @@ import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
@@ -90,8 +91,7 @@ public final class ScopeField extends ObjectField {
 		final Obj newOwner = getEnclosingContainer().toObject();
 		final ObjectType newOwnerType = newOwner.type();
 		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
-		final org.o42a.core.member.Member ancestorMember =
-				ancestor.member(getKey());
+		final Member ancestorMember = ancestor.member(getKey());
 
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
@@ -119,6 +119,11 @@ public final class ScopeField extends ObjectField {
 	@Override
 	protected ObjectField propagate(MemberField member) {
 		return new ScopeField(member, this);
+	}
+
+	@Override
+	protected Obj propagateArtifact(Field<Obj> overridden) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

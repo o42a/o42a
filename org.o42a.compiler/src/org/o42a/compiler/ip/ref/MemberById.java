@@ -91,7 +91,13 @@ public class MemberById extends PlacedPathFragment {
 			declaredIn = null;
 		}
 
-		return path(getContainer(), declaredIn, false).bind(this, start);
+		final Path path = path(getContainer(), declaredIn, false);
+
+		if (path == null) {
+			return null;
+		}
+
+		return path.bind(this, start);
 	}
 
 	@Override

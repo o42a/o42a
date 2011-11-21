@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
@@ -54,7 +54,7 @@ public abstract class RefFldOp<
 	}
 
 	@Override
-	public final ObjOp toObject(CodeDirs dirs) {
+	public final ObjectOp toObject(CodeDirs dirs) {
 
 		final Artifact<?> artifact = fld().getField().getArtifact();
 
@@ -77,7 +77,7 @@ public abstract class RefFldOp<
 		return null;
 	}
 
-	public ObjOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs) {
 		if (isOmitted()) {
 
 			final ObjectIR targetIR = fld().getTarget().ir(getGenerator());
@@ -106,19 +106,24 @@ public abstract class RefFldOp<
 			targetType = targetAscendant;
 		}
 
-		final ObjectBodyIR.Op targetBodyPtr = ptr.to(
-				null,
-				code,
-				targetAscendant.ir(getGenerator()).getBodyType());
+		if (host().getPrecision().isExact()) {
 
-		return targetBodyPtr.op(
-				getBuilder(),
-				targetType,
-				host().getPrecision());
+			final ObjectBodyIR.Op targetBodyPtr = ptr.to(
+					null,
+					code,
+					targetAscendant.ir(getGenerator()).getBodyType());
+
+			return targetBodyPtr.op(
+					getBuilder(),
+					targetType,
+					ObjectPrecision.EXACT);
+		}
+
+		return anonymousObject(getBuilder(), ptr, targetType);
 	}
 
 	@Override
-	public final ObjOp materialize(CodeDirs dirs) {
+	public final ObjectOp materialize(CodeDirs dirs) {
 		return target(dirs);
 	}
 

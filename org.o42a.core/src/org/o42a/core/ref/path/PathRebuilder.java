@@ -60,6 +60,10 @@ public final class PathRebuilder implements LocationInfo {
 		return this.path.getContext();
 	}
 
+	public final boolean isStatic() {
+		return this.path.isStatic();
+	}
+
 	public final Path restPath() {
 		return new Path(
 				this.path.getKind(),
