@@ -43,13 +43,13 @@ public abstract class ObjectScope extends ArtifactScope<Obj> {
 
 	@Override
 	public Path getEnclosingScopePath() {
+		if (this.enclosingScopePath != null) {
+			return this.enclosingScopePath;
+		}
 		if (getEnclosingScope().isTopScope()) {
 			return null;
 		}
-
-		this.enclosingScopePath = getArtifact().scopePath();
-
-		return this.enclosingScopePath;
+		return this.enclosingScopePath = getArtifact().scopePath();
 	}
 
 	@Override

@@ -70,21 +70,20 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 
 	@Override
 	public Path getEnclosingScopePath() {
-		if (this.enclosingScopePath == null) {
-			if (getEnclosingContainer().getScope().isTopScope()) {
-				return null;
-			}
-
-			final Obj object = getArtifact().toObject();
-
-			if (object == null) {
-				return null;
-			}
-
-			this.enclosingScopePath = object.scopePath();
+		if (this.enclosingScopePath != null) {
+			return this.enclosingScopePath;
+		}
+		if (getEnclosingContainer().getScope().isTopScope()) {
+			return null;
 		}
 
-		return this.enclosingScopePath;
+		final Obj object = getArtifact().toObject();
+
+		if (object == null) {
+			return null;
+		}
+
+		return this.enclosingScopePath = object.scopePath();
 	}
 
 	@Override
