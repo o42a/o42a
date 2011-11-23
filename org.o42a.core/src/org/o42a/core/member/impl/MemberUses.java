@@ -31,7 +31,7 @@ public final class MemberUses implements UserInfo {
 	private final Member member;
 	private final MemberUser user;
 	private final UseTracker tracker = new UseTracker();
-	private final HashSet<UseInfo> uses = new HashSet<UseInfo>();
+	private final HashSet<Uses> uses = new HashSet<Uses>();
 
 	public MemberUses(String name, Member member) {
 		this.name = name;
@@ -44,7 +44,7 @@ public final class MemberUses implements UserInfo {
 		return this.user;
 	}
 
-	public final void useBy(UseInfo use) {
+	public final void useBy(Uses use) {
 		this.uses.add(use);
 	}
 
@@ -58,7 +58,7 @@ public final class MemberUses implements UserInfo {
 		if (!this.tracker.start(useCase.toUseCase())) {
 			return this.tracker.getUseFlag();
 		}
-		for (UseInfo use : this.uses) {
+		for (Uses use : this.uses) {
 			if (this.tracker.useBy(use)) {
 				return this.tracker.getUseFlag();
 			}

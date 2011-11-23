@@ -22,7 +22,7 @@ package org.o42a.core.artifact.common;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
 public abstract class MaterializableArtifact<
@@ -57,7 +57,7 @@ public abstract class MaterializableArtifact<
 	}
 
 	@Override
-	public UseInfo fieldUses() {
+	public Uses fieldUses() {
 		return materialize().fieldUses();
 	}
 

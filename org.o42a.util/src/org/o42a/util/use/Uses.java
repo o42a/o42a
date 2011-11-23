@@ -20,11 +20,11 @@
 package org.o42a.util.use;
 
 
-public interface UseInfo {
+public interface Uses {
 
-	UseInfo ALWAYS_USED = new AlwaysUsed();
+	Uses ALWAYS_USED = new AlwaysUsed();
 
-	UseInfo NEVER_USED = new NeverUsed();
+	Uses NEVER_USED = new NeverUsed();
 
 	UseFlag getUseBy(UseCaseInfo useCase);
 

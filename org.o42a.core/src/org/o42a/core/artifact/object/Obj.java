@@ -58,7 +58,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
 public abstract class Obj
@@ -496,7 +496,7 @@ public abstract class Obj
 	}
 
 	@Override
-	public final UseInfo fieldUses() {
+	public final Uses fieldUses() {
 		if (this.fieldUses != null) {
 			return this.fieldUses;
 		}

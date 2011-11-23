@@ -72,14 +72,14 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return getUseBy(useCase).isUsed();
 	}
 
-	public final UseInfo accessed() {
+	public final Uses accessed() {
 		if (this.accessedBy == null) {
 			return NEVER_USED;
 		}
 		return this.accessedBy;
 	}
 
-	public final UseInfo ancestorDefsUpdates() {
+	public final Uses ancestorDefsUpdates() {
 		if (getObject().getConstructionMode().isRuntime()) {
 			return ALWAYS_USED;
 		}
