@@ -20,7 +20,6 @@
 package org.o42a.core.artifact.object.impl;
 
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
-import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -39,6 +38,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
@@ -50,13 +50,13 @@ public final class ScopeField extends ObjectField {
 
 	private final ScopeField overridden;
 
-	public ScopeField(Obj owner) {
+	public ScopeField(Obj owner, MemberId memberId) {
 		super(
 				owner.toMemberOwner(),
 				fieldDeclaration(
 						owner,
 						owner.distributeIn(owner),
-						SCOPE_FIELD_ID)
+						memberId)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
 		setFieldArtifact(owner.getScope().getEnclosingContainer().toObject());

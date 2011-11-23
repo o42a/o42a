@@ -476,9 +476,20 @@ public abstract class Obj
 		final Container enclosing = scope.getEnclosingContainer();
 
 		if (enclosing.toObject() != null) {
-			scopePathStep = new ParentObjectStep(
-					SCOPE_FIELD_ID.key(scope));
+
+			final Obj propagatedFrom = getPropagatedFrom();
+
+			if (propagatedFrom != null) {
+				// Reuse enclosing scope path from object
+				// this one is propagated from.
+				return propagatedFrom.getScope().getEnclosingScopePath();
+			}
+
+			// New scope field is to be created.
+			scopePathStep = new ParentObjectStep(SCOPE_FIELD_ID.key(scope));
 		} else {
+			// Enclosing local path.
+			// Will be replaced with dependency during path rebuild.
 			assert enclosing.toLocal() != null :
 				"Unsupported kind of enclosing scope " + enclosing;
 			scopePathStep = new ParentLocalStep(this);
@@ -809,10 +820,7 @@ public abstract class Obj
 
 	private void declareMembers() {
 		this.objectMembers = new ObjectMembers(this);
-		if (getScope().getEnclosingScopePath() != null
-				&& getScope().getEnclosingContainer().toObject() != null) {
-			this.objectMembers.addMember(new ScopeField(this).toMember());
-		}
+		declareScopeField();
 		declareMembers(this.objectMembers);
 
 		final ObjectType objectType = type();
@@ -827,6 +835,36 @@ public abstract class Obj
 			this.objectMembers.deriveMembers(
 					ancestor.typeObject(objectType));
 		}
+	}
+
+	private void declareScopeField() {
+		if (getScope().getEnclosingScope().toObject() == null) {
+			// Only object members may have an enclosing scope path.
+			return;
+		}
+
+		final Path enclosingScopePath = getScope().getEnclosingScopePath();
+
+		if (enclosingScopePath == null) {
+			// Enclosing scope path not defined.
+			return;
+		}
+
+		final Step[] steps = enclosingScopePath.getSteps();
+
+		assert steps.length == 1 :
+			"Enclosing path scope should contain exactly one step";
+
+		final MemberStep step = (MemberStep) steps[0];
+		final MemberKey memberKey = step.getMemberKey();
+
+		if (memberKey.getOrigin() != getScope()) {
+			// Enclosing scope field is derived from overridden object.
+			return;
+		}
+
+		this.objectMembers.addMember(
+				new ScopeField(this, memberKey.getMemberId()).toMember());
 	}
 
 	private void resolveAllMembers() {
