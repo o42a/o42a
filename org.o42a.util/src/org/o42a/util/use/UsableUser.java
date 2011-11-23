@@ -22,9 +22,9 @@ package org.o42a.util.use;
 
 public final class UsableUser extends AbstractUser {
 
-	private final UseInfo uses;
+	private final Uses uses;
 
-	public UsableUser(UseInfo uses) {
+	public UsableUser(Uses uses) {
 		assert this != uses;
 		this.uses = uses;
 	}

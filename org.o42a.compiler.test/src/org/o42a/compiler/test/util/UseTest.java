@@ -178,13 +178,13 @@ public class UseTest {
 		assertUsed(usable7);
 	}
 
-	public void assertUsed(UseInfo use) {
+	public void assertUsed(Uses use) {
 		assertTrue(
 				use + " is not used by " + this.useCase,
 				use.getUseBy(this.useCase).isUsed());
 	}
 
-	public void assertUnused(UseInfo use) {
+	public void assertUnused(Uses use) {
 		assertFalse(
 				use + " is used by " + this.useCase,
 				use.getUseBy(this.useCase).isUsed());

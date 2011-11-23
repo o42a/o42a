@@ -23,7 +23,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.util.use.*;
 
 
-public class FieldUses implements UseInfo {
+public class FieldUses implements Uses {
 
 	private final UseTracker tracker = new UseTracker();
 	private final MemberContainer container;

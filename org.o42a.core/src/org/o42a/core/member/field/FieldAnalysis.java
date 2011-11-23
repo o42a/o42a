@@ -27,7 +27,7 @@ import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
 
 
-public class FieldAnalysis implements UseInfo {
+public class FieldAnalysis implements Uses {
 
 	private final UseTracker tracker = new UseTracker();
 	private final MemberField member;
@@ -137,15 +137,15 @@ public class FieldAnalysis implements UseInfo {
 		return "MemberAnalysis[" + this.member + ']';
 	}
 
-	final void useBy(UseInfo user) {
+	final void useBy(Uses user) {
 		memberUses().useBy(user);
 	}
 
-	final void useSubstanceBy(UseInfo user) {
+	final void useSubstanceBy(Uses user) {
 		substanceUses().useBy(user);
 	}
 
-	final void useNestedBy(UseInfo user) {
+	final void useNestedBy(Uses user) {
 		nestedUses().useBy(user);
 	}
 

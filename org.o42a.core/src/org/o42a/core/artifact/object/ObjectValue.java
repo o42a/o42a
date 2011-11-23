@@ -36,7 +36,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements UseInfo {
+public final class ObjectValue implements Uses {
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;

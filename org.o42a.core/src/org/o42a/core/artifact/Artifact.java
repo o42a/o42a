@@ -30,7 +30,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.UseInfo;
+import org.o42a.util.use.Uses;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
@@ -166,7 +166,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return this.clonesContent = new ArtifactContent(this, true);
 	}
 
-	public abstract UseInfo fieldUses();
+	public abstract Uses fieldUses();
 
 	public final void resolveAll() {
 		if (this.allResolved) {

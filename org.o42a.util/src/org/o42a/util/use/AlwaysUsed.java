@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed implements UseInfo {
+final class AlwaysUsed implements Uses {
 
 	@Override
 	public UseFlag getUseBy(UseCaseInfo useCase) {

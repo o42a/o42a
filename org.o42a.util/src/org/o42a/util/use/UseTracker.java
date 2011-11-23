@@ -49,7 +49,7 @@ public class UseTracker {
 		return true;
 	}
 
-	public final boolean require(UseInfo use) {
+	public final boolean require(Uses use) {
 
 		final UseCase useCase = this.useFlag.getUseCase();
 		final UseFlag used = use.getUseBy(useCase);
@@ -68,7 +68,7 @@ public class UseTracker {
 		return false;
 	}
 
-	public final boolean useBy(UseInfo use) {
+	public final boolean useBy(Uses use) {
 
 		final UseCase useCase = this.useFlag.getUseCase();
 		final UseFlag used = use.getUseBy(useCase);
