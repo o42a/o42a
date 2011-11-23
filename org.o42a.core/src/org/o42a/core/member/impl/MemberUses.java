@@ -19,19 +19,21 @@
 */
 package org.o42a.core.member.impl;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
+
 import java.util.HashSet;
 
 import org.o42a.core.member.Member;
 import org.o42a.util.use.*;
 
 
-public final class MemberUses implements UserInfo {
+public final class MemberUses implements UserInfo, Uses<SimpleUsage> {
 
 	private final String name;
 	private final Member member;
 	private final MemberUser user;
 	private final UseTracker tracker = new UseTracker();
-	private final HashSet<Uses> uses = new HashSet<Uses>();
+	private final HashSet<Uses<?>> uses = new HashSet<Uses<?>>();
 
 	public MemberUses(String name, Member member) {
 		this.name = name;
@@ -40,30 +42,45 @@ public final class MemberUses implements UserInfo {
 	}
 
 	@Override
-	public User toUser() {
+	public final User<SimpleUsage> toUser() {
 		return this.user;
 	}
 
-	public final void useBy(Uses use) {
-		this.uses.add(use);
+	@Override
+	public final AllUsages<SimpleUsage> allUsages() {
+		return toUser().allUsages();
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
-	}
+	public UseFlag getUseBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
 
-	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		if (!this.tracker.start(useCase.toUseCase())) {
+		final UseCase uc = useCase.toUseCase();
+
+		if (uc.isSteady()) {
+			return uc.usedFlag();
+		}
+		if (!this.tracker.start(uc)) {
 			return this.tracker.getUseFlag();
 		}
-		for (Uses use : this.uses) {
+		for (Uses<?> use : this.uses) {
 			if (this.tracker.useBy(use)) {
 				return this.tracker.getUseFlag();
 			}
 		}
 		return this.tracker.done();
+	}
+
+	@Override
+	public boolean isUsedBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+		return getUseBy(useCase, selector).isUsed();
+	}
+
+	public final void useBy(Uses<?> use) {
+		this.uses.add(use);
 	}
 
 	@Override
@@ -74,11 +91,17 @@ public final class MemberUses implements UserInfo {
 		return this.name + '[' + this.member + ']';
 	}
 
-	private final class MemberUser extends AbstractUser {
+	private final class MemberUser extends AbstractUser<SimpleUsage> {
+
+		MemberUser() {
+			super(ALL_SIMPLE_USAGES);
+		}
 
 		@Override
-		public UseFlag getUseBy(UseCaseInfo useCase) {
-			return MemberUses.this.getUseBy(useCase);
+		public UseFlag getUseBy(
+				UseCaseInfo useCase,
+				UseSelector<SimpleUsage> selector) {
+			return MemberUses.this.getUseBy(useCase, selector);
 		}
 
 		@Override

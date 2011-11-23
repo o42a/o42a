@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import java.util.HashMap;
 
@@ -238,7 +239,8 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
 		if (getObjectIR().getObject().type().rtDerivation().isUsedBy(
-				getGenerator())) {
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			instance.ancestorFunc().setConstant(true).setValue(
 					createAncestorFunc(instance));
 		} else {

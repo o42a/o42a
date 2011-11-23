@@ -20,20 +20,21 @@
 package org.o42a.util.use;
 
 
-final class SimpleUsable extends Usable {
+final class SimpleUsable<U extends Usage<U>> extends Usable<U> {
 
 	private final String name;
 	private final Object usable;
-	private final UsableUser user;
+	private final UsableUser<U> user;
 
-	SimpleUsable(String name, Object usable) {
+	SimpleUsable(AllUsages<U> allUsages, String name, Object usable) {
+		super(allUsages);
 		this.name = name;
 		this.usable = usable;
-		this.user = new UsableUser(this);
+		this.user = new UsableUser<U>(this);
 	}
 
 	@Override
-	public final User toUser() {
+	public final User<U> toUser() {
 		return this.user;
 	}
 

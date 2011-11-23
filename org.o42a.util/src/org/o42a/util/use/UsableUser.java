@@ -20,18 +20,19 @@
 package org.o42a.util.use;
 
 
-public final class UsableUser extends AbstractUser {
+public final class UsableUser<U extends Usage<U>> extends AbstractUser<U> {
 
-	private final Uses uses;
+	private final Uses<U> uses;
 
-	public UsableUser(Uses uses) {
+	public UsableUser(Uses<U> uses) {
+		super(uses.allUsages());
 		assert this != uses;
 		this.uses = uses;
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		return this.uses.getUseBy(useCase);
+	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
+		return this.uses.getUseBy(useCase, selector);
 	}
 
 	@Override

@@ -53,7 +53,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.UserInfo;
 
 
 public final class ComparisonExpression extends ObjectConstructor {
@@ -206,15 +205,14 @@ public final class ComparisonExpression extends ObjectConstructor {
 		public void resolveBuiltin(Resolver resolver) {
 			phrase(distribute()).resolveAll(resolver);
 
-			final UserInfo user = resolver;
 			final Field<?> field =
 					resolver.getScope()
 					.toObject()
 					.member(this.comparisonKey)
 					.toField()
-					.field(user);
+					.field(resolver);
 
-			field.getArtifact().toObject().value().resolveAll(user);
+			field.getArtifact().toObject().value().resolveAll(resolver);
 		}
 
 		@Override

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
@@ -61,7 +62,9 @@ public class ObjectIR  {
 	}
 
 	public final boolean isExact() {
-		return !getObject().type().derivation().isUsedBy(getGenerator());
+		return !getObject().type().derivation().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES);
 	}
 
 	public final ScopeIR getScopeIR() {

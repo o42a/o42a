@@ -21,55 +21,86 @@ package org.o42a.util.use;
 
 import static java.util.Collections.emptySet;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 
-public abstract class Usable implements UserInfo {
+public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
-	public static Usable simpleUsable(String name, Object used) {
-		return new SimpleUsable(name, used);
+	static final Object DUMMY = new Object();
+
+	private final AllUsages<U> allUsages;
+	private HashMap<U, UsedBy<U>> usedBy;
+
+	public Usable(AllUsages<U> allUsages) {
+		this.allUsages = allUsages;
 	}
 
-	public static Usable simpleUsable(Object used) {
-		return new SimpleUsable(null, used);
+	@Override
+	public abstract User<U> toUser();
+
+	@Override
+	public final AllUsages<U> allUsages() {
+		return this.allUsages;
 	}
 
-	private final UseTracker tracker = new UseTracker();
-	private HashSet<User> usedBy;
-
-	public final void useBy(UserInfo user) {
-		user.toUser().use(this);
+	public final void useBy(UserInfo user, U usage) {
+		user.toUser().use(this, usage);
 	}
 
-	public final Set<User> getUsedBy() {
+	public final Set<User<?>> getUsedBy(U usage) {
 		if (this.usedBy == null) {
 			return emptySet();
 		}
-		return this.usedBy;
+
+		final UsedBy<U> usedBy = this.usedBy.get(usage);
+
+		if (usedBy == null) {
+			return emptySet();
+		}
+
+		return usedBy.getUsedBy();
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		if (!this.tracker.start(useCase.toUseCase())) {
-			return this.tracker.getUseFlag();
+	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
+
+		final UseCase uc = useCase.toUseCase();
+
+		if (uc.isSteady()) {
+			return uc.usedFlag();
 		}
 		if (this.usedBy == null) {
-			return this.tracker.done();
+			return uc.unusedFlag();
 		}
 
-		for (User user : this.usedBy) {
-			if (this.tracker.useBy(user)) {
-				return this.tracker.getUseFlag();
+		boolean unknown = false;
+
+		for (Map.Entry<U, UsedBy<U>> e : this.usedBy.entrySet()) {
+
+			final U usage = e.getKey();
+
+			if (!selector.acceptUsage(usage)) {
+				continue;
 			}
+
+			final UseFlag useFlag = e.getValue().getUseBy(useCase);
+
+			if (useFlag.isUsed()) {
+				return useFlag;
+			}
+			unknown |= useFlag.isKnown();
 		}
 
-		return this.tracker.done();
+		return unknown ? uc.checkUseFlag() : uc.unusedFlag();
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final boolean isUsedBy(
+			UseCaseInfo useCase,
+			UseSelector<U> selector) {
+		return getUseBy(useCase, selector).isUsed();
 	}
 
 	@Override
@@ -80,11 +111,59 @@ public abstract class Usable implements UserInfo {
 		return getClass().getSimpleName() + this.usedBy.toString();
 	}
 
-	final void useBy(User user) {
+	final void useBy(User<?> user, U usage) {
 		if (this.usedBy == null) {
-			this.usedBy = new HashSet<User>();
+			this.usedBy = new HashMap<U, UsedBy<U>>();
+		} else {
+
+			final UsedBy<U> existing = this.usedBy.get(usage);
+
+			if (existing != null) {
+				existing.addUseBy(user);
+				return;
+			}
 		}
-		this.usedBy.add(user);
+
+		final UsedBy<U> usedBy = new UsedBy<U>();
+
+		usedBy.addUseBy(user);
+
+		this.usedBy.put(usage, usedBy);
+	}
+
+	private static final class UsedBy<U extends Usage<U>> extends UseTracker {
+
+		private final HashMap<User<?>, Object> usedBy =
+				new HashMap<User<?>, Object>();
+
+		public final Set<User<?>> getUsedBy() {
+			return this.usedBy.keySet();
+		}
+
+		@Override
+		public String toString() {
+			if (this.usedBy == null) {
+				return "{}";
+			}
+			return this.usedBy.keySet().toString();
+		}
+
+		final void addUseBy(User<?> user) {
+			this.usedBy.put(user, Usable.DUMMY);
+		}
+
+		UseFlag getUseBy(UseCaseInfo useCase) {
+			if (!start(useCase.toUseCase())) {
+				return getUseFlag();
+			}
+			for (User<?> user : getUsedBy()) {
+				if (useBy(user)) {
+					return getUseFlag();
+				}
+			}
+			return done();
+		}
+
 	}
 
 }

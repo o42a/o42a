@@ -38,7 +38,8 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.*;
+import org.o42a.util.use.User;
+import org.o42a.util.use.UserInfo;
 
 
 public class Resolver implements UserInfo, LocationInfo {
@@ -48,7 +49,7 @@ public class Resolver implements UserInfo, LocationInfo {
 	}
 
 	private final Scope scope;
-	private final User user;
+	private final User<?> user;
 	private final PathWalker walker;
 
 	protected Resolver(Scope scope, UserInfo user, PathWalker walker) {
@@ -88,7 +89,7 @@ public class Resolver implements UserInfo, LocationInfo {
 	}
 
 	@Override
-	public final User toUser() {
+	public final User<?> toUser() {
 		return this.user;
 	}
 
@@ -97,16 +98,6 @@ public class Resolver implements UserInfo, LocationInfo {
 			return this;
 		}
 		return getScope().newResolver(this);
-	}
-
-	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		return toUser().getUseBy(useCase);
-	}
-
-	@Override
-	public boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
 	}
 
 	public final Resolution noResolution(LocationInfo location) {
