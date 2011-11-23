@@ -22,6 +22,7 @@ package org.o42a.core.artifact;
 import org.o42a.core.*;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.FieldUses;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
@@ -30,7 +31,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.Holder;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.Uses;
 
 
 public abstract class Artifact<A extends Artifact<A>> extends Placed {
@@ -166,7 +166,7 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		return this.clonesContent = new ArtifactContent(this, true);
 	}
 
-	public abstract Uses fieldUses();
+	public abstract FieldUses fieldUses();
 
 	public final void resolveAll() {
 		if (this.allResolved) {

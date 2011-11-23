@@ -19,8 +19,12 @@
 */
 package org.o42a.util.use;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
-public final class UseCase extends AbstractUser implements UseCaseInfo {
+
+public final class UseCase
+		extends AbstractUser<SimpleUsage>
+		implements UseCaseInfo {
 
 	private final String name;
 	private final UseFlag usedFlag;
@@ -31,6 +35,7 @@ public final class UseCase extends AbstractUser implements UseCaseInfo {
 	private final boolean steady;
 
 	UseCase(String name) {
+		super(ALL_SIMPLE_USAGES);
 		this.name = name;
 		this.steady = false;
 		this.usedFlag = new UseFlag(this, (byte) 1);
@@ -39,6 +44,7 @@ public final class UseCase extends AbstractUser implements UseCaseInfo {
 	}
 
 	UseCase(String name, boolean steady) {
+		super(ALL_SIMPLE_USAGES);
 		this.name = name;
 		this.steady = true;
 		this.unusedFlag = this.usedFlag = new UseFlag(this, (byte) 1);
@@ -75,8 +81,17 @@ public final class UseCase extends AbstractUser implements UseCaseInfo {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		return useCase == this ? usedFlag() : unusedFlag();
+	public UseFlag getUseBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+
+		final UseCase uc = useCase.toUseCase();
+
+		if (uc.isSteady()) {
+			return uc.usedFlag();
+		}
+
+		return uc == this ? usedFlag() : unusedFlag();
 	}
 
 	@Override

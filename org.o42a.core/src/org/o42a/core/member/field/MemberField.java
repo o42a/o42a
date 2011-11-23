@@ -384,7 +384,7 @@ public abstract class MemberField extends Member {
 		if (user.toUser().isDummy()) {
 			return;
 		}
-		getAnalysis().useBy(user);
+		getAnalysis().useBy(user.toUser());
 	}
 
 }

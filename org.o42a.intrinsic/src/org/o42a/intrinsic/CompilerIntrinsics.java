@@ -23,7 +23,8 @@ import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
 import static org.o42a.util.string.StringCodec.canonicalName;
-import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
 import java.util.HashMap;
 
@@ -35,12 +36,13 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.source.*;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
+import org.o42a.util.use.SimpleUsage;
 import org.o42a.util.use.Usable;
 
 
 public class CompilerIntrinsics extends Intrinsics {
 
-	private final Usable user = simpleUsable("MainUser");
+	private final Usable<SimpleUsage> user = simpleUsable("MainUser");
 	private final SourceCompiler compiler;
 	private final Top top;
 	private final CompilerContext topContext;
@@ -188,7 +190,7 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	public void generateAll(Generator generator) {
 		if (consoleUsed()) {
-			this.user.useBy(generator);
+			this.user.useBy(generator, SIMPLE_USAGE);
 			this.consoleModule.generateMain(generator);
 		}
 	}

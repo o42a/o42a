@@ -22,7 +22,9 @@ package org.o42a.core.artifact.object;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
-import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.util.use.SimpleUsage.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.def.DefKind;
@@ -36,7 +38,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements Uses {
+public final class ObjectValue implements Uses<SimpleUsage> {
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -49,10 +51,10 @@ public final class ObjectValue implements Uses {
 	private final ValuePart claim;
 	private final ValuePart proposition;
 
-	private Usable uses;
-	private Usable rtUses;
-	private Usable explicitUses;
-	private Usable rtExplicitUses;
+	private Usable<SimpleUsage> uses;
+	private Usable<SimpleUsage> rtUses;
+	private Usable<SimpleUsage> explicitUses;
+	private Usable<SimpleUsage> rtExplicitUses;
 
 	private boolean fullyResolved;
 
@@ -83,16 +85,25 @@ public final class ObjectValue implements Uses {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final AllUsages<SimpleUsage> allUsages() {
+		return ALL_SIMPLE_USAGES;
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
+	public final UseFlag getUseBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
 		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.uses.getUseBy(useCase);
+		return this.uses.getUseBy(useCase, selector);
+	}
+
+	@Override
+	public final boolean isUsedBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+		return getUseBy(useCase, selector).isUsed();
 	}
 
 	public final Value<?> getValue() {
@@ -232,7 +243,7 @@ public final class ObjectValue implements Uses {
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			explicitUses().useBy(user);
+			explicitUses().useBy(user, SIMPLE_USAGE);
 		}
 		return this;
 	}
@@ -281,7 +292,7 @@ public final class ObjectValue implements Uses {
 		}
 	}
 
-	final Usable uses() {
+	final Usable<SimpleUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
@@ -298,7 +309,7 @@ public final class ObjectValue implements Uses {
 		return this.uses;
 	}
 
-	final Usable explicitUses() {
+	final Usable<SimpleUsage> explicitUses() {
 		if (this.explicitUses != null) {
 			return this.explicitUses;
 		}
@@ -307,16 +318,16 @@ public final class ObjectValue implements Uses {
 
 		if (cloneOf != null) {
 			this.explicitUses = cloneOf.value().rtExplicitUses();
-			rtUses().useBy(this.explicitUses);
+			rtUses().useBy(this.explicitUses, SIMPLE_USAGE);
 		} else {
 			this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
-			uses().useBy(this.explicitUses);
+			uses().useBy(this.explicitUses, SIMPLE_USAGE);
 		}
 
 		return this.explicitUses;
 	}
 
-	private final Usable rtUses() {
+	private final Usable<SimpleUsage> rtUses() {
 		if (this.rtUses != null) {
 			return this.rtUses;
 		}
@@ -328,12 +339,12 @@ public final class ObjectValue implements Uses {
 		}
 
 		this.rtUses = simpleUsable("RtValuesOf", this.object);
-		uses().useBy(this.rtUses);
+		uses().useBy(this.rtUses, SIMPLE_USAGE);
 
 		return this.rtUses;
 	}
 
-	private final Usable rtExplicitUses() {
+	private final Usable<SimpleUsage> rtExplicitUses() {
 		if (this.rtExplicitUses != null) {
 			return this.rtExplicitUses;
 		}

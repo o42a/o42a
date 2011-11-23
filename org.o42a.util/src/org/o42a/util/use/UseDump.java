@@ -19,6 +19,8 @@
 */
 package org.o42a.util.use;
 
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
+
 import java.util.ArrayList;
 
 
@@ -27,13 +29,19 @@ import java.util.ArrayList;
  * Use tracking dumper.
  *
  * <p>This class is only used for debugging purposes.</p>
+ *
+ * @param <U> usage.
  */
-public class UseDump {
+public class UseDump<U extends Usage<U>> {
 
-	private static final ArrayList<UseDump> uses = new ArrayList<UseDump>();
+	private static final ArrayList<UseDump<?>> uses =
+			new ArrayList<UseDump<?>>();
 
-	public static void dumpUse(Object what, UserInfo user) {
-		uses.add(new UseDump(what.toString(), user.toUser()));
+	public static <U extends Usage<U>> void dumpUse(
+			Object what,
+			User<U> user,
+			U usage) {
+		uses.add(new UseDump<U>(what.toString(), user, usage));
 	}
 
 	public static void dumpSeparator(String what) {
@@ -41,21 +49,23 @@ public class UseDump {
 	}
 
 	public static void printUses(UseCaseInfo useCase) {
-		for (UseDump dump : uses) {
+		for (UseDump<?> dump : uses) {
 			dump.print(useCase);
 		}
 	}
 
 	protected final String what;
-	protected final User user;
+	protected final User<U> user;
+	protected final U usage;
 
-	UseDump(String what, User user) {
+	UseDump(String what, User<U> user, U usage) {
 		this.what = what;
 		this.user = user;
+		this.usage = usage;
 	}
 
 	public void print(UseCaseInfo useCase) {
-		if (this.user.isUsedBy(useCase)) {
+		if (this.user.isUsedBy(useCase, this.usage)) {
 			System.err.println("(!) " + this.what);
 			System.err.println("  + " + this.user);
 		}
@@ -66,10 +76,10 @@ public class UseDump {
 		return this.what + " by " + this.user;
 	}
 
-	private static final class Separator extends UseDump {
+	private static final class Separator extends UseDump<SimpleUsage> {
 
 		Separator(String what) {
-			super(what, null);
+			super(what, null, SIMPLE_USAGE);
 		}
 
 		@Override

@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
@@ -166,7 +167,9 @@ public abstract class ObjectValueIRCondFunc
 		if (!constant.isConstant() || constant.isFalse()) {
 			return constant;
 		}
-		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			return constant;
 		}
 
@@ -174,10 +177,12 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	protected Condition determineFinal() {
-		if (getObject().type().rtDerivation().isUsedBy(getGenerator())) {
+		if (getObject().type().rtDerivation().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			return Condition.RUNTIME;
 		}
-		if (part().accessed().isUsedBy(getGenerator())) {
+		if (part().accessed().isUsedBy(getGenerator(), ALL_SIMPLE_USAGES)) {
 			return Condition.RUNTIME;
 		}
 		return defs().condition(getObject().getScope().dummyResolver());
@@ -185,7 +190,9 @@ public abstract class ObjectValueIRCondFunc
 
 	@Override
 	protected void create() {
-		if (canStub() && !getObject().value().isUsedBy(getGenerator())) {
+		if (canStub() && !getObject().value().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			stub(stubFunc());
 			return;
 		}
@@ -205,10 +212,12 @@ public abstract class ObjectValueIRCondFunc
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().rtDerivation().isUsedBy(getGenerator())) {
+		if (getObject().type().rtDerivation().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			return false;
 		}
-		return !part().accessed().isUsedBy(getGenerator());
+		return !part().accessed().isUsedBy(getGenerator(), ALL_SIMPLE_USAGES);
 	}
 
 	protected void reuse() {
@@ -235,7 +244,9 @@ public abstract class ObjectValueIRCondFunc
 			if (ancestor == null) {
 				return;
 			}
-			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+			if (part().ancestorDefsUpdates().isUsedBy(
+					getGenerator(),
+					ALL_SIMPLE_USAGES)) {
 				return;
 			}
 
@@ -305,7 +316,9 @@ public abstract class ObjectValueIRCondFunc
 
 		final Code code = dirs.code();
 
-		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 

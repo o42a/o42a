@@ -20,15 +20,26 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed implements Uses {
+final class AlwaysUsed<U extends Usage<U>> implements Uses<U> {
+
+	private final AllUsages<U> allUsages;
+
+	AlwaysUsed(AllUsages<U> allUsages) {
+		this.allUsages = allUsages;
+	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
+	public AllUsages<U> allUsages() {
+		return this.allUsages;
+	}
+
+	@Override
+	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
 		return useCase.toUseCase().usedFlag();
 	}
 
 	@Override
-	public boolean isUsedBy(UseCaseInfo useCase) {
+	public boolean isUsedBy(UseCaseInfo useCase, UseSelector<U> selector) {
 		return true;
 	}
 

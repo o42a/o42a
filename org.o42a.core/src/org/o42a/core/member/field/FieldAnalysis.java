@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
@@ -27,7 +28,7 @@ import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
 
 
-public class FieldAnalysis implements Uses {
+public class FieldAnalysis implements Uses<SimpleUsage> {
 
 	private final UseTracker tracker = new UseTracker();
 	private final MemberField member;
@@ -50,13 +51,21 @@ public class FieldAnalysis implements Uses {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final AllUsages<SimpleUsage> allUsages() {
+		return ALL_SIMPLE_USAGES;
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		if (!this.tracker.start(useCase.toUseCase())) {
+	public UseFlag getUseBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+
+		final UseCase uc = useCase.toUseCase();
+
+		if (uc.isSteady()) {
+			return uc.usedFlag();
+		}
+		if (!this.tracker.start(uc)) {
 			return this.tracker.getUseFlag();
 		}
 		if (this.memberUses == null) {
@@ -76,38 +85,31 @@ public class FieldAnalysis implements Uses {
 		return this.tracker.done();
 	}
 
+	@Override
+	public final boolean isUsedBy(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+		return getUseBy(useCase, selector).isUsed();
+	}
+
 	public final boolean accessedBy(UseCaseInfo useCase) {
-		return this.memberUses.isUsedBy(useCase);
+		return this.memberUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
 	}
 
 	public final boolean substanceAccessedBy(UseCaseInfo useCase) {
-		return this.substanceUses.isUsedBy(useCase);
+		return this.substanceUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
 	}
 
 	public final boolean nestedAccessedBy(UseCaseInfo useCase) {
-		return this.nestedUses.isUsedBy(useCase);
+		return this.nestedUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
 	}
 
-	public final UserInfo rtDerivation() {
-
-		final MemberUses uses = rtDerivationUses();
-
-		if (uses == null) {
-			return dummyUser();
-		}
-
-		return uses;
+	public final User<SimpleUsage> rtDerivation() {
+		return rtDerivationUses().toUser();
 	}
 
-	public final UserInfo derivation() {
-
-		final MemberUses uses = derivationUses();
-
-		if (uses == null) {
-			return dummyUser();
-		}
-
-		return uses;
+	public final User<SimpleUsage> derivation() {
+		return derivationUses().toUser();
 	}
 
 	public String reasonNotFound(Generator generator) {
@@ -137,15 +139,15 @@ public class FieldAnalysis implements Uses {
 		return "MemberAnalysis[" + this.member + ']';
 	}
 
-	final void useBy(Uses user) {
+	final void useBy(Uses<?> user) {
 		memberUses().useBy(user);
 	}
 
-	final void useSubstanceBy(Uses user) {
+	final void useSubstanceBy(Uses<?> user) {
 		substanceUses().useBy(user);
 	}
 
-	final void useNestedBy(Uses user) {
+	final void useNestedBy(Uses<?> user) {
 		nestedUses().useBy(user);
 	}
 

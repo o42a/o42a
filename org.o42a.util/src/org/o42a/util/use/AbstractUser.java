@@ -20,11 +20,15 @@
 package org.o42a.util.use;
 
 
-public abstract class AbstractUser extends User {
+public abstract class AbstractUser<U extends Usage<U>> extends User<U> {
+
+	public AbstractUser(AllUsages<U> allUsages) {
+		super(allUsages);
+	}
 
 	@Override
-	void use(Usable usable) {
-		usable.useBy(this);
+	<UU extends Usage<UU>> void use(Usable<UU> usable, UU usage) {
+		usable.useBy(this, usage);
 	}
 
 }

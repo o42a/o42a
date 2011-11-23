@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
@@ -49,7 +50,7 @@ public abstract class Fld {
 		this.bodyIR = bodyIR;
 
 		assert getField().toMember().getAnalysis().getDeclarationAnalysis()
-		.isUsedBy(getGenerator()) :
+		.isUsedBy(getGenerator(), ALL_SIMPLE_USAGES) :
 			"Attempt to generate never accessed field " + getField();
 
 		this.omitted = mayOmit();
@@ -132,7 +133,9 @@ public abstract class Fld {
 		final FieldAnalysis declarationAnalysis =
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
-		return !declarationAnalysis.derivation().isUsedBy(getGenerator());
+		return !declarationAnalysis.derivation().isUsedBy(
+				getGenerator(),
+				ALL_SIMPLE_USAGES);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
