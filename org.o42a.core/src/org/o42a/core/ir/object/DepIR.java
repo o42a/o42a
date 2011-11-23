@@ -83,7 +83,7 @@ public class DepIR {
 		case ENCLOSING_OWNER_DEP:
 			return getGenerator().id("O");
 		case REF_DEP:
-			return getGenerator().id("D").anonymous(getDep().getName());
+			return getGenerator().id('D' + getDep().getName());
 		}
 
 		throw new IllegalStateException(
