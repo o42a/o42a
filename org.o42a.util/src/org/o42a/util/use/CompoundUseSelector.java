@@ -20,33 +20,29 @@
 package org.o42a.util.use;
 
 
-public final class SimpleUsage extends Usage<SimpleUsage> {
+final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
 
-	public static final AllUsages<SimpleUsage> ALL_SIMPLE_USAGES =
-			new AllUsages<SimpleUsage>(SimpleUsage.class);
+	private final UseSelector<U> first;
+	private final UseSelector<U> second;
 
-	public static final SimpleUsage SIMPLE_USAGE = new SimpleUsage();
-
-	public static final Uses<SimpleUsage> alwaysUsed() {
-		return ALL_SIMPLE_USAGES.alwaysUsed();
+	CompoundUseSelector(UseSelector<U> first, UseSelector<U> second) {
+		assert second != null :
+			"Second use selector not specified";
+		this.first = first;
+		this.second = second;
 	}
 
-	public static final Uses<SimpleUsage> neverUsed() {
-		return ALL_SIMPLE_USAGES.neverUsed();
+	@Override
+	public boolean acceptUsage(U usage) {
+		return this.first.acceptUsage(usage) && this.second.acceptUsage(usage);
 	}
 
-	public static final Usable<SimpleUsage> simpleUsable(Object used) {
-		return ALL_SIMPLE_USAGES.usable(used);
-	}
-
-	public static final Usable<SimpleUsage> simpleUsable(
-			String name,
-			Object used) {
-		return ALL_SIMPLE_USAGES.usable(name, used);
-	}
-
-	private SimpleUsage() {
-		super(ALL_SIMPLE_USAGES, "Usage");
+	@Override
+	public String toString() {
+		if (this.second == null) {
+			return super.toString();
+		}
+		return "(" + this.first + " & " + this.second + ')';
 	}
 
 }

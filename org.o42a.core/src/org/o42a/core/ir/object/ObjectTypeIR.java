@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import java.util.HashMap;
 
@@ -238,9 +238,9 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
-		if (getObjectIR().getObject().type().rtDerivation().isUsedBy(
+		if (getObjectIR().getObject().type().derivation().isUsedBy(
 				getGenerator(),
-				ALL_SIMPLE_USAGES)) {
+				RUNTIME_DERIVATION_USAGE)) {
 			instance.ancestorFunc().setConstant(true).setValue(
 					createAncestorFunc(instance));
 		} else {

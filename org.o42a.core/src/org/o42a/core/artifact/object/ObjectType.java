@@ -20,6 +20,9 @@
 package org.o42a.core.artifact.object;
 
 import static java.util.Collections.unmodifiableMap;
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.DerivationUsage.usable;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.SimpleUsage.simpleUsable;
@@ -43,8 +46,7 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 	private Obj lastDefinition;
 	private Usable<SimpleUsage> uses;
 	private Usable<SimpleUsage> rtUses;
-	private Usable<SimpleUsage> derivationUses;
-	private Usable<SimpleUsage> rtDerivationUses;
+	private Usable<DerivationUsage> derivationUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -147,12 +149,12 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		return this;
 	}
 
-	public final User<SimpleUsage> rtDerivation() {
-		return rtDerivationUses().toUser();
+	public final User<DerivationUsage> derivation() {
+		return derivationUses().toUser();
 	}
 
-	public final User<SimpleUsage> derivation() {
-		return derivationUses().toUser();
+	public final User<DerivationUsage> rtDerivation() {
+		return derivationUses().usageUser(RUNTIME_DERIVATION_USAGE);
 	}
 
 	public final boolean derivedFrom(ObjectType other) {
@@ -169,7 +171,7 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
-		rtDerivationUses().useBy(type.rtDerivationUses(), SIMPLE_USAGE);
+		derivationUses().useBy(type.rtDerivation(), RUNTIME_DERIVATION_USAGE);
 	}
 
 	public void resolveAll() {
@@ -187,10 +189,13 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 	}
 
 	protected void useAsAncestor(Obj derived) {
-		derivationUses().useBy(derived.content(), SIMPLE_USAGE);
-		rtDerivationUses().useBy(
-				derived.type().rtDerivationUses(),
-				SIMPLE_USAGE);
+		derivationUses().useBy(
+				derived.content(),
+				getObject().isClone()
+				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
+		derivationUses().useBy(
+				derived.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
 		}
@@ -201,10 +206,13 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		final Obj sampleObject =
 				sample.getAscendants().getObject();
 
-		derivationUses().useBy(sampleObject.content(), SIMPLE_USAGE);
-		rtDerivationUses().useBy(
-				sampleObject.type().rtDerivationUses(),
-				SIMPLE_USAGE);
+		derivationUses().useBy(
+				sampleObject.content(),
+				getObject().isClone()
+				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
+		derivationUses().useBy(
+				sampleObject.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
 		if (!sampleObject.isClone()) {
 			trackAscendantDefsUsage(sampleObject);
 			trackAncestorDefsUpdates(sampleObject);
@@ -277,19 +285,18 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		return this.rtUses;
 	}
 
-	private Usable<SimpleUsage> rtDerivationUses() {
-		if (this.rtDerivationUses != null) {
-			return this.rtDerivationUses;
+	private final Usable<DerivationUsage> derivationUses() {
+		if (this.derivationUses != null) {
+			return this.derivationUses;
 		}
 
 		final Obj object = getObject();
 		final Obj cloneOf = object.getCloneOf();
 
 		if (cloneOf != null) {
-			this.rtDerivationUses =
-					cloneOf.type().rtDerivationUses();
+			this.derivationUses = cloneOf.type().derivationUses();
 		} else {
-			this.rtDerivationUses = simpleUsable("RtDerivationOf", getObject());
+			this.derivationUses = usable("DerivationOf", getObject());
 		}
 
 		final Member member = object.toMember();
@@ -299,9 +306,9 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 			final MemberField field = member.toField();
 
 			if (field != null) {
-				this.rtDerivationUses.useBy(
+				this.derivationUses.useBy(
 						field.getAnalysis().rtDerivation(),
-						SIMPLE_USAGE);
+						RUNTIME_DERIVATION_USAGE);
 			}
 		} else {
 
@@ -319,37 +326,21 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 			if (enclosingObject != null) {
 				// Stand-alone object is constructed at run time,
 				// if enclosing object is ever derived.
-				this.rtDerivationUses.useBy(
+				this.derivationUses.useBy(
 						enclosingObject.type().derivation(),
-						SIMPLE_USAGE);
+						RUNTIME_DERIVATION_USAGE);
 			} else {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
 			if (getObject().getConstructionMode().isRuntime()) {
-				this.rtDerivationUses.useBy(
+				this.derivationUses.useBy(
 						getObject().content(),
-						SIMPLE_USAGE);
+						RUNTIME_DERIVATION_USAGE);
 			}
 		}
 
-		derivationUses().useBy(this.rtDerivationUses, SIMPLE_USAGE);
-
-		return this.rtDerivationUses;
-	}
-
-	private final Usable<SimpleUsage> derivationUses() {
-		if (this.derivationUses != null) {
-			return this.derivationUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.derivationUses = cloneOf.type().rtDerivationUses();
-		}
-
-		return this.derivationUses = simpleUsable("DerivationOf", getObject());
+		return this.derivationUses;
 	}
 
 	private HashMap<Scope, Derivation> buildAllAscendants() {

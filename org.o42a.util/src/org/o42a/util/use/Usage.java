@@ -20,7 +20,7 @@
 package org.o42a.util.use;
 
 
-public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
+public abstract class Usage<U extends Usage<U>> extends UseSelector<U> {
 
 	private final AllUsages<U> all;
 	private final String name;
@@ -48,22 +48,22 @@ public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
 		return this.ordinal;
 	}
 
-	public final Usable<U> usable(Object used) {
-		return new SimpleUsable<U>(all(), null, used);
-	}
-
-	public final Usable<U> usable(String name, Object used) {
-		return new SimpleUsable<U>(all(), name, used);
-	}
-
 	@SuppressWarnings("unchecked")
 	public final U self() {
 		return (U) this;
 	}
 
 	@Override
-	public boolean acceptUsage(U usage) {
+	public final boolean acceptUsage(U usage) {
 		return usage == self();
+	}
+
+	@Override
+	public final UseSelector<U> and(UseSelector<U> other) {
+		if (other == all()) {
+			return this;
+		}
+		return super.and(other);
 	}
 
 	@Override

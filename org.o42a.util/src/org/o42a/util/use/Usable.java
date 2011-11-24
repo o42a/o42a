@@ -109,6 +109,16 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		return getUseBy(useCase, selector).isUsed();
 	}
 
+	public final User<U> selectiveUser(UseSelector<U> selector) {
+		return new SelectiveUser<U>(this, selector);
+	}
+
+	public final User<U> usageUser(U usage) {
+		assert usage != null :
+			"Usage not specified";
+		return used(usage).user(this, usage);
+	}
+
 	@Override
 	public String toString() {
 		if (this.usedBy == null) {
@@ -118,29 +128,45 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	final void useBy(User<?> user, U usage) {
+		used(usage).addUseBy(user);
+	}
+
+	private UsedBy<U> used(U usage) {
 
 		final int ordinal = usage.ordinal();
 		final UsedBy<U> existing = this.usedBy[ordinal];
 
 		if (existing != null) {
-			existing.addUseBy(user);
-			return;
+			return existing;
 		}
 
 		final UsedBy<U> usedBy = new UsedBy<U>();
 
-		usedBy.addUseBy(user);
-
 		this.usedBy[ordinal] = usedBy;
+
+		return usedBy;
 	}
 
 	private static final class UsedBy<U extends Usage<U>> extends UseTracker {
 
 		private final HashMap<User<?>, Object> usedBy =
 				new HashMap<User<?>, Object>();
+		private SelectiveUser<U> user;
 
 		public final Set<User<?>> getUsedBy() {
 			return this.usedBy.keySet();
+		}
+
+		public UseFlag getUseBy(UseCaseInfo useCase) {
+			if (!start(useCase.toUseCase())) {
+				return getUseFlag();
+			}
+			for (User<?> user : getUsedBy()) {
+				if (useBy(user)) {
+					return getUseFlag();
+				}
+			}
+			return done();
 		}
 
 		@Override
@@ -155,16 +181,11 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			this.usedBy.put(user, Usable.DUMMY);
 		}
 
-		UseFlag getUseBy(UseCaseInfo useCase) {
-			if (!start(useCase.toUseCase())) {
-				return getUseFlag();
+		final User<U> user(Usable<U> usable, U usage) {
+			if (this.user != null) {
+				return this.user;
 			}
-			for (User<?> user : getUsedBy()) {
-				if (useBy(user)) {
-					return getUseFlag();
-				}
-			}
-			return done();
+			return this.user = new SelectiveUser<U>(usable, usage);
 		}
 
 	}

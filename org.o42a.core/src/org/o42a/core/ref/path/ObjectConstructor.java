@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import java.util.IdentityHashMap;
 
@@ -259,9 +259,9 @@ public abstract class ObjectConstructor extends Placed {
 
 			final Obj sample = getConstructed();
 
-			if (!sample.type().rtDerivation().isUsedBy(
+			if (!sample.type().derivation().isUsedBy(
 					dirs.getGenerator(),
-					ALL_SIMPLE_USAGES)) {
+					RUNTIME_DERIVATION_USAGE)) {
 
 				final ObjOp target = sample.ir(dirs.getGenerator()).op(
 						getBuilder(),
