@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
@@ -177,9 +178,9 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	protected Condition determineFinal() {
-		if (getObject().type().rtDerivation().isUsedBy(
+		if (getObject().type().derivation().isUsedBy(
 				getGenerator(),
-				ALL_SIMPLE_USAGES)) {
+				RUNTIME_DERIVATION_USAGE)) {
 			return Condition.RUNTIME;
 		}
 		if (part().accessed().isUsedBy(getGenerator(), ALL_SIMPLE_USAGES)) {
@@ -212,9 +213,9 @@ public abstract class ObjectValueIRCondFunc
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().rtDerivation().isUsedBy(
+		if (getObject().type().derivation().isUsedBy(
 				getGenerator(),
-				ALL_SIMPLE_USAGES)) {
+				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
 		return !part().accessed().isUsedBy(getGenerator(), ALL_SIMPLE_USAGES);

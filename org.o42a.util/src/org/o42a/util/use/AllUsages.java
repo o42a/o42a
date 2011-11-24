@@ -24,7 +24,7 @@ import java.lang.reflect.Array;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AllUsages<U extends Usage<U>> implements UseSelector<U> {
+public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 
 	private final Class<? extends U> usageClass;
 	private final String name;
@@ -69,9 +69,22 @@ public final class AllUsages<U extends Usage<U>> implements UseSelector<U> {
 		return this.neverUsed = new NeverUsed<U>(this);
 	}
 
+	public final Usable<U> usable(Object used) {
+		return new SimpleUsable<U>(this, null, used);
+	}
+
+	public final Usable<U> usable(String name, Object used) {
+		return new SimpleUsable<U>(this, name, used);
+	}
+
 	@Override
-	public boolean acceptUsage(U usage) {
+	public final boolean acceptUsage(U usage) {
 		return true;
+	}
+
+	@Override
+	public final UseSelector<U> and(UseSelector<U> other) {
+		return other;
 	}
 
 	@Override

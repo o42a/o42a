@@ -20,8 +20,15 @@
 package org.o42a.util.use;
 
 
-public interface UseSelector<U extends Usage<U>> {
+public abstract class UseSelector<U extends Usage<U>> {
 
-	boolean acceptUsage(U usage);
+	public abstract boolean acceptUsage(U usage);
+
+	public UseSelector<U> and(UseSelector<U> other) {
+		if (equals(other)) {
+			return this;
+		}
+		return new CompoundUseSelector<U>(this, other);
+	}
 
 }

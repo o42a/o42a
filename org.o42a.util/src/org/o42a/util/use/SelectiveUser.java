@@ -20,33 +20,30 @@
 package org.o42a.util.use;
 
 
-public final class SimpleUsage extends Usage<SimpleUsage> {
+public class SelectiveUser<U extends Usage<U>> extends AbstractUser<U> {
 
-	public static final AllUsages<SimpleUsage> ALL_SIMPLE_USAGES =
-			new AllUsages<SimpleUsage>(SimpleUsage.class);
+	private final Uses<U> uses;
+	private final UseSelector<U> selector;
 
-	public static final SimpleUsage SIMPLE_USAGE = new SimpleUsage();
-
-	public static final Uses<SimpleUsage> alwaysUsed() {
-		return ALL_SIMPLE_USAGES.alwaysUsed();
+	public SelectiveUser(Uses<U> uses, UseSelector<U> selector) {
+		super(uses.allUsages());
+		assert selector != null :
+			"Use selector not specified";
+		this.uses = uses;
+		this.selector = selector;
 	}
 
-	public static final Uses<SimpleUsage> neverUsed() {
-		return ALL_SIMPLE_USAGES.neverUsed();
+	@Override
+	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
+		return this.uses.getUseBy(useCase, this.selector.and(selector));
 	}
 
-	public static final Usable<SimpleUsage> simpleUsable(Object used) {
-		return ALL_SIMPLE_USAGES.usable(used);
-	}
-
-	public static final Usable<SimpleUsage> simpleUsable(
-			String name,
-			Object used) {
-		return ALL_SIMPLE_USAGES.usable(name, used);
-	}
-
-	private SimpleUsage() {
-		super(ALL_SIMPLE_USAGES, "Usage");
+	@Override
+	public String toString() {
+		if (this.uses == null) {
+			return super.toString();
+		}
+		return this.uses.toString();
 	}
 
 }

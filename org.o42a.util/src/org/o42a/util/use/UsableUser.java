@@ -26,7 +26,6 @@ public final class UsableUser<U extends Usage<U>> extends AbstractUser<U> {
 
 	public UsableUser(Uses<U> uses) {
 		super(uses.allUsages());
-		assert this != uses;
 		this.uses = uses;
 	}
 
