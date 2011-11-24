@@ -19,10 +19,13 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
@@ -35,8 +38,7 @@ public class FieldAnalysis implements Uses<SimpleUsage> {
 	private MemberUses memberUses;
 	private MemberUses substanceUses;
 	private MemberUses nestedUses;
-	private MemberUses derivationUses;
-	private MemberUses rtDerivationUses;
+	private Usable<DerivationUsage> derivationUses;
 
 	FieldAnalysis(MemberField member) {
 		this.member = member;
@@ -104,11 +106,7 @@ public class FieldAnalysis implements Uses<SimpleUsage> {
 		return this.nestedUses.isUsed(useCase, ALL_SIMPLE_USAGES);
 	}
 
-	public final User<SimpleUsage> rtDerivation() {
-		return rtDerivationUses().toUser();
-	}
-
-	public final User<SimpleUsage> derivation() {
+	public final User<DerivationUsage> derivation() {
 		return derivationUses().toUser();
 	}
 
@@ -184,57 +182,51 @@ public class FieldAnalysis implements Uses<SimpleUsage> {
 		return this.nestedUses;
 	}
 
-	private MemberUses rtDerivationUses() {
-		if (this.rtDerivationUses != null) {
-			return this.rtDerivationUses;
-		}
-
-		final MemberField member = getMember();
-		final Obj owner = member.getMemberOwner().getOwner();
-
-		// Run time construction status derived from owner.
-		this.rtDerivationUses = new MemberUses("RtDerivationOf", getMember());
-		this.rtDerivationUses.useBy(
-				owner.type().rtDerivation());
-
-		final Obj target =
-				member.substance(dummyUser()).toArtifact().materialize();
-
-		if (target.getConstructionMode().isRuntime()) {
-			this.rtDerivationUses.useBy(target.content());
-		}
-
-		final MemberField lastDefinition = member.getLastDefinition();
-
-		if (lastDefinition != member) {
-			lastDefinition.getAnalysis().rtDerivationUses().useBy(
-					this.rtDerivationUses);
-		}
-
-		derivationUses().useBy(this.rtDerivationUses);
-
-		return this.rtDerivationUses;
-	}
-
-	private MemberUses derivationUses() {
+	private Usable<DerivationUsage> derivationUses() {
 		if (this.derivationUses != null) {
 			return this.derivationUses;
 		}
 
 		final MemberField member = getMember();
 
-		this.derivationUses = new MemberUses("DerivationOf", getMember());
+		this.derivationUses =
+				DerivationUsage.usable("DerivationOf", getMember());
 
 		final Obj owner = member.getMemberOwner().getOwner();
 
 		// If owner derived then member derived too.
-		this.derivationUses.useBy(owner.type().derivation());
+		this.derivationUses.useBy(
+				owner.type().derivation(),
+				STATIC_DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();
 
 		if (firstDeclaration != member) {
 			firstDeclaration.getAnalysis().derivationUses().useBy(
-					this.derivationUses);
+					this.derivationUses,
+					STATIC_DERIVATION_USAGE);
+		}
+
+		// Run time construction status derived from owner.
+		this.derivationUses.useBy(
+				owner.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
+
+		final Obj target =
+				member.substance(dummyUser()).toArtifact().materialize();
+
+		if (target.getConstructionMode().isRuntime()) {
+			this.derivationUses.useBy(
+					target.content(),
+					RUNTIME_DERIVATION_USAGE);
+		}
+
+		final MemberField lastDefinition = member.getLastDefinition();
+
+		if (lastDefinition != member) {
+			lastDefinition.getAnalysis().derivationUses().useBy(
+					this.derivationUses.usageUser(RUNTIME_DERIVATION_USAGE),
+					RUNTIME_DERIVATION_USAGE);
 		}
 
 		return this.derivationUses;

@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
@@ -108,9 +108,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 		final FieldAnalysis analysis = getField().toMember().getAnalysis();
 
-		if (!analysis.rtDerivation().isUsed(
+		if (!analysis.derivation().isUsed(
 				getGenerator(),
-				ALL_SIMPLE_USAGES)) {
+				RUNTIME_DERIVATION_USAGE)) {
 			this.constructor = getType().constructorStub();
 			return;
 		}

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.core.artifact.object.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -135,7 +136,7 @@ public abstract class Fld {
 
 		return !declarationAnalysis.derivation().isUsed(
 				getGenerator(),
-				ALL_SIMPLE_USAGES);
+				ALL_DERIVATION_USAGES);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
