@@ -24,6 +24,7 @@ public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
 
 	private final AllUsages<U> all;
 	private final String name;
+	private final int ordinal;
 
 	public Usage(AllUsages<U> all, String name) {
 		assert all != null :
@@ -32,7 +33,7 @@ public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
 			"Usage name not specified";
 		this.all = all;
 		this.name = name;
-		all.addUsage(self());
+		this.ordinal = all.addUsage(self());
 	}
 
 	public final AllUsages<U> all() {
@@ -41,6 +42,10 @@ public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
 
 	public final String name() {
 		return this.name;
+	}
+
+	public final int ordinal() {
+		return this.ordinal;
 	}
 
 	public final Usable<U> usable(Object used) {
