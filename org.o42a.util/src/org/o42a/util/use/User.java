@@ -20,11 +20,11 @@
 package org.o42a.util.use;
 
 
-public abstract class User implements UserInfo {
+public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 
 	private static final DummyUser DUMMY_USER = new DummyUser();
 
-	public static User dummyUser() {
+	public static User<?> dummyUser() {
 		return DUMMY_USER;
 	}
 
@@ -36,7 +36,17 @@ public abstract class User implements UserInfo {
 		return new UseCase(name, true);
 	}
 
-	User() {
+	private final AllUsages<U> allUsages;
+
+	User(AllUsages<U> allUsages) {
+		assert allUsages != null :
+			"All usages not specified";
+		this.allUsages = allUsages;
+	}
+
+	@Override
+	public final AllUsages<U> allUsages() {
+		return this.allUsages;
 	}
 
 	public boolean isDummy() {
@@ -44,15 +54,17 @@ public abstract class User implements UserInfo {
 	}
 
 	@Override
-	public final User toUser() {
+	public final User<U> toUser() {
 		return this;
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<U> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
-	abstract void use(Usable usable);
+	abstract <UU extends Usage<UU>> void use(Usable<UU> usable, UU usage);
 
 }

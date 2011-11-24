@@ -20,32 +20,33 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed<U extends Usage<U>> implements Uses<U> {
+public final class SimpleUsage extends Usage<SimpleUsage> {
 
-	private final AllUsages<U> allUsages;
+	public static final AllUsages<SimpleUsage> ALL_SIMPLE_USAGES =
+			new AllUsages<SimpleUsage>(SimpleUsage.class);
 
-	AlwaysUsed(AllUsages<U> allUsages) {
-		this.allUsages = allUsages;
+	public static final SimpleUsage SIMPLE_USAGE = new SimpleUsage();
+
+	public static final Uses<SimpleUsage> alwaysUsed() {
+		return ALL_SIMPLE_USAGES.alwaysUsed();
 	}
 
-	@Override
-	public AllUsages<U> allUsages() {
-		return this.allUsages;
+	public static final Uses<SimpleUsage> neverUsed() {
+		return ALL_SIMPLE_USAGES.neverUsed();
 	}
 
-	@Override
-	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
-		return useCase.toUseCase().usedFlag();
+	public static final Usable<SimpleUsage> simpleUsable(Object used) {
+		return ALL_SIMPLE_USAGES.usable(used);
 	}
 
-	@Override
-	public boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector) {
-		return true;
+	public static final Usable<SimpleUsage> simpleUsable(
+			String name,
+			Object used) {
+		return ALL_SIMPLE_USAGES.usable(name, used);
 	}
 
-	@Override
-	public String toString() {
-		return "AlwaysUsed";
+	private SimpleUsage() {
+		super(ALL_SIMPLE_USAGES, "Usage");
 	}
 
 }

@@ -19,11 +19,13 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
+
 import org.o42a.core.member.field.MemberField;
 import org.o42a.util.use.*;
 
 
-public class FieldUses implements Uses {
+public class FieldUses implements Uses<SimpleUsage> {
 
 	private final UseTracker tracker = new UseTracker();
 	private final MemberContainer container;
@@ -37,8 +39,21 @@ public class FieldUses implements Uses {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		if (!this.tracker.start(useCase.toUseCase())) {
+	public final AllUsages<SimpleUsage> allUsages() {
+		return ALL_SIMPLE_USAGES;
+	}
+
+	@Override
+	public UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+
+		final UseCase uc = useCase.toUseCase();
+
+		if (uc.isSteady()) {
+			return uc.usedFlag();
+		}
+		if (!this.tracker.start(uc)) {
 			return this.tracker.getUseFlag();
 		}
 
@@ -58,8 +73,10 @@ public class FieldUses implements Uses {
 	}
 
 	@Override
-	public boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	@Override

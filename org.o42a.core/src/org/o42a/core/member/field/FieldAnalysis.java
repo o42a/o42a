@@ -19,23 +19,22 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
+import static org.o42a.core.member.field.FieldUsage.*;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.impl.MemberUses;
 import org.o42a.util.use.*;
 
 
-public class FieldAnalysis implements Uses {
+public class FieldAnalysis implements Uses<FieldUsage> {
 
-	private final UseTracker tracker = new UseTracker();
 	private final MemberField member;
-	private MemberUses memberUses;
-	private MemberUses substanceUses;
-	private MemberUses nestedUses;
-	private MemberUses derivationUses;
-	private MemberUses rtDerivationUses;
+	private MemberFieldUses uses;
+	private Usable<DerivationUsage> derivationUses;
 
 	FieldAnalysis(MemberField member) {
 		this.member = member;
@@ -50,64 +49,26 @@ public class FieldAnalysis implements Uses {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final AllUsages<FieldUsage> allUsages() {
+		return ALL_FIELD_USAGES;
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase) {
-		if (!this.tracker.start(useCase.toUseCase())) {
-			return this.tracker.getUseFlag();
-		}
-		if (this.memberUses == null) {
-			return this.tracker.done();
-		}
-		if (!this.tracker.require(this.memberUses)) {
-			return this.tracker.getUseFlag();
-		}
-		if (this.substanceUses != null
-				&& this.tracker.useBy(this.substanceUses)) {
-			return this.tracker.getUseFlag();
-		}
-		if (this.nestedUses != null
-				&& this.tracker.useBy(this.nestedUses)) {
-			return this.tracker.getUseFlag();
-		}
-		return this.tracker.done();
+	public UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<FieldUsage> selector) {
+		return uses().selectUse(useCase, selector);
 	}
 
-	public final boolean accessedBy(UseCaseInfo useCase) {
-		return this.memberUses.isUsedBy(useCase);
+	@Override
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<FieldUsage> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
-	public final boolean substanceAccessedBy(UseCaseInfo useCase) {
-		return this.substanceUses.isUsedBy(useCase);
-	}
-
-	public final boolean nestedAccessedBy(UseCaseInfo useCase) {
-		return this.nestedUses.isUsedBy(useCase);
-	}
-
-	public final UserInfo rtDerivation() {
-
-		final MemberUses uses = rtDerivationUses();
-
-		if (uses == null) {
-			return dummyUser();
-		}
-
-		return uses;
-	}
-
-	public final UserInfo derivation() {
-
-		final MemberUses uses = derivationUses();
-
-		if (uses == null) {
-			return dummyUser();
-		}
-
-		return uses;
+	public final User<DerivationUsage> derivation() {
+		return derivationUses().toUser();
 	}
 
 	public String reasonNotFound(Generator generator) {
@@ -115,11 +76,12 @@ public class FieldAnalysis implements Uses {
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		if (!accessedBy(generator)) {
+		if (!uses().isUsed(generator, FIELD_ACCESS)) {
 			out.append("never accessed");
 			comma = true;
 		}
-		if (!substanceAccessedBy(generator) && !nestedAccessedBy(generator)) {
+		if (!uses().isUsed(generator, SUBSTANCE_USAGE)
+				&& !uses().isUsed(generator, NESTED_USAGE)) {
 			if (comma) {
 				out.append(", ");
 			}
@@ -137,102 +99,76 @@ public class FieldAnalysis implements Uses {
 		return "MemberAnalysis[" + this.member + ']';
 	}
 
-	final void useBy(Uses user) {
-		memberUses().useBy(user);
-	}
-
-	final void useSubstanceBy(Uses user) {
-		substanceUses().useBy(user);
-	}
-
-	final void useNestedBy(Uses user) {
-		nestedUses().useBy(user);
-	}
-
-	private MemberUses memberUses() {
-		if (this.memberUses != null) {
-			return this.memberUses;
+	final MemberFieldUses uses() {
+		if (this.uses != null) {
+			return this.uses;
 		}
-		this.memberUses = new MemberUses("MemberUses", getMember());
+
+		this.uses = new MemberFieldUses(getMember());
+
 		if (getMember().isOverride()) {
-			getDeclarationAnalysis().useBy(this.memberUses);
+
+			final MemberFieldUses declarationUses = getDeclarationAnalysis().uses();
+
+			declarationUses.useBy(
+					this.uses.usageUser(FIELD_ACCESS),
+					FIELD_ACCESS);
+			declarationUses.useBy(
+					this.uses.usageUser(SUBSTANCE_USAGE),
+					SUBSTANCE_USAGE);
+			declarationUses.useBy(
+					this.uses.usageUser(NESTED_USAGE),
+					NESTED_USAGE);
 		}
-		return this.memberUses;
+
+		return this.uses;
 	}
 
-	private MemberUses substanceUses() {
-		if (this.substanceUses != null) {
-			return this.substanceUses;
-		}
-		this.substanceUses = new MemberUses("SubstanceUses", getMember());
-		if (getMember().isOverride()) {
-			getDeclarationAnalysis().useSubstanceBy(this.substanceUses);
-		}
-		return this.substanceUses;
-	}
-
-	private MemberUses nestedUses() {
-		if (this.nestedUses != null) {
-			return this.nestedUses;
-		}
-		this.nestedUses = new MemberUses("NestedUses", getMember());
-		if (getMember().isOverride()) {
-			getDeclarationAnalysis().useNestedBy(this.nestedUses);
-		}
-		return this.nestedUses;
-	}
-
-	private MemberUses rtDerivationUses() {
-		if (this.rtDerivationUses != null) {
-			return this.rtDerivationUses;
-		}
-
-		final MemberField member = getMember();
-		final Obj owner = member.getMemberOwner().getOwner();
-
-		// Run time construction status derived from owner.
-		this.rtDerivationUses = new MemberUses("RtDerivationOf", getMember());
-		this.rtDerivationUses.useBy(
-				owner.type().rtDerivation());
-
-		final Obj target =
-				member.substance(dummyUser()).toArtifact().materialize();
-
-		if (target.getConstructionMode().isRuntime()) {
-			this.rtDerivationUses.useBy(target.content());
-		}
-
-		final MemberField lastDefinition = member.getLastDefinition();
-
-		if (lastDefinition != member) {
-			lastDefinition.getAnalysis().rtDerivationUses().useBy(
-					this.rtDerivationUses);
-		}
-
-		derivationUses().useBy(this.rtDerivationUses);
-
-		return this.rtDerivationUses;
-	}
-
-	private MemberUses derivationUses() {
+	private Usable<DerivationUsage> derivationUses() {
 		if (this.derivationUses != null) {
 			return this.derivationUses;
 		}
 
 		final MemberField member = getMember();
 
-		this.derivationUses = new MemberUses("DerivationOf", getMember());
+		this.derivationUses =
+				DerivationUsage.usable("DerivationOf", getMember());
 
 		final Obj owner = member.getMemberOwner().getOwner();
 
 		// If owner derived then member derived too.
-		this.derivationUses.useBy(owner.type().derivation());
+		this.derivationUses.useBy(
+				owner.type().derivation(),
+				STATIC_DERIVATION_USAGE);
 
 		final MemberField firstDeclaration = member.getFirstDeclaration();
 
 		if (firstDeclaration != member) {
 			firstDeclaration.getAnalysis().derivationUses().useBy(
-					this.derivationUses);
+					this.derivationUses,
+					STATIC_DERIVATION_USAGE);
+		}
+
+		// Run time construction status derived from owner.
+		this.derivationUses.useBy(
+				owner.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
+
+		final Obj target =
+				member.substance(dummyUser()).toArtifact().materialize();
+
+		if (target.getConstructionMode().isRuntime()) {
+			this.derivationUses.useBy(
+					target.content(),
+					RUNTIME_DERIVATION_USAGE);
+		}
+
+		final MemberField lastDefinition = member.getLastDefinition();
+
+		if (lastDefinition != member) {
+			lastDefinition.getAnalysis().derivationUses().useBy(
+					this.derivationUses.usageUser(RUNTIME_DERIVATION_USAGE),
+					RUNTIME_DERIVATION_USAGE);
 		}
 
 		return this.derivationUses;

@@ -19,15 +19,16 @@
 */
 package org.o42a.core.artifact;
 
-import static org.o42a.util.use.Usable.simpleUsable;
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
 import org.o42a.util.use.*;
 
 
-public class ArtifactContent implements UserInfo {
+public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 
 	private final Artifact<?> artifact;
-	private Usable usable;
+	private Usable<SimpleUsage> usable;
 	private final boolean clonesContent;
 
 	ArtifactContent(Artifact<?> artifact, boolean clonesContent) {
@@ -40,28 +41,37 @@ public class ArtifactContent implements UserInfo {
 	}
 
 	@Override
-	public final User toUser() {
+	public final User<SimpleUsage> toUser() {
 		return usable().toUser();
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final AllUsages<SimpleUsage> allUsages() {
+		return toUser().allUsages();
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
+	public final UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
 		if (this.usable == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.usable.getUseBy(useCase);
+		return this.usable.selectUse(useCase, selector);
+	}
+
+	@Override
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final void useBy(UserInfo user) {
 		if (user.toUser().isDummy()) {
 			return;
 		}
-		usable().useBy(user);
+		usable().useBy(user, SIMPLE_USAGE);
 	}
 
 	@Override
@@ -78,7 +88,7 @@ public class ArtifactContent implements UserInfo {
 		return out.toString();
 	}
 
-	private final Usable usable() {
+	private final Usable<SimpleUsage> usable() {
 		if (this.usable != null) {
 			return this.usable;
 		}

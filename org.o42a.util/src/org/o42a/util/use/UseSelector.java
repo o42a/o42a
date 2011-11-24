@@ -20,32 +20,15 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed<U extends Usage<U>> implements Uses<U> {
+public abstract class UseSelector<U extends Usage<U>> {
 
-	private final AllUsages<U> allUsages;
+	public abstract boolean acceptUsage(U usage);
 
-	AlwaysUsed(AllUsages<U> allUsages) {
-		this.allUsages = allUsages;
-	}
-
-	@Override
-	public AllUsages<U> allUsages() {
-		return this.allUsages;
-	}
-
-	@Override
-	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
-		return useCase.toUseCase().usedFlag();
-	}
-
-	@Override
-	public boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector) {
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "AlwaysUsed";
+	public UseSelector<U> and(UseSelector<U> other) {
+		if (equals(other)) {
+			return this;
+		}
+		return new CompoundUseSelector<U>(this, other);
 	}
 
 }

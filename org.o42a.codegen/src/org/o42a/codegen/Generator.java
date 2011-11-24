@@ -30,7 +30,6 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
 import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.UseFlag;
 import org.o42a.util.use.User;
 
 
@@ -58,18 +57,8 @@ public abstract class Generator implements UseCaseInfo {
 	}
 
 	@Override
-	public final User toUser() {
+	public final User<?> toUser() {
 		return toUseCase();
-	}
-
-	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		return toUser().getUseBy(useCase);
-	}
-
-	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
 	}
 
 	public CodeIdFactory getCodeIdFactory() {
