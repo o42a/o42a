@@ -27,7 +27,7 @@ import java.util.Set;
 
 public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
-	static final Object DUMMY = new Object();
+	private static final Object DUMMY = new Object();
 
 	private final AllUsages<U> allUsages;
 	private final UsedBy<U>[] usedBy;
@@ -91,7 +91,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 				continue;
 			}
 
-			final UseFlag useFlag = usedBy.getUseBy(useCase);
+			final UseFlag useFlag = usedBy.selectUse(useCase);
 
 			if (useFlag.isUsed()) {
 				return useFlag;
@@ -157,7 +157,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			return this.usedBy.keySet();
 		}
 
-		public UseFlag getUseBy(UseCaseInfo useCase) {
+		public UseFlag selectUse(UseCaseInfo useCase) {
 			if (!start(useCase.toUseCase())) {
 				return getUseFlag();
 			}
