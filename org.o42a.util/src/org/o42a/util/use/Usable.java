@@ -22,7 +22,6 @@ package org.o42a.util.use;
 import static java.util.Collections.emptySet;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 
@@ -31,10 +30,12 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	static final Object DUMMY = new Object();
 
 	private final AllUsages<U> allUsages;
-	private HashMap<U, UsedBy<U>> usedBy;
+	private final UsedBy<U>[] usedBy;
 
+	@SuppressWarnings("unchecked")
 	public Usable(AllUsages<U> allUsages) {
 		this.allUsages = allUsages;
+		this.usedBy = new UsedBy[allUsages.size()];
 	}
 
 	@Override
@@ -50,11 +51,8 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	public final Set<User<?>> getUsedBy(U usage) {
-		if (this.usedBy == null) {
-			return emptySet();
-		}
 
-		final UsedBy<U> usedBy = this.usedBy.get(usage);
+		final UsedBy<U> usedBy = this.usedBy[usage.ordinal()];
 
 		if (usedBy == null) {
 			return emptySet();
@@ -76,16 +74,24 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		}
 
 		boolean unknown = false;
+		final AllUsages<U> allUsages = allUsages();
+		final U[] usages = allUsages.usages();
 
-		for (Map.Entry<U, UsedBy<U>> e : this.usedBy.entrySet()) {
+		for (int i = 0, size = allUsages.size(); i < size; ++i) {
 
-			final U usage = e.getKey();
+			final UsedBy<U> usedBy = this.usedBy[i];
+
+			if (usedBy == null) {
+				continue;
+			}
+
+			final U usage = usages[i];
 
 			if (!selector.acceptUsage(usage)) {
 				continue;
 			}
 
-			final UseFlag useFlag = e.getValue().getUseBy(useCase);
+			final UseFlag useFlag = usedBy.getUseBy(useCase);
 
 			if (useFlag.isUsed()) {
 				return useFlag;
@@ -112,23 +118,20 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	final void useBy(User<?> user, U usage) {
-		if (this.usedBy == null) {
-			this.usedBy = new HashMap<U, UsedBy<U>>();
-		} else {
 
-			final UsedBy<U> existing = this.usedBy.get(usage);
+		final int ordinal = usage.ordinal();
+		final UsedBy<U> existing = this.usedBy[ordinal];
 
-			if (existing != null) {
-				existing.addUseBy(user);
-				return;
-			}
+		if (existing != null) {
+			existing.addUseBy(user);
+			return;
 		}
 
 		final UsedBy<U> usedBy = new UsedBy<U>();
 
 		usedBy.addUseBy(user);
 
-		this.usedBy.put(usage, usedBy);
+		this.usedBy[ordinal] = usedBy;
 	}
 
 	private static final class UsedBy<U extends Usage<U>> extends UseTracker {

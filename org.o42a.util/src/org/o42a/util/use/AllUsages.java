@@ -51,6 +51,10 @@ public final class AllUsages<U extends Usage<U>> implements UseSelector<U> {
 		return this.usages;
 	}
 
+	public final int size() {
+		return this.usages.length;
+	}
+
 	public final Uses<U> alwaysUsed() {
 		if (this.alwaysUsed != null) {
 			return this.alwaysUsed;
@@ -78,8 +82,13 @@ public final class AllUsages<U extends Usage<U>> implements UseSelector<U> {
 		return this.name;
 	}
 
-	final void addUsage(U usage) {
+	final int addUsage(U usage) {
+
+		final int ordinal = this.usages.length;
+
 		this.usages = ArrayUtil.append(this.usages, usage);
+
+		return ordinal;
 	}
 
 }
