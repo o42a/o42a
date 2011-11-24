@@ -20,32 +20,30 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed<U extends Usage<U>> implements Uses<U> {
+public class SelectiveUser<U extends Usage<U>> extends AbstractUser<U> {
 
-	private final AllUsages<U> allUsages;
+	private final Uses<U> uses;
+	private final UseSelector<U> selector;
 
-	AlwaysUsed(AllUsages<U> allUsages) {
-		this.allUsages = allUsages;
-	}
-
-	@Override
-	public AllUsages<U> allUsages() {
-		return this.allUsages;
+	public SelectiveUser(Uses<U> uses, UseSelector<U> selector) {
+		super(uses.allUsages());
+		assert selector != null :
+			"Use selector not specified";
+		this.uses = uses;
+		this.selector = selector;
 	}
 
 	@Override
 	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
-		return useCase.toUseCase().usedFlag();
-	}
-
-	@Override
-	public boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector) {
-		return true;
+		return this.uses.selectUse(useCase, this.selector.and(selector));
 	}
 
 	@Override
 	public String toString() {
-		return "AlwaysUsed";
+		if (this.uses == null) {
+			return super.toString();
+		}
+		return this.uses.toString();
 	}
 
 }

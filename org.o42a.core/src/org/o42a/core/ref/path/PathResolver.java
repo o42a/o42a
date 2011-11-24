@@ -20,7 +20,8 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Scope;
-import org.o42a.util.use.*;
+import org.o42a.util.use.User;
+import org.o42a.util.use.UserInfo;
 
 
 public final class PathResolver implements UserInfo {
@@ -44,10 +45,10 @@ public final class PathResolver implements UserInfo {
 	}
 
 	private final Scope pathStart;
-	private final User user;
+	private final User<?> user;
 	private final byte fullResolution;
 
-	private PathResolver(Scope pathStart, User user, byte fullResolution) {
+	private PathResolver(Scope pathStart, User<?> user, byte fullResolution) {
 		this.pathStart = pathStart;
 		this.user = user;
 		this.fullResolution = fullResolution;
@@ -66,17 +67,7 @@ public final class PathResolver implements UserInfo {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
-		return this.user.getUseBy(useCase);
-	}
-
-	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return this.user.isUsedBy(useCase);
-	}
-
-	@Override
-	public final User toUser() {
+	public final User<?> toUser() {
 		return this.user;
 	}
 

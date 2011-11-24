@@ -49,10 +49,11 @@ public class UseTracker {
 		return true;
 	}
 
-	public final boolean require(Uses use) {
+	public final <U extends Usage<U>> boolean require(Uses<U> use) {
 
+		final AllUsages<U> allUsages = use.allUsages();
 		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.getUseBy(useCase);
+		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (used.isUsed()) {
 			useCase.end(this);
@@ -68,10 +69,11 @@ public class UseTracker {
 		return false;
 	}
 
-	public final boolean useBy(Uses use) {
+	public final <U extends Usage<U>> boolean useBy(Uses<U> use) {
 
+		final AllUsages<U> allUsages = use.allUsages();
 		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.getUseBy(useCase);
+		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (!used.isUsed()) {
 			if (useCase.end(this)) {

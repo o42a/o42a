@@ -19,10 +19,14 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
+import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
@@ -201,7 +205,9 @@ public abstract class ObjectValueIRValFunc
 		if (!constant.getKnowledge().isKnown()) {
 			return getValueStruct().runtimeValue();
 		}
-		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsed(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			return constant;
 		}
 
@@ -217,7 +223,9 @@ public abstract class ObjectValueIRValFunc
 
 	@Override
 	protected void create() {
-		if (canStub() && !getObject().value().isUsedBy(getGenerator())) {
+		if (canStub() && !getObject().value().isUsed(
+				getGenerator(),
+				ALL_VALUE_USAGES)) {
 			stub(stubFunc());
 			return;
 		}
@@ -249,10 +257,12 @@ public abstract class ObjectValueIRValFunc
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().rtDerivation().isUsedBy(getGenerator())) {
+		if (getObject().type().derivation().isUsed(
+				getGenerator(),
+				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
-		return !part().accessed().isUsedBy(getGenerator());
+		return !part().isUsed(getGenerator(), VALUE_PART_ACCESS);
 	}
 
 	protected void reuse() {
@@ -279,7 +289,9 @@ public abstract class ObjectValueIRValFunc
 			if (ancestor == null) {
 				return;
 			}
-			if (part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+			if (part().ancestorDefsUpdates().isUsed(
+					getGenerator(),
+					ALL_SIMPLE_USAGES)) {
 				return;
 			}
 
@@ -414,7 +426,9 @@ public abstract class ObjectValueIRValFunc
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
 
-		if (!part().ancestorDefsUpdates().isUsedBy(getGenerator())) {
+		if (!part().ancestorDefsUpdates().isUsed(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();
 

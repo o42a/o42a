@@ -19,10 +19,13 @@
 */
 package org.o42a.util.use;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
-final class DummyUser extends User {
+
+final class DummyUser extends User<SimpleUsage> {
 
 	DummyUser() {
+		super(ALL_SIMPLE_USAGES);
 	}
 
 	@Override
@@ -31,7 +34,9 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
+	public final UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<SimpleUsage> selector) {
 		return useCase.toUseCase().unusedFlag();
 	}
 
@@ -41,7 +46,7 @@ final class DummyUser extends User {
 	}
 
 	@Override
-	void use(Usable usable) {
+	<UU extends Usage<UU>> void use(Usable<UU> usable, UU usage) {
 	}
 
 }

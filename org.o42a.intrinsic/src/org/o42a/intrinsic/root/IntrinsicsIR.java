@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -79,7 +80,9 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 	}
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
-		if (!object.content().isUsedBy(getGenerator())) {
+		if (!object.content().toUser().isUsed(
+				getGenerator(),
+				ALL_SIMPLE_USAGES)) {
 			ptr.setNull();
 			return;
 		}

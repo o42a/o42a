@@ -20,32 +20,29 @@
 package org.o42a.util.use;
 
 
-final class AlwaysUsed<U extends Usage<U>> implements Uses<U> {
+final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
 
-	private final AllUsages<U> allUsages;
+	private final UseSelector<U> first;
+	private final UseSelector<U> second;
 
-	AlwaysUsed(AllUsages<U> allUsages) {
-		this.allUsages = allUsages;
+	CompoundUseSelector(UseSelector<U> first, UseSelector<U> second) {
+		assert second != null :
+			"Second use selector not specified";
+		this.first = first;
+		this.second = second;
 	}
 
 	@Override
-	public AllUsages<U> allUsages() {
-		return this.allUsages;
-	}
-
-	@Override
-	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
-		return useCase.toUseCase().usedFlag();
-	}
-
-	@Override
-	public boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector) {
-		return true;
+	public boolean acceptUsage(U usage) {
+		return this.first.acceptUsage(usage) && this.second.acceptUsage(usage);
 	}
 
 	@Override
 	public String toString() {
-		return "AlwaysUsed";
+		if (this.second == null) {
+			return super.toString();
+		}
+		return "(" + this.first + " & " + this.second + ')';
 	}
 
 }

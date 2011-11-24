@@ -20,14 +20,12 @@
 package org.o42a.util.use;
 
 
-public interface Uses {
+public interface Uses<U extends Usage<U>> {
 
-	Uses ALWAYS_USED = new AlwaysUsed();
+	AllUsages<U> allUsages();
 
-	Uses NEVER_USED = new NeverUsed();
+	UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector);
 
-	UseFlag getUseBy(UseCaseInfo useCase);
-
-	boolean isUsedBy(UseCaseInfo useCase);
+	boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector);
 
 }

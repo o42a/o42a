@@ -20,6 +20,9 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
+import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
+import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashSet;
@@ -202,8 +205,8 @@ public abstract class MemberField extends Member {
 
 		final Artifact<?> artifact = field(dummyUser()).getArtifact();
 
-		getAnalysis().useSubstanceBy(artifact.content());
-		getAnalysis().useNestedBy(artifact.fieldUses());
+		getAnalysis().uses().useBy(artifact.content(), SUBSTANCE_USAGE);
+		getAnalysis().uses().useBy(artifact.fieldUses(), NESTED_USAGE);
 		artifact.resolveAll();
 	}
 
@@ -384,7 +387,7 @@ public abstract class MemberField extends Member {
 		if (user.toUser().isDummy()) {
 			return;
 		}
-		getAnalysis().useBy(user);
+		getAnalysis().uses().useBy(user.toUser(), FIELD_ACCESS);
 	}
 
 }

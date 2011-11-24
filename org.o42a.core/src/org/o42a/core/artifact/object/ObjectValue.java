@@ -19,10 +19,12 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
+import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
+import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
-import static org.o42a.util.use.Usable.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.def.DefKind;
@@ -36,7 +38,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements Uses {
+public final class ObjectValue implements Uses<ValueUsage> {
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -49,10 +51,7 @@ public final class ObjectValue implements Uses {
 	private final ValuePart claim;
 	private final ValuePart proposition;
 
-	private Usable uses;
-	private Usable rtUses;
-	private Usable explicitUses;
-	private Usable rtExplicitUses;
+	private Usable<ValueUsage> uses;
 
 	private boolean fullyResolved;
 
@@ -83,16 +82,25 @@ public final class ObjectValue implements Uses {
 	}
 
 	@Override
-	public final boolean isUsedBy(UseCaseInfo useCase) {
-		return getUseBy(useCase).isUsed();
+	public final AllUsages<ValueUsage> allUsages() {
+		return ALL_VALUE_USAGES;
 	}
 
 	@Override
-	public final UseFlag getUseBy(UseCaseInfo useCase) {
+	public final UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<ValueUsage> selector) {
 		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.uses.getUseBy(useCase);
+		return this.uses.selectUse(useCase, selector);
+	}
+
+	@Override
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<ValueUsage> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final Value<?> getValue() {
@@ -232,7 +240,11 @@ public final class ObjectValue implements Uses {
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			explicitUses().useBy(user);
+			uses().useBy(
+					user,
+					getObject().isClone()
+					? EXPLICIT_RUNTINE_VALUE_USAGE
+					: EXPLICIT_STATIC_VALUE_USAGE);
 		}
 		return this;
 	}
@@ -281,7 +293,7 @@ public final class ObjectValue implements Uses {
 		}
 	}
 
-	final Usable uses() {
+	final Usable<ValueUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
@@ -289,63 +301,13 @@ public final class ObjectValue implements Uses {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.value().rtUses();
+			this.uses = cloneOf.value().uses();
 		} else {
-			this.uses = simpleUsable("ValueOf", this.object);
+			this.uses = ValueUsage.usable(this);
 		}
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
-	}
-
-	final Usable explicitUses() {
-		if (this.explicitUses != null) {
-			return this.explicitUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			this.explicitUses = cloneOf.value().rtExplicitUses();
-			rtUses().useBy(this.explicitUses);
-		} else {
-			this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
-			uses().useBy(this.explicitUses);
-		}
-
-		return this.explicitUses;
-	}
-
-	private final Usable rtUses() {
-		if (this.rtUses != null) {
-			return this.rtUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.rtUses = cloneOf.value().rtUses();
-		}
-
-		this.rtUses = simpleUsable("RtValuesOf", this.object);
-		uses().useBy(this.rtUses);
-
-		return this.rtUses;
-	}
-
-	private final Usable rtExplicitUses() {
-		if (this.rtExplicitUses != null) {
-			return this.rtExplicitUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.rtExplicitUses = cloneOf.value().rtExplicitUses();
-		}
-
-		return this.rtExplicitUses =
-				simpleUsable("RtExplicitValuesOf", this.object);
 	}
 
 	private Definitions getAncestorDefinitions() {
