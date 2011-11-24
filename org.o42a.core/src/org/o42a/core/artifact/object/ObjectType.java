@@ -22,10 +22,9 @@ package org.o42a.core.artifact.object;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.artifact.object.DerivationUsage.usable;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.SimpleUsage.simpleUsable;
+import static org.o42a.core.artifact.object.TypeUsage.RUNTIME_TYPE_USAGE;
+import static org.o42a.core.artifact.object.TypeUsage.STATIC_TYPE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.HashMap;
@@ -40,12 +39,11 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
 
-public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
+public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 
 	private final Obj object;
 	private Obj lastDefinition;
-	private Usable<SimpleUsage> uses;
-	private Usable<SimpleUsage> rtUses;
+	private Usable<TypeUsage> uses;
 	private Usable<DerivationUsage> derivationUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
@@ -75,19 +73,19 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final User<SimpleUsage> toUser() {
+	public final User<TypeUsage> toUser() {
 		return uses().toUser();
 	}
 
 	@Override
-	public final AllUsages<SimpleUsage> allUsages() {
-		return toUser().allUsages();
+	public final AllUsages<TypeUsage> allUsages() {
+		return TypeUsage.ALL_TYPE_USAGES;
 	}
 
 	@Override
 	public final UseFlag selectUse(
 			UseCaseInfo useCase,
-			UseSelector<SimpleUsage> selector) {
+			UseSelector<TypeUsage> selector) {
 		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
@@ -97,7 +95,7 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 	@Override
 	public final boolean isUsed(
 			UseCaseInfo useCase,
-			UseSelector<SimpleUsage> selector) {
+			UseSelector<TypeUsage> selector) {
 		return selectUse(useCase, selector).isUsed();
 	}
 
@@ -144,7 +142,10 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 
 	public final ObjectType useBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			uses().useBy(user, SIMPLE_USAGE);
+			uses().useBy(
+					user,
+					getObject().isClone()
+					? RUNTIME_TYPE_USAGE : STATIC_TYPE_USAGE);
 		}
 		return this;
 	}
@@ -251,7 +252,7 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		return this.resolution.resolved();
 	}
 
-	private final Usable<SimpleUsage> uses() {
+	private final Usable<TypeUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
@@ -259,30 +260,13 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.type().rtUses();
+			this.uses = cloneOf.type().uses();
 		} else {
-			this.uses = simpleUsable(this);
+			this.uses = TypeUsage.usable(this);
 		}
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
-	}
-
-	private final Usable<SimpleUsage> rtUses() {
-		if (this.rtUses != null) {
-			return this.rtUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.rtUses = cloneOf.type().rtUses();
-		}
-
-		this.rtUses = simpleUsable("ClonesOf", this);
-		uses().useBy(this.rtUses, SIMPLE_USAGE);
-
-		return this.rtUses;
 	}
 
 	private final Usable<DerivationUsage> derivationUses() {
@@ -296,7 +280,8 @@ public final class ObjectType implements UserInfo, Uses<SimpleUsage> {
 		if (cloneOf != null) {
 			this.derivationUses = cloneOf.type().derivationUses();
 		} else {
-			this.derivationUses = usable("DerivationOf", getObject());
+			this.derivationUses =
+					DerivationUsage.usable("DerivationOf", getObject());
 		}
 
 		final Member member = object.toMember();
