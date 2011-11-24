@@ -53,7 +53,7 @@ public class UseTracker {
 
 		final AllUsages<U> allUsages = use.allUsages();
 		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.getUseBy(useCase, allUsages);
+		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (used.isUsed()) {
 			useCase.end(this);
@@ -73,7 +73,7 @@ public class UseTracker {
 
 		final AllUsages<U> allUsages = use.allUsages();
 		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.getUseBy(useCase, allUsages);
+		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (!used.isUsed()) {
 			if (useCase.end(this)) {

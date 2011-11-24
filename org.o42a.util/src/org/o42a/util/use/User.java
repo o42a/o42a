@@ -59,10 +59,10 @@ public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<U> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	abstract <UU extends Usage<UU>> void use(Usable<UU> usable, UU usage);

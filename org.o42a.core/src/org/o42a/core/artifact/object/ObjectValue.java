@@ -90,20 +90,20 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final UseFlag getUseBy(
+	public final UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.uses.getUseBy(useCase, selector);
+		return this.uses.selectUse(useCase, selector);
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final Value<?> getValue() {

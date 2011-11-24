@@ -62,7 +62,7 @@ public class ObjectIR  {
 	}
 
 	public final boolean isExact() {
-		return !getObject().type().derivation().isUsedBy(
+		return !getObject().type().derivation().isUsed(
 				getGenerator(),
 				ALL_DERIVATION_USAGES);
 	}

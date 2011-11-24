@@ -44,7 +44,7 @@ public class FieldUses implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public UseFlag getUseBy(
+	public UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 
@@ -73,10 +73,10 @@ public class FieldUses implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	@Override

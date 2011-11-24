@@ -238,7 +238,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
-		if (getObjectIR().getObject().type().derivation().isUsedBy(
+		if (getObjectIR().getObject().type().derivation().isUsed(
 				getGenerator(),
 				RUNTIME_DERIVATION_USAGE)) {
 			instance.ancestorFunc().setConstant(true).setValue(

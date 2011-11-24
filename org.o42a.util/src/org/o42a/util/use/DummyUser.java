@@ -34,7 +34,7 @@ final class DummyUser extends User<SimpleUsage> {
 	}
 
 	@Override
-	public final UseFlag getUseBy(
+	public final UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 		return useCase.toUseCase().unusedFlag();

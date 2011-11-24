@@ -62,7 +62,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
+	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
 
 		final UseCase uc = useCase.toUseCase();
 
@@ -103,10 +103,10 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<U> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final User<U> selectiveUser(UseSelector<U> selector) {

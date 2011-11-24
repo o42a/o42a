@@ -80,7 +80,7 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 	}
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
-		if (!object.content().toUser().isUsedBy(
+		if (!object.content().toUser().isUsed(
 				getGenerator(),
 				ALL_SIMPLE_USAGES)) {
 			ptr.setNull();

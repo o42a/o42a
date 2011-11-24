@@ -34,12 +34,12 @@ final class NeverUsed<U extends Usage<U>> implements Uses<U> {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
+	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
 		return useCase.toUseCase().unusedFlag();
 	}
 
 	@Override
-	public boolean isUsedBy(UseCaseInfo useCase, UseSelector<U> selector) {
+	public boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector) {
 		return false;
 	}
 

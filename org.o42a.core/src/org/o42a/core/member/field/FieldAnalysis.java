@@ -56,7 +56,7 @@ public class FieldAnalysis implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public UseFlag getUseBy(
+	public UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 
@@ -86,22 +86,22 @@ public class FieldAnalysis implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final boolean accessedBy(UseCaseInfo useCase) {
-		return this.memberUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
+		return this.memberUses.isUsed(useCase, ALL_SIMPLE_USAGES);
 	}
 
 	public final boolean substanceAccessedBy(UseCaseInfo useCase) {
-		return this.substanceUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
+		return this.substanceUses.isUsed(useCase, ALL_SIMPLE_USAGES);
 	}
 
 	public final boolean nestedAccessedBy(UseCaseInfo useCase) {
-		return this.nestedUses.isUsedBy(useCase, ALL_SIMPLE_USAGES);
+		return this.nestedUses.isUsed(useCase, ALL_SIMPLE_USAGES);
 	}
 
 	public final User<SimpleUsage> rtDerivation() {

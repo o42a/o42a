@@ -51,20 +51,20 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final UseFlag getUseBy(
+	public final UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 		if (this.usable == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
-		return this.usable.getUseBy(useCase, selector);
+		return this.usable.selectUse(useCase, selector);
 	}
 
 	@Override
-	public final boolean isUsedBy(
+	public final boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final void useBy(UserInfo user) {

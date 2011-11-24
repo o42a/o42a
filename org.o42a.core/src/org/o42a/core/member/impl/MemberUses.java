@@ -52,7 +52,7 @@ public final class MemberUses implements UserInfo, Uses<SimpleUsage> {
 	}
 
 	@Override
-	public UseFlag getUseBy(
+	public UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 
@@ -73,10 +73,10 @@ public final class MemberUses implements UserInfo, Uses<SimpleUsage> {
 	}
 
 	@Override
-	public boolean isUsedBy(
+	public boolean isUsed(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
-		return getUseBy(useCase, selector).isUsed();
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final void useBy(Uses<?> use) {
@@ -98,10 +98,10 @@ public final class MemberUses implements UserInfo, Uses<SimpleUsage> {
 		}
 
 		@Override
-		public UseFlag getUseBy(
+		public UseFlag selectUse(
 				UseCaseInfo useCase,
 				UseSelector<SimpleUsage> selector) {
-			return MemberUses.this.getUseBy(useCase, selector);
+			return MemberUses.this.selectUse(useCase, selector);
 		}
 
 		@Override

@@ -203,7 +203,7 @@ public abstract class ObjectValueIRValFunc
 		if (!constant.getKnowledge().isKnown()) {
 			return getValueStruct().runtimeValue();
 		}
-		if (!part().ancestorDefsUpdates().isUsedBy(
+		if (!part().ancestorDefsUpdates().isUsed(
 				getGenerator(),
 				ALL_SIMPLE_USAGES)) {
 			return constant;
@@ -221,7 +221,7 @@ public abstract class ObjectValueIRValFunc
 
 	@Override
 	protected void create() {
-		if (canStub() && !getObject().value().isUsedBy(
+		if (canStub() && !getObject().value().isUsed(
 				getGenerator(),
 				ALL_SIMPLE_USAGES)) {
 			stub(stubFunc());
@@ -255,12 +255,12 @@ public abstract class ObjectValueIRValFunc
 
 	@Override
 	protected boolean canStub() {
-		if (getObject().type().derivation().isUsedBy(
+		if (getObject().type().derivation().isUsed(
 				getGenerator(),
 				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
-		return !part().accessed().isUsedBy(getGenerator(), ALL_SIMPLE_USAGES);
+		return !part().accessed().isUsed(getGenerator(), ALL_SIMPLE_USAGES);
 	}
 
 	protected void reuse() {
@@ -287,7 +287,7 @@ public abstract class ObjectValueIRValFunc
 			if (ancestor == null) {
 				return;
 			}
-			if (part().ancestorDefsUpdates().isUsedBy(
+			if (part().ancestorDefsUpdates().isUsed(
 					getGenerator(),
 					ALL_SIMPLE_USAGES)) {
 				return;
@@ -424,7 +424,7 @@ public abstract class ObjectValueIRValFunc
 		final ValOp result = dirs.value();
 		final Code code = dirs.code();
 
-		if (!part().ancestorDefsUpdates().isUsedBy(
+		if (!part().ancestorDefsUpdates().isUsed(
 				getGenerator(),
 				ALL_SIMPLE_USAGES)) {
 
