@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
@@ -261,7 +262,7 @@ public abstract class ObjectValueIRValFunc
 				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
-		return !part().accessed().isUsed(getGenerator(), ALL_SIMPLE_USAGES);
+		return !part().isUsed(getGenerator(), VALUE_PART_ACCESS);
 	}
 
 	protected void reuse() {

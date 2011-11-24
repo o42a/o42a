@@ -19,6 +19,9 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.artifact.object.ValuePartUsage.ALL_VALUE_PART_USAGES;
+import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
+import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.*;
 import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.SimpleUsage.simpleUsable;
@@ -31,13 +34,12 @@ import org.o42a.util.use.*;
 
 
 public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
-		implements UserInfo {
+		implements UserInfo, Uses<ValuePartUsage> {
 
 	private final ObjectValue objectValue;
 	private final DefKind defKind;
-	private Usable<SimpleUsage> usedBy;
-	private Usable<SimpleUsage> accessedBy;
-	private Usable<SimpleUsage> ancestorDefsUpdatedBy;
+	private Usable<ValuePartUsage> uses;
+	private Usable<SimpleUsage> ancestorDefsUpdates;
 
 	ObjectValuePart(ObjectValue objectValue, DefKind defKind) {
 		this.objectValue = objectValue;
@@ -61,31 +63,43 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return (S) getObjectValue().getDefinitions().defs(getDefKind());
 	}
 
-	public final Uses<SimpleUsage> accessed() {
-		if (this.accessedBy == null) {
-			return SimpleUsage.neverUsed();
-		}
-		return this.accessedBy;
-	}
-
 	public final Uses<SimpleUsage> ancestorDefsUpdates() {
 		if (getObject().getConstructionMode().isRuntime()) {
 			return SimpleUsage.alwaysUsed();
 		}
-		if (this.ancestorDefsUpdatedBy == null) {
+		if (this.ancestorDefsUpdates == null) {
 			return SimpleUsage.neverUsed();
 		}
-		return this.ancestorDefsUpdatedBy;
+		return this.ancestorDefsUpdates;
 	}
 
 	@Override
-	public final User<?> toUser() {
+	public final User<ValuePartUsage> toUser() {
 		return uses().toUser();
+	}
+
+	@Override
+	public final AllUsages<ValuePartUsage> allUsages() {
+		return ALL_VALUE_PART_USAGES;
+	}
+
+	@Override
+	public final UseFlag selectUse(
+			UseCaseInfo useCase,
+			UseSelector<ValuePartUsage> selector) {
+		return uses().selectUse(useCase, selector);
+	}
+
+	@Override
+	public final boolean isUsed(
+			UseCaseInfo useCase,
+			UseSelector<ValuePartUsage> selector) {
+		return selectUse(useCase, selector).isUsed();
 	}
 
 	public final void accessBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			accessedBy().useBy(user, SIMPLE_USAGE);
+			uses().useBy(user, VALUE_PART_ACCESS);
 		}
 	}
 
@@ -107,55 +121,46 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return this.defKind.displayName() + "Of[" + getObject() + ']';
 	}
 
-	final Usable<SimpleUsage> uses() {
-		if (this.usedBy != null) {
-			return this.usedBy;
+	final Usable<ValuePartUsage> uses() {
+		if (this.uses != null) {
+			return this.uses;
 		}
 
-		this.usedBy = simpleUsable(this);
+		this.uses = ValuePartUsage.usable(this);
 
 		final ObjectValue objectValue = getObjectValue();
 		final Obj object = objectValue.getObject();
 		final Usable<ValueUsage> valueUses = objectValue.uses();
 
 		valueUses.useBy(
-				this.usedBy,
+				this.uses,
 				object.isClone() ? RUNTIME_VALUE_USAGE : STATIC_VALUE_USAGE);
-		this.usedBy.useBy(
+		this.uses.useBy(
 				valueUses.usageUser(
 						object.isClone()
 						? EXPLICIT_RUNTINE_VALUE_USAGE
 						: EXPLICIT_STATIC_VALUE_USAGE),
-				SIMPLE_USAGE);
+				VALUE_PART_USAGE);
 
-		return this.usedBy;
-	}
-
-	final Usable<SimpleUsage> accessedBy() {
-		if (this.accessedBy != null) {
-			return this.accessedBy;
-		}
-
-		this.accessedBy = simpleUsable(
-				getDefKind().displayName() + "AccessOf",
-				getObject());
-		uses().useBy(this.accessedBy, SIMPLE_USAGE);
-
-		return this.accessedBy;
+		return this.uses;
 	}
 
 	final Usable<SimpleUsage> ancestorDefsUpdatedBy() {
-		if (this.ancestorDefsUpdatedBy != null) {
-			return this.ancestorDefsUpdatedBy;
+		if (this.ancestorDefsUpdates != null) {
+			return this.ancestorDefsUpdates;
 		}
-		return this.ancestorDefsUpdatedBy = simpleUsable(
+		return this.ancestorDefsUpdates = simpleUsable(
 				"Ancestor " + getDefKind().displayName() + "sUpdatesOf",
 				getObject());
 	}
 
 	final void wrapBy(ObjectValuePart<?, ?> wrapPart) {
-		uses().useBy(wrapPart.uses(), SIMPLE_USAGE);
-		accessedBy().useBy(wrapPart.accessedBy(), SIMPLE_USAGE);
+		uses().useBy(
+				wrapPart.uses().usageUser(VALUE_PART_USAGE),
+				VALUE_PART_USAGE);
+		uses().useBy(
+				wrapPart.uses().usageUser(VALUE_PART_ACCESS),
+				VALUE_PART_ACCESS);
 		ancestorDefsUpdatedBy().useBy(
 				wrapPart.ancestorDefsUpdatedBy(),
 				SIMPLE_USAGE);
