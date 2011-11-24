@@ -34,8 +34,8 @@ public class SelectiveUser<U extends Usage<U>> extends AbstractUser<U> {
 	}
 
 	@Override
-	public UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector) {
-		return this.uses.getUseBy(useCase, this.selector.and(selector));
+	public UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector) {
+		return this.uses.selectUse(useCase, this.selector.and(selector));
 	}
 
 	@Override

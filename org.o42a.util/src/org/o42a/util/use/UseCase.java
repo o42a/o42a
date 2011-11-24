@@ -81,7 +81,7 @@ public final class UseCase
 	}
 
 	@Override
-	public UseFlag getUseBy(
+	public UseFlag selectUse(
 			UseCaseInfo useCase,
 			UseSelector<SimpleUsage> selector) {
 

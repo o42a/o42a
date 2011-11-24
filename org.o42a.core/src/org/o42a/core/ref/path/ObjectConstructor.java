@@ -259,7 +259,7 @@ public abstract class ObjectConstructor extends Placed {
 
 			final Obj sample = getConstructed();
 
-			if (!sample.type().derivation().isUsedBy(
+			if (!sample.type().derivation().isUsed(
 					dirs.getGenerator(),
 					RUNTIME_DERIVATION_USAGE)) {
 

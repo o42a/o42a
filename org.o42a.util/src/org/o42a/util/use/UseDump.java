@@ -65,7 +65,7 @@ public class UseDump<U extends Usage<U>> {
 	}
 
 	public void print(UseCaseInfo useCase) {
-		if (this.user.isUsedBy(useCase, this.usage)) {
+		if (this.user.isUsed(useCase, this.usage)) {
 			System.err.println("(!) " + this.what);
 			System.err.println("  + " + this.user);
 		}

@@ -50,7 +50,7 @@ public abstract class Fld {
 		this.bodyIR = bodyIR;
 
 		assert getField().toMember().getAnalysis().getDeclarationAnalysis()
-		.isUsedBy(getGenerator(), ALL_SIMPLE_USAGES) :
+		.isUsed(getGenerator(), ALL_SIMPLE_USAGES) :
 			"Attempt to generate never accessed field " + getField();
 
 		this.omitted = mayOmit();
@@ -133,7 +133,7 @@ public abstract class Fld {
 		final FieldAnalysis declarationAnalysis =
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
-		return !declarationAnalysis.derivation().isUsedBy(
+		return !declarationAnalysis.derivation().isUsed(
 				getGenerator(),
 				ALL_SIMPLE_USAGES);
 	}

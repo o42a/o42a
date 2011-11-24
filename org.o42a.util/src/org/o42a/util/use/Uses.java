@@ -24,8 +24,8 @@ public interface Uses<U extends Usage<U>> {
 
 	AllUsages<U> allUsages();
 
-	UseFlag getUseBy(UseCaseInfo useCase, UseSelector<U> selector);
+	UseFlag selectUse(UseCaseInfo useCase, UseSelector<U> selector);
 
-	boolean isUsedBy(UseCaseInfo useCase, UseSelector<U> selector);
+	boolean isUsed(UseCaseInfo useCase, UseSelector<U> selector);
 
 }

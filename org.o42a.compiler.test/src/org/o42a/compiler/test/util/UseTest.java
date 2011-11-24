@@ -103,7 +103,7 @@ public class UseTest {
 	public void selfNotUsed() {
 		this.usable.useBy(this.usable, SIMPLE_USAGE);
 
-		assertFalse(this.usable.isUsedBy(this.useCase, SIMPLE_USAGE));
+		assertFalse(this.usable.isUsed(this.useCase, SIMPLE_USAGE));
 	}
 
 	@Test
@@ -183,13 +183,13 @@ public class UseTest {
 	public void assertUsed(Uses<SimpleUsage> use) {
 		assertTrue(
 				use + " is not used by " + this.useCase,
-				use.getUseBy(this.useCase, ALL_SIMPLE_USAGES).isUsed());
+				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed());
 	}
 
 	public void assertUnused(Uses<SimpleUsage> use) {
 		assertFalse(
 				use + " is used by " + this.useCase,
-				use.getUseBy(this.useCase, ALL_SIMPLE_USAGES).isUsed());
+				use.selectUse(this.useCase, ALL_SIMPLE_USAGES).isUsed());
 	}
 
 	private final class TestUsable extends Usable<SimpleUsage> {
