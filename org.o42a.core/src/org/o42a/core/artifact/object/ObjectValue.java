@@ -19,12 +19,12 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
+import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
+import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.SimpleUsage.simpleUsable;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.def.DefKind;
@@ -38,7 +38,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements Uses<SimpleUsage> {
+public final class ObjectValue implements Uses<ValueUsage> {
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -51,10 +51,7 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 	private final ValuePart claim;
 	private final ValuePart proposition;
 
-	private Usable<SimpleUsage> uses;
-	private Usable<SimpleUsage> rtUses;
-	private Usable<SimpleUsage> explicitUses;
-	private Usable<SimpleUsage> rtExplicitUses;
+	private Usable<ValueUsage> uses;
 
 	private boolean fullyResolved;
 
@@ -85,14 +82,14 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 	}
 
 	@Override
-	public final AllUsages<SimpleUsage> allUsages() {
-		return ALL_SIMPLE_USAGES;
+	public final AllUsages<ValueUsage> allUsages() {
+		return ALL_VALUE_USAGES;
 	}
 
 	@Override
 	public final UseFlag selectUse(
 			UseCaseInfo useCase,
-			UseSelector<SimpleUsage> selector) {
+			UseSelector<ValueUsage> selector) {
 		if (this.uses == null) {
 			return useCase.toUseCase().unusedFlag();
 		}
@@ -102,7 +99,7 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 	@Override
 	public final boolean isUsed(
 			UseCaseInfo useCase,
-			UseSelector<SimpleUsage> selector) {
+			UseSelector<ValueUsage> selector) {
 		return selectUse(useCase, selector).isUsed();
 	}
 
@@ -243,7 +240,11 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 
 	public final ObjectValue explicitUseBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
-			explicitUses().useBy(user, SIMPLE_USAGE);
+			uses().useBy(
+					user,
+					getObject().isClone()
+					? EXPLICIT_RUNTINE_VALUE_USAGE
+					: EXPLICIT_STATIC_VALUE_USAGE);
 		}
 		return this;
 	}
@@ -292,7 +293,7 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 		}
 	}
 
-	final Usable<SimpleUsage> uses() {
+	final Usable<ValueUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
@@ -300,63 +301,13 @@ public final class ObjectValue implements Uses<SimpleUsage> {
 		final Obj cloneOf = getObject().getCloneOf();
 
 		if (cloneOf != null) {
-			this.uses = cloneOf.value().rtUses();
+			this.uses = cloneOf.value().uses();
 		} else {
-			this.uses = simpleUsable("ValueOf", this.object);
+			this.uses = ValueUsage.usable(this);
 		}
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
-	}
-
-	final Usable<SimpleUsage> explicitUses() {
-		if (this.explicitUses != null) {
-			return this.explicitUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			this.explicitUses = cloneOf.value().rtExplicitUses();
-			rtUses().useBy(this.explicitUses, SIMPLE_USAGE);
-		} else {
-			this.explicitUses = simpleUsable("ExplicitValueOf", this.object);
-			uses().useBy(this.explicitUses, SIMPLE_USAGE);
-		}
-
-		return this.explicitUses;
-	}
-
-	private final Usable<SimpleUsage> rtUses() {
-		if (this.rtUses != null) {
-			return this.rtUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.rtUses = cloneOf.value().rtUses();
-		}
-
-		this.rtUses = simpleUsable("RtValuesOf", this.object);
-		uses().useBy(this.rtUses, SIMPLE_USAGE);
-
-		return this.rtUses;
-	}
-
-	private final Usable<SimpleUsage> rtExplicitUses() {
-		if (this.rtExplicitUses != null) {
-			return this.rtExplicitUses;
-		}
-
-		final Obj cloneOf = getObject().getCloneOf();
-
-		if (cloneOf != null) {
-			return this.rtExplicitUses = cloneOf.value().rtExplicitUses();
-		}
-
-		return this.rtExplicitUses =
-				simpleUsable("RtExplicitValuesOf", this.object);
 	}
 
 	private Definitions getAncestorDefinitions() {

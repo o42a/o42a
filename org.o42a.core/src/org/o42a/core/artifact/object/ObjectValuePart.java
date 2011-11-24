@@ -19,7 +19,9 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.SimpleUsage.*;
+import static org.o42a.core.artifact.object.ValueUsage.*;
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
 import org.o42a.core.def.Def;
 import org.o42a.core.def.DefKind;
@@ -61,17 +63,17 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 	public final Uses<SimpleUsage> accessed() {
 		if (this.accessedBy == null) {
-			return neverUsed();
+			return SimpleUsage.neverUsed();
 		}
 		return this.accessedBy;
 	}
 
 	public final Uses<SimpleUsage> ancestorDefsUpdates() {
 		if (getObject().getConstructionMode().isRuntime()) {
-			return alwaysUsed();
+			return SimpleUsage.alwaysUsed();
 		}
 		if (this.ancestorDefsUpdatedBy == null) {
-			return neverUsed();
+			return SimpleUsage.neverUsed();
 		}
 		return this.ancestorDefsUpdatedBy;
 	}
@@ -111,8 +113,20 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		}
 
 		this.usedBy = simpleUsable(this);
-		getObjectValue().uses().useBy(this.usedBy, SIMPLE_USAGE);
-		this.usedBy.useBy(getObjectValue().explicitUses(), SIMPLE_USAGE);
+
+		final ObjectValue objectValue = getObjectValue();
+		final Obj object = objectValue.getObject();
+		final Usable<ValueUsage> valueUses = objectValue.uses();
+
+		valueUses.useBy(
+				this.usedBy,
+				object.isClone() ? RUNTIME_VALUE_USAGE : STATIC_VALUE_USAGE);
+		this.usedBy.useBy(
+				valueUses.usageUser(
+						object.isClone()
+						? EXPLICIT_RUNTINE_VALUE_USAGE
+						: EXPLICIT_STATIC_VALUE_USAGE),
+				SIMPLE_USAGE);
 
 		return this.usedBy;
 	}

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -100,7 +100,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				&& getValueIR().requirement().canStub()
 				&& !getObject().value().isUsed(
 						getGenerator(),
-						ALL_SIMPLE_USAGES);
+						ALL_VALUE_USAGES);
 	}
 
 	@Override

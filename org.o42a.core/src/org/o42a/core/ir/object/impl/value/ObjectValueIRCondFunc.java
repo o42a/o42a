@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
@@ -193,7 +194,7 @@ public abstract class ObjectValueIRCondFunc
 	protected void create() {
 		if (canStub() && !getObject().value().isUsed(
 				getGenerator(),
-				ALL_SIMPLE_USAGES)) {
+				ALL_VALUE_USAGES)) {
 			stub(stubFunc());
 			return;
 		}
