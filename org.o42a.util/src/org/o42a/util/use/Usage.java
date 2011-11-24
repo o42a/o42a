@@ -1,0 +1,72 @@
+/*
+    Utilities
+    Copyright (C) 2011 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.util.use;
+
+
+public abstract class Usage<U extends Usage<U>> implements UseSelector<U> {
+
+	private final AllUsages<U> all;
+	private final String name;
+
+	public Usage(AllUsages<U> all, String name) {
+		assert all != null :
+			"All usages not specified";
+		assert name != null :
+			"Usage name not specified";
+		this.all = all;
+		this.name = name;
+		all.addUsage(self());
+	}
+
+	public final AllUsages<U> all() {
+		return this.all;
+	}
+
+	public final String name() {
+		return this.name;
+	}
+
+	public final Usable<U> usable(Object used) {
+		return new SimpleUsable<U>(all(), null, used);
+	}
+
+	public final Usable<U> usable(String name, Object used) {
+		return new SimpleUsable<U>(all(), name, used);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final U self() {
+		return (U) this;
+	}
+
+	@Override
+	public boolean acceptUsage(U usage) {
+		return usage == self();
+	}
+
+	@Override
+	public String toString() {
+		if (this.name == null) {
+			return super.toString();
+		}
+		return this.name;
+	}
+
+}
