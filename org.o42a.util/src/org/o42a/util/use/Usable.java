@@ -166,7 +166,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 					return getUseFlag();
 				}
 			}
-			return done();
+			return unused();
 		}
 
 		@Override
