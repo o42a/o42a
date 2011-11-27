@@ -69,7 +69,7 @@ public class FieldUses implements Uses<SimpleUsage> {
 			}
 		}
 
-		return this.tracker.done();
+		return this.tracker.unused();
 	}
 
 	@Override

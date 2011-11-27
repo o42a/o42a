@@ -88,7 +88,18 @@ public class UseTracker {
 		return true;
 	}
 
-	public final UseFlag done() {
+	public final UseFlag used() {
+
+		final UseCase useCase = this.useFlag.getUseCase();
+
+		if (useCase.end(this)) {
+			return this.useFlag = useCase.usedFlag();
+		}
+
+		return this.useFlag;
+	}
+
+	public final UseFlag unused() {
 
 		final UseCase useCase = this.useFlag.getUseCase();
 

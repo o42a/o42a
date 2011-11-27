@@ -63,19 +63,22 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			return uc.usedFlag();
 		}
 
+		boolean unknown = false;
+
 		// Field access is required.
-		if (!selector.acceptUsage(FIELD_ACCESS)) {
-			return uc.unusedFlag();
-		}
+		if (selector.acceptUsage(FIELD_ACCESS)) {
 
-		final UseFlag fieldUsed = used(FIELD_ACCESS).selectUse(useCase);
+			final UseFlag fieldAccess = used(FIELD_ACCESS).selectUse(useCase);
 
-		if (!fieldUsed.isUsed()) {
-			return fieldUsed;
+			if (!fieldAccess.isUsed()) {
+				if (fieldAccess.isKnown()) {
+					return fieldAccess;
+				}
+				unknown = true;
+			}
 		}
 
 		// At least one of the other usages is required.
-		boolean unknown = false;
 		final AllUsages<FieldUsage> allUsages = allUsages();
 		final FieldUsage[] usages = allUsages.usages();
 
@@ -184,7 +187,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 					return getUseFlag();
 				}
 			}
-			return done();
+			return unused();
 		}
 
 		@Override
