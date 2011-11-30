@@ -40,7 +40,6 @@ class BackendModule : public Module {
 
 	mutable TargetData *targetData;
 	mutable FunctionPassManager *functionPassManager;
-	std::vector<PATypeHolder *> types;
 	Constant *stackSaveFunc;
 	Constant *stackRestoreFunc;
 	bool hostMachine;
@@ -62,8 +61,6 @@ public:
 	static BackendModule *createBackend(StringRef &ModuleID);
 
 	const TargetData &getTargetData() const;
-
-	PATypeHolder *newOpaqueType();
 
 	Constant *getStackSaveFunc();
 

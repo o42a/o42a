@@ -18,10 +18,10 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binary
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    createType
- * Signature: (J)J
+ * Signature: (JJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_createType
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -50,10 +50,10 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_alloca
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    refineType
- * Signature: (JJIJJZ)J
+ * Signature: (JJZ)V
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jboolean);
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineType
+  (JNIEnv *, jclass, jlong, jlong, jboolean);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator

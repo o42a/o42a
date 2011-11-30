@@ -29,14 +29,14 @@
 #include "llvm/CodeGen/AsmPrinter.h"
 #include "llvm/MC/MCContext.h"
 #include "llvm/MC/MCStreamer.h"
+#include "llvm/MC/SubtargetFeature.h"
 #include "llvm/Support/CommandLine.h"
 #include "llvm/Support/FormattedStream.h"
 #include "llvm/Support/Host.h"
-#include "llvm/Target/SubtargetFeature.h"
+#include "llvm/Support/TargetRegistry.h"
+#include "llvm/Support/TargetSelect.h"
 #include "llvm/Target/TargetData.h"
 #include "llvm/Target/TargetMachine.h"
-#include "llvm/Target/TargetRegistry.h"
-#include "llvm/Target/TargetSelect.h"
 #include "llvm/Transforms/Scalar.h"
 
 
@@ -105,7 +105,6 @@ BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
 		targetData(),
 		functionPassManager(),
-		types(),
 		stackSaveFunc(),
 		stackRestoreFunc(),
 		hostMachine() {
@@ -118,18 +117,13 @@ BackendModule::~BackendModule() {
 	if (this->functionPassManager) {
 		delete this->functionPassManager;
 	}
-
-	const size_t size = this->types.size();
-
-	for (size_t i = 0; i < size; ++i) {
-		delete this->types[i];
-	}
 }
 
 void BackendModule::initializeTargets() {
 	OTRACE("--------- Initializing\n");
 	InitializeAllTargetInfos();
 	InitializeAllTargets();
+	InitializeAllTargetMCs();
 	InitializeAllAsmPrinters();
 }
 
@@ -180,15 +174,6 @@ const TargetData &BackendModule::getTargetData() const {
 	return *this->targetData;
 }
 
-PATypeHolder *BackendModule::newOpaqueType() {
-
-	PATypeHolder *holder = new PATypeHolder(OpaqueType::get(getContext()));
-
-	this->types.push_back(holder);
-
-	return holder;
-}
-
 Constant *BackendModule::getStackSaveFunc() {
 	if (this->stackSaveFunc) {
 		return this->stackSaveFunc;
@@ -206,13 +191,9 @@ Constant *BackendModule::getStackRestoreFunc() {
 		return this->stackRestoreFunc;
 	}
 
-	std::vector<const Type*> args(1);
-
-	args[0] = Type::getInt8PtrTy(getContext());
-
 	FunctionType *type = FunctionType::get(
 			Type::getVoidTy(getContext()),
-			args,
+			ArrayRef<Type*>(Type::getInt8PtrTy(getContext())),
 			false);
 
 	return this->stackRestoreFunc =
@@ -307,16 +288,15 @@ bool BackendModule::writeCode() {
 
 		std::string triple = getTargetTriple();
 		std::string features;
+		std::string CPU;
 
 		if (this->hostMachine) {
+			CPU = sys::getHostCPUName();
 
 			StringMap<bool> featureMap;
 			SubtargetFeatures f;
 
-			f.getDefaultSubtargetFeatures(
-					sys::getHostCPUName(),
-					Triple(triple));
-			f.setCPU(sys::getHostCPUName());
+			f.getDefaultSubtargetFeatures(Triple(triple));
 			if (sys::getHostCPUFeatures(featureMap)) {
 				for (StringMapIterator<bool> it = featureMap.begin();
 						it != featureMap.end();) {
@@ -340,7 +320,7 @@ bool BackendModule::writeCode() {
 		}
 
 		TargetMachine *const machine =
-				target->createTargetMachine(getTargetTriple(), features);
+				target->createTargetMachine(getTargetTriple(), CPU, features);
 
 		if (machine->addPassesToEmitFile(
 				pm,

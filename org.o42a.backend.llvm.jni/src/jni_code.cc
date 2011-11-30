@@ -255,8 +255,8 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_nullStructPtr(
 		jclass,
 		jlong typePtr) {
 
-	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
-	Constant *result = Constant::getNullValue(type->get()->getPointerTo());
+	Type *type = from_ptr<Type>(typePtr);
+	Constant *result = Constant::getNullValue(type->getPointerTo());
 
 	return to_ptr(result);
 }
@@ -299,9 +299,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
-	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	Type *type = from_ptr<Type>(typePtr);
 	Value *result = builder.CreateAlloca(
-			type->get()->getPointerTo(),
+			type->getPointerTo(),
 			0,
 			StringRef(from_ptr<char>(id), idLen));
 
@@ -318,9 +318,9 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
-	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	Type *type = from_ptr<Type>(typePtr);
 	Value *result = builder.CreateAlloca(
-			type->get(),
+			type,
 			0,
 			StringRef(from_ptr<char>(id), idLen));
 
@@ -346,6 +346,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	BasicBlock *block2 = from_ptr<BasicBlock>(block2ptr);
 	PHINode *phi = builder.CreatePHI(
 			value1->getType(),
+			2,
 			StringRef(from_ptr<char>(id), idLen));
 
 	phi->addIncoming(value1, block1);
@@ -368,6 +369,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
 	size_t len = blocksAndValues.length();
 	PHINode *phi = builder.CreatePHI(
 			from_ptr<Value>(blocksAndValues[1])->getType(),
+			len >> 1,
 			StringRef(from_ptr<char>(id), idLen));
 
 	for (size_t i = 0; i < len; i += 2) {

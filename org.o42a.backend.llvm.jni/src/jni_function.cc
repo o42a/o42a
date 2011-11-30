@@ -34,25 +34,22 @@ using namespace llvm;
 jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 		JNIEnv *env,
 		jclass,
-		jlong modulePtr,
-		jlong id,
-		jint idLen,
 		jlong returnTypePtr,
 		jlongArray paramPtrs) {
 
-	Module *module = from_ptr<Module>(modulePtr);
-	const Type *returnType = from_ptr<const Type>(returnTypePtr);
+	Type *returnType = from_ptr<Type>(returnTypePtr);
 	jArray<jlongArray, jlong> paramArray(env, paramPtrs);
 	const size_t numParams = paramArray.length();
-	std::vector<const Type*> params(numParams);
+	Type* params[numParams];
 
 	for (size_t i = 0; i < numParams; ++i) {
-		params[i] = from_ptr<const Type>(paramArray[i]);
+		params[i] = from_ptr<Type>(paramArray[i]);
 	}
 
-	FunctionType *result = FunctionType::get(returnType, params, false);
-
-	module->addTypeName(StringRef(from_ptr<char>(id), idLen), result);
+	FunctionType *result = FunctionType::get(
+			returnType,
+			ArrayRef<Type *>(params, numParams),
+			false);
 
 	return to_ptr(result);
 }
@@ -150,7 +147,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 	Value *callee = from_ptr<Value>(functionPtr);
 	jArray<jlongArray, jlong> argArray(env, argPtrs);
 	const size_t numArgs = argArray.length();
-	std::vector<Value*> args(numArgs);
+	Value* args[numArgs];
 
 	for (size_t i = 0; i < numArgs; ++i) {
 		args[i] = from_ptr<Value>(argArray[i]);
@@ -161,11 +158,10 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 	if (id) {
 		result = builder.CreateCall(
 				callee,
-				args.begin(),
-				args.end(),
+				ArrayRef<Value*>(args, numArgs),
 				StringRef(from_ptr<char>(id), idLen));
 	} else {
-		result = builder.CreateCall(callee, args.begin(), args.end());
+		result = builder.CreateCall(callee, ArrayRef<Value*>(args, numArgs));
 	}
 
 	return to_ptr(result);
