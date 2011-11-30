@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_LLSignatureWriter
  * Method:    createSignature
- * Signature: (JJIJ[J)J
+ * Signature: (J[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlongArray);
+  (JNIEnv *, jclass, jlong, jlongArray);
 
 #ifdef __cplusplus
 }

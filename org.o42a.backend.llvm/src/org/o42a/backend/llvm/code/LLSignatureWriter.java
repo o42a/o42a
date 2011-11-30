@@ -22,7 +22,6 @@ package org.o42a.backend.llvm.code;
 import static java.lang.System.arraycopy;
 
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.code.Arg;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -165,14 +164,7 @@ final class LLSignatureWriter<F extends Func<F>>
 	@Override
 	public LLSignature<F> done() {
 
-		final NativeBuffer ids = this.module.ids();
-		final long signaturePtr = createSignature(
-				this.module.getNativePtr(),
-				ids.writeCodeId(
-						this.signature.codeId(this.module.getGenerator())),
-				ids.length(),
-				this.returnType,
-				this.params);
+		final long signaturePtr = createSignature(this.returnType, this.params);
 
 		return new LLSignature<F>(this.signature, signaturePtr);
 	}
@@ -194,9 +186,6 @@ final class LLSignatureWriter<F extends Func<F>>
 	}
 
 	private static native long createSignature(
-			long modulePtr,
-			long id,
-			int idLen,
 			long returnTypePtr,
 			long[] paramPtrs);
 
