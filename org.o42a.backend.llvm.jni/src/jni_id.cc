@@ -34,9 +34,9 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_typeExpression(
 		jclass,
 		jlong typePtr) {
 
-	const PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	Type *type = from_ptr<Type>(typePtr);
 
-	return to_ptr(Constant::getNullValue(type->get()->getPointerTo()));
+	return to_ptr(Constant::getNullValue(type->getPointerTo()));
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
@@ -52,17 +52,16 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 	jInt32Array indexArray(env, indices);
 	const size_t len = indexArray.length();
 	Constant *indexList[len + 1];
-	const IntegerType *int32ty =
-			IntegerType::getInt32Ty(module->getContext());
+	IntegerType *int32ty = IntegerType::getInt32Ty(module->getContext());
 
 	indexList[0] = ConstantInt::get(int32ty, 0);
 	for (int i = len - 1; i >= 0; --i) {
 		indexList[len - i] = ConstantInt::get(int32ty, indexArray[i]);
-		ODEBUG_WITH_TYPE("trace", llvm::errs() << " " << indexArray[i]);
 	}
 
-	Constant *result =
-			ConstantExpr::getInBoundsGetElementPtr(global, indexList, len + 1);
+	Constant *result = ConstantExpr::getInBoundsGetElementPtr(
+			global,
+			ArrayRef<Constant*>(indexList, len + 1));
 
 	return to_ptr(result);
 }
@@ -78,10 +77,8 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
 
 	Constant *id = from_ptr<Constant>(idPtr);
 	Constant *to = from_ptr<Constant>(toPtr);
-	const IntegerType *int32ty =
-			IntegerType::getInt32Ty(id->getContext());
-	const IntegerType *int64ty =
-			IntegerType::getInt64Ty(id->getContext());
+	IntegerType *int32ty = IntegerType::getInt32Ty(id->getContext());
+	IntegerType *int64ty = IntegerType::getInt64Ty(id->getContext());
 
 	Constant *result = ConstantExpr::getIntegerCast(
 			ConstantExpr::getSub(

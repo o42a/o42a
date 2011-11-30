@@ -211,10 +211,10 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
 	Value *pointer = from_ptr<Value>(pointerPtr);
-	PATypeHolder *type = from_ptr<PATypeHolder>(typePtr);
+	Type *type = from_ptr<Type>(typePtr);
 	Value *result = builder.CreatePointerCast(
 			pointer,
-			type->get()->getPointerTo(),
+			type->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
 	return to_ptr(result);
@@ -294,7 +294,7 @@ jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 	IRBuilder<> builder(block);
 	Value *from = from_ptr<Value>(fromPtr);
 	Value *by = from_ptr<Value>(byPtr);
-	const Type *int64ty = builder.getInt64Ty();
+	Type *int64ty = builder.getInt64Ty();
 	Value *origin = builder.CreatePtrToInt(from, int64ty);
 	Value *offset = builder.CreateIntCast(by, int64ty, true);
 	Value *position = builder.CreateAdd(origin, offset);

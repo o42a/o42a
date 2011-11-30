@@ -37,9 +37,9 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 	private final Type<S> type;
 	private final long typePtr;
-	private long uniqueTypePtr;
 	private long nativePtr;
 	private int nextIndex;
+	private boolean typeAllocated;
 
 	public ContainerLLDAlloc(
 			LLVMModule module,
@@ -52,14 +52,14 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 		this.nativePtr = typeDataPtr;
 		this.type = type;
 		if (typeDataPtr != 0L) {
-			this.uniqueTypePtr = 0L;
+			this.typeAllocated = false;
 		} else {
 
 			final ContainerLLDAlloc<?> typeAllocation =
 					(ContainerLLDAlloc<?>) type.pointer(module.getGenerator())
 					.getAllocation();
 
-			this.uniqueTypePtr = typeAllocation.getUniqueTypePtr();
+			this.typeAllocated = typeAllocation.isTypeAllocated();
 		}
 
 		assert typePtr != 0L :
@@ -71,17 +71,13 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 	}
 
 	public final boolean isTypeAllocated() {
-		return this.uniqueTypePtr != 0L;
+		return this.typeAllocated;
 	}
 
-	public final long getUniqueTypePtr() {
-		return this.uniqueTypePtr;
-	}
-
-	public final void setUniqueTypePtr(long uniqueTypePtr) {
+	public final void typeAllocated() {
 		assert !isTypeAllocated() :
 			"Type already allocated";
-		this.uniqueTypePtr = uniqueTypePtr;
+		this.typeAllocated = true;
 	}
 
 	public final long getNativePtr() {
