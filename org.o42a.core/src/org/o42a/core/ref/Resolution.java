@@ -33,10 +33,16 @@ import org.o42a.util.use.UserInfo;
 
 public abstract class Resolution implements ScopeInfo {
 
+	private final Resolver resolver;
 	private final ScopeInfo resolved;
 
-	public Resolution(ScopeInfo location) {
+	public Resolution(Resolver resolver, ScopeInfo location) {
+		this.resolver = resolver;
 		this.resolved = location;
+	}
+
+	public final Resolver getResolver() {
+		return this.resolver;
 	}
 
 	@Override
@@ -72,7 +78,7 @@ public abstract class Resolution implements ScopeInfo {
 		return toArtifact().toLink();
 	}
 
-	public Directive toDirective(Resolver resolver) {
+	public Directive toDirective() {
 
 		final Obj materialized = materialize();
 
@@ -84,10 +90,10 @@ public abstract class Resolution implements ScopeInfo {
 		}
 
 		final Value<Directive> value = ValueStruct.DIRECTIVE.cast(
-				materialized.value().explicitUseBy(resolver).getValue());
+				materialized.value().explicitUseBy(getResolver()).getValue());
 
 		if (!value.getKnowledge().isKnown()) {
-			resolver.getLogger().error(
+			getResolver().getLogger().error(
 					"runtime_directive",
 					this,
 					"Unable to execute directive at compile time");
