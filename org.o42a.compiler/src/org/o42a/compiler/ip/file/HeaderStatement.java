@@ -83,12 +83,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -119,8 +114,7 @@ class HeaderStatement extends Statement {
 		public Instruction toInstruction(Resolver resolver) {
 
 			final Ref ref = getHeader().getRef();
-			final Directive directive =
-					ref.resolve(resolver).toDirective();
+			final Directive directive = ref.resolve(resolver).toDirective();
 
 			if (directive == null) {
 				notDirective(getLogger(), this);

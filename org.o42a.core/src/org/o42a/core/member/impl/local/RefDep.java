@@ -131,9 +131,9 @@ public final class RefDep extends Dep {
 		if (resolver.isFullResolution()) {
 			if (resolver.isValueResolution() && index == path.length() - 1) {
 				// Resolve only the last value.
-				this.depRef.resolveValues(localResolver);
+				this.depRef.resolve(localResolver).resolveValue();
 			} else {
-				this.depRef.resolveAll(localResolver);
+				this.depRef.resolve(localResolver).resolveAll();
 			}
 		}
 

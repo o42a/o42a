@@ -188,7 +188,11 @@ public class LocalDef extends ValueDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		getBlock().resolveValues(this.localPrefix.rescope(resolver));
+
+		final LocalScope local =
+				this.localPrefix.rescope(resolver.getScope()).toLocal();
+
+		getBlock().resolveImperative(local.walkingResolver(resolver));
 	}
 
 	@Override

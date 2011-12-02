@@ -204,7 +204,7 @@ public class LogicalExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
-			operand().resolveValues(resolver);
+			operand().resolve(resolver).resolveValue();
 		}
 
 		@Override

@@ -25,7 +25,9 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefDefiner;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
@@ -62,13 +64,7 @@ final class RefConditionDefiner extends Definer {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 
-		final Resolution resolution = getRef().resolve(resolver);
-
-		if (resolution == null) {
-			return null;
-		}
-
-		final Directive directive = resolution.toDirective();
+		final Directive directive = getRef().resolve(resolver).toDirective();
 
 		if (directive == null) {
 			return null;

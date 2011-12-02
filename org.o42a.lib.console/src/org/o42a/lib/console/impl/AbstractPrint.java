@@ -62,7 +62,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		text().resolveValues(resolver);
+		text().resolve(resolver).resolveValue();
 	}
 
 	@Override

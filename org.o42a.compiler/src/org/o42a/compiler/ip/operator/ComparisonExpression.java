@@ -203,7 +203,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
-			phrase(distribute()).resolveAll(resolver);
+			phrase(distribute()).resolve(resolver).resolveTarget();
 
 			final Field<?> field =
 					resolver.getScope()

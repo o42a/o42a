@@ -68,7 +68,7 @@ abstract class ArrayLength extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		array().resolveValues(resolver);
+		array().resolve(resolver).resolveValue();
 	}
 
 	@Override

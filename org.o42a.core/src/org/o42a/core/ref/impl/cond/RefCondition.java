@@ -23,8 +23,8 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 
 
@@ -66,13 +66,8 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolveAll(resolver);
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
-		this.ref.resolveValues(resolver);
+	protected void fullyResolveImperative(LocalResolver resolver) {
+		this.ref.resolve(resolver).resolveLogical();
 	}
 
 	@Override

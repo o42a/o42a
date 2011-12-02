@@ -84,7 +84,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		operand().resolveValues(resolver);
+		operand().resolve(resolver).resolveValue();
 	}
 
 	@Override

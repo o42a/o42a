@@ -67,7 +67,7 @@ public final class RefCondDef extends CondDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.ref.resolveValues(resolver);
+		this.ref.resolve(resolver).resolveLogical();
 	}
 
 }

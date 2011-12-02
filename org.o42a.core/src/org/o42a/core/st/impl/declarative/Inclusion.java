@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
@@ -50,12 +50,7 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
