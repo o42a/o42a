@@ -32,8 +32,8 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.NextDistributor;
@@ -295,11 +295,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveValues(Resolver resolver) {
+	final void resolveValues(LocalResolver resolver) {
 		assert this.instructionsExecuted :
 			"Instructions not executed yet";
 		for (Definer definer : getDefiners()) {
-			definer.getStatement().resolveValues(resolver);
+			definer.getStatement().resolveImperative(resolver);
 		}
 	}
 

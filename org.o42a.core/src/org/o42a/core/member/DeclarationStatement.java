@@ -20,7 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
@@ -40,11 +40,7 @@ public abstract class DeclarationStatement extends Statement {
 	public abstract DeclarationDefiner define(StatementEnv env);
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 	}
 
 }

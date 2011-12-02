@@ -116,24 +116,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		if (getAssignmentKind().isError()) {
-			return;
-		}
-
-		final Resolution value =
-				this.value.resolve(resolver).resolveTarget();
-		final Resolution destination =
-				this.destination.resolve(resolver).resolveTarget();
-
-		if (!destination.isError() && !value.isError()) {
-			destination.materialize().type().wrapBy(
-					value.materialize().type());
-		}
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 		if (getAssignmentKind().isError()) {
 			return;
 		}
@@ -141,7 +124,7 @@ public class AssignmentStatement extends Statement {
 		final Resolution value =
 				this.value.resolve(resolver).resolveValue();
 		final Resolution destination =
-				this.destination.resolve(resolver).resolveValue();
+				this.destination.resolve(resolver).resolveTarget();
 
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().value().wrapBy(
