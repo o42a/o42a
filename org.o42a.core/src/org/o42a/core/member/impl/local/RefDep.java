@@ -141,7 +141,7 @@ public final class RefDep extends Dep {
 
 		walker.refDep(object, this, this.depRef);
 
-		return resolution.toContainer();
+		return resolution.toArtifact().getContainer();
 	}
 
 }

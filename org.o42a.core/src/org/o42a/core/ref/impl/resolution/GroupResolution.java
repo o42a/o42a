@@ -19,13 +19,10 @@
 */
 package org.o42a.core.ref.impl.resolution;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.path.Path;
 import org.o42a.util.use.UserInfo;
 
 
@@ -36,18 +33,8 @@ public final class GroupResolution extends Resolution {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return materialize().value().getDefinitions().isConstant();
-	}
-
-	@Override
-	public final GroupClause toContainer() {
-		return (GroupClause) getResolved();
-	}
-
-	@Override
 	public final Artifact<?> toArtifact() {
-		return toContainer().toArtifact();
+		return toGroup().toArtifact();
 	}
 
 	@Override
@@ -56,13 +43,8 @@ public final class GroupResolution extends Resolution {
 	}
 
 	@Override
-	public Path materializationPath() {
-		return SELF_PATH;
-	}
-
-	@Override
 	public void resolveAll() {
-		toContainer().resolveAll();
+		toGroup().resolveAll();
 	}
 
 	@Override
@@ -73,6 +55,10 @@ public final class GroupResolution extends Resolution {
 		if (materialized != null) {
 			materialized.value().resolveAll(user);
 		}
+	}
+
+	private final GroupClause toGroup() {
+		return (GroupClause) getResolved();
 	}
 
 }
