@@ -101,8 +101,8 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		leftOperand().resolveValues(resolver);
-		rightOperand().resolveValues(resolver);
+		leftOperand().resolve(resolver).resolveValue();
+		rightOperand().resolve(resolver).resolveValue();
 	}
 
 	@Override

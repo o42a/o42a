@@ -190,8 +190,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		getRef().resolveAll(resolver);
-		type(resolver);
+		getRef().resolve(resolver).resolveType();
 	}
 
 	protected abstract TypeRef createReproduction(

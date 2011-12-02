@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
@@ -186,7 +186,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveValues(Resolver resolver) {
+	final void resolveValues(LocalResolver resolver) {
 
 		final Sentence<S> prerequisite = getPrerequisite();
 

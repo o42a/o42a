@@ -124,9 +124,9 @@ final class SubString extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		string().resolveValues(resolver);
-		from().resolveValues(resolver);
-		to().resolveValues(resolver);
+		string().resolve(resolver).resolveValue();
+		from().resolve(resolver).resolveValue();
+		to().resolve(resolver).resolveValue();
 	}
 
 	@Override

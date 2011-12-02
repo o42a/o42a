@@ -52,7 +52,7 @@ public final class ReusedClauseRef {
 		final Resolver resolver =
 				clause.getEnclosingScope().walkingResolver(dummyUser(), reuser);
 
-		if (this.ref.resolve(resolver) == null) {
+		if (!this.ref.resolve(resolver).isResolved()) {
 			return null;
 		}
 

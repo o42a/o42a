@@ -82,7 +82,7 @@ public final class RefLogical extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolveValues(resolver);
+		this.ref.resolve(resolver).resolveLogical();
 	}
 
 }

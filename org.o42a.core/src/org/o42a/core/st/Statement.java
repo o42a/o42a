@@ -25,7 +25,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -52,21 +52,11 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public void resolveAll(Resolver resolver) {
-		this.fullyResolved = true;
+	public void resolveImperative(LocalResolver resolver) {
+		fullyResolved();
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(resolver);
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
-
-	public void resolveValues(Resolver resolver) {
-		resolveAll(resolver);
-		getContext().fullResolution().start();
-		try {
-			fullyResolveValues(resolver);
+			fullyResolveImperative(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -91,14 +81,16 @@ public abstract class Statement extends Placed {
 		return true;
 	}
 
-	protected abstract void fullyResolve(Resolver resolver);
-
-	protected abstract void fullyResolveValues(Resolver resolver);
+	protected abstract void fullyResolveImperative(LocalResolver resolver);
 
 	protected abstract StOp createOp(LocalBuilder builder);
 
 	protected final StOp noOp(LocalBuilder builder) {
 		return noStOp(builder, this);
+	}
+
+	protected final void fullyResolved() {
+		this.fullyResolved = true;
 	}
 
 }

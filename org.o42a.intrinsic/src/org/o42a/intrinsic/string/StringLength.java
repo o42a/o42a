@@ -66,7 +66,7 @@ final class StringLength extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		string().resolveValues(resolver);
+		string().resolve(resolver).resolveValue();
 	}
 
 	@Override

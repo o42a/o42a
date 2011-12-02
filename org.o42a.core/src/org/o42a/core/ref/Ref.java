@@ -41,6 +41,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefLogical;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -150,9 +151,9 @@ public class Ref extends Statement {
 		return new RefDefiner(this, env);
 	}
 
-	public Resolution resolve(Resolver resolver) {
+	public final Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return resolve(resolver, resolver.toPathResolver());
+		return new Resolution(this, resolver);
 	}
 
 	public final Value<?> getValue() {
@@ -393,26 +394,17 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver, resolver.toFullPathResolver()).resolveAll();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
-
-		final Resolution resolution =
-				resolve(resolver, resolver.toValuePathResolver());
-
-		resolution.resolveValues(resolver);
-	}
-
-	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
-		return resolver.path(pathResolver, getPath());
+	protected void fullyResolveImperative(LocalResolver resolver) {
+		resolve(resolver).resolveValue();
 	}
 
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
 		return new RefStOp(builder, this, op(builder.host()));
+	}
+
+	final void refFullyResolved() {
+		fullyResolved();
 	}
 
 	private static ValueStructFinder vsFinder(ValueStructFinder finder) {
