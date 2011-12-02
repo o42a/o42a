@@ -72,8 +72,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		what().resolveValues(resolver);
-		with().resolveValues(resolver);
+		what().resolve(resolver).resolveValue();
+		with().resolve(resolver).resolveValue();
 	}
 
 	@Override

@@ -121,11 +121,10 @@ public class AssignmentStatement extends Statement {
 			return;
 		}
 
-		final Resolution value = this.value.resolve(resolver);
-		final Resolution destination = this.destination.resolve(resolver);
-
-		this.destination.resolveAll(resolver);
-		this.value.resolveAll(resolver);
+		final Resolution value =
+				this.value.resolve(resolver).resolveTarget();
+		final Resolution destination =
+				this.destination.resolve(resolver).resolveTarget();
 
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().type().wrapBy(
@@ -139,11 +138,10 @@ public class AssignmentStatement extends Statement {
 			return;
 		}
 
-		final Resolution value = this.value.resolve(resolver);
-		final Resolution destination = this.destination.resolve(resolver);
-
-		this.value.resolveValues(resolver);
-		this.destination.resolveValues(resolver);
+		final Resolution value =
+				this.value.resolve(resolver).resolveValue();
+		final Resolution destination =
+				this.destination.resolve(resolver).resolveValue();
 
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().value().wrapBy(

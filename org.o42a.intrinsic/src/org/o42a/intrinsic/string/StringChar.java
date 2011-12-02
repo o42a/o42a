@@ -89,8 +89,8 @@ final class StringChar extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		string().resolveValues(resolver);
-		index().resolveValues(resolver);
+		string().resolve(resolver).resolveValue();
+		index().resolve(resolver).resolveValue();
 	}
 
 	@Override

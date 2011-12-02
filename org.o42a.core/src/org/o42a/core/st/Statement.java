@@ -53,7 +53,7 @@ public abstract class Statement extends Placed {
 	public abstract Statement reproduce(Reproducer reproducer);
 
 	public void resolveAll(Resolver resolver) {
-		this.fullyResolved = true;
+		fullyResolved();
 		getContext().fullResolution().start();
 		try {
 			fullyResolve(resolver);
@@ -99,6 +99,10 @@ public abstract class Statement extends Placed {
 
 	protected final StOp noOp(LocalBuilder builder) {
 		return noStOp(builder, this);
+	}
+
+	protected final void fullyResolved() {
+		this.fullyResolved = true;
 	}
 
 }

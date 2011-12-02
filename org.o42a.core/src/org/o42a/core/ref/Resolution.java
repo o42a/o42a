@@ -36,10 +36,10 @@ public final class Resolution implements ScopeInfo {
 
 	private static final byte RESOLUTION = 0x01;
 	private static final byte FULL_RESOLUTION = 0x02 | RESOLUTION;
-	private static final byte VALUES_RESOLUTION = 0x04 | FULL_RESOLUTION;
+	private static final byte VALUE_RESOLUTION = 0x04 | FULL_RESOLUTION;
 
-	private static final byte ABSENT = 0x10;
-	private static final byte ERROR = 0x20;
+	private static final byte ABSENT = 0x20;
+	private static final byte ERROR = 0x40;
 
 	private static final byte NO_VALUE = ERROR | ABSENT;
 
@@ -140,7 +140,7 @@ public final class Resolution implements ScopeInfo {
 		return artifact.materialize();
 	}
 
-	public final void resolveAll() {
+	public final Resolution resolveAll() {
 
 		final Clause clause = resolve(FULL_RESOLUTION).toClause();
 
@@ -149,16 +149,57 @@ public final class Resolution implements ScopeInfo {
 		} else {
 			toArtifact().resolveAll();
 		}
+
+		return this;
 	}
 
-	public final void resolveValues() {
+	public final Resolution resolveTarget() {
+
+		final Clause clause = resolve(FULL_RESOLUTION).toClause();
+
+		if (clause != null) {
+			clause.resolveAll();
+		} else {
+			toArtifact().resolveAll();
+		}
+
+		return this;
+	}
+
+	public final Resolution resolveType() {
 
 		final Obj materialized =
-				resolve(VALUES_RESOLUTION).toArtifact().materialize();
+				resolve(FULL_RESOLUTION).toArtifact().materialize();
+
+		if (materialized != null) {
+			materialized.type().useBy(getResolver()).resolveAll();
+		}
+
+		return this;
+	}
+
+	public final Resolution resolveLogical() {
+
+		final Obj materialized =
+				resolve(VALUE_RESOLUTION).toArtifact().materialize();
 
 		if (materialized != null) {
 			materialized.value().resolveAll(getResolver());
 		}
+
+		return this;
+	}
+
+	public final Resolution resolveValue() {
+
+		final Obj materialized =
+				resolve(VALUE_RESOLUTION).toArtifact().materialize();
+
+		if (materialized != null) {
+			materialized.value().resolveAll(getResolver());
+		}
+
+		return this;
 	}
 
 	@Override
@@ -207,6 +248,9 @@ public final class Resolution implements ScopeInfo {
 				return this.resolved;
 			}
 		}
+		if ((flags & FULL_RESOLUTION) != 0) {
+			getRef().refFullyResolved();
+		}
 
 		final BoundPath path = getRef().getPath();
 		final Resolver resolver = getResolver();
@@ -214,7 +258,7 @@ public final class Resolution implements ScopeInfo {
 
 		if ((flags & FULL_RESOLUTION) != FULL_RESOLUTION) {
 			pathResolver = resolver.toPathResolver();
-		} else if ((flags & VALUES_RESOLUTION) == VALUES_RESOLUTION) {
+		} else if ((flags & VALUE_RESOLUTION) == VALUE_RESOLUTION) {
 			pathResolver = resolver.toValuePathResolver();
 		} else {
 			pathResolver = resolver.toFullPathResolver();

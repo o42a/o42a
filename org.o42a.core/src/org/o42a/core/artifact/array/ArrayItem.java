@@ -77,7 +77,7 @@ public final class ArrayItem extends ArrayElement {
 	}
 
 	public void resolveAll(Resolver resolver) {
-		getValueRef().resolveValues(resolver);
+		getValueRef().resolve(resolver).resolveValue();
 	}
 
 	@Override
