@@ -28,11 +28,11 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.GroupClause;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.impl.resolution.*;
+import org.o42a.core.ref.impl.resolution.ArtifactResolution;
+import org.o42a.core.ref.impl.resolution.ErrorResolution;
+import org.o42a.core.ref.impl.resolution.GroupResolution;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -164,12 +164,6 @@ public class Resolver implements UserInfo, LocationInfo {
 			return noResolution(location);
 		}
 
-		final LocalScope local = resolved.toLocal();
-
-		if (local != null && local == resolved.getScope().toLocal()) {
-			return localResolution(location, local);
-		}
-
 		final Clause clause = resolved.toClause();
 
 		if (clause != null) {
@@ -185,32 +179,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		if (resolved == null) {
 			return noResolution(location);
 		}
-
-		final Obj object = resolved.toObject();
-
-		if (object != null) {
-			return objectResolution(location, object);
-		}
-
 		return new ArtifactResolution(resolved);
-	}
-
-	final Resolution objectResolution(
-			LocationInfo location,
-			Obj resolved) {
-		if (resolved == null) {
-			return noResolution(location);
-		}
-		return new ObjectResolution(resolved);
-	}
-
-	final Resolution localResolution(
-			LocationInfo location,
-			LocalScope resolved) {
-		if (resolved == null) {
-			return noResolution(location);
-		}
-		return new LocalResolution(resolved);
 	}
 
 	final Resolution clauseResolution(
@@ -226,7 +195,9 @@ public class Resolver implements UserInfo, LocationInfo {
 			return new GroupResolution(group);
 		}
 
-		return objectResolution(location, resolved.toPlainClause().getObject());
+		return artifactResolution(
+				location,
+				resolved.toPlainClause().getObject());
 	}
 
 }

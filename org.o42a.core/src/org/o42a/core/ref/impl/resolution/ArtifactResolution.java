@@ -19,13 +19,9 @@
 */
 package org.o42a.core.ref.impl.resolution;
 
-import static org.o42a.core.ref.path.Path.materializePath;
-
-import org.o42a.core.Container;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.path.Path;
 import org.o42a.util.use.UserInfo;
 
 
@@ -36,16 +32,6 @@ public final class ArtifactResolution extends Resolution {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return materialize().value().getDefinitions().isConstant();
-	}
-
-	@Override
-	public final Container toContainer() {
-		return toArtifact().getContainer();
-	}
-
-	@Override
 	public final Artifact<?> toArtifact() {
 		return (Artifact<?>) getResolved();
 	}
@@ -53,11 +39,6 @@ public final class ArtifactResolution extends Resolution {
 	@Override
 	public final Obj materialize() {
 		return toArtifact().materialize();
-	}
-
-	@Override
-	public final Path materializationPath() {
-		return materializePath();
 	}
 
 	@Override
