@@ -22,13 +22,14 @@ package org.o42a.core.ref.impl.resolution;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.use.UserInfo;
 
 
 public final class ArtifactResolution extends Resolution {
 
-	public ArtifactResolution(Artifact<?> resolved) {
-		super(resolved);
+	public ArtifactResolution(Resolver resolver, Artifact<?> resolved) {
+		super(resolver, resolved);
 	}
 
 	@Override

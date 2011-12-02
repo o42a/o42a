@@ -120,7 +120,7 @@ class HeaderStatement extends Statement {
 
 			final Ref ref = getHeader().getRef();
 			final Directive directive =
-					ref.resolve(resolver).toDirective(resolver);
+					ref.resolve(resolver).toDirective();
 
 			if (directive == null) {
 				notDirective(getLogger(), this);
