@@ -41,6 +41,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefLogical;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -393,12 +394,7 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver).resolveAll();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 		resolve(resolver).resolveValue();
 	}
 

@@ -83,12 +83,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected void fullyResolveValues(Resolver resolver) {
+	protected void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
