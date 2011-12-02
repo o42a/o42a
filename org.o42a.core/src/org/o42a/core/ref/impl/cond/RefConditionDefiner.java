@@ -68,7 +68,7 @@ final class RefConditionDefiner extends Definer {
 			return null;
 		}
 
-		final Directive directive = resolution.toDirective(resolver);
+		final Directive directive = resolution.toDirective();
 
 		if (directive == null) {
 			return null;

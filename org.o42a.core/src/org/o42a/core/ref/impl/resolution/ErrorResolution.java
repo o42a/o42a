@@ -31,8 +31,8 @@ import org.o42a.util.use.UserInfo;
 
 public final class ErrorResolution extends Resolution {
 
-	public ErrorResolution(ScopeInfo location) {
-		super(location);
+	public ErrorResolution(Resolver resolver, ScopeInfo location) {
+		super(resolver, location);
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public final class ErrorResolution extends Resolution {
 	}
 
 	@Override
-	public final Directive toDirective(Resolver resolver) {
+	public final Directive toDirective() {
 		return SKIP_DIRECTIVE;
 	}
 

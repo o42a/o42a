@@ -23,13 +23,14 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.GroupClause;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.util.use.UserInfo;
 
 
 public final class GroupResolution extends Resolution {
 
-	public GroupResolution(GroupClause resolved) {
-		super(resolved);
+	public GroupResolution(Resolver resolver, GroupClause resolved) {
+		super(resolver, resolved);
 	}
 
 	@Override
