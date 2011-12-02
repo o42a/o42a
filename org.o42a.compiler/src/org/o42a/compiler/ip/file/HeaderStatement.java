@@ -119,8 +119,7 @@ class HeaderStatement extends Statement {
 		public Instruction toInstruction(Resolver resolver) {
 
 			final Ref ref = getHeader().getRef();
-			final Directive directive =
-					ref.resolve(resolver).toDirective();
+			final Directive directive = ref.resolve(resolver).toDirective();
 
 			if (directive == null) {
 				notDirective(getLogger(), this);

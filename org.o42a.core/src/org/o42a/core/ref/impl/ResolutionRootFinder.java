@@ -140,7 +140,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(dummyUser(), this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution != null;
+		return resolution.isResolved();
 	}
 
 	@Override
@@ -163,7 +163,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final Resolution ancestorResolution =
 				ancestor.getRescopedRef().resolve(ancestorResolver);
 
-		return ancestorResolution != null;
+		return ancestorResolution.isResolved();
 	}
 
 	@Override
