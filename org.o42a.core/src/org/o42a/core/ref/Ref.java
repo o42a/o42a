@@ -30,6 +30,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
@@ -95,7 +96,14 @@ public class Ref extends Statement {
 	}
 
 	public final boolean isConstant() {
-		return isStatic() && getResolution().isConstant();
+		if (!isStatic()) {
+			return false;
+		}
+
+		final Definitions definitions =
+				getResolution().materialize().value().getDefinitions();
+
+		return definitions.isConstant();
 	}
 
 	public final boolean isKnownStatic() {
