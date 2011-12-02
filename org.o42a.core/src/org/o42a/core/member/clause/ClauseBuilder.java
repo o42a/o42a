@@ -233,7 +233,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 				dummyUser(),
 				outcomeBuilder);
 
-		if (outcome.resolve(resolver) == null) {
+		if (!outcome.resolve(resolver).isResolved()) {
 			return Path.SELF_PATH;
 		}
 

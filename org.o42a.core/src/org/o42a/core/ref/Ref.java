@@ -150,9 +150,9 @@ public class Ref extends Statement {
 		return new RefDefiner(this, env);
 	}
 
-	public Resolution resolve(Resolver resolver) {
+	public final Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return resolve(resolver, resolver.toPathResolver());
+		return new Resolution(this, resolver);
 	}
 
 	public final Value<?> getValue() {
@@ -394,20 +394,12 @@ public class Ref extends Statement {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		resolve(resolver, resolver.toFullPathResolver()).resolveAll();
+		resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-
-		final Resolution resolution =
-				resolve(resolver, resolver.toValuePathResolver());
-
-		resolution.resolveValues(resolver);
-	}
-
-	private Resolution resolve(Resolver resolver, PathResolver pathResolver) {
-		return resolver.path(pathResolver, getPath());
+		resolve(resolver).resolveValues();
 	}
 
 	@Override

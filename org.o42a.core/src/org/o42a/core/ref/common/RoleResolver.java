@@ -50,7 +50,7 @@ public class RoleResolver implements PathWalker {
 				scope.walkingResolver(dummyUser(), roleResolver);
 		final Resolution resolution = ref.resolve(resolver);
 
-		if (resolution == null) {
+		if (!resolution.isResolved()) {
 			return NONE;
 		}
 
@@ -165,7 +165,7 @@ public class RoleResolver implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(dummyUser(), this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution != null;
+		return resolution.isResolved();
 	}
 
 	@Override

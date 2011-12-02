@@ -19,26 +19,42 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ScopeInfo;
-import org.o42a.core.Scoped;
+import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.clause.Clause;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolution;
+import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.*;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.UserInfo;
 
 
-public abstract class Resolution implements ScopeInfo {
+public final class Resolution implements ScopeInfo {
 
+	private static final byte RESOLUTION = 0x01;
+	private static final byte FULL_RESOLUTION = 0x02 | RESOLUTION;
+	private static final byte VALUES_RESOLUTION = 0x04 | FULL_RESOLUTION;
+
+	private static final byte ABSENT = 0x10;
+	private static final byte ERROR = 0x20;
+
+	private static final byte NO_VALUE = ERROR | ABSENT;
+
+	private final Ref ref;
 	private final Resolver resolver;
-	private final ScopeInfo resolved;
+	private Container resolved;
+	private byte flags;
 
-	public Resolution(Resolver resolver, ScopeInfo location) {
+	Resolution(Ref ref, Resolver resolver) {
+		this.ref = ref;
 		this.resolver = resolver;
-		this.resolved = location;
+	}
+
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	public final Resolver getResolver() {
@@ -47,31 +63,41 @@ public abstract class Resolution implements ScopeInfo {
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.resolved.getContext();
+		return getResolver().getContext();
 	}
 
 	@Override
-	public Loggable getLoggable() {
-		return this.resolved.getLoggable();
+	public final Loggable getLoggable() {
+		return getResolver().getLoggable();
 	}
 
 	@Override
 	public final Scope getScope() {
-		return this.resolved.getScope();
+		return getResolved().getScope();
 	}
 
-	public boolean isError() {
-		return false;
+	public final boolean isError() {
+		return checkFlags(ERROR) != 0;
+	}
+
+	public final boolean isResolved() {
+		return checkFlags(ABSENT) == 0;
 	}
 
 	public final boolean isFalse() {
 		return toObject() == getContext().getFalse();
 	}
 
-	public abstract Artifact<?> toArtifact();
+	public final Clause toClause() {
+		return getResolved().toClause();
+	}
+
+	public final Artifact<?> toArtifact() {
+		return getResolved().toArtifact();
+	}
 
 	public final Obj toObject() {
-		return toArtifact().toObject();
+		return getResolved().toObject();
 	}
 
 	public final Link toLink() {
@@ -103,11 +129,37 @@ public abstract class Resolution implements ScopeInfo {
 		return value.getCompilerValue();
 	}
 
-	public abstract Obj materialize();
+	public final Obj materialize() {
 
-	public abstract void resolveAll();
+		final Artifact<?> artifact = toArtifact();
 
-	public abstract void resolveValues(UserInfo user);
+		if (artifact == null) {
+			return null;
+		}
+
+		return artifact.materialize();
+	}
+
+	public final void resolveAll() {
+
+		final Clause clause = resolve(FULL_RESOLUTION).toClause();
+
+		if (clause != null) {
+			clause.resolveAll();
+		} else {
+			toArtifact().resolveAll();
+		}
+	}
+
+	public final void resolveValues() {
+
+		final Obj materialized =
+				resolve(VALUES_RESOLUTION).toArtifact().materialize();
+
+		if (materialized != null) {
+			materialized.value().resolveAll(getResolver());
+		}
+	}
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
@@ -131,11 +183,59 @@ public abstract class Resolution implements ScopeInfo {
 
 	@Override
 	public String toString() {
-		return this.resolved.toString();
+		if (this.resolved != null) {
+			return this.resolved.toString();
+		}
+		return "Resolution[" + this.ref + ']';
 	}
 
-	protected final ScopeInfo getResolved() {
-		return this.resolved;
+	private final Container getResolved() {
+		return resolve(RESOLUTION);
+	}
+
+	private final int checkFlags(byte flag) {
+		getResolved();
+		return this.flags & flag;
+	}
+
+	private final Container resolve(byte flags) {
+		if (this.flags != 0) {
+			if ((this.flags & flags) == flags) {
+				return this.resolved;
+			}
+			if ((this.flags & NO_VALUE) != 0) {
+				return this.resolved;
+			}
+		}
+
+		final BoundPath path = getRef().getPath();
+		final Resolver resolver = getResolver();
+		final PathResolver pathResolver;
+
+		if ((flags & FULL_RESOLUTION) != FULL_RESOLUTION) {
+			pathResolver = resolver.toPathResolver();
+		} else if ((flags & VALUES_RESOLUTION) == VALUES_RESOLUTION) {
+			pathResolver = resolver.toValuePathResolver();
+		} else {
+			pathResolver = resolver.toFullPathResolver();
+		}
+
+		final PathResolution pathResolution = path.walk(
+				pathResolver.resolveBy(resolver),
+				resolver.getWalker());
+
+		if (!pathResolution.isResolved()) {
+			if (pathResolution.isError()) {
+				this.flags = ERROR;
+				return this.resolved = getContext().getFalse();
+			}
+			this.flags = ABSENT;
+			return null;
+		}
+
+		this.flags = flags;
+
+		return this.resolved = pathResolution.getResult();
 	}
 
 }

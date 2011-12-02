@@ -26,14 +26,8 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.Scoped;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.GroupClause;
-import org.o42a.core.ref.impl.resolution.ArtifactResolution;
-import org.o42a.core.ref.impl.resolution.ErrorResolution;
-import org.o42a.core.ref.impl.resolution.GroupResolution;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -100,21 +94,6 @@ public class Resolver implements UserInfo, LocationInfo {
 		return getScope().newResolver(this);
 	}
 
-	public final Resolution path(PathResolver resolver, BoundPath path) {
-
-		final PathResolution pathResolution =
-				path.walk(resolver.resolveBy(this), getWalker());
-
-		if (!pathResolution.isResolved()) {
-			if (pathResolution.isError()) {
-				return noResolution(path);
-			}
-			return null;
-		}
-
-		return containerResolution(path, pathResolution.getResult());
-	}
-
 	public final PathResolver toPathResolver() {
 		return pathResolver(getScope(), this);
 	}
@@ -136,53 +115,6 @@ public class Resolver implements UserInfo, LocationInfo {
 			return "DummyResolver[" + this.scope + ']';
 		}
 		return "Resolver[" + this.scope + " by " + this.user + ']';
-	}
-
-	private final Resolution containerResolution(
-			LocationInfo location,
-			Container resolved) {
-		if (resolved == null) {
-			return noResolution(location);
-		}
-
-		final Clause clause = resolved.toClause();
-
-		if (clause != null) {
-			return clauseResolution(location, clause);
-		}
-
-		return artifactResolution(location, resolved.toArtifact());
-	}
-
-	private final Resolution artifactResolution(
-			LocationInfo location,
-			Artifact<?> resolved) {
-		if (resolved == null) {
-			return noResolution(location);
-		}
-		return new ArtifactResolution(this, resolved);
-	}
-
-	private final Resolution clauseResolution(
-			LocationInfo location,
-			Clause resolved) {
-		if (resolved == null) {
-			return noResolution(location);
-		}
-
-		final GroupClause group = resolved.toGroupClause();
-
-		if (group != null) {
-			return new GroupResolution(this, group);
-		}
-
-		return artifactResolution(
-				location,
-				resolved.toPlainClause().getObject());
-	}
-
-	private final Resolution noResolution(LocationInfo location) {
-		return new ErrorResolution(this, new Scoped(location, getScope()));
 	}
 
 	private static final class Factory extends ResolverFactory<Resolver> {
