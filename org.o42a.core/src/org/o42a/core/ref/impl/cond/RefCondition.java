@@ -67,12 +67,12 @@ public final class RefCondition extends Statement {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolveAll(resolver);
+		this.ref.resolve(resolver).resolveAll();
 	}
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		this.ref.resolveValues(resolver);
+		this.ref.resolve(resolver).resolveLogical();
 	}
 
 	@Override

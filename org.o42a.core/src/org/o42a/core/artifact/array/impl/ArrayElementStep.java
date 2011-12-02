@@ -95,7 +95,7 @@ final class ArrayElementStep extends Step {
 		final Resolution indexResolution = indexRef.resolve(indexResolver);
 
 		if (resolver.isFullResolution()) {
-			indexRef.resolveValues(indexResolver);
+			indexRef.resolve(indexResolver).resolveValue();
 		}
 
 		if (indexResolution.isError()) {

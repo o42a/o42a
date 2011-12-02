@@ -72,7 +72,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		input().resolveValues(resolver);
+		input().resolve(resolver).resolveValue();
 	}
 
 	@Override

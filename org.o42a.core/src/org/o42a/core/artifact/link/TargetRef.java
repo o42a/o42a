@@ -159,7 +159,7 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		this.typeRef.resolveAll(resolver);
-		this.ref.resolveAll(resolver);
+		this.ref.resolve(resolver).resolveTarget();
 	}
 
 	private static final class FullLogical extends Logical {
@@ -211,8 +211,9 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 		@Override
 		protected void fullyResolve(Resolver resolver) {
 			this.targetRef.resolveAll(resolver);
-			this.targetRef.getRef().resolveValues(
-					this.targetRef.getPrefix().rescope(resolver));
+			this.targetRef.getRef()
+			.resolve(this.targetRef.getPrefix().rescope(resolver))
+			.resolveLogical();
 		}
 
 	}

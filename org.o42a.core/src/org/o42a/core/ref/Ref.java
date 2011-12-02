@@ -399,12 +399,16 @@ public class Ref extends Statement {
 
 	@Override
 	protected void fullyResolveValues(Resolver resolver) {
-		resolve(resolver).resolveValues();
+		resolve(resolver).resolveValue();
 	}
 
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
 		return new RefStOp(builder, this, op(builder.host()));
+	}
+
+	final void refFullyResolved() {
+		fullyResolved();
 	}
 
 	private static ValueStructFinder vsFinder(ValueStructFinder finder) {
