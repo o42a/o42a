@@ -100,10 +100,6 @@ public class Resolver implements UserInfo, LocationInfo {
 		return getScope().newResolver(this);
 	}
 
-	public final Resolution noResolution(LocationInfo location) {
-		return new ErrorResolution(new Scoped(location, getScope()));
-	}
-
 	public final Resolution path(PathResolver resolver, BoundPath path) {
 
 		final PathResolution pathResolution =
@@ -142,22 +138,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		return "Resolver[" + this.scope + " by " + this.user + ']';
 	}
 
-	private static final class Factory extends ResolverFactory<Resolver> {
-
-		Factory(Scope scope) {
-			super(scope);
-		}
-
-		@Override
-		protected Resolver createResolver(
-				UserInfo user,
-				PathWalker walker) {
-			return new Resolver(getScope(), user, walker);
-		}
-
-	}
-
-	final Resolution containerResolution(
+	private final Resolution containerResolution(
 			LocationInfo location,
 			Container resolved) {
 		if (resolved == null) {
@@ -173,16 +154,16 @@ public class Resolver implements UserInfo, LocationInfo {
 		return artifactResolution(location, resolved.toArtifact());
 	}
 
-	final Resolution artifactResolution(
+	private final Resolution artifactResolution(
 			LocationInfo location,
 			Artifact<?> resolved) {
 		if (resolved == null) {
 			return noResolution(location);
 		}
-		return new ArtifactResolution(resolved);
+		return new ArtifactResolution(this, resolved);
 	}
 
-	final Resolution clauseResolution(
+	private final Resolution clauseResolution(
 			LocationInfo location,
 			Clause resolved) {
 		if (resolved == null) {
@@ -192,12 +173,31 @@ public class Resolver implements UserInfo, LocationInfo {
 		final GroupClause group = resolved.toGroupClause();
 
 		if (group != null) {
-			return new GroupResolution(group);
+			return new GroupResolution(this, group);
 		}
 
 		return artifactResolution(
 				location,
 				resolved.toPlainClause().getObject());
+	}
+
+	private final Resolution noResolution(LocationInfo location) {
+		return new ErrorResolution(this, new Scoped(location, getScope()));
+	}
+
+	private static final class Factory extends ResolverFactory<Resolver> {
+
+		Factory(Scope scope) {
+			super(scope);
+		}
+
+		@Override
+		protected Resolver createResolver(
+				UserInfo user,
+				PathWalker walker) {
+			return new Resolver(getScope(), user, walker);
+		}
+
 	}
 
 }
