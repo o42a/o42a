@@ -19,15 +19,12 @@
 */
 package org.o42a.core.ref.impl.resolution;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.value.Directive.SKIP_DIRECTIVE;
 
-import org.o42a.core.Container;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Directive;
 import org.o42a.util.use.UserInfo;
 
@@ -44,16 +41,6 @@ public final class ErrorResolution extends Resolution {
 	}
 
 	@Override
-	public boolean isConstant() {
-		return true;
-	}
-
-	@Override
-	public final Container toContainer() {
-		return toArtifact();
-	}
-
-	@Override
 	public final Obj toArtifact() {
 		return getContext().getFalse();
 	}
@@ -66,11 +53,6 @@ public final class ErrorResolution extends Resolution {
 	@Override
 	public final Obj materialize() {
 		return toArtifact();
-	}
-
-	@Override
-	public final Path materializationPath() {
-		return SELF_PATH;
 	}
 
 	@Override
