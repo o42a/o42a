@@ -21,7 +21,6 @@ package org.o42a.core.ref;
 
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.core.ref.path.PathResolver.valuePathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.core.Container;
@@ -98,12 +97,8 @@ public class Resolver implements UserInfo, LocationInfo {
 		return pathResolver(getScope(), this);
 	}
 
-	public final PathResolver toFullPathResolver() {
-		return fullPathResolver(getScope(), this);
-	}
-
-	public final PathResolver toValuePathResolver() {
-		return valuePathResolver(getScope(), this);
+	public final PathResolver toFullPathResolver(RefUsage usage) {
+		return fullPathResolver(getScope(), this, usage);
 	}
 
 	@Override

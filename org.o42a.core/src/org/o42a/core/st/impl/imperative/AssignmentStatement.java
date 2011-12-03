@@ -124,7 +124,7 @@ public class AssignmentStatement extends Statement {
 		final Resolution value =
 				this.value.resolve(resolver).resolveValue();
 		final Resolution destination =
-				this.destination.resolve(resolver).resolveTarget();
+				this.destination.resolve(resolver).resolveAssignee();
 
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().value().wrapBy(
