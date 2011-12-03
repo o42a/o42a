@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.RefUsage.RESOLUTION_REF_USAGE;
+
 import org.o42a.core.PlaceInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -146,7 +148,7 @@ public final class PrefixPath {
 
 	public final void resolveAll(Resolver resolver) {
 		bind(getStart()).walk(
-				resolver.toFullPathResolver(),
+				resolver.toFullPathResolver(RESOLUTION_REF_USAGE),
 				resolver.getWalker());
 	}
 

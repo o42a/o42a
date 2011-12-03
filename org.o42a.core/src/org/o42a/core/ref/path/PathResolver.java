@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.util.use.User;
 import org.o42a.util.use.UserInfo;
 
@@ -29,29 +30,24 @@ public final class PathResolver implements UserInfo {
 	public static PathResolver pathResolver(
 			Scope pathStart,
 			UserInfo user) {
-		return new PathResolver(pathStart, user.toUser(), (byte) -1);
+		return new PathResolver(pathStart, user.toUser(), null);
 	}
 
 	public static PathResolver fullPathResolver(
 			Scope pathStart,
-			UserInfo user) {
-		return new PathResolver(pathStart, user.toUser(), (byte) 0);
-	}
-
-	public static PathResolver valuePathResolver(
-			Scope pathStart,
-			UserInfo user) {
-		return new PathResolver(pathStart, user.toUser(), (byte) 1);
+			UserInfo user,
+			RefUsage usage) {
+		return new PathResolver(pathStart, user.toUser(), usage);
 	}
 
 	private final Scope pathStart;
 	private final User<?> user;
-	private final byte fullResolution;
+	private final RefUsage usage;
 
-	private PathResolver(Scope pathStart, User<?> user, byte fullResolution) {
+	private PathResolver(Scope pathStart, User<?> user, RefUsage usage) {
 		this.pathStart = pathStart;
 		this.user = user;
-		this.fullResolution = fullResolution;
+		this.usage = usage;
 	}
 
 	public final Scope getPathStart() {
@@ -59,11 +55,11 @@ public final class PathResolver implements UserInfo {
 	}
 
 	public final boolean isFullResolution() {
-		return this.fullResolution >= 0;
+		return this.usage != null;
 	}
 
-	public final boolean isValueResolution() {
-		return this.fullResolution > 0;
+	public final RefUsage getUsage() {
+		return this.usage;
 	}
 
 	@Override
@@ -78,7 +74,7 @@ public final class PathResolver implements UserInfo {
 		return new PathResolver(
 				getPathStart(),
 				user.toUser(),
-				this.fullResolution);
+				this.usage);
 	}
 
 	@Override
@@ -90,13 +86,13 @@ public final class PathResolver implements UserInfo {
 		final StringBuilder out = new StringBuilder();
 
 		if (isFullResolution()) {
-			if (isValueResolution()) {
-				out.append("Value");
-			} else {
-				out.append("Full");
-			}
+			out.append("FullPathResolver[");
+			out.append(this.usage).append(" by ");
+		} else {
+			out.append("PathResolver[");
 		}
-		out.append("PathResolver[").append(this.user).append(']');
+		out.append(this.user);
+		out.append(']');
 
 		return out.toString();
 	}

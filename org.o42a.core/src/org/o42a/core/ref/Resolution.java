@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ref.RefUsage.*;
+
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
@@ -34,10 +36,7 @@ import org.o42a.util.log.Loggable;
 
 public final class Resolution implements ScopeInfo {
 
-	private static final byte RESOLUTION = 0x01;
-	private static final byte FULL_RESOLUTION = 0x02 | RESOLUTION;
-	private static final byte VALUE_RESOLUTION = 0x04 | FULL_RESOLUTION;
-
+	private static final byte RESOLVED = 0x01;
 	private static final byte ABSENT = 0x20;
 	private static final byte ERROR = 0x40;
 
@@ -141,62 +140,40 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	public final Resolution resolveAll() {
-
-		final Clause clause = resolve(FULL_RESOLUTION).toClause();
-
-		if (clause != null) {
-			clause.resolveAll();
-		} else {
-			toArtifact().resolveAll();
-		}
-
-		return this;
+		return resolveAll(RESOLUTION_REF_USAGE);
 	}
 
 	public final Resolution resolveTarget() {
+		return resolveAll(TARGET_REF_USAGE);
+	}
 
-		final Clause clause = resolve(FULL_RESOLUTION).toClause();
-
-		if (clause != null) {
-			clause.resolveAll();
-		} else {
-			toArtifact().resolveAll();
-		}
-
-		return this;
+	public final Resolution resolveAssignee() {
+		return resolveAll(ASSIGNEE_REF_USAGE);
 	}
 
 	public final Resolution resolveType() {
-
-		final Obj materialized =
-				resolve(FULL_RESOLUTION).toArtifact().materialize();
-
-		if (materialized != null) {
-			materialized.type().useBy(getResolver()).resolveAll();
-		}
-
-		return this;
+		return resolveAll(TYPE_REF_USAGE);
 	}
 
 	public final Resolution resolveLogical() {
-
-		final Obj materialized =
-				resolve(VALUE_RESOLUTION).toArtifact().materialize();
-
-		if (materialized != null) {
-			materialized.value().resolveAll(getResolver());
-		}
-
-		return this;
+		return resolveAll(LOGICAL_REF_USAGE);
 	}
 
 	public final Resolution resolveValue() {
+		return resolveAll(VALUE_REF_USAGE);
+	}
 
-		final Obj materialized =
-				resolve(VALUE_RESOLUTION).toArtifact().materialize();
+	public final Resolution resolveAll(RefUsage usage) {
+		getRef().refFullyResolved();
 
-		if (materialized != null) {
-			materialized.value().resolveAll(getResolver());
+		if ((this.flags & NO_VALUE) == 0) {
+
+			final Container resolved =
+					resolve(getResolver().toFullPathResolver(usage));
+
+			if (resolved != null) {
+				usage.fullyResolve(this, resolved);
+			}
 		}
 
 		return this;
@@ -231,7 +208,10 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	private final Container getResolved() {
-		return resolve(RESOLUTION);
+		if (this.flags != 0) {
+			return this.resolved;
+		}
+		return resolve(getResolver().toPathResolver());
 	}
 
 	private final int checkFlags(byte flag) {
@@ -239,31 +219,10 @@ public final class Resolution implements ScopeInfo {
 		return this.flags & flag;
 	}
 
-	private final Container resolve(byte flags) {
-		if (this.flags != 0) {
-			if ((this.flags & flags) == flags) {
-				return this.resolved;
-			}
-			if ((this.flags & NO_VALUE) != 0) {
-				return this.resolved;
-			}
-		}
-		if ((flags & FULL_RESOLUTION) != 0) {
-			getRef().refFullyResolved();
-		}
+	private final Container resolve(PathResolver pathResolver) {
 
-		final BoundPath path = getRef().getPath();
 		final Resolver resolver = getResolver();
-		final PathResolver pathResolver;
-
-		if ((flags & FULL_RESOLUTION) != FULL_RESOLUTION) {
-			pathResolver = resolver.toPathResolver();
-		} else if ((flags & VALUE_RESOLUTION) == VALUE_RESOLUTION) {
-			pathResolver = resolver.toValuePathResolver();
-		} else {
-			pathResolver = resolver.toFullPathResolver();
-		}
-
+		final BoundPath path = getRef().getPath();
 		final PathResolution pathResolution = path.walk(
 				pathResolver.resolveBy(resolver),
 				resolver.getWalker());
@@ -277,7 +236,7 @@ public final class Resolution implements ScopeInfo {
 			return null;
 		}
 
-		this.flags = flags;
+		this.flags = RESOLVED;
 
 		return this.resolved = pathResolution.getResult();
 	}
