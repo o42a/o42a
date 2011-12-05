@@ -68,11 +68,6 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

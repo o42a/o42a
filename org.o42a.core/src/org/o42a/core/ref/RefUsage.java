@@ -22,8 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.core.Container;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.util.use.AllUsages;
-import org.o42a.util.use.Usage;
+import org.o42a.util.use.*;
 
 
 public abstract class RefUsage extends Usage<RefUsage> {
@@ -37,20 +36,36 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new ValueUsage("RefValue");
 	public static final RefUsage TYPE_REF_USAGE =
 			new TypeUsage("RefType");
+	public static final RefUsage CONTAINER_REF_USAGE =
+			new ResolutionUsage("RefContainer");
 	public static final RefUsage TARGET_REF_USAGE =
 			new ResolutionUsage("RefTarget");
 	public static final RefUsage ASSIGNEE_REF_USAGE =
 			new ResolutionUsage("RefAssignee");
-	public static final RefUsage RESOLUTION_REF_USAGE =
-			new ResolutionUsage("RefResolution");
 
-	protected abstract void fullyResolve(
-			Resolution resolution,
-			Container resolved);
+	public static Uses<RefUsage> alwaysUsed() {
+		return ALL_REF_USAGES.alwaysUsed();
+	}
+
+	public static Uses<RefUsage> neverUsed() {
+		return ALL_REF_USAGES.neverUsed();
+	}
+
+	public static Usable<RefUsage> usable(Object used) {
+		return ALL_REF_USAGES.usable(used);
+	}
+
+	public static Usable<RefUsage> usable(String name, Object used) {
+		return ALL_REF_USAGES.usable(name, used);
+	}
 
 	private RefUsage(String name) {
 		super(ALL_REF_USAGES, name);
 	}
+
+	protected abstract void fullyResolve(
+			Resolution resolution,
+			Container resolved);
 
 	private static final class ValueUsage extends RefUsage {
 
@@ -107,4 +122,5 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 	}
+
 }

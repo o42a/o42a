@@ -33,6 +33,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -72,6 +73,11 @@ public class MemberStep extends Step {
 		}
 
 		return field.getArtifactKind().isObject();
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override

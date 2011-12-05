@@ -163,7 +163,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 				this.reproducer.distributeBy(distributor));
 	}
 
-	private final class ComparisonResult extends BuiltinObject {
+	private static final class ComparisonResult extends BuiltinObject {
 
 		private final ComparisonExpression ref;
 		private MemberKey comparisonKey;
@@ -177,7 +177,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 		public Value<?> calculateBuiltin(Resolver resolver) {
 			resolveMembers(false);// Initialize comparisonKey.
 
-			if (hasError()) {
+			if (this.ref.hasError()) {
 				return falseValue();
 			}
 
@@ -203,7 +203,6 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
-			phrase(distribute()).resolve(resolver).resolveAll();
 
 			final Field<?> field =
 					resolver.getScope()

@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -53,6 +54,11 @@ public final class MaterializerStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override

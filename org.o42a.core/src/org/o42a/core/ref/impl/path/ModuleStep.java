@@ -31,6 +31,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -57,6 +58,11 @@ public final class ModuleStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override

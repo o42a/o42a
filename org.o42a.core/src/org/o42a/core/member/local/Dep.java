@@ -29,6 +29,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 
 
@@ -45,6 +46,16 @@ public abstract class Dep extends Step {
 	@Override
 	public final PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
+	}
+
+	@Override
+	public final boolean isMaterial() {
+		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	public final DepKind getDepKind() {
