@@ -115,10 +115,6 @@ public abstract class ObjectConstructor extends Placed {
 
 	protected abstract Obj createObject();
 
-	protected Obj propagateObject(Scope scope, Obj sample) {
-		return new Propagated(scope, this, sample);
-	}
-
 	private Obj propagate(Scope scope) {
 		if (this.propagated != null) {
 
@@ -129,7 +125,7 @@ public abstract class ObjectConstructor extends Placed {
 			}
 		}
 
-		return propagateObject(scope, getConstructed());
+		return new Propagated(scope, this, getConstructed());
 	}
 
 	private void pinPropagated(Propagated propagated) {

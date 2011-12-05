@@ -34,6 +34,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -54,6 +55,11 @@ public final class ParentLocalStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
@@ -124,6 +130,7 @@ public final class ParentLocalStep extends Step {
 		final Container enclosingContainer =
 				this.object.getEnclosingContainer();
 		final Ref ref = rebuilder.restPath()
+				.materialize()
 				.bind(rebuilder, enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
 

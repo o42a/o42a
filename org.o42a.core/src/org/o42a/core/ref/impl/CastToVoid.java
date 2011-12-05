@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
@@ -49,6 +50,11 @@ final class CastToVoid extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.LOGICAL_REF_USAGE;
 	}
 
 	@Override

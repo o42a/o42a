@@ -31,9 +31,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -58,6 +56,11 @@ final class ArrayElementStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return false;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.VALUE_REF_USAGE;
 	}
 
 	@Override

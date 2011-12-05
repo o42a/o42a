@@ -28,6 +28,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.impl.path.AncestorStep;
 import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.impl.path.PathFieldDefinition;
@@ -46,6 +47,8 @@ public abstract class Step {
 	}
 
 	public abstract boolean isMaterial();
+
+	public abstract RefUsage getObjectUsage();
 
 	public abstract Container resolve(
 			PathResolver resolver,

@@ -77,11 +77,6 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		if (this.depRef == null) {
 			return super.toString();
@@ -134,7 +129,7 @@ public final class RefDep extends Dep {
 				this.depRef.resolve(localResolver).resolveAll(
 						resolver.getUsage());
 			} else {
-				this.depRef.resolve(localResolver).resolveAll();
+				this.depRef.resolve(localResolver).resolveContainer();
 			}
 		}
 

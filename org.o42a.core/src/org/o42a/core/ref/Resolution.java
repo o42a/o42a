@@ -139,8 +139,8 @@ public final class Resolution implements ScopeInfo {
 		return artifact.materialize();
 	}
 
-	public final Resolution resolveAll() {
-		return resolveAll(RESOLUTION_REF_USAGE);
+	public final Resolution resolveContainer() {
+		return resolveAll(CONTAINER_REF_USAGE);
 	}
 
 	public final Resolution resolveTarget() {

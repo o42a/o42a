@@ -28,16 +28,19 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.use.Usable;
 
 
 public class ObjectConstructorStep extends Step {
 
 	private final ObjectConstructor constructor;
+	private Usable<RefUsage> uses;
 
 	public ObjectConstructorStep(ObjectConstructor constructor) {
 		this.constructor = constructor;
@@ -51,6 +54,11 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -68,7 +76,22 @@ public class ObjectConstructorStep extends Step {
 		}
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
+
+			final int nextIdx = index + 1;
+
+			if (path.length() > nextIdx) {
+
+				final Step nextStep = path.getSteps()[nextIdx];
+				final RefUsage usage = nextStep.getObjectUsage();
+
+				if (usage != null) {
+					uses().useBy(resolver, usage);
+				}
+			} else {
+				uses().useBy(resolver, resolver.getUsage());
+			}
 		}
+
 		walker.object(this, object);
 
 		return object;
@@ -124,6 +147,13 @@ public class ObjectConstructorStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return this.constructor.fieldDefinition(path, distributor);
+	}
+
+	private final Usable<RefUsage> uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = RefUsage.usable(this);
 	}
 
 }

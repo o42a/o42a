@@ -103,6 +103,10 @@ public class BoundPath extends Location {
 		return getRawPath().getBindings();
 	}
 
+	public final Step[] getSteps() {
+		return getPath().getSteps();
+	}
+
 	public final int length() {
 		return getSteps().length;
 	}
@@ -351,10 +355,6 @@ public class BoundPath extends Location {
 			return this.path;
 		}
 		return this.path = rebuildPath();
-	}
-
-	final Step[] getSteps() {
-		return getPath().getSteps();
 	}
 
 	final Path getRawPath() {
