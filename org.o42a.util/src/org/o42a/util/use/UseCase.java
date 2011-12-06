@@ -31,7 +31,8 @@ public final class UseCase
 	private final UseFlag unusedFlag;
 	private final UseFlag checkUseFlag;
 	private UseTracker topLevelTracker;
-	private int rev;
+	private int updateRev;
+	private int checkRev;
 	private final boolean steady;
 
 	UseCase(String name) {
@@ -80,6 +81,10 @@ public final class UseCase
 		return used ? this.usedFlag : this.unusedFlag;
 	}
 
+	public final int update() {
+		return ++this.updateRev;
+	}
+
 	@Override
 	public UseFlag selectUse(
 			UseCaseInfo useCase,
@@ -99,12 +104,16 @@ public final class UseCase
 		return this.name;
 	}
 
+	final int getUpdateRev() {
+		return this.updateRev;
+	}
+
 	final int start(UseTracker tracker) {
 		if (this.topLevelTracker != null) {
-			return this.rev;
+			return this.checkRev;
 		}
 		this.topLevelTracker = tracker;
-		return ++this.rev;
+		return ++this.checkRev;
 	}
 
 	final boolean end(UseTracker tracker) {

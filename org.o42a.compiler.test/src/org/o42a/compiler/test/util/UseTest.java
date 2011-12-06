@@ -44,13 +44,28 @@ public class UseTest {
 	}
 
 	@Test
-	public void notUsed() {
+	public void unused() {
 		assertUnused(this.usable);
 	}
 
 	@Test
 	public void used() {
 		this.usable.useBy(this.useCase, SIMPLE_USAGE);
+		assertUsed(this.usable);
+	}
+
+	@Test
+	public void updateAfterCheck() {
+		assertUnused(this.usable);
+
+		final TestUsable usable2 = new TestUsable();
+
+		this.usable.useBy(usable2, SIMPLE_USAGE);
+
+		assertUnused(this.usable);
+
+		usable2.useBy(this.useCase, SIMPLE_USAGE);
+
 		assertUsed(this.usable);
 	}
 

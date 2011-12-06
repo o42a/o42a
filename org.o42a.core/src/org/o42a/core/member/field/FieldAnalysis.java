@@ -108,7 +108,8 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 
 		if (getMember().isOverride()) {
 
-			final MemberFieldUses declarationUses = getDeclarationAnalysis().uses();
+			final MemberFieldUses declarationUses =
+					getDeclarationAnalysis().uses();
 
 			declarationUses.useBy(
 					this.uses.usageUser(FIELD_ACCESS),
