@@ -42,7 +42,7 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 
 	@Override
 	public final User<SimpleUsage> toUser() {
-		return usable().toUser();
+		return uses().toUser();
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 		if (user.toUser().isDummy()) {
 			return;
 		}
-		usable().useBy(user, SIMPLE_USAGE);
+		uses().useBy(user, SIMPLE_USAGE);
 	}
 
 	@Override
@@ -88,7 +88,7 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 		return out.toString();
 	}
 
-	private final Usable<SimpleUsage> usable() {
+	private final Usable<SimpleUsage> uses() {
 		if (this.usable != null) {
 			return this.usable;
 		}

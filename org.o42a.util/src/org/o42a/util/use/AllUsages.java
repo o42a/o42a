@@ -89,7 +89,7 @@ public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 
 	@Override
 	public String toString() {
-		if (this.name != null) {
+		if (this.name == null) {
 			return super.toString();
 		}
 		return this.name;

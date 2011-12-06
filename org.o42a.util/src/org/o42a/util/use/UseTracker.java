@@ -23,28 +23,57 @@ package org.o42a.util.use;
 public class UseTracker {
 
 	private UseFlag useFlag;
-	private int rev;
+	private int updateRev;
+	private int checkRev;
 
 	public final UseFlag getUseFlag() {
 		return this.useFlag;
 	}
 
+	public final void update() {
+		if (this.useFlag != null) {
+
+			final UseCase useCase = this.useFlag.getUseCase();
+
+			this.updateRev = useCase.update();
+			this.useFlag = useCase.checkUseFlag();
+		}
+	}
+
 	public final boolean start(UseCase useCase) {
 		if (!useCase.caseFlag(this.useFlag)) {
-			this.rev = useCase.start(this);
+			// Use flag belongs to another use case.
+			// Evaluate the use status.
 			this.useFlag = useCase.checkUseFlag();
+			this.updateRev = useCase.getUpdateRev();
+			this.checkRev = useCase.start(this);
 			return true;
 		}
+
+		final int updateRev = useCase.getUpdateRev();
+
+		if (this.updateRev != updateRev) {
+			// Use graph updated since last check.
+			// Re-evaluate the use status.
+			this.useFlag = useCase.checkUseFlag();
+			this.updateRev = updateRev;
+			this.checkRev = useCase.start(this);
+			return true;
+		}
+
+		// No use graph updates since last check.
 		if (this.useFlag.isKnown()) {
+			// Use status already evaluated.
 			return false;
 		}
 
-		final int rev = useCase.start(this);
+		final int checkRev = useCase.start(this);
 
-		if (this.rev == rev) {
+		if (this.checkRev == checkRev) {
+			// Use status evaluation is already in progress.
 			return false;
 		}
-		this.rev = rev;
+		this.checkRev = checkRev;
 
 		return true;
 	}

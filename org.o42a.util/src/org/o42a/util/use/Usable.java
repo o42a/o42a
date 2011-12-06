@@ -31,6 +31,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
 	private final AllUsages<U> allUsages;
 	private final UsedBy<U>[] usedBy;
+	private UseCase useCase;
 
 	@SuppressWarnings("unchecked")
 	public Usable(AllUsages<U> allUsages) {
@@ -69,6 +70,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		if (uc.isSteady()) {
 			return uc.usedFlag();
 		}
+		this.useCase = uc;
 		if (this.usedBy == null) {
 			return uc.unusedFlag();
 		}
@@ -128,7 +130,11 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	}
 
 	final void useBy(User<?> user, U usage) {
-		used(usage).addUseBy(user);
+		if (used(usage).addUseBy(user)) {
+			if (this.useCase != null) {
+				this.useCase.update();
+			}
+		}
 	}
 
 	private UsedBy<U> used(U usage) {
@@ -177,8 +183,8 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			return this.usedBy.keySet().toString();
 		}
 
-		final void addUseBy(User<?> user) {
-			this.usedBy.put(user, Usable.DUMMY);
+		final boolean addUseBy(User<?> user) {
+			return this.usedBy.put(user, DUMMY) == null;
 		}
 
 		final User<U> user(Usable<U> usable, U usage) {
