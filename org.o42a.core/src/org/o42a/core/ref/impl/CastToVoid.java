@@ -58,7 +58,19 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		return "@@void";
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return path.cut(1).fieldDefinition(distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -69,27 +81,15 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return reproducedPath(toPath());
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		return "@@void";
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return path.cut(1).fieldDefinition(distributor);
 	}
 
 	private static final class Op extends StepOp<CastToVoid> {

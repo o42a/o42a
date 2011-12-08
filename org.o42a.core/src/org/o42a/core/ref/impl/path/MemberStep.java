@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2010,2011 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,57 +19,30 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class PathFragmentStep extends Step {
+public class MemberStep extends AbstractMemberStep {
 
-	private final PathFragment fragment;
-
-	public PathFragmentStep(PathFragment fragment) {
-		this.fragment = fragment;
-	}
-
-	@Override
-	public PathKind getPathKind() {
-		return PathKind.RELATIVE_PATH;
-	}
-
-	@Override
-	public boolean isMaterial() {
-		return false;
-	}
-
-	@Override
-	public RefUsage getObjectUsage() {
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		if (this.fragment == null) {
-			return "(?)";
-		}
-		return '(' + this.fragment.toString() + ')';
-	}
-
-	@Override
-	protected PathFragment getPathFragment() {
-		return this.fragment;
+	public MemberStep(MemberKey memberKey) {
+		super(memberKey);
 	}
 
 	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return this.fragment.fieldDefinition(path, distributor);
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	@Override
@@ -79,29 +52,38 @@ public final class PathFragmentStep extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-		throw unresolved();
-	}
 
-	@Override
-	protected void normalize(PathNormalizer normalizer) {
-		throw unresolved();
+		final Member member = resolveMember(path, index, start);
+
+		if (member == null) {
+			return null;
+		}
+
+		walker.member(start.getContainer(), this, member);
+
+		return member.substance(resolver);
 	}
 
 	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
-			PathReproducer reproducer) {
-		throw unresolved();
-	}
+			PathReproducer reproducer,
+			Scope origin,
+			Scope scope) {
 
-	@Override
-	protected PathOp op(PathOp start) {
-		throw unresolved();
-	}
+		final Member member = origin.getContainer().member(getMemberKey());
 
-	private IllegalStateException unresolved() {
-		return new IllegalStateException(
-				"Path fragment not resolved yet: " + this);
+		if (origin.getContainer().toClause() == null
+				&& member.toClause() == null) {
+			// Neither clause, nor member of clause.
+			// Return unchanged.
+			return unchangedPath(toPath());
+		}
+
+		final MemberKey reproductionKey =
+				getMemberKey().getMemberId().reproduceFrom(origin).key(scope);
+
+		return reproducedPath(reproductionKey.toPath());
 	}
 
 }
