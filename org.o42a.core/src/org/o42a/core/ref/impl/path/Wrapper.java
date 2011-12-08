@@ -65,30 +65,6 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		start.assertSameScope(this.wrapperScope);
-		walker.staticScope(this, this.wrappedScope);
-		return this.wrappedScope.getContainer();
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String toString() {
 		if (this.wrappedScope == null) {
 			return super.toString();
@@ -100,6 +76,42 @@ public class Wrapper extends Step {
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		start.assertSameScope(this.wrapperScope);
+		walker.staticScope(this, this.wrappedScope);
+		return this.wrappedScope.getContainer();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.add(this.wrappedScope, new NormalStep() {
+			@Override
+			public Path appendTo(Path path) {
+				return path.append(new Wrapper(
+						Wrapper.this.wrapperScope,
+						Wrapper.this.wrappedScope));
+			}
+		});
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
 		throw new UnsupportedOperationException();
 	}
 

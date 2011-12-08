@@ -50,13 +50,6 @@ public abstract class Step {
 
 	public abstract RefUsage getObjectUsage();
 
-	public abstract Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker);
-
 	public ValueAdapter valueAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {
@@ -65,15 +58,9 @@ public abstract class Step {
 				expectedStruct);
 	}
 
-	public abstract PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer);
-
 	public Path toPath() {
 		return new Path(getPathKind(), NO_PATH_BINDINGS, false, this);
 	}
-
-	public abstract PathOp op(PathOp start);
 
 	@Override
 	public String toString() {
@@ -106,6 +93,19 @@ public abstract class Step {
 			BoundPath path,
 			Distributor distributor);
 
+	protected abstract Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker);
+
+	protected abstract void normalize(PathNormalizer normalizer);
+
+	protected abstract PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer);
+
 	protected final FieldDefinition defaultFieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
@@ -117,5 +117,7 @@ public abstract class Step {
 			Distributor distributor) {
 		return new ObjectFieldDefinition(path, distributor);
 	}
+
+	protected abstract PathOp op(PathOp start);
 
 }

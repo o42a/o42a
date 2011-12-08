@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object.impl;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -29,18 +30,19 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.ref.impl.path.AbstractMemberStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class ParentObjectStep extends MemberStep {
+public final class ParentObjectStep extends AbstractMemberStep {
 
 	public ParentObjectStep(MemberKey memberKey) {
 		super(memberKey);
 	}
 
 	@Override
-	public Container resolve(
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -67,7 +69,7 @@ public final class ParentObjectStep extends MemberStep {
 			}
 		}
 
-		final Member member = resolveMember(resolver, path, index, start);
+		final Member member = resolveMember(path, index, start);
 
 		if (member == null) {
 			return null;
@@ -78,6 +80,21 @@ public final class ParentObjectStep extends MemberStep {
 		walker.up(object, this, result);
 
 		return result;
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+
+		final Member member = resolveMember(
+				normalizer.getPath(),
+				normalizer.getStepIndex(),
+				normalizer.getStepStart());
+
+		if (member == null) {
+			return;
+		}
+
+		normalizer.up(member.substance(dummyUser()).getScope());
 	}
 
 	@Override

@@ -54,24 +54,6 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		// Error could not be resolved.
-		return null;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
 	public PathOp op(PathOp start) {
 		throw new UnsupportedOperationException(
 				"Error path step can not be written");
@@ -87,6 +69,29 @@ public class ErrorStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return FieldDefinition.invalidDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		// Error could not be resolved.
+		return null;
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		// Normalization impossible.
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
 	}
 
 }

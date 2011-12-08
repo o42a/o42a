@@ -62,38 +62,6 @@ public final class MaterializerStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final Artifact<?> artifact = start.getArtifact();
-
-		assert artifact != null :
-			"Can not materialize " + start;
-
-		final Obj result = artifact.materialize();
-
-		walker.materialize(artifact, this, result);
-
-		return result;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start);
-	}
-
-	@Override
 	public String toString() {
 		return "*";
 	}
@@ -121,6 +89,42 @@ public final class MaterializerStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return path.cut(1).fieldDefinition(distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+
+		final Artifact<?> artifact = start.getArtifact();
+
+		assert artifact != null :
+			"Can not materialize " + start;
+
+		final Obj result = artifact.materialize();
+
+		walker.materialize(artifact, this, result);
+
+		return result;
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(toPath());
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start);
 	}
 
 	private static final class Op extends PathOp {

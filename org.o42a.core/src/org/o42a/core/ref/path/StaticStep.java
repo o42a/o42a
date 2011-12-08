@@ -63,7 +63,27 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
+	public Path toPath() {
+		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
+	}
+
+	@Override
+	public String toString() {
+		if (this.scope == null) {
+			return super.toString();
+		}
+		return '<' + this.scope.toString() + '>';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -80,7 +100,19 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.getStepStart().assertDerivedFrom(getScope());
+
+		normalizer.add(getScope(), new NormalStep() {
+			@Override
+			public Path appendTo(Path path) {
+				return path.append(new StaticStep(getScope()));
+			}
+		});
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
@@ -88,28 +120,8 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public Path toPath() {
-		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		if (this.scope == null) {
-			return super.toString();
-		}
-		return '<' + this.scope.toString() + '>';
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<StaticStep> {
