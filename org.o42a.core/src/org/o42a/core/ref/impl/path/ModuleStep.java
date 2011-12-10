@@ -66,42 +66,6 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final CompilerContext context = start.getContext();
-		final Module module = context.getIntrinsics().getModule(this.moduleId);
-
-		if (module == null) {
-			context.getLogger().error(
-					"unresolved_module",
-					path,
-					"Module <%s> can not be resolved",
-					this.moduleId);
-			return null;
-		}
-		walker.module(this, module);
-
-		return module;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
-	}
-
-	@Override
 	public int hashCode() {
 		return this.moduleId.hashCode();
 	}
@@ -133,6 +97,42 @@ public final class ModuleStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+
+		final CompilerContext context = start.getContext();
+		final Module module = context.getIntrinsics().getModule(this.moduleId);
+
+		if (module == null) {
+			context.getLogger().error(
+					"unresolved_module",
+					path,
+					"Module <%s> can not be resolved",
+					this.moduleId);
+			return null;
+		}
+		walker.module(this, module);
+
+		return module;
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	private static final class Op extends StepOp<ModuleStep> {

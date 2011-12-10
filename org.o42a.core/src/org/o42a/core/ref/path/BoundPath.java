@@ -298,7 +298,9 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public final BoundPath normalize(Scope start) {
+	public final BoundPath normalize(Scope origin, Scope start) {
+		origin.assertDerivedFrom(getOrigin());
+
 		if (length() == 0) {
 			if (start == getOrigin()) {
 				return this;
@@ -309,7 +311,8 @@ public class BoundPath extends Location {
 			return SELF_PATH.bind(this, start);
 		}
 
-		final PathNormalizer normalizer = new PathNormalizer(start, this);
+		final PathNormalizer normalizer =
+				new PathNormalizer(origin, start, this);
 
 		return normalizer.normalize();
 	}

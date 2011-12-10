@@ -30,25 +30,38 @@ import org.o42a.core.Scope;
 
 public class PathNormalizer {
 
-	private final Scope start;
 	private final BoundPath path;
+	private final Scope origin;
+	private final Scope normalizedStart;
 	private final ArrayList<NormalStep> normalSteps;
 
 	private Scope stepStart;
 	private Scope stepResolution;
+
+	private final int startIndex;
 	private int stepIndex;
 
 	private boolean normalizationStarted;
 	private boolean stepNormalized;
 
-	PathNormalizer(Scope start, BoundPath path) {
-		this.start = start;
+	PathNormalizer(Scope origin, Scope normalizedStart, BoundPath path) {
+		this.origin = origin;
+		this.normalizedStart = normalizedStart;
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
+		if (!path.isStatic()) {
+			this.startIndex = 0;
+		} else {
+			this.startIndex = path.startIndex();
+		}
 	}
 
 	public final Scope getOrigin() {
-		return this.start;
+		return this.origin;
+	}
+
+	public final Scope getNormalizedStart() {
+		return this.normalizedStart;
 	}
 
 	public final BoundPath getPath() {
@@ -63,6 +76,10 @@ public class PathNormalizer {
 		return this.stepStart;
 	}
 
+	public final boolean isStepIgnored() {
+		return this.startIndex > this.stepIndex;
+	}
+
 	public final void add(Scope resolution, NormalStep normalStep) {
 		this.stepResolution = resolution;
 		this.normalizationStarted = true;
@@ -70,9 +87,9 @@ public class PathNormalizer {
 		this.normalSteps.add(normalStep);
 	}
 
-	public final void up(Scope enclosing) {
+	public final boolean up(Scope enclosing) {
 		if (this.normalizationStarted) {
-			return;
+			return false;
 		}
 
 		// Enclosing scope not reached yet.
@@ -80,10 +97,14 @@ public class PathNormalizer {
 		this.stepNormalized = true;
 		this.stepResolution = enclosing;
 
-		if (enclosing == this.start) {
-			// Enclosing scope reached.
-			this.normalizationStarted = true;
+		if (enclosing != getNormalizedStart()) {
+			// Enclosing not reached.
+			return false;
 		}
+
+		this.normalizationStarted = true;
+
+		return true;
 	}
 
 	@Override
@@ -98,7 +119,7 @@ public class PathNormalizer {
 		if (path.isAbsolute()) {
 			this.stepStart = path.root(getOrigin());
 		} else {
-			this.stepStart = path.getOrigin();
+			this.stepStart = getOrigin();
 		}
 
 		final Step[] steps = path.getSteps();
@@ -132,7 +153,7 @@ public class PathNormalizer {
 			result = normalStep.appendTo(result);
 		}
 
-		return result.bind(path, getOrigin());
+		return result.bind(path, getNormalizedStart());
 	}
 
 }

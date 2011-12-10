@@ -61,7 +61,24 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		return "Owner[" + this.local + ']';
+	}
+
+	@Override
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combineWithLocalOwner(this.local.getOwner());
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -80,7 +97,7 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return reproducedPath(
@@ -88,25 +105,14 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.up(
+				normalizer.getStepStart().toLocal().getOwner().getScope());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		return "Owner[" + this.local + ']';
-	}
-
-	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-		rebuilder.combineWithLocalOwner(this.local.getOwner());
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<LocalOwnerStep> {
