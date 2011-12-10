@@ -73,7 +73,7 @@ public abstract class Dep extends Step {
 	public abstract Ref getDepRef();
 
 	@Override
-	public Container resolve(
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -102,11 +102,6 @@ public abstract class Dep extends Step {
 				walker);
 	}
 
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
-	}
-
 	protected abstract Container resolveDep(
 			PathResolver resolver,
 			BoundPath path,
@@ -114,6 +109,29 @@ public abstract class Dep extends Step {
 			Obj object,
 			LocalScope enclosingLocal,
 			PathWalker walker);
+
+	@Override
+	protected final void normalize(PathNormalizer normalizer) {
+
+		final Obj object = normalizer.getStepStart().toObject();
+		final LocalScope enclosingLocal =
+				object.getScope().getEnclosingContainer().toLocal();
+
+		if (!normalizer.up(enclosingLocal)) {
+			return;
+		}
+
+		normalizeDep(normalizer, enclosingLocal);
+	}
+
+	protected abstract void normalizeDep(
+			PathNormalizer normalizer,
+			LocalScope enclosingLocal);
+
+	@Override
+	protected final PathOp op(PathOp start) {
+		return new Op(start, this);
+	}
 
 	private static final class Op extends StepOp<Dep> {
 

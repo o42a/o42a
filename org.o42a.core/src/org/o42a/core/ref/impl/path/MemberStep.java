@@ -21,6 +21,7 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
@@ -62,6 +63,32 @@ public class MemberStep extends AbstractMemberStep {
 		walker.member(start.getContainer(), this, member);
 
 		return member.substance(resolver);
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		if (!normalizer.isStepIgnored()) {
+			return;
+		}
+
+		// Step will be ignored, so just add it to normalized path.
+		final Member member = resolveMember(
+				normalizer.getPath(),
+				normalizer.getStepIndex(),
+				normalizer.getStepStart());
+
+		if (member == null) {
+			return;
+		}
+
+		normalizer.add(
+				member.substance(dummyUser()).getScope(),
+				new NormalStep() {
+					@Override
+					public Path appendTo(Path path) {
+						return path.append(getMemberKey());
+					}
+				});
 	}
 
 	@Override

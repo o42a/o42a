@@ -85,18 +85,6 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(
-				new RefDep(
-						reproducer.getScope().toObject(),
-						getDepRef(),
-						this.name)
-				.toPath());
-	}
-
-	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
@@ -138,6 +126,18 @@ public final class RefDep extends Dep {
 		walker.refDep(object, this, this.depRef);
 
 		return resolution.toArtifact().getContainer();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(
+				new RefDep(
+						reproducer.getScope().toObject(),
+						getDepRef(),
+						this.name)
+				.toPath());
 	}
 
 }

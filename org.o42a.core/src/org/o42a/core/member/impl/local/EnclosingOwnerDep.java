@@ -68,15 +68,6 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(
-				new EnclosingOwnerDep(reproducer.getScope().toObject())
-				.toPath());
-	}
-
-	@Override
 	public int hashCode() {
 		return this.target.getScope().hashCode();
 	}
@@ -127,6 +118,32 @@ public final class EnclosingOwnerDep extends Dep {
 		walker.up(object, this, owner);
 
 		return owner;
+	}
+
+	@Override
+	protected void normalizeDep(
+			PathNormalizer normalizer,
+			LocalScope enclosingLocal) {
+		if (!normalizer.isStepIgnored()) {
+			return;
+		}
+
+		// Step will be ignored. So just add it to normal path.
+		normalizer.add(enclosingLocal.getOwner().getScope(), new NormalStep() {
+			@Override
+			public Path appendTo(Path path) {
+				return path.append(new EnclosingOwnerDep(getObject()));
+			}
+		});
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(
+				new EnclosingOwnerDep(reproducer.getScope().toObject())
+				.toPath());
 	}
 
 }
