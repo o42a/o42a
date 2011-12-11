@@ -20,33 +20,27 @@
 package org.o42a.util.use;
 
 
-final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
+final class NegatedUseSelector<U extends Usage<U>> extends UseSelector<U> {
 
-	private final UseSelector<U> first;
-	private final UseSelector<U> second;
+	private final UseSelector<U> negated;
 
-	CompoundUseSelector(UseSelector<U> first, UseSelector<U> second) {
-		assert second != null :
-			"Second use selector not specified";
-		this.first = first;
-		this.second = second;
+	NegatedUseSelector(UseSelector<U> negated) {
+		this.negated = negated;
 	}
 
 	@Override
-	public boolean acceptUsage(U usage) {
-		return this.first.acceptUsage(usage) && this.second.acceptUsage(usage);
+	public final boolean acceptUsage(U usage) {
+		return false;
+	}
+
+	@Override
+	public UseSelector<U> not() {
+		return this.negated;
 	}
 
 	@Override
 	public int hashCode() {
-
-		final int prime = 31;
-		int result = 1;
-
-		result = prime * result + this.first.hashCode();
-		result = prime * result + this.second.hashCode();
-
-		return result;
+		return 31 + this.negated.hashCode();
 	}
 
 	@Override
@@ -61,24 +55,14 @@ final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
 			return false;
 		}
 
-		final CompoundUseSelector<?> other = (CompoundUseSelector<?>) obj;
+		final NegatedUseSelector<?> other = (NegatedUseSelector<?>) obj;
 
-		if (!this.first.equals(other.first)) {
-			return false;
-		}
-		if (!this.second.equals(other.second)) {
-			return false;
-		}
-
-		return true;
+		return this.negated.equals(other.negated);
 	}
 
 	@Override
 	public String toString() {
-		if (this.second == null) {
-			return super.toString();
-		}
-		return "(" + this.first + " & " + this.second + ')';
+		return "(--" + this.negated + ')';
 	}
 
 }
