@@ -43,6 +43,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -152,7 +153,7 @@ public class BoundPath extends Location {
 		final Step[] steps = getRawSteps();
 
 		if (steps.length == 0) {
-			return new AncestorStep().toPath().bind(
+			return new AncestorFragment().toPath().bind(
 					location,
 					distributor.getScope()).typeRef(distributor);
 		}
@@ -298,23 +299,27 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public final BoundPath normalize(Scope origin, Scope start) {
+	public final BoundPath normalize(Normalizer normalizer, Scope origin) {
 		origin.assertDerivedFrom(getOrigin());
 
 		if (length() == 0) {
+
+			final Scope start = normalizer.getNormalizedScope();
+
 			if (start == getOrigin()) {
 				return this;
 			}
 			if (isAbsolute()) {
 				return ROOT_PATH.bind(this, start);
 			}
+
 			return SELF_PATH.bind(this, start);
 		}
 
-		final PathNormalizer normalizer =
-				new PathNormalizer(origin, start, this);
+		final PathNormalizer pathNormalizer =
+				new PathNormalizer(normalizer, origin, this);
 
-		return normalizer.normalize();
+		return pathNormalizer.normalize();
 	}
 
 	public final PathReproducer reproducer(Reproducer reproducer) {

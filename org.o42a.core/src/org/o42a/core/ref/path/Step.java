@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.impl.path.AncestorStep;
+import org.o42a.core.ref.impl.path.AncestorFragment;
 import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
@@ -86,7 +86,7 @@ public abstract class Step {
 			BoundPath path,
 			LocationInfo location,
 			Distributor distributor) {
-		return path.append(new AncestorStep()).typeRef(distributor);
+		return path.append(new AncestorFragment()).typeRef(distributor);
 	}
 
 	protected abstract FieldDefinition fieldDefinition(

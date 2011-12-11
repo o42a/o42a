@@ -20,15 +20,15 @@
 package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
+import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
@@ -53,7 +53,19 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		return "VOID";
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -68,33 +80,34 @@ public class VoidStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected void normalize(PathNormalizer normalizer) {
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		return "VOID";
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return objectFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<VoidStep> {
 
 		Op(PathOp start, VoidStep step) {
 			super(start, step);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs) {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs) {
+			return voidValue().op(getBuilder(), dirs.code());
 		}
 
 		@Override
