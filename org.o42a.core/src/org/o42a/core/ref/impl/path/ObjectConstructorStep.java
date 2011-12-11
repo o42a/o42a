@@ -21,26 +21,22 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.use.Usable;
 
 
-public class ObjectConstructorStep extends Step {
+public class ObjectConstructorStep extends AbstractObjectStep {
 
 	private final ObjectConstructor constructor;
-	private Usable<RefUsage> uses;
 
 	public ObjectConstructorStep(ObjectConstructor constructor) {
 		this.constructor = constructor;
@@ -54,47 +50,6 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
-	}
-
-	@Override
-	public RefUsage getObjectUsage() {
-		return RefUsage.CONTAINER_REF_USAGE;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final Obj object = this.constructor.resolve(start);
-
-		if (object == null) {
-			return null;
-		}
-		if (resolver.isFullResolution()) {
-			object.resolveAll();
-
-			final int nextIdx = index + 1;
-
-			if (path.length() > nextIdx) {
-
-				final Step nextStep = path.getSteps()[nextIdx];
-				final RefUsage usage = nextStep.getObjectUsage();
-
-				if (usage != null) {
-					uses().useBy(resolver, usage);
-				}
-			} else {
-				uses().useBy(resolver, resolver.getUsage());
-			}
-		}
-
-		walker.object(this, object);
-
-		return object;
 	}
 
 	@Override
@@ -149,11 +104,17 @@ public class ObjectConstructorStep extends Step {
 		return this.constructor.fieldDefinition(path, distributor);
 	}
 
-	private final Usable<RefUsage> uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = RefUsage.usable(this);
+	@Override
+	protected Obj resolveObject(
+			BoundPath path,
+			int index,
+			Scope start) {
+		return this.constructor.resolve(start);
+	}
+
+	@Override
+	protected void walkToObject(PathWalker walker, Obj object) {
+		walker.object(this, object);
 	}
 
 }

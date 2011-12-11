@@ -26,13 +26,17 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import java.util.ArrayList;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseCaseInfo;
+import org.o42a.util.use.User;
 
 
-public class PathNormalizer {
+public class PathNormalizer implements UseCaseInfo {
 
-	private final BoundPath path;
+	private final Normalizer normalizer;
 	private final Scope origin;
-	private final Scope normalizedStart;
+	private final BoundPath path;
 	private final ArrayList<NormalStep> normalSteps;
 
 	private Scope stepStart;
@@ -44,9 +48,9 @@ public class PathNormalizer {
 	private boolean normalizationStarted;
 	private boolean stepNormalized;
 
-	PathNormalizer(Scope origin, Scope normalizedStart, BoundPath path) {
+	PathNormalizer(Normalizer normalizer, Scope origin, BoundPath path) {
+		this.normalizer = normalizer;
 		this.origin = origin;
-		this.normalizedStart = normalizedStart;
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
 		if (!path.isStatic()) {
@@ -56,12 +60,16 @@ public class PathNormalizer {
 		}
 	}
 
+	public final Normalizer getNormalizer() {
+		return this.normalizer;
+	}
+
 	public final Scope getOrigin() {
 		return this.origin;
 	}
 
 	public final Scope getNormalizedStart() {
-		return this.normalizedStart;
+		return this.normalizer.getNormalizedScope();
 	}
 
 	public final BoundPath getPath() {
@@ -77,7 +85,15 @@ public class PathNormalizer {
 	}
 
 	public final boolean isStepIgnored() {
-		return this.startIndex > this.stepIndex;
+		return this.startIndex > getStepIndex();
+	}
+
+	public final boolean isLastStep() {
+		return getStepIndex() == getPath().length() - 1;
+	}
+
+	public final boolean isStepNormalized() {
+		return this.stepNormalized;
 	}
 
 	public final void add(Scope resolution, NormalStep normalStep) {
@@ -108,6 +124,16 @@ public class PathNormalizer {
 	}
 
 	@Override
+	public final User<?> toUser() {
+		return getNormalizer().toUser();
+	}
+
+	@Override
+	public final UseCase toUseCase() {
+		return getNormalizer().toUseCase();
+	}
+
+	@Override
 	public String toString() {
 		return "PathNormalizer[" + this.path + ']';
 	}
@@ -129,7 +155,7 @@ public class PathNormalizer {
 			this.stepNormalized = false;
 
 			steps[this.stepIndex].normalize(this);
-			if (!this.stepNormalized) {
+			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
 				return path;

@@ -43,6 +43,11 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final RefUsage ASSIGNEE_REF_USAGE =
 			new ResolutionUsage("RefAssignee");
 
+	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
+			LOGICAL_REF_USAGE.or(VALUE_REF_USAGE);
+	public static final UseSelector<RefUsage> NON_VALUE_REF_USAGES =
+			VALUE_REF_USAGES.not();
+
 	public static Uses<RefUsage> alwaysUsed() {
 		return ALL_REF_USAGES.alwaysUsed();
 	}

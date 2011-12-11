@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -31,14 +30,13 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 
 
-public final class ModuleStep extends Step {
+public final class ModuleStep extends AbstractObjectStep {
 
 	private final String moduleId;
 
@@ -58,11 +56,6 @@ public final class ModuleStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
-	}
-
-	@Override
-	public RefUsage getObjectUsage() {
-		return null;
 	}
 
 	@Override
@@ -100,12 +93,10 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected Container resolve(
-			PathResolver resolver,
+	protected Obj resolveObject(
 			BoundPath path,
 			int index,
-			Scope start,
-			PathWalker walker) {
+			Scope start) {
 
 		final CompilerContext context = start.getContext();
 		final Module module = context.getIntrinsics().getModule(this.moduleId);
@@ -118,9 +109,13 @@ public final class ModuleStep extends Step {
 					this.moduleId);
 			return null;
 		}
-		walker.module(this, module);
 
 		return module;
+	}
+
+	@Override
+	protected void walkToObject(PathWalker walker, Obj object) {
+		walker.module(this, object);
 	}
 
 	@Override

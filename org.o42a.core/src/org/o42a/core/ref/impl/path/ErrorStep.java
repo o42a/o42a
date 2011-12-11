@@ -54,12 +54,6 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
-		throw new UnsupportedOperationException(
-				"Error path step can not be written");
-	}
-
-	@Override
 	public String toString() {
 		return "ERROR";
 	}
@@ -92,6 +86,12 @@ public class ErrorStep extends Step {
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		throw new UnsupportedOperationException(
+				"Error path step can not be written");
 	}
 
 }

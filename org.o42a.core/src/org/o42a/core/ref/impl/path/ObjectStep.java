@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
-import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -31,12 +30,11 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class ObjectStep extends Step {
+public class ObjectStep extends AbstractObjectStep {
 
 	private final Obj object;
 
@@ -52,22 +50,6 @@ public class ObjectStep extends Step {
 	@Override
 	public boolean isMaterial() {
 		return true;
-	}
-
-	@Override
-	public RefUsage getObjectUsage() {
-		return null;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		walker.object(this, this.object);
-		return this.object;
 	}
 
 	@Override
@@ -95,6 +77,19 @@ public class ObjectStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Obj resolveObject(
+			BoundPath path,
+			int index,
+			Scope start) {
+		return this.object;
+	}
+
+	@Override
+	protected void walkToObject(PathWalker walker, Obj object) {
+		walker.object(this, object);
 	}
 
 	private static final class Op extends StepOp<ObjectStep> {

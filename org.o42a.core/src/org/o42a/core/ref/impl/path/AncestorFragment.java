@@ -31,7 +31,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 
 
-public class AncestorStep extends PathFragment {
+public class AncestorFragment extends PathFragment {
 
 	@Override
 	public BoundPath expand(PathExpander expander, int index, Scope start) {
