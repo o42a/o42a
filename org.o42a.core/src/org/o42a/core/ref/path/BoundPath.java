@@ -45,6 +45,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.UnNormalizedPath;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -299,7 +300,7 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
-	public final BoundPath normalize(Normalizer normalizer, Scope origin) {
+	public final NormalPath normalize(Normalizer normalizer, Scope origin) {
 		origin.assertDerivedFrom(getOrigin());
 
 		if (length() == 0) {
@@ -307,13 +308,13 @@ public class BoundPath extends Location {
 			final Scope start = normalizer.getNormalizedScope();
 
 			if (start == getOrigin()) {
-				return this;
+				return new UnNormalizedPath(this);
 			}
 			if (isAbsolute()) {
-				return ROOT_PATH.bind(this, start);
+				return new UnNormalizedPath(ROOT_PATH.bind(this, start));
 			}
 
-			return SELF_PATH.bind(this, start);
+			return new UnNormalizedPath(SELF_PATH.bind(this, start));
 		}
 
 		final PathNormalizer pathNormalizer =

@@ -24,9 +24,11 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.impl.UnNormalizedPath;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
@@ -138,7 +140,7 @@ public class PathNormalizer implements UseCaseInfo {
 		return "PathNormalizer[" + this.path + ']';
 	}
 
-	BoundPath normalize() {
+	NormalPath normalize() {
 
 		final BoundPath path = getPath();
 
@@ -158,28 +160,88 @@ public class PathNormalizer implements UseCaseInfo {
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
-				return path;
+				return new UnNormalizedPath(getNormalizedStart(), path);
 			}
 
 			this.stepStart = this.stepResolution;
 			++this.stepIndex;
 		}
 
-		Path result;
+		return new NormalizedPath(
+				getNormalizedStart(),
+				this.path,
+				this.normalSteps);
+	}
 
-		if (path.isAbsolute()) {
-			result = ROOT_PATH;
-		} else if (!path.isStatic()) {
-			result = SELF_PATH;
-		} else {
-			result = EMPTY_STATIC_PATH;
+	private static class NormalizedPath implements NormalPath {
+
+		private final Scope origin;
+		private final BoundPath path;
+		private final ArrayList<NormalStep> normalSteps;
+
+		NormalizedPath(
+				Scope origin,
+				BoundPath path,
+				ArrayList<NormalStep> normalSteps) {
+			this.origin = origin;
+			this.path = path;
+			this.normalSteps = normalSteps;
 		}
 
-		for (NormalStep normalStep : this.normalSteps) {
-			result = normalStep.appendTo(result);
+		@Override
+		public final boolean isNormalized() {
+			return true;
 		}
 
-		return result.bind(path, getNormalizedStart());
+		@Override
+		public final Scope getOrigin() {
+			return this.origin;
+		}
+
+		@Override
+		public BoundPath toPath() {
+
+			Path result;
+
+			if (this.path.isAbsolute()) {
+				result = ROOT_PATH;
+			} else if (!this.path.isStatic()) {
+				result = SELF_PATH;
+			} else {
+				result = EMPTY_STATIC_PATH;
+			}
+
+			for (NormalStep normalStep : this.normalSteps) {
+				result = normalStep.appendTo(result);
+			}
+
+			return result.bind(this.path, getOrigin());
+		}
+
+		@Override
+		public String toString() {
+			if (this.normalSteps == null) {
+				return super.toString();
+			}
+
+			final StringBuilder out = new StringBuilder();
+
+			out.append("NormalPath<");
+			if (this.path.isAbsolute()) {
+				out.append('/');
+			}
+
+			final Iterator<NormalStep> steps = this.normalSteps.iterator();
+
+			out.append(steps.next());
+			while (steps.hasNext()) {
+				out.append('/').append(steps.next());
+			}
+			out.append('>');
+
+			return out.toString();
+		}
+
 	}
 
 }
