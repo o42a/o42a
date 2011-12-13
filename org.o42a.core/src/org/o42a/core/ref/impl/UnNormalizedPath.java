@@ -17,45 +17,52 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl;
+
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.User;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.NormalPath;
 
 
-public final class Normalizer implements UseCaseInfo {
+public class UnNormalizedPath implements NormalPath {
 
-	private final UseCase useCase;
-	private final Scope normalizedScope;
+	private final BoundPath path;
 
-	public Normalizer(UseCaseInfo useCase, Scope normalizedScope) {
-		this.useCase = useCase.toUseCase();
-		this.normalizedScope = normalizedScope;
+	public UnNormalizedPath(BoundPath path) {
+		this.path = path;
 	}
 
-	public final Scope getNormalizedScope() {
-		return this.normalizedScope;
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return this.useCase;
+	public UnNormalizedPath(Scope origin, BoundPath path) {
+		if (path.getOrigin() == origin) {
+			this.path = path;
+		} else {
+			this.path = path.prefixWith(SELF_PATH.toPrefix(origin));
+		}
 	}
 
 	@Override
-	public final UseCase toUseCase() {
-		return this.useCase;
+	public final boolean isNormalized() {
+		return false;
+	}
+
+	@Override
+	public final Scope getOrigin() {
+		return this.path.getOrigin();
+	}
+
+	@Override
+	public final BoundPath toPath() {
+		return this.path;
 	}
 
 	@Override
 	public String toString() {
-		if (this.normalizedScope == null) {
+		if (this.path == null) {
 			return super.toString();
 		}
-		return "Normalizer[to " + this.normalizedScope
-				+ " by " + this.useCase + ']';
+		return "NormalPath" + this.path;
 	}
 
 }
