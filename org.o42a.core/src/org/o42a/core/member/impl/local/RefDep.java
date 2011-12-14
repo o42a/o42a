@@ -129,6 +129,13 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
+	protected void normalizeDep(
+			PathNormalizer normalizer,
+			LocalScope enclosingLocal) {
+		// FIXME Implement Dep normalization.
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
