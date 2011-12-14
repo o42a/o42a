@@ -100,7 +100,9 @@ public abstract class Step {
 			Scope start,
 			PathWalker walker);
 
-	protected abstract void normalize(PathNormalizer normalizer);
+	protected void normalize(PathNormalizer normalizer) {
+		// FIXME Implement normalization.
+	}
 
 	protected abstract PathReproduction reproduce(
 			LocationInfo location,

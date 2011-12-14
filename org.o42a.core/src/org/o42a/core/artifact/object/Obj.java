@@ -50,7 +50,7 @@ import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.MemberStep;
+import org.o42a.core.ref.impl.path.AbstractMemberStep;
 import org.o42a.core.ref.impl.path.ObjectStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
@@ -855,7 +855,7 @@ public abstract class Obj
 		assert steps.length == 1 :
 			"Enclosing path scope should contain exactly one step";
 
-		final MemberStep step = (MemberStep) steps[0];
+		final AbstractMemberStep step = (AbstractMemberStep) steps[0];
 		final MemberKey memberKey = step.getMemberKey();
 
 		if (memberKey.getOrigin() != getScope()) {

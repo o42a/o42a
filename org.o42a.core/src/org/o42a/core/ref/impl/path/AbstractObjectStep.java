@@ -110,7 +110,9 @@ public abstract class AbstractObjectStep extends Step {
 		// inlinable.
 	}
 
-	protected abstract void inlineObject(PathNormalizer normalizer);
+	protected void inlineObject(PathNormalizer normalizer) {
+		// FIXME Implement object inlining.
+	}
 
 	protected final Usable<RefUsage> uses() {
 		if (this.uses != null) {
