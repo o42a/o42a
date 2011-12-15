@@ -22,7 +22,6 @@ package org.o42a.core.source;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
 
 
 public abstract class Intrinsics {
@@ -31,7 +30,7 @@ public abstract class Intrinsics {
 
 	public abstract Obj getVoid();
 
-	public abstract Field<Obj> getVoidField();
+	public abstract Obj getFalse();
 
 	public abstract Container getTop();
 
@@ -40,8 +39,6 @@ public abstract class Intrinsics {
 	public abstract Obj getRoot();
 
 	public abstract Obj getDirective();
-
-	public abstract Obj getFalse();
 
 	public abstract Obj getInteger();
 

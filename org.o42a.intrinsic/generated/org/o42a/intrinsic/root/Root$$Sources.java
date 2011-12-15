@@ -60,10 +60,6 @@ public final class Root$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.root.DirectiveValueTypeObject$$Sources(this))
 			.getScope().toField(),
-			new org.o42a.intrinsic.root.False(
-					owner,
-					new org.o42a.intrinsic.root.False$$Sources(this))
-			.getScope().toField(),
 			new org.o42a.intrinsic.numeric.FloatValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.numeric.FloatValueTypeObject$$Sources(this))

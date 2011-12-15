@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
+import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -62,9 +63,7 @@ public class Root extends Obj {
 	private final ModuleCompiler compiler;
 	private final AnnotatedSources sources;
 
-	private final VoidField voidField;
 	private Obj directiveObject;
-	private Obj falseObject;
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
@@ -82,16 +81,11 @@ public class Root extends Obj {
 		super(new RootScope(compiler, topScope.distribute()));
 		this.compiler = compiler;
 		this.sources = sources;
-		this.voidField = new VoidField(this);
 		setValueStruct(ValueStruct.VOID);
 	}
 
 	public final URLSourceTree getSourceTree() {
 		return this.sources.getSourceTree();
-	}
-
-	public final Field<Obj> getVoidField() {
-		return this.voidField;
 	}
 
 	public final Obj getDirective() {
@@ -100,14 +94,6 @@ public class Root extends Obj {
 		}
 		return this.directiveObject =
 				field("directive").substance(dummyUser()).toObject();
-	}
-
-	public final Obj getFalse() {
-		if (this.falseObject != null) {
-			return this.falseObject;
-		}
-		return this.falseObject =
-				field("false").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getInteger() {
@@ -162,13 +148,9 @@ public class Root extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-
-		return new Ascendants(this).setAncestor(
-				Path.VOID_PATH
-				.bind(this, enclosingScope)
-				.staticTypeRef(enclosingScope.distribute()));
+		return new Ascendants(this).setAncestor(voidRef(
+				this,
+				getScope().getEnclosingScope().distribute()).toStaticTypeRef());
 	}
 
 	@Override
@@ -189,7 +171,6 @@ public class Root extends Obj {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		this.memberRegistry.registerMembers(members);
-		members.addMember(getVoidField().toMember());
 		for (Field<?> field : this.sources.fields(toMemberOwner())) {
 			members.addMember(field.toMember());
 		}

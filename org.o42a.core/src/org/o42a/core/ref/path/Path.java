@@ -43,6 +43,8 @@ public final class Path {
 	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
 	public static final Path VOID_PATH =
 			new Path(ABSOLUTE_PATH, NO_PATH_BINDINGS, true, new VoidStep());
+	public static final Path FALSE_PATH =
+			new Path(ABSOLUTE_PATH, NO_PATH_BINDINGS, true, new FalseStep());
 
 	static final Path EMPTY_STATIC_PATH =
 			new Path(RELATIVE_PATH, NO_PATH_BINDINGS, true);

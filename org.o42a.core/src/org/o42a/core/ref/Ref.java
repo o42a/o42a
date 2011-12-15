@@ -20,7 +20,8 @@
 package org.o42a.core.ref;
 
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
-import static org.o42a.core.ref.path.Path.ROOT_PATH;
+import static org.o42a.core.ref.path.Path.FALSE_PATH;
+import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
@@ -29,7 +30,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
@@ -39,7 +39,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.impl.Adapter;
@@ -61,23 +60,13 @@ import org.o42a.core.value.*;
 public class Ref extends Statement {
 
 	public static Ref voidRef(LocationInfo location, Distributor distributor) {
-
-		final Field<Obj> wrapperField =
-				location.getContext().getIntrinsics().getVoidField();
-
-		return ROOT_PATH.append(wrapperField.getKey())
-				.bind(location, distributor.getScope())
-				.target(distributor);
+		return VOID_PATH.bind(location, distributor.getScope()).target(
+				distributor);
 	}
 
 	public static Ref falseRef(LocationInfo location, Distributor distributor) {
-
-		final Obj falseObject = location.getContext().getFalse();
-		final Path falsePath = ROOT_PATH.append(
-				falseObject.getScope().toMember().getKey());
-
-		return falsePath.bind(location, distributor.getScope())
-				.target(distributor);
+		return FALSE_PATH.bind(location, distributor.getScope()).target(
+				distributor);
 	}
 
 	public static Ref errorRef(LocationInfo location, Distributor distributor) {
