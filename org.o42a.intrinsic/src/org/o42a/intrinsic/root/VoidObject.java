@@ -20,7 +20,6 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.value.Value.voidValue;
-import static org.o42a.util.log.Logger.DECLARATION_LOGGER;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -37,11 +36,9 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.*;
-import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.io.Source;
 
 
 public final class VoidObject extends BuiltinObject {
@@ -85,46 +82,7 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	private static VoidScope voidScope(Scope topScope) {
-
-		final VoidContext context = new VoidContext(topScope.getContext());
-
-		return new VoidScope(context, topScope.distribute());
-	}
-
-	private static final class VoidContext extends CompilerContext {
-
-		private final Source source;
-
-		VoidContext(CompilerContext topContext) {
-			super(topContext, DECLARATION_LOGGER);
-			this.source = topContext.getSource();
-		}
-
-		@Override
-		public Source getSource() {
-			return this.source;
-		}
-
-		@Override
-		public ModuleCompiler compileModule() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public FieldCompiler compileField() {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public void include(DeclarativeBlock block, SectionTag tag) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public String toString() {
-			return "void";
-		}
-
+		return new VoidScope(topScope.getContext(), topScope.distribute());
 	}
 
 	private static final class VoidScope extends ObjectScope {

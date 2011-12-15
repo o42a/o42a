@@ -70,7 +70,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	}
 
 	@Override
-	protected final Definitions explicitDefinitions() {
+	protected Definitions explicitDefinitions() {
 		return new BuiltinValueDef(this).toDefinitions();
 	}
 

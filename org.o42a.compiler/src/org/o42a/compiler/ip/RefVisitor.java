@@ -24,9 +24,12 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.compiler.ip.ref.RefInterpreter.parentPath;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
+import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
@@ -43,6 +46,8 @@ import org.o42a.core.source.LocationInfo;
 
 
 public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
+
+	private static final RootVisitor ROOT_VISITOR = new RootVisitor();
 
 	private final OwnerVisitor ownerVisitor = new OwnerVisitor();
 	private Interpreter ip;
@@ -161,10 +166,29 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		@Override
 		public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
 
+			final RefNode declaredInNode = ref.getDeclaredIn();
 			final Owner owner;
 			final ExpressionNode ownerNode = ref.getOwner();
 
 			if (ownerNode != null) {
+				if (declaredInNode == null) {
+
+					final NameNode nameNode = ref.getName();
+
+					if (nameNode != null
+							&& ownerNode.accept(ROOT_VISITOR, null) != null) {
+
+						final String name = nameNode.getName();
+
+						if ("void".equals(name)) {
+							return new Owner(voidRef(location(p, ref), p));
+						}
+						if ("false".equals(name)) {
+							return new Owner(falseRef(location(p, ref), p));
+						}
+					}
+				}
+
 				owner = ownerNode.accept(this, p);
 				if (owner == null) {
 					return null;
@@ -173,7 +197,7 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 				owner = null;
 			}
 
-			final StaticTypeRef declaredIn = declaredIn(ref.getDeclaredIn(), p);
+			final StaticTypeRef declaredIn = declaredIn(declaredInNode, p);
 
 			if (owner != null) {
 				return owner.memberRefOwner(
@@ -309,6 +333,24 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 		private Owner wrap(Ref owner) {
 			return new Owner(owner, this.overridden);
+		}
+
+	}
+
+	private static final class RootVisitor
+			extends AbstractExpressionVisitor<Object, Void> {
+
+		@Override
+		public Object visitScopeRef(ScopeRefNode ref, Void p) {
+			if (ref.getType() == ScopeType.ROOT) {
+				return Boolean.TRUE;
+			}
+			return null;
+		}
+
+		@Override
+		protected Object visitExpression(ExpressionNode expression, Void p) {
+			return null;
 		}
 
 	}

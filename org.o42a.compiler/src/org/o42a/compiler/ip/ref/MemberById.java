@@ -20,7 +20,9 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -123,7 +125,22 @@ public class MemberById extends PlacedPathFragment {
 		final Container enclosing = container.getEnclosingContainer();
 
 		if (enclosing == null) {
+			if (declaredIn == null) {
+
+				final String name = this.memberId.toName();
+
+				if (name != null) {
+					if ("void".equals(name)) {
+						return VOID_PATH;
+					}
+					if ("false".equals(name)) {
+						return FALSE_PATH;
+					}
+				}
+			}
+
 			getLogger().unresolved(this, this.memberId);
+
 			return null;
 		}
 

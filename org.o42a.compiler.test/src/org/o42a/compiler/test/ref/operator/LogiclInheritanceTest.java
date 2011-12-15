@@ -34,11 +34,11 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	public void isTrue() {
 		compile(
 				"A := void(",
-				"  Foo := void.",
-				"  Bar := ++foo.",
-				").",
-				"B := a(Foo = false).",
-				"C := b.");
+				"  Foo := void",
+				"  Bar := ++foo",
+				")",
+				"B := a(Foo = false)",
+				"C := b");
 
 		assertTrueVoid(this.aBar);
 		assertFalseVoid(this.bBar);
@@ -49,11 +49,11 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	public void not() {
 		compile(
 				"A := void(",
-				"  Foo := void.",
-				"  Bar := --foo.",
-				").",
-				"B := a(Foo = false).",
-				"C := b.");
+				"  Foo := void",
+				"  Bar := --foo",
+				")",
+				"B := a(Foo = false)",
+				"C := b");
 
 		assertFalseVoid(this.aBar);
 		assertTrueVoid(this.bBar);
@@ -64,11 +64,11 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	public void known() {
 		compile(
 				"A := void(",
-				"  Foo := false.",
-				"  Bar := +-foo.",
-				").",
-				"B := a(Foo = *(False? = void)).",
-				"C := b.");
+				"  Foo := void(= False)",
+				"  Bar := +-foo",
+				")",
+				"B := a(Foo = *(False? = void))",
+				"C := b");
 
 		assertTrueVoid(this.aBar);
 		assertFalseVoid(this.bBar);
@@ -79,11 +79,11 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	public void unknown() {
 		compile(
 				"A := void(",
-				"  Foo := false.",
-				"  Bar := -+foo.",
-				").",
-				"B := a(Foo = *(False? = void)).",
-				"C := b.");
+				"  Foo := void(= False)",
+				"  Bar := -+foo",
+				")",
+				"B := a(Foo = *(False? = void))",
+				"C := b");
 
 		assertFalseVoid(this.aBar);
 		assertTrueVoid(this.bBar);
