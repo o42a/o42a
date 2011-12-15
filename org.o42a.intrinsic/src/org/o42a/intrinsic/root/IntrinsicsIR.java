@@ -73,7 +73,7 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 	protected void fill() {
 		set(this.rootType, this.root);
 		set(this.voidType, this.root.getContext().getVoid());
-		set(this.falseType, this.root.getFalse());
+		set(this.falseType, this.root.getContext().getFalse());
 		set(this.integerType, this.root.getInteger());
 		set(this.floatType, this.root.getFloat());
 		set(this.stringType, this.root.getString());

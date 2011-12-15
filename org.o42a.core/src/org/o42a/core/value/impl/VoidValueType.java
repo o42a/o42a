@@ -40,8 +40,7 @@ public final class VoidValueType extends SingleValueType<Void> {
 
 	@Override
 	public Path path(Intrinsics intrinsics) {
-		return Path.ROOT_PATH.append(
-				intrinsics.getVoidField().getKey());
+		return Path.VOID_PATH;
 	}
 
 }

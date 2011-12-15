@@ -20,7 +20,7 @@
 package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
-import static org.o42a.core.value.Value.voidValue;
+import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
@@ -35,7 +35,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class VoidStep extends Step {
+public class FalseStep extends Step {
 
 	@Override
 	public PathKind getPathKind() {
@@ -54,7 +54,7 @@ public class VoidStep extends Step {
 
 	@Override
 	public String toString() {
-		return "VOID";
+		return "FALSE";
 	}
 
 	@Override
@@ -72,15 +72,11 @@ public class VoidStep extends Step {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj voidObject = start.getContext().getVoid();
+		final Obj falseObject = start.getContext().getFalse();
 
-		walker.module(this, voidObject);
+		walker.module(this, falseObject);
 
-		return voidObject;
-	}
-
-	@Override
-	protected void normalize(PathNormalizer normalizer) {
+		return falseObject;
 	}
 
 	@Override
@@ -91,31 +87,41 @@ public class VoidStep extends Step {
 	}
 
 	@Override
+	protected void normalize(PathNormalizer normalizer) {
+	}
+
+	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
 	}
 
-	private static final class Op extends StepOp<VoidStep> {
+	private static final class Op extends StepOp<FalseStep> {
 
-		Op(PathOp start, VoidStep step) {
+		Op(PathOp start, FalseStep step) {
 			super(start, step);
 		}
 
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
+			dirs.code().go(dirs.falseDir());
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
-			return voidValue().op(getBuilder(), dirs.code());
+
+			final ValOp result = falseValue().op(getBuilder(), dirs.code());
+
+			dirs.code().go(dirs.falseDir());
+
+			return result;
 		}
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
 
-			final Obj voidObject = getContext().getVoid();
+			final Obj falseObject = getContext().getFalse();
 
-			return voidObject.ir(getGenerator()).op(getBuilder(), dirs.code());
+			return falseObject.ir(getGenerator()).op(getBuilder(), dirs.code());
 		}
 
 	}
