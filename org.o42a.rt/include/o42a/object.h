@@ -539,17 +539,9 @@ extern const struct {
 
 	O42A_HEADER;
 
-	const o42a_obj_stype_t *root_type;
-
 	const o42a_obj_stype_t *void_type;
 
 	const o42a_obj_stype_t *false_type;
-
-	const o42a_obj_stype_t *integer_type;
-
-	const o42a_obj_stype_t *float_type;
-
-	const o42a_obj_stype_t *string_type;
 
 } o42a;
 

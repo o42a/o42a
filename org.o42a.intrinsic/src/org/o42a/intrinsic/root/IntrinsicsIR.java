@@ -38,12 +38,8 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	private final Root root;
 
-	private StructRec<ObjectIRType.Op> rootType;
 	private StructRec<ObjectIRType.Op> voidType;
 	private StructRec<ObjectIRType.Op> falseType;
-	private StructRec<ObjectIRType.Op> integerType;
-	private StructRec<ObjectIRType.Op> floatType;
-	private StructRec<ObjectIRType.Op> stringType;
 
 	IntrinsicsIR(Root root) {
 		this.root = root;
@@ -61,22 +57,14 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
-		this.rootType = data.addPtr("root_type", OBJECT_TYPE);
 		this.voidType = data.addPtr("void_type", OBJECT_TYPE);
 		this.falseType = data.addPtr("false_type", OBJECT_TYPE);
-		this.integerType = data.addPtr("integer_type", OBJECT_TYPE);
-		this.floatType = data.addPtr("float_type", OBJECT_TYPE);
-		this.stringType = data.addPtr("string_type", OBJECT_TYPE);
 	}
 
 	@Override
 	protected void fill() {
-		set(this.rootType, this.root);
 		set(this.voidType, this.root.getContext().getVoid());
 		set(this.falseType, this.root.getContext().getFalse());
-		set(this.integerType, this.root.getInteger());
-		set(this.floatType, this.root.getFloat());
-		set(this.stringType, this.root.getString());
 	}
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
