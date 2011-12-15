@@ -32,7 +32,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.source.*;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
@@ -49,6 +48,7 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	private final ModuleNamespace moduleNamespace;
 	private final Obj voidObject;
+	private final Obj falseObject;
 	private final Root root;
 
 	private final HashMap<String, ModuleUse> modules =
@@ -67,6 +67,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.top = new Top(this.topContext);
 		this.moduleNamespace = new ModuleNamespace(this);
 		this.voidObject = new VoidObject(this.top);
+		this.falseObject = new False(this.top);
 		this.root = createRoot(this.top);
 		this.consoleModule = consoleModule(this.root.getContext());
 		addModule(this.consoleModule);
@@ -88,13 +89,13 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
-	public Field<Obj> getVoidField() {
-		return this.root.getVoidField();
+	public Obj getVoid() {
+		return this.voidObject;
 	}
 
 	@Override
-	public Obj getVoid() {
-		return this.voidObject;
+	public Obj getFalse() {
+		return this.falseObject;
 	}
 
 	@Override
@@ -105,11 +106,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	@Override
 	public Obj getDirective() {
 		return this.root.getDirective();
-	}
-
-	@Override
-	public Obj getFalse() {
-		return this.root.getFalse();
 	}
 
 	@Override
