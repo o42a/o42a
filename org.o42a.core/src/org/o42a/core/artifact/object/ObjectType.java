@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
-import static java.util.Collections.emptyMap;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
@@ -28,8 +28,7 @@ import static org.o42a.core.artifact.object.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.artifact.object.TypeUsage.STATIC_TYPE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
@@ -49,7 +48,7 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
-	private HashMap<Scope, Derivative> allDerivatives;
+	private ArrayList<Derivative> allDerivatives;
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -142,9 +141,9 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 		return this.allAscendants = unmodifiableMap(buildAllAscendants());
 	}
 
-	public final Map<Scope, Derivative> allDerivatives() {
+	public final List<Derivative> allDerivatives() {
 		if (this.allDerivatives == null) {
-			return emptyMap();
+			return emptyList();
 		}
 		return this.allDerivatives;
 	}
@@ -474,9 +473,9 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 
 	private void registerDerivative(Scope scope, Derivative derivative) {
 		if (this.allDerivatives == null) {
-			this.allDerivatives = new HashMap<Scope, Derivative>();
+			this.allDerivatives = new ArrayList<Derivative>();
 		}
-		this.allDerivatives.put(scope, derivative);
+		this.allDerivatives.add(derivative);
 		if (getObject().isClone()) {
 			// Clone is explicitly derived.
 			// Update the derivation tree.
