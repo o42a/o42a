@@ -31,7 +31,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.util.use.UserInfo;
 
 
-public abstract class Sample extends Scoped {
+public abstract class Sample extends Scoped implements Derivative {
 
 	private final Ascendants ascendants;
 
@@ -53,6 +53,21 @@ public abstract class Sample extends Scoped {
 	public abstract Member getOverriddenMember();
 
 	public abstract StaticTypeRef getExplicitAscendant();
+
+	@Override
+	public final Obj getDerivedObject() {
+		return getAscendants().getObject();
+	}
+
+	@Override
+	public final Sample toSample() {
+		return this;
+	}
+
+	@Override
+	public final Inheritor toInheritor() {
+		return null;
+	}
 
 	public final ObjectType type(UserInfo user) {
 		return getObject().type().useBy(user);

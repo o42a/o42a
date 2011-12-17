@@ -48,6 +48,8 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
+	private HashMap<Scope, Derivative> allDerivatives =
+			new HashMap<Scope, Derivative>();
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -140,6 +142,10 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 		return this.allAscendants = unmodifiableMap(buildAllAscendants());
 	}
 
+	public final Map<Scope, Derivative> allDerivatives() {
+		return this.allDerivatives;
+	}
+
 	public final ObjectType useBy(UserInfo user) {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
@@ -199,24 +205,31 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 				RUNTIME_DERIVATION_USAGE);
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
+			if (derived.getWrapped() == null) {
+				registerDerivative(
+						derived.getScope().getEnclosingScope(),
+						new Inheritor(derived));
+			}
 		}
 	}
 
 	protected void useAsSample(Sample sample) {
 
-		final Obj sampleObject =
-				sample.getAscendants().getObject();
+		final Obj derived = sample.getDerivedObject();
 
 		derivationUses().useBy(
-				sampleObject.content(),
+				derived.content(),
 				getObject().isClone()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
-				sampleObject.type().rtDerivation(),
+				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!sampleObject.isClone()) {
-			trackAscendantDefsUsage(sampleObject);
-			trackAncestorDefsUpdates(sampleObject);
+		if (!derived.isClone()) {
+			trackAscendantDefsUsage(derived);
+			trackAncestorDefsUpdates(derived);
+			if (derived.getWrapped() == null) {
+				registerDerivative(sample.getScope(), sample);
+			}
 		}
 	}
 
@@ -452,6 +465,24 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 			if (newAncestorValue.part(defKind).getDefs().updatedSince(
 					oldAncestorObject)) {
 				sampleValuePart.updateAncestorDefsBy(sinceValuePart);
+			}
+		}
+	}
+
+	private void registerDerivative(Scope scope, Derivative derivative) {
+		this.allDerivatives.put(scope, derivative);
+		if (getObject().isClone()) {
+			// Clone is explicitly derived.
+			// Update the derivation tree.
+			final Sample[] samples = getSamples();
+
+			if (samples.length != 0) {
+
+				final Sample sample = getSamples()[0];
+
+				sample.getObject().type().allDerivatives.put(
+						sample.getScope(),
+						sample);
 			}
 		}
 	}
