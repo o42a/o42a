@@ -25,6 +25,7 @@ import static org.o42a.core.member.field.FieldUsage.*;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.use.*;
@@ -97,6 +98,14 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 			return super.toString();
 		}
 		return "MemberAnalysis[" + this.member + ']';
+	}
+
+	final void registerArtifact(Artifact<?> artifact) {
+
+		final MemberFieldUses uses = uses();
+
+		uses.useBy(artifact.content(), SUBSTANCE_USAGE);
+		uses.useBy(artifact.fieldUses(), NESTED_USAGE);
 	}
 
 	final MemberFieldUses uses() {

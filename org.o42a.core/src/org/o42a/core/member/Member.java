@@ -168,7 +168,7 @@ public abstract class Member extends Placed {
 		return getLastDefinition() != this;
 	}
 
-	public Set<CompilerContext> getAllContexts() {
+	public Set<CompilerContext> allContexts() {
 		return Collections.singleton(getContext());
 	}
 

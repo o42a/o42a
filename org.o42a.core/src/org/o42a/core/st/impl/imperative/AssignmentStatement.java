@@ -129,6 +129,9 @@ public class AssignmentStatement extends Statement {
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().value().wrapBy(
 					value.materialize().value());
+			if (resolver.getScope() == getScope()) {
+				destination.toLink().assign(this.value);
+			}
 		}
 	}
 
