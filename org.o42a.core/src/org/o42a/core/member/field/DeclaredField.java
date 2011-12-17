@@ -88,7 +88,7 @@ public abstract class DeclaredField<
 			return enclosingScope.getContext() != getContext();
 		}
 
-		return !enclosingMember.getAllContexts().contains(getContext());
+		return !enclosingMember.allContexts().contains(getContext());
 	}
 
 	public final Inclusions newInclusions() {

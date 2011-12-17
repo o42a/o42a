@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
@@ -48,8 +49,7 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
-	private HashMap<Scope, Derivative> allDerivatives =
-			new HashMap<Scope, Derivative>();
+	private HashMap<Scope, Derivative> allDerivatives;
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -143,6 +143,9 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	}
 
 	public final Map<Scope, Derivative> allDerivatives() {
+		if (this.allDerivatives == null) {
+			return emptyMap();
+		}
 		return this.allDerivatives;
 	}
 
@@ -470,6 +473,9 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	}
 
 	private void registerDerivative(Scope scope, Derivative derivative) {
+		if (this.allDerivatives == null) {
+			this.allDerivatives = new HashMap<Scope, Derivative>();
+		}
 		this.allDerivatives.put(scope, derivative);
 		if (getObject().isClone()) {
 			// Clone is explicitly derived.
@@ -480,7 +486,7 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 
 				final Sample sample = getSamples()[0];
 
-				sample.getObject().type().allDerivatives.put(
+				sample.getObject().type().registerDerivative(
 						sample.getScope(),
 						sample);
 			}

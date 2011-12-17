@@ -31,6 +31,8 @@ import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.impl.LinkTarget;
 import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
@@ -86,6 +88,15 @@ public abstract class Link extends MaterializableArtifact<Link> {
 			define();
 		}
 		return this.targetRef;
+	}
+
+	public final void assign(Ref value) {
+
+		final Field<?> field = getScope().toField();
+
+		if (field != null) {
+			field.toMember().assign(value);
+		}
 	}
 
 	protected abstract TargetRef buildTargetRef();
