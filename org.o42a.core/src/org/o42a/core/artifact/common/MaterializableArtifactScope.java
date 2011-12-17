@@ -21,14 +21,14 @@ package org.o42a.core.artifact.common;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactScope;
+import org.o42a.core.artifact.StandaloneArtifactScope;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.source.LocationInfo;
 
 
 public abstract class MaterializableArtifactScope<
 		A extends MaterializableArtifact<A>>
-				extends ArtifactScope<A> {
+				extends StandaloneArtifactScope<A> {
 
 	private final MaterializableArtifactScope<A> propagatedFrom;
 	private ArtifactContainer<A> container;

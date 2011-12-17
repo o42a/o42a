@@ -36,7 +36,7 @@ public abstract class ObjectField extends Field<Obj> {
 
 	protected ObjectField(MemberField member, Field<Obj> propagatedFrom) {
 		super(member);
-		setFieldArtifact(propagateArtifact(propagatedFrom));
+		setScopeArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	protected ObjectField(
@@ -45,7 +45,7 @@ public abstract class ObjectField extends Field<Obj> {
 			boolean propagateArtifact) {
 		super(member);
 		if (propagateArtifact) {
-			setFieldArtifact(propagateArtifact(propagatedFrom));
+			setScopeArtifact(propagateArtifact(propagatedFrom));
 		}
 	}
 
