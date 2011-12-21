@@ -45,7 +45,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.UnNormalizedPath;
+import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;

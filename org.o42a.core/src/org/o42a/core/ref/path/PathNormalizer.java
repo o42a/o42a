@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.impl.UnNormalizedPath;
+import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
