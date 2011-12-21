@@ -89,8 +89,7 @@ public abstract class ContainerMembers {
 	}
 
 	protected void registerSymbol(MemberId memberId, Member member) {
-		if (member.getVisibility() == Visibility.PRIVATE
-				&& member.isOverride()) {
+		if (!member.getVisibility().isOverridable() && member.isOverride()) {
 			// Only explicitly declared private members registered.
 			return;
 		}

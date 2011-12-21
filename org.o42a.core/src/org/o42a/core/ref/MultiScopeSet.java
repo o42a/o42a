@@ -24,6 +24,14 @@ public enum MultiScopeSet {
 
 	SINGLE_SCOPE,
 	DERIVATIVES_ONLY,
-	MULTI_SCOPE
+	MULTI_SCOPE;
+
+	public final boolean isSingle() {
+		return this == SINGLE_SCOPE;
+	}
+
+	public final boolean nothingButDerivatives() {
+		return this != MULTI_SCOPE;
+	}
 
 }

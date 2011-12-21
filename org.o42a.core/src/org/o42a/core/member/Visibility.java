@@ -24,6 +24,10 @@ public enum Visibility {
 
 	PRIVATE,
 	PROTECTED,
-	PUBLIC
+	PUBLIC;
+
+	public final boolean isOverridable() {
+		return this != PRIVATE;
+	}
 
 }

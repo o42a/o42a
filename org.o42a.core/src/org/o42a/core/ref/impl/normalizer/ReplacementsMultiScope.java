@@ -32,7 +32,14 @@ import org.o42a.core.ref.MultiScopeSet;
 
 public final class ReplacementsMultiScope extends MultiScope {
 
-	public ReplacementsMultiScope(Field<?> field) {
+	public static MultiScope replacementMultiScope(Field<?> field) {
+		if (!field.getVisibility().isOverridable()) {
+			return new PropagatedMultiScope(field);
+		}
+		return new ReplacementsMultiScope(field);
+	}
+
+	private ReplacementsMultiScope(Field<?> field) {
 		super(field);
 	}
 
