@@ -21,6 +21,7 @@ package org.o42a.core.ref.impl.normalizer;
 
 import static org.o42a.core.ref.MultiScope.multiScope;
 import static org.o42a.core.ref.impl.normalizer.ReplacementsMultiScope.replacementMultiScope;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -30,10 +31,9 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.core.ref.MultiScope;
-import org.o42a.core.ref.MultiScopeSet;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -92,11 +92,10 @@ public class MultiWalker implements PathWalker {
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
-		if (getScopeSet().nothingButDerivatives()) {
-			return set(multiScope(enclosing.getScope()));
+		if (!getScopeSet().nothingButDerivatives()) {
+			return false;
 		}
-		// TODO Auto-generated method stub
-		return false;
+		return set(multiScope(enclosing.getScope()));
 	}
 
 	@Override
@@ -117,6 +116,10 @@ public class MultiWalker implements PathWalker {
 		}
 
 		final Field<?> field = fieldMember.field(User.dummyUser());
+
+		if (field.getArtifactKind().isVariable()) {
+			return false;
+		}
 
 		if (getScopeSet().nothingButDerivatives()) {
 
@@ -139,14 +142,27 @@ public class MultiWalker implements PathWalker {
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		// TODO Support for multi-scoping of array elements.
 		return false;
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		// TODO Auto-generated method stub
-		return false;
+		if (!getScopeSet().nothingButDerivatives()) {
+			return false;
+		}
+
+		final LocalScope local =
+				object.getScope().getEnclosingScope().toLocal();
+		final MultiWalker walker =
+				new MultiWalker(new PropagatedMultiScope(local));
+		final Resolution resolution =
+				dependency.resolve(local.walkingResolver(dummyUser(), walker));
+
+		if (resolution.isError() || !resolution.isResolved()) {
+			return false;
+		}
+
+		return set(walker.getMultiScope());
 	}
 
 	@Override

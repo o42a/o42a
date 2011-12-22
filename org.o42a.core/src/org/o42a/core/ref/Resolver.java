@@ -61,10 +61,6 @@ public class Resolver implements UserInfo, LocationInfo {
 		return this.scope.getContext();
 	}
 
-	public final boolean isDummy() {
-		return this.user.isDummy();
-	}
-
 	public final Container getContainer() {
 		return this.scope.getContainer();
 	}
@@ -106,7 +102,7 @@ public class Resolver implements UserInfo, LocationInfo {
 		if (this.user == null) {
 			return super.toString();
 		}
-		if (isDummy()) {
+		if (toUser().isDummy()) {
 			return "DummyResolver[" + this.scope + ']';
 		}
 		return "Resolver[" + this.scope + " by " + this.user + ']';
