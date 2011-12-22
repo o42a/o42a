@@ -101,10 +101,10 @@ public final class ReplacementsMultiScope extends MultiScope {
 				if (field != null) {
 					this.sub = new ReplacementsIterator(field);
 				} else {
-					// FIXME Implement assignment target multi-scope.
 					this.sub = null;
 				}
 			}
+
 			return this.sub.next();
 		}
 

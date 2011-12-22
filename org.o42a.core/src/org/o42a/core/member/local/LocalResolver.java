@@ -45,7 +45,7 @@ public class LocalResolver extends Resolver {
 		if (toUser() == null) {
 			return super.toString();
 		}
-		if (isDummy()) {
+		if (toUser().isDummy()) {
 			return "DummyLocalResolver[" + getScope() + ']';
 		}
 		return "LocalResolver[" + getScope() + " by " + toUser() + ']';
