@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.normalizer;
 
 import static org.o42a.core.ref.MultiScope.multiScope;
+import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.derivativesMultiScope;
 import static org.o42a.core.ref.impl.normalizer.ReplacementsMultiScope.replacementMultiScope;
 import static org.o42a.util.use.User.dummyUser;
 
@@ -126,7 +127,7 @@ public class MultiWalker implements PathWalker {
 			final Obj object = field.toObject();
 
 			if (object != null) {
-				return set(new DerivativesMultiScope(object));
+				return set(derivativesMultiScope(object));
 			}
 
 			return set(replacementMultiScope(field));
