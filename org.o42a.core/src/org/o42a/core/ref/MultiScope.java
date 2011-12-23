@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.derivativesMultiScope;
 import static org.o42a.core.ref.impl.normalizer.ReplacementsMultiScope.replacementMultiScope;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.impl.normalizer.DerivativesMultiScope;
 import org.o42a.core.ref.impl.normalizer.PropagatedMultiScope;
 
 
@@ -36,7 +36,7 @@ public abstract class MultiScope implements Iterable<Scope> {
 		final Obj object = start.toObject();
 
 		if (object != null) {
-			return new DerivativesMultiScope(object);
+			return derivativesMultiScope(object);
 		}
 
 		final LocalScope local = start.toLocal();

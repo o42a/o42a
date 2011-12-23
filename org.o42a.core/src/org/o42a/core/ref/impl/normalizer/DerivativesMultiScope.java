@@ -30,7 +30,14 @@ import org.o42a.core.ref.MultiScopeSet;
 
 public final class DerivativesMultiScope extends MultiScope {
 
-	public DerivativesMultiScope(Obj object) {
+	public static MultiScope derivativesMultiScope(Obj object) {
+		if (object.type().allDerivatives().isEmpty()) {
+			return new PropagatedMultiScope(object.getScope());
+		}
+		return new DerivativesMultiScope(object);
+	}
+
+	private DerivativesMultiScope(Obj object) {
 		super(object.getScope());
 	}
 
