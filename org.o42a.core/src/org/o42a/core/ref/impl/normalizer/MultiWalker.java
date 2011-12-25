@@ -20,8 +20,9 @@
 package org.o42a.core.ref.impl.normalizer;
 
 import static org.o42a.core.ref.MultiScope.multiScope;
-import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.derivativesMultiScope;
-import static org.o42a.core.ref.impl.normalizer.ReplacementsMultiScope.replacementMultiScope;
+import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.objectMultiScope;
+import static org.o42a.core.ref.impl.normalizer.LinkMultiScope.declaredFieldMultiScope;
+import static org.o42a.core.ref.impl.normalizer.ReplacementsMultiScope.replacementsMultiScope;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
@@ -38,7 +39,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.util.use.User;
 
 
 public class MultiWalker implements PathWalker {
@@ -93,9 +93,6 @@ public class MultiWalker implements PathWalker {
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
-		if (!getScopeSet().nothingButDerivatives()) {
-			return false;
-		}
 		return set(multiScope(enclosing.getScope()));
 	}
 
@@ -116,39 +113,37 @@ public class MultiWalker implements PathWalker {
 			return true;
 		}
 
-		final Field<?> field = fieldMember.field(User.dummyUser());
+		final Field<?> field = fieldMember.field(dummyUser());
 
 		if (field.getArtifactKind().isVariable()) {
+			// Variables not supported yet.
 			return false;
 		}
-
-		if (getScopeSet().nothingButDerivatives()) {
-
-			final Obj object = field.toObject();
-
-			if (object != null) {
-				return set(derivativesMultiScope(object));
-			}
-
-			return set(replacementMultiScope(field));
+		if (getScopeSet().nothingButDerived()) {
+			return set(replacementsMultiScope(field));
 		}
-
-		if (!field.getVisibility().isOverridable()) {
-			return set(replacementMultiScope(field));
+		if (!field.isOverride()) {
+			return set(declaredFieldMultiScope(field));
 		}
-
-		return set(
-				new MultiOwnerReplacementsMultiScope(getMultiScope(), field));
+		if (!getScopeSet().isInherited()) {
+			return set(new InheritedFieldsMultiScope(
+					field,
+					getMultiScope().ancestors()));
+		}
+		return set(new MultiOwnerReplacementsMultiScope(
+				getMultiScope(),
+				field));
 	}
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
+		// Arrays not supported yet.
 		return false;
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		if (!getScopeSet().nothingButDerivatives()) {
+		if (!getScopeSet().nothingButDerived()) {
 			return false;
 		}
 
@@ -168,17 +163,17 @@ public class MultiWalker implements PathWalker {
 
 	@Override
 	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return set(new MaterialMultiScope(getMultiScope()));
+		return set(getMultiScope().materialize());
 	}
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		this.multiScope = multiScope(object.getScope());
-		return true;
+		return set(objectMultiScope(object));
 	}
 
 	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
+		this.multiScope = null;
 	}
 
 	@Override
@@ -192,7 +187,7 @@ public class MultiWalker implements PathWalker {
 
 	private final boolean set(MultiScope multiScope) {
 		this.multiScope = multiScope;
-		return true;
+		return multiScope != null;
 	}
 
 }

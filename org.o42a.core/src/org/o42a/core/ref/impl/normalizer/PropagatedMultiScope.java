@@ -36,7 +36,7 @@ public class PropagatedMultiScope extends MultiScope {
 
 	@Override
 	public MultiScopeSet getScopeSet() {
-		return MultiScopeSet.DERIVATIVES_ONLY;
+		return MultiScopeSet.DERIVED_SCOPES;
 	}
 
 	@Override

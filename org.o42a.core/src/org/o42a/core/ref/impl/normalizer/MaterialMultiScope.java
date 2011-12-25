@@ -26,11 +26,11 @@ import org.o42a.core.ref.MultiScope;
 import org.o42a.core.ref.MultiScopeSet;
 
 
-final class MaterialMultiScope extends MultiScope {
+public final class MaterialMultiScope extends MultiScope {
 
 	private final MultiScope artifacts;
 
-	MaterialMultiScope(MultiScope artifacts) {
+	public MaterialMultiScope(MultiScope artifacts) {
 		super(artifacts.getScope().getArtifact().materialize().getScope());
 		this.artifacts = artifacts;
 	}
@@ -38,6 +38,11 @@ final class MaterialMultiScope extends MultiScope {
 	@Override
 	public MultiScopeSet getScopeSet() {
 		return this.artifacts.getScopeSet();
+	}
+
+	@Override
+	public MultiScope materialize() {
+		return this;
 	}
 
 	@Override

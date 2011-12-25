@@ -19,11 +19,13 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
+import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.objectMultiScope;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldReplacement;
 import org.o42a.core.ref.MultiScope;
@@ -32,7 +34,13 @@ import org.o42a.core.ref.MultiScopeSet;
 
 public final class ReplacementsMultiScope extends MultiScope {
 
-	public static MultiScope replacementMultiScope(Field<?> field) {
+	public static MultiScope replacementsMultiScope(Field<?> field) {
+		
+		final Obj object = field.toObject();
+
+		if (object != null) {
+			return objectMultiScope(object);
+		}
 		if (field.toMember().allReplacements().isEmpty()) {
 			return new PropagatedMultiScope(field);
 		}
@@ -45,7 +53,7 @@ public final class ReplacementsMultiScope extends MultiScope {
 
 	@Override
 	public final MultiScopeSet getScopeSet() {
-		return MultiScopeSet.MULTI_SCOPE;
+		return MultiScopeSet.SCOPES;
 	}
 
 	@Override

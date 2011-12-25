@@ -17,60 +17,63 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl.normalizer;
 
+import static java.util.Collections.singletonList;
 import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.objectMultiScope;
+
+import java.util.Iterator;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.impl.normalizer.MaterialMultiScope;
-import org.o42a.core.ref.impl.normalizer.PropagatedMultiScope;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.MultiScope;
+import org.o42a.core.ref.MultiScopeSet;
 
 
-public abstract class MultiScope implements Iterable<Scope> {
+final class LinkMultiScope extends MultiScope {
 
-	public static MultiScope multiScope(Scope start) {
+	static MultiScope declaredFieldMultiScope(Field<?> field) {
 
-		final Obj object = start.toObject();
+		final Obj object = field.toObject();
 
 		if (object != null) {
 			return objectMultiScope(object);
 		}
 
-		final LocalScope local = start.toLocal();
-
-		assert local != null :
-			"Can not build multi-scope for " + start;
-
-		return new PropagatedMultiScope(local);
+		return new LinkMultiScope(field);
 	}
 
-	private final Scope scope;
-
-	public MultiScope(Scope scope) {
-		this.scope = scope;
+	private LinkMultiScope(Field<?> scope) {
+		super(scope);
 	}
 
-	public final Scope getScope() {
-		return this.scope;
+	@Override
+	public MultiScopeSet getScopeSet() {
+		return MultiScopeSet.SCOPES;
 	}
 
-	public abstract MultiScopeSet getScopeSet();
-
-	public Iterable<Scope> ancestors() {
-		return null;
+	@Override
+	public Iterator<Scope> iterator() {
+		return singletonList(getScope()).iterator();
 	}
 
+	@Override
 	public MultiScope materialize() {
+		return objectMultiScope(
+				getScope().toField().getArtifact().materialize());
+	}
 
-		final Obj object = getScope().toObject();
+	@Override
+	public String toString() {
 
-		if (object == null) {
-			return this;
+		final Scope scope = getScope();
+
+		if (scope == null) {
+			return super.toString();
 		}
 
-		return new MaterialMultiScope(this);
+		return "LinkMultiScope[" + getScope() + ']';
 	}
 
 }
