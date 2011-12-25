@@ -22,16 +22,34 @@ package org.o42a.core.ref;
 
 public enum MultiScopeSet {
 
+	/**
+	 * Single (static) scope.
+	 */
 	SINGLE_SCOPE,
-	DERIVATIVES_ONLY,
-	MULTI_SCOPE;
 
-	public final boolean isSingle() {
-		return this == SINGLE_SCOPE;
+	/**
+	 * Scopes corresponding to object known at compile time (fully constructed
+	 * one) and all of it's derivatives also known at compile time.
+	 */
+	DERIVED_SCOPES,
+
+	/**
+	 * The scopes of an objects constructed by single expression. These scopes
+	 * can be non-derivatives, depending on the object ancestor reference.
+	 */
+	INHERITED_SCOPES,
+
+	/**
+	 * Multiple scopes.
+	 */
+	SCOPES;
+
+	public final boolean nothingButDerived() {
+		return ordinal() <= DERIVED_SCOPES.ordinal();
 	}
 
-	public final boolean nothingButDerivatives() {
-		return this != MULTI_SCOPE;
+	public final boolean isInherited() {
+		return this == INHERITED_SCOPES;
 	}
 
 }

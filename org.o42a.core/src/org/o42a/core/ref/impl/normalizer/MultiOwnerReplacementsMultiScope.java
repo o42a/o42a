@@ -30,18 +30,18 @@ import org.o42a.core.ref.MultiScope;
 import org.o42a.core.ref.MultiScopeSet;
 
 
-public class MultiOwnerReplacementsMultiScope extends MultiScope {
+final class MultiOwnerReplacementsMultiScope extends MultiScope {
 
 	private final MultiScope owner;
 
-	public MultiOwnerReplacementsMultiScope(MultiScope owner, Field<?> field) {
+	MultiOwnerReplacementsMultiScope(MultiScope owner, Field<?> field) {
 		super(field);
 		this.owner = owner;
 	}
 
 	@Override
 	public MultiScopeSet getScopeSet() {
-		return MultiScopeSet.MULTI_SCOPE;
+		return MultiScopeSet.SCOPES;
 	}
 
 	@Override

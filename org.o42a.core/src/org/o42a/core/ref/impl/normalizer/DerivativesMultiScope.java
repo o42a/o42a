@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
+import static org.o42a.core.ref.impl.normalizer.InheritedMultiScope.inheritedMultiScope;
+
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
@@ -30,7 +32,10 @@ import org.o42a.core.ref.MultiScopeSet;
 
 public final class DerivativesMultiScope extends MultiScope {
 
-	public static MultiScope derivativesMultiScope(Obj object) {
+	public static MultiScope objectMultiScope(Obj object) {
+		if (object.getConstructionMode().isStrict()) {
+			return inheritedMultiScope(object);
+		}
 		if (object.type().allDerivatives().isEmpty()) {
 			return new PropagatedMultiScope(object.getScope());
 		}
@@ -43,7 +48,7 @@ public final class DerivativesMultiScope extends MultiScope {
 
 	@Override
 	public final MultiScopeSet getScopeSet() {
-		return MultiScopeSet.DERIVATIVES_ONLY;
+		return MultiScopeSet.DERIVED_SCOPES;
 	}
 
 	@Override
