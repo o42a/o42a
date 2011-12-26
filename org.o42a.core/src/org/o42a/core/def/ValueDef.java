@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
@@ -179,6 +180,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 				conditions,
 				NO_CLAIMS,
 				new ValueDefs(DefKind.PROPOSITION, this));
+	}
+
+	public InlineValueDef inline(Normalizer normalizer) {
+		// TODO In-line ValueDef.
+		return null;
 	}
 
 	public ValOp write(ValDirs dirs, HostOp host) {

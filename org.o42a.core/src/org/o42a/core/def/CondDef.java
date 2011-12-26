@@ -25,6 +25,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
@@ -139,6 +140,11 @@ public abstract class CondDef extends Def<CondDef> {
 				new CondDefs(DefKind.CONDITION, this),
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
+	}
+
+	public InlineCondDef inline(Normalizer normalizer) {
+		// TODO In-line CondDef.
+		return null;
 	}
 
 	public final void write(CodeDirs dirs, HostOp host) {

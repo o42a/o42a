@@ -17,50 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value;
+package org.o42a.core.def;
+
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueStruct;
 
 
-public enum ValStoreMode {
+public abstract class InlineValueDef extends InlineCondDef {
 
-	TEMP_VAL_STORE() {
+	private ValueStruct<?, ?> valueStruct;
 
-		@Override
-		ValueStorageIR storage(ValOp target) {
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
+	}
 
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
+	@Override
+	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
 
-			return ir.getTempStorage();
-		}
+		final ValDirs valDirs = dirs.value(getValueStruct());
 
-	},
+		writeValue(valDirs, host);
 
-	INITIAL_VAL_STORE() {
+		valDirs.done();
+	}
 
-		@Override
-		ValueStorageIR storage(ValOp target) {
+	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
-
-			return ir.getInitialStorage();
-		}
-
-	},
-
-	ASSIGNMENT_VAL_STORE() {
-
-		@Override
-		ValueStorageIR storage(ValOp target) {
-
-			final ValueStructIR<?, ?> ir =
-					target.getValueStruct().ir(target.getGenerator());
-
-			return ir.getAssignmentStorage();
-		}
-
-	};
-
-	abstract ValueStorageIR storage(ValOp target);
+	void setValueStruct(ValueStruct<?, ?> valueStruct) {
+		this.valueStruct = valueStruct;
+	}
 
 }

@@ -19,13 +19,10 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
-
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.Usable;
 
 
@@ -81,51 +78,11 @@ public abstract class AbstractObjectStep extends Step {
 
 	protected abstract void walkToObject(PathWalker walker, Obj object);
 
-	@Override
-	protected void normalize(PathNormalizer normalizer) {
-		if (uses().selectUse(
-				normalizer,
-				NON_VALUE_REF_USAGES).isUsed()) {
-			return;
-		}
-
-		// Try to inline object which is used only by value.
-		if (normalizer.getPath().isStatic()) {
-			// Path is static. Object can be inlined.
-			inline(normalizer);
-			return;
-		}
-
-		final TypeRef ancestor = ancestor(
-				normalizer.getPath(),
-				normalizer.getPath(),
-				normalizer.getStepStart().distribute());
-
-		if (ancestor.isStatic()) {
-			inline(normalizer);
-			return;
-		}
-
-		// TODO check whether ancestor is stable enough for object to be
-		// inlinable.
-	}
-
-	protected void inlineObject(PathNormalizer normalizer) {
-		// FIXME Implement object inlining.
-	}
-
 	protected final Usable<RefUsage> uses() {
 		if (this.uses != null) {
 			return this.uses;
 		}
 		return this.uses = RefUsage.usable(this);
-	}
-
-	private void inline(PathNormalizer normalizer) {
-		inlineObject(normalizer);
-		if (normalizer.isStepNormalized()) {
-			// TODO update the use graph once an object inlined.
-		}
 	}
 
 }

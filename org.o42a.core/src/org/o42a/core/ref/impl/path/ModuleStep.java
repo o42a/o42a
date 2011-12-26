@@ -19,17 +19,21 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.InlineValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -116,6 +120,44 @@ public final class ModuleStep extends AbstractObjectStep {
 	@Override
 	protected void walkToObject(PathWalker walker, Obj object) {
 		walker.module(this, object);
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		if (uses().selectUse(
+				normalizer,
+				NON_VALUE_REF_USAGES).isUsed()) {
+			return;
+		}
+
+		final Module module =
+				normalizer.getStepStart()
+				.getContext()
+				.getIntrinsics()
+				.getModule(this.moduleId);
+		final InlineValueDef def = module.value().getDefinitions().inline(
+				new Normalizer(normalizer, normalizer.getStepStart(), true));
+
+		if (def == null) {
+			return;
+		}
+
+		normalizer.add(module.getScope(), new InlineStep(def) {
+			@Override
+			protected Container resolve(
+					PathResolver resolver,
+					BoundPath path,
+					int index,
+					Scope start,
+					PathWalker walker) {
+				return ModuleStep.this.resolve(
+						resolver,
+						path,
+						index,
+						start,
+						walker);
+			}
+		});
 	}
 
 	@Override

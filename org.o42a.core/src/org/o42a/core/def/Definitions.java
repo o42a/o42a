@@ -27,6 +27,8 @@ import java.util.Collection;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.def.impl.InlineDefinitions;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
@@ -576,6 +578,45 @@ public class Definitions extends Scoped {
 				conditions().runtime(this),
 				claims(),
 				propositions());
+	}
+
+	public final InlineValueDef inline(Normalizer normalizer) {
+
+		final InlineCondDef requirement = requirements().inline(normalizer);
+
+		if (requirement == null) {
+			return null;
+		}
+
+		final InlineCondDef condition = conditions().inline(normalizer);
+
+		if (condition == null) {
+			return null;
+		}
+
+		final InlineValueDef claim =
+				claims().inline(normalizer, this);
+
+		if (claim == null) {
+			return null;
+		}
+
+		final InlineValueDef proposition =
+				propositions().inline(normalizer, this);
+
+		if (proposition == null) {
+			return null;
+		}
+
+		final InlineValueDef result = new InlineDefinitions(
+				requirement,
+				condition,
+				claim,
+				proposition);
+
+		result.setValueStruct(getValueStruct());
+
+		return result;
 	}
 
 	public final void resolveAll() {

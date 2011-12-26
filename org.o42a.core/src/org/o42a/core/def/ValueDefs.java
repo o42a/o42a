@@ -19,6 +19,9 @@
 */
 package org.o42a.core.def;
 
+import org.o42a.core.def.impl.InlineValueDefs;
+import org.o42a.core.def.impl.UnknownInlineDef;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -130,5 +133,32 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 				definitions.claims(),
 				newPropositions);
 	}
+
+	InlineValueDef inline(Normalizer normalizer, Definitions definitions) {
+		if (isEmpty()) {
+			return new UnknownInlineDef();
+		}
+
+		final ValueDef[] defs = get();
+		final InlineValueDef[] inlines = new InlineValueDef[defs.length];
+
+		for (int i = 0; i < defs.length; ++i) {
+
+			final InlineValueDef inline = defs[i].inline(normalizer);
+
+			if (inline == null) {
+				return null;
+			}
+			inline.setValueStruct(definitions.getValueStruct());
+			inlines[i] = inline;
+		}
+
+		final InlineValueDef result = new InlineValueDefs(inlines);
+
+		result.setValueStruct(definitions.getValueStruct());
+
+		return result;
+	}
+
 }
 
