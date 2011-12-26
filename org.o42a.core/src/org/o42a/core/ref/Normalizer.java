@@ -29,14 +29,23 @@ public final class Normalizer implements UseCaseInfo {
 
 	private final UseCase useCase;
 	private final Scope normalizedScope;
+	private final boolean isStatic;
 
-	public Normalizer(UseCaseInfo useCase, Scope normalizedScope) {
+	public Normalizer(
+			UseCaseInfo useCase,
+			Scope normalizedScope,
+			boolean isStatic) {
+		this.isStatic = isStatic;
 		this.useCase = useCase.toUseCase();
 		this.normalizedScope = normalizedScope;
 	}
 
 	public final Scope getNormalizedScope() {
 		return this.normalizedScope;
+	}
+
+	public final boolean isStatic() {
+		return this.isStatic;
 	}
 
 	@Override

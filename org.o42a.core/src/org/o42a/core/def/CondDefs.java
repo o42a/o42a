@@ -21,7 +21,10 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
 
+import org.o42a.core.def.impl.InlineCondDefs;
 import org.o42a.core.def.impl.RuntimeCondDef;
+import org.o42a.core.def.impl.UnknownInlineDef;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;
 import org.o42a.util.ArrayUtil;
@@ -208,6 +211,27 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 				newConditions,
 				definitions.claims(),
 				definitions.propositions());
+	}
+
+	final InlineCondDef inline(Normalizer normalizer) {
+		if (isEmpty()) {
+			return new UnknownInlineDef();
+		}
+
+		final CondDef[] defs = get();
+		final InlineCondDef[] inlines = new InlineCondDef[defs.length];
+
+		for (int i = 0; i < defs.length; ++i) {
+
+			final InlineCondDef inline = defs[i].inline(normalizer);
+
+			if (inline == null) {
+				return null;
+			}
+			inlines[i] = inline;
+		}
+
+		return new InlineCondDefs(this, inlines);
 	}
 
 	private static int nextNonPrereq(CondDef[] defs, int start) {
