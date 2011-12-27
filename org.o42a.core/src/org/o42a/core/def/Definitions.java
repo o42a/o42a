@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import java.util.Collection;
@@ -468,50 +469,11 @@ public class Definitions extends Scoped {
 				claims().unclaim(propositions()));
 	}
 
-	public Definitions prefixWith(PrefixPath prefix) {
-		if (prefix.emptyFor(this)) {
-			return this;
-		}
-
-		final Scope resultScope = prefix.getStart();
-
-		if (isEmpty()) {
-			return emptyDefinitions(this, resultScope);
-		}
-
-		final CondDefs requirements = requirements();
-		final CondDefs newRequirements = requirements.prefixWith(prefix);
-		final CondDefs conditions = conditions();
-		final CondDefs newConditions = conditions.prefixWith(prefix);
-		final ValueDefs claims = claims();
-		final ValueDefs newClaims = claims.prefixWith(prefix);
-		final ValueDefs propositions = propositions();
-		final ValueDefs newPropositions = propositions.prefixWith(prefix);
-		final ValueStruct<?, ?> valueStruct = getValueStruct();
-		final ValueStruct<?, ?> newValueStruct =
-				valueStruct != null ? valueStruct.prefixWith(prefix) : null;
-
-		if (resultScope == getScope()
-				// This may fail when there is no definitions.
-				&& valueStruct == newValueStruct
-				&& requirements == newRequirements
-				&& conditions == newConditions
-				&& claims == newClaims
-				&& propositions == newPropositions) {
-			return this;
-		}
-
-		return new Definitions(
-				this,
-				resultScope,
-				newValueStruct,
-				newRequirements,
-				newConditions,
-				newClaims,
-				newPropositions);
+	public final Definitions wrapBy(Scope wrapperScope) {
+		return prefixWith(wrapperPrefix(wrapperScope, getScope()));
 	}
 
-	public Definitions upgradeScope(Scope scope) {
+	public final Definitions upgradeScope(Scope scope) {
 		if (scope == getScope()) {
 			return this;
 		}
@@ -741,6 +703,49 @@ public class Definitions extends Scoped {
 				NO_CONDITIONS,
 				claims(),
 				NO_PROPOSITIONS);
+	}
+
+	private Definitions prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
+
+		final Scope resultScope = prefix.getStart();
+
+		if (isEmpty()) {
+			return emptyDefinitions(this, resultScope);
+		}
+
+		final CondDefs requirements = requirements();
+		final CondDefs newRequirements = requirements.prefixWith(prefix);
+		final CondDefs conditions = conditions();
+		final CondDefs newConditions = conditions.prefixWith(prefix);
+		final ValueDefs claims = claims();
+		final ValueDefs newClaims = claims.prefixWith(prefix);
+		final ValueDefs propositions = propositions();
+		final ValueDefs newPropositions = propositions.prefixWith(prefix);
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+		final ValueStruct<?, ?> newValueStruct =
+				valueStruct != null ? valueStruct.prefixWith(prefix) : null;
+
+		if (resultScope == getScope()
+				// This may fail when there is no definitions.
+				&& valueStruct == newValueStruct
+				&& requirements == newRequirements
+				&& conditions == newConditions
+				&& claims == newClaims
+				&& propositions == newPropositions) {
+			return this;
+		}
+
+		return new Definitions(
+				this,
+				resultScope,
+				newValueStruct,
+				newRequirements,
+				newConditions,
+				newClaims,
+				newPropositions);
 	}
 
 	private static final class Empty extends Definitions {
