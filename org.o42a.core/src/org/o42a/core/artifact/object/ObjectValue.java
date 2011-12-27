@@ -24,7 +24,6 @@ import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_US
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.def.DefKind;
@@ -160,9 +159,7 @@ public final class ObjectValue implements Uses<ValueUsage> {
 					wrapped.value().getDefinitions();
 
 			return this.explicitDefinitions =
-					wrappedDefinitions.prefixWith(wrapperPrefix(
-							object.getScope(),
-							wrapped.getScope()));
+					wrappedDefinitions.wrapBy(object.getScope());
 		}
 
 		this.explicitDefinitions = object.explicitDefinitions();
