@@ -22,6 +22,7 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Definitions.*;
 
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.impl.InlineCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
@@ -142,9 +143,32 @@ public abstract class CondDef extends Def<CondDef> {
 				NO_PROPOSITIONS);
 	}
 
-	public InlineCond inline(Normalizer normalizer) {
-		// TODO In-line CondDef.
-		return null;
+	public final InlineCond inline(Normalizer normalizer) {
+
+		final InlineCond prerequisite;
+
+		if (!hasPrerequisite()) {
+			prerequisite = null;
+		} else {
+			prerequisite = getPrerequisite().inline(normalizer);
+			if (prerequisite == null) {
+				return null;
+			}
+		}
+
+		final InlineCond precondition = getPrecondition().inline(normalizer);
+
+		if (precondition == null) {
+			return null;
+		}
+
+		final InlineCond def = inlineDef(normalizer);
+
+		if (def == null) {
+			return null;
+		}
+
+		return new InlineCondDef(prerequisite, precondition, def);
 	}
 
 	public final void write(CodeDirs dirs, HostOp host) {
@@ -159,6 +183,11 @@ public abstract class CondDef extends Def<CondDef> {
 	}
 
 	@Override
+	protected String name() {
+		return "CondDef";
+	}
+
+	@Override
 	protected final void fullyResolve(Resolver resolver) {
 		getPrerequisite().resolveAll(resolver);
 		getLogical().resolveAll(resolver);
@@ -167,9 +196,9 @@ public abstract class CondDef extends Def<CondDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	@Override
-	protected String name() {
-		return "CondDef";
+	protected InlineCond inlineDef(Normalizer normailzer) {
+		// TODO In-line CondDef.
+		return null;
 	}
 
 }

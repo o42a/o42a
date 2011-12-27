@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.def.CondDef;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -273,8 +274,6 @@ public abstract class Logical extends Scoped {
 
 	public abstract LogicalValue logicalValue(Resolver resolver);
 
-	public abstract Logical reproduce(Reproducer reproducer);
-
 	public final Logical or(Logical other) {
 		if (other == null) {
 			return this;
@@ -415,6 +414,13 @@ public abstract class Logical extends Scoped {
 		} finally {
 			getContext().fullResolution().end();
 		}
+	}
+
+	public abstract Logical reproduce(Reproducer reproducer);
+
+	public InlineCond inline(Normalizer normalizer) {
+		// TODO In-line logicals.
+		return null;
 	}
 
 	public abstract void write(CodeDirs dirs, HostOp host);

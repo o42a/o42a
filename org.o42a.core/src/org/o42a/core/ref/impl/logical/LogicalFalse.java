@@ -21,9 +21,11 @@ package org.o42a.core.ref.impl.logical;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -31,6 +33,8 @@ import org.o42a.core.value.LogicalValue;
 
 
 public final class LogicalFalse extends Logical {
+
+	private static final InlineFalse INLINE_FALSE = new InlineFalse();
 
 	public LogicalFalse(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -54,6 +58,11 @@ public final class LogicalFalse extends Logical {
 	}
 
 	@Override
+	public InlineCond inline(Normalizer normalizer) {
+		return INLINE_FALSE;
+	}
+
+	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
@@ -70,6 +79,20 @@ public final class LogicalFalse extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
+	}
+
+	private static final class InlineFalse extends InlineCond {
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			dirs.code().go(dirs.falseDir());
+		}
+
+		@Override
+		public String toString() {
+			return "FALSE";
+		}
+
 	}
 
 }

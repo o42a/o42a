@@ -20,7 +20,7 @@
 package org.o42a.core.def;
 
 import org.o42a.core.def.impl.InlineValueDefs;
-import org.o42a.core.def.impl.UnknownInlineDef;
+import org.o42a.core.def.impl.UnknownInlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -136,7 +136,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 	InlineValue inline(Normalizer normalizer, Definitions definitions) {
 		if (isEmpty()) {
-			return new UnknownInlineDef();
+			return new UnknownInlineValue();
 		}
 
 		final ValueDef[] defs = get();
