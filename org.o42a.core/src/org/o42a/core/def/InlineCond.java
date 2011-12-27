@@ -23,8 +23,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-public abstract class InlineCondDef {
+public abstract class InlineCond {
 
-	public abstract void writeLogicalValue(CodeDirs dirs, HostOp host);
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 }

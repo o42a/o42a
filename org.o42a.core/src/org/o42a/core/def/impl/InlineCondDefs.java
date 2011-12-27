@@ -22,23 +22,23 @@ package org.o42a.core.def.impl;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.CondDefs;
-import org.o42a.core.def.InlineCondDef;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-public class InlineCondDefs extends InlineCondDef {
+public class InlineCondDefs extends InlineCond {
 
 	private final CondDefs defs;
-	private final InlineCondDef[] inlines;
+	private final InlineCond[] inlines;
 
-	public InlineCondDefs(CondDefs defs, InlineCondDef[] inlines) {
+	public InlineCondDefs(CondDefs defs, InlineCond[] inlines) {
 		this.defs = defs;
 		this.inlines = inlines;
 	}
 
 	@Override
-	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+	public void writeCond(CodeDirs dirs, HostOp host) {
 
 		final Code code = dirs.code();
 		final CondDef[] defs = this.defs.get();
@@ -60,7 +60,7 @@ public class InlineCondDefs extends InlineCondDef {
 						block,
 						dirs.falseDir());
 
-				this.inlines[i].writeLogicalValue(defDirs, host);
+				this.inlines[i].writeCond(defDirs, host);
 				block.go(last ? code.tail() : blocks[next].head());
 				continue;
 			}
@@ -70,7 +70,7 @@ public class InlineCondDefs extends InlineCondDef {
 					dirs.falseDir(),
 					last ? dirs.unknownDir() : blocks[next].head());
 
-			this.inlines[i].writeLogicalValue(defDirs, host);
+			this.inlines[i].writeCond(defDirs, host);
 
 			final int nextRequired = nextRequired(defs, i);
 

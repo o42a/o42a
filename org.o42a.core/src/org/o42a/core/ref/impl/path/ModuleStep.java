@@ -26,7 +26,7 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.InlineValueDef;
+import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.op.CodeDirs;
@@ -135,7 +135,7 @@ public final class ModuleStep extends AbstractObjectStep {
 				.getContext()
 				.getIntrinsics()
 				.getModule(this.moduleId);
-		final InlineValueDef def = module.value().getDefinitions().inline(
+		final InlineValue def = module.value().getDefinitions().inline(
 				new Normalizer(normalizer, normalizer.getStepStart(), true));
 
 		if (def == null) {

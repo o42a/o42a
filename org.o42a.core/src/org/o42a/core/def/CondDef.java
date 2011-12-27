@@ -142,7 +142,7 @@ public abstract class CondDef extends Def<CondDef> {
 				NO_PROPOSITIONS);
 	}
 
-	public InlineCondDef inline(Normalizer normalizer) {
+	public InlineCond inline(Normalizer normalizer) {
 		// TODO In-line CondDef.
 		return null;
 	}

@@ -182,7 +182,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 				new ValueDefs(DefKind.PROPOSITION, this));
 	}
 
-	public InlineValueDef inline(Normalizer normalizer) {
+	public InlineValue inline(Normalizer normalizer) {
 		// TODO In-line ValueDef.
 		return null;
 	}

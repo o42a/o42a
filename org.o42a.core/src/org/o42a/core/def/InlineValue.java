@@ -26,7 +26,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class InlineValueDef extends InlineCondDef {
+public abstract class InlineValue extends InlineCond {
 
 	private ValueStruct<?, ?> valueStruct;
 
@@ -35,7 +35,7 @@ public abstract class InlineValueDef extends InlineCondDef {
 	}
 
 	@Override
-	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+	public void writeCond(CodeDirs dirs, HostOp host) {
 
 		final ValDirs valDirs = dirs.value(getValueStruct());
 
