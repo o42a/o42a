@@ -43,6 +43,7 @@ public class InlineDefinitions extends InlineValue {
 			InlineCond condition,
 			InlineValue claim,
 			InlineValue proposition) {
+		super(proposition.getValueStruct());
 		this.requirement = requirement;
 		this.condition = condition;
 		this.claim = claim;

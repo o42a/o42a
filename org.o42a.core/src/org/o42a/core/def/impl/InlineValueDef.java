@@ -36,6 +36,7 @@ public class InlineValueDef extends InlineValue {
 			InlineCond prerequisite,
 			InlineCond precondition,
 			InlineValue def) {
+		super(def.getValueStruct());
 		this.prerequisite = prerequisite;
 		this.precondition = precondition;
 		this.def = def;

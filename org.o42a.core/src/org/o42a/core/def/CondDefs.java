@@ -219,6 +219,11 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		}
 
 		final CondDef[] defs = get();
+
+		if (defs.length == 1) {
+			return defs[0].inline(normalizer);
+		}
+
 		final InlineCond[] inlines = new InlineCond[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {

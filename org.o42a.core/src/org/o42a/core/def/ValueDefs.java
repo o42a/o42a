@@ -135,29 +135,32 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 	}
 
 	InlineValue inline(Normalizer normalizer, Definitions definitions) {
+
+		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
+
 		if (isEmpty()) {
-			return new UnknownInlineValue();
+			return new UnknownInlineValue(valueStruct);
 		}
 
 		final ValueDef[] defs = get();
+
+		if (defs.length == 1) {
+			return defs[0].inline(normalizer, valueStruct);
+		}
+
 		final InlineValue[] inlines = new InlineValue[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
 
-			final InlineValue inline = defs[i].inline(normalizer);
+			final InlineValue inline = defs[i].inline(normalizer, valueStruct);
 
 			if (inline == null) {
 				return null;
 			}
-			inline.setValueStruct(definitions.getValueStruct());
 			inlines[i] = inline;
 		}
 
-		final InlineValue result = new InlineValueDefs(inlines);
-
-		result.setValueStruct(definitions.getValueStruct());
-
-		return result;
+		return new InlineValueDefs(inlines);
 	}
 
 }

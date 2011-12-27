@@ -24,9 +24,14 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.value.ValueStruct;
 
 
 public class UnknownInlineValue extends InlineValue {
+
+	public UnknownInlineValue(ValueStruct<?, ?> valueStruct) {
+		super(valueStruct);
+	}
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {

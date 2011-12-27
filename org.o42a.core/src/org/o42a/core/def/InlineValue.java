@@ -28,7 +28,11 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class InlineValue extends InlineCond {
 
-	private ValueStruct<?, ?> valueStruct;
+	private final ValueStruct<?, ?> valueStruct;
+
+	public InlineValue(ValueStruct<?, ?> valueStruct) {
+		this.valueStruct = valueStruct;
+	}
 
 	public final ValueStruct<?, ?> getValueStruct() {
 		return this.valueStruct;
@@ -45,9 +49,5 @@ public abstract class InlineValue extends InlineCond {
 	}
 
 	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
-
-	void setValueStruct(ValueStruct<?, ?> valueStruct) {
-		this.valueStruct = valueStruct;
-	}
 
 }

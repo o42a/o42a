@@ -143,34 +143,6 @@ public abstract class CondDef extends Def<CondDef> {
 				NO_PROPOSITIONS);
 	}
 
-	public final InlineCond inline(Normalizer normalizer) {
-
-		final InlineCond prerequisite;
-
-		if (!hasPrerequisite()) {
-			prerequisite = null;
-		} else {
-			prerequisite = getPrerequisite().inline(normalizer);
-			if (prerequisite == null) {
-				return null;
-			}
-		}
-
-		final InlineCond precondition = getPrecondition().inline(normalizer);
-
-		if (precondition == null) {
-			return null;
-		}
-
-		final InlineCond def = inlineDef(normalizer);
-
-		if (def == null) {
-			return null;
-		}
-
-		return new InlineCondDef(prerequisite, precondition, def);
-	}
-
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
@@ -199,6 +171,34 @@ public abstract class CondDef extends Def<CondDef> {
 	protected InlineCond inlineDef(Normalizer normailzer) {
 		// TODO In-line CondDef.
 		return null;
+	}
+
+	final InlineCond inline(Normalizer normalizer) {
+
+		final InlineCond prerequisite;
+
+		if (!hasPrerequisite()) {
+			prerequisite = null;
+		} else {
+			prerequisite = getPrerequisite().inline(normalizer);
+			if (prerequisite == null) {
+				return null;
+			}
+		}
+
+		final InlineCond precondition = getPrecondition().inline(normalizer);
+
+		if (precondition == null) {
+			return null;
+		}
+
+		final InlineCond def = inlineDef(normalizer);
+
+		if (def == null) {
+			return null;
+		}
+
+		return new InlineCondDef(prerequisite, precondition, def);
 	}
 
 }
