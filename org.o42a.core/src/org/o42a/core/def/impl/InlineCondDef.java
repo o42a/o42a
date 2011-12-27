@@ -19,24 +19,33 @@
 */
 package org.o42a.core.def.impl;
 
-import org.o42a.core.def.InlineValue;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 
 
-public class UnknownInlineDef extends InlineValue {
+public class InlineCondDef extends InlineCond {
 
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
+	private final InlineCond prerequisite;
+	private final InlineCond precondition;
+	private final InlineCond def;
+
+	public InlineCondDef(
+			InlineCond prerequisite,
+			InlineCond precondition,
+			InlineCond def) {
+		this.prerequisite = prerequisite;
+		this.precondition = precondition;
+		this.def = def;
 	}
 
 	@Override
-	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
-		return dirs.value();
+	public void writeCond(CodeDirs dirs, HostOp host) {
+		if (this.prerequisite != null) {
+			this.prerequisite.writeCond(dirs.unknownWhenFalse(), host);
+		}
+		this.precondition.writeCond(dirs, host);
+		this.def.writeCond(dirs, host);
 	}
 
 }

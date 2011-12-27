@@ -25,6 +25,7 @@ import static org.o42a.core.def.Definitions.NO_REQUIREMENTS;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.impl.InlineValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -182,9 +183,32 @@ public abstract class ValueDef extends Def<ValueDef> {
 				new ValueDefs(DefKind.PROPOSITION, this));
 	}
 
-	public InlineValue inline(Normalizer normalizer) {
-		// TODO In-line ValueDef.
-		return null;
+	public final InlineValue inline(Normalizer normalizer) {
+
+		final InlineCond prerequisite;
+
+		if (!hasPrerequisite()) {
+			prerequisite = null;
+		} else {
+			prerequisite = getPrerequisite().inline(normalizer);
+			if (prerequisite == null) {
+				return null;
+			}
+		}
+
+		final InlineCond precondition = getPrecondition().inline(normalizer);
+
+		if (precondition == null) {
+			return null;
+		}
+
+		final InlineValue def = inlineDef(normalizer);
+
+		if (def == null) {
+			return null;
+		}
+
+		return new InlineValueDef(prerequisite, precondition, def);
 	}
 
 	public ValOp write(ValDirs dirs, HostOp host) {
@@ -204,6 +228,11 @@ public abstract class ValueDef extends Def<ValueDef> {
 		}
 
 		return writeDef(dirs, rescopedHost);
+	}
+
+	@Override
+	protected String name() {
+		return "ValueDef";
 	}
 
 	protected abstract boolean hasConstantValue();
@@ -229,9 +258,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
-	@Override
-	protected String name() {
-		return "ValueDef";
+	protected InlineValue inlineDef(Normalizer normalizer) {
+		// TODO In-line ValueDef.
+		return null;
 	}
 
 }
