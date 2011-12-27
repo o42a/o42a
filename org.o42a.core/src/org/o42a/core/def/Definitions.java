@@ -580,35 +580,35 @@ public class Definitions extends Scoped {
 				propositions());
 	}
 
-	public final InlineValueDef inline(Normalizer normalizer) {
+	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineCondDef requirement = requirements().inline(normalizer);
+		final InlineCond requirement = requirements().inline(normalizer);
 
 		if (requirement == null) {
 			return null;
 		}
 
-		final InlineCondDef condition = conditions().inline(normalizer);
+		final InlineCond condition = conditions().inline(normalizer);
 
 		if (condition == null) {
 			return null;
 		}
 
-		final InlineValueDef claim =
+		final InlineValue claim =
 				claims().inline(normalizer, this);
 
 		if (claim == null) {
 			return null;
 		}
 
-		final InlineValueDef proposition =
+		final InlineValue proposition =
 				propositions().inline(normalizer, this);
 
 		if (proposition == null) {
 			return null;
 		}
 
-		final InlineValueDef result = new InlineDefinitions(
+		final InlineValue result = new InlineDefinitions(
 				requirement,
 				condition,
 				claim,

@@ -213,17 +213,17 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 				definitions.propositions());
 	}
 
-	final InlineCondDef inline(Normalizer normalizer) {
+	final InlineCond inline(Normalizer normalizer) {
 		if (isEmpty()) {
 			return new UnknownInlineDef();
 		}
 
 		final CondDef[] defs = get();
-		final InlineCondDef[] inlines = new InlineCondDef[defs.length];
+		final InlineCond[] inlines = new InlineCond[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
 
-			final InlineCondDef inline = defs[i].inline(normalizer);
+			final InlineCond inline = defs[i].inline(normalizer);
 
 			if (inline == null) {
 				return null;

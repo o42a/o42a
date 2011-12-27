@@ -20,7 +20,7 @@
 package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.def.InlineValueDef;
+import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -32,9 +32,9 @@ import org.o42a.core.source.LocationInfo;
 
 public abstract class InlineStep extends Step implements NormalStep {
 
-	private final InlineValueDef def;
+	private final InlineValue def;
 
-	public InlineStep(InlineValueDef def) {
+	public InlineStep(InlineValue def) {
 		this.def = def;
 	}
 
@@ -85,7 +85,7 @@ public abstract class InlineStep extends Step implements NormalStep {
 
 		@Override
 		public void writeLogicalValue(CodeDirs dirs) {
-			getStep().def.writeLogicalValue(dirs, host());
+			getStep().def.writeCond(dirs, host());
 		}
 
 		@Override

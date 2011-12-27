@@ -134,17 +134,17 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 				newPropositions);
 	}
 
-	InlineValueDef inline(Normalizer normalizer, Definitions definitions) {
+	InlineValue inline(Normalizer normalizer, Definitions definitions) {
 		if (isEmpty()) {
 			return new UnknownInlineDef();
 		}
 
 		final ValueDef[] defs = get();
-		final InlineValueDef[] inlines = new InlineValueDef[defs.length];
+		final InlineValue[] inlines = new InlineValue[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
 
-			final InlineValueDef inline = defs[i].inline(normalizer);
+			final InlineValue inline = defs[i].inline(normalizer);
 
 			if (inline == null) {
 				return null;
@@ -153,7 +153,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			inlines[i] = inline;
 		}
 
-		final InlineValueDef result = new InlineValueDefs(inlines);
+		final InlineValue result = new InlineValueDefs(inlines);
 
 		result.setValueStruct(definitions.getValueStruct());
 

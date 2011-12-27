@@ -22,8 +22,8 @@ package org.o42a.core.def.impl;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.def.InlineCondDef;
-import org.o42a.core.def.InlineValueDef;
+import org.o42a.core.def.InlineCond;
+import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -31,18 +31,18 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public class InlineDefinitions extends InlineValueDef {
+public class InlineDefinitions extends InlineValue {
 
-	private final InlineCondDef requirement;
-	private final InlineCondDef condition;
-	private final InlineValueDef claim;
-	private final InlineValueDef proposition;
+	private final InlineCond requirement;
+	private final InlineCond condition;
+	private final InlineValue claim;
+	private final InlineValue proposition;
 
 	public InlineDefinitions(
-			InlineCondDef requirement,
-			InlineCondDef condition,
-			InlineValueDef claim,
-			InlineValueDef proposition) {
+			InlineCond requirement,
+			InlineCond condition,
+			InlineValue claim,
+			InlineValue proposition) {
 		this.requirement = requirement;
 		this.condition = condition;
 		this.claim = claim;
@@ -55,7 +55,7 @@ public class InlineDefinitions extends InlineValueDef {
 		final Code code = dirs.code();
 
 		writeRequirement(dirs.dirs(), host);
-		this.condition.writeLogicalValue(dirs.dirs(), host);
+		this.condition.writeCond(dirs.dirs(), host);
 
 		final Code unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
@@ -101,7 +101,7 @@ public class InlineDefinitions extends InlineValueDef {
 				dirs.falseDir(),
 				unknownReq.head());
 
-		this.requirement.writeLogicalValue(reqDirs, host);
+		this.requirement.writeCond(reqDirs, host);
 		if (unknownReq.exists()) {
 			unknownReq.go(dirs.code().tail());
 		}

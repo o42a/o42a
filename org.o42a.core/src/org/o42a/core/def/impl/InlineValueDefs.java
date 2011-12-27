@@ -21,17 +21,17 @@ package org.o42a.core.def.impl;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.def.InlineValueDef;
+import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-public class InlineValueDefs extends InlineValueDef {
+public class InlineValueDefs extends InlineValue {
 
-	private final InlineValueDef[] inlines;
+	private final InlineValue[] inlines;
 
-	public InlineValueDefs(InlineValueDef[] inlines) {
+	public InlineValueDefs(InlineValue[] inlines) {
 		this.inlines = inlines;
 	}
 

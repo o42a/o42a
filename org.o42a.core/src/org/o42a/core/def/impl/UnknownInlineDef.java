@@ -19,17 +19,17 @@
 */
 package org.o42a.core.def.impl;
 
-import org.o42a.core.def.InlineValueDef;
+import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-public class UnknownInlineDef extends InlineValueDef {
+public class UnknownInlineDef extends InlineValue {
 
 	@Override
-	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+	public void writeCond(CodeDirs dirs, HostOp host) {
 		dirs.code().go(dirs.unknownDir());
 	}
 
