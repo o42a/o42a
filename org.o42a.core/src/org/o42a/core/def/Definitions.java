@@ -570,15 +570,11 @@ public class Definitions extends Scoped {
 			return null;
 		}
 
-		final InlineValue result = new InlineDefinitions(
+		return new InlineDefinitions(
 				requirement,
 				condition,
 				claim,
 				proposition);
-
-		result.setValueStruct(getValueStruct());
-
-		return result;
 	}
 
 	public final void resolveAll() {

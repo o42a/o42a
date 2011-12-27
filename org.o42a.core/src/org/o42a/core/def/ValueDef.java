@@ -183,34 +183,6 @@ public abstract class ValueDef extends Def<ValueDef> {
 				new ValueDefs(DefKind.PROPOSITION, this));
 	}
 
-	public final InlineValue inline(Normalizer normalizer) {
-
-		final InlineCond prerequisite;
-
-		if (!hasPrerequisite()) {
-			prerequisite = null;
-		} else {
-			prerequisite = getPrerequisite().inline(normalizer);
-			if (prerequisite == null) {
-				return null;
-			}
-		}
-
-		final InlineCond precondition = getPrecondition().inline(normalizer);
-
-		if (precondition == null) {
-			return null;
-		}
-
-		final InlineValue def = inlineDef(normalizer);
-
-		if (def == null) {
-			return null;
-		}
-
-		return new InlineValueDef(prerequisite, precondition, def);
-	}
-
 	public ValOp write(ValDirs dirs, HostOp host) {
 
 		final HostOp rescopedHost = getPrefix().write(dirs.dirs(), host);
@@ -258,9 +230,41 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
-	protected InlineValue inlineDef(Normalizer normalizer) {
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
 		// TODO In-line ValueDef.
 		return null;
+	}
+
+	final InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineCond prerequisite;
+
+		if (!hasPrerequisite()) {
+			prerequisite = null;
+		} else {
+			prerequisite = getPrerequisite().inline(normalizer);
+			if (prerequisite == null) {
+				return null;
+			}
+		}
+
+		final InlineCond precondition = getPrecondition().inline(normalizer);
+
+		if (precondition == null) {
+			return null;
+		}
+
+		final InlineValue def = inlineDef(normalizer, valueStruct);
+
+		if (def == null) {
+			return null;
+		}
+
+		return new InlineValueDef(prerequisite, precondition, def);
 	}
 
 }

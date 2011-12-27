@@ -32,6 +32,7 @@ public class InlineValueDefs extends InlineValue {
 	private final InlineValue[] inlines;
 
 	public InlineValueDefs(InlineValue[] inlines) {
+		super(inlines[0].getValueStruct());
 		this.inlines = inlines;
 	}
 
