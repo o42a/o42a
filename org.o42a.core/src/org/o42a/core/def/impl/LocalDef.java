@@ -54,37 +54,26 @@ public class LocalDef extends ValueDef {
 
 		final Obj actualOwner = scope.toObject();
 		final Obj explicitOwner = block.getScope().getOwner();
-		final boolean explicit = actualOwner == explicitOwner;
 
-		final LocalDef localDef = new LocalDef(scope, block, definer, explicit);
+		assert actualOwner == explicitOwner :
+			"LocalDef can only be constructed for explicit local scope";
 
-		// Rescope to explicit owner scope.
-		final ValueDef def = localDef.rescope(explicitOwner.getScope());
-
-		if (explicit) {
-			return def;
-		}
-
-		// Upgrade scope to actual owner's one.
-		return def.upgradeScope(actualOwner.getScope());
+		return new LocalDef(scope, block, definer);
 	}
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
 	private final Definer definer;
-	private final boolean explicit;
 	private final PrefixPath localPrefix;
 
 	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
-			Definer definer,
-			boolean explicit) {
+			Definer definer) {
 		super(sourceOf(block), block, emptyPrefix(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
 		this.definer = definer;
-		this.explicit = explicit;
 		this.localPrefix = getOwnerScope().pathTo(block.getScope());
 	}
 
@@ -93,7 +82,6 @@ public class LocalDef extends ValueDef {
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
 		this.definer = prototype.definer;
-		this.explicit = prototype.explicit;
 		this.localPrefix = prototype.localPrefix;
 	}
 
@@ -216,15 +204,7 @@ public class LocalDef extends ValueDef {
 				ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
 		final LocalIR ir = scope.ir(host.getGenerator());
 
-		if (this.explicit) {
-			return ir.writeValue(dirs, ownerBody, null);
-		}
-
-		return ir.writeValue(
-				dirs,
-				ownerType.ir(host.getGenerator())
-				.op(host.getBuilder(), dirs.code()),
-				ownerBody);
+		return ir.writeValue(dirs, ownerBody, null);
 	}
 
 	private Scope getOwnerScope() {

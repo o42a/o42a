@@ -129,30 +129,11 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return this.hasPrerequisite;
 	}
 
-	public final D prefixWith(PrefixPath prefix) {
-
-		final PrefixPath oldPrefix = getPrefix();
-		final PrefixPath newPrefix = oldPrefix.and(prefix);
-
-		if (newPrefix == oldPrefix) {
-			return self();
-		}
-
-		return create(newPrefix, prefix);
-	}
-
 	public final D upgradeScope(Scope toScope) {
 		if (toScope == getScope()) {
 			return self();
 		}
 		return prefixWith(upgradePrefix(this, toScope));
-	}
-
-	public final D rescope(Scope toScope) {
-		if (getScope() == toScope) {
-			return self();
-		}
-		return prefixWith(toScope.pathTo(getScope()));
 	}
 
 	public void resolveAll(Resolver resolver) {
@@ -347,6 +328,18 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	final void update(DefKind kind, boolean hasPrerequisite) {
 		this.kind = kind;
 		this.hasPrerequisite = hasPrerequisite;
+	}
+
+	final D prefixWith(PrefixPath prefix) {
+
+		final PrefixPath oldPrefix = getPrefix();
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
+
+		if (newPrefix == oldPrefix) {
+			return self();
+		}
+
+		return create(newPrefix, prefix);
 	}
 
 	private final D copy() {
