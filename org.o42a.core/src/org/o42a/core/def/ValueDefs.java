@@ -19,8 +19,10 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.ref.InlineValue.inlineUnknown;
+
 import org.o42a.core.def.impl.InlineValueDefs;
-import org.o42a.core.def.impl.UnknownInlineValue;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -139,7 +141,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
 
 		if (isEmpty()) {
-			return new UnknownInlineValue(valueStruct);
+			return inlineUnknown(valueStruct);
 		}
 
 		final ValueDef[] defs = get();

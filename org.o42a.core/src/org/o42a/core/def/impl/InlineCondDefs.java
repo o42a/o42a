@@ -22,9 +22,9 @@ package org.o42a.core.def.impl;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.CondDefs;
-import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.InlineCond;
 
 
 public class InlineCondDefs extends InlineCond {

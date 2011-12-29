@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ref.impl;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -61,6 +60,11 @@ public final class RefLogical extends Logical {
 		}
 
 		return reproduced.getLogical();
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
+		return this.ref.inline(normalizer, origin);
 	}
 
 	@Override

@@ -17,17 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def.impl;
+package org.o42a.core.ref.impl.normalizer;
 
-import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.InlineCond;
 
 
 public class UnknownInlineCond extends InlineCond {
 
-	public static final InlineCond UNKNOWN_INLINE_COND =
-			new UnknownInlineCond();
+	public static final InlineCond INSTANCE = new UnknownInlineCond();
 
 	private UnknownInlineCond() {
 	}

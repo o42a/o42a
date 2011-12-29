@@ -21,12 +21,9 @@ package org.o42a.core.ref.impl.logical;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
-import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -102,13 +99,14 @@ public final class LogicalOr extends Logical {
 	}
 
 	@Override
-	public InlineCond inline(Normalizer normalizer) {
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
 
 		final InlineCond[] inlines = new InlineCond[this.options.length];
 
 		for (int i = 0; i < inlines.length; ++i) {
 
-			final InlineCond inline = this.options[i].inline(normalizer);
+			final InlineCond inline =
+					this.options[i].inline(normalizer, origin);
 
 			if (inline == null) {
 				return null;

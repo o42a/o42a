@@ -17,35 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def.impl;
+package org.o42a.core.ref;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.InlineCond;
+import org.o42a.core.ref.impl.normalizer.InlineFalse;
+import org.o42a.core.ref.impl.normalizer.InlineTrue;
+import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
 
 
-public class InlineCondDef extends InlineCond {
+public abstract class InlineCond {
 
-	private final InlineCond prerequisite;
-	private final InlineCond precondition;
-	private final InlineCond def;
+	public static final InlineCond INLINE_TRUE = InlineTrue.INSTANCE;
+	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
+	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
 
-	public InlineCondDef(
-			InlineCond prerequisite,
-			InlineCond precondition,
-			InlineCond def) {
-		this.prerequisite = prerequisite;
-		this.precondition = precondition;
-		this.def = def;
-	}
-
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		if (this.prerequisite != null) {
-			this.prerequisite.writeCond(dirs.unknownWhenFalse(), host);
-		}
-		this.precondition.writeCond(dirs, host);
-		this.def.writeCond(dirs, host);
-	}
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 }

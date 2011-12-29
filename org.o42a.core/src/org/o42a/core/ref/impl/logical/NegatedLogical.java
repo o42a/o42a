@@ -20,12 +20,10 @@
 package org.o42a.core.ref.impl.logical;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.def.InlineCond;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -61,9 +59,9 @@ public final class NegatedLogical extends Logical {
 	}
 
 	@Override
-	public InlineCond inline(Normalizer normalizer) {
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
 
-		final InlineCond negated = negate().inline(normalizer);
+		final InlineCond negated = negate().inline(normalizer, origin);
 
 		if (negated == null) {
 			return null;

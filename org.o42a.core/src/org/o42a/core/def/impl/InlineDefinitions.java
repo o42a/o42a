@@ -22,13 +22,13 @@ package org.o42a.core.def.impl;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.def.InlineCond;
-import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ref.InlineCond;
+import org.o42a.core.ref.InlineValue;
 
 
 public class InlineDefinitions extends InlineValue {
