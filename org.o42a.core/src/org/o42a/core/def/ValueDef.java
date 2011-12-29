@@ -29,10 +29,7 @@ import org.o42a.core.def.impl.InlineValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
@@ -42,12 +39,15 @@ public abstract class ValueDef extends Def<ValueDef> {
 	private Value<?> constantValue;
 	private CondDef condition;
 
-	public ValueDef(Obj source, LocationInfo location, PrefixPath prefix) {
-		super(source, location, DefKind.PROPOSITION, prefix);
+	public ValueDef(
+			Obj source,
+			LocationInfo location,
+			ScopeUpgrade scopeUpgrade) {
+		super(source, location, DefKind.PROPOSITION, scopeUpgrade);
 	}
 
-	protected ValueDef(ValueDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	protected ValueDef(ValueDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 	}
 
 	public final boolean isClaim() {
@@ -84,7 +84,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		}
 
 		final Resolver resolver =
-				getPrefix().rescope(getScope().dummyResolver());
+				getScopeUpgrade().rescope(getScope().dummyResolver());
 
 		return this.constantValue = calculateValue(resolver);
 	}
@@ -121,7 +121,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 	public final Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getPrefix().rescope(resolver);
+		final Resolver rescoped = getScopeUpgrade().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -152,7 +152,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return getValueStruct().unknownValue();
 		}
 
-		return value.prefixWith(getPrefix());
+		return value.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	@Override
@@ -184,22 +184,19 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	public ValOp write(ValDirs dirs, HostOp host) {
-
-		final HostOp rescopedHost = getPrefix().write(dirs.dirs(), host);
-
 		if (hasPrerequisite()) {
 			getPrerequisite().write(
 					dirs.dirs().unknownWhenFalse(),
-					rescopedHost);
+					host);
 		}
 
 		if (!getPrecondition().isTrue()) {
 			getPrecondition().write(
 					dirs.dirs().falseWhenUnknown(),
-					rescopedHost);
+					host);
 		}
 
-		return writeDef(dirs, rescopedHost);
+		return writeDef(dirs, host);
 	}
 
 	@Override

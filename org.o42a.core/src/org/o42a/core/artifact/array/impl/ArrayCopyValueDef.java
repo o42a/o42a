@@ -21,7 +21,6 @@ package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
@@ -101,13 +100,15 @@ final class ArrayCopyValueDef extends ValueDef {
 	private ArrayValueStruct toStruct;
 
 	ArrayCopyValueDef(Ref ref, boolean toConstant) {
-		super(sourceOf(ref), ref, emptyPrefix(ref.getScope()));
+		super(sourceOf(ref), ref, ScopeUpgrade.noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
 		this.toConstant = toConstant;
 	}
 
-	private ArrayCopyValueDef(ArrayCopyValueDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private ArrayCopyValueDef(
+			ArrayCopyValueDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
 		this.toConstant = prototype.toConstant;
 	}
@@ -146,8 +147,10 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new ArrayCopyValueDef(this, prefix);
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new ArrayCopyValueDef(this, upgrade);
 	}
 
 	@Override
@@ -185,11 +188,11 @@ final class ArrayCopyValueDef extends ValueDef {
 			return this.fromStruct;
 		}
 
-		final Scope scope = getPrefix().rescope(getScope());
+		final Scope scope = getScopeUpgrade().rescope(getScope());
 
 		return this.fromStruct =
 				(ArrayValueStruct) this.ref.valueStruct(scope).prefixWith(
-						getPrefix());
+						getScopeUpgrade().toPrefix());
 	}
 
 }

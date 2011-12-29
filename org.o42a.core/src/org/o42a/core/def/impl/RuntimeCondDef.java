@@ -21,13 +21,13 @@ package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 
 
 public final class RuntimeCondDef extends CondDef {
@@ -40,12 +40,14 @@ public final class RuntimeCondDef extends CondDef {
 				 * as this definition is not explicit. */
 				definitions.getContext().getVoid(),
 				definitions,
-				emptyPrefix(definitions.getScope()));
+				noScopeUpgrade(definitions.getScope()));
 		this.definitions = definitions;
 	}
 
-	private RuntimeCondDef(RuntimeCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private RuntimeCondDef(
+			RuntimeCondDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.definitions = prototype.definitions;
 	}
 
@@ -70,9 +72,9 @@ public final class RuntimeCondDef extends CondDef {
 
 	@Override
 	protected RuntimeCondDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new RuntimeCondDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new RuntimeCondDef(this, upgrade);
 	}
 
 	@Override

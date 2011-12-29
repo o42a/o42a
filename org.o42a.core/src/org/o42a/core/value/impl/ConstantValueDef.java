@@ -20,7 +20,7 @@
 package org.o42a.core.value.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
@@ -29,7 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -40,17 +40,19 @@ public final class ConstantValueDef<T> extends ValueDef {
 	private final Value<T> value;
 
 	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
-		super(source, location, emptyPrefix(source.getScope()));
+		super(source, location, noScopeUpgrade(source.getScope()));
 		this.value = value;
 	}
 
 	ConstantValueDef(ConstantObject<T> source) {
-		super(source, source, emptyPrefix(source.getScope()));
+		super(source, source, noScopeUpgrade(source.getScope()));
 		this.value = source.getValue();
 	}
 
-	private ConstantValueDef(ConstantValueDef<T> prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private ConstantValueDef(
+			ConstantValueDef<T> prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
 	}
 
@@ -85,8 +87,10 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new ConstantValueDef<T>(this, prefix);
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new ConstantValueDef<T>(this, upgrade);
 	}
 
 	@Override

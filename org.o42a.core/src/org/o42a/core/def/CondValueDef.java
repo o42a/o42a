@@ -24,7 +24,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -34,15 +34,15 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(def.getSource(), def.getLocation(), def.getPrefix());
+		super(def.getSource(), def.getLocation(), def.getScopeUpgrade());
 		this.def = def;
 		update(
 				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
 				def.hasPrerequisite());
 	}
 
-	private CondValueDef(CondValueDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private CondValueDef(CondValueDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.def = prototype.def;
 	}
 
@@ -63,8 +63,10 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new CondValueDef(this, prefix);
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new CondValueDef(this, upgrade);
 	}
 
 	@Override
