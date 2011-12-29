@@ -67,4 +67,9 @@ public final class RefCondDef extends CondDef {
 		this.ref.resolve(resolver).resolveLogical();
 	}
 
+	@Override
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		return this.ref.inline(normalizer, getScope());
+	}
+
 }

@@ -165,10 +165,7 @@ public abstract class CondDef extends Def<CondDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected InlineCond inlineDef(Normalizer normailzer) {
-		// TODO In-line CondDef.
-		return null;
-	}
+	protected abstract InlineCond inlineDef(Normalizer normalizer);
 
 	final InlineCond inline(Normalizer normalizer) {
 

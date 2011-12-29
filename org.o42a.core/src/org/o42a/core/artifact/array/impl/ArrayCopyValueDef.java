@@ -37,6 +37,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ArrayCopyValueDef extends ValueDef {
@@ -156,6 +157,13 @@ final class ArrayCopyValueDef extends ValueDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
+	}
+
+	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
 	}
 
 	@Override

@@ -28,9 +28,7 @@ import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -103,6 +101,14 @@ public class BuiltinValueDef extends ValueDef {
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
 				object.value().valuePart(isClaim()).resolver());
+	}
+
+	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+		//return this.builtin.inline(normalizer, valueStruct, getScope());
 	}
 
 	@Override

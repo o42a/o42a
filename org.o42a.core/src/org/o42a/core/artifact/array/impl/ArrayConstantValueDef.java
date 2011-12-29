@@ -32,11 +32,10 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 public class ArrayConstantValueDef extends ValueDef {
@@ -118,6 +117,13 @@ public class ArrayConstantValueDef extends ValueDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.value.resolveAll(resolver);
+	}
+
+	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
 	}
 
 	@Override

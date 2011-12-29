@@ -20,11 +20,10 @@
 package org.o42a.core.def;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -90,9 +89,45 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineCond inline = this.def.inline(normalizer);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, inline);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		this.def.getLogical().write(dirs.dirs(), host);
 		return dirs.value().storeVoid(dirs.code());
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineCond inline;
+
+		public Inline(ValueStruct<?, ?> valueStruct, InlineCond inline) {
+			super(valueStruct);
+			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.inline.writeCond(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			writeCond(dirs.dirs(), host);
+			return dirs.value().storeVoid(dirs.code());
+		}
+
 	}
 
 }

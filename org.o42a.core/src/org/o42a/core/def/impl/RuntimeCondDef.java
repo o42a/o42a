@@ -25,9 +25,7 @@ import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 
 
 public final class RuntimeCondDef extends CondDef {
@@ -49,6 +47,11 @@ public final class RuntimeCondDef extends CondDef {
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.definitions = prototype.definitions;
+	}
+
+	@Override
+	protected String name() {
+		return "RuntimeCondDef";
 	}
 
 	@Override
@@ -78,8 +81,9 @@ public final class RuntimeCondDef extends CondDef {
 	}
 
 	@Override
-	protected String name() {
-		return "RuntimeCondDef";
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		throw new UnsupportedOperationException(
+				"Run-time definition can not generate code");
 	}
 
 }

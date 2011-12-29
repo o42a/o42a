@@ -40,4 +40,9 @@ public interface Builtin extends LocationInfo {
 
 	ValOp writeBuiltin(ValDirs dirs, HostOp host);
 
+	/*InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin);*/
+
 }
