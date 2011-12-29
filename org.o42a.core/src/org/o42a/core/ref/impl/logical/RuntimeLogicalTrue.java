@@ -20,9 +20,11 @@
 package org.o42a.core.ref.impl.logical;
 
 import org.o42a.core.Scope;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -50,6 +52,11 @@ public final class RuntimeLogicalTrue extends Logical {
 	public Logical reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new RuntimeLogical(this, reproducer.getScope());
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer) {
+		return LogicalTrue.INLINE_TRUE;
 	}
 
 	@Override

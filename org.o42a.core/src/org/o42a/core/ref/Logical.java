@@ -72,50 +72,50 @@ public abstract class Logical extends Scoped {
 	public static Logical conjunction(
 			LocationInfo location,
 			Scope scope,
-			Logical... claims) {
-		if (claims.length == 0) {
+			Logical... requirements) {
+		if (requirements.length == 0) {
 			return logicalFalse(location, scope);
 		}
-		if (claims.length == 1) {
-			return claims[0];
+		if (requirements.length == 1) {
+			return requirements[0];
 		}
 
-		final ArrayList<Logical> newClaims =
-				new ArrayList<Logical>(claims.length);
+		final ArrayList<Logical> newRequirements =
+				new ArrayList<Logical>(requirements.length);
 
-		for (Logical claim : claims) {
-			claim.assertCompatible(scope);
+		for (Logical requirement : requirements) {
+			requirement.assertCompatible(scope);
 
-			final LogicalValue value = claim.getConstantValue();
+			final LogicalValue value = requirement.getConstantValue();
 
 			if (value == LogicalValue.FALSE) {
-				return claim;
+				return requirement;
 			}
 			if (value.isConstant()) {
 				continue;
 			}
 
-			final Logical[] expanded = claim.expandConjunction();
+			final Logical[] expanded = requirement.expandConjunction();
 
 			if (expanded != null) {
 				for (Logical c : expanded) {
-					and(newClaims, c);
+					and(newRequirements, c);
 				}
 			} else {
-				and(newClaims, claim);
+				and(newRequirements, requirement);
 			}
 		}
 
-		final int size = newClaims.size();
+		final int size = newRequirements.size();
 
 		if (size == 1) {
-			return newClaims.get(0);
+			return newRequirements.get(0);
 		}
 
 		return new LogicalAnd(
 				location,
 				scope,
-				newClaims.toArray(new Logical[size]));
+				newRequirements.toArray(new Logical[size]));
 	}
 
 	public static Logical conjunction(

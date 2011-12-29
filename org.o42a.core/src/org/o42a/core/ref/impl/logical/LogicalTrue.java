@@ -33,7 +33,7 @@ import org.o42a.core.value.LogicalValue;
 
 public final class LogicalTrue extends Logical {
 
-	private static final InlineTrue INLINE_TRUE = new InlineTrue();
+	static final InlineCond INLINE_TRUE = new InlineTrue();
 
 	public LogicalTrue(LocationInfo location, Scope scope) {
 		super(location, scope);
