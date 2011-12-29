@@ -25,11 +25,10 @@ import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -99,6 +98,13 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return new Inline(this.value);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.value.op(dirs.getBuilder(), dirs.code());
 	}
@@ -106,6 +112,34 @@ public final class ConstantValueDef<T> extends ValueDef {
 	@Override
 	protected String name() {
 		return "ConstantValueDef";
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final Value<?> value;
+
+		public Inline(Value<?> value) {
+			super(value.getValueStruct());
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.value.op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
 	}
 
 }

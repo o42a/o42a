@@ -23,9 +23,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 
 
 public final class LogicalCondDef extends CondDef {
@@ -72,6 +70,11 @@ public final class LogicalCondDef extends CondDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.logical.resolveAll(resolver);
+	}
+
+	@Override
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		return this.logical.inline(normalizer, getScope());
 	}
 
 }

@@ -93,6 +93,13 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return this.ref.inline(normalizer, getScope());
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.ref.op(host).writeValue(dirs);
 	}

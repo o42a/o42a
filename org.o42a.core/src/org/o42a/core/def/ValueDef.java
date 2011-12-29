@@ -221,12 +221,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected InlineValue inlineDef(
+	protected abstract InlineValue inlineDef(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		// TODO In-line ValueDef.
-		return null;
-	}
+			ValueStruct<?, ?> valueStruct);
 
 	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		return writeValue(dirs.falseWhenUnknown(), host);

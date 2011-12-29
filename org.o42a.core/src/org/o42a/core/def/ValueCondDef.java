@@ -19,9 +19,7 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 
 
 final class ValueCondDef extends CondDef {
@@ -66,6 +64,11 @@ final class ValueCondDef extends CondDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.def.fullyResolve(resolver);
+	}
+
+	@Override
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		return this.def.inline(normalizer, this.def.getValueStruct());
 	}
 
 }
