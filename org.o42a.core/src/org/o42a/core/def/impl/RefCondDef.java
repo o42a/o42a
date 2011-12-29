@@ -20,13 +20,10 @@
 package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 
 
 public final class RefCondDef extends CondDef {
@@ -34,12 +31,12 @@ public final class RefCondDef extends CondDef {
 	private final Ref ref;
 
 	public RefCondDef(Ref ref) {
-		super(sourceOf(ref), ref, emptyPrefix(ref.getScope()));
+		super(sourceOf(ref), ref, noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
 	}
 
-	RefCondDef(RefCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	RefCondDef(RefCondDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
 	}
 
@@ -60,9 +57,9 @@ public final class RefCondDef extends CondDef {
 
 	@Override
 	protected RefCondDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new RefCondDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new RefCondDef(this, upgrade);
 	}
 
 	@Override

@@ -21,8 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
-import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import java.util.Collection;
 
@@ -31,7 +30,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.def.impl.InlineDefinitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 import org.o42a.util.log.LogInfo;
@@ -470,14 +469,14 @@ public class Definitions extends Scoped {
 	}
 
 	public final Definitions wrapBy(Scope wrapperScope) {
-		return prefixWith(wrapperPrefix(wrapperScope, getScope()));
+		return upgradeScope(wrapScope(wrapperScope, getScope()));
 	}
 
 	public final Definitions upgradeScope(Scope scope) {
 		if (scope == getScope()) {
 			return this;
 		}
-		return prefixWith(upgradePrefix(this, scope));
+		return upgradeScope(ScopeUpgrade.upgradeScope(this, scope));
 	}
 
 	public Definitions requirementPart(LocationInfo location) {
@@ -701,28 +700,32 @@ public class Definitions extends Scoped {
 				NO_PROPOSITIONS);
 	}
 
-	private Definitions prefixWith(PrefixPath prefix) {
-		if (prefix.emptyFor(this)) {
+	private Definitions upgradeScope(ScopeUpgrade scopeUpgrade) {
+		if (!scopeUpgrade.upgradeOf(this)) {
 			return this;
 		}
 
-		final Scope resultScope = prefix.getStart();
+		final Scope resultScope = scopeUpgrade.getFinalScope();
 
 		if (isEmpty()) {
 			return emptyDefinitions(this, resultScope);
 		}
 
 		final CondDefs requirements = requirements();
-		final CondDefs newRequirements = requirements.prefixWith(prefix);
+		final CondDefs newRequirements =
+				requirements.upgradeScope(scopeUpgrade);
 		final CondDefs conditions = conditions();
-		final CondDefs newConditions = conditions.prefixWith(prefix);
+		final CondDefs newConditions = conditions.upgradeScope(scopeUpgrade);
 		final ValueDefs claims = claims();
-		final ValueDefs newClaims = claims.prefixWith(prefix);
+		final ValueDefs newClaims = claims.upgradeScope(scopeUpgrade);
 		final ValueDefs propositions = propositions();
-		final ValueDefs newPropositions = propositions.prefixWith(prefix);
+		final ValueDefs newPropositions =
+				propositions.upgradeScope(scopeUpgrade);
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
 		final ValueStruct<?, ?> newValueStruct =
-				valueStruct != null ? valueStruct.prefixWith(prefix) : null;
+				valueStruct != null
+				? valueStruct.prefixWith(scopeUpgrade.toPrefix())
+				: null;
 
 		if (resultScope == getScope()
 				// This may fail when there is no definitions.

@@ -19,15 +19,14 @@
 */
 package org.o42a.core.def;
 
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
-import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -56,7 +55,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return local.getOwner();
 	}
 
-	private final PrefixPath prefix;
+	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
 	private final LocationInfo location;
 	private DefKind kind;
@@ -70,16 +69,16 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 			Obj source,
 			LocationInfo location,
 			DefKind kind,
-			PrefixPath prefix) {
-		this.prefix = prefix;
+			ScopeUpgrade scopeUpgrade) {
+		this.scopeUpgrade = scopeUpgrade;
 		this.location = location;
 		this.source = source;
 		this.kind = kind;
 		this.hasPrerequisite = false;
 	}
 
-	Def(D prototype, PrefixPath prefix) {
-		this.prefix = prefix;
+	Def(D prototype, ScopeUpgrade scopeUpgrade) {
+		this.scopeUpgrade = scopeUpgrade;
 		this.source = prototype.source;
 		this.location = prototype.location;
 		this.kind = prototype.kind;
@@ -91,11 +90,11 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 
 	@Override
 	public final Scope getScope() {
-		return this.prefix.getStart();
+		return this.scopeUpgrade.getFinalScope();
 	}
 
-	public final PrefixPath getPrefix() {
-		return this.prefix;
+	public final ScopeUpgrade getScopeUpgrade() {
+		return this.scopeUpgrade;
 	}
 
 	@Override
@@ -133,22 +132,21 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		if (toScope == getScope()) {
 			return self();
 		}
-		return prefixWith(upgradePrefix(this, toScope));
+		return upgradeScope(ScopeUpgrade.upgradeScope(this, toScope));
 	}
 
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getPrefix().resolveAll(resolver);
-			fullyResolve(getPrefix().rescope(resolver));
+			fullyResolve(getScopeUpgrade().rescope(resolver));
 		} finally {
 			getContext().fullResolution().end();
 		}
 	}
 
 	public final Logical fullLogical() {
-		return getLogical().prefixWith(getPrefix());
+		return getLogical().prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
@@ -280,8 +278,8 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	}
 
 	protected abstract D create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade);
 
 	protected abstract void fullyResolve(Resolver resolver);
 
@@ -330,20 +328,20 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		this.hasPrerequisite = hasPrerequisite;
 	}
 
-	final D prefixWith(PrefixPath prefix) {
+	final D upgradeScope(ScopeUpgrade upgrade) {
 
-		final PrefixPath oldPrefix = getPrefix();
-		final PrefixPath newPrefix = oldPrefix.and(prefix);
+		final ScopeUpgrade oldUpgrade = getScopeUpgrade();
+		final ScopeUpgrade newUpgrade = oldUpgrade.and(upgrade);
 
-		if (newPrefix == oldPrefix) {
+		if (newUpgrade == oldUpgrade) {
 			return self();
 		}
 
-		return create(newPrefix, prefix);
+		return create(newUpgrade, upgrade);
 	}
 
 	private final D copy() {
-		return create(getPrefix(), emptyPrefix(getScope()));
+		return create(getScopeUpgrade(), noScopeUpgrade(getScope()));
 	}
 
 }

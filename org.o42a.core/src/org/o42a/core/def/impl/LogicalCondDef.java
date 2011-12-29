@@ -20,12 +20,12 @@
 package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 
 
 public final class LogicalCondDef extends CondDef {
@@ -36,12 +36,14 @@ public final class LogicalCondDef extends CondDef {
 		super(
 				sourceOf(logical),
 				logical,
-				emptyPrefix(logical.getScope()));
+				noScopeUpgrade(logical.getScope()));
 		this.logical = logical;
 	}
 
-	private LogicalCondDef(LogicalCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private LogicalCondDef(
+			LogicalCondDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.logical = prototype.logical;
 	}
 
@@ -62,9 +64,9 @@ public final class LogicalCondDef extends CondDef {
 
 	@Override
 	protected CondDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new LogicalCondDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new LogicalCondDef(this, upgrade);
 	}
 
 	@Override

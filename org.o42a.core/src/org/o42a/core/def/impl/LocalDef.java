@@ -20,7 +20,7 @@
 package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -35,6 +35,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
@@ -70,15 +71,15 @@ public class LocalDef extends ValueDef {
 			Scope ownerScope,
 			ImperativeBlock block,
 			Definer definer) {
-		super(sourceOf(block), block, emptyPrefix(ownerScope));
+		super(sourceOf(block), block, noScopeUpgrade(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
 		this.definer = definer;
 		this.localPrefix = getOwnerScope().pathTo(block.getScope());
 	}
 
-	private LocalDef(LocalDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private LocalDef(LocalDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
 		this.definer = prototype.definer;
@@ -108,7 +109,9 @@ public class LocalDef extends ValueDef {
 			return null;
 		}
 
-		return valueStruct.prefixWith(this.localPrefix).prefixWith(getPrefix());
+		return valueStruct
+				.prefixWith(this.localPrefix)
+				.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	@Override
@@ -170,8 +173,10 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected LocalDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new LocalDef(this, prefix);
+	protected LocalDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new LocalDef(this, upgrade);
 	}
 
 	@Override
