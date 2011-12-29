@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref.impl.logical;
 
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
@@ -67,6 +69,11 @@ public final class RescopedLogical extends Logical {
 		}
 
 		return new RescopedLogical(this.logical, newPrefix);
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer) {
+		return this.logical.inline(normalizer);
 	}
 
 	@Override

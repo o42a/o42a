@@ -20,9 +20,11 @@
 package org.o42a.core.ref.impl.logical;
 
 import org.o42a.codegen.code.Code;
+import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -59,6 +61,18 @@ public final class NegatedLogical extends Logical {
 	}
 
 	@Override
+	public InlineCond inline(Normalizer normalizer) {
+
+		final InlineCond negated = negate().inline(normalizer);
+
+		if (negated == null) {
+			return null;
+		}
+
+		return new Inline(negated);
+	}
+
+	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
@@ -85,6 +99,39 @@ public final class NegatedLogical extends Logical {
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		negate().resolveAll(resolver);
+	}
+
+	private static final class Inline extends InlineCond {
+
+		private final InlineCond negated;
+
+		Inline(InlineCond negated) {
+			this.negated = negated;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+
+			final Code code = dirs.code();
+			final Code isFalse = code.addBlock("is_false");
+			final CodeDirs negatedDirs =
+					dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
+					.begin("not", "In-line logical NOT: " + this);
+
+			this.negated.writeCond(negatedDirs, host);
+			negatedDirs.end();
+			code.go(dirs.falseDir());
+
+			if (isFalse.exists()) {
+				isFalse.go(code.tail());
+			}
+		}
+
+		@Override
+		public String toString() {
+			return "--" + this.negated;
+		}
+
 	}
 
 }
