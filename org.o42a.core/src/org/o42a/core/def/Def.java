@@ -146,7 +146,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	}
 
 	public final Logical fullLogical() {
-		return getLogical().prefixWith(getScopeUpgrade().toPrefix());
+		return getLogical().upgradeScope(getScopeUpgrade());
 	}
 
 	public final D addPrerequisite(Logical prerequisite) {
