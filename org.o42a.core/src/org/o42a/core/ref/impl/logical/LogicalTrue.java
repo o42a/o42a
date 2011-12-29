@@ -19,21 +19,18 @@
 */
 package org.o42a.core.ref.impl.logical;
 
+import static org.o42a.core.ref.InlineCond.INLINE_TRUE;
+
 import org.o42a.core.Scope;
-import org.o42a.core.def.InlineCond;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
 
 public final class LogicalTrue extends Logical {
-
-	static final InlineCond INLINE_TRUE = new InlineTrue();
 
 	public LogicalTrue(LocationInfo location, Scope scope) {
 		super(location, scope);
@@ -57,7 +54,7 @@ public final class LogicalTrue extends Logical {
 	}
 
 	@Override
-	public InlineCond inline(Normalizer normalizer) {
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
 		return INLINE_TRUE;
 	}
 
@@ -74,19 +71,6 @@ public final class LogicalTrue extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-	}
-
-	private static final class InlineTrue extends InlineCond {
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-		}
-
-		@Override
-		public String toString() {
-			return "TRUE";
-		}
-
 	}
 
 }

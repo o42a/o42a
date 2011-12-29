@@ -20,11 +20,11 @@
 package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;

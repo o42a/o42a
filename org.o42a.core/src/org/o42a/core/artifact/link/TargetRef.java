@@ -25,7 +25,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.RescopableRef;
@@ -33,7 +32,6 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.util.log.Loggable;
 
 
@@ -67,7 +65,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	private final Ref ref;
 	private final TypeRef typeRef;
-	private Logical fullLogical;
 
 	private TargetRef(Ref ref, TypeRef typeRef, PrefixPath prefix) {
 		super(prefix);
@@ -93,13 +90,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	public TypeRef getTypeRef() {
 		return this.typeRef;
-	}
-
-	public Logical fullLogical() {
-		if (this.fullLogical != null) {
-			return this.fullLogical;
-		}
-		return this.fullLogical = new FullLogical(this);
 	}
 
 	public final TypeRef toTypeRef() {
@@ -160,62 +150,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 	protected void fullyResolve(Resolver resolver) {
 		this.typeRef.resolveAll(resolver);
 		this.ref.resolve(resolver).resolveTarget();
-	}
-
-	private static final class FullLogical extends Logical {
-
-		private final TargetRef targetRef;
-
-		FullLogical(TargetRef targetRef) {
-			super(targetRef, targetRef.getScope());
-			this.targetRef = targetRef;
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return this.targetRef.getRef().getLogical().getConstantValue();
-		}
-
-		@Override
-		public LogicalValue logicalValue(Resolver resolver) {
-			assertCompatible(resolver.getScope());
-			return this.targetRef.getRef().getLogical().logicalValue(
-					this.targetRef.getPrefix().rescope(resolver));
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-
-			final TargetRef targetRef = this.targetRef.reproduce(reproducer);
-
-			if (targetRef == null) {
-				return null;
-			}
-
-			return targetRef.fullLogical();
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			assert assertFullyResolved();
-			this.targetRef.getRef().getLogical().write(
-					dirs,
-					this.targetRef.getPrefix().write(dirs, host));
-		}
-
-		@Override
-		public String toString() {
-			return "(" + this.targetRef + ")?";
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			this.targetRef.resolveAll(resolver);
-			this.targetRef.getRef()
-			.resolve(this.targetRef.getPrefix().rescope(resolver))
-			.resolveLogical();
-		}
-
 	}
 
 }

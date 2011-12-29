@@ -252,6 +252,17 @@ public class Ref extends Statement {
 				.append(reproducer.getPhrasePrefix().getPath().materialize()));
 	}
 
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
+
+		final NormalPath normalPath = getPath().normalize(normalizer, origin);
+
+		if (normalPath == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct(origin), normalPath);
+	}
+
 	private Ref reproducePart(Reproducer reproducer, Path path) {
 		return path.bind(this, reproducer.getScope()).target(
 				reproducer.distribute());
@@ -401,6 +412,35 @@ public class Ref extends Statement {
 			return finder;
 		}
 		return DEFAULT_VALUE_STRUCT_FINDER;
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final BoundPath path;
+
+		Inline(ValueStruct<?, ?> valueStruct, NormalPath path) {
+			super(valueStruct);
+			this.path = path.toPath();
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.path.op(dirs, host).writeLogicalValue(dirs);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.path.op(dirs.dirs(), host).writeValue(dirs);
+		}
+
+		@Override
+		public String toString() {
+			if (this.path == null) {
+				return super.toString();
+			}
+			return this.path.toString();
+		}
+
 	}
 
 	private static final class RefStOp extends StOp {

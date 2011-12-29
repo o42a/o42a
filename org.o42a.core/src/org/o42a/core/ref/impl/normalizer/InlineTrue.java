@@ -17,31 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def.impl;
+package org.o42a.core.ref.impl.normalizer;
 
-import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ref.InlineCond;
 
 
-public class UnknownInlineValue extends InlineValue {
+public final class InlineTrue extends InlineCond {
 
-	public UnknownInlineValue(ValueStruct<?, ?> valueStruct) {
-		super(valueStruct);
+	public static final InlineTrue INSTANCE = new InlineTrue();
+
+	private InlineTrue() {
 	}
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
 	}
 
 	@Override
-	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
-		return dirs.value();
+	public String toString() {
+		return "TRUE";
 	}
 
 }

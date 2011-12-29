@@ -17,35 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.def.impl;
+package org.o42a.core.ref;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.InlineCond;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
+import org.o42a.core.value.ValueStruct;
 
 
-public class InlineCondDef extends InlineCond {
+public abstract class InlineValue extends InlineCond {
 
-	private final InlineCond prerequisite;
-	private final InlineCond precondition;
-	private final InlineCond def;
+	public static InlineValue inlineUnknown(ValueStruct<?, ?> valueStruct) {
+		return new UnknownInlineValue(valueStruct);
+	}
 
-	public InlineCondDef(
-			InlineCond prerequisite,
-			InlineCond precondition,
-			InlineCond def) {
-		this.prerequisite = prerequisite;
-		this.precondition = precondition;
-		this.def = def;
+	private final ValueStruct<?, ?> valueStruct;
+
+	public InlineValue(ValueStruct<?, ?> valueStruct) {
+		this.valueStruct = valueStruct;
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
-		if (this.prerequisite != null) {
-			this.prerequisite.writeCond(dirs.unknownWhenFalse(), host);
-		}
-		this.precondition.writeCond(dirs, host);
-		this.def.writeCond(dirs, host);
+
+		final ValDirs valDirs = dirs.value(getValueStruct());
+
+		writeValue(valDirs, host);
+
+		valDirs.done();
 	}
+
+	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
 }

@@ -26,8 +26,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
@@ -182,6 +181,55 @@ final class SentenceLogicals {
 		}
 
 		@Override
+		public InlineCond inline(Normalizer normalizer, Scope origin) {
+			if (this.variants.isEmpty()) {
+				if (this.otherwise == null) {
+					return InlineCond.INLINE_TRUE;
+				}
+				return this.otherwise.inline(normalizer, origin);
+			}
+
+			final InlineCond otherwise;
+
+			if (this.otherwise == null) {
+				otherwise = null;
+			} else {
+				otherwise = this.otherwise.inline(normalizer, origin);
+				if (otherwise == null) {
+					return null;
+				}
+			}
+
+			final InlineCond[] prereqs = new InlineCond[this.variants.size()];
+			final InlineCond[] preconds = new InlineCond[prereqs.length];
+			int i = 0;
+
+			for (StatementEnv variant : this.variants) {
+
+				final InlineCond prereq =
+						variant.prerequisite(getScope())
+						.inline(normalizer, origin);
+
+				if (prereq == null) {
+					return null;
+				}
+
+				final InlineCond precond =
+						variant.precondition(getScope())
+						.inline(normalizer, origin);
+
+				if (precond == null) {
+					return null;
+				}
+
+				prereqs[i] = prereq;
+				preconds[i] = precond;
+			}
+
+			return new Inline(prereqs, preconds, otherwise);
+		}
+
+		@Override
 		public void write(CodeDirs dirs, HostOp host) {
 			assert assertFullyResolved();
 
@@ -301,6 +349,98 @@ final class SentenceLogicals {
 			this.otherwise = Logical.and(
 					this.otherwise,
 					sentence.getFinalEnv().fullLogical(getScope()));
+		}
+
+	}
+
+	private static final class Inline extends InlineCond {
+
+		private final InlineCond[] prereqs;
+		private final InlineCond[] preconds;
+		private final InlineCond otherwise;
+
+		Inline(
+				InlineCond[] prereqs,
+				InlineCond[] preconds,
+				InlineCond otherwise) {
+			this.prereqs = prereqs;
+			this.preconds = preconds;
+			this.otherwise = otherwise;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+
+			final Code code = dirs.code();
+			final CodePos exit = dirs.falseDir();
+			CodePos otherwise;
+
+			if (this.otherwise == null) {
+				otherwise = exit;
+			} else {
+
+				final Code otherwiseBlock = code.addBlock("otherwise");
+
+				this.otherwise.writeCond(
+						dirs.getBuilder().falseWhenUnknown(
+								otherwiseBlock,
+								exit),
+						host);
+
+				otherwise = otherwiseBlock.head();
+			}
+
+			int idx = 0;
+			Code prereq = code;
+
+			for (;;) {
+
+				final int nextIdx = idx + 1;
+
+				if (nextIdx >= this.preconds.length) {
+					this.prereqs[idx].writeCond(
+							dirs.getBuilder().falseWhenUnknown(
+									prereq,
+									otherwise),
+							host);
+					this.preconds[idx].writeCond(
+							dirs.getBuilder().falseWhenUnknown(prereq, exit),
+							host);
+					break;
+				}
+
+				final Code next = code.addBlock(nextIdx + "_prereq");
+
+				this.prereqs[idx].writeCond(
+						dirs.getBuilder().falseWhenUnknown(prereq, next.head()),
+						host);
+				this.preconds[idx].writeCond(
+						dirs.getBuilder().falseWhenUnknown(prereq, exit),
+						host);
+
+				prereq = next;
+				idx = nextIdx;
+			}
+		}
+
+		@Override
+		public String toString() {
+			if (this.preconds == null) {
+				return super.toString();
+			}
+			final StringBuilder out = new StringBuilder();
+
+			for (int i = 0; i < this.preconds.length; ++i) {
+				out.append('(').append(this.prereqs[i]);
+				out.append(")? (");
+				out.append(this.preconds[i]).append(").");
+			}
+
+			if (this.otherwise != null) {
+				out.append(" OTHERWISE(").append(this.otherwise).append(").");
+			}
+
+			return out.toString();
 		}
 
 	}

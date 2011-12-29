@@ -177,13 +177,14 @@ public abstract class CondDef extends Def<CondDef> {
 		if (!hasPrerequisite()) {
 			prerequisite = null;
 		} else {
-			prerequisite = getPrerequisite().inline(normalizer);
+			prerequisite = getPrerequisite().inline(normalizer, getScope());
 			if (prerequisite == null) {
 				return null;
 			}
 		}
 
-		final InlineCond precondition = getPrecondition().inline(normalizer);
+		final InlineCond precondition =
+				getPrecondition().inline(normalizer, getScope());
 
 		if (precondition == null) {
 			return null;

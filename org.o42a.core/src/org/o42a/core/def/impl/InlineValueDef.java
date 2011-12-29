@@ -19,11 +19,11 @@
 */
 package org.o42a.core.def.impl;
 
-import org.o42a.core.def.InlineCond;
-import org.o42a.core.def.InlineValue;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.InlineCond;
+import org.o42a.core.ref.InlineValue;
 
 
 public class InlineValueDef extends InlineValue {

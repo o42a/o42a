@@ -20,10 +20,11 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
-import static org.o42a.core.def.impl.UnknownInlineCond.UNKNOWN_INLINE_COND;
+import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
 
 import org.o42a.core.def.impl.InlineCondDefs;
 import org.o42a.core.def.impl.RuntimeCondDef;
+import org.o42a.core.ref.InlineCond;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;
@@ -215,7 +216,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 
 	final InlineCond inline(Normalizer normalizer) {
 		if (isEmpty()) {
-			return UNKNOWN_INLINE_COND;
+			return INLINE_UNKNOWN;
 		}
 
 		final CondDef[] defs = get();

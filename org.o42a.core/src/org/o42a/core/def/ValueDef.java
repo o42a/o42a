@@ -221,18 +221,18 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		return writeValue(dirs.falseWhenUnknown(), host);
-	}
-
-	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
-
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		// TODO In-line ValueDef.
 		return null;
 	}
+
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+		return writeValue(dirs.falseWhenUnknown(), host);
+	}
+
+	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
 	final InlineValue inline(
 			Normalizer normalizer,
@@ -243,13 +243,14 @@ public abstract class ValueDef extends Def<ValueDef> {
 		if (!hasPrerequisite()) {
 			prerequisite = null;
 		} else {
-			prerequisite = getPrerequisite().inline(normalizer);
+			prerequisite = getPrerequisite().inline(normalizer, getScope());
 			if (prerequisite == null) {
 				return null;
 			}
 		}
 
-		final InlineCond precondition = getPrecondition().inline(normalizer);
+		final InlineCond precondition =
+				getPrecondition().inline(normalizer, getScope());
 
 		if (precondition == null) {
 			return null;

@@ -33,9 +33,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
@@ -189,6 +187,13 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
 	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		// Imperative block`s value CAN be UNKNOWN.
 		return writeValue(dirs, host);
@@ -250,6 +255,11 @@ public class LocalDef extends ValueDef {
 		@Override
 		public Logical reproduce(Reproducer reproducer) {
 			getLogger().notReproducible(this);
+			return null;
+		}
+
+		@Override
+		public InlineCond inline(Normalizer normalizer, Scope origin) {
 			return null;
 		}
 
