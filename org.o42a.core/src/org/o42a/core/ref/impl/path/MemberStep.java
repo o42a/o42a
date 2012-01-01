@@ -85,6 +85,9 @@ public class MemberStep extends AbstractMemberStep {
 				member.substance(dummyUser()).getScope(),
 				new NormalStep() {
 					@Override
+					public void cancel() {
+					}
+					@Override
 					public Path appendTo(Path path) {
 						return path.append(getMemberKey());
 					}

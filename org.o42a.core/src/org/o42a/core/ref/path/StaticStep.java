@@ -105,6 +105,9 @@ final class StaticStep extends Step {
 
 		normalizer.add(getScope(), new NormalStep() {
 			@Override
+			public void cancel() {
+			}
+			@Override
 			public Path appendTo(Path path) {
 				return path.append(new StaticStep(getScope()));
 			}

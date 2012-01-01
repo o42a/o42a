@@ -134,6 +134,9 @@ public final class EnclosingOwnerDep extends Dep {
 			public Path appendTo(Path path) {
 				return path.append(new EnclosingOwnerDep(getObject()));
 			}
+			@Override
+			public void cancel() {
+			}
 		});
 	}
 

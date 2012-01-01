@@ -256,7 +256,7 @@ public class Ref extends Statement {
 
 		final NormalPath normalPath = getPath().normalize(normalizer, origin);
 
-		if (normalPath == null) {
+		if (!normalPath.isNormalized()) {
 			return null;
 		}
 
@@ -416,29 +416,42 @@ public class Ref extends Statement {
 
 	private static final class Inline extends InlineValue {
 
-		private final BoundPath path;
+		private final NormalPath normalPath;
+		private BoundPath path;
 
-		Inline(ValueStruct<?, ?> valueStruct, NormalPath path) {
+		Inline(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
 			super(valueStruct);
-			this.path = path.toPath();
+			this.normalPath = normalPath;
 		}
 
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
-			this.path.op(dirs, host).writeLogicalValue(dirs);
+			toPath().op(dirs, host).writeLogicalValue(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return this.path.op(dirs.dirs(), host).writeValue(dirs);
+			return toPath().op(dirs.dirs(), host).writeValue(dirs);
+		}
+
+		@Override
+		public void cancel() {
+			this.normalPath.cancel();
 		}
 
 		@Override
 		public String toString() {
-			if (this.path == null) {
+			if (this.normalPath == null) {
 				return super.toString();
 			}
-			return this.path.toString();
+			return this.normalPath.toString();
+		}
+
+		private final BoundPath toPath() {
+			if (this.path != null) {
+				return this.path;
+			}
+			return this.path = this.normalPath.toPath();
 		}
 
 	}

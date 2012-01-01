@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.ref.InlineCond.cancelUpToNull;
+
 import java.util.ArrayList;
 
 import org.o42a.codegen.code.Code;
@@ -209,21 +211,22 @@ final class SentenceLogicals {
 				final InlineCond prereq =
 						variant.prerequisite(getScope())
 						.inline(normalizer, origin);
-
-				if (prereq == null) {
-					return null;
-				}
-
 				final InlineCond precond =
 						variant.precondition(getScope())
 						.inline(normalizer, origin);
 
-				if (precond == null) {
-					return null;
-				}
-
 				prereqs[i] = prereq;
 				preconds[i] = precond;
+				++i;
+
+				if (prereq == null || precond == null) {
+					if (otherwise != null) {
+						otherwise.cancel();
+					}
+					cancelUpToNull(prereqs);
+					cancelUpToNull(preconds);
+					return null;
+				}
 			}
 
 			return new Inline(prereqs, preconds, otherwise);
@@ -420,6 +423,15 @@ final class SentenceLogicals {
 
 				prereq = next;
 				idx = nextIdx;
+			}
+		}
+
+		@Override
+		public void cancel() {
+			cancelAll(this.prereqs);
+			cancelAll(this.preconds);
+			if (this.otherwise != null) {
+				this.otherwise.cancel();
 			}
 		}
 

@@ -36,4 +36,13 @@ public class UnknownInlineCond extends InlineCond {
 		dirs.code().go(dirs.unknownDir());
 	}
 
+	@Override
+	public void cancel() {
+	}
+
+	@Override
+	public String toString() {
+		return "UNKNOWN";
+	}
+
 }

@@ -95,6 +95,32 @@ public class InlineDefinitions extends InlineValue {
 				getValueStruct());
 	}
 
+	@Override
+	public void cancel() {
+		this.requirement.cancel();
+		this.condition.cancel();
+		this.claim.cancel();
+		this.proposition.cancel();
+	}
+
+	@Override
+	public String toString() {
+		if (this.proposition == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(');
+		out.append(this.requirement).append("! ");
+		out.append(this.condition).append(". ");
+		out.append(this.claim).append("! ");
+		out.append(this.proposition);
+		out.append(')');
+
+		return out.toString();
+	}
+
 	private void writeRequirement(CodeDirs dirs, HostOp host) {
 
 		final Code unknownReq = dirs.addBlock("unknown_req");
