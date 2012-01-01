@@ -102,6 +102,9 @@ public class Wrapper extends Step {
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.add(this.wrappedScope, new NormalStep() {
 			@Override
+			public void cancel() {
+			}
+			@Override
 			public Path appendTo(Path path) {
 				return path.append(new Wrapper(
 						Wrapper.this.wrapperScope,

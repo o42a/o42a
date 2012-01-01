@@ -48,4 +48,33 @@ public class InlineCondDef extends InlineCond {
 		this.def.writeCond(dirs, host);
 	}
 
+	@Override
+	public void cancel() {
+		if (this.prerequisite != null) {
+			this.prerequisite.cancel();
+		}
+		this.precondition.cancel();
+		this.def.cancel();
+	}
+
+	@Override
+	public String toString() {
+		if (this.def == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(');
+		if (this.prerequisite != null) {
+			out.append(this.prerequisite).append("? ");
+		}
+		out.append(this.precondition);
+		out.append(", ");
+		out.append(this.def);
+		out.append(')');
+
+		return out.toString();
+	}
+
 }

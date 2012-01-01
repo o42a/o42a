@@ -44,4 +44,20 @@ public class UnknownInlineValue extends InlineValue {
 		return dirs.value();
 	}
 
+	@Override
+	public void cancel() {
+	}
+
+	@Override
+	public String toString() {
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		if (valueStruct == null) {
+			return super.toString();
+		}
+
+		return valueStruct.unknownValue().toString();
+	}
+
 }

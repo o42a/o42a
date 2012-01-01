@@ -30,4 +30,6 @@ public interface NormalPath {
 
 	BoundPath toPath();
 
+	void cancel();
+
 }

@@ -21,6 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
 import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
+import static org.o42a.core.ref.InlineCond.cancelUpToNull;
 
 import org.o42a.core.def.impl.InlineCondDefs;
 import org.o42a.core.def.impl.RuntimeCondDef;
@@ -232,6 +233,7 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 			final InlineCond inline = defs[i].inline(normalizer);
 
 			if (inline == null) {
+				cancelUpToNull(inlines);
 				return null;
 			}
 			inlines[i] = inline;
