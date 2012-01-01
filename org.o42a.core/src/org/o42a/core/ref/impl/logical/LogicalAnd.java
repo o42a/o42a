@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.logical;
 
+import static org.o42a.core.ref.InlineCond.cancelUpToNull;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -109,6 +111,7 @@ public final class LogicalAnd extends Logical {
 					this.requirements[i].inline(normalizer, origin);
 
 			if (inline == null) {
+				cancelUpToNull(inlines);
 				return null;
 			}
 
@@ -176,6 +179,11 @@ public final class LogicalAnd extends Logical {
 			}
 
 			subDirs.end();
+		}
+
+		@Override
+		public void cancel() {
+			cancelAll(this.requirements);
 		}
 
 		@Override

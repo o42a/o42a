@@ -32,6 +32,23 @@ public abstract class InlineCond {
 	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
 	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
 
+	public static void cancelAll(InlineCond... inlines) {
+		for (InlineCond inline : inlines) {
+			inline.cancel();
+		}
+	}
+
+	public static void cancelUpToNull(InlineCond... inlines) {
+		for (InlineCond inline : inlines) {
+			if (inline == null) {
+				return;
+			}
+			inline.cancel();
+		}
+	}
+
 	public abstract void writeCond(CodeDirs dirs, HostOp host);
+
+	public abstract void cancel();
 
 }

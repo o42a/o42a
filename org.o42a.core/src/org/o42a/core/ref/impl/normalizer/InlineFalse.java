@@ -37,6 +37,10 @@ public final class InlineFalse extends InlineCond {
 	}
 
 	@Override
+	public void cancel() {
+	}
+
+	@Override
 	public String toString() {
 		return "FALSE";
 	}

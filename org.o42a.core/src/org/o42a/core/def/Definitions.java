@@ -550,6 +550,7 @@ public class Definitions extends Scoped {
 		final InlineCond condition = conditions().inline(normalizer);
 
 		if (condition == null) {
+			requirement.cancel();
 			return null;
 		}
 
@@ -557,6 +558,8 @@ public class Definitions extends Scoped {
 				claims().inline(normalizer, this);
 
 		if (claim == null) {
+			requirement.cancel();
+			condition.cancel();
 			return null;
 		}
 
@@ -564,6 +567,9 @@ public class Definitions extends Scoped {
 				propositions().inline(normalizer, this);
 
 		if (proposition == null) {
+			requirement.cancel();
+			condition.cancel();
+			claim.cancel();
 			return null;
 		}
 

@@ -133,6 +133,10 @@ public final class ConstantValueDef<T> extends ValueDef {
 		}
 
 		@Override
+		public void cancel() {
+		}
+
+		@Override
 		public String toString() {
 			if (this.value == null) {
 				return super.toString();

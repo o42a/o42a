@@ -160,6 +160,7 @@ public class PathNormalizer implements UseCaseInfo {
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
+				cancelAll(this.normalSteps);
 				return new UnNormalizedPath(getNormalizedStart(), path);
 			}
 
@@ -171,6 +172,12 @@ public class PathNormalizer implements UseCaseInfo {
 				getNormalizedStart(),
 				this.path,
 				this.normalSteps);
+	}
+
+	private static void cancelAll(Iterable<NormalStep> normalSteps) {
+		for (NormalStep step : normalSteps) {
+			step.cancel();
+		}
 	}
 
 	private static class NormalizedPath implements NormalPath {
@@ -216,6 +223,11 @@ public class PathNormalizer implements UseCaseInfo {
 			}
 
 			return result.bind(this.path, getOrigin());
+		}
+
+		@Override
+		public void cancel() {
+			cancelAll(this.normalSteps);
 		}
 
 		@Override

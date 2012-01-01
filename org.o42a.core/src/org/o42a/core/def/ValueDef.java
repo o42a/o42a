@@ -250,12 +250,19 @@ public abstract class ValueDef extends Def<ValueDef> {
 				getPrecondition().inline(normalizer, getScope());
 
 		if (precondition == null) {
+			if (prerequisite != null) {
+				prerequisite.cancel();
+			}
 			return null;
 		}
 
 		final InlineValue def = inlineDef(normalizer, valueStruct);
 
 		if (def == null) {
+			if (prerequisite != null) {
+				prerequisite.cancel();
+			}
+			precondition.cancel();
 			return null;
 		}
 
