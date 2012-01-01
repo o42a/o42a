@@ -69,4 +69,27 @@ public class InlineValueDefs extends InlineValue {
 		return result;
 	}
 
+	@Override
+	public void cancel() {
+		cancelAll(this.inlines);
+	}
+
+	@Override
+	public String toString() {
+		if (this.inlines == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(');
+		out.append(this.inlines[0]);
+		for (int i = 1; i < this.inlines.length; ++i) {
+			out.append(". ").append(this.inlines[i]);
+		}
+		out.append(')');
+
+		return out.toString();
+	}
+
 }

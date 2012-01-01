@@ -36,6 +36,10 @@ public final class InlineTrue extends InlineCond {
 	}
 
 	@Override
+	public void cancel() {
+	}
+
+	@Override
 	public String toString() {
 		return "TRUE";
 	}

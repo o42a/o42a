@@ -58,6 +58,10 @@ public class UnNormalizedPath implements NormalPath {
 	}
 
 	@Override
+	public void cancel() {
+	}
+
+	@Override
 	public String toString() {
 		if (this.path == null) {
 			return super.toString();

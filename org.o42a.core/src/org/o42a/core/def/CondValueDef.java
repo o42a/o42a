@@ -128,6 +128,19 @@ final class CondValueDef extends ValueDef {
 			return dirs.value().storeVoid(dirs.code());
 		}
 
+		@Override
+		public void cancel() {
+			this.inline.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
+		}
+
 	}
 
 }

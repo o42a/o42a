@@ -24,4 +24,6 @@ public interface NormalStep {
 
 	Path appendTo(Path path);
 
+	void cancel();
+
 }

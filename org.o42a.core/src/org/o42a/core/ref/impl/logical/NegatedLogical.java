@@ -126,6 +126,11 @@ public final class NegatedLogical extends Logical {
 		}
 
 		@Override
+		public void cancel() {
+			this.negated.cancel();
+		}
+
+		@Override
 		public String toString() {
 			return "--" + this.negated;
 		}

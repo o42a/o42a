@@ -144,6 +144,9 @@ public final class ModuleStep extends AbstractObjectStep {
 
 		normalizer.add(module.getScope(), new InlineStep(def) {
 			@Override
+			public void cancel() {
+			}
+			@Override
 			protected Container resolve(
 					PathResolver resolver,
 					BoundPath path,

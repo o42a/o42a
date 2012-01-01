@@ -19,6 +19,7 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.ref.InlineCond.cancelUpToNull;
 import static org.o42a.core.ref.InlineValue.inlineUnknown;
 
 import org.o42a.core.def.impl.InlineValueDefs;
@@ -157,6 +158,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			final InlineValue inline = defs[i].inline(normalizer, valueStruct);
 
 			if (inline == null) {
+				cancelUpToNull(inlines);
 				return null;
 			}
 			inlines[i] = inline;
