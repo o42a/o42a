@@ -52,9 +52,9 @@ comment && /^[ \t]*Copyright/ {
 		skip=1
 		exit 0
 	}
-	year_str=gensub("^([^,]*)(,|-).*", "\\1-" year, "g", $3)
+	year_str=gensub("^([^,-]*)[,-].*", "\\1-" year, "g", $3)
 	if (year_str == $3) {
-	    year_str=$3 "," year
+		year_str=$3 "," year
 	}
 	printf "%s", buffer
 	print "    Copyright (C)", year_str, author

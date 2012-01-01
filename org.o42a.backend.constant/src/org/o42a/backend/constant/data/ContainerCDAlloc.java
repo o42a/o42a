@@ -214,21 +214,4 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return alloc.getDeclaringType() == getDeclaringType();
 	}
 
-	private ContainerCDAlloc<?> findContainer(
-			ContainerCDAlloc<?> correspondingContainer,
-			CDAlloc<?, ?> alloc) {
-
-		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
-
-		if (enclosing == null) {
-			return correspondingContainer;
-		}
-
-		final ContainerCDAlloc<?> found = enclosing.findContainer(
-				correspondingContainer.getEnclosing(),
-				enclosing);
-
-		return (ContainerCDAlloc<?>) found.nested.get(alloc.getIndex());
-	}
-
 }
