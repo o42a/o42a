@@ -29,11 +29,9 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.User;
 
 
-public abstract class Generator implements UseCaseInfo {
+public abstract class Generator {
 
 	private final String id;
 	private final GeneratorFunctions functions;
@@ -56,10 +54,7 @@ public abstract class Generator implements UseCaseInfo {
 		return this.proxied;
 	}
 
-	@Override
-	public final User<?> toUser() {
-		return toUseCase();
-	}
+	public abstract Analysis getAnalysis();
 
 	public CodeIdFactory getCodeIdFactory() {
 		return DEFAULT_CODE_ID_FACTORY;

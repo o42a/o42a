@@ -23,7 +23,6 @@ import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCase;
 
 
 public abstract class ProxyGenerator extends Generator {
@@ -40,6 +39,11 @@ public abstract class ProxyGenerator extends Generator {
 
 	public final Generator getProxiedGenerator() {
 		return this.proxiedGenerator;
+	}
+
+	@Override
+	public final Analysis getAnalysis() {
+		return getProxiedGenerator().getAnalysis();
 	}
 
 	@Override
@@ -60,11 +64,6 @@ public abstract class ProxyGenerator extends Generator {
 	@Override
 	public final Debug getDebug() {
 		return this.debug;
-	}
-
-	@Override
-	public final UseCase toUseCase() {
-		return getProxiedGenerator().toUseCase();
 	}
 
 	protected final CodeBackend proxiedCodeBackend() {

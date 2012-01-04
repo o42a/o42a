@@ -99,7 +99,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				&& getValueIR().claim().canStub()
 				&& getValueIR().requirement().canStub()
 				&& !getObject().value().isUsed(
-						getGenerator(),
+						getGenerator().getAnalysis(),
 						ALL_VALUE_USAGES);
 	}
 

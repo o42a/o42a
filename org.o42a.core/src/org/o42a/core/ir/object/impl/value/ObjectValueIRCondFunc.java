@@ -171,7 +171,7 @@ public abstract class ObjectValueIRCondFunc
 			return constant;
 		}
 		if (!part().ancestorDefsUpdates().isUsed(
-				getGenerator(),
+				getGenerator().getAnalysis(),
 				ALL_SIMPLE_USAGES)) {
 			return constant;
 		}
@@ -181,11 +181,11 @@ public abstract class ObjectValueIRCondFunc
 
 	protected Condition determineFinal() {
 		if (getObject().type().derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalysis(),
 				RUNTIME_DERIVATION_USAGE)) {
 			return Condition.RUNTIME;
 		}
-		if (part().isUsed(getGenerator(), VALUE_PART_ACCESS)) {
+		if (part().isUsed(getGenerator().getAnalysis(), VALUE_PART_ACCESS)) {
 			return Condition.RUNTIME;
 		}
 		return defs().condition(getObject().getScope().dummyResolver());
@@ -194,7 +194,7 @@ public abstract class ObjectValueIRCondFunc
 	@Override
 	protected void create() {
 		if (canStub() && !getObject().value().isUsed(
-				getGenerator(),
+				getGenerator().getAnalysis(),
 				ALL_VALUE_USAGES)) {
 			stub(stubFunc());
 			return;
@@ -216,11 +216,11 @@ public abstract class ObjectValueIRCondFunc
 	@Override
 	protected boolean canStub() {
 		if (getObject().type().derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalysis(),
 				RUNTIME_DERIVATION_USAGE)) {
 			return false;
 		}
-		return !part().isUsed(getGenerator(), VALUE_PART_ACCESS);
+		return !part().isUsed(getGenerator().getAnalysis(), VALUE_PART_ACCESS);
 	}
 
 	protected void reuse() {
@@ -248,7 +248,7 @@ public abstract class ObjectValueIRCondFunc
 				return;
 			}
 			if (part().ancestorDefsUpdates().isUsed(
-					getGenerator(),
+					getGenerator().getAnalysis(),
 					ALL_SIMPLE_USAGES)) {
 				return;
 			}
@@ -320,7 +320,7 @@ public abstract class ObjectValueIRCondFunc
 		final Code code = dirs.code();
 
 		if (!part().ancestorDefsUpdates().isUsed(
-				getGenerator(),
+				getGenerator().getAnalysis(),
 				ALL_SIMPLE_USAGES)) {
 
 			final TypeRef ancestor = getObject().type().getAncestor();

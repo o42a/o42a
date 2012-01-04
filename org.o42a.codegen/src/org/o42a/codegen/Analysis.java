@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,49 +22,49 @@ package org.o42a.codegen;
 import static org.o42a.util.use.User.steadyUseCase;
 import static org.o42a.util.use.User.useCase;
 
-import org.o42a.codegen.debug.Debug;
 import org.o42a.util.use.UseCase;
+import org.o42a.util.use.UseCaseInfo;
+import org.o42a.util.use.User;
 
 
-public abstract class AbstractGenerator extends Generator {
+public class Analysis implements UseCaseInfo {
 
-	private final Analysis analysis;
-	private final Debug debug;
 	private UseCase useCase;
 
-	public AbstractGenerator(String id, Analysis analysis) {
-		super(id);
-		assert analysis != null :
-			"Analysis not specified";
-		this.analysis = analysis;
-		this.debug = new Debug(this);
-		this.useCase = useCase(id);
+	public Analysis(String name) {
+		this.useCase = useCase(name);
 	}
 
-	@Override
-	public final Analysis getAnalysis() {
-		return this.analysis;
-	}
-
-	@Override
-	public final Debug getDebug() {
-		return this.debug;
-	}
-
-	@Override
 	public final boolean isUsesAnalysed() {
 		return !this.useCase.isSteady();
 	}
 
-	@Override
 	public final void setUsesAnalysed(boolean usesAnalysed) {
 		if (isUsesAnalysed() != usesAnalysed) {
 			if (usesAnalysed) {
-				this.useCase = useCase(getId());
+				this.useCase = useCase(this.useCase.getName());
 			} else {
-				this.useCase = steadyUseCase(getId());
+				this.useCase = steadyUseCase(this.useCase.getName());
 			}
 		}
+	}
+
+	@Override
+	public final User<?> toUser() {
+		return this.useCase;
+	}
+
+	@Override
+	public final UseCase toUseCase() {
+		return this.useCase;
+	}
+
+	@Override
+	public String toString() {
+		if (this.useCase == null) {
+			return super.toString();
+		}
+		return "Analysis[" + this.useCase.getName() + ']';
 	}
 
 }

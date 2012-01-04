@@ -52,6 +52,10 @@ public final class UseCase
 		this.checkUseFlag = new UseFlag(this, (byte) 0);
 	}
 
+	public final String getName() {
+		return this.name;
+	}
+
 	public final boolean isSteady() {
 		return this.steady;
 	}
