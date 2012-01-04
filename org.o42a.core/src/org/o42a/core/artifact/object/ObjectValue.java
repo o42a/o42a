@@ -19,13 +19,13 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Resolver;
@@ -37,7 +37,7 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements Uses<ValueUsage> {
+public final class ObjectValue {
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -80,26 +80,19 @@ public final class ObjectValue implements Uses<ValueUsage> {
 		return this.valueStruct;
 	}
 
-	@Override
-	public final AllUsages<ValueUsage> allUsages() {
-		return ALL_VALUE_USAGES;
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
 		if (this.uses == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.uses.selectUse(useCase, selector);
+		return this.uses.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final Value<?> getValue() {

@@ -24,19 +24,19 @@ import org.o42a.codegen.debug.Debug;
 
 public abstract class AbstractGenerator extends Generator {
 
-	private final Analysis analysis;
+	private final Analyzer analyzer;
 	private final Debug debug;
 
-	public AbstractGenerator(Analysis analysis) {
-		assert analysis != null :
+	public AbstractGenerator(Analyzer analyzer) {
+		assert analyzer != null :
 			"Analysis not specified";
-		this.analysis = analysis;
+		this.analyzer = analyzer;
 		this.debug = new Debug(this);
 	}
 
 	@Override
-	public final Analysis getAnalysis() {
-		return this.analysis;
+	public final Analyzer getAnalyzer() {
+		return this.analyzer;
 	}
 
 	@Override

@@ -41,8 +41,8 @@ public abstract class ProxyGenerator extends Generator {
 	}
 
 	@Override
-	public final Analysis getAnalysis() {
-		return getProxiedGenerator().getAnalysis();
+	public final Analyzer getAnalyzer() {
+		return getProxiedGenerator().getAnalyzer();
 	}
 
 	@Override

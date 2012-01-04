@@ -46,7 +46,7 @@ public abstract class Generator {
 		return this.proxied;
 	}
 
-	public abstract Analysis getAnalysis();
+	public abstract Analyzer getAnalyzer();
 
 	public CodeIdFactory getCodeIdFactory() {
 		return DEFAULT_CODE_ID_FACTORY;

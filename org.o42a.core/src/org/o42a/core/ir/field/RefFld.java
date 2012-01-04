@@ -109,7 +109,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		final FieldAnalysis analysis = getField().toMember().getAnalysis();
 
 		if (!analysis.derivation().isUsed(
-				getGenerator().getAnalysis(),
+				getGenerator().getAnalyzer(),
 				RUNTIME_DERIVATION_USAGE)) {
 			this.constructor = getType().constructorStub();
 			return;
