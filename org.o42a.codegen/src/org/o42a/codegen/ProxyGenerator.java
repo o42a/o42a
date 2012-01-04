@@ -31,7 +31,6 @@ public abstract class ProxyGenerator extends Generator {
 	private final Debug debug;
 
 	public ProxyGenerator(Generator proxiedGenerator) {
-		super(proxiedGenerator.getId());
 		this.proxiedGenerator = proxiedGenerator;
 		proxiedGenerator.proxied();
 		this.debug = new Debug(this);
@@ -49,16 +48,6 @@ public abstract class ProxyGenerator extends Generator {
 	@Override
 	public final CodeIdFactory getCodeIdFactory() {
 		return getProxiedGenerator().getCodeIdFactory();
-	}
-
-	@Override
-	public final boolean isUsesAnalysed() {
-		return getProxiedGenerator().isUsesAnalysed();
-	}
-
-	@Override
-	public final void setUsesAnalysed(boolean usesAnalysed) {
-		getProxiedGenerator().setUsesAnalysed(usesAnalysed);
 	}
 
 	@Override

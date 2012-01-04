@@ -33,21 +33,13 @@ import org.o42a.codegen.debug.Debug;
 
 public abstract class Generator {
 
-	private final String id;
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private boolean proxied;
 
-	Generator(String id) {
-		assert id != null :
-			"Generator identifier not specified";
-		this.id = id;
+	Generator() {
 		this.functions = new GeneratorFunctions(this);
 		this.globals = new GeneratorGlobals(this);
-	}
-
-	public final String getId() {
-		return this.id;
 	}
 
 	public final boolean isProxied() {
@@ -77,10 +69,6 @@ public abstract class Generator {
 	public final void setDebug(boolean debug) {
 		getDebug().setDebug(debug);
 	}
-
-	public abstract boolean isUsesAnalysed();
-
-	public abstract void setUsesAnalysed(boolean usesAnalysed);
 
 	public final CodeId id() {
 		return getCodeIdFactory().id();

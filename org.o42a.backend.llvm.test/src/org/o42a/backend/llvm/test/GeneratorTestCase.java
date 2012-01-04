@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
+import org.o42a.codegen.Analysis;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
@@ -36,6 +37,7 @@ public class GeneratorTestCase extends CompilerTestCase {
 
 		final LLVMGenerator llvmGenerator = newGenerator(
 				"test",
+				new Analysis("test"),
 				parseArgs(System.getProperty("llvm.args", "")));
 		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
