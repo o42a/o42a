@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
+import org.o42a.codegen.Analysis;
 import org.o42a.codegen.Generator;
 import org.o42a.common.source.FileSourceTree;
 import org.o42a.compiler.Compiler;
@@ -80,7 +81,8 @@ public class CL {
 	public static void main(String[] args) {
 
 		final String[] llvmArgs = ArrayUtil.prepend("o42ac", args);
-		final LLVMGenerator llvmGenerator = newGenerator(null, llvmArgs);
+		final LLVMGenerator llvmGenerator =
+				newGenerator(null, new Analysis("compiler"), llvmArgs);
 		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
 		try {

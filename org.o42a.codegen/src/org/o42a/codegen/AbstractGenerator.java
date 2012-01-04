@@ -19,26 +19,19 @@
 */
 package org.o42a.codegen;
 
-import static org.o42a.util.use.User.steadyUseCase;
-import static org.o42a.util.use.User.useCase;
-
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCase;
 
 
 public abstract class AbstractGenerator extends Generator {
 
 	private final Analysis analysis;
 	private final Debug debug;
-	private UseCase useCase;
 
-	public AbstractGenerator(String id, Analysis analysis) {
-		super(id);
+	public AbstractGenerator(Analysis analysis) {
 		assert analysis != null :
 			"Analysis not specified";
 		this.analysis = analysis;
 		this.debug = new Debug(this);
-		this.useCase = useCase(id);
 	}
 
 	@Override
@@ -49,22 +42,6 @@ public abstract class AbstractGenerator extends Generator {
 	@Override
 	public final Debug getDebug() {
 		return this.debug;
-	}
-
-	@Override
-	public final boolean isUsesAnalysed() {
-		return !this.useCase.isSteady();
-	}
-
-	@Override
-	public final void setUsesAnalysed(boolean usesAnalysed) {
-		if (isUsesAnalysed() != usesAnalysed) {
-			if (usesAnalysed) {
-				this.useCase = useCase(getId());
-			} else {
-				this.useCase = steadyUseCase(getId());
-			}
-		}
 	}
 
 }

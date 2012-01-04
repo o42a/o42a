@@ -31,14 +31,15 @@ public class LLVMGenerator extends AbstractGenerator {
 
 	public static LLVMGenerator newGenerator(
 			String id,
+			Analysis analysis,
 			String... args) {
-		return new LLVMGenerator(new LLVMModule(id, args));
+		return new LLVMGenerator(new LLVMModule(id, args), analysis);
 	}
 
 	private final LLVMModule module;
 
-	private LLVMGenerator(LLVMModule module) {
-		super(module.getId(), new Analysis(module.getId()));
+	private LLVMGenerator(LLVMModule module, Analysis analysis) {
+		super(analysis);
 		this.module = module;
 		module.init(this);
 		setDebug(module.isDebug());
