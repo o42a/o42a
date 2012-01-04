@@ -26,7 +26,7 @@ import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
 import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.Analysis;
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
@@ -52,32 +52,32 @@ public class FieldAnalysis {
 	}
 
 	public UseFlag selectUse(
-			Analysis analysis,
+			Analyzer analyzer,
 			UseSelector<FieldUsage> selector) {
-		return uses().selectUse(analysis, selector);
+		return uses().selectUse(analyzer, selector);
 	}
 
 	public final boolean isUsed(
-			Analysis analysis,
+			Analyzer analyzer,
 			UseSelector<FieldUsage> selector) {
-		return selectUse(analysis, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final User<DerivationUsage> derivation() {
 		return derivationUses().toUser();
 	}
 
-	public String reasonNotFound(Analysis analysis) {
+	public String reasonNotFound(Analyzer analyzer) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		if (!uses().isUsed(analysis, FIELD_ACCESS)) {
+		if (!uses().isUsed(analyzer, FIELD_ACCESS)) {
 			out.append("never accessed");
 			comma = true;
 		}
-		if (!uses().isUsed(analysis, SUBSTANCE_USAGE)
-				&& !uses().isUsed(analysis, NESTED_USAGE)) {
+		if (!uses().isUsed(analyzer, SUBSTANCE_USAGE)
+				&& !uses().isUsed(analyzer, NESTED_USAGE)) {
 			if (comma) {
 				out.append(", ");
 			}
@@ -99,7 +99,7 @@ public class FieldAnalysis {
 
 		final MemberFieldUses uses = uses();
 
-		uses.useBy(artifact.content(), SUBSTANCE_USAGE);
+		uses.useBy(artifact.content().toUser(), SUBSTANCE_USAGE);
 		uses.useBy(artifact.fieldUses(), NESTED_USAGE);
 	}
 

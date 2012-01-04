@@ -19,13 +19,13 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.artifact.object.ValuePartUsage.ALL_VALUE_PART_USAGES;
 import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.*;
 import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Defs;
@@ -34,7 +34,7 @@ import org.o42a.util.use.*;
 
 
 public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
-		implements UserInfo, Uses<ValuePartUsage> {
+		implements UserInfo {
 
 	private final ObjectValue objectValue;
 	private final DefKind defKind;
@@ -78,23 +78,16 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return uses().toUser();
 	}
 
-	@Override
-	public final AllUsages<ValuePartUsage> allUsages() {
-		return ALL_VALUE_PART_USAGES;
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
-		return uses().selectUse(useCase, selector);
+		return uses().selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValuePartUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final void accessBy(UserInfo user) {

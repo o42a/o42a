@@ -27,11 +27,11 @@ import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
 
 
-public class Analysis implements UseCaseInfo {
+public class Analyzer implements UseCaseInfo {
 
 	private UseCase useCase;
 
-	public Analysis(String name) {
+	public Analyzer(String name) {
 		this.useCase = useCase(name);
 	}
 

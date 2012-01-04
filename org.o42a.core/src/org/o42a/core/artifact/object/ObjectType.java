@@ -30,6 +30,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.member.Member;
@@ -39,7 +40,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
 
-public final class ObjectType implements UserInfo, Uses<TypeUsage> {
+public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
@@ -78,26 +79,19 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 		return uses().toUser();
 	}
 
-	@Override
-	public final AllUsages<TypeUsage> allUsages() {
-		return TypeUsage.ALL_TYPE_USAGES;
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<TypeUsage> selector) {
 		if (this.uses == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.uses.selectUse(useCase, selector);
+		return this.uses.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<TypeUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final Ascendants getAscendants() {

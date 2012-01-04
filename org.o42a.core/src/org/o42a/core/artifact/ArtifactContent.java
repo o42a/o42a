@@ -22,10 +22,11 @@ package org.o42a.core.artifact;
 import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.util.use.*;
 
 
-public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
+public class ArtifactContent implements UserInfo {
 
 	private final Artifact<?> artifact;
 	private Usable<SimpleUsage> usable;
@@ -45,26 +46,19 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 		return uses().toUser();
 	}
 
-	@Override
-	public final AllUsages<SimpleUsage> allUsages() {
-		return toUser().allUsages();
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<SimpleUsage> selector) {
 		if (this.usable == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.usable.selectUse(useCase, selector);
+		return this.usable.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<SimpleUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final void useBy(UserInfo user) {

@@ -273,7 +273,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				declaredField.getAnalysis();
 
 		if (!declarationAnalysis.isUsed(
-				generator.getAnalysis(),
+				generator.getAnalyzer(),
 				ALL_FIELD_USAGES)) {
 			// Field is never used. Skip generation.
 			return false;
@@ -317,7 +317,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final FieldAnalysis analysis = field.getAnalysis();
 
 		out.append(": ").append(
-				analysis.reasonNotFound(getGenerator().getAnalysis()));
+				analysis.reasonNotFound(getGenerator().getAnalyzer()));
 
 		return out.toString();
 	}
