@@ -45,6 +45,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
 import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;

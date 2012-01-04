@@ -21,17 +21,19 @@ package org.o42a.core.member.field;
 
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.member.field.FieldUsage.*;
+import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
+import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.Analysis;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.use.*;
 
 
-public class FieldAnalysis implements Uses<FieldUsage> {
+public class FieldAnalysis {
 
 	private final MemberField member;
 	private MemberFieldUses uses;
@@ -49,40 +51,33 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 		return getMember().getFirstDeclaration().getAnalysis();
 	}
 
-	@Override
-	public final AllUsages<FieldUsage> allUsages() {
-		return ALL_FIELD_USAGES;
-	}
-
-	@Override
 	public UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analysis analysis,
 			UseSelector<FieldUsage> selector) {
-		return uses().selectUse(useCase, selector);
+		return uses().selectUse(analysis, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analysis analysis,
 			UseSelector<FieldUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analysis, selector).isUsed();
 	}
 
 	public final User<DerivationUsage> derivation() {
 		return derivationUses().toUser();
 	}
 
-	public String reasonNotFound(Generator generator) {
+	public String reasonNotFound(Analysis analysis) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		if (!uses().isUsed(generator, FIELD_ACCESS)) {
+		if (!uses().isUsed(analysis, FIELD_ACCESS)) {
 			out.append("never accessed");
 			comma = true;
 		}
-		if (!uses().isUsed(generator, SUBSTANCE_USAGE)
-				&& !uses().isUsed(generator, NESTED_USAGE)) {
+		if (!uses().isUsed(analysis, SUBSTANCE_USAGE)
+				&& !uses().isUsed(analysis, NESTED_USAGE)) {
 			if (comma) {
 				out.append(", ");
 			}

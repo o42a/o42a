@@ -21,6 +21,7 @@ package org.o42a.backend.llvm;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.AbstractGenerator;
+import org.o42a.codegen.Analysis;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -37,7 +38,7 @@ public class LLVMGenerator extends AbstractGenerator {
 	private final LLVMModule module;
 
 	private LLVMGenerator(LLVMModule module) {
-		super(module.getId());
+		super(module.getId(), new Analysis(module.getId()));
 		this.module = module;
 		module.init(this);
 		setDebug(module.isDebug());

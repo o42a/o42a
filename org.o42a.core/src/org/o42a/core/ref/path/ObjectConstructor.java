@@ -256,7 +256,7 @@ public abstract class ObjectConstructor extends Placed {
 			final Obj sample = getConstructed();
 
 			if (!sample.type().derivation().isUsed(
-					dirs.getGenerator(),
+					dirs.getGenerator().getAnalysis(),
 					RUNTIME_DERIVATION_USAGE)) {
 
 				final ObjOp target = sample.ir(dirs.getGenerator()).op(
