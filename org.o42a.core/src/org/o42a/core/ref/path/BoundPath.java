@@ -20,8 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
-import static org.o42a.core.ref.path.Path.ROOT_PATH;
-import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
@@ -303,22 +302,12 @@ public class BoundPath extends Location {
 	public final NormalPath normalize(Normalizer normalizer, Scope origin) {
 		origin.assertDerivedFrom(getOrigin());
 
-		if (length() == 0) {
-
-			final Scope start = normalizer.getNormalizedScope();
-
-			if (start == getOrigin()) {
-				return new UnNormalizedPath(this);
-			}
-			if (isAbsolute()) {
-				return new UnNormalizedPath(ROOT_PATH.bind(this, start));
-			}
-
-			return new UnNormalizedPath(SELF_PATH.bind(this, start));
-		}
-
 		final PathNormalizer pathNormalizer =
-				new PathNormalizer(normalizer, origin, this);
+				pathNormalizer(normalizer, origin, this);
+
+		if (pathNormalizer == null) {
+			return new UnNormalizedPath(this);
+		}
 
 		return pathNormalizer.normalize();
 	}

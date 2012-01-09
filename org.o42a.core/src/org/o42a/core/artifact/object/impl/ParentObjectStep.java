@@ -91,10 +91,21 @@ public final class ParentObjectStep extends AbstractMemberStep {
 				normalizer.getStepStart());
 
 		if (member == null) {
+			normalizer.cancel();
 			return;
 		}
 
-		normalizer.up(member.substance(dummyUser()).getScope());
+		normalizer.up(
+				member.substance(dummyUser()).getScope(),
+				new NormalStep() {
+					@Override
+					public Path appendTo(Path path) {
+						return path.append(ParentObjectStep.this);
+					}
+					@Override
+					public void cancel() {
+					}
+				});
 	}
 
 	@Override

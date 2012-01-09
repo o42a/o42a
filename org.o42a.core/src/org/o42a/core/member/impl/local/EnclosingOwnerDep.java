@@ -123,16 +123,11 @@ public final class EnclosingOwnerDep extends Dep {
 	@Override
 	protected void normalizeDep(
 			PathNormalizer normalizer,
-			LocalScope enclosingLocal) {
-		if (!normalizer.isStepIgnored()) {
-			return;
-		}
-
-		// Step will be ignored. So just add it to normal path.
-		normalizer.add(enclosingLocal.getOwner().getScope(), new NormalStep() {
+			final LocalScope enclosingLocal) {
+		normalizer.up(enclosingLocal.getOwner().getScope(), new NormalStep() {
 			@Override
 			public Path appendTo(Path path) {
-				return path.append(new EnclosingOwnerDep(getObject()));
+				return path.append(enclosingLocal.getEnclosingScopePath());
 			}
 			@Override
 			public void cancel() {

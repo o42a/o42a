@@ -132,7 +132,7 @@ public final class RefDep extends Dep {
 	protected void normalizeDep(
 			PathNormalizer normalizer,
 			LocalScope enclosingLocal) {
-		// FIXME Implement Dep normalization.
+		normalizer.append(getDepRef().getPath());
 	}
 
 	@Override

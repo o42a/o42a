@@ -21,9 +21,10 @@ package org.o42a.core.ref.impl.normalizer;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
+import java.util.List;
+
 import org.o42a.core.Scope;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.NormalPath;
+import org.o42a.core.ref.path.*;
 
 
 public class UnNormalizedPath implements NormalPath {
@@ -58,6 +59,11 @@ public class UnNormalizedPath implements NormalPath {
 	}
 
 	@Override
+	public void appendTo(List<NormalStep> normalSteps) {
+		normalSteps.add(new UnNormalizedStep());
+	}
+
+	@Override
 	public void cancel() {
 	}
 
@@ -67,6 +73,26 @@ public class UnNormalizedPath implements NormalPath {
 			return super.toString();
 		}
 		return "NormalPath" + this.path;
+	}
+
+	private final class UnNormalizedStep implements NormalStep {
+
+		@Override
+		public Path appendTo(Path path) {
+
+			Path result = path;
+
+			for (Step step : UnNormalizedPath.this.path.getSteps()) {
+				result = result.append(step);
+			}
+
+			return result;
+		}
+
+		@Override
+		public void cancel() {
+		}
+
 	}
 
 }

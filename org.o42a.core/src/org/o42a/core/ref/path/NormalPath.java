@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import java.util.List;
+
 import org.o42a.core.Scope;
 
 
@@ -31,5 +33,7 @@ public interface NormalPath {
 	BoundPath toPath();
 
 	void cancel();
+
+	void appendTo(List<NormalStep> normalSteps);
 
 }
