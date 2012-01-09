@@ -68,6 +68,7 @@ public class MemberStep extends AbstractMemberStep {
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		if (!normalizer.isStepIgnored()) {
+			normalizer.cancel();
 			return;
 		}
 
@@ -78,6 +79,7 @@ public class MemberStep extends AbstractMemberStep {
 				normalizer.getStepStart());
 
 		if (member == null) {
+			normalizer.cancel();
 			return;
 		}
 

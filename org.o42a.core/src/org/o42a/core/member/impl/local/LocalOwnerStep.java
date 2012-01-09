@@ -107,7 +107,16 @@ public final class LocalOwnerStep extends Step {
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.up(
-				normalizer.getStepStart().toLocal().getOwner().getScope());
+				normalizer.getStepStart().toLocal().getOwner().getScope(),
+				new NormalStep() {
+					@Override
+					public Path appendTo(Path path) {
+						return path.append(LocalOwnerStep.this);
+					}
+					@Override
+					public void cancel() {
+					}
+				});
 	}
 
 	@Override

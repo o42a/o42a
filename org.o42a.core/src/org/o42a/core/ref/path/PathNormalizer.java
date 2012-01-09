@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
@@ -34,7 +35,22 @@ import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
 
 
-public class PathNormalizer implements UseCaseInfo {
+public final class PathNormalizer implements UseCaseInfo {
+
+	static PathNormalizer pathNormalizer(
+			Normalizer normalizer,
+			Scope origin,
+			BoundPath path) {
+
+		final PathNormalizer pathNormalizer =
+				new PathNormalizer(normalizer, origin, path);
+
+		if (!pathNormalizer.init()) {
+			return null;
+		}
+
+		return pathNormalizer;
+	}
 
 	private final Normalizer normalizer;
 	private final Scope origin;
@@ -50,7 +66,10 @@ public class PathNormalizer implements UseCaseInfo {
 	private boolean normalizationStarted;
 	private boolean stepNormalized;
 
-	PathNormalizer(Normalizer normalizer, Scope origin, BoundPath path) {
+	private PathNormalizer(
+			Normalizer normalizer,
+			Scope origin,
+			BoundPath path) {
 		this.normalizer = normalizer;
 		this.origin = origin;
 		this.path = path;
@@ -86,6 +105,10 @@ public class PathNormalizer implements UseCaseInfo {
 		return this.stepStart;
 	}
 
+	public final boolean isNormalizationStarted() {
+		return this.normalizationStarted;
+	}
+
 	public final boolean isStepIgnored() {
 		return this.startIndex > getStepIndex();
 	}
@@ -100,29 +123,52 @@ public class PathNormalizer implements UseCaseInfo {
 
 	public final void add(Scope resolution, NormalStep normalStep) {
 		this.stepResolution = resolution;
-		this.normalizationStarted = true;
 		this.stepNormalized = true;
 		this.normalSteps.add(normalStep);
 	}
 
-	public final boolean up(Scope enclosing) {
-		if (this.normalizationStarted) {
-			return false;
+	public final boolean up(Scope enclosing, NormalStep normalStep) {
+		if (isNormalizationStarted()) {
+			add(enclosing, normalStep);
+			return true;
 		}
 
 		// Enclosing scope not reached yet.
 		// No need to add the enclosing scope step.
-		this.stepNormalized = true;
-		this.stepResolution = enclosing;
-
-		if (enclosing != getNormalizedStart()) {
-			// Enclosing not reached.
+		if (!upTo(enclosing)) {
+			// Enclosing scope not inside normalized path start.
+			cancel();
 			return false;
 		}
 
-		this.normalizationStarted = true;
+		this.stepNormalized = true;
+		this.stepResolution = enclosing;
 
 		return true;
+	}
+
+	public void append(BoundPath path) {
+
+		final PathNormalizer pathNormalizer =
+				new PathNormalizer(getNormalizer(), getStepStart(), path);
+
+		pathNormalizer.set(this);
+
+		final NormalPath normalPath = pathNormalizer.normalize();
+
+		if (!normalPath.isNormalized() && !isNormalizationStarted()) {
+			cancel();
+			return;
+		}
+		normalPath.appendTo(this.normalSteps);
+
+		set(pathNormalizer);
+		this.stepNormalized = pathNormalizer.stepNormalized;
+		this.stepResolution = pathNormalizer.stepResolution;
+	}
+
+	public final void cancel() {
+		this.stepNormalized = false;
 	}
 
 	@Override
@@ -143,6 +189,21 @@ public class PathNormalizer implements UseCaseInfo {
 	NormalPath normalize() {
 
 		final BoundPath path = getPath();
+
+		if (path.length() == 0) {
+
+			final Scope start = getNormalizedStart();
+
+			this.stepResolution = start;
+			if (start == getOrigin()) {
+				return new UnNormalizedPath(path);
+			}
+			if (path.isAbsolute()) {
+				return new UnNormalizedPath(ROOT_PATH.bind(path, start));
+			}
+
+			return new UnNormalizedPath(SELF_PATH.bind(path, start));
+		}
 
 		if (path.isAbsolute()) {
 			this.stepStart = path.root(getOrigin());
@@ -172,6 +233,38 @@ public class PathNormalizer implements UseCaseInfo {
 				getNormalizedStart(),
 				this.path,
 				this.normalSteps);
+	}
+
+	private boolean init() {
+		if (upTo(getOrigin())) {
+			return true;
+		}
+		if (!getOrigin().contains(getNormalizedStart())) {
+			return false;
+		}
+
+		this.normalizationStarted = true;
+
+		return true;
+	}
+
+	private boolean upTo(Scope scope) {
+
+		final Scope normalizedStart = getNormalizedStart();
+
+		if (scope == normalizedStart) {
+			this.normalizationStarted = true;
+			return true;
+		}
+		if (normalizedStart.contains(scope)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private final void set(PathNormalizer other) {
+		this.normalizationStarted = other.normalizationStarted;
 	}
 
 	private static void cancelAll(Iterable<NormalStep> normalSteps) {
@@ -228,6 +321,11 @@ public class PathNormalizer implements UseCaseInfo {
 		@Override
 		public void cancel() {
 			cancelAll(this.normalSteps);
+		}
+
+		@Override
+		public void appendTo(List<NormalStep> normalSteps) {
+			normalSteps.addAll(this.normalSteps);
 		}
 
 		@Override
