@@ -905,6 +905,7 @@ public abstract class Obj
 		}
 
 		this.deps.put(key, found);
+		found.setDisabled(false);
 
 		return found;
 	}

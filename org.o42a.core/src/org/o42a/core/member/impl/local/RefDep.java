@@ -133,6 +133,17 @@ public final class RefDep extends Dep {
 			PathNormalizer normalizer,
 			LocalScope enclosingLocal) {
 		normalizer.append(getDepRef().getPath());
+		normalizer.add(normalizer.getStepStart(), new NormalStep() {
+			@Override
+			public Path appendTo(Path path) {
+				setDisabled(true);
+				return path;
+			}
+			@Override
+			public void cancel() {
+				setDisabled(false);
+			}
+		});
 	}
 
 	@Override

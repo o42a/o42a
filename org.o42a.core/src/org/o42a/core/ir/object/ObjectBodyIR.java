@@ -287,6 +287,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Obj ascendant = getAscendant();
 
 		for (Dep dep : ascendant.getDeps()) {
+			if (dep.isDisabled()) {
+				continue;
+			}
 
 			final DepIR depIR = new DepIR(getGenerator(), dep);
 

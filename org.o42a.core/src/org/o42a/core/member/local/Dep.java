@@ -37,10 +37,19 @@ public abstract class Dep extends Step {
 
 	private final Obj object;
 	private final DepKind kind;
+	private boolean disabled;
 
 	public Dep(Obj object, DepKind kind) {
 		this.object = object;
 		this.kind = kind;
+	}
+
+	public final boolean isDisabled() {
+		return this.disabled;
+	}
+
+	public final void setDisabled(boolean disabled) {
+		this.disabled = disabled;
 	}
 
 	@Override
@@ -141,6 +150,8 @@ public abstract class Dep extends Step {
 
 	@Override
 	protected final PathOp op(PathOp start) {
+		assert !isDisabled() :
+			this + " is disabled";
 		return new Op(start, this);
 	}
 
