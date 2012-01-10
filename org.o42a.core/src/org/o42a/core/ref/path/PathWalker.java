@@ -21,7 +21,6 @@ package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -50,8 +49,6 @@ public interface PathWalker {
 	boolean arrayElement(Obj array, Step step, ArrayElement element);
 
 	boolean refDep(Obj object, Step step, Ref dependency);
-
-	boolean materialize(Artifact<?> artifact, Step step, Obj result);
 
 	boolean object(Step step, Obj object);
 

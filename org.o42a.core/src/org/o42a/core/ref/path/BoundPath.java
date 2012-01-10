@@ -179,18 +179,6 @@ public class BoundPath extends Location {
 		return getRawPath().append(fragment).bind(this, getOrigin());
 	}
 
-	public final BoundPath materialize() {
-
-		final Path rawPath = getRawPath();
-		final Path materialized = rawPath.materialize();
-
-		if (rawPath == materialized) {
-			return this;
-		}
-
-		return materialized.bind(this, this.origin);
-	}
-
 	public final BoundPath arrayItem(Ref indexRef) {
 		return new ArrayIndex(indexRef).appendToPath(this);
 	}

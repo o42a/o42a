@@ -49,11 +49,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.toObject();
-
-		assert object != null :
-			"Attempt to obtain parent of object, but "
-			+ start + " is not an object";
+		final Obj object = start.getArtifact().materialize();
 
 		if (!resolver.isFullResolution() && !object.membersResolved()) {
 

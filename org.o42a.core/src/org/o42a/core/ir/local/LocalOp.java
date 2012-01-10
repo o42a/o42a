@@ -67,11 +67,6 @@ public final class LocalOp implements HostOp {
 		return this;
 	}
 
-	@Override
-	public final ObjOp toObject(CodeDirs dirs) {
-		return null;
-	}
-
 	public final ObjectOp owner() {
 		return getBuilder().owner();
 	}

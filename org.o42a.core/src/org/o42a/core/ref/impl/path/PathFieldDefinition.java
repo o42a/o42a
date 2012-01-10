@@ -46,7 +46,7 @@ public final class PathFieldDefinition extends FieldDefinition {
 		final Distributor distributor = distribute();
 
 		definer.setTargetRef(
-				this.path.materialize().target(distributor),
+				this.path.target(distributor),
 				this.path.typeRef(distributor));
 	}
 

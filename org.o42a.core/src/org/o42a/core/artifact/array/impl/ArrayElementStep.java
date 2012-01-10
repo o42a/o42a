@@ -54,11 +54,6 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return false;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return RefUsage.VALUE_REF_USAGE;
 	}
@@ -75,11 +70,7 @@ final class ArrayElementStep extends Step {
 		}
 
 		final Ref indexRef = indexRef(path);
-		final Obj array = start.toObject();
-
-		assert array != null :
-			"Not an array object: " + start;
-
+		final Obj array = start.getArtifact().materialize();
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {

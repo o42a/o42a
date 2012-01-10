@@ -24,8 +24,6 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.value.ValOp;
 
@@ -46,11 +44,6 @@ public abstract class LclOp extends IROp implements HostOp {
 	@Override
 	public Op<?> ptr() {
 		return (Op<?>) super.ptr();
-	}
-
-	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-		return null;
 	}
 
 	@Override

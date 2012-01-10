@@ -275,12 +275,10 @@ public abstract class ObjectConstructor extends Placed {
 				return target;
 			}
 
-			final ObjectOp object = host().toObject(dirs);
-
-			if (object != null) {
+			if (local == null) {
 				return getBuilder().newObject(
 						dirs,
-						object,
+						host().materialize(dirs),
 						ancestorFunc(getBuilder()).getPointer().op(
 								null,
 								dirs.code()),

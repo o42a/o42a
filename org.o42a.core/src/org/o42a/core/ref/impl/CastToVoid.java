@@ -48,11 +48,6 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return RefUsage.LOGICAL_REF_USAGE;
 	}

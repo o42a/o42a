@@ -55,11 +55,6 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return false;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}

@@ -25,7 +25,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
@@ -115,15 +114,7 @@ final class TestRunner extends Obj {
 			return;
 		}
 
-		final Path fieldPath = field.getKey().toPath();
-		final Path testPath;
-
-		if (field.getArtifactKind() == ArtifactKind.OBJECT) {
-			testPath = fieldPath;
-		} else {
-			testPath = fieldPath.materialize();
-		}
-
+		final Path testPath = field.getKey().toPath();
 		final Scope localScope = statements.getScope();
 		final Path pathFromLocal =
 				localScope.getEnclosingScopePath().append(testPath);

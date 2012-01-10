@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -71,11 +70,6 @@ public class SimplePathTracker extends PathTracker {
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return walk(walker().refDep(object, step, dependency));
-	}
-
-	@Override
-	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return walk(walker().materialize(artifact, step, result));
 	}
 
 	@Override

@@ -23,7 +23,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
@@ -63,11 +62,6 @@ public abstract class FldOp extends IROp implements HostOp {
 	@Override
 	public Fld.Op<?> ptr() {
 		return (Fld.Op<?>) super.ptr();
-	}
-
-	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-		return null;
 	}
 
 	@Override

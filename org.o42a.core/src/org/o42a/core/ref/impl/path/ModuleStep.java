@@ -58,11 +58,6 @@ public final class ModuleStep extends AbstractObjectStep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public int hashCode() {
 		return this.moduleId.hashCode();
 	}

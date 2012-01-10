@@ -54,18 +54,6 @@ public abstract class RefFldOp<
 	}
 
 	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-
-		final Artifact<?> artifact = fld().getField().getArtifact();
-
-		if (artifact.getKind() == ArtifactKind.OBJECT) {
-			return target(dirs);
-		}
-
-		return null;
-	}
-
-	@Override
 	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Artifact<?> artifact = fld().getField().getArtifact();

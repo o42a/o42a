@@ -46,8 +46,6 @@ public abstract class Step {
 		return null;
 	}
 
-	public abstract boolean isMaterial();
-
 	public abstract RefUsage getObjectUsage();
 
 	public ValueAdapter valueAdapter(

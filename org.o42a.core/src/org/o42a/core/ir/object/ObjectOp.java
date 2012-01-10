@@ -83,11 +83,6 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-		return this;
-	}
-
-	@Override
 	public final LocalOp toLocal() {
 		return null;
 	}

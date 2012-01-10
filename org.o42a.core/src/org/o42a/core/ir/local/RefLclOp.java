@@ -72,18 +72,6 @@ public final class RefLclOp extends LclOp {
 	}
 
 	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-
-		final Obj object = getArtifact().toObject();
-
-		if (object == null) {
-			return null;
-		}
-
-		return target(dirs);
-	}
-
-	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final Obj object = getArtifact().toObject();

@@ -41,11 +41,6 @@ public final class MaterialMultiScope extends MultiScope {
 	}
 
 	@Override
-	public MultiScope materialize() {
-		return this;
-	}
-
-	@Override
 	public Iterator<Scope> iterator() {
 		return new MaterialIterator(this.artifacts);
 	}
