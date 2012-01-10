@@ -53,11 +53,6 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}

@@ -238,7 +238,6 @@ public final class PrefixPath {
 
 		final PrefixPath phrasePrefix =
 				reproducer.getPhrasePrefix()
-				.materialize()
 				.getPath()
 				.toPrefix(reproducer.getPhrasePrefix().getScope());
 		final Path externalPath = pathReproduction.getExternalPath();

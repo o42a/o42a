@@ -24,7 +24,6 @@ import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.objectMult
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.impl.normalizer.MaterialMultiScope;
 import org.o42a.core.ref.impl.normalizer.PropagatedMultiScope;
 
 
@@ -60,17 +59,6 @@ public abstract class MultiScope implements Iterable<Scope> {
 
 	public Iterable<Scope> ancestors() {
 		return null;
-	}
-
-	public MultiScope materialize() {
-
-		final Obj object = getScope().toObject();
-
-		if (object == null) {
-			return this;
-		}
-
-		return new MaterialMultiScope(this);
 	}
 
 }

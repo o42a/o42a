@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -155,19 +154,6 @@ public class PathRecorder extends PathTracker {
 			@Override
 			public boolean replay(PathWalker walker) {
 				return walker.refDep(object, step, dependency);
-			}
-		});
-	}
-
-	@Override
-	public boolean materialize(
-			final Artifact<?> artifact,
-			final Step step,
-			final Obj result) {
-		return record(new Record() {
-			@Override
-			public boolean replay(PathWalker walker) {
-				return walker.materialize(artifact, step, result);
 			}
 		});
 	}

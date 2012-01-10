@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -32,7 +33,6 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -61,19 +61,6 @@ public abstract class AbstractMemberStep extends Step {
 
 	public final MemberKey getMemberKey() {
 		return this.memberKey;
-	}
-
-	@Override
-	public final boolean isMaterial() {
-
-		final Member member = firstDeclaration();
-		final MemberField field = member.toField();
-
-		if (field == null) {
-			return true;
-		}
-
-		return field.getArtifactKind().isObject();
 	}
 
 	@Override
@@ -120,7 +107,14 @@ public abstract class AbstractMemberStep extends Step {
 			int index,
 			Scope start) {
 
-		final Member member = start.getContainer().member(this.memberKey);
+		final Member member;
+		final Artifact<?> artifact = start.getArtifact();
+
+		if (artifact != null) {
+			member = start.getArtifact().materialize().member(this.memberKey);
+		} else {
+			member = start.getContainer().member(this.memberKey);
+		}
 
 		if (member == null) {
 			unresolved(path, index, start);

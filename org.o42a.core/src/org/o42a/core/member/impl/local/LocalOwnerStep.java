@@ -51,11 +51,6 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}

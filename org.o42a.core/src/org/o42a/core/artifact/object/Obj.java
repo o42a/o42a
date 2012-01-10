@@ -441,8 +441,7 @@ public abstract class Obj
 				return null;
 			}
 
-			return adapterPath.materialize().append(
-					foundInAdapterLink.getKey());
+			return adapterPath.append(foundInAdapterLink.getKey());
 		}
 
 		return null;

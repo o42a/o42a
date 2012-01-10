@@ -35,8 +35,6 @@ public interface HostOp {
 
 	CompilerContext getContext();
 
-	ObjectOp toObject(CodeDirs dirs);
-
 	LocalOp toLocal();
 
 	HostOp field(CodeDirs dirs, MemberKey memberKey);

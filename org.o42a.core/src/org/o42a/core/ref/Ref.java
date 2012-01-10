@@ -186,18 +186,6 @@ public class Ref extends Statement {
 		return getPath().ancestor(location, distribute());
 	}
 
-	public final Ref materialize() {
-
-		final BoundPath path = getPath();
-		final BoundPath materialized = path.materialize();
-
-		if (materialized == path) {
-			return this;
-		}
-
-		return materialized.target(distribute());
-	}
-
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
@@ -232,8 +220,7 @@ public class Ref extends Statement {
 					reproducer,
 					pathReproduction,
 					reproducer.getPhrasePrefix()
-					.getPath()
-					.materialize());
+					.getPath());
 		}
 
 		if (!pathReproduction.isOutOfClause()) {
@@ -249,7 +236,7 @@ public class Ref extends Statement {
 				pathReproducer.reproduceBindings(
 						pathReproduction.getReproducedPath())
 				.bind(this, reproducer.getScope())
-				.append(reproducer.getPhrasePrefix().getPath().materialize()));
+				.append(reproducer.getPhrasePrefix().getPath()));
 	}
 
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
@@ -294,9 +281,7 @@ public class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType);
 
-		return getPath().materialize()
-				.append(adapter.toPath())
-				.target(distribute());
+		return getPath().append(adapter.toPath()).target(distribute());
 	}
 
 	public final Ref prefixWith(PrefixPath prefix) {

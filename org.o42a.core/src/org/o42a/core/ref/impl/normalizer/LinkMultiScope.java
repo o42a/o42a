@@ -59,12 +59,6 @@ final class LinkMultiScope extends MultiScope {
 	}
 
 	@Override
-	public MultiScope materialize() {
-		return objectMultiScope(
-				getScope().toField().getArtifact().materialize());
-	}
-
-	@Override
 	public String toString() {
 
 		final Scope scope = getScope();

@@ -24,7 +24,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
@@ -55,11 +54,6 @@ public abstract class Dep extends Step {
 	@Override
 	public final PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
-	}
-
-	@Override
-	public final boolean isMaterial() {
-		return true;
 	}
 
 	@Override
@@ -163,13 +157,7 @@ public abstract class Dep extends Step {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-
-			final ObjectOp object = start().toObject(dirs);
-
-			assert object != null :
-				"Not an object: " + start();
-
-			return object.dep(dirs, getStep());
+			return start().materialize(dirs).dep(dirs, getStep());
 		}
 
 	}

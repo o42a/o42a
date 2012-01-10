@@ -32,7 +32,7 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 
 	public ObjectFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
-		this.path = path.materialize();
+		this.path = path;
 	}
 
 	@Override

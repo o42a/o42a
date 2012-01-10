@@ -48,11 +48,6 @@ public class ObjectConstructorStep extends AbstractObjectStep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public ValueAdapter valueAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {

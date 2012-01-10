@@ -48,11 +48,6 @@ public class ObjectStep extends AbstractObjectStep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

@@ -49,11 +49,6 @@ public abstract class InlineStep extends Step implements NormalStep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}

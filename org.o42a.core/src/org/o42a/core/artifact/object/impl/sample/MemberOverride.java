@@ -101,8 +101,7 @@ public final class MemberOverride extends Sample {
 	private ValueStruct<?, ?> valueStruct() {
 
 		final Obj object = getObject();
-		final Path memberPath =
-				this.overriddenMember.getKey().toPath().materialize();
+		final Path memberPath = this.overriddenMember.getKey().toPath();
 		final PrefixPath prefix =
 				memberPath.toPrefix(object.getScope().getEnclosingScope());
 

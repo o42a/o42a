@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.Path.materializePath;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -47,11 +47,9 @@ public class AncestorFragment extends PathFragment {
 
 			final TypeRef typeRef = artifact.getTypeRef();
 
-			return materializePath()
-					.bind(typeRef, start)
-					.append(ancestor(
-						artifact.materialize().getScope(),
-						typeRef));
+			return SELF_PATH.bind(typeRef, start).append(ancestor(
+					artifact.materialize().getScope(),
+					typeRef));
 		}
 
 		final Artifact<?> materializationOf = object.getMaterializationOf();

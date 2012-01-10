@@ -47,11 +47,6 @@ public class ScopeFldOp extends FldOp {
 		return (ScopeFld.Op) super.ptr();
 	}
 
-	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-		return target(dirs);
-	}
-
 	public ObjectOp target(CodeDirs dirs) {
 		if (isOmitted()) {
 

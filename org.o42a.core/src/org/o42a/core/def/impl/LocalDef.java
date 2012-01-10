@@ -203,11 +203,7 @@ public class LocalDef extends ValueDef {
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final ObjectOp ownerObject = host.toObject(dirs.dirs());
-
-		assert ownerObject != null :
-			"Local scope owner expected: " + host;
-
+		final ObjectOp ownerObject = host.materialize(dirs.dirs());
 		final LocalScope scope = getBlock().getScope().toLocal();
 		final Obj ownerType = scope.getOwner();
 		final ObjOp ownerBody =

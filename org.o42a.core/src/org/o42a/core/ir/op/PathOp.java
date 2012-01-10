@@ -83,18 +83,13 @@ public abstract class PathOp implements HostOp {
 	}
 
 	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-		return target(dirs).toObject(dirs);
-	}
-
-	@Override
 	public LocalOp toLocal() {
 		return null;
 	}
 
 	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs).field(dirs, memberKey);
+		return materialize(dirs).field(dirs, memberKey);
 	}
 
 	@Override

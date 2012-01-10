@@ -53,11 +53,6 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public RefUsage getObjectUsage() {
 		return null;
 	}
@@ -130,7 +125,6 @@ public final class ParentLocalStep extends Step {
 		final Container enclosingContainer =
 				this.object.getEnclosingContainer();
 		final Ref ref = rebuilder.restPath()
-				.materialize()
 				.bind(rebuilder, enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
 
@@ -162,11 +156,6 @@ public final class ParentLocalStep extends Step {
 
 		OpaqueLocalOp(PathOp start) {
 			super(start);
-		}
-
-		@Override
-		public ObjectOp toObject(CodeDirs dirs) {
-			return null;
 		}
 
 		@Override
