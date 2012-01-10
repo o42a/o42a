@@ -154,13 +154,7 @@ public final class PathNormalizer implements UseCaseInfo {
 
 		pathNormalizer.set(this);
 
-		final NormalPath normalPath = pathNormalizer.normalize();
-
-		if (!normalPath.isNormalized() && !isNormalizationStarted()) {
-			cancel();
-			return;
-		}
-		normalPath.appendTo(this.normalSteps);
+		pathNormalizer.normalize().appendTo(this.normalSteps);
 
 		set(pathNormalizer);
 		this.stepNormalized = pathNormalizer.stepNormalized;
@@ -227,6 +221,10 @@ public final class PathNormalizer implements UseCaseInfo {
 
 			this.stepStart = this.stepResolution;
 			++this.stepIndex;
+		}
+
+		if (!isNormalizationStarted()) {
+			return new UnNormalizedPath(path);
 		}
 
 		return new NormalizedPath(

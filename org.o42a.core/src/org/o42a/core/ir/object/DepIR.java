@@ -40,6 +40,8 @@ public class DepIR {
 	private Type instance;
 
 	public DepIR(Generator generator, Dep dep) {
+		assert !dep.isDisabled() :
+			dep + " is disabled";
 		this.generator = generator;
 		this.dep = dep;
 	}
