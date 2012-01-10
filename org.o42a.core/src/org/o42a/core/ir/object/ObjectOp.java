@@ -94,6 +94,9 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public void fillDeps(CodeDirs dirs, Obj sample) {
 		for (Dep dep : sample.getDeps()) {
+			if (dep.isDisabled()) {
+				continue;
+			}
 			dep(dirs, dep).fill(
 					getBuilder().host().toLocal().getBuilder(),
 					dirs);
