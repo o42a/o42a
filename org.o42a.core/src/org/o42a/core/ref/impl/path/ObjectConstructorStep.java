@@ -21,12 +21,14 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -34,9 +36,10 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
 
-public class ObjectConstructorStep extends AbstractObjectStep {
+public class ObjectConstructorStep extends Step {
 
 	private final ObjectConstructor constructor;
+	private ObjectStepUses uses;
 
 	public ObjectConstructorStep(ObjectConstructor constructor) {
 		this.constructor = constructor;
@@ -48,31 +51,15 @@ public class ObjectConstructorStep extends AbstractObjectStep {
 	}
 
 	@Override
+	public final RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
+	}
+
+	@Override
 	public ValueAdapter valueAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {
 		return this.constructor.valueAdapter(ref, expectedStruct);
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		this.constructor.assertCompatible(reproducer.getReproducingScope());
-
-		final ObjectConstructor reproduced =
-				this.constructor.reproduce(reproducer);
-
-		if (reproduced == null) {
-			return null;
-		}
-
-		return reproducedPath(reproduced.toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return this.constructor.op(start);
 	}
 
 	@Override
@@ -100,16 +87,54 @@ public class ObjectConstructorStep extends AbstractObjectStep {
 	}
 
 	@Override
-	protected Obj resolveObject(
+	protected Container resolve(
+			PathResolver resolver,
 			BoundPath path,
 			int index,
-			Scope start) {
-		return this.constructor.resolve(start);
+			Scope start,
+			PathWalker walker) {
+
+		final Obj object = this.constructor.resolve(start);
+
+		if (object == null) {
+			return null;
+		}
+
+		if (resolver.isFullResolution()) {
+			object.resolveAll();
+			uses().useBy(resolver, path, index);
+		}
+		walker.object(this, object);
+
+		return object;
 	}
 
 	@Override
-	protected void walkToObject(PathWalker walker, Obj object) {
-		walker.object(this, object);
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		this.constructor.assertCompatible(reproducer.getReproducingScope());
+
+		final ObjectConstructor reproduced =
+				this.constructor.reproduce(reproducer);
+
+		if (reproduced == null) {
+			return null;
+		}
+
+		return reproducedPath(reproduced.toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return this.constructor.op(start);
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
 	}
 
 }

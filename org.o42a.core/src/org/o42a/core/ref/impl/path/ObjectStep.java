@@ -21,6 +21,7 @@ package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -30,11 +31,12 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class ObjectStep extends AbstractObjectStep {
+public class ObjectStep extends Step {
 
 	private final Obj object;
 
@@ -48,15 +50,8 @@ public class ObjectStep extends AbstractObjectStep {
 	}
 
 	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -75,16 +70,29 @@ public class ObjectStep extends AbstractObjectStep {
 	}
 
 	@Override
-	protected Obj resolveObject(
+	protected Container resolve(
+			PathResolver resolver,
 			BoundPath path,
 			int index,
-			Scope start) {
+			Scope start,
+			PathWalker walker) {
+		if (resolver.isFullResolution()) {
+			this.object.resolveAll();
+		}
+		walker.object(this, this.object);
 		return this.object;
 	}
 
 	@Override
-	protected void walkToObject(PathWalker walker, Obj object) {
-		walker.object(this, object);
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	private static final class Op extends StepOp<ObjectStep> {
