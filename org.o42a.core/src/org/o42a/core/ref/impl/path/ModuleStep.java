@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
@@ -34,15 +33,17 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
 
 
-public final class ModuleStep extends AbstractObjectStep {
+public final class ModuleStep extends Step {
 
 	private final String moduleId;
+	private ObjectStepUses uses;
 
 	public ModuleStep(String moduleId) {
 		this.moduleId = moduleId;
@@ -51,6 +52,11 @@ public final class ModuleStep extends AbstractObjectStep {
 	@Override
 	public PathKind getPathKind() {
 		return PathKind.ABSOLUTE_PATH;
+	}
+
+	@Override
+	public final RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	public String getModuleId() {
@@ -92,10 +98,12 @@ public final class ModuleStep extends AbstractObjectStep {
 	}
 
 	@Override
-	protected Obj resolveObject(
+	protected Container resolve(
+			PathResolver resolver,
 			BoundPath path,
 			int index,
-			Scope start) {
+			Scope start,
+			PathWalker walker) {
 
 		final CompilerContext context = start.getContext();
 		final Module module = context.getIntrinsics().getModule(this.moduleId);
@@ -108,20 +116,18 @@ public final class ModuleStep extends AbstractObjectStep {
 					this.moduleId);
 			return null;
 		}
+		if (resolver.isFullResolution()) {
+			module.resolveAll();
+			uses().useBy(resolver, path, index);
+		}
+		walker.module(this, module);
 
 		return module;
 	}
 
 	@Override
-	protected void walkToObject(PathWalker walker, Obj object) {
-		walker.module(this, object);
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		if (uses().selectUse(
-				normalizer,
-				NON_VALUE_REF_USAGES).isUsed()) {
+		if (!uses().onlyValueUsed(normalizer)) {
 			return;
 		}
 
@@ -168,6 +174,13 @@ public final class ModuleStep extends AbstractObjectStep {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
 	}
 
 	private static final class Op extends StepOp<ModuleStep> {
