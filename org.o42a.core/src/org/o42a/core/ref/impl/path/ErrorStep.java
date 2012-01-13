@@ -72,8 +72,13 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		// Normalization impossible.
+		normalizer.cancel(); // Normalization impossible.
 	}
 
 	@Override

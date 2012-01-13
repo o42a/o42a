@@ -33,6 +33,7 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
@@ -275,6 +276,11 @@ public final class ComparisonExpression extends ObjectConstructor {
 			this.comparisonKey = statement.toMember().getKey();
 
 			memberRegistry.registerMembers(members);
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.ref.resolve(enclosing);
 		}
 
 	}

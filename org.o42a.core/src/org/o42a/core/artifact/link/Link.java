@@ -90,6 +90,19 @@ public abstract class Link extends MaterializableArtifact<Link> {
 		return this.targetRef;
 	}
 
+	public final Link findIn(Scope enclosing) {
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
+		if (enclosingScope == enclosing) {
+			return this;
+		}
+
+		enclosing.assertDerivedFrom(enclosingScope);
+
+		return findLinkIn(enclosing);
+	}
+
 	public final void assign(Ref value) {
 
 		final Field<?> field = getScope().toField();
@@ -121,6 +134,8 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 		return new LinkTarget(this);
 	}
+
+	protected abstract Link findLinkIn(Scope enclosing);
 
 	@Override
 	protected void fullyResolveArtifact() {

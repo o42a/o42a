@@ -66,6 +66,11 @@ public class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		return target.getEnclosingScope();
+	}
+
+	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		if (!normalizer.isStepIgnored()) {
 			normalizer.cancel();

@@ -98,6 +98,8 @@ public abstract class Step {
 			Scope start,
 			PathWalker walker);
 
+	protected abstract Scope revert(Scope target);
+
 	protected void normalize(PathNormalizer normalizer) {
 		// FIXME Implement normalization.
 	}

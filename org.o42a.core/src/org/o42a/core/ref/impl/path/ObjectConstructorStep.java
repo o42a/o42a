@@ -110,6 +110,12 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		target.assertDerivedFrom(this.constructor.getConstructed().getScope());
+		return target.getEnclosingScope();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

@@ -19,8 +19,12 @@
 */
 package org.o42a.core.artifact.link.impl.decl;
 
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -53,6 +57,15 @@ final class OverriderLink extends Link {
 		return this.variant.build(
 				knownTypeRef(),
 				this.field.derivedTargetRef());
+	}
+
+	@Override
+	protected Link findLinkIn(Scope enclosing) {
+
+		final MemberField field =
+				enclosing.getContainer().member(this.field.getKey()).toField();
+
+		return field.field(dummyUser()).getArtifact().toLink();
 	}
 
 	private TypeRef knownTypeRef() {

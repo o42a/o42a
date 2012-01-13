@@ -26,6 +26,7 @@ import static org.o42a.core.member.impl.clause.GroupRegistry.prohibitedContinuat
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -35,6 +36,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -122,6 +124,15 @@ final class ClauseDefinition extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+
+		final MemberClause clause =
+				enclosing.getContainer().member(toClause().getKey()).toClause();
+
+		return clause.clause().toPlainClause().toObject();
 	}
 
 	void define(Reproducer reproducer) {

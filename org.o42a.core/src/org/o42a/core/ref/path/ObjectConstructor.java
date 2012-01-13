@@ -115,7 +115,7 @@ public abstract class ObjectConstructor extends Placed {
 
 	protected abstract Obj createObject();
 
-	private Obj propagate(Scope scope) {
+	final Obj propagate(Scope scope) {
 		if (this.propagated != null) {
 
 			final Obj cached = this.propagated.get(scope);
@@ -232,6 +232,11 @@ public abstract class ObjectConstructor extends Placed {
 		@Override
 		protected Definitions explicitDefinitions() {
 			return emptyDefinitions(this, getScope());
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.constructor.propagate(enclosing);
 		}
 
 	}

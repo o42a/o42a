@@ -21,12 +21,14 @@ package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.clause.PlainClause;
 
 
@@ -71,6 +73,15 @@ final class PropagatedClauseDefinition extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+
+		final MemberClause clause =
+				enclosing.getContainer().member(toClause().getKey()).toClause();
+
+		return clause.clause().toPlainClause().toObject();
 	}
 
 }

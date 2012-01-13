@@ -31,9 +31,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -44,7 +42,7 @@ import org.o42a.lib.test.TestModule;
 import org.o42a.util.use.UserInfo;
 
 
-final class TestRunner extends Obj {
+final class TestRunner extends ConstructedObject {
 
 	public static void runTest(
 			TestModule module,

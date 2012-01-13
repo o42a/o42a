@@ -37,8 +37,11 @@ import org.o42a.core.source.LocationInfo;
 
 public final class ParentObjectStep extends AbstractMemberStep {
 
-	public ParentObjectStep(MemberKey memberKey) {
+	private final Obj object;
+
+	public ParentObjectStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
+		this.object = object;
 	}
 
 	@Override
@@ -135,6 +138,11 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 		// Update to actual enclosing scope path.
 		return reproducedPath(scope.getEnclosingScopePath());
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
 	}
 
 }

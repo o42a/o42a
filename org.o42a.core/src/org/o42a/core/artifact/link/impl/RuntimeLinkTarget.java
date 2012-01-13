@@ -24,6 +24,7 @@ import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
@@ -67,6 +68,11 @@ public final class RuntimeLinkTarget extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		return this.link.findIn(enclosing).materialize();
 	}
 
 	@Override

@@ -59,7 +59,22 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		if (this.index == null) {
+			return super.toString();
+		}
+		return "[" + this.index + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -166,7 +181,12 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected Scope revert(Scope target) {
+		return target.getEnclosingScope();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 
@@ -184,26 +204,11 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new ArrayElementOp(
 				start,
 				this.arrayStruct,
 				indexRef(start.getPath()));
-	}
-
-	@Override
-	public String toString() {
-		if (this.index == null) {
-			return super.toString();
-		}
-		return "[" + this.index + ']';
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return objectFieldDefinition(path, distributor);
 	}
 
 	private final Ref indexRef(BoundPath path) {

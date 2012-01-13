@@ -28,11 +28,11 @@ import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayItem;
 import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
@@ -40,7 +40,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-final class ArrayObject extends Obj {
+final class ArrayObject extends ConstructedObject {
 
 	private final ArrayConstructor constructor;
 	private final boolean typeByItems;
@@ -65,10 +65,6 @@ final class ArrayObject extends Obj {
 		this.typeByItems = reproducedFrom.typeByItems;
 		this.reproducer = reproducer;
 		this.reproducedFrom = reproducedFrom;
-	}
-
-	public final ArrayConstructor getConstructor() {
-		return this.constructor;
 	}
 
 	public Array getArray() {
