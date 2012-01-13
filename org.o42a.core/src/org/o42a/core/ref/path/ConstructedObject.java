@@ -1,6 +1,6 @@
 /*
-    Console Module
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,51 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.lib.console;
+package org.o42a.core.ref.path;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.DefinedObject;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-final class MainCall extends DefinedObject {
+public abstract class ConstructedObject extends Obj {
 
-	private final TypeRef adapterRef;
+	private final ObjectConstructor constructor;
 
-	MainCall(
-			LocationInfo location,
-			Distributor enclosing,
-			TypeRef adapterRef) {
-		super(location, enclosing);
-		this.adapterRef = adapterRef;
+	public ConstructedObject(
+			ObjectConstructor constructor,
+			Distributor enclosing) {
+		super(constructor, enclosing);
+		this.constructor = constructor;
+	}
+
+	public final ObjectConstructor getConstructor() {
+		return this.constructor;
 	}
 
 	@Override
 	public String toString() {
-		if (this.adapterRef == null) {
+		if (this.constructor == null) {
 			return super.toString();
 		}
-		return this.adapterRef + "()";
-	}
-
-	@Override
-	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.adapterRef);
-	}
-
-	@Override
-	protected void buildDefinition(DeclarativeBlock definition) {
+		return this.constructor.toString();
 	}
 
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
+		return getConstructor().propagate(enclosing);
 	}
 
 }

@@ -52,7 +52,7 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.path.AbstractMemberStep;
-import org.o42a.core.ref.impl.path.ObjectStep;
+import org.o42a.core.ref.impl.path.StaticObjectStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -486,7 +486,8 @@ public abstract class Obj
 			}
 
 			// New scope field is to be created.
-			scopePathStep = new ParentObjectStep(SCOPE_FIELD_ID.key(scope));
+			scopePathStep =
+					new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
 		} else {
 			// Enclosing local path.
 			// Will be replaced with dependency during path rebuild.
@@ -498,10 +499,23 @@ public abstract class Obj
 		return scopePathStep.toPath();
 	}
 
+	public final Obj findIn(Scope enclosing) {
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
+		if (enclosingScope == enclosing) {
+			return this;
+		}
+
+		enclosing.assertDerivedFrom(enclosingScope);
+
+		return findObjectIn(enclosing);
+	}
+
 	public final Ref staticRef(Scope scope) {
 
 		final BoundPath path =
-				new ObjectStep(this).toPath().bindStatically(this, scope);
+				new StaticObjectStep(this).toPath().bindStatically(this, scope);
 
 		return path.target(distributeIn(scope.getContainer()));
 	}
@@ -685,6 +699,8 @@ public abstract class Obj
 
 		return cloneOf;
 	}
+
+	protected abstract Obj findObjectIn(Scope enclosing);
 
 	@Override
 	protected Dep addEnclosingOwnerDep(Obj owner) {

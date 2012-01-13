@@ -76,6 +76,11 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		return target;
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

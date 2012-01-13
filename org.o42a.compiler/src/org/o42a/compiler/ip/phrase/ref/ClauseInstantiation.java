@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -86,10 +87,7 @@ final class ClauseInstantiation extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new InstantiationObject(
-				this.instance,
-				distribute(),
-				getAscendants());
+		return new InstantiationObject(this);
 	}
 
 	private AscendantsDefinition getAscendants() {
@@ -102,31 +100,34 @@ final class ClauseInstantiation extends ObjectConstructor {
 
 	private static final class InstantiationObject extends DefinedObject {
 
-		private final ClauseInstance instance;
-		private final AscendantsDefinition ascendants;
+		private final ClauseInstantiation instantiation;
 
-		InstantiationObject(
-				ClauseInstance instance,
-				Distributor enclosing,
-				AscendantsDefinition ascendants) {
-			super(instance.getLocation(), enclosing);
-			this.instance = instance;
-			this.ascendants = ascendants;
+		InstantiationObject(ClauseInstantiation instantiation) {
+			super(
+					instantiation.instance.getLocation(),
+					instantiation.distribute());
+			this.instantiation = instantiation;
 		}
 
 		@Override
 		public String toString() {
-			return this.instance.toString();
+			return this.instantiation.toString();
 		}
 
 		@Override
 		protected Ascendants buildAscendants() {
-			return this.ascendants.updateAscendants(new Ascendants(this));
+			return this.instantiation.getAscendants().updateAscendants(
+					new Ascendants(this));
 		}
 
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
-			this.instance.getDefinition().buildBlock(definition);
+			this.instantiation.instance.getDefinition().buildBlock(definition);
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.instantiation.resolve(enclosing);
 		}
 
 	}

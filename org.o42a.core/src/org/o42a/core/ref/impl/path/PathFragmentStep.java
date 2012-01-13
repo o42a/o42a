@@ -78,6 +78,11 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		throw unresolved();
+	}
+
+	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		throw unresolved();
 	}

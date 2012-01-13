@@ -20,6 +20,7 @@
 package org.o42a.core.ref.impl.path;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
@@ -64,6 +65,11 @@ public abstract class InlineStep extends Step implements NormalStep {
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
 		throw new UnsupportedOperationException();
 	}
 

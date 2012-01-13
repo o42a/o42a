@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.FieldDefinition;
@@ -126,6 +127,15 @@ public final class RefDep extends Dep {
 		walker.refDep(object, this, this.depRef);
 
 		return resolution.toArtifact().getContainer();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+
+		final LocalScope revertedLocal =
+				getDepRef().getPath().revert(target).toLocal();
+
+		return getObject().findIn(revertedLocal).getScope();
 	}
 
 	@Override

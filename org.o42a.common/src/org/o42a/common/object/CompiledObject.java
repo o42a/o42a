@@ -22,6 +22,7 @@ package org.o42a.common.object;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;
@@ -36,6 +37,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
@@ -139,6 +141,15 @@ public class CompiledObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.define(getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+
+		final MemberField field =
+				enclosing.getContainer().member(getField().getKey()).toField();
+
+		return field.field(dummyUser()).getArtifact().materialize();
 	}
 
 	protected final boolean reportError(Resolver resolver) {

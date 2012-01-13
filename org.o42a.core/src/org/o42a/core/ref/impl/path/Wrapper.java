@@ -87,6 +87,12 @@ public class Wrapper extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		target.assertSameScope(this.wrappedScope);
+		return this.wrapperScope;
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

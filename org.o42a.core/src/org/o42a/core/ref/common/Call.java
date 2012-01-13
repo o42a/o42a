@@ -20,6 +20,7 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -109,54 +110,41 @@ public class Call extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new CallObject(
-				this,
-				distribute(),
-				this.ascendants,
-				this.definitions);
+		return new CallObject(this, distribute());
 	}
 
 	private static final class CallObject extends DefinedObject {
 
-		private final AscendantsDefinition ascendants;
-		private BlockBuilder definitions;
+		private final Call call;
 
 		CallObject(
-				LocationInfo location,
-				Distributor enclosing,
-				AscendantsDefinition ascendants,
-				BlockBuilder definitions) {
-			super(location, enclosing);
-			this.ascendants = ascendants;
-			this.definitions = definitions;
+				Call call,
+				Distributor enclosing) {
+			super(call, enclosing);
+			this.call = call;
 		}
 
 		@Override
 		public String toString() {
-			if (this.ascendants == null) {
+			if (this.call == null) {
 				return super.toString();
 			}
-
-			final StringBuilder out = new StringBuilder();
-
-			out.append(this.ascendants).append('(');
-			if (this.definitions != null) {
-				out.append(this.definitions);
-			}
-			out.append(')');
-
-			return out.toString();
+			return this.call.toString();
 		}
 
 		@Override
 		protected Ascendants buildAscendants() {
-			return this.ascendants.updateAscendants(new Ascendants(this));
+			return this.call.ascendants.updateAscendants(new Ascendants(this));
 		}
 
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
-			this.definitions.buildBlock(definition);
-			this.definitions = null;
+			this.call.definitions.buildBlock(definition);
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.call.resolve(enclosing);
 		}
 
 	}

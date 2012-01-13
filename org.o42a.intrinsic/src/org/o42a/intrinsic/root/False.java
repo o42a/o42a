@@ -30,6 +30,7 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
@@ -90,6 +91,12 @@ public final class False extends BuiltinObject {
 	@Override
 	protected final Definitions explicitDefinitions() {
 		return new BuiltinValueDef(this).claim().toDefinitions();
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
 	}
 
 	private static FalseScope falseScope(Scope topScope) {

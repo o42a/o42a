@@ -58,38 +58,6 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final Obj object = start.toObject();
-
-		object.assertDerivedFrom(this.object);
-
-		final Container result =
-				object.getScope().getEnclosingContainer();
-
-		walker.up(object, this, result);
-
-		return result;
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new OpaqueLocalOp(start);
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
-	}
-
-	@Override
 	public int hashCode() {
 		return this.object.getScope().hashCode();
 	}
@@ -146,6 +114,43 @@ public final class ParentLocalStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+
+		final Obj object = start.toObject();
+
+		object.assertDerivedFrom(this.object);
+
+		final Container result =
+				object.getScope().getEnclosingContainer();
+
+		walker.up(object, this, result);
+
+		return result;
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new OpaqueLocalOp(start);
 	}
 
 	private final ObjectArtifact object() {

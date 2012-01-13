@@ -187,6 +187,12 @@ public class Root extends Obj {
 	}
 
 	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
+	}
+
+	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return new IR(generator, this);
 	}

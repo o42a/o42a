@@ -36,11 +36,11 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class ObjectStep extends Step {
+public class StaticObjectStep extends Step {
 
 	private final Obj object;
 
-	public ObjectStep(Obj object) {
+	public StaticObjectStep(Obj object) {
 		this.object = object;
 	}
 
@@ -84,6 +84,11 @@ public class ObjectStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
@@ -95,9 +100,9 @@ public class ObjectStep extends Step {
 		return new Op(start, this);
 	}
 
-	private static final class Op extends StepOp<ObjectStep> {
+	private static final class Op extends StepOp<StaticObjectStep> {
 
-		Op(PathOp start, ObjectStep step) {
+		Op(PathOp start, StaticObjectStep step) {
 			super(start, step);
 		}
 

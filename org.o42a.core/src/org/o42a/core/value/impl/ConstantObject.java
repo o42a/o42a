@@ -21,24 +21,23 @@ package org.o42a.core.value.impl;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.source.LocationInfo;
+import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.Value;
 
 
-public final class ConstantObject<T> extends Obj {
+final class ConstantObject<T> extends ConstructedObject {
 
 	private final Value<T> value;
 
-	public ConstantObject(
-			LocationInfo location,
+	ConstantObject(
+			Constant<T> constant,
 			Distributor enclosing,
 			SingleValueType<T> valueType,
 			T value) {
-		super(location, enclosing);
+		super(constant, enclosing);
 		setValueStruct(valueType.struct());
 		this.value = valueType.constantValue(value);
 	}

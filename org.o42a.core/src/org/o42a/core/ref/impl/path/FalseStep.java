@@ -86,6 +86,11 @@ public class FalseStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
 	}

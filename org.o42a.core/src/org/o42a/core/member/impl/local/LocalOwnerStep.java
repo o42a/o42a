@@ -92,6 +92,12 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
+	protected Scope revert(Scope target) {
+		return target.toObject().member(
+				this.local.toMember().getKey()).toLocal().local();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

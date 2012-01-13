@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.FieldDefinition;
@@ -118,6 +119,23 @@ public final class EnclosingOwnerDep extends Dep {
 		walker.up(object, this, owner);
 
 		return owner;
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+
+		final LocalScope originalLocal =
+				getObject().getScope().getEnclosingScope().toLocal();
+
+		target.assertDerivedFrom(originalLocal.getOwner().getScope());
+
+		final LocalScope revertedLocal =
+				target.toObject()
+				.member(originalLocal.toMember().getKey())
+				.toLocal()
+				.local();
+
+		return getObject().findIn(revertedLocal).getScope();
 	}
 
 	@Override
