@@ -33,6 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
@@ -138,13 +139,26 @@ public final class Top extends AbstractScope implements MemberContainer {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return null;
 	}
 
 	@Override
-	public Path findMember(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path findMember(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return null;
+	}
+
+	@Override
+	public Prediction predict(Prediction enclosing) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

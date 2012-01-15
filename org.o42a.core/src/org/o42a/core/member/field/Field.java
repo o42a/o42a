@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.ref.impl.prediction.FieldPrediction.predictField;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
@@ -32,6 +33,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.impl.field.FieldContainer;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
@@ -236,6 +238,11 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 
 	public final boolean isOverride() {
 		return this.member.isOverride();
+	}
+
+	@Override
+	public final Prediction predict(Prediction enclosing) {
+		return predictField(enclosing, this);
 	}
 
 	@Override

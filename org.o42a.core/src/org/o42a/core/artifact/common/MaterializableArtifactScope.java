@@ -23,6 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.StandaloneArtifactScope;
 import org.o42a.core.member.MemberContainer;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -77,6 +78,11 @@ public abstract class MaterializableArtifactScope<
 	@Override
 	public MaterializableArtifactScope<A> getLastDefinition() {
 		return getFirstDeclaration();
+	}
+
+	@Override
+	public final Prediction predict(Prediction enclosing) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
