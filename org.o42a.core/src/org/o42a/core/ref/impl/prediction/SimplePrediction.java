@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,40 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ref.impl.prediction;
 
 import static java.util.Collections.singletonList;
-import static org.o42a.core.ref.impl.normalizer.DerivativesMultiScope.objectMultiScope;
 
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.MultiScope;
-import org.o42a.core.ref.MultiScopeSet;
+import org.o42a.core.ref.Predicted;
+import org.o42a.core.ref.Prediction;
 
 
-final class LinkMultiScope extends MultiScope {
+public final class SimplePrediction extends Prediction {
 
-	static MultiScope declaredFieldMultiScope(Field<?> field) {
-
-		final Obj object = field.toObject();
-
-		if (object != null) {
-			return objectMultiScope(object);
-		}
-
-		return new LinkMultiScope(field);
-	}
-
-	private LinkMultiScope(Field<?> scope) {
+	public SimplePrediction(Scope scope) {
 		super(scope);
 	}
 
 	@Override
-	public MultiScopeSet getScopeSet() {
-		return MultiScopeSet.SCOPES;
+	public Predicted getPredicted() {
+		return Predicted.PREDICTED;
 	}
 
 	@Override
@@ -67,7 +53,7 @@ final class LinkMultiScope extends MultiScope {
 			return super.toString();
 		}
 
-		return "LinkMultiScope[" + getScope() + ']';
+		return scope.toString();
 	}
 
 }

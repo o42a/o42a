@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,26 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ref.impl.prediction;
 
 import static java.util.Collections.singletonList;
 
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.MultiScope;
-import org.o42a.core.ref.MultiScopeSet;
+import org.o42a.core.ref.Predicted;
+import org.o42a.core.ref.Prediction;
 
 
-public class SingleScope extends MultiScope {
+public final class ExactPrediction extends Prediction {
 
-	public SingleScope(Scope scope) {
+	public ExactPrediction(Scope scope) {
 		super(scope);
 	}
 
 	@Override
-	public MultiScopeSet getScopeSet() {
-		return MultiScopeSet.SINGLE_SCOPE;
+	public Predicted getPredicted() {
+		return Predicted.EXACTLY_PREDICTED;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class SingleScope extends MultiScope {
 			return super.toString();
 		}
 
-		return scope.toString();
+		return scope + "!";
 	}
 
 }

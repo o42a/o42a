@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,26 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ref.impl.prediction;
 
 import static java.util.Collections.singletonList;
 
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.MultiScope;
-import org.o42a.core.ref.MultiScopeSet;
+import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Predicted;
+import org.o42a.core.ref.Prediction;
 
 
-public class PropagatedMultiScope extends MultiScope {
+public class LocalPrediction extends Prediction {
 
-	public PropagatedMultiScope(Scope scope) {
-		super(scope);
+	public static Prediction predictLocal(
+			Prediction enclosing,
+			LocalScope local) {
+		assert enclosing.assertEncloses(local);
+
+		switch (enclosing.getPredicted()) {
+		case EXACTLY_PREDICTED:
+			return exactPrediction(local);
+		case UNPREDICTED:
+			return unpredicted(local);
+		case PREDICTED:
+			return new LocalPrediction(local);
+		}
+
+		throw new IllegalArgumentException(
+				"Unsupported prediction: " + enclosing.getPredicted());
+	}
+
+	private LocalPrediction(LocalScope local) {
+		super(local);
 	}
 
 	@Override
-	public MultiScopeSet getScopeSet() {
-		return MultiScopeSet.DERIVED_SCOPES;
+	public Predicted getPredicted() {
+		return Predicted.PREDICTED;
 	}
 
 	@Override
@@ -53,7 +72,7 @@ public class PropagatedMultiScope extends MultiScope {
 			return super.toString();
 		}
 
-		return scope.toString() + '*';
+		return "LocalPrediction[" + scope + ']';
 	}
 
 }
