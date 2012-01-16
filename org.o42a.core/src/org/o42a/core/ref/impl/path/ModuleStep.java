@@ -31,8 +31,6 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.InlineValue;
-import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
@@ -43,7 +41,6 @@ import org.o42a.core.source.Module;
 public final class ModuleStep extends Step {
 
 	private final String moduleId;
-	private ObjectStepUses uses;
 
 	public ModuleStep(String moduleId) {
 		this.moduleId = moduleId;
@@ -118,7 +115,6 @@ public final class ModuleStep extends Step {
 		}
 		if (resolver.isFullResolution()) {
 			module.resolveAll();
-			uses().useBy(resolver, path, index);
 		}
 		walker.module(this, module);
 
@@ -127,41 +123,7 @@ public final class ModuleStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		if (!uses().onlyValueUsed(normalizer)) {
-			return;
-		}
-
-		final Module module =
-				normalizer.getStepStart()
-				.getContext()
-				.getIntrinsics()
-				.getModule(this.moduleId);
-		final InlineValue def = module.value().getDefinitions().inline(
-				new Normalizer(normalizer, normalizer.getStepStart(), true));
-
-		if (def == null) {
-			return;
-		}
-
-		normalizer.add(module.getScope(), new InlineStep(def) {
-			@Override
-			public void cancel() {
-			}
-			@Override
-			protected Container resolve(
-					PathResolver resolver,
-					BoundPath path,
-					int index,
-					Scope start,
-					PathWalker walker) {
-				return ModuleStep.this.resolve(
-						resolver,
-						path,
-						index,
-						start,
-						walker);
-			}
-		});
+		normalizer.cancel();
 	}
 
 	@Override
@@ -179,13 +141,6 @@ public final class ModuleStep extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
 	}
 
 	private static final class Op extends StepOp<ModuleStep> {

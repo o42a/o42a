@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
+import static org.o42a.core.ref.Prediction.scopePrediction;
 import static org.o42a.core.ref.path.Path.EMPTY_STATIC_PATH;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
@@ -29,6 +31,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
@@ -43,7 +46,7 @@ public final class PathNormalizer implements UseCaseInfo {
 			BoundPath path) {
 
 		final PathNormalizer pathNormalizer =
-				new PathNormalizer(normalizer, origin, path);
+				new PathNormalizer(normalizer, scopePrediction(origin), path);
 
 		if (!pathNormalizer.init()) {
 			return null;
@@ -53,12 +56,12 @@ public final class PathNormalizer implements UseCaseInfo {
 	}
 
 	private final Normalizer normalizer;
-	private final Scope origin;
+	private final Prediction origin;
 	private final BoundPath path;
 	private final ArrayList<NormalStep> normalSteps;
 
-	private Scope stepStart;
-	private Scope stepResolution;
+	private Prediction stepStart;
+	private Prediction stepResolution;
 
 	private final int startIndex;
 	private int stepIndex;
@@ -68,7 +71,7 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	private PathNormalizer(
 			Normalizer normalizer,
-			Scope origin,
+			Prediction origin,
 			BoundPath path) {
 		this.normalizer = normalizer;
 		this.origin = origin;
@@ -85,7 +88,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		return this.normalizer;
 	}
 
-	public final Scope getOrigin() {
+	public final Prediction getOrigin() {
 		return this.origin;
 	}
 
@@ -101,7 +104,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		return this.stepIndex;
 	}
 
-	public final Scope getStepStart() {
+	public final Prediction getStepStart() {
 		return this.stepStart;
 	}
 
@@ -121,7 +124,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		return this.stepNormalized;
 	}
 
-	public final void add(Scope resolution, NormalStep normalStep) {
+	public final void add(Prediction resolution, NormalStep normalStep) {
 		this.stepResolution = resolution;
 		this.stepNormalized = true;
 		this.normalSteps.add(normalStep);
@@ -129,7 +132,7 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	public final boolean up(Scope enclosing, NormalStep normalStep) {
 		if (isNormalizationStarted()) {
-			add(enclosing, normalStep);
+			add(scopePrediction(enclosing), normalStep);
 			return true;
 		}
 
@@ -142,7 +145,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		}
 
 		this.stepNormalized = true;
-		this.stepResolution = enclosing;
+		this.stepResolution = scopePrediction(enclosing);
 
 		return true;
 	}
@@ -188,7 +191,7 @@ public final class PathNormalizer implements UseCaseInfo {
 
 			final Scope start = getNormalizedStart();
 
-			this.stepResolution = start;
+			this.stepResolution = scopePrediction(start);
 			if (start == getOrigin()) {
 				return new UnNormalizedPath(path);
 			}
@@ -200,7 +203,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		}
 
 		if (path.isAbsolute()) {
-			this.stepStart = path.root(getOrigin());
+			this.stepStart = exactPrediction(path.root(getOrigin().getScope()));
 		} else {
 			this.stepStart = getOrigin();
 		}
@@ -234,10 +237,10 @@ public final class PathNormalizer implements UseCaseInfo {
 	}
 
 	private boolean init() {
-		if (upTo(getOrigin())) {
+		if (upTo(getOrigin().getScope())) {
 			return true;
 		}
-		if (!getOrigin().contains(getNormalizedStart())) {
+		if (!getOrigin().getScope().contains(getNormalizedStart())) {
 			return false;
 		}
 

@@ -142,17 +142,20 @@ public final class EnclosingOwnerDep extends Dep {
 	protected void normalizeDep(
 			PathNormalizer normalizer,
 			final LocalScope enclosingLocal) {
-		normalizer.up(enclosingLocal.getOwner().getScope(), new NormalStep() {
-			@Override
-			public Path appendTo(Path path) {
-				setDisabled(true);
-				return path.append(enclosingLocal.getEnclosingScopePath());
-			}
-			@Override
-			public void cancel() {
-				setDisabled(false);
-			}
-		});
+		normalizer.up(
+				enclosingLocal.getOwner().getScope(),
+				new NormalStep() {
+					@Override
+					public Path appendTo(Path path) {
+						setDisabled(true);
+						return path.append(
+								enclosingLocal.getEnclosingScopePath());
+					}
+					@Override
+					public void cancel() {
+						setDisabled(false);
+					}
+				});
 	}
 
 	@Override

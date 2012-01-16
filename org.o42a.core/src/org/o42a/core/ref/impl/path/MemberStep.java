@@ -81,7 +81,7 @@ public class MemberStep extends AbstractMemberStep {
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
-				normalizer.getStepStart());
+				normalizer.getStepStart().getScope());
 
 		if (member == null) {
 			normalizer.cancel();
@@ -89,7 +89,8 @@ public class MemberStep extends AbstractMemberStep {
 		}
 
 		normalizer.add(
-				member.substance(dummyUser()).getScope(),
+				member.substance(dummyUser()).getScope().predict(
+						normalizer.getStepStart()),
 				new NormalStep() {
 					@Override
 					public void cancel() {
