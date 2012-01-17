@@ -125,14 +125,8 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
-
-		final Container substance = member.substance(dummyUser());
-
-		if (getPrediction().isExact()) {
-			return set(exactPrediction(substance.getScope()));
-		}
-
-		return set(substance.getScope().predict(getPrediction()));
+		return set(member.substance(dummyUser())
+				.getScope().predict(getPrediction()));
 	}
 
 	@Override
@@ -164,9 +158,6 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		if (getPrediction().isExact()) {
-			return set(exactPrediction(object.getScope()));
-		}
 		return set(object.getScope().predict(getPrediction()));
 	}
 
