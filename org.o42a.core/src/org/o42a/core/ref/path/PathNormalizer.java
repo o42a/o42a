@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.Prediction.scopePrediction;
 import static org.o42a.core.ref.path.Path.EMPTY_STATIC_PATH;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
@@ -32,7 +31,9 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.impl.normalizer.PathRemainderNormalStep;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
+import org.o42a.core.ref.impl.normalizer.UnchangedNormalPath;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
@@ -56,6 +57,7 @@ public final class PathNormalizer implements UseCaseInfo {
 	}
 
 	private final Normalizer normalizer;
+	private final PathNormalizer parent;
 	private final Prediction origin;
 	private final BoundPath path;
 	private final ArrayList<NormalStep> normalSteps;
@@ -63,10 +65,10 @@ public final class PathNormalizer implements UseCaseInfo {
 	private Prediction stepStart;
 	private Prediction stepResolution;
 
-	private final int startIndex;
 	private int stepIndex;
 
 	private boolean normalizationStarted;
+	private boolean normalizationFinished;
 	private boolean stepNormalized;
 
 	private PathNormalizer(
@@ -74,14 +76,19 @@ public final class PathNormalizer implements UseCaseInfo {
 			Prediction origin,
 			BoundPath path) {
 		this.normalizer = normalizer;
+		this.parent = null;
 		this.origin = origin;
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
-		if (!path.isStatic()) {
-			this.startIndex = 0;
-		} else {
-			this.startIndex = path.startIndex();
-		}
+	}
+
+	private PathNormalizer(PathNormalizer parent, BoundPath path) {
+		this.normalizer = parent.getNormalizer();
+		this.parent = parent;
+		this.origin = parent.getStepStart();
+		this.path = path;
+		this.normalSteps = new ArrayList<NormalStep>(path.length());
+		this.normalizationStarted = parent.normalizationStarted;
 	}
 
 	public final Normalizer getNormalizer() {
@@ -112,12 +119,15 @@ public final class PathNormalizer implements UseCaseInfo {
 		return this.normalizationStarted;
 	}
 
-	public final boolean isStepIgnored() {
-		return this.startIndex > getStepIndex();
+	public final boolean isNormalizationFinished() {
+		return this.normalizationFinished;
 	}
 
 	public final boolean isLastStep() {
-		return getStepIndex() == getPath().length() - 1;
+		if (this.parent != null && !this.parent.isLastStep()) {
+			return false;
+		}
+		return getStepIndex() + 1 >= getPath().length();
 	}
 
 	public final boolean isStepNormalized() {
@@ -130,10 +140,15 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.normalSteps.add(normalStep);
 	}
 
-	public final boolean up(Scope enclosing, NormalStep normalStep) {
+	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
-			add(scopePrediction(enclosing), normalStep);
-			return true;
+			this.normalizationFinished = true;
+			add(
+					scopePrediction(enclosing),
+					new PathRemainderNormalStep(
+							getPath().getPath(),
+							getStepIndex()));
+			return false;
 		}
 
 		// Enclosing scope not reached yet.
@@ -152,16 +167,30 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	public void append(BoundPath path) {
 
-		final PathNormalizer pathNormalizer =
-				new PathNormalizer(getNormalizer(), getStepStart(), path);
+		final PathNormalizer normalizer = new PathNormalizer(this, path);
+		final NormalPath normalPath = normalizer.normalize();
 
-		pathNormalizer.set(this);
+		if (!normalPath.isNormalized()) {
+			cancel();
+			return;
+		}
 
-		pathNormalizer.normalize().appendTo(this.normalSteps);
+		normalPath.appendTo(this.normalSteps);
 
-		set(pathNormalizer);
-		this.stepNormalized = pathNormalizer.stepNormalized;
-		this.stepResolution = pathNormalizer.stepResolution;
+		this.normalizationStarted = normalizer.normalizationStarted;
+		this.stepNormalized = normalizer.stepNormalized;
+		this.stepResolution = normalizer.stepResolution;
+		if (normalizer.isNormalizationFinished()) {
+			this.normalizationFinished = true;
+
+			final int nextStep = getStepIndex() + 1;
+
+			if (nextStep < getPath().length()) {
+				this.normalSteps.add(new PathRemainderNormalStep(
+						getPath().getPath(),
+						nextStep));
+			}
+		}
 	}
 
 	public final void cancel() {
@@ -187,26 +216,11 @@ public final class PathNormalizer implements UseCaseInfo {
 
 		final BoundPath path = getPath();
 
-		if (path.length() == 0) {
-
-			final Scope start = getNormalizedStart();
-
-			this.stepResolution = scopePrediction(start);
-			if (start == getOrigin()) {
-				return new UnNormalizedPath(path);
-			}
-			if (path.isAbsolute()) {
-				return new UnNormalizedPath(ROOT_PATH.bind(path, start));
-			}
-
-			return new UnNormalizedPath(SELF_PATH.bind(path, start));
-		}
-
 		if (path.isAbsolute()) {
-			this.stepStart = exactPrediction(path.root(getOrigin().getScope()));
-		} else {
-			this.stepStart = getOrigin();
+			return new UnchangedNormalPath(
+					path.getPath().bind(path, getNormalizedStart()));
 		}
+		this.stepStart = getOrigin();
 
 		final Step[] steps = path.getSteps();
 
@@ -215,18 +229,24 @@ public final class PathNormalizer implements UseCaseInfo {
 			this.stepNormalized = false;
 
 			steps[this.stepIndex].normalize(this);
+			if (isNormalizationFinished()) {
+				return new NormalizedPath(
+						getNormalizedStart(),
+						this.path,
+						this.normalSteps);
+			}
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
 				cancelAll(this.normalSteps);
-				return new UnNormalizedPath(getNormalizedStart(), path);
+				return new UnNormalizedPath(path);
 			}
 
 			this.stepStart = this.stepResolution;
 			++this.stepIndex;
 		}
 
-		if (!isNormalizationStarted()) {
+		if (!isNormalizationStarted() && this.parent == null) {
 			return new UnNormalizedPath(path);
 		}
 
@@ -262,10 +282,6 @@ public final class PathNormalizer implements UseCaseInfo {
 		}
 
 		return false;
-	}
-
-	private final void set(PathNormalizer other) {
-		this.normalizationStarted = other.normalizationStarted;
 	}
 
 	private static void cancelAll(Iterable<NormalStep> normalSteps) {
