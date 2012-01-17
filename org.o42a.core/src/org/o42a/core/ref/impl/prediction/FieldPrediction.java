@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldReplacement;
 import org.o42a.core.ref.Predicted;
@@ -70,9 +71,7 @@ public class FieldPrediction extends Prediction {
 
 	@Override
 	public Iterator<Scope> iterator() {
-		return new Iter(
-				this.enclosing,
-				new ReplacementsIterator(getScope().toField()));
+		return new Iter(this.enclosing, getScope().toField());
 	}
 
 	@Override
@@ -85,6 +84,102 @@ public class FieldPrediction extends Prediction {
 		}
 
 		return "FieldPrediction[" + scope + ']';
+	}
+
+	private static final class Iter implements Iterator<Scope> {
+
+		private final Prediction enclosing;
+		private final Iterator<Scope> enclosings;
+		private final MemberKey fieldKey;
+		private EIter replacements;
+
+		Iter(Prediction enclosing, Field<?> field) {
+			this.enclosing = enclosing;
+			this.fieldKey = field.getKey();
+			this.enclosings = enclosing.iterator();
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (this.replacements != null && this.replacements.hasNext()) {
+				return true;
+			}
+			return this.enclosings.hasNext();
+		}
+
+		@Override
+		public Scope next() {
+			if (this.replacements == null || !this.replacements.hasNext()) {
+				this.replacements = new EIter(
+						this.enclosing,
+						this.enclosings.next()
+						.getScope()
+						.getContainer()
+						.member(this.fieldKey)
+						.toField()
+						.field(dummyUser()));
+			}
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class EIter implements Iterator<Scope> {
+
+		private final Prediction enclosing;
+		private final ReplacementsIterator replacements;
+		private Iterator<Scope> impls;
+
+		EIter(Prediction enclosing, Field<?> start) {
+			this.enclosing = enclosing;
+			this.replacements = new ReplacementsIterator(start);
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (this.impls == null || !this.impls.hasNext()) {
+				return nextImpl();
+			}
+			return true;
+		}
+
+		@Override
+		public Scope next() {
+			if (this.impls == null || !this.impls.hasNext()) {
+				if (!nextImpl()) {
+					throw new NoSuchElementException();
+				}
+			}
+			return this.impls.next();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		private boolean nextImpl() {
+			do {
+				if (!this.replacements.hasNext()) {
+					return false;
+				}
+
+				final Field<?> field = this.replacements.next();
+				final ObjectImplementations impls = new ObjectImplementations(
+						this.enclosing,
+						field.getArtifact().materialize());
+
+				this.impls = impls.iterator();
+			} while (this.impls == null || !this.impls.hasNext());
+
+			return true;
+		}
+
 	}
 
 	private static final class ReplacementsIterator
@@ -138,59 +233,6 @@ public class FieldPrediction extends Prediction {
 				return super.toString();
 			}
 			return "ReplacementsIterator[" + this.start + ']';
-		}
-
-	}
-
-	private static final class Iter implements Iterator<Scope> {
-
-		private final Prediction enclosing;
-		private final ReplacementsIterator replacements;
-		private Iterator<Scope> impls;
-
-		Iter(Prediction enclosing, ReplacementsIterator replacements) {
-			this.enclosing = enclosing;
-			this.replacements = replacements;
-		}
-
-		@Override
-		public boolean hasNext() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				return nextImpl();
-			}
-			return true;
-		}
-
-		@Override
-		public Scope next() {
-			if (this.impls == null || !this.impls.hasNext()) {
-				if (!nextImpl()) {
-					throw new NoSuchElementException();
-				}
-			}
-			return this.impls.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		private boolean nextImpl() {
-			do {
-				if (!this.replacements.hasNext()) {
-					return false;
-				}
-
-				final Field<?> field = this.replacements.next();
-				final ObjectImplementations impls = new ObjectImplementations(
-						this.enclosing,
-						field.getArtifact().materialize());
-
-				this.impls = impls.iterator();
-			} while (this.impls == null || !this.impls.hasNext());
-
-			return true;
 		}
 
 	}
