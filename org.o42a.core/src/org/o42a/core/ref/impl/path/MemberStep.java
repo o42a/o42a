@@ -72,7 +72,10 @@ public class MemberStep extends AbstractMemberStep {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		if (!normalizer.isStepIgnored()) {
+		if (normalizer.isNormalizationStarted()
+				&& normalizer.getStepStart().getScope()
+				== normalizer.getNormalizedStart()) {
+			// Member of non-normalizable scope.
 			normalizer.cancel();
 			return;
 		}

@@ -121,17 +121,7 @@ public abstract class Dep extends Step {
 		final LocalScope enclosingLocal =
 				objectScope.getEnclosingContainer().toLocal();
 
-		if (!normalizer.up(
-				enclosingLocal,
-				new NormalStep() {
-					@Override
-					public Path appendTo(Path path) {
-						return path.append(objectScope.getEnclosingScopePath());
-					}
-					@Override
-					public void cancel() {
-					}
-				})) {
+		if (!normalizer.up(enclosingLocal)) {
 			return;
 		}
 

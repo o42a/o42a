@@ -19,28 +19,13 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-
-import java.util.List;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
 
 
-public class UnNormalizedPath implements NormalPath {
-
-	private final BoundPath path;
+public class UnNormalizedPath extends UnchangedNormalPath {
 
 	public UnNormalizedPath(BoundPath path) {
-		this.path = path;
-	}
-
-	public UnNormalizedPath(Scope origin, BoundPath path) {
-		if (path.getOrigin() == origin) {
-			this.path = path;
-		} else {
-			this.path = path.prefixWith(SELF_PATH.toPrefix(origin));
-		}
+		super(path);
 	}
 
 	@Override
@@ -49,50 +34,15 @@ public class UnNormalizedPath implements NormalPath {
 	}
 
 	@Override
-	public final Scope getOrigin() {
-		return this.path.getOrigin();
-	}
-
-	@Override
-	public final BoundPath toPath() {
-		return this.path;
-	}
-
-	@Override
-	public void appendTo(List<NormalStep> normalSteps) {
-		normalSteps.add(new UnNormalizedStep());
-	}
-
-	@Override
-	public void cancel() {
-	}
-
-	@Override
 	public String toString() {
-		if (this.path == null) {
+
+		final BoundPath path = toPath();
+
+		if (path == null) {
 			return super.toString();
 		}
-		return "NormalPath" + this.path;
-	}
 
-	private final class UnNormalizedStep implements NormalStep {
-
-		@Override
-		public Path appendTo(Path path) {
-
-			Path result = path;
-
-			for (Step step : UnNormalizedPath.this.path.getSteps()) {
-				result = result.append(step);
-			}
-
-			return result;
-		}
-
-		@Override
-		public void cancel() {
-		}
-
+		return "UnNormalizedPath" + path;
 	}
 
 }
