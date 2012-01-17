@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.scopePrediction;
-import static org.o42a.core.ref.path.Path.EMPTY_STATIC_PATH;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
@@ -70,6 +69,7 @@ public final class PathNormalizer implements UseCaseInfo {
 	private boolean normalizationStarted;
 	private boolean normalizationFinished;
 	private boolean stepNormalized;
+	private boolean isStatic;
 
 	private PathNormalizer(
 			Normalizer normalizer,
@@ -80,6 +80,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.origin = origin;
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
+		this.isStatic = path.isStatic();
 	}
 
 	private PathNormalizer(PathNormalizer parent, BoundPath path) {
@@ -89,6 +90,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
 		this.normalizationStarted = parent.normalizationStarted;
+		this.isStatic = parent.isStatic() || path.isStatic();
 	}
 
 	public final Normalizer getNormalizer() {
@@ -105,6 +107,10 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	public final BoundPath getPath() {
 		return this.path;
+	}
+
+	public final boolean isStatic() {
+		return this.isStatic;
 	}
 
 	public final int getStepIndex() {
@@ -180,6 +186,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.normalizationStarted = normalizer.normalizationStarted;
 		this.stepNormalized = normalizer.stepNormalized;
 		this.stepResolution = normalizer.stepResolution;
+		this.isStatic = normalizer.isStatic;
 		if (normalizer.isNormalizationFinished()) {
 			this.normalizationFinished = true;
 
@@ -233,7 +240,8 @@ public final class PathNormalizer implements UseCaseInfo {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.normalSteps);
+						this.normalSteps,
+						isStatic());
 			}
 			if (!isStepNormalized()) {
 				// Normalization failed.
@@ -253,7 +261,8 @@ public final class PathNormalizer implements UseCaseInfo {
 		return new NormalizedPath(
 				getNormalizedStart(),
 				this.path,
-				this.normalSteps);
+				this.normalSteps,
+				isStatic());
 	}
 
 	private boolean init() {
@@ -295,14 +304,17 @@ public final class PathNormalizer implements UseCaseInfo {
 		private final Scope origin;
 		private final BoundPath path;
 		private final ArrayList<NormalStep> normalSteps;
+		private final boolean isStatic;
 
 		NormalizedPath(
 				Scope origin,
 				BoundPath path,
-				ArrayList<NormalStep> normalSteps) {
+				ArrayList<NormalStep> normalSteps,
+				boolean isStatic) {
 			this.origin = origin;
 			this.path = path;
 			this.normalSteps = normalSteps;
+			this.isStatic = isStatic;
 		}
 
 		@Override
@@ -322,17 +334,19 @@ public final class PathNormalizer implements UseCaseInfo {
 
 			if (this.path.isAbsolute()) {
 				result = ROOT_PATH;
-			} else if (!this.path.isStatic()) {
-				result = SELF_PATH;
 			} else {
-				result = EMPTY_STATIC_PATH;
+				result = SELF_PATH;
 			}
 
 			for (NormalStep normalStep : this.normalSteps) {
 				result = normalStep.appendTo(result);
 			}
 
-			return result.bind(this.path, getOrigin());
+			if (!this.isStatic) {
+				return result.bind(this.path, getOrigin());
+			}
+
+			return result.bindStatically(this.path, getOrigin());
 		}
 
 		@Override
