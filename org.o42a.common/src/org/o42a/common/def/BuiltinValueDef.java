@@ -107,8 +107,7 @@ public class BuiltinValueDef extends ValueDef {
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return null;
-		//return this.builtin.inline(normalizer, valueStruct, getScope());
+		return this.builtin.inlineBuiltin(normalizer, valueStruct, getScope());
 	}
 
 	@Override
