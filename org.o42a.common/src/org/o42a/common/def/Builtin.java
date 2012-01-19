@@ -19,13 +19,17 @@
 */
 package org.o42a.common.def;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 public interface Builtin extends LocationInfo {
@@ -38,11 +42,11 @@ public interface Builtin extends LocationInfo {
 
 	void resolveBuiltin(Resolver resolver);
 
-	ValOp writeBuiltin(ValDirs dirs, HostOp host);
-
-	/*InlineValue inline(
+	InlineValue inlineBuiltin(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
-			Scope origin);*/
+			Scope origin);
+
+	ValOp writeBuiltin(ValDirs dirs, HostOp host);
 
 }
