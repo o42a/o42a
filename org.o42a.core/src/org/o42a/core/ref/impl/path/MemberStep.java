@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.util.use.User.dummyUser;
@@ -26,14 +27,25 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.artifact.link.Link;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.impl.normalizer.InlineStep;
+import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
 public class MemberStep extends AbstractMemberStep {
+
+	private ObjectStepUses uses;
 
 	public MemberStep(MemberKey memberKey) {
 		super(memberKey);
@@ -59,7 +71,9 @@ public class MemberStep extends AbstractMemberStep {
 		if (member == null) {
 			return null;
 		}
-
+		if (resolver.isFullResolution()) {
+			uses().useBy(resolver, path, index);
+		}
 		walker.member(start.getContainer(), this, member);
 
 		return member.substance(resolver);
@@ -80,7 +94,6 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		// Step will be ignored, so just add it to normalized path.
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
@@ -90,19 +103,65 @@ public class MemberStep extends AbstractMemberStep {
 			normalizer.cancel();
 			return;
 		}
+		if (normalizer.getStepStart().getScope() != member.getDefinedIn()) {
+			// Require explicitly declared member.
+			normalizer.cancel();
+			return;
+		}
 
-		normalizer.add(
-				member.substance(dummyUser()).getScope().predict(
-						normalizer.getStepStart()),
-				new NormalStep() {
-					@Override
-					public void cancel() {
-					}
-					@Override
-					public Path appendTo(Path path) {
-						return path.append(getMemberKey());
-					}
-				});
+		final MemberField memberField = member.toField();
+
+		if (memberField == null) {
+			// Field required
+			normalizer.cancel();
+			return;
+		}
+
+		final Field<?> field = memberField.field(dummyUser());
+		final Artifact<?> artifact = field.getArtifact();
+		final Prediction prediction = field.predict(normalizer.getStepStart());
+		final Link link = artifact.toLink();
+
+		if (link != null) {
+			// Append the link target.
+			if (linkUpdated(normalizer, prediction)) {
+				return;
+			}
+			normalizer.append(
+					link.getTargetRef().getRescopedRef().getPath());
+		}
+		if (!normalizer.isLastStep()) {
+			// Not last object step.
+			// Leave the step as is.
+			normalizer.add(prediction, new SameNormalStep(this));
+			return;
+		}
+
+		final Obj object = artifact.toObject();
+
+		if (!uses().onlyValueUsed(normalizer)) {
+			// Can not in-line object used otherwise but by value.
+			normalizer.cancel();
+			return;
+		}
+		if (definitionsChange(object, prediction)) {
+			normalizer.cancel();
+			return;
+		}
+
+		final InlineValue inline = object.value().getDefinitions().inline(
+				normalizer.getNormalizer());
+
+		if (inline == null) {
+			normalizer.cancel();
+			return;
+		}
+
+		normalizer.add(prediction, new InlineStep(this, inline) {
+			@Override
+			public void cancel() {
+			}
+		});
 	}
 
 	@Override
@@ -125,6 +184,29 @@ public class MemberStep extends AbstractMemberStep {
 				getMemberKey().getMemberId().reproduceFrom(origin).key(scope);
 
 		return reproducedPath(reproductionKey.toPath());
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private boolean linkUpdated(
+			PathNormalizer normalizer,
+			Prediction prediction) {
+
+		final Scope stepStart = normalizer.getStepStart().getScope();
+
+		for (Scope replacement : prediction) {
+			if (replacement.toField().getDefinedIn() != stepStart) {
+				normalizer.cancel();
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

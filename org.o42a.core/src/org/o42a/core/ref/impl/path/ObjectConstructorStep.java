@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -27,8 +28,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.*;
+import org.o42a.core.ref.impl.normalizer.InlineStep;
+import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -99,7 +101,6 @@ public class ObjectConstructorStep extends Step {
 		if (object == null) {
 			return null;
 		}
-
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
 			uses().useBy(resolver, path, index);
@@ -113,6 +114,52 @@ public class ObjectConstructorStep extends Step {
 	protected Scope revert(Scope target) {
 		target.assertDerivedFrom(this.constructor.getConstructed().getScope());
 		return target.getEnclosingScope();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+
+		final Obj object =
+				this.constructor.resolve(normalizer.getStepStart().getScope());
+
+		if (object == null) {
+			normalizer.cancel();
+			return;
+		}
+		if (!normalizer.isLastStep()) {
+			// Not a last step - go on.
+			normalizer.add(
+					object.getScope().predict(normalizer.getStepStart()),
+					new SameNormalStep(this));
+			return;
+		}
+		if (!uses().onlyValueUsed(normalizer)) {
+			// Can not in-line object used otherwise but by value.
+			normalizer.cancel();
+			return;
+		}
+
+		final Prediction prediction =
+				object.getScope().predict(normalizer.getStepStart());
+
+		if (definitionsChange(object, prediction)) {
+			normalizer.cancel();
+			return;
+		}
+
+		final InlineValue inline = object.value().getDefinitions().inline(
+				normalizer.getNormalizer());
+
+		if (inline == null) {
+			normalizer.cancel();
+			return;
+		}
+
+		normalizer.add(prediction, new InlineStep(this, inline) {
+			@Override
+			public void cancel() {
+			}
+		});
 	}
 
 	@Override

@@ -142,6 +142,19 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	protected void normalize(PathNormalizer normalizer) {
+
+		final Obj object = normalizer.getStepStart().getScope().toObject();
+
+		object.assertDerivedFrom(this.object);
+
+		final Container result =
+				object.getScope().getEnclosingContainer();
+
+		normalizer.up(result.getScope());
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

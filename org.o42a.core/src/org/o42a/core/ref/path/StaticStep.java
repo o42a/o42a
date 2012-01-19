@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -97,17 +96,7 @@ final class StaticStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.getStepStart().getScope().assertDerivedFrom(getScope());
-
-		normalizer.add(exactPrediction(getScope()), new NormalStep() {
-			@Override
-			public void cancel() {
-			}
-			@Override
-			public Path appendTo(Path path) {
-				return path.append(new StaticStep(getScope()));
-			}
-		});
+		normalizer.cancel();
 	}
 
 	@Override

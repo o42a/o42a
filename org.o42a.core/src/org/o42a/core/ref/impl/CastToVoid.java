@@ -81,6 +81,11 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.skip();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

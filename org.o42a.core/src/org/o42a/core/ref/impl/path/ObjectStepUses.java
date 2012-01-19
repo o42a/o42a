@@ -22,6 +22,9 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.RefUsage.usable;
 
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolver;
@@ -31,6 +34,18 @@ import org.o42a.util.use.UseCaseInfo;
 
 
 public class ObjectStepUses {
+
+	public static boolean definitionsChange(Obj object, Prediction prediction) {
+		for (Scope scope : prediction) {
+			if (scope.toObject().value().getDefinitions()
+					.updatedSince(object)) {
+				// Definitions may change in descendant.
+				// Can not in-line object.
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private final Usable<RefUsage> uses;
 
@@ -46,10 +61,7 @@ public class ObjectStepUses {
 		return this.uses;
 	}
 
-	public final void useBy(
-			PathResolver resolver,
-			BoundPath path,
-			int index) {
+	public final void useBy(PathResolver resolver, BoundPath path, int index) {
 		if (!resolver.isFullResolution()) {
 			return;
 		}

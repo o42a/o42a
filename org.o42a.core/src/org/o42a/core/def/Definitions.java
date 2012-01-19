@@ -27,6 +27,7 @@ import java.util.Collection;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.impl.InlineDefinitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
@@ -537,6 +538,19 @@ public class Definitions extends Scoped {
 				conditions().runtime(this),
 				claims(),
 				propositions());
+	}
+
+	public final boolean updatedSince(Obj ascendant) {
+		if (requirements().updatedSince(ascendant)) {
+			return true;
+		}
+		if (conditions().updatedSince(ascendant)) {
+			return true;
+		}
+		if (claims().updatedSince(ascendant)) {
+			return true;
+		}
+		return propositions().updatedSince(ascendant);
 	}
 
 	public final InlineValue inline(Normalizer normalizer) {

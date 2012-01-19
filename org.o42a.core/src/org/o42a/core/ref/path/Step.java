@@ -40,6 +40,16 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class Step {
 
+	public static final Container resolveStep(
+			Step step,
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		return step.resolve(resolver, path, index, start, walker);
+	}
+
 	public abstract PathKind getPathKind();
 
 	public String getName() {
@@ -100,9 +110,7 @@ public abstract class Step {
 
 	protected abstract Scope revert(Scope target);
 
-	protected void normalize(PathNormalizer normalizer) {
-		// FIXME Implement normalization.
-	}
+	protected abstract void normalize(PathNormalizer normalizer);
 
 	protected abstract PathReproduction reproduce(
 			LocationInfo location,
