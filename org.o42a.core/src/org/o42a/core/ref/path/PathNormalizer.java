@@ -30,9 +30,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.impl.normalizer.PathRemainderNormalStep;
-import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
-import org.o42a.core.ref.impl.normalizer.UnchangedNormalPath;
+import org.o42a.core.ref.impl.normalizer.*;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
 import org.o42a.util.use.User;
@@ -144,6 +142,12 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.stepResolution = resolution;
 		this.stepNormalized = true;
 		this.normalSteps.add(normalStep);
+	}
+
+	public final void skip() {
+		add(
+				getStepStart(),
+				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
 	}
 
 	public final boolean up(Scope enclosing) {

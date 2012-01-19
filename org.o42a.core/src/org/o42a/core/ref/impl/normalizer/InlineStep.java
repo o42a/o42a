@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
+import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -33,9 +34,11 @@ import org.o42a.core.source.LocationInfo;
 
 public abstract class InlineStep extends Step implements NormalStep {
 
+	private final Step step;
 	private final InlineValue def;
 
-	public InlineStep(InlineValue def) {
+	public InlineStep(Step step, InlineValue def) {
+		this.step = step;
 		this.def = def;
 	}
 
@@ -55,6 +58,14 @@ public abstract class InlineStep extends Step implements NormalStep {
 	}
 
 	@Override
+	public String toString() {
+		if (this.step == null) {
+			return super.toString();
+		}
+		return "In-line[" + this.step + ']';
+	}
+
+	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
@@ -71,6 +82,21 @@ public abstract class InlineStep extends Step implements NormalStep {
 	@Override
 	protected Scope revert(Scope target) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		return resolveStep(this.step, resolver, path, index, start, walker);
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.skip();
 	}
 
 	@Override
