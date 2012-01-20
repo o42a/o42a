@@ -76,6 +76,7 @@ public class VoidStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
+		normalizer.inlineStep();
 	}
 
 	@Override

@@ -151,8 +151,14 @@ public final class PathNormalizer implements UseCaseInfo {
 		}
 	}
 
-	public final void skip() {
+	public final void addStep() {
 		add(
+				getStepStart(),
+				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
+	}
+
+	public final void inlineStep() {
+		inline(
 				getStepStart(),
 				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
 	}

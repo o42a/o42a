@@ -96,7 +96,7 @@ public abstract class InlineStep extends Step implements NormalStep {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.skip();
+		normalizer.addStep();
 	}
 
 	@Override
