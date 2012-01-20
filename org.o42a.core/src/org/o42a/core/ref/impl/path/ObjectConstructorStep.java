@@ -126,14 +126,14 @@ public class ObjectConstructorStep extends Step {
 			normalizer.cancel();
 			return;
 		}
-		if (!normalizer.isLastStep()) {
-			// Not a last step - go on.
-			normalizer.add(
-					object.getScope().predict(normalizer.getStepStart()),
-					new SameNormalStep(this));
-			return;
-		}
 		if (!uses().onlyValueUsed(normalizer)) {
+			if (!normalizer.isLastStep()) {
+				// Not a last step - go on.
+				normalizer.add(
+						object.getScope().predict(normalizer.getStepStart()),
+						new SameNormalStep(this));
+				return;
+			}
 			// Can not in-line object used otherwise but by value.
 			normalizer.cancel();
 			return;
@@ -155,7 +155,7 @@ public class ObjectConstructorStep extends Step {
 			return;
 		}
 
-		normalizer.add(prediction, new InlineStep(this, inline) {
+		normalizer.inline(prediction, new InlineStep(this, inline) {
 			@Override
 			public void cancel() {
 			}

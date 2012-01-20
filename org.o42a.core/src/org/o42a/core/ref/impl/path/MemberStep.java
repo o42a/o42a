@@ -130,16 +130,16 @@ public class MemberStep extends AbstractMemberStep {
 			normalizer.append(
 					link.getTargetRef().getRescopedRef().getPath());
 		}
-		if (!normalizer.isLastStep()) {
-			// Not last object step.
-			// Leave the step as is.
-			normalizer.add(prediction, new SameNormalStep(this));
-			return;
-		}
 
 		final Obj object = artifact.toObject();
 
 		if (!uses().onlyValueUsed(normalizer)) {
+			if (!normalizer.isLastStep()) {
+				// Not last object step.
+				// Leave the step as is.
+				normalizer.add(prediction, new SameNormalStep(this));
+				return;
+			}
 			// Can not in-line object used otherwise but by value.
 			normalizer.cancel();
 			return;
@@ -157,7 +157,7 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		normalizer.add(prediction, new InlineStep(this, inline) {
+		normalizer.inline(prediction, new InlineStep(this, inline) {
 			@Override
 			public void cancel() {
 			}
