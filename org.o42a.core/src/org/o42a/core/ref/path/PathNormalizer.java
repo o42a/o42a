@@ -60,7 +60,7 @@ public final class PathNormalizer implements UseCaseInfo {
 	private final ArrayList<NormalStep> normalSteps;
 
 	private Prediction stepStart;
-	private Prediction stepResolution;
+	private Prediction stepPrediction;
 
 	private int stepIndex;
 
@@ -138,10 +138,17 @@ public final class PathNormalizer implements UseCaseInfo {
 		return this.stepNormalized;
 	}
 
-	public final void add(Prediction resolution, NormalStep normalStep) {
-		this.stepResolution = resolution;
+	public final void add(Prediction prediction, NormalStep normalStep) {
+		this.stepPrediction = prediction;
 		this.stepNormalized = true;
 		this.normalSteps.add(normalStep);
+	}
+
+	public final void inline(Prediction prediction, NormalStep normalStep) {
+		add(prediction, normalStep);
+		if (isLastStep()) {
+			this.normalizationFinished = true;
+		}
 	}
 
 	public final void skip() {
@@ -170,7 +177,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		}
 
 		this.stepNormalized = true;
-		this.stepResolution = scopePrediction(enclosing);
+		this.stepPrediction = scopePrediction(enclosing);
 
 		return true;
 	}
@@ -189,7 +196,7 @@ public final class PathNormalizer implements UseCaseInfo {
 
 		this.normalizationStarted = normalizer.normalizationStarted;
 		this.stepNormalized = normalizer.stepNormalized;
-		this.stepResolution = normalizer.stepResolution;
+		this.stepPrediction = normalizer.stepPrediction;
 		this.isStatic = normalizer.isStatic;
 		if (normalizer.isNormalizationFinished()) {
 			this.normalizationFinished = true;
@@ -236,7 +243,7 @@ public final class PathNormalizer implements UseCaseInfo {
 		final Step[] steps = path.getSteps();
 
 		while (this.stepIndex < steps.length) {
-			this.stepResolution = null;
+			this.stepPrediction = null;
 			this.stepNormalized = false;
 
 			steps[this.stepIndex].normalize(this);
@@ -254,7 +261,7 @@ public final class PathNormalizer implements UseCaseInfo {
 				return new UnNormalizedPath(path);
 			}
 
-			this.stepStart = this.stepResolution;
+			this.stepStart = this.stepPrediction;
 			++this.stepIndex;
 		}
 
