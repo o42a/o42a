@@ -30,7 +30,6 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
@@ -83,7 +82,7 @@ final class CastToVoid extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.inline(normalizer.getStepStart(), new SameNormalStep(this));
+		normalizer.inlineStep();
 	}
 
 	@Override
