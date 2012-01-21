@@ -157,6 +157,9 @@ public class ObjectConstructorStep extends Step {
 
 		normalizer.inline(prediction, new InlineStep(this, inline) {
 			@Override
+			public void ignore() {
+			}
+			@Override
 			public void cancel() {
 			}
 		});

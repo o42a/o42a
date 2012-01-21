@@ -83,6 +83,10 @@ public class UnchangedNormalPath implements NormalPath {
 		}
 
 		@Override
+		public void ignore() {
+		}
+
+		@Override
 		public void cancel() {
 		}
 

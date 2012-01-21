@@ -159,6 +159,9 @@ public class MemberStep extends AbstractMemberStep {
 
 		normalizer.inline(prediction, new InlineStep(this, inline) {
 			@Override
+			public void ignore() {
+			}
+			@Override
 			public void cancel() {
 			}
 		});
