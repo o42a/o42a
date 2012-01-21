@@ -48,6 +48,10 @@ public class PathRemainderNormalStep implements NormalStep {
 	}
 
 	@Override
+	public void ignore() {
+	}
+
+	@Override
 	public void cancel() {
 	}
 
