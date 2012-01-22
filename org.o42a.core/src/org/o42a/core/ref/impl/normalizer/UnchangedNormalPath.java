@@ -69,9 +69,6 @@ public class UnchangedNormalPath implements NormalPath {
 
 		@Override
 		public Path appendTo(Path path) {
-			if (toPath().isAbsolute()) {
-				return toPath().toPath();
-			}
 
 			Path result = path;
 

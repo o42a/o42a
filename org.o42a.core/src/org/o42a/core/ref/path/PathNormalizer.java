@@ -58,6 +58,10 @@ public final class PathNormalizer implements UseCaseInfo {
 	private final Prediction origin;
 	private final BoundPath path;
 
+	private final ArrayList<NormalStep> normalSteps;
+	private int firstNonIgnored = -1;
+	private boolean overrideNonIgnored;
+
 	private Prediction stepStart;
 	private Prediction stepPrediction;
 	private int stepIndex;
@@ -69,17 +73,18 @@ public final class PathNormalizer implements UseCaseInfo {
 			BoundPath path) {
 		this.parent = null;
 		this.data = new Data(normalizer, path);
-		this.data.isStatic = path.isStatic();
 		this.origin = origin;
 		this.path = path;
+		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
 
 	private PathNormalizer(PathNormalizer parent, BoundPath path) {
 		this.parent = parent;
 		this.data = parent.data;
+		this.data.append(path);
 		this.origin = parent.getStepStart();
 		this.path = path;
-		this.data.append(path);
+		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
 
 	public final Normalizer getNormalizer() {
@@ -136,12 +141,12 @@ public final class PathNormalizer implements UseCaseInfo {
 	public final void add(Prediction prediction, NormalStep normalStep) {
 		this.stepPrediction = prediction;
 		this.stepNormalized = true;
-		this.data.normalSteps.add(normalStep);
+		this.normalSteps.add(normalStep);
 	}
 
 	public final void inline(Prediction prediction, NormalStep normalStep) {
 		add(prediction, normalStep);
-		this.data.dontIgnore(getStepIndex());
+		dontIgnore();
 		if (isLastStep()) {
 			this.data.normalizationFinished = true;
 		}
@@ -161,13 +166,13 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
-			this.data.normalizationFinished = true;
-			this.data.firstNonIgnored = getStepIndex();
 			add(
 					scopePrediction(enclosing),
 					new PathRemainderNormalStep(
 							getPath().getPath(),
 							getStepIndex()));
+			overrideNonIgnored();
+			this.data.normalizationFinished = true;
 			return false;
 		}
 
@@ -195,19 +200,28 @@ public final class PathNormalizer implements UseCaseInfo {
 			return;
 		}
 
-		normalPath.appendTo(this.data.normalSteps);
+		if (normalizer.firstNonIgnored >= 0) {
+
+			final int index =
+					this.normalSteps.size() + normalizer.firstNonIgnored;
+
+			if (normalizer.overrideNonIgnored) {
+				overrideNonIgnored(index);
+			} else {
+				dontIgnore(index);
+			}
+		}
+
+		normalPath.appendTo(this.normalSteps);
 
 		this.stepNormalized = normalizer.stepNormalized;
 		this.stepPrediction = normalizer.stepPrediction;
-		if (path.isAbsolute()) {
-			this.data.firstNonIgnored = getStepIndex();
-		}
 		if (normalizer.isNormalizationFinished()) {
 
 			final int nextStep = getStepIndex() + 1;
 
 			if (nextStep < getPath().length()) {
-				this.data.normalSteps.add(new PathRemainderNormalStep(
+				this.normalSteps.add(new PathRemainderNormalStep(
 						getPath().getPath(),
 						nextStep));
 			}
@@ -238,9 +252,13 @@ public final class PathNormalizer implements UseCaseInfo {
 		final BoundPath path = getPath();
 
 		if (path.isAbsolute()) {
+			this.firstNonIgnored = 0;
+			this.data.normalizationFinished = true;
+
 			return new UnchangedNormalPath(
 					path.getPath().bind(path, getNormalizedStart()));
 		}
+
 		this.stepStart = getOrigin();
 
 		final Step[] steps = path.getSteps();
@@ -254,15 +272,15 @@ public final class PathNormalizer implements UseCaseInfo {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.data.normalSteps,
-						this.data.firstNonIgnored,
+						this.normalSteps,
+						this.firstNonIgnored,
 						isAbsolute(),
 						isStatic());
 			}
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
-				cancelAll(this.data.normalSteps);
+				cancelAll(this.normalSteps);
 				return new UnNormalizedPath(path);
 			}
 
@@ -277,8 +295,8 @@ public final class PathNormalizer implements UseCaseInfo {
 		return new NormalizedPath(
 				getNormalizedStart(),
 				this.path,
-				this.data.normalSteps,
-				this.data.firstNonIgnored,
+				this.normalSteps,
+				this.firstNonIgnored,
 				isAbsolute(),
 				isStatic());
 	}
@@ -311,6 +329,25 @@ public final class PathNormalizer implements UseCaseInfo {
 		return false;
 	}
 
+	private final void dontIgnore() {
+		dontIgnore(this.normalSteps.size() - 1);
+	}
+
+	private final void dontIgnore(int index) {
+		if (this.firstNonIgnored < 0) {
+			this.firstNonIgnored = index;
+		}
+	}
+
+	private final void overrideNonIgnored() {
+		overrideNonIgnored(this.normalSteps.size() - 1);
+	}
+
+	private final void overrideNonIgnored(int firstNonIgnored) {
+		this.firstNonIgnored = firstNonIgnored;
+		this.overrideNonIgnored = true;
+	}
+
 	private static void cancelAll(Iterable<NormalStep> normalSteps) {
 		for (NormalStep step : normalSteps) {
 			step.cancel();
@@ -320,8 +357,6 @@ public final class PathNormalizer implements UseCaseInfo {
 	private static final class Data {
 
 		private final Normalizer normalizer;
-		private final ArrayList<NormalStep> normalSteps;
-		private int firstNonIgnored = -1;
 		private boolean normalizationStarted;
 		private boolean normalizationFinished;
 		private boolean isAbsolute;
@@ -329,7 +364,6 @@ public final class PathNormalizer implements UseCaseInfo {
 
 		Data(Normalizer normalizer, BoundPath path) {
 			this.normalizer = normalizer;
-			this.normalSteps = new ArrayList<NormalStep>(path.length());
 			this.isAbsolute = path.isAbsolute();
 			this.isStatic = path.isStatic();
 		}
@@ -337,12 +371,6 @@ public final class PathNormalizer implements UseCaseInfo {
 		final void append(BoundPath path) {
 			this.isAbsolute |= path.isAbsolute();
 			this.isStatic |= path.isStatic();
-		}
-
-		final void dontIgnore(int index) {
-			if (this.firstNonIgnored < 0) {
-				this.firstNonIgnored = index;
-			}
 		}
 
 	}
