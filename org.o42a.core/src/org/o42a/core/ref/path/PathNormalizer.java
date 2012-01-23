@@ -27,16 +27,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.*;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.User;
 
 
-public final class PathNormalizer implements UseCaseInfo {
+public final class PathNormalizer {
 
 	static PathNormalizer pathNormalizer(
 			Normalizer normalizer,
@@ -85,6 +83,10 @@ public final class PathNormalizer implements UseCaseInfo {
 		this.origin = parent.getStepStart();
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
+	}
+
+	public final Analyzer getAnalyzer() {
+		return getNormalizer().getAnalyzer();
 	}
 
 	public final Normalizer getNormalizer() {
@@ -230,16 +232,6 @@ public final class PathNormalizer implements UseCaseInfo {
 
 	public final void cancel() {
 		this.stepNormalized = false;
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return getNormalizer().toUser();
-	}
-
-	@Override
-	public final UseCase toUseCase() {
-		return getNormalizer().toUseCase();
 	}
 
 	@Override

@@ -126,7 +126,7 @@ public class ObjectConstructorStep extends Step {
 			normalizer.cancel();
 			return;
 		}
-		if (!uses().onlyValueUsed(normalizer)) {
+		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
 			if (!normalizer.isLastStep()) {
 				// Not a last step - go on.
 				normalizer.add(
