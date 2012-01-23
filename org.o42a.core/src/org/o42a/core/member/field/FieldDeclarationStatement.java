@@ -23,6 +23,7 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
@@ -141,10 +142,9 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 			final Member member =
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
-			final Field<?> field = member.toField().field(resolver);
+			final Artifact<?> artifact = member.toField().artifact(resolver);
 			final LogicalValue logicalValue =
-					field.getArtifact()
-					.materialize()
+					artifact.materialize()
 					.value()
 					.getDefinitions()
 					.value(resolver)

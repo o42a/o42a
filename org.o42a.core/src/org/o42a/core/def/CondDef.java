@@ -145,10 +145,7 @@ public abstract class CondDef extends Def<CondDef> {
 
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		if (hasPrerequisite()) {
-			getPrerequisite().write(dirs.unknownWhenFalse(), host);
-		}
-		getLogical().write(dirs.falseWhenUnknown(), host);
+		writeDef(dirs, host);
 	}
 
 	@Override
@@ -165,9 +162,7 @@ public abstract class CondDef extends Def<CondDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected abstract InlineCond inlineDef(Normalizer normalizer);
-
-	final InlineCond inline(Normalizer normalizer) {
+	protected final InlineCond inline(Normalizer normalizer) {
 
 		final InlineCond prerequisite;
 
@@ -201,6 +196,15 @@ public abstract class CondDef extends Def<CondDef> {
 		}
 
 		return new InlineCondDef(prerequisite, precondition, def);
+	}
+
+	protected abstract InlineCond inlineDef(Normalizer normalizer);
+
+	protected void writeDef(CodeDirs dirs, HostOp host) {
+		if (hasPrerequisite()) {
+			getPrerequisite().write(dirs.unknownWhenFalse(), host);
+		}
+		getLogical().write(dirs.falseWhenUnknown(), host);
 	}
 
 }

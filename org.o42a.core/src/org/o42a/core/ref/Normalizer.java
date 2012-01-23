@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.util.use.UseCase;
 import org.o42a.util.use.UseCaseInfo;
@@ -27,17 +28,21 @@ import org.o42a.util.use.User;
 
 public final class Normalizer implements UseCaseInfo {
 
-	private final UseCase useCase;
+	private final Analyzer analyzer;
 	private final Scope normalizedScope;
 	private final boolean isStatic;
 
 	public Normalizer(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			Scope normalizedScope,
 			boolean isStatic) {
 		this.isStatic = isStatic;
-		this.useCase = useCase.toUseCase();
+		this.analyzer = analyzer;
 		this.normalizedScope = normalizedScope;
+	}
+
+	public final Analyzer getAnalyzer() {
+		return this.analyzer;
 	}
 
 	public final Scope getNormalizedScope() {
@@ -50,12 +55,12 @@ public final class Normalizer implements UseCaseInfo {
 
 	@Override
 	public final User<?> toUser() {
-		return this.useCase;
+		return this.analyzer.toUser();
 	}
 
 	@Override
 	public final UseCase toUseCase() {
-		return this.useCase;
+		return this.analyzer.toUseCase();
 	}
 
 	@Override
@@ -64,7 +69,7 @@ public final class Normalizer implements UseCaseInfo {
 			return super.toString();
 		}
 		return "Normalizer[to " + this.normalizedScope
-				+ " by " + this.useCase + ']';
+				+ " by " + this.analyzer + ']';
 	}
 
 }

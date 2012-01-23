@@ -71,4 +71,9 @@ final class ValueCondDef extends CondDef {
 		return this.def.inline(normalizer, this.def.getValueStruct());
 	}
 
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.def.normalize(normalizer);
+	}
+
 }

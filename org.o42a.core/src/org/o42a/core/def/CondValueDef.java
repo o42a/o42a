@@ -103,6 +103,11 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.def.normalize(normalizer);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		this.def.getLogical().write(dirs.dirs(), host);
 		return dirs.value().storeVoid(dirs.code());

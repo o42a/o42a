@@ -86,4 +86,9 @@ public final class RuntimeCondDef extends CondDef {
 				"Run-time definition can not generate code");
 	}
 
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		// Run-time definition can not be normalized.
+	}
+
 }

@@ -167,6 +167,10 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		if (fromConstToConst()) {
 			// Constant array can be copied by reference.

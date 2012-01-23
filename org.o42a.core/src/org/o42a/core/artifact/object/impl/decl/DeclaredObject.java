@@ -75,7 +75,7 @@ class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {
 		final MemberField field =
 				enclosing.getContainer().member(this.field.getKey()).toField();
 
-		return field.field(dummyUser()).getArtifact().materialize();
+		return field.artifact(dummyUser()).materialize();
 	}
 
 }

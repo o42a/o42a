@@ -28,6 +28,9 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.Analyzer;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
@@ -38,6 +41,9 @@ import org.o42a.util.use.*;
 
 
 public final class ObjectValue {
+
+	private static final byte FULLY_RESOLVED = 1;
+	private static final byte NORMALIZED = 2;
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -52,7 +58,7 @@ public final class ObjectValue {
 
 	private Usable<ValueUsage> uses;
 
-	private boolean fullyResolved;
+	private byte fullResolution;
 
 	ObjectValue(Obj object) {
 		this.object = object;
@@ -246,7 +252,7 @@ public final class ObjectValue {
 	}
 
 	public final void resolveAll(UserInfo user) {
-		if (this.fullyResolved) {
+		if (this.fullResolution != 0) {
 			explicitUseBy(user);
 			return;
 		}
@@ -255,7 +261,7 @@ public final class ObjectValue {
 		final FullResolution fullResolution =
 				object.getContext().fullResolution();
 
-		this.fullyResolved = true;
+		this.fullResolution = FULLY_RESOLVED;
 		fullResolution.start();
 		try {
 			object.resolveAll();
@@ -263,6 +269,42 @@ public final class ObjectValue {
 			object.fullyResolveDefinitions();
 		} finally {
 			fullResolution.end();
+		}
+	}
+
+	public final void normalize(Analyzer analyzer) {
+		if (this.fullResolution >= NORMALIZED) {
+			return;
+		}
+		this.fullResolution = NORMALIZED;
+
+		final Obj object = getObject();
+
+		if (object.getConstructionMode().isRuntime()) {
+			return;
+		}
+
+		final Normalizer normalizer =
+				new Normalizer(analyzer, object.getScope(), false);
+		final Obj wrapped = object.getWrapped();
+		final Definitions definitions = wrapped.value().getDefinitions();
+
+		definitions.normalize(normalizer);
+
+		for (Member member : object.getMembers()) {
+
+			final MemberField field = member.toField();
+
+			if (field == null) {
+				continue;
+			}
+			if (field.isPropagated()) {
+				continue;
+			}
+
+			final Obj nested = field.artifact(dummyUser()).materialize();
+
+			nested.value().normalize(analyzer);
 		}
 	}
 

@@ -606,6 +606,13 @@ public class Definitions extends Scoped {
 		}
 	}
 
+	public final void normalize(Normalizer normalizer) {
+		requirements().normalize(normalizer);
+		conditions().normalize(normalizer);
+		claims().normalize(normalizer);
+		propositions().normalize(normalizer);
+	}
+
 	@Override
 	public String toString() {
 

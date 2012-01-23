@@ -69,7 +69,7 @@ public final class PropagatedObject extends Obj {
 		final MemberField field = enclosing.getContainer().member(
 				getScope().toField().getKey()).toField();
 
-		return field.field(dummyUser()).getArtifact().materialize();
+		return field.artifact(dummyUser()).materialize();
 	}
 
 }

@@ -34,16 +34,16 @@ import org.o42a.core.value.ValueStruct;
 
 public final class RefValueDef extends ValueDef {
 
-	private final Ref ref;
+	private final Common common;
 
 	public RefValueDef(Ref ref) {
 		super(sourceOf(ref), ref, noScopeUpgrade(ref.getScope()));
-		this.ref = ref;
+		this.common = new Common(ref);
 	}
 
 	private RefValueDef(RefValueDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.ref = prototype.ref;
+		this.common = prototype.common;
 	}
 
 	@Override
@@ -51,33 +51,33 @@ public final class RefValueDef extends ValueDef {
 
 		final Scope scope = getScopeUpgrade().rescope(getScope());
 
-		return this.ref.valueStruct(scope).prefixWith(
+		return this.common.ref.valueStruct(scope).prefixWith(
 				getScopeUpgrade().toPrefix());
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.common.ref.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
+		return logicalTrue(this, this.common.ref.getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return this.ref.getLogical();
+		return this.common.ref.getLogical();
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.ref.isConstant();
+		return this.common.ref.isConstant();
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.ref.value(resolver);
+		return this.common.ref.value(resolver);
 	}
 
 	@Override
@@ -89,19 +89,55 @@ public final class RefValueDef extends ValueDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.ref.resolve(resolver).resolveValue();
+		this.common.ref.resolve(resolver).resolveValue();
 	}
 
 	@Override
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return this.ref.inline(normalizer, getScope());
+		return this.common.ref.inline(normalizer, getScope());
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.common.inline = inline(normalizer, getValueStruct());
+	}
+
+	@Override
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+
+		final InlineValue inline = this.common.inline;
+
+		if (inline != null) {
+			return inline.writeValue(dirs, host);
+		}
+
+		return super.writeDef(dirs, host);
 	}
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.ref.op(host).writeValue(dirs);
+		return this.common.ref.op(host).writeValue(dirs);
+	}
+
+	private static final class Common {
+
+		private final Ref ref;
+		private InlineValue inline;
+
+		Common(Ref ref) {
+			this.ref = ref;
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return "null";
+			}
+			return this.ref.toString();
+		}
+
 	}
 
 }

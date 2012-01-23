@@ -23,41 +23,43 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.*;
 
 
 public final class LogicalCondDef extends CondDef {
 
-	private final Logical logical;
+	private final Common common;
 
 	public LogicalCondDef(Logical logical) {
 		super(
 				sourceOf(logical),
 				logical,
 				noScopeUpgrade(logical.getScope()));
-		this.logical = logical;
+		this.common = new Common(logical);
 	}
 
 	private LogicalCondDef(
 			LogicalCondDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.logical = prototype.logical;
+		this.common = prototype.common;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.common.logical.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.common.logical.getScope());
 	}
 
 	@Override
 	protected final Logical buildLogical() {
-		return this.logical;
+		return this.common.logical;
 	}
 
 	@Override
@@ -69,12 +71,49 @@ public final class LogicalCondDef extends CondDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.logical.resolveAll(resolver);
+		this.common.logical.resolveAll(resolver);
 	}
 
 	@Override
 	protected InlineCond inlineDef(Normalizer normalizer) {
-		return this.logical.inline(normalizer, getScope());
+		return this.common.logical.inline(normalizer, getScope());
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.common.inline = inline(normalizer);
+	}
+
+	@Override
+	protected void writeDef(CodeDirs dirs, HostOp host) {
+
+		final InlineCond inline = this.common.inline;
+
+		if (inline != null) {
+			inline.writeCond(dirs, host);
+			return;
+		}
+
+		super.writeDef(dirs, host);
+	}
+
+	private static final class Common {
+
+		private final Logical logical;
+		private InlineCond inline;
+
+		Common(Logical logical) {
+			this.logical = logical;
+		}
+
+		@Override
+		public String toString() {
+			if (this.logical == null) {
+				return "null";
+			}
+			return this.logical.toString();
+		}
+
 	}
 
 }

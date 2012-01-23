@@ -183,19 +183,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 				new ValueDefs(DefKind.PROPOSITION, this));
 	}
 
-	public ValOp write(ValDirs dirs, HostOp host) {
-		if (hasPrerequisite()) {
-			getPrerequisite().write(
-					dirs.dirs().unknownWhenFalse(),
-					host);
-		}
-
-		if (!getPrecondition().isTrue()) {
-			getPrecondition().write(
-					dirs.dirs().falseWhenUnknown(),
-					host);
-		}
-
+	public final ValOp write(ValDirs dirs, HostOp host) {
+		assertFullyResolved();
 		return writeDef(dirs, host);
 	}
 
@@ -221,17 +210,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected abstract InlineValue inlineDef(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct);
-
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		return writeValue(dirs.falseWhenUnknown(), host);
-	}
-
-	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
-
-	final InlineValue inline(
+	protected final InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
@@ -268,5 +247,30 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 		return new InlineValueDef(prerequisite, precondition, def);
 	}
+
+	protected abstract InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct);
+
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+		if (hasPrerequisite()) {
+			getPrerequisite().write(
+					dirs.dirs().unknownWhenFalse(),
+					host);
+		}
+
+		if (!getPrecondition().isTrue()) {
+			getPrecondition().write(
+					dirs.dirs().falseWhenUnknown(),
+					host);
+		}
+		return writeDefValue(dirs, host);
+	}
+
+	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
+		return writeValue(dirs.falseWhenUnknown(), host);
+	}
+
+	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
 }

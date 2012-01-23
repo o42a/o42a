@@ -110,6 +110,11 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		// No need to normalize the scalar constant.
+	}
+
+	@Override
 	protected String name() {
 		return "ConstantValueDef";
 	}

@@ -24,9 +24,7 @@ import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
@@ -116,6 +114,10 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return this.source;
 	}
 
+	public final boolean isExplicit() {
+		return getSource() == sourceOf(getScope().toObject());
+	}
+
 	public final DefKind getKind() {
 		return this.kind;
 	}
@@ -133,16 +135,6 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 			return self();
 		}
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, toScope));
-	}
-
-	public void resolveAll(Resolver resolver) {
-		this.allResolved = true;
-		getContext().fullResolution().start();
-		try {
-			fullyResolve(getScopeUpgrade().rescope(resolver));
-		} finally {
-			getContext().fullResolution().end();
-		}
 	}
 
 	public final Logical fullLogical() {
@@ -217,6 +209,25 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	public abstract CondDef toCondition();
 
 	public abstract Definitions toDefinitions();
+
+	public final void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(getScopeUpgrade().rescope(resolver));
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public final void normalize(Normalizer normalizer) {
+		if (!isExplicit()) {
+			// No need to resolve an explicit definition.
+			// It'll be resolved in it's declaration source.
+			return;
+		}
+		normalizeDef(normalizer);
+	}
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
@@ -322,6 +333,8 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	protected final LocationInfo getLocation() {
 		return this.location;
 	}
+
+	protected abstract void normalizeDef(Normalizer normalizer);
 
 	final void update(DefKind kind, boolean hasPrerequisite) {
 		this.kind = kind;
