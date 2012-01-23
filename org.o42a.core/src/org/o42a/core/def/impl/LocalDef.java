@@ -194,7 +194,12 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+	protected void normalizeDef(Normalizer normalizer) {
+		// TODO Implement imperative block normalization.
+	}
+
+	@Override
+	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
 		// Imperative block`s value CAN be UNKNOWN.
 		return writeValue(dirs, host);
 	}

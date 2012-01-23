@@ -162,6 +162,10 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return this.field;
 	}
 
+	public final Artifact<?> artifact(UserInfo user) {
+		return field(user).getArtifact();
+	}
+
 	@Override
 	public final MemberField toField() {
 		return this;
@@ -219,7 +223,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public void resolveAll() {
 
-		final Artifact<?> artifact = field(dummyUser()).getArtifact();
+		final Artifact<?> artifact = artifact(dummyUser());
 
 		getAnalysis().registerArtifact(artifact);
 		artifact.resolveAll();

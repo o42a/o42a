@@ -61,7 +61,7 @@ final class DeclaredLink extends Link {
 		final MemberField field =
 				enclosing.getContainer().member(this.field.getKey()).toField();
 
-		return field.field(dummyUser()).getArtifact().toLink();
+		return field.artifact(dummyUser()).toLink();
 	}
 
 }

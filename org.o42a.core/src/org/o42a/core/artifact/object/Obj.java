@@ -581,8 +581,7 @@ public abstract class Obj
 
 		return enclosingWrapped.member(field.getKey())
 				.toField()
-				.field(dummyUser())
-				.getArtifact()
+				.artifact(dummyUser())
 				.materialize();
 	}
 

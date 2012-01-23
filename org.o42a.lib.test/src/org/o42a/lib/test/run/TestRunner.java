@@ -80,7 +80,7 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		final Artifact<?> adapterArtifact =
-				adapterMember.toField().field(user).getArtifact();
+				adapterMember.toField().artifact(user);
 
 		if (!adapterArtifact.isValid()) {
 			return;

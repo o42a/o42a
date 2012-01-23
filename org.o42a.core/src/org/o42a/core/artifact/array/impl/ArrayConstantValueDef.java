@@ -127,6 +127,10 @@ public class ArrayConstantValueDef extends ValueDef {
 	}
 
 	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		if (hasConstantValue()) {
 			return this.value.op(dirs.getBuilder(), dirs.code());

@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.util.ArrayUtil;
@@ -325,8 +326,14 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		final ObjectValuePart<?, ?> part = objectValue.part(getDefKind());
 		final Resolver resolver = part.resolver();
 
-		for (Def<?> def : this.defs) {
+		for (Def<?> def : get()) {
 			def.resolveAll(resolver);
+		}
+	}
+
+	final void normalize(Normalizer normalizer) {
+		for (Def<?> def : get()) {
+			def.normalize(normalizer);
 		}
 	}
 
