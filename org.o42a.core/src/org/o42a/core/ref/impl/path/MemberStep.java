@@ -133,7 +133,7 @@ public class MemberStep extends AbstractMemberStep {
 
 		final Obj object = artifact.toObject();
 
-		if (!uses().onlyValueUsed(normalizer)) {
+		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
 			if (!normalizer.isLastStep()) {
 				// Not last object step.
 				// Leave the step as is.

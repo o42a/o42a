@@ -21,12 +21,9 @@ package org.o42a.core.ref;
 
 import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
-import org.o42a.util.use.UseCase;
-import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.User;
 
 
-public final class Normalizer implements UseCaseInfo {
+public final class Normalizer {
 
 	private final Analyzer analyzer;
 	private final Scope normalizedScope;
@@ -51,16 +48,6 @@ public final class Normalizer implements UseCaseInfo {
 
 	public final boolean isStatic() {
 		return this.isStatic;
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return this.analyzer.toUser();
-	}
-
-	@Override
-	public final UseCase toUseCase() {
-		return this.analyzer.toUseCase();
 	}
 
 	@Override
