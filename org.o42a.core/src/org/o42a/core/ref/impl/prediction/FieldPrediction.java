@@ -119,7 +119,7 @@ public class FieldPrediction extends Prediction {
 						.toField()
 						.field(dummyUser()));
 			}
-			return null;
+			return this.replacements.next();
 		}
 
 		@Override
