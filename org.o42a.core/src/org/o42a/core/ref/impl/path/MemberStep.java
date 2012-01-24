@@ -125,10 +125,12 @@ public class MemberStep extends AbstractMemberStep {
 		if (link != null) {
 			// Append the link target.
 			if (linkUpdated(normalizer, prediction)) {
+				normalizer.cancel();
 				return;
 			}
 			normalizer.append(
 					link.getTargetRef().getRescopedRef().getPath());
+			return;
 		}
 
 		final Obj object = artifact.toObject();
@@ -203,7 +205,7 @@ public class MemberStep extends AbstractMemberStep {
 		final Scope stepStart = normalizer.getStepStart().getScope();
 
 		for (Scope replacement : prediction) {
-			if (replacement.toField().getDefinedIn() != stepStart) {
+			if (fieldOf(replacement).getDefinedIn() != stepStart) {
 				normalizer.cancel();
 				return true;
 			}
@@ -212,4 +214,16 @@ public class MemberStep extends AbstractMemberStep {
 		return false;
 	}
 
+	private static Field<?> fieldOf(Scope scope) {
+
+		final Field<?> field = scope.toField();
+
+		if (field != null) {
+			return field;
+		}
+
+		final Obj object = scope.toObject();
+
+		return object.getMaterializationOf().getScope().toField();
+	}
 }

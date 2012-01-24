@@ -568,8 +568,7 @@ public class Definitions extends Scoped {
 			return null;
 		}
 
-		final InlineValue claim =
-				claims().inline(normalizer, this);
+		final InlineValue claim = claims().inline(normalizer, this);
 
 		if (claim == null) {
 			requirement.cancel();
@@ -577,8 +576,7 @@ public class Definitions extends Scoped {
 			return null;
 		}
 
-		final InlineValue proposition =
-				propositions().inline(normalizer, this);
+		final InlineValue proposition = propositions().inline(normalizer, this);
 
 		if (proposition == null) {
 			requirement.cancel();
