@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.*;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
@@ -38,9 +39,9 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	private ArtifactContent content;
 	private ArtifactContent clonesContent;
 	private Ref self;
-	private boolean allResolved;
 	private final A propagatedFrom;
 	private Holder<A> cloneOf;
+	private byte fullResolution;
 
 	public Artifact(Scope scope) {
 		super(scope, new ArtifactDistributor(scope, scope));
@@ -169,10 +170,10 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	public abstract FieldUses fieldUses();
 
 	public final void resolveAll() {
-		if (this.allResolved) {
+		if (this.fullResolution != 0) {
 			return;
 		}
-		this.allResolved = true;
+		this.fullResolution = 1;
 		getContext().fullResolution().start();
 		try {
 			fullyResolve();
@@ -181,9 +182,18 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 		}
 	}
 
+	public final void normalize(Analyzer analyzer) {
+		if (this.fullResolution >= 2) {
+			return;
+		}
+		this.fullResolution = 2;
+		normalizeArtifact(analyzer);
+	}
+
 	public final boolean assertFullyResolved() {
-		assert this.allResolved || (isClone() && getCloneOf().allResolved):
-			this + " is not fully resolved";
+		assert this.fullResolution > 0
+			|| (isClone() && getCloneOf().fullResolution > 0):
+				this + " is not fully resolved";
 		return true;
 	}
 
@@ -214,6 +224,8 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 	}
 
 	protected abstract void fullyResolve();
+
+	protected abstract void normalizeArtifact(Analyzer analyzer);
 
 	private static final class ArtifactDistributor extends Distributor {
 

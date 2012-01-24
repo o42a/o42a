@@ -347,6 +347,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void generateCode(Generator generator) {
+		INTRINSICS.analyze(generator.getAnalyzer());
 		INTRINSICS.generateAll(generator);
 	}
 

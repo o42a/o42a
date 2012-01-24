@@ -31,6 +31,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
@@ -46,6 +47,7 @@ import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldUses;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
 import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
@@ -767,6 +769,12 @@ public abstract class Obj
 		value().getDefinitions().resolveAll();
 	}
 
+	@Override
+	protected void normalizeArtifact(Analyzer analyzer) {
+		value().normalize(analyzer);
+		normalizeFields(analyzer);
+	}
+
 	protected ObjectIR createIR(Generator generator) {
 
 		final Obj wrapped = getWrapped();
@@ -901,6 +909,28 @@ public abstract class Obj
 				continue;
 			}
 			member.resolveAll();
+		}
+	}
+
+	private void normalizeFields(Analyzer analyzer) {
+		for (Member member : getMembers()) {
+
+			final MemberField memberField = member.toField();
+
+			if (memberField == null) {
+				continue;
+			}
+			if (memberField.isPropagated()) {
+				continue;
+			}
+
+			final Field<?> field = memberField.field(dummyUser());
+
+			if (field.isScopeField()) {
+				continue;
+			}
+
+			field.getArtifact().materialize().normalize(analyzer);
 		}
 	}
 

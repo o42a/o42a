@@ -28,8 +28,6 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.codegen.Analyzer;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
@@ -290,22 +288,6 @@ public final class ObjectValue {
 		final Definitions definitions = wrapped.value().getDefinitions();
 
 		definitions.normalize(normalizer);
-
-		for (Member member : object.getMembers()) {
-
-			final MemberField field = member.toField();
-
-			if (field == null) {
-				continue;
-			}
-			if (field.isPropagated()) {
-				continue;
-			}
-
-			final Obj nested = field.artifact(dummyUser()).materialize();
-
-			nested.value().normalize(analyzer);
-		}
 	}
 
 	@Override
