@@ -30,6 +30,7 @@ import org.o42a.util.use.User;
 public class Analyzer implements UseCaseInfo {
 
 	private UseCase useCase;
+	private boolean normalizationEnabled = true;
 
 	public Analyzer(String name) {
 		this.useCase = useCase(name);
@@ -47,6 +48,14 @@ public class Analyzer implements UseCaseInfo {
 				this.useCase = steadyUseCase(this.useCase.getName());
 			}
 		}
+	}
+
+	public final boolean isNormalizationEnabled() {
+		return this.normalizationEnabled;
+	}
+
+	public final void setNormalizationEnabled(boolean normalizationEnabled) {
+		this.normalizationEnabled = normalizationEnabled;
 	}
 
 	@Override

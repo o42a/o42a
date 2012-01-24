@@ -73,6 +73,7 @@ public class CL {
 
 		logger.abortOnError();
 
+		intrinsics.analyze(this.generator.getAnalyzer());
 		intrinsics.generateAll(this.generator);
 
 		this.generator.write();
