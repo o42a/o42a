@@ -35,8 +35,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -94,6 +93,21 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 				.typeRef(enclosingScope.distribute()));
 	}
 
+	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue text = text().inline(normalizer, origin);
+
+		if (text == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, text);
+	}
+
 	private Ref text() {
 		if (this.text != null) {
 			return this.text;
@@ -109,6 +123,40 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		return generator.externalFunction(
 				AbstractPrint.this.funcName,
 				PrintFunc.PRINT);
+	}
+
+	private final class Inline extends InlineValue {
+
+		private final InlineValue inlineText;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue text) {
+			super(valueStruct);
+			this.inlineText = text;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs textDirs =
+					dirs.dirs().value(ValueStruct.STRING, "text");
+			final Code code = textDirs.code();
+
+			final ValOp text = this.inlineText.writeValue(textDirs, host);
+			final PrintFunc printFunc =
+					printFunc(code.getGenerator()).op(null, code);
+
+			printFunc.print(code, text);
+
+			textDirs.done();
+
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public void cancel() {
+			this.inlineText.cancel();
+		}
+
 	}
 
 }
