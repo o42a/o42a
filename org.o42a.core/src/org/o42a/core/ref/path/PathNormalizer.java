@@ -29,6 +29,10 @@ import java.util.List;
 
 import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.*;
@@ -140,13 +144,15 @@ public final class PathNormalizer {
 		return this.stepNormalized;
 	}
 
-	public final void add(Prediction prediction, NormalStep normalStep) {
-		this.stepPrediction = prediction;
-		this.stepNormalized = true;
-		this.normalSteps.add(normalStep);
+	public final void skip(
+			Prediction prediction,
+			NormalAppender normalStep) {
+		add(prediction, normalStep);
 	}
 
-	public final void inline(Prediction prediction, NormalStep normalStep) {
+	public final void inline(
+			Prediction prediction,
+			InlineStep normalStep) {
 		add(prediction, normalStep);
 		dontIgnore();
 		if (isLastStep()) {
@@ -154,14 +160,8 @@ public final class PathNormalizer {
 		}
 	}
 
-	public final void addStep() {
+	public final void skipStep() {
 		add(
-				getStepStart(),
-				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
-	}
-
-	public final void inlineStep() {
-		inline(
 				getStepStart(),
 				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
 	}
@@ -267,7 +267,7 @@ public final class PathNormalizer {
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
-						isStatic());
+						isStatic()).done(this.parent == null);
 			}
 			if (!isStepNormalized()) {
 				// Normalization failed.
@@ -290,7 +290,7 @@ public final class PathNormalizer {
 				this.normalSteps,
 				this.firstNonIgnored,
 				isAbsolute(),
-				isStatic());
+				isStatic()).done(this.parent == null);
 	}
 
 	private boolean init() {
@@ -319,6 +319,12 @@ public final class PathNormalizer {
 		}
 
 		return false;
+	}
+
+	private final void add(Prediction prediction, NormalStep normalStep) {
+		this.stepPrediction = prediction;
+		this.stepNormalized = true;
+		this.normalSteps.add(normalStep);
 	}
 
 	private final void dontIgnore() {
@@ -370,11 +376,13 @@ public final class PathNormalizer {
 	private static final class NormalizedPath implements NormalPath {
 
 		private final Scope origin;
-		private final BoundPath path;
 		private final ArrayList<NormalStep> normalSteps;
 		private final int firstNonIgnored;
 		private final boolean isAbsolute;
 		private final boolean isStatic;
+
+		private InlineStep inline;
+		private BoundPath path;
 
 		NormalizedPath(
 				Scope origin,
@@ -402,35 +410,6 @@ public final class PathNormalizer {
 		}
 
 		@Override
-		public BoundPath toPath() {
-
-			Path result;
-
-			if (this.isAbsolute) {
-				result = ROOT_PATH;
-			} else {
-				result = SELF_PATH;
-			}
-
-			int index = 0;
-
-			for (NormalStep normalStep : this.normalSteps) {
-				if (index < this.firstNonIgnored) {
-					normalStep.ignore();
-				} else {
-					result = normalStep.appendTo(result);
-				}
-				++index;
-			}
-
-			if (!this.isStatic) {
-				return result.bind(this.path, getOrigin());
-			}
-
-			return result.bindStatically(this.path, getOrigin());
-		}
-
-		@Override
 		public void cancel() {
 			cancelAll(this.normalSteps);
 		}
@@ -438,6 +417,23 @@ public final class PathNormalizer {
 		@Override
 		public void appendTo(List<NormalStep> normalSteps) {
 			normalSteps.addAll(this.normalSteps);
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+			if (this.inline != null) {
+				this.inline.writeLogicalValue(dirs, host);
+			} else {
+				this.path.op(dirs, host).writeLogicalValue(dirs);
+			}
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			if (this.inline != null) {
+				return this.inline.writeValue(dirs, host);
+			}
+			return this.path.op(dirs.dirs(), host).writeValue(dirs);
 		}
 
 		@Override
@@ -462,6 +458,64 @@ public final class PathNormalizer {
 			out.append('>');
 
 			return out.toString();
+		}
+
+		final NormalPath done(boolean done) {
+			if (done) {
+				ignoreLeading();
+				build();
+			}
+			return this;
+		}
+
+		private void ignoreLeading() {
+			for (int i = 0; i < this.firstNonIgnored; ++i) {
+				this.normalSteps.get(i).ignore();
+			}
+		}
+
+		private NormalPath build() {
+
+			InlineStep precedingInline = null;
+			Path path;
+
+			if (this.isAbsolute) {
+				path = ROOT_PATH;
+			} else {
+				path = SELF_PATH;
+			}
+
+			for (int i = this.firstNonIgnored, len = this.normalSteps.size();
+					i < len;
+					++i) {
+
+				final NormalStep normalStep = this.normalSteps.get(i);
+				final InlineStep inline = normalStep.toInline();
+
+				if (inline != null) {
+					inline.after(precedingInline);
+					precedingInline = inline;
+					continue;
+				}
+
+				assert precedingInline != null :
+					"Non-in-line normal step (" + normalStep
+					+ ") after the in-line one (" + precedingInline
+					+ ")";
+
+				path = normalStep.toAppender().appendTo(path);
+			}
+
+			if (precedingInline != null) {
+				// In-line normal step.
+				this.inline = precedingInline;
+			} else if (!this.isStatic) {
+				this.path = path.bind(this.path, getOrigin());
+			} else {
+				this.path = path.bindStatically(this.path, getOrigin());
+			}
+
+			return this;
 		}
 
 	}

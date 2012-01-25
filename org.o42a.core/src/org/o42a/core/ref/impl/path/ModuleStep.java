@@ -123,7 +123,7 @@ public final class ModuleStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.cancel();
+		normalizer.skipStep();
 	}
 
 	@Override

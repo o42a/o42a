@@ -82,7 +82,7 @@ final class CastToVoid extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.inlineStep();
+		normalizer.inline(normalizer.getStepStart(), new Inline());
 	}
 
 	@Override
@@ -95,6 +95,44 @@ final class CastToVoid extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
+	}
+
+	private static final class Inline extends InlineStep {
+
+		private InlineStep preceding;
+
+		@Override
+		public void ignore() {
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public void after(InlineStep preceding) {
+			this.preceding = preceding;
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+			this.preceding.writeLogicalValue(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
+
+			writeLogicalValue(dirs.dirs(), host);
+
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public String toString() {
+			return "@@void";
+		}
+
 	}
 
 	private static final class Op extends StepOp<CastToVoid> {

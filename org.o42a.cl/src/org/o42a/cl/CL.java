@@ -82,8 +82,9 @@ public class CL {
 	public static void main(String[] args) {
 
 		final String[] llvmArgs = ArrayUtil.prepend("o42ac", args);
+		final Analyzer analyzer = new Analyzer("compiler");
 		final LLVMGenerator llvmGenerator =
-				newGenerator(null, new Analyzer("compiler"), llvmArgs);
+				newGenerator(null, analyzer, llvmArgs);
 		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
 		try {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,38 +19,45 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
-import org.o42a.core.ref.path.NormalAppender;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.path.InlineStep;
 
 
-public final class SameNormalStep extends NormalAppender {
+public abstract class InlineValueStep extends InlineStep {
 
-	private final Step step;
+	private final InlineValue value;
 
-	public SameNormalStep(Step step) {
-		this.step = step;
+	public InlineValueStep(InlineValue def) {
+		this.value = def;
 	}
 
 	@Override
-	public Path appendTo(Path path) {
-		return path.append(this.step);
+	public void after(InlineStep preceding) {
+		assert preceding == null :
+			"In-line step (" + this
+			+ ") can not follow another one (" + preceding + ")";
 	}
 
 	@Override
-	public void ignore() {
+	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+		this.value.writeCond(dirs, host);
 	}
 
 	@Override
-	public void cancel() {
+	public ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.value.writeValue(dirs, host);
 	}
 
 	@Override
 	public String toString() {
-		if (this.step == null) {
+		if (this.value == null) {
 			return super.toString();
 		}
-		return this.step.toString();
+		return "In-line[" + this.value + ']';
 	}
 
 }

@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
-import org.o42a.core.ref.path.NormalStep;
+import org.o42a.core.ref.path.NormalAppender;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.Step;
 
 
-public class PathRemainderNormalStep implements NormalStep {
+public class PathRemainderNormalStep extends NormalAppender {
 
 	private final Path path;
 	private final int start;

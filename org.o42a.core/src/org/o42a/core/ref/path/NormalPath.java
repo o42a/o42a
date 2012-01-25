@@ -22,6 +22,10 @@ package org.o42a.core.ref.path;
 import java.util.List;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 
 
 public interface NormalPath {
@@ -30,10 +34,12 @@ public interface NormalPath {
 
 	Scope getOrigin();
 
-	BoundPath toPath();
-
 	void cancel();
 
 	void appendTo(List<NormalStep> normalSteps);
+
+	void writeLogicalValue(CodeDirs dirs, HostOp host);
+
+	ValOp writeValue(ValDirs dirs, HostOp host);
 
 }

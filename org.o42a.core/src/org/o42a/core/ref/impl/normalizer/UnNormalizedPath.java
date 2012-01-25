@@ -36,7 +36,7 @@ public class UnNormalizedPath extends UnchangedNormalPath {
 	@Override
 	public String toString() {
 
-		final BoundPath path = toPath();
+		final BoundPath path = getPath();
 
 		if (path == null) {
 			return super.toString();
