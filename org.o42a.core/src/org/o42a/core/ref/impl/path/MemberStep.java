@@ -37,7 +37,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.impl.normalizer.InlineStep;
+import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -139,7 +139,7 @@ public class MemberStep extends AbstractMemberStep {
 			if (!normalizer.isLastStep()) {
 				// Not last object step.
 				// Leave the step as is.
-				normalizer.add(prediction, new SameNormalStep(this));
+				normalizer.skip(prediction, new SameNormalStep(this));
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
@@ -159,7 +159,7 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		normalizer.inline(prediction, new InlineStep(this, inline) {
+		normalizer.inline(prediction, new InlineValueStep(inline) {
 			@Override
 			public void ignore() {
 			}

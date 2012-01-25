@@ -29,7 +29,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.*;
-import org.o42a.core.ref.impl.normalizer.InlineStep;
+import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
@@ -129,7 +129,7 @@ public class ObjectConstructorStep extends Step {
 		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
 			if (!normalizer.isLastStep()) {
 				// Not a last step - go on.
-				normalizer.add(
+				normalizer.skip(
 						object.getScope().predict(normalizer.getStepStart()),
 						new SameNormalStep(this));
 				return;
@@ -155,7 +155,7 @@ public class ObjectConstructorStep extends Step {
 			return;
 		}
 
-		normalizer.inline(prediction, new InlineStep(this, inline) {
+		normalizer.inline(prediction, new InlineValueStep(inline) {
 			@Override
 			public void ignore() {
 			}

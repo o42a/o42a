@@ -402,7 +402,6 @@ public class Ref extends Statement {
 	private static final class Inline extends InlineValue {
 
 		private final NormalPath normalPath;
-		private BoundPath path;
 
 		Inline(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
 			super(valueStruct);
@@ -411,12 +410,12 @@ public class Ref extends Statement {
 
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
-			toPath().op(dirs, host).writeLogicalValue(dirs);
+			this.normalPath.writeLogicalValue(dirs, host);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return toPath().op(dirs.dirs(), host).writeValue(dirs);
+			return this.normalPath.writeValue(dirs, host);
 		}
 
 		@Override
@@ -430,13 +429,6 @@ public class Ref extends Statement {
 				return super.toString();
 			}
 			return this.normalPath.toString();
-		}
-
-		private final BoundPath toPath() {
-			if (this.path != null) {
-				return this.path;
-			}
-			return this.path = this.normalPath.toPath();
 		}
 
 	}

@@ -22,6 +22,10 @@ package org.o42a.core.ref.impl.normalizer;
 import java.util.List;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.path.*;
 
 
@@ -31,6 +35,10 @@ public class UnchangedNormalPath implements NormalPath {
 
 	public UnchangedNormalPath(BoundPath path) {
 		this.path = path;
+	}
+
+	public final BoundPath getPath() {
+		return this.path;
 	}
 
 	@Override
@@ -44,17 +52,22 @@ public class UnchangedNormalPath implements NormalPath {
 	}
 
 	@Override
-	public BoundPath toPath() {
-		return this.path;
-	}
-
-	@Override
 	public void cancel() {
 	}
 
 	@Override
 	public void appendTo(List<NormalStep> normalSteps) {
 		normalSteps.add(new UnhchangedStep());
+	}
+
+	@Override
+	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+		getPath().op(dirs, host).writeLogicalValue(dirs);
+	}
+
+	@Override
+	public ValOp writeValue(ValDirs dirs, HostOp host) {
+		return getPath().op(dirs.dirs(), host).writeValue(dirs);
 	}
 
 	@Override
@@ -65,14 +78,14 @@ public class UnchangedNormalPath implements NormalPath {
 		return "UnchanhgedNormalPath" + this.path;
 	}
 
-	private final class UnhchangedStep implements NormalStep {
+	private final class UnhchangedStep extends NormalAppender {
 
 		@Override
 		public Path appendTo(Path path) {
 
 			Path result = path;
 
-			for (Step step : toPath().getSteps()) {
+			for (Step step : getPath().getSteps()) {
 				result = result.append(step);
 			}
 
@@ -90,7 +103,7 @@ public class UnchangedNormalPath implements NormalPath {
 		@Override
 		public String toString() {
 
-			final BoundPath path = toPath();
+			final BoundPath path = getPath();
 
 			if (path == null) {
 				return super.toString();

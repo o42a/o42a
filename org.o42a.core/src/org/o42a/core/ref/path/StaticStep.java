@@ -98,7 +98,7 @@ final class StaticStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.add(
+		normalizer.skip(
 				exactPrediction(normalizer.getStepStart().getScope()),
 				new SameNormalStep(this));
 	}

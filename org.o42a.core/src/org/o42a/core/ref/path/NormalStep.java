@@ -20,12 +20,17 @@
 package org.o42a.core.ref.path;
 
 
-public interface NormalStep {
+public abstract class NormalStep {
 
-	Path appendTo(Path path);
+	NormalStep() {
+	}
 
-	void ignore();
+	public abstract void ignore();
 
-	void cancel();
+	public abstract void cancel();
+
+	public abstract InlineStep toInline();
+
+	public abstract NormalAppender toAppender();
 
 }

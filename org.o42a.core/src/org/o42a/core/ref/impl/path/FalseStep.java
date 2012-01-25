@@ -83,7 +83,7 @@ public class FalseStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.inlineStep();
+		normalizer.skipStep();
 	}
 
 	@Override

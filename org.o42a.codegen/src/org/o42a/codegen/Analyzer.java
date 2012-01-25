@@ -40,7 +40,7 @@ public class Analyzer implements UseCaseInfo {
 		return !this.useCase.isSteady();
 	}
 
-	public final void setUsesAnalysed(boolean usesAnalysed) {
+	public final Analyzer setUsesAnalysed(boolean usesAnalysed) {
 		if (isUsesAnalysed() != usesAnalysed) {
 			if (usesAnalysed) {
 				this.useCase = useCase(this.useCase.getName());
@@ -48,14 +48,17 @@ public class Analyzer implements UseCaseInfo {
 				this.useCase = steadyUseCase(this.useCase.getName());
 			}
 		}
+		return this;
 	}
 
 	public final boolean isNormalizationEnabled() {
 		return this.normalizationEnabled;
 	}
 
-	public final void setNormalizationEnabled(boolean normalizationEnabled) {
+	public final Analyzer setNormalizationEnabled(
+			boolean normalizationEnabled) {
 		this.normalizationEnabled = normalizationEnabled;
+		return this;
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class Analyzer implements UseCaseInfo {
 		if (this.useCase == null) {
 			return super.toString();
 		}
-		return "Analysis[" + this.useCase.getName() + ']';
+		return "Analyzer[" + this.useCase.getName() + ']';
 	}
 
 }
