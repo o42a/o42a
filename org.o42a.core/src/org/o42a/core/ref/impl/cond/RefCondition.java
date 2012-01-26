@@ -24,6 +24,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
 
@@ -61,6 +62,11 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		this.ref.normalizeImperative(normalizer);
+	}
+
+	@Override
 	public String toString() {
 		return this.ref.toString();
 	}
@@ -86,7 +92,7 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 			writeLogicalValue(control);
 		}
 

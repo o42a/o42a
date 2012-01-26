@@ -45,7 +45,9 @@ public final class ResolutionRootFinder implements PathWalker {
 		final ResolutionRootFinder finder = new ResolutionRootFinder(scope);
 		final Resolver resolver = scope.walkingResolver(dummyUser(), finder);
 
-		typeRef.getRescopedRef().resolve(resolver);
+		if (typeRef.getRescopedRef().resolve(resolver).isError()) {
+			return null;
+		}
 
 		return finder.getRoot();
 	}

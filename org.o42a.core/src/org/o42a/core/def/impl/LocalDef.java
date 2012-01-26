@@ -195,7 +195,14 @@ public class LocalDef extends ValueDef {
 
 	@Override
 	protected void normalizeDef(Normalizer normalizer) {
-		// TODO Implement imperative block normalization.
+
+		final ImperativeBlock block = getBlock();
+		final Normalizer imperativeNormalizer = new Normalizer(
+				normalizer.getAnalyzer(),
+				block.getScope(),
+				false);
+
+		block.normalizeImperative(imperativeNormalizer);
 	}
 
 	@Override

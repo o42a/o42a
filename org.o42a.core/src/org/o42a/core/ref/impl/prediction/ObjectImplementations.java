@@ -110,9 +110,8 @@ final class ObjectImplementations extends Prediction {
 		@Override
 		public Scope next() {
 
-			final Scope enclosing = this.ancestors.next();
-
-			this.ancestorPath.revert(enclosing);
+			final Scope ancestor = this.ancestors.next();
+			final Scope enclosing = this.ancestorPath.revert(ancestor);
 
 			return this.object.findIn(enclosing).getScope();
 		}

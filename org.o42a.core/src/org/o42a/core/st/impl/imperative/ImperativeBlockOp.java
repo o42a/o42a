@@ -42,7 +42,7 @@ public final class ImperativeBlockOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 		writeSentences(control, result);
 	}
 
@@ -242,7 +242,7 @@ public final class ImperativeBlockOp extends StOp {
 			if (result == null) {
 				op.writeLogicalValue(control);
 			} else {
-				op.writeAssignment(control, result);
+				op.writeValue(control, result);
 			}
 		}
 	}

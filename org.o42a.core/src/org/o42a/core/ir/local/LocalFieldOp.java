@@ -41,7 +41,7 @@ public final class LocalFieldOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 		final LclOp op =

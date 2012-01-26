@@ -30,7 +30,7 @@ final class NoStOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 	}
 
 	@Override

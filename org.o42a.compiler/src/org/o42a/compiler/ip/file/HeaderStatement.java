@@ -27,6 +27,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerLogger;
@@ -72,6 +73,11 @@ class HeaderStatement extends Statement {
 		}
 
 		return new HeaderStatement(ref);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -33,9 +33,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -105,6 +103,10 @@ public class AssignmentStatement extends Statement {
 				reproducer.distribute(),
 				destination,
 				value);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
 	}
 
 	@Override
