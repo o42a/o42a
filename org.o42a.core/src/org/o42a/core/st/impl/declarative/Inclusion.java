@@ -22,6 +22,7 @@ package org.o42a.core.st.impl.declarative;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
@@ -42,6 +43,11 @@ public abstract class Inclusion extends Statement {
 	@Override
 	public Definer define(StatementEnv env) {
 		return this.definer = createDefiner(env);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

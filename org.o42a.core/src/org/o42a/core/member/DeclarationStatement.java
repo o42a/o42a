@@ -21,6 +21,7 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
@@ -38,6 +39,10 @@ public abstract class DeclarationStatement extends Statement {
 
 	@Override
 	public abstract DeclarationDefiner define(StatementEnv env);
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+	}
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {

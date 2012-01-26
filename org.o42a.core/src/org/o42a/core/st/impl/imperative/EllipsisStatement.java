@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Imperatives;
@@ -71,6 +72,10 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+	}
+
+	@Override
 	public String toString() {
 		if (!this.exit) {
 			if (this.name == null) {
@@ -103,7 +108,7 @@ public final class EllipsisStatement extends Statement {
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
@@ -124,7 +129,7 @@ public final class EllipsisStatement extends Statement {
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 

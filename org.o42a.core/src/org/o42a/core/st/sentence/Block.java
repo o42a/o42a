@@ -25,6 +25,7 @@ import java.util.List;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockDefiner;
@@ -175,6 +176,13 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	}
 
 	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		for (Sentence<S> sentence : getSentences()) {
+			sentence.normalizeImperatives(normalizer);
+		}
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -199,7 +207,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	protected void fullyResolveImperative(LocalResolver resolver) {
 		getDefiner().getDefinitionTargets();
 		for (Sentence<S> sentence : getSentences()) {
-			sentence.resolveValues(resolver);
+			sentence.resolveImperatives(resolver);
 		}
 	}
 

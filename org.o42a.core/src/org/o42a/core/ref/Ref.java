@@ -79,6 +79,7 @@ public class Ref extends Statement {
 	private final BoundPath path;
 	private Logical logical;
 	private RefOp op;
+	private InlineValue inline;
 
 	public Ref(BoundPath path, Distributor distributor) {
 		super(path, distributor);
@@ -250,24 +251,9 @@ public class Ref extends Statement {
 		return new Inline(valueStruct(origin), normalPath);
 	}
 
-	private Ref reproducePart(Reproducer reproducer, Path path) {
-		return path.bind(this, reproducer.getScope()).target(
-				reproducer.distribute());
-	}
-
-	private Ref startWithPrefix(
-			Reproducer reproducer,
-			PathReproduction pathReproduction,
-			BoundPath phrasePrefix) {
-
-		final Path externalPath = pathReproduction.getExternalPath();
-
-		if (externalPath.isSelf()) {
-			return phrasePrefix.target(reproducer.distribute());
-		}
-
-		return phrasePrefix.append(externalPath)
-				.target(reproducer.distribute());
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		this.inline = inline(normalizer, getScope());
 	}
 
 	public final Ref toStatic() {
@@ -385,7 +371,10 @@ public class Ref extends Statement {
 
 	@Override
 	protected final StOp createOp(LocalBuilder builder) {
-		return new RefStOp(builder, this, op(builder.host()));
+		if (this.inline != null) {
+			return new InlineOp(builder, this, this.inline);
+		}
+		return new Op(builder, this, op(builder.host()));
 	}
 
 	final void refFullyResolved() {
@@ -397,6 +386,26 @@ public class Ref extends Statement {
 			return finder;
 		}
 		return DEFAULT_VALUE_STRUCT_FINDER;
+	}
+
+	private Ref reproducePart(Reproducer reproducer, Path path) {
+		return path.bind(this, reproducer.getScope()).target(
+				reproducer.distribute());
+	}
+
+	private Ref startWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction,
+			BoundPath phrasePrefix) {
+
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phrasePrefix.target(reproducer.distribute());
+		}
+
+		return phrasePrefix.append(externalPath)
+				.target(reproducer.distribute());
 	}
 
 	private static final class Inline extends InlineValue {
@@ -433,11 +442,11 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class RefStOp extends StOp {
+	private static final class Op extends StOp {
 
 		private final RefOp ref;
 
-		RefStOp(
+		Op(
 				LocalBuilder builder,
 				Statement statement,
 				RefOp ref) {
@@ -446,7 +455,17 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeLogicalValue(Control control) {
+
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					control.falseDir());
+
+			this.ref.writeLogicalValue(dirs);
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
 
 			final Code code = control.code();
 			final ValDirs dirs =
@@ -462,6 +481,20 @@ public class Ref extends Statement {
 			control.returnValue();
 		}
 
+	}
+
+	private static final class InlineOp extends StOp {
+
+		private final InlineValue inline;
+
+		InlineOp(
+				LocalBuilder builder,
+				Statement statement,
+				InlineValue inline) {
+			super(builder, statement);
+			this.inline = inline;
+		}
+
 		@Override
 		public void writeLogicalValue(Control control) {
 
@@ -469,7 +502,34 @@ public class Ref extends Statement {
 					control.code(),
 					control.falseDir());
 
-			this.ref.writeLogicalValue(dirs);
+			this.inline.writeCond(dirs, getBuilder().host());
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
+
+			final Code code = control.code();
+			final ValDirs dirs =
+					control.getBuilder().falseWhenUnknown(
+							code,
+							control.falseDir())
+					.value(code.id("local_val"), result);
+
+			result.store(
+					code,
+					this.inline.writeValue(dirs, getBuilder().host()));
+
+			dirs.done();
+
+			control.returnValue();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
 		}
 
 	}

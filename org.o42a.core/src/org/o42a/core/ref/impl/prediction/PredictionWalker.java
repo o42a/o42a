@@ -43,8 +43,12 @@ public class PredictionWalker implements PathWalker {
 	public static Prediction predictRef(Ref ref, Scope start) {
 
 		final PredictionWalker walker = new PredictionWalker();
+		final Resolution resolution =
+				ref.resolve(start.walkingResolver(dummyUser(), walker));
 
-		ref.resolve(start.walkingResolver(dummyUser(), walker));
+		if (resolution.isError()) {
+			return unpredicted(resolution.getScope());
+		}
 
 		return walker.getPrediction();
 	}
@@ -63,8 +67,12 @@ public class PredictionWalker implements PathWalker {
 		}
 
 		final PredictionWalker walker = new PredictionWalker(start);
+		final Resolution resolution = ref.resolve(
+				start.getScope().walkingResolver(dummyUser(), walker));
 
-		ref.resolve(start.getScope().walkingResolver(dummyUser(), walker));
+		if (resolution.isError()) {
+			return unpredicted(resolution.getScope());
+		}
 
 		return walker.getPrediction();
 	}

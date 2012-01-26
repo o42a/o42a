@@ -41,7 +41,7 @@ final class VariableAssignmentOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),

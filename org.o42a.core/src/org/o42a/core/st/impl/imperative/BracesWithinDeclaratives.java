@@ -29,6 +29,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.Location;
@@ -95,12 +96,18 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 		return this.block.toString();
 	}
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

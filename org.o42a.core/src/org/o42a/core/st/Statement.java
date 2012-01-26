@@ -26,6 +26,7 @@ import org.o42a.core.Placed;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -52,7 +53,7 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public void resolveImperative(LocalResolver resolver) {
+	public final void resolveImperative(LocalResolver resolver) {
 		fullyResolved();
 		getContext().fullResolution().start();
 		try {
@@ -61,6 +62,8 @@ public abstract class Statement extends Placed {
 			getContext().fullResolution().end();
 		}
 	}
+
+	public abstract void normalizeImperative(Normalizer normalizer);
 
 	public final StOp op(LocalBuilder builder) {
 

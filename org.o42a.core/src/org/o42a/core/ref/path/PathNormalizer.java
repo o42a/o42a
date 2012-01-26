@@ -498,7 +498,7 @@ public final class PathNormalizer {
 					continue;
 				}
 
-				assert precedingInline != null :
+				assert precedingInline == null :
 					"Non-in-line normal step (" + normalStep
 					+ ") after the in-line one (" + precedingInline
 					+ ")";
