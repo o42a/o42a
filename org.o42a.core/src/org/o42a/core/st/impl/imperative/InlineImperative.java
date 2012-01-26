@@ -17,21 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.st.impl.imperative;
 
 
-public abstract class NormalAppender extends NormalStep {
+public abstract class InlineImperative {
 
-	public abstract Path appendTo(Path path);
+	public abstract void cancel();
 
-	@Override
-	public final InlineStep toInline() {
-		return null;
+	public static void cancelAll(InlineImperative... inlines) {
+		for (InlineImperative inline : inlines) {
+			inline.cancel();
+		}
 	}
 
-	@Override
-	public final NormalAppender toAppender() {
-		return this;
+	public static void cancelUpToNull(InlineImperative... inlines) {
+		for (InlineImperative inline : inlines) {
+			if (inline == null) {
+				return;
+			}
+			inline.cancel();
+		}
 	}
 
 }

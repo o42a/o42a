@@ -27,9 +27,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -76,7 +74,14 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public final InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -89,12 +94,12 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
+	protected final void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(LocalBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 
