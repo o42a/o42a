@@ -19,14 +19,21 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import static org.o42a.core.value.Value.voidValue;
+
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class RefCondition extends Statement {
@@ -62,6 +69,20 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineValue value = this.ref.inline(normalizer, getScope());
+
+		if (value == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, value);
+	}
+
+	@Override
 	public void normalizeImperative(Normalizer normalizer) {
 		this.ref.normalizeImperative(normalizer);
 	}
@@ -83,6 +104,41 @@ public final class RefCondition extends Statement {
 
 	final StatementEnv getConditionalEnv() {
 		return this.conditionalEnv;
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue value;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
+			super(valueStruct);
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.value.writeCond(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			writeCond(dirs.dirs(), host);
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public void cancel() {
+			this.value.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return "(++" + this.value + ")";
+		}
+
 	}
 
 	private static final class Op extends StOp {

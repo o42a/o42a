@@ -252,6 +252,13 @@ public class Ref extends Statement {
 	}
 
 	@Override
+	public InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return inline(normalizer, getScope());
+	}
+
+	@Override
 	public void normalizeImperative(Normalizer normalizer) {
 		this.inline = inline(normalizer, getScope());
 	}

@@ -26,10 +26,12 @@ import org.o42a.core.Placed;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Statement extends Placed {
@@ -63,6 +65,10 @@ public abstract class Statement extends Placed {
 		}
 	}
 
+	public abstract InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct);
+
 	public abstract void normalizeImperative(Normalizer normalizer);
 
 	public final StOp op(LocalBuilder builder) {
@@ -95,5 +101,6 @@ public abstract class Statement extends Placed {
 	protected final void fullyResolved() {
 		this.fullyResolved = true;
 	}
+
 
 }

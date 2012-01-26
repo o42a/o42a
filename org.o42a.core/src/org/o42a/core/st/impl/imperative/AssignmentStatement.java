@@ -106,6 +106,13 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
+	public InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
 	public void normalizeImperative(Normalizer normalizer) {
 	}
 

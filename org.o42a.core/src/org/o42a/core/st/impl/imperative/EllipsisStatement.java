@@ -25,10 +25,12 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class EllipsisStatement extends Statement {
@@ -69,6 +71,13 @@ public final class EllipsisStatement extends Statement {
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new EllipsisStatement(this, reproducer.distribute());
+	}
+
+	@Override
+	public InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
 	}
 
 	@Override

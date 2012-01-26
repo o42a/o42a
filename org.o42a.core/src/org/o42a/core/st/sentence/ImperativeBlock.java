@@ -33,6 +33,8 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -40,6 +42,7 @@ import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
@@ -227,6 +230,21 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;
+	}
+
+	@Override
+	public InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		// TODO Implement imperative block in-lining.
+		return null;
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		for (ImperativeSentence sentence : getSentences()) {
+			sentence.normalizeImperatives(normalizer);
+		}
 	}
 
 	public Statement wrap(Distributor distributor) {

@@ -21,10 +21,12 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationStatement extends Statement {
@@ -41,7 +43,14 @@ public abstract class DeclarationStatement extends Statement {
 	public abstract DeclarationDefiner define(StatementEnv env);
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public final InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
 	}
 
 	@Override

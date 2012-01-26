@@ -22,10 +22,12 @@ package org.o42a.core.st.impl.declarative;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Inclusion extends Statement {
@@ -46,22 +48,29 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public final InlineValue inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Statement reproduce(Reproducer reproducer) {
+	public final Statement reproduce(Reproducer reproducer) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
+	protected final void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(LocalBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 
