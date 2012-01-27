@@ -1,6 +1,6 @@
 /*
     Console Module
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,8 +20,10 @@
 package org.o42a.lib.console;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -54,6 +56,12 @@ final class MainCall extends DefinedObject {
 
 	@Override
 	protected void buildDefinition(DeclarativeBlock definition) {
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
 	}
 
 }

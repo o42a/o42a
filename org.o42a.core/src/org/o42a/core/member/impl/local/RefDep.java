@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,6 +24,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.FieldDefinition;
@@ -77,28 +78,11 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
 	public String toString() {
 		if (this.depRef == null) {
 			return super.toString();
 		}
 		return "Dep[" + this.depRef + " of " + getObject() + ']';
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(
-				new RefDep(
-						reproducer.getScope().toObject(),
-						getDepRef(),
-						this.name)
-				.toPath());
 	}
 
 	@Override
@@ -134,7 +118,7 @@ public final class RefDep extends Dep {
 				this.depRef.resolve(localResolver).resolveAll(
 						resolver.getUsage());
 			} else {
-				this.depRef.resolve(localResolver).resolveAll();
+				this.depRef.resolve(localResolver).resolveContainer();
 			}
 		}
 
@@ -143,6 +127,60 @@ public final class RefDep extends Dep {
 		walker.refDep(object, this, this.depRef);
 
 		return resolution.toArtifact().getContainer();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+
+		final LocalScope revertedLocal =
+				getDepRef().getPath().revert(target).toLocal();
+
+		return getObject().findIn(revertedLocal).getScope();
+	}
+
+	@Override
+	protected void normalizeDep(
+			PathNormalizer normalizer,
+			LocalScope enclosingLocal) {
+		normalizer.skip(normalizer.getStepStart(), new DepDisabler());
+		normalizer.append(getDepRef().getPath());
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(
+				new RefDep(
+						reproducer.getScope().toObject(),
+						getDepRef(),
+						this.name)
+				.toPath());
+	}
+
+	private final class DepDisabler extends NormalAppender {
+
+		@Override
+		public Path appendTo(Path path) {
+			ignore();
+			return path;
+		}
+
+		@Override
+		public void ignore() {
+			setDisabled(true);
+		}
+
+		@Override
+		public void cancel() {
+			setDisabled(false);
+		}
+
+		@Override
+		public String toString() {
+			return "-";
+		}
+
 	}
 
 }

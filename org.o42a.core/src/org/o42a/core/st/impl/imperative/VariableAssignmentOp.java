@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,9 +19,9 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -31,7 +31,7 @@ final class VariableAssignmentOp extends StOp {
 
 	private final AssignmentStatement assignment;
 
-	VariableAssignmentOp(LocalBuilder builder, AssignmentStatement assignment) {
+	VariableAssignmentOp(CodeBuilder builder, AssignmentStatement assignment) {
 		super(builder, assignment);
 		this.assignment = assignment;
 	}
@@ -41,7 +41,7 @@ final class VariableAssignmentOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),

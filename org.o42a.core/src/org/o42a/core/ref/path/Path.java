@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.impl.path.MaterializerStep.MATERIALIZER_STEP;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
@@ -73,14 +72,6 @@ public final class Path {
 				NO_PATH_BINDINGS,
 				true,
 				new ModuleStep(moduleId));
-	}
-
-	public static Path materializePath() {
-		return new Path(
-				RELATIVE_PATH,
-				NO_PATH_BINDINGS,
-				false,
-				MATERIALIZER_STEP);
 	}
 
 	private final PathKind kind;
@@ -149,23 +140,6 @@ public final class Path {
 		assert fragment != null :
 			"Path fragment not specified";
 		return append(new PathFragmentStep(fragment));
-	}
-
-	public Path materialize() {
-
-		final int length = this.steps.length;
-
-		if (length == 0) {
-			return this;
-		}
-
-		final Step lastStep = this.steps[length - 1];
-
-		if (lastStep.isMaterial()) {
-			return this;
-		}
-
-		return append(MATERIALIZER_STEP);
 	}
 
 	public final Path newObject(ObjectConstructor constructor) {

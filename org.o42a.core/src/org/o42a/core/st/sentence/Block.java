@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -199,7 +199,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	protected void fullyResolveImperative(LocalResolver resolver) {
 		getDefiner().getDefinitionTargets();
 		for (Sentence<S> sentence : getSentences()) {
-			sentence.resolveValues(resolver);
+			sentence.resolveImperatives(resolver);
 		}
 	}
 

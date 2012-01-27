@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,10 +19,14 @@
 */
 package org.o42a.core.artifact.object.impl.decl;
 
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.util.Lambda;
 
 
@@ -63,6 +67,15 @@ class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.field.define(getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+
+		final MemberField field =
+				enclosing.getContainer().member(this.field.getKey()).toField();
+
+		return field.artifact(dummyUser()).materialize();
 	}
 
 }

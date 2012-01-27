@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -26,6 +26,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -210,6 +211,11 @@ public class LogicalExpression extends ObjectConstructor {
 		@Override
 		public String toString() {
 			return this.ref != null ? this.ref.toString() : "LogicalOp";
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.ref.resolve(enclosing);
 		}
 
 		final Ref operand() {

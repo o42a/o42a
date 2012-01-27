@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -89,8 +89,7 @@ public abstract class ContainerMembers {
 	}
 
 	protected void registerSymbol(MemberId memberId, Member member) {
-		if (member.getVisibility() == Visibility.PRIVATE
-				&& member.isOverride()) {
+		if (!member.getVisibility().isOverridable() && member.isOverride()) {
 			// Only explicitly declared private members registered.
 			return;
 		}

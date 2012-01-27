@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,6 +28,7 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -79,6 +80,12 @@ public final class VoidObject extends BuiltinObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this);
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
 	}
 
 	private static VoidScope voidScope(Scope topScope) {

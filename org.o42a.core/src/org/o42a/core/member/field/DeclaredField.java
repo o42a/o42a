@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -48,7 +48,7 @@ public abstract class DeclaredField<
 	protected DeclaredField(MemberField member, Field<A> propagatedFrom) {
 		super(member);
 		this.artifactKind = propagatedFrom.getArtifactKind();
-		setFieldArtifact(propagateArtifact(propagatedFrom));
+		setScopeArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	@Override
@@ -59,20 +59,20 @@ public abstract class DeclaredField<
 	@SuppressWarnings("unchecked")
 	@Override
 	public A getArtifact() {
-		if (getFieldArtifact() == null) {
+		if (getScopeArtifact() == null) {
 			if (!getKey().isValid()) {
 
 				final Artifact<?> falseObject = getContext().getFalse();
 
-				setFieldArtifact((A) falseObject);
+				setScopeArtifact((A) falseObject);
 			} else if (isOverride()) {
-				setFieldArtifact(overrideArtifact());
+				setScopeArtifact(overrideArtifact());
 			} else {
-				setFieldArtifact(declareArtifact());
+				setScopeArtifact(declareArtifact());
 			}
 		}
 
-		return getFieldArtifact();
+		return getScopeArtifact();
 	}
 
 	public final List<V> getVariants() {
@@ -88,7 +88,7 @@ public abstract class DeclaredField<
 			return enclosingScope.getContext() != getContext();
 		}
 
-		return !enclosingMember.getAllContexts().contains(getContext());
+		return !enclosingMember.allContexts().contains(getContext());
 	}
 
 	public final Inclusions newInclusions() {

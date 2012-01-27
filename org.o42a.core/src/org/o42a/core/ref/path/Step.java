@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,7 +28,8 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.AncestorStep;
+import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.impl.path.AncestorFragment;
 import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
 import org.o42a.core.ref.impl.path.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
@@ -39,20 +40,23 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class Step {
 
+	public static final Container resolveStep(
+			Step step,
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		return step.resolve(resolver, path, index, start, walker);
+	}
+
 	public abstract PathKind getPathKind();
 
 	public String getName() {
 		return null;
 	}
 
-	public abstract boolean isMaterial();
-
-	public abstract Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker);
+	public abstract RefUsage getObjectUsage();
 
 	public ValueAdapter valueAdapter(
 			Ref ref,
@@ -62,15 +66,9 @@ public abstract class Step {
 				expectedStruct);
 	}
 
-	public abstract PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer);
-
 	public Path toPath() {
 		return new Path(getPathKind(), NO_PATH_BINDINGS, false, this);
 	}
-
-	public abstract PathOp op(PathOp start);
 
 	@Override
 	public String toString() {
@@ -96,12 +94,27 @@ public abstract class Step {
 			BoundPath path,
 			LocationInfo location,
 			Distributor distributor) {
-		return path.append(new AncestorStep()).typeRef(distributor);
+		return path.append(new AncestorFragment()).typeRef(distributor);
 	}
 
 	protected abstract FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor);
+
+	protected abstract Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker);
+
+	protected abstract Scope revert(Scope target);
+
+	protected abstract void normalize(PathNormalizer normalizer);
+
+	protected abstract PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer);
 
 	protected final FieldDefinition defaultFieldDefinition(
 			BoundPath path,
@@ -114,5 +127,7 @@ public abstract class Step {
 			Distributor distributor) {
 		return new ObjectFieldDefinition(path, distributor);
 	}
+
+	protected abstract PathOp op(PathOp start);
 
 }

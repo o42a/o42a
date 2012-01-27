@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -101,8 +101,7 @@ public final class MemberOverride extends Sample {
 	private ValueStruct<?, ?> valueStruct() {
 
 		final Obj object = getObject();
-		final Path memberPath =
-				this.overriddenMember.getKey().toPath().materialize();
+		final Path memberPath = this.overriddenMember.getKey().toPath();
 		final PrefixPath prefix =
 				memberPath.toPrefix(object.getScope().getEnclosingScope());
 

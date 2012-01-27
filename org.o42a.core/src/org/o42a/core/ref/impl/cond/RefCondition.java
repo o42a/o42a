@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,13 +19,15 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class RefCondition extends Statement {
@@ -61,6 +63,26 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineCommand value =
+				this.ref.inlineImperative(normalizer, valueStruct);
+
+		if (value == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, value);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		this.ref.normalizeImperative(normalizer);
+	}
+
+	@Override
 	public String toString() {
 		return this.ref.toString();
 	}
@@ -71,7 +93,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return new Op(builder, this.ref);
 	}
 
@@ -79,14 +101,48 @@ public final class RefCondition extends Statement {
 		return this.conditionalEnv;
 	}
 
+	private static final class Inline implements InlineCommand {
+
+		private final InlineCommand value;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineCommand value) {
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(Control control) {
+			this.value.writeCond(control);
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
+			writeCond(control);
+
+		}
+
+		@Override
+		public void cancel() {
+			this.value.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return "(++" + this.value + ")";
+		}
+
+	}
+
 	private static final class Op extends StOp {
 
-		Op(LocalBuilder builder, Statement statement) {
+		Op(CodeBuilder builder, Statement statement) {
 			super(builder, statement);
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 			writeLogicalValue(control);
 		}
 

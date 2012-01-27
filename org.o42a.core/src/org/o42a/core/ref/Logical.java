@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,7 +30,6 @@ import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.logical.*;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -71,50 +70,50 @@ public abstract class Logical extends Scoped {
 	public static Logical conjunction(
 			LocationInfo location,
 			Scope scope,
-			Logical... claims) {
-		if (claims.length == 0) {
+			Logical... requirements) {
+		if (requirements.length == 0) {
 			return logicalFalse(location, scope);
 		}
-		if (claims.length == 1) {
-			return claims[0];
+		if (requirements.length == 1) {
+			return requirements[0];
 		}
 
-		final ArrayList<Logical> newClaims =
-				new ArrayList<Logical>(claims.length);
+		final ArrayList<Logical> newRequirements =
+				new ArrayList<Logical>(requirements.length);
 
-		for (Logical claim : claims) {
-			claim.assertCompatible(scope);
+		for (Logical requirement : requirements) {
+			requirement.assertCompatible(scope);
 
-			final LogicalValue value = claim.getConstantValue();
+			final LogicalValue value = requirement.getConstantValue();
 
 			if (value == LogicalValue.FALSE) {
-				return claim;
+				return requirement;
 			}
 			if (value.isConstant()) {
 				continue;
 			}
 
-			final Logical[] expanded = claim.expandConjunction();
+			final Logical[] expanded = requirement.expandConjunction();
 
 			if (expanded != null) {
 				for (Logical c : expanded) {
-					and(newClaims, c);
+					and(newRequirements, c);
 				}
 			} else {
-				and(newClaims, claim);
+				and(newRequirements, requirement);
 			}
 		}
 
-		final int size = newClaims.size();
+		final int size = newRequirements.size();
 
 		if (size == 1) {
-			return newClaims.get(0);
+			return newRequirements.get(0);
 		}
 
 		return new LogicalAnd(
 				location,
 				scope,
-				newClaims.toArray(new Logical[size]));
+				newRequirements.toArray(new Logical[size]));
 	}
 
 	public static Logical conjunction(
@@ -273,8 +272,6 @@ public abstract class Logical extends Scoped {
 
 	public abstract LogicalValue logicalValue(Resolver resolver);
 
-	public abstract Logical reproduce(Reproducer reproducer);
-
 	public final Logical or(Logical other) {
 		if (other == null) {
 			return this;
@@ -403,8 +400,8 @@ public abstract class Logical extends Scoped {
 		return new LogicalCondDef(this);
 	}
 
-	public Logical prefixWith(PrefixPath prefix) {
-		return new RescopedLogical(this, prefix);
+	public Logical upgradeScope(ScopeUpgrade scopeUpgrade) {
+		return new RescopedLogical(this, scopeUpgrade);
 	}
 
 	public final void resolveAll(Resolver resolver) {
@@ -416,6 +413,10 @@ public abstract class Logical extends Scoped {
 			getContext().fullResolution().end();
 		}
 	}
+
+	public abstract Logical reproduce(Reproducer reproducer);
+
+	public abstract InlineCond inline(Normalizer normalizer, Scope origin);
 
 	public abstract void write(CodeDirs dirs, HostOp host);
 

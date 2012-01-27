@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,10 +22,11 @@ package org.o42a.core.artifact;
 import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.util.use.*;
 
 
-public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
+public class ArtifactContent implements UserInfo {
 
 	private final Artifact<?> artifact;
 	private Usable<SimpleUsage> usable;
@@ -42,36 +43,29 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 
 	@Override
 	public final User<SimpleUsage> toUser() {
-		return usable().toUser();
+		return uses().toUser();
 	}
 
-	@Override
-	public final AllUsages<SimpleUsage> allUsages() {
-		return toUser().allUsages();
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<SimpleUsage> selector) {
 		if (this.usable == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.usable.selectUse(useCase, selector);
+		return this.usable.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<SimpleUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final void useBy(UserInfo user) {
 		if (user.toUser().isDummy()) {
 			return;
 		}
-		usable().useBy(user, SIMPLE_USAGE);
+		uses().useBy(user, SIMPLE_USAGE);
 	}
 
 	@Override
@@ -88,7 +82,7 @@ public class ArtifactContent implements UserInfo, Uses<SimpleUsage> {
 		return out.toString();
 	}
 
-	private final Usable<SimpleUsage> usable() {
+	private final Usable<SimpleUsage> uses() {
 		if (this.usable != null) {
 			return this.usable;
 		}

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,11 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member;
+package org.o42a.core.member.field;
 
 import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberContainer;
 import org.o42a.util.use.*;
 
 
@@ -64,7 +65,7 @@ public class FieldUses implements Uses<SimpleUsage> {
 			if (field == null) {
 				continue;
 			}
-			if (this.tracker.useBy(field.getAnalysis())) {
+			if (this.tracker.useBy(field.getAnalysis().uses())) {
 				return this.tracker.getUseFlag();
 			}
 		}

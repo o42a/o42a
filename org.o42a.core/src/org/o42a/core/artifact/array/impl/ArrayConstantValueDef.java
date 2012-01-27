@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,7 +20,7 @@
 package org.o42a.core.artifact.array.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.artifact.array.Array;
 import org.o42a.core.artifact.array.ArrayValueStruct;
@@ -32,11 +32,10 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 public class ArrayConstantValueDef extends ValueDef {
@@ -49,14 +48,17 @@ public class ArrayConstantValueDef extends ValueDef {
 			LocationInfo location,
 			ArrayValueStruct valueStruct,
 			Array value) {
-		super(source, location, emptyPrefix(valueStruct.toScoped().getScope()));
+		super(
+				source,
+				location,
+				noScopeUpgrade(valueStruct.toScoped().getScope()));
 		this.value = valueStruct.compilerValue(value);
 	}
 
 	private ArrayConstantValueDef(
 			ArrayConstantValueDef prototype,
-			PrefixPath prefix) {
-		super(prototype, prefix);
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
 	}
 
@@ -69,7 +71,8 @@ public class ArrayConstantValueDef extends ValueDef {
 		final ArrayValueStruct valueStruct =
 				(ArrayValueStruct) this.value.getValueStruct();
 
-		return this.valueStruct = valueStruct.prefixWith(getPrefix());
+		return this.valueStruct =
+				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	public final Array getArray() {
@@ -91,9 +94,9 @@ public class ArrayConstantValueDef extends ValueDef {
 
 	@Override
 	protected ArrayConstantValueDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new ArrayConstantValueDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new ArrayConstantValueDef(this, upgrade);
 	}
 
 	@Override
@@ -114,6 +117,17 @@ public class ArrayConstantValueDef extends ValueDef {
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.value.resolveAll(resolver);
+	}
+
+	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,9 +31,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -56,12 +54,27 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return false;
+	public RefUsage getObjectUsage() {
+		return RefUsage.VALUE_REF_USAGE;
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		if (this.index == null) {
+			return super.toString();
+		}
+		return "[" + this.index + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -72,11 +85,7 @@ final class ArrayElementStep extends Step {
 		}
 
 		final Ref indexRef = indexRef(path);
-		final Obj array = start.toObject();
-
-		assert array != null :
-			"Not an array object: " + start;
-
+		final Obj array = start.getArtifact().materialize();
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
@@ -172,7 +181,18 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected Scope revert(Scope target) {
+		return target.getEnclosingScope();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		// Array element normalization not supported yet.
+		normalizer.cancel();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 
@@ -190,26 +210,11 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new ArrayElementOp(
 				start,
 				this.arrayStruct,
 				indexRef(start.getPath()));
-	}
-
-	@Override
-	public String toString() {
-		if (this.index == null) {
-			return super.toString();
-		}
-		return "[" + this.index + ']';
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return objectFieldDefinition(path, distributor);
 	}
 
 	private final Ref indexRef(BoundPath path) {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -33,6 +33,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -295,11 +296,17 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveValues(LocalResolver resolver) {
+	final void resolveImperatives(LocalResolver resolver) {
 		assert this.instructionsExecuted :
 			"Instructions not executed yet";
 		for (Definer definer : getDefiners()) {
 			definer.getStatement().resolveImperative(resolver);
+		}
+	}
+
+	final void normalizeImperatives(Normalizer normalizer) {
+		for (Definer definer : getDefiners()) {
+			definer.getStatement().normalizeImperative(normalizer);
 		}
 	}
 

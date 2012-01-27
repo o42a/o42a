@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -129,7 +129,7 @@ public final class LocalIRFunc
 		final Control control =
 				builder.createControl(code, exit.head(), failure.head());
 
-		op.writeAssignment(control, result);
+		op.writeValue(control, result);
 
 		control.end();
 

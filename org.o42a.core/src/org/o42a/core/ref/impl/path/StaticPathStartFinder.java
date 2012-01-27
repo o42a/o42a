@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,7 +23,6 @@ import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.array.ArrayElement;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
@@ -100,11 +99,6 @@ public final class StaticPathStartFinder implements PathWalker {
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
 		return skip();
-	}
-
-	@Override
-	public boolean materialize(Artifact<?> artifact, Step step, Obj result) {
-		return set(result);
 	}
 
 	@Override

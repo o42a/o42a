@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,7 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.AbstractContainer.parentContainer;
+import static org.o42a.core.ref.impl.prediction.LocalPrediction.predictLocal;
 
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.impl.local.ExplicitLocalScope;
 import org.o42a.core.member.impl.local.LocalOwnerStep;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -259,8 +261,8 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final boolean contains(Scope other) {
-		return AbstractScope.contains(this, other);
+	public final Prediction predict(Prediction enclosing) {
+		return predictLocal(enclosing, this);
 	}
 
 	@Override
@@ -281,6 +283,11 @@ public abstract class LocalScope
 	@Override
 	public final PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
+	}
+
+	@Override
+	public final boolean contains(Scope other) {
+		return AbstractScope.contains(this, other);
 	}
 
 	@Override

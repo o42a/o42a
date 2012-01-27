@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,12 +30,10 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -108,6 +106,17 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+	}
+
+	@Override
 	public String toString() {
 		if (this.value == null) {
 			return super.toString();
@@ -129,11 +138,14 @@ public class AssignmentStatement extends Statement {
 		if (!destination.isError() && !value.isError()) {
 			destination.materialize().value().wrapBy(
 					value.materialize().value());
+			if (resolver.getScope() == getScope()) {
+				destination.toLink().assign(this.value);
+			}
 		}
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return getAssignmentKind().op(builder, this);
 	}
 

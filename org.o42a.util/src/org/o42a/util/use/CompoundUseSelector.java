@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -35,6 +35,42 @@ final class CompoundUseSelector<U extends Usage<U>> extends UseSelector<U> {
 	@Override
 	public boolean acceptUsage(U usage) {
 		return this.first.acceptUsage(usage) && this.second.acceptUsage(usage);
+	}
+
+	@Override
+	public int hashCode() {
+
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + this.first.hashCode();
+		result = prime * result + this.second.hashCode();
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final CompoundUseSelector<?> other = (CompoundUseSelector<?>) obj;
+
+		if (!this.first.equals(other.first)) {
+			return false;
+		}
+		if (!this.second.equals(other.second)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -33,15 +33,17 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.*;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -163,10 +165,10 @@ public final class ComparisonExpression extends ObjectConstructor {
 				this.reproducer.distributeBy(distributor));
 	}
 
-	private final class ComparisonResult extends BuiltinObject {
+	private static final class ComparisonResult extends BuiltinObject {
 
 		private final ComparisonExpression ref;
-		private MemberKey comparisonKey;
+		private Ref comparisonRef;
 
 		ComparisonResult(ComparisonExpression ref) {
 			super(ref, ref.distribute(), ValueStruct.VOID);
@@ -177,18 +179,11 @@ public final class ComparisonExpression extends ObjectConstructor {
 		public Value<?> calculateBuiltin(Resolver resolver) {
 			resolveMembers(false);// Initialize comparisonKey.
 
-			if (hasError()) {
+			if (this.ref.hasError()) {
 				return falseValue();
 			}
 
-			final Field<?> field =
-					resolver.getContainer()
-					.member(this.comparisonKey)
-					.toField()
-					.field(resolver);
-			final Value<?> value =
-					field.getArtifact().toObject().value()
-					.explicitUseBy(resolver).getValue();
+			final Value<?> value = this.comparisonRef.value(resolver);
 
 			if (!value.getKnowledge().isKnown()) {
 				// Value could not be determined at compile-time.
@@ -203,16 +198,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
-			phrase(distribute()).resolve(resolver).resolveAll();
-
-			final Field<?> field =
-					resolver.getScope()
-					.toObject()
-					.member(this.comparisonKey)
-					.toField()
-					.field(resolver);
-
-			field.getArtifact().toObject().value().resolveAll(resolver);
+			this.comparisonRef.resolve(resolver).resolveValue();
 		}
 
 		@Override
@@ -226,9 +212,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 			final ValDirs cmpDirs = dirs.dirs().falseWhenUnknown().value(
 					operator.getValueStruct(),
 					"cmp");
-			final ObjectOp comparison =
-					host.field(cmpDirs.dirs(), this.comparisonKey)
-					.materialize(cmpDirs.dirs());
+			final RefOp comparison = this.comparisonRef.op(host);
 			final ValOp comparisonVal =
 					operator.writeComparison(cmpDirs, comparison);
 
@@ -273,9 +257,17 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 			statement.define(defaultEnv(this));
 
-			this.comparisonKey = statement.toMember().getKey();
+			this.comparisonRef =
+					statement.toMember().getKey().toPath().bind(
+							this,
+							getScope()).target(distribute());
 
 			memberRegistry.registerMembers(members);
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.ref.resolve(enclosing);
 		}
 
 	}

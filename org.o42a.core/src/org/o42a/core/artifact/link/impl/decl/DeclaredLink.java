@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,8 +19,12 @@
 */
 package org.o42a.core.artifact.link.impl.decl;
 
+import static org.o42a.util.use.User.dummyUser;
+
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.member.field.MemberField;
 
 
 final class DeclaredLink extends Link {
@@ -49,6 +53,15 @@ final class DeclaredLink extends Link {
 		return this.variant.build(
 				this.variant.getDeclaration().getType(),
 				null);
+	}
+
+	@Override
+	protected Link findLinkIn(Scope enclosing) {
+
+		final MemberField field =
+				enclosing.getContainer().member(this.field.getKey()).toField();
+
+		return field.artifact(dummyUser()).toLink();
 	}
 
 }

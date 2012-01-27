@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,56 +20,100 @@
 package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ref.*;
 
 
 public final class LogicalCondDef extends CondDef {
 
-	private final Logical logical;
+	private final Common common;
 
 	public LogicalCondDef(Logical logical) {
 		super(
 				sourceOf(logical),
 				logical,
-				emptyPrefix(logical.getScope()));
-		this.logical = logical;
+				noScopeUpgrade(logical.getScope()));
+		this.common = new Common(logical);
 	}
 
-	private LogicalCondDef(LogicalCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
-		this.logical = prototype.logical;
+	private LogicalCondDef(
+			LogicalCondDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
+		this.common = prototype.common;
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.common.logical.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.logical.getScope());
+		return logicalTrue(this, this.common.logical.getScope());
 	}
 
 	@Override
 	protected final Logical buildLogical() {
-		return this.logical;
+		return this.common.logical;
 	}
 
 	@Override
 	protected CondDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new LogicalCondDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new LogicalCondDef(this, upgrade);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.logical.resolveAll(resolver);
+		this.common.logical.resolveAll(resolver);
+	}
+
+	@Override
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		return this.common.logical.inline(normalizer, getScope());
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.common.inline = inline(normalizer);
+	}
+
+	@Override
+	protected void writeDef(CodeDirs dirs, HostOp host) {
+
+		final InlineCond inline = this.common.inline;
+
+		if (inline != null) {
+			inline.writeCond(dirs, host);
+			return;
+		}
+
+		super.writeDef(dirs, host);
+	}
+
+	private static final class Common {
+
+		private final Logical logical;
+		private InlineCond inline;
+
+		Common(Logical logical) {
+			this.logical = logical;
+		}
+
+		@Override
+		public String toString() {
+			if (this.logical == null) {
+				return "null";
+			}
+			return this.logical.toString();
+		}
+
 	}
 
 }

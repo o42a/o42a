@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,8 +22,7 @@ package org.o42a.core.ref.impl.logical;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -50,6 +49,12 @@ public final class RuntimeLogical extends Logical {
 	public Logical reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new RuntimeLogical(this, reproducer.getScope());
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
+		throw new UnsupportedOperationException(
+				"Abstract run-time logical should not generate any code");
 	}
 
 	@Override

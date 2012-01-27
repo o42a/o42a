@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,16 +19,19 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.core.ref.impl.prediction.ObjectPrediction.predictObject;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactScope;
+import org.o42a.core.artifact.StandaloneArtifactScope;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ObjectScope extends ArtifactScope<Obj> {
+public abstract class ObjectScope extends StandaloneArtifactScope<Obj> {
 
 	private Path enclosingScopePath;
 
@@ -67,6 +70,11 @@ public abstract class ObjectScope extends ArtifactScope<Obj> {
 	@Override
 	public ObjectScope getLastDefinition() {
 		return getFirstDeclaration();
+	}
+
+	@Override
+	public final Prediction predict(Prediction enclosing) {
+		return predictObject(enclosing, toObject());
 	}
 
 	@Override

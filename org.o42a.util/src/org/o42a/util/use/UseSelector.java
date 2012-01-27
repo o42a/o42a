@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -29,6 +29,21 @@ public abstract class UseSelector<U extends Usage<U>> {
 			return this;
 		}
 		return new CompoundUseSelector<U>(this, other);
+	}
+
+	@SuppressWarnings("unchecked")
+	public UseSelector<U> or(UseSelector<U> other) {
+		if (equals(other)) {
+			return this;
+		}
+		if (other.getClass() == AnyUseSelector.class) {
+			return ((AnyUseSelector<U>) other).append(this);
+		}
+		return new AnyUseSelector<U>(this, other);
+	}
+
+	public UseSelector<U> not() {
+		return new NegatedUseSelector<U>(this);
 	}
 
 }

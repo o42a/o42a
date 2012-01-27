@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
+import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
 import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
 import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
@@ -41,11 +42,12 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.impl.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -103,6 +105,10 @@ public class BoundPath extends Location {
 		return getRawPath().getBindings();
 	}
 
+	public final Step[] getSteps() {
+		return getPath().getSteps();
+	}
+
 	public final int length() {
 		return getSteps().length;
 	}
@@ -147,7 +153,7 @@ public class BoundPath extends Location {
 		final Step[] steps = getRawSteps();
 
 		if (steps.length == 0) {
-			return new AncestorStep().toPath().bind(
+			return new AncestorFragment().toPath().bind(
 					location,
 					distributor.getScope()).typeRef(distributor);
 		}
@@ -171,18 +177,6 @@ public class BoundPath extends Location {
 
 	public final BoundPath append(PathFragment fragment) {
 		return getRawPath().append(fragment).bind(this, getOrigin());
-	}
-
-	public final BoundPath materialize() {
-
-		final Path rawPath = getRawPath();
-		final Path materialized = rawPath.materialize();
-
-		if (rawPath == materialized) {
-			return this;
-		}
-
-		return materialized.bind(this, this.origin);
 	}
 
 	public final BoundPath arrayItem(Ref indexRef) {
@@ -226,6 +220,20 @@ public class BoundPath extends Location {
 
 	public final PathResolution resolve(PathResolver resolver) {
 		return walk(resolver, DUMMY_PATH_WALKER);
+	}
+
+	public final Scope revert(Scope target) {
+		assert !isStatic() :
+			"Can not revert the static scope";
+
+		Scope result = target;
+		final Step[] steps = getSteps();
+
+		for (int i = steps.length - 1; i >= 0; --i) {
+			result = steps[i].revert(result);
+		}
+
+		return result;
 	}
 
 	public PathResolution walk(PathResolver resolver, PathWalker walker) {
@@ -293,6 +301,19 @@ public class BoundPath extends Location {
 		return lastStep.fieldDefinition(this, distributor);
 	}
 
+	public final NormalPath normalize(Normalizer normalizer, Scope origin) {
+		origin.assertDerivedFrom(getOrigin());
+
+		final PathNormalizer pathNormalizer =
+				pathNormalizer(normalizer, origin, this);
+
+		if (pathNormalizer == null) {
+			return new UnNormalizedPath(this);
+		}
+
+		return pathNormalizer.normalize();
+	}
+
 	public final PathReproducer reproducer(Reproducer reproducer) {
 		return new PathReproducer(reproducer, this);
 	}
@@ -353,15 +374,29 @@ public class BoundPath extends Location {
 		return this.path = rebuildPath();
 	}
 
-	final Step[] getSteps() {
-		return getPath().getSteps();
-	}
-
 	final Path getRawPath() {
 		if (this.path != null) {
 			return this.path;
 		}
 		return this.rawPath;
+	}
+
+	final Scope root(Scope start) {
+		return start.getContext().getRoot().getScope();
+	}
+
+	final int startIndex() {
+		if (this.startObject == null) {
+			findStart();
+		}
+		return this.startIndex;
+	}
+
+	final Obj startObject() {
+		if (this.startObject == null) {
+			findStart();
+		}
+		return this.startObject;
 	}
 
 	private final Step[] getRawSteps() {
@@ -373,9 +408,9 @@ public class BoundPath extends Location {
 			PathResolver resolver,
 			PathWalker walker,
 			boolean expand) {
-		final Scope start = resolver.getPathStart();
 		this.path = path;
 
+		final Scope start = resolver.getPathStart();
 		final Scope startFrom;
 		final PathTracker tracker;
 
@@ -398,7 +433,7 @@ public class BoundPath extends Location {
 						this,
 						resolver,
 						walker,
-						startIndex(start.getContext()));
+						startIndex());
 			}
 		} else {
 			startFrom = start;
@@ -420,7 +455,7 @@ public class BoundPath extends Location {
 						this,
 						resolver,
 						walker,
-						startIndex(start.getContext()));
+						startIndex());
 			}
 		}
 
@@ -529,25 +564,7 @@ public class BoundPath extends Location {
 		return pathResolution(this, result);
 	}
 
-	private final Scope root(Scope start) {
-		return start.getContext().getRoot().getScope();
-	}
-
-	private int startIndex(CompilerContext context) {
-		if (this.startObject == null) {
-			findStart(context);
-		}
-		return this.startIndex;
-	}
-
-	private Obj startObject(CompilerContext context) {
-		if (this.startObject == null) {
-			findStart(context);
-		}
-		return this.startObject;
-	}
-
-	private void findStart(CompilerContext context) {
+	private void findStart() {
 
 		final StaticPathStartFinder walker = new StaticPathStartFinder();
 
@@ -622,14 +639,13 @@ public class BoundPath extends Location {
 	private final PathOp staticOp(CodeDirs dirs, HostOp start) {
 
 		final CodeBuilder builder = dirs.getBuilder();
-		final CompilerContext context = builder.getContext();
 		final ObjectIR firstObject =
-				startObject(context).ir(dirs.getGenerator());
+				startObject().ir(dirs.getGenerator());
 		PathOp found =
 				hostPathOp(this, start, firstObject.op(builder, dirs.code()));
 		final Step[] steps = getSteps();
 
-		for (int i = startIndex(context); i < steps.length; ++i) {
+		for (int i = startIndex(); i < steps.length; ++i) {
 			found = steps[i].op(found);
 			if (found == null) {
 				throw new IllegalStateException(toString(i + 1) + " not found");

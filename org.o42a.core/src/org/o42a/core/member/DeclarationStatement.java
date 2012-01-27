@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,9 +21,12 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.StatementEnv;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationStatement extends Statement {
@@ -38,6 +41,17 @@ public abstract class DeclarationStatement extends Statement {
 
 	@Override
 	public abstract DeclarationDefiner define(StatementEnv env);
+
+	@Override
+	public final InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
+	}
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {

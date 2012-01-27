@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -26,6 +26,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -43,32 +44,8 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		// Error could not be resolved.
+	public RefUsage getObjectUsage() {
 		return null;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		throw new UnsupportedOperationException(
-				"Error path step can not be written");
 	}
 
 	@Override
@@ -81,6 +58,40 @@ public class ErrorStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return FieldDefinition.invalidDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		// Error could not be resolved.
+		return null;
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.cancel(); // Normalization impossible.
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		throw new UnsupportedOperationException(
+				"Error path step can not be written");
 	}
 
 }

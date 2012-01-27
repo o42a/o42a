@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -29,7 +29,9 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.*;
-import org.o42a.ast.ref.*;
+import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
@@ -197,7 +199,7 @@ public final class FieldDeclarableVisitor
 						declaration.getDisplayName());
 				return null;
 			}
-			if (declaration.getVisibility() == Visibility.PRIVATE) {
+			if (!declaration.getVisibility().isOverridable()) {
 				declaration.getLogger().prohibitedPrivateAbstract(
 						declarator.getDefinitionAssignment(),
 						declaration.getDisplayName());

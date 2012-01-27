@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -239,7 +239,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
 		if (getObjectIR().getObject().type().derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalyzer(),
 				RUNTIME_DERIVATION_USAGE)) {
 			instance.ancestorFunc().setConstant(true).setValue(
 					createAncestorFunc(instance));

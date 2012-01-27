@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,7 +20,7 @@
 package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -29,18 +29,14 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.action.Action;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -63,22 +59,22 @@ public class LocalDef extends ValueDef {
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
-	private final Definer definer;
-	private final PrefixPath localPrefix;
+	final Definer definer;
+	final PrefixPath localPrefix;
 
 	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
 			Definer definer) {
-		super(sourceOf(block), block, emptyPrefix(ownerScope));
+		super(sourceOf(block), block, noScopeUpgrade(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
 		this.definer = definer;
 		this.localPrefix = getOwnerScope().pathTo(block.getScope());
 	}
 
-	private LocalDef(LocalDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private LocalDef(LocalDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
 		this.definer = prototype.definer;
@@ -108,7 +104,9 @@ public class LocalDef extends ValueDef {
 			return null;
 		}
 
-		return valueStruct.prefixWith(this.localPrefix).prefixWith(getPrefix());
+		return valueStruct
+				.prefixWith(this.localPrefix)
+				.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	@Override
@@ -170,8 +168,10 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected LocalDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new LocalDef(this, prefix);
+	protected LocalDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new LocalDef(this, upgrade);
 	}
 
 	@Override
@@ -184,7 +184,34 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineCommand inline =
+				getBlock().inlineImperative(normalizer, valueStruct);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new InlineLocalDef(valueStruct, inline);
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+
+		final ImperativeBlock block = getBlock();
+		final Normalizer imperativeNormalizer = new Normalizer(
+				normalizer.getAnalyzer(),
+				block.getScope(),
+				false);
+
+		block.normalizeImperative(imperativeNormalizer);
+	}
+
+	@Override
+	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
 		// Imperative block`s value CAN be UNKNOWN.
 		return writeValue(dirs, host);
 	}
@@ -193,11 +220,7 @@ public class LocalDef extends ValueDef {
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final ObjectOp ownerObject = host.toObject(dirs.dirs());
-
-		assert ownerObject != null :
-			"Local scope owner expected: " + host;
-
+		final ObjectOp ownerObject = host.materialize(dirs.dirs());
 		final LocalScope scope = getBlock().getScope().toLocal();
 		final Obj ownerType = scope.getOwner();
 		final ObjOp ownerBody =
@@ -207,75 +230,8 @@ public class LocalDef extends ValueDef {
 		return ir.writeValue(dirs, ownerBody, null);
 	}
 
-	private Scope getOwnerScope() {
+	Scope getOwnerScope() {
 		return this.ownerScope;
-	}
-
-	private static final class LocalLogical extends Logical {
-
-		private final LocalDef def;
-
-		LocalLogical(LocalDef def) {
-			super(def, def.getOwnerScope());
-			this.def = def;
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Resolver resolver) {
-			assertCompatible(resolver.getScope());
-
-			final Resolver localResolver =
-					this.def.localPrefix.rescope(resolver);
-			final LocalScope local = localResolver.getScope().toLocal();
-
-			assert local != null :
-				"Not a local scope: " + resolver;
-
-			final Action action = this.def.definer.initialLogicalValue(
-					local.walkingResolver(resolver));
-
-			return action.getLogicalValue();
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			getLogger().notReproducible(this);
-			return null;
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			assert assertFullyResolved();
-
-			final CodeDirs subDirs =
-					dirs.begin("local_logical", "Local logical: " + this);
-
-			final Obj owner = this.def.getOwnerScope().toObject();
-			final ValueStruct<?, ?> valueStruct =
-					owner.value().getValueStruct();
-			final ValDirs valDirs = subDirs.value(valueStruct, "local_val");
-
-			this.def.writeValue(valDirs, host);
-			valDirs.done();
-
-			subDirs.end();
-		}
-
-		@Override
-		public String toString() {
-			return this.def + "?";
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			this.def.resolveAll(resolver);
-		}
-
 	}
 
 }

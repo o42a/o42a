@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,14 +20,16 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class EllipsisStatement extends Statement {
@@ -71,6 +73,17 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+	}
+
+	@Override
 	public String toString() {
 		if (!this.exit) {
 			if (this.name == null) {
@@ -89,7 +102,7 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		if (this.exit) {
 			return new ExitOp(builder, this);
 		}
@@ -98,12 +111,12 @@ public final class EllipsisStatement extends Statement {
 
 	private static final class ExitOp extends StOp {
 
-		ExitOp(LocalBuilder builder, EllipsisStatement statement) {
+		ExitOp(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
@@ -119,12 +132,12 @@ public final class EllipsisStatement extends Statement {
 
 	private static final class RepeatOp extends StOp {
 
-		RepeatOp(LocalBuilder builder, EllipsisStatement statement) {
+		RepeatOp(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeValue(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 

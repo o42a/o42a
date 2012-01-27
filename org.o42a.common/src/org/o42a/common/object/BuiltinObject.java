@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -25,6 +25,8 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 
@@ -52,6 +54,15 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 	@Override
 	public boolean isConstantBuiltin() {
 		return false;
+	}
+
+	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		// TODO Implement in-lining.
+		return null;
 	}
 
 	@Override

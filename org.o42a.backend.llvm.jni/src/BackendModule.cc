@@ -1,6 +1,6 @@
 /*
     Compiler JNI Bindings to LLVM
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -101,6 +101,24 @@ static cl::alias ShortOutFormat(
 		cl::Prefix,
 		cl::desc("Alias of -format option"));
 
+static cl::opt<cl::boolOrDefault> AnalyzeUses(
+		"analyze-uses",
+		cl::ValueOptional,
+		cl::Hidden,
+		cl::desc(
+				"Enables or disables the uses analysis. "
+				"Enabled by default"),
+		cl::value_desc("0/1"));
+
+static cl::opt<cl::boolOrDefault> Normalize(
+		"normalize",
+		cl::ValueOptional,
+		cl::Hidden,
+		cl::desc(
+				"Enables or disables the normalization. "
+				"Enabled by default"),
+		cl::value_desc("0/1"));
+
 BackendModule::BackendModule(StringRef ModuleID, LLVMContext &context) :
 		Module(ModuleID, context),
 		targetData(),
@@ -146,6 +164,20 @@ bool BackendModule::isDebugEnabled() {
 		return false;
 	}
 	return Debug.getValue() != cl::BOU_FALSE;
+}
+
+bool BackendModule::isUsesAnalysed() {
+	if (!AnalyzeUses.getNumOccurrences()) {
+		return true;
+	}
+	return AnalyzeUses.getValue() != cl::BOU_FALSE;
+}
+
+bool BackendModule::isNormalizationEnabled() {
+	if (!Normalize.getNumOccurrences()) {
+		return true;
+	}
+	return Normalize.getValue() != cl::BOU_FALSE;
 }
 
 BackendModule *BackendModule::createBackend(StringRef &ModuleID) {

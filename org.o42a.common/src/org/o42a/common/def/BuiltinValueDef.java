@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,96 +21,142 @@ package org.o42a.common.def;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
 public class BuiltinValueDef extends ValueDef {
 
-	private final Builtin builtin;
+	private final Common common;
 
 	public BuiltinValueDef(Builtin builtin) {
 		super(
 				builtin.toObject(),
 				builtin,
-				emptyPrefix(builtin.toObject().getScope()));
-		this.builtin = builtin;
+				noScopeUpgrade(builtin.toObject().getScope()));
+		this.common = new Common(builtin);
 	}
 
-	private BuiltinValueDef(BuiltinValueDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
-		this.builtin = prototype.builtin;
+	private BuiltinValueDef(
+			BuiltinValueDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
+		this.common = prototype.common;
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.builtin.toObject().value().getValueStruct();
+		return this.common.builtin.toObject().value().getValueStruct();
+	}
+
+	@Override
+	protected String name() {
+		return "BuiltinValueDef";
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.builtin.isConstantBuiltin();
+		return this.common.builtin.isConstantBuiltin();
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.builtin.toObject().getScope());
+		return logicalTrue(this, this.common.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.builtin.toObject().getScope());
+		return logicalTrue(this, this.common.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return runtimeLogical(this, this.builtin.toObject().getScope());
+		return runtimeLogical(this, this.common.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected BuiltinValueDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new BuiltinValueDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new BuiltinValueDef(this, upgrade);
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.builtin.calculateBuiltin(resolver);
+		return this.common.builtin.calculateBuiltin(resolver);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 
 		final Obj object = resolver.getContainer().toObject();
-		final Obj builtin = this.builtin.toObject();
+		final Obj builtin = this.common.builtin.toObject();
 
 		if (builtin != object) {
 			builtin.value().resolveAll(resolver);
 		}
 		object.resolveAll();
-		this.builtin.resolveBuiltin(
+		this.common.builtin.resolveBuiltin(
 				object.value().valuePart(isClaim()).resolver());
 	}
 
 	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.builtin.writeBuiltin(dirs, host);
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return this.common.builtin.inlineBuiltin(
+				normalizer,
+				valueStruct,
+				getScope());
 	}
 
 	@Override
-	protected String name() {
-		return "BuiltinValueDef";
+	protected void normalizeDef(Normalizer normalizer) {
+		this.common.inline = inline(normalizer, getValueStruct());
+	}
+
+	@Override
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+
+		final InlineValue inline = this.common.inline;
+
+		if (inline != null) {
+			return inline.writeValue(dirs, host);
+		}
+
+		return super.writeDef(dirs, host);
+	}
+
+	@Override
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		return this.common.builtin.writeBuiltin(dirs, host);
+	}
+
+	private static final class Common {
+
+		private final Builtin builtin;
+		private InlineValue inline;
+
+		Common(Builtin builtin) {
+			this.builtin = builtin;
+		}
+
+		@Override
+		public String toString() {
+			if (this.builtin == null) {
+				return "null";
+			}
+			return this.builtin.toString();
+		}
+
 	}
 
 }

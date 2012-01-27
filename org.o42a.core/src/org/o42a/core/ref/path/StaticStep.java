@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -31,6 +32,8 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -52,12 +55,32 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
-	public Container resolve(
+	public Path toPath() {
+		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
+	}
+
+	@Override
+	public String toString() {
+		if (this.scope == null) {
+			return super.toString();
+		}
+		return '<' + this.scope.toString() + '>';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -74,7 +97,19 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.skip(
+				exactPrediction(normalizer.getStepStart().getScope()),
+				new SameNormalStep(this));
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
@@ -82,28 +117,8 @@ final class StaticStep extends Step {
 	}
 
 	@Override
-	public Path toPath() {
-		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		if (this.scope == null) {
-			return super.toString();
-		}
-		return '<' + this.scope.toString() + '>';
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<StaticStep> {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -35,6 +35,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 	private final MemberField field;
 	private final FieldUser user;
 	private final UsedBy[] usedBy;
+	private UseCase useCase;
 
 	MemberFieldUses(MemberField field) {
 		this.field = field;
@@ -62,6 +63,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 		if (uc.isSteady()) {
 			return uc.usedFlag();
 		}
+		this.useCase = uc;
 
 		boolean unknown = false;
 
@@ -129,7 +131,11 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 	}
 
 	final void useBy(Uses<?> user, FieldUsage usage) {
-		used(usage).addUseBy(user);
+		if (used(usage).addUseBy(user)) {
+			if (this.useCase != null) {
+				this.useCase.update();
+			}
+		}
 	}
 
 	private UsedBy used(FieldUsage usage) {
@@ -198,8 +204,8 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			return this.usedBy.keySet().toString();
 		}
 
-		final void addUseBy(Uses<?> uses) {
-			this.usedBy.put(uses, DUMMY);
+		final boolean addUseBy(Uses<?> uses) {
+			return this.usedBy.put(uses, DUMMY) == null;
 		}
 
 		final User<FieldUsage> user(MemberFieldUses uses, FieldUsage usage) {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,6 +22,7 @@ package org.o42a.core.artifact.link;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -31,6 +32,9 @@ import org.o42a.core.artifact.common.MaterializableArtifactScope;
 import org.o42a.core.artifact.link.impl.LinkTarget;
 import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
@@ -88,6 +92,28 @@ public abstract class Link extends MaterializableArtifact<Link> {
 		return this.targetRef;
 	}
 
+	public final Link findIn(Scope enclosing) {
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
+		if (enclosingScope == enclosing) {
+			return this;
+		}
+
+		enclosing.assertDerivedFrom(enclosingScope);
+
+		return findLinkIn(enclosing);
+	}
+
+	public final void assign(Ref value) {
+
+		final Field<?> field = getScope().toField();
+
+		if (field != null) {
+			field.toMember().assign(value);
+		}
+	}
+
 	protected abstract TargetRef buildTargetRef();
 
 	@Override
@@ -111,10 +137,21 @@ public abstract class Link extends MaterializableArtifact<Link> {
 		return new LinkTarget(this);
 	}
 
+	protected abstract Link findLinkIn(Scope enclosing);
+
 	@Override
 	protected void fullyResolveArtifact() {
 		getTargetRef().resolveAll(
 				getScope().getEnclosingScope().newResolver(content()));
+	}
+
+	@Override
+	protected void normalizeArtifact(Analyzer analyzer) {
+
+		final Resolution target =
+				getTargetRef().getRef().resolve(getScope().dummyResolver());
+
+		target.toArtifact().normalize(analyzer);
 	}
 
 	private void define() {

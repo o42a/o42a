@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -51,7 +51,7 @@ public abstract class Fld {
 		this.bodyIR = bodyIR;
 
 		assert getField().toMember().getAnalysis().getDeclarationAnalysis()
-		.isUsed(getGenerator(), ALL_FIELD_USAGES) :
+		.isUsed(getGenerator().getAnalyzer(), ALL_FIELD_USAGES) :
 			"Attempt to generate never accessed field " + getField();
 
 		this.omitted = mayOmit();
@@ -135,7 +135,7 @@ public abstract class Fld {
 				getField().toMember().getAnalysis().getDeclarationAnalysis();
 
 		return !declarationAnalysis.derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalyzer(),
 				ALL_DERIVATION_USAGES);
 	}
 

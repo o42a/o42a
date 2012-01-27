@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -272,7 +272,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final FieldAnalysis declarationAnalysis =
 				declaredField.getAnalysis();
 
-		if (!declarationAnalysis.isUsed(generator, ALL_FIELD_USAGES)) {
+		if (!declarationAnalysis.isUsed(
+				generator.getAnalyzer(),
+				ALL_FIELD_USAGES)) {
 			// Field is never used. Skip generation.
 			return false;
 		}
@@ -285,6 +287,9 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final Obj ascendant = getAscendant();
 
 		for (Dep dep : ascendant.getDeps()) {
+			if (dep.isDisabled()) {
+				continue;
+			}
 
 			final DepIR depIR = new DepIR(getGenerator(), dep);
 
@@ -314,7 +319,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		final FieldAnalysis analysis = field.getAnalysis();
 
-		out.append(": ").append(analysis.reasonNotFound(getGenerator()));
+		out.append(": ").append(
+				analysis.reasonNotFound(getGenerator().getAnalyzer()));
 
 		return out.toString();
 	}

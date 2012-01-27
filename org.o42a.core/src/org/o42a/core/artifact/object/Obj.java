@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,6 +31,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;
@@ -45,12 +46,15 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseContainer;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldUses;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.impl.local.EnclosingOwnerDep;
 import org.o42a.core.member.impl.local.RefDep;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.ObjectStep;
+import org.o42a.core.ref.impl.path.AbstractMemberStep;
+import org.o42a.core.ref.impl.path.StaticObjectStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -439,8 +443,7 @@ public abstract class Obj
 				return null;
 			}
 
-			return adapterPath.materialize().append(
-					foundInAdapterLink.getKey());
+			return adapterPath.append(foundInAdapterLink.getKey());
 		}
 
 		return null;
@@ -485,7 +488,8 @@ public abstract class Obj
 			}
 
 			// New scope field is to be created.
-			scopePathStep = new ParentObjectStep(SCOPE_FIELD_ID.key(scope));
+			scopePathStep =
+					new ParentObjectStep(this, SCOPE_FIELD_ID.key(scope));
 		} else {
 			// Enclosing local path.
 			// Will be replaced with dependency during path rebuild.
@@ -497,10 +501,23 @@ public abstract class Obj
 		return scopePathStep.toPath();
 	}
 
+	public final Obj findIn(Scope enclosing) {
+
+		final Scope enclosingScope = getScope().getEnclosingScope();
+
+		if (enclosingScope == enclosing) {
+			return this;
+		}
+
+		enclosing.assertDerivedFrom(enclosingScope);
+
+		return findObjectIn(enclosing);
+	}
+
 	public final Ref staticRef(Scope scope) {
 
 		final BoundPath path =
-				new ObjectStep(this).toPath().bindStatically(this, scope);
+				new StaticObjectStep(this).toPath().bindStatically(this, scope);
 
 		return path.target(distributeIn(scope.getContainer()));
 	}
@@ -566,8 +583,7 @@ public abstract class Obj
 
 		return enclosingWrapped.member(field.getKey())
 				.toField()
-				.field(dummyUser())
-				.getArtifact()
+				.artifact(dummyUser())
 				.materialize();
 	}
 
@@ -685,6 +701,8 @@ public abstract class Obj
 		return cloneOf;
 	}
 
+	protected abstract Obj findObjectIn(Scope enclosing);
+
 	@Override
 	protected Dep addEnclosingOwnerDep(Obj owner) {
 		assert getContext().fullResolution().assertIncomplete();
@@ -749,6 +767,12 @@ public abstract class Obj
 			wrapped.value().wrapBy(value());
 		}
 		value().getDefinitions().resolveAll();
+	}
+
+	@Override
+	protected void normalizeArtifact(Analyzer analyzer) {
+		value().normalize(analyzer);
+		normalizeFields(analyzer);
 	}
 
 	protected ObjectIR createIR(Generator generator) {
@@ -854,7 +878,7 @@ public abstract class Obj
 		assert steps.length == 1 :
 			"Enclosing path scope should contain exactly one step";
 
-		final MemberStep step = (MemberStep) steps[0];
+		final AbstractMemberStep step = (AbstractMemberStep) steps[0];
 		final MemberKey memberKey = step.getMemberKey();
 
 		if (memberKey.getOrigin() != getScope()) {
@@ -888,6 +912,28 @@ public abstract class Obj
 		}
 	}
 
+	private void normalizeFields(Analyzer analyzer) {
+		for (Member member : getMembers()) {
+
+			final MemberField memberField = member.toField();
+
+			if (memberField == null) {
+				continue;
+			}
+			if (memberField.isPropagated()) {
+				continue;
+			}
+
+			final Field<?> field = memberField.field(dummyUser());
+
+			if (field.isScopeField()) {
+				continue;
+			}
+
+			field.getArtifact().materialize().normalize(analyzer);
+		}
+	}
+
 	private Symbol memberById(MemberId memberId) {
 		resolveMembers(memberId.containsAdapterId());
 		return this.symbols.get(memberId);
@@ -903,6 +949,7 @@ public abstract class Obj
 		}
 
 		this.deps.put(key, found);
+		found.setDisabled(false);
 
 		return found;
 	}

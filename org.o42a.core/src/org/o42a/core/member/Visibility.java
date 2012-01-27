@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,6 +24,10 @@ public enum Visibility {
 
 	PRIVATE,
 	PROTECTED,
-	PUBLIC
+	PUBLIC;
+
+	public final boolean isOverridable() {
+		return this != PRIVATE;
+	}
 
 }

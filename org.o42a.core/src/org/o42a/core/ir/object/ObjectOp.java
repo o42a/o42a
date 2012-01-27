@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -83,17 +83,15 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-		return this;
-	}
-
-	@Override
 	public final LocalOp toLocal() {
 		return null;
 	}
 
 	public void fillDeps(CodeDirs dirs, Obj sample) {
 		for (Dep dep : sample.getDeps()) {
+			if (dep.isDisabled()) {
+				continue;
+			}
 			dep(dirs, dep).fill(
 					getBuilder().host().toLocal().getBuilder(),
 					dirs);

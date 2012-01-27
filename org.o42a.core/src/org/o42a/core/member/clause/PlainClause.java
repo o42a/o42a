@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -37,6 +37,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -260,6 +261,11 @@ public abstract class PlainClause
 	@Override
 	public final GroupClause toGroupClause() {
 		return null;
+	}
+
+	@Override
+	public Prediction predict(Prediction enclosing) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,16 +21,19 @@ package org.o42a.core.member.field;
 
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
-import static org.o42a.core.member.field.FieldUsage.*;
+import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
+import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
+import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.Generator;
+import org.o42a.codegen.Analyzer;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.util.use.*;
 
 
-public class FieldAnalysis implements Uses<FieldUsage> {
+public class FieldAnalysis {
 
 	private final MemberField member;
 	private MemberFieldUses uses;
@@ -48,40 +51,33 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 		return getMember().getFirstDeclaration().getAnalysis();
 	}
 
-	@Override
-	public final AllUsages<FieldUsage> allUsages() {
-		return ALL_FIELD_USAGES;
-	}
-
-	@Override
 	public UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<FieldUsage> selector) {
-		return uses().selectUse(useCase, selector);
+		return uses().selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<FieldUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final User<DerivationUsage> derivation() {
 		return derivationUses().toUser();
 	}
 
-	public String reasonNotFound(Generator generator) {
+	public String reasonNotFound(Analyzer analyzer) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		if (!uses().isUsed(generator, FIELD_ACCESS)) {
+		if (!uses().isUsed(analyzer, FIELD_ACCESS)) {
 			out.append("never accessed");
 			comma = true;
 		}
-		if (!uses().isUsed(generator, SUBSTANCE_USAGE)
-				&& !uses().isUsed(generator, NESTED_USAGE)) {
+		if (!uses().isUsed(analyzer, SUBSTANCE_USAGE)
+				&& !uses().isUsed(analyzer, NESTED_USAGE)) {
 			if (comma) {
 				out.append(", ");
 			}
@@ -99,6 +95,14 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 		return "MemberAnalysis[" + this.member + ']';
 	}
 
+	final void registerArtifact(Artifact<?> artifact) {
+
+		final MemberFieldUses uses = uses();
+
+		uses.useBy(artifact.content().toUser(), SUBSTANCE_USAGE);
+		uses.useBy(artifact.fieldUses(), NESTED_USAGE);
+	}
+
 	final MemberFieldUses uses() {
 		if (this.uses != null) {
 			return this.uses;
@@ -108,7 +112,8 @@ public class FieldAnalysis implements Uses<FieldUsage> {
 
 		if (getMember().isOverride()) {
 
-			final MemberFieldUses declarationUses = getDeclarationAnalysis().uses();
+			final MemberFieldUses declarationUses =
+					getDeclarationAnalysis().uses();
 
 			declarationUses.useBy(
 					this.uses.usageUser(FIELD_ACCESS),

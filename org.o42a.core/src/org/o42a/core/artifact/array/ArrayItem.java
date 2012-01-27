@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,14 +20,18 @@
 package org.o42a.core.artifact.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.artifact.object.ObjectValue;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 
 
 public final class ArrayItem extends ArrayElement {
@@ -120,6 +124,21 @@ public final class ArrayItem extends ArrayElement {
 		@Override
 		protected TargetRef buildTargetRef() {
 			return this.item.getValueRef().toTargetRef(this.item.getTypeRef());
+		}
+
+		@Override
+		protected Link findLinkIn(Scope enclosing) {
+
+			final Obj array = enclosing.toObject();
+			final ObjectValue arrayValue = array.value();
+			final ArrayValueStruct arrayStruct =
+					ArrayValueStruct.class.cast(arrayValue.getValueStruct());
+			final Value<Array> arrayVal =
+					arrayStruct.cast(arrayValue.getValue());
+			final ArrayItem[] items =
+					arrayVal.getCompilerValue().items(enclosing);
+
+			return items[this.item.index].getArtifact();
 		}
 
 	}

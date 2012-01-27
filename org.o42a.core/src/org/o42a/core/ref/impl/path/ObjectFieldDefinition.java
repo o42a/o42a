@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -32,7 +32,7 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 
 	public ObjectFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
-		this.path = path.materialize();
+		this.path = path;
 	}
 
 	@Override

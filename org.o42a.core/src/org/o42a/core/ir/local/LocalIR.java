@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -78,7 +78,7 @@ public final class LocalIR extends ObjectLocalIR {
 
 	@Override
 	protected LocalOp createOp(CodeBuilder builder, Code code) {
-		return new LocalOp((LocalBuilder) builder, getScope());
+		return new LocalOp(builder, getScope());
 	}
 
 }

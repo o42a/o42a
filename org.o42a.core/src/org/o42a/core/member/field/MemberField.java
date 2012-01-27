@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,14 +19,12 @@
 */
 package org.o42a.core.member.field;
 
+import static java.util.Collections.emptyList;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
-import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
-import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import org.o42a.core.Container;
 import org.o42a.core.artifact.Accessor;
@@ -38,6 +36,7 @@ import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -46,7 +45,7 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.use.UserInfo;
 
 
-public abstract class MemberField extends Member {
+public abstract class MemberField extends Member implements FieldReplacement {
 
 	private static final MemberField[] NO_MERGED = new MemberField[0];
 
@@ -58,6 +57,7 @@ public abstract class MemberField extends Member {
 	private HashSet<CompilerContext> allContexts;
 
 	private FieldAnalysis analysis;
+	private ArrayList<FieldReplacement> allReplacements;
 
 	public MemberField(MemberOwner owner, FieldDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -162,9 +162,18 @@ public abstract class MemberField extends Member {
 		return this.field;
 	}
 
+	public final Artifact<?> artifact(UserInfo user) {
+		return field(user).getArtifact();
+	}
+
 	@Override
 	public final MemberField toField() {
 		return this;
+	}
+
+	@Override
+	public final Assignment toAssignment() {
+		return null;
 	}
 
 	@Override
@@ -186,7 +195,7 @@ public abstract class MemberField extends Member {
 	public abstract MemberField getPropagatedFrom();
 
 	@Override
-	public final Set<CompilerContext> getAllContexts() {
+	public final Set<CompilerContext> allContexts() {
 		if (this.allContexts != null) {
 			return this.allContexts;
 		}
@@ -197,17 +206,30 @@ public abstract class MemberField extends Member {
 		return this.allContexts;
 	}
 
+	public final List<FieldReplacement> allReplacements() {
+		if (this.allReplacements == null) {
+			return emptyList();
+		}
+		return this.allReplacements;
+	}
+
 	@Override
 	public abstract MemberField propagateTo(MemberOwner owner);
+
+	public final void assign(Ref value) {
+		registerReplacement(new Assignment(value));
+	}
 
 	@Override
 	public void resolveAll() {
 
-		final Artifact<?> artifact = field(dummyUser()).getArtifact();
+		final Artifact<?> artifact = artifact(dummyUser());
 
-		getAnalysis().uses().useBy(artifact.content(), SUBSTANCE_USAGE);
-		getAnalysis().uses().useBy(artifact.fieldUses(), NESTED_USAGE);
+		getAnalysis().registerArtifact(artifact);
 		artifact.resolveAll();
+		if (isOverride() && !isClone()) {
+			registerAsReplacement();
+		}
 	}
 
 	@Override
@@ -388,6 +410,24 @@ public abstract class MemberField extends Member {
 			return;
 		}
 		getAnalysis().uses().useBy(user.toUser(), FIELD_ACCESS);
+	}
+
+	private void registerAsReplacement() {
+		for (Member overridden : getOverridden()) {
+			overridden.toField().registerReplacement(this);
+		}
+	}
+
+	private void registerReplacement(FieldReplacement replacement) {
+		if (this.allReplacements == null) {
+			this.allReplacements = new ArrayList<FieldReplacement>();
+		}
+		this.allReplacements.add(replacement);
+		if (isClone()) {
+			// Clone replaced by explicit field.
+			// Register this clone as a replacement too.
+			registerAsReplacement();
+		}
 	}
 
 }

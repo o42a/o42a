@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
@@ -47,31 +48,8 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		walker.skip(this, start);
-		return start.getContainer();
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
+	public RefUsage getObjectUsage() {
+		return RefUsage.LOGICAL_REF_USAGE;
 	}
 
 	@Override
@@ -84,6 +62,77 @@ final class CastToVoid extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return path.cut(1).fieldDefinition(distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		walker.skip(this, start);
+		return start.getContainer();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return target;
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.inline(normalizer.getStepStart(), new Inline());
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start, this);
+	}
+
+	private static final class Inline extends InlineStep {
+
+		private InlineStep preceding;
+
+		@Override
+		public void ignore() {
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public void after(InlineStep preceding) {
+			this.preceding = preceding;
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+			this.preceding.writeLogicalValue(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
+
+			writeLogicalValue(dirs.dirs(), host);
+
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public String toString() {
+			return "@@void";
+		}
+
 	}
 
 	private static final class Op extends StepOp<CastToVoid> {

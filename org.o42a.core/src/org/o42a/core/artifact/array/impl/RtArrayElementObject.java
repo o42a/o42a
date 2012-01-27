@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,8 @@
 package org.o42a.core.artifact.array.impl;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.Scope;
+import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
@@ -51,6 +53,14 @@ final class RtArrayElementObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return null;
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+
+		final Link link = this.element.getArtifact();
+
+		return link.findIn(enclosing).materialize();
 	}
 
 	@Override

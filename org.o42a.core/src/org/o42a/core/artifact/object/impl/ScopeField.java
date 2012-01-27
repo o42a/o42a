@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,11 +30,11 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectField;
 import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.local.LclOp;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.Member;
@@ -59,7 +59,7 @@ public final class ScopeField extends ObjectField {
 						memberId)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
-		setFieldArtifact(owner.getScope().getEnclosingContainer().toObject());
+		setScopeArtifact(owner.getScope().getEnclosingContainer().toObject());
 	}
 
 	private ScopeField(MemberField member, ScopeField overridden) {
@@ -80,7 +80,7 @@ public final class ScopeField extends ObjectField {
 	@Override
 	public Obj getArtifact() {
 
-		final Obj artifact = getFieldArtifact();
+		final Obj artifact = getScopeArtifact();
 
 		if (artifact != null) {
 			return artifact;
@@ -111,7 +111,7 @@ public final class ScopeField extends ObjectField {
 			}
 		}
 
-		setFieldArtifact(newArtifact);
+		setScopeArtifact(newArtifact);
 
 		return newArtifact;
 	}
@@ -156,7 +156,7 @@ public final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected LclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
+		protected LclOp allocateLocal(CodeBuilder builder, AllocationCode code) {
 			throw new UnsupportedOperationException();
 		}
 

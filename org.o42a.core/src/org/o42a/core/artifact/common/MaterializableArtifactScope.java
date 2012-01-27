@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,14 +21,15 @@ package org.o42a.core.artifact.common;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactScope;
+import org.o42a.core.artifact.StandaloneArtifactScope;
 import org.o42a.core.member.MemberContainer;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.LocationInfo;
 
 
 public abstract class MaterializableArtifactScope<
 		A extends MaterializableArtifact<A>>
-				extends ArtifactScope<A> {
+				extends StandaloneArtifactScope<A> {
 
 	private final MaterializableArtifactScope<A> propagatedFrom;
 	private ArtifactContainer<A> container;
@@ -77,6 +78,11 @@ public abstract class MaterializableArtifactScope<
 	@Override
 	public MaterializableArtifactScope<A> getLastDefinition() {
 		return getFirstDeclaration();
+	}
+
+	@Override
+	public final Prediction predict(Prediction enclosing) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

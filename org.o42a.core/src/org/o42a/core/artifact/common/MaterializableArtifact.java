@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,7 +22,7 @@ package org.o42a.core.artifact.common;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.member.FieldUses;
+import org.o42a.core.member.field.FieldUses;
 
 
 public abstract class MaterializableArtifact<

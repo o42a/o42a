@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -45,11 +45,6 @@ public class ScopeFldOp extends FldOp {
 	@Override
 	public final ScopeFld.Op ptr() {
 		return (ScopeFld.Op) super.ptr();
-	}
-
-	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-		return target(dirs);
 	}
 
 	public ObjectOp target(CodeDirs dirs) {

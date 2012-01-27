@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -51,18 +51,6 @@ public abstract class RefFldOp<
 	@Override
 	public S ptr() {
 		return (S) super.ptr();
-	}
-
-	@Override
-	public final ObjectOp toObject(CodeDirs dirs) {
-
-		final Artifact<?> artifact = fld().getField().getArtifact();
-
-		if (artifact.getKind() == ArtifactKind.OBJECT) {
-			return target(dirs);
-		}
-
-		return null;
 	}
 
 	@Override

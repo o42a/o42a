@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -27,8 +27,9 @@ import java.util.Arrays;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.*;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.util.ArrayUtil;
 
 
@@ -284,7 +285,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return create(PROPOSITION, newPropositions);
 	}
 
-	final S prefixWith(PrefixPath prefix) {
+	final S upgradeScope(ScopeUpgrade scopeUpgrade) {
 		if (isEmpty()) {
 			return self();
 		}
@@ -294,9 +295,9 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		for (int i = 0; i < items.length; ++i) {
 
 			final D def = items[i];
-			final D newDef = def.prefixWith(prefix);
+			final D newDef = def.upgradeScope(scopeUpgrade);
 
-			newDef.assertScopeIs(prefix.getStart());
+			newDef.assertScopeIs(scopeUpgrade.getFinalScope());
 			if (def == newDef) {
 				continue;
 			}
@@ -309,7 +310,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 			System.arraycopy(items, 0, newItems, 0, i);
 			newItems[i++] = newDef;
 			for (;i < items.length; ++i) {
-				newItems[i] = items[i].prefixWith(prefix);
+				newItems[i] = items[i].upgradeScope(scopeUpgrade);
 			}
 
 			return create(getDefKind(), newItems);
@@ -325,8 +326,14 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		final ObjectValuePart<?, ?> part = objectValue.part(getDefKind());
 		final Resolver resolver = part.resolver();
 
-		for (Def<?> def : this.defs) {
+		for (Def<?> def : get()) {
 			def.resolveAll(resolver);
+		}
+	}
+
+	final void normalize(Normalizer normalizer) {
+		for (Def<?> def : get()) {
+			def.normalize(normalizer);
 		}
 	}
 

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -46,7 +46,7 @@ public final class PathFieldDefinition extends FieldDefinition {
 		final Distributor distributor = distribute();
 
 		definer.setTargetRef(
-				this.path.materialize().target(distributor),
+				this.path.target(distributor),
 				this.path.typeRef(distributor));
 	}
 

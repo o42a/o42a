@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,11 +22,10 @@ package org.o42a.core.def;
 import static org.o42a.core.def.Definitions.*;
 
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.def.impl.InlineCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.LogicalValue;
@@ -36,12 +35,15 @@ public abstract class CondDef extends Def<CondDef> {
 
 	private ValueDef value;
 
-	public CondDef(Obj source, LocationInfo location, PrefixPath prefix) {
-		super(source, location, DefKind.CONDITION, prefix);
+	public CondDef(
+			Obj source,
+			LocationInfo location,
+			ScopeUpgrade scopeUpgrade) {
+		super(source, location, DefKind.CONDITION, scopeUpgrade);
 	}
 
-	protected CondDef(CondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	protected CondDef(CondDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 	}
 
 	public final boolean isRequirement() {
@@ -100,7 +102,7 @@ public abstract class CondDef extends Def<CondDef> {
 	public final Condition condition(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
-		final Resolver rescoped = getPrefix().rescope(resolver);
+		final Resolver rescoped = getScopeUpgrade().rescope(resolver);
 
 		if (hasPrerequisite()) {
 
@@ -143,13 +145,12 @@ public abstract class CondDef extends Def<CondDef> {
 
 	public final void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
+		writeDef(dirs, host);
+	}
 
-		final HostOp rescopedHost = getPrefix().write(dirs, host);
-
-		if (hasPrerequisite()) {
-			getPrerequisite().write(dirs.unknownWhenFalse(), rescopedHost);
-		}
-		getLogical().write(dirs.falseWhenUnknown(), rescopedHost);
+	@Override
+	protected String name() {
+		return "CondDef";
 	}
 
 	@Override
@@ -161,9 +162,49 @@ public abstract class CondDef extends Def<CondDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	@Override
-	protected String name() {
-		return "CondDef";
+	protected final InlineCond inline(Normalizer normalizer) {
+
+		final InlineCond prerequisite;
+
+		if (!hasPrerequisite()) {
+			prerequisite = null;
+		} else {
+			prerequisite = getPrerequisite().inline(normalizer, getScope());
+			if (prerequisite == null) {
+				return null;
+			}
+		}
+
+		final InlineCond precondition =
+				getPrecondition().inline(normalizer, getScope());
+
+		if (precondition == null) {
+			if (prerequisite != null) {
+				prerequisite.cancel();
+			}
+			return null;
+		}
+
+		final InlineCond def = inlineDef(normalizer);
+
+		if (def == null) {
+			if (prerequisite != null) {
+				prerequisite.cancel();
+			}
+			precondition.cancel();
+			return null;
+		}
+
+		return new InlineCondDef(prerequisite, precondition, def);
+	}
+
+	protected abstract InlineCond inlineDef(Normalizer normalizer);
+
+	protected void writeDef(CodeDirs dirs, HostOp host) {
+		if (hasPrerequisite()) {
+			getPrerequisite().write(dirs.unknownWhenFalse(), host);
+		}
+		getLogical().write(dirs.falseWhenUnknown(), host);
 	}
 
 }

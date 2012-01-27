@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,7 +20,6 @@
 package org.o42a.core.ir;
 
 import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -30,7 +29,6 @@ import org.o42a.codegen.code.Function;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.local.LocalBuilder;
-import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.local.LocalScope;
@@ -38,7 +36,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 
 
-public class CodeBuilder {
+public abstract class CodeBuilder {
 
 	public static CodeBuilder codeBuilder(
 			Function<? extends ObjectFunc<?>> function,
@@ -55,62 +53,30 @@ public class CodeBuilder {
 
 		final Obj scopeObject = scope.toObject();
 
-		if (scopeObject != null) {
-			return new CodeBuilder(
-					function,
-					exit,
-					scopeObject.ir(generator).getBodyType(),
-					scopeObject,
-					hostPrecision);
-		}
+		assert scopeObject != null :
+			"Unsupported scope: " + scope;
 
-		return new CodeBuilder(function, scope);
+		return new ObjBuilder(
+				function,
+				exit,
+				scopeObject.ir(generator).getBodyType(),
+				scopeObject,
+				hostPrecision);
 	}
 
-	public static CodeBuilder codeBuilder(
+	public static CodeBuilder hostlessBuilder(
 			CompilerContext context,
 			Function<?> function) {
-		return new CodeBuilder(context, function);
+		return new HostlessBuilder(context, function);
 	}
 
 	private final CompilerContext context;
-	private final HostOp host;
 	private final Function<?> function;
 	private int nameSeq;
 
-	protected CodeBuilder(
-			Function<? extends ObjectFunc<?>> function,
-			CodePos exit,
-			ObjectBodyIR hostIR,
-			Obj hostType,
-			ObjectPrecision hostPrecision) {
-		this.context = hostIR.getAscendant().getContext();
-		this.function = function;
-		this.host = host(function, exit, hostIR, hostType, hostPrecision);
-	}
-
-	protected CodeBuilder(
-			Function<? extends ObjectFunc<?>> function,
-			LocalIR scopeIR) {
-		this.context = scopeIR.getScope().getContext();
-		this.function = function;
-		this.host = scopeIR.op(this, function);
-	}
-
-	private CodeBuilder(
-			Function<? extends ObjectFunc<?>> function,
-			Scope scope) {
-		this.context = scope.getContext();
-		this.function = function;
-		this.host = scope.ir(function.getGenerator()).op(this, function);
-	}
-
-	private CodeBuilder(
-			CompilerContext context,
-			Function<?> function) {
+	protected CodeBuilder(CompilerContext context, Function<?> function) {
 		this.context = context;
 		this.function = function;
-		this.host = null;
 	}
 
 	public final Generator getGenerator() {
@@ -129,9 +95,9 @@ public class CodeBuilder {
 		return (ObjectSignature<?>) this.function.getSignature();
 	}
 
-	public HostOp host() {
-		return this.host;
-	}
+	public abstract HostOp host();
+
+	public abstract ObjectOp owner();
 
 	public final CodeId nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);
@@ -201,39 +167,6 @@ public class CodeBuilder {
 		final RefOp ancestor = ancestorType.op(dirs, host());
 
 		return ancestor.target(dirs).materialize(dirs);
-	}
-
-	private ObjOp host(
-			Code code,
-			CodePos exit,
-			ObjectBodyIR hostIR,
-			Obj hostType,
-			ObjectPrecision hostPrecision) {
-		switch (hostPrecision) {
-		case EXACT:
-			return hostIR.getObjectIR().op(this, code).cast(
-					null,
-					falseWhenUnknown(code, exit),
-					hostType);
-		case COMPATIBLE:
-			return getFunction().arg(code, getObjectSignature().object())
-					.to(null, code, hostIR)
-					.op(this, hostType, hostPrecision);
-		case DERIVED:
-
-			final ObjectOp host = anonymousObject(
-					this,
-					getFunction().arg(code, getObjectSignature().object()),
-					hostType);
-
-			return host.cast(
-					code.id("host"),
-					falseWhenUnknown(code, exit),
-					hostType);
-		}
-
-		throw new IllegalArgumentException(
-				"Unknown host precision: " + hostPrecision);
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -45,7 +45,7 @@ public class LocalResolver extends Resolver {
 		if (toUser() == null) {
 			return super.toString();
 		}
-		if (isDummy()) {
+		if (toUser().isDummy()) {
 			return "DummyLocalResolver[" + getScope() + ']';
 		}
 		return "LocalResolver[" + getScope() + " by " + toUser() + ']';

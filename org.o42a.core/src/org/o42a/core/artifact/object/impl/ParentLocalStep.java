@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -34,6 +34,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -52,40 +53,8 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final Obj object = start.toObject();
-
-		object.assertDerivedFrom(this.object);
-
-		final Container result =
-				object.getScope().getEnclosingContainer();
-
-		walker.up(object, this, result);
-
-		return result;
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new OpaqueLocalOp(start);
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
@@ -147,6 +116,56 @@ public final class ParentLocalStep extends Step {
 		return defaultFieldDefinition(path, distributor);
 	}
 
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+
+		final Obj object = start.toObject();
+
+		object.assertDerivedFrom(this.object);
+
+		final Container result =
+				object.getScope().getEnclosingContainer();
+
+		walker.up(object, this, result);
+
+		return result;
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+
+		final Obj object = normalizer.getStepStart().getScope().toObject();
+
+		object.assertDerivedFrom(this.object);
+
+		final Container result =
+				object.getScope().getEnclosingContainer();
+
+		normalizer.up(result.getScope());
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(reproducer.getScope().getEnclosingScopePath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new OpaqueLocalOp(start);
+	}
+
 	private final ObjectArtifact object() {
 		return this.object;
 	}
@@ -155,11 +174,6 @@ public final class ParentLocalStep extends Step {
 
 		OpaqueLocalOp(PathOp start) {
 			super(start);
-		}
-
-		@Override
-		public ObjectOp toObject(CodeDirs dirs) {
-			return null;
 		}
 
 		@Override

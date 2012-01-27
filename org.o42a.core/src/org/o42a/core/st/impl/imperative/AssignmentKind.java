@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.StOp.noStOp;
 
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 
 
@@ -30,7 +30,7 @@ enum AssignmentKind {
 	ASSIGNMENT_ERROR() {
 
 		@Override
-		public StOp op(LocalBuilder builder, AssignmentStatement assignment) {
+		public StOp op(CodeBuilder builder, AssignmentStatement assignment) {
 			return noStOp(builder, assignment);
 		}
 
@@ -39,7 +39,7 @@ enum AssignmentKind {
 	VARIABLE_ASSIGNMENT() {
 
 		@Override
-		public StOp op(LocalBuilder builder, AssignmentStatement assignment) {
+		public StOp op(CodeBuilder builder, AssignmentStatement assignment) {
 			return new VariableAssignmentOp(builder, assignment);
 		}
 
@@ -50,7 +50,7 @@ enum AssignmentKind {
 	}
 
 	public abstract StOp op(
-			LocalBuilder builder,
+			CodeBuilder builder,
 			AssignmentStatement assignment);
 
 }

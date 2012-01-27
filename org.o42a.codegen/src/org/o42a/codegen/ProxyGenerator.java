@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,7 +23,6 @@ import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCase;
 
 
 public abstract class ProxyGenerator extends Generator {
@@ -32,7 +31,6 @@ public abstract class ProxyGenerator extends Generator {
 	private final Debug debug;
 
 	public ProxyGenerator(Generator proxiedGenerator) {
-		super(proxiedGenerator.getId());
 		this.proxiedGenerator = proxiedGenerator;
 		proxiedGenerator.proxied();
 		this.debug = new Debug(this);
@@ -43,28 +41,18 @@ public abstract class ProxyGenerator extends Generator {
 	}
 
 	@Override
+	public final Analyzer getAnalyzer() {
+		return getProxiedGenerator().getAnalyzer();
+	}
+
+	@Override
 	public final CodeIdFactory getCodeIdFactory() {
 		return getProxiedGenerator().getCodeIdFactory();
 	}
 
 	@Override
-	public final boolean isUsesAnalysed() {
-		return getProxiedGenerator().isUsesAnalysed();
-	}
-
-	@Override
-	public final void setUsesAnalysed(boolean usesAnalysed) {
-		getProxiedGenerator().setUsesAnalysed(usesAnalysed);
-	}
-
-	@Override
 	public final Debug getDebug() {
 		return this.debug;
-	}
-
-	@Override
-	public final UseCase toUseCase() {
-		return getProxiedGenerator().toUseCase();
 	}
 
 	protected final CodeBackend proxiedCodeBackend() {

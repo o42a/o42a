@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
@@ -47,7 +47,7 @@ final class NotEqualsOperator extends ComparisonOperator {
 	}
 
 	@Override
-	public ValOp writeComparison(ValDirs dirs, ObjectOp comparison) {
+	public ValOp writeComparison(ValDirs dirs, RefOp comparison) {
 
 		final Code code = dirs.code();
 		final Code notEqual = code.addBlock("not_equal");

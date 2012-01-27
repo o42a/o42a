@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -69,7 +69,7 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {
 		if (!object.content().toUser().isUsed(
-				getGenerator(),
+				getGenerator().getAnalyzer(),
 				ALL_SIMPLE_USAGES)) {
 			ptr.setNull();
 			return;

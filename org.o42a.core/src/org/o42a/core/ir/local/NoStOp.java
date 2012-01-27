@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,18 +19,19 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
 final class NoStOp extends StOp {
 
-	NoStOp(LocalBuilder builder, Statement statement) {
+	NoStOp(CodeBuilder builder, Statement statement) {
 		super(builder, statement);
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 	}
 
 	@Override
