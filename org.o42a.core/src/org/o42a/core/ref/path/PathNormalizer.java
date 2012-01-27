@@ -22,6 +22,7 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.ref.Prediction.scopePrediction;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.util.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -168,12 +169,19 @@ public final class PathNormalizer {
 
 	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
-			add(
-					scopePrediction(enclosing),
-					new PathRemainderNormalStep(
-							getPath().getPath(),
-							getStepIndex()));
+
+			final Scope current;
+
+			if (this.stepPrediction != null) {
+				current = this.stepPrediction.getScope();
+			} else {
+				current = this.stepStart.getScope();
+			}
+
+			this.normalSteps.add(
+					new NormalPathStep(current.getEnclosingScopePath()));
 			overrideNonIgnored();
+			addRest();
 			this.data.normalizationFinished = true;
 			return false;
 		}
@@ -219,14 +227,7 @@ public final class PathNormalizer {
 		this.stepNormalized = normalizer.stepNormalized;
 		this.stepPrediction = normalizer.stepPrediction;
 		if (normalizer.isNormalizationFinished()) {
-
-			final int nextStep = getStepIndex() + 1;
-
-			if (nextStep < getPath().length()) {
-				this.normalSteps.add(new PathRemainderNormalStep(
-						getPath().getPath(),
-						nextStep));
-			}
+			addRest();
 		}
 	}
 
@@ -346,9 +347,14 @@ public final class PathNormalizer {
 		this.overrideNonIgnored = true;
 	}
 
-	private static void cancelAll(Iterable<NormalStep> normalSteps) {
-		for (NormalStep step : normalSteps) {
-			step.cancel();
+	private void addRest() {
+
+		final int nextStep = getStepIndex() + 1;
+
+		if (nextStep < getPath().length()) {
+			this.normalSteps.add(new PathRemainderNormalStep(
+					getPath().getPath(),
+					nextStep));
 		}
 	}
 

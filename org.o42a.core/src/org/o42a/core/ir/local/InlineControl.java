@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,28 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ir.local;
 
-import java.util.List;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.Cancelable;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.CodeBuilder;
 
 
-public interface NormalPath extends Cancelable {
+public class InlineControl extends MainControl {
 
-	boolean isNormalized();
+	private Code returnCode;
 
-	Scope getOrigin();
+	public InlineControl(
+			CodeBuilder builder,
+			Code code,
+			CodePos exit,
+			CodePos falseDir) {
+		super(builder, code, exit, falseDir);
+	}
 
-	void appendTo(List<NormalStep> normalSteps);
+	@Override
+	public void end() {
+		super.end();
+		if (this.returnCode != null) {
+			this.returnCode.go(code().tail());
+		}
+	}
 
-	void writeLogicalValue(CodeDirs dirs, HostOp host);
-
-	ValOp writeValue(ValDirs dirs, HostOp host);
+	@Override
+	CodePos returnDir() {
+		if (this.returnCode == null) {
+			this.returnCode = code().addBlock("return");
+		}
+		return this.returnCode.head();
+	}
 
 }

@@ -22,19 +22,20 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.CodeBuilder;
 
 
-final class MainControl extends Control {
+abstract class MainControl extends Control {
 
-	private final LocalBuilder builder;
+	private final CodeBuilder builder;
 	private final Code code;
 	private final CodePos exit;
-	private Code returnCode;
+
 	private int seq;
 	private final CodePos falseDir;
 
 	MainControl(
-			LocalBuilder builder,
+			CodeBuilder builder,
 			Code code,
 			CodePos exit,
 			CodePos falseDir) {
@@ -69,7 +70,7 @@ final class MainControl extends Control {
 	public void end() {
 	}
 
-	final LocalBuilder builder() {
+	final CodeBuilder builder() {
 		return this.builder;
 	}
 
@@ -81,18 +82,6 @@ final class MainControl extends Control {
 	@Override
 	final BracesControl braces() {
 		return null;
-	}
-
-	@Override
-	final CodePos returnDir() {
-		if (this.returnCode != null) {
-			return this.returnCode.head();
-		}
-
-		this.returnCode = this.code.addBlock(this.code.id("return"));
-		this.returnCode.returnVoid();
-
-		return this.returnCode.head();
 	}
 
 	@Override

@@ -210,7 +210,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected abstract void fullyResolveDef(Resolver resolver);
 
-	protected final InlineValue inline(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 

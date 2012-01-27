@@ -91,8 +91,7 @@ public final class PathReproducer {
 	}
 
 	public final PathReproduction reproducePath() {
-		return getReproducingPath().getKind().reproduce(
-				this);
+		return getReproducingPath().getKind().reproduce(this);
 	}
 
 	public final <B> PathBinding<B> reproduce(PathBinding<B> binding) {

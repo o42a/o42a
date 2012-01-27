@@ -26,11 +26,9 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.st.Definer;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -236,7 +234,7 @@ final class ImperativeOp {
 			Control control,
 			ValOp result,
 			Imperatives statements,
-			InlineStatements inlines) {
+			InlineCommands inlines) {
 
 		final List<Definer> definers = statements.getDefiners();
 		final int size = definers.size();
@@ -254,39 +252,19 @@ final class ImperativeOp {
 
 				if (result == null) {
 					op.writeLogicalValue(control);
-					continue;
+				} else {
+					op.writeValue(control, result);
 				}
-				op.writeValue(control, result);
-				continue;
+			} else {
+
+				final InlineCommand inline = inlines.get(i);
+
+				if (result == null) {
+					inline.writeCond(control);
+				} else {
+					inline.writeValue(control, result);
+				}
 			}
-
-			final InlineValue inline = inlines.get(i);
-
-			if (result == null) {
-
-				final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-						control.code(),
-						control.falseDir());
-
-				inline.writeCond(dirs, control.host());
-
-				continue;
-			}
-
-			final Code code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(code.id("local_val"), result);
-
-			result.store(
-					code,
-					inline.writeValue(dirs, control.host()));
-
-			dirs.done();
-
-			control.returnValue();
 		}
 	}
 

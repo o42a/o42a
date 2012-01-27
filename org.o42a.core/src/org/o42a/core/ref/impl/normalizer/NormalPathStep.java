@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,33 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util;
+package org.o42a.core.ref.impl.normalizer;
+
+import org.o42a.core.ref.path.NormalAppender;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.Step;
 
 
-public final class Cancellation {
+public final class NormalPathStep extends NormalAppender {
 
-	public static void cancelAll(Cancelable... cancelables) {
-		for (Cancelable cancellable : cancelables) {
-			cancellable.cancel();
-		}
+	private final Path path;
+
+	public NormalPathStep(Path path) {
+		this.path = path;
 	}
 
-	public static void cancelAll(Iterable<? extends Cancelable> cancelables) {
-		for (Cancelable cancellable : cancelables) {
-			cancellable.cancel();
+	@Override
+	public Path appendTo(Path path) {
+
+		Path result = path;
+
+		for (Step step : this.path.getSteps()) {
+			result = result.append(step);
 		}
+
+		return result;
 	}
 
-	public static void cancelUpToNull(Cancelable... cancelables) {
-		for (Cancelable cancellable : cancelables) {
-			if (cancellable == null) {
-				return;
-			}
-			cancellable.cancel();
-		}
+	@Override
+	public void ignore() {
 	}
 
-	private Cancellation() {
+	@Override
+	public void cancel() {
+	}
+
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
+		return this.path.toString();
 	}
 
 }

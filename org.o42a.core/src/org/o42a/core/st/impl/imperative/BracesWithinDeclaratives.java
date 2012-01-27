@@ -94,7 +94,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		throw new UnsupportedOperationException();

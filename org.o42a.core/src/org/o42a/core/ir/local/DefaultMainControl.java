@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,28 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ir.local;
 
-import java.util.List;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.Cancelable;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.CodePos;
 
 
-public interface NormalPath extends Cancelable {
+final class DefaultMainControl extends MainControl {
 
-	boolean isNormalized();
+	private Code returnCode;
 
-	Scope getOrigin();
+	public DefaultMainControl(
+			LocalBuilder builder,
+			Code code,
+			CodePos exit,
+			CodePos falseDir) {
+		super(builder, code, exit, falseDir);
+	}
 
-	void appendTo(List<NormalStep> normalSteps);
+	@Override
+	final CodePos returnDir() {
+		if (this.returnCode != null) {
+			return this.returnCode.head();
+		}
 
-	void writeLogicalValue(CodeDirs dirs, HostOp host);
+		this.returnCode = code().addBlock(code().id("return"));
+		this.returnCode.returnVoid();
 
-	ValOp writeValue(ValDirs dirs, HostOp host);
+		return this.returnCode.head();
+	}
 
 }

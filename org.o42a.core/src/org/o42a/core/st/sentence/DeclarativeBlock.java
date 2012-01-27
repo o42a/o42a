@@ -30,9 +30,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.BlockDefiner;
@@ -165,7 +165,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		throw new UnsupportedOperationException();

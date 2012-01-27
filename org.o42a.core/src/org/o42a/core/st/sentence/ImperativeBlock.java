@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
@@ -33,13 +34,10 @@ import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueStruct;
@@ -233,11 +231,10 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		// TODO Implement imperative block in-lining.
-		return null;
+		return inlineBlock(normalizer, valueStruct, this);
 	}
 
 	@Override

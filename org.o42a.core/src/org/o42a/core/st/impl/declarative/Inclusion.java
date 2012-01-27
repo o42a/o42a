@@ -22,7 +22,6 @@ package org.o42a.core.st.impl.declarative;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -48,7 +47,7 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	public final InlineValue inlineImperative(
+	public final InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

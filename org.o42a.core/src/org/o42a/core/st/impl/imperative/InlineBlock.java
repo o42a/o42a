@@ -19,24 +19,23 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 import static org.o42a.core.st.impl.imperative.InlineSentence.inlineSentence;
 import static org.o42a.util.Cancellation.cancelAll;
 import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueStruct;
 
 
-public class InlineBlock extends InlineValue {
+public class InlineBlock implements InlineCommand {
 
 	public static InlineBlock inlineBlock(
 			Normalizer normalizer,
@@ -60,15 +59,16 @@ public class InlineBlock extends InlineValue {
 			inlines[i++] = inline;
 		}
 
-		return new InlineBlock(valueStruct, inlines);
+		return new InlineBlock(block, inlines);
 	}
 
+	private final ImperativeBlock block;
 	private final InlineSentence[] sentences;
 
 	private InlineBlock(
-			ValueStruct<?, ?> valueStruct,
+			ImperativeBlock block,
 			InlineSentence[] sentences) {
-		super(valueStruct);
+		this.block = block;
 		this.sentences = sentences;
 	}
 
@@ -77,15 +77,13 @@ public class InlineBlock extends InlineValue {
 	}
 
 	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		// TODO Auto-generated method stub
-		super.writeCond(dirs, host);
+	public void writeCond(Control control) {
+		writeSentences(control, null, this.block, this);
 	}
 
 	@Override
-	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		// TODO Auto-generated method stub
-		return null;
+	public void writeValue(Control control, ValOp result) {
+		writeSentences(control, result, this.block, this);
 	}
 
 	@Override

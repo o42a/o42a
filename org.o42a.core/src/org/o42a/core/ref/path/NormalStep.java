@@ -19,15 +19,15 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.util.Cancelable;
 
-public abstract class NormalStep {
+
+public abstract class NormalStep implements Cancelable {
 
 	NormalStep() {
 	}
 
 	public abstract void ignore();
-
-	public abstract void cancel();
 
 	public abstract InlineStep toInline();
 

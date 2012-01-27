@@ -74,7 +74,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public final InlineValue inlineImperative(
+	public final InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		throw new UnsupportedOperationException();
