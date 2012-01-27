@@ -22,6 +22,7 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.op.IROp;
@@ -32,7 +33,7 @@ public abstract class LclOp extends IROp implements HostOp {
 
 	private final FieldIR<?> fieldIR;
 
-	LclOp(LocalBuilder builder, FieldIR<?> fieldIR, Op<?> ptr) {
+	LclOp(CodeBuilder builder, FieldIR<?> fieldIR, Op<?> ptr) {
 		super(builder, ptr);
 		this.fieldIR = fieldIR;
 	}
@@ -73,7 +74,7 @@ public abstract class LclOp extends IROp implements HostOp {
 			return (Type<S>) super.getType();
 		}
 
-		public abstract LclOp op(LocalBuilder builder, FieldIR<?> fieldIR);
+		public abstract LclOp op(CodeBuilder builder, FieldIR<?> fieldIR);
 
 	}
 

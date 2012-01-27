@@ -24,7 +24,7 @@ import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
@@ -99,7 +99,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

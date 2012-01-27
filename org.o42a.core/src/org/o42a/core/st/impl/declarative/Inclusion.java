@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.InlineValue;
@@ -70,7 +70,7 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

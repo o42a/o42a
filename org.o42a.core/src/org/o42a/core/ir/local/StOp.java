@@ -20,20 +20,21 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
 public abstract class StOp {
 
-	public static StOp noStOp(LocalBuilder builder, Statement statement) {
+	public static StOp noStOp(CodeBuilder builder, Statement statement) {
 		return new NoStOp(builder, statement);
 	}
 
-	private final LocalBuilder builder;
+	private final CodeBuilder builder;
 	private final Statement statement;
 
-	public StOp(LocalBuilder builder, Statement statement) {
+	public StOp(CodeBuilder builder, Statement statement) {
 		this.builder = builder;
 		this.statement = statement;
 	}
@@ -42,7 +43,7 @@ public abstract class StOp {
 		return getBuilder().getGenerator();
 	}
 
-	public final LocalBuilder getBuilder() {
+	public final CodeBuilder getBuilder() {
 		return this.builder;
 	}
 

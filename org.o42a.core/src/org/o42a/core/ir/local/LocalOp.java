@@ -22,6 +22,7 @@ package org.o42a.core.ir.local;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
@@ -35,10 +36,10 @@ import org.o42a.core.source.CompilerContext;
 
 public final class LocalOp implements HostOp {
 
-	private final LocalBuilder builder;
+	private final CodeBuilder builder;
 	private final LocalScope scope;
 
-	public LocalOp(LocalBuilder builder, LocalScope scope) {
+	public LocalOp(CodeBuilder builder, LocalScope scope) {
 		this.builder = builder;
 		this.scope = scope;
 	}
@@ -58,7 +59,7 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public final LocalBuilder getBuilder() {
+	public final CodeBuilder getBuilder() {
 		return this.builder;
 	}
 

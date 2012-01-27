@@ -30,7 +30,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
@@ -145,7 +145,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return getAssignmentKind().op(builder, this);
 	}
 

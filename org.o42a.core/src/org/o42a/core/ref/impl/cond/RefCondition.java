@@ -21,9 +21,9 @@ package org.o42a.core.ref.impl.cond;
 
 import static org.o42a.core.value.Value.voidValue;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -98,7 +98,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return new Op(builder, this.ref);
 	}
 
@@ -143,7 +143,7 @@ public final class RefCondition extends Statement {
 
 	private static final class Op extends StOp {
 
-		Op(LocalBuilder builder, Statement statement) {
+		Op(CodeBuilder builder, Statement statement) {
 			super(builder, statement);
 		}
 

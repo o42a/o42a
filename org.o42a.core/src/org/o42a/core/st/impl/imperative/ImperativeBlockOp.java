@@ -21,8 +21,8 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -30,7 +30,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 
 public final class ImperativeBlockOp extends StOp {
 
-	public ImperativeBlockOp(LocalBuilder builder, ImperativeBlock block) {
+	public ImperativeBlockOp(CodeBuilder builder, ImperativeBlock block) {
 		super(builder, block);
 	}
 

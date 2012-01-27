@@ -31,9 +31,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -377,7 +377,7 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(CodeBuilder builder) {
 		if (this.inline != null) {
 			return new InlineOp(builder, this, this.inline);
 		}
@@ -454,7 +454,7 @@ public class Ref extends Statement {
 		private final RefOp ref;
 
 		Op(
-				LocalBuilder builder,
+				CodeBuilder builder,
 				Statement statement,
 				RefOp ref) {
 			super(builder, statement);
@@ -495,7 +495,7 @@ public class Ref extends Statement {
 		private final InlineValue inline;
 
 		InlineOp(
-				LocalBuilder builder,
+				CodeBuilder builder,
 				Statement statement,
 				InlineValue inline) {
 			super(builder, statement);

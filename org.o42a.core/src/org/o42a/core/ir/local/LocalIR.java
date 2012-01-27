@@ -78,7 +78,7 @@ public final class LocalIR extends ObjectLocalIR {
 
 	@Override
 	protected LocalOp createOp(CodeBuilder builder, Code code) {
-		return new LocalOp((LocalBuilder) builder, getScope());
+		return new LocalOp(builder, getScope());
 	}
 
 }

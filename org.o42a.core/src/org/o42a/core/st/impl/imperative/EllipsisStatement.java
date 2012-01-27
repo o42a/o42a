@@ -20,8 +20,8 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
@@ -103,7 +103,7 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		if (this.exit) {
 			return new ExitOp(builder, this);
 		}
@@ -112,7 +112,7 @@ public final class EllipsisStatement extends Statement {
 
 	private static final class ExitOp extends StOp {
 
-		ExitOp(LocalBuilder builder, EllipsisStatement statement) {
+		ExitOp(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
@@ -133,7 +133,7 @@ public final class EllipsisStatement extends Statement {
 
 	private static final class RepeatOp extends StOp {
 
-		RepeatOp(LocalBuilder builder, EllipsisStatement statement) {
+		RepeatOp(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
