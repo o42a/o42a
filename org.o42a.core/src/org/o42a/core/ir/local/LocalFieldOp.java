@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.Field;
@@ -29,7 +30,7 @@ public final class LocalFieldOp extends StOp {
 	private final Field<?> field;
 
 	public LocalFieldOp(
-			LocalBuilder builder,
+			CodeBuilder builder,
 			DeclarationStatement statement,
 			Field<?> field) {
 		super(builder, statement);

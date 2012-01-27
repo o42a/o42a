@@ -21,7 +21,7 @@ package org.o42a.core.member.impl.clause;
 
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
@@ -73,7 +73,7 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return null;
 	}
 

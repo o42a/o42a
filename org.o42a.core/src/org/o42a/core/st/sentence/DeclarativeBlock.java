@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.InlineValue;
@@ -177,7 +177,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

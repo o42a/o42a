@@ -19,13 +19,14 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
 final class NoStOp extends StOp {
 
-	NoStOp(LocalBuilder builder, Statement statement) {
+	NoStOp(CodeBuilder builder, Statement statement) {
 		super(builder, statement);
 	}
 

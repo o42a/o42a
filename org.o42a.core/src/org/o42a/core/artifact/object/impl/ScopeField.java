@@ -30,11 +30,11 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectField;
 import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.local.LclOp;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.Member;
@@ -156,7 +156,7 @@ public final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected LclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
+		protected LclOp allocateLocal(CodeBuilder builder, AllocationCode code) {
 			throw new UnsupportedOperationException();
 		}
 

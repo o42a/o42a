@@ -19,11 +19,9 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.ir.local.StOp.noStOp;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.InlineValue;
@@ -71,7 +69,7 @@ public abstract class Statement extends Placed {
 
 	public abstract void normalizeImperative(Normalizer normalizer);
 
-	public final StOp op(LocalBuilder builder) {
+	public final StOp op(CodeBuilder builder) {
 
 		final StOp op = this.op;
 
@@ -92,11 +90,7 @@ public abstract class Statement extends Placed {
 
 	protected abstract void fullyResolveImperative(LocalResolver resolver);
 
-	protected abstract StOp createOp(LocalBuilder builder);
-
-	protected final StOp noOp(LocalBuilder builder) {
-		return noStOp(builder, this);
-	}
+	protected abstract StOp createOp(CodeBuilder builder);
 
 	protected final void fullyResolved() {
 		this.fullyResolved = true;
