@@ -58,6 +58,10 @@ public:
 
 	static bool isDebugEnabled();
 
+	static bool isUsesAnalysed();
+
+	static bool isNormalizationEnabled();
+
 	static BackendModule *createBackend(StringRef &ModuleID);
 
 	const TargetData &getTargetData() const;
