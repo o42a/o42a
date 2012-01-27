@@ -19,7 +19,8 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import static org.o42a.core.ref.InlineCond.cancelUpToNull;
+import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;

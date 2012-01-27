@@ -17,26 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.core.ir;
+
+import org.o42a.codegen.code.Function;
+import org.o42a.core.source.CompilerContext;
 
 
-public abstract class InlineImperative {
+final class NonObjectBuilder extends CodeBuilder {
 
-	public abstract void cancel();
-
-	public static void cancelAll(InlineImperative... inlines) {
-		for (InlineImperative inline : inlines) {
-			inline.cancel();
-		}
+	NonObjectBuilder(
+			CompilerContext context,
+			Function<?> function) {
+		super(context, function);
 	}
 
-	public static void cancelUpToNull(InlineImperative... inlines) {
-		for (InlineImperative inline : inlines) {
-			if (inline == null) {
-				return;
-			}
-			inline.cancel();
-		}
+	@Override
+	public final HostOp host() {
+		throw new UnsupportedOperationException();
 	}
 
 }
