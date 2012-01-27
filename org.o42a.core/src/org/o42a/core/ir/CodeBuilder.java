@@ -64,10 +64,10 @@ public abstract class CodeBuilder {
 				hostPrecision);
 	}
 
-	public static CodeBuilder codeBuilder(
+	public static CodeBuilder hostlessBuilder(
 			CompilerContext context,
 			Function<?> function) {
-		return new NonObjectBuilder(context, function);
+		return new HostlessBuilder(context, function);
 	}
 
 	private final CompilerContext context;
@@ -96,6 +96,8 @@ public abstract class CodeBuilder {
 	}
 
 	public abstract HostOp host();
+
+	public abstract ObjectOp owner();
 
 	public final CodeId nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);

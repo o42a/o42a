@@ -48,6 +48,11 @@ public final class ObjBuilder extends CodeBuilder {
 		return this.host;
 	}
 
+	@Override
+	public final ObjOp owner() {
+		return host();
+	}
+
 	private ObjOp host(
 			Code code,
 			CodePos exit,
