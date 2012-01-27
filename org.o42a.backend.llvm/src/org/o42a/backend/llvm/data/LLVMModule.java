@@ -116,6 +116,14 @@ public final class LLVMModule {
 		return debugEnabled();
 	}
 
+	public final boolean isUsesAnalysed() {
+		return usesAnalysed();
+	}
+
+	public final boolean isNormalizationEnabled() {
+		return normalizationEnabled();
+	}
+
 	public final long getNativePtr() {
 		return this.nativePtr;
 	}
@@ -257,6 +265,10 @@ public final class LLVMModule {
 	private static native byte[] inputEncoding();
 
 	private static native boolean debugEnabled();
+
+	private static native boolean usesAnalysed();
+
+	private static native boolean normalizationEnabled();
 
 	private static native long createModule(long id, int idLen);
 
