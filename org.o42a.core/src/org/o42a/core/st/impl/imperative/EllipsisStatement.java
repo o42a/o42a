@@ -25,7 +25,6 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -74,7 +73,7 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

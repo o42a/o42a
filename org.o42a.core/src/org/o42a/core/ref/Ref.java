@@ -51,9 +51,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.value.*;
 
 
@@ -193,9 +191,6 @@ public class Ref extends Statement {
 
 		final BoundPath path = getPath();
 
-		if (path.isAbsolute()) {
-			return path.target(reproducer.distribute());
-		}
 		if (path.isSelf()) {
 			return Path.SELF_PATH
 					.bind(this, reproducer.getScope())
@@ -252,10 +247,17 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return inline(normalizer, getScope());
+
+		final InlineValue inline = inline(normalizer, getScope());
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new InlineCmd(inline);
 	}
 
 	@Override
@@ -529,6 +531,58 @@ public class Ref extends Statement {
 			dirs.done();
 
 			control.returnValue();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
+		}
+
+	}
+
+	private static final class InlineCmd implements InlineCommand {
+
+		private final InlineValue inline;
+
+		InlineCmd(InlineValue inline) {
+			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(Control control) {
+
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					control.falseDir());
+
+			this.inline.writeCond(dirs, control.host());
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
+
+			final Code code = control.code();
+			final ValDirs dirs =
+					control.getBuilder().falseWhenUnknown(
+							code,
+							control.falseDir())
+					.value(code.id("local_val"), result);
+
+			result.store(
+					code,
+					this.inline.writeValue(dirs, control.host()));
+
+			dirs.done();
+
+			control.returnValue();
+		}
+
+		@Override
+		public void cancel() {
+			this.inline.cancel();
 		}
 
 		@Override

@@ -24,30 +24,31 @@ import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Definer;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Cancelable;
 
 
-public class InlineStatements implements Cancelable {
+public class InlineCommands implements Cancelable {
 
-	public static InlineStatements inlineStatements(
+	public static InlineCommands inlineCommands(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Imperatives imperatives) {
 
 		final List<Definer> definers = imperatives.getDefiners();
-		final InlineValue[] inlines = new InlineValue[definers.size()];
+		final InlineCommand[] inlines = new InlineCommand[definers.size()];
 		int i = 0;
 
 		for (Definer definer : definers) {
 
-			final InlineValue inline = definer.getStatement().inlineImperative(
-					normalizer,
-					valueStruct);
+			final InlineCommand inline =
+					definer.getStatement().inlineImperative(
+							normalizer,
+							valueStruct);
 
 			if (inline == null) {
 				cancelUpToNull(inlines);
@@ -57,22 +58,22 @@ public class InlineStatements implements Cancelable {
 			inlines[i++] = inline;
 		}
 
-		return new InlineStatements(inlines);
+		return new InlineCommands(inlines);
 	}
 
-	private final InlineValue[] statements;
+	private final InlineCommand[] commands;
 
-	InlineStatements(InlineValue[] statements) {
-		this.statements = statements;
+	InlineCommands(InlineCommand[] statements) {
+		this.commands = statements;
 	}
 
-	public final InlineValue get(int index) {
-		return this.statements[index];
+	public final InlineCommand get(int index) {
+		return this.commands[index];
 	}
 
 	@Override
 	public void cancel() {
-		cancelAll(this.statements);
+		cancelAll(this.commands);
 	}
 
 }

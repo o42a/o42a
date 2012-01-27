@@ -57,7 +57,7 @@ public class UnchangedNormalPath implements NormalPath {
 
 	@Override
 	public void appendTo(List<NormalStep> normalSteps) {
-		normalSteps.add(new UnhchangedStep());
+		normalSteps.add(new NormalPathStep(this.path.toPath()));
 	}
 
 	@Override
@@ -76,42 +76,6 @@ public class UnchangedNormalPath implements NormalPath {
 			return super.toString();
 		}
 		return "UnchanhgedNormalPath" + this.path;
-	}
-
-	private final class UnhchangedStep extends NormalAppender {
-
-		@Override
-		public Path appendTo(Path path) {
-
-			Path result = path;
-
-			for (Step step : getPath().getSteps()) {
-				result = result.append(step);
-			}
-
-			return result;
-		}
-
-		@Override
-		public void ignore() {
-		}
-
-		@Override
-		public void cancel() {
-		}
-
-		@Override
-		public String toString() {
-
-			final BoundPath path = getPath();
-
-			if (path == null) {
-				return super.toString();
-			}
-
-			return path.toString();
-		}
-
 	}
 
 }

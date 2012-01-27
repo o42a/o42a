@@ -19,17 +19,11 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import static org.o42a.core.value.Value.voidValue;
-
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
@@ -69,11 +63,12 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
-		final InlineValue value = this.ref.inline(normalizer, getScope());
+		final InlineCommand value =
+				this.ref.inlineImperative(normalizer, valueStruct);
 
 		if (value == null) {
 			return null;
@@ -106,24 +101,23 @@ public final class RefCondition extends Statement {
 		return this.conditionalEnv;
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class Inline implements InlineCommand {
 
-		private final InlineValue value;
+		private final InlineCommand value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
-			super(valueStruct);
+		Inline(ValueStruct<?, ?> valueStruct, InlineCommand value) {
 			this.value = value;
 		}
 
 		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			this.value.writeCond(dirs, host);
+		public void writeCond(Control control) {
+			this.value.writeCond(control);
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			writeCond(dirs.dirs(), host);
-			return voidValue().op(dirs.getBuilder(), dirs.code());
+		public void writeValue(Control control, ValOp result) {
+			writeCond(control);
+
 		}
 
 		@Override

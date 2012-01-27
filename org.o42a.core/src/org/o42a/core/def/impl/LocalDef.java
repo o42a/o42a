@@ -29,17 +29,14 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.action.Action;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -62,8 +59,8 @@ public class LocalDef extends ValueDef {
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
-	private final Definer definer;
-	private final PrefixPath localPrefix;
+	final Definer definer;
+	final PrefixPath localPrefix;
 
 	private LocalDef(
 			Scope ownerScope,
@@ -190,7 +187,15 @@ public class LocalDef extends ValueDef {
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return getBlock().inlineImperative(normalizer, valueStruct);
+
+		final InlineCommand inline =
+				getBlock().inlineImperative(normalizer, valueStruct);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new InlineLocalDef(valueStruct, inline);
 	}
 
 	@Override
@@ -225,80 +230,8 @@ public class LocalDef extends ValueDef {
 		return ir.writeValue(dirs, ownerBody, null);
 	}
 
-	private Scope getOwnerScope() {
+	Scope getOwnerScope() {
 		return this.ownerScope;
-	}
-
-	private static final class LocalLogical extends Logical {
-
-		private final LocalDef def;
-
-		LocalLogical(LocalDef def) {
-			super(def, def.getOwnerScope());
-			this.def = def;
-		}
-
-		@Override
-		public LogicalValue getConstantValue() {
-			return LogicalValue.RUNTIME;
-		}
-
-		@Override
-		public LogicalValue logicalValue(Resolver resolver) {
-			assertCompatible(resolver.getScope());
-
-			final Resolver localResolver =
-					this.def.localPrefix.rescope(resolver);
-			final LocalScope local = localResolver.getScope().toLocal();
-
-			assert local != null :
-				"Not a local scope: " + resolver;
-
-			final Action action = this.def.definer.initialLogicalValue(
-					local.walkingResolver(resolver));
-
-			return action.getLogicalValue();
-		}
-
-		@Override
-		public Logical reproduce(Reproducer reproducer) {
-			getLogger().notReproducible(this);
-			return null;
-		}
-
-		@Override
-		public InlineCond inline(Normalizer normalizer, Scope origin) {
-			return null;
-		}
-
-		@Override
-		public void write(CodeDirs dirs, HostOp host) {
-			assert assertFullyResolved();
-
-			final CodeDirs subDirs =
-					dirs.begin("local_logical", "Local logical: " + this);
-
-			final Obj owner = this.def.getOwnerScope().toObject();
-			final ValueStruct<?, ?> valueStruct =
-					owner.value().getValueStruct();
-			final ValDirs valDirs = subDirs.value(valueStruct, "local_val");
-
-			this.def.writeValue(valDirs, host);
-			valDirs.done();
-
-			subDirs.end();
-		}
-
-		@Override
-		public String toString() {
-			return this.def + "?";
-		}
-
-		@Override
-		protected void fullyResolve(Resolver resolver) {
-			this.def.resolveAll(resolver);
-		}
-
 	}
 
 }

@@ -24,7 +24,6 @@ import org.o42a.core.Placed;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -63,7 +62,7 @@ public abstract class Statement extends Placed {
 		}
 	}
 
-	public abstract InlineValue inlineImperative(
+	public abstract InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct);
 

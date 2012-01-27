@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.impl.imperative.InlineStatements.inlineStatements;
+import static org.o42a.core.st.impl.imperative.InlineCommands.inlineCommands;
 import static org.o42a.util.Cancellation.cancelAll;
 import static org.o42a.util.Cancellation.cancelUpToNull;
 
@@ -52,13 +52,13 @@ public final class InlineSentence implements Cancelable {
 		}
 
 		final List<Imperatives> alts = sentence.getAlternatives();
-		final InlineStatements[] inlineAlts = new InlineStatements[alts.size()];
+		final InlineCommands[] inlineAlts = new InlineCommands[alts.size()];
 		int i = 0;
 
 		for (Imperatives alt : alts) {
 
-			final InlineStatements inlineAlt =
-					inlineStatements(normalizer, valueStruct, alt);
+			final InlineCommands inlineAlt =
+					inlineCommands(normalizer, valueStruct, alt);
 
 			if (inlineAlt == null) {
 				if (inlinePrereq != null) {
@@ -75,11 +75,11 @@ public final class InlineSentence implements Cancelable {
 	}
 
 	private final InlineSentence prerequisite;
-	private final InlineStatements[] alts;
+	private final InlineCommands[] alts;
 
 	private InlineSentence(
 			InlineSentence prerequisite,
-			InlineStatements[] alts) {
+			InlineCommands[] alts) {
 		this.prerequisite = prerequisite;
 		this.alts = alts;
 	}
@@ -88,7 +88,7 @@ public final class InlineSentence implements Cancelable {
 		return this.prerequisite;
 	}
 
-	public final InlineStatements get(int index) {
+	public final InlineCommands get(int index) {
 		return this.alts[index];
 	}
 

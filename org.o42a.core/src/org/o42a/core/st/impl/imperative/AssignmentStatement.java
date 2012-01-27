@@ -106,7 +106,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public InlineValue inlineImperative(
+	public InlineCommand inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;
