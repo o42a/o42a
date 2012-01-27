@@ -19,17 +19,20 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.Cancellation.cancelUpToNull;
+
 import java.util.List;
 
-import org.o42a.core.ref.InlineCond;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Cancelable;
 
 
-public class InlineStatements extends InlineImperative {
+public class InlineStatements implements Cancelable {
 
 	public static InlineStatements inlineStatements(
 			Normalizer normalizer,
@@ -47,7 +50,7 @@ public class InlineStatements extends InlineImperative {
 					valueStruct);
 
 			if (inline == null) {
-				InlineCond.cancelUpToNull(inlines);
+				cancelUpToNull(inlines);
 				return null;
 			}
 
@@ -69,7 +72,7 @@ public class InlineStatements extends InlineImperative {
 
 	@Override
 	public void cancel() {
-		InlineCond.cancelAll(this.statements);
+		cancelAll(this.statements);
 	}
 
 }

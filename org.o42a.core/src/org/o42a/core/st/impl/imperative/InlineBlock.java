@@ -20,6 +20,8 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.InlineSentence.inlineSentence;
+import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class InlineBlock extends InlineValue {
 					inlineSentence(normalizer, valueStruct, sentence);
 
 			if (inline == null) {
-				InlineImperative.cancelUpToNull(inlines);
+				cancelUpToNull(inlines);
 				return null;
 			}
 
@@ -88,7 +90,7 @@ public class InlineBlock extends InlineValue {
 
 	@Override
 	public void cancel() {
-		InlineImperative.cancelAll(this.sentences);
+		cancelAll(this.sentences);
 	}
 
 }

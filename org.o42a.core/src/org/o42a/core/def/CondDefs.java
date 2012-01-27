@@ -21,7 +21,7 @@ package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
 import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
-import static org.o42a.core.ref.InlineCond.cancelUpToNull;
+import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import org.o42a.core.def.impl.InlineCondDefs;
 import org.o42a.core.def.impl.RuntimeCondDef;

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.def.impl;
 
+import static org.o42a.util.Cancellation.cancelAll;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.CondDefs;

@@ -35,18 +35,20 @@ import org.o42a.core.ir.op.ObjectFunc;
 
 public class LocalBuilder extends CodeBuilder {
 
+	private final LocalOp host;
 	private final ObjectOp owner;
 
 	public LocalBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			LocalIR scopeIR) {
-		super(function, scopeIR);
+		super(scopeIR.getScope().getContext(), function);
+		this.host = scopeIR.op(this, function);
 		this.owner = owner(function, scopeIR);
 	}
 
 	@Override
 	public final LocalOp host() {
-		return (LocalOp) super.host();
+		return this.host;
 	}
 
 	public final ObjectOp owner() {

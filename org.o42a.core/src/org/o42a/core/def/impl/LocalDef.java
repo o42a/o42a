@@ -190,7 +190,7 @@ public class LocalDef extends ValueDef {
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return null;
+		return getBlock().inlineImperative(normalizer, valueStruct);
 	}
 
 	@Override

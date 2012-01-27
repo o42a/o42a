@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.local;
 
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
