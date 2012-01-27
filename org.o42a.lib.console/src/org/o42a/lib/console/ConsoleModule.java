@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.console;
 
-import static org.o42a.core.ir.CodeBuilder.codeBuilder;
+import static org.o42a.core.ir.CodeBuilder.hostlessBuilder;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
@@ -131,7 +131,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 		main.debug("Start execution");
 
-		final CodeBuilder builder = codeBuilder(getContext(), main);
+		final CodeBuilder builder = hostlessBuilder(getContext(), main);
 		final Code exit = main.addBlock("exit");
 		final AllocationCode alloc = main.undisposable();
 		final ValOp result =

@@ -20,19 +20,23 @@
 package org.o42a.core.ir;
 
 import org.o42a.codegen.code.Function;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.source.CompilerContext;
 
 
-final class NonObjectBuilder extends CodeBuilder {
+final class HostlessBuilder extends CodeBuilder {
 
-	NonObjectBuilder(
-			CompilerContext context,
-			Function<?> function) {
+	HostlessBuilder(CompilerContext context, Function<?> function) {
 		super(context, function);
 	}
 
 	@Override
 	public final HostOp host() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ObjectOp owner() {
 		throw new UnsupportedOperationException();
 	}
 
