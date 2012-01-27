@@ -1,6 +1,6 @@
 /*
     Compiler JNI Bindings to LLVM
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -117,7 +117,19 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputEncoding(
 jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
 		JNIEnv *,
 		jclass) {
-	return o42ac::BackendModule::isDebugEnabled() ? JNI_TRUE : JNI_FALSE;
+	return o42ac::BackendModule::isDebugEnabled();
+}
+
+jboolean Java_org_o42a_backend_llvm_data_LLVMModule_usesAnalysed(
+		JNIEnv *,
+		jclass) {
+	return o42ac::BackendModule::isUsesAnalysed();
+}
+
+jboolean Java_org_o42a_backend_llvm_data_LLVMModule_normalizationEnabled(
+		JNIEnv *,
+		jclass) {
+	return o42ac::BackendModule::isNormalizationEnabled();
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(

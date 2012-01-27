@@ -1,6 +1,6 @@
 /*
     Compiler JNI Bindings to LLVM
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -57,6 +57,10 @@ public:
 	static const std::string *getInputEncoding();
 
 	static bool isDebugEnabled();
+
+	static bool isUsesAnalysed();
+
+	static bool isNormalizationEnabled();
 
 	static BackendModule *createBackend(StringRef &ModuleID);
 

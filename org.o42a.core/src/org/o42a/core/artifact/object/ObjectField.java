@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -36,7 +36,7 @@ public abstract class ObjectField extends Field<Obj> {
 
 	protected ObjectField(MemberField member, Field<Obj> propagatedFrom) {
 		super(member);
-		setFieldArtifact(propagateArtifact(propagatedFrom));
+		setScopeArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	protected ObjectField(
@@ -45,7 +45,7 @@ public abstract class ObjectField extends Field<Obj> {
 			boolean propagateArtifact) {
 		super(member);
 		if (propagateArtifact) {
-			setFieldArtifact(propagateArtifact(propagatedFrom));
+			setScopeArtifact(propagateArtifact(propagatedFrom));
 		}
 	}
 

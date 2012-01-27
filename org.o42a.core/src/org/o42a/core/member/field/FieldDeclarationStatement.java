@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,7 +23,8 @@ import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.artifact.Artifact;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.LocalFieldOp;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.DeclarationDefiner;
@@ -99,7 +100,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return new LocalFieldOp(
 				builder,
 				this,
@@ -141,10 +142,9 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 			final Member member =
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
-			final Field<?> field = member.toField().field(resolver);
+			final Artifact<?> artifact = member.toField().artifact(resolver);
 			final LogicalValue logicalValue =
-					field.getArtifact()
-					.materialize()
+					artifact.materialize()
 					.value()
 					.getDefinitions()
 					.value(resolver)

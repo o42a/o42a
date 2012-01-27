@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -109,7 +109,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		final FieldAnalysis analysis = getField().toMember().getAnalysis();
 
 		if (!analysis.derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalyzer(),
 				RUNTIME_DERIVATION_USAGE)) {
 			this.constructor = getType().constructorStub();
 			return;
@@ -164,11 +164,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	protected final Obj targetType(Obj bodyType) {
 
-		final Field<?> actual =
+		final Artifact<?> artifact =
 				bodyType.member(getField().getKey())
 				.toField()
-				.field(dummyUser());
-		final Artifact<?> artifact = actual.getArtifact();
+				.artifact(dummyUser());
 		final Obj object = artifact.toObject();
 
 		if (object != null) {

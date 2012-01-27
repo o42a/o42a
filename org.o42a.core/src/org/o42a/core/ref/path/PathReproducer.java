@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -91,8 +91,7 @@ public final class PathReproducer {
 	}
 
 	public final PathReproduction reproducePath() {
-		return getReproducingPath().getKind().reproduce(
-				this);
+		return getReproducingPath().getKind().reproduce(this);
 	}
 
 	public final <B> PathBinding<B> reproduce(PathBinding<B> binding) {

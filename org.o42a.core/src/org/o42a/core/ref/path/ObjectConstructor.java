@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -115,11 +115,7 @@ public abstract class ObjectConstructor extends Placed {
 
 	protected abstract Obj createObject();
 
-	protected Obj propagateObject(Scope scope, Obj sample) {
-		return new Propagated(scope, this, sample);
-	}
-
-	private Obj propagate(Scope scope) {
+	final Obj propagate(Scope scope) {
 		if (this.propagated != null) {
 
 			final Obj cached = this.propagated.get(scope);
@@ -129,7 +125,7 @@ public abstract class ObjectConstructor extends Placed {
 			}
 		}
 
-		return propagateObject(scope, getConstructed());
+		return new Propagated(scope, this, getConstructed());
 	}
 
 	private void pinPropagated(Propagated propagated) {
@@ -238,6 +234,11 @@ public abstract class ObjectConstructor extends Placed {
 			return emptyDefinitions(this, getScope());
 		}
 
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.constructor.propagate(enclosing);
+		}
+
 	}
 
 	private final class Op extends PathOp {
@@ -260,7 +261,7 @@ public abstract class ObjectConstructor extends Placed {
 			final Obj sample = getConstructed();
 
 			if (!sample.type().derivation().isUsed(
-					dirs.getGenerator(),
+					dirs.getGenerator().getAnalyzer(),
 					RUNTIME_DERIVATION_USAGE)) {
 
 				final ObjOp target = sample.ir(dirs.getGenerator()).op(
@@ -279,12 +280,10 @@ public abstract class ObjectConstructor extends Placed {
 				return target;
 			}
 
-			final ObjectOp object = host().toObject(dirs);
-
-			if (object != null) {
+			if (local == null) {
 				return getBuilder().newObject(
 						dirs,
-						object,
+						host().materialize(dirs),
 						ancestorFunc(getBuilder()).getPointer().op(
 								null,
 								dirs.code()),

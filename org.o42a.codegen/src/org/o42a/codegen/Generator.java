@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -29,37 +29,24 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
-import org.o42a.util.use.UseCaseInfo;
-import org.o42a.util.use.User;
 
 
-public abstract class Generator implements UseCaseInfo {
+public abstract class Generator {
 
-	private final String id;
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
 	private boolean proxied;
 
-	Generator(String id) {
-		assert id != null :
-			"Generator identifier not specified";
-		this.id = id;
+	Generator() {
 		this.functions = new GeneratorFunctions(this);
 		this.globals = new GeneratorGlobals(this);
-	}
-
-	public final String getId() {
-		return this.id;
 	}
 
 	public final boolean isProxied() {
 		return this.proxied;
 	}
 
-	@Override
-	public final User<?> toUser() {
-		return toUseCase();
-	}
+	public abstract Analyzer getAnalyzer();
 
 	public CodeIdFactory getCodeIdFactory() {
 		return DEFAULT_CODE_ID_FACTORY;
@@ -82,10 +69,6 @@ public abstract class Generator implements UseCaseInfo {
 	public final void setDebug(boolean debug) {
 		getDebug().setDebug(debug);
 	}
-
-	public abstract boolean isUsesAnalysed();
-
-	public abstract void setUsesAnalysed(boolean usesAnalysed);
 
 	public final CodeId id() {
 		return getCodeIdFactory().id();

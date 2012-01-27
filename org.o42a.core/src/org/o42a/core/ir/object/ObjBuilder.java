@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.artifact.object.Obj;
@@ -28,18 +31,59 @@ import org.o42a.core.ir.op.ObjectFunc;
 
 public final class ObjBuilder extends CodeBuilder {
 
+	private final ObjOp host;
+
 	public ObjBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
 			ObjectBodyIR hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
-		super(function, exit, hostIR, hostType, hostPrecision);
+		super(hostIR.getAscendant().getContext(), function);
+		this.host = host(function, exit, hostIR, hostType, hostPrecision);
 	}
 
 	@Override
 	public final ObjOp host() {
-		return (ObjOp) super.host();
+		return this.host;
+	}
+
+	@Override
+	public final ObjOp owner() {
+		return host();
+	}
+
+	private ObjOp host(
+			Code code,
+			CodePos exit,
+			ObjectBodyIR hostIR,
+			Obj hostType,
+			ObjectPrecision hostPrecision) {
+		switch (hostPrecision) {
+		case EXACT:
+			return hostIR.getObjectIR().op(this, code).cast(
+					null,
+					falseWhenUnknown(code, exit),
+					hostType);
+		case COMPATIBLE:
+			return getFunction().arg(code, getObjectSignature().object())
+					.to(null, code, hostIR)
+					.op(this, hostType, hostPrecision);
+		case DERIVED:
+
+			final ObjectOp host = anonymousObject(
+					this,
+					getFunction().arg(code, getObjectSignature().object()),
+					hostType);
+
+			return host.cast(
+					code.id("host"),
+					falseWhenUnknown(code, exit),
+					hostType);
+		}
+
+		throw new IllegalArgumentException(
+				"Unknown host precision: " + hostPrecision);
 	}
 
 }

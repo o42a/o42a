@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -35,20 +35,23 @@ import org.o42a.core.ir.op.ObjectFunc;
 
 public class LocalBuilder extends CodeBuilder {
 
+	private final LocalOp host;
 	private final ObjectOp owner;
 
 	public LocalBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			LocalIR scopeIR) {
-		super(function, scopeIR);
+		super(scopeIR.getScope().getContext(), function);
+		this.host = scopeIR.op(this, function);
 		this.owner = owner(function, scopeIR);
 	}
 
 	@Override
 	public final LocalOp host() {
-		return (LocalOp) super.host();
+		return this.host;
 	}
 
+	@Override
 	public final ObjectOp owner() {
 		return this.owner;
 	}
@@ -72,7 +75,7 @@ public class LocalBuilder extends CodeBuilder {
 			Code code,
 			CodePos exit,
 			CodePos falseDir) {
-		return new MainControl(this, code, exit, falseDir);
+		return new DefaultMainControl(this, code, exit, falseDir);
 	}
 
 	private ObjectOp owner(Code code, LocalIR scopeIR) {

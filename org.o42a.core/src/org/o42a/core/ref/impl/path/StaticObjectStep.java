@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,15 +31,16 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class ObjectStep extends Step {
+public class StaticObjectStep extends Step {
 
 	private final Obj object;
 
-	public ObjectStep(Obj object) {
+	public StaticObjectStep(Obj object) {
 		this.object = object;
 	}
 
@@ -49,31 +50,8 @@ public class ObjectStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		walker.object(this, this.object);
-		return this.object;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -91,9 +69,45 @@ public class ObjectStep extends Step {
 		return defaultFieldDefinition(path, distributor);
 	}
 
-	private static final class Op extends StepOp<ObjectStep> {
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		if (resolver.isFullResolution()) {
+			this.object.resolveAll();
+		}
+		walker.object(this, this.object);
+		return this.object;
+	}
 
-		Op(PathOp start, ObjectStep step) {
+	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.cancel();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start, this);
+	}
+
+	private static final class Op extends StepOp<StaticObjectStep> {
+
+		Op(PathOp start, StaticObjectStep step) {
 			super(start, step);
 		}
 

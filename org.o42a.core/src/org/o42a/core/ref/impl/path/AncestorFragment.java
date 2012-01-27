@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
-import static org.o42a.core.ref.path.Path.materializePath;
+import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -31,7 +31,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueType;
 
 
-public class AncestorStep extends PathFragment {
+public class AncestorFragment extends PathFragment {
 
 	@Override
 	public BoundPath expand(PathExpander expander, int index, Scope start) {
@@ -47,11 +47,9 @@ public class AncestorStep extends PathFragment {
 
 			final TypeRef typeRef = artifact.getTypeRef();
 
-			return materializePath()
-					.bind(typeRef, start)
-					.append(ancestor(
-						artifact.materialize().getScope(),
-						typeRef));
+			return SELF_PATH.bind(typeRef, start).append(ancestor(
+					artifact.materialize().getScope(),
+					typeRef));
 		}
 
 		final Artifact<?> materializationOf = object.getMaterializationOf();

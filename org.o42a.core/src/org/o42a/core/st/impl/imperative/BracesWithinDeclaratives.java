@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,15 +22,14 @@ package org.o42a.core.st.impl.imperative;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -95,16 +94,29 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 		return this.block.toString();
 	}
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

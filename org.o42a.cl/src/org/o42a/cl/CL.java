@@ -1,6 +1,6 @@
 /*
     Compiler Command-Line Interface
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,6 +28,7 @@ import java.io.IOException;
 
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.common.source.FileSourceTree;
 import org.o42a.compiler.Compiler;
@@ -72,6 +73,7 @@ public class CL {
 
 		logger.abortOnError();
 
+		intrinsics.analyze(this.generator.getAnalyzer());
 		intrinsics.generateAll(this.generator);
 
 		this.generator.write();
@@ -80,7 +82,9 @@ public class CL {
 	public static void main(String[] args) {
 
 		final String[] llvmArgs = ArrayUtil.prepend("o42ac", args);
-		final LLVMGenerator llvmGenerator = newGenerator(null, llvmArgs);
+		final Analyzer analyzer = new Analyzer("compiler");
+		final LLVMGenerator llvmGenerator =
+				newGenerator(null, analyzer, llvmArgs);
 		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
 		try {

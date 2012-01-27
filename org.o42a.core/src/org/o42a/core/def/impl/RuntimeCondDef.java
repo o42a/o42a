@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,13 +21,11 @@ package org.o42a.core.def.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 
 
 public final class RuntimeCondDef extends CondDef {
@@ -40,13 +38,20 @@ public final class RuntimeCondDef extends CondDef {
 				 * as this definition is not explicit. */
 				definitions.getContext().getVoid(),
 				definitions,
-				emptyPrefix(definitions.getScope()));
+				noScopeUpgrade(definitions.getScope()));
 		this.definitions = definitions;
 	}
 
-	private RuntimeCondDef(RuntimeCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private RuntimeCondDef(
+			RuntimeCondDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.definitions = prototype.definitions;
+	}
+
+	@Override
+	protected String name() {
+		return "RuntimeCondDef";
 	}
 
 	@Override
@@ -70,14 +75,20 @@ public final class RuntimeCondDef extends CondDef {
 
 	@Override
 	protected RuntimeCondDef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix) {
-		return new RuntimeCondDef(this, prefix);
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new RuntimeCondDef(this, upgrade);
 	}
 
 	@Override
-	protected String name() {
-		return "RuntimeCondDef";
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		throw new UnsupportedOperationException(
+				"Run-time definition can not generate code");
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		// Run-time definition can not be normalized.
 	}
 
 }

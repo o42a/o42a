@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
@@ -27,9 +28,9 @@ import static org.o42a.core.artifact.object.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.artifact.object.TypeUsage.STATIC_TYPE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.member.Member;
@@ -39,7 +40,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.util.use.*;
 
 
-public final class ObjectType implements UserInfo, Uses<TypeUsage> {
+public final class ObjectType implements UserInfo {
 
 	private final Obj object;
 	private Obj lastDefinition;
@@ -48,6 +49,7 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
+	private ArrayList<Derivative> allDerivatives;
 
 	ObjectType(Obj object) {
 		this.object = object;
@@ -77,26 +79,19 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 		return uses().toUser();
 	}
 
-	@Override
-	public final AllUsages<TypeUsage> allUsages() {
-		return TypeUsage.ALL_TYPE_USAGES;
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<TypeUsage> selector) {
 		if (this.uses == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.uses.selectUse(useCase, selector);
+		return this.uses.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<TypeUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final Ascendants getAscendants() {
@@ -138,6 +133,13 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 			return this.allAscendants;
 		}
 		return this.allAscendants = unmodifiableMap(buildAllAscendants());
+	}
+
+	public final List<Derivative> allDerivatives() {
+		if (this.allDerivatives == null) {
+			return emptyList();
+		}
+		return this.allDerivatives;
 	}
 
 	public final ObjectType useBy(UserInfo user) {
@@ -199,24 +201,31 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 				RUNTIME_DERIVATION_USAGE);
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
+			if (derived.getWrapped() == null) {
+				registerDerivative(
+						derived.getScope().getEnclosingScope(),
+						new Inheritor(derived));
+			}
 		}
 	}
 
 	protected void useAsSample(Sample sample) {
 
-		final Obj sampleObject =
-				sample.getAscendants().getObject();
+		final Obj derived = sample.getDerivedObject();
 
 		derivationUses().useBy(
-				sampleObject.content(),
+				derived.content(),
 				getObject().isClone()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
-				sampleObject.type().rtDerivation(),
+				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!sampleObject.isClone()) {
-			trackAscendantDefsUsage(sampleObject);
-			trackAncestorDefsUpdates(sampleObject);
+		if (!derived.isClone()) {
+			trackAscendantDefsUsage(derived);
+			trackAncestorDefsUpdates(derived);
+			if (derived.getWrapped() == null) {
+				registerDerivative(sample.getScope(), sample);
+			}
 		}
 	}
 
@@ -452,6 +461,27 @@ public final class ObjectType implements UserInfo, Uses<TypeUsage> {
 			if (newAncestorValue.part(defKind).getDefs().updatedSince(
 					oldAncestorObject)) {
 				sampleValuePart.updateAncestorDefsBy(sinceValuePart);
+			}
+		}
+	}
+
+	private void registerDerivative(Scope scope, Derivative derivative) {
+		if (this.allDerivatives == null) {
+			this.allDerivatives = new ArrayList<Derivative>();
+		}
+		this.allDerivatives.add(derivative);
+		if (getObject().isClone()) {
+			// Clone is explicitly derived.
+			// Update the derivation tree.
+			final Sample[] samples = getSamples();
+
+			if (samples.length != 0) {
+
+				final Sample sample = getSamples()[0];
+
+				sample.getObject().type().registerDerivative(
+						sample.getScope(),
+						sample);
 			}
 		}
 	}

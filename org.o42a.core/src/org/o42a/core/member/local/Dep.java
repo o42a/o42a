@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,11 +24,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 
 
@@ -36,15 +36,29 @@ public abstract class Dep extends Step {
 
 	private final Obj object;
 	private final DepKind kind;
+	private boolean disabled;
 
 	public Dep(Obj object, DepKind kind) {
 		this.object = object;
 		this.kind = kind;
 	}
 
+	public final boolean isDisabled() {
+		return this.disabled;
+	}
+
+	public final void setDisabled(boolean disabled) {
+		this.disabled = disabled;
+	}
+
 	@Override
 	public final PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
+	}
+
+	@Override
+	public RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	public final DepKind getDepKind() {
@@ -62,7 +76,7 @@ public abstract class Dep extends Step {
 	public abstract Ref getDepRef();
 
 	@Override
-	public Container resolve(
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -91,11 +105,6 @@ public abstract class Dep extends Step {
 				walker);
 	}
 
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
-	}
-
 	protected abstract Container resolveDep(
 			PathResolver resolver,
 			BoundPath path,
@@ -103,6 +112,32 @@ public abstract class Dep extends Step {
 			Obj object,
 			LocalScope enclosingLocal,
 			PathWalker walker);
+
+	@Override
+	protected final void normalize(PathNormalizer normalizer) {
+
+		final Obj object = normalizer.getStepStart().getScope().toObject();
+		final Scope objectScope = object.getScope();
+		final LocalScope enclosingLocal =
+				objectScope.getEnclosingContainer().toLocal();
+
+		if (!normalizer.up(enclosingLocal)) {
+			return;
+		}
+
+		normalizeDep(normalizer, enclosingLocal);
+	}
+
+	protected abstract void normalizeDep(
+			PathNormalizer normalizer,
+			LocalScope enclosingLocal);
+
+	@Override
+	protected final PathOp op(PathOp start) {
+		assert !isDisabled() :
+			this + " is disabled";
+		return new Op(start, this);
+	}
 
 	private static final class Op extends StepOp<Dep> {
 
@@ -112,13 +147,7 @@ public abstract class Dep extends Step {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-
-			final ObjectOp object = start().toObject(dirs);
-
-			assert object != null :
-				"Not an object: " + start();
-
-			return object.dep(dirs, getStep());
+			return start().materialize(dirs).dep(dirs, getStep());
 		}
 
 	}

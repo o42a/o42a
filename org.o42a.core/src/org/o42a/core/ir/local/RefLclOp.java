@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -33,6 +33,7 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
@@ -46,7 +47,7 @@ public final class RefLclOp extends LclOp {
 
 	public static final Type REF_LCL = new Type();
 
-	private RefLclOp(LocalBuilder builder, FieldIR<?> fieldIR, Op ptr) {
+	private RefLclOp(CodeBuilder builder, FieldIR<?> fieldIR, Op ptr) {
 		super(builder, fieldIR, ptr);
 	}
 
@@ -69,18 +70,6 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public Op ptr() {
 		return (Op) super.ptr();
-	}
-
-	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-
-		final Obj object = getArtifact().toObject();
-
-		if (object == null) {
-			return null;
-		}
-
-		return target(dirs);
 	}
 
 	@Override
@@ -153,7 +142,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		@Override
-		public RefLclOp op(LocalBuilder builder, FieldIR<?> fieldIR) {
+		public RefLclOp op(CodeBuilder builder, FieldIR<?> fieldIR) {
 			return new RefLclOp(builder, fieldIR, this);
 		}
 

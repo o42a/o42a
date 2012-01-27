@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,6 +28,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.ObjectMemberRegistry;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -117,6 +118,12 @@ public class Module extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.define(getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
 	}
 
 	private static ModuleScope moduleScope(ModuleCompiler compiler) {

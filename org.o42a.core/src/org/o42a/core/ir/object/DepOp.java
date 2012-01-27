@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,9 +24,8 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.DepIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
@@ -65,31 +64,13 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public ObjectOp toObject(CodeDirs dirs) {
-
-		final Artifact<?> target = getDep().getDepTarget();
-		final Obj object = target.toObject();
-
-		if (object == null) {
-			return null;
-		}
-
-		final Code code = dirs.code();
-
-		return anonymousObject(
-				getBuilder(),
-				ptr().object(code).load(null, code),
-				object);
-	}
-
-	@Override
 	public final LocalOp toLocal() {
 		return null;
 	}
 
 	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-		return toObject(dirs).field(dirs, memberKey);
+		return materialize(dirs).field(dirs, memberKey);
 	}
 
 	@Override
@@ -109,7 +90,7 @@ public class DepOp extends IROp implements HostOp {
 		throw new UnsupportedOperationException();
 	}
 
-	public void fill(LocalBuilder builder, CodeDirs dirs) {
+	public void fill(CodeBuilder builder, CodeDirs dirs) {
 
 		final DataOp object = object(builder, dirs);
 		final Code code = dirs.code();
@@ -120,7 +101,7 @@ public class DepOp extends IROp implements HostOp {
 		}
 	}
 
-	private DataOp object(LocalBuilder builder, CodeDirs dirs) {
+	private DataOp object(CodeBuilder builder, CodeDirs dirs) {
 
 		final Code code = dirs.code();
 

@@ -1,6 +1,6 @@
 /*
     Utilities
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -89,7 +89,7 @@ public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 
 	@Override
 	public String toString() {
-		if (this.name != null) {
+		if (this.name == null) {
 			return super.toString();
 		}
 		return this.name;

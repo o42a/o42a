@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,6 +21,7 @@ package org.o42a.backend.llvm;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.AbstractGenerator;
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -30,16 +31,19 @@ public class LLVMGenerator extends AbstractGenerator {
 
 	public static LLVMGenerator newGenerator(
 			String id,
+			Analyzer analyzer,
 			String... args) {
-		return new LLVMGenerator(new LLVMModule(id, args));
+		return new LLVMGenerator(new LLVMModule(id, args), analyzer);
 	}
 
 	private final LLVMModule module;
 
-	private LLVMGenerator(LLVMModule module) {
-		super(module.getId());
+	private LLVMGenerator(LLVMModule module, Analyzer analyzer) {
+		super(analyzer);
 		this.module = module;
 		module.init(this);
+		getAnalyzer().setUsesAnalysed(module.isUsesAnalysed());
+		getAnalyzer().setNormalizationEnabled(module.isNormalizationEnabled());
 		setDebug(module.isDebug());
 	}
 

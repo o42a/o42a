@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,9 +19,7 @@
 */
 package org.o42a.core.def;
 
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 
 
 final class ValueCondDef extends CondDef {
@@ -29,15 +27,15 @@ final class ValueCondDef extends CondDef {
 	private final ValueDef def;
 
 	ValueCondDef(ValueDef def) {
-		super(def.getSource(), def.getLocation(), def.getPrefix());
+		super(def.getSource(), def.getLocation(), def.getScopeUpgrade());
 		this.def = def;
 		update(
 				def.isClaim() ? DefKind.REQUIREMENT : DefKind.CONDITION,
 				def.hasPrerequisite());
 	}
 
-	private ValueCondDef(ValueCondDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private ValueCondDef(ValueCondDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.def = prototype.def;
 	}
 
@@ -57,13 +55,25 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	protected CondDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new ValueCondDef(this, prefix);
+	protected CondDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new ValueCondDef(this, upgrade);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.def.fullyResolve(resolver);
+	}
+
+	@Override
+	protected InlineCond inlineDef(Normalizer normalizer) {
+		return this.def.inline(normalizer, this.def.getValueStruct());
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.def.normalize(normalizer);
 	}
 
 }

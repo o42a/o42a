@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,6 +30,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -42,12 +43,24 @@ public class FalseStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		return "FALSE";
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -62,27 +75,25 @@ public class FalseStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return unchangedPath(toPath());
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.skipStep();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		return "FALSE";
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<FalseStep> {

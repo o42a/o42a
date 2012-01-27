@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -184,6 +184,12 @@ public class Root extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.define(getScope());
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		throw new IllegalArgumentException(
+				"Not an enclosing scope: " + enclosing);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,11 +24,10 @@ import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -75,6 +74,18 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
+	public final InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -83,12 +94,12 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
+	protected final void fullyResolveImperative(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected final StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

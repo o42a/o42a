@@ -1,6 +1,6 @@
 /*
     Compiler Tests
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -347,6 +347,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void generateCode(Generator generator) {
+		INTRINSICS.analyze(generator.getAnalyzer());
 		INTRINSICS.generateAll(generator);
 	}
 

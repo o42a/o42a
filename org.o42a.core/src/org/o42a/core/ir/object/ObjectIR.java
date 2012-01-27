@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -63,7 +63,7 @@ public class ObjectIR  {
 
 	public final boolean isExact() {
 		return !getObject().type().derivation().isUsed(
-				getGenerator(),
+				getGenerator().getAnalyzer(),
 				ALL_DERIVATION_USAGES);
 	}
 

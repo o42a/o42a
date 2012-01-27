@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -27,16 +27,19 @@ import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.declarative.DeclarativeBlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -162,7 +165,19 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

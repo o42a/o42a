@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.Field;
@@ -29,7 +30,7 @@ public final class LocalFieldOp extends StOp {
 	private final Field<?> field;
 
 	public LocalFieldOp(
-			LocalBuilder builder,
+			CodeBuilder builder,
 			DeclarationStatement statement,
 			Field<?> field) {
 		super(builder, statement);
@@ -41,7 +42,7 @@ public final class LocalFieldOp extends StOp {
 	}
 
 	@Override
-	public void writeAssignment(Control control, ValOp result) {
+	public void writeValue(Control control, ValOp result) {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 		final LclOp op =

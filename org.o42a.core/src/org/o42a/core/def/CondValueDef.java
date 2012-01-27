@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,11 +20,10 @@
 package org.o42a.core.def;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -34,15 +33,15 @@ final class CondValueDef extends ValueDef {
 	private final CondDef def;
 
 	CondValueDef(CondDef def) {
-		super(def.getSource(), def.getLocation(), def.getPrefix());
+		super(def.getSource(), def.getLocation(), def.getScopeUpgrade());
 		this.def = def;
 		update(
 				def.isRequirement() ? DefKind.CLAIM : DefKind.PROPOSITION,
 				def.hasPrerequisite());
 	}
 
-	private CondValueDef(CondValueDef prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private CondValueDef(CondValueDef prototype, ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.def = prototype.def;
 	}
 
@@ -63,8 +62,10 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new CondValueDef(this, prefix);
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new CondValueDef(this, upgrade);
 	}
 
 	@Override
@@ -88,9 +89,63 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineCond inline = this.def.inline(normalizer);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, inline);
+	}
+
+	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		this.def.normalize(normalizer);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		this.def.getLogical().write(dirs.dirs(), host);
 		return dirs.value().storeVoid(dirs.code());
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineCond inline;
+
+		public Inline(ValueStruct<?, ?> valueStruct, InlineCond inline) {
+			super(valueStruct);
+			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.inline.writeCond(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			writeCond(dirs.dirs(), host);
+			return dirs.value().storeVoid(dirs.code());
+		}
+
+		@Override
+		public void cancel() {
+			this.inline.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
+		}
+
 	}
 
 }

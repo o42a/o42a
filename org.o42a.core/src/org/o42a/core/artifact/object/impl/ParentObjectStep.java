@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,6 +22,7 @@ package org.o42a.core.artifact.object.impl;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
+import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -29,29 +30,29 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.ref.impl.path.AbstractMemberStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class ParentObjectStep extends MemberStep {
+public final class ParentObjectStep extends AbstractMemberStep {
 
-	public ParentObjectStep(MemberKey memberKey) {
+	private final Obj object;
+
+	public ParentObjectStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
+		this.object = object;
 	}
 
 	@Override
-	public Container resolve(
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.toObject();
-
-		assert object != null :
-			"Attempt to obtain parent of object, but "
-			+ start + " is not an object";
+		final Obj object = start.getArtifact().materialize();
 
 		if (!resolver.isFullResolution() && !object.membersResolved()) {
 
@@ -67,7 +68,7 @@ public final class ParentObjectStep extends MemberStep {
 			}
 		}
 
-		final Member member = resolveMember(resolver, path, index, start);
+		final Member member = resolveMember(path, index, start);
 
 		if (member == null) {
 			return null;
@@ -78,6 +79,22 @@ public final class ParentObjectStep extends MemberStep {
 		walker.up(object, this, result);
 
 		return result;
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+
+		final Member member = resolveMember(
+				normalizer.getPath(),
+				normalizer.getStepIndex(),
+				normalizer.getStepStart().getScope());
+
+		if (member == null) {
+			normalizer.cancel();
+			return;
+		}
+
+		normalizer.up(member.substance(dummyUser()).getScope());
 	}
 
 	@Override
@@ -111,6 +128,11 @@ public final class ParentObjectStep extends MemberStep {
 
 		// Update to actual enclosing scope path.
 		return reproducedPath(scope.getEnclosingScopePath());
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
 	}
 
 }

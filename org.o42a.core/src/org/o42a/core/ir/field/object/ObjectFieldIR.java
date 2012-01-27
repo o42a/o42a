@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -29,7 +29,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
@@ -60,7 +59,7 @@ public final class ObjectFieldIR extends FieldIR<Obj> {
 	}
 
 	@Override
-	protected RefLclOp allocateLocal(LocalBuilder builder, AllocationCode code) {
+	protected RefLclOp allocateLocal(CodeBuilder builder, AllocationCode code) {
 		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 

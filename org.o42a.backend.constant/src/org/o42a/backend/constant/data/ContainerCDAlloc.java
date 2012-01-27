@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -212,23 +212,6 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 	private boolean hasSameType(ContainerCDAlloc<?> alloc) {
 		return alloc.getDeclaringType() == getDeclaringType();
-	}
-
-	private ContainerCDAlloc<?> findContainer(
-			ContainerCDAlloc<?> correspondingContainer,
-			CDAlloc<?, ?> alloc) {
-
-		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
-
-		if (enclosing == null) {
-			return correspondingContainer;
-		}
-
-		final ContainerCDAlloc<?> found = enclosing.findContainer(
-				correspondingContainer.getEnclosing(),
-				enclosing);
-
-		return (ContainerCDAlloc<?>) found.nested.get(alloc.getIndex());
 	}
 
 }

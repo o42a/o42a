@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,9 +31,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -51,9 +51,7 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.value.*;
 
 
@@ -79,6 +77,7 @@ public class Ref extends Statement {
 	private final BoundPath path;
 	private Logical logical;
 	private RefOp op;
+	private InlineValue inline;
 
 	public Ref(BoundPath path, Distributor distributor) {
 		super(path, distributor);
@@ -186,27 +185,12 @@ public class Ref extends Statement {
 		return getPath().ancestor(location, distribute());
 	}
 
-	public final Ref materialize() {
-
-		final BoundPath path = getPath();
-		final BoundPath materialized = path.materialize();
-
-		if (materialized == path) {
-			return this;
-		}
-
-		return materialized.target(distribute());
-	}
-
 	@Override
 	public Ref reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final BoundPath path = getPath();
 
-		if (path.isAbsolute()) {
-			return path.target(reproducer.distribute());
-		}
 		if (path.isSelf()) {
 			return Path.SELF_PATH
 					.bind(this, reproducer.getScope())
@@ -232,8 +216,7 @@ public class Ref extends Statement {
 					reproducer,
 					pathReproduction,
 					reproducer.getPhrasePrefix()
-					.getPath()
-					.materialize());
+					.getPath());
 		}
 
 		if (!pathReproduction.isOutOfClause()) {
@@ -249,27 +232,37 @@ public class Ref extends Statement {
 				pathReproducer.reproduceBindings(
 						pathReproduction.getReproducedPath())
 				.bind(this, reproducer.getScope())
-				.append(reproducer.getPhrasePrefix().getPath().materialize()));
+				.append(reproducer.getPhrasePrefix().getPath()));
 	}
 
-	private Ref reproducePart(Reproducer reproducer, Path path) {
-		return path.bind(this, reproducer.getScope()).target(
-				reproducer.distribute());
-	}
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
 
-	private Ref startWithPrefix(
-			Reproducer reproducer,
-			PathReproduction pathReproduction,
-			BoundPath phrasePrefix) {
+		final NormalPath normalPath = getPath().normalize(normalizer, origin);
 
-		final Path externalPath = pathReproduction.getExternalPath();
-
-		if (externalPath.isSelf()) {
-			return phrasePrefix.target(reproducer.distribute());
+		if (!normalPath.isNormalized()) {
+			return null;
 		}
 
-		return phrasePrefix.append(externalPath)
-				.target(reproducer.distribute());
+		return new Inline(valueStruct(origin), normalPath);
+	}
+
+	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineValue inline = inline(normalizer, getScope());
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new InlineCmd(inline);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		this.inline = inline(normalizer, getScope());
 	}
 
 	public final Ref toStatic() {
@@ -283,9 +276,7 @@ public class Ref extends Statement {
 
 		final Adapter adapter = new Adapter(location, adapterType);
 
-		return getPath().materialize()
-				.append(adapter.toPath())
-				.target(distribute());
+		return getPath().append(adapter.toPath()).target(distribute());
 	}
 
 	public final Ref prefixWith(PrefixPath prefix) {
@@ -388,8 +379,11 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(LocalBuilder builder) {
-		return new RefStOp(builder, this, op(builder.host()));
+	protected final StOp createOp(CodeBuilder builder) {
+		if (this.inline != null) {
+			return new InlineOp(builder, this, this.inline);
+		}
+		return new Op(builder, this, op(builder.host()));
 	}
 
 	final void refFullyResolved() {
@@ -403,12 +397,66 @@ public class Ref extends Statement {
 		return DEFAULT_VALUE_STRUCT_FINDER;
 	}
 
-	private static final class RefStOp extends StOp {
+	private Ref reproducePart(Reproducer reproducer, Path path) {
+		return path.bind(this, reproducer.getScope()).target(
+				reproducer.distribute());
+	}
+
+	private Ref startWithPrefix(
+			Reproducer reproducer,
+			PathReproduction pathReproduction,
+			BoundPath phrasePrefix) {
+
+		final Path externalPath = pathReproduction.getExternalPath();
+
+		if (externalPath.isSelf()) {
+			return phrasePrefix.target(reproducer.distribute());
+		}
+
+		return phrasePrefix.append(externalPath)
+				.target(reproducer.distribute());
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final NormalPath normalPath;
+
+		Inline(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
+			super(valueStruct);
+			this.normalPath = normalPath;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.normalPath.writeLogicalValue(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.normalPath.writeValue(dirs, host);
+		}
+
+		@Override
+		public void cancel() {
+			this.normalPath.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.normalPath == null) {
+				return super.toString();
+			}
+			return this.normalPath.toString();
+		}
+
+	}
+
+	private static final class Op extends StOp {
 
 		private final RefOp ref;
 
-		RefStOp(
-				LocalBuilder builder,
+		Op(
+				CodeBuilder builder,
 				Statement statement,
 				RefOp ref) {
 			super(builder, statement);
@@ -416,7 +464,17 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void writeAssignment(Control control, ValOp result) {
+		public void writeLogicalValue(Control control) {
+
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					control.falseDir());
+
+			this.ref.writeLogicalValue(dirs);
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
 
 			final Code code = control.code();
 			final ValDirs dirs =
@@ -432,6 +490,20 @@ public class Ref extends Statement {
 			control.returnValue();
 		}
 
+	}
+
+	private static final class InlineOp extends StOp {
+
+		private final InlineValue inline;
+
+		InlineOp(
+				CodeBuilder builder,
+				Statement statement,
+				InlineValue inline) {
+			super(builder, statement);
+			this.inline = inline;
+		}
+
 		@Override
 		public void writeLogicalValue(Control control) {
 
@@ -439,7 +511,86 @@ public class Ref extends Statement {
 					control.code(),
 					control.falseDir());
 
-			this.ref.writeLogicalValue(dirs);
+			this.inline.writeCond(dirs, getBuilder().host());
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
+
+			final Code code = control.code();
+			final ValDirs dirs =
+					control.getBuilder().falseWhenUnknown(
+							code,
+							control.falseDir())
+					.value(code.id("local_val"), result);
+
+			result.store(
+					code,
+					this.inline.writeValue(dirs, getBuilder().host()));
+
+			dirs.done();
+
+			control.returnValue();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
+		}
+
+	}
+
+	private static final class InlineCmd implements InlineCommand {
+
+		private final InlineValue inline;
+
+		InlineCmd(InlineValue inline) {
+			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(Control control) {
+
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					control.falseDir());
+
+			this.inline.writeCond(dirs, control.host());
+		}
+
+		@Override
+		public void writeValue(Control control, ValOp result) {
+
+			final Code code = control.code();
+			final ValDirs dirs =
+					control.getBuilder().falseWhenUnknown(
+							code,
+							control.falseDir())
+					.value(code.id("local_val"), result);
+
+			result.store(
+					code,
+					this.inline.writeValue(dirs, control.host()));
+
+			dirs.done();
+
+			control.returnValue();
+		}
+
+		@Override
+		public void cancel() {
+			this.inline.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
 		}
 
 	}

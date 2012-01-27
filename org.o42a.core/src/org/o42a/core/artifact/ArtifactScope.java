@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,79 +19,16 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.*;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.Loggable;
+import org.o42a.core.AbstractScope;
 
 
 public abstract class ArtifactScope<A extends Artifact<A>>
 		extends AbstractScope {
 
-	private final CompilerContext context;
-	private final Loggable loggable;
-	private final Container enclosingContainer;
-	private final ScopePlace place;
 	private A artifact;
 
-	private ScopeIR ir;
-
-	public ArtifactScope(LocationInfo location, Distributor enclosing) {
-		this.context = location.getContext();
-		this.loggable = location.getLoggable();
-		this.enclosingContainer = enclosing.getContainer();
-		this.place = enclosing.getPlace();
-	}
-
 	@Override
-	public final CompilerContext getContext() {
-		return this.context;
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.loggable;
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return this.place;
-	}
-
-	@Override
-	public A getArtifact() {
-		assert this.artifact != null :
-			"Scope " + this + " not initialized yet";
-		return this.artifact;
-	}
-
-	@Override
-	public final Container getEnclosingContainer() {
-		return this.enclosingContainer;
-	}
-
-	@Override
-	public final Member toMember() {
-		return null;
-	}
-
-	@Override
-	public final Field<Obj> toField() {
-		return null;
-	}
-
-	@Override
-	public final ScopeIR ir(Generator generator) {
-		if (this.ir == null || this.ir.getGenerator() != generator) {
-			this.ir = createIR(generator);
-		}
-		return this.ir;
-	}
+	public abstract A getArtifact();
 
 	@Override
 	public String toString() {
@@ -101,10 +38,12 @@ public abstract class ArtifactScope<A extends Artifact<A>>
 		return this.artifact.toString();
 	}
 
-	protected abstract ScopeIR createIR(Generator generator);
+	protected final A setScopeArtifact(A artifact) {
+		return this.artifact = artifact;
+	}
 
-	void setScopeArtifact(A artifact) {
-		this.artifact = artifact;
+	protected final A getScopeArtifact() {
+		return this.artifact;
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,15 +19,16 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
@@ -37,7 +38,10 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.use.*;
 
 
-public final class ObjectValue implements Uses<ValueUsage> {
+public final class ObjectValue {
+
+	private static final byte FULLY_RESOLVED = 1;
+	private static final byte NORMALIZED = 2;
 
 	private final Obj object;
 	private ValueStruct<?, ?> valueStruct;
@@ -52,7 +56,7 @@ public final class ObjectValue implements Uses<ValueUsage> {
 
 	private Usable<ValueUsage> uses;
 
-	private boolean fullyResolved;
+	private byte fullResolution;
 
 	ObjectValue(Obj object) {
 		this.object = object;
@@ -80,26 +84,19 @@ public final class ObjectValue implements Uses<ValueUsage> {
 		return this.valueStruct;
 	}
 
-	@Override
-	public final AllUsages<ValueUsage> allUsages() {
-		return ALL_VALUE_USAGES;
-	}
-
-	@Override
 	public final UseFlag selectUse(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
 		if (this.uses == null) {
-			return useCase.toUseCase().unusedFlag();
+			return analyzer.toUseCase().unusedFlag();
 		}
-		return this.uses.selectUse(useCase, selector);
+		return this.uses.selectUse(analyzer, selector);
 	}
 
-	@Override
 	public final boolean isUsed(
-			UseCaseInfo useCase,
+			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
-		return selectUse(useCase, selector).isUsed();
+		return selectUse(analyzer, selector).isUsed();
 	}
 
 	public final Value<?> getValue() {
@@ -253,7 +250,7 @@ public final class ObjectValue implements Uses<ValueUsage> {
 	}
 
 	public final void resolveAll(UserInfo user) {
-		if (this.fullyResolved) {
+		if (this.fullResolution != 0) {
 			explicitUseBy(user);
 			return;
 		}
@@ -262,7 +259,7 @@ public final class ObjectValue implements Uses<ValueUsage> {
 		final FullResolution fullResolution =
 				object.getContext().fullResolution();
 
-		this.fullyResolved = true;
+		this.fullResolution = FULLY_RESOLVED;
 		fullResolution.start();
 		try {
 			object.resolveAll();
@@ -271,6 +268,26 @@ public final class ObjectValue implements Uses<ValueUsage> {
 		} finally {
 			fullResolution.end();
 		}
+	}
+
+	public final void normalize(Analyzer analyzer) {
+		if (this.fullResolution >= NORMALIZED) {
+			return;
+		}
+		this.fullResolution = NORMALIZED;
+
+		final Obj object = getObject();
+
+		if (object.getConstructionMode().isRuntime()) {
+			return;
+		}
+
+		final Normalizer normalizer =
+				new Normalizer(analyzer, object.getScope(), false);
+		final Obj wrapped = object.getWrapped();
+		final Definitions definitions = wrapped.value().getDefinitions();
+
+		definitions.normalize(normalizer);
 	}
 
 	@Override

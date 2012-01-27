@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -31,6 +31,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -50,49 +51,13 @@ public final class ModuleStep extends Step {
 		return PathKind.ABSOLUTE_PATH;
 	}
 
+	@Override
+	public final RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
+	}
+
 	public String getModuleId() {
 		return this.moduleId;
-	}
-
-	@Override
-	public boolean isMaterial() {
-		return true;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final CompilerContext context = start.getContext();
-		final Module module = context.getIntrinsics().getModule(this.moduleId);
-
-		if (module == null) {
-			context.getLogger().error(
-					"unresolved_module",
-					path,
-					"Module <%s> can not be resolved",
-					this.moduleId);
-			return null;
-		}
-		walker.module(this, module);
-
-		return module;
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		return unchangedPath(toPath());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
 	}
 
 	@Override
@@ -127,6 +92,55 @@ public final class ModuleStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return objectFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+
+		final CompilerContext context = start.getContext();
+		final Module module = context.getIntrinsics().getModule(this.moduleId);
+
+		if (module == null) {
+			context.getLogger().error(
+					"unresolved_module",
+					path,
+					"Module <%s> can not be resolved",
+					this.moduleId);
+			return null;
+		}
+		if (resolver.isFullResolution()) {
+			module.resolveAll();
+		}
+		walker.module(this, module);
+
+		return module;
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.skipStep();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return unchangedPath(toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return new Op(start, this);
 	}
 
 	private static final class Op extends StepOp<ModuleStep> {

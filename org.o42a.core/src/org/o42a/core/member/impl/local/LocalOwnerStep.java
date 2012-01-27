@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -50,12 +51,29 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return true;
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
-	public Container resolve(
+	public String toString() {
+		return "Owner[" + this.local + ']';
+	}
+
+	@Override
+	protected void rebuild(PathRebuilder rebuilder) {
+		rebuilder.combineWithLocalOwner(this.local.getOwner());
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return defaultFieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
 			PathResolver resolver,
 			BoundPath path,
 			int index,
@@ -74,7 +92,13 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public PathReproduction reproduce(
+	protected Scope revert(Scope target) {
+		return target.toObject().member(
+				this.local.toMember().getKey()).toLocal().local();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
 		return reproducedPath(
@@ -82,25 +106,15 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
-	public PathOp op(PathOp start) {
+	protected void normalize(PathNormalizer normalizer) {
+		normalizer.up(
+				normalizer.getStepStart().getScope()
+				.toLocal().getOwner().getScope());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
 		return new Op(start, this);
-	}
-
-	@Override
-	public String toString() {
-		return "Owner[" + this.local + ']';
-	}
-
-	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-		rebuilder.combineWithLocalOwner(this.local.getOwner());
-	}
-
-	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
 	}
 
 	private static final class Op extends StepOp<LocalOwnerStep> {

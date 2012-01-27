@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -30,6 +30,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
@@ -103,6 +104,8 @@ public interface Scope extends PlaceInfo {
 	LocalScope toLocal();
 
 	ConstructionMode getConstructionMode();
+
+	Prediction predict(Prediction enclosing);
 
 	boolean derivedFrom(Scope other);
 

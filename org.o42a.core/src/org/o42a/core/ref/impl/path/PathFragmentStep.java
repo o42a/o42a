@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -24,6 +24,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -42,30 +43,8 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-		return false;
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-		throw unresolved();
-	}
-
-	@Override
-	public PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		throw unresolved();
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		throw unresolved();
+	public RefUsage getObjectUsage() {
+		return null;
 	}
 
 	@Override
@@ -86,6 +65,38 @@ public final class PathFragmentStep extends Step {
 			BoundPath path,
 			Distributor distributor) {
 		return this.fragment.fieldDefinition(path, distributor);
+	}
+
+	@Override
+	protected Container resolve(
+			PathResolver resolver,
+			BoundPath path,
+			int index,
+			Scope start,
+			PathWalker walker) {
+		throw unresolved();
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		throw unresolved();
+	}
+
+	@Override
+	protected void normalize(PathNormalizer normalizer) {
+		throw unresolved();
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		throw unresolved();
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		throw unresolved();
 	}
 
 	private IllegalStateException unresolved() {

@@ -1,6 +1,6 @@
 /*
     Test Framework
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -25,16 +25,13 @@ import static org.o42a.util.use.User.dummyUser;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -45,7 +42,7 @@ import org.o42a.lib.test.TestModule;
 import org.o42a.util.use.UserInfo;
 
 
-final class TestRunner extends Obj {
+final class TestRunner extends ConstructedObject {
 
 	public static void runTest(
 			TestModule module,
@@ -83,7 +80,7 @@ final class TestRunner extends Obj {
 		}
 
 		final Artifact<?> adapterArtifact =
-				adapterMember.toField().field(user).getArtifact();
+				adapterMember.toField().artifact(user);
 
 		if (!adapterArtifact.isValid()) {
 			return;
@@ -115,15 +112,7 @@ final class TestRunner extends Obj {
 			return;
 		}
 
-		final Path fieldPath = field.getKey().toPath();
-		final Path testPath;
-
-		if (field.getArtifactKind() == ArtifactKind.OBJECT) {
-			testPath = fieldPath;
-		} else {
-			testPath = fieldPath.materialize();
-		}
-
+		final Path testPath = field.getKey().toPath();
 		final Scope localScope = statements.getScope();
 		final Path pathFromLocal =
 				localScope.getEnclosingScopePath().append(testPath);

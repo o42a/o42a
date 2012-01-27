@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref.impl.path;
 
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -25,6 +25,7 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -32,15 +33,16 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.MemberField;
+import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public class MemberStep extends Step {
+public abstract class AbstractMemberStep extends Step {
 
 	private final MemberKey memberKey;
 
-	public MemberStep(MemberKey memberKey) {
+	public AbstractMemberStep(MemberKey memberKey) {
 		if (memberKey == null) {
 			throw new NullPointerException("Field key not specified");
 		}
@@ -48,12 +50,12 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public PathKind getPathKind() {
+	public final PathKind getPathKind() {
 		return PathKind.RELATIVE_PATH;
 	}
 
 	@Override
-	public String getName() {
+	public final String getName() {
 		return this.memberKey.getName();
 	}
 
@@ -62,50 +64,8 @@ public class MemberStep extends Step {
 	}
 
 	@Override
-	public boolean isMaterial() {
-
-		final Member member = firstDeclaration();
-		final MemberField field = member.toField();
-
-		if (field == null) {
-			return true;
-		}
-
-		return field.getArtifactKind().isObject();
-	}
-
-	@Override
-	public Container resolve(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Scope start,
-			PathWalker walker) {
-
-		final Member member = resolveMember(resolver, path, index, start);
-
-		if (member == null) {
-			return null;
-		}
-
-		walker.member(start.getContainer(), this, member);
-
-		return member.substance(resolver);
-	}
-
-	@Override
-	public final PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-
-		final Scope origin = this.memberKey.getOrigin();
-
-		return reproduce(location, reproducer, origin, reproducer.getScope());
-	}
-
-	@Override
-	public PathOp op(PathOp start) {
-		return new Op(start, this);
+	public final RefUsage getObjectUsage() {
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -125,7 +85,7 @@ public class MemberStep extends Step {
 			return false;
 		}
 
-		final MemberStep other = (MemberStep) obj;
+		final AbstractMemberStep other = (AbstractMemberStep) obj;
 
 		return this.memberKey.equals(other.memberKey);
 	}
@@ -142,13 +102,19 @@ public class MemberStep extends Step {
 		return defaultFieldDefinition(path, distributor);
 	}
 
-	protected Member resolveMember(
-			PathResolver resolver,
+	protected final Member resolveMember(
 			BoundPath path,
 			int index,
 			Scope start) {
 
-		final Member member = start.getContainer().member(this.memberKey);
+		final Member member;
+		final Artifact<?> artifact = start.getArtifact();
+
+		if (artifact != null) {
+			member = start.getArtifact().materialize().member(this.memberKey);
+		} else {
+			member = start.getContainer().member(this.memberKey);
+		}
 
 		if (member == null) {
 			unresolved(path, index, start);
@@ -156,6 +122,16 @@ public class MemberStep extends Step {
 		}
 
 		return member;
+	}
+
+	@Override
+	protected final PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+
+		final Scope origin = this.memberKey.getOrigin();
+
+		return reproduce(location, reproducer, origin, reproducer.getScope());
 	}
 
 	protected PathReproduction reproduce(
@@ -179,6 +155,11 @@ public class MemberStep extends Step {
 		return reproducedPath(reproductionKey.toPath());
 	}
 
+	@Override
+	protected final PathOp op(PathOp start) {
+		return new Op(start, this);
+	}
+
 	private final Member firstDeclaration() {
 
 		final Scope origin = this.memberKey.getOrigin();
@@ -196,9 +177,9 @@ public class MemberStep extends Step {
 		return null;
 	}
 
-	private static final class Op extends StepOp<MemberStep> {
+	private static final class Op extends StepOp<AbstractMemberStep> {
 
-		Op(PathOp start, MemberStep step) {
+		Op(PathOp start, AbstractMemberStep step) {
 			super(start, step);
 		}
 

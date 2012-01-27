@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,12 +19,14 @@
 */
 package org.o42a.core.ref.impl.logical;
 
+import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.Cancellation.cancelUpToNull;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
@@ -32,11 +34,11 @@ import org.o42a.core.value.LogicalValue;
 
 public final class LogicalOr extends Logical {
 
-	private final Logical[] variants;
+	private final Logical[] options;
 
-	public LogicalOr(LocationInfo location, Scope scope, Logical[] variants) {
+	public LogicalOr(LocationInfo location, Scope scope, Logical[] options) {
 		super(location, scope);
-		this.variants = variants;
+		this.options = options;
 	}
 
 	@Override
@@ -44,9 +46,9 @@ public final class LogicalOr extends Logical {
 
 		LogicalValue result = null;
 
-		for (Logical variant : this.variants) {
+		for (Logical option : this.options) {
 
-			final LogicalValue value = variant.getConstantValue();
+			final LogicalValue value = option.getConstantValue();
 
 			if (value.isTrue()) {
 				return value;
@@ -64,9 +66,9 @@ public final class LogicalOr extends Logical {
 
 		LogicalValue result = null;
 
-		for (Logical variant : this.variants) {
+		for (Logical option : this.options) {
 
-			final LogicalValue value = variant.logicalValue(resolver);
+			final LogicalValue value = option.logicalValue(resolver);
 
 			if (value.isTrue()) {
 				return value;
@@ -82,21 +84,42 @@ public final class LogicalOr extends Logical {
 	public Logical reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Logical[] variants = new Logical[this.variants.length];
+		final Logical[] options = new Logical[this.options.length];
 
-		for (int i = 0; i < variants.length; ++i) {
+		for (int i = 0; i < options.length; ++i) {
 
 			final Logical reproduced =
-					this.variants[i].reproduce(reproducer);
+					this.options[i].reproduce(reproducer);
 
 			if (reproduced == null) {
 				return null;
 			}
 
-			variants[i] = reproduced;
+			options[i] = reproduced;
 		}
 
-		return new LogicalOr(this, reproducer.getScope(), variants);
+		return new LogicalOr(this, reproducer.getScope(), options);
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
+
+		final InlineCond[] inlines = new InlineCond[this.options.length];
+
+		for (int i = 0; i < inlines.length; ++i) {
+
+			final InlineCond inline =
+					this.options[i].inline(normalizer, origin);
+
+			if (inline == null) {
+				cancelUpToNull(inlines);
+				return null;
+			}
+
+			inlines[i] = inline;
+		}
+
+		return new Inline(inlines);
 	}
 
 	@Override
@@ -110,12 +133,12 @@ public final class LogicalOr extends Logical {
 
 		code.go(block.head());
 
-		for (int i = 0; i < this.variants.length; ++i) {
+		for (int i = 0; i < this.options.length; ++i) {
 
 			final Code next;
 			final CodeDirs blockDirs;
 
-			if (i + 1 < this.variants.length) {
+			if (i + 1 < this.options.length) {
 				next = code.addBlock((i + 1) + "_disj");
 			} else {
 				next = code.addBlock("all_false");
@@ -123,7 +146,7 @@ public final class LogicalOr extends Logical {
 			}
 
 			blockDirs = dirs.getBuilder().falseWhenUnknown(block, next.head());
-			this.variants[i].write(blockDirs, host);
+			this.options[i].write(blockDirs, host);
 			block.go(code.tail());
 
 			block = next;
@@ -137,12 +160,9 @@ public final class LogicalOr extends Logical {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append('(');
-		for (Logical variant : this.variants) {
-			if (out.length() > 1) {
-				out.append(" | ");
-			}
-			out.append(variant);
+		out.append('(').append(this.options[0]);
+		for (int i = 1; i < this.options.length; ++i) {
+			out.append("; ").append(this.options[i]);
 		}
 		out.append(')');
 
@@ -151,14 +171,77 @@ public final class LogicalOr extends Logical {
 
 	@Override
 	protected Logical[] expandDisjunction() {
-		return this.variants;
+		return this.options;
 	}
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		for (Logical variant : this.variants) {
+		for (Logical variant : this.options) {
 			variant.resolveAll(resolver);
 		}
+	}
+
+	private static final class Inline extends InlineCond {
+
+		private final InlineCond[] options;
+
+		Inline(InlineCond[] options) {
+			this.options = options;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+
+			final CodeDirs subDirs =
+					dirs.begin("or", "In-line logical OR: " + this);
+			final Code code = subDirs.code();
+
+			Code block = code.addBlock("0_disj");
+
+			code.go(block.head());
+
+			for (int i = 0; i < this.options.length; ++i) {
+
+				final Code next;
+				final CodeDirs blockDirs;
+
+				if (i + 1 < this.options.length) {
+					next = code.addBlock((i + 1) + "_disj");
+				} else {
+					next = code.addBlock("all_false");
+					next.go(subDirs.falseDir());
+				}
+
+				blockDirs =
+						dirs.getBuilder().falseWhenUnknown(block, next.head());
+				this.options[i].writeCond(blockDirs, host);
+				block.go(code.tail());
+
+				block = next;
+			}
+
+			subDirs.end();
+		}
+
+		@Override
+		public void cancel() {
+			cancelAll(this.options);
+		}
+
+		@Override
+		public String toString() {
+
+			final StringBuilder out = new StringBuilder();
+
+			out.append('(').append(this.options[0]);
+			for (int i = 1; i < this.options.length; ++i) {
+				out.append("; ").append(this.options[i]);
+			}
+			out.append(')');
+
+			return out.toString();
+		}
+
 	}
 
 }

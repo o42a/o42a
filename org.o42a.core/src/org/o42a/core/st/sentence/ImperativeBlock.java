@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
@@ -28,18 +29,18 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopePlace;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
@@ -229,6 +230,20 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		return reproduction;
 	}
 
+	@Override
+	public InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return inlineBlock(normalizer, valueStruct, this);
+	}
+
+	@Override
+	public void normalizeImperative(Normalizer normalizer) {
+		for (ImperativeSentence sentence : getSentences()) {
+			sentence.normalizeImperatives(normalizer);
+		}
+	}
+
 	public Statement wrap(Distributor distributor) {
 		if (!isTopLevel()) {
 			return this;
@@ -237,7 +252,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected StOp createOp(CodeBuilder builder) {
 		return new ImperativeBlockOp(builder, this);
 	}
 

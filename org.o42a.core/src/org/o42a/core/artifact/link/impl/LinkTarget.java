@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,6 +21,7 @@ package org.o42a.core.artifact.link.impl;
 
 import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
 
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.def.Definitions;
@@ -77,6 +78,11 @@ public class LinkTarget extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return null;
+	}
+
+	@Override
+	protected Obj findObjectIn(Scope enclosing) {
+		return this.link.findIn(enclosing).materialize();
 	}
 
 }

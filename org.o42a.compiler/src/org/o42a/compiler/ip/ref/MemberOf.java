@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.core.ref.path.Path.materializePath;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.CompoundPathWalker;
@@ -28,7 +26,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.Role;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.ref.common.PlacedPathFragment;
@@ -73,22 +70,11 @@ public class MemberOf extends PlacedPathFragment {
 
 		final Artifact<?> artifact = owner.getArtifact();
 		final MemberContainer container;
-		final Path prefix;
 
 		if (artifact != null) {
-
-			final Obj object = artifact.toObject();
-
-			if (object == null) {
-				container = artifact.materialize();
-				prefix = materializePath();
-			} else {
-				container = object;
-				prefix = SELF_PATH;
-			}
+			container = artifact.materialize();
 		} else {
 			container = scope.getContainer();
-			prefix = SELF_PATH;
 		}
 
 		final Path memberPath = container.member(
@@ -107,7 +93,7 @@ public class MemberOf extends PlacedPathFragment {
 			return null;
 		}
 
-		return prefix.append(memberPath).bind(this, owner);
+		return memberPath.bind(this, owner);
 	}
 
 	@Override

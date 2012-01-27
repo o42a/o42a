@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,12 +19,14 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Inclusion extends Statement {
@@ -45,17 +47,29 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	public Statement reproduce(Reproducer reproducer) {
+	public final InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	public final void normalizeImperative(Normalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
+	public final Statement reproduce(Reproducer reproducer) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected StOp createOp(LocalBuilder builder) {
+	protected final void fullyResolveImperative(LocalResolver resolver) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected final StOp createOp(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

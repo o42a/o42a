@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -40,6 +40,8 @@ public class DepIR {
 	private Type instance;
 
 	public DepIR(Generator generator, Dep dep) {
+		assert !dep.isDisabled() :
+			dep + " is disabled";
 		this.generator = generator;
 		this.dep = dep;
 	}

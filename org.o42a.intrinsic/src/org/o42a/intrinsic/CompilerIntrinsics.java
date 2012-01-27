@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,6 +28,7 @@ import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
 import java.util.HashMap;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
@@ -184,9 +185,15 @@ public class CompilerIntrinsics extends Intrinsics {
 		}
 	}
 
+	public void analyze(Analyzer analyzer) {
+		if (consoleUsed()) {
+			this.user.useBy(analyzer, SIMPLE_USAGE);
+		}
+		normalizeAll(analyzer);
+	}
+
 	public void generateAll(Generator generator) {
 		if (consoleUsed()) {
-			this.user.useBy(generator, SIMPLE_USAGE);
 			this.consoleModule.generateMain(generator);
 		}
 	}
@@ -202,6 +209,18 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	private final boolean consoleUsed() {
 		return this.modules.get(this.consoleModule.getModuleId()).isUsed();
+	}
+
+	private void normalizeAll(Analyzer analyzer) {
+		if (analyzer.isNormalizationEnabled()) {
+			this.root.normalize(analyzer);
+			if (this.mainModule != null) {
+				this.mainModule.normalize(analyzer);
+			}
+			for (ModuleUse module : this.modules.values()) {
+				module.normalize(analyzer);
+			}
+		}
 	}
 
 	private static final class ModuleUse {
@@ -227,6 +246,12 @@ public class CompilerIntrinsics extends Intrinsics {
 		public void resolveAll() {
 			if (isUsed()) {
 				this.module.resolveAll();
+			}
+		}
+
+		public void normalize(Analyzer analyzer) {
+			if (isUsed()) {
+				this.module.normalize(analyzer);
 			}
 		}
 

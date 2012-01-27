@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -99,7 +99,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 				&& getValueIR().claim().canStub()
 				&& getValueIR().requirement().canStub()
 				&& !getObject().value().isUsed(
-						getGenerator(),
+						getGenerator().getAnalyzer(),
 						ALL_VALUE_USAGES);
 	}
 

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,25 +19,29 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.ref.impl.prediction.FieldPrediction.predictField;
 import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.*;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopePlace;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.impl.field.FieldContainer;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Field<A extends Artifact<A>> extends AbstractScope {
+public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 
 	private final MemberField member;
-	private A artifact;
 	private Path enclosingScopePath;
 	private Field<A>[] overridden;
 
@@ -191,9 +195,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
-	public abstract A getArtifact();
-
-	@Override
 	public final MemberField toMember() {
 		return this.member;
 	}
@@ -240,6 +241,11 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	}
 
 	@Override
+	public final Prediction predict(Prediction enclosing) {
+		return predictField(enclosing, this);
+	}
+
+	@Override
 	public boolean derivedFrom(Scope other) {
 		if (this == other) {
 			return true;
@@ -276,14 +282,6 @@ public abstract class Field<A extends Artifact<A>> extends AbstractScope {
 	@Override
 	public String toString() {
 		return this.member.toString();
-	}
-
-	protected final A setFieldArtifact(A artifact) {
-		return this.artifact = artifact;
-	}
-
-	protected final A getFieldArtifact() {
-		return this.artifact;
 	}
 
 	protected void merge(Field<?> field) {

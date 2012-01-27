@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ref.impl.logical;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
 
@@ -31,12 +30,12 @@ import org.o42a.core.value.LogicalValue;
 public final class RescopedLogical extends Logical {
 
 	private final Logical logical;
-	private final PrefixPath prefix;
+	private final ScopeUpgrade scopeUpgrade;
 
-	public RescopedLogical(Logical logical, PrefixPath prefix) {
-		super(logical, prefix.getStart());
+	public RescopedLogical(Logical logical, ScopeUpgrade scopeUpgrade) {
+		super(logical, scopeUpgrade.getFinalScope());
 		this.logical = logical;
-		this.prefix = prefix;
+		this.scopeUpgrade = scopeUpgrade;
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public final class RescopedLogical extends Logical {
 	@Override
 	public LogicalValue logicalValue(Resolver resolver) {
 		assertCompatible(resolver.getScope());
-		return this.logical.logicalValue(this.prefix.rescope(resolver));
+		return this.logical.logicalValue(this.scopeUpgrade.rescope(resolver));
 	}
 
 	@Override
@@ -57,22 +56,27 @@ public final class RescopedLogical extends Logical {
 	}
 
 	@Override
-	public Logical prefixWith(PrefixPath prefix) {
+	public Logical upgradeScope(ScopeUpgrade scopeUpgrade) {
 
-		final PrefixPath oldPrefix = this.prefix;
-		final PrefixPath newPrefix = oldPrefix.and(prefix);
+		final ScopeUpgrade oldUpgrade = this.scopeUpgrade;
+		final ScopeUpgrade newUpgrade = oldUpgrade.and(scopeUpgrade);
 
-		if (newPrefix == oldPrefix) {
+		if (newUpgrade == oldUpgrade) {
 			return this;
 		}
 
-		return new RescopedLogical(this.logical, newPrefix);
+		return new RescopedLogical(this.logical, newUpgrade);
+	}
+
+	@Override
+	public InlineCond inline(Normalizer normalizer, Scope origin) {
+		return this.logical.inline(normalizer, origin);
 	}
 
 	@Override
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
-		this.logical.write(dirs, this.prefix.write(dirs, host));
+		this.logical.write(dirs, host);
 	}
 
 	@Override
@@ -82,8 +86,7 @@ public final class RescopedLogical extends Logical {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		this.prefix.resolveAll(resolver);
-		this.logical.resolveAll(this.prefix.rescope(resolver));
+		this.logical.resolveAll(this.scopeUpgrade.rescope(resolver));
 	}
 
 }

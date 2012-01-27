@@ -25,7 +25,7 @@ BEGIN {
 	buffer = ""
 	skip = 0
 	comment = 0
-	year = "2011"
+	year = "2012"
 	author = "Ruslan Lopatin"
 }
 
@@ -52,8 +52,12 @@ comment && /^[ \t]*Copyright/ {
 		skip=1
 		exit 0
 	}
+	year_str=gensub("^([^,-]*)[,-].*", "\\1-" year, "g", $3)
+	if (year_str == $3) {
+		year_str=$3 "," year
+	}
 	printf "%s", buffer
-	print "    Copyright (C)", $3 "," year, author 
+	print "    Copyright (C)", year_str, author
 	comment = 0
 	buffer = ""
 	skip = 1

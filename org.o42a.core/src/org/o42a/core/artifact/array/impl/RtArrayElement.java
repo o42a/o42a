@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -40,7 +40,7 @@ public class RtArrayElement extends ArrayElement {
 	}
 
 	@Override
-	public ItemLink getArtifact() {
+	public Link getArtifact() {
 		if (this.artifact != null) {
 			return this.artifact;
 		}
@@ -63,12 +63,14 @@ public class RtArrayElement extends ArrayElement {
 	private static final class ItemLink extends Link {
 
 		private final TargetRef targetRef;
+		private final RtArrayElement element;
 
 		ItemLink(RtArrayElement element) {
 			super(
 					element,
 					element.isConstant()
 					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
+			this.element = element;
 			this.targetRef =
 					new RtArrayElementConstructor(element)
 					.toRef()
@@ -78,6 +80,15 @@ public class RtArrayElement extends ArrayElement {
 		@Override
 		protected TargetRef buildTargetRef() {
 			return this.targetRef;
+		}
+
+		@Override
+		protected Link findLinkIn(Scope enclosing) {
+
+			final RtArrayElement element =
+					new RtArrayElement(enclosing, this.element.indexRef);
+
+			return element.getArtifact();
 		}
 
 	}

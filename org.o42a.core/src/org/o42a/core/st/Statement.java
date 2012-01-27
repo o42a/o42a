@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,16 +19,16 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.ir.local.StOp.noStOp;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.ir.local.LocalBuilder;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Statement extends Placed {
@@ -52,7 +52,7 @@ public abstract class Statement extends Placed {
 
 	public abstract Statement reproduce(Reproducer reproducer);
 
-	public void resolveImperative(LocalResolver resolver) {
+	public final void resolveImperative(LocalResolver resolver) {
 		fullyResolved();
 		getContext().fullResolution().start();
 		try {
@@ -62,7 +62,13 @@ public abstract class Statement extends Placed {
 		}
 	}
 
-	public final StOp op(LocalBuilder builder) {
+	public abstract InlineCommand inlineImperative(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct);
+
+	public abstract void normalizeImperative(Normalizer normalizer);
+
+	public final StOp op(CodeBuilder builder) {
 
 		final StOp op = this.op;
 
@@ -83,14 +89,11 @@ public abstract class Statement extends Placed {
 
 	protected abstract void fullyResolveImperative(LocalResolver resolver);
 
-	protected abstract StOp createOp(LocalBuilder builder);
-
-	protected final StOp noOp(LocalBuilder builder) {
-		return noStOp(builder, this);
-	}
+	protected abstract StOp createOp(CodeBuilder builder);
 
 	protected final void fullyResolved() {
 		this.fullyResolved = true;
 	}
+
 
 }

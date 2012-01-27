@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -22,7 +22,7 @@ package org.o42a.core.member;
 import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.path.MemberStep;
+import org.o42a.core.ref.impl.path.MemberStep;
 import org.o42a.core.ref.path.Path;
 
 

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
@@ -93,43 +94,47 @@ class PhraseConstructor extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new PhraseObject(
-				this.phrase.getMainContext(),
-				distribute(),
-				this.ascendants);
+		return new PhraseObject(this);
 	}
 
 	private static final class PhraseObject extends DefinedObject {
 
-		private final MainPhraseContext mainContext;
-		private final AscendantsDefinition ascendants;
+		private final PhraseConstructor constructor;
 
-		private PhraseObject(
-				MainPhraseContext mainContext,
-				Distributor distributor,
-				AscendantsDefinition ascendants) {
-			super(mainContext.getPhrase(), distributor);
-			this.mainContext = mainContext;
-			this.ascendants = ascendants;
+		private PhraseObject(PhraseConstructor constructor) {
+			super(
+					constructor.phrase,
+					constructor.distribute());
+			this.constructor = constructor;
 		}
 
 		@Override
 		public String toString() {
-			return this.mainContext.getPhrase().toString();
+			if (this.constructor == null) {
+				return super.toString();
+			}
+			return this.constructor.phrase.toString();
 		}
 
 		@Override
 		protected Ascendants buildAscendants() {
-			return this.ascendants.updateAscendants(new Ascendants(this));
+			return this.constructor.ascendants.updateAscendants(
+					new Ascendants(this));
 		}
 
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
 
 			final BlockBuilder definitionBuilder =
-					this.mainContext.getInstances()[0].getDefinition();
+					this.constructor.phrase.getMainContext()
+					.getInstances()[0].getDefinition();
 
 			definitionBuilder.buildBlock(definition);
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			return this.constructor.resolve(enclosing);
 		}
 
 	}

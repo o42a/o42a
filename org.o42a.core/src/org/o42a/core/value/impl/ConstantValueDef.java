@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,16 +20,15 @@
 package org.o42a.core.value.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -40,17 +39,19 @@ public final class ConstantValueDef<T> extends ValueDef {
 	private final Value<T> value;
 
 	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
-		super(source, location, emptyPrefix(source.getScope()));
+		super(source, location, noScopeUpgrade(source.getScope()));
 		this.value = value;
 	}
 
 	ConstantValueDef(ConstantObject<T> source) {
-		super(source, source, emptyPrefix(source.getScope()));
+		super(source, source, noScopeUpgrade(source.getScope()));
 		this.value = source.getValue();
 	}
 
-	private ConstantValueDef(ConstantValueDef<T> prototype, PrefixPath prefix) {
-		super(prototype, prefix);
+	private ConstantValueDef(
+			ConstantValueDef<T> prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
 	}
 
@@ -85,8 +86,10 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new ConstantValueDef<T>(this, prefix);
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new ConstantValueDef<T>(this, upgrade);
 	}
 
 	@Override
@@ -95,13 +98,57 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return new Inline(this.value);
+	}
+
+	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.value.op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override
+	protected void normalizeDef(Normalizer normalizer) {
+		// No need to normalize the scalar constant.
+	}
+
+	@Override
 	protected String name() {
 		return "ConstantValueDef";
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final Value<?> value;
+
+		public Inline(Value<?> value) {
+			super(value.getValueStruct());
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.value.op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
 	}
 
 }

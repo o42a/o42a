@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,6 +19,12 @@
 */
 package org.o42a.core.def;
 
+import static org.o42a.core.ref.InlineValue.inlineUnknown;
+import static org.o42a.util.Cancellation.cancelUpToNull;
+
+import org.o42a.core.def.impl.InlineValueDefs;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -130,5 +136,36 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 				definitions.claims(),
 				newPropositions);
 	}
+
+	InlineValue inline(Normalizer normalizer, Definitions definitions) {
+
+		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
+
+		if (isEmpty()) {
+			return inlineUnknown(valueStruct);
+		}
+
+		final ValueDef[] defs = get();
+
+		if (defs.length == 1) {
+			return defs[0].inline(normalizer, valueStruct);
+		}
+
+		final InlineValue[] inlines = new InlineValue[defs.length];
+
+		for (int i = 0; i < defs.length; ++i) {
+
+			final InlineValue inline = defs[i].inline(normalizer, valueStruct);
+
+			if (inline == null) {
+				cancelUpToNull(inlines);
+				return null;
+			}
+			inlines[i] = inline;
+		}
+
+		return new InlineValueDefs(inlines);
+	}
+
 }
 

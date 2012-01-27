@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.RefUsage.RESOLUTION_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 
 import org.o42a.core.PlaceInfo;
 import org.o42a.core.Scope;
@@ -148,7 +148,7 @@ public final class PrefixPath {
 
 	public final void resolveAll(Resolver resolver) {
 		bind(getStart()).walk(
-				resolver.toFullPathResolver(RESOLUTION_REF_USAGE),
+				resolver.toFullPathResolver(CONTAINER_REF_USAGE),
 				resolver.getWalker());
 	}
 
@@ -238,7 +238,6 @@ public final class PrefixPath {
 
 		final PrefixPath phrasePrefix =
 				reproducer.getPhrasePrefix()
-				.materialize()
 				.getPath()
 				.toPrefix(reproducer.getPhrasePrefix().getScope());
 		final Path externalPath = pathReproduction.getExternalPath();

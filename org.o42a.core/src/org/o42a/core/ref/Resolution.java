@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -139,8 +139,8 @@ public final class Resolution implements ScopeInfo {
 		return artifact.materialize();
 	}
 
-	public final Resolution resolveAll() {
-		return resolveAll(RESOLUTION_REF_USAGE);
+	public final Resolution resolveContainer() {
+		return resolveAll(CONTAINER_REF_USAGE);
 	}
 
 	public final Resolution resolveTarget() {

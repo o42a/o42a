@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,8 +20,13 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.def.DefKind.PROPOSITION;
+import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
+import static org.o42a.util.Cancellation.cancelUpToNull;
 
+import org.o42a.core.def.impl.InlineCondDefs;
 import org.o42a.core.def.impl.RuntimeCondDef;
+import org.o42a.core.ref.InlineCond;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;
 import org.o42a.util.ArrayUtil;
@@ -208,6 +213,33 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 				newConditions,
 				definitions.claims(),
 				definitions.propositions());
+	}
+
+	final InlineCond inline(Normalizer normalizer) {
+		if (isEmpty()) {
+			return INLINE_UNKNOWN;
+		}
+
+		final CondDef[] defs = get();
+
+		if (defs.length == 1) {
+			return defs[0].inline(normalizer);
+		}
+
+		final InlineCond[] inlines = new InlineCond[defs.length];
+
+		for (int i = 0; i < defs.length; ++i) {
+
+			final InlineCond inline = defs[i].inline(normalizer);
+
+			if (inline == null) {
+				cancelUpToNull(inlines);
+				return null;
+			}
+			inlines[i] = inline;
+		}
+
+		return new InlineCondDefs(this, inlines);
 	}
 
 	private static int nextNonPrereq(CondDef[] defs, int start) {
