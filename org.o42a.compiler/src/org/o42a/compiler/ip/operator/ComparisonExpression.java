@@ -236,10 +236,8 @@ public final class ComparisonExpression extends ObjectConstructor {
 			if (this.ref.hasError()) {
 				return inlineFalse(valueStruct);
 			}
-			System.err.println("(!) " + this);
 
-			final InlineValue cmpValue =
-					this.cmp.inline(normalizer, origin);
+			final InlineValue cmpValue = this.cmp.inline(normalizer, origin);
 
 			if (cmpValue == null) {
 				return null;
@@ -274,7 +272,8 @@ public final class ComparisonExpression extends ObjectConstructor {
 			final Ref phrase = this.ref.phrase(distributor);
 			final FieldBuilder builder = memberRegistry.newField(
 					fieldDeclaration(this, distributor, COMPARISON)
-					.setVisibility(Visibility.PRIVATE),
+					.setVisibility(Visibility.PRIVATE)
+					.link(),
 					phrase.toFieldDefinition());
 
 			if (builder == null) {

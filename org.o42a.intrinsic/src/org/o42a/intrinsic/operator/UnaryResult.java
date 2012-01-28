@@ -21,14 +21,14 @@ package org.o42a.intrinsic.operator;
 
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -88,7 +88,22 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue operandValue = operand().inline(normalizer, origin);
+
+		if (operandValue == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, operandValue);
+	}
+
+	@Override
+	public final ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs operandDirs =
 				dirs.dirs().value(getOperandStruct(), "operand");
@@ -117,6 +132,44 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		final Path path = member.getKey().toPath();
 
 		return this.operand = path.bind(this, getScope()).target(distribute());
+	}
+
+	private final class Inline extends InlineValue {
+
+		private final InlineValue operandValue;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue operandValue) {
+			super(valueStruct);
+			this.operandValue = operandValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs operandDirs =
+					dirs.dirs().value(getOperandStruct(), "operand");
+			final ValOp operandVal =
+					this.operandValue.writeValue(operandDirs, host);
+
+			final ValDirs resultDirs = operandDirs.dirs().value(dirs);
+			final ValOp result = write(resultDirs, operandVal);
+
+			resultDirs.done();
+			operandDirs.done();
+
+			return result;
+		}
+
+		@Override
+		public void cancel() {
+			this.operandValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			return UnaryResult.this.toString();
+		}
+
 	}
 
 }
