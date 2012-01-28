@@ -82,7 +82,7 @@ final class CastToVoid extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.inline(normalizer.getStepStart(), new Inline());
+		normalizer.inline(normalizer.lastPrediction(), new Inline());
 	}
 
 	@Override

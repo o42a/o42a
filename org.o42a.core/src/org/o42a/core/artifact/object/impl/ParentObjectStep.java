@@ -87,7 +87,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
-				normalizer.getStepStart().getScope());
+				normalizer.lastPrediction().getScope());
 
 		if (member == null) {
 			normalizer.cancel();

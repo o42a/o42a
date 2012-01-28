@@ -178,7 +178,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 		final ValOp cmpVal;
 
 		if (inlineCmp != null) {
-			cmpVal = operator.inlineComparison(dirs, host, inlineCmp);
+			cmpVal = operator.inlineComparison(cmpDirs, host, inlineCmp);
 		} else {
 			cmpVal = operator.writeComparison(cmpDirs, cmp);
 		}

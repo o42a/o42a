@@ -86,24 +86,17 @@ public class MemberStep extends AbstractMemberStep {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		if (normalizer.isNormalizationStarted()
-				&& normalizer.getStepStart().getScope()
-				== normalizer.getNormalizedStart()) {
-			// Member of non-normalizable scope.
-			normalizer.cancel();
-			return;
-		}
 
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
-				normalizer.getStepStart().getScope());
+				normalizer.lastPrediction().getScope());
 
 		if (member == null) {
 			normalizer.cancel();
 			return;
 		}
-		if (normalizer.getStepStart().getScope() != member.getDefinedIn()) {
+		if (normalizer.lastPrediction().getScope() != member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
 			return;
@@ -118,8 +111,15 @@ public class MemberStep extends AbstractMemberStep {
 		}
 
 		final Field<?> field = memberField.field(dummyUser());
+		final Prediction prediction =
+				field.predict(normalizer.lastPrediction());
+
+		if (!prediction.isPredicted()) {
+			normalizer.cancel();
+			return;
+		}
+
 		final Artifact<?> artifact = field.getArtifact();
-		final Prediction prediction = field.predict(normalizer.getStepStart());
 		final Link link = artifact.toLink();
 
 		if (link != null) {
@@ -202,7 +202,7 @@ public class MemberStep extends AbstractMemberStep {
 			PathNormalizer normalizer,
 			Prediction prediction) {
 
-		final Scope stepStart = normalizer.getStepStart().getScope();
+		final Scope stepStart = normalizer.lastPrediction().getScope();
 
 		for (Scope replacement : prediction) {
 			if (fieldOf(replacement).getDefinedIn() != stepStart) {

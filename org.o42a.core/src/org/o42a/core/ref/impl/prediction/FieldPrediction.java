@@ -62,6 +62,7 @@ public class FieldPrediction extends Prediction {
 	private FieldPrediction(Prediction enclosing, Field<?> field) {
 		super(field);
 		this.enclosing = enclosing;
+		field.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
 	}
 
 	@Override
@@ -101,15 +102,32 @@ public class FieldPrediction extends Prediction {
 
 		@Override
 		public boolean hasNext() {
-			if (this.replacements != null && this.replacements.hasNext()) {
-				return true;
+			if (this.replacements == null || !this.replacements.hasNext()) {
+				return findNext();
 			}
-			return this.enclosings.hasNext();
+			return this.replacements.hasNext();
 		}
 
 		@Override
 		public Scope next() {
 			if (this.replacements == null || !this.replacements.hasNext()) {
+				if (!findNext()) {
+					throw new NoSuchElementException();
+				}
+			}
+			return this.replacements.next();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		private boolean findNext() {
+			do {
+				if (!this.enclosings.hasNext()) {
+					return false;
+				}
 				this.replacements = new EIter(
 						this.enclosing,
 						this.enclosings.next()
@@ -118,13 +136,8 @@ public class FieldPrediction extends Prediction {
 						.member(this.fieldKey)
 						.toField()
 						.field(dummyUser()));
-			}
-			return this.replacements.next();
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
+			} while (this.replacements == null || !this.replacements.hasNext());
+			return true;
 		}
 
 	}
@@ -138,12 +151,13 @@ public class FieldPrediction extends Prediction {
 		EIter(Prediction enclosing, Field<?> start) {
 			this.enclosing = enclosing;
 			this.replacements = new ReplacementsIterator(start);
+			start.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
 		}
 
 		@Override
 		public boolean hasNext() {
 			if (this.impls == null || !this.impls.hasNext()) {
-				return nextImpl();
+				return findNext();
 			}
 			return true;
 		}
@@ -151,7 +165,7 @@ public class FieldPrediction extends Prediction {
 		@Override
 		public Scope next() {
 			if (this.impls == null || !this.impls.hasNext()) {
-				if (!nextImpl()) {
+				if (!findNext()) {
 					throw new NoSuchElementException();
 				}
 			}
@@ -163,7 +177,7 @@ public class FieldPrediction extends Prediction {
 			throw new UnsupportedOperationException();
 		}
 
-		private boolean nextImpl() {
+		private boolean findNext() {
 			do {
 				if (!this.replacements.hasNext()) {
 					return false;

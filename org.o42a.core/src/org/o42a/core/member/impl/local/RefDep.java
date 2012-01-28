@@ -59,7 +59,7 @@ public final class RefDep extends Dep {
 
 	@Override
 	public final Object getDepKey() {
-		return this.depRef;
+		return this.depRef.getPath().toPath();
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public final class RefDep extends Dep {
 	protected void normalizeDep(
 			PathNormalizer normalizer,
 			LocalScope enclosingLocal) {
-		normalizer.skip(normalizer.getStepStart(), new DepDisabler());
+		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(getDepRef().getPath());
 	}
 

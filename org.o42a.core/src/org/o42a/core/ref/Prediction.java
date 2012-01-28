@@ -20,9 +20,7 @@
 package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.impl.prediction.ExactPrediction;
-import org.o42a.core.ref.impl.prediction.SimplePrediction;
-import org.o42a.core.ref.impl.prediction.Unpredicted;
+import org.o42a.core.ref.impl.prediction.*;
 
 
 public abstract class Prediction implements Iterable<Scope> {
@@ -59,6 +57,16 @@ public abstract class Prediction implements Iterable<Scope> {
 
 	public final boolean isPredicted() {
 		return getPredicted().isPredicted();
+	}
+
+	public final Prediction compatibleWith(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+
+		scope.assertDerivedFrom(getScope());
+
+		return new CompatiblePrediction(scope, this);
 	}
 
 	public final boolean assertEncloses(Scope scope) {
