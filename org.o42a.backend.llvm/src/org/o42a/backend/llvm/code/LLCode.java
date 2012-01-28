@@ -598,6 +598,7 @@ public abstract class LLCode implements CodeWriter {
 
 	private final void endBlock() {
 		this.blockPtr = 0;
+		this.tail = null;
 	}
 
 	static long createBlock(LLFunction<?> function, CodeId id) {
