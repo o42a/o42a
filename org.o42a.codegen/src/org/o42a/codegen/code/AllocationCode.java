@@ -21,8 +21,6 @@ package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.AllocationWriter;
-import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -34,7 +32,6 @@ public final class AllocationCode extends Code {
 
 	private final Code enclosing;
 	private final boolean disposable;
-	private Code destruction;
 	private AllocationWriter writer;
 	private Code alts[];
 
@@ -71,15 +68,6 @@ public final class AllocationCode extends Code {
 
 	public final Code alt(CodeId name) {
 		return alt(addBlock(name));
-	}
-
-	public final Code destruction() {
-		assert assertIncomplete();
-		if (this.destruction != null) {
-			return this.destruction;
-		}
-		setDestruction(getEnclosing().addBlock(id().detail("destruct")));
-		return this.destruction;
 	}
 
 	public final AnyRecOp allocatePtr(CodeId id) {
@@ -125,28 +113,16 @@ public final class AllocationCode extends Code {
 			return;
 		}
 
-		final CodeWriter[] alts = altWriters();
-
-		if (alts != null) {
-
-			final Code destruct;
-			final MultiCodePos target;
-
-			if (this.destruction == null) {
-				destruct = addBlock(id().detail("destruct"));
-				target = destruct.writer().comeFrom(alts);
-				setDestruction(destruct);
-			} else {
-				destruct = addBlock(id().detail("pre-destruct"));
-				target = destruct.writer().comeFrom(alts);
-				destruct.go(this.destruction.head());
+		if (isDisposable()) {
+			if (this.alts != null) {
+				for (Code alt : this.alts) {
+					if (alt.exists()) {
+						writer().dispose(alt.writer());
+					}
+				}
 			}
-			this.destruction.writer().goToOneOf(target);
-			go(getEnclosing().tail());
-		} else if (this.destruction != null) {
-			go(this.destruction.head());
-			this.destruction.go(getEnclosing().tail());
-		} else {
+		}
+		if (exists()) {
 			if (isDisposable()) {
 				writer().dispose(writer());
 			}
@@ -172,33 +148,6 @@ public final class AllocationCode extends Code {
 			this.alts = ArrayUtil.append(this.alts, alt);
 		}
 		return alt;
-	}
-
-	private void setDestruction(Code destruction) {
-		this.destruction = destruction;
-		if (isDisposable()) {
-			writer().dispose(this.destruction.writer());
-		}
-	}
-
-	private CodeWriter[] altWriters() {
-		if (this.alts == null) {
-			return null;
-		}
-
-		final CodeWriter alts[] = new CodeWriter[1 + this.alts.length];
-		int i = 0;
-
-		if (exists()) {
-			alts[i++] = writer();
-		}
-		for (Code alt : this.alts) {
-			if (alt.exists()) {
-				alts[i++] = alt.writer();
-			}
-		}
-
-		return i == 0 ? null : ArrayUtil.clip(alts, i);
 	}
 
 }
