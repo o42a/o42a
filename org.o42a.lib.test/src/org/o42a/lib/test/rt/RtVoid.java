@@ -25,12 +25,17 @@ import org.o42a.codegen.code.Code;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.lib.test.TestModule;
 
 
@@ -51,6 +56,14 @@ public class RtVoid extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return new Inline(valueStruct);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final Code code = dirs.code();
@@ -58,6 +71,38 @@ public class RtVoid extends AnnotatedBuiltin {
 		code.debug("Run-time void");
 
 		return voidValue().op(dirs.getBuilder(), code);
+	}
+
+	private static final class Inline extends InlineValue {
+
+		Inline(ValueStruct<?, ?> valueStruct) {
+			super(valueStruct);
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			dirs.code().debug("Run-time void");
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final Code code = dirs.code();
+
+			code.debug("Run-time void");
+
+			return voidValue().op(dirs.getBuilder(), code);
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public String toString() {
+			return "RT-VOID";
+		}
+
 	}
 
 }
