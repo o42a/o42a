@@ -65,6 +65,21 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue text = text().inline(normalizer, origin);
+
+		if (text == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, text);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs textDirs = dirs.dirs().value(ValueStruct.STRING, "text");
@@ -91,21 +106,6 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		return new Ascendants(this).setAncestor(
 				printToConsole.bind(this, enclosingScope)
 				.typeRef(enclosingScope.distribute()));
-	}
-
-	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-
-		final InlineValue text = text().inline(normalizer, origin);
-
-		if (text == null) {
-			return null;
-		}
-
-		return new Inline(valueStruct, text);
 	}
 
 	private Ref text() {

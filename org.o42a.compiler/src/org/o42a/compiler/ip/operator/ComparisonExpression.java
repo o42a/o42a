@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
+import static org.o42a.core.ref.InlineValue.inlineFalse;
 import static org.o42a.core.st.StatementEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
@@ -45,8 +46,7 @@ import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -165,10 +165,37 @@ public final class ComparisonExpression extends ObjectConstructor {
 				this.reproducer.distributeBy(distributor));
 	}
 
+	private ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			RefOp cmp,
+			InlineValue inlineCmp) {
+
+		final ComparisonOperator operator = getOperator();
+		final ValDirs cmpDirs = dirs.dirs().falseWhenUnknown().value(
+				operator.getValueStruct(),
+				"cmp");
+		final ValOp cmpVal;
+
+		if (inlineCmp != null) {
+			cmpVal = operator.inlineComparison(dirs, host, inlineCmp);
+		} else {
+			cmpVal = operator.writeComparison(cmpDirs, cmp);
+		}
+
+		final ValDirs resultDirs = cmpDirs.dirs().value(dirs);
+		final ValOp result = operator.write(resultDirs, cmpVal);
+
+		resultDirs.done();
+		cmpDirs.done();
+
+		return result;
+	}
+
 	private static final class ComparisonResult extends BuiltinObject {
 
 		private final ComparisonExpression ref;
-		private Ref comparisonRef;
+		private Ref cmp;
 
 		ComparisonResult(ComparisonExpression ref) {
 			super(ref, ref.distribute(), ValueStruct.VOID);
@@ -183,7 +210,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 				return falseValue();
 			}
 
-			final Value<?> value = this.comparisonRef.value(resolver);
+			final Value<?> value = this.cmp.value(resolver);
 
 			if (!value.getKnowledge().isKnown()) {
 				// Value could not be determined at compile-time.
@@ -198,7 +225,27 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		@Override
 		public void resolveBuiltin(Resolver resolver) {
-			this.comparisonRef.resolve(resolver).resolveValue();
+			this.cmp.resolve(resolver).resolveValue();
+		}
+
+		@Override
+		public InlineValue inlineBuiltin(
+				Normalizer normalizer,
+				ValueStruct<?, ?> valueStruct,
+				Scope origin) {
+			if (this.ref.hasError()) {
+				return inlineFalse(valueStruct);
+			}
+			System.err.println("(!) " + this);
+
+			final InlineValue cmpValue =
+					this.cmp.inline(normalizer, origin);
+
+			if (cmpValue == null) {
+				return null;
+			}
+
+			return new Inline(valueStruct, this.ref, cmpValue);
 		}
 
 		@Override
@@ -207,22 +254,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 				dirs.code().go(dirs.falseDir());
 				return falseValue().op(dirs.getBuilder(), dirs.code());
 			}
-
-			final ComparisonOperator operator = this.ref.getOperator();
-			final ValDirs cmpDirs = dirs.dirs().falseWhenUnknown().value(
-					operator.getValueStruct(),
-					"cmp");
-			final RefOp comparison = this.comparisonRef.op(host);
-			final ValOp comparisonVal =
-					operator.writeComparison(cmpDirs, comparison);
-
-			final ValDirs resultDirs = cmpDirs.dirs().value(dirs);
-			final ValOp result = operator.write(resultDirs, comparisonVal);
-
-			resultDirs.done();
-			cmpDirs.done();
-
-			return result;
+			return this.ref.write(dirs, host, this.cmp.op(host), null);
 		}
 
 		@Override
@@ -257,10 +289,9 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 			statement.define(defaultEnv(this));
 
-			this.comparisonRef =
-					statement.toMember().getKey().toPath().bind(
-							this,
-							getScope()).target(distribute());
+			this.cmp = statement.toMember().getKey().toPath().bind(
+					this,
+					getScope()).target(distribute());
 
 			memberRegistry.registerMembers(members);
 		}
@@ -268,6 +299,40 @@ public final class ComparisonExpression extends ObjectConstructor {
 		@Override
 		protected Obj findObjectIn(Scope enclosing) {
 			return this.ref.resolve(enclosing);
+		}
+
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final ComparisonExpression ref;
+		private final InlineValue cmpValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				ComparisonExpression ref,
+				InlineValue cmpValue) {
+			super(valueStruct);
+			this.ref = ref;
+			this.cmpValue = cmpValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.ref.write(dirs, host, null, this.cmpValue);
+		}
+
+		@Override
+		public void cancel() {
+			this.cmpValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

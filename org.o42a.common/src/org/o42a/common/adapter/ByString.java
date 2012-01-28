@@ -81,7 +81,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
-		final InlineValue input = input().inline(normalizer, getScope());
+		final InlineValue input = input().inline(normalizer, origin);
 
 		if (input == null) {
 			return null;

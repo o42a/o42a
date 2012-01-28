@@ -24,10 +24,12 @@ import static org.o42a.ast.expression.BinaryOperator.*;
 import java.util.EnumMap;
 
 import org.o42a.ast.expression.BinaryOperator;
+import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.clause.ClauseId;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -84,8 +86,15 @@ public abstract class ComparisonOperator {
 
 	public abstract boolean result(Value<?> value);
 
-	public ValOp writeComparison(ValDirs dirs, RefOp comparison) {
-		return comparison.writeValue(dirs);
+	public ValOp writeComparison(ValDirs dirs, RefOp cmp) {
+		return cmp.writeValue(dirs);
+	}
+
+	public ValOp inlineComparison(
+			ValDirs dirs,
+			HostOp host,
+			InlineValue cmp) {
+		return cmp.writeValue(dirs, host);
 	}
 
 	public abstract ValOp write(ValDirs dirs, ValOp comparisonVal);
