@@ -20,9 +20,12 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.scopePrediction;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -85,7 +88,7 @@ public final class PathNormalizer {
 		this.parent = parent;
 		this.data = parent.data;
 		this.data.append(path);
-		this.origin = parent.getStepStart();
+		this.origin = parent.lastPrediction();
 		this.path = path;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
@@ -122,8 +125,15 @@ public final class PathNormalizer {
 		return this.stepIndex;
 	}
 
-	public final Prediction getStepStart() {
+	public final Prediction stepStart() {
 		return this.stepStart;
+	}
+
+	public final Prediction lastPrediction() {
+		if (this.stepPrediction == null) {
+			return this.stepStart;
+		}
+		return this.stepPrediction;
 	}
 
 	public final boolean isNormalizationStarted() {
@@ -163,20 +173,14 @@ public final class PathNormalizer {
 
 	public final void skipStep() {
 		add(
-				getStepStart(),
+				lastPrediction(),
 				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
 	}
 
 	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
 
-			final Scope current;
-
-			if (this.stepPrediction != null) {
-				current = this.stepPrediction.getScope();
-			} else {
-				current = this.stepStart.getScope();
-			}
+			final Scope current = lastPrediction().getScope();
 
 			this.normalSteps.add(
 					new NormalPathStep(current.getEnclosingScopePath()));
@@ -515,11 +519,18 @@ public final class PathNormalizer {
 			if (precedingInline != null) {
 				// In-line normal step.
 				this.inline = precedingInline;
-			} else if (!this.isStatic) {
+				return this;
+			}
+			if (!this.isStatic) {
 				this.path = path.bind(this.path, getOrigin());
 			} else {
 				this.path = path.bindStatically(this.path, getOrigin());
 			}
+
+			this.path.resolve(fullPathResolver(
+					getOrigin(),
+					dummyUser(),
+					VALUE_REF_USAGE));
 
 			return this;
 		}

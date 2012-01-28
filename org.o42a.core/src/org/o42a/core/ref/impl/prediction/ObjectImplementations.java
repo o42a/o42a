@@ -24,6 +24,7 @@ import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
@@ -41,6 +42,8 @@ final class ObjectImplementations extends Prediction {
 	ObjectImplementations(Prediction enclosing, Obj object) {
 		super(object.getScope());
 		this.enclosing = enclosing;
+		object.getScope().getEnclosingScope().assertDerivedFrom(
+				enclosing.getScope());
 	}
 
 	@Override
@@ -86,8 +89,9 @@ final class ObjectImplementations extends Prediction {
 			return this.ancestorPrediction = exactPrediction(getScope());
 		}
 
-		return this.ancestorPrediction =
-				predictRef(ancestor.getRef(), this.enclosing);
+		return this.ancestorPrediction = predictRef(
+				ancestor.getRef(),
+				this.enclosing.compatibleWith(getScope().getEnclosingScope()));
 	}
 
 	private static final class Iter implements Iterator<Scope> {
@@ -95,6 +99,7 @@ final class ObjectImplementations extends Prediction {
 		private final Obj object;
 		private final BoundPath ancestorPath;
 		private final Iterator<Scope> ancestors;
+		private Obj next;
 
 		Iter(Obj object, Prediction ancestorPrediction) {
 			this.object = object;
@@ -104,16 +109,22 @@ final class ObjectImplementations extends Prediction {
 
 		@Override
 		public boolean hasNext() {
-			return this.ancestors.hasNext();
+			return this.next != null || findNext();
 		}
 
 		@Override
 		public Scope next() {
+			if (this.next == null) {
+				if (!findNext()) {
+					throw new NoSuchElementException();
+				}
+			}
 
-			final Scope ancestor = this.ancestors.next();
-			final Scope enclosing = this.ancestorPath.revert(ancestor);
+			final Obj next = this.next;
 
-			return this.object.findIn(enclosing).getScope();
+			this.next = null;
+
+			return next.getScope();
 		}
 
 		@Override
@@ -121,6 +132,28 @@ final class ObjectImplementations extends Prediction {
 			throw new UnsupportedOperationException();
 		}
 
+		private boolean findNext() {
+
+			final Scope objectEnclosing =
+					this.object.getScope().getEnclosingScope();
+
+			while (this.ancestors.hasNext()) {
+
+				final Scope ancestor = this.ancestors.next();
+				final Scope enclosing = this.ancestorPath.revert(ancestor);
+
+				if (!enclosing.derivedFrom(objectEnclosing)) {
+					objectEnclosing.assertDerivedFrom(enclosing);
+					continue;
+				}
+
+				this.next = this.object.findIn(enclosing);
+
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 }

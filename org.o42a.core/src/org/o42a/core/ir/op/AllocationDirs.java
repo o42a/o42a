@@ -71,10 +71,6 @@ public class AllocationDirs {
 		return this.code.allocatePtr(id, type);
 	}
 
-	public final Code destruction() {
-		return this.code.destruction();
-	}
-
 	public final CodeDirs dirs() {
 		if (this.dirs != null) {
 			return this.dirs;

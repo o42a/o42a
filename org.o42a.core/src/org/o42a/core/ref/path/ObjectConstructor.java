@@ -116,6 +116,7 @@ public abstract class ObjectConstructor extends Placed {
 	protected abstract Obj createObject();
 
 	final Obj propagate(Scope scope) {
+		assertCompatible(scope);
 		if (this.propagated != null) {
 
 			final Obj cached = this.propagated.get(scope);

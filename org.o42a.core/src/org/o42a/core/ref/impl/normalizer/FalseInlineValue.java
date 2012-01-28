@@ -17,47 +17,47 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl.normalizer;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
-import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class InlineValue extends InlineCond {
+public class FalseInlineValue extends InlineValue {
 
-	public static InlineValue inlineFalse(ValueStruct<?, ?> valueStruct) {
-		return new FalseInlineValue(valueStruct);
-	}
-
-	public static InlineValue inlineUnknown(ValueStruct<?, ?> valueStruct) {
-		return new UnknownInlineValue(valueStruct);
-	}
-
-	private final ValueStruct<?, ?> valueStruct;
-
-	public InlineValue(ValueStruct<?, ?> valueStruct) {
-		this.valueStruct = valueStruct;
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
+	public FalseInlineValue(ValueStruct<?, ?> valueStruct) {
+		super(valueStruct);
 	}
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
-
-		final ValDirs valDirs = dirs.value(getValueStruct());
-
-		writeValue(valDirs, host);
-
-		valDirs.done();
+		dirs.code().go(dirs.falseDir());
 	}
 
-	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
+	@Override
+	public ValOp writeValue(ValDirs dirs, HostOp host) {
+		dirs.code().go(dirs.falseDir());
+		return dirs.value();
+	}
+
+	@Override
+	public void cancel() {
+	}
+
+	@Override
+	public String toString() {
+
+		final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+		if (valueStruct == null) {
+			return super.toString();
+		}
+
+		return valueStruct.falseValue().toString();
+	}
 
 }
