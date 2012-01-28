@@ -89,9 +89,8 @@ final class ObjectImplementations extends Prediction {
 			return this.ancestorPrediction = exactPrediction(getScope());
 		}
 
-		return this.ancestorPrediction = predictRef(
-				ancestor.getRef(),
-				this.enclosing.compatibleWith(getScope().getEnclosingScope()));
+		return this.ancestorPrediction =
+				predictRef(ancestor.getRef(), this.enclosing);
 	}
 
 	private static final class Iter implements Iterator<Scope> {
