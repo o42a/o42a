@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.ref.InlineValue.inlineFalse;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.Value.falseValue;
 
@@ -38,6 +39,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -68,6 +71,14 @@ public final class False extends BuiltinObject {
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
+	}
+
+	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return inlineFalse(valueStruct);
 	}
 
 	@Override
