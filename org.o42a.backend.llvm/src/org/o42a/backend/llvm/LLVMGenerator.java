@@ -42,9 +42,6 @@ public class LLVMGenerator extends AbstractGenerator {
 		super(analyzer);
 		this.module = module;
 		module.init(this);
-		getAnalyzer().setUsesAnalysed(module.isUsesAnalysed());
-		getAnalyzer().setNormalizationEnabled(module.isNormalizationEnabled());
-		setDebug(module.isDebug());
 	}
 
 	public final String getInputFilename() {
