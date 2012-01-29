@@ -56,11 +56,11 @@ public:
 
 	static const std::string *getInputEncoding();
 
-	static bool isDebugEnabled();
+	static int debugEnabled();
 
-	static bool isUsesAnalysed();
+	static int usesAnalysed();
 
-	static bool isNormalizationEnabled();
+	static int normalizationEnabled();
 
 	static BackendModule *createBackend(StringRef &ModuleID);
 
