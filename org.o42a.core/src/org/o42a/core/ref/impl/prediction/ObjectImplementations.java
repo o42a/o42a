@@ -99,6 +99,7 @@ final class ObjectImplementations extends Prediction {
 		private final BoundPath ancestorPath;
 		private final Iterator<Scope> ancestors;
 		private Obj next;
+		private boolean objectReported;
 
 		Iter(Obj object, Prediction ancestorPrediction) {
 			this.object = object;
@@ -143,10 +144,16 @@ final class ObjectImplementations extends Prediction {
 
 				if (!enclosing.derivedFrom(objectEnclosing)) {
 					objectEnclosing.assertDerivedFrom(enclosing);
-					continue;
+					if (this.objectReported) {
+						continue;
+					}
+					this.next = this.object;
+					this.objectReported = true;
+					return true;
 				}
 
 				this.next = this.object.findIn(enclosing);
+				this.objectReported |= this.next == this.object;
 
 				return true;
 			}
