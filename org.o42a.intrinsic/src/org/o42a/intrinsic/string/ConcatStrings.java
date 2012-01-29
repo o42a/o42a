@@ -24,14 +24,15 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -77,29 +78,30 @@ final class ConcatStrings extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue whatValue = what().inline(normalizer, origin);
+
+		if (whatValue == null) {
+			return null;
+		}
+
+		final InlineValue withValue = with().inline(normalizer, origin);
+
+		if (withValue == null) {
+			whatValue.cancel();
+			return null;
+		}
+
+		return new Inline(valueStruct, whatValue, withValue);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs whatDirs = dirs.dirs().value(ValueStruct.STRING, "what");
-		final ValOp whatVal = what().op(host).writeValue(whatDirs);
-
-		final ValDirs withDirs =
-				whatDirs.dirs().value(ValueStruct.STRING, "with");
-		final ValOp withVal = with().op(host).writeValue(withDirs);
-
-		final Code code = withDirs.code();
-		final FuncPtr<ConcatFunc> funcPtr =
-				code.getGenerator().externalFunction(
-						"o42a_str_concat",
-						ConcatFunc.CONCAT);
-		final ConcatFunc func = funcPtr.op(null, code);
-		final ValOp result = dirs.value();
-
-		func.concat(code, result, whatVal, withVal);
-
-		withDirs.done();
-		whatDirs.done();
-
-		return result;
+		return write(dirs, host, what().op(host), null, with().op(host), null);
 	}
 
 	private Ref what() {
@@ -124,4 +126,80 @@ final class ConcatStrings extends AnnotatedBuiltin {
 				toKey.toPath().bind(this, getScope()).target(distribute());
 	}
 
+	private static ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			RefOp what,
+			InlineValue inlineWhat,
+			RefOp with,
+			InlineValue inlineWith) {
+		final ValDirs whatDirs = dirs.dirs().value(ValueStruct.STRING, "what");
+		final ValOp whatVal;
+
+		if (inlineWhat != null) {
+			whatVal = inlineWhat.writeValue(whatDirs, host);
+		} else {
+			whatVal = what.writeValue(whatDirs);
+		}
+
+		final ValDirs withDirs =
+				whatDirs.dirs().value(ValueStruct.STRING, "with");
+		final ValOp withVal;
+
+		if (inlineWith != null) {
+			withVal = inlineWith.writeValue(withDirs, host);
+		} else {
+			withVal = with.writeValue(withDirs);
+		}
+
+		final Code code = withDirs.code();
+		final FuncPtr<ConcatFunc> funcPtr =
+				code.getGenerator().externalFunction(
+						"o42a_str_concat",
+						ConcatFunc.CONCAT);
+		final ConcatFunc func = funcPtr.op(null, code);
+		final ValOp result = dirs.value();
+
+		func.concat(code, result, whatVal, withVal);
+
+		withDirs.done();
+		whatDirs.done();
+
+		return result;
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue whatValue;
+		private final InlineValue withValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				InlineValue whatValue,
+				InlineValue withValue) {
+			super(valueStruct);
+			this.whatValue = whatValue;
+			this.withValue = withValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return write(dirs, host, null, this.whatValue, null, this.withValue);
+		}
+
+		@Override
+		public void cancel() {
+			this.whatValue.cancel();
+			this.withValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.withValue == null) {
+				return super.toString();
+			}
+			return "(" + this.whatValue + "+" + this.withValue + ")";
+		}
+
+	}
 }
