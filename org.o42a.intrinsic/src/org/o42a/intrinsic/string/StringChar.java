@@ -30,14 +30,15 @@ import org.o42a.codegen.code.op.Int64op;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -94,15 +95,87 @@ final class StringChar extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue stringValue = string().inline(normalizer, origin);
+
+		if (stringValue == null) {
+			return null;
+		}
+
+		final InlineValue indexValue = index().inline(normalizer, origin);
+
+		if (indexValue == null) {
+			stringValue.cancel();
+			return null;
+		}
+
+		return new Inline(valueStruct, stringValue, indexValue);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+		return write(
+				dirs,
+				host,
+				string().op(host),
+				null,
+				index().op(host),
+				null);
+	}
+
+	private Ref string() {
+		if (this.string != null) {
+			return this.string;
+		}
+
+		final Path path = getScope().getEnclosingScopePath();
+
+		return this.string = path.bind(this, getScope()).target(distribute());
+	}
+
+	private Ref index() {
+		if (this.index != null) {
+			return this.index;
+		}
+
+		final MemberKey indexKey =
+				field("index", Accessor.DECLARATION).getKey();
+
+		return this.index =
+				indexKey.toPath().bind(this, getScope()).target(distribute());
+	}
+
+	private static ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			RefOp str,
+			InlineValue inlineStr,
+			RefOp idx,
+			InlineValue inlineIdx) {
 
 		final ValDirs stringDirs =
 				dirs.dirs().value(ValueStruct.STRING, "string");
-		final ValOp stringVal = string().op(host).writeValue(stringDirs);
+		final ValOp stringVal;
+
+		if (inlineStr != null) {
+			stringVal = inlineStr.writeValue(stringDirs, host);
+		} else {
+			stringVal = str.writeValue(stringDirs);
+		}
 
 		final ValDirs indexDirs =
 				stringDirs.dirs().value(ValueStruct.INTEGER, "index");
-		final ValOp indexVal = index().op(host).writeValue(indexDirs);
+		final ValOp indexVal;
+
+		if (inlineIdx != null) {
+			indexVal = inlineIdx.writeValue(indexDirs, host);
+		} else {
+			indexVal = idx.writeValue(indexDirs);
+		}
 
 		final Code code = indexDirs.code();
 
@@ -154,26 +227,45 @@ final class StringChar extends AnnotatedBuiltin {
 		return result;
 	}
 
-	private Ref string() {
-		if (this.string != null) {
-			return this.string;
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue stringValue;
+		private final InlineValue indexValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				InlineValue stringValue,
+				InlineValue indexValue) {
+			super(valueStruct);
+			this.stringValue = stringValue;
+			this.indexValue = indexValue;
 		}
 
-		final Path path = getScope().getEnclosingScopePath();
-
-		return this.string = path.bind(this, getScope()).target(distribute());
-	}
-
-	private Ref index() {
-		if (this.index != null) {
-			return this.index;
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return write(
+					dirs,
+					host,
+					null,
+					this.stringValue,
+					null,
+					this.indexValue);
 		}
 
-		final MemberKey indexKey =
-				field("index", Accessor.DECLARATION).getKey();
+		@Override
+		public void cancel() {
+			this.stringValue.cancel();
+			this.indexValue.cancel();
+		}
 
-		return this.index =
-				indexKey.toPath().bind(this, getScope()).target(distribute());
+		@Override
+		public String toString() {
+			if (this.indexValue == null) {
+				return super.toString();
+			}
+			return "(" + this.stringValue + "):char[" + this.indexValue + ']';
+		}
+
 	}
 
 }
