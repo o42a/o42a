@@ -159,25 +159,25 @@ const std::string *BackendModule::getInputEncoding() {
 	return &InputEncoding;
 }
 
-bool BackendModule::isDebugEnabled() {
+int BackendModule::debugEnabled() {
 	if (!Debug.getNumOccurrences()) {
-		return false;
+		return 0;
 	}
-	return Debug.getValue() != cl::BOU_FALSE;
+	return Debug.getValue() != cl::BOU_FALSE ? 1 : -1;
 }
 
-bool BackendModule::isUsesAnalysed() {
+int BackendModule::usesAnalysed() {
 	if (!AnalyzeUses.getNumOccurrences()) {
-		return true;
+		return 0;
 	}
-	return AnalyzeUses.getValue() != cl::BOU_FALSE;
+	return AnalyzeUses.getValue() != cl::BOU_FALSE ? 1 : -1;
 }
 
-bool BackendModule::isNormalizationEnabled() {
+int BackendModule::normalizationEnabled() {
 	if (!Normalize.getNumOccurrences()) {
-		return true;
+		return 0;
 	}
-	return Normalize.getValue() != cl::BOU_FALSE;
+	return Normalize.getValue() != cl::BOU_FALSE ? 1 : -1;
 }
 
 BackendModule *BackendModule::createBackend(StringRef &ModuleID) {

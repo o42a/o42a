@@ -114,22 +114,22 @@ jbyteArray Java_org_o42a_backend_llvm_data_LLVMModule_inputEncoding(
 	return array;
 }
 
-jboolean Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
+jint Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled(
 		JNIEnv *,
 		jclass) {
-	return o42ac::BackendModule::isDebugEnabled();
+	return o42ac::BackendModule::debugEnabled();
 }
 
-jboolean Java_org_o42a_backend_llvm_data_LLVMModule_usesAnalysed(
+jint Java_org_o42a_backend_llvm_data_LLVMModule_usesAnalysed(
 		JNIEnv *,
 		jclass) {
-	return o42ac::BackendModule::isUsesAnalysed();
+	return o42ac::BackendModule::usesAnalysed();
 }
 
-jboolean Java_org_o42a_backend_llvm_data_LLVMModule_normalizationEnabled(
+jint Java_org_o42a_backend_llvm_data_LLVMModule_normalizationEnabled(
 		JNIEnv *,
 		jclass) {
-	return o42ac::BackendModule::isNormalizationEnabled();
+	return o42ac::BackendModule::normalizationEnabled();
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(

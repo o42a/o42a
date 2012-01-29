@@ -29,6 +29,7 @@ import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLSignature;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -91,9 +92,27 @@ public final class LLVMModule {
 		this.nativePtr = createModule(
 				ids().writeCodeId(generator.id(this.id)),
 				ids().length());
-
 		assert this.nativePtr != 0 :
 			"Failed to create LLVM module " + this.id;
+
+		final Analyzer analyzer = generator.getAnalyzer();
+		final int debugEnabled = debugEnabled();
+
+		if (debugEnabled != 0) {
+			generator.setDebug(debugEnabled > 0);
+		}
+
+		final int usesAnalysed = usesAnalysed();
+
+		if (usesAnalysed != 0) {
+			analyzer.setUsesAnalysed(usesAnalysed > 0);
+		}
+
+		final int normalizationEnabled = normalizationEnabled();
+
+		if (normalizationEnabled != 0) {
+			analyzer.setNormalizationEnabled(normalizationEnabled > 0);
+		}
 	}
 
 	public final LLVMGenerator getGenerator() {
@@ -110,18 +129,6 @@ public final class LLVMModule {
 
 	public final String getInputEncoding() {
 		return this.inputEncoding;
-	}
-
-	public final boolean isDebug() {
-		return debugEnabled();
-	}
-
-	public final boolean isUsesAnalysed() {
-		return usesAnalysed();
-	}
-
-	public final boolean isNormalizationEnabled() {
-		return normalizationEnabled();
 	}
 
 	public final long getNativePtr() {
@@ -264,11 +271,11 @@ public final class LLVMModule {
 
 	private static native byte[] inputEncoding();
 
-	private static native boolean debugEnabled();
+	private static native int debugEnabled();
 
-	private static native boolean usesAnalysed();
+	private static native int usesAnalysed();
 
-	private static native boolean normalizationEnabled();
+	private static native int normalizationEnabled();
 
 	private static native long createModule(long id, int idLen);
 
