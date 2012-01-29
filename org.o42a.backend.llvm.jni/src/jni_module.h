@@ -42,25 +42,25 @@ JNIEXPORT jbyteArray JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_inputEnc
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    debugEnabled
- * Signature: ()Z
+ * Signature: ()I
  */
-JNIEXPORT jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_debugEnabled
   (JNIEnv *, jclass);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    usesAnalysed
- * Signature: ()Z
+ * Signature: ()I
  */
-JNIEXPORT jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_usesAnalysed
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_usesAnalysed
   (JNIEnv *, jclass);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    normalizationEnabled
- * Signature: ()Z
+ * Signature: ()I
  */
-JNIEXPORT jboolean JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_normalizationEnabled
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_normalizationEnabled
   (JNIEnv *, jclass);
 
 /*
