@@ -30,10 +30,10 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
@@ -72,20 +72,23 @@ abstract class ArrayLength extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue arrayValue = array().inline(normalizer, origin);
+
+		if (arrayValue == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, arrayValue);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs arrayDirs =
-				dirs.dirs().value(valueStruct(getScope()), "array_val");
-		final Code code = arrayDirs.code();
-
-		final ValOp string = array().op(host).writeValue(arrayDirs);
-		final Int32op length = string.loadLength(code.id("array_len"), code);
-		final ValOp result =
-				dirs.value().store(code, length.toInt64(null, code));
-
-		arrayDirs.done();
-
-		return result;
+		return write(dirs, host, null);
 	}
 
 	private ArrayValueStruct valueStruct(Scope scope) {
@@ -100,6 +103,61 @@ abstract class ArrayLength extends AnnotatedBuiltin {
 		final Path path = getScope().getEnclosingScopePath();
 
 		return this.array = path.bind(this, getScope()).target(distribute());
+	}
+
+	private ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			InlineValue inlineArray) {
+
+		final ValDirs arrayDirs =
+				dirs.dirs().value(valueStruct(getScope()), "array_val");
+		final Code code = arrayDirs.code();
+
+		final ValOp arrayVal;
+
+		if (inlineArray != null) {
+			arrayVal = inlineArray.writeValue(arrayDirs, host);
+		} else {
+			arrayVal = array().op(host).writeValue(arrayDirs);
+		}
+
+		final Int32op length = arrayVal.loadLength(code.id("array_len"), code);
+		final ValOp result =
+				dirs.value().store(code, length.toInt64(null, code));
+
+		arrayDirs.done();
+
+		return result;
+	}
+
+	private final class Inline extends InlineValue {
+
+		private final InlineValue arrayValue;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue arrayValue) {
+			super(valueStruct);
+			this.arrayValue = arrayValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return write(dirs, host, this.arrayValue);
+		}
+
+		@Override
+		public void cancel() {
+			this.arrayValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.arrayValue == null) {
+				return super.toString();
+			}
+			return this.arrayValue + ":length";
+		}
+
 	}
 
 }

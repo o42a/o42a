@@ -30,11 +30,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -95,6 +95,93 @@ public class LogicalExpression extends ObjectConstructor {
 		return new LogicalResult(this);
 	}
 
+	private ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			RefOp op,
+			InlineValue inlineOp) {
+
+		final CodeBuilder builder = dirs.getBuilder();
+		final Code code = dirs.code();
+		final Code operandFalse = dirs.addBlock("operand_false");
+		final Code operandUnknown = dirs.addBlock("operand_unknown");
+
+		switch (this.node.getOperator()) {
+		case NOT:
+			writeLogicalValue(
+					builder.falseWhenUnknown(code, operandFalse.head()),
+					host,
+					op,
+					inlineOp);
+			code.go(dirs.falseDir());
+			if (operandFalse.exists()) {
+				operandFalse.go(code.tail());
+			}
+			break;
+		case IS_TRUE:
+			writeLogicalValue(
+					builder.falseWhenUnknown(code, operandFalse.head()),
+					host,
+					op,
+					inlineOp);
+			if (operandFalse.exists()) {
+				operandFalse.go(dirs.falseDir());
+			}
+			break;
+		case KNOWN:
+			writeLogicalValue(
+					builder.splitWhenUnknown(
+							code,
+							operandFalse.head(),
+							operandUnknown.head()),
+					host,
+					op,
+					inlineOp);
+			if (operandFalse.exists()) {
+				operandFalse.go(code.tail());
+			}
+			if (operandUnknown.exists()) {
+				operandUnknown.go(dirs.falseDir());
+			}
+			break;
+		case UNKNOWN:
+			writeLogicalValue(
+					builder.splitWhenUnknown(
+							code,
+							operandFalse.head(),
+							operandUnknown.head()),
+					host,
+					op,
+					inlineOp);
+			code.go(dirs.falseDir());
+			if (operandFalse.exists()) {
+				operandFalse.go(dirs.falseDir());
+			}
+			if (operandUnknown.exists()) {
+				operandUnknown.go(code.tail());
+			}
+			break;
+		default:
+			throw new IllegalStateException(
+					"Unsupported logical operator: "
+					+ this.node.getOperator().getSign());
+		}
+
+		return voidValue().op(builder, code);
+	}
+
+	private final void writeLogicalValue(
+			CodeDirs dirs,
+			HostOp host,
+			RefOp op,
+			InlineValue inlineOp) {
+		if (inlineOp != null) {
+			inlineOp.writeCond(dirs, host);
+		} else {
+			op.writeLogicalValue(dirs);
+		}
+	}
+
 	private static final class LogicalResult extends BuiltinObject {
 
 		private final LogicalExpression ref;
@@ -143,64 +230,23 @@ public class LogicalExpression extends ObjectConstructor {
 		}
 
 		@Override
-		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+		public InlineValue inlineBuiltin(
+				Normalizer normalizer,
+				ValueStruct<?, ?> valueStruct,
+				Scope origin) {
 
-			final CodeBuilder builder = dirs.getBuilder();
-			final RefOp op = operand().op(host);
-			final Code code = dirs.code();
-			final Code operandFalse = dirs.addBlock("operand_false");
-			final Code operandUnknown = dirs.addBlock("operand_unknown");
+			final InlineValue operand = operand().inline(normalizer, origin);
 
-			switch (this.ref.node.getOperator()) {
-			case NOT:
-				op.writeLogicalValue(builder.falseWhenUnknown(
-						code,
-						operandFalse.head()));
-				code.go(dirs.falseDir());
-				if (operandFalse.exists()) {
-					operandFalse.go(code.tail());
-				}
-				break;
-			case IS_TRUE:
-				op.writeLogicalValue(builder.falseWhenUnknown(
-						code,
-						operandFalse.head()));
-				if (operandFalse.exists()) {
-					operandFalse.go(dirs.falseDir());
-				}
-				break;
-			case KNOWN:
-				op.writeLogicalValue(builder.splitWhenUnknown(
-						code,
-						operandFalse.head(),
-						operandUnknown.head()));
-				if (operandFalse.exists()) {
-					operandFalse.go(code.tail());
-				}
-				if (operandUnknown.exists()) {
-					operandUnknown.go(dirs.falseDir());
-				}
-				break;
-			case UNKNOWN:
-				op.writeLogicalValue(builder.splitWhenUnknown(
-						code,
-						operandFalse.head(),
-						operandUnknown.head()));
-				code.go(dirs.falseDir());
-				if (operandFalse.exists()) {
-					operandFalse.go(dirs.falseDir());
-				}
-				if (operandUnknown.exists()) {
-					operandUnknown.go(code.tail());
-				}
-				break;
-			default:
-				throw new IllegalStateException(
-						"Unsupported logical operator: "
-						+ this.ref.node.getOperator().getSign());
+			if (operand == null) {
+				return null;
 			}
 
-			return voidValue().op(builder, code);
+			return new Inline(valueStruct, this.ref, operand);
+		}
+
+		@Override
+		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+			return this.ref.write(dirs, host, operand().op(host), null);
 		}
 
 		@Override
@@ -223,6 +269,40 @@ public class LogicalExpression extends ObjectConstructor {
 				return this.operand;
 			}
 			return this.operand = this.ref.operand.rescope(getScope());
+		}
+
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final LogicalExpression ref;
+		private final InlineValue operandValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				LogicalExpression ref,
+				InlineValue operandValue) {
+			super(valueStruct);
+			this.ref = ref;
+			this.operandValue = operandValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.ref.write(dirs, host, null, this.operandValue);
+		}
+
+		@Override
+		public void cancel() {
+			this.operandValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}
