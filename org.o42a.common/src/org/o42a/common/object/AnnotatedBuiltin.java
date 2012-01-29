@@ -21,12 +21,8 @@ package org.o42a.common.object;
 
 import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinValueDef;
-import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.InlineValue;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class AnnotatedBuiltin
@@ -40,15 +36,6 @@ public abstract class AnnotatedBuiltin
 	@Override
 	public boolean isConstantBuiltin() {
 		return false;
-	}
-
-	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		// TODO Implement in-lining.
-		return null;
 	}
 
 	@Override

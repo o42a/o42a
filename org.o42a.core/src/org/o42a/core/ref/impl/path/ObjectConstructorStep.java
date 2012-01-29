@@ -112,15 +112,21 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected Scope revert(Scope target) {
-		target.assertDerivedFrom(this.constructor.getConstructed().getScope());
-		return target.getEnclosingScope();
+
+		final Scope constructed = this.constructor.getConstructed().getScope();
+
+		if (target.derivedFrom(constructed)) {
+			return target.getEnclosingScope();
+		}
+
+		return constructed.getEnclosingScope();
 	}
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
 
 		final Obj object =
-				this.constructor.resolve(normalizer.getStepStart().getScope());
+				this.constructor.resolve(normalizer.lastPrediction().getScope());
 
 		if (object == null) {
 			normalizer.cancel();
@@ -130,7 +136,7 @@ public class ObjectConstructorStep extends Step {
 			if (!normalizer.isLastStep()) {
 				// Not a last step - go on.
 				normalizer.skip(
-						object.getScope().predict(normalizer.getStepStart()),
+						object.getScope().predict(normalizer.lastPrediction()),
 						new SameNormalStep(this));
 				return;
 			}
@@ -140,8 +146,12 @@ public class ObjectConstructorStep extends Step {
 		}
 
 		final Prediction prediction =
-				object.getScope().predict(normalizer.getStepStart());
+				object.getScope().predict(normalizer.lastPrediction());
 
+		if (!prediction.isPredicted()) {
+			normalizer.cancel();
+			return;
+		}
 		if (definitionsChange(object, prediction)) {
 			normalizer.cancel();
 			return;

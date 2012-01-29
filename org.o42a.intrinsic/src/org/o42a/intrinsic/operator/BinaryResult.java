@@ -21,14 +21,14 @@ package org.o42a.intrinsic.operator;
 
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -106,6 +106,29 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue leftValue = leftOperand().inline(normalizer, origin);
+
+		if (leftValue == null) {
+			return null;
+		}
+
+		final InlineValue rightValue =
+				rightOperand().inline(normalizer, origin);
+
+		if (rightValue == null) {
+			leftValue.cancel();
+			return null;
+		}
+
+		return new Inline(valueStruct, leftValue, rightValue);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
 		final ValDirs leftDirs =
@@ -157,6 +180,54 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 		return this.rightOperand =
 				path.bind(this, getScope()).target(distribute());
+	}
+
+	private final class Inline extends InlineValue {
+
+		private final InlineValue leftValue;
+		private final InlineValue rightValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				InlineValue leftValue,
+				InlineValue rightValue) {
+			super(valueStruct);
+			this.leftValue = leftValue;
+			this.rightValue = rightValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs leftDirs =
+					dirs.dirs().value(getLeftOperandStruct(), "left");
+			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
+
+			final ValDirs rightDirs =
+					leftDirs.dirs().value(getRightOperandStruct(), "right");
+			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
+
+			final ValDirs resultDirs = rightDirs.dirs().value(dirs);
+			final ValOp result = write(resultDirs, leftVal, rightVal);
+
+			resultDirs.done();
+			rightDirs.done();
+			leftDirs.done();
+
+			return result;
+		}
+
+		@Override
+		public void cancel() {
+			this.leftValue.cancel();
+			this.rightValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			return BinaryResult.this.toString();
+		}
+
 	}
 
 }

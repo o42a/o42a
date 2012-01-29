@@ -26,14 +26,15 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Accessor;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -130,41 +131,46 @@ final class SubString extends AnnotatedBuiltin {
 	}
 
 	@Override
+	public InlineValue inlineBuiltin(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue stringValue = string().inline(normalizer, origin);
+
+		if (stringValue == null) {
+			return null;
+		}
+
+		final InlineValue fromValue = from().inline(normalizer, origin);
+
+		if (fromValue == null) {
+			stringValue.cancel();
+			return null;
+		}
+
+		final InlineValue toValue = to().inline(normalizer, origin);
+
+		if (toValue == null) {
+			stringValue.cancel();
+			fromValue.cancel();
+			return null;
+		}
+
+		return new Inline(valueStruct, stringValue, fromValue, toValue);
+	}
+
+	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs stringDirs =
-				dirs.dirs().value(ValueStruct.STRING, "string");
-		final ValOp stringVal = string().op(host).writeValue(stringDirs);
-
-		final ValDirs fromDirs =
-				stringDirs.dirs().value(ValueStruct.INTEGER, "from");
-		final ValOp fromVal = from().op(host).writeValue(fromDirs);
-
-		final ValDirs toDirs =
-				fromDirs.dirs().value(ValueStruct.INTEGER, "to");
-		final ValOp toVal = from().op(host).writeValue(fromDirs);
-
-		final ValDirs substringDirs = toDirs.dirs().value(dirs);
-
-		final Code code = substringDirs.code();
-		final FuncPtr<SubStringFunc> funcPtr =
-				substringDirs.getGenerator().externalFunction(
-						"o42a_str_sub",
-						SUB_STRING);
-		final SubStringFunc func = funcPtr.op(null, code);
-
-		final ValOp substring = func.substring(
-				substringDirs,
-				stringVal,
-				fromVal.rawValue(null, code).load(code.id("from"), code),
-				toVal.rawValue(null, code).load(code.id("to"), code));
-
-		substringDirs.done();
-		toDirs.done();
-		fromDirs.done();
-		stringDirs.done();
-
-		return substring;
+		return write(
+				dirs,
+				host,
+				string().op(host),
+				null,
+				from().op(host),
+				null,
+				to().op(host),
+				null);
 	}
 
 	private Ref string() {
@@ -197,6 +203,116 @@ final class SubString extends AnnotatedBuiltin {
 
 		return this.to =
 				toKey.toPath().bind(this, getScope()).target(distribute());
+	}
+
+	private static ValOp write(
+			ValDirs dirs,
+			HostOp host,
+			RefOp str,
+			InlineValue inlineStr,
+			RefOp from,
+			InlineValue inlineFrom,
+			RefOp to,
+			InlineValue inlineTo) {
+
+		final ValDirs stringDirs =
+				dirs.dirs().value(ValueStruct.STRING, "string");
+		final ValOp stringVal;
+
+		if (inlineStr != null) {
+			stringVal = inlineStr.writeValue(stringDirs, host);
+		} else {
+			stringVal = str.writeValue(stringDirs);
+		}
+
+		final ValDirs fromDirs =
+				stringDirs.dirs().value(ValueStruct.INTEGER, "from");
+		final ValOp fromVal;
+
+		if (inlineFrom != null) {
+			fromVal = inlineFrom.writeValue(fromDirs, host);
+		} else {
+			fromVal = from.writeValue(fromDirs);
+		}
+
+		final ValDirs toDirs =
+				fromDirs.dirs().value(ValueStruct.INTEGER, "to");
+		final ValOp toVal;
+
+		if (inlineTo != null) {
+			toVal = inlineTo.writeValue(toDirs, host);
+		} else {
+			toVal = to.writeValue(toDirs);
+		}
+
+		final ValDirs substringDirs = toDirs.dirs().value(dirs);
+
+		final Code code = substringDirs.code();
+		final FuncPtr<SubStringFunc> funcPtr =
+				substringDirs.getGenerator().externalFunction(
+						"o42a_str_sub",
+						SUB_STRING);
+		final SubStringFunc func = funcPtr.op(null, code);
+
+		final ValOp substring = func.substring(
+				substringDirs,
+				stringVal,
+				fromVal.rawValue(null, code).load(code.id("from"), code),
+				toVal.rawValue(null, code).load(code.id("to"), code));
+
+		substringDirs.done();
+		toDirs.done();
+		fromDirs.done();
+		stringDirs.done();
+
+		return substring;
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue stringValue;
+		private final InlineValue fromValue;
+		private final InlineValue toValue;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				InlineValue stringValue,
+				InlineValue fromValue,
+				InlineValue toValue) {
+			super(valueStruct);
+			this.stringValue = stringValue;
+			this.fromValue = fromValue;
+			this.toValue = toValue;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return write(
+					dirs,
+					host,
+					null,
+					this.stringValue,
+					null,
+					this.fromValue,
+					null,
+					this.toValue);
+		}
+
+		@Override
+		public void cancel() {
+			this.stringValue.cancel();
+			this.fromValue.cancel();
+			this.toValue.cancel();
+		}
+
+		@Override
+		public String toString() {
+			if (this.toValue == null) {
+				return super.toString();
+			}
+			return (this.stringValue + ":substring["
+					+ this.fromValue + ", " + this.toValue + ']');
+		}
 	}
 
 }

@@ -116,7 +116,7 @@ public abstract class Dep extends Step {
 	@Override
 	protected final void normalize(PathNormalizer normalizer) {
 
-		final Obj object = normalizer.getStepStart().getScope().toObject();
+		final Obj object = normalizer.lastPrediction().getScope().toObject();
 		final Scope objectScope = object.getScope();
 		final LocalScope enclosingLocal =
 				objectScope.getEnclosingContainer().toLocal();

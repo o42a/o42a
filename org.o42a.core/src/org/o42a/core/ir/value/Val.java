@@ -148,6 +148,9 @@ public final class Val implements Content<ValType> {
 	@Override
 	public String toString() {
 		if (!getCondition()) {
+			if (isIndefinite()) {
+				return "indefinite";
+			}
 			if (isUnknown()) {
 				return "unknown";
 			}

@@ -62,6 +62,7 @@ public class FieldPrediction extends Prediction {
 	private FieldPrediction(Prediction enclosing, Field<?> field) {
 		super(field);
 		this.enclosing = enclosing;
+		field.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
 	}
 
 	@Override
@@ -71,7 +72,7 @@ public class FieldPrediction extends Prediction {
 
 	@Override
 	public Iterator<Scope> iterator() {
-		return new Iter(this.enclosing, getScope().toField());
+		return new Itr(this.enclosing, getScope().toField());
 	}
 
 	@Override
@@ -86,14 +87,14 @@ public class FieldPrediction extends Prediction {
 		return "FieldPrediction[" + scope + ']';
 	}
 
-	private static final class Iter implements Iterator<Scope> {
+	private static final class Itr implements Iterator<Scope> {
 
 		private final Prediction enclosing;
 		private final Iterator<Scope> enclosings;
 		private final MemberKey fieldKey;
-		private EIter replacements;
+		private OverridersItr overriders;
 
-		Iter(Prediction enclosing, Field<?> field) {
+		Itr(Prediction enclosing, Field<?> field) {
 			this.enclosing = enclosing;
 			this.fieldKey = field.getKey();
 			this.enclosings = enclosing.iterator();
@@ -101,25 +102,20 @@ public class FieldPrediction extends Prediction {
 
 		@Override
 		public boolean hasNext() {
-			if (this.replacements != null && this.replacements.hasNext()) {
-				return true;
+			if (this.overriders == null || !this.overriders.hasNext()) {
+				return findNext();
 			}
-			return this.enclosings.hasNext();
+			return this.overriders.hasNext();
 		}
 
 		@Override
 		public Scope next() {
-			if (this.replacements == null || !this.replacements.hasNext()) {
-				this.replacements = new EIter(
-						this.enclosing,
-						this.enclosings.next()
-						.getScope()
-						.getContainer()
-						.member(this.fieldKey)
-						.toField()
-						.field(dummyUser()));
+			if (this.overriders == null || !this.overriders.hasNext()) {
+				if (!findNext()) {
+					throw new NoSuchElementException();
+				}
 			}
-			return this.replacements.next();
+			return this.overriders.next();
 		}
 
 		@Override
@@ -127,23 +123,49 @@ public class FieldPrediction extends Prediction {
 			throw new UnsupportedOperationException();
 		}
 
+		@Override
+		public String toString() {
+			if (this.fieldKey == null) {
+				return super.toString();
+			}
+			return "FieldIterator[" + this.fieldKey + ']';
+		}
+
+		private boolean findNext() {
+			do {
+				if (!this.enclosings.hasNext()) {
+					return false;
+				}
+				this.overriders = new OverridersItr(
+						this.enclosing,
+						this.enclosings.next()
+						.getScope()
+						.getContainer()
+						.member(this.fieldKey)
+						.toField()
+						.field(dummyUser()));
+			} while (this.overriders == null || !this.overriders.hasNext());
+			return true;
+		}
+
 	}
 
-	private static final class EIter implements Iterator<Scope> {
+	private static final class OverridersItr implements Iterator<Scope> {
 
 		private final Prediction enclosing;
-		private final ReplacementsIterator replacements;
+		private final ReplacementsItr replacements;
 		private Iterator<Scope> impls;
 
-		EIter(Prediction enclosing, Field<?> start) {
+		OverridersItr(Prediction enclosing, Field<?> start) {
 			this.enclosing = enclosing;
-			this.replacements = new ReplacementsIterator(start);
+			this.replacements = new ReplacementsItr(start);
+			start.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
 		}
 
 		@Override
 		public boolean hasNext() {
 			if (this.impls == null || !this.impls.hasNext()) {
-				return nextImpl();
+				return findNext();
 			}
 			return true;
 		}
@@ -151,7 +173,7 @@ public class FieldPrediction extends Prediction {
 		@Override
 		public Scope next() {
 			if (this.impls == null || !this.impls.hasNext()) {
-				if (!nextImpl()) {
+				if (!findNext()) {
 					throw new NoSuchElementException();
 				}
 			}
@@ -163,15 +185,31 @@ public class FieldPrediction extends Prediction {
 			throw new UnsupportedOperationException();
 		}
 
-		private boolean nextImpl() {
+		@Override
+		public String toString() {
+			if (this.replacements == null) {
+				return super.toString();
+			}
+			return "OverridersIterator[" + this.replacements.start + ']';
+		}
+
+		private boolean findNext() {
 			do {
 				if (!this.replacements.hasNext()) {
 					return false;
 				}
 
 				final Field<?> field = this.replacements.next();
+				final Prediction enclosing;
+
+				if (this.enclosing.isExact()) {
+					enclosing = exactPrediction(field.getEnclosingScope());
+				} else {
+					enclosing = new SimplePrediction(field.getEnclosingScope());
+				}
+
 				final ObjectImplementations impls = new ObjectImplementations(
-						this.enclosing,
+						enclosing,
 						field.getArtifact().materialize());
 
 				this.impls = impls.iterator();
@@ -182,14 +220,13 @@ public class FieldPrediction extends Prediction {
 
 	}
 
-	private static final class ReplacementsIterator
-			implements Iterator<Field<?>> {
+	private static final class ReplacementsItr implements Iterator<Field<?>> {
 
 		private final Field<?> start;
 		private Iterator<FieldReplacement> replacements;
-		private ReplacementsIterator sub;
+		private ReplacementsItr sub;
 
-		ReplacementsIterator(Field<?> start) {
+		ReplacementsItr(Field<?> start) {
 			this.start = start;
 		}
 
@@ -215,7 +252,7 @@ public class FieldPrediction extends Prediction {
 
 				final FieldReplacement replacement = this.replacements.next();
 
-				this.sub = new ReplacementsIterator(
+				this.sub = new ReplacementsItr(
 						replacement.toField().field(dummyUser()));
 			}
 

@@ -237,7 +237,7 @@ public abstract class ValDirs {
 			this.storeMode = ASSIGNMENT_VAL_STORE;
 		}
 
-		public TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
+		TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
