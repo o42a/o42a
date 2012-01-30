@@ -30,7 +30,7 @@ final class NegatedUseSelector<U extends Usage<U>> extends UseSelector<U> {
 
 	@Override
 	public final boolean acceptUsage(U usage) {
-		return false;
+		return !this.negated.acceptUsage(usage);
 	}
 
 	@Override
