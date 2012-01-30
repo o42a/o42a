@@ -337,7 +337,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void compile(String line, String... lines) {
-		this.analyzer = new Analyzer(getModuleName());
+		this.analyzer = createAnalyzer();
 		this.source = new TestSource(this, buildCode(line, lines), this.source);
 		this.context = new TestSourceTree(this.source).context(this.topContext);
 
@@ -347,6 +347,10 @@ public abstract class CompilerTestCase {
 		INTRINSICS.resolveAll(this.analyzer);
 		assert this.module.getContext().fullResolution().isComplete() :
 			"Full resolution is incomplete";
+	}
+
+	protected Analyzer createAnalyzer() {
+		return new Analyzer(getModuleName());
 	}
 
 	protected void generateCode(Generator generator) {
