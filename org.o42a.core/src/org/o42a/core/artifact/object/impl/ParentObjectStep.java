@@ -112,7 +112,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 		final Prediction prediction = normalizer.lastPrediction();
 		final Obj object = enclosing.toObject();
 
-		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
+		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
 				// Not last object step.
 				// Leave the step as is.
