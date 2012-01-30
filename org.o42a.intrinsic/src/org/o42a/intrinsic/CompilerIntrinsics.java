@@ -160,7 +160,7 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.main = this.consoleModule.createMain(this.user);
 	}
 
-	public void resolveAll() {
+	public void resolveAll(Analyzer analyzer) {
 		// False object can be used by runtime, so it should always present.
 		getFalse().type().useBy(this.user);
 		getFalse().value().explicitUseBy(this.user);
@@ -180,16 +180,13 @@ public class CompilerIntrinsics extends Intrinsics {
 			for (ModuleUse module : this.modules.values()) {
 				module.resolveAll();
 			}
+			if (consoleUsed()) {
+				this.user.useBy(analyzer, SIMPLE_USAGE);
+			}
+			normalizeAll(analyzer);
 		} finally {
 			fullResolution.end();
 		}
-	}
-
-	public void analyze(Analyzer analyzer) {
-		if (consoleUsed()) {
-			this.user.useBy(analyzer, SIMPLE_USAGE);
-		}
-		normalizeAll(analyzer);
 	}
 
 	public void generateAll(Generator generator) {

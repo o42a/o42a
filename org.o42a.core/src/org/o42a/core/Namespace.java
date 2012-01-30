@@ -128,7 +128,7 @@ public class Namespace extends AbstractContainer {
 					findInNs(user, accessor, memberId, declaredIn);
 
 			if (found != null) {
-				return found.toPath();
+				return found.getPath();
 			}
 		}
 

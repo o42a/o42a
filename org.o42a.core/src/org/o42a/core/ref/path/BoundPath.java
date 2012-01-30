@@ -106,6 +106,13 @@ public class BoundPath extends Location {
 		return getRawPath().getBindings();
 	}
 
+	public final Path getPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.path = rebuildPath();
+	}
+
 	public final Step[] getSteps() {
 		return getPath().getSteps();
 	}
@@ -340,10 +347,6 @@ public class BoundPath extends Location {
 		return getRawPath().bindStatically(this, this.origin);
 	}
 
-	public Path toPath() {
-		return getPath();
-	}
-
 	public final PathOp op(CodeDirs dirs, HostOp start) {
 		if (isStatic()) {
 			return staticOp(dirs, start);
@@ -372,13 +375,6 @@ public class BoundPath extends Location {
 			return super.toString();
 		}
 		return getRawPath().toString(this.origin, length);
-	}
-
-	final Path getPath() {
-		if (this.path != null) {
-			return this.path;
-		}
-		return this.path = rebuildPath();
 	}
 
 	final Path getRawPath() {

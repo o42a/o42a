@@ -128,9 +128,12 @@ public abstract class Dep extends Step {
 		normalizeDep(normalizer, enclosingLocal);
 	}
 
+	@Override
+	protected abstract Path nonNormalizedRemainder(PathNormalizer normalizer);
+
 	protected abstract void normalizeDep(
 			PathNormalizer normalizer,
-			LocalScope enclosingLocal);
+			LocalScope local);
 
 	@Override
 	protected final PathOp op(PathOp start) {

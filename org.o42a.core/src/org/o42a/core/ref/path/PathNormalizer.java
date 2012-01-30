@@ -40,6 +40,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.*;
+import org.o42a.core.source.FullResolution;
 
 
 public final class PathNormalizer {
@@ -185,6 +186,17 @@ public final class PathNormalizer {
 			this.normalSteps.add(
 					new NormalPathStep(current.getEnclosingScopePath()));
 			overrideNonIgnored();
+
+			this.stepPrediction = scopePrediction(enclosing);
+
+			final Step step = getPath().getSteps()[getStepIndex()];
+			final Path nonNormalizedRemainder =
+					step.nonNormalizedRemainder(this);
+
+			if (!nonNormalizedRemainder.isSelf()) {
+				this.normalSteps.add(
+						new NormalPathStep(nonNormalizedRemainder));
+			}
 			addRest();
 			this.data.normalizationFinished = true;
 			return false;
@@ -527,10 +539,18 @@ public final class PathNormalizer {
 				this.path = path.bindStatically(this.path, getOrigin());
 			}
 
-			this.path.resolve(fullPathResolver(
-					getOrigin(),
-					dummyUser(),
-					VALUE_REF_USAGE));
+			final FullResolution fullResolution =
+					this.path.getContext().fullResolution();
+
+			fullResolution.start();
+			try {
+				this.path.resolve(fullPathResolver(
+						getOrigin(),
+						dummyUser(),
+						VALUE_REF_USAGE));
+			} finally {
+				fullResolution.end();
+			}
 
 			return this;
 		}

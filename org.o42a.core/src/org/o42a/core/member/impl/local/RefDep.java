@@ -22,6 +22,7 @@ package org.o42a.core.member.impl.local;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -59,7 +60,7 @@ public final class RefDep extends Dep {
 
 	@Override
 	public final Object getDepKey() {
-		return this.depRef.getPath().toPath();
+		return this.depRef.getPath().getPath();
 	}
 
 	@Override
@@ -141,9 +142,19 @@ public final class RefDep extends Dep {
 	@Override
 	protected void normalizeDep(
 			PathNormalizer normalizer,
-			LocalScope enclosingLocal) {
+			LocalScope local) {
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(getDepRef().getPath());
+	}
+
+	@Override
+	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
+		return getDepRef().getPath().getPath();
+	}
+
+	@Override
+	protected void normalizeStep(Analyzer analyzer) {
+		getDepRef().normalize(analyzer);
 	}
 
 	@Override
