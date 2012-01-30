@@ -64,4 +64,4 @@ Float :=> &number
   )
 )
 
-<*By string> Floats: by string(<*''> Input = ())
+<*By string> Floats: by string(<*''!> Input = ())

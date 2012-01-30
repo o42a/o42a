@@ -64,4 +64,4 @@ Integer :=> &number
   )
 )
 
-<*By string> Integers: by string(<*''> Input = ())
+<*By string> Integers: by string(<*''!> Input = ())
