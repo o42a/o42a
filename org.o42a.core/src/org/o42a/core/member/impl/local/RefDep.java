@@ -32,6 +32,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.impl.path.ObjectStepUses;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -41,6 +42,7 @@ public final class RefDep extends Dep {
 	private final String name;
 	private final Ref depRef;
 	private final Artifact<?> target;
+	private ObjectStepUses uses;
 
 	public RefDep(Obj object, Ref depRef, String name) {
 		super(object, DepKind.REF_DEP);
@@ -114,6 +116,7 @@ public final class RefDep extends Dep {
 				enclosingLocal.newResolver(resolver);
 
 		if (resolver.isFullResolution()) {
+			uses().useBy(resolver, path, index);
 			if (index == path.length() - 1) {
 				// Resolve only the last value.
 				this.depRef.resolve(localResolver).resolveAll(
@@ -141,10 +144,17 @@ public final class RefDep extends Dep {
 
 	@Override
 	protected void normalizeDep(
-			PathNormalizer normalizer,
-			LocalScope local) {
+			final PathNormalizer normalizer,
+			final LocalScope local) {
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
-		normalizer.append(getDepRef().getPath());
+		normalizer.append(
+				getDepRef().getPath(),
+				new NestedNormalizer() {
+					@Override
+					public boolean onlyValueUsed() {
+						return uses().onlyValueUsed(normalizer);
+					}
+				});
 	}
 
 	@Override
@@ -167,6 +177,13 @@ public final class RefDep extends Dep {
 						getDepRef(),
 						this.name)
 				.toPath());
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
 	}
 
 	private final class DepDisabler extends NormalAppender {

@@ -85,7 +85,7 @@ public class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
-	protected void normalize(PathNormalizer normalizer) {
+	protected void normalize(final PathNormalizer normalizer) {
 
 		final Member member = resolveMember(
 				normalizer.getPath(),
@@ -96,11 +96,11 @@ public class MemberStep extends AbstractMemberStep {
 			normalizer.cancel();
 			return;
 		}
-		/*if (normalizer.lastPrediction().getScope() != member.getDefinedIn()) {
+		if (normalizer.lastPrediction().getScope() != member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
 			return;
-		}*/
+		}
 
 		final MemberField memberField = member.toField();
 
@@ -129,13 +129,19 @@ public class MemberStep extends AbstractMemberStep {
 				return;
 			}
 			normalizer.append(
-					link.getTargetRef().getRescopedRef().getPath());
+					link.getTargetRef().getRescopedRef().getPath(),
+					new NestedNormalizer() {
+						@Override
+						public boolean onlyValueUsed() {
+							return uses().onlyValueUsed(normalizer);
+						}
+					});
 			return;
 		}
 
 		final Obj object = artifact.toObject();
 
-		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
+		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
 				// Not last object step.
 				// Leave the step as is.
