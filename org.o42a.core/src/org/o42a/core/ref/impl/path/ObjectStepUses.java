@@ -22,14 +22,11 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.RefUsage.usable;
 
-import org.o42a.codegen.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathResolver;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 import org.o42a.util.use.Usable;
 
 
@@ -78,8 +75,11 @@ public class ObjectStepUses {
 		}
 	}
 
-	public final boolean onlyValueUsed(Analyzer analyzer) {
-		return !uses().isUsed(analyzer, NON_VALUE_REF_USAGES);
+	public final boolean onlyValueUsed(PathNormalizer normalizer) {
+		if (normalizer.isNested()) {
+			return normalizer.getNested().onlyValueUsed();
+		}
+		return !uses().isUsed(normalizer.getAnalyzer(), NON_VALUE_REF_USAGES);
 	}
 
 	@Override

@@ -133,7 +133,7 @@ public class ObjectConstructorStep extends Step {
 			normalizer.cancel();
 			return;
 		}
-		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
+		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
 				// Not a last step - go on.
 				normalizer.skip(
