@@ -66,14 +66,13 @@ public class CL {
 		final Module module = new Module(context, null);
 
 		intrinsics.setMainModule(module);
-		intrinsics.resolveAll();
+		intrinsics.resolveAll(this.generator.getAnalyzer());
 
 		assert context.fullResolution().isComplete() :
 			"Full resolution is incomplete";
 
 		logger.abortOnError();
 
-		intrinsics.analyze(this.generator.getAnalyzer());
 		intrinsics.generateAll(this.generator);
 
 		this.generator.write();

@@ -26,6 +26,7 @@ import static org.o42a.util.use.User.useCase;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.artifact.Accessor;
@@ -43,6 +44,7 @@ import org.o42a.util.use.UseCase;
 public abstract class CompilerTestCase {
 
 	public static final UseCase USE_CASE = useCase("test");
+	protected Analyzer analyzer = new Analyzer("test");
 
 	static final Compiler COMPILER = compiler();
 	static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
@@ -335,19 +337,19 @@ public abstract class CompilerTestCase {
 	}
 
 	protected void compile(String line, String... lines) {
+		this.analyzer = new Analyzer(getModuleName());
 		this.source = new TestSource(this, buildCode(line, lines), this.source);
 		this.context = new TestSourceTree(this.source).context(this.topContext);
 
 		this.context.fullResolution().reset();
 		this.module = new Module(this.context, getModuleName());
 		INTRINSICS.setMainModule(this.module);
-		INTRINSICS.resolveAll();
+		INTRINSICS.resolveAll(this.analyzer);
 		assert this.module.getContext().fullResolution().isComplete() :
 			"Full resolution is incomplete";
 	}
 
 	protected void generateCode(Generator generator) {
-		INTRINSICS.analyze(generator.getAnalyzer());
 		INTRINSICS.generateAll(generator);
 	}
 

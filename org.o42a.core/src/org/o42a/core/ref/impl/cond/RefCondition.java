@@ -71,6 +71,7 @@ public final class RefCondition extends Statement {
 				this.ref.inlineImperative(normalizer, valueStruct);
 
 		if (value == null) {
+			this.ref.normalize(normalizer.getAnalyzer());
 			return null;
 		}
 
