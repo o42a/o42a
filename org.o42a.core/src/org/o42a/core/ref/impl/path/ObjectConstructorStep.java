@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -125,8 +126,8 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
 
-		final Obj object =
-				this.constructor.resolve(normalizer.lastPrediction().getScope());
+		final Obj object = this.constructor.resolve(
+				normalizer.lastPrediction().getScope());
 
 		if (object == null) {
 			normalizer.cancel();
@@ -173,6 +174,11 @@ public class ObjectConstructorStep extends Step {
 			public void cancel() {
 			}
 		});
+	}
+
+	@Override
+	protected void normalizeStep(Analyzer analyzer) {
+		this.constructor.getConstructed().normalize(analyzer);
 	}
 
 	@Override

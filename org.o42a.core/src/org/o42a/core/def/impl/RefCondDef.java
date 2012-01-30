@@ -76,6 +76,7 @@ public final class RefCondDef extends CondDef {
 
 	@Override
 	protected void normalizeDef(Normalizer normalizer) {
+		this.common.ref.normalize(normalizer.getAnalyzer());
 		this.common.inline = inline(normalizer);
 	}
 

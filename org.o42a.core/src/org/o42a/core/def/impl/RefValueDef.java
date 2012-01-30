@@ -101,6 +101,7 @@ public final class RefValueDef extends ValueDef {
 
 	@Override
 	protected void normalizeDef(Normalizer normalizer) {
+		this.common.ref.normalize(normalizer.getAnalyzer());
 		this.common.inline = inline(normalizer, getValueStruct());
 	}
 

@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -260,9 +261,16 @@ public class Ref extends Statement {
 		return new InlineCmd(inline);
 	}
 
+	public final void normalize(Analyzer analyzer) {
+		getPath().normalizePath(analyzer);
+	}
+
 	@Override
 	public void normalizeImperative(Normalizer normalizer) {
 		this.inline = inline(normalizer, getScope());
+		if (this.inline == null) {
+			normalize(normalizer.getAnalyzer());
+		}
 	}
 
 	public final Ref toStatic() {

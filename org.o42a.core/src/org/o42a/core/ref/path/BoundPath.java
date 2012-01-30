@@ -30,6 +30,7 @@ import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -312,6 +313,12 @@ public class BoundPath extends Location {
 		}
 
 		return pathNormalizer.normalize();
+	}
+
+	public final void normalizePath(Analyzer analyzer) {
+		for (Step step : getSteps()) {
+			step.normalizeStep(analyzer);
+		}
 	}
 
 	public final PathReproducer reproducer(Reproducer reproducer) {

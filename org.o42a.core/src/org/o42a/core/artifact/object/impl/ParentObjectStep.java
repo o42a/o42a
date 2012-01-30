@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object.impl;
 
+import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -30,7 +31,12 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.impl.normalizer.InlineValueStep;
+import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.impl.path.AbstractMemberStep;
+import org.o42a.core.ref.impl.path.ObjectStepUses;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
@@ -38,6 +44,7 @@ import org.o42a.core.source.LocationInfo;
 public final class ParentObjectStep extends AbstractMemberStep {
 
 	private final Obj object;
+	private ObjectStepUses uses;
 
 	public ParentObjectStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
@@ -54,7 +61,9 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 		final Obj object = start.getArtifact().materialize();
 
-		if (!resolver.isFullResolution() && !object.membersResolved()) {
+		if (resolver.isFullResolution()) {
+			uses().useBy(resolver, path, index);
+		} else if (!object.membersResolved()) {
 
 			final Scope self = getMemberKey().getOrigin();
 
@@ -94,7 +103,47 @@ public final class ParentObjectStep extends AbstractMemberStep {
 			return;
 		}
 
-		normalizer.up(member.substance(dummyUser()).getScope());
+		final Container enclosing = member.substance(dummyUser());
+
+		if (!normalizer.up(enclosing.getScope())) {
+			return;
+		}
+
+		final Prediction prediction = normalizer.lastPrediction();
+		final Obj object = enclosing.toObject();
+
+		if (!uses().onlyValueUsed(normalizer.getAnalyzer())) {
+			if (!normalizer.isLastStep()) {
+				// Not last object step.
+				// Leave the step as is.
+				normalizer.skip(prediction, new SameNormalStep(this));
+				return;
+			}
+			// Can not in-line object used otherwise but by value.
+			normalizer.cancel();
+			return;
+		}
+		if (definitionsChange(object, prediction)) {
+			normalizer.cancel();
+			return;
+		}
+
+		final InlineValue inline = object.value().getDefinitions().inline(
+				normalizer.getNormalizer());
+
+		if (inline == null) {
+			normalizer.cancel();
+			return;
+		}
+
+		normalizer.inline(prediction, new InlineValueStep(inline) {
+			@Override
+			public void ignore() {
+			}
+			@Override
+			public void cancel() {
+			}
+		});
 	}
 
 	@Override
@@ -133,6 +182,13 @@ public final class ParentObjectStep extends AbstractMemberStep {
 	@Override
 	protected Scope revert(Scope target) {
 		return this.object.findIn(target).getScope();
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
 	}
 
 }
