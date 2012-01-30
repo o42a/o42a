@@ -62,9 +62,6 @@ public class ObjectStepUses {
 	}
 
 	public final void useBy(PathResolver resolver, BoundPath path, int index) {
-		if (!resolver.isFullResolution()) {
-			return;
-		}
 
 		final int nextIdx = index + 1;
 

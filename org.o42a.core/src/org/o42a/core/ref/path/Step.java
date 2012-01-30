@@ -21,6 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 
+import org.o42a.codegen.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -111,6 +112,9 @@ public abstract class Step {
 	protected abstract Scope revert(Scope target);
 
 	protected abstract void normalize(PathNormalizer normalizer);
+
+	protected void normalizeStep(Analyzer analyzer) {
+	}
 
 	protected abstract PathReproduction reproduce(
 			LocationInfo location,

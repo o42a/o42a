@@ -64,7 +64,14 @@ public final class RefLogical extends Logical {
 
 	@Override
 	public InlineCond inline(Normalizer normalizer, Scope origin) {
-		return this.ref.inline(normalizer, origin);
+
+		final InlineValue inline = this.ref.inline(normalizer, origin);
+
+		if (inline == null) {
+			this.ref.normalize(normalizer.getAnalyzer());
+		}
+
+		return inline;
 	}
 
 	@Override
