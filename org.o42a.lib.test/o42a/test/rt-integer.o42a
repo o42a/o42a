@@ -20,4 +20,4 @@
 Rt-integer :=> $$integer
 ========================
 
-<*By string> Parser: integer(<*''> Input = ())
+<*By string> Parser: integer(<*''!> Input = ())
