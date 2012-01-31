@@ -64,7 +64,7 @@ public class BoundPath extends Location {
 
 	private final Scope origin;
 	private final Path rawPath;
-	private ProxyUsable<SimpleUsage> user =
+	private final ProxyUsable<SimpleUsage> user =
 			new ProxyUsable<SimpleUsage>(SimpleUsage.ALL_SIMPLE_USAGES, this);
 	private User<SimpleUsage> originalUser;
 	private Path path;
@@ -405,10 +405,6 @@ public class BoundPath extends Location {
 		} else {
 			this.originalUser = this.user.getProxied();
 		}
-	}
-
-	public void setUser(ProxyUsable<SimpleUsage> user) {
-		this.user = user;
 	}
 
 	final Scope root() {
