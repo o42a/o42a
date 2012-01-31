@@ -24,9 +24,17 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 
 	private SimpleUsable<U> usable;
 
+	public ProxyUsable(AllUsages<U> allUsages, Object used) {
+		this(allUsages, null, used);
+	}
+
 	public ProxyUsable(AllUsages<U> allUsages, String name, Object used) {
 		super(allUsages);
 		this.usable = new SimpleUsable<U>(allUsages, name, used);
+	}
+
+	public ProxyUsable(User<U> proxied, Object used) {
+		this(proxied, null, used);
 	}
 
 	public ProxyUsable(User<U> proxied, String name, Object used) {

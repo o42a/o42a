@@ -20,6 +20,8 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.scopePrediction;
+import static org.o42a.util.Cancellation.NOT_CANCELABLE;
+import static org.o42a.util.Cancellation.appendCancelable;
 import static org.o42a.util.Cancellation.cancelAll;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.*;
+import org.o42a.util.Cancelable;
 
 
 public final class PathNormalizer {
@@ -62,6 +65,8 @@ public final class PathNormalizer {
 	private Prediction stepPrediction;
 	private int stepIndex;
 	private boolean stepNormalized;
+
+	private Cancelable cancelable = NOT_CANCELABLE;
 
 	private PathNormalizer(
 			Normalizer normalizer,
@@ -229,6 +234,7 @@ public final class PathNormalizer {
 			return;
 		}
 
+		this.cancelable = appendCancelable(this.cancelable, normalPath);
 		if (normalizer.firstNonIgnored >= 0) {
 
 			final int index =
@@ -284,6 +290,7 @@ public final class PathNormalizer {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
+						this.cancelable,
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
@@ -292,7 +299,7 @@ public final class PathNormalizer {
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
-				cancelAll(this.normalSteps);
+				cancelNormalization();
 				return new UnNormalizedPath(path);
 			}
 
@@ -301,12 +308,14 @@ public final class PathNormalizer {
 		}
 
 		if (!isNormalizationStarted() && !isNested()) {
+			cancelNormalization();
 			return new UnNormalizedPath(path);
 		}
 
 		return new NormalizedPath(
 				getNormalizedStart(),
 				this.path,
+				this.cancelable,
 				this.normalSteps,
 				this.firstNonIgnored,
 				isAbsolute(),
@@ -375,6 +384,12 @@ public final class PathNormalizer {
 					getPath().getPath(),
 					nextStep));
 		}
+	}
+
+	private void cancelNormalization() {
+		cancelAll(this.normalSteps);
+		getPath().cancelNormalization();
+		this.cancelable.cancel();
 	}
 
 	private static final class Data {
