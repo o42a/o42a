@@ -17,14 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.util.Cancellation.cancelAll;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,13 +34,15 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.path.*;
 import org.o42a.core.source.FullResolution;
+import org.o42a.util.Cancelable;
+import org.o42a.util.use.User;
 
 
-public final class NormalizedPath implements NormalPath {
+final class NormalizedPath implements NormalPath {
 
 	private final Scope origin;
+	private final Cancelable cancelable;
 	private final ArrayList<NormalStep> normalSteps;
 	private final int firstNonIgnored;
 	private final boolean isAbsolute;
@@ -50,15 +51,17 @@ public final class NormalizedPath implements NormalPath {
 	private InlineStep inline;
 	private BoundPath path;
 
-	public NormalizedPath(
+	NormalizedPath(
 			Scope origin,
 			BoundPath path,
+			Cancelable cancelable,
 			ArrayList<NormalStep> normalSteps,
 			int firstNonIgnored,
 			boolean isAbsolute,
 			boolean isStatic) {
 		this.origin = origin;
 		this.path = path;
+		this.cancelable = cancelable;
 		this.normalSteps = normalSteps;
 		this.firstNonIgnored = firstNonIgnored;
 		this.isAbsolute = isAbsolute;
@@ -77,6 +80,8 @@ public final class NormalizedPath implements NormalPath {
 
 	@Override
 	public void cancel() {
+		this.path.cancelNormalization();
+		this.cancelable.cancel();
 		cancelAll(this.normalSteps);
 	}
 
@@ -103,10 +108,14 @@ public final class NormalizedPath implements NormalPath {
 	}
 
 	public final NormalPath done(boolean done) {
+
+		final User<?> user = this.path.pathNormalized();
+
 		if (done) {
 			ignoreLeading();
-			build();
+			build(user);
 		}
+
 		return this;
 	}
 
@@ -140,7 +149,7 @@ public final class NormalizedPath implements NormalPath {
 		}
 	}
 
-	private NormalPath build() {
+	private NormalPath build(User<?> user) {
 
 		InlineStep precedingInline = null;
 		Path path;
@@ -188,10 +197,8 @@ public final class NormalizedPath implements NormalPath {
 
 		fullResolution.start();
 		try {
-			this.path.resolve(fullPathResolver(
-					getOrigin(),
-					dummyUser(),
-					VALUE_REF_USAGE));
+			this.path.resolve(
+					fullPathResolver(getOrigin(), user, VALUE_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}

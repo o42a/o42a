@@ -22,6 +22,27 @@ package org.o42a.util;
 
 public final class Cancellation {
 
+	public static final Cancelable NOT_CANCELABLE = new NotCancelable();
+
+	public static Cancelable cancelables(Cancelable... cancelables) {
+		if (cancelables == null || cancelables.length == 0) {
+			return NOT_CANCELABLE;
+		}
+		if (cancelables.length == 1) {
+			return cancelables[0];
+		}
+		return new Cancelables(cancelables);
+	}
+
+	public static Cancelable appendCancelable(
+			Cancelable first,
+			Cancelable second) {
+		if (first == NOT_CANCELABLE) {
+			return first;
+		}
+		return cancelables(first, second);
+	}
+
 	public static void cancelAll(Cancelable... cancelables) {
 		for (Cancelable cancellable : cancelables) {
 			cancellable.cancel();
@@ -44,6 +65,52 @@ public final class Cancellation {
 	}
 
 	private Cancellation() {
+	}
+
+	private static final class NotCancelable implements Cancelable {
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public String toString() {
+			return "NotCancelable";
+		}
+
+	}
+
+	private static final class Cancelables implements Cancelable {
+
+		private final Cancelable[] cancelables;
+
+		Cancelables(Cancelable[] cancelables) {
+			this.cancelables = cancelables;
+		}
+
+		@Override
+		public void cancel() {
+			for (Cancelable cancelable : this.cancelables) {
+				cancelable.cancel();
+			}
+		}
+
+		@Override
+		public String toString() {
+			if (this.cancelables == null) {
+				return super.toString();
+			}
+
+			final StringBuilder out = new StringBuilder();
+
+			out.append(this.cancelables[0]);
+			for (int i = 1; i < this.cancelables.length; ++i) {
+				out.append("; ").append(this.cancelables[i]);
+			}
+
+			return out.toString();
+		}
+
 	}
 
 }

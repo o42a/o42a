@@ -221,11 +221,9 @@ public final class Resolution implements ScopeInfo {
 
 	private final Container resolve(PathResolver pathResolver) {
 
-		final Resolver resolver = getResolver();
 		final BoundPath path = getRef().getPath();
-		final PathResolution pathResolution = path.walk(
-				pathResolver.resolveBy(resolver),
-				resolver.getWalker());
+		final PathResolution pathResolution =
+				path.walk(pathResolver, getResolver().getWalker());
 
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
