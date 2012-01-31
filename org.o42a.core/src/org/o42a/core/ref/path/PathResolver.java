@@ -71,10 +71,7 @@ public final class PathResolver implements UserInfo {
 		if (user.toUser() == this.user) {
 			return this;
 		}
-		return new PathResolver(
-				getPathStart(),
-				user.toUser(),
-				this.usage);
+		return new PathResolver(getPathStart(), user.toUser(), this.usage);
 	}
 
 	@Override

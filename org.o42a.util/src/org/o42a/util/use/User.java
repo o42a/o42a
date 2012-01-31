@@ -27,7 +27,7 @@ public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 	private static final User<SimpleUsage> DUMMY_USER =
 			ALL_SIMPLE_USAGES.dummyUser();
 
-	public static User<?> dummyUser() {
+	public static User<SimpleUsage> dummyUser() {
 		return DUMMY_USER;
 	}
 

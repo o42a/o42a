@@ -26,6 +26,7 @@ import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
@@ -54,12 +55,18 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.use.ProxyUsable;
+import org.o42a.util.use.SimpleUsage;
+import org.o42a.util.use.User;
 
 
 public class BoundPath extends Location {
 
 	private final Scope origin;
 	private final Path rawPath;
+	private final ProxyUsable<SimpleUsage> user =
+			new ProxyUsable<SimpleUsage>(SimpleUsage.ALL_SIMPLE_USAGES, this);
+	private User<SimpleUsage> originalUser;
 	private Path path;
 
 	private Obj startObject;
@@ -384,8 +391,24 @@ public class BoundPath extends Location {
 		return this.rawPath;
 	}
 
-	final Scope root(Scope start) {
-		return start.getContext().getRoot().getScope();
+	final User<?> pathNormalized() {
+		if (this.originalUser == null) {
+			this.originalUser = this.user.getProxied();
+			this.user.setProxied(dummyUser());
+		}
+		return this.originalUser;
+	}
+
+	final void cancelNormalization() {
+		if (this.originalUser != null) {
+			this.user.setProxied(this.originalUser);
+		} else {
+			this.originalUser = this.user.getProxied();
+		}
+	}
+
+	final Scope root() {
+		return getOrigin().getContext().getRoot().getScope();
 	}
 
 	final int startIndex() {
@@ -408,18 +431,18 @@ public class BoundPath extends Location {
 
 	private PathResolution walkPath(
 			Path path,
-			PathResolver resolver,
+			PathResolver originalResolver,
 			PathWalker walker,
 			boolean expand) {
 		this.path = path;
 
-		final Scope start = resolver.getPathStart();
-		final Scope startFrom;
+		final PathResolver resolver = wrapResolutionUser(originalResolver);
+		final Scope start;
 		final PathTracker tracker;
 
 		if (isAbsolute()) {
-			startFrom = root(start);
-			if (!walker.root(this, startFrom)) {
+			start = root();
+			if (!walker.root(this, start)) {
 				return NO_PATH_RESOLUTION;
 			}
 			if (expand) {
@@ -427,7 +450,7 @@ public class BoundPath extends Location {
 						this,
 						resolver,
 						walker,
-						startFrom,
+						start,
 						true);
 			} else if (resolver.toUser().isDummy()) {
 				tracker = new SimplePathTracker(this, resolver, walker);
@@ -439,9 +462,9 @@ public class BoundPath extends Location {
 						startIndex());
 			}
 		} else {
-			startFrom = start;
-			startFrom.assertDerivedFrom(getOrigin());
-			if (!walker.start(this, startFrom)) {
+			start = resolver.getPathStart();
+			start.assertDerivedFrom(getOrigin());
+			if (!walker.start(this, start)) {
 				return NO_PATH_RESOLUTION;
 			}
 			if (expand) {
@@ -449,7 +472,7 @@ public class BoundPath extends Location {
 						this,
 						resolver,
 						walker,
-						startFrom,
+						start,
 						false);
 			} else if (!isStatic() || resolver.toUser().isDummy()) {
 				tracker = new SimplePathTracker(this, resolver, walker);
@@ -462,9 +485,29 @@ public class BoundPath extends Location {
 			}
 		}
 
+		return walkFrom(start, tracker);
+	}
+
+	private PathResolver wrapResolutionUser(PathResolver originalResolver) {
+
+		final User<?> originalUser = originalResolver.toUser();
+
+		if (originalUser.isDummy()) {
+			return originalResolver;
+		}
+
+		final ProxyUsable<SimpleUsage> user = this.user;
+
+		user.useBy(originalUser, SIMPLE_USAGE);
+
+		return originalResolver.resolveBy(user);
+	}
+
+	private PathResolution walkFrom(Scope start, PathTracker tracker) {
+
 		Step[] steps = this.path.getSteps();
-		Container result = startFrom.getContainer();
-		Scope prev = startFrom;
+		Container result = start.getContainer();
+		Scope prev = start;
 		int i = 0;
 
 		while (i < steps.length) {
@@ -510,8 +553,7 @@ public class BoundPath extends Location {
 
 				if (replacement.isAbsolute()) {
 					// Replacement is an absolute path.
-					// Replace all steps from the very first to the current
-					// one.
+					// Replace all steps from the very first to the current one.
 					steps = ArrayUtil.replace(
 							steps,
 							0,
@@ -523,7 +565,7 @@ public class BoundPath extends Location {
 							true,
 							steps);
 					// Continue from the ROOT.
-					prev = root(start);
+					prev = root();
 					i = 0;
 					tracker.setAbsolute(prev);
 				} else {
