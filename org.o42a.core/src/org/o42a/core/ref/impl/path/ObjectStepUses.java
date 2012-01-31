@@ -58,6 +58,22 @@ public class ObjectStepUses {
 		return this.uses;
 	}
 
+	public final RefUsage usage(
+			PathResolver resolver,
+			BoundPath path,
+			int index) {
+
+		final int nextIdx = index + 1;
+
+		if (path.length() == nextIdx) {
+			return resolver.getUsage();
+		}
+
+		final Step nextStep = path.getSteps()[nextIdx];
+
+		return nextStep.getObjectUsage();
+	}
+
 	public final void useBy(PathResolver resolver, BoundPath path, int index) {
 
 		final int nextIdx = index + 1;
@@ -76,10 +92,20 @@ public class ObjectStepUses {
 	}
 
 	public final boolean onlyValueUsed(PathNormalizer normalizer) {
-		if (normalizer.isNested()) {
-			return normalizer.getNested().onlyValueUsed();
+		if (!uses().hasUses()) {
+			return false;
 		}
-		return !uses().isUsed(normalizer.getAnalyzer(), NON_VALUE_REF_USAGES);
+		if (!uses().hasUses(NON_VALUE_REF_USAGES)) {
+			return true;
+		}
+		if (!normalizer.isNested()) {
+			return false;
+		}
+		if (!normalizer.getNested().onlyValueUsed()) {
+			return false;
+		}
+
+		return normalizer.getStepIndex() + 1 == normalizer.getPath().length();
 	}
 
 	@Override

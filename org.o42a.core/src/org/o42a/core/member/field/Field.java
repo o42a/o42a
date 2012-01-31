@@ -41,6 +41,19 @@ import org.o42a.util.log.Loggable;
 
 public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 
+	public static Field<?> fieldOf(Scope scope) {
+
+		final Field<?> field = scope.toField();
+
+		if (field != null) {
+			return field;
+		}
+
+		final Obj object = scope.toObject();
+
+		return object.getMaterializationOf().getScope().toField();
+	}
+
 	private final MemberField member;
 	private Path enclosingScopePath;
 	private Field<A>[] overridden;
