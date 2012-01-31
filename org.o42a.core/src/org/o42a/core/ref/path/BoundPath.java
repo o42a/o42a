@@ -400,7 +400,11 @@ public class BoundPath extends Location {
 	}
 
 	final void cancelNormalization() {
-		this.user.setProxied(this.originalUser);
+		if (this.originalUser != null) {
+			this.user.setProxied(this.originalUser);
+		} else {
+			this.originalUser = this.user.getProxied();
+		}
 	}
 
 	public void setUser(ProxyUsable<SimpleUsage> user) {
