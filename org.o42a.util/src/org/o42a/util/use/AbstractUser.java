@@ -27,6 +27,11 @@ public abstract class AbstractUser<U extends Usage<U>> extends User<U> {
 	}
 
 	@Override
+	public final boolean isDummy() {
+		return false;
+	}
+
+	@Override
 	<UU extends Usage<UU>> void use(Usable<UU> usable, UU usage) {
 		usable.useBy(this, usage);
 	}

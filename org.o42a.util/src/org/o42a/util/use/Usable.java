@@ -30,13 +30,11 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 	private static final Object DUMMY = new Object();
 
 	private final AllUsages<U> allUsages;
-	private final UsedBy<U>[] usedBy;
+	private UsedBy<U>[] usedBy;
 	private UseCase useCase;
 
-	@SuppressWarnings("unchecked")
 	public Usable(AllUsages<U> allUsages) {
 		this.allUsages = allUsages;
-		this.usedBy = new UsedBy[allUsages.size()];
 	}
 
 	@Override
@@ -47,11 +45,18 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		return this.allUsages;
 	}
 
+	public final boolean hasUses() {
+		return this.usedBy != null;
+	}
+
 	public final void useBy(UserInfo user, U usage) {
 		user.toUser().use(this, usage);
 	}
 
 	public final Set<User<?>> getUsedBy(U usage) {
+		if (this.usedBy == null) {
+			return emptySet();
+		}
 
 		final UsedBy<U> usedBy = this.usedBy[usage.ordinal()];
 
@@ -111,6 +116,32 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		return selectUse(useCase, selector).isUsed();
 	}
 
+	public final boolean hasUses(UseSelector<U> selector) {
+		if (this.usedBy == null) {
+			return false;
+		}
+
+		final AllUsages<U> allUsages = allUsages();
+		final U[] usages = allUsages.usages();
+
+		for (int i = 0, size = allUsages.size(); i < size; ++i) {
+
+			final UsedBy<U> usedBy = this.usedBy[i];
+
+			if (usedBy == null) {
+				continue;
+			}
+
+			final U usage = usages[i];
+
+			if (selector.acceptUsage(usage)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public final User<U> selectiveUser(UseSelector<U> selector) {
 		return new SelectiveUser<U>(this, selector);
 	}
@@ -123,10 +154,10 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 
 	@Override
 	public String toString() {
-		if (this.usedBy == null) {
-			return getClass().getSimpleName() + "[]";
+		if (this.allUsages == null) {
+			return super.toString();
 		}
-		return getClass().getSimpleName() + this.usedBy.toString();
+		return getClass().getSimpleName() + '[' + this.allUsages + ']';
 	}
 
 	final void useBy(User<?> user, U usage) {
@@ -137,7 +168,11 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private UsedBy<U> used(U usage) {
+		if (this.usedBy == null) {
+			this.usedBy = new UsedBy[allUsages().size()];
+		}
 
 		final int ordinal = usage.ordinal();
 		final UsedBy<U> existing = this.usedBy[ordinal];
