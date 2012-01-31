@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.member.field.Field.fieldOf;
 import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -81,7 +82,14 @@ public class MemberStep extends AbstractMemberStep {
 
 	@Override
 	protected Scope revert(Scope target) {
-		return target.getEnclosingScope();
+
+		final Field<?> field = fieldOf(target);
+
+		if (field != null && field.getKey().equals(getMemberKey())) {
+			return target.getEnclosingScope();
+		}
+
+		return getMemberKey().getOrigin();
 	}
 
 	@Override
@@ -220,16 +228,4 @@ public class MemberStep extends AbstractMemberStep {
 		return false;
 	}
 
-	private static Field<?> fieldOf(Scope scope) {
-
-		final Field<?> field = scope.toField();
-
-		if (field != null) {
-			return field;
-		}
-
-		final Obj object = scope.toObject();
-
-		return object.getMaterializationOf().getScope().toField();
-	}
 }

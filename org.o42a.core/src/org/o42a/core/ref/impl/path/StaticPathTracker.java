@@ -36,7 +36,10 @@ public final class StaticPathTracker extends SimplePathTracker {
 			PathWalker walker,
 			int startIndex) {
 		super(path, resolver, walker);
-		this.beforeStart = startIndex;
+		// Static path resolution starts with object.
+		// This object requires resolution.
+		// This object's step index is one less than the path start one.
+		this.beforeStart = startIndex - 1;
 	}
 
 	@Override

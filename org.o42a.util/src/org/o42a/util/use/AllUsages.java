@@ -31,6 +31,7 @@ public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 	private U usages[];
 	private AlwaysUsed<U> alwaysUsed;
 	private NeverUsed<U> neverUsed;
+	private DummyUser<U> dummyUser;
 
 	public AllUsages(Class<? extends U> usageClass) {
 		this(usageClass, null);
@@ -67,6 +68,13 @@ public final class AllUsages<U extends Usage<U>> extends UseSelector<U> {
 			return this.neverUsed;
 		}
 		return this.neverUsed = new NeverUsed<U>(this);
+	}
+
+	public final User<U> dummyUser() {
+		if (this.dummyUser != null) {
+			return this.dummyUser;
+		}
+		return this.dummyUser = new DummyUser<U>(this);
 	}
 
 	public final Usable<U> usable(Object used) {
