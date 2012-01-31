@@ -19,10 +19,13 @@
 */
 package org.o42a.util.use;
 
+import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
+
 
 public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 
-	private static final DummyUser DUMMY_USER = new DummyUser();
+	private static final User<SimpleUsage> DUMMY_USER =
+			ALL_SIMPLE_USAGES.dummyUser();
 
 	public static User<?> dummyUser() {
 		return DUMMY_USER;
@@ -44,13 +47,11 @@ public abstract class User<U extends Usage<U>> implements UserInfo, Uses<U> {
 		this.allUsages = allUsages;
 	}
 
+	public abstract boolean isDummy();
+
 	@Override
 	public final AllUsages<U> allUsages() {
 		return this.allUsages;
-	}
-
-	public boolean isDummy() {
-		return false;
 	}
 
 	@Override

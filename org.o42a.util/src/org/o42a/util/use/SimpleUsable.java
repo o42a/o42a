@@ -23,14 +23,22 @@ package org.o42a.util.use;
 final class SimpleUsable<U extends Usage<U>> extends Usable<U> {
 
 	private final String name;
-	private final Object usable;
+	private final Object used;
 	private final UsableUser<U> user;
 
-	SimpleUsable(AllUsages<U> allUsages, String name, Object usable) {
+	SimpleUsable(AllUsages<U> allUsages, String name, Object used) {
 		super(allUsages);
 		this.name = name;
-		this.usable = usable;
+		this.used = used;
 		this.user = new UsableUser<U>(this);
+	}
+
+	public final String name() {
+		return this.name;
+	}
+
+	public final Object used() {
+		return this.used;
 	}
 
 	@Override
@@ -40,13 +48,13 @@ final class SimpleUsable<U extends Usage<U>> extends Usable<U> {
 
 	@Override
 	public String toString() {
-		if (this.usable == null) {
+		if (this.used == null) {
 			return super.toString();
 		}
 		if (this.name == null) {
-			return this.usable.toString();
+			return this.used.toString();
 		}
-		return this.name + '[' + this.usable + ']';
+		return this.name + '[' + this.used + ']';
 	}
 
 }
