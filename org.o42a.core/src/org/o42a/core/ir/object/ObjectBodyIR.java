@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

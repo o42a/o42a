@@ -28,6 +28,7 @@ import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION
 import java.util.HashSet;
 import java.util.Set;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.ConstructionMode;
 import org.o42a.core.artifact.object.Obj;
@@ -40,7 +41,6 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class AbstractScope implements Scope {

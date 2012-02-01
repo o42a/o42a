@@ -19,8 +19,8 @@
 */
 package org.o42a.core.artifact.array.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;

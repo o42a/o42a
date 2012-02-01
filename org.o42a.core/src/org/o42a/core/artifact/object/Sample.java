@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.def.Definitions;
@@ -28,7 +29,6 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class Sample extends Scoped implements Derivative {

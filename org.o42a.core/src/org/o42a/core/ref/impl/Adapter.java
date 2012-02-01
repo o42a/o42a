@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;

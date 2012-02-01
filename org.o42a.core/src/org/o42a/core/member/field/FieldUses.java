@@ -19,11 +19,11 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
+import org.o42a.analysis.use.*;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
-import org.o42a.util.use.*;
 
 
 public class FieldUses implements Uses<SimpleUsage> {

@@ -19,10 +19,10 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.impl.clause.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.impl.clause.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.*;
 import org.o42a.core.member.*;

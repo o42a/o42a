@@ -25,11 +25,11 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLSignature;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
-import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;

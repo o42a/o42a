@@ -26,9 +26,9 @@ import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import java.io.File;
 import java.io.IOException;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
-import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.common.source.FileSourceTree;
 import org.o42a.compiler.Compiler;

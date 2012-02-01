@@ -25,7 +25,7 @@ import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.o42a.util.use.*;
+import org.o42a.analysis.use.*;
 
 
 final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {

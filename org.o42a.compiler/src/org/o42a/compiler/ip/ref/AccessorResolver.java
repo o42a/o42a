@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;

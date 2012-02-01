@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ref;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
-import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathWalker;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class ResolverFactory<R extends Resolver> {

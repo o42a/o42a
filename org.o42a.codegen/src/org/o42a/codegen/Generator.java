@@ -21,6 +21,7 @@ package org.o42a.codegen;
 
 import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.CodeCallback;

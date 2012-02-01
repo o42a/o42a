@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;

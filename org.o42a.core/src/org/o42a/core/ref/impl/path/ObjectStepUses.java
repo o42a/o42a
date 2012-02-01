@@ -22,12 +22,12 @@ package org.o42a.core.ref.impl.path;
 import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.RefUsage.usable;
 
+import org.o42a.analysis.use.Usable;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
-import org.o42a.util.use.Usable;
 
 
 public class ObjectStepUses {

@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.test;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.common.object.AnnotatedModule;
 import org.o42a.common.object.RelatedSources;
 import org.o42a.common.object.SourcePath;
@@ -27,7 +28,6 @@ import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
-import org.o42a.util.use.UserInfo;
 
 
 @SourcePath("test.o42a")

@@ -19,18 +19,18 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
 import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
-import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.object.DerivationUsage;
 import org.o42a.core.artifact.object.Obj;
-import org.o42a.util.use.*;
 
 
 public class FieldAnalysis {

@@ -19,16 +19,18 @@
 */
 package org.o42a.intrinsic;
 
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
 import static org.o42a.util.string.StringCodec.canonicalName;
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
@@ -36,8 +38,6 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.source.*;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
-import org.o42a.util.use.SimpleUsage;
-import org.o42a.util.use.Usable;
 
 
 public class CompilerIntrinsics extends Intrinsics {

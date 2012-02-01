@@ -19,10 +19,11 @@
 */
 package org.o42a.core.artifact.object;
 
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import java.util.Arrays;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Role;
 import org.o42a.core.artifact.object.impl.sample.ExplicitSample;
@@ -37,7 +38,6 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.Lambda;
-import org.o42a.util.use.UserInfo;
 
 
 public class Ascendants
