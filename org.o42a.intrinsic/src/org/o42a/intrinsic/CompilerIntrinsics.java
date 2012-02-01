@@ -56,7 +56,6 @@ public class CompilerIntrinsics extends Intrinsics {
 			new HashMap<String, ModuleUse>();
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
-	private Obj main;
 
 	public static CompilerIntrinsics intrinsics(SourceCompiler compiler) {
 		return new CompilerIntrinsics(compiler);
@@ -157,7 +156,7 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	public void setMainModule(Module module) {
 		this.mainModule = registerModule(module.getModuleId(), module);
-		this.main = this.consoleModule.createMain(this.user);
+		this.consoleModule.createMain(this.user);
 	}
 
 	public void resolveAll(Analyzer analyzer) {
@@ -173,9 +172,6 @@ public class CompilerIntrinsics extends Intrinsics {
 			this.root.resolveAll();
 			if (this.mainModule != null) {
 				this.mainModule.resolveAll();
-				if (this.main != null) {
-					this.main.resolveAll();
-				}
 			}
 			for (ModuleUse module : this.modules.values()) {
 				module.resolveAll();
@@ -190,6 +186,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void generateAll(Generator generator) {
+		this.root.ir(generator).allocate();
 		if (consoleUsed()) {
 			this.consoleModule.generateMain(generator);
 		}
