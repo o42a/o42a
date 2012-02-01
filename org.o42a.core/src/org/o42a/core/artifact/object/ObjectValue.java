@@ -283,7 +283,7 @@ public final class ObjectValue {
 		}
 
 		final Normalizer normalizer =
-				new Normalizer(analyzer, object.getScope(), false);
+				new Normalizer(analyzer, object.getScope());
 		final Obj wrapped = object.getWrapped();
 		final Definitions definitions = wrapped.value().getDefinitions();
 
