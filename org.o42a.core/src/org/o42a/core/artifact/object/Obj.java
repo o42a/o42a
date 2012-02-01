@@ -19,6 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.artifact.object.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.artifact.object.ObjectResolution.RESOLVING_MEMBERS;
@@ -27,11 +28,10 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Accessor;

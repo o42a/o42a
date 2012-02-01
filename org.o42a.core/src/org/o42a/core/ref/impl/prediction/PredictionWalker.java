@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.Prediction.scopePrediction;
 import static org.o42a.core.ref.Prediction.unpredicted;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;

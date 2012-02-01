@@ -23,6 +23,8 @@ import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.PathResolver;
@@ -31,8 +33,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
 
 
 public class Resolver implements UserInfo, LocationInfo {

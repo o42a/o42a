@@ -20,7 +20,6 @@
 package org.o42a.util;
 
 
-
 public interface Cancelable {
 
 	void cancel();

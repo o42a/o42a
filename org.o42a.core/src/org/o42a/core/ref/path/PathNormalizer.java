@@ -26,7 +26,7 @@ import static org.o42a.util.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;

@@ -21,13 +21,13 @@ package org.o42a.compiler.test.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.User.useCase;
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.User.useCase;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.o42a.util.use.*;
+import org.o42a.analysis.use.*;
 
 
 public class UseTest {

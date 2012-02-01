@@ -20,13 +20,14 @@
 package org.o42a.compiler.test;
 
 import static org.junit.Assert.*;
+import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
-import static org.o42a.util.use.User.useCase;
 
 import org.junit.Before;
 import org.junit.Rule;
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.UseCase;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.artifact.Accessor;
@@ -38,7 +39,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.*;
 import org.o42a.intrinsic.CompilerIntrinsics;
-import org.o42a.util.use.UseCase;
 
 
 public abstract class CompilerTestCase {

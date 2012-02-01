@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
 
 

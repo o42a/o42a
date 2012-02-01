@@ -22,6 +22,7 @@ package org.o42a.lib.test.run;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
@@ -35,7 +36,6 @@ import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.lib.test.TestModule;
-import org.o42a.util.use.UserInfo;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "run_tests.o42a")

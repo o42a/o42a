@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -36,7 +37,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.FullResolution;
 import org.o42a.util.Cancelable;
-import org.o42a.util.use.User;
 
 
 final class NormalizedPath implements NormalPath {

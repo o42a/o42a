@@ -25,7 +25,7 @@
 		<file name="org.o42a.codegen"/>
 	</filelist>
 
-	<property name="compile.deps" value="org.o42a.util"/>
+	<property name="compile.deps" value="org.o42a.util,org.o42a.analysis"/>
 
 	<import file="../build/common.build.xml" />
 

@@ -19,13 +19,14 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import static org.o42a.core.def.DefKind.*;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.util.use.User.dummyUser;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.*;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ref.Normalizer;
@@ -35,7 +36,6 @@ import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.use.*;
 
 
 public final class ObjectValue {

@@ -24,6 +24,7 @@ import static org.o42a.core.ref.impl.prediction.LocalPrediction.predictLocal;
 
 import java.util.Set;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -48,7 +49,6 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class LocalScope

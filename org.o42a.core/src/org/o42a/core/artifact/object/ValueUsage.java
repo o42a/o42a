@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.util.use.*;
+import org.o42a.analysis.use.*;
 
 
 public class ValueUsage extends Usage<ValueUsage> {
