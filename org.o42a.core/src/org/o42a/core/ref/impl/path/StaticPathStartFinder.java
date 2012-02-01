@@ -36,8 +36,13 @@ import org.o42a.core.ref.path.Step;
 public final class StaticPathStartFinder implements PathWalker {
 
 	private int index;
+	private Scope startObjectScope;
 	private Obj startObject;
 	private int startIndex;
+
+	public final Scope getStartObjectScope() {
+		return this.startObjectScope;
+	}
 
 	public final Obj getStartObject() {
 		return this.startObject;
@@ -49,19 +54,21 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean root(BoundPath path, Scope root) {
+		this.startObjectScope = root.getEnclosingScope();
 		this.startObject = root.toObject();
 		return true;
 	}
 
 	@Override
 	public boolean start(BoundPath path, Scope start) {
+		this.startObjectScope = start.getEnclosingScope();
 		this.startObject = start.toObject();
 		return true;
 	}
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return set(module);
+		return set(module.getScope().getEnclosingScope(), module);
 	}
 
 	@Override
@@ -71,12 +78,12 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return set(scope.toObject());
+		return set(scope.getEnclosingScope(), scope.toObject());
 	}
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
-		return set(enclosing.toObject());
+		return set(enclosed.getScope(), enclosing.toObject());
 	}
 
 	@Override
@@ -88,7 +95,9 @@ public final class StaticPathStartFinder implements PathWalker {
 			return skip();
 		}
 
-		return set(field.substance(dummyUser()).toObject());
+		return set(
+				container.getScope(),
+				field.substance(dummyUser()).toObject());
 	}
 
 	@Override
@@ -103,7 +112,7 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		return set(object);
+		return set(object.getScope().getEnclosingScope(), object);
 	}
 
 	@Override
@@ -115,11 +124,12 @@ public final class StaticPathStartFinder implements PathWalker {
 		return false;
 	}
 
-	private final boolean set(Obj object) {
+	private final boolean set(Scope objectScope, Obj object) {
 		if (object == null) {
 			++this.index;
 			return true;
 		}
+		this.startObjectScope = objectScope;
 		this.startObject = object;
 		if (object.getConstructionMode().isRuntime()) {
 			return false;

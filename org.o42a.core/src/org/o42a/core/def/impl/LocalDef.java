@@ -202,10 +202,8 @@ public class LocalDef extends ValueDef {
 	protected void normalizeDef(Normalizer normalizer) {
 
 		final ImperativeBlock block = getBlock();
-		final Normalizer imperativeNormalizer = new Normalizer(
-				normalizer.getAnalyzer(),
-				block.getScope(),
-				false);
+		final Normalizer imperativeNormalizer =
+				normalizer.forScope(block.getScope());
 
 		block.normalizeImperative(imperativeNormalizer);
 	}

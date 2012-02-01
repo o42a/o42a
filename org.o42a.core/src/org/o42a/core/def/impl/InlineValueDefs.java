@@ -65,7 +65,9 @@ public class InlineValueDefs extends InlineValue {
 
 			defDirs.done();
 
-			block.go(code.tail());
+			if (block.exists()) {
+				block.go(code.tail());
+			}
 		}
 
 		return result;

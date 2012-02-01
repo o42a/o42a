@@ -19,27 +19,34 @@
 */
 package org.o42a.lib.console;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.CodeBuilder.hostlessBuilder;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 import static org.o42a.lib.console.MainFunc.MAIN;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.common.object.*;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Module;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -53,7 +60,9 @@ public class ConsoleModule extends AnnotatedModule {
 				moduleSources(ConsoleModule.class));
 	}
 
-	private Obj main;
+	private Ref main;
+	private InlineValue inlineMain;
+	private UserInfo user;
 
 	private ConsoleModule(
 			CompilerContext parentContext,
@@ -61,15 +70,16 @@ public class ConsoleModule extends AnnotatedModule {
 		super(parentContext, sources);
 	}
 
-	public Obj createMain(UserInfo user) {
+	public Ref createMain(UserInfo user) {
+		this.user = user;
 
-		final Obj mainModule = getContext().getIntrinsics().getMainModule();
+		final Module mainModule = getContext().getIntrinsics().getMainModule();
 
 		if (mainModule == null) {
 			return null;
 		}
 
-		final Obj mainObject = field("main").substance(user).toObject();
+		final Obj mainObject = field("main").substance(dummyUser()).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
 		final Member mainMember = mainModule.member(mainAdapterId);
 
@@ -77,7 +87,7 @@ public class ConsoleModule extends AnnotatedModule {
 			return null;
 		}
 
-		final Field<?> mainAdapter = mainMember.toField().field(user);
+		final Field<?> mainAdapter = mainMember.toField().field(dummyUser());
 
 		if (mainAdapter == null) {
 			return null;
@@ -94,17 +104,26 @@ public class ConsoleModule extends AnnotatedModule {
 		final Ref adapterRef =
 				adapterPath.bind(mainAdapter, mainMember.getScope())
 				.target(mainModule.distribute());
+		final Path mainPath;
 
 		if (!main.isPrototype()) {
-			this.main = main;
+			mainPath =
+					modulePath(mainModule.getModuleId())
+					.append(adapterPath);
 		} else {
-			this.main = new MainCall(
-					main,
-					mainModule.distribute(),
-					adapterRef.toStaticTypeRef());
+			mainPath =
+					modulePath(mainModule.getModuleId())
+					.newObject(new MainCall(
+							main,
+							mainModule.distribute(),
+							adapterRef.toStaticTypeRef()));
 		}
 
-		this.main.value().explicitUseBy(user);
+		final Scope mainScope = mainModule.getScope();
+
+		this.main = mainPath
+				.bind(mainAdapter, mainScope)
+				.target(mainScope.distribute());
 
 		return this.main;
 	}
@@ -143,9 +162,16 @@ public class ConsoleModule extends AnnotatedModule {
 				.value(alloc.id("exec_main"), result);
 		final Code code = dirs.code();
 
-		result.store(
-				code,
-				this.main.ir(generator).op(builder, code).writeValue(dirs));
+		final ScopeIR mainIR = this.main.getScope().ir(generator);
+		final HostOp host = mainIR.op(builder, code);
+		final ValOp programResult;
+
+		if (this.inlineMain != null) {
+			programResult = this.inlineMain.writeValue(dirs, host);
+		} else {
+			programResult = this.main.op(host).writeValue(dirs);
+		}
+		result.store(code, programResult);
 
 		dirs.done();
 		alloc.done();
@@ -161,6 +187,28 @@ public class ConsoleModule extends AnnotatedModule {
 		.toInt32(null, main)
 		.load(null, main)
 		.returnValue(main);
+	}
+
+	@Override
+	protected void fullyResolve() {
+		super.fullyResolve();
+		if (this.main != null) {
+
+			final Resolver resolver =
+					this.main.getScope().newResolver(this.user);
+
+			this.main.resolve(resolver).resolveValue();
+		}
+	}
+
+	@Override
+	protected void normalizeArtifact(Analyzer analyzer) {
+		super.normalizeArtifact(analyzer);
+		if (this.main != null) {
+			this.inlineMain = this.main.inline(
+					new Normalizer(analyzer, this.main.getScope()),
+					this.main.getScope());
+		}
 	}
 
 	private void generateDebugMain(

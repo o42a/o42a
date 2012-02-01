@@ -401,7 +401,9 @@ public abstract class ObjectValueIRValFunc
 
 					defDirs.done();
 
-					block.go(code.tail());
+					if (block.exists()) {
+						block.go(code.tail());
+					}
 				}
 				continue;
 			}
@@ -415,7 +417,9 @@ public abstract class ObjectValueIRValFunc
 
 			defDirs.done();
 
-			block.go(code.tail());
+			if (block.exists()) {
+				block.go(code.tail());
+			}
 		}
 
 		return result;

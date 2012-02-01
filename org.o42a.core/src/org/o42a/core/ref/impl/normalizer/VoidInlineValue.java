@@ -19,45 +19,38 @@
 */
 package org.o42a.core.ref.impl.normalizer;
 
+import static org.o42a.core.value.Value.voidValue;
+
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
-import org.o42a.core.ref.path.InlineStep;
+import org.o42a.core.value.ValueStruct;
 
 
-public abstract class InlineValueStep extends InlineStep {
+public class VoidInlineValue extends InlineValue {
 
-	private final InlineValue value;
-
-	public InlineValueStep(InlineValue def) {
-		this.value = def;
+	public VoidInlineValue() {
+		super(ValueStruct.VOID);
 	}
 
 	@Override
-	public void after(InlineStep preceding) {
-		assert preceding == null :
-			"In-line step (" + this
-			+ ") can not follow another one (" + preceding + ")";
-	}
-
-	@Override
-	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
-		this.value.writeCond(dirs, host);
+	public void writeCond(CodeDirs dirs, HostOp host) {
 	}
 
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.value.writeValue(dirs, host);
+		return voidValue().op(dirs.getBuilder(), dirs.code());
+	}
+
+	@Override
+	public void cancel() {
 	}
 
 	@Override
 	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return this.value.toString();
+		return "VOID";
 	}
 
 }

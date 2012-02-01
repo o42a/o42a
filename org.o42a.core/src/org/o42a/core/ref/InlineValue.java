@@ -25,10 +25,17 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
+import org.o42a.core.ref.impl.normalizer.VoidInlineValue;
 import org.o42a.core.value.ValueStruct;
 
 
 public abstract class InlineValue extends InlineCond {
+
+	private static final VoidInlineValue INLINE_VOID = new VoidInlineValue();
+
+	public static InlineValue inlineVoid() {
+		return INLINE_VOID;
+	}
 
 	public static InlineValue inlineFalse(ValueStruct<?, ?> valueStruct) {
 		return new FalseInlineValue(valueStruct);

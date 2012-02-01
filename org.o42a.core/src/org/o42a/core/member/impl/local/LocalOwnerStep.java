@@ -113,6 +113,11 @@ public final class LocalOwnerStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalize(normalizer);
+	}
+
+	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
 	}

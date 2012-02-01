@@ -92,6 +92,60 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
+		normalize(normalizer, false);
+	}
+
+	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalize(normalizer, true);
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer,
+			Scope origin,
+			Scope scope) {
+
+		final Clause fromClause = origin.getContainer().toClause();
+
+		if (fromClause == null) {
+			// Walked out of object, containing clauses.
+			if (!reproducer.phraseCreatesObject()) {
+				return outOfClausePath(SELF_PATH, toPath());
+			}
+			return outOfClausePath(
+					scope.getEnclosingScopePath(),
+					toPath());
+
+		}
+
+		final Clause enclosingClause = fromClause.getEnclosingClause();
+
+		if (enclosingClause == null && !fromClause.requiresInstance()) {
+			// Left stand-alone clause without enclosing object.
+			return outOfClausePath(
+					scope.getEnclosingScopePath(),
+					SELF_PATH);
+		}
+
+		// Update to actual enclosing scope path.
+		return reproducedPath(scope.getEnclosingScopePath());
+	}
+
+	@Override
+	protected Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private void normalize(PathNormalizer normalizer, boolean isStatic) {
 
 		final Member member = resolveMember(
 				normalizer.getPath(),
@@ -144,51 +198,6 @@ public final class ParentObjectStep extends AbstractMemberStep {
 			public void cancel() {
 			}
 		});
-	}
-
-	@Override
-	protected PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer,
-			Scope origin,
-			Scope scope) {
-
-		final Clause fromClause = origin.getContainer().toClause();
-
-		if (fromClause == null) {
-			// Walked out of object, containing clauses.
-			if (!reproducer.phraseCreatesObject()) {
-				return outOfClausePath(SELF_PATH, toPath());
-			}
-			return outOfClausePath(
-					scope.getEnclosingScopePath(),
-					toPath());
-
-		}
-
-		final Clause enclosingClause = fromClause.getEnclosingClause();
-
-		if (enclosingClause == null && !fromClause.requiresInstance()) {
-			// Left stand-alone clause without enclosing object.
-			return outOfClausePath(
-					scope.getEnclosingScopePath(),
-					SELF_PATH);
-		}
-
-		// Update to actual enclosing scope path.
-		return reproducedPath(scope.getEnclosingScopePath());
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		return this.object.findIn(target).getScope();
-	}
-
-	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
 	}
 
 }

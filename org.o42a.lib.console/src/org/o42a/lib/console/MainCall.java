@@ -24,12 +24,14 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.common.DefinedObject;
 import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-final class MainCall extends DefinedObject {
+final class MainCall extends ObjectConstructor {
 
 	private final TypeRef adapterRef;
 
@@ -42,6 +44,21 @@ final class MainCall extends DefinedObject {
 	}
 
 	@Override
+	public TypeRef ancestor(LocationInfo location) {
+		return this.adapterRef;
+	}
+
+	@Override
+	public ObjectConstructor reproduce(PathReproducer reproducer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected Obj createObject() {
+		return new MainObject(this, distribute(), this.adapterRef);
+	}
+
+	@Override
 	public String toString() {
 		if (this.adapterRef == null) {
 			return super.toString();
@@ -49,19 +66,41 @@ final class MainCall extends DefinedObject {
 		return this.adapterRef + "()";
 	}
 
-	@Override
-	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.adapterRef);
-	}
+	private static final class MainObject extends DefinedObject {
 
-	@Override
-	protected void buildDefinition(DeclarativeBlock definition) {
-	}
+		private final TypeRef adapterRef;
 
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
+		MainObject(
+				LocationInfo location,
+				Distributor enclosing,
+				TypeRef adapterRef) {
+			super(location, enclosing);
+			this.adapterRef = adapterRef;
+		}
+
+		@Override
+		public String toString() {
+			if (this.adapterRef == null) {
+				return super.toString();
+			}
+			return this.adapterRef + "()";
+		}
+
+		@Override
+		protected Ascendants buildAscendants() {
+			return new Ascendants(this).setAncestor(this.adapterRef);
+		}
+
+		@Override
+		protected void buildDefinition(DeclarativeBlock definition) {
+		}
+
+		@Override
+		protected Obj findObjectIn(Scope enclosing) {
+			throw new IllegalArgumentException(
+					"Not an enclosing scope: " + enclosing);
+		}
+
 	}
 
 }
