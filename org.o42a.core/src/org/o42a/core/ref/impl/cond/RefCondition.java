@@ -118,7 +118,6 @@ public final class RefCondition extends Statement {
 		@Override
 		public void writeValue(Control control, ValOp result) {
 			writeCond(control);
-
 		}
 
 		@Override
