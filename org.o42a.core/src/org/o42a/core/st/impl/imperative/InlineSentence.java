@@ -71,15 +71,18 @@ public final class InlineSentence implements Cancelable {
 			inlineAlts[i++] = inlineAlt;
 		}
 
-		return new InlineSentence(inlinePrereq, inlineAlts);
+		return new InlineSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
+	private final ImperativeSentence sentence;
 	private final InlineSentence prerequisite;
 	private final InlineCommands[] alts;
 
 	private InlineSentence(
+			ImperativeSentence sentence,
 			InlineSentence prerequisite,
 			InlineCommands[] alts) {
+		this.sentence = sentence;
 		this.prerequisite = prerequisite;
 		this.alts = alts;
 	}
@@ -98,6 +101,35 @@ public final class InlineSentence implements Cancelable {
 			this.prerequisite.cancel();
 		}
 		cancelAll(this.alts);
+	}
+
+	@Override
+	public String toString() {
+		if (this.alts == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		if (this.prerequisite != null) {
+			out.append(this.prerequisite).append(' ');
+		}
+		if (this.alts.length > 0) {
+			out.append(this.alts[0]);
+			for (int i = 1; i < this.alts.length; ++i) {
+				out.append("; ").append(this.alts[i]);
+			}
+		}
+
+		if (this.sentence.isIssue()) {
+			out.append('?');
+		} else if (this.sentence.isClaim()) {
+			out.append('!');
+		} else {
+			out.append('.');
+		}
+
+		return out.toString();
 	}
 
 }

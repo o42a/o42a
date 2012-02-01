@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.value.Value.falseValue;
 
@@ -36,6 +37,8 @@ import org.o42a.core.source.LocationInfo;
 
 
 public class FalseStep extends Step {
+
+	private static final Inline INLINE_FALSE = new Inline();
 
 	@Override
 	public PathKind getPathKind() {
@@ -88,17 +91,60 @@ public class FalseStep extends Step {
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalizer.skipStep();
+
+		final Obj falseObject =
+				normalizer.stepStart().getScope().getContext().getFalse();
+
+		normalizer.inline(
+				exactPrediction(falseObject.getScope()),
+				INLINE_FALSE);
 	}
 
 	@Override
 	protected Scope revert(Scope target) {
-		throw new UnsupportedOperationException();
+		return target.getContext().getRoot().getScope();
 	}
 
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
+	}
+
+	private static final class Inline extends InlineStep {
+
+		@Override
+		public void ignore() {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValOp result =
+					falseValue().op(dirs.getBuilder(), dirs.code());
+
+			dirs.code().go(dirs.falseDir());
+
+			return result;
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+			dirs.code().go(dirs.falseDir());
+		}
+
+		@Override
+		public void after(InlineStep preceding) {
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public String toString() {
+			return "FALSE";
+		}
+
 	}
 
 	private static final class Op extends StepOp<FalseStep> {

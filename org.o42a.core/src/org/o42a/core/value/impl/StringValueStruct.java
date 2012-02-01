@@ -70,13 +70,16 @@ public class StringValueStruct extends SingleValueStruct<String> {
 
 		@Override
 		protected CodeId constId(String value) {
-			return getGenerator().id("CONST").sub("STRING")
+			return getGenerator().id("CONST")
+					.sub("STRING")
 					.anonymous(++this.constSeq);
 		}
 
 		@Override
 		protected CodeId valueId(String value) {
-			return getGenerator().id("STRING_" + (this.stringSeq++));
+			return getGenerator().id("DATA")
+					.sub("STRING")
+					.anonymous(this.stringSeq++);
 		}
 
 		@Override

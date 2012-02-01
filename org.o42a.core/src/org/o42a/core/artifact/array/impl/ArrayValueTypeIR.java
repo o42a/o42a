@@ -50,12 +50,12 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 		final String prefix;
 
 		if (getValueType().isConstant()) {
-			prefix = "CARRAY_";
+			prefix = "CARRAY";
 		} else {
-			prefix = "VARRAY_";
+			prefix = "VARRAY";
 		}
 
-		return getGenerator().id(prefix + (++this.idSeq));
+		return getGenerator().id("DATA").sub(prefix).anonymous(++this.idSeq);
 	}
 
 	@Override
