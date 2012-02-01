@@ -192,6 +192,12 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		// Array element normalization not supported yet.
+		normalizer.cancel();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

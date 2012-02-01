@@ -88,6 +88,11 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		throw unresolved();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

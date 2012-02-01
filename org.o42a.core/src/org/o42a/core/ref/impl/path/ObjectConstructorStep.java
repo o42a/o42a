@@ -125,6 +125,48 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
+		normalize(normalizer, false);
+	}
+
+	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalize(normalizer, true);
+	}
+
+	@Override
+	protected void normalizeStep(Analyzer analyzer) {
+		this.constructor.getConstructed().normalize(analyzer);
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		this.constructor.assertCompatible(reproducer.getReproducingScope());
+
+		final ObjectConstructor reproduced =
+				this.constructor.reproduce(reproducer);
+
+		if (reproduced == null) {
+			return null;
+		}
+
+		return reproducedPath(reproduced.toPath());
+	}
+
+	@Override
+	protected PathOp op(PathOp start) {
+		return this.constructor.op(start);
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private void normalize(PathNormalizer normalizer, boolean isStatic) {
 
 		final Obj object = this.constructor.resolve(
 				normalizer.lastPrediction().getScope());
@@ -174,39 +216,6 @@ public class ObjectConstructorStep extends Step {
 			public void cancel() {
 			}
 		});
-	}
-
-	@Override
-	protected void normalizeStep(Analyzer analyzer) {
-		this.constructor.getConstructed().normalize(analyzer);
-	}
-
-	@Override
-	protected PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer) {
-		this.constructor.assertCompatible(reproducer.getReproducingScope());
-
-		final ObjectConstructor reproduced =
-				this.constructor.reproduce(reproducer);
-
-		if (reproduced == null) {
-			return null;
-		}
-
-		return reproducedPath(reproduced.toPath());
-	}
-
-	@Override
-	protected PathOp op(PathOp start) {
-		return this.constructor.op(start);
-	}
-
-	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
 	}
 
 }

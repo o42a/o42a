@@ -113,6 +113,8 @@ public abstract class Step {
 
 	protected abstract void normalize(PathNormalizer normalizer);
 
+	protected abstract void normalizeStatic(PathNormalizer normalizer);
+
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
 		return Path.SELF_PATH;
 	}
