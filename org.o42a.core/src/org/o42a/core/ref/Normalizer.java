@@ -27,13 +27,8 @@ public final class Normalizer {
 
 	private final Analyzer analyzer;
 	private final Scope normalizedScope;
-	private final boolean isStatic;
 
-	public Normalizer(
-			Analyzer analyzer,
-			Scope normalizedScope,
-			boolean isStatic) {
-		this.isStatic = isStatic;
+	public Normalizer(Analyzer analyzer, Scope normalizedScope) {
 		this.analyzer = analyzer;
 		this.normalizedScope = normalizedScope;
 	}
@@ -46,8 +41,11 @@ public final class Normalizer {
 		return this.normalizedScope;
 	}
 
-	public final boolean isStatic() {
-		return this.isStatic;
+	public final Normalizer forScope(Scope normalizedScope) {
+		if (getNormalizedScope() == normalizedScope) {
+			return this;
+		}
+		return new Normalizer(this.analyzer, normalizedScope);
 	}
 
 	@Override
