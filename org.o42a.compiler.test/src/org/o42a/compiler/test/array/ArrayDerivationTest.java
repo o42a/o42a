@@ -22,7 +22,7 @@ package org.o42a.compiler.test.array;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;

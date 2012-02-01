@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
@@ -26,8 +28,6 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataOp;

@@ -19,10 +19,11 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import java.util.*;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
 import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.artifact.object.Sample;
@@ -32,7 +33,6 @@ import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class Member extends Placed {

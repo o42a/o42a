@@ -19,8 +19,8 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.util.use.SimpleUsage.ALL_SIMPLE_USAGES;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;

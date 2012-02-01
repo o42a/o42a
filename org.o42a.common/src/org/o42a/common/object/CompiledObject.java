@@ -19,10 +19,10 @@
 */
 package org.o42a.common.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;

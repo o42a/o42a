@@ -19,10 +19,10 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
 import static org.o42a.core.st.impl.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;

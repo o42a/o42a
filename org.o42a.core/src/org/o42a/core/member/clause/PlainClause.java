@@ -24,6 +24,7 @@ import static org.o42a.core.artifact.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import java.util.Set;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.AbstractScope;
 import org.o42a.core.Container;
@@ -43,7 +44,6 @@ import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class PlainClause

@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.Field.fieldOf;
 import static org.o42a.core.ref.impl.path.ObjectStepUses.definitionsChange;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;

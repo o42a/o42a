@@ -19,8 +19,8 @@
 */
 package org.o42a.core;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.ArrayList;
 

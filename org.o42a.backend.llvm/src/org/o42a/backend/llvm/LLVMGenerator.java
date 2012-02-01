@@ -19,9 +19,9 @@
 */
 package org.o42a.backend.llvm;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.AbstractGenerator;
-import org.o42a.codegen.Analyzer;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;

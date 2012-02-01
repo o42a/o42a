@@ -19,11 +19,11 @@
 */
 package org.o42a.core.artifact;
 
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.SimpleUsage.simpleUsable;
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 
-import org.o42a.codegen.Analyzer;
-import org.o42a.util.use.*;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.*;
 
 
 public class ArtifactContent implements UserInfo {

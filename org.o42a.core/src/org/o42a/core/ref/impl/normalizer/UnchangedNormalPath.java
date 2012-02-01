@@ -26,7 +26,9 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.NormalPath;
+import org.o42a.core.ref.path.NormalStep;
 
 
 public class UnchangedNormalPath implements NormalPath {
