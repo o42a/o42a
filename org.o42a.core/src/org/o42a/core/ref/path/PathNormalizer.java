@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.Prediction.scopePrediction;
 import static org.o42a.util.Cancellation.NOT_CANCELABLE;
 import static org.o42a.util.Cancellation.appendCancelable;
@@ -60,6 +61,7 @@ public final class PathNormalizer {
 	private final ArrayList<NormalStep> normalSteps;
 	private int firstNonIgnored = -1;
 	private boolean overrideNonIgnored;
+	private boolean staticNormalization;
 
 	private Prediction stepStart;
 	private Prediction stepPrediction;
@@ -163,15 +165,11 @@ public final class PathNormalizer {
 		return this.stepNormalized;
 	}
 
-	public final void skip(
-			Prediction prediction,
-			NormalAppender normalStep) {
+	public final void skip(Prediction prediction, NormalAppender normalStep) {
 		add(prediction, normalStep);
 	}
 
-	public final void inline(
-			Prediction prediction,
-			InlineStep normalStep) {
+	public final void inline(Prediction prediction, InlineStep normalStep) {
 		add(prediction, normalStep);
 		dontIgnore();
 		if (isLastStep()) {
@@ -188,13 +186,17 @@ public final class PathNormalizer {
 	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
 
-			final Scope current = lastPrediction().getScope();
+			final Prediction lastPrediction = lastPrediction();
+			final Scope current = lastPrediction.getScope();
 
 			this.normalSteps.add(
 					new NormalPathStep(current.getEnclosingScopePath()));
 			overrideNonIgnored();
 
-			this.stepPrediction = scopePrediction(enclosing);
+			this.stepPrediction =
+					lastPrediction.isExact()
+					? exactPrediction(enclosing)
+					: scopePrediction(enclosing);
 
 			final Step step = getPath().getSteps()[getStepIndex()];
 			final Path nonNormalizedRemainder =
@@ -217,8 +219,13 @@ public final class PathNormalizer {
 			return false;
 		}
 
+		final Prediction lastPrediction = lastPrediction();
+
 		this.stepNormalized = true;
-		this.stepPrediction = scopePrediction(enclosing);
+		this.stepPrediction =
+				lastPrediction.isExact()
+				? exactPrediction(enclosing)
+				: scopePrediction(enclosing);
 
 		return true;
 	}
@@ -249,10 +256,11 @@ public final class PathNormalizer {
 
 		normalPath.appendTo(this.normalSteps);
 
-		this.stepNormalized = normalizer.stepNormalized;
-		this.stepPrediction = normalizer.stepPrediction;
 		if (normalizer.isNormalizationFinished()) {
 			addRest();
+		} else {
+			this.stepNormalized = normalizer.stepNormalized;
+			this.stepPrediction = normalizer.stepPrediction;
 		}
 	}
 
@@ -266,20 +274,32 @@ public final class PathNormalizer {
 	}
 
 	NormalPath normalize() {
+		if (isStatic()) {
+			return normalizeStatic();
+		}
+		return normalizeRelative();
+	}
 
-		final BoundPath path = getPath();
-
-		if (path.isAbsolute()) {
-			this.firstNonIgnored = 0;
-			this.data.normalizationFinished = true;
-
-			return new UnchangedNormalPath(
-					path.getPath().bind(path, getNormalizedStart()));
+	private boolean init() {
+		if (upTo(getOrigin().getScope())) {
+			return true;
+		}
+		if (!getOrigin().getScope().contains(getNormalizedStart())) {
+			return this.staticNormalization;
 		}
 
-		this.stepStart = getOrigin();
+		this.data.normalizationStarted = true;
 
+		return true;
+	}
+
+	private NormalPath normalizeRelative() {
+		this.staticNormalization = false;
+
+		final BoundPath path = getPath();
 		final Step[] steps = path.getSteps();
+
+		this.stepStart = getOrigin();
 
 		while (this.stepIndex < steps.length) {
 			this.stepPrediction = null;
@@ -322,20 +342,56 @@ public final class PathNormalizer {
 				isStatic()).done(!isNested());
 	}
 
-	private boolean init() {
-		if (upTo(getOrigin().getScope())) {
-			return true;
-		}
-		if (!getOrigin().getScope().contains(getNormalizedStart())) {
-			return false;
+	private NormalPath normalizeStatic() {
+		this.staticNormalization = true;
+
+		final BoundPath path = getPath();
+		final Step[] steps = path.getSteps();
+		final Data stored = this.data.clone();
+
+		this.stepIndex = path.startIndex() - 1;
+		this.stepStart = exactPrediction(path.startObjectScope());
+
+		while (this.stepIndex < steps.length) {
+			this.stepPrediction = null;
+			this.stepNormalized = false;
+
+			steps[this.stepIndex].normalizeStatic(this);
+			if (isNormalizationFinished()) {
+				return new NormalizedPath(
+						getNormalizedStart(),
+						this.path,
+						this.cancelable,
+						this.normalSteps,
+						this.firstNonIgnored,
+						isAbsolute(),
+						isStatic()).done(!isNested());
+			}
+			if (!isStepNormalized()) {
+				cancelNormalization();
+				break;
+			}
+
+			this.stepStart = this.stepPrediction;
+			++this.stepIndex;
 		}
 
-		this.data.normalizationStarted = true;
+		if (path.isAbsolute()) {
+			this.data.restore(stored);
+			this.firstNonIgnored = 0;
+			this.cancelable = null;
+			this.data.normalizationFinished = true;
+			return new UnchangedNormalPath(
+					path.getPath().bind(path, getNormalizedStart()));
+		}
 
-		return true;
+		return new UnNormalizedPath(path);
 	}
 
 	private boolean upTo(Scope scope) {
+		if (this.staticNormalization) {
+			return true;
+		}
 
 		final Scope normalizedStart = getNormalizedStart();
 
@@ -392,7 +448,7 @@ public final class PathNormalizer {
 		this.cancelable.cancel();
 	}
 
-	private static final class Data {
+	private static final class Data implements Cloneable {
 
 		private final Normalizer normalizer;
 		private boolean normalizationStarted;
@@ -406,9 +462,25 @@ public final class PathNormalizer {
 			this.isStatic = path.isStatic();
 		}
 
+		@Override
+		protected Data clone() {
+			try {
+				return (Data) super.clone();
+			} catch (CloneNotSupportedException e) {
+				return null;
+			}
+		}
+
 		final void append(BoundPath path) {
 			this.isAbsolute |= path.isAbsolute();
 			this.isStatic |= path.isStatic();
+		}
+
+		final void restore(Data stored) {
+			this.normalizationStarted = stored.normalizationStarted;
+			this.normalizationFinished = stored.normalizationFinished;
+			this.isAbsolute = stored.normalizationFinished;
+			this.isStatic = stored.normalizationFinished;
 		}
 
 	}

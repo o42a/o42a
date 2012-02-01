@@ -80,6 +80,11 @@ public class VoidStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalizer.skipStep();
+	}
+
+	@Override
 	protected Scope revert(Scope target) {
 		throw new UnsupportedOperationException();
 	}

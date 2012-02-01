@@ -104,6 +104,11 @@ final class StaticStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalizer.cancel();
+	}
+
+	@Override
 	protected Scope revert(Scope target) {
 		throw new UnsupportedOperationException();
 	}
