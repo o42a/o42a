@@ -43,7 +43,7 @@ final class InlineLocalDef extends InlineValue {
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
-		final InlineControl control = control(dirs);
+		final InlineControl control = new InlineControl(dirs);
 
 		this.command.writeCond(control);
 
@@ -53,7 +53,7 @@ final class InlineLocalDef extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-		final InlineControl control = control(dirs.dirs());
+		final InlineControl control = new InlineControl(dirs.dirs());
 		final ValOp value = dirs.value();
 
 		this.command.writeValue(control, value);
@@ -74,14 +74,6 @@ final class InlineLocalDef extends InlineValue {
 			return super.toString();
 		}
 		return this.command.toString();
-	}
-
-	private final InlineControl control(CodeDirs dirs) {
-		return new InlineControl(
-				dirs.getBuilder(),
-				dirs.code(),
-				dirs.unknownDir(),
-				dirs.falseDir());
 	}
 
 }

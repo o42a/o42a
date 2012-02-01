@@ -19,25 +19,77 @@
 */
 package org.o42a.core.ir;
 
+import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Function;
+import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
 
 
 final class HostlessBuilder extends CodeBuilder {
 
+	private final Op host;
+
 	HostlessBuilder(CompilerContext context, Function<?> function) {
 		super(context, function);
+		this.host = new Op(this);
 	}
 
 	@Override
 	public final HostOp host() {
-		throw new UnsupportedOperationException();
+		return this.host;
 	}
 
 	@Override
 	public ObjectOp owner() {
 		throw new UnsupportedOperationException();
+	}
+
+	private static final class Op implements HostOp {
+
+		private final HostlessBuilder builder;
+
+		Op(HostlessBuilder builder) {
+			this.builder = builder;
+		}
+
+		@Override
+		public Generator getGenerator() {
+			return this.builder.getGenerator();
+		}
+
+		@Override
+		public CodeBuilder getBuilder() {
+			return this.builder;
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.builder.getContext();
+		}
+
+		@Override
+		public LocalOp toLocal() {
+			return null;
+		}
+
+		@Override
+		public HostOp field(CodeDirs dirs, MemberKey memberKey) {
+			throw new IllegalArgumentException("Fake host has no fields");
+		}
+
+		@Override
+		public ObjectOp materialize(CodeDirs dirs) {
+			return null;
+		}
+
+		@Override
+		public void assign(CodeDirs dirs, HostOp value) {
+			throw new UnsupportedOperationException();
+		}
+
 	}
 
 }

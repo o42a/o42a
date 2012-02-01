@@ -21,24 +21,25 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.CodeDirs;
 
 
 public class InlineControl extends MainControl {
 
 	private Code returnCode;
 
-	public InlineControl(
-			CodeBuilder builder,
-			Code code,
-			CodePos exit,
-			CodePos falseDir) {
-		super(builder, code, exit, falseDir);
+	public InlineControl(CodeDirs dirs) {
+		super(
+				dirs.getBuilder(),
+				dirs.code(),
+				dirs.unknownDir(),
+				dirs.falseDir());
 	}
 
 	@Override
 	public void end() {
 		super.end();
+		code().go(exit());
 		if (this.returnCode != null) {
 			this.returnCode.go(code().tail());
 		}
