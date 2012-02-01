@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;

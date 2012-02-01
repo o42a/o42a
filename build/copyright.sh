@@ -46,6 +46,7 @@ assign_copyright() {
 	find "${dirname}/../${dir}" -name "$pattern" | process_list "${name}"
 }
 
+assign_copyright org.o42a.analysis/src "Compilation Analysis" "*.java"
 assign_copyright org.o42a.ast/src "Abstract Syntax Tree" "*.java"
 assign_copyright org.o42a.backend.constant/src "Constant Handler Compiler Back-end" "*.java"
 assign_copyright org.o42a.backend.llvm/src "Compiler LLVM Back-end" "*.java"

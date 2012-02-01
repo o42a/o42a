@@ -14,6 +14,8 @@ update_mf() {
 
 sed -i "s/\(o42a_release *= *\).*/\1${release}/" "${dirname}/o42a.release"
 sed -i "s/^\(O42A_RELEASE=\).*/\1\"${release}\"/" "${dirname}/../o42ac"
+
+update_mf analysis
 update_mf ast
 update_mf backend.constant
 update_mf backend.llvm

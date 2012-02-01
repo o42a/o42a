@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Arrays;
 

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.ALL_DERIVATION_USAGES;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.Collection;
 

@@ -19,9 +19,10 @@
 */
 package org.o42a.lib.test.run;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
@@ -39,7 +40,6 @@ import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.lib.test.TestModule;
-import org.o42a.util.use.UserInfo;
 
 
 final class TestRunner extends ConstructedObject {

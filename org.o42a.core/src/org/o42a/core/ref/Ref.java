@@ -26,7 +26,7 @@ import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;

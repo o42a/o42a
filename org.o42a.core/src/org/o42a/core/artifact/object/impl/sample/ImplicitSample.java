@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.object.impl.sample;
 
-import static org.o42a.util.use.User.dummyUser;
+import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.artifact.object.*;
 import org.o42a.core.member.Member;

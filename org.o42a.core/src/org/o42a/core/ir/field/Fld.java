@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;

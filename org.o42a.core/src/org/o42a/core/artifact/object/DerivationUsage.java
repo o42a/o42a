@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact.object;
 
-import org.o42a.util.use.*;
+import org.o42a.analysis.use.*;
 
 
 public final class DerivationUsage extends Usage<DerivationUsage> {

@@ -19,10 +19,10 @@
 */
 package org.o42a.core.member.local;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.PathWalker;
-import org.o42a.util.use.UserInfo;
 
 
 public class LocalResolver extends Resolver {

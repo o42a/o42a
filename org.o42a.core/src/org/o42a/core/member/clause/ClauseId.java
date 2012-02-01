@@ -19,10 +19,10 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterTypeScope;
 import static org.o42a.core.ref.path.Path.absolutePath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;

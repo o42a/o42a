@@ -21,11 +21,11 @@ package org.o42a.core.st.sentence;
 
 import java.util.List;
 
+import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.util.use.User;
 
 
 final class InstructionExecutor implements InstructionContext {

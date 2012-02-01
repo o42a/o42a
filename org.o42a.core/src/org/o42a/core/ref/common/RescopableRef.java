@@ -21,6 +21,7 @@ package org.o42a.core.ref.common;
 
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
@@ -35,7 +36,6 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
-import org.o42a.util.use.UserInfo;
 
 
 public abstract class RescopableRef<R extends RescopableRef<R>>

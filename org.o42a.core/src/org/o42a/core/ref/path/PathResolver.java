@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.path;
 
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.util.use.User;
-import org.o42a.util.use.UserInfo;
 
 
 public final class PathResolver implements UserInfo {

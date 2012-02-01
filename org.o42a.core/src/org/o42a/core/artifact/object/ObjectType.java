@@ -21,23 +21,23 @@ package org.o42a.core.artifact.object;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.artifact.object.ObjectResolution.NOT_RESOLVED;
 import static org.o42a.core.artifact.object.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.artifact.object.TypeUsage.STATIC_TYPE_USAGE;
-import static org.o42a.util.use.User.dummyUser;
 
 import java.util.*;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.*;
 import org.o42a.core.Scope;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.use.*;
 
 
 public final class ObjectType implements UserInfo {

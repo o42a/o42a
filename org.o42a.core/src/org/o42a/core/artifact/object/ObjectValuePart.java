@@ -19,18 +19,18 @@
 */
 package org.o42a.core.artifact.object;
 
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.artifact.object.ValueUsage.*;
-import static org.o42a.util.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.util.use.SimpleUsage.simpleUsable;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
+import org.o42a.analysis.use.*;
 import org.o42a.core.def.Def;
 import org.o42a.core.def.DefKind;
 import org.o42a.core.def.Defs;
 import org.o42a.core.ref.Resolver;
-import org.o42a.util.use.*;
 
 
 public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>

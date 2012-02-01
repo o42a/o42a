@@ -19,8 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.phrase.part.NextClause.terminatePhrase;
-import static org.o42a.util.use.User.dummyUser;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;

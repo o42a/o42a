@@ -21,7 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;

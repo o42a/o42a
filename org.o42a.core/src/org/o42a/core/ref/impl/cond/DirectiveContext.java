@@ -19,10 +19,10 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.util.use.User;
 
 
 final class DirectiveContext implements InstructionContext {

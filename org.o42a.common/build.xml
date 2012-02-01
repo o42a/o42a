@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     Module Commons Build Script
-    Copyright (C) 2011 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -27,7 +27,7 @@
 
 	<property
 		name="compile.deps"
-		value="org.o42a.util,org.o42a.codegen"/>
+		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen"/>
 
 	<import file="../build/common.build.xml"/>
 

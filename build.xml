@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
     o42a Build Script
-    Copyright (C) 2010,2011 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,6 +23,7 @@
 
 	<filelist id="subprojects" dir=".">
 		<file name="org.o42a.util"/>
+		<file name="org.o42a.analysis"/>
 		<file name="org.o42a.ast"/>
 		<file name="org.o42a.parser"/>
 		<file name="org.o42a.codegen"/>

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.codegen.Analyzer;
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.*;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;

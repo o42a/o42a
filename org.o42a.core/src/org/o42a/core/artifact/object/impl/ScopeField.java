@@ -19,10 +19,11 @@
 */
 package org.o42a.core.artifact.object.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.util.use.User.dummyUser;
 
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
@@ -43,7 +44,6 @@ import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.path.Path;
-import org.o42a.util.use.UserInfo;
 
 
 public final class ScopeField extends ObjectField {
