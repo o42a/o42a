@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.path;
 
+import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.value.Value.voidValue;
 
@@ -36,6 +37,8 @@ import org.o42a.core.source.LocationInfo;
 
 
 public class VoidStep extends Step {
+
+	private static final Inline INLINE_VOID = new Inline();
 
 	@Override
 	public PathKind getPathKind() {
@@ -81,12 +84,18 @@ public class VoidStep extends Step {
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalizer.skipStep();
+
+		final Obj voidObject =
+				normalizer.stepStart().getScope().getContext().getVoid();
+
+		normalizer.inline(
+				exactPrediction(voidObject.getScope()),
+				INLINE_VOID);
 	}
 
 	@Override
 	protected Scope revert(Scope target) {
-		throw new UnsupportedOperationException();
+		return target.getContext().getRoot().getScope();
 	}
 
 	@Override
@@ -99,6 +108,36 @@ public class VoidStep extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
+	}
+
+	private static final class Inline extends InlineStep {
+
+		@Override
+		public void ignore() {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+		}
+
+		@Override
+		public void after(InlineStep preceding) {
+		}
+
+		@Override
+		public void cancel() {
+		}
+
+		@Override
+		public String toString() {
+			return "VOID";
+		}
+
 	}
 
 	private static final class Op extends StepOp<VoidStep> {

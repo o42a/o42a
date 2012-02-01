@@ -91,4 +91,23 @@ public class InlineBlock implements InlineCommand {
 		cancelAll(this.sentences);
 	}
 
+	@Override
+	public String toString() {
+		if (this.sentences == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('{');
+		if (this.sentences.length > 0) {
+			out.append(this.sentences[0]);
+			for (int i = 1; i < this.sentences.length; ++i) {
+				out.append(' ').append(this.sentences[i]);
+			}
+		}
+		out.append('}');
+
+		return out.toString();
+	}
 }

@@ -147,7 +147,9 @@ public final class LogicalOr extends Logical {
 
 			blockDirs = dirs.getBuilder().falseWhenUnknown(block, next.head());
 			this.options[i].write(blockDirs, host);
-			block.go(code.tail());
+			if (block.exists()) {
+				block.go(code.tail());
+			}
 
 			block = next;
 		}
@@ -215,7 +217,9 @@ public final class LogicalOr extends Logical {
 				blockDirs =
 						dirs.getBuilder().falseWhenUnknown(block, next.head());
 				this.options[i].writeCond(blockDirs, host);
-				block.go(code.tail());
+				if (block.exists()) {
+					block.go(code.tail());
+				}
 
 				block = next;
 			}

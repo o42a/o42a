@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
+import static org.o42a.core.ref.InlineValue.inlineVoid;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.CodeId;
@@ -33,7 +34,6 @@ import org.o42a.core.artifact.object.ObjectScope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
@@ -46,8 +46,6 @@ import org.o42a.core.value.ValueStruct;
 
 
 public final class VoidObject extends BuiltinObject {
-
-	private static final Inline INLINE_VOID = new Inline();
 
 	public VoidObject(Scope topScope) {
 		super(voidScope(topScope), ValueStruct.VOID);
@@ -77,7 +75,7 @@ public final class VoidObject extends BuiltinObject {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return INLINE_VOID;
+		return inlineVoid();
 	}
 
 	@Override
@@ -144,32 +142,6 @@ public final class VoidObject extends BuiltinObject {
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
 			return getScope().toObject().ir(getGenerator()).op(builder, code);
-		}
-
-	}
-
-	private static final class Inline extends InlineValue {
-
-		Inline() {
-			super(ValueStruct.VOID);
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return voidValue().op(dirs.getBuilder(), dirs.code());
-		}
-
-		@Override
-		public void cancel() {
-		}
-
-		@Override
-		public String toString() {
-			return "VOID";
 		}
 
 	}

@@ -133,16 +133,17 @@ public class MemberStep extends AbstractMemberStep {
 
 	private void normalize(final PathNormalizer normalizer, boolean isStatic) {
 
+		final Prediction lastPrediction = normalizer.lastPrediction();
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
-				normalizer.lastPrediction().getScope());
+				lastPrediction.getScope());
 
 		if (member == null) {
 			normalizer.cancel();
 			return;
 		}
-		if (normalizer.lastPrediction().getScope() != member.getDefinedIn()) {
+		if (lastPrediction.getScope() != member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
 			return;
@@ -157,8 +158,7 @@ public class MemberStep extends AbstractMemberStep {
 		}
 
 		final Field<?> field = memberField.field(dummyUser());
-		final Prediction prediction =
-				field.predict(normalizer.lastPrediction());
+		final Prediction prediction = field.predict(lastPrediction);
 
 		if (!prediction.isPredicted()) {
 			normalizer.cancel();
