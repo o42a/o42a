@@ -155,6 +155,11 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

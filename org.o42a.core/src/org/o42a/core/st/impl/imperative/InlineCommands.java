@@ -63,7 +63,7 @@ public class InlineCommands implements Cancelable {
 
 	private final InlineCommand[] commands;
 
-	InlineCommands(InlineCommand[] statements) {
+	private InlineCommands(InlineCommand[] statements) {
 		this.commands = statements;
 	}
 
@@ -74,6 +74,25 @@ public class InlineCommands implements Cancelable {
 	@Override
 	public void cancel() {
 		cancelAll(this.commands);
+	}
+
+	@Override
+	public String toString() {
+		if (this.commands == null) {
+			return super.toString();
+		}
+		if (this.commands.length == 0) {
+			return "";
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(this.commands[0]);
+		for (int i = 1; i < this.commands.length; ++i) {
+			out.append(", ").append(this.commands[i]);
+		}
+
+		return out.toString();
 	}
 
 }

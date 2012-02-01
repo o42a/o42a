@@ -105,6 +105,11 @@ public class Wrapper extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalizer.cancel();
+	}
+
+	@Override
 	protected PathOp op(PathOp start) {
 		throw new UnsupportedOperationException();
 	}

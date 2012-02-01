@@ -63,7 +63,7 @@ final class NormalizedPath implements NormalPath {
 		this.path = path;
 		this.cancelable = cancelable;
 		this.normalSteps = normalSteps;
-		this.firstNonIgnored = firstNonIgnored;
+		this.firstNonIgnored = firstNonIgnored < 0 ? 0 : firstNonIgnored;
 		this.isAbsolute = isAbsolute;
 		this.isStatic = isStatic;
 	}

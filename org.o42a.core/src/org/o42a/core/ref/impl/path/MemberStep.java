@@ -94,17 +94,56 @@ public class MemberStep extends AbstractMemberStep {
 
 	@Override
 	protected void normalize(final PathNormalizer normalizer) {
+		normalize(normalizer, false);
+	}
 
+	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		normalize(normalizer, true);
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer,
+			Scope origin,
+			Scope scope) {
+
+		final Member member = origin.getContainer().member(getMemberKey());
+
+		if (origin.getContainer().toClause() == null
+				&& member.toClause() == null) {
+			// Neither clause, nor member of clause.
+			// Return unchanged.
+			return unchangedPath(toPath());
+		}
+
+		final MemberKey reproductionKey =
+				getMemberKey().getMemberId().reproduceFrom(origin).key(scope);
+
+		return reproducedPath(reproductionKey.toPath());
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private void normalize(final PathNormalizer normalizer, boolean isStatic) {
+
+		final Prediction lastPrediction = normalizer.lastPrediction();
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
-				normalizer.lastPrediction().getScope());
+				lastPrediction.getScope());
 
 		if (member == null) {
 			normalizer.cancel();
 			return;
 		}
-		if (normalizer.lastPrediction().getScope() != member.getDefinedIn()) {
+		if (lastPrediction.getScope() != member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
 			return;
@@ -119,8 +158,7 @@ public class MemberStep extends AbstractMemberStep {
 		}
 
 		final Field<?> field = memberField.field(dummyUser());
-		final Prediction prediction =
-				field.predict(normalizer.lastPrediction());
+		final Prediction prediction = field.predict(lastPrediction);
 
 		if (!prediction.isPredicted()) {
 			normalizer.cancel();
@@ -181,35 +219,6 @@ public class MemberStep extends AbstractMemberStep {
 			public void cancel() {
 			}
 		});
-	}
-
-	@Override
-	protected PathReproduction reproduce(
-			LocationInfo location,
-			PathReproducer reproducer,
-			Scope origin,
-			Scope scope) {
-
-		final Member member = origin.getContainer().member(getMemberKey());
-
-		if (origin.getContainer().toClause() == null
-				&& member.toClause() == null) {
-			// Neither clause, nor member of clause.
-			// Return unchanged.
-			return unchangedPath(toPath());
-		}
-
-		final MemberKey reproductionKey =
-				getMemberKey().getMemberId().reproduceFrom(origin).key(scope);
-
-		return reproducedPath(reproductionKey.toPath());
-	}
-
-	private final ObjectStepUses uses() {
-		if (this.uses != null) {
-			return this.uses;
-		}
-		return this.uses = new ObjectStepUses(this);
 	}
 
 	private boolean linkUpdated(

@@ -69,6 +69,7 @@ public class BoundPath extends Location {
 	private User<SimpleUsage> originalUser;
 	private Path path;
 
+	private Scope startObjectScope;
 	private Obj startObject;
 	private int startIndex;
 
@@ -418,6 +419,13 @@ public class BoundPath extends Location {
 		return this.startIndex;
 	}
 
+	final Scope startObjectScope() {
+		if (this.startObjectScope == null) {
+			findStart();
+		}
+		return this.startObjectScope;
+	}
+
 	final Obj startObject() {
 		if (this.startObject == null) {
 			findStart();
@@ -615,8 +623,9 @@ public class BoundPath extends Location {
 
 		walk(pathResolver(getOrigin(), dummyUser()), walker);
 
-		this.startIndex = walker.getStartIndex();
+		this.startObjectScope = walker.getStartObjectScope();
 		this.startObject = walker.getStartObject();
+		this.startIndex = walker.getStartIndex();
 	}
 
 	private Path rebuildPath() {

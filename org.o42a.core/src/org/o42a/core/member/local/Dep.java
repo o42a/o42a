@@ -129,6 +129,12 @@ public abstract class Dep extends Step {
 	}
 
 	@Override
+	protected void normalizeStatic(PathNormalizer normalizer) {
+		throw new UnsupportedOperationException(
+				"Dep can not be a part of static path " + normalizer.getPath());
+	}
+
+	@Override
 	protected abstract Path nonNormalizedRemainder(PathNormalizer normalizer);
 
 	protected abstract void normalizeDep(
