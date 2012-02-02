@@ -149,7 +149,8 @@ public abstract class Link extends MaterializableArtifact<Link> {
 	protected void normalizeArtifact(Analyzer analyzer) {
 
 		final Resolution target =
-				getTargetRef().getRef().resolve(getScope().dummyResolver());
+				getTargetRef().getRef().resolve(
+						getScope().getEnclosingScope().dummyResolver());
 
 		target.toArtifact().normalize(analyzer);
 	}

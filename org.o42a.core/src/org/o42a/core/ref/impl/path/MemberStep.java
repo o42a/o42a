@@ -216,14 +216,7 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		normalizer.inline(prediction, new InlineValueStep(inline) {
-			@Override
-			public void ignore() {
-			}
-			@Override
-			public void cancel() {
-			}
-		});
+		normalizer.inline(prediction, new InlineValueStep(inline));
 	}
 
 	private boolean linkUpdated(

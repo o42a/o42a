@@ -96,6 +96,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		final InlineValue operandValue = operand().inline(normalizer, origin);
 
 		if (operandValue == null) {
+			operand().inline(normalizer, origin);
 			return null;
 		}
 

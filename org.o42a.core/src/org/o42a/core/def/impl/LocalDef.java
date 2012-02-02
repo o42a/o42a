@@ -203,11 +203,11 @@ public class LocalDef extends ValueDef {
 	@Override
 	protected void normalizeDef(Normalizer normalizer) {
 
-		final ImperativeBlock block = getBlock();
+		final Scope localScope = this.localPrefix.rescope(getScope());
 		final Normalizer imperativeNormalizer =
-				normalizer.forScope(block.getScope());
+				normalizer.forScope(localScope);
 
-		block.normalizeImperative(imperativeNormalizer);
+		getBlock().normalizeImperative(imperativeNormalizer);
 	}
 
 	@Override
