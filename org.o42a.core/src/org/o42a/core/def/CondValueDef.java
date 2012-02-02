@@ -51,6 +51,11 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+		this.def.normalize(normalizer);
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return this.def.isConstant();
 	}
@@ -100,11 +105,6 @@ final class CondValueDef extends ValueDef {
 		}
 
 		return new Inline(valueStruct, inline);
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		this.def.normalize(normalizer);
 	}
 
 	@Override

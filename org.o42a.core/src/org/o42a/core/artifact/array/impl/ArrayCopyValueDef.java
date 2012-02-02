@@ -123,6 +123,10 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return false;
 	}
@@ -164,10 +168,6 @@ final class ArrayCopyValueDef extends ValueDef {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
 	}
 
 	@Override

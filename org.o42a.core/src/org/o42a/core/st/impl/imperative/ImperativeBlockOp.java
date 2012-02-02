@@ -48,5 +48,4 @@ public final class ImperativeBlockOp extends StOp {
 		return (ImperativeBlock) getStatement();
 	}
 
-
 }

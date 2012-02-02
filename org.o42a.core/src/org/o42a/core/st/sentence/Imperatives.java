@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Definer;
@@ -139,6 +140,12 @@ public class Imperatives extends Statements<Imperatives> {
 				getSentence().getBlock().getInitialEnv());
 
 		return statement.define(env);
+	}
+
+	final void normalizeImperatives(Normalizer normalizer) {
+		for (Definer definer : getDefiners()) {
+			definer.getStatement().normalizeImperative(normalizer);
+		}
 	}
 
 	private Block<?> blockByName(LocationInfo location, String name) {

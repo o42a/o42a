@@ -40,6 +40,11 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+		this.def.normalize(normalizer);
+	}
+
+	@Override
 	protected Logical buildPrerequisite() {
 		return this.def.getPrerequisite();
 	}
@@ -69,11 +74,6 @@ final class ValueCondDef extends CondDef {
 	@Override
 	protected InlineCond inlineDef(Normalizer normalizer) {
 		return this.def.inline(normalizer, this.def.getValueStruct());
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		this.def.normalize(normalizer);
 	}
 
 }

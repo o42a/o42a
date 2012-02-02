@@ -35,26 +35,32 @@ import org.o42a.core.value.ValueStruct;
 
 public class BuiltinValueDef extends ValueDef {
 
-	private final Common common;
+	private final Builtin builtin;
+	private InlineValue inline;
 
 	public BuiltinValueDef(Builtin builtin) {
 		super(
 				builtin.toObject(),
 				builtin,
 				noScopeUpgrade(builtin.toObject().getScope()));
-		this.common = new Common(builtin);
+		this.builtin = builtin;
 	}
 
 	private BuiltinValueDef(
 			BuiltinValueDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.common = prototype.common;
+		this.builtin = prototype.builtin;
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.common.builtin.toObject().value().getValueStruct();
+		return this.builtin.toObject().value().getValueStruct();
+	}
+
+	@Override
+	public void normalize(Normalizer normalizer) {
+		this.inline = inline(normalizer, getValueStruct());
 	}
 
 	@Override
@@ -64,22 +70,22 @@ public class BuiltinValueDef extends ValueDef {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.common.builtin.isConstantBuiltin();
+		return this.builtin.isConstantBuiltin();
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.common.builtin.toObject().getScope());
+		return logicalTrue(this, this.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.common.builtin.toObject().getScope());
+		return logicalTrue(this, this.builtin.toObject().getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return runtimeLogical(this, this.common.builtin.toObject().getScope());
+		return runtimeLogical(this, this.builtin.toObject().getScope());
 	}
 
 	@Override
@@ -91,20 +97,20 @@ public class BuiltinValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return this.common.builtin.calculateBuiltin(resolver);
+		return this.builtin.calculateBuiltin(resolver);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 
 		final Obj object = resolver.getContainer().toObject();
-		final Obj builtin = this.common.builtin.toObject();
+		final Obj builtin = this.builtin.toObject();
 
 		if (builtin != object) {
 			builtin.value().resolveAll(resolver);
 		}
 		object.resolveAll();
-		this.common.builtin.resolveBuiltin(
+		this.builtin.resolveBuiltin(
 				object.value().valuePart(isClaim()).resolver());
 	}
 
@@ -112,21 +118,16 @@ public class BuiltinValueDef extends ValueDef {
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return this.common.builtin.inlineBuiltin(
+		return this.builtin.inlineBuiltin(
 				normalizer,
 				valueStruct,
 				getScope());
 	}
 
 	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		this.common.inline = inline(normalizer, getValueStruct());
-	}
-
-	@Override
 	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 
-		final InlineValue inline = this.common.inline;
+		final InlineValue inline = this.inline;
 
 		if (inline != null) {
 			return inline.writeValue(dirs, host);
@@ -137,26 +138,7 @@ public class BuiltinValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		return this.common.builtin.writeBuiltin(dirs, host);
-	}
-
-	private static final class Common {
-
-		private final Builtin builtin;
-		private InlineValue inline;
-
-		Common(Builtin builtin) {
-			this.builtin = builtin;
-		}
-
-		@Override
-		public String toString() {
-			if (this.builtin == null) {
-				return "null";
-			}
-			return this.builtin.toString();
-		}
-
+		return this.builtin.writeBuiltin(dirs, host);
 	}
 
 }
