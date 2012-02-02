@@ -24,7 +24,6 @@ import static org.o42a.common.object.AnnotatedModule.moduleSources;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import org.o42a.codegen.Generator;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.RelatedSources;
 import org.o42a.common.object.SourcePath;
@@ -37,7 +36,6 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
@@ -190,32 +188,6 @@ public class Root extends Obj {
 	protected Obj findObjectIn(Scope enclosing) {
 		throw new IllegalArgumentException(
 				"Not an enclosing scope: " + enclosing);
-	}
-
-	@Override
-	protected ObjectIR createIR(Generator generator) {
-		return new IR(generator, this);
-	}
-
-	private static final class IR extends ObjectIR {
-
-		IR(Generator generator, Root root) {
-			super(generator, root);
-		}
-
-		@Override
-		protected void allocateData() {
-
-			final IntrinsicsIR intrinsicsIR =
-					new IntrinsicsIR((Root) getObject());
-
-			getGenerator().newGlobal().setConstant().export().struct(
-					intrinsicsIR);
-			if (getGenerator().isDebug()) {
-				getGenerator().newGlobal().export().struct(new DebugIR());
-			}
-		}
-
 	}
 
 }
