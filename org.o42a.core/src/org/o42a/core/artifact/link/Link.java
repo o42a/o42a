@@ -34,7 +34,6 @@ import org.o42a.core.artifact.link.impl.RuntimeLinkTarget;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 
@@ -147,12 +146,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 	@Override
 	protected void normalizeArtifact(Analyzer analyzer) {
-
-		final Resolution target =
-				getTargetRef().getRef().resolve(
-						getScope().getEnclosingScope().dummyResolver());
-
-		target.toArtifact().normalize(analyzer);
+		materialize().normalize(analyzer);
 	}
 
 	private void define() {
