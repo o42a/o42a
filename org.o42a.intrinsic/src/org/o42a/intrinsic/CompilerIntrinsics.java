@@ -170,9 +170,6 @@ public class CompilerIntrinsics extends Intrinsics {
 		fullResolution.start();
 		try {
 			this.root.resolveAll();
-			if (this.mainModule != null) {
-				this.mainModule.resolveAll();
-			}
 			for (ModuleUse module : this.modules.values()) {
 				module.resolveAll();
 			}
@@ -186,7 +183,13 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void generateAll(Generator generator) {
-		this.root.ir(generator).allocate();
+
+		final IntrinsicsIR intrinsicsIR = new IntrinsicsIR(this);
+
+		generator.newGlobal().setConstant().export().struct(intrinsicsIR);
+		if (generator.isDebug()) {
+			generator.newGlobal().export().struct(new DebugIR());
+		}
 		if (consoleUsed()) {
 			this.consoleModule.generateMain(generator);
 		}
@@ -208,9 +211,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	private void normalizeAll(Analyzer analyzer) {
 		if (analyzer.isNormalizationEnabled()) {
 			this.root.normalize(analyzer);
-			if (this.mainModule != null) {
-				this.mainModule.normalize(analyzer);
-			}
 			for (ModuleUse module : this.modules.values()) {
 				module.normalize(analyzer);
 			}

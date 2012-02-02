@@ -32,17 +32,18 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.intrinsic.CompilerIntrinsics;
 
 
-final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
+public final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
-	private final Root root;
+	private final CompilerIntrinsics intrinsics;
 
 	private StructRec<ObjectIRType.Op> voidType;
 	private StructRec<ObjectIRType.Op> falseType;
 
-	IntrinsicsIR(Root root) {
-		this.root = root;
+	public IntrinsicsIR(CompilerIntrinsics intrinsics) {
+		this.intrinsics = intrinsics;
 	}
 
 	@Override
@@ -63,8 +64,8 @@ final class IntrinsicsIR extends Struct<IntrinsicsIR.Op> {
 
 	@Override
 	protected void fill() {
-		set(this.voidType, this.root.getContext().getVoid());
-		set(this.falseType, this.root.getContext().getFalse());
+		set(this.voidType, this.intrinsics.getVoid());
+		set(this.falseType, this.intrinsics.getFalse());
 	}
 
 	private void set(StructRec<ObjectIRType.Op> ptr, Obj object) {

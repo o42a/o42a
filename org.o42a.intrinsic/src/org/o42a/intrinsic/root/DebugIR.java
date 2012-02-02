@@ -30,11 +30,11 @@ import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 
 
-class DebugIR extends Struct<DebugIR.Op> {
+public class DebugIR extends Struct<DebugIR.Op> {
 
 	private AnyRec rtypeTypeInfo;
 
-	DebugIR() {
+	public DebugIR() {
 	}
 
 	@Override
