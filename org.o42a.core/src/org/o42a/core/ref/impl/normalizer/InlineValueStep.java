@@ -27,12 +27,16 @@ import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.path.InlineStep;
 
 
-public abstract class InlineValueStep extends InlineStep {
+public final class InlineValueStep extends InlineStep {
 
 	private final InlineValue value;
 
 	public InlineValueStep(InlineValue def) {
 		this.value = def;
+	}
+
+	@Override
+	public void ignore() {
 	}
 
 	@Override
@@ -50,6 +54,11 @@ public abstract class InlineValueStep extends InlineStep {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.value.writeValue(dirs, host);
+	}
+
+	@Override
+	public void cancel() {
+		this.value.cancel();
 	}
 
 	@Override

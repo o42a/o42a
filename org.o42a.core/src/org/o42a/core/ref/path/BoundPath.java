@@ -397,6 +397,9 @@ public class BoundPath extends Location {
 	final User<?> pathNormalized() {
 		if (this.originalUser == null) {
 			this.originalUser = this.user.getProxied();
+			// TODO Find the right moment to disable the path uses.
+			// As cancellation may not happen even if the path normalized.
+			// In this case the disablement will lead to IR breakage.
 			//this.user.setProxied(dummyUser());
 		}
 		return this.originalUser;

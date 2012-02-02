@@ -221,11 +221,11 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	}
 
 	public final void normalize(Normalizer normalizer) {
-		if (!isExplicit()) {
+		/*if (!isExplicit()) {
 			// No need to resolve an explicit definition.
 			// It'll be resolved in it's declaration source.
 			return;
-		}
+		}*/
 		normalizeDef(normalizer);
 	}
 
