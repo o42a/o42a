@@ -771,6 +771,14 @@ public abstract class Obj
 
 	@Override
 	protected void normalizeArtifact(Analyzer analyzer) {
+
+		final Obj wrapped = getWrapped();
+
+		if (wrapped != this) {
+			wrapped.normalize(analyzer);
+			return;
+		}
+
 		value().normalize(analyzer);
 		normalizeFields(analyzer);
 	}
@@ -930,7 +938,7 @@ public abstract class Obj
 				continue;
 			}
 
-			field.getArtifact().materialize().normalize(analyzer);
+			field.getArtifact().normalize(analyzer);
 		}
 	}
 

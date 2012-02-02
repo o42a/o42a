@@ -276,19 +276,8 @@ public final class ObjectValue {
 		}
 		this.fullResolution = NORMALIZED;
 
-		final Obj object = getObject();
-		final Obj wrapped = object.getWrapped();
-
-		if (wrapped != object) {
-			wrapped.value().normalize(analyzer);
-			return;
-		}
-		if (object.getConstructionMode().isRuntime()) {
-			return;
-		}
-
 		final Normalizer normalizer =
-				new Normalizer(analyzer, object.getScope());
+				new Normalizer(analyzer, getObject().getScope());
 
 		getDefinitions().normalize(normalizer);
 	}
