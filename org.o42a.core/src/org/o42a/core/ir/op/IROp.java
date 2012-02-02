@@ -31,7 +31,7 @@ import org.o42a.core.source.CompilerContext;
 
 public abstract class IROp {
 
-	final PtrOp<?> ptr;
+	private final PtrOp<?> ptr;
 	private final CodeBuilder builder;
 
 	public IROp(CodeBuilder builder, PtrOp<?> ptr) {

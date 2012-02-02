@@ -26,6 +26,7 @@ import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
@@ -40,6 +41,7 @@ public class InlineBlock implements InlineCommand {
 	public static InlineBlock inlineBlock(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
+			Scope origin,
 			ImperativeBlock block) {
 
 		final List<ImperativeSentence> sentences = block.getSentences();
@@ -49,7 +51,7 @@ public class InlineBlock implements InlineCommand {
 		for (ImperativeSentence sentence : sentences) {
 
 			final InlineSentence inline =
-					inlineSentence(normalizer, valueStruct, sentence);
+					inlineSentence(normalizer, valueStruct, origin, sentence);
 
 			if (inline == null) {
 				cancelUpToNull(inlines);

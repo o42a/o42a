@@ -24,6 +24,7 @@ import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.InlineCommand;
@@ -37,6 +38,7 @@ public class InlineCommands implements Cancelable {
 	public static InlineCommands inlineCommands(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
+			Scope origin,
 			Imperatives imperatives) {
 
 		final List<Definer> definers = imperatives.getDefiners();
@@ -48,8 +50,8 @@ public class InlineCommands implements Cancelable {
 			final InlineCommand inline =
 					definer.getStatement().inlineImperative(
 							normalizer,
-							valueStruct);
-
+							valueStruct,
+							origin);
 			if (inline == null) {
 				cancelUpToNull(inlines);
 				return null;

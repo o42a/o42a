@@ -274,6 +274,10 @@ public final class PathNormalizer {
 	}
 
 	NormalPath normalize() {
+		if (!getPath().getBindings().isEmpty()) {
+			cancelNormalization();
+			return new UnNormalizedPath(getPath());
+		}
 		if (isStatic()) {
 			return normalizeStatic();
 		}
@@ -368,13 +372,14 @@ public final class PathNormalizer {
 						isStatic()).done(!isNested());
 			}
 			if (!isStepNormalized()) {
-				cancelNormalization();
 				break;
 			}
 
 			this.stepStart = this.stepPrediction;
 			++this.stepIndex;
 		}
+
+		cancelNormalization();
 
 		if (path.isAbsolute()) {
 			this.data.restore(stored);

@@ -188,8 +188,10 @@ public class LocalDef extends ValueDef {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
-		final InlineCommand inline =
-				getBlock().inlineImperative(normalizer, valueStruct);
+		final InlineCommand inline = getBlock().inlineImperative(
+				normalizer,
+				valueStruct,
+				this.localPrefix.rescope(getScope()));
 
 		if (inline == null) {
 			return null;

@@ -78,7 +78,8 @@ class HeaderStatement extends Statement {
 	@Override
 	public final InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

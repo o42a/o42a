@@ -139,10 +139,6 @@ public class MemberStep extends AbstractMemberStep {
 				normalizer.getStepIndex(),
 				lastPrediction.getScope());
 
-		if (member == null) {
-			normalizer.cancel();
-			return;
-		}
 		if (lastPrediction.getScope() != member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
@@ -169,6 +165,11 @@ public class MemberStep extends AbstractMemberStep {
 		final Link link = artifact.toLink();
 
 		if (link != null) {
+			if (link.isVariable()
+					|| link.materialize().getConstructionMode().isRuntime()) {
+				normalizer.cancel();
+				return;
+			}
 			// Append the link target.
 			if (linkUpdated(normalizer, prediction)) {
 				normalizer.cancel();
@@ -195,6 +196,10 @@ public class MemberStep extends AbstractMemberStep {
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
+			normalizer.cancel();
+			return;
+		}
+		if (object.getConstructionMode().isRuntime()) {
 			normalizer.cancel();
 			return;
 		}

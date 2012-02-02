@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.local.LocalResolver;
@@ -49,7 +50,8 @@ public abstract class Inclusion extends Statement {
 	@Override
 	public final InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		return null;
 	}
 

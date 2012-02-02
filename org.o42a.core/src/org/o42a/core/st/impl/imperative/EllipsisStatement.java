@@ -20,6 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
@@ -75,7 +76,8 @@ public final class EllipsisStatement extends Statement {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		return null;
 	}
 

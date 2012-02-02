@@ -33,9 +33,7 @@ final class InlineLocalDef extends InlineValue {
 
 	private final InlineCommand command;
 
-	InlineLocalDef(
-			ValueStruct<?, ?> valueStruct,
-			InlineCommand command) {
+	InlineLocalDef(ValueStruct<?, ?> valueStruct, InlineCommand command) {
 		super(valueStruct);
 		this.command = command;
 	}

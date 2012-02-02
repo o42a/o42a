@@ -26,9 +26,7 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Distributor;
-import org.o42a.core.ScopePlace;
+import org.o42a.core.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
@@ -233,8 +231,9 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		return inlineBlock(normalizer, valueStruct, this);
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return inlineBlock(normalizer, valueStruct, origin, this);
 	}
 
 	@Override

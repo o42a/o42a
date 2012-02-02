@@ -108,7 +108,8 @@ public class AssignmentStatement extends Statement {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		return null;
 	}
 

@@ -44,8 +44,8 @@ public final class Cancellation {
 	}
 
 	public static void cancelAll(Cancelable... cancelables) {
-		for (Cancelable cancellable : cancelables) {
-			cancellable.cancel();
+		for (Cancelable cancelable : cancelables) {
+			cancelable.cancel();
 		}
 	}
 
@@ -60,7 +60,6 @@ public final class Cancellation {
 			if (cancellable == null) {
 				return;
 			}
-			cancellable.cancel();
 		}
 	}
 

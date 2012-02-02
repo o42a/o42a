@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
@@ -65,10 +66,11 @@ public final class RefCondition extends Statement {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 
 		final InlineCommand value =
-				this.ref.inlineImperative(normalizer, valueStruct);
+				this.ref.inlineImperative(normalizer, valueStruct, origin);
 
 		if (value == null) {
 			this.ref.normalize(normalizer.getAnalyzer());
