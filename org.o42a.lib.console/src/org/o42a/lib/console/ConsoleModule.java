@@ -36,8 +36,6 @@ import org.o42a.common.object.*;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.AdapterId;
@@ -148,40 +146,8 @@ public class ConsoleModule extends AnnotatedModule {
 					DEBUGGABLE_MAIN);
 		}
 
-		main.debug("Start execution");
+		final ValOp result = callMain(main);
 
-		final CodeBuilder builder = hostlessBuilder(getContext(), main);
-		final Code exit = main.addBlock("exit");
-		final AllocationCode alloc = main.undisposable();
-		final ValOp result =
-				alloc.allocate(null, VAL_TYPE)
-				.op(builder, ValueStruct.INTEGER)
-				.storeIndefinite(alloc);
-		final ValDirs dirs =
-				builder.falseWhenUnknown(alloc, exit.head())
-				.value(alloc.id("exec_main"), result);
-		final Code code = dirs.code();
-
-		final ScopeIR mainIR = this.main.getScope().ir(generator);
-		final HostOp host = mainIR.op(builder, code);
-		final ValOp programResult;
-
-		if (this.inlineMain != null) {
-			programResult = this.inlineMain.writeValue(dirs, host);
-		} else {
-			programResult = this.main.op(host).writeValue(dirs);
-		}
-		result.store(code, programResult);
-
-		dirs.done();
-		alloc.done();
-
-		if (exit.exists()) {
-			exit.debug("Execution failed");
-			exit.int32(-1).returnValue(exit);
-		}
-
-		main.debug("Execution succeed");
 		result.rawValue(main.id("execution_result_ptr"), main)
 		.toAny(null, main)
 		.toInt32(null, main)
@@ -229,6 +195,43 @@ public class ConsoleModule extends AnnotatedModule {
 				main.getPointer().op(null, debugMain),
 				debugMain.arg(debugMain, MAIN.argc()),
 				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
+	}
+
+	private ValOp callMain(Function<DebuggableMainFunc> main) {
+		main.debug("Start execution");
+
+		final CodeBuilder builder = hostlessBuilder(getContext(), main);
+		final Code exit = main.addBlock("exit");
+		final AllocationCode alloc = main.undisposable();
+		final ValOp result =
+				alloc.allocate(null, VAL_TYPE)
+				.op(builder, ValueStruct.INTEGER)
+				.storeIndefinite(alloc);
+		final ValDirs dirs =
+				builder.falseWhenUnknown(alloc, exit.head())
+				.value(alloc.id("exec_main"), result);
+		final Code code = dirs.code();
+
+		final ValOp programResult;
+
+		if (this.inlineMain != null) {
+			programResult = this.inlineMain.writeValue(dirs, builder.host());
+		} else {
+			programResult = this.main.op(builder.host()).writeValue(dirs);
+		}
+		result.store(code, programResult);
+
+		dirs.done();
+		alloc.done();
+
+		if (exit.exists()) {
+			exit.debug("Execution failed");
+			exit.int32(-1).returnValue(exit);
+		}
+
+		main.debug("Execution succeed");
+
+		return result;
 	}
 
 }
