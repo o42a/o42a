@@ -79,6 +79,7 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 	protected abstract void endTypeAllocation(DataAllocator allocator);
 
 	protected void postTypeAllocation() {
+		getGenerator().getGlobals().registerType(this);
 	}
 
 	final boolean completeAllocation(boolean immediately) {
@@ -124,8 +125,6 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 			globals.allocatingType(this);
 		}
 		setAllocation(startTypeAllocation(globals.dataAllocator()));
-
-		globals.registerType(this);
 
 		return true;
 	}

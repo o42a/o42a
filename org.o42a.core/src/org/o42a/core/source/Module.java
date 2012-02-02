@@ -154,6 +154,7 @@ public class Module extends Obj {
 		final Module module() {
 			return (Module) getContainer();
 		}
+
 	}
 
 	private static final class ModuleIR extends ScopeIR {
