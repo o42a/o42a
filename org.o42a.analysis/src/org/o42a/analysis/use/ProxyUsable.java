@@ -31,6 +31,7 @@ public class ProxyUsable<U extends Usage<U>> extends ProxyUser<U> {
 	public ProxyUsable(AllUsages<U> allUsages, String name, Object used) {
 		super(allUsages);
 		this.usable = new SimpleUsable<U>(allUsages, name, used);
+		setProxied(this.usable.toUser());
 	}
 
 	public ProxyUsable(User<U> proxied, Object used) {

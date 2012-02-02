@@ -25,6 +25,7 @@ import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
@@ -37,6 +38,7 @@ public final class InlineSentence implements Cancelable {
 	public static InlineSentence inlineSentence(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
+			Scope origin,
 			ImperativeSentence sentence) {
 
 		final ImperativeSentence prereq = sentence.getPrerequisite();
@@ -45,7 +47,8 @@ public final class InlineSentence implements Cancelable {
 		if (prereq == null) {
 			inlinePrereq = null;
 		} else {
-			inlinePrereq = inlineSentence(normalizer, valueStruct, prereq);
+			inlinePrereq =
+					inlineSentence(normalizer, valueStruct, origin, prereq);
 			if (inlinePrereq == null) {
 				return null;
 			}
@@ -58,7 +61,7 @@ public final class InlineSentence implements Cancelable {
 		for (Imperatives alt : alts) {
 
 			final InlineCommands inlineAlt =
-					inlineCommands(normalizer, valueStruct, alt);
+					inlineCommands(normalizer, valueStruct, origin, alt);
 
 			if (inlineAlt == null) {
 				if (inlinePrereq != null) {

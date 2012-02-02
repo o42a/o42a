@@ -236,7 +236,7 @@ public class Ref extends Statement {
 				.append(reproducer.getPhrasePrefix().getPath()));
 	}
 
-	public InlineValue inline(Normalizer normalizer, Scope origin) {
+	public final InlineValue inline(Normalizer normalizer, Scope origin) {
 
 		final NormalPath normalPath = getPath().normalize(normalizer, origin);
 
@@ -250,9 +250,10 @@ public class Ref extends Statement {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 
-		final InlineValue inline = inline(normalizer, getScope());
+		final InlineValue inline = inline(normalizer, origin);
 
 		if (inline == null) {
 			return null;

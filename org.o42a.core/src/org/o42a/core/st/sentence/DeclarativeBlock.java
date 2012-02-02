@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.member.MemberRegistry;
@@ -167,7 +168,8 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	@Override
 	public InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

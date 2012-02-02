@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
@@ -65,7 +66,7 @@ public class BoundPath extends Location {
 	private final Scope origin;
 	private final Path rawPath;
 	private final ProxyUsable<SimpleUsage> user =
-			new ProxyUsable<SimpleUsage>(SimpleUsage.ALL_SIMPLE_USAGES, this);
+			new ProxyUsable<SimpleUsage>(ALL_SIMPLE_USAGES, this);
 	private User<SimpleUsage> originalUser;
 	private Path path;
 
@@ -324,6 +325,7 @@ public class BoundPath extends Location {
 				pathNormalizer(normalizer, origin, this);
 
 		if (pathNormalizer == null) {
+			cancelNormalization();
 			return new UnNormalizedPath(this);
 		}
 
@@ -395,7 +397,7 @@ public class BoundPath extends Location {
 	final User<?> pathNormalized() {
 		if (this.originalUser == null) {
 			this.originalUser = this.user.getProxied();
-			this.user.setProxied(dummyUser());
+			//this.user.setProxied(dummyUser());
 		}
 		return this.originalUser;
 	}

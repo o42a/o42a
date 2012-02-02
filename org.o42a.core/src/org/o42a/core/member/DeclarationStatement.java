@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
@@ -45,7 +46,8 @@ public abstract class DeclarationStatement extends Statement {
 	@Override
 	public final InlineCommand inlineImperative(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
 		return null;
 	}
 

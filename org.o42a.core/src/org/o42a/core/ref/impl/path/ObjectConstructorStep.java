@@ -171,7 +171,7 @@ public class ObjectConstructorStep extends Step {
 		final Obj object = this.constructor.resolve(
 				normalizer.lastPrediction().getScope());
 
-		if (object == null) {
+		if (object.getConstructionMode().isRuntime()) {
 			normalizer.cancel();
 			return;
 		}

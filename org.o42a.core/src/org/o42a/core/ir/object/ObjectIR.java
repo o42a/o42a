@@ -134,7 +134,7 @@ public class ObjectIR  {
 
 		final ObjectBodyIR bodyType = getBodyType();
 
-		return bodyType.data(code.getGenerator())
+		return bodyType.data(getGenerator())
 				.getPointer().op(null, code).op(builder, this);
 	}
 
