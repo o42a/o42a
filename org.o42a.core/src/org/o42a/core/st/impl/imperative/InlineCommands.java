@@ -33,9 +33,9 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Cancelable;
 
 
-public class InlineCommands implements Cancelable {
+final class InlineCommands implements Cancelable {
 
-	public static InlineCommands inlineCommands(
+	static InlineCommands inlineCommands(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,

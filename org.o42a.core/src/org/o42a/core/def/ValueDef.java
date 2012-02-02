@@ -264,6 +264,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 					dirs.dirs().falseWhenUnknown(),
 					host);
 		}
+
 		return writeDefValue(dirs, host);
 	}
 

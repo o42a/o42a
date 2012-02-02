@@ -61,6 +61,11 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+		// No need to normalize the scalar constant.
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return true;
 	}
@@ -107,11 +112,6 @@ public final class ConstantValueDef<T> extends ValueDef {
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.value.op(dirs.getBuilder(), dirs.code());
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		// No need to normalize the scalar constant.
 	}
 
 	@Override

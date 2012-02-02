@@ -144,13 +144,13 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void writeValue(Control control, ValOp result) {
-			writeLogicalValue(control);
+		public void writeLogicalValue(Control control) {
+			getStatement().op(getBuilder()).writeLogicalValue(control);
 		}
 
 		@Override
-		public void writeLogicalValue(Control control) {
-			getStatement().op(getBuilder()).writeLogicalValue(control);
+		public void writeValue(Control control, ValOp result) {
+			writeLogicalValue(control);
 		}
 
 	}

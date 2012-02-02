@@ -30,31 +30,38 @@ import org.o42a.core.ref.*;
 
 public final class RefCondDef extends CondDef {
 
-	private final Common common;
+	private final Ref ref;
+	private InlineCond inline;
 
 	public RefCondDef(Ref ref) {
 		super(sourceOf(ref), ref, noScopeUpgrade(ref.getScope()));
-		this.common = new Common(ref);
+		this.ref = ref;
 	}
 
 	RefCondDef(RefCondDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.common = prototype.common;
+		this.ref = prototype.ref;
+	}
+
+	@Override
+	public void normalize(Normalizer normalizer) {
+		this.ref.normalize(normalizer.getAnalyzer());
+		this.inline = inline(normalizer);
 	}
 
 	@Override
 	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.common.ref.getScope());
+		return logicalTrue(this, this.ref.getScope());
 	}
 
 	@Override
 	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.common.ref.getScope());
+		return logicalTrue(this, this.ref.getScope());
 	}
 
 	@Override
 	protected Logical buildLogical() {
-		return this.common.ref.getLogical();
+		return this.ref.getLogical();
 	}
 
 	@Override
@@ -66,24 +73,18 @@ public final class RefCondDef extends CondDef {
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.common.ref.resolve(resolver).resolveLogical();
+		this.ref.resolve(resolver).resolveLogical();
 	}
 
 	@Override
 	protected InlineCond inlineDef(Normalizer normalizer) {
-		return this.common.ref.inline(normalizer, getScope());
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		this.common.ref.normalize(normalizer.getAnalyzer());
-		this.common.inline = inline(normalizer);
+		return this.ref.inline(normalizer, getScope());
 	}
 
 	@Override
 	protected void writeDef(CodeDirs dirs, HostOp host) {
 
-		final InlineCond inline = this.common.inline;
+		final InlineCond inline = this.inline;
 
 		if (inline != null) {
 			inline.writeCond(dirs, host);
@@ -91,24 +92,6 @@ public final class RefCondDef extends CondDef {
 		}
 
 		super.writeDef(dirs, host);
-	}
-
-	private static final class Common {
-
-		private final Ref ref;
-		private InlineCond inline;
-
-		Common(Ref ref) {
-			this.ref = ref;
-		}
-		@Override
-		public String toString() {
-			if (this.ref == null) {
-				return "null";
-			}
-			return this.ref.toString();
-		}
-
 	}
 
 }

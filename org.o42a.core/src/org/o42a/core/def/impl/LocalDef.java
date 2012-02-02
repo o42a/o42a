@@ -110,6 +110,19 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+		if (!isExplicit()) {
+			return;
+		}
+
+		final Scope localScope = this.localPrefix.rescope(getScope());
+		final Normalizer imperativeNormalizer =
+				normalizer.forScope(localScope);
+
+		getBlock().normalizeImperative(imperativeNormalizer);
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();
@@ -198,16 +211,6 @@ public class LocalDef extends ValueDef {
 		}
 
 		return new InlineLocalDef(valueStruct, inline);
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-
-		final Scope localScope = this.localPrefix.rescope(getScope());
-		final Normalizer imperativeNormalizer =
-				normalizer.forScope(localScope);
-
-		getBlock().normalizeImperative(imperativeNormalizer);
 	}
 
 	@Override

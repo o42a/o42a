@@ -220,14 +220,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		}
 	}
 
-	public final void normalize(Normalizer normalizer) {
-		/*if (!isExplicit()) {
-			// No need to resolve an explicit definition.
-			// It'll be resolved in it's declaration source.
-			return;
-		}*/
-		normalizeDef(normalizer);
-	}
+	public abstract void normalize(Normalizer normalizer);
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
@@ -333,8 +326,6 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	protected final LocationInfo getLocation() {
 		return this.location;
 	}
-
-	protected abstract void normalizeDef(Normalizer normalizer);
 
 	final void update(DefKind kind, boolean hasPrerequisite) {
 		this.kind = kind;

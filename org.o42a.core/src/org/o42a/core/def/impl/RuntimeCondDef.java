@@ -50,6 +50,10 @@ public final class RuntimeCondDef extends CondDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+	}
+
+	@Override
 	protected String name() {
 		return "RuntimeCondDef";
 	}
@@ -84,11 +88,6 @@ public final class RuntimeCondDef extends CondDef {
 	protected InlineCond inlineDef(Normalizer normalizer) {
 		throw new UnsupportedOperationException(
 				"Run-time definition can not generate code");
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
-		// Run-time definition can not be normalized.
 	}
 
 }

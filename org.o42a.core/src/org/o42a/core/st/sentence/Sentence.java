@@ -28,7 +28,6 @@ import java.util.List;
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
@@ -196,18 +195,6 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 		for (S alt : getAlternatives()) {
 			alt.resolveImperatives(resolver);
-		}
-	}
-
-	final void normalizeImperatives(Normalizer normalizer) {
-
-		final Sentence<S> prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-			prerequisite.normalizeImperatives(normalizer);
-		}
-		for (S alt : getAlternatives()) {
-			alt.normalizeImperatives(normalizer);
 		}
 	}
 

@@ -80,6 +80,10 @@ public class ArrayConstantValueDef extends ValueDef {
 	}
 
 	@Override
+	public void normalize(Normalizer normalizer) {
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 
 		final Array array = getArray();
@@ -124,10 +128,6 @@ public class ArrayConstantValueDef extends ValueDef {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;
-	}
-
-	@Override
-	protected void normalizeDef(Normalizer normalizer) {
 	}
 
 	@Override
