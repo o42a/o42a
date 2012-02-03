@@ -107,35 +107,6 @@ void Java_org_o42a_backend_llvm_code_LLCode_choose(
 	builder.CreateCondBr(condition, trueBlock, falseBlock);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLCode_blockAddress(
-		JNIEnv *,
-		jclass,
-		jlong,
-		jlong targetPtr) {
-	return to_ptr(BlockAddress::get(from_ptr<BasicBlock>(targetPtr)));
-}
-
-jlong Java_org_o42a_backend_llvm_code_LLCode_indirectbr(
-		JNIEnv *env,
-		jclass,
-		jlong blockPtr,
-		jlong targetPtr,
-		jlongArray targetBlockPtrs) {
-
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	Value *target = from_ptr<Value>(targetPtr);
-	jInt64Array targetBlocks(env, targetBlockPtrs);
-	IRBuilder<> builder(block);
-	size_t len = targetBlocks.length();
-	IndirectBrInst *inst = builder.CreateIndirectBr(target, len);
-
-	for (size_t i = 0; i < len; ++i) {
-		inst->addDestination(from_ptr<BasicBlock>(targetBlocks[i]));
-	}
-
-	return to_ptr(inst);
-}
-
 jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
 		JNIEnv *,
 		jclass,

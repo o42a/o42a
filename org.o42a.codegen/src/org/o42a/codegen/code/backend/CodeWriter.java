@@ -76,10 +76,6 @@ public interface CodeWriter {
 
 	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
 
-	MultiCodePos comeFrom(CodeWriter[] alts);
-
-	void goToOneOf(MultiCodePos target);
-
 	AnyRecOp allocatePtr(CodeId id);
 
 	<S extends StructOp<S>> StructRecOp<S> allocatePtr(

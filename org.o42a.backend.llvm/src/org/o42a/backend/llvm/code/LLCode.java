@@ -32,7 +32,6 @@ import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -286,49 +285,6 @@ public abstract class LLCode implements CodeWriter {
 		}
 
 		choose(blockPtr, nativePtr(condition), truePtr, falsePtr);
-	}
-
-	@Override
-	public MultiCodePos comeFrom(CodeWriter[] alts) {
-
-		final long targetBlockPtrs[] = new long[alts.length];
-		final long blocksAndAddrs[] = new long[alts.length << 1];
-		int j = 0;
-
-		for (int i = 0; i < alts.length; ++i) {
-
-			final LLCode llvmAlt = llvm(alts[i]);
-			final long blockPtr = llvmAlt.nextPtr();
-			final long nextPtr = llvmAlt.createNextBlock();
-
-			blocksAndAddrs[j++] = blockPtr;
-			blocksAndAddrs[j++] = blockAddress(blockPtr, nextPtr);
-
-			go(blockPtr, nextPtr());
-			llvmAlt.setNextPtr(nextPtr);
-
-			targetBlockPtrs[i] = nextPtr;
-		}
-
-		final NativeBuffer ids = getModule().ids();
-		final long targetPtr = phiN(
-				nextPtr(),
-				ids.writeCodeId(this.code.opId(null)),
-				ids.length(),
-				blocksAndAddrs);
-
-		return new LLMultiCodePos(targetPtr, targetBlockPtrs);
-	}
-
-	@Override
-	public void goToOneOf(MultiCodePos target) {
-
-		final LLMultiCodePos llvmTarget = (LLMultiCodePos) target;
-
-		indirectbr(
-				nextPtr(),
-				llvmTarget.getTargetPtr(),
-				llvmTarget.getTargetBlockPtrs());
 	}
 
 	@Override
@@ -627,13 +583,6 @@ public abstract class LLCode implements CodeWriter {
 			long conditionPtr,
 			long truePtr,
 			long falsePtr);
-
-	private static native long blockAddress(long blockPtr, long targetPtr);
-
-	private static native long indirectbr(
-			long blockPtr,
-			long targetPtr,
-			long[] targetBlockPtrs);
 
 	private static native long int8(long modulePtr, byte value);
 

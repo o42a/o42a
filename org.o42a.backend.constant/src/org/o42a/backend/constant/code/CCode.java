@@ -34,7 +34,6 @@ import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.backend.MultiCodePos;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -262,23 +261,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		if (pos != null) {
 			go(pos);
 		}
-	}
-
-	@Override
-	public final MultiCodePos comeFrom(CodeWriter[] alts) {
-
-		final CodeWriter[] underlyingAlts = new CodeWriter[alts.length];
-
-		for (int i = 0; i < alts.length; ++i) {
-			underlyingAlts[i] = underlying(alts[i]);
-		}
-
-		return getUnderlying().writer().comeFrom(underlyingAlts);
-	}
-
-	@Override
-	public final void goToOneOf(MultiCodePos target) {
-		getUnderlying().writer().goToOneOf(target);
 	}
 
 	@Override
