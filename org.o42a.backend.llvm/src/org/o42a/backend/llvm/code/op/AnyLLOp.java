@@ -20,7 +20,6 @@
 package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.*;
@@ -44,7 +43,7 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 	@Override
 	public AnyLLOp toAny(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final long nextPtr = llvm(code).nextPtr();
 
 		if (nextPtr == getBlockPtr()) {
 			return this;
@@ -65,11 +64,12 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toPtr(
+				llvm.instr(toPtr(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -84,12 +84,13 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(
+				llvm.instr(toInt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 8));
+						(byte) 8)));
 	}
 
 	@Override
@@ -104,12 +105,13 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(
+				llvm.instr(toInt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 16));
+						(byte) 16)));
 	}
 
 	@Override
@@ -124,12 +126,13 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(
+				llvm.instr(toInt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 32));
+						(byte) 32)));
 	}
 
 	@Override
@@ -144,12 +147,13 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toInt(
+				llvm.instr(toInt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 64));
+						(byte) 64)));
 	}
 
 	@Override
@@ -164,11 +168,12 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toFp32(
+				llvm.instr(toFp32(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -183,11 +188,12 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toFp64(
+				llvm.instr(toFp64(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -202,11 +208,12 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 				resultId,
 				getAllocClass(),
 				nextPtr,
-				toRelPtr(
+				llvm.instr(toRelPtr(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override

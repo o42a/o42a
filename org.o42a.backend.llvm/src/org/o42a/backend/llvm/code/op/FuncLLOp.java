@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
@@ -66,16 +65,24 @@ public final class FuncLLOp<F extends Func<F>>
 				resultId,
 				getSignature(),
 				nextPtr,
-				load(
+				llvm.instr(load(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr())));
+						getNativePtr()))));
 	}
 
 	@Override
 	public final void store(Code code, F value) {
-		store(nextPtr(code), getNativePtr(), nativePtr(value));
+
+		final LLCode llvm = llvm(code);
+
+		llvm.instr(store(
+				llvm.nextPtr(),
+				llvm.nextInstr(),
+				getNativePtr(),
+				nativePtr(value)));
 	}
 
 	@Override

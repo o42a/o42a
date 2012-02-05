@@ -35,7 +35,7 @@ import org.o42a.codegen.data.Type;
 
 
 public final class LLFunction<F extends Func<F>>
-		extends LLCode
+		extends LLBlock
 		implements FuncWriter<F> {
 
 	private final Function<F> function;
@@ -75,7 +75,7 @@ public final class LLFunction<F extends Func<F>>
 	public Int8op int8arg(Code code, Arg<Int8op> arg) {
 		return new Int8llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -83,7 +83,7 @@ public final class LLFunction<F extends Func<F>>
 	public Int16op int16arg(Code code, Arg<Int16op> arg) {
 		return new Int16llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -91,7 +91,7 @@ public final class LLFunction<F extends Func<F>>
 	public Int32op int32arg(Code code, Arg<Int32op> arg) {
 		return new Int32llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -99,7 +99,7 @@ public final class LLFunction<F extends Func<F>>
 	public Int64op int64arg(Code code, Arg<Int64op> arg) {
 		return new Int64llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -107,7 +107,7 @@ public final class LLFunction<F extends Func<F>>
 	public Fp32op fp32arg(Code code, Arg<Fp32op> arg) {
 		return new Fp32llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -115,7 +115,7 @@ public final class LLFunction<F extends Func<F>>
 	public Fp64op fp64arg(Code code, Arg<Fp64op> arg) {
 		return new Fp64llOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -123,7 +123,7 @@ public final class LLFunction<F extends Func<F>>
 	public BoolOp boolArg(Code code, Arg<BoolOp> arg) {
 		return new BoolLLOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -131,7 +131,7 @@ public final class LLFunction<F extends Func<F>>
 	public RelOp relPtrArg(Code code, Arg<RelOp> arg) {
 		return new RelLLOp(
 				argId(arg),
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -140,7 +140,7 @@ public final class LLFunction<F extends Func<F>>
 		return new AnyLLOp(
 				argId(arg),
 				AUTO_ALLOC_CLASS,
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -149,7 +149,7 @@ public final class LLFunction<F extends Func<F>>
 		return new DataLLOp(
 				argId(arg),
 				AUTO_ALLOC_CLASS,
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
 
@@ -162,7 +162,7 @@ public final class LLFunction<F extends Func<F>>
 				argId(arg),
 				AUTO_ALLOC_CLASS,
 				type,
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex())));
 	}
 
@@ -174,7 +174,7 @@ public final class LLFunction<F extends Func<F>>
 		return signature.op(new LLFunc<FF>(
 				argId(arg),
 				signature,
-				nextPtr(code),
+				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex())));
 	}
 

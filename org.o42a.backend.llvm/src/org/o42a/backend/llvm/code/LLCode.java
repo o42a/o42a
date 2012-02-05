@@ -32,7 +32,9 @@ import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.RelOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -90,10 +92,6 @@ public abstract class LLCode implements CodeWriter {
 		return llvm(pos).getBlockPtr();
 	}
 
-	public static final long nextPtr(Code code) {
-		return llvm(code).nextPtr();
-	}
-
 	public static final long nextPtr(CodeWriter writer) {
 		return llvm(writer).nextPtr();
 	}
@@ -148,11 +146,7 @@ public abstract class LLCode implements CodeWriter {
 	private final LLFunction<?> function;
 	private final Code code;
 	private final CodeId id;
-	private LLCodePos.Head head;
-	private LLCodePos.Tail tail;
-	private long firstBlockPtr;
-	private long blockPtr;
-	private int blockIdx;
+	private LLInset lastInset;
 
 	public LLCode(
 			LLVMModule module,
@@ -178,53 +172,12 @@ public abstract class LLCode implements CodeWriter {
 		return this.id;
 	}
 
-	@Override
-	public boolean created() {
-		return this.firstBlockPtr != 0L;
-	}
+	public abstract long nextPtr();
 
-	@Override
-	public boolean exists() {
-		return this.blockPtr != 0L;
-	}
+	public abstract long nextInstr();
 
-	@Override
-	public LLCodePos.Head head() {
-		return this.head;
-	}
-
-	@Override
-	public LLCodePos.Tail tail() {
-		if (this.tail != null) {
-			assert this.tail.getBlockPtr() == getBlockPtr() :
-				"Wrong tail position";
-			return this.tail;
-		}
-
-		final long nextPtr;
-		final long prevPtr = getBlockPtr();
-
-		if (prevPtr != 0L) {
-			endBlock();
-			nextPtr = nextPtr();
-			go(prevPtr, nextPtr);
-		} else {
-			nextPtr = nextPtr();
-		}
-
-		return this.tail;
-	}
-
-	public long nextPtr() {
-
-		final long prevPtr = getBlockPtr();
-
-		if (prevPtr != 0) {
-			this.tail = null;
-			return prevPtr;// block isn't fulfilled yet
-		}
-
-		return setNextPtr(createNextBlock());
+	public final LLInset inset(Code code, CodeId id) {
+		return this.lastInset = new LLInset(this, this.lastInset, code, id);
 	}
 
 	@SuppressWarnings({
@@ -243,48 +196,6 @@ public abstract class LLCode implements CodeWriter {
 				allocation.getSignature(),
 				nextPtr(),
 				alloc.llvmId().expression(getModule()));
-	}
-
-	@Override
-	public LLBlock block(Code code, CodeId id) {
-		return new LLBlock(this, code, id);
-	}
-
-	@Override
-	public LLAllocation allocationBlock(AllocationCode code, CodeId id) {
-		return new LLAllocation(this, code, id);
-	}
-
-	@Override
-	public void go(CodePos pos) {
-		go(nextPtr(), blockPtr(pos));
-		endBlock();
-	}
-
-	@Override
-	public void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
-
-		final long blockPtr = nextPtr();
-		final long truePtr;
-		final long falsePtr;
-
-		endBlock();
-
-		final LLCodePos llvmTrue = llvm(truePos);
-		final LLCodePos llvmFalse = llvm(falsePos);
-
-		if (llvmTrue == null || llvmTrue.tailOf(this)) {
-			truePtr = nextPtr();
-		} else {
-			truePtr = llvmTrue.getBlockPtr();
-		}
-		if (llvmFalse == null || llvmFalse.tailOf(this)) {
-			falsePtr = nextPtr();
-		} else {
-			falsePtr = llvmFalse.getBlockPtr();
-		}
-
-		choose(blockPtr, nativePtr(condition), truePtr, falsePtr);
 	}
 
 	@Override
@@ -410,11 +321,12 @@ public abstract class LLCode implements CodeWriter {
 				AUTO_ALLOC_CLASS,
 				type,
 				nextPtr,
-				allocateStruct(
+				instr(allocateStruct(
 						nextPtr,
+						nextInstr(),
 						ids.writeCodeId(id),
 						id.length(),
-						type.getTypePtr())));
+						type.getTypePtr()))));
 	}
 
 	@Override
@@ -427,7 +339,11 @@ public abstract class LLCode implements CodeWriter {
 				id,
 				AUTO_ALLOC_CLASS,
 				nextPtr,
-				allocatePtr(nextPtr, ids.writeCodeId(id), ids.length()));
+				instr(allocatePtr(
+						nextPtr,
+						nextInstr(),
+						ids.writeCodeId(id),
+						ids.length())));
 	}
 
 	@Override
@@ -445,11 +361,12 @@ public abstract class LLCode implements CodeWriter {
 				AUTO_ALLOC_CLASS,
 				alloc.getType(),
 				nextPtr,
-				allocateStructPtr(
+				instr(allocateStructPtr(
 						nextPtr,
+						nextInstr(),
 						ids.writeCodeId(id),
 						id.length(),
-						alloc.getTypePtr()));
+						alloc.getTypePtr())));
 	}
 
 	@Override
@@ -471,14 +388,15 @@ public abstract class LLCode implements CodeWriter {
 		return o1.create(
 				id,
 				nextPtr,
-				phi2(
+				instr(phi2(
 						nextPtr,
+						nextInstr(),
 						ids.writeCodeId(id),
 						ids.length(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
 						o2.getBlockPtr(),
-						o2.getNativePtr()));
+						o2.getNativePtr())));
 	}
 
 	public <O extends Op> O select(
@@ -497,64 +415,38 @@ public abstract class LLCode implements CodeWriter {
 		return trueOp.create(
 				id,
 				nextPtr,
-				select(
+				instr(select(
 						nextPtr,
+						nextInstr(),
 						ids.writeCodeId(selectId),
 						ids.length(),
 						condition.getNativePtr(),
 						trueOp.getNativePtr(),
-						falseOp.getNativePtr()));
+						falseOp.getNativePtr())));
 	}
 
 	@Override
 	public void returnVoid() {
 		this.function.getCallback().beforeReturn(this.code);
-		returnVoid(nextPtr());
+		instr(returnVoid(nextPtr(), nextInstr()));
 	}
 
 	public void returnValue(LLOp<?> result) {
 		this.function.getCallback().beforeReturn(this.code);
-		returnValue(nextPtr(), result.getNativePtr());
+		instr(returnValue(nextPtr(), nextInstr(),result.getNativePtr()));
+	}
+
+	public long instr(long instr) {
+		if (this.lastInset != null) {
+			this.lastInset.nextInstr(instr);
+			this.lastInset = null;
+		}
+		return instr;
 	}
 
 	@Override
 	public String toString() {
 		return getId().toString();
-	}
-
-	protected final void init() {
-		this.head = new LLCodePos.Head(this);
-		this.tail = new LLCodePos.Tail(this);
-	}
-
-	protected abstract long createFirtsBlock();
-
-	final long getFirstBlockPtr() {
-		if (created()) {
-			return this.firstBlockPtr;
-		}
-		return this.firstBlockPtr = this.blockPtr = createFirtsBlock();
-	}
-
-	final long getBlockPtr() {
-		if (created()) {
-			return this.blockPtr;
-		}
-		return getFirstBlockPtr();
-	}
-
-	private long createNextBlock() {
-		return createBlock(getFunction(), getId().anonymous(++this.blockIdx));
-	}
-
-	private long setNextPtr(final long nextPtr) {
-		this.tail = new LLCodePos.Tail(this, nextPtr);
-		return this.blockPtr = nextPtr;
-	}
-
-	private final void endBlock() {
-		this.blockPtr = 0;
-		this.tail = null;
 	}
 
 	static long createBlock(LLFunction<?> function, CodeId id) {
@@ -572,14 +464,21 @@ public abstract class LLCode implements CodeWriter {
 			long id,
 			int idLen);
 
-	static native long stackSave(long blockPtr);
+	static native long stackSave(long blockPtr, long instrPtr);
 
-	static native void stackRestore(long blockPtr, long stackPtr);
-
-	static native void go(long sourcePtr, long targetPtr);
-
-	private static native void choose(
+	static native long stackRestore(
 			long blockPtr,
+			long instrPtr,
+			long stackPtr);
+
+	static native long go(
+			long sourcePtr,
+			long instrPtr,
+			long targetPtr);
+
+	static native long choose(
+			long blockPtr,
+			long instrPtr,
 			long conditionPtr,
 			long truePtr,
 			long falsePtr);
@@ -606,23 +505,27 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long allocatePtr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen);
 
 	private static native long allocateStructPtr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long typePtr);
 
 	private static native long allocateStruct(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long typePtr);
 
 	private static native long phi2(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long block1ptr,
@@ -632,20 +535,25 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long phiN(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long[] blockAndValuePtrs);
 
 	private static native long select(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long conditionPtr,
 			long truePtr,
 			long flsePtr);
 
-	private static native void returnVoid(long blockPtr);
+	private static native long returnVoid(long blockPtr, long instrPtr);
 
-	private static native void returnValue(long blockPtr, long valuePtr);
+	private static native long returnValue(
+			long blockPtr,
+			long instrPtr,
+			long valuePtr);
 
 }

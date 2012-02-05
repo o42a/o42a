@@ -32,6 +32,11 @@
 using namespace llvm;
 
 
+#define MAKE_BUILDER \
+		IRBuilder<> builder(block);\
+		if (instrPtr) builder.SetInsertPoint(\
+				cast<Instruction>(from_ptr<Value>(instrPtr)))
+
 jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
 		JNIEnv *,
 		jclass,
@@ -51,60 +56,66 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_createBlock(
 jlong Java_org_o42a_backend_llvm_code_LLCode_stackSave(
 		JNIEnv *,
 		jclass,
-		jlong blockPtr) {
+		jlong blockPtr,
+		jlong instrPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
 	o42ac::BackendModule *module =
 			static_cast<o42ac::BackendModule*>(block->getParent()->getParent());
-	IRBuilder<> builder(block);
 	Value *stackState = builder.CreateCall(module->getStackSaveFunc(), "stack");
 
 	return to_ptr(stackState);
 }
 
-void Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
+jlong Java_org_o42a_backend_llvm_code_LLCode_stackRestore(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong stackPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
 	o42ac::BackendModule *module =
 			static_cast<o42ac::BackendModule*>(block->getParent()->getParent());
 	Value *stackState = from_ptr<Value>(stackPtr);
-	IRBuilder<> builder(block);
 
-	builder.CreateCall(module->getStackRestoreFunc(), stackState);
+	return to_ptr(builder.CreateCall(
+			module->getStackRestoreFunc(),
+			stackState));
 }
 
-void Java_org_o42a_backend_llvm_code_LLCode_go(
-		JNIEnv *,
-		jclass,
-		jlong sourcePtr,
-		jlong targetPtr) {
-
-	BasicBlock *source = from_ptr<BasicBlock>(sourcePtr);
-	BasicBlock *target = from_ptr<BasicBlock>(targetPtr);
-	IRBuilder<> builder(source);
-
-	builder.CreateBr(target);
-}
-
-void Java_org_o42a_backend_llvm_code_LLCode_choose(
+jlong Java_org_o42a_backend_llvm_code_LLCode_go(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
+		jlong targetPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
+	BasicBlock *target = from_ptr<BasicBlock>(targetPtr);
+
+	return to_ptr(builder.CreateBr(target));
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
 		jlong conditionPtr,
 		jlong truePtr,
 		jlong falsePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
 	Value *condition = from_ptr<Value>(conditionPtr);
 	BasicBlock *trueBlock = from_ptr<BasicBlock>(truePtr);
 	BasicBlock *falseBlock = from_ptr<BasicBlock>(falsePtr);
-	IRBuilder<> builder(block);
 
-	builder.CreateCondBr(condition, trueBlock, falseBlock);
+	return to_ptr(builder.CreateCondBr(condition, trueBlock, falseBlock));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
@@ -195,7 +206,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_fp64(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_bool(
+jlong Java_org_o42a_backend_llvm_code_LLCode_bool(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr,
@@ -209,7 +220,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_bool(
 	return to_ptr(result);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
+jlong Java_org_o42a_backend_llvm_code_LLCode_nullPtr(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr) {
@@ -247,11 +258,12 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	Value *result = builder.CreateAlloca(
 			builder.getInt8PtrTy(),
 			0,
@@ -264,12 +276,13 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	Type *type = from_ptr<Type>(typePtr);
 	Value *result = builder.CreateAlloca(
 			type->getPointerTo(),
@@ -283,12 +296,13 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlong typePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	Type *type = from_ptr<Type>(typePtr);
 	Value *result = builder.CreateAlloca(
 			type,
@@ -302,6 +316,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlong block1ptr,
@@ -310,7 +325,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 		jlong value2ptr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	Value *value1 = from_ptr<Value>(value1ptr);
 	BasicBlock *block1 = from_ptr<BasicBlock>(block1ptr);
 	Value *value2 = from_ptr<Value>(value2ptr);
@@ -326,16 +341,17 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	return to_ptr(phi);
 }
 
-jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN(
+jlong Java_org_o42a_backend_llvm_code_LLCode_phiN(
 		JNIEnv *env,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlongArray blockAndValuePtrs) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	jInt64Array blocksAndValues(env, blockAndValuePtrs);
 	size_t len = blocksAndValues.length();
 	PHINode *phi = builder.CreatePHI(
@@ -356,6 +372,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlong conditionPtr,
@@ -363,7 +380,7 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 		jlong falsePtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	MAKE_BUILDER;
 	Value *condition = from_ptr<Value>(conditionPtr);
 	Value *value1 = from_ptr<Value>(truePtr);
 	Value *value2 = from_ptr<Value>(falsePtr);
@@ -376,26 +393,28 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_select(
 	return to_ptr(result);
 }
 
-void Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
-		JNIEnv *,
-		jclass,
-		jlong blockPtr) {
-
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
-
-	builder.CreateRetVoid();
-}
-
-void Java_org_o42a_backend_llvm_code_LLCode_returnValue(
+jlong Java_org_o42a_backend_llvm_code_LLCode_returnVoid(
 		JNIEnv *,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr) {
+
+	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
+
+	return to_ptr(builder.CreateRetVoid());
+}
+
+jlong Java_org_o42a_backend_llvm_code_LLCode_returnValue(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
 		jlong resultPtr) {
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
+	MAKE_BUILDER;
 	Value *result = from_ptr<Value>(resultPtr);
-	IRBuilder<> builder(block);
 
-	builder.CreateRet(result);
+	return to_ptr(builder.CreateRet(result));
 }
