@@ -137,6 +137,7 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		JNIEnv *env,
 		jclass,
 		jlong blockPtr,
+		jlong instrPtr,
 		jlong id,
 		jint idLen,
 		jlong functionPtr,
@@ -144,6 +145,9 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 
 	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	IRBuilder<> builder(block);
+	if (instrPtr) {
+		builder.SetInsertPoint(cast<Instruction>(from_ptr<Value>(instrPtr)));
+	}
 	Value *callee = from_ptr<Value>(functionPtr);
 	jArray<jlongArray, jlong> argArray(env, argPtrs);
 	const size_t numArgs = argArray.length();

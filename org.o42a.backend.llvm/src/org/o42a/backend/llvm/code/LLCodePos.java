@@ -26,44 +26,44 @@ public abstract class LLCodePos implements CodePos {
 
 	public abstract long getBlockPtr();
 
-	public abstract boolean tailOf(LLCode code);
+	public abstract boolean tailOf(LLBlock block);
 
 	public static class Head extends LLCodePos {
 
-		private final LLCode code;
+		private final LLBlock block;
 
-		Head(LLCode code) {
-			this.code = code;
+		Head(LLBlock block) {
+			this.block = block;
 		}
 
 		@Override
 		public long getBlockPtr() {
-			return this.code.getFirstBlockPtr();
+			return this.block.getFirstBlockPtr();
 		}
 
 		@Override
-		public boolean tailOf(LLCode code) {
+		public boolean tailOf(LLBlock code) {
 			return false;
 		}
 
 		@Override
 		public String toString() {
-			return this.code.toString();
+			return this.block.toString();
 		}
 
 	}
 
 	public static class Tail extends LLCodePos {
 
-		private final LLCode code;
+		private final LLBlock block;
 		private long blockPtr;
 
-		Tail(LLCode code) {
-			this.code = code;
+		Tail(LLBlock block) {
+			this.block = block;
 		}
 
-		Tail(LLCode code, long blockPtr) {
-			this.code = code;
+		Tail(LLBlock block, long blockPtr) {
+			this.block = block;
 			this.blockPtr = blockPtr;
 		}
 
@@ -72,17 +72,17 @@ public abstract class LLCodePos implements CodePos {
 			if (this.blockPtr != 0L) {
 				return this.blockPtr;
 			}
-			return this.blockPtr = this.code.getBlockPtr();
+			return this.blockPtr = this.block.getBlockPtr();
 		}
 
 		@Override
-		public boolean tailOf(LLCode code) {
-			return code == this.code;
+		public boolean tailOf(LLBlock code) {
+			return code == this.block;
 		}
 
 		@Override
 		public String toString() {
-			return this.code.toString() + "...";
+			return this.block.toString() + "...";
 		}
 
 	}

@@ -18,34 +18,34 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_createBlock
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    stackSave
- * Signature: (J)J
+ * Signature: (JJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_stackSave
-  (JNIEnv *, jclass, jlong);
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    stackRestore
- * Signature: (JJ)V
+ * Signature: (JJJ)J
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLCode_stackRestore
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_stackRestore
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    go
- * Signature: (JJ)V
+ * Signature: (JJJ)J
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLCode_go
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_go
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    choose
- * Signature: (JJJJ)V
+ * Signature: (JJJJJ)J
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLCode_choose
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_choose
+  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
@@ -130,66 +130,66 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_nullFuncPtr
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocatePtr
- * Signature: (JJI)J
+ * Signature: (JJJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocatePtr
-  (JNIEnv *, jclass, jlong, jlong, jint);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocateStructPtr
- * Signature: (JJIJ)J
+ * Signature: (JJJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    allocateStruct
- * Signature: (JJIJ)J
+ * Signature: (JJJIJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_allocateStruct
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    phi2
- * Signature: (JJIJJJJ)J
+ * Signature: (JJJIJJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phi2
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    phiN
- * Signature: (JJI[J)J
+ * Signature: (JJJI[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_phiN
-  (JNIEnv *, jclass, jlong, jlong, jint, jlongArray);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlongArray);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    select
- * Signature: (JJIJJJ)J
+ * Signature: (JJJIJJJ)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_select
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlong, jlong);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    returnVoid
- * Signature: (J)V
+ * Signature: (JJ)J
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLCode_returnVoid
-  (JNIEnv *, jclass, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_returnVoid
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
  * Method:    returnValue
- * Signature: (JJ)V
+ * Signature: (JJJ)J
  */
-JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_code_LLCode_returnValue
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_returnValue
+  (JNIEnv *, jclass, jlong, jlong, jlong);
 
 #ifdef __cplusplus
 }

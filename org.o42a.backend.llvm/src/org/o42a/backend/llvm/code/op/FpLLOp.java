@@ -48,11 +48,12 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				neg(
+				llvm.instr(neg(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -66,12 +67,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				add(
+				llvm.instr(add(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(summand)));
+						nativePtr(summand))));
 	}
 
 	@Override
@@ -85,12 +87,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				sub(
+				llvm.instr(sub(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(subtrahend)));
+						nativePtr(subtrahend))));
 	}
 
 	@Override
@@ -104,12 +107,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				mul(
+				llvm.instr(mul(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(multiplier)));
+						nativePtr(multiplier))));
 	}
 
 	@Override
@@ -123,12 +127,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				div(
+				llvm.instr(div(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(divisor)));
+						nativePtr(divisor))));
 	}
 
 	@Override
@@ -142,12 +147,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				rem(
+				llvm.instr(rem(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(divisor)));
+						nativePtr(divisor))));
 	}
 
 	@Override
@@ -161,12 +167,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				eq(
+				llvm.instr(eq(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -180,12 +187,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				ne(
+				llvm.instr(ne(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -199,11 +207,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				gt(
+				llvm.instr(gt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr(), nativePtr(other)));
+						getNativePtr(),
+						nativePtr(other))));
 	}
 
 	@Override
@@ -217,12 +227,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				ge(
+				llvm.instr(ge(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -236,12 +247,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				lt(
+				llvm.instr(lt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -255,12 +267,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				le(
+				llvm.instr(le(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -274,12 +287,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int8llOp(
 				resultId,
 				nextPtr,
-				fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 8));
+						(byte) 8)));
 	}
 
 	@Override
@@ -293,12 +307,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int16llOp(
 				resultId,
 				nextPtr,
-				fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 16));
+						(byte) 16)));
 	}
 
 	@Override
@@ -312,12 +327,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int32llOp(
 				resultId,
 				nextPtr,
-				fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 32));
+						(byte) 32)));
 	}
 
 	@Override
@@ -331,12 +347,13 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Int64llOp(
 				resultId,
 				nextPtr,
-				fp2int(
+				llvm.instr(fp2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 64));
+						(byte) 64)));
 	}
 
 	@Override
@@ -350,11 +367,12 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Fp32llOp(
 				resultId,
 				nextPtr,
-				fp2fp32(
+				llvm.instr(fp2fp32(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -368,21 +386,24 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		return new Fp64llOp(
 				resultId,
 				nextPtr,
-				fp2fp64(
+				llvm.instr(fp2fp64(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	private static native long neg(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);
 
 	private static native long add(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -390,6 +411,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long sub(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -397,6 +419,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long mul(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -404,6 +427,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long div(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -411,6 +435,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long rem(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -418,6 +443,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long eq(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -425,6 +451,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long ne(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -432,6 +459,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long gt(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -439,6 +467,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long ge(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -446,6 +475,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long lt(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -453,6 +483,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long le(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -460,6 +491,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long fp2int(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr,
@@ -467,12 +499,14 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 
 	private static native long fp2fp32(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);
 
 	private static native long fp2fp64(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);

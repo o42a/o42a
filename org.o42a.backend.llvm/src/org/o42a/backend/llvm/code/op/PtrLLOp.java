@@ -95,11 +95,12 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				isNull(
+				llvm.instr(isNull(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -114,12 +115,13 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				IntLLOp.eq(
+				llvm.instr(IntLLOp.eq(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -135,12 +137,13 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		return create(
 				offsetId,
 				nextPtr,
-				offset(
+				llvm.instr(offset(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(offsetId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(index)));
+						nativePtr(index))));
 	}
 
 	@Override
@@ -155,11 +158,12 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				castId,
 				getAllocClass(),
 				nextPtr,
-				toAny(
+				llvm.instr(toAny(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(castId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	public DataLLOp toData(CodeId id, Code code) {
@@ -173,11 +177,12 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				castId,
 				getAllocClass(),
 				nextPtr,
-				toAny(
+				llvm.instr(toAny(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(castId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	public <SS extends StructOp<SS>> SS to(
@@ -195,12 +200,13 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				getAllocClass(),
 				type,
 				nextPtr,
-				castStructTo(
+				llvm.instr(castStructTo(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(castId),
 						ids.length(),
 						getNativePtr(),
-						typePtr(type))));
+						typePtr(type)))));
 	}
 
 	public <F extends Func<F>> FuncLLOp<F> toFunc(
@@ -216,12 +222,13 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				id,
 				getAllocClass(),
 				nextPtr,
-				castFuncTo(
+				llvm.instr(castFuncTo(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(id),
 						ids.length(),
 						getNativePtr(),
-						llvm.getModule().nativePtr(signature)),
+						llvm.getModule().nativePtr(signature))),
 				signature);
 	}
 
@@ -247,6 +254,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	protected static native long field(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr,
@@ -254,29 +262,34 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	protected static native long load(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
-	protected static native void store(
+	protected static native long store(
 			long blockPtr,
+			long instrPtr,
 			long pointerPtr,
 			long valuePtr);
 
 	static native long toAny(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	static native long toPtr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	static native long toInt(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr,
@@ -284,24 +297,28 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	static native long toFp32(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	static native long toFp64(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	static native long toRelPtr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	private static native long castStructTo(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr,
@@ -309,6 +326,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	private static native long castFuncTo(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr,
@@ -316,12 +334,14 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	private static native long isNull(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr);
 
 	private static native long offset(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long pointerPtr,

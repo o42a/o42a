@@ -72,10 +72,10 @@ extern "C" {
 /*
  * Class:     org_o42a_backend_llvm_code_op_LLFunc
  * Method:    call
- * Signature: (JJIJ[J)J
+ * Signature: (JJJIJ[J)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_LLFunc_call
-  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jlongArray);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jlongArray);
 
 #ifdef __cplusplus
 }

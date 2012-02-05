@@ -81,12 +81,13 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 				resultId,
 				AUTO_ALLOC_CLASS,
 				nextPtr,
-				offsetBy(
+				llvm.instr(offsetBy(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						nativePtr(from),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -104,6 +105,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 
 	private static native long offsetBy(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long fromPtr,

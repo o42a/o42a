@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.code.op;
-
-import static org.o42a.backend.llvm.code.LLCode.llvm;
+package org.o42a.backend.llvm.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Fp64op;
 
 
-public final class Fp64llOp extends FpLLOp<Fp64op, Fp64llOp>
-		implements Fp64op {
+final class LLCodeBlock extends LLBlock {
 
-	public Fp64llOp(CodeId id, long blockPtr, long nativePtr) {
-		super(id, blockPtr, nativePtr);
+	LLCodeBlock(LLBlock enclosing, Code code, CodeId id) {
+		super(
+				enclosing.getModule(),
+				enclosing.getFunction(),
+				code,
+				id);
+		init();
 	}
 
 	@Override
-	public Fp64llOp toFp64(CodeId id, Code code) {
-
-		final long nextPtr = llvm(code).nextPtr();
-
-		if (nextPtr == getBlockPtr()) {
-			return this;
-		}
-
-		return super.toFp64(id, code);
+	public void done() {
 	}
 
 	@Override
-	public Fp64llOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new Fp64llOp(id, blockPtr, nativePtr);
+	protected long createFirtsBlock() {
+		return createBlock(getFunction(), getId());
 	}
 
 }

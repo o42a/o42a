@@ -19,8 +19,8 @@
 */
 package org.o42a.backend.llvm.code.op;
 
+import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
@@ -63,87 +63,87 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 	@Override
 	public void call(Code code, Op... args) {
-		call(null, code, nextPtr(code), args);
+		call(null, llvm(code), args);
 	}
 
 	@Override
 	public Int8op callInt8(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Int8llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Int8llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public Int16op callInt16(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Int16llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Int16llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public Int32op callInt32(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Int32llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Int32llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public Int64op callInt64(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Int64llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Int64llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public Fp32op callFp32(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Fp32llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Fp32llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public Fp64op callFp64(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new Fp64llOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new Fp64llOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public BoolOp callBool(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
-		return new BoolLLOp(id, nextPtr, call(id, code, nextPtr, args));
+		return new BoolLLOp(id, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
 	public AnyOp callAny(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
 		return new AnyLLOp(
 				id,
 				getAllocClass(),
-				nextPtr,
-				call(id, code, nextPtr, args));
+				llvm.nextPtr(),
+				call(id, llvm, args));
 	}
 
 	@Override
 	public DataOp callData(CodeId id, Code code, Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
 		return new DataLLOp(
 				id,
 				getAllocClass(),
-				nextPtr,
-				call(id, code, nextPtr, args));
+				llvm.nextPtr(),
+				call(id, llvm, args));
 	}
 
 	@Override
@@ -153,35 +153,37 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 			Type<S> type,
 			Op... args) {
 
-		final long nextPtr = nextPtr(code);
+		final LLCode llvm = llvm(code);
 
 		return type.op(new LLStruct<S>(
 				id,
 				AUTO_ALLOC_CLASS,
 				type,
-				nextPtr,
-				call(id, code, nextPtr, args)));
+				llvm.nextPtr(),
+				call(id, llvm, args)));
 	}
 
-	private long call(CodeId id, Code code, long blockPtr, Op[] args) {
+	private long call(CodeId id, LLCode code, Op[] args) {
 
-		final NativeBuffer ids = LLCode.llvm(code).getModule().ids();
+		final NativeBuffer ids = code.getModule().ids();
 		final long[] argPtrs = new long[args.length];
 
 		for (int i = 0; i < args.length; ++i) {
 			argPtrs[i] = nativePtr(args[i]);
 		}
 
-		return call(
-				blockPtr,
+		return code.instr(call(
+				code.nextPtr(),
+				code.nextInstr(),
 				ids.writeCodeId(id),
 				ids.length(),
 				getNativePtr(),
-				argPtrs);
+				argPtrs));
 	}
 
 	private static native long call(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long functionPtr,

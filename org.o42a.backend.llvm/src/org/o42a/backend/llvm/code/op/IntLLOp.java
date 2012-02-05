@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
@@ -56,12 +55,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				shl(
+				llvm.instr(shl(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(numBits)));
+						nativePtr(numBits))));
 	}
 
 	@Override
@@ -80,12 +80,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				lshr(
+				llvm.instr(lshr(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(numBits)));
+						nativePtr(numBits))));
 	}
 
 	@Override
@@ -104,12 +105,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				ashr(
+				llvm.instr(ashr(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(numBits)));
+						nativePtr(numBits))));
 	}
 
 	@Override
@@ -128,12 +130,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				and(
+				llvm.instr(and(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(operand)));
+						nativePtr(operand))));
 	}
 
 	@Override
@@ -147,12 +150,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				or(
+				llvm.instr(or(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(operand)));
+						nativePtr(operand))));
 	}
 
 	@Override
@@ -166,12 +170,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				xor(
+				llvm.instr(xor(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(operand)));
+						nativePtr(operand))));
 	}
 
 	@Override
@@ -185,11 +190,12 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				neg(
+				llvm.instr(neg(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -203,12 +209,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				add(
+				llvm.instr(add(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(summand)));
+						nativePtr(summand))));
 	}
 
 	@Override
@@ -222,12 +229,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				sub(
+				llvm.instr(sub(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(subtrahend)));
+						nativePtr(subtrahend))));
 	}
 
 	@Override
@@ -241,12 +249,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				mul(
+				llvm.instr(mul(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(multiplier)));
+						nativePtr(multiplier))));
 	}
 
 	@Override
@@ -260,12 +269,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				div(
+				llvm.instr(div(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(divisor)));
+						nativePtr(divisor))));
 	}
 
 	@Override
@@ -279,12 +289,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return create(
 				resultId,
 				nextPtr,
-				rem(
+				llvm.instr(rem(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(divisor)));
+						nativePtr(divisor))));
 	}
 
 	@Override
@@ -298,12 +309,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				eq(
+				llvm.instr(eq(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -317,12 +329,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				ne(
+				llvm.instr(ne(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -336,12 +349,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				gt(
-						nextPtr(code),
+				llvm.instr(gt(
+						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -355,11 +369,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				ge(
+				llvm.instr(ge(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr(), nativePtr(other)));
+						getNativePtr(),
+						nativePtr(other))));
 	}
 
 	@Override
@@ -373,12 +389,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				lt(
+				llvm.instr(lt(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -392,12 +409,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				le(
+				llvm.instr(le(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(other)));
+						nativePtr(other))));
 	}
 
 	@Override
@@ -411,12 +429,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int8llOp(
 				resultId,
 				nextPtr,
-				int2int(
+				llvm.instr(int2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 8));
+						(byte) 8)));
 	}
 
 	@Override
@@ -430,12 +449,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int16llOp(
 				resultId,
 				nextPtr,
-				int2int(
+				llvm.instr(int2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 16));
+						(byte) 16)));
 	}
 
 	@Override
@@ -449,12 +469,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int32llOp(
 				resultId,
 				nextPtr,
-				int2int(
+				llvm.instr(int2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 32));
+						(byte) 32)));
 	}
 
 	@Override
@@ -468,12 +489,13 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Int64llOp(
 				resultId,
 				nextPtr,
-				int2int(
+				llvm.instr(int2int(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						(byte) 64));
+						(byte) 64)));
 	}
 
 	@Override
@@ -487,11 +509,12 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Fp32llOp(
 				resultId,
 				nextPtr,
-				intToFp32(
+				llvm.instr(intToFp32(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -505,11 +528,12 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new Fp64llOp(
 				resultId,
 				nextPtr,
-				intToFp64(
+				llvm.instr(intToFp64(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	@Override
@@ -523,17 +547,19 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 		return new BoolLLOp(
 				resultId,
 				nextPtr,
-				lowestBit(
+				llvm.instr(lowestBit(
 						nextPtr,
+						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()));
+						getNativePtr())));
 	}
 
 	protected abstract T constantValue(Code code, int value);
 
 	private static native long shl(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr,
@@ -541,6 +567,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long lshr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr,
@@ -548,6 +575,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long ashr(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr,
@@ -555,6 +583,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long and(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -562,6 +591,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long or(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -569,6 +599,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long xor(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -576,12 +607,14 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long neg(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);
 
 	private static native long add(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -589,6 +622,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long sub(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -596,6 +630,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long mul(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -603,6 +638,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long div(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -610,6 +646,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long rem(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -617,6 +654,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	static native long eq(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -624,6 +662,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long ne(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -631,6 +670,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long gt(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -638,6 +678,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long ge(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -645,6 +686,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long lt(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -652,6 +694,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long le(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long op1ptr,
@@ -659,6 +702,7 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long int2int(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr,
@@ -666,18 +710,21 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	private static native long intToFp32(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);
 
 	private static native long intToFp64(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);
 
 	private static native long lowestBit(
 			long blockPtr,
+			long instrPtr,
 			long id,
 			int idLen,
 			long valuePtr);

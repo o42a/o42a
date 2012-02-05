@@ -20,7 +20,6 @@
 package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
-import static org.o42a.backend.llvm.code.LLCode.nextPtr;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -42,7 +41,7 @@ public final class Int32llOp extends IntLLOp<Int32op, Int32llOp>
 	@Override
 	public Int32llOp toInt32(CodeId id, Code code) {
 
-		final long nextPtr = nextPtr(code);
+		final long nextPtr = llvm(code).nextPtr();
 
 		if (nextPtr == getBlockPtr()) {
 			return this;

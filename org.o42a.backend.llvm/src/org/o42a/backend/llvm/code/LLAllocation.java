@@ -25,11 +25,11 @@ import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 
 
-final class LLAllocation extends LLCode implements AllocationWriter {
+final class LLAllocation extends LLBlock implements AllocationWriter {
 
 	private final long stackPtr;
 
-	LLAllocation(LLCode enclosing, AllocationCode code, CodeId id) {
+	LLAllocation(LLBlock enclosing, AllocationCode code, CodeId id) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),
@@ -37,7 +37,7 @@ final class LLAllocation extends LLCode implements AllocationWriter {
 				id);
 		init();
 		if (code.isDisposable()) {
-			this.stackPtr = stackSave(nextPtr());
+			this.stackPtr = instr(stackSave(nextPtr(), nextInstr()));
 		} else {
 			this.stackPtr = 0L;
 		}
@@ -45,7 +45,7 @@ final class LLAllocation extends LLCode implements AllocationWriter {
 
 	@Override
 	public void dispose(CodeWriter writer) {
-		stackRestore(nextPtr(writer), this.stackPtr);
+		instr(stackRestore(nextPtr(writer), nextInstr(), this.stackPtr));
 	}
 
 	@Override
