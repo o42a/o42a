@@ -20,7 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 
-public interface AllocationWriter extends CodeWriter {
+public interface AllocationWriter extends BlockWriter {
 
 	void dispose(CodeWriter writer);
 

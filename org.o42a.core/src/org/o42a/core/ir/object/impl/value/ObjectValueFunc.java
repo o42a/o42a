@@ -22,7 +22,7 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.artifact.object.ValuePart;
@@ -140,12 +140,12 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	@Override
 	protected ValOp build(ValDirs dirs, ObjOp host) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		writeRequirement(dirs.dirs(), host);
 		getValueIR().writeCondition(dirs.dirs(), host, null);
 
-		final Code unknownClaim = dirs.addBlock("unknown_claim");
+		final Block unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 				dirs.dirs().splitWhenUnknown(
 						dirs.dirs().falseDir(),
@@ -184,7 +184,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 	private void writeRequirement(CodeDirs dirs, ObjOp host) {
 
-		final Code unknownReq = dirs.addBlock("unknown_req");
+		final Block unknownReq = dirs.addBlock("unknown_req");
 		final CodeDirs reqDirs = dirs.splitWhenUnknown(
 				dirs.falseDir(),
 				unknownReq.head());
@@ -195,10 +195,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		}
 	}
 
-	private ValType.Op writeProposition(
-			ValDirs dirs,
-			Code code,
-			ObjOp host) {
+	private ValType.Op writeProposition(ValDirs dirs, Block code, ObjOp host) {
 
 		final ValDirs propDirs = dirs.sub(code).setStoreMode(INITIAL_VAL_STORE);
 		final ValType.Op prop = code.phi(

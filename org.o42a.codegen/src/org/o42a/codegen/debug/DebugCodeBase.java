@@ -28,10 +28,11 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.CodeBase;
 import org.o42a.codegen.data.Ptr;
 
 
-public abstract class DebugCodeBase extends OpCodeBase {
+public abstract class DebugCodeBase extends CodeBase {
 
 	static DebugStackFrameOp allocateStackFrame(
 			Code code,
@@ -126,7 +127,7 @@ public abstract class DebugCodeBase extends OpCodeBase {
 			return codePos;
 		}
 
-		final Code block = code().addBlock(id);
+		final Block block = code().addBlock(id);
 
 		block.end();
 		block.go(codePos);

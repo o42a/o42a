@@ -20,12 +20,12 @@
 package org.o42a.backend.llvm.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 
 
 final class LLCodeBlock extends LLBlock {
 
-	LLCodeBlock(LLBlock enclosing, Code code, CodeId id) {
+	LLCodeBlock(LLCode enclosing, Block code, CodeId id) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),

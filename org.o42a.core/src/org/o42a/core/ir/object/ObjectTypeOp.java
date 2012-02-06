@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
@@ -82,7 +83,7 @@ public class ObjectTypeOp extends IROp {
 
 	public final void writeRequirement(CodeDirs dirs, ObjectOp body) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ObjectCondFunc function =
 				ptr().data(code).requirementFunc(code).load(null, code);
 
@@ -100,7 +101,7 @@ public class ObjectTypeOp extends IROp {
 
 	public final void writeCondition(CodeDirs dirs, ObjectOp body) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ObjectCondFunc function =
 				ptr().data(code).conditionFunc(code).load(null, code);
 
@@ -109,7 +110,7 @@ public class ObjectTypeOp extends IROp {
 
 	public final ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ObjectValFunc function =
 				ptr().data(code).propositionFunc(code).load(null, code);
 

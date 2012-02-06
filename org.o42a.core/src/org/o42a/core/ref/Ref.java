@@ -27,7 +27,7 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
@@ -485,7 +485,7 @@ public class Ref extends Statement {
 		@Override
 		public void writeValue(Control control, ValOp result) {
 
-			final Code code = control.code();
+			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,
@@ -526,7 +526,7 @@ public class Ref extends Statement {
 		@Override
 		public void writeValue(Control control, ValOp result) {
 
-			final Code code = control.code();
+			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,
@@ -573,7 +573,7 @@ public class Ref extends Statement {
 		@Override
 		public void writeValue(Control control, ValOp result) {
 
-			final Code code = control.code();
+			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,

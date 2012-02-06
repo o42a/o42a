@@ -152,7 +152,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	private void buildAssigner(Function<VariableAssignerFunc> assigner) {
 
-		final Code failure = assigner.addBlock("failure");
+		final Block failure = assigner.addBlock("failure");
 		final ObjBuilder builder = new ObjBuilder(
 				assigner,
 				failure.head(),

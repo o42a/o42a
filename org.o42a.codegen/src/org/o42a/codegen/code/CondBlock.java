@@ -20,18 +20,18 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 
 
-public class CondCode extends CodeBlock {
+public class CondBlock extends CodeBlock {
 
 	private final BoolOp condition;
 	private final CodeId falseName;
-	private Code otherwise;
+	private Block otherwise;
 
-	CondCode(
-			Code enclosing,
+	CondBlock(
+			Block enclosing,
 			BoolOp condition,
 			CodeId trueName,
 			CodeId falseName) {
@@ -44,7 +44,7 @@ public class CondCode extends CodeBlock {
 		return this.condition;
 	}
 
-	public final Code otherwise() {
+	public final Block otherwise() {
 		if (this.otherwise == null) {
 			initBlocks();
 		}
@@ -52,7 +52,7 @@ public class CondCode extends CodeBlock {
 	}
 
 	@Override
-	public CodeWriter writer() {
+	public BlockWriter writer() {
 		if (this.writer == null) {
 			initBlocks();
 		}
@@ -65,10 +65,14 @@ public class CondCode extends CodeBlock {
 				+ " ? " + getId() + " : " + this.falseName;
 	}
 
+	private final Block enclosing() {
+		return (Block) getEnclosing();
+	}
+
 	private void initBlocks() {
 		this.writer = getEnclosing().writer().block(this, getId());
 		this.otherwise = getEnclosing().addBlock(this.falseName);
-		getEnclosing().writer().go(
+		enclosing().writer().go(
 				this.condition,
 				unwrapPos(head()),
 				unwrapPos(this.otherwise.head()));

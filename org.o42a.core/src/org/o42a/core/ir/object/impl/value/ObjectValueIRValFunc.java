@@ -121,7 +121,7 @@ public abstract class ObjectValueIRValFunc
 			subDirs = dirs;
 		}
 
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 		final Value<?> finalValue = getFinal();
 
 		if (finalValue.getKnowledge().isKnown()) {
@@ -155,8 +155,8 @@ public abstract class ObjectValueIRValFunc
 
 		function.debug("Calculating " + suffix());
 
-		final Code failure = function.addBlock("failure");
-		final Code unknown = function.addBlock("unknown");
+		final Block failure = function.addBlock("failure");
+		final Block unknown = function.addBlock("unknown");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),
@@ -172,7 +172,7 @@ public abstract class ObjectValueIRValFunc
 				failure.head(),
 				unknown.head())
 				.value(function.id(suffix() + "_val"), result);
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ObjOp host = builder.host();
 
 		code.dumpName("Host: ", host.ptr());
@@ -317,7 +317,7 @@ public abstract class ObjectValueIRValFunc
 
 		if (finalValue.getKnowledge().isKnown()) {
 
-			final Code code = dirs.code();
+			final Block code = dirs.code();
 			final ValOp result = finalValue.op(dirs.getBuilder(), code);
 
 			code.debug(
@@ -378,7 +378,7 @@ public abstract class ObjectValueIRValFunc
 			ValueCollector collector) {
 
 		final ValOp result = dirs.value();
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final int size = collector.size();
 		final ValueDef[] defs = collector.getExplicitDefs();
 
@@ -386,7 +386,7 @@ public abstract class ObjectValueIRValFunc
 		for (int i = 0; i < size; ++i) {
 
 			final ValueDef def = defs[i];
-			final Code block = collector.blocks[i];
+			final Block block = collector.blocks[i];
 
 			if (def == null) {
 				if (i == collector.ancestorIndex) {
@@ -428,7 +428,7 @@ public abstract class ObjectValueIRValFunc
 	private ValOp writeAncestorDef(ValDirs dirs, ObjOp host) {
 
 		final ValOp result = dirs.value();
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		if (!part().ancestorDefsUpdates().isUsed(
 				getGenerator().getAnalyzer(),
@@ -473,7 +473,7 @@ public abstract class ObjectValueIRValFunc
 
 	private void writeAncestorDef(
 			ValDirs dirs,
-			Code code,
+			Block code,
 			ObjectOp ancestorBody,
 			ObjectTypeOp ancestorType) {
 
@@ -509,7 +509,7 @@ public abstract class ObjectValueIRValFunc
 
 		private final CodeDirs dirs;
 		private final ValueDef[] explicitDefs;
-		private final Code[] blocks;
+		private final Block[] blocks;
 		private int size;
 		private int ancestorIndex = -1;
 
@@ -517,7 +517,7 @@ public abstract class ObjectValueIRValFunc
 			super(object);
 			this.dirs = dirs;
 			this.explicitDefs = new ValueDef[capacity];
-			this.blocks = new Code[capacity];
+			this.blocks = new Block[capacity];
 		}
 
 		public final ValueDef[] getExplicitDefs() {

@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.op.CodeDirs;
 
 
 public class InlineControl extends MainControl {
 
-	private Code returnCode;
+	private Block returnCode;
 
 	public InlineControl(CodeDirs dirs) {
 		super(

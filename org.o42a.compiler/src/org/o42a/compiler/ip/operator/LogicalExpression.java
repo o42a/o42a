@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
@@ -102,9 +102,9 @@ public class LogicalExpression extends ObjectConstructor {
 			InlineValue inlineOp) {
 
 		final CodeBuilder builder = dirs.getBuilder();
-		final Code code = dirs.code();
-		final Code operandFalse = dirs.addBlock("operand_false");
-		final Code operandUnknown = dirs.addBlock("operand_unknown");
+		final Block code = dirs.code();
+		final Block operandFalse = dirs.addBlock("operand_false");
+		final Block operandUnknown = dirs.addBlock("operand_unknown");
 
 		switch (this.node.getOperator()) {
 		case NOT:

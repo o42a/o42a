@@ -41,7 +41,7 @@ public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 
 	public ValOp parse(ValDirs dirs, ValOp input, int radix) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ValOp output = dirs.value();
 
 		parse(code, output, input, radix);

@@ -26,6 +26,7 @@ import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -61,14 +62,14 @@ public class CtrOp extends IROp {
 				"New object: sample=" + sample
 				+ ", ancestorFunc=" + ancestorFunc
 				+ ", scope=" + scope);
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 
 		ptr().scopeType(code).store(code, scope.objectType(code).ptr());
 		ptr().ancestorFunc(code).store(code, ancestorFunc);
 		ptr().type(code).store(code, sample.objectType(code).ptr());
 
 		final DataOp result = newFunc().op(null, code).newObject(code, this);
-		final Code nullObject = code.addBlock("null_new_object");
+		final Block nullObject = code.addBlock("null_new_object");
 
 		result.isNull(null, code).go(code, nullObject.head());
 
@@ -94,7 +95,7 @@ public class CtrOp extends IROp {
 				"new_object",
 				"New object: sample=" + sample
 				+ ", ancestor=" + ancestor);
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 
 		if (scope != null) {
 			ptr().scopeType(code).store(code, scope.objectType(code).ptr());

@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
@@ -34,7 +33,9 @@ import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -46,8 +47,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	private final CFunction<?> function;
 	private final C code;
 	private final C underlying;
-	private CCodePos head;
-	private CCodePos tail;
 
 	CCode(
 			ConstBackend backend,
@@ -75,30 +74,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	public final C getUnderlying() {
 		return this.underlying;
-	}
-
-	@Override
-	public CodePos head() {
-
-		final CodePos underlyingHead = getUnderlying().head();
-
-		if (this.head != null && this.head.getUnderlying() == underlyingHead) {
-			return this.head;
-		}
-
-		return this.head = new CCodePos(underlyingHead);
-	}
-
-	@Override
-	public CodePos tail() {
-
-		final CodePos underlyingTail = getUnderlying().tail();
-
-		if (this.tail != null && this.tail.getUnderlying() == underlyingTail) {
-			return this.tail;
-		}
-
-		return this.tail = new CCodePos(underlyingTail);
 	}
 
 	@Override
@@ -134,18 +109,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final CBlock block(Code code, CodeId id) {
-		return new CBlock(this, code, getUnderlying().addBlock(id.getLocal()));
-	}
-
-	@Override
-	public final CAllocation allocationBlock(AllocationCode code, CodeId id) {
-		return new CAllocation(
+	public final CCodeBlock block(Block code, CodeId id) {
+		return new CCodeBlock(
 				this,
 				code,
-				code.isDisposable()
-				? getUnderlying().allocate(id.getLocal())
-				: getUnderlying().undisposable(id.getLocal()));
+				getUnderlying().addBlock(id.getLocal()));
 	}
 
 	@Override
@@ -236,31 +204,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				underlyingPtr,
 				getBackend().getGenerator().getFunctions().nullPtr(
 						signature));
-	}
-
-	@Override
-	public final void go(CodePos pos) {
-		getUnderlying().go(underlying(pos));
-	}
-
-	@Override
-	public final void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
-
-		final BoolCOp cond = (BoolCOp) condition;
-
-		if (!cond.isConstant()) {
-			cond.getUnderlying().go(
-					getUnderlying(),
-					underlying(truePos),
-					underlying(falsePos));
-			return;
-		}
-
-		final CodePos pos = cond.getConstant() ? truePos : falsePos;
-
-		if (pos != null) {
-			go(pos);
-		}
 	}
 
 	@Override
@@ -365,16 +308,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				cop2.getUnderlying());
 
 		return cop1.create(this, underlyingPHI, null);
-	}
-
-	@Override
-	public final void returnVoid() {
-		beforeReturn();
-		getUnderlying().returnVoid();
-	}
-
-	public final void beforeReturn() {
-		getFunction().getCallback().beforeReturn(code());
 	}
 
 	@Override

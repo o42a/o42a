@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
@@ -45,8 +45,8 @@ final class ImperativeOp {
 
 		final String name = control.name(block.getName()) + "_blk";
 
-		final Code code = control.addBlock(name);
-		final Code next = control.addBlock(name + "_next");
+		final Block code = control.addBlock(name);
+		final Block next = control.addBlock(name + "_next");
 		final Control blockControl;
 
 		if (block.isParentheses()) {
@@ -96,7 +96,7 @@ final class ImperativeOp {
 			String index) {
 
 		final ImperativeSentence prerequisite = sentence.getPrerequisite();
-		final Code prereqFailed;
+		final Block prereqFailed;
 
 		if (prerequisite == null) {
 			prereqFailed = null;
@@ -138,7 +138,7 @@ final class ImperativeOp {
 		}
 
 		// code blocks for each alternative
-		final Code[] blocks = new Code[len];
+		final Block[] blocks = new Block[len];
 		final Generator generator = control.getGenerator();
 		final CodeId sentId = generator.id(index + "_sent");
 
@@ -154,7 +154,7 @@ final class ImperativeOp {
 		for (int i = 0; i < len; ++i) {
 
 			final Imperatives alt = alternatives.get(i);
-			final Code altCode = blocks[i];
+			final Block altCode = blocks[i];
 			final Control altControl;
 			final int nextIdx = i + 1;
 
@@ -284,7 +284,7 @@ final class ImperativeOp {
 		return -1;
 	}
 
-	private static void endPrereq(Control control, Code prereqFailed) {
+	private static void endPrereq(Control control, Block prereqFailed) {
 		if (prereqFailed != null && prereqFailed.exists()) {
 			// prerequisite failed - continue execution
 			prereqFailed.go(control.code().tail());

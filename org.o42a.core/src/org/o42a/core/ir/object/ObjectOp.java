@@ -25,9 +25,7 @@ import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CondCode;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
@@ -111,7 +109,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 				id != null ? id.getId() : "cast",
 				"Dynamic cast " + this + " to " + wellKnownType);
 
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 
 		code.dumpName("To", type.ptr());
 
@@ -126,7 +124,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 		if (!reportError) {
 
-			final Code castNull = code.addBlock("cast_null");
+			final Block castNull = code.addBlock("cast_null");
 
 			resultPtr.isNull(null, code).go(code, castNull.head());
 
@@ -168,15 +166,15 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 			"Wrong value type: " + getValueType()
 			+ ", but " + dirs.getValueType() + " expected";
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ValOp value = objectType(code).ptr().data(code).value(code).op(
 				getBuilder(),
 				getValueStruct());
-		final CondCode indefinite = value.loadIndefinite(null, code).branch(
+		final CondBlock indefinite = value.loadIndefinite(null, code).branch(
 				code,
 				"val_indefinite",
 				"val_definite");
-		final Code definite = indefinite.otherwise();
+		final Block definite = indefinite.otherwise();
 
 		definite.dump(this + " value is definite: ", value.ptr());
 		value.go(definite, dirs);
@@ -316,7 +314,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 				id != null ? id.getId() : "cast",
 				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 		final ObjOp ascendantObj = ascendantIR.op(getBuilder(), code);
 		final ObjectTypeOp ascendantType = ascendantObj.objectType(code);
 
@@ -375,12 +373,12 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	private void evaluateAndStoreValue(
-			Code code,
+			Block code,
 			ValOp value,
 			ValDirs resultDirs) {
 
-		final Code falseCode = code.addBlock("eval_false");
-		final Code unknownCode = code.addBlock("eval_unknown");
+		final Block falseCode = code.addBlock("eval_false");
+		final Block unknownCode = code.addBlock("eval_unknown");
 		final ValDirs valDirs =
 				getBuilder().splitWhenUnknown(
 						code,

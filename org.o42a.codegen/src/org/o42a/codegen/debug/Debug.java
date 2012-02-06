@@ -134,7 +134,7 @@ public class Debug {
 
 		final BoolOp execResult =
 				execCommandFunc().op(null, function).exec(function, debugEnv);
-		final Code commandExecuted = function.addBlock("command_executed");
+		final Block commandExecuted = function.addBlock("command_executed");
 
 		execResult.go(function, commandExecuted.head());
 
@@ -264,7 +264,7 @@ public class Debug {
 	private static final class DebugCodeCallback implements CodeCallback {
 
 		@Override
-		public void beforeReturn(Code code) {
+		public void beforeReturn(Block code) {
 
 			final Debug debug = code.getGenerator().getDebug();
 

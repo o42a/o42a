@@ -24,6 +24,7 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -91,7 +92,7 @@ public final class RefLclOp extends LclOp {
 
 	public ObjectOp target(CodeDirs dirs) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final Obj ascendant = getAscendant();
 		final DataOp objectPtr = ptr().object(code).load(null, code);
 
@@ -103,7 +104,7 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public void write(Control control, ValOp result) {
 
-		final Code code = control.code();
+		final Block code = control.code();
 		final CodeDirs dirs =
 				control.getBuilder().falseWhenUnknown(code, control.falseDir());
 		final Obj object = getArtifact().materialize();

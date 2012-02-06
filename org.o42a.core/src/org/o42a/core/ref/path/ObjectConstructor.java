@@ -27,7 +27,7 @@ import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.IdentityHashMap;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
@@ -149,7 +149,7 @@ public abstract class ObjectConstructor extends Placed {
 						enclosing.nextId(),
 						OBJECT_REF);
 
-		final Code ancestorNotFound =
+		final Block ancestorNotFound =
 				ancestorFunc.addBlock("ancestor_not_found");
 		final CodeBuilder builder = codeBuilder(
 				ancestorFunc,
@@ -165,9 +165,9 @@ public abstract class ObjectConstructor extends Placed {
 		return ancestorFunc;
 	}
 
-	private void buildAncestorFunc(CodeBuilder builder, Code code) {
+	private void buildAncestorFunc(CodeBuilder builder, Block code) {
 
-		final Code ancestorFailed = code.addBlock("ancestor_failed");
+		final Block ancestorFailed = code.addBlock("ancestor_failed");
 		final ObjectOp ancestor = buildAncestor(
 				builder.falseWhenUnknown(code, ancestorFailed.head()));
 

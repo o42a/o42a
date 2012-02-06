@@ -19,13 +19,13 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 
 
 public interface CodeCallback {
 
 	CodeCallback NOOP_CODE_CALLBACK = new NoOpCodeCallback();
 
-	void beforeReturn(Code code);
+	void beforeReturn(Block code);
 
 }

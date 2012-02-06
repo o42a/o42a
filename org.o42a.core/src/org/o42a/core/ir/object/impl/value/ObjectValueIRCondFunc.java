@@ -99,7 +99,7 @@ public abstract class ObjectValueIRCondFunc
 			}
 		}
 
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 
 		switch (getFinal()) {
 		case TRUE:
@@ -132,8 +132,8 @@ public abstract class ObjectValueIRCondFunc
 
 		function.debug("Calculating " + suffix());
 
-		final Code condFalse = function.addBlock("false");
-		final Code condUnknown = function.addBlock("unknown");
+		final Block condFalse = function.addBlock("false");
+		final Block condUnknown = function.addBlock("unknown");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				condFalse.head(),
@@ -317,7 +317,7 @@ public abstract class ObjectValueIRCondFunc
 			ObjOp host,
 			boolean trueWithoutAncestor) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		if (!part().ancestorDefsUpdates().isUsed(
 				getGenerator().getAnalyzer(),
@@ -345,11 +345,11 @@ public abstract class ObjectValueIRCondFunc
 			return;
 		}
 
-		final CondCode hasAncestor = host.hasAncestor(code).branch(
+		final CondBlock hasAncestor = host.hasAncestor(code).branch(
 				code,
 				"has_ancestor",
 				"no_ancestor");
-		final Code noAncestor = hasAncestor.otherwise();
+		final Block noAncestor = hasAncestor.otherwise();
 
 		noAncestor.debug("No ancestor " + suffix());
 		if (trueWithoutAncestor) {
@@ -372,7 +372,7 @@ public abstract class ObjectValueIRCondFunc
 
 	private void writeAncestorDef(
 			CodeDirs dirs,
-			Code code,
+			Block code,
 			ObjectOp ancestorBody,
 			ObjectTypeOp ancestorType) {
 
@@ -403,7 +403,7 @@ public abstract class ObjectValueIRCondFunc
 			ObjOp host,
 			CondCollector collector) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final CondDef[] defs = collector.getExplicitDefs();
 		final int size = collector.size();
 
@@ -411,7 +411,7 @@ public abstract class ObjectValueIRCondFunc
 		for (int i = 0; i < size; ++i) {
 
 			final CondDef def = defs[i];
-			final Code block = collector.blocks[i];
+			final Block block = collector.blocks[i];
 
 			if (def == null) {
 				if (i == collector.ancestorIndex) {
@@ -487,18 +487,18 @@ public abstract class ObjectValueIRCondFunc
 
 	private final class CondCollector extends DefCollector<CondDef> {
 
-		private final Code code;
+		private final Block code;
 		private final CondDef[] explicitDefs;
-		private final Code[] blocks;
+		private final Block[] blocks;
 		private int size;
 		private int ancestorIndex = -1;
 		private boolean hasExplicit;
 
-		CondCollector(Code code, Obj object, int capacity) {
+		CondCollector(Block code, Obj object, int capacity) {
 			super(object);
 			this.code = code;
 			this.explicitDefs = new CondDef[capacity];
-			this.blocks = new Code[capacity];
+			this.blocks = new Block[capacity];
 		}
 
 		public final CondDef[] getExplicitDefs() {
@@ -529,7 +529,7 @@ public abstract class ObjectValueIRCondFunc
 		CodePos next(int index, CodePos defaultPos) {
 			for (int i = index + 1; i < this.blocks.length; ++i) {
 
-				final Code block = this.blocks[i];
+				final Block block = this.blocks[i];
 
 				if (block != null) {
 					return block.head();

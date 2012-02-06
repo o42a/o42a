@@ -23,7 +23,7 @@ import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
@@ -36,13 +36,13 @@ import org.o42a.core.value.ValueType;
 public abstract class ValDirs {
 
 	private final CodeBuilder builder;
-	private final Code code;
+	private final Block code;
 	private final ValueStruct<?, ?> valueStruct;
-	private Code falseCode;
-	private Code unknownCode;
+	private Block falseCode;
+	private Block unknownCode;
 	protected CodeDirs dirs;
 
-	ValDirs(CodeBuilder builder, Code code, ValueStruct<?, ?> valueStruct) {
+	ValDirs(CodeBuilder builder, Block code, ValueStruct<?, ?> valueStruct) {
 		this.builder = builder;
 		this.code = code;
 		this.valueStruct = valueStruct;
@@ -93,7 +93,7 @@ public abstract class ValDirs {
 		return this.code.isDebug();
 	}
 
-	public final Code code() {
+	public final Block code() {
 		return this.code;
 	}
 
@@ -105,11 +105,11 @@ public abstract class ValDirs {
 		return code().id(name);
 	}
 
-	public final Code addBlock(String name) {
+	public final Block addBlock(String name) {
 		return this.code.addBlock(name);
 	}
 
-	public final Code addBlock(CodeId name) {
+	public final Block addBlock(CodeId name) {
 		return this.code.addBlock(name);
 	}
 
@@ -146,7 +146,7 @@ public abstract class ValDirs {
 		return sub(addBlock(name));
 	}
 
-	public final ValDirs sub(Code code) {
+	public final ValDirs sub(Block code) {
 		return new SubValDirs(this, code);
 	}
 
@@ -208,11 +208,11 @@ public abstract class ValDirs {
 		}
 	}
 
-	void endFalse(CodeDirs enclosing, Code code) {
+	void endFalse(CodeDirs enclosing, Block code) {
 		code.go(enclosing.falseDir());
 	}
 
-	void endUnknown(CodeDirs enclosing, Code code) {
+	void endUnknown(CodeDirs enclosing, Block code) {
 		code.go(enclosing.unknownDir());
 	}
 
@@ -330,7 +330,7 @@ public abstract class ValDirs {
 		final ValDirs enclosing;
 		private final TopLevelValDirs topLevel;
 
-		SubValDirs(ValDirs enclosing, Code code) {
+		SubValDirs(ValDirs enclosing, Block code) {
 			super(enclosing.getBuilder(), code, enclosing.getValueStruct());
 			this.enclosing = enclosing;
 			this.topLevel = enclosing.topLevel();
@@ -354,7 +354,7 @@ public abstract class ValDirs {
 
 	private static final class FalseWhenUnknownValDirs extends SubValDirs {
 
-		FalseWhenUnknownValDirs(ValDirs enclosing, Code code) {
+		FalseWhenUnknownValDirs(ValDirs enclosing, Block code) {
 			super(enclosing, code);
 		}
 
@@ -396,13 +396,13 @@ public abstract class ValDirs {
 		}
 
 		@Override
-		void endFalse(CodeDirs enclosing, Code code) {
+		void endFalse(CodeDirs enclosing, Block code) {
 			code.end();
 			super.endFalse(enclosing, code);
 		}
 
 		@Override
-		void endUnknown(CodeDirs enclosing, Code code) {
+		void endUnknown(CodeDirs enclosing, Block code) {
 			code.end();
 			super.endUnknown(enclosing, code);
 		}

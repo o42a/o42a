@@ -23,7 +23,7 @@ import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Scope;
@@ -104,13 +104,13 @@ public abstract class CodeBuilder {
 	}
 
 	public final CodeDirs falseWhenUnknown(
-			Code code,
+			Block code,
 			CodePos falseDir) {
 		return CodeDirs.falseWhenUnknown(this, code, falseDir);
 	}
 
 	public final CodeDirs splitWhenUnknown(
-			Code code,
+			Block code,
 			CodePos falseDir,
 			CodePos unknownDir) {
 		return CodeDirs.splitWhenUnknown(this, code, falseDir, unknownDir);

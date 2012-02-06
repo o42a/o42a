@@ -19,8 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
@@ -49,7 +49,7 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 	@Override
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final Int64recOp leftPtr =
 				leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
@@ -59,8 +59,8 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 		final Int64op right = rightPtr.load(code.id("right"), code);
 
 		final BoolOp gt = left.gt(code.id("gt"), code, right);
-		final CondCode greater = gt.branch(code, "greater", "not_greater");
-		final Code notGreater = greater.otherwise();
+		final CondBlock greater = gt.branch(code, "greater", "not_greater");
+		final Block notGreater = greater.otherwise();
 
 		final ValType.Op result1 = ONE.op(dirs.getBuilder(), greater).ptr();
 

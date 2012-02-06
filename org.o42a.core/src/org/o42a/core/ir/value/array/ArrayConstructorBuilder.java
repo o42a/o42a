@@ -56,7 +56,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 		final Obj owner = array.getOwner();
 		final ObjectIR ownerIR =
 				owner.ir(function.getGenerator());
-		final Code failure = function.addBlock("failure");
+		final Block failure = function.addBlock("failure");
 		final ObjBuilder builder = new ObjBuilder(
 				function,
 				failure.head(),
@@ -92,7 +92,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 	private void allocateItems(ValDirs dirs) {
 
 		final Array array = this.arrayIR.getArray();
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ArrayItem[] items = array.getItems();
 		final FuncPtr<ValAllocFunc> func =
 				dirs.getGenerator().externalFunction(
@@ -115,7 +115,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 			ArrayItem item,
 			int index) {
 
-		final Code failure = arrayDirs.addBlock("item_" + index + "_failed");
+		final Block failure = arrayDirs.addBlock("item_" + index + "_failed");
 		final ValDirs dirs = falseWhenUnknown(
 				arrayDirs.getBuilder(),
 				arrayDirs.code(),

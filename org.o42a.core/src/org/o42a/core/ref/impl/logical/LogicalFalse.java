@@ -21,7 +21,7 @@ package org.o42a.core.ref.impl.logical;
 
 import static org.o42a.core.ref.InlineCond.INLINE_FALSE;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -63,7 +63,7 @@ public final class LogicalFalse extends Logical {
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		code.debug("Logical: FALSE");
 		code.go(dirs.falseDir());

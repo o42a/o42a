@@ -22,7 +22,7 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -73,7 +73,7 @@ public abstract class Control {
 		return this.reachability != UNREACHABLE;
 	}
 
-	public abstract Code code();
+	public abstract Block code();
 
 	public abstract CodePos exit();
 
@@ -150,19 +150,19 @@ public abstract class Control {
 		return main().anonymousName();
 	}
 
-	public final Code addBlock(String name) {
+	public final Block addBlock(String name) {
 		return code().addBlock(name);
 	}
 
-	public final Code addBlock(CodeId name) {
+	public final Block addBlock(CodeId name) {
 		return code().addBlock(name);
 	}
 
-	public final Control braces(Code code, CodePos next, String name) {
+	public final Control braces(Block code, CodePos next, String name) {
 		return new BracesControl(this, code, next, name);
 	}
 
-	public final Control parentheses(Code code, CodePos next) {
+	public final Control parentheses(Block code, CodePos next) {
 		return new NestedControl.ParenthesesControl(this, code, next);
 	}
 
@@ -170,7 +170,7 @@ public abstract class Control {
 		return new NestedControl.IssueControl(this, next);
 	}
 
-	public final Control alt(Code code, CodePos next) {
+	public final Control alt(Block code, CodePos next) {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
@@ -179,7 +179,7 @@ public abstract class Control {
 	@Override
 	public String toString() {
 
-		final Code code = code();
+		final Block code = code();
 
 		if (code == null) {
 			return super.toString();

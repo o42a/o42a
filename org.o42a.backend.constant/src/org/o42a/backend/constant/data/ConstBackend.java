@@ -28,6 +28,7 @@ import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
@@ -41,8 +42,16 @@ public class ConstBackend {
 		return cast(code.writer());
 	}
 
+	public static CBlock<?> cast(Block code) {
+		return cast(code.writer());
+	}
+
 	public static CCode<?> cast(CodeWriter codeWriter) {
 		return (CCode<?>) codeWriter;
+	}
+
+	public static CBlock<?> cast(BlockWriter codeWriter) {
+		return (CBlock<?>) codeWriter;
 	}
 
 	public static Code underlying(Code code) {

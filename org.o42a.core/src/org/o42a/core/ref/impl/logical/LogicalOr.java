@@ -22,7 +22,7 @@ package org.o42a.core.ref.impl.logical;
 import static org.o42a.util.Cancellation.cancelAll;
 import static org.o42a.util.Cancellation.cancelUpToNull;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -127,15 +127,15 @@ public final class LogicalOr extends Logical {
 		assert assertFullyResolved();
 
 		final CodeDirs subDirs = dirs.begin("or", "Logical OR: " + this);
-		final Code code = subDirs.code();
+		final Block code = subDirs.code();
 
-		Code block = code.addBlock("0_disj");
+		Block block = code.addBlock("0_disj");
 
 		code.go(block.head());
 
 		for (int i = 0; i < this.options.length; ++i) {
 
-			final Code next;
+			final Block next;
 			final CodeDirs blockDirs;
 
 			if (i + 1 < this.options.length) {
@@ -196,15 +196,15 @@ public final class LogicalOr extends Logical {
 
 			final CodeDirs subDirs =
 					dirs.begin("or", "In-line logical OR: " + this);
-			final Code code = subDirs.code();
+			final Block code = subDirs.code();
 
-			Code block = code.addBlock("0_disj");
+			Block block = code.addBlock("0_disj");
 
 			code.go(block.head());
 
 			for (int i = 0; i < this.options.length; ++i) {
 
-				final Code next;
+				final Block next;
 				final CodeDirs blockDirs;
 
 				if (i + 1 < this.options.length) {

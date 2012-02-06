@@ -42,7 +42,7 @@ public class VariableAssignerFunc extends ObjectFunc<VariableAssignerFunc> {
 
 	public void assign(CodeDirs dirs, ObjectOp object, ObjectOp value) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		assign(code, object, value).goUnless(code, dirs.falseDir());
 	}

@@ -21,7 +21,7 @@ package org.o42a.core.def.impl;
 
 import static org.o42a.util.Cancellation.cancelAll;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.def.CondDef;
 import org.o42a.core.def.CondDefs;
 import org.o42a.core.ir.HostOp;
@@ -42,9 +42,9 @@ public class InlineCondDefs extends InlineCond {
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final CondDef[] defs = this.defs.get();
-		final Code[] blocks = new Code[defs.length];
+		final Block[] blocks = new Block[defs.length];
 
 		for (int i = 0; i < blocks.length; ++i) {
 			blocks[i] = code.addBlock("cond_" + i);
@@ -54,7 +54,7 @@ public class InlineCondDefs extends InlineCond {
 
 			final int next = i + 1;
 			final boolean last = next >= defs.length;
-			final Code block = blocks[i];
+			final Block block = blocks[i];
 
 			if (!defs[i].hasPrerequisite()) {
 

@@ -22,6 +22,7 @@ package org.o42a.core.artifact.array.impl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.artifact.array.ArrayValueStruct;
@@ -94,7 +95,7 @@ final class ArrayElementOp extends PathOp {
 
 		final ValOp indexVal =
 				this.indexRef.op(pathStart()).writeValue(dirs);
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final Int64op index = indexVal.rawValue(
 				dirs.id("idx"),
 				dirs.code()).load(null, code);
@@ -110,7 +111,7 @@ final class ArrayElementOp extends PathOp {
 
 	private void checkIndex(CodeDirs dirs, Int64op index, ValOp array) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final Int32op length =
 				array.loadLength(code.id("array_len"), code);
 
@@ -141,7 +142,7 @@ final class ArrayElementOp extends PathOp {
 
 	private ObjectOp loadItem(ValDirs dirs, Int64op index) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final AnyRecOp itemRec = itemRec(dirs, index);
 		final AnyOp itemPtr = itemRec.load(code.id("item"), code);
 

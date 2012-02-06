@@ -19,12 +19,10 @@
 */
 package org.o42a.codegen.code.op;
 
-import static org.o42a.codegen.code.op.OpCodeBase.unwrapPos;
+import static org.o42a.codegen.code.op.OpBlockBase.unwrapPos;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondCode;
+import org.o42a.codegen.code.*;
 
 
 public abstract class BoolOp implements Op {
@@ -39,16 +37,16 @@ public abstract class BoolOp implements Op {
 			O trueValue,
 			O falseValue);
 
-	public final CondCode branch(Code source) {
+	public final CondBlock branch(Block source) {
 		return branch(source, null);
 	}
 
-	public final CondCode branch(Code source, String conditionName) {
+	public final CondBlock branch(Block source, String conditionName) {
 		return branch(source, conditionName, null);
 	}
 
-	public final CondCode branch(
-			Code source,
+	public final CondBlock branch(
+			Block source,
 			String trueName,
 			String falseName) {
 		return branch(
@@ -57,12 +55,12 @@ public abstract class BoolOp implements Op {
 				falseName != null ? source.getGenerator().id(falseName) : null);
 	}
 
-	public final CondCode branch(
-			Code source,
+	public final CondBlock branch(
+			Block source,
 			CodeId trueName,
 			CodeId falseName) {
 
-		final OpCodeBase src = source;
+		final OpBlockBase src = source;
 
 		return src.choose(
 				this,
@@ -74,18 +72,18 @@ public abstract class BoolOp implements Op {
 						: source.getGenerator().id("false")));
 	}
 
-	public final void go(Code source, CodePos truePos) {
+	public final void go(Block source, CodePos truePos) {
 		go(source, truePos, null);
 	}
 
-	public final void goUnless(Code source, CodePos falsePos) {
+	public final void goUnless(Block source, CodePos falsePos) {
 		go(source, null, falsePos);
 	}
 
-	public final void go(Code source, CodePos truePos, CodePos falsePos) {
+	public final void go(Block source, CodePos truePos, CodePos falsePos) {
 		source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
 	}
 
-	public abstract void returnValue(Code code);
+	public abstract void returnValue(Block code);
 
 }

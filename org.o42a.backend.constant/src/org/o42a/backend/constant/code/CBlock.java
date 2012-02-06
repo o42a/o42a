@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,17 +19,99 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Code;
+import static org.o42a.backend.constant.data.ConstBackend.underlying;
+
+import org.o42a.backend.constant.code.op.BoolCOp;
+import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.backend.BlockWriter;
+import org.o42a.codegen.code.op.BoolOp;
 
 
-final class CBlock extends CCode<Code> {
+public abstract class CBlock<B extends Block> extends CCode<B>
+		implements BlockWriter {
 
-	CBlock(CCode<?> enclosing, Code code, Code underlying) {
-		super(
-				enclosing.getBackend(),
-				enclosing.getFunction(),
+	private CCodePos head;
+	private CCodePos tail;
+
+	public CBlock(
+			ConstBackend backend,
+			CFunction<?> function,
+			B code,
+			B underlying) {
+		super(backend, function, code, underlying);
+	}
+
+	@Override
+	public CodePos head() {
+
+		final CodePos underlyingHead = getUnderlying().head();
+
+		if (this.head != null && this.head.getUnderlying() == underlyingHead) {
+			return this.head;
+		}
+
+		return this.head = new CCodePos(underlyingHead);
+	}
+
+	@Override
+	public CodePos tail() {
+
+		final CodePos underlyingTail = getUnderlying().tail();
+
+		if (this.tail != null && this.tail.getUnderlying() == underlyingTail) {
+			return this.tail;
+		}
+
+		return this.tail = new CCodePos(underlyingTail);
+	}
+
+	@Override
+	public final void go(CodePos pos) {
+		getUnderlying().go(underlying(pos));
+	}
+
+	@Override
+	public final void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
+
+		final BoolCOp cond = (BoolCOp) condition;
+
+		if (!cond.isConstant()) {
+			cond.getUnderlying().go(
+					getUnderlying(),
+					underlying(truePos),
+					underlying(falsePos));
+			return;
+		}
+
+		final CodePos pos = cond.getConstant() ? truePos : falsePos;
+
+		if (pos != null) {
+			go(pos);
+		}
+	}
+
+	@Override
+	public final CAllocation allocationBlock(AllocationCode code, CodeId id) {
+		return new CAllocation(
+				this,
 				code,
-				underlying);
+				code.isDisposable()
+				? getUnderlying().allocate(id.getLocal())
+				: getUnderlying().undisposable(id.getLocal()));
+	}
+
+	@Override
+	public final void returnVoid() {
+		beforeReturn();
+		getUnderlying().returnVoid();
+	}
+
+	public final void beforeReturn() {
+		getFunction().getCallback().beforeReturn(code());
 	}
 
 }

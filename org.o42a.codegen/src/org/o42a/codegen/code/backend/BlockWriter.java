@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,13 +19,24 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.op.BoolOp;
 
 
-final class NoOpCodeCallback implements CodeCallback {
+public interface BlockWriter extends CodeWriter {
 
-	@Override
-	public void beforeReturn(Block code) {
-	}
+	CodePos head();
+
+	CodePos tail();
+
+	void go(CodePos pos);
+
+	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
+
+	AllocationWriter allocationBlock(AllocationCode code, CodeId id);
+
+	void returnVoid();
 
 }

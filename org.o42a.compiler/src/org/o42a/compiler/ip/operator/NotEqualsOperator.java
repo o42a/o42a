@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -51,8 +51,8 @@ final class NotEqualsOperator extends ComparisonOperator {
 	@Override
 	public ValOp writeComparison(ValDirs dirs, RefOp cmp) {
 
-		final Code code = dirs.code();
-		final Code notEqual = code.addBlock("not_equal");
+		final Block code = dirs.code();
+		final Block notEqual = code.addBlock("not_equal");
 
 		cmp.writeLogicalValue(
 				dirs.getBuilder().falseWhenUnknown(code, notEqual.head()));
@@ -68,8 +68,8 @@ final class NotEqualsOperator extends ComparisonOperator {
 	@Override
 	public ValOp inlineComparison(ValDirs dirs, HostOp host, InlineValue cmp) {
 
-		final Code code = dirs.code();
-		final Code notEqual = code.addBlock("not_equal");
+		final Block code = dirs.code();
+		final Block notEqual = code.addBlock("not_equal");
 
 		cmp.writeCond(
 				dirs.getBuilder().falseWhenUnknown(code, notEqual.head()),

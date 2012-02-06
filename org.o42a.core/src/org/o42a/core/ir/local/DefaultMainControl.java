@@ -19,17 +19,17 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 
 
 final class DefaultMainControl extends MainControl {
 
-	private Code returnCode;
+	private Block returnCode;
 
 	public DefaultMainControl(
 			LocalBuilder builder,
-			Code code,
+			Block code,
 			CodePos exit,
 			CodePos falseDir) {
 		super(builder, code, exit, falseDir);

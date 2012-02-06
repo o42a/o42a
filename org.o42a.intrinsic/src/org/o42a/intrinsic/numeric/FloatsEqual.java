@@ -21,7 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.*;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
@@ -47,7 +47,7 @@ public final class FloatsEqual extends NumbersEqual<Double> {
 	@Override
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
 		final Fp64recOp leftPtr =
 				leftRec.toFp64(code.id("float_left_ptr"), code);

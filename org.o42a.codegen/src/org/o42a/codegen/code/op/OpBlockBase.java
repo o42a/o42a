@@ -20,13 +20,11 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondCode;
-import org.o42a.codegen.data.CodeBase;
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.*;
 
 
-public abstract class OpCodeBase extends CodeBase {
+public abstract class OpBlockBase extends Code {
 
 	protected static CodePos unwrapPos(CodePos codePos) {
 		if (codePos == null || codePos.getClass() != Head.class) {
@@ -35,16 +33,24 @@ public abstract class OpCodeBase extends CodeBase {
 		return ((Head) codePos).unwrap();
 	}
 
-	protected abstract CondCode choose(
+	public OpBlockBase(Code enclosing, CodeId name) {
+		super(enclosing, name);
+	}
+
+	public OpBlockBase(Generator generator, CodeId id) {
+		super(generator, id);
+	}
+
+	protected abstract CondBlock choose(
 			BoolOp condition,
 			CodeId trueName,
 			CodeId falseName);
 
 	protected static final class Head implements CodePos {
 
-		private final Code code;
+		private final Block code;
 
-		public Head(Code code) {
+		public Head(Block code) {
 			this.code = code;
 		}
 

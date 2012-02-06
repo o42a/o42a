@@ -21,7 +21,7 @@ package org.o42a.core.def.impl;
 
 import static org.o42a.util.Cancellation.cancelAll;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -42,8 +42,8 @@ public class InlineValueDefs extends InlineValue {
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
 		final ValOp result = dirs.value();
-		final Code code = dirs.code();
-		final Code[] blocks = new Code[this.inlines.length];
+		final Block code = dirs.code();
+		final Block[] blocks = new Block[this.inlines.length];
 
 		for (int i = 0; i < blocks.length; ++i) {
 			blocks[i] = code.addBlock("val_" + i);
@@ -52,7 +52,7 @@ public class InlineValueDefs extends InlineValue {
 		for (int i = 0; i < this.inlines.length; ++i) {
 
 			final int nextIdx = i + 1;
-			final Code block = blocks[i];
+			final Block block = blocks[i];
 			final CodePos nextDir =
 					nextIdx >= this.inlines.length
 					? dirs.unknownDir() : blocks[nextIdx].head();

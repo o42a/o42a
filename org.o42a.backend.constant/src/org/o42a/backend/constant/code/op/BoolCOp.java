@@ -22,9 +22,11 @@ package org.o42a.backend.constant.code.op;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
+import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
@@ -110,9 +112,9 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public void returnValue(Code code) {
+	public void returnValue(Block code) {
 
-		final CCode<?> ccode = cast(code);
+		final CBlock<?> ccode = cast(code);
 
 		ccode.beforeReturn();
 		getUnderlying().returnValue(ccode.getUnderlying());

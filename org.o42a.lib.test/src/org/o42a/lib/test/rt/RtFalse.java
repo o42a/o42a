@@ -21,7 +21,7 @@ package org.o42a.lib.test.rt;
 
 import static org.o42a.core.value.Value.falseValue;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
@@ -66,7 +66,7 @@ public class RtFalse extends AnnotatedBuiltin {
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		code.debug("Run-time false");
 		code.go(dirs.falseDir());
@@ -83,7 +83,7 @@ public class RtFalse extends AnnotatedBuiltin {
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
 
-			final Code code = dirs.code();
+			final Block code = dirs.code();
 
 			code.debug("Run-time false");
 			code.go(dirs.falseDir());
@@ -92,7 +92,7 @@ public class RtFalse extends AnnotatedBuiltin {
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-			final Code code = dirs.code();
+			final Block code = dirs.code();
 
 			code.debug("Run-time false");
 			code.go(dirs.falseDir());

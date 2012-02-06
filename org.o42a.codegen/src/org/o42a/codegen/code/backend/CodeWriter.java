@@ -20,17 +20,15 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
 public interface CodeWriter {
-
-	CodePos head();
-
-	CodePos tail();
 
 	boolean created();
 
@@ -44,9 +42,7 @@ public interface CodeWriter {
 			CodeId id,
 			FuncAllocation<F> allocation);
 
-	CodeWriter block(Code code, CodeId id);
-
-	AllocationWriter allocationBlock(AllocationCode code, CodeId id);
+	BlockWriter block(Block code, CodeId id);
 
 	Int8op int8(byte value);
 
@@ -72,10 +68,6 @@ public interface CodeWriter {
 
 	<F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature);
 
-	void go(CodePos pos);
-
-	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
-
 	AnyRecOp allocatePtr(CodeId id);
 
 	<S extends StructOp<S>> StructRecOp<S> allocatePtr(
@@ -89,7 +81,5 @@ public interface CodeWriter {
 	<O extends Op> O phi(CodeId id, O op);
 
 	<O extends Op> O phi(CodeId id, O op1, O op2);
-
-	void returnVoid();
 
 }

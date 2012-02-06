@@ -24,7 +24,7 @@ import static org.o42a.util.Cancellation.cancelUpToNull;
 
 import java.util.ArrayList;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -246,7 +246,7 @@ final class SentenceLogicals {
 				return;
 			}
 
-			final Code code = dirs.code();
+			final Block code = dirs.code();
 			final CodePos exit = dirs.falseDir();
 			CodePos otherwise;
 
@@ -254,7 +254,7 @@ final class SentenceLogicals {
 				otherwise = exit;
 			} else {
 
-				final Code otherwiseBlock = code.addBlock("otherwise");
+				final Block otherwiseBlock = code.addBlock("otherwise");
 
 				this.otherwise.write(
 						dirs.getBuilder().falseWhenUnknown(
@@ -266,7 +266,7 @@ final class SentenceLogicals {
 			}
 
 			int idx = 0;
-			Code prereq = code;
+			Block prereq = code;
 
 			for (;;) {
 
@@ -289,7 +289,7 @@ final class SentenceLogicals {
 					break;
 				}
 
-				final Code next = code.addBlock(nextIdx + "_prereq");
+				final Block next = code.addBlock(nextIdx + "_prereq");
 
 				prerequisite.write(
 						dirs.getBuilder().falseWhenUnknown(prereq, next.head()),
@@ -375,7 +375,7 @@ final class SentenceLogicals {
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
 
-			final Code code = dirs.code();
+			final Block code = dirs.code();
 			final CodePos exit = dirs.falseDir();
 			CodePos otherwise;
 
@@ -383,7 +383,7 @@ final class SentenceLogicals {
 				otherwise = exit;
 			} else {
 
-				final Code otherwiseBlock = code.addBlock("otherwise");
+				final Block otherwiseBlock = code.addBlock("otherwise");
 
 				this.otherwise.writeCond(
 						dirs.getBuilder().falseWhenUnknown(
@@ -395,7 +395,7 @@ final class SentenceLogicals {
 			}
 
 			int idx = 0;
-			Code prereq = code;
+			Block prereq = code;
 
 			for (;;) {
 
@@ -413,7 +413,7 @@ final class SentenceLogicals {
 					break;
 				}
 
-				final Code next = code.addBlock(nextIdx + "_prereq");
+				final Block next = code.addBlock(nextIdx + "_prereq");
 
 				this.prereqs[idx].writeCond(
 						dirs.getBuilder().falseWhenUnknown(prereq, next.head()),

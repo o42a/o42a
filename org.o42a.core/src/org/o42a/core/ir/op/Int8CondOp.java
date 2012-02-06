@@ -20,6 +20,7 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int8op;
@@ -46,7 +47,7 @@ public final class Int8CondOp implements CondOp {
 	}
 
 	@Override
-	public void go(Code code, CodeDirs dirs) {
+	public void go(Block code, CodeDirs dirs) {
 		dirs.go(code, this);
 	}
 

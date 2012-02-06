@@ -46,7 +46,7 @@ final class SubStringFunc extends Func<SubStringFunc> {
 			Int64op to) {
 
 		final ValOp sub = dirs.value();
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		substring(code, sub, string, from, to);
 

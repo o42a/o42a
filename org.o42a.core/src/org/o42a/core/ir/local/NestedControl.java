@@ -20,7 +20,7 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 
 
@@ -28,13 +28,13 @@ abstract class NestedControl extends Control {
 
 	private final MainControl main;
 	private final Control parent;
-	private final Code code;
+	private final Block code;
 	private final BracesControl braces;
 	private AllocationCode allocation;
 	private final CodePos exit;
 	private final CodePos falseDir;
 
-	NestedControl(Control parent, Code code, CodePos exit, CodePos falseDir) {
+	NestedControl(Control parent, Block code, CodePos exit, CodePos falseDir) {
 		super(parent);
 		this.falseDir = falseDir;
 		this.main = parent.main();
@@ -45,7 +45,7 @@ abstract class NestedControl extends Control {
 	}
 
 	@Override
-	public final Code code() {
+	public final Block code() {
 		return this.code;
 	}
 
@@ -98,7 +98,7 @@ abstract class NestedControl extends Control {
 
 	static final class ParenthesesControl extends NestedControl {
 
-		ParenthesesControl(Control parent, Code code, CodePos next) {
+		ParenthesesControl(Control parent, Block code, CodePos next) {
 			super(parent, code, next, parent.falseDir());
 		}
 
@@ -114,7 +114,7 @@ abstract class NestedControl extends Control {
 
 	static final class AltControl extends NestedControl {
 
-		AltControl(Control parent, Code code, CodePos falseDir) {
+		AltControl(Control parent, Block code, CodePos falseDir) {
 			super(parent, code, parent.exit(), falseDir);
 		}
 

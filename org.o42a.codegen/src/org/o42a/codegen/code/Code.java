@@ -29,15 +29,14 @@ import org.o42a.codegen.debug.DebugCodeBase;
 public abstract class Code extends DebugCodeBase {
 
 	private final CodeId id;
-	private final Head head = new Head(this);
 	private OpNames opNames = new OpNames(this);
 
-	Code(Code enclosing, CodeId name) {
+	public Code(Code enclosing, CodeId name) {
 		super(enclosing);
 		this.id = enclosing.getOpNames().nestedId(name);
 	}
 
-	Code(Generator generator, CodeId id) {
+	public Code(Generator generator, CodeId id) {
 		super(generator);
 		this.id = id;
 	}
@@ -62,55 +61,14 @@ public abstract class Code extends DebugCodeBase {
 		return getGenerator().id(name);
 	}
 
-	public final CodePos head() {
-		if (created()) {
-			return writer().head();
-		}
-		return this.head;
-	}
-
-	public final CodePos tail() {
-		assert assertIncomplete();
-		return writer().tail();
-	}
-
-	public final AllocationCode allocate() {
-		return new AllocationCode(this, null, true);
-	}
-
-	public final AllocationCode allocate(String name) {
-		return new AllocationCode(this, id(name), true);
-	}
-
-	public final AllocationCode allocate(CodeId name) {
-		return new AllocationCode(this, name, true);
-	}
-
-	public final AllocationCode undisposable() {
-		return new AllocationCode(this, null, false);
-	}
-
-	public final AllocationCode undisposable(String name) {
-		return new AllocationCode(this, id(name), false);
-	}
-
-	public final AllocationCode undisposable(CodeId name) {
-		return new AllocationCode(this, name, false);
-	}
-
-	public final Code addBlock(String name) {
+	public final Block addBlock(String name) {
 		assert assertIncomplete();
 		return new CodeBlock(this, getGenerator().id(name));
 	}
 
-	public final Code addBlock(CodeId name) {
+	public final Block addBlock(CodeId name) {
 		assert assertIncomplete();
 		return new CodeBlock(this, name);
-	}
-
-	public final void go(CodePos pos) {
-		assert assertIncomplete();
-		writer().go(unwrapPos(pos));
 	}
 
 	public final Int8op int8(byte value) {
@@ -184,12 +142,6 @@ public abstract class Code extends DebugCodeBase {
 		return writer().phi(opId(id), op1, op2);
 	}
 
-	public void returnVoid() {
-		assert assertIncomplete();
-		writer().returnVoid();
-		complete();
-	}
-
 	public final CodeId opId(CodeId id) {
 		return getOpNames().opId(id);
 	}
@@ -197,15 +149,6 @@ public abstract class Code extends DebugCodeBase {
 	@Override
 	public String toString() {
 		return this.id.toString();
-	}
-
-	@Override
-	protected final CondCode choose(
-			BoolOp condition,
-			CodeId trueName,
-			CodeId falseName) {
-		assert assertIncomplete();
-		return new CondCode(this, condition, trueName, falseName);
 	}
 
 }

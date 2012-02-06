@@ -21,7 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.artifact.object.Obj;
@@ -54,7 +54,7 @@ public final class ObjBuilder extends CodeBuilder {
 	}
 
 	private ObjOp host(
-			Code code,
+			Block code,
 			CodePos exit,
 			ObjectBodyIR hostIR,
 			Obj hostType,
