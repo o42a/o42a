@@ -22,7 +22,6 @@ package org.o42a.backend.llvm.code;
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.BlockWriter;
@@ -102,11 +101,6 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	@Override
 	public final long nextInstr() {
 		return 0L;
-	}
-
-	@Override
-	public LLAllocation allocationBlock(AllocationCode code, CodeId id) {
-		return new LLAllocation(this, code, id);
 	}
 
 	@Override

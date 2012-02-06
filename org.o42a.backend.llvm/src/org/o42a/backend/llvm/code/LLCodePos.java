@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.llvm.code;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 
 
@@ -34,6 +35,11 @@ public abstract class LLCodePos implements CodePos {
 
 		Head(LLBlock block) {
 			this.block = block;
+		}
+
+		@Override
+		public Block code() {
+			return this.block.block();
 		}
 
 		@Override
@@ -65,6 +71,11 @@ public abstract class LLCodePos implements CodePos {
 		Tail(LLBlock block, long blockPtr) {
 			this.block = block;
 			this.blockPtr = blockPtr;
+		}
+
+		@Override
+		public Block code() {
+			return this.block.block();
 		}
 
 		@Override

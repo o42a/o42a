@@ -61,6 +61,30 @@ public abstract class Code extends DebugCodeBase {
 		return getGenerator().id(name);
 	}
 
+	public final AllocationCode allocate() {
+		return new AllocationCode(this, null, true);
+	}
+
+	public final AllocationCode allocate(String name) {
+		return new AllocationCode(this, id(name), true);
+	}
+
+	public final AllocationCode allocate(CodeId name) {
+		return new AllocationCode(this, name, true);
+	}
+
+	public final AllocationCode undisposable() {
+		return new AllocationCode(this, null, false);
+	}
+
+	public final AllocationCode undisposable(String name) {
+		return new AllocationCode(this, id(name), false);
+	}
+
+	public final AllocationCode undisposable(CodeId name) {
+		return new AllocationCode(this, name, false);
+	}
+
 	public final Block addBlock(String name) {
 		assert assertIncomplete();
 		return new CodeBlock(this, getGenerator().id(name));

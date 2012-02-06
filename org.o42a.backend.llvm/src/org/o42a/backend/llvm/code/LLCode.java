@@ -101,10 +101,6 @@ public abstract class LLCode implements CodeWriter {
 		return llvm(pos).getBlockPtr();
 	}
 
-	public static final long nextPtr(CodeWriter writer) {
-		return llvm(writer).nextPtr();
-	}
-
 	public static final long typePtr(Type<?> type) {
 
 		final ContainerLLDAlloc<?> allocation =
@@ -189,15 +185,6 @@ public abstract class LLCode implements CodeWriter {
 
 	public abstract long nextInstr();
 
-	public final LLInset inset(Code code, CodeId id) {
-		return this.lastInset = new LLInset(this, this.lastInset, code, id);
-	}
-
-	@Override
-	public LLBlock block(Block code, CodeId id) {
-		return new LLCodeBlock(this, code, id);
-	}
-
 	@SuppressWarnings({
 		"rawtypes", "unchecked"
 	})
@@ -214,6 +201,26 @@ public abstract class LLCode implements CodeWriter {
 				allocation.getSignature(),
 				nextPtr(),
 				alloc.llvmId().expression(getModule()));
+	}
+
+	public final LLInset inset(Code code, CodeId id) {
+		return this.lastInset = new LLCodeInset(this, this.lastInset, code, id);
+	}
+
+	@Override
+	public LLAllocation allocation(AllocationCode code, CodeId id) {
+
+		final LLAllocation allocation =
+				new LLAllocation(this, this.lastInset, code, id);
+
+		this.lastInset = allocation;
+
+		return allocation;
+	}
+
+	@Override
+	public LLBlock block(Block code, CodeId id) {
+		return new LLCodeBlock(this, code, id);
 	}
 
 	@Override

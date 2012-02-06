@@ -109,6 +109,16 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
+	public final CAllocation allocation(AllocationCode code, CodeId id) {
+		return new CAllocation(
+				this,
+				code,
+				code.isDisposable()
+				? getUnderlying().allocate(id.getLocal())
+				: getUnderlying().undisposable(id.getLocal()));
+	}
+
+	@Override
 	public final CCodeBlock block(Block code, CodeId id) {
 		return new CCodeBlock(
 				this,

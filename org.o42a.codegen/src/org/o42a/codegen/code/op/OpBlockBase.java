@@ -55,6 +55,11 @@ public abstract class OpBlockBase extends Code {
 		}
 
 		@Override
+		public Block code() {
+			return this.code;
+		}
+
+		@Override
 		public String toString() {
 			return this.code.toString();
 		}

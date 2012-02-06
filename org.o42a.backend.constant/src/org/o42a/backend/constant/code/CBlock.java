@@ -23,8 +23,6 @@ import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.op.BoolCOp;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.BlockWriter;
@@ -54,7 +52,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return this.head;
 		}
 
-		return this.head = new CCodePos(underlyingHead);
+		return this.head = new CCodePos(this, underlyingHead);
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return this.tail;
 		}
 
-		return this.tail = new CCodePos(underlyingTail);
+		return this.tail = new CCodePos(this, underlyingTail);
 	}
 
 	@Override
@@ -92,16 +90,6 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		if (pos != null) {
 			go(pos);
 		}
-	}
-
-	@Override
-	public final CAllocation allocationBlock(AllocationCode code, CodeId id) {
-		return new CAllocation(
-				this,
-				code,
-				code.isDisposable()
-				? getUnderlying().allocate(id.getLocal())
-				: getUnderlying().undisposable(id.getLocal()));
 	}
 
 	@Override

@@ -22,4 +22,6 @@ package org.o42a.codegen.code;
 
 public interface CodePos {
 
+	Block code();
+
 }

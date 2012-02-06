@@ -25,36 +25,52 @@ import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 
 
-final class LLAllocation extends LLBlock implements AllocationWriter {
+final class LLAllocation extends LLInset implements AllocationWriter {
 
-	private final long stackPtr;
+	private long stackPtr;
+	private long firstInstr;
 
-	LLAllocation(LLBlock enclosing, AllocationCode code, CodeId id) {
-		super(
-				enclosing.getModule(),
-				enclosing.getFunction(),
-				code,
-				id);
-		init();
-		if (code.isDisposable()) {
-			this.stackPtr = instr(stackSave(nextPtr(), nextInstr()));
-		} else {
-			this.stackPtr = 0L;
-		}
+	LLAllocation(
+			LLCode enclosing,
+			LLInset prevInset,
+			AllocationCode code,
+			CodeId id) {
+		super(enclosing, prevInset, code, id);
 	}
 
 	@Override
 	public void dispose(CodeWriter writer) {
-		instr(stackRestore(nextPtr(writer), nextInstr(), this.stackPtr));
+		if (!exists()) {
+			// No allocations done. Nothing to dispose.
+			return;
+		}
+
+		final LLCode llvm = llvm(writer);
+
+		llvm.instr(stackRestore(llvm.nextPtr(), llvm.nextInstr(), stackPtr()));
 	}
 
 	@Override
-	public void done() {
+	public long instr(long instr) {
+		if (this.firstInstr == 0L) {
+			this.firstInstr = instr;
+		}
+		return super.instr(instr);
 	}
 
-	@Override
-	protected long createFirtsBlock() {
-		return createBlock(getFunction(), getId());
+	private final AllocationCode allocation() {
+		return (AllocationCode) code();
+	}
+
+	private final long stackPtr() {
+		assert allocation().isDisposable() :
+			this + " is not disposable, so stack is not saved";
+		if (this.stackPtr != 0L) {
+			return this.stackPtr;
+		}
+		return this.stackPtr = instr(stackSave(
+				nextPtr(),
+				this.firstInstr != 0L ? this.firstInstr : nextInstr()));
 	}
 
 }

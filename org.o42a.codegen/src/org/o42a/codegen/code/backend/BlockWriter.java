@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -34,8 +32,6 @@ public interface BlockWriter extends CodeWriter {
 	void go(CodePos pos);
 
 	void go(BoolOp condition, CodePos truePos, CodePos falsePos);
-
-	AllocationWriter allocationBlock(AllocationCode code, CodeId id);
 
 	void returnVoid();
 

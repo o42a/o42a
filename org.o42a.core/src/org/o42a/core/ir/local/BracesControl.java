@@ -28,15 +28,14 @@ import org.o42a.codegen.code.*;
 final class BracesControl extends Control {
 
 	private final MainControl main;
-	private final Block enclosingCode;
 	private final Block code;
 	private final Control parent;
 	private final BracesControl enclosing;
 	private final String name;
 	private final CodePos done;
+	private final AllocationCode allocation;
 	private Block exitCode;
 	private Block falseCode;
-	private AllocationCode allocation;
 	private Block returnCode;
 	private IdentityHashMap<BracesControl, Block> exits;
 	private IdentityHashMap<BracesControl, Block> repeats;
@@ -44,12 +43,13 @@ final class BracesControl extends Control {
 	BracesControl(Control parent, Block code, CodePos next, String name) {
 		super(parent);
 		this.main = parent.main();
-		this.enclosingCode = code;
-		this.code = code.addBlock(code.id().detail("eval"));
+		this.code = code;
 		this.parent = parent;
 		this.enclosing = parent.braces();
 		this.name = name;
 		this.done = next;
+		this.allocation = code.allocate();
+		this.allocation.addExit(code);
 	}
 
 	public final BracesControl getEnclosing() {
@@ -66,11 +66,8 @@ final class BracesControl extends Control {
 	}
 
 	@Override
-	public AllocationCode allocation() {
-		if (this.allocation != null) {
-			return this.allocation;
-		}
-		return this.allocation = this.enclosingCode.allocate();
+	public final AllocationCode allocation() {
+		return this.allocation;
 	}
 
 	@Override
@@ -79,7 +76,7 @@ final class BracesControl extends Control {
 			return this.exitCode.head();
 		}
 
-		this.exitCode = allocation().alt("exit");
+		this.exitCode = allocation().addExitBlock("exit");
 
 		return this.exitCode.head();
 	}
@@ -90,21 +87,14 @@ final class BracesControl extends Control {
 			return this.falseCode.head();
 		}
 
-		this.falseCode = allocation().alt("false");
+		this.falseCode = allocation().addExitBlock("false");
 
 		return this.falseCode.head();
 	}
 
 	@Override
 	public void end() {
-		if (this.allocation == null) {
-			this.enclosingCode.go(this.code.head());
-			this.code.go(this.enclosingCode.tail());
-		} else {
-			this.allocation.go(this.code.head());
-			this.code.go(this.allocation.tail());
-			this.allocation.done();
-		}
+		this.allocation.done();
 		if (this.exitCode != null && this.exitCode.exists()) {
 			this.exitCode.go(this.done);
 		}
@@ -130,7 +120,7 @@ final class BracesControl extends Control {
 				final Block repeat = e.getValue();
 
 				if (braces == this) {
-					repeat.go(this.enclosingCode.head());
+					repeat.go(code().head());
 					continue;
 				}
 				repeat.go(this.parent.repeatDir(braces));
@@ -141,7 +131,7 @@ final class BracesControl extends Control {
 	@Override
 	public String toString() {
 
-		final Code code = this.enclosingCode;
+		final Code code = this.code;
 
 		if (code == null) {
 			return super.toString();
@@ -166,7 +156,7 @@ final class BracesControl extends Control {
 			return this.returnCode.head();
 		}
 
-		this.returnCode = allocation().alt("return");
+		this.returnCode = allocation().addExitBlock("return");
 
 		return this.returnCode.head();
 	}
@@ -191,9 +181,9 @@ final class BracesControl extends Control {
 		final String name = braces.getName();
 
 		if (name == null) {
-			exit = allocation().alt("exit");
+			exit = allocation().addExitBlock("exit");
 		} else {
-			exit = allocation().alt(this.code.id("exit").sub(name));
+			exit = allocation().addExitBlock(this.code.id("exit").sub(name));
 		}
 
 		this.exits.put(braces, exit);
@@ -218,9 +208,10 @@ final class BracesControl extends Control {
 		final String name = braces.getName();
 
 		if (name == null) {
-			repeat = allocation().alt("repeat");
+			repeat = allocation().addExitBlock("repeat");
 		} else {
-			repeat = allocation().alt(this.code.id("repeat").sub(name));
+			repeat = allocation().addExitBlock(
+					this.code.id("repeat").sub(name));
 		}
 
 		this.repeats.put(braces, repeat);

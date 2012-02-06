@@ -219,8 +219,7 @@ public abstract class ValDirs {
 	static final class TopLevelValDirs extends ValDirs {
 
 		private final CodeDirs enclosing;
-		private final boolean allocatable;
-		private AllocationDirs allocation;
+		private final AllocationDirs allocation;
 		private ValOp value;
 		private ValStoreMode storeMode;
 
@@ -230,11 +229,12 @@ public abstract class ValDirs {
 				ValueStruct<?, ?> valueStruct) {
 			super(
 					enclosing.getBuilder(),
-					enclosing.addBlock(name),
+					enclosing.code(),
 					valueStruct);
-			this.allocatable = true;
+			this.dirs = enclosing;
 			this.enclosing = enclosing;
 			this.storeMode = ASSIGNMENT_VAL_STORE;
+			this.allocation = enclosing.allocate(name);
 		}
 
 		TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
@@ -243,10 +243,10 @@ public abstract class ValDirs {
 					enclosing.code(),
 					value.getValueStruct());
 			this.dirs = enclosing;
-			this.allocatable = false;
 			this.enclosing = enclosing;
 			this.value = value;
 			this.storeMode = value.getStoreMode();
+			this.allocation = null;
 		}
 
 		@Override
@@ -254,12 +254,6 @@ public abstract class ValDirs {
 			if (this.value != null) {
 				return this.value;
 			}
-
-			assert this.allocatable :
-				"Can not allocate value";
-
-			this.allocation = this.enclosing.allocate("value");
-
 			return this.value =
 					this.allocation.allocate(id("value"), ValType.VAL_TYPE)
 					.op(getBuilder(), getValueStruct())
@@ -269,17 +263,7 @@ public abstract class ValDirs {
 
 		@Override
 		public void done() {
-			if (!this.allocatable) {
-				return;
-			}
-			if (this.allocation == null) {
-				this.enclosing.code().go(code().head());
-				code().go(this.enclosing.code().tail());
-				endDirs(this.enclosing);
-			} else {
-				this.allocation.code().go(code().head());
-				code().go(this.allocation.code().tail());
-				endDirs(this.allocation.dirs());
+			if (this.allocation != null) {
 				this.allocation.done();
 			}
 		}
@@ -291,7 +275,7 @@ public abstract class ValDirs {
 
 		@Override
 		CodeDirs createDirs() {
-			return createDirs(this.enclosing);
+			throw new UnsupportedOperationException();
 		}
 
 	}
