@@ -77,12 +77,14 @@ final class ImperativeOp {
 
 		blockControl.end();
 
-		if (code.exists()) {
+		if (code.created()) {
 			control.code().go(code.head());
 			if (next.exists()) {
 				next.go(control.code().tail());
 			}
-			code.go(control.code().tail());
+			if (code.exists()) {
+				code.go(control.code().tail());
+			}
 		}
 
 		control.reachability(blockControl);

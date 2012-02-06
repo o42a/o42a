@@ -23,11 +23,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
-final class LLInset extends LLCode {
+abstract class LLInset extends LLCode {
 
 	private final long blockPtr;
 	private LLInset prevInset;
 	private long nextInstr;
+	private boolean exists;
 
 	LLInset(LLCode enclosing, LLInset prevInset, Code code, CodeId id) {
 		super(
@@ -43,12 +44,12 @@ final class LLInset extends LLCode {
 
 	@Override
 	public boolean created() {
-		return true;
+		return exists();
 	}
 
 	@Override
 	public boolean exists() {
-		return true;
+		return this.exists;
 	}
 
 	@Override
@@ -68,6 +69,7 @@ final class LLInset extends LLCode {
 	@Override
 	public long instr(long instr) {
 		super.instr(instr);
+		this.exists = true;
 		if (this.prevInset != null) {
 			this.prevInset.nextInstr(instr);
 			this.prevInset = null;

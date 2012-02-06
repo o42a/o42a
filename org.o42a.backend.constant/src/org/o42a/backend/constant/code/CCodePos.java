@@ -19,15 +19,23 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 
 
 public final class CCodePos implements CodePos {
 
+	private final CBlock<?> code;
 	private final CodePos underlying;
 
-	public CCodePos(CodePos underlying) {
+	public CCodePos(CBlock<?> code, CodePos underlying) {
+		this.code = code;
 		this.underlying = underlying;
+	}
+
+	@Override
+	public Block code() {
+		return this.code.code();
 	}
 
 	public final CodePos getUnderlying() {

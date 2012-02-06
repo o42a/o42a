@@ -208,7 +208,7 @@ public class ConsoleModule extends AnnotatedModule {
 				.op(builder, ValueStruct.INTEGER)
 				.storeIndefinite(alloc);
 		final ValDirs dirs =
-				builder.falseWhenUnknown(alloc, exit.head())
+				builder.falseWhenUnknown(main, exit.head())
 				.value(alloc.id("exec_main"), result);
 		final Block code = dirs.code();
 

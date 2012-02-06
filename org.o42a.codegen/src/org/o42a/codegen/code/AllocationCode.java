@@ -28,24 +28,16 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AllocationCode extends Block {
+public final class AllocationCode extends Code {
 
-	private final Block enclosing;
+	private final AllocationWriter writer;
 	private final boolean disposable;
-	private AllocationWriter writer;
-	private Block alts[];
+	private Code exits[];
 
-	AllocationCode(Block enclosing, CodeId name, boolean disposable) {
+	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
-		this.enclosing = enclosing;
 		this.disposable = disposable;
-		if (!getGenerator().isProxied()) {
-			enclosing.go(head());
-		}
-	}
-
-	public final Block getEnclosing() {
-		return this.enclosing;
+		this.writer = enclosing.writer().allocation(this, getId());
 	}
 
 	public final boolean isDisposable() {
@@ -54,20 +46,12 @@ public final class AllocationCode extends Block {
 
 	@Override
 	public boolean created() {
-		return this.writer != null && this.writer.created();
+		return writer().created();
 	}
 
 	@Override
 	public final boolean exists() {
-		return this.writer != null && this.writer.exists();
-	}
-
-	public final Block alt(String name) {
-		return alt(addBlock(name));
-	}
-
-	public final Block alt(CodeId name) {
-		return alt(addBlock(name));
+		return writer().exists();
 	}
 
 	public final AnyRecOp allocatePtr(CodeId id) {
@@ -103,6 +87,32 @@ public final class AllocationCode extends Block {
 		return result;
 	}
 
+	public final void addExit(Code exit) {
+		if (this.exits == null) {
+			this.exits = new Code[] {exit};
+		} else {
+			this.exits = ArrayUtil.append(this.exits, exit);
+		}
+	}
+
+	public final Block addExitBlock(String name) {
+
+		final Block exit = addBlock(name);
+
+		addExit(exit);
+
+		return exit;
+	}
+
+	public final Block addExitBlock(CodeId name) {
+
+		final Block exit = addBlock(name);
+
+		addExit(exit);
+
+		return exit;
+	}
+
 	@Override
 	public void done() {
 		if (isComplete()) {
@@ -114,19 +124,13 @@ public final class AllocationCode extends Block {
 		}
 
 		if (isDisposable()) {
-			if (this.alts != null) {
-				for (Code alt : this.alts) {
-					if (alt.exists()) {
-						writer().dispose(alt.writer());
+			if (this.exits != null) {
+				for (Code exit : this.exits) {
+					if (exit.exists()) {
+						writer().dispose(exit.writer());
 					}
 				}
 			}
-		}
-		if (exists()) {
-			if (isDisposable()) {
-				writer().dispose(writer());
-			}
-			go(getEnclosing().tail());
 		}
 
 		super.done();
@@ -134,20 +138,7 @@ public final class AllocationCode extends Block {
 
 	@Override
 	public final AllocationWriter writer() {
-		if (this.writer != null) {
-			return this.writer;
-		}
-		return this.writer =
-				getEnclosing().writer().allocationBlock(this, getId());
-	}
-
-	private Block alt(Block alt) {
-		if (this.alts == null) {
-			this.alts = new Block[] {alt};
-		} else {
-			this.alts = ArrayUtil.append(this.alts, alt);
-		}
-		return alt;
+		return this.writer;
 	}
 
 }

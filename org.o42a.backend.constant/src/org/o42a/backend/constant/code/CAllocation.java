@@ -27,11 +27,11 @@ import org.o42a.codegen.code.backend.CodeWriter;
 
 
 final class CAllocation
-		extends CBlock<AllocationCode>
+		extends CCode<AllocationCode>
 		implements AllocationWriter {
 
 	CAllocation(
-			CBlock<?> enclosing,
+			CCode<?> enclosing,
 			AllocationCode allocation,
 			AllocationCode underlying) {
 		super(

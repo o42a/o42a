@@ -32,13 +32,14 @@ public class AllocationDirs {
 
 	private final CodeDirs enclosing;
 	private final AllocationCode code;
-	private Block falseAlt;
-	private Block unknownAlt;
+	private Block falseExit;
+	private Block unknownExit;
 	private CodeDirs dirs;
 
 	AllocationDirs(CodeDirs enclosing, AllocationCode code) {
 		this.enclosing = enclosing;
 		this.code = code;
+		this.code.addExit(enclosing.code());
 	}
 
 	public final AllocationCode code() {
@@ -76,30 +77,30 @@ public class AllocationDirs {
 			return this.dirs;
 		}
 
-		this.falseAlt = this.code.alt("false");
+		this.falseExit = this.code.addExitBlock("false");
 		if (this.enclosing.isFalseWhenUnknown()) {
-			this.unknownAlt = this.falseAlt;
+			this.unknownExit = this.falseExit;
 		} else {
-			this.unknownAlt = this.code.alt("unknown");
+			this.unknownExit = this.code.addExitBlock("unknown");
 		}
 
 		return this.dirs = new CodeDirs(
 				this.enclosing.getBuilder(),
-				this.code,
-				this.falseAlt.head(),
-				this.unknownAlt.head());
+				this.enclosing.code(),
+				this.falseExit.head(),
+				this.unknownExit.head());
 	}
 
 	public void done() {
+		this.code.done();
 		if (this.dirs == null) {
 			return;
 		}
-		this.code.done();
-		if (this.falseAlt.exists()) {
-			this.falseAlt.go(this.enclosing.falseDir());
+		if (this.falseExit.exists()) {
+			this.falseExit.go(this.enclosing.falseDir());
 		}
-		if (this.unknownAlt.exists() && this.unknownAlt != this.falseAlt) {
-			this.unknownAlt.go(this.enclosing.unknownDir());
+		if (this.unknownExit.exists() && this.unknownExit != this.falseExit) {
+			this.unknownExit.go(this.enclosing.unknownDir());
 		}
 	}
 
