@@ -20,13 +20,13 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.backend.BlockWriter;
 
 
-class CodeBlock extends Code {
+class CodeBlock extends Block {
 
 	private final Code enclosing;
-	CodeWriter writer;
+	BlockWriter writer;
 
 	CodeBlock(Code enclosing, CodeId name) {
 		super(enclosing, name);
@@ -48,7 +48,7 @@ class CodeBlock extends Code {
 	}
 
 	@Override
-	public CodeWriter writer() {
+	public BlockWriter writer() {
 		if (this.writer != null) {
 			return this.writer;
 		}

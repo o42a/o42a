@@ -21,7 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
@@ -73,7 +73,7 @@ public abstract class RefFldOp<
 			return targetIR.op(getBuilder(), dirs.code());
 		}
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final FldKind kind = fld().getKind();
 
 		code.dumpName(kind + " field: ", ptr());

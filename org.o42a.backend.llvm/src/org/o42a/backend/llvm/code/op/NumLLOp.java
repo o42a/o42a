@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -100,7 +101,7 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	public abstract T create(CodeId id, long blockPtr, long nativePtr);
 
 	@Override
-	public void returnValue(Code code) {
+	public void returnValue(Block code) {
 		llvm(code).returnValue(this);
 	}
 

@@ -20,6 +20,7 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -64,7 +65,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 	}
 
 	@Override
-	public final void returnValue(Code code) {
+	public final void returnValue(Block code) {
 		writer().returnValue(code);
 	}
 

@@ -20,7 +20,7 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 
@@ -28,7 +28,7 @@ import org.o42a.core.ir.CodeBuilder;
 abstract class MainControl extends Control {
 
 	private final CodeBuilder builder;
-	private final Code code;
+	private final Block code;
 	private final CodePos exit;
 
 	private int seq;
@@ -36,7 +36,7 @@ abstract class MainControl extends Control {
 
 	MainControl(
 			CodeBuilder builder,
-			Code code,
+			Block code,
 			CodePos exit,
 			CodePos falseDir) {
 		this.code = code;
@@ -46,7 +46,7 @@ abstract class MainControl extends Control {
 	}
 
 	@Override
-	public final Code code() {
+	public final Block code() {
 		return this.code;
 	}
 

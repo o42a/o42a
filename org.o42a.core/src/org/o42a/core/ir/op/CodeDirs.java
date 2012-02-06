@@ -21,6 +21,7 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
@@ -33,27 +34,27 @@ public class CodeDirs {
 
 	public static CodeDirs falseWhenUnknown(
 			CodeBuilder builder,
-			Code code,
+			Block code,
 			CodePos falseDir) {
 		return new CodeDirs(builder, code, falseDir, falseDir);
 	}
 
 	public static CodeDirs splitWhenUnknown(
 			CodeBuilder builder,
-			Code code,
+			Block code,
 			CodePos falseDir,
 			CodePos unknownDir) {
 		return new CodeDirs(builder, code, falseDir, unknownDir);
 	}
 
-	private final Code code;
+	private final Block code;
 	private final CodePos falseDir;
 	private final CodePos unknownDir;
 	private final CodeBuilder builder;
 
 	CodeDirs(
 			CodeBuilder builder,
-			Code code,
+			Block code,
 			CodePos falseDir,
 			CodePos unknownDir) {
 		assert builder != null :
@@ -82,7 +83,7 @@ public class CodeDirs {
 		return this.code.isDebug();
 	}
 
-	public final Code code() {
+	public final Block code() {
 		return this.code;
 	}
 
@@ -94,15 +95,15 @@ public class CodeDirs {
 		return this.code.id(string);
 	}
 
-	public final Code addBlock(String name) {
+	public final Block addBlock(String name) {
 		return this.code.addBlock(name);
 	}
 
-	public final Code addBlock(CodeId name) {
+	public final Block addBlock(CodeId name) {
 		return this.code.addBlock(name);
 	}
 
-	public final CodeDirs sub(Code code) {
+	public final CodeDirs sub(Block code) {
 		return new CodeDirs(getBuilder(), code, this.falseDir, this.unknownDir);
 	}
 
@@ -113,8 +114,8 @@ public class CodeDirs {
 
 		this.code.begin(message);
 
-		final Code falseCode = this.code.addBlock(id + "_false");
-		final Code unknownCode;
+		final Block falseCode = this.code.addBlock(id + "_false");
+		final Block unknownCode;
 
 		if (isFalseWhenUnknown()) {
 			unknownCode = falseCode;
@@ -196,7 +197,7 @@ public class CodeDirs {
 		return this.unknownDir;
 	}
 
-	public final void go(Code code, CondOp cond) {
+	public final void go(Block code, CondOp cond) {
 
 		final BoolOp condition = cond.loadCondition(null, code);
 
@@ -205,7 +206,7 @@ public class CodeDirs {
 			return;
 		}
 
-		final Code condFalse = code.addBlock("false");
+		final Block condFalse = code.addBlock("false");
 
 		condition.goUnless(code, condFalse.head());
 		if (condFalse.exists()) {
@@ -253,14 +254,14 @@ public class CodeDirs {
 	private static final class Nested extends CodeDirs {
 
 		private final CodeDirs enclosing;
-		private final Code falseCode;
-		private final Code unknownCode;
+		private final Block falseCode;
+		private final Block unknownCode;
 		private boolean ended;
 
 		Nested(
 				CodeDirs enclosing,
-				Code falseCode,
-				Code unknownCode) {
+				Block falseCode,
+				Block unknownCode) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),

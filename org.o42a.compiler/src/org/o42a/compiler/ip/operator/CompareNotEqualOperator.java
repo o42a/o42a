@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.op.CodeDirs;
@@ -35,7 +35,7 @@ final class CompareNotEqualOperator extends CompareOperator {
 	@Override
 	public void write(CodeDirs dirs, Int64op comparisonValue) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final BoolOp result = comparisonValue.ne(null, code, code.int64(0));
 
 		result.goUnless(code, dirs.falseDir());

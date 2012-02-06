@@ -57,7 +57,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
-	public final void returnValue(Code code) {
+	public final void returnValue(Block code) {
 		this.caller.returnValue(code);
 	}
 

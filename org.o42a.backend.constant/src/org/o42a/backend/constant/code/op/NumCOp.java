@@ -22,8 +22,10 @@ package org.o42a.backend.constant.code.op;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
+import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 
@@ -474,9 +476,9 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 	protected abstract int cmp(T value1, T value2);
 
 	@Override
-	public final void returnValue(Code code) {
+	public final void returnValue(Block code) {
 
-		final CCode<?> ccode = cast(code);
+		final CBlock<?> ccode = cast(code);
 
 		ccode.beforeReturn();
 		getUnderlying().returnValue(ccode.getUnderlying());

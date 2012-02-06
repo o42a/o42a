@@ -23,9 +23,7 @@ import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.FunctionBuilder;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -121,11 +119,11 @@ public final class LocalIRFunc
 		this.function = function;
 	}
 
-	private void build(LocalBuilder builder, Code code, ValOp result) {
+	private void build(LocalBuilder builder, Block code, ValOp result) {
 
 		final StOp op = getScope().getBlock().op(builder);
-		final Code exit = code.addBlock("exit");
-		final Code failure = code.addBlock("failure");
+		final Block exit = code.addBlock("exit");
+		final Block failure = code.addBlock("failure");
 		final Control control =
 				builder.createControl(code, exit.head(), failure.head());
 

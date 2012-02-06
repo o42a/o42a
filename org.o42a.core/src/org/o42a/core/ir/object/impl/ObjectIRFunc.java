@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.impl;
 
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
@@ -82,7 +83,7 @@ public abstract class ObjectIRFunc {
 			return false;
 		}
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		code.debug("Object condition is FALSE");
 		code.go(dirs.falseDir());

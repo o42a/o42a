@@ -129,7 +129,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final RefFldOp<?, C> fld = op(code, builder.host());
 
 		final ObjectOp result = construct(builder, dirs, fld);
@@ -273,14 +273,14 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 			return func(id, code, getType().constructor());
 		}
 
-		public DataOp target(Code code, ObjOp host) {
+		public DataOp target(Block code, ObjOp host) {
 
 			final DataOp object = object(null, code).load(null, code);
-			final CondCode noTarget = object.isNull(null, code).branch(
+			final CondBlock noTarget = object.isNull(null, code).branch(
 					code,
 					"no_target",
 					"has_target");
-			final Code hasTarget = noTarget.otherwise();
+			final Block hasTarget = noTarget.otherwise();
 
 			final DataOp object1 = hasTarget.phi(null, object);
 
@@ -392,7 +392,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 		@Override
 		public void build(Function<C> constructor) {
 
-			final Code failure = constructor.addBlock("failure");
+			final Block failure = constructor.addBlock("failure");
 			final ObjBuilder builder = new ObjBuilder(
 					constructor,
 					failure.head(),

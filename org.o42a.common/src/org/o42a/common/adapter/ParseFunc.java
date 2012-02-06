@@ -40,7 +40,7 @@ public final class ParseFunc extends Func<ParseFunc> {
 
 	public ValOp parse(ValDirs dirs, ValOp input) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ValOp output = dirs.value();
 
 		parse(code, output, input);

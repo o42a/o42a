@@ -26,9 +26,7 @@ import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CondCode;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
@@ -157,7 +155,7 @@ public final class ValOp extends IROp implements CondOp {
 				shift);
 	}
 
-	public Int32op loadCharMask(CodeId id, Code code) {
+	public Int32op loadCharMask(CodeId id, Block code) {
 
 		final Int32op alignment =
 				loadAlignment(id != null ? id.detail("alignment") : null, code);
@@ -165,8 +163,8 @@ public final class ValOp extends IROp implements CondOp {
 				alignment.getId().detail("4bytes"),
 				code,
 				code.int32(4));
-		final CondCode when4bytes = is4bytes.branch(code, "4bytes");
-		final Code not4bytes = when4bytes.otherwise();
+		final CondBlock when4bytes = is4bytes.branch(code, "4bytes");
+		final Block not4bytes = when4bytes.otherwise();
 
 		final Int32op result1 = when4bytes.int32(-1);
 
@@ -211,15 +209,15 @@ public final class ValOp extends IROp implements CondOp {
 		return rawValue(valueId.detail("raw"), code).toAny(valueId, code);
 	}
 
-	public final AnyOp loadData(CodeId id, Code code) {
+	public final AnyOp loadData(CodeId id, Block code) {
 
 		final AnyOp value =
 				value(id != null ? id.detail("value") : null, code);
 		final BoolOp external =
 				loadExternal(id != null ? id.detail("external") : null, code);
 
-		final CondCode whenExternal = external.branch(code, "external");
-		final Code notExternal = whenExternal.otherwise();
+		final CondBlock whenExternal = external.branch(code, "external");
+		final Block notExternal = whenExternal.otherwise();
 
 		final AnyOp result1 =
 				value.toPtr(null, whenExternal).load(null, whenExternal);
@@ -329,12 +327,12 @@ public final class ValOp extends IROp implements CondOp {
 		return this;
 	}
 
-	public final void go(Code code, ValDirs dirs) {
+	public final void go(Block code, ValDirs dirs) {
 		go(code, dirs.dirs());
 	}
 
 	@Override
-	public final void go(Code code, CodeDirs dirs) {
+	public final void go(Block code, CodeDirs dirs) {
 		if (this.constant != null) {
 			if (!this.constant.getCondition()) {
 				if (this.constant.isUnknown()) {

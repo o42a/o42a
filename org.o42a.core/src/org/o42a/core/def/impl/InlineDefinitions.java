@@ -21,7 +21,7 @@ package org.o42a.core.def.impl;
 
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -53,12 +53,12 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		writeRequirement(dirs.dirs(), host);
 		this.condition.writeCond(dirs.dirs(), host);
 
-		final Code unknownClaim = dirs.addBlock("unknown_claim");
+		final Block unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 				dirs.dirs().splitWhenUnknown(
 						dirs.dirs().falseDir(),
@@ -123,7 +123,7 @@ public class InlineDefinitions extends InlineValue {
 
 	private void writeRequirement(CodeDirs dirs, HostOp host) {
 
-		final Code unknownReq = dirs.addBlock("unknown_req");
+		final Block unknownReq = dirs.addBlock("unknown_req");
 		final CodeDirs reqDirs = dirs.splitWhenUnknown(
 				dirs.falseDir(),
 				unknownReq.head());
@@ -134,10 +134,7 @@ public class InlineDefinitions extends InlineValue {
 		}
 	}
 
-	private ValType.Op writeProposition(
-			ValDirs dirs,
-			Code code,
-			HostOp host) {
+	private ValType.Op writeProposition(ValDirs dirs, Block code, HostOp host) {
 
 		final ValDirs propDirs = dirs.sub(code);
 		final ValType.Op prop = code.phi(

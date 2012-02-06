@@ -21,9 +21,7 @@ package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
@@ -72,7 +70,7 @@ public class LocalBuilder extends CodeBuilder {
 	}
 
 	public final Control createControl(
-			Code code,
+			Block code,
 			CodePos exit,
 			CodePos falseDir) {
 		return new DefaultMainControl(this, code, exit, falseDir);

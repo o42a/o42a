@@ -201,7 +201,7 @@ public class ConsoleModule extends AnnotatedModule {
 		main.debug("Start execution");
 
 		final CodeBuilder builder = hostlessBuilder(getContext(), main);
-		final Code exit = main.addBlock("exit");
+		final Block exit = main.addBlock("exit");
 		final AllocationCode alloc = main.undisposable();
 		final ValOp result =
 				alloc.allocate(null, VAL_TYPE)
@@ -210,7 +210,7 @@ public class ConsoleModule extends AnnotatedModule {
 		final ValDirs dirs =
 				builder.falseWhenUnknown(alloc, exit.head())
 				.value(alloc.id("exec_main"), result);
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
 		final ValOp programResult;
 

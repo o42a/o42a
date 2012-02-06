@@ -23,7 +23,7 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
@@ -177,7 +177,7 @@ final class StringChar extends AnnotatedBuiltin {
 			indexVal = idx.writeValue(indexDirs);
 		}
 
-		final Code code = indexDirs.code();
+		final Block code = indexDirs.code();
 
 		final Int64op index =
 				indexVal.rawValue(code.id("index"), code)

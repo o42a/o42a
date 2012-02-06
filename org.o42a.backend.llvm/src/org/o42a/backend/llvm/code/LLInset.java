@@ -20,10 +20,7 @@
 package org.o42a.backend.llvm.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.BoolOp;
 
 
 final class LLInset extends LLCode {
@@ -45,16 +42,6 @@ final class LLInset extends LLCode {
 	}
 
 	@Override
-	public CodePos head() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public CodePos tail() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public boolean created() {
 		return true;
 	}
@@ -66,26 +53,6 @@ final class LLInset extends LLCode {
 
 	@Override
 	public void done() {
-	}
-
-	@Override
-	public LLBlock block(Code code, CodeId id) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public LLAllocation allocationBlock(AllocationCode code, CodeId id) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void go(CodePos pos) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

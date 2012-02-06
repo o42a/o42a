@@ -19,15 +19,17 @@
 */
 package org.o42a.backend.llvm.code;
 
+import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 
 
-abstract class LLBlock extends LLCode {
+public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	private LLCodePos.Head head;
 	private LLCodePos.Tail tail;
@@ -38,9 +40,13 @@ abstract class LLBlock extends LLCode {
 	LLBlock(
 			LLVMModule module,
 			LLFunction<?> function,
-			Code code,
+			Block code,
 			CodeId id) {
 		super(module, function, code, id);
+	}
+
+	public final Block block() {
+		return (Block) code();
 	}
 
 	@Override
@@ -99,11 +105,6 @@ abstract class LLBlock extends LLCode {
 	}
 
 	@Override
-	public LLBlock block(Code code, CodeId id) {
-		return new LLCodeBlock(this, code, id);
-	}
-
-	@Override
 	public LLAllocation allocationBlock(AllocationCode code, CodeId id) {
 		return new LLAllocation(this, code, id);
 	}
@@ -143,6 +144,17 @@ abstract class LLBlock extends LLCode {
 				nativePtr(condition),
 				truePtr,
 				falsePtr));
+	}
+
+	@Override
+	public void returnVoid() {
+		getFunction().getCallback().beforeReturn(block());
+		instr(returnVoid(nextPtr(), nextInstr()));
+	}
+
+	public void returnValue(LLOp<?> result) {
+		getFunction().getCallback().beforeReturn(block());
+		instr(returnValue(nextPtr(), nextInstr(),result.getNativePtr()));
 	}
 
 	protected final void init() {

@@ -21,7 +21,7 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -32,8 +32,8 @@ public class AllocationDirs {
 
 	private final CodeDirs enclosing;
 	private final AllocationCode code;
-	private Code falseAlt;
-	private Code unknownAlt;
+	private Block falseAlt;
+	private Block unknownAlt;
 	private CodeDirs dirs;
 
 	AllocationDirs(CodeDirs enclosing, AllocationCode code) {
@@ -41,7 +41,7 @@ public class AllocationDirs {
 		this.code = code;
 	}
 
-	public final Code code() {
+	public final AllocationCode code() {
 		return this.code;
 	}
 

@@ -27,9 +27,7 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -80,7 +78,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 	}
 
 	@Override
-	public void returnValue(Code code) {
+	public void returnValue(Block code) {
 		llvm(code).returnValue(this);
 	}
 

@@ -31,6 +31,7 @@ import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RelOp;
@@ -46,8 +47,16 @@ public abstract class LLCode implements CodeWriter {
 		return llvm(code.writer());
 	}
 
+	public static final LLBlock llvm(Block code) {
+		return llvm(code.writer());
+	}
+
 	public static final LLCode llvm(CodeWriter writer) {
 		return (LLCode) writer;
+	}
+
+	public static final LLBlock llvm(BlockWriter writer) {
+		return (LLBlock) writer;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -172,12 +181,21 @@ public abstract class LLCode implements CodeWriter {
 		return this.id;
 	}
 
+	public final Code code() {
+		return this.code;
+	}
+
 	public abstract long nextPtr();
 
 	public abstract long nextInstr();
 
 	public final LLInset inset(Code code, CodeId id) {
 		return this.lastInset = new LLInset(this, this.lastInset, code, id);
+	}
+
+	@Override
+	public LLBlock block(Block code, CodeId id) {
+		return new LLCodeBlock(this, code, id);
 	}
 
 	@SuppressWarnings({
@@ -425,17 +443,6 @@ public abstract class LLCode implements CodeWriter {
 						falseOp.getNativePtr())));
 	}
 
-	@Override
-	public void returnVoid() {
-		this.function.getCallback().beforeReturn(this.code);
-		instr(returnVoid(nextPtr(), nextInstr()));
-	}
-
-	public void returnValue(LLOp<?> result) {
-		this.function.getCallback().beforeReturn(this.code);
-		instr(returnValue(nextPtr(), nextInstr(),result.getNativePtr()));
-	}
-
 	public long instr(long instr) {
 		if (this.lastInset != null) {
 			this.lastInset.nextInstr(instr);
@@ -549,9 +556,9 @@ public abstract class LLCode implements CodeWriter {
 			long truePtr,
 			long flsePtr);
 
-	private static native long returnVoid(long blockPtr, long instrPtr);
+	static native long returnVoid(long blockPtr, long instrPtr);
 
-	private static native long returnValue(
+	static native long returnValue(
 			long blockPtr,
 			long instrPtr,
 			long valuePtr);

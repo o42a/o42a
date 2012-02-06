@@ -48,7 +48,7 @@ public abstract class Return<O> {
 		return getDataType().getName();
 	}
 
-	public abstract void returnNull(Code code);
+	public abstract void returnNull(Block code);
 
 	@Override
 	public String toString() {
@@ -79,7 +79,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.returnVoid();
 		}
 
@@ -102,7 +102,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.int8((byte) 0).returnValue(code);
 		}
 
@@ -127,7 +127,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.int16((short) 0).returnValue(code);
 		}
 
@@ -152,7 +152,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.int32(0).returnValue(code);
 		}
 
@@ -177,7 +177,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.int64(0L).returnValue(code);
 		}
 
@@ -202,7 +202,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.fp32(0.0f).returnValue(code);
 		}
 
@@ -227,7 +227,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.fp64(0.0d).returnValue(code);
 		}
 
@@ -252,7 +252,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.bool(false).returnValue(code);
 		}
 
@@ -277,7 +277,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.nullPtr().returnValue(code);
 		}
 
@@ -302,7 +302,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.nullDataPtr().returnValue(code);
 		}
 
@@ -335,7 +335,7 @@ public abstract class Return<O> {
 		}
 
 		@Override
-		public void returnNull(Code code) {
+		public void returnNull(Block code) {
 			code.nullPtr(this.type).returnValue(code);
 		}
 

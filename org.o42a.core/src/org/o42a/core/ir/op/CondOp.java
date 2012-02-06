@@ -20,6 +20,7 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -30,6 +31,6 @@ public interface CondOp {
 
 	BoolOp loadUnknown(CodeId id, Code code);
 
-	void go(Code code, CodeDirs dirs);
+	void go(Block code, CodeDirs dirs);
 
 }

@@ -28,14 +28,14 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AllocationCode extends Code {
+public final class AllocationCode extends Block {
 
-	private final Code enclosing;
+	private final Block enclosing;
 	private final boolean disposable;
 	private AllocationWriter writer;
-	private Code alts[];
+	private Block alts[];
 
-	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
+	AllocationCode(Block enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
 		this.enclosing = enclosing;
 		this.disposable = disposable;
@@ -44,7 +44,7 @@ public final class AllocationCode extends Code {
 		}
 	}
 
-	public final Code getEnclosing() {
+	public final Block getEnclosing() {
 		return this.enclosing;
 	}
 
@@ -62,11 +62,11 @@ public final class AllocationCode extends Code {
 		return this.writer != null && this.writer.exists();
 	}
 
-	public final Code alt(String name) {
+	public final Block alt(String name) {
 		return alt(addBlock(name));
 	}
 
-	public final Code alt(CodeId name) {
+	public final Block alt(CodeId name) {
 		return alt(addBlock(name));
 	}
 
@@ -141,9 +141,9 @@ public final class AllocationCode extends Code {
 				getEnclosing().writer().allocationBlock(this, getId());
 	}
 
-	private Code alt(Code alt) {
+	private Block alt(Block alt) {
 		if (this.alts == null) {
-			this.alts = new Code[] {alt};
+			this.alts = new Block[] {alt};
 		} else {
 			this.alts = ArrayUtil.append(this.alts, alt);
 		}

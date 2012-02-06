@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -74,8 +74,8 @@ public final class NegatedLogical extends Logical {
 	public void write(CodeDirs dirs, HostOp host) {
 		assert assertFullyResolved();
 
-		final Code code = dirs.code();
-		final Code isFalse = code.addBlock("is_false");
+		final Block code = dirs.code();
+		final Block isFalse = code.addBlock("is_false");
 		final CodeDirs negatedDirs =
 				dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
 				.begin("not", "Logical NOT: " + this);
@@ -110,8 +110,8 @@ public final class NegatedLogical extends Logical {
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
 
-			final Code code = dirs.code();
-			final Code isFalse = code.addBlock("is_false");
+			final Block code = dirs.code();
+			final Block isFalse = code.addBlock("is_false");
 			final CodeDirs negatedDirs =
 					dirs.getBuilder().falseWhenUnknown(code, isFalse.head())
 					.begin("not", "In-line logical NOT: " + this);

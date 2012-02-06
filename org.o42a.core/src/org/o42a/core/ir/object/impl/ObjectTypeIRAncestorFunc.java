@@ -22,7 +22,7 @@ package org.o42a.core.ir.object.impl;
 import static org.o42a.core.ir.CodeBuilder.codeBuilder;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.FunctionBuilder;
 import org.o42a.core.ir.CodeBuilder;
@@ -45,7 +45,7 @@ public class ObjectTypeIRAncestorFunc
 	@Override
 	public void build(Function<ObjectRefFunc> function) {
 
-		final Code failure = function.addBlock("failure");
+		final Block failure = function.addBlock("failure");
 		final TypeRef ancestor = this.objectIR.getObject().type().getAncestor();
 		final CodeBuilder builder = codeBuilder(
 				function,

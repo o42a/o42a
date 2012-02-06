@@ -22,28 +22,26 @@ package org.o42a.core.ir.local;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.*;
 
 
 final class BracesControl extends Control {
 
 	private final MainControl main;
-	private final Code enclosingCode;
-	private final Code code;
+	private final Block enclosingCode;
+	private final Block code;
 	private final Control parent;
 	private final BracesControl enclosing;
 	private final String name;
 	private final CodePos done;
-	private Code exitCode;
-	private Code falseCode;
+	private Block exitCode;
+	private Block falseCode;
 	private AllocationCode allocation;
-	private Code returnCode;
-	private IdentityHashMap<BracesControl, Code> exits;
-	private IdentityHashMap<BracesControl, Code> repeats;
+	private Block returnCode;
+	private IdentityHashMap<BracesControl, Block> exits;
+	private IdentityHashMap<BracesControl, Block> repeats;
 
-	BracesControl(Control parent, Code code, CodePos next, String name) {
+	BracesControl(Control parent, Block code, CodePos next, String name) {
 		super(parent);
 		this.main = parent.main();
 		this.enclosingCode = code;
@@ -63,7 +61,7 @@ final class BracesControl extends Control {
 	}
 
 	@Override
-	public final Code code() {
+	public final Block code() {
 		return this.code;
 	}
 
@@ -117,19 +115,19 @@ final class BracesControl extends Control {
 			this.returnCode.go(this.parent.returnDir());
 		}
 		if (this.exits != null) {
-			for (Map.Entry<BracesControl, Code> e : this.exits.entrySet()) {
+			for (Map.Entry<BracesControl, Block> e : this.exits.entrySet()) {
 
 				final BracesControl braces = e.getKey();
-				final Code exit = e.getValue();
+				final Block exit = e.getValue();
 
 				exit.go(this.parent.exitDir(braces));
 			}
 		}
 		if (this.repeats != null) {
-			for (Map.Entry<BracesControl, Code> e : this.repeats.entrySet()) {
+			for (Map.Entry<BracesControl, Block> e : this.repeats.entrySet()) {
 
 				final BracesControl braces = e.getKey();
-				final Code repeat = e.getValue();
+				final Block repeat = e.getValue();
 
 				if (braces == this) {
 					repeat.go(this.enclosingCode.head());
@@ -179,17 +177,17 @@ final class BracesControl extends Control {
 			return exit();
 		}
 		if (this.exits == null) {
-			this.exits = new IdentityHashMap<BracesControl, Code>(1);
+			this.exits = new IdentityHashMap<BracesControl, Block>(1);
 		} else {
 
-			final Code exit = this.exits.get(braces);
+			final Block exit = this.exits.get(braces);
 
 			if (exit != null) {
 				return exit.head();
 			}
 		}
 
-		final Code exit;
+		final Block exit;
 		final String name = braces.getName();
 
 		if (name == null) {
@@ -206,17 +204,17 @@ final class BracesControl extends Control {
 	@Override
 	final CodePos repeatDir(BracesControl braces) {
 		if (this.repeats == null) {
-			this.repeats = new IdentityHashMap<BracesControl, Code>(1);
+			this.repeats = new IdentityHashMap<BracesControl, Block>(1);
 		} else {
 
-			final Code repeat = this.repeats.get(braces);
+			final Block repeat = this.repeats.get(braces);
 
 			if (repeat != null) {
 				return repeat.head();
 			}
 		}
 
-		final Code repeat;
+		final Block repeat;
 		final String name = braces.getName();
 
 		if (name == null) {

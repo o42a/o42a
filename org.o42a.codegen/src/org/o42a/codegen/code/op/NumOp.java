@@ -20,6 +20,7 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 
 
@@ -61,6 +62,6 @@ public interface NumOp<O extends NumOp<O>> extends Op {
 
 	Fp64op toFp64(CodeId id, Code code);
 
-	void returnValue(Code code);
+	void returnValue(Block code);
 
 }

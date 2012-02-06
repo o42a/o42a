@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
@@ -64,7 +65,7 @@ public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
 	}
 
 	@Override
-	public void returnValue(Code code) {
+	public void returnValue(Block code) {
 		llvm(code).returnValue(this);
 	}
 

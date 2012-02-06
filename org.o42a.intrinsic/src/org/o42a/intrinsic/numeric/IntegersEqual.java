@@ -21,7 +21,7 @@ package org.o42a.intrinsic.numeric;
 
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
@@ -49,7 +49,7 @@ public final class IntegersEqual extends NumbersEqual<Long> {
 	@Override
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final Int64recOp leftPtr =
 				leftVal.rawValue(code.id("left_int_ptr"), code);
 		final Int64op left = leftPtr.load(code.id("left"), code);
