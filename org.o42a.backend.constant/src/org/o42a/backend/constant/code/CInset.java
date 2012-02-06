@@ -1,5 +1,5 @@
 /*
-    Compiler LLVM Back-end
+    Constant Handler Compiler Back-end
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,28 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.code;
+package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 
 
-final class LLCodeBlock extends LLBlock {
+class CInset extends CCode<Code> {
 
-	LLCodeBlock(LLCode enclosing, Block code) {
+	CInset(CCode<?> enclosing, Code code, Code underlying) {
 		super(
-				enclosing.getModule(),
+				enclosing.getBackend(),
 				enclosing.getFunction(),
-				code);
-		init();
-	}
-
-	@Override
-	public void done() {
-	}
-
-	@Override
-	protected long createFirtsBlock() {
-		return createBlock(getFunction(), getId());
+				code,
+				underlying);
 	}
 
 }

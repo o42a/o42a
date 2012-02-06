@@ -150,17 +150,11 @@ public abstract class LLCode implements CodeWriter {
 	private final LLVMModule module;
 	private final LLFunction<?> function;
 	private final Code code;
-	private final CodeId id;
 	private LLInset lastInset;
 
-	public LLCode(
-			LLVMModule module,
-			LLFunction<?> function,
-			Code code,
-			CodeId id) {
+	public LLCode(LLVMModule module, LLFunction<?> function, Code code) {
 		this.module = module;
 		this.code = code;
-		this.id = id;
 		this.function = function != null ? function : (LLFunction<?>) this;
 	}
 
@@ -174,7 +168,7 @@ public abstract class LLCode implements CodeWriter {
 
 	@Override
 	public final CodeId getId() {
-		return this.id;
+		return this.code.getId();
 	}
 
 	public final Code code() {
@@ -203,15 +197,16 @@ public abstract class LLCode implements CodeWriter {
 				alloc.llvmId().expression(getModule()));
 	}
 
-	public final LLInset inset(Code code, CodeId id) {
-		return this.lastInset = new LLCodeInset(this, this.lastInset, code, id);
+	@Override
+	public final LLInset inset(Code code) {
+		return this.lastInset = new LLInset(this, this.lastInset, code);
 	}
 
 	@Override
-	public LLAllocation allocation(AllocationCode code, CodeId id) {
+	public LLAllocation allocation(AllocationCode code) {
 
 		final LLAllocation allocation =
-				new LLAllocation(this, this.lastInset, code, id);
+				new LLAllocation(this, this.lastInset, code);
 
 		this.lastInset = allocation;
 
@@ -219,8 +214,8 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public LLBlock block(Block code, CodeId id) {
-		return new LLCodeBlock(this, code, id);
+	public LLBlock block(Block code) {
+		return new LLCodeBlock(this, code);
 	}
 
 	@Override

@@ -19,7 +19,6 @@
 */
 package org.o42a.backend.llvm.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -30,12 +29,8 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 	private long stackPtr;
 	private long firstInstr;
 
-	LLAllocation(
-			LLCode enclosing,
-			LLInset prevInset,
-			AllocationCode code,
-			CodeId id) {
-		super(enclosing, prevInset, code, id);
+	LLAllocation(LLCode enclosing, LLInset prevInset, AllocationCode code) {
+		super(enclosing, prevInset, code);
 	}
 
 	@Override

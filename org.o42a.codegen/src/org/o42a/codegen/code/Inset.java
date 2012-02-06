@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,39 +20,31 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.BlockWriter;
+import org.o42a.codegen.code.backend.CodeWriter;
 
 
-class CodeBlock extends Block {
+final class Inset extends Code {
 
-	private final Code enclosing;
-	BlockWriter writer;
+	private final CodeWriter writer;
 
-	CodeBlock(Code enclosing, CodeId name) {
+	Inset(Code enclosing, CodeId name) {
 		super(enclosing, name);
-		this.enclosing = enclosing;
-	}
-
-	public final Code getEnclosing() {
-		return this.enclosing;
+		this.writer = enclosing.writer().inset(this);
 	}
 
 	@Override
 	public boolean created() {
-		return this.writer != null && this.writer.created();
+		return this.writer.created();
 	}
 
 	@Override
-	public final boolean exists() {
-		return this.writer != null && this.writer.exists();
+	public boolean exists() {
+		return this.writer.exists();
 	}
 
 	@Override
-	public BlockWriter writer() {
-		if (this.writer != null) {
-			return this.writer;
-		}
-		return this.writer = getEnclosing().writer().block(this);
+	public CodeWriter writer() {
+		return this.writer;
 	}
 
 }

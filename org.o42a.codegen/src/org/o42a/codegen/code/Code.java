@@ -61,6 +61,14 @@ public abstract class Code extends DebugCodeBase {
 		return getGenerator().id(name);
 	}
 
+	public final Code inset(String name) {
+		return new Inset(this, id(name));
+	}
+
+	public final Code inset(CodeId name) {
+		return new Inset(this, name);
+	}
+
 	public final AllocationCode allocate() {
 		return new AllocationCode(this, null, true);
 	}

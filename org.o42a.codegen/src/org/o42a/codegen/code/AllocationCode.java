@@ -37,7 +37,7 @@ public final class AllocationCode extends Code {
 	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
 		this.disposable = disposable;
-		this.writer = enclosing.writer().allocation(this, getId());
+		this.writer = enclosing.writer().allocation(this);
 	}
 
 	public final boolean isDisposable() {

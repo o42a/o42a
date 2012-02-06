@@ -19,23 +19,21 @@
 */
 package org.o42a.backend.llvm.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 
 
-abstract class LLInset extends LLCode {
+class LLInset extends LLCode {
 
 	private final long blockPtr;
 	private LLInset prevInset;
 	private long nextInstr;
 	private boolean exists;
 
-	LLInset(LLCode enclosing, LLInset prevInset, Code code, CodeId id) {
+	LLInset(LLCode enclosing, LLInset prevInset, Code code) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),
-				code,
-				id);
+				code);
 		this.prevInset = prevInset;
 		this.blockPtr = enclosing.nextPtr();
 		assert prevInset == null || prevInset.blockPtr == this.blockPtr :
