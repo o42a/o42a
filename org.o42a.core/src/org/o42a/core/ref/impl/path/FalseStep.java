@@ -161,7 +161,9 @@ public class FalseStep extends Step {
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
 
-			final ValOp result = falseValue().op(getBuilder(), dirs.code());
+			final ValOp result = dirs.getValueStruct().falseValue().op(
+					getBuilder(),
+					dirs.code());
 
 			dirs.code().go(dirs.falseDir());
 
