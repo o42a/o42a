@@ -40,9 +40,11 @@ public interface CodeWriter {
 			CodeId id,
 			FuncAllocation<F> allocation);
 
-	AllocationWriter allocation(AllocationCode code, CodeId id);
+	CodeWriter inset(Code code);
 
-	BlockWriter block(Block code, CodeId id);
+	AllocationWriter allocation(AllocationCode code);
+
+	BlockWriter block(Block code);
 
 	Int8op int8(byte value);
 

@@ -43,11 +43,8 @@ public final class LLFunction<F extends Func<F>>
 	private final LLFAlloc<F> allocation;
 	private long functionPtr;
 
-	LLFunction(
-			LLVMModule module,
-			Function<F> function,
-			CodeCallback callback) {
-		super(module, null, function, function.getId());
+	LLFunction(LLVMModule module, Function<F> function, CodeCallback callback) {
+		super(module, null, function);
 		this.function = function;
 		this.callback = callback;
 		init();

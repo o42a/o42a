@@ -70,7 +70,7 @@ public class CondBlock extends CodeBlock {
 	}
 
 	private void initBlocks() {
-		this.writer = getEnclosing().writer().block(this, getId());
+		this.writer = getEnclosing().writer().block(this);
 		this.otherwise = getEnclosing().addBlock(this.falseName);
 		enclosing().writer().go(
 				this.condition,

@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.code;
 
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.BlockWriter;
@@ -36,12 +35,8 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	private long blockPtr;
 	private int blockIdx;
 
-	LLBlock(
-			LLVMModule module,
-			LLFunction<?> function,
-			Block code,
-			CodeId id) {
-		super(module, function, code, id);
+	LLBlock(LLVMModule module, LLFunction<?> function, Block code) {
+		super(module, function, code);
 	}
 
 	public final Block block() {

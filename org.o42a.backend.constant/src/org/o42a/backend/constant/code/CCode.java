@@ -109,7 +109,18 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final CAllocation allocation(AllocationCode code, CodeId id) {
+	public CodeWriter inset(Code code) {
+		return new CInset(
+				this,
+				code,
+				getUnderlying().inset(code.getId().getLocal()));
+	}
+
+	@Override
+	public final CAllocation allocation(AllocationCode code) {
+
+		final CodeId id = code.getId();
+
 		return new CAllocation(
 				this,
 				code,
@@ -119,11 +130,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final CCodeBlock block(Block code, CodeId id) {
+	public final CCodeBlock block(Block code) {
 		return new CCodeBlock(
 				this,
 				code,
-				getUnderlying().addBlock(id.getLocal()));
+				getUnderlying().addBlock(code.getId().getLocal()));
 	}
 
 	@Override
