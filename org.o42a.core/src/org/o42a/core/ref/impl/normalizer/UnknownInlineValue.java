@@ -41,7 +41,9 @@ public class UnknownInlineValue extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 		dirs.code().go(dirs.unknownDir());
-		return dirs.value();
+		return dirs.getValueStruct().unknownValue().op(
+				dirs.getBuilder(),
+				dirs.code());
 	}
 
 	@Override

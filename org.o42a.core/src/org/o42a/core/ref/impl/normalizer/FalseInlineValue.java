@@ -41,7 +41,9 @@ public class FalseInlineValue extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 		dirs.code().go(dirs.falseDir());
-		return dirs.value();
+		return dirs.getValueStruct().falseValue().op(
+				dirs.getBuilder(),
+				dirs.code());
 	}
 
 	@Override
