@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.AnyCOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
@@ -31,27 +32,22 @@ public final class AnyRecCOp
 		extends RecCOp<AnyRecOp, AnyOp, Ptr<AnyOp>>
 		implements AnyRecOp {
 
-	public AnyRecCOp(
-			CCode<?> code,
-			AnyRecOp underlying,
-			Ptr<AnyRecOp> constant) {
-		super(code, underlying, constant);
+	public AnyRecCOp(OpBE<AnyRecOp> backend) {
+		super(backend);
+	}
+
+	public AnyRecCOp(OpBE<AnyRecOp> backend, Ptr<AnyRecOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public AnyRecCOp create(
-			CCode<?> code,
-			AnyRecOp underlying,
-			Ptr<AnyRecOp> constant) {
-		return new AnyRecCOp(code, underlying, constant);
+	public AnyRecOp create(OpBE<AnyRecOp> backend, Ptr<AnyRecOp> constant) {
+		return new AnyRecCOp(backend, constant);
 	}
 
 	@Override
-	protected AnyCOp loaded(
-			CCode<?> code,
-			AnyOp underlying,
-			Ptr<AnyOp> constant) {
-		return new AnyCOp(code, underlying, constant);
+	protected AnyCOp loaded(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
+		return new AnyCOp(backend, constant);
 	}
 
 	@Override

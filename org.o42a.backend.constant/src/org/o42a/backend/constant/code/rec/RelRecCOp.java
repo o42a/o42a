@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.RelCOp;
 import org.o42a.backend.constant.data.RelCDAlloc;
 import org.o42a.codegen.code.op.RelOp;
@@ -32,24 +33,22 @@ public final class RelRecCOp
 		extends RecCOp<RelRecOp, RelOp, RelPtr>
 		implements RelRecOp {
 
-	public RelRecCOp(
-			CCode<?> code,
-			RelRecOp underlying,
-			Ptr<RelRecOp> constant) {
-		super(code, underlying, constant);
+	public RelRecCOp(OpBE<RelRecOp> backend) {
+		super(backend);
+	}
+
+	public RelRecCOp(OpBE<RelRecOp> backend, Ptr<RelRecOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public RelRecCOp create(
-			CCode<?> code,
-			RelRecOp underlying,
-			Ptr<RelRecOp> constant) {
-		return new RelRecCOp(code, underlying, constant);
+	public RelRecOp create(OpBE<RelRecOp> backend, Ptr<RelRecOp> constant) {
+		return new RelRecCOp(backend, constant);
 	}
 
 	@Override
-	protected RelCOp loaded(CCode<?> code, RelOp underlying, RelPtr constant) {
-		return new RelCOp(code, underlying, constant);
+	protected RelOp loaded(OpBE<RelOp> backend, RelPtr constant) {
+		return new RelCOp(backend, constant);
 	}
 
 	@Override

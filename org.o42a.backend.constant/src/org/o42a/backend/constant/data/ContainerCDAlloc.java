@@ -24,6 +24,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import java.util.ArrayList;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
@@ -129,8 +130,14 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		}
 
 		return type.op(new CStruct<S>(
-				ccode,
-				getUnderlying().getPointer().op(id, ccode.getUnderlying()),
+				new OpBE<S>(id, ccode) {
+					@Override
+					protected S write() {
+						return getUnderlying().getPointer().op(
+								getId(),
+								code().getUnderlying());
+					}
+				},
 				type,
 				getPointer()));
 	}

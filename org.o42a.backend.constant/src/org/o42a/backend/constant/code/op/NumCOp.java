@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
@@ -30,15 +29,25 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 
 
-public abstract class NumCOp<O extends NumOp<O>, T extends Number>
-		extends AbstractCOp<O, T> implements NumOp<O> {
+public abstract class NumCOp<U extends NumOp<U>, T extends Number>
+		extends AbstractCOp<U, T>
+		implements NumOp<U> {
 
-	public NumCOp(CCode<?> code, O underlying, T constant) {
-		super(code, underlying, constant);
+	public NumCOp(OpBE<U> backend) {
+		super(backend);
+	}
+
+	public NumCOp(CodeId id, CCode<?> code, T constant) {
+		super(new NumConstBE<U, T>(id, code, constant), constant);
+		((NumConstBE<?, ?>) backend()).init(this);
+	}
+
+	public NumCOp(OpBE<U> backend, T constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public final O neg(CodeId id, Code code) {
+	public final U neg(CodeId id, Code code) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -46,291 +55,292 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 
 			final T neg = neg(getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, neg),
-					neg);
+			return create(constant(id, ccode, neg), neg);
 		}
 
-		return create(
-				ccode,
-				getUnderlying().neg(id, ccode.getUnderlying()),
-				null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().neg(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
-	public final O add(CodeId id, Code code, O summand) {
+	public final U add(CodeId id, Code code, U summand) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> s = (NumCOp<O, T>) summand;
+		final NumCOp<U, T> s = (NumCOp<U, T>) summand;
 
 		if (isConstant() && s.isConstant()) {
 
 			final T sum = add(getConstant(), s.getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, sum),
-					sum);
+			return create(constant(id, ccode, sum), sum);
 		}
 
-		final O underlyingSum = getUnderlying().add(
-				id,
-				ccode.getUnderlying(),
-				s.getUnderlying());
-
-		return create(ccode, underlyingSum, null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().add(
+						getId(),
+						code().getUnderlying(),
+						s.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final O sub(CodeId id, Code code, O subtrahend) {
+	public final U sub(CodeId id, Code code, U subtrahend) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> s = (NumCOp<O, T>) subtrahend;
+		final NumCOp<U, T> s = (NumCOp<U, T>) subtrahend;
 
 		if (isConstant() && s.isConstant()) {
 
 			final T diff = sub(getConstant(), s.getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, diff),
-					diff);
+			return create(constant(id, ccode, diff), diff);
 		}
 
-		final O underlyingDiff = getUnderlying().sub(
-				id,
-				ccode.getUnderlying(),
-				s.getUnderlying());
-
-		return create(ccode, underlyingDiff, null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().sub(
+						getId(),
+						code().getUnderlying(),
+						s.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final O mul(CodeId id, Code code, O multiplier) {
+	public final U mul(CodeId id, Code code, U multiplier) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> m = (NumCOp<O, T>) multiplier;
+		final NumCOp<U, T> m = (NumCOp<U, T>) multiplier;
 
 		if (isConstant() && m.isConstant()) {
 
 			final T mul = mul(getConstant(), m.getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, mul),
-					mul);
+			return create(constant(id, ccode, mul), mul);
 		}
 
-		final O underlyingMul = getUnderlying().mul(
-				id,
-				ccode.getUnderlying(),
-				m.getUnderlying());
-
-		return create(ccode, underlyingMul, null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().mul(
+						getId(),
+						code().getUnderlying(),
+						m.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final O div(CodeId id, Code code, O divisor) {
+	public final U div(CodeId id, Code code, U divisor) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> d = (NumCOp<O, T>) divisor;
+		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
 		if (isConstant() && d.isConstant()) {
 
 			final T div = div(getConstant(), d.getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, div),
-					div);
+			return create(constant(id, ccode, div), div);
 		}
 
-		final O underlyingDiv = getUnderlying().div(
-				id,
-				ccode.getUnderlying(),
-				d.getUnderlying());
-
-		return create(ccode, underlyingDiv, null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().div(
+						getId(),
+						code().getUnderlying(),
+						d.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final O rem(CodeId id, Code code, O divisor) {
+	public final U rem(CodeId id, Code code, U divisor) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> d = (NumCOp<O, T>) divisor;
+		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
 		if (isConstant() && d.isConstant()) {
 
 			final T rem = rem(getConstant(), d.getConstant());
 
-			return create(
-					ccode,
-					underlyingConstant(ccode, rem),
-					rem);
+			return create(constant(id, ccode, rem), rem);
 		}
 
-		final O underlyingRem = getUnderlying().rem(
-				id,
-				ccode.getUnderlying(),
-				underlying(divisor));
-
-		return create(ccode, underlyingRem, null);
+		return create(new OpBE<U>(id, ccode) {
+			@Override
+			protected U write() {
+				return backend().underlying().rem(
+						getId(),
+						code().getUnderlying(),
+						d.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final BoolOp eq(CodeId id, Code code, O other) {
+	public final BoolOp eq(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean eq = getConstant().equals(o.getConstant());
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(eq),
-					eq);
+			return new BoolCOp(id, ccode, eq);
 		}
 
-		final BoolOp underlyingEq = getUnderlying().eq(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingEq, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().eq(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final BoolOp ne(CodeId id, Code code, O other) {
+	public final BoolOp ne(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean ne = !getConstant().equals(o.getConstant());
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(ne),
-					ne);
+			return new BoolCOp(id, ccode, ne);
 		}
 
-		final BoolOp underlyingNe = getUnderlying().ne(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingNe, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().ne(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public final BoolOp gt(CodeId id, Code code, O other) {
+	public final BoolOp gt(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean gt = cmp(getConstant(), o.getConstant()) > 0;
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(gt),
-					gt);
+			return new BoolCOp(id, ccode, gt);
 		}
 
-		final BoolOp underlyingGt = getUnderlying().gt(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingGt, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().gt(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public BoolOp ge(CodeId id, Code code, O other) {
+	public BoolOp ge(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean ge = cmp(getConstant(), o.getConstant()) >= 0;
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(ge),
-					ge);
+			return new BoolCOp(id, ccode, ge);
 		}
 
-		final BoolOp underlyingGe = getUnderlying().ge(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingGe, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().ge(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public BoolOp lt(CodeId id, Code code, O other) {
+	public BoolOp lt(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean lt = cmp(getConstant(), o.getConstant()) < 0;
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(lt),
-					lt);
+			return new BoolCOp(id, ccode, lt);
 		}
 
-		final BoolOp underlyingLt = getUnderlying().lt(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingLt, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().lt(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
-	public BoolOp le(CodeId id, Code code, O other) {
+	public BoolOp le(CodeId id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final NumCOp<O, T> o = (NumCOp<O, T>) other;
+		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
 		if (isConstant() && o.isConstant()) {
 
 			final boolean le = cmp(getConstant(), o.getConstant()) <= 0;
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(le),
-					le);
+			return new BoolCOp(id, ccode, le);
 		}
 
-		final BoolOp underlyingLe = getUnderlying().le(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
-
-		return new BoolCOp(ccode, underlyingLe, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().le(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@Override
@@ -339,19 +349,17 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final byte int8 = getConstant().byteValue();
-
-			return new Int8cOp(
-					ccode,
-					ccode.getUnderlying().int8(int8),
-					int8);
+			return new Int8cOp(id, ccode, getConstant().byteValue());
 		}
 
-		final Int8op underlyingInt8 =
-				getUnderlying().toInt8(id, ccode.getUnderlying());
-
-		return new Int8cOp(ccode, underlyingInt8, null);
+		return new Int8cOp(new OpBE<Int8op>(id, ccode) {
+			@Override
+			protected Int8op write() {
+				return backend().underlying().toInt8(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -360,19 +368,17 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final short int16 = getConstant().shortValue();
-
-			return new Int16cOp(
-					ccode,
-					ccode.getUnderlying().int16(int16),
-					int16);
+			return new Int16cOp(id, ccode, getConstant().shortValue());
 		}
 
-		final Int16op underlyingInt16 =
-				getUnderlying().toInt16(id, ccode.getUnderlying());
-
-		return new Int16cOp(ccode, underlyingInt16, null);
+		return new Int16cOp(new OpBE<Int16op>(id, ccode) {
+			@Override
+			protected Int16op write() {
+				return backend().underlying().toInt16(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -381,19 +387,17 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final int int32 = getConstant().intValue();
-
-			return new Int32cOp(
-					ccode,
-					ccode.getUnderlying().int32(int32),
-					int32);
+			return new Int32cOp(id, ccode, getConstant().intValue());
 		}
 
-		final Int32op underlyingInt32 =
-				getUnderlying().toInt32(id, ccode.getUnderlying());
-
-		return new Int32cOp(ccode, underlyingInt32, null);
+		return new Int32cOp(new OpBE<Int32op>(id, ccode) {
+			@Override
+			protected Int32op write() {
+				return backend().underlying().toInt32(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -402,19 +406,17 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final long int64 = getConstant().longValue();
-
-			return new Int64cOp(
-					ccode,
-					ccode.getUnderlying().int64(int64),
-					int64);
+			return new Int64cOp(id, ccode, getConstant().longValue());
 		}
 
-		final Int64op underlyingInt64 =
-				getUnderlying().toInt64(id, ccode.getUnderlying());
-
-		return new Int64cOp(ccode, underlyingInt64, null);
+		return new Int64cOp(new OpBE<Int64op>(id, ccode) {
+			@Override
+			protected Int64op write() {
+				return backend().underlying().toInt64(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -423,19 +425,17 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final float fp32 = getConstant().floatValue();
-
-			return new Fp32cOp(
-					ccode,
-					ccode.getUnderlying().fp32(fp32),
-					fp32);
+			return new Fp32cOp(id, ccode, getConstant().floatValue());
 		}
 
-		final Fp32op underlyingFp32 =
-				getUnderlying().toFp32(id, ccode.getUnderlying());
-
-		return new Fp32cOp(ccode, underlyingFp32, null);
+		return new Fp32cOp(new OpBE<Fp32op>(id, ccode) {
+			@Override
+			protected Fp32op write() {
+				return backend().underlying().toFp32(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -444,22 +444,34 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final double fp64 = getConstant().doubleValue();
-
-			return new Fp64cOp(
-					ccode,
-					ccode.getUnderlying().fp64(fp64),
-					fp64);
+			return new Fp64cOp(id, ccode, getConstant().doubleValue());
 		}
 
-		final Fp64op underlyingFp64 =
-				getUnderlying().toFp64(id, ccode.getUnderlying());
-
-		return new Fp64cOp(ccode, underlyingFp64, null);
+		return new Fp64cOp(new OpBE<Fp64op>(id, ccode) {
+			@Override
+			protected Fp64op write() {
+				return backend().underlying().toFp64(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
-	protected abstract O underlyingConstant(CCode<?> code, T constant);
+	@Override
+	public final void returnValue(Block code) {
+
+		final CBlock<?> ccode = cast(code);
+
+		ccode.beforeReturn();
+		new TermBE(ccode) {
+			@Override
+			public void reveal() {
+				backend().underlying().returnValue(code().getUnderlying());
+			}
+		};
+	}
+
+	protected abstract U underlyingConstant(CCode<?> code, T constant);
 
 	protected abstract T neg(T value);
 
@@ -475,13 +487,36 @@ public abstract class NumCOp<O extends NumOp<O>, T extends Number>
 
 	protected abstract int cmp(T value1, T value2);
 
-	@Override
-	public final void returnValue(Block code) {
+	protected OpBE<U> constant(CodeId id, CCode<?> code, T constant) {
+		return new NumConstBE<U, T>(id, code, constant, this);
+	}
 
-		final CBlock<?> ccode = cast(code);
+	private static final class NumConstBE<
+			U extends NumOp<U>,
+			T extends Number>
+					extends ConstBE<U, T> {
 
-		ccode.beforeReturn();
-		getUnderlying().returnValue(ccode.getUnderlying());
+		private NumCOp<U, T> op;
+
+		NumConstBE(CodeId id, CCode<?> code, T constant) {
+			super(id, code, constant);
+		}
+
+		NumConstBE(CodeId id, CCode<?> code, T constant, NumCOp<U, T> op) {
+			super(id, code, constant);
+			this.op = op;
+		}
+
+		@Override
+		protected U write() {
+			return this.op.underlyingConstant(code(), this.constant);
+		}
+
+		@SuppressWarnings("unchecked")
+		final void init(NumCOp<?, ?> op) {
+			this.op = (NumCOp<U, T>) op;
+		}
+
 	}
 
 }

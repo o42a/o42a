@@ -95,20 +95,21 @@ public class ConstBackend {
 		return codePos != null ? cast(codePos).getUnderlying() : null;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({
+		"unchecked", "rawtypes"
+	})
 	public static <O extends Op> COp<O, ?> cast(O op) {
+		if (op instanceof StructOp) {
+			return cast((StructOp) op);
+		}
+		if (op instanceof Func) {
+			return cast((Func) op);
+		}
 		return (COp<O, ?>) op;
 	}
 
-	@SuppressWarnings("unchecked")
 	public static <O extends Op> O underlying(O op) {
-		if (op instanceof StructOp) {
-			return (O) underlying((StructOp<?>) op);
-		}
-		if (op instanceof Func) {
-			return (O) underlying((Func<?>) op);
-		}
-		return cast(op).getUnderlying();
+		return cast(op).backend().underlying();
 	}
 
 	public static <S extends StructOp<S>> CStruct<S> cast(StructOp<S> op) {
@@ -117,7 +118,7 @@ public class ConstBackend {
 
 	public static <S extends StructOp<S>> StructOp<S> underlying(
 			StructOp<S> op) {
-		return cast(op).getUnderlying();
+		return cast(op).backend().underlying();
 	}
 
 	public static <F extends Func<F>> CFAlloc<F> cast(
@@ -135,7 +136,7 @@ public class ConstBackend {
 	}
 
 	public static <F extends Func<F>> F underlying(Func<F> func) {
-		return cast(func).getUnderlying();
+		return cast(func).backend().underlying();
 	}
 
 	private final ConstGenerator generator;

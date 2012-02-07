@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,22 +20,22 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.RecordedOp;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
 
 
-public interface COp<U extends Op, T> extends Op, RecordedOp {
+public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 
-	CCode<?> getCode();
+	protected final T constant;
 
-	boolean isConstant();
+	public ConstBE(CodeId id, CCode<?> code, T constant) {
+		super(id, code);
+		this.constant = constant;
+	}
 
-	T getConstant();
-
-	U create(OpBE<U> backend);
-
-	U create(OpBE<U> backend, T constant);
-
-	OpBE<U> backend();
+	@Override
+	public String toString() {
+		return this.constant.toString();
+	}
 
 }

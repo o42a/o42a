@@ -20,10 +20,9 @@
 package org.o42a.backend.constant.code.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.op.PtrCOp;
+import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.rec.RecCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -37,8 +36,12 @@ public abstract class RecCOp<
 		O extends Op,
 		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
 
-	public RecCOp(CCode<?> code, R underlying, Ptr<R> constant) {
-		super(code, underlying, constant);
+	public RecCOp(OpBE<R> backend) {
+		super(backend);
+	}
+
+	public RecCOp(OpBE<R> backend, Ptr<R> constant) {
+		super(backend, constant);
 	}
 
 	public final T getConstantValue() {
@@ -61,27 +64,44 @@ public abstract class RecCOp<
 	public final O load(CodeId id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final T constantValue = getConstantValue();
+		final T constant = getConstantValue();
 
-		if (constantValue != null) {
+		if (constant != null) {
 			return loaded(
-					ccode,
-					underlyingConstant(ccode, constantValue),
-					constantValue);
+					new ConstBE<O, T>(id, ccode, constant) {
+						@Override
+						protected O write() {
+							return underlyingConstant(code(), this.constant);
+						}
+					},
+					constant);
 		}
 
-		final O underlyingLoaded =
-				getUnderlying().load(id, ccode.getUnderlying());
-
-		return loaded(ccode, underlyingLoaded, null);
+		return loaded(
+				new OpBE<O>(id, ccode) {
+					@Override
+					protected O write() {
+						return backend().underlying().load(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final void store(Code code, O value) {
-		getUnderlying().store(underlying(code), underlying(value));
+	public final void store(final Code code, final O value) {
+		new InstrBE(cast(code)) {
+			@Override
+			public void reveal() {
+				backend().underlying().store(
+						code().getUnderlying(),
+						cast(value).backend().underlying());
+			}
+		};
 	}
 
-	protected abstract O loaded(CCode<?> code, O underlying, T constant);
+	protected abstract O loaded(OpBE<O> backend, T constant);
 
 	protected abstract O underlyingConstant(CCode<?> code, T constant);
 

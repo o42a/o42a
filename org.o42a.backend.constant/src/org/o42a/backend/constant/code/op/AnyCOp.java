@@ -21,7 +21,6 @@ package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
@@ -35,145 +34,173 @@ import org.o42a.codegen.data.Type;
 
 public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
-	public AnyCOp(CCode<?> code, AnyOp underlying, Ptr<AnyOp> constant) {
-		super(code, underlying, constant);
+	public AnyCOp(OpBE<AnyOp> backend) {
+		super(backend, null);
+	}
+
+	public AnyCOp(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
 	public final AnyRecCOp toPtr(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final AnyRecOp underlyingRec =
-				getUnderlying().toPtr(id, ccode.getUnderlying());
-
-		return new AnyRecCOp(ccode, underlyingRec, null);
+		return new AnyRecCOp(new OpBE<AnyRecOp>(id, cast(code)) {
+			@Override
+			protected AnyRecOp write() {
+				return backend().underlying().toPtr(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Int8recCOp toInt8(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Int8recOp underlyingRec =
-				getUnderlying().toInt8(id, ccode.getUnderlying());
-
-		return new Int8recCOp(ccode, underlyingRec, null);
+		return new Int8recCOp(new OpBE<Int8recOp>(id, cast(code)) {
+			@Override
+			protected Int8recOp write() {
+				return backend().underlying().toInt8(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Int16recCOp toInt16(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Int16recOp underlyingRec =
-				getUnderlying().toInt16(id, ccode.getUnderlying());
-
-		return new Int16recCOp(ccode, underlyingRec, null);
+		return new Int16recCOp(new OpBE<Int16recOp>(id, cast(code)) {
+			@Override
+			protected Int16recOp write() {
+				return backend().underlying().toInt16(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Int32recCOp toInt32(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Int32recOp underlyingRec =
-				getUnderlying().toInt32(id, ccode.getUnderlying());
-
-		return new Int32recCOp(ccode, underlyingRec, null);
+		return new Int32recCOp(new OpBE<Int32recOp>(id, cast(code)) {
+			@Override
+			protected Int32recOp write() {
+				return backend().underlying().toInt32(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Int64recCOp toInt64(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Int64recOp underlyingRec =
-				getUnderlying().toInt64(id, ccode.getUnderlying());
-
-		return new Int64recCOp(ccode, underlyingRec, null);
+		return new Int64recCOp(new OpBE<Int64recOp>(id, cast(code)) {
+			@Override
+			protected Int64recOp write() {
+				return backend().underlying().toInt64(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Fp32recCOp toFp32(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Fp32recOp underlyingRec =
-				getUnderlying().toFp32(id, ccode.getUnderlying());
-
-		return new Fp32recCOp(ccode, underlyingRec, null);
+		return new Fp32recCOp(new OpBE<Fp32recOp>(id, cast(code)) {
+			@Override
+			protected Fp32recOp write() {
+				return backend().underlying().toFp32(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final Fp64recOp toFp64(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Fp64recOp underlyingRec =
-				getUnderlying().toFp64(id, ccode.getUnderlying());
-
-		return new Fp64recCOp(ccode, underlyingRec, null);
+		return new Fp64recCOp(new OpBE<Fp64recOp>(id, cast(code)) {
+			@Override
+			protected Fp64recOp write() {
+				return backend().underlying().toFp64(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final RelRecCOp toRel(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final RelRecOp underlyingRec =
-				getUnderlying().toRel(id, ccode.getUnderlying());
-
-		return new RelRecCOp(ccode, underlyingRec, null);
+		return new RelRecCOp(new OpBE<RelRecOp>(id, cast(code)) {
+			@Override
+			protected RelRecOp write() {
+				return backend().underlying().toRel(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public DataCOp toData(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final DataOp underlyingData =
-				getUnderlying().toData(id, ccode.getUnderlying());
-
-		return new DataCOp(ccode, underlyingData, null);
+		return new DataCOp(new OpBE<DataOp>(id, cast(code)) {
+			@Override
+			protected DataOp write() {
+				return backend().underlying().toData(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public AnyCOp toAny(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final AnyOp underlying = getUnderlying();
-		final AnyOp underlyingAny =
-				underlying.toAny(id, ccode.getUnderlying());
-
-		if (underlying == underlyingAny) {
-			return this;
-		}
-
-		return new AnyCOp(ccode, underlyingAny, getConstant());
+		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
+			@Override
+			protected AnyOp write() {
+				return backend().underlying().toAny(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public final <F extends Func<F>> FuncCOp<F> toFunc(
-			CodeId id,
-			Code code,
-			Signature<F> signature) {
-
-		final CCode<?> ccode = cast(code);
-		final FuncOp<F> underlyingFunc = getUnderlying().toFunc(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(signature));
-
-		return new FuncCOp<F>(ccode, underlyingFunc, null);
+			final CodeId id,
+			final Code code,
+			final Signature<F> signature) {
+		return new FuncCOp<F>(
+				new OpBE<FuncOp<F>>(id, cast(code)) {
+					@Override
+					protected FuncOp<F> write() {
+						return backend().underlying().toFunc(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(signature));
+					}
+				},
+				signature);
 	}
 
 	@Override
-	public <S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type) {
-
-		final CCode<?> ccode = cast(code);
-		final S underlyingStruct = getUnderlying().to(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(type));
-
-		return type.op(new CStruct<S>(ccode, underlyingStruct, type, null));
+	public <S extends StructOp<S>> S to(
+			final CodeId id,
+			final Code code,
+			final Type<S> type) {
+		return type.op(new CStruct<S>(
+				new OpBE<S>(id, cast(code)) {
+					@Override
+					protected S write() {
+						return backend().underlying().to(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(type));
+					}
+				},
+				type));
 	}
 
 	@Override
-	public AnyCOp create(CCode<?> code, AnyOp underlying, Ptr<AnyOp> constant) {
-		return new AnyCOp(code, underlying, constant);
+	public AnyCOp create(OpBE<AnyOp> underlying, Ptr<AnyOp> constant) {
+		return new AnyCOp(underlying, constant);
 	}
 
 }

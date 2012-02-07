@@ -36,8 +36,8 @@ public final class CFunc<F extends Func<F>>
 		extends PtrCOp<F, FuncPtr<F>>
 		implements FuncCaller<F> {
 
-	public CFunc(CCode<?> code, F underlying, FuncPtr<F> constant) {
-		super(code, underlying, constant);
+	public CFunc(OpBE<F> backend, FuncPtr<F> constant) {
+		super(backend, constant);
 	}
 
 	@Override
@@ -46,7 +46,12 @@ public final class CFunc<F extends Func<F>>
 	}
 
 	public final CSignature<F> getUnderlyingSignature() {
-		return (CSignature<F>) getUnderlying().getSignature();
+		return (CSignature<F>) backend().underlying().getSignature();
+	}
+
+	@Override
+	public F create(OpBE<F> backend, FuncPtr<F> constant) {
+		return getSignature().op(new CFunc<F>(backend, constant));
 	}
 
 	@Override
@@ -177,11 +182,6 @@ public final class CFunc<F extends Func<F>>
 				underlyingArgs(args));
 
 		return type.op(new CStruct<S>(ccode, underlyingResult, type, null));
-	}
-
-	@Override
-	public F create(CCode<?> code, F underlying, FuncPtr<F> constant) {
-		return getSignature().op(new CFunc<F>(code, underlying, constant));
 	}
 
 	private Op[] underlyingArgs(Op[] args) {

@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.DataCDAlloc;
 import org.o42a.backend.constant.data.rec.DataRecCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
@@ -32,30 +33,25 @@ public final class DataRecCOp
 		extends RecCOp<DataRecOp, DataOp, Ptr<DataOp>>
 		implements DataRecOp {
 
-	public DataRecCOp(
-			CCode<?> code,
-			DataRecOp underlying,
-			Ptr<DataRecOp> constant) {
-		super(code, underlying, constant);
+	public DataRecCOp(OpBE<DataRecOp> backend) {
+		super(backend);
+	}
+
+	public DataRecCOp(OpBE<DataRecOp> backend, Ptr<DataRecOp> constant) {
+		super(backend, constant);
 		assert (constant == null
 				|| (constant.getAllocation() instanceof DataRecCDAlloc)) :
 					"Wrong constant: " + constant;
 	}
 
 	@Override
-	public DataRecCOp create(
-			CCode<?> code,
-			DataRecOp underlying,
-			Ptr<DataRecOp> constant) {
-		return new DataRecCOp(code, underlying, constant);
+	public DataRecOp create(OpBE<DataRecOp> backend, Ptr<DataRecOp> constant) {
+		return new DataRecCOp(backend, constant);
 	}
 
 	@Override
-	protected DataCOp loaded(
-			CCode<?> code,
-			DataOp underlying,
-			Ptr<DataOp> constant) {
-		return new DataCOp(code, underlying, constant);
+	protected DataOp loaded(OpBE<DataOp> backend, Ptr<DataOp> constant) {
+		return new DataCOp(backend, constant);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Fp32cOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.Ptr;
@@ -30,24 +31,22 @@ public final class Fp32recCOp
 		extends RecCOp<Fp32recOp, Fp32op, Float>
 		implements Fp32recOp {
 
-	public Fp32recCOp(
-			CCode<?> code,
-			Fp32recOp underlying,
-			Ptr<Fp32recOp> constant) {
-		super(code, underlying, constant);
+	public Fp32recCOp(OpBE<Fp32recOp> backend) {
+		super(backend);
+	}
+
+	public Fp32recCOp(OpBE<Fp32recOp> backend, Ptr<Fp32recOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Fp32recCOp create(
-			CCode<?> code,
-			Fp32recOp underlying,
-			Ptr<Fp32recOp> constant) {
-		return new Fp32recCOp(code, underlying, constant);
+	public Fp32recOp create(OpBE<Fp32recOp> backend, Ptr<Fp32recOp> constant) {
+		return new Fp32recCOp(backend, constant);
 	}
 
 	@Override
-	protected Fp32cOp loaded(CCode<?> code, Fp32op underlying, Float constant) {
-		return new Fp32cOp(code, underlying, constant);
+	protected Fp32op loaded(OpBE<Fp32op> backend, Float constant) {
+		return new Fp32cOp(backend, constant);
 	}
 
 	@Override

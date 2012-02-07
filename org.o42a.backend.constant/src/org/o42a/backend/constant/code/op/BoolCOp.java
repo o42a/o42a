@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
@@ -35,29 +34,42 @@ import org.o42a.codegen.code.op.StructOp;
 
 public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
-	private final CCode<?> code;
-	private final BoolOp underlying;
+	private final OpBE<BoolOp> backend;
 	private final Boolean constant;
 
-	public BoolCOp(CCode<?> code, BoolOp underlying, Boolean constant) {
-		this.code = code;
-		this.underlying = underlying;
+	public BoolCOp(OpBE<BoolOp> backend) {
+		this.backend = backend;
+		this.constant = null;
+	}
+
+	public BoolCOp(OpBE<BoolOp> backend, Boolean constant) {
+		this.backend = backend;
+		this.constant = constant;
+	}
+
+	public BoolCOp(CodeId id, CCode<?> code, boolean constant) {
+		this.backend = new ConstBE(id, code, constant);
 		this.constant = constant;
 	}
 
 	@Override
 	public final CCode<?> getCode() {
-		return this.code;
+		return backend().code();
 	}
 
 	@Override
-	public final BoolOp getUnderlying() {
-		return this.underlying;
+	public final OpBE<BoolOp> backend() {
+		return this.backend;
+	}
+
+	@Override
+	public final OpBE<BoolOp> record() {
+		return backend();
 	}
 
 	@Override
 	public CodeId getId() {
-		return getUnderlying().getId();
+		return backend().getId();
 	}
 
 	@Override
@@ -73,10 +85,10 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends Op> O select(
-			CodeId id,
-			Code code,
-			O trueValue,
-			O falseValue) {
+			final CodeId id,
+			final Code code,
+			final O trueValue,
+			final O falseValue) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -89,26 +101,26 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 		if (trueValue instanceof StructOp) {
 
-			final CStruct<?> trueVal = cast((StructOp<?>) trueValue);
-			final StructOp<?> underlying = getUnderlying().select(
-					id,
-					ccode.getUnderlying(),
-					trueVal.getUnderlying(),
-					underlying((StructOp<?>) falseValue));
 			@SuppressWarnings("rawtypes")
-			final CStruct res = trueVal;
+			final CStruct trueStruct = cast((StructOp) trueValue);
+			@SuppressWarnings("rawtypes")
+			final CStruct falseStruct = cast((StructOp) falseValue);
 
-			return (O) res.create(ccode, underlying, null);
+			return selectStruct(id, ccode, trueStruct, falseStruct);
 		}
 
 		final COp<O, ?> trueVal = cast(trueValue);
-		final O underlying = getUnderlying().select(
-				id,
-				ccode.getUnderlying(),
-				trueVal.getUnderlying(),
-				underlying(falseValue));
 
-		return trueVal.create(ccode, underlying, null);
+		return trueVal.create(new OpBE<O>(id, ccode) {
+			@Override
+			protected O write() {
+				return backend().underlying().select(
+						getId(),
+						code().getUnderlying(),
+						trueVal.backend().underlying(),
+						cast(falseValue).backend().underlying());
+			}
+		});
 	}
 
 	@Override
@@ -117,27 +129,34 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		final CBlock<?> ccode = cast(code);
 
 		ccode.beforeReturn();
-		getUnderlying().returnValue(ccode.getUnderlying());
+		new TermBE(ccode) {
+			@Override
+			public void reveal() {
+				backend().underlying().returnValue(code().getUnderlying());
+			}
+		};
 	}
 
 	@Override
-	public BoolOp create(CCode<?> code, BoolOp underlying, Boolean constant) {
-		return new BoolCOp(code, underlying, constant);
+	public final BoolOp create(OpBE<BoolOp> backend) {
+		return create(backend, null);
+	}
+
+	@Override
+	public BoolOp create(OpBE<BoolOp> backend, Boolean constant) {
+		return new BoolCOp(backend, constant);
 	}
 
 	@Override
 	public String toString() {
-		if (this.underlying == null) {
+		if (this.backend == null) {
 			return super.toString();
 		}
-		return this.underlying.toString();
+		return this.backend.toString();
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private <O extends Op> O create(
-			CodeId id,
-			CCode<?> code,
-			O value) {
+	private <O extends Op> O create(CodeId id, CCode<?> code, O value) {
 		if (value instanceof StructOp) {
 
 			final StructOp<?> struct = (StructOp<?>) value;
@@ -148,8 +167,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			}
 
 			return (O) struct.getType().op(new CStruct(
-					code,
-					str.getUnderlying(),
+					new AliasBE(id, code, str.backend()),
 					struct.getType(),
 					str.getConstant()));
 		}
@@ -160,7 +178,47 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			return value;
 		}
 
-		return (O) val.create(code, val.getUnderlying(), val.getConstant());
+		return (O) val.create(
+				new AliasBE(id, code, val.backend()),
+				val.getConstant());
+	}
+
+	private <S extends StructOp<S>> S selectStruct(
+			final CodeId id,
+			final CCode<?> code,
+			final CStruct<S> trueValue,
+			final CStruct<S> falseValue) {
+		return trueValue.create(new OpBE<S>(id, code) {
+			@Override
+			protected S write() {
+				return backend().underlying().select(
+						getId(),
+						code().getUnderlying(),
+						trueValue.backend().underlying(),
+						falseValue.backend().underlying());
+			}
+		});
+	}
+
+	private static final class ConstBE extends OpBE<BoolOp> {
+
+		private final boolean constant;
+
+		ConstBE(CodeId id, CCode<?> code, boolean constant) {
+			super(id, code);
+			this.constant = constant;
+		}
+
+		@Override
+		public String toString() {
+			return Boolean.toString(this.constant);
+		}
+
+		@Override
+		protected BoolOp write() {
+			return code().getUnderlying().bool(this.constant);
+		}
+
 	}
 
 }

@@ -34,28 +34,38 @@ import org.o42a.codegen.data.Type;
 public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 		implements DataOp {
 
-	public DataCOp(CCode<?> code, DataOp underlying, Ptr<DataOp> constant) {
-		super(code, underlying, constant);
+	public DataCOp(OpBE<DataOp> backend) {
+		super(backend);
+	}
+
+	public DataCOp(OpBE<DataOp> backend, Ptr<DataOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public <S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type) {
+	public <S extends StructOp<S>> S to(
+			final CodeId id,
+			final Code code,
+			final Type<S> type) {
 
 		final CCode<?> ccode = cast(code);
-		final S underlyingStruct = getUnderlying().to(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(type));
 
-		return type.op(new CStruct<S>(ccode, underlyingStruct, type, null));
+		return type.op(new CStruct<S>(
+				new OpBE<S>(id, ccode) {
+					@Override
+					protected S write() {
+						return backend().underlying().to(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(type));
+					}
+				},
+				type));
 	}
 
 	@Override
-	public DataCOp create(
-			CCode<?> code,
-			DataOp underlying,
-			Ptr<DataOp> constant) {
-		return new DataCOp(code, underlying, constant);
+	public DataOp create(OpBE<DataOp> backend, Ptr<DataOp> constant) {
+		return new DataCOp(backend, constant);
 	}
 
 }

@@ -20,18 +20,27 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp64op;
 
 
 public final class Fp64cOp extends FpCOp<Fp64op, Double> implements Fp64op {
 
-	public Fp64cOp(CCode<?> code, Fp64op underlying, Double constant) {
-		super(code, underlying, constant);
+	public Fp64cOp(OpBE<Fp64op> backend) {
+		super(backend);
+	}
+
+	public Fp64cOp(CodeId id, CCode<?> code, Double constant) {
+		super(id, code, constant);
+	}
+
+	public Fp64cOp(OpBE<Fp64op> backend, Double constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Fp64cOp create(CCode<?> code, Fp64op underlying, Double constant) {
-		return new Fp64cOp(code, underlying, constant);
+	public Fp64cOp create(OpBE<Fp64op> backend, Double constant) {
+		return new Fp64cOp(backend, constant);
 	}
 
 	@Override

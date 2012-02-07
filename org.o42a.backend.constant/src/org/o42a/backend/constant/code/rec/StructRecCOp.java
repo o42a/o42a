@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.code.op.StructOp;
@@ -34,12 +35,16 @@ public class StructRecCOp<S extends StructOp<S>>
 
 	private final Type<S> type;
 
+	public StructRecCOp(OpBE<StructRecOp<S>> backend, Type<S> type) {
+		super(backend);
+		this.type = type;
+	}
+
 	public StructRecCOp(
-			CCode<?> code,
-			StructRecOp<S> underlying,
+			OpBE<StructRecOp<S>> backend,
 			Type<S> type,
 			Ptr<StructRecOp<S>> constant) {
-		super(code, underlying, constant);
+		super(backend, constant);
 		this.type = type;
 	}
 
@@ -48,20 +53,15 @@ public class StructRecCOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public StructRecCOp<S> create(
-			CCode<?> code,
-			StructRecOp<S> underlying,
+	public StructRecOp<S> create(
+			OpBE<StructRecOp<S>> backend,
 			Ptr<StructRecOp<S>> constant) {
-		return new StructRecCOp<S>(code, underlying, getType(), constant);
+		return new StructRecCOp<S>(backend, getType(), constant);
 	}
 
 	@Override
-	protected S loaded(CCode<?> code, S underlying, Ptr<S> constant) {
-		return getType().op(new CStruct<S>(
-				code,
-				underlying,
-				getType(),
-				constant));
+	protected S loaded(OpBE<S> backend, Ptr<S> constant) {
+		return getType().op(new CStruct<S>(backend, getType(), constant));
 	}
 
 	@Override

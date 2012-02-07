@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Fp64cOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.data.Ptr;
@@ -30,27 +31,22 @@ public final class Fp64recCOp
 		extends RecCOp<Fp64recOp, Fp64op, Double>
 		implements Fp64recOp {
 
-	public Fp64recCOp(
-			CCode<?> code,
-			Fp64recOp underlying,
-			Ptr<Fp64recOp> constant) {
-		super(code, underlying, constant);
+	public Fp64recCOp(OpBE<Fp64recOp> backend) {
+		super(backend);
+	}
+
+	public Fp64recCOp(OpBE<Fp64recOp> backend, Ptr<Fp64recOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Fp64recCOp create(
-			CCode<?> code,
-			Fp64recOp underlying,
-			Ptr<Fp64recOp> constant) {
-		return new Fp64recCOp(code, underlying, constant);
+	public Fp64recOp create(OpBE<Fp64recOp> backend, Ptr<Fp64recOp> constant) {
+		return new Fp64recCOp(backend, constant);
 	}
 
 	@Override
-	protected Fp64cOp loaded(
-			CCode<?> code,
-			Fp64op underlying,
-			Double constant) {
-		return new Fp64cOp(code, underlying, constant);
+	protected Fp64op loaded(OpBE<Fp64op> backend, Double constant) {
+		return new Fp64cOp(backend, constant);
 	}
 
 	@Override

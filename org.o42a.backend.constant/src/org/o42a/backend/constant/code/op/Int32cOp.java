@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int32op;
 
 
@@ -27,16 +28,21 @@ public final class Int32cOp
 		extends IntCOp<Int32op, Integer>
 		implements Int32op {
 
-	public Int32cOp(CCode<?> code, Int32op underlying, Integer constant) {
-		super(code, underlying, constant);
+	public Int32cOp(OpBE<Int32op> backend) {
+		super(backend);
+	}
+
+	public Int32cOp(CodeId id, CCode<?> code, Integer constant) {
+		super(id, code, constant);
+	}
+
+	public Int32cOp(OpBE<Int32op> backend, Integer constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Int32cOp create(
-			CCode<?> code,
-			Int32op underlying,
-			Integer constant) {
-		return new Int32cOp(code, underlying, constant);
+	public Int32cOp create(OpBE<Int32op> backend, Integer constant) {
+		return new Int32cOp(backend, constant);
 	}
 
 	@Override

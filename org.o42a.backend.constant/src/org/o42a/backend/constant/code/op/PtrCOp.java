@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
@@ -37,8 +36,12 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		extends AbstractCOp<P, PT>
 		implements PtrOp<P> {
 
-	public PtrCOp(CCode<?> code, P underlying, PT constant) {
-		super(code, underlying, constant);
+	public PtrCOp(OpBE<P> backend) {
+		super(backend);
+	}
+
+	public PtrCOp(OpBE<P> backend, PT constant) {
+		super(backend, constant);
 	}
 
 	@Override
@@ -52,7 +55,12 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		final CBlock<?> ccode = ConstBackend.cast(code);
 
 		ccode.beforeReturn();
-		getUnderlying().returnValue(ccode.getUnderlying());
+		new TermBE(ccode) {
+			@Override
+			public void reveal() {
+				backend().underlying().returnValue(code().getUnderlying());
+			}
+		};
 	}
 
 	@Override
@@ -61,19 +69,17 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		final CCode<?> ccode = cast(code);
 
 		if (isConstant()) {
-
-			final Boolean result = getConstant().isNull();
-
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(result),
-					result);
+			return new BoolCOp(id, ccode, getConstant().isNull());
 		}
 
-		final BoolOp underlyingIsNull =
-				getUnderlying().isNull(id, ccode.getUnderlying());
-
-		return new BoolCOp(ccode, underlyingIsNull, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().isNull(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -83,21 +89,22 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		final COp<P, ?> o = cast(other);
 
 		if (isConstant() && o.isConstant()) {
-
-			final Boolean result = getConstant().equals(o.getConstant());
-
 			return new BoolCOp(
+					id,
 					ccode,
-					ccode.getUnderlying().bool(result),
-					result);
+					getConstant().equals(o.getConstant()));
 		}
 
-		final BoolOp underlyingEq = getUnderlying().eq(
-				id,
-				ccode.getUnderlying(),
-				underlying(other));
 
-		return new BoolCOp(ccode, underlyingEq, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().eq(
+						getId(),
+						code().getUnderlying(),
+						o.backend().underlying());
+			}
+		});
 	}
 
 	@SuppressWarnings("unchecked")
@@ -111,25 +118,32 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 			if (getCode() == ccode) {
 				return (P) this;
 			}
-			return create(ccode, getUnderlying(), getConstant());
+			return create(new AliasBE<P>(id, ccode, backend()), getConstant());
 		}
 
-		final P underlyingOffset = getUnderlying().offset(
-				id,
-				ccode.getUnderlying(),
-				idx.getUnderlying());
-
-		return create(ccode, underlyingOffset, null);
+		return create(
+				new OpBE<P>(id, ccode) {
+					@Override
+					protected P write() {
+						return backend().underlying().offset(
+								getId(),
+								code().getUnderlying(),
+								idx.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
 	public AnyCOp toAny(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final AnyOp underlyingAny =
-				getUnderlying().toAny(id, ccode.getUnderlying());
-
-		return new AnyCOp(ccode, underlyingAny, null);
+		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
+			@Override
+			protected AnyOp write() {
+				return backend().underlying().toAny(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 }

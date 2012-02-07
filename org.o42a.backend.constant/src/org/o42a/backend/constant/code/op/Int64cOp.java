@@ -20,18 +20,27 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int64op;
 
 
 public final class Int64cOp extends IntCOp<Int64op, Long> implements Int64op {
 
-	public Int64cOp(CCode<?> code, Int64op underlying, Long constant) {
-		super(code, underlying, constant);
+	public Int64cOp(OpBE<Int64op> backend) {
+		super(backend);
+	}
+
+	public Int64cOp(CodeId id, CCode<?> code, Long constant) {
+		super(id, code, constant);
+	}
+
+	public Int64cOp(OpBE<Int64op> backend, Long constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Int64cOp create(CCode<?> code, Int64op underlying, Long constant) {
-		return new Int64cOp(code, underlying, constant);
+	public Int64cOp create(OpBE<Int64op> backend, Long constant) {
+		return new Int64cOp(backend, constant);
 	}
 
 	@Override
