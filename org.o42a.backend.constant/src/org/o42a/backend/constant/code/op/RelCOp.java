@@ -20,9 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
@@ -31,35 +29,45 @@ import org.o42a.codegen.data.RelPtr;
 
 public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 
-	public RelCOp(CCode<?> code, RelOp underlying, RelPtr constant) {
-		super(code, underlying, constant);
+	public RelCOp(OpBE<RelOp> backend) {
+		super(backend);
+	}
+
+	public RelCOp(OpBE<RelOp> backend, RelPtr constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public final AnyCOp offset(CodeId id, Code code, PtrOp<?> from) {
+	public final AnyCOp offset(
+			final CodeId id,
+			final Code code,
+			final PtrOp<?> from) {
+		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
+			@Override
+			protected AnyOp write() {
+				return backend().underlying().offset(
+						getId(),
+						code().getUnderlying(),
+						cast(from).backend().underlying());
+			}
+		});
+	}
 
-		final CCode<?> ccode = cast(code);
-		final AnyOp underlyingOffset = getUnderlying().offset(
-				id,
-				ccode.getUnderlying(),
-				underlying(from));
-
-		return new AnyCOp(ccode, underlyingOffset, null);
+	@Override
+	public RelCOp create(OpBE<RelOp> backend, RelPtr constant) {
+		return new RelCOp(backend, constant);
 	}
 
 	@Override
 	public final Int32cOp toInt32(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final Int32op underlyingInt32 =
-				getUnderlying().toInt32(id, ccode.getUnderlying());
-
-		return new Int32cOp(ccode, underlyingInt32, null);
-	}
-
-	@Override
-	public RelCOp create(CCode<?> code, RelOp underlying, RelPtr constant) {
-		return new RelCOp(code, underlying, constant);
+		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
+			@Override
+			protected Int32op write() {
+				return backend().underlying().toInt32(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 }

@@ -23,7 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CFunc;
-import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -35,48 +35,52 @@ public final class FuncCOp<F extends Func<F>>
 		extends RecCOp<FuncOp<F>, F, FuncPtr<F>>
 		implements FuncOp<F> {
 
+	private final Signature<F> signature;
+
+	public FuncCOp(OpBE<FuncOp<F>> backend, Signature<F> signature) {
+		super(backend);
+		this.signature = signature;
+	}
+
 	public FuncCOp(
-			CCode<?> code,
-			FuncOp<F> underlying,
+			OpBE<FuncOp<F>> backend,
+			Signature<F> signature,
 			Ptr<FuncOp<F>> constant) {
-		super(code, underlying, constant);
+		super(backend, constant);
+		this.signature = signature;
 	}
 
 	@Override
 	public final Signature<F> getSignature() {
-		return getUnderlyingSignature().getOriginal();
-	}
-
-	public final CSignature<F> getUnderlyingSignature() {
-		return (CSignature<F>) getUnderlying().getSignature();
+		return this.signature;
 	}
 
 	@Override
 	public final <FF extends Func<FF>> FuncCOp<FF> toFunc(
-			CodeId id,
-			Code code,
-			Signature<FF> signature) {
-
-		final CCode<?> ccode = cast(code);
-		final FuncOp<FF> underlyingFunc = getUnderlying().toFunc(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(signature));
-
-		return new FuncCOp<FF>(ccode, underlyingFunc, null);
+			final CodeId id,
+			final Code code,
+			final Signature<FF> signature) {
+		return new FuncCOp<FF>(
+				new OpBE<FuncOp<FF>>(id, cast(code)) {
+					@Override
+					protected FuncOp<FF> write() {
+						return backend().underlying().toFunc(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(signature));
+					}
+				},
+				signature);
 	}
 
 	@Override
-	public FuncCOp<F> create(
-			CCode<?> code,
-			FuncOp<F> underlying,
-			Ptr<FuncOp<F>> constant) {
-		return new FuncCOp<F>(code, underlying, constant);
+	public FuncOp<F> create(OpBE<FuncOp<F>> backend, Ptr<FuncOp<F>> constant) {
+		return new FuncCOp<F>(backend, getSignature(), constant);
 	}
 
 	@Override
-	protected F loaded(CCode<?> code, F underlying, FuncPtr<F> constant) {
-		return getSignature().op(new CFunc<F>(code, underlying, constant));
+	protected F loaded(OpBE<F> backend, FuncPtr<F> constant) {
+		return getSignature().op(new CFunc<F>(backend, constant));
 	}
 
 	@Override

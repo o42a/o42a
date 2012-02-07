@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Int32cOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.Ptr;
@@ -30,27 +31,24 @@ public final class Int32recCOp
 		extends RecCOp<Int32recOp, Int32op, Integer>
 		implements Int32recOp {
 
-	public Int32recCOp(
-			CCode<?> code,
-			Int32recOp underlying,
-			Ptr<Int32recOp> constant) {
-		super(code, underlying, constant);
+	public Int32recCOp(OpBE<Int32recOp> backend) {
+		super(backend);
+	}
+
+	public Int32recCOp(OpBE<Int32recOp> backend, Ptr<Int32recOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Int32recCOp create(
-			CCode<?> code,
-			Int32recOp underlying,
+	public Int32recOp create(
+			OpBE<Int32recOp> backend,
 			Ptr<Int32recOp> constant) {
-		return new Int32recCOp(code, underlying, constant);
+		return new Int32recCOp(backend, constant);
 	}
 
 	@Override
-	protected Int32cOp loaded(
-			CCode<?> code,
-			Int32op underlying,
-			Integer constant) {
-		return new Int32cOp(code, underlying, constant);
+	protected Int32op loaded(OpBE<Int32op> backend, Integer constant) {
+		return new Int32cOp(backend, constant);
 	}
 
 	@Override

@@ -22,7 +22,6 @@ package org.o42a.backend.constant.code;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.*;
-import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.func.CFAlloc;
@@ -31,8 +30,7 @@ import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -99,18 +97,25 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			FuncAllocation<F> allocation) {
 
 		final CFAlloc<F> alloc = cast(allocation);
-		final F underlyingFunc =
-				alloc.getUnderlyingPtr().op(id, getUnderlying());
 
-		return new CFunc<F>(this, underlyingFunc, alloc.getPointer());
+		return new CFunc<F>(
+				new OpBE<F>(id, this) {
+					@Override
+					protected F write() {
+						return alloc.getUnderlyingPtr().op(
+								getId(),
+								getUnderlying());
+					}
+				},
+				alloc.getPointer());
 	}
 
 	@Override
-	public CodeWriter inset(Code code) {
-		return new CInset(
+	public final CodeWriter inset(Code code) {
+		return recordInset(new CCodeInset(
 				this,
 				code,
-				getUnderlying().inset(code.getId().getLocal()));
+				getUnderlying().inset(code.getId().getLocal())));
 	}
 
 	@Override
@@ -118,12 +123,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 		final CodeId id = code.getId();
 
-		return new CAllocation(
+		return recordInset(new CAllocation(
 				this,
 				code,
 				code.isDisposable()
 				? getUnderlying().allocate(id.getLocal())
-				: getUnderlying().undisposable(id.getLocal()));
+				: getUnderlying().undisposable(id.getLocal())));
 	}
 
 	@Override
@@ -136,60 +141,71 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final Int8cOp int8(byte value) {
-		return new Int8cOp(this, getUnderlying().int8(value), value);
+		return new Int8cOp(null, this, value);
 	}
 
 	@Override
 	public final Int16cOp int16(short value) {
-		return new Int16cOp(this, getUnderlying().int16(value), value);
+		return new Int16cOp(null, this, value);
 	}
 
 	@Override
 	public final Int32cOp int32(int value) {
-		return new Int32cOp(this, getUnderlying().int32(value), value);
+		return new Int32cOp(null, this, value);
 	}
 
 	@Override
 	public final Int64cOp int64(long value) {
-		return new Int64cOp(this, getUnderlying().int64(value), value);
+		return new Int64cOp(null, this, value);
 	}
 
 	@Override
 	public final Fp32cOp fp32(float value) {
-		return new Fp32cOp(this, getUnderlying().fp32(value), value);
+		return new Fp32cOp(null, this, value);
 	}
 
 	@Override
 	public final Fp64cOp fp64(double value) {
-		return new Fp64cOp(this, getUnderlying().fp64(value), value);
+		return new Fp64cOp(null, this, value);
 	}
 
 	@Override
 	public final BoolCOp bool(boolean value) {
-		return new BoolCOp(this, getUnderlying().bool(value), value);
+		return new BoolCOp(null, this, value);
 	}
 
 	@Override
 	public final RelCOp nullRelPtr() {
 		return new RelCOp(
-				this,
-				getUnderlying().nullRelPtr(),
-				null);
+				new OpBE<RelOp>(null, this) {
+					@Override
+					protected RelOp write() {
+						return getUnderlying().nullRelPtr();
+					}
+				});
 	}
 
 	@Override
 	public final AnyCOp nullPtr() {
 		return new AnyCOp(
-				this,
-				getUnderlying().nullPtr(),
+				new OpBE<AnyOp>(null, this) {
+					@Override
+					protected AnyOp write() {
+						return getUnderlying().nullPtr();
+					}
+				},
 				getBackend().getGenerator().getGlobals().nullPtr());
 	}
 
 	@Override
 	public final DataCOp nullDataPtr() {
 		return new DataCOp(
-				this,
-				getUnderlying().nullDataPtr(),
+				new OpBE<DataOp>(null, this) {
+					@Override
+					protected DataOp write() {
+						return getUnderlying().nullDataPtr();
+					}
+				},
 				getBackend().getGenerator().getGlobals().nullDataPtr());
 	}
 
@@ -197,78 +213,62 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
 
 		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
-		final CType<S> underlyingType = typeAlloc.getUnderlyingInstance();
-		final S underlyingPtr = getUnderlying().nullPtr(underlyingType);
-		final Type<S> originalType = underlyingType.getOriginal();
+		final Type<S> originalType =
+				typeAlloc.getData().getInstance().getType();
 
-		return originalType.op(
-				new CStruct<S>(
-						this,
-						underlyingPtr,
-						underlyingType.getOriginal(),
-						getBackend().getGenerator().getGlobals().nullPtr(
-								originalType)));
+		return originalType.op(new CStruct<S>(
+				new OpBE<S>(null, this) {
+					@Override
+					protected S write() {
+
+						final CType<S> underlyingType =
+								typeAlloc.getUnderlyingInstance();
+
+						return getUnderlying().nullPtr(underlyingType);
+					}
+				},
+				originalType,
+				getBackend().getGenerator().getGlobals().nullPtr(
+						originalType)));
 	}
 
 	@Override
-	public final <F extends Func<F>> CFunc<F> nullPtr(Signature<F> signature) {
-
-		final CSignature<F> underlyingSignature =
-				getBackend().underlying(signature);
-		final F underlyingPtr = getUnderlying().nullPtr(underlyingSignature);
-
+	public final <F extends Func<F>> CFunc<F> nullPtr(
+			final Signature<F> signature) {
 		return new CFunc<F>(
-				this,
-				underlyingPtr,
+				new OpBE<F>(null, this) {
+					@Override
+					protected F write() {
+						return getUnderlying().nullPtr(
+								getBackend().underlying(signature));
+					}
+				},
 				getBackend().getGenerator().getFunctions().nullPtr(
 						signature));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public final <O extends Op> O phi(CodeId id, O op) {
-		if (op instanceof StructOp<?>) {
 
-			final CStruct<?> cop = cast((StructOp<?>) op);
-			final StructOp<?> underlyingPHI =
-					getUnderlying().phi(id, cop.getUnderlying());
-			@SuppressWarnings("rawtypes")
-			final CStruct res = cop;
-
-			return (O) res.create(this, underlyingPHI, cop.getConstant());
-		}
-
-		final COp<O, ?> cop = cast(op);
-		final O underlyingPHI = getUnderlying().phi(id, cop.getUnderlying());
+		final COp<?, ?> cop = cast((StructOp<?>) op);
 		@SuppressWarnings("rawtypes")
 		final COp res = cop;
 
-		return (O) res.create(this, underlyingPHI, cop.getConstant());
+		return (O) res.create(
+				new OpBE<O>(id, this) {
+					@Override
+					protected O write() {
+						return (O) code().getUnderlying().phi(
+								getId(),
+								cop.backend().underlying());
+					}
+				},
+				cop.getConstant());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
-		if (op1 instanceof StructOp) {
-
-			final CStruct<?> cop1 = cast((StructOp<?>) op1);
-			final CStruct<?> cop2 = cast((StructOp<?>) op2);
-
-			if (cop1.isConstant() && cop2.isConstant()) {
-				if (cop1.getConstant().equals(cop2)) {
-					return phi(id, op1);
-				}
-			}
-
-			final StructOp<?> underlyingPHI = getUnderlying().phi(
-					id,
-					cop1.getUnderlying(),
-					cop2.getUnderlying());
-			@SuppressWarnings("rawtypes")
-			final CStruct res = cop1;
-
-			return (O) res.create(this, underlyingPHI, null);
-		}
 
 		final COp<O, ?> cop1 = cast(op1);
 		final COp<O, ?> cop2 = cast(op2);
@@ -279,12 +279,21 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			}
 		}
 
-		final O underlyingPHI = getUnderlying().phi(
-				id,
-				cop1.getUnderlying(),
-				cop2.getUnderlying());
+		return cop1.create(
+				new OpBE<O>(id, this) {
+					@Override
+					protected O write() {
+						 return getUnderlying().phi(
+									getId(),
+									cop1.backend().underlying(),
+									cop2.backend().underlying());
+					}
+				},
+				null);
+	}
 
-		return cop1.create(this, underlyingPHI, null);
+	public final <O extends InstrBE> O op(O op) {
+		return record(op);
 	}
 
 	@Override
@@ -293,6 +302,17 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 			return super.toString();
 		}
 		return this.underlying.toString();
+	}
+
+	protected abstract OpRecords records();
+
+	final <R extends OpRecord> R record(R op) {
+		return records().add(op);
+	}
+
+	private final <I extends CInset<?>> I recordInset(I inset) {
+		record(inset.records());
+		return inset;
 	}
 
 }

@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
-
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
@@ -29,15 +27,18 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public abstract class AbstractCOp<O extends Op, T> implements COp<O, T> {
+public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 
-	private final CCode<?> code;
-	private final O underlying;
+	private final OpBE<U> backend;
 	private final T constant;
 
-	public AbstractCOp(CCode<?> code, O underlying, T constant) {
-		this.code = code;
-		this.underlying = underlying;
+	public AbstractCOp(OpBE<U> backend) {
+		this.backend = backend;
+		this.constant = null;
+	}
+
+	public AbstractCOp(OpBE<U> backend, T constant) {
+		this.backend = backend;
 		this.constant = constant;
 	}
 
@@ -47,17 +48,22 @@ public abstract class AbstractCOp<O extends Op, T> implements COp<O, T> {
 
 	@Override
 	public final CCode<?> getCode() {
-		return this.code;
+		return backend().code();
 	}
 
 	@Override
-	public final O getUnderlying() {
-		return this.underlying;
+	public final OpBE<U> backend() {
+		return this.backend;
+	}
+
+	@Override
+	public final OpBE<U> record() {
+		return backend();
 	}
 
 	@Override
 	public final CodeId getId() {
-		return getUnderlying().getId();
+		return backend().getId();
 	}
 
 	@Override
@@ -72,17 +78,19 @@ public abstract class AbstractCOp<O extends Op, T> implements COp<O, T> {
 
 	@Override
 	public void allocated(AllocationCode code, StructOp<?> enclosing) {
-		getUnderlying().allocated(
-				underlying(code),
-				underlying(enclosing));
+	}
+
+	@Override
+	public final U create(OpBE<U> backend) {
+		return create(backend, null);
 	}
 
 	@Override
 	public String toString() {
-		if (this.underlying == null) {
+		if (this.backend == null) {
 			return super.toString();
 		}
-		return this.underlying.toString();
+		return this.backend.toString();
 	}
 
 }

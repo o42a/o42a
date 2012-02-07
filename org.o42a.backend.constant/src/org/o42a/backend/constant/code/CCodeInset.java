@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.op;
+package org.o42a.backend.constant.code;
 
-import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.RecordedOp;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.Code;
 
 
-public interface COp<U extends Op, T> extends Op, RecordedOp {
+class CCodeInset extends CInset<Code> {
 
-	CCode<?> getCode();
-
-	boolean isConstant();
-
-	T getConstant();
-
-	U create(OpBE<U> backend);
-
-	U create(OpBE<U> backend, T constant);
-
-	OpBE<U> backend();
+	CCodeInset(CCode<?> enclosing, Code code, Code underlying) {
+		super(enclosing, code, underlying);
+	}
 
 }

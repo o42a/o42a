@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.op;
+package org.o42a.backend.constant.code;
 
-import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.RecordedOp;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.util.Chain;
 
 
-public interface COp<U extends Op, T> extends Op, RecordedOp {
+public class OpRecords extends Chain<OpRecord> implements OpRecord {
 
-	CCode<?> getCode();
+	private OpRecord next;
 
-	boolean isConstant();
+	@Override
+	public final OpRecord getNext() {
+		return this.next;
+	}
 
-	T getConstant();
+	@Override
+	public final void setNext(OpRecord next) {
+		this.next = next;
+	}
 
-	U create(OpBE<U> backend);
+	@Override
+	public void reveal() {
+		for (OpRecord record : this) {
+			record.reveal();
+		}
+	}
 
-	U create(OpBE<U> backend, T constant);
+	@Override
+	protected OpRecord next(OpRecord item) {
+		return item.getNext();
+	}
 
-	OpBE<U> backend();
+	@Override
+	protected void setNext(OpRecord prev, OpRecord next) {
+		prev.setNext(next);
+	}
 
 }

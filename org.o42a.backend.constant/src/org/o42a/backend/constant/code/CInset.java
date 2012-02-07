@@ -22,14 +22,26 @@ package org.o42a.backend.constant.code;
 import org.o42a.codegen.code.Code;
 
 
-class CInset extends CCode<Code> {
+abstract class CInset<C extends Code> extends CCode<C> implements RecordedOp {
 
-	CInset(CCode<?> enclosing, Code code, Code underlying) {
+	private final OpRecords records = new OpRecords();
+
+	CInset(CCode<?> enclosing, C code, C underlying) {
 		super(
 				enclosing.getBackend(),
 				enclosing.getFunction(),
 				code,
 				underlying);
+	}
+
+	@Override
+	public final OpRecord record() {
+		return records();
+	}
+
+	@Override
+	protected OpRecords records() {
+		return this.records;
 	}
 
 }

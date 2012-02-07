@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
@@ -29,38 +28,51 @@ import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.IntOp;
 
 
-public abstract class IntCOp<O extends IntOp<O>, T extends Number>
-		extends NumCOp<O, T>
-		implements IntOp<O> {
+public abstract class IntCOp<U extends IntOp<U>, T extends Number>
+		extends NumCOp<U, T>
+		implements IntOp<U> {
 
-	public IntCOp(CCode<?> code, O underlying, T constant) {
-		super(code, underlying, constant);
+	public IntCOp(OpBE<U> backend) {
+		super(backend);
+	}
+
+	public IntCOp(CodeId id, CCode<?> code, T constant) {
+		super(id, code, constant);
+	}
+
+	public IntCOp(OpBE<U> backend, T constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public final O shl(CodeId id, Code code, O numBits) {
+	public final U shl(final CodeId id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> nb = (IntCOp<O, T>) numBits;
+		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
 		if (isConstant() && nb.isConstant()) {
 
 			final T shl = shl(getConstant(), nb.getConstant().intValue());
 
-			return create(ccode, underlyingConstant(ccode, shl), shl);
+			return create(constant(id, ccode, shl), shl);
 		}
 
-		final O underlyingShl = getUnderlying().shl(
-				id,
-				ccode.getUnderlying(),
-				underlying(numBits));
-
-		return create(ccode, underlyingShl, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().shl(
+								getId(),
+								code().getUnderlying(),
+								nb.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O shl(CodeId id, Code code, int numBits) {
+	public final U shl(final CodeId id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -68,41 +80,51 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 			final T shl = shl(getConstant(), Integer.valueOf(numBits));
 
-			return create(ccode, underlyingConstant(ccode, shl), shl);
+			return create(constant(id, ccode, shl), shl);
 		}
 
-		final O underlyingShl = getUnderlying().shl(
-				id,
-				ccode.getUnderlying(),
-				numBits);
-
-		return create(ccode, underlyingShl, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().shl(
+								getId(),
+								code().getUnderlying(),
+								numBits);
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O lshr(CodeId id, Code code, O numBits) {
+	public final U lshr(final CodeId id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> nb = (IntCOp<O, T>) numBits;
+		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
 		if (isConstant() && nb.isConstant()) {
 
 			final T lshr = lshr(getConstant(), nb.getConstant().intValue());
 
-			return create(ccode, underlyingConstant(ccode, lshr), lshr);
+			return create(constant(id, ccode, lshr), lshr);
 		}
 
-		final O underlyingLShr = getUnderlying().lshr(
-				id,
-				ccode.getUnderlying(),
-				underlying(numBits));
-
-		return create(ccode, underlyingLShr, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().lshr(
+								getId(),
+								code().getUnderlying(),
+								nb.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O lshr(CodeId id, Code code, int numBits) {
+	public final U lshr(final CodeId id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -110,41 +132,51 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 			final T lshr = lshr(getConstant(), Integer.valueOf(numBits));
 
-			return create(ccode, underlyingConstant(ccode, lshr), lshr);
+			return create(constant(id, ccode, lshr), lshr);
 		}
 
-		final O underlyingLShr = getUnderlying().lshr(
-				id,
-				ccode.getUnderlying(),
-				numBits);
-
-		return create(ccode, underlyingLShr, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().lshr(
+								getId(),
+								code().getUnderlying(),
+								numBits);
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O ashr(CodeId id, Code code, O numBits) {
+	public final U ashr(final CodeId id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> nb = (IntCOp<O, T>) numBits;
+		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
 		if (isConstant() && nb.isConstant()) {
 
 			final T ashr = ashr(getConstant(), nb.getConstant().intValue());
 
-			return create(ccode, underlyingConstant(ccode, ashr), ashr);
+			return create(constant(id, ccode, ashr), ashr);
 		}
 
-		final O underlyingAShr = getUnderlying().ashr(
-				id,
-				ccode.getUnderlying(),
-				underlying(numBits));
-
-		return create(ccode, underlyingAShr, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().ashr(
+								getId(),
+								code().getUnderlying(),
+								nb.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O ashr(CodeId id, Code code, int numBits) {
+	public final U ashr(final CodeId id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -152,85 +184,105 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 			final T ashr = ashr(getConstant(), Integer.valueOf(numBits));
 
-			return create(ccode, underlyingConstant(ccode, ashr), ashr);
+			return create(constant(id, ccode, ashr), ashr);
 		}
 
-		final O underlyingAShr = getUnderlying().ashr(
-				id,
-				ccode.getUnderlying(),
-				numBits);
-
-		return create(ccode, underlyingAShr, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().ashr(
+								getId(),
+								code().getUnderlying(),
+								numBits);
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O and(CodeId id, Code code, O operand) {
+	public final U and(final CodeId id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> op = (IntCOp<O, T>) operand;
+		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
 		if (isConstant() && op.isConstant()) {
 
 			final T and = and(getConstant(), op.getConstant());
 
-			return create(ccode, underlyingConstant(ccode, and), and);
+			return create(constant(id, ccode, and), and);
 		}
 
-		final O underlyingAnd = getUnderlying().and(
-				id,
-				ccode.getUnderlying(),
-				underlying(operand));
-
-		return create(ccode, underlyingAnd, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().and(
+								getId(),
+								code().getUnderlying(),
+								op.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O or(CodeId id, Code code, O operand) {
+	public final U or(final CodeId id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> op = (IntCOp<O, T>) operand;
+		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
 		if (isConstant() && op.isConstant()) {
 
 			final T or = or(getConstant(), op.getConstant());
 
-			return create(ccode, underlyingConstant(ccode, or), or);
+			return create(constant(id, ccode, or), or);
 		}
 
-		final O underlyingOr = getUnderlying().or(
-				id,
-				ccode.getUnderlying(),
-				underlying(operand));
-
-		return create(ccode, underlyingOr, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().or(
+								getId(),
+								code().getUnderlying(),
+								op.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O xor(CodeId id, Code code, O operand) {
+	public final U xor(final CodeId id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
 		@SuppressWarnings("unchecked")
-		final IntCOp<O, T> op = (IntCOp<O, T>) operand;
+		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
 		if (isConstant() && op.isConstant()) {
 
 			final T xor = xor(getConstant(), op.getConstant());
 
-			return create(ccode, underlyingConstant(ccode, xor), xor);
+			return create(constant(id, ccode, xor), xor);
 		}
 
-		final O underlyingXor = getUnderlying().xor(
-				id,
-				ccode.getUnderlying(),
-				underlying(operand));
-
-		return create(ccode, underlyingXor, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().xor(
+								getId(),
+								code().getUnderlying(),
+								op.backend().underlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final O comp(CodeId id, Code code) {
+	public final U comp(final CodeId id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -238,17 +290,23 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 			final T comp = comp(getConstant());
 
-			return create(ccode, underlyingConstant(ccode, comp), comp);
+			return create(constant(id, ccode, comp), comp);
 		}
 
-		final O underlyingComp =
-				getUnderlying().comp(id, ccode.getUnderlying());
-
-		return create(ccode, underlyingComp, null);
+		return create(
+				new OpBE<U>(id, ccode) {
+					@Override
+					protected U write() {
+						return backend().underlying().comp(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final BoolOp lowestBit(CodeId id, Code code) {
+	public final BoolOp lowestBit(final CodeId id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
 
@@ -256,16 +314,17 @@ public abstract class IntCOp<O extends IntOp<O>, T extends Number>
 
 			final boolean lowestBit = (getConstant().intValue() & 1) != 0;
 
-			return new BoolCOp(
-					ccode,
-					ccode.getUnderlying().bool(lowestBit),
-					lowestBit);
+			return new BoolCOp(id, ccode, lowestBit);
 		}
 
-		final BoolOp underlyingLowestBit =
-				getUnderlying().lowestBit(id, ccode.getUnderlying());
-
-		return new BoolCOp(ccode, underlyingLowestBit, null);
+		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().lowestBit(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	protected abstract T shl(T value, int numBits);

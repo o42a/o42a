@@ -21,8 +21,8 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.AnyCOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyOp;
@@ -38,12 +38,14 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
 
 	@Override
 	public AnyCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-
-		final CCode<?> ccode = cast(writer);
-		final AnyOp underlyingOp =
-				getUnderlyingPtr().op(id, ccode.getUnderlying());
-
-		return new AnyCOp(ccode, underlyingOp, null);
+		return new AnyCOp(new OpBE<AnyOp>(id, cast(writer)) {
+			@Override
+			protected AnyOp write() {
+				return getUnderlyingPtr().op(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override

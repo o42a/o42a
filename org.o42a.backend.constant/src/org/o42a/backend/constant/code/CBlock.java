@@ -19,9 +19,10 @@
 */
 package org.o42a.backend.constant.code;
 
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
+import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.BoolCOp;
+import org.o42a.backend.constant.code.op.TermBE;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
@@ -68,38 +69,69 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public final void go(CodePos pos) {
-		getUnderlying().go(underlying(pos));
+	public final void go(final CodePos pos) {
+		new TermBE(this) {
+			@Override
+			public void reveal() {
+				getUnderlying().go(cast(pos).getUnderlying());
+			}
+		};
 	}
 
 	@Override
-	public final void go(BoolOp condition, CodePos truePos, CodePos falsePos) {
+	public final void go(
+			final BoolOp condition,
+			final CodePos truePos,
+			final CodePos falsePos) {
 
 		final BoolCOp cond = (BoolCOp) condition;
 
-		if (!cond.isConstant()) {
-			cond.getUnderlying().go(
-					getUnderlying(),
-					underlying(truePos),
-					underlying(falsePos));
+		if (cond.isConstant()) {
+
+			final CodePos pos = cond.getConstant() ? truePos : falsePos;
+
+			if (pos != null) {
+				go(pos);
+			}
+
 			return;
 		}
 
-		final CodePos pos = cond.getConstant() ? truePos : falsePos;
-
-		if (pos != null) {
-			go(pos);
-		}
+		new TermBE(this) {
+			@Override
+			public void reveal() {
+				cond.backend().underlying().go(
+						code().getUnderlying(),
+						cast(truePos).getUnderlying(),
+						cast(falsePos).getUnderlying());
+			}
+		};
 	}
 
 	@Override
 	public final void returnVoid() {
 		beforeReturn();
-		getUnderlying().returnVoid();
+		new TermBE(this) {
+			@Override
+			public void reveal() {
+				code().getUnderlying().returnVoid();
+			}
+		};
 	}
 
 	public final void beforeReturn() {
 		getFunction().getCallback().beforeReturn(code());
+	}
+
+	public final <T extends TermBE> T term(T op) {
+		// TODO end block.
+		return record(op);
+	}
+
+	@Override
+	protected OpRecords records() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

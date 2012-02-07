@@ -36,18 +36,14 @@ import org.o42a.codegen.data.backend.DataAllocation;
 
 
 public final class CAllocation
-		extends CCode<AllocationCode>
+		extends CInset<AllocationCode>
 		implements AllocationWriter {
 
 	CAllocation(
 			CCode<?> enclosing,
-			AllocationCode allocation,
+			AllocationCode code,
 			AllocationCode underlying) {
-		super(
-				enclosing.getBackend(),
-				enclosing.getFunction(),
-				allocation,
-				underlying);
+		super(enclosing, code, underlying);
 	}
 
 	@Override

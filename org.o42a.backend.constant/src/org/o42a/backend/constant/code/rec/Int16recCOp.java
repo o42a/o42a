@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.Int16cOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int16op;
 import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.data.Ptr;
@@ -30,27 +31,24 @@ public final class Int16recCOp
 		extends RecCOp<Int16recOp, Int16op, Short>
 		implements Int16recOp {
 
-	public Int16recCOp(
-			CCode<?> code,
-			Int16recOp underlying,
-			Ptr<Int16recOp> constant) {
-		super(code, underlying, constant);
+	public Int16recCOp(OpBE<Int16recOp> backend) {
+		super(backend);
+	}
+
+	public Int16recCOp(OpBE<Int16recOp> backend, Ptr<Int16recOp> constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Int16recCOp create(
-			CCode<?> code,
-			Int16recOp underlying,
+	public Int16recOp create(
+			OpBE<Int16recOp> backend,
 			Ptr<Int16recOp> constant) {
-		return new Int16recCOp(code, underlying, constant);
+		return new Int16recCOp(backend, constant);
 	}
 
 	@Override
-	protected Int16cOp loaded(
-			CCode<?> code,
-			Int16op underlying,
-			Short constant) {
-		return new Int16cOp(code, underlying, constant);
+	protected Int16op loaded(OpBE<Int16op> backend, Short constant) {
+		return new Int16cOp(backend, constant);
 	}
 
 	@Override

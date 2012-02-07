@@ -21,7 +21,7 @@ package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.RelCOp;
 import org.o42a.backend.constant.data.rec.RelRecCDAlloc;
 import org.o42a.codegen.CodeId;
@@ -85,12 +85,16 @@ public final class RelCDAlloc implements RelAllocation {
 
 	@Override
 	public RelOp op(CodeId id, CodeWriter writer) {
-
-		final CCode<?> ccode = cast(writer);
-		final RelOp underlyingOp =
-				getUnderlying().op(id, ccode.getUnderlying());
-
-		return new RelCOp(ccode, underlyingOp, getPointer());
+		return new RelCOp(
+				new OpBE<RelOp>(id, cast(writer)) {
+					@Override
+					protected RelOp write() {
+						return getUnderlying().op(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getPointer());
 	}
 
 	@Override

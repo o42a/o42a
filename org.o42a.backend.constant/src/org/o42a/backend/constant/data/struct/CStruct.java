@@ -23,6 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.PtrCOp;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.CDAlloc;
@@ -42,8 +43,12 @@ public final class CStruct<S extends StructOp<S>>
 
 	private final Type<S> type;
 
-	public CStruct(CCode<?> code, S underlying, Type<S> type, Ptr<S> constant) {
-		super(code, underlying, constant);
+	public CStruct(OpBE<S> backend, Type<S> type) {
+		this(backend, type, null);
+	}
+
+	public CStruct(OpBE<S> backend, Type<S> type, Ptr<S> constant) {
+		super(backend, constant);
 		this.type = type;
 	}
 
@@ -55,15 +60,18 @@ public final class CStruct<S extends StructOp<S>>
 	@Override
 	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
 
-		final CCode<?> ccode = cast(code);
 		final CDAlloc<?, ?> alloc =
 				(CDAlloc<?, ?>) field.getPointer().getAllocation();
-		final AnyRecOp underlyingRec = getUnderlying().writer().field(
-				id,
-				ccode.getUnderlying(),
-				alloc.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec, null);
+		return new AnyRecCOp(new OpBE<AnyRecOp>(id, cast(code)) {
+			@Override
+			protected AnyRecOp write() {
+				return backend().underlying().writer().field(
+						getId(),
+						code().getUnderlying(),
+						alloc.getUnderlying());
+			}
+		});
 	}
 
 	@Override
@@ -84,12 +92,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Int8cdAlloc fld =
 				(Int8cdAlloc) field.getPointer().getAllocation();
-		final Int8recOp underlyingRec = getUnderlying().writer().int8(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Int8recCOp(ccode, underlyingRec, pointer);
+		return new Int8recCOp(
+				new OpBE<Int8recOp>(id, ccode) {
+					@Override
+					protected Int8recOp write() {
+						return backend().underlying().writer().int8(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -110,12 +124,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Int16cdAlloc fld =
 				(Int16cdAlloc) field.getPointer().getAllocation();
-		final Int16recOp underlyingRec = getUnderlying().writer().int16(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Int16recCOp(ccode, underlyingRec, pointer);
+		return new Int16recCOp(
+				new OpBE<Int16recOp>(id, ccode) {
+					@Override
+					protected Int16recOp write() {
+						return backend().underlying().writer().int16(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -136,12 +156,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Int32cdAlloc fld =
 				(Int32cdAlloc) field.getPointer().getAllocation();
-		final Int32recOp underlyingRec = getUnderlying().writer().int32(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Int32recCOp(ccode, underlyingRec, pointer);
+		return new Int32recCOp(
+				new OpBE<Int32recOp>(id, ccode) {
+					@Override
+					protected Int32recOp write() {
+						return backend().underlying().writer().int32(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -162,12 +188,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Int64cdAlloc fld =
 				(Int64cdAlloc) field.getPointer().getAllocation();
-		final Int64recOp underlyingRec = getUnderlying().writer().int64(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Int64recCOp(ccode, underlyingRec, pointer);
+		return new Int64recCOp(
+				new OpBE<Int64recOp>(id, ccode) {
+					@Override
+					protected Int64recOp write() {
+						return backend().underlying().writer().int64(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -188,12 +220,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Fp32cdAlloc fld =
 				(Fp32cdAlloc) field.getPointer().getAllocation();
-		final Fp32recOp underlyingRec = getUnderlying().writer().fp32(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Fp32recCOp(ccode, underlyingRec, pointer);
+		return new Fp32recCOp(
+				new OpBE<Fp32recOp>(id, ccode) {
+					@Override
+					protected Fp32recOp write() {
+						return backend().underlying().writer().fp32(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -214,12 +252,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final Fp64cdAlloc fld =
 				(Fp64cdAlloc) field.getPointer().getAllocation();
-		final Fp64recOp underlyingRec = getUnderlying().writer().fp64(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new Fp64recCOp(ccode, underlyingRec, pointer);
+		return new Fp64recCOp(
+				new OpBE<Fp64recOp>(id, ccode) {
+					@Override
+					protected Fp64recOp write() {
+						return backend().underlying().writer().fp64(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -240,12 +284,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final AnyRecCDAlloc fld =
 				(AnyRecCDAlloc) field.getPointer().getAllocation();
-		final AnyRecOp underlyingRec = getUnderlying().writer().ptr(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new AnyRecCOp(ccode, underlyingRec, pointer);
+		return new AnyRecCOp(
+				new OpBE<AnyRecOp>(id, ccode) {
+					@Override
+					protected AnyRecOp write() {
+						return backend().underlying().writer().ptr(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -266,12 +316,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final DataRecCDAlloc fld =
 				(DataRecCDAlloc) field.getPointer().getAllocation();
-		final DataRecOp underlyingRec = getUnderlying().writer().ptr(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new DataRecCOp(ccode, underlyingRec, pointer);
+		return new DataRecCOp(
+				new OpBE<DataRecOp>(id, ccode) {
+					@Override
+					protected DataRecOp write() {
+						return backend().underlying().writer().ptr(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -295,14 +351,17 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final StructRecCDAlloc<SS> fld =
 				(StructRecCDAlloc<SS>) field.getPointer().getAllocation();
-		final StructRecOp<SS> underlyingRec = getUnderlying().writer().ptr(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
 		return new StructRecCOp<SS>(
-				ccode,
-				underlyingRec,
+				new OpBE<StructRecOp<SS>>(id, ccode) {
+					@Override
+					protected StructRecOp<SS> write() {
+						return backend().underlying().writer().ptr(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
 				field.getType(),
 				pointer);
 	}
@@ -325,12 +384,18 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final RelRecCDAlloc fld =
 				(RelRecCDAlloc) field.getPointer().getAllocation();
-		final RelRecOp underlyingRec = getUnderlying().writer().relPtr(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new RelRecCOp(ccode, underlyingRec, pointer);
+		return new RelRecCOp(
+				new OpBE<RelRecOp>(id, ccode) {
+					@Override
+					protected RelRecOp write() {
+						return backend().underlying().writer().relPtr(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				pointer);
 	}
 
 	@Override
@@ -356,14 +421,17 @@ public final class CStruct<S extends StructOp<S>>
 
 		final CCode<?> ccode = cast(code);
 		final CType<SS> fld = getBackend().underlying(field);
-		final SS underlyingStruct = getUnderlying().writer().struct(
-				id,
-				ccode.getUnderlying(),
-				fld);
 
 		return field.op(new CStruct<SS>(
-				ccode,
-				underlyingStruct,
+				new OpBE<SS>(id, ccode) {
+					@Override
+					protected SS write() {
+						return backend().underlying().writer().struct(
+								getId(),
+								code().getUnderlying(),
+								fld);
+					}
+				},
 				field.getType(),
 				pointer));
 	}
@@ -389,46 +457,58 @@ public final class CStruct<S extends StructOp<S>>
 		final CCode<?> ccode = cast(code);
 		final FuncRecCDAlloc<F> fld =
 				(FuncRecCDAlloc<F>) field.getPointer().getAllocation();
-		final FuncOp<F> underlyingRec = getUnderlying().writer().func(
-				id,
-				ccode.getUnderlying(),
-				fld.getUnderlying());
 
-		return new FuncCOp<F>(ccode, underlyingRec, pointer);
+		return new FuncCOp<F>(
+				new OpBE<FuncOp<F>>(id, ccode) {
+					@Override
+					protected FuncOp<F> write() {
+						return backend().underlying().writer().func(
+								getId(),
+								code().getUnderlying(),
+								fld.getUnderlying());
+					}
+				},
+				field.getSignature(),
+				pointer);
 	}
 
 	@Override
 	public DataCOp toData(CodeId id, Code code) {
-
-		final CCode<?> ccode = cast(code);
-		final DataOp underlyingData =
-				getUnderlying().toData(id, ccode.getUnderlying());
-
-		return new DataCOp(ccode, underlyingData, null);
+		return new DataCOp(new OpBE<DataOp>(id, cast(code)) {
+			@Override
+			protected DataOp write() {
+				return backend().underlying().toData(
+						getId(),
+						code().getUnderlying());
+			}
+		});
 	}
 
 	@Override
 	public <SS extends StructOp<SS>> SS to(
-			CodeId id,
-			Code code,
-			Type<SS> type) {
+			final CodeId id,
+			final Code code,
+			final Type<SS> type) {
 
 		final CCode<?> ccode = cast(code);
-		final SS underlyingStruct = getUnderlying().to(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(type));
 
-		return type.op(new CStruct<SS>(ccode, underlyingStruct, type, null));
+		return type.op(new CStruct<SS>(
+				new OpBE<SS>(id, ccode) {
+					@Override
+					protected SS write() {
+						return backend().underlying().to(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(type));
+					}
+				},
+				type,
+				null));
 	}
 
 	@Override
-	public S create(CCode<?> code, S underlying, Ptr<S> constantValue) {
-		return getType().op(new CStruct<S>(
-				code,
-				underlying,
-				getType(),
-				constantValue));
+	public S create(OpBE<S> backend, Ptr<S> constant) {
+		return getType().op(new CStruct<S>(backend, getType(), constant));
 	}
 
 }

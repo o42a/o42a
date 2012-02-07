@@ -20,18 +20,27 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int8op;
 
 
 public final class Int8cOp extends IntCOp<Int8op, Byte> implements Int8op {
 
-	public Int8cOp(CCode<?> code, Int8op underlying, Byte constant) {
-		super(code, underlying, constant);
+	public Int8cOp(OpBE<Int8op> backend) {
+		super(backend);
+	}
+
+	public Int8cOp(CodeId id, CCode<?> code, Byte constant) {
+		super(id, code, constant);
+	}
+
+	public Int8cOp(OpBE<Int8op> backend, Byte constant) {
+		super(backend, constant);
 	}
 
 	@Override
-	public Int8cOp create(CCode<?> code, Int8op underlying, Byte constant) {
-		return new Int8cOp(code, underlying, constant);
+	public Int8cOp create(OpBE<Int8op> backend, Byte constant) {
+		return new Int8cOp(backend, constant);
 	}
 
 	@Override
