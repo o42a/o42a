@@ -30,9 +30,9 @@ using namespace llvm;
 
 
 #define MAKE_BUILDER \
-		IRBuilder<> builder(block);\
+		IRBuilder<> builder(from_ptr<BasicBlock>(blockPtr));\
 		if (instrPtr) builder.SetInsertPoint(\
-				cast<Instruction>(from_ptr<Value>(instrPtr)))
+			static_cast<Instruction*>(from_ptr<Value>(instrPtr)))
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_shl(
 		JNIEnv *,
@@ -44,7 +44,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_shl(
 		jlong valuePtr,
 		jlong numBitsPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *numBits = from_ptr<Value>(numBitsPtr);
@@ -53,7 +52,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_shl(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
@@ -66,7 +65,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
 		jlong valuePtr,
 		jlong numBitsPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *numBits = from_ptr<Value>(numBitsPtr);
@@ -75,7 +73,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lshr(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
@@ -88,7 +86,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
 		jlong valuePtr,
 		jlong numBitsPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *numBits = from_ptr<Value>(numBitsPtr);
@@ -97,7 +94,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ashr(
 			numBits,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
@@ -110,7 +107,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -119,7 +115,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_and(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
@@ -132,7 +128,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -141,7 +136,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_or(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
@@ -154,7 +149,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -163,7 +157,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_xor(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_neg(
@@ -175,14 +169,13 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_neg(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateNeg(
 			value,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
@@ -195,7 +188,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -204,7 +196,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_add(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
@@ -217,7 +209,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -226,7 +217,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_sub(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
@@ -239,7 +230,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -248,7 +238,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_mul(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
@@ -261,7 +251,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -270,7 +259,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_div(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
@@ -283,7 +272,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -292,7 +280,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_rem(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
@@ -305,7 +293,6 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -314,7 +301,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_op_IntLLOp_eq(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
@@ -327,7 +314,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -336,7 +322,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ne(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
@@ -349,7 +335,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -358,7 +343,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_gt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
@@ -371,7 +356,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -380,7 +364,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_ge(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
@@ -393,7 +377,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -402,7 +385,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
@@ -415,7 +398,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -424,7 +406,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_le(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_int2int(
@@ -437,16 +419,15 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_int2int(
 		jlong valuePtr,
 		jbyte intBits) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateIntCast(
 			value,
-			IntegerType::get(block->getContext(), intBits),
+			IntegerType::get(builder.getContext(), intBits),
 			true,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
@@ -458,7 +439,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateSIToFP(
@@ -466,7 +446,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp32(
 			builder.getFloatTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
@@ -478,7 +458,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateSIToFP(
@@ -486,7 +465,7 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_intToFp64(
 			builder.getDoubleTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
@@ -498,7 +477,6 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateIntCast(
@@ -507,5 +485,5 @@ jlong Java_org_o42a_backend_llvm_code_op_IntLLOp_lowestBit(
 			false,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }

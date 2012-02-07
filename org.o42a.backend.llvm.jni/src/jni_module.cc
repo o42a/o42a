@@ -36,7 +36,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_bufferPtr(
 		JNIEnv *env,
 		jclass,
 		jobject buffer) {
-	return to_ptr(env->GetDirectBufferAddress(buffer));
+	return to_ptr<void>(env->GetDirectBufferAddress(buffer));
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMModule_parseArgs(
@@ -142,7 +142,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_createModule(
 	o42ac::BackendModule *module =
 			o42ac::BackendModule::createBackend(moduleId);
 
-	return to_ptr(module);
+	return to_ptr<o42ac::BackendModule>(module);
 }
 
 jboolean Java_org_o42a_backend_llvm_data_LLVMModule_write(
@@ -167,9 +167,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_voidType(
 		jclass,
 		jlong modulePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getVoidTy(module->getContext()));
+	return to_ptr<Type>(Type::getVoidTy(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_intType(
@@ -178,9 +179,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_intType(
 		jlong modulePtr,
 		jbyte numBits) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(IntegerType::get(module->getContext(), numBits));
+	return to_ptr<Type>(IntegerType::get(module->getContext(), numBits));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp32type(
@@ -188,9 +190,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp32type(
 		jclass,
 		jlong modulePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getFloatTy(module->getContext()));
+	return to_ptr<Type>(Type::getFloatTy(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp64type(
@@ -198,9 +201,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_fp64type(
 		jclass,
 		jlong modulePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getDoubleTy(module->getContext()));
+	return to_ptr<Type>(Type::getDoubleTy(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_boolType(
@@ -208,9 +212,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_boolType(
 		jclass,
 		jlong modulePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getInt1Ty(module->getContext()));
+	return to_ptr<Type>(Type::getInt1Ty(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType(
@@ -218,9 +223,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_relPtrType(
 		jclass,
 		jlong modulePtr)  {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getInt32Ty(module->getContext()));
+	return to_ptr<Type>(Type::getInt32Ty(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_anyType(
@@ -228,9 +234,10 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_anyType(
 		jclass,
 		jlong modulePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 
-	return to_ptr(Type::getInt8PtrTy(module->getContext()));
+	return to_ptr<Type>(Type::getInt8PtrTy(module->getContext()));
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
@@ -240,7 +247,7 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerTo(
 
 	Type *type = from_ptr<Type>(typePtr);
 
-	return to_ptr(type->getPointerTo());
+	return to_ptr<Type>(type->getPointerTo());
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerToFunc(
@@ -250,5 +257,5 @@ jlong Java_org_o42a_backend_llvm_data_LLVMModule_pointerToFunc(
 
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
 
-	return to_ptr(type->getPointerTo());
+	return to_ptr<Type>(type->getPointerTo());
 }
