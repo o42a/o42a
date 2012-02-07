@@ -33,9 +33,9 @@ using namespace llvm;
 
 
 #define MAKE_BUILDER \
-		IRBuilder<> builder(block);\
+		IRBuilder<> builder(from_ptr<BasicBlock>(blockPtr));\
 		if (instrPtr) builder.SetInsertPoint(\
-				cast<Instruction>(from_ptr<Value>(instrPtr)))
+			static_cast<Instruction*>(from_ptr<Value>(instrPtr)))
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		JNIEnv *,
@@ -47,7 +47,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 		jlong pointerPtr,
 		jint field) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreateConstInBoundsGEP2_32(
@@ -56,7 +55,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 			field,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
@@ -68,14 +67,13 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreateLoad(
 			pointer,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
@@ -86,12 +84,11 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		jlong pointerPtr,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 
-	return to_ptr(builder.CreateStore(value, pointer));
+	return to_ptr<Value>(builder.CreateStore(value, pointer));
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
@@ -103,7 +100,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
@@ -111,7 +107,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 			builder.getInt8PtrTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
@@ -123,7 +119,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
@@ -131,7 +126,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 			builder.getInt8PtrTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
@@ -144,15 +139,14 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
 		jlong pointerPtr,
 		jbyte intBits) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
 			pointer,
-			IntegerType::get(block->getContext(), intBits)->getPointerTo(),
+			IntegerType::get(builder.getContext(), intBits)->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
@@ -164,7 +158,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
@@ -172,7 +165,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 			builder.getFloatTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
@@ -184,7 +177,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
@@ -192,7 +184,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 			builder.getDoubleTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
@@ -204,7 +196,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreatePointerCast(
@@ -212,7 +203,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 			builder.getInt32Ty()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
@@ -225,7 +216,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 		jlong pointerPtr,
 		jlong typePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Type *type = from_ptr<Type>(typePtr);
@@ -234,7 +224,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 			type->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
@@ -247,7 +237,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 		jlong pointerPtr,
 		jlong funcTypePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Type *type = from_ptr<Type>(funcTypePtr);
@@ -256,7 +245,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 			type->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
@@ -268,7 +257,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 		jint idLen,
 		jlong pointerPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *result = builder.CreateICmpEQ(
@@ -276,7 +264,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 			Constant::getNullValue(pointer->getType()),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
@@ -289,7 +277,6 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 		jlong pointerPtr,
 		jlong indexPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *index = from_ptr<Value>(indexPtr);
@@ -298,7 +285,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 			index,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
@@ -311,7 +298,6 @@ jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 		jlong fromPtr,
 		jlong byPtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *from = from_ptr<Value>(fromPtr);
 	Value *by = from_ptr<Value>(byPtr);
@@ -324,5 +310,5 @@ jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 			builder.getInt8PtrTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }

@@ -29,7 +29,7 @@ template<typename T> inline T* from_ptr(const jlong ptr) {
 	return reinterpret_cast<T*>(ptr);
 }
 
-inline jlong to_ptr(const void* object) {
+template<typename T> inline jlong to_ptr(T *const object) {
 	return reinterpret_cast<jlong>(object);
 }
 

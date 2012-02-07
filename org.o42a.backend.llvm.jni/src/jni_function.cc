@@ -51,7 +51,7 @@ jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 			ArrayRef<Type *>(params, numParams),
 			false);
 
-	return to_ptr(result);
+	return to_ptr<FunctionType>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
@@ -62,13 +62,14 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_externFunction(
 		jint idLen,
 		jlong typePtr) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 	FunctionType *type = from_ptr<FunctionType>(typePtr);
 	Constant *function = module->getOrInsertFunction(
 			StringRef(from_ptr<char>(id), idLen),
 			type);
 
-	return to_ptr(function);
+	return to_ptr<Value>(function);
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
@@ -80,7 +81,8 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 		jlong funcTypePtr,
 		jboolean exported) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 	FunctionType *type = from_ptr<FunctionType>(funcTypePtr);
 	GlobalValue::LinkageTypes linkageType =
 			exported
@@ -93,7 +95,7 @@ jlong Java_org_o42a_backend_llvm_code_LLFunction_createFunction(
 
 	function->setDoesNotThrow(true);
 
-	return to_ptr(function);
+	return to_ptr<Value>(function);
 }
 
 jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_arg(
@@ -118,7 +120,7 @@ jlong JNICALL Java_org_o42a_backend_llvm_code_LLFunction_arg(
 		value = &*args;
 	}
 
-	return to_ptr(value);
+	return to_ptr<Value>(value);
 }
 
 jboolean Java_org_o42a_backend_llvm_code_LLFunction_validate(
@@ -143,10 +145,10 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		jlong functionPtr,
 		jlongArray argPtrs) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
-	IRBuilder<> builder(block);
+	IRBuilder<> builder(from_ptr<BasicBlock>(blockPtr));
 	if (instrPtr) {
-		builder.SetInsertPoint(cast<Instruction>(from_ptr<Value>(instrPtr)));
+		builder.SetInsertPoint(static_cast<Instruction*>(
+				from_ptr<Value>(instrPtr)));
 	}
 	Value *callee = from_ptr<Value>(functionPtr);
 	jArray<jlongArray, jlong> argArray(env, argPtrs);
@@ -168,5 +170,5 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		result = builder.CreateCall(callee, ArrayRef<Value*>(args, numArgs));
 	}
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }

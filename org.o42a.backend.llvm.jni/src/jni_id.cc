@@ -19,6 +19,7 @@
 */
 #include "jni_id.h"
 
+#include "o42ac/llvm/BackendModule.h"
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
 
@@ -36,7 +37,7 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_typeExpression(
 
 	Type *type = from_ptr<Type>(typePtr);
 
-	return to_ptr(Constant::getNullValue(type->getPointerTo()));
+	return to_ptr<Value>(Constant::getNullValue(type->getPointerTo()));
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
@@ -46,7 +47,8 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 		jlong globalPtr,
 		jintArray indices) {
 
-	Module *module = from_ptr<Module>(modulePtr);
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
 	Constant *global = from_ptr<Constant>(globalPtr);
 
 	jInt32Array indexArray(env, indices);
@@ -63,7 +65,7 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_expression(
 			global,
 			ArrayRef<Constant*>(indexList, len + 1));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
@@ -72,7 +74,7 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
 		jlong idPtr,
 		jlong toPtr) {
 	if (!idPtr || !toPtr) {
-		return to_ptr(NULL);
+		return to_ptr<Value>(NULL);
 	}
 
 	Constant *id = from_ptr<Constant>(idPtr);
@@ -87,7 +89,7 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_relativeExpression(
 			int32ty,
 			true);
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_id_LLVMId_toAnyPtr(
@@ -100,5 +102,5 @@ jlong Java_org_o42a_backend_llvm_id_LLVMId_toAnyPtr(
 			pointer,
 			Type::getInt8PtrTy(pointer->getContext()));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }

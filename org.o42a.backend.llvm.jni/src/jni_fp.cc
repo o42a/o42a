@@ -29,9 +29,9 @@ using namespace llvm;
 
 
 #define MAKE_BUILDER \
-		IRBuilder<> builder(block);\
+		IRBuilder<> builder(from_ptr<BasicBlock>(blockPtr));\
 		if (instrPtr) builder.SetInsertPoint(\
-				cast<Instruction>(from_ptr<Value>(instrPtr)))
+			static_cast<Instruction*>(from_ptr<Value>(instrPtr)))
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_neg(
 		JNIEnv *,
@@ -42,14 +42,13 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_neg(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateFNeg(
 			value,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_add(
@@ -62,7 +61,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_add(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -71,7 +69,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_add(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_sub(
@@ -84,7 +82,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_sub(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -93,7 +90,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_sub(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_mul(
@@ -106,7 +103,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_mul(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -115,7 +111,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_mul(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_div(
@@ -128,7 +124,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_div(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -137,7 +132,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_div(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_rem(
@@ -150,7 +145,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_rem(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -159,7 +153,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_rem(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_eq(
@@ -172,7 +166,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_eq(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -181,7 +174,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_eq(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ne(
@@ -194,7 +187,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ne(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -203,7 +195,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ne(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_gt(
@@ -216,7 +208,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_gt(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -225,7 +216,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_gt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ge(
@@ -238,7 +229,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ge(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -247,7 +237,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_ge(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_lt(
@@ -260,7 +250,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_lt(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -269,7 +258,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_lt(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_le(
@@ -282,7 +271,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_le(
 		jlong op1ptr,
 		jlong op2ptr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *op1 = from_ptr<Value>(op1ptr);
 	Value *op2 = from_ptr<Value>(op2ptr);
@@ -291,7 +279,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_le(
 			op2,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2int(
@@ -304,15 +292,14 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2int(
 		jlong valuePtr,
 		jbyte intBits) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateFPToSI(
 			value,
-			IntegerType::get(block->getContext(), intBits),
+			IntegerType::get(builder.getContext(), intBits),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32(
@@ -324,7 +311,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateFPCast(
@@ -332,7 +318,7 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp32(
 			builder.getFloatTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64(
@@ -344,7 +330,6 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64(
 		jint idLen,
 		jlong valuePtr) {
 
-	BasicBlock *block = from_ptr<BasicBlock>(blockPtr);
 	MAKE_BUILDER;
 	Value *value = from_ptr<Value>(valuePtr);
 	Value *result = builder.CreateFPCast(
@@ -352,5 +337,5 @@ jlong Java_org_o42a_backend_llvm_code_op_FpLLOp_fp2fp64(
 			builder.getDoubleTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr(result);
+	return to_ptr<Value>(result);
 }
