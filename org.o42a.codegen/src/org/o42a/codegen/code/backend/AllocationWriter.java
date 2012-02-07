@@ -19,8 +19,24 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.op.AnyRecOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.backend.DataAllocation;
+
 
 public interface AllocationWriter extends CodeWriter {
+
+	AnyRecOp allocatePtr(CodeId id);
+
+	<S extends StructOp<S>> StructRecOp<S> allocatePtr(
+			CodeId id,
+			DataAllocation<S> allocation);
+
+	<S extends StructOp<S>> S allocateStruct(
+			CodeId id,
+			DataAllocation<S> allocation);
 
 	void dispose(CodeWriter writer);
 

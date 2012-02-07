@@ -20,7 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.StructOp;
@@ -35,7 +35,7 @@ public abstract class CodeBase {
 	}
 
 	protected static <S extends StructOp<S>> S allocate(
-			Code code,
+			AllocationCode code,
 			CodeId id,
 			Type<S> type) {
 		assert code.assertIncomplete();

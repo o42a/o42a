@@ -70,16 +70,6 @@ public interface CodeWriter {
 
 	<F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature);
 
-	AnyRecOp allocatePtr(CodeId id);
-
-	<S extends StructOp<S>> StructRecOp<S> allocatePtr(
-			CodeId id,
-			DataAllocation<S> allocation);
-
-	<S extends StructOp<S>> S allocateStruct(
-			CodeId id,
-			DataAllocation<S> allocation);
-
 	<O extends Op> O phi(CodeId id, O op);
 
 	<O extends Op> O phi(CodeId id, O op1, O op2);

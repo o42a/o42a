@@ -28,6 +28,7 @@ import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.Op;
@@ -42,24 +43,48 @@ public class ConstBackend {
 		return cast(code.writer());
 	}
 
+	public static CAllocation cast(AllocationCode code) {
+		return cast(code.writer());
+	}
+
 	public static CBlock<?> cast(Block code) {
 		return cast(code.writer());
 	}
 
-	public static CCode<?> cast(CodeWriter codeWriter) {
-		return (CCode<?>) codeWriter;
+	public static CCode<?> cast(CodeWriter writer) {
+		return (CCode<?>) writer;
 	}
 
-	public static CBlock<?> cast(BlockWriter codeWriter) {
-		return (CBlock<?>) codeWriter;
+	public static CAllocation cast(AllocationWriter writer) {
+		return (CAllocation) writer;
+	}
+
+	public static CBlock<?> cast(BlockWriter writer) {
+		return (CBlock<?>) writer;
 	}
 
 	public static Code underlying(Code code) {
 		return cast(code).getUnderlying();
 	}
 
-	public static CodeWriter underlying(CodeWriter codeWriter) {
-		return cast(codeWriter).getUnderlying().writer();
+	public static AllocationCode underlying(AllocationCode code) {
+		return cast(code).getUnderlying();
+	}
+
+	public static Block underlying(Block code) {
+		return cast(code).getUnderlying();
+	}
+
+	public static CodeWriter underlying(CodeWriter writer) {
+		return cast(writer).getUnderlying().writer();
+	}
+
+	public static AllocationWriter underlying(AllocationWriter writer) {
+		return cast(writer).getUnderlying().writer();
+	}
+
+	public static BlockWriter underlying(BlockWriter writer) {
+		return cast(writer).getUnderlying().writer();
 	}
 
 	public static CCodePos cast(CodePos codePos) {

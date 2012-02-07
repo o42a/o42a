@@ -19,9 +19,18 @@
 */
 package org.o42a.backend.llvm.code;
 
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+
+import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
+import org.o42a.backend.llvm.code.rec.StructRecLLOp;
+import org.o42a.backend.llvm.data.NativeBuffer;
+import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 
 
 final class LLAllocation extends LLInset implements AllocationWriter {
@@ -31,6 +40,69 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 
 	LLAllocation(LLCode enclosing, LLInset prevInset, AllocationCode code) {
 		super(enclosing, prevInset, code);
+	}
+
+	@Override
+	public <S extends StructOp<S>> S allocateStruct(
+			CodeId id,
+			DataAllocation<S> allocation) {
+
+		final ContainerLLDAlloc<S> type =
+				(ContainerLLDAlloc<S>) allocation;
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return type.getType().op(new LLStruct<S>(
+				id,
+				AUTO_ALLOC_CLASS,
+				type,
+				nextPtr,
+				instr(allocateStruct(
+						nextPtr,
+						nextInstr(),
+						ids.writeCodeId(id),
+						id.length(),
+						type.getTypePtr()))));
+	}
+
+	@Override
+	public AnyRecLLOp allocatePtr(CodeId id) {
+
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return new AnyRecLLOp(
+				id,
+				AUTO_ALLOC_CLASS,
+				nextPtr,
+				instr(allocatePtr(
+						nextPtr,
+						nextInstr(),
+						ids.writeCodeId(id),
+						ids.length())));
+	}
+
+	@Override
+	public <S extends StructOp<S>> StructRecLLOp<S> allocatePtr(
+			CodeId id,
+			DataAllocation<S> allocation) {
+
+		final ContainerLLDAlloc<S> alloc =
+				(ContainerLLDAlloc<S>) allocation;
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return new StructRecLLOp<S>(
+				id,
+				AUTO_ALLOC_CLASS,
+				alloc.getType(),
+				nextPtr,
+				instr(allocateStructPtr(
+						nextPtr,
+						nextInstr(),
+						ids.writeCodeId(id),
+						id.length(),
+						alloc.getTypePtr())));
 	}
 
 	@Override

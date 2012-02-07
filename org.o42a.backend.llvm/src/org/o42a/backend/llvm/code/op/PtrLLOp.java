@@ -74,7 +74,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp<?> enclosing) {
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override

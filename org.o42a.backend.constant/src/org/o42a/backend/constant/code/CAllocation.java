@@ -21,12 +21,21 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
 
+import org.o42a.backend.constant.code.rec.AnyRecCOp;
+import org.o42a.backend.constant.code.rec.StructRecCOp;
+import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.struct.CStruct;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.backend.DataAllocation;
 
 
-final class CAllocation
+public final class CAllocation
 		extends CCode<AllocationCode>
 		implements AllocationWriter {
 
@@ -39,6 +48,48 @@ final class CAllocation
 				enclosing.getFunction(),
 				allocation,
 				underlying);
+	}
+
+	@Override
+	public final AnyRecCOp allocatePtr(CodeId id) {
+		return new AnyRecCOp(
+				this,
+				getUnderlying().writer().allocatePtr(id),
+				null);
+	}
+
+	@Override
+	public final <S extends StructOp<S>> StructRecCOp<S> allocatePtr(
+			CodeId id,
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+		final StructRecOp<S> underlyingOp =
+				getUnderlying().writer().allocatePtr(
+						id,
+						typeAlloc.getUnderlyingPtr().getAllocation());
+
+		return new StructRecCOp<S>(
+				this,
+				underlyingOp,
+				typeAlloc.getUnderlyingInstance().getType(),
+				null);
+	}
+
+	@Override
+	public final <S extends StructOp<S>> S allocateStruct(
+			CodeId id,
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+		final S underlyingOp = getUnderlying().writer().allocateStruct(
+				id,
+				typeAlloc.getUnderlyingPtr().getAllocation());
+		final Type<S> type = typeAlloc.getUnderlyingInstance().getOriginal();
+
+		return type.op(new CStruct<S>(this, underlyingOp, type, null));
 	}
 
 	@Override

@@ -77,12 +77,11 @@ public final class AllocationCode extends Code {
 			Type<S> type) {
 		assert assertIncomplete();
 
-		final Code code = this;
 		final StructRecOp<S> result = writer().allocatePtr(
-				code.opId(id),
-				dataAllocation(type.data(code.getGenerator())));
+				opId(id),
+				dataAllocation(type.data(getGenerator())));
 
-		result.allocated(code, null);
+		result.allocated(this, null);
 
 		return result;
 	}

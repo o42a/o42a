@@ -28,7 +28,7 @@ import org.o42a.codegen.code.*;
 public abstract class BoolOp implements Op {
 
 	@Override
-	public void allocated(Code code, StructOp<?> enclosing) {
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	public abstract <O extends Op> O select(

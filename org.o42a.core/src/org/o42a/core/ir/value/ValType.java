@@ -23,6 +23,7 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -143,7 +144,7 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		@Override
-		public void allocated(Code code, StructOp<?> enclosing) {
+		public void allocated(AllocationCode code, StructOp<?> enclosing) {
 			this.allocatedOnStack = true;
 			super.allocated(code, enclosing);
 		}

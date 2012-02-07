@@ -34,10 +34,11 @@ import org.o42a.codegen.data.Ptr;
 
 public abstract class DebugCodeBase extends CodeBase {
 
-	static DebugStackFrameOp allocateStackFrame(
-			Code code,
-			CodeId id) {
-		return allocate(code, id, DEBUG_STACK_FRAME_TYPE);
+	static DebugStackFrameOp allocateStackFrame(Code code, CodeId id) {
+
+		final AllocationCode allocation = code.undisposable("stack_frame");
+
+		return allocate(allocation, id, DEBUG_STACK_FRAME_TYPE);
 	}
 
 	private final Generator generator;
