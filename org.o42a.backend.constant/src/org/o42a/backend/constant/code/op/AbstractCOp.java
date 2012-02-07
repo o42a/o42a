@@ -24,7 +24,7 @@ import static org.o42a.backend.constant.data.ConstBackend.underlying;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
 
@@ -71,7 +71,7 @@ public abstract class AbstractCOp<O extends Op, T> implements COp<O, T> {
 	}
 
 	@Override
-	public final void allocated(Code code, StructOp<?> enclosing) {
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 		getUnderlying().allocated(
 				underlying(code),
 				underlying(enclosing));

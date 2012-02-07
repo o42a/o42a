@@ -20,9 +20,7 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
@@ -54,7 +52,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 	}
 
 	@Override
-	public void allocated(Code code, StructOp<?> enclosing) {
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final RecOp<?, ?> fieldOp =
@@ -98,6 +96,18 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 			Code code,
 			Type<SS> type) {
 		return writer().to(code.opId(id), code, type);
+	}
+
+	@Override
+	public String toString() {
+
+		final CodeId id = getId();
+
+		if (id == null) {
+			return super.toString();
+		}
+
+		return id.toString();
 	}
 
 	protected final RecOp<?, ?> field(CodeId id, Code code, Data<?> field) {

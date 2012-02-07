@@ -22,8 +22,6 @@ package org.o42a.backend.constant.code;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.*;
-import org.o42a.backend.constant.code.rec.AnyRecCOp;
-import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -35,7 +33,6 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -225,47 +222,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				underlyingPtr,
 				getBackend().getGenerator().getFunctions().nullPtr(
 						signature));
-	}
-
-	@Override
-	public final AnyRecCOp allocatePtr(CodeId id) {
-		return new AnyRecCOp(
-				this,
-				getUnderlying().writer().allocatePtr(id),
-				null);
-	}
-
-	@Override
-	public final <S extends StructOp<S>> StructRecCOp<S> allocatePtr(
-			CodeId id,
-			DataAllocation<S> typeAllocation) {
-
-		final ContainerCDAlloc<S> typeAlloc =
-				(ContainerCDAlloc<S>) typeAllocation;
-		final StructRecOp<S> underlyingOp =
-				getUnderlying().writer().allocatePtr(
-						id,
-						typeAlloc.getUnderlyingPtr().getAllocation());
-
-		return new StructRecCOp<S>(
-				this,
-				underlyingOp,
-				typeAlloc.getUnderlyingInstance().getType(),
-				null);
-	}
-
-	@Override
-	public final <S extends StructOp<S>> S allocateStruct(
-			CodeId id,
-			DataAllocation<S> typeAllocation) {
-
-		final ContainerCDAlloc<S> typeAlloc =
-				(ContainerCDAlloc<S>) typeAllocation;
-		final S underlyingOp = getUnderlying().writer().allocateStruct(
-				id, typeAlloc.getUnderlyingPtr().getAllocation());
-		final Type<S> type = typeAlloc.getUnderlyingInstance().getOriginal();
-
-		return type.op(new CStruct<S>(this, underlyingOp, type, null));
 	}
 
 	@SuppressWarnings("unchecked")

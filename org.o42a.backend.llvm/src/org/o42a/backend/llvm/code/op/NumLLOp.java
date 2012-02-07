@@ -23,6 +23,7 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
@@ -58,7 +59,7 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	}
 
 	@Override
-	public void allocated(Code code, StructOp<?> enclosing) {
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override

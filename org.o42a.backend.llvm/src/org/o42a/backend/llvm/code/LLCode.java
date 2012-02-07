@@ -19,12 +19,9 @@
 */
 package org.o42a.backend.llvm.code;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
-import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
-import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
@@ -327,69 +324,6 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public <S extends StructOp<S>> S allocateStruct(
-			CodeId id,
-			DataAllocation<S> allocation) {
-
-		final ContainerLLDAlloc<S> type =
-				(ContainerLLDAlloc<S>) allocation;
-		final long nextPtr = nextPtr();
-		final NativeBuffer ids = getModule().ids();
-
-		return type.getType().op(new LLStruct<S>(
-				id,
-				AUTO_ALLOC_CLASS,
-				type,
-				nextPtr,
-				instr(allocateStruct(
-						nextPtr,
-						nextInstr(),
-						ids.writeCodeId(id),
-						id.length(),
-						type.getTypePtr()))));
-	}
-
-	@Override
-	public AnyRecLLOp allocatePtr(CodeId id) {
-
-		final long nextPtr = nextPtr();
-		final NativeBuffer ids = getModule().ids();
-
-		return new AnyRecLLOp(
-				id,
-				AUTO_ALLOC_CLASS,
-				nextPtr,
-				instr(allocatePtr(
-						nextPtr,
-						nextInstr(),
-						ids.writeCodeId(id),
-						ids.length())));
-	}
-
-	@Override
-	public <S extends StructOp<S>> StructRecLLOp<S> allocatePtr(
-			CodeId id,
-			DataAllocation<S> allocation) {
-
-		final ContainerLLDAlloc<S> alloc =
-				(ContainerLLDAlloc<S>) allocation;
-		final long nextPtr = nextPtr();
-		final NativeBuffer ids = getModule().ids();
-
-		return new StructRecLLOp<S>(
-				id,
-				AUTO_ALLOC_CLASS,
-				alloc.getType(),
-				nextPtr,
-				instr(allocateStructPtr(
-						nextPtr,
-						nextInstr(),
-						ids.writeCodeId(id),
-						id.length(),
-						alloc.getTypePtr())));
-	}
-
-	@Override
 	public <O extends Op> O phi(CodeId id, O op) {
 
 		final LLOp<O> o = llvm(op);
@@ -512,20 +446,20 @@ public abstract class LLCode implements CodeWriter {
 
 	private static native long nullFuncPtr(long funcTypePtr);
 
-	private static native long allocatePtr(
+	static native long allocatePtr(
 			long blockPtr,
 			long instrPtr,
 			long id,
 			int idLen);
 
-	private static native long allocateStructPtr(
+	static native long allocateStructPtr(
 			long blockPtr,
 			long instrPtr,
 			long id,
 			int idLen,
 			long typePtr);
 
-	private static native long allocateStruct(
+	static native long allocateStruct(
 			long blockPtr,
 			long instrPtr,
 			long id,
