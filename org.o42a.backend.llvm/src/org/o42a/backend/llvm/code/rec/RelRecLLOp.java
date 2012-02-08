@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.op.RelLLOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.RelOp;
@@ -42,7 +40,7 @@ public final class RelRecLLOp
 
 	@Override
 	public RelRecLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new RelRecLLOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
+		return new RelRecLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override

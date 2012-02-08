@@ -20,7 +20,6 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.id.LLVMId.functionId;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
@@ -136,7 +135,7 @@ public final class LLFunction<F extends Func<F>>
 	public AnyOp ptrArg(Code code, Arg<AnyOp> arg) {
 		return new AnyLLOp(
 				argId(arg),
-				AUTO_ALLOC_CLASS,
+				null,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -145,7 +144,7 @@ public final class LLFunction<F extends Func<F>>
 	public DataOp dataArg(Code code, Arg<DataOp> arg) {
 		return new DataLLOp(
 				argId(arg),
-				AUTO_ALLOC_CLASS,
+				null,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -157,7 +156,7 @@ public final class LLFunction<F extends Func<F>>
 			Type<S> type) {
 		return type.op(new LLStruct<S>(
 				argId(arg),
-				AUTO_ALLOC_CLASS,
+				null,
 				type,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex())));

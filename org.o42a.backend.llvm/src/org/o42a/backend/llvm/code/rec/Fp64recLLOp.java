@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.op.Fp64llOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp64op;
@@ -42,14 +40,11 @@ public final class Fp64recLLOp
 
 	@Override
 	public Fp64recLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new Fp64recLLOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
+		return new Fp64recLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected Fp64op createLoaded(
-			CodeId id,
-			long blockPtr,
-			long nativePtr) {
+	protected Fp64op createLoaded(CodeId id, long blockPtr, long nativePtr) {
 		return new Fp64llOp(id, blockPtr, nativePtr);
 	}
 

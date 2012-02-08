@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
@@ -49,7 +47,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 	public StructRecLLOp<S> create(CodeId id, long blockPtr, long nativePtr) {
 		return new StructRecLLOp<S>(
 				id,
-				AUTO_ALLOC_CLASS,
+				null,
 				this.type,
 				blockPtr,
 				nativePtr);
@@ -59,7 +57,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 	protected S createLoaded(CodeId id, long blockPtr, long nativePtr) {
 		return this.type.op(new LLStruct<S>(
 				id,
-				AUTO_ALLOC_CLASS,
+				null,
 				this.type,
 				blockPtr,
 				nativePtr));

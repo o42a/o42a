@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.op.DataLLOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
@@ -42,7 +40,7 @@ public final class DataRecLLOp
 
 	@Override
 	public DataRecLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new DataRecLLOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
+		return new DataRecLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
@@ -50,11 +48,7 @@ public final class DataRecLLOp
 			CodeId id,
 			long blockPtr,
 			long nativePtr) {
-		return new DataLLOp(
-				id,
-				AUTO_ALLOC_CLASS,
-				blockPtr,
-				nativePtr);
+		return new DataLLOp(id, null, blockPtr, nativePtr);
 	}
 
 }

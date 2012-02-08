@@ -51,7 +51,7 @@ public final class DataLLOp extends PtrLLOp<DataOp> implements DataOp {
 
 	@Override
 	public DataLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new DataLLOp(id, getAllocClass(), blockPtr, nativePtr);
+		return new DataLLOp(id, null, blockPtr, nativePtr);
 	}
 
 }

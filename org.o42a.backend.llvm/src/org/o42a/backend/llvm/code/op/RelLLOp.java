@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
@@ -80,7 +79,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 
 		return new AnyLLOp(
 				resultId,
-				AUTO_ALLOC_CLASS,
+				from.getAllocClass(),// Points to the same allocation unit.
 				nextPtr,
 				llvm.instr(offsetBy(
 						nextPtr,

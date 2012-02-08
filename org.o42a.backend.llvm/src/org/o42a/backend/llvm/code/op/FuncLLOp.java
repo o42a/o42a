@@ -87,12 +87,7 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
-		return new FuncLLOp<F>(
-				id,
-				getAllocClass(),
-				blockPtr,
-				nativePtr,
-				getSignature());
+		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
 	}
 
 	@Override
