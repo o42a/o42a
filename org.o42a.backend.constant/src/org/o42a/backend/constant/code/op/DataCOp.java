@@ -27,6 +27,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
@@ -34,12 +35,15 @@ import org.o42a.codegen.data.Type;
 public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 		implements DataOp {
 
-	public DataCOp(OpBE<DataOp> backend) {
-		super(backend);
+	public DataCOp(OpBE<DataOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public DataCOp(OpBE<DataOp> backend, Ptr<DataOp> constant) {
-		super(backend, constant);
+	public DataCOp(
+			OpBE<DataOp> backend,
+			AllocClass allocClass,
+			Ptr<DataOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
@@ -60,12 +64,13 @@ public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 								getBackend().underlying(type));
 					}
 				},
+				getAllocClass(),
 				type));
 	}
 
 	@Override
 	public DataOp create(OpBE<DataOp> backend, Ptr<DataOp> constant) {
-		return new DataCOp(backend, constant);
+		return new DataCOp(backend, null, constant);
 	}
 
 }

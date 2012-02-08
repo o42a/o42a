@@ -25,6 +25,7 @@ import org.o42a.backend.constant.code.op.RelCOp;
 import org.o42a.backend.constant.data.RelCDAlloc;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.RelPtr;
 
@@ -33,17 +34,20 @@ public final class RelRecCOp
 		extends RecCOp<RelRecOp, RelOp, RelPtr>
 		implements RelRecOp {
 
-	public RelRecCOp(OpBE<RelRecOp> backend) {
-		super(backend);
+	public RelRecCOp(OpBE<RelRecOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public RelRecCOp(OpBE<RelRecOp> backend, Ptr<RelRecOp> constant) {
-		super(backend, constant);
+	public RelRecCOp(
+			OpBE<RelRecOp> backend,
+			AllocClass allocClass,
+			Ptr<RelRecOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
 	public RelRecOp create(OpBE<RelRecOp> backend, Ptr<RelRecOp> constant) {
-		return new RelRecCOp(backend, constant);
+		return new RelRecCOp(backend, null, constant);
 	}
 
 	@Override

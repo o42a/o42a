@@ -42,15 +42,17 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 			final CodeId id,
 			final Code code,
 			final PtrOp<?> from) {
-		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
-			@Override
-			protected AnyOp write() {
-				return backend().underlying().offset(
-						getId(),
-						code().getUnderlying(),
-						cast(from).backend().underlying());
-			}
-		});
+		return new AnyCOp(
+				new OpBE<AnyOp>(id, cast(code)) {
+					@Override
+					protected AnyOp write() {
+						return backend().underlying().offset(
+								getId(),
+								code().getUnderlying(),
+								cast(from).backend().underlying());
+					}
+				},
+				from.getAllocClass()/* Points to the same allocation unit. */);
 	}
 
 	@Override

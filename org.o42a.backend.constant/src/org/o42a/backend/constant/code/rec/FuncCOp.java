@@ -28,6 +28,7 @@ import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -37,16 +38,20 @@ public final class FuncCOp<F extends Func<F>>
 
 	private final Signature<F> signature;
 
-	public FuncCOp(OpBE<FuncOp<F>> backend, Signature<F> signature) {
-		super(backend);
+	public FuncCOp(
+			OpBE<FuncOp<F>> backend,
+			AllocClass allocClass,
+			Signature<F> signature) {
+		super(backend, allocClass);
 		this.signature = signature;
 	}
 
 	public FuncCOp(
 			OpBE<FuncOp<F>> backend,
+			AllocClass allocClass,
 			Signature<F> signature,
 			Ptr<FuncOp<F>> constant) {
-		super(backend, constant);
+		super(backend, allocClass, constant);
 		this.signature = signature;
 	}
 
@@ -70,17 +75,19 @@ public final class FuncCOp<F extends Func<F>>
 								getBackend().underlying(signature));
 					}
 				},
+				getAllocClass(),
 				signature);
 	}
 
 	@Override
 	public FuncOp<F> create(OpBE<FuncOp<F>> backend, Ptr<FuncOp<F>> constant) {
-		return new FuncCOp<F>(backend, getSignature(), constant);
+		return new FuncCOp<F>(backend, null, getSignature(), constant);
 	}
 
 	@Override
 	protected F loaded(OpBE<F> backend, FuncPtr<F> constant) {
-		return getSignature().op(new CFunc<F>(backend, constant));
+		return getSignature().op(
+				new CFunc<F>(backend, getSignature(), constant));
 	}
 
 	@Override

@@ -20,7 +20,9 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.underlying;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -29,6 +31,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
@@ -49,9 +52,13 @@ public final class CAllocation
 	@Override
 	public final AnyRecCOp allocatePtr(CodeId id) {
 		return new AnyRecCOp(
-				this,
-				getUnderlying().writer().allocatePtr(id),
-				null);
+				new OpBE<AnyRecOp>(id, this) {
+					@Override
+					protected AnyRecOp write() {
+						return getUnderlying().writer().allocatePtr(getId());
+					}
+				},
+				AUTO_ALLOC_CLASS);
 	}
 
 	@Override
@@ -61,16 +68,18 @@ public final class CAllocation
 
 		final ContainerCDAlloc<S> typeAlloc =
 				(ContainerCDAlloc<S>) typeAllocation;
-		final StructRecOp<S> underlyingOp =
-				getUnderlying().writer().allocatePtr(
-						id,
-						typeAlloc.getUnderlyingPtr().getAllocation());
 
 		return new StructRecCOp<S>(
-				this,
-				underlyingOp,
-				typeAlloc.getUnderlyingInstance().getType(),
-				null);
+				new OpBE<StructRecOp<S>>(id, this) {
+					@Override
+					protected StructRecOp<S> write() {
+						return getUnderlying().writer().allocatePtr(
+								getId(),
+								typeAlloc.getUnderlyingPtr().getAllocation());
+					}
+				},
+				AUTO_ALLOC_CLASS,
+				typeAlloc.getType());
 	}
 
 	@Override
@@ -80,12 +89,19 @@ public final class CAllocation
 
 		final ContainerCDAlloc<S> typeAlloc =
 				(ContainerCDAlloc<S>) typeAllocation;
-		final S underlyingOp = getUnderlying().writer().allocateStruct(
-				id,
-				typeAlloc.getUnderlyingPtr().getAllocation());
-		final Type<S> type = typeAlloc.getUnderlyingInstance().getOriginal();
+		final Type<S> type = typeAlloc.getType();
 
-		return type.op(new CStruct<S>(this, underlyingOp, type, null));
+		return type.op(new CStruct<S>(
+				new OpBE<S>(id, this) {
+					@Override
+					protected S write() {
+						return getUnderlying().writer().allocateStruct(
+								getId(),
+								typeAlloc.getUnderlyingPtr().getAllocation());
+					}
+				},
+				AUTO_ALLOC_CLASS,
+				type));
 	}
 
 	@Override

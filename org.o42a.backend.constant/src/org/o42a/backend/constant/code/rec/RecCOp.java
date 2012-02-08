@@ -28,6 +28,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -36,12 +37,12 @@ public abstract class RecCOp<
 		O extends Op,
 		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
 
-	public RecCOp(OpBE<R> backend) {
-		super(backend);
+	public RecCOp(OpBE<R> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public RecCOp(OpBE<R> backend, Ptr<R> constant) {
-		super(backend, constant);
+	public RecCOp(OpBE<R> backend, AllocClass allocClass, Ptr<R> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	public final T getConstantValue() {

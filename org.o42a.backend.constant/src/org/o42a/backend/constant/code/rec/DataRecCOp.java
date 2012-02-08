@@ -26,6 +26,7 @@ import org.o42a.backend.constant.data.DataCDAlloc;
 import org.o42a.backend.constant.data.rec.DataRecCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -33,12 +34,15 @@ public final class DataRecCOp
 		extends RecCOp<DataRecOp, DataOp, Ptr<DataOp>>
 		implements DataRecOp {
 
-	public DataRecCOp(OpBE<DataRecOp> backend) {
-		super(backend);
+	public DataRecCOp(OpBE<DataRecOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public DataRecCOp(OpBE<DataRecOp> backend, Ptr<DataRecOp> constant) {
-		super(backend, constant);
+	public DataRecCOp(
+			OpBE<DataRecOp> backend,
+			AllocClass allocClass,
+			Ptr<DataRecOp> constant) {
+		super(backend, allocClass, constant);
 		assert (constant == null
 				|| (constant.getAllocation() instanceof DataRecCDAlloc)) :
 					"Wrong constant: " + constant;
@@ -46,12 +50,12 @@ public final class DataRecCOp
 
 	@Override
 	public DataRecOp create(OpBE<DataRecOp> backend, Ptr<DataRecOp> constant) {
-		return new DataRecCOp(backend, constant);
+		return new DataRecCOp(backend, null, constant);
 	}
 
 	@Override
 	protected DataOp loaded(OpBE<DataOp> backend, Ptr<DataOp> constant) {
-		return new DataCOp(backend, constant);
+		return new DataCOp(backend, null, constant);
 	}
 
 	@Override

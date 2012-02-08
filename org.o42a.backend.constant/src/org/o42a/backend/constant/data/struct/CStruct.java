@@ -43,12 +43,16 @@ public final class CStruct<S extends StructOp<S>>
 
 	private final Type<S> type;
 
-	public CStruct(OpBE<S> backend, Type<S> type) {
-		this(backend, type, null);
+	public CStruct(OpBE<S> backend, AllocClass allocClass, Type<S> type) {
+		this(backend, allocClass, type, null);
 	}
 
-	public CStruct(OpBE<S> backend, Type<S> type, Ptr<S> constant) {
-		super(backend, constant);
+	public CStruct(
+			OpBE<S> backend,
+			AllocClass allocClass,
+			Type<S> type,
+			Ptr<S> constant) {
+		super(backend, allocClass, constant);
 		this.type = type;
 	}
 
@@ -63,15 +67,17 @@ public final class CStruct<S extends StructOp<S>>
 		final CDAlloc<?, ?> alloc =
 				(CDAlloc<?, ?>) field.getPointer().getAllocation();
 
-		return new AnyRecCOp(new OpBE<AnyRecOp>(id, cast(code)) {
-			@Override
-			protected AnyRecOp write() {
-				return backend().underlying().writer().field(
-						getId(),
-						code().getUnderlying(),
-						alloc.getUnderlying());
-			}
-		});
+		return new AnyRecCOp(
+				new OpBE<AnyRecOp>(id, cast(code)) {
+					@Override
+					protected AnyRecOp write() {
+						return backend().underlying().writer().field(
+								getId(),
+								code().getUnderlying(),
+								alloc.getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
@@ -103,6 +109,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -135,6 +142,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -167,6 +175,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -199,6 +208,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -231,6 +241,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -263,6 +274,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -295,6 +307,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -327,6 +340,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -362,6 +376,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				field.getType(),
 				pointer);
 	}
@@ -395,6 +410,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				pointer);
 	}
 
@@ -432,6 +448,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld);
 					}
 				},
+				getAllocClass(),
 				field.getType(),
 				pointer));
 	}
@@ -468,20 +485,23 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
+				getAllocClass(),
 				field.getSignature(),
 				pointer);
 	}
 
 	@Override
 	public DataCOp toData(CodeId id, Code code) {
-		return new DataCOp(new OpBE<DataOp>(id, cast(code)) {
-			@Override
-			protected DataOp write() {
-				return backend().underlying().toData(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new DataCOp(
+				new OpBE<DataOp>(id, cast(code)) {
+					@Override
+					protected DataOp write() {
+						return backend().underlying().toData(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
@@ -502,13 +522,14 @@ public final class CStruct<S extends StructOp<S>>
 								getBackend().underlying(type));
 					}
 				},
+				getAllocClass(),
 				type,
 				null));
 	}
 
 	@Override
 	public S create(OpBE<S> backend, Ptr<S> constant) {
-		return getType().op(new CStruct<S>(backend, getType(), constant));
+		return getType().op(new CStruct<S>(backend, null, getType(), constant));
 	}
 
 }

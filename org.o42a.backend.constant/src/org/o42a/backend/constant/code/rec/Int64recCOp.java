@@ -24,6 +24,7 @@ import org.o42a.backend.constant.code.op.Int64cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -31,19 +32,22 @@ public final class Int64recCOp
 		extends RecCOp<Int64recOp, Int64op, Long>
 		implements Int64recOp {
 
-	public Int64recCOp(OpBE<Int64recOp> backend) {
-		super(backend);
+	public Int64recCOp(OpBE<Int64recOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public Int64recCOp(OpBE<Int64recOp> backend, Ptr<Int64recOp> constant) {
-		super(backend, constant);
+	public Int64recCOp(
+			OpBE<Int64recOp> backend,
+			AllocClass allocClass,
+			Ptr<Int64recOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
 	public Int64recOp create(
 			OpBE<Int64recOp> backend,
 			Ptr<Int64recOp> constant) {
-		return new Int64recCOp(backend, constant);
+		return new Int64recCOp(backend, null, constant);
 	}
 
 	@Override

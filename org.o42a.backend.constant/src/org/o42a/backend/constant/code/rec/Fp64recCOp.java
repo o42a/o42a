@@ -24,6 +24,7 @@ import org.o42a.backend.constant.code.op.Fp64cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.codegen.code.op.Fp64recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -31,17 +32,20 @@ public final class Fp64recCOp
 		extends RecCOp<Fp64recOp, Fp64op, Double>
 		implements Fp64recOp {
 
-	public Fp64recCOp(OpBE<Fp64recOp> backend) {
-		super(backend);
+	public Fp64recCOp(OpBE<Fp64recOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public Fp64recCOp(OpBE<Fp64recOp> backend, Ptr<Fp64recOp> constant) {
-		super(backend, constant);
+	public Fp64recCOp(
+			OpBE<Fp64recOp> backend,
+			AllocClass allocClass,
+			Ptr<Fp64recOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
 	public Fp64recOp create(OpBE<Fp64recOp> backend, Ptr<Fp64recOp> constant) {
-		return new Fp64recCOp(backend, constant);
+		return new Fp64recCOp(backend, null, constant);
 	}
 
 	@Override

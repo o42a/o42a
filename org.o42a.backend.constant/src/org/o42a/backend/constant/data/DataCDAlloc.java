@@ -38,14 +38,17 @@ public final class DataCDAlloc extends CDAlloc<DataOp, Data<DataOp>> {
 
 	@Override
 	public DataCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-		return new DataCOp(new OpBE<DataOp>(id, cast(writer)) {
-			@Override
-			protected DataOp write() {
-				return getUnderlyingPtr().op(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new DataCOp(
+				new OpBE<DataOp>(id, cast(writer)) {
+					@Override
+					protected DataOp write() {
+						return getUnderlyingPtr().op(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				allocClass,
+				getPointer());
 	}
 
 	@Override

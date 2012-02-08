@@ -24,6 +24,7 @@ import org.o42a.backend.constant.code.op.Fp32cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.Fp32recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -31,17 +32,20 @@ public final class Fp32recCOp
 		extends RecCOp<Fp32recOp, Fp32op, Float>
 		implements Fp32recOp {
 
-	public Fp32recCOp(OpBE<Fp32recOp> backend) {
-		super(backend);
+	public Fp32recCOp(OpBE<Fp32recOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public Fp32recCOp(OpBE<Fp32recOp> backend, Ptr<Fp32recOp> constant) {
-		super(backend, constant);
+	public Fp32recCOp(
+			OpBE<Fp32recOp> backend,
+			AllocClass allocClass,
+			Ptr<Fp32recOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
 	public Fp32recOp create(OpBE<Fp32recOp> backend, Ptr<Fp32recOp> constant) {
-		return new Fp32recCOp(backend, constant);
+		return new Fp32recCOp(backend, null, constant);
 	}
 
 	@Override

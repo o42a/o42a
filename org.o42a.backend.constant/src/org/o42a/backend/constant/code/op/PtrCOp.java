@@ -20,6 +20,9 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
@@ -36,17 +39,37 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		extends AbstractCOp<P, PT>
 		implements PtrOp<P> {
 
-	public PtrCOp(OpBE<P> backend) {
+	private final AllocClass allocClass;
+
+	public PtrCOp(OpBE<P> backend, AllocClass allocClass) {
 		super(backend);
+		if (allocClass != null) {
+			this.allocClass = allocClass;
+		} else {
+			this.allocClass = DEFAULT_ALLOC_CLASS;
+		}
 	}
 
-	public PtrCOp(OpBE<P> backend, PT constant) {
+	public PtrCOp(OpBE<P> backend, AllocClass allocClass, PT constant) {
 		super(backend, constant);
+		if (constant != null) {
+			if (constant.isPtrToConstant()) {
+				this.allocClass = CONSTANT_ALLOC_CLASS;
+			} else {
+				this.allocClass = STATIC_ALLOC_CLASS;
+			}
+		} else {
+			if (allocClass != null) {
+				this.allocClass = allocClass;
+			} else {
+				this.allocClass = DEFAULT_ALLOC_CLASS;
+			}
+		}
 	}
 
 	@Override
 	public final AllocClass getAllocClass() {
-		return getUnderlying().getAllocClass();
+		return this.allocClass;
 	}
 
 	@Override
@@ -136,14 +159,16 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 	@Override
 	public AnyCOp toAny(CodeId id, Code code) {
-		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
-			@Override
-			protected AnyOp write() {
-				return backend().underlying().toAny(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new AnyCOp(
+				new OpBE<AnyOp>(id, cast(code)) {
+					@Override
+					protected AnyOp write() {
+						return backend().underlying().toAny(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 }

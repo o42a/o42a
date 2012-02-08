@@ -25,6 +25,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -32,22 +33,25 @@ public final class AnyRecCOp
 		extends RecCOp<AnyRecOp, AnyOp, Ptr<AnyOp>>
 		implements AnyRecOp {
 
-	public AnyRecCOp(OpBE<AnyRecOp> backend) {
-		super(backend);
+	public AnyRecCOp(OpBE<AnyRecOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
-	public AnyRecCOp(OpBE<AnyRecOp> backend, Ptr<AnyRecOp> constant) {
-		super(backend, constant);
+	public AnyRecCOp(
+			OpBE<AnyRecOp> backend,
+			AllocClass allocClass,
+			Ptr<AnyRecOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
 	public AnyRecOp create(OpBE<AnyRecOp> backend, Ptr<AnyRecOp> constant) {
-		return new AnyRecCOp(backend, constant);
+		return new AnyRecCOp(backend, null, constant);
 	}
 
 	@Override
 	protected AnyCOp loaded(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
-		return new AnyCOp(backend, constant);
+		return new AnyCOp(backend, null, constant);
 	}
 
 	@Override

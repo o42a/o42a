@@ -38,14 +38,17 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
 
 	@Override
 	public AnyCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-		return new AnyCOp(new OpBE<AnyOp>(id, cast(writer)) {
-			@Override
-			protected AnyOp write() {
-				return getUnderlyingPtr().op(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new AnyCOp(
+				new OpBE<AnyOp>(id, cast(writer)) {
+					@Override
+					protected AnyOp write() {
+						return getUnderlyingPtr().op(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				allocClass,
+				getPointer());
 	}
 
 	@Override
