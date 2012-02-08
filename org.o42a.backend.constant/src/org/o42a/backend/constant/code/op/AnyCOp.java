@@ -28,138 +28,148 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
 public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
-	public AnyCOp(OpBE<AnyOp> backend) {
-		super(backend, null);
+	public AnyCOp(
+			OpBE<AnyOp> backend,
+			AllocClass allocClass,
+			Ptr<AnyOp> constant) {
+		super(backend, allocClass, constant);
 	}
 
-	public AnyCOp(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
-		super(backend, constant);
+	public AnyCOp(OpBE<AnyOp> backend, AllocClass allocClass) {
+		super(backend, allocClass);
 	}
 
 	@Override
 	public final AnyRecCOp toPtr(CodeId id, Code code) {
-		return new AnyRecCOp(new OpBE<AnyRecOp>(id, cast(code)) {
-			@Override
-			protected AnyRecOp write() {
-				return backend().underlying().toPtr(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new AnyRecCOp(
+				new OpBE<AnyRecOp>(id, cast(code)) {
+					@Override
+					protected AnyRecOp write() {
+						return backend().underlying().toPtr(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Int8recCOp toInt8(CodeId id, Code code) {
-		return new Int8recCOp(new OpBE<Int8recOp>(id, cast(code)) {
-			@Override
-			protected Int8recOp write() {
-				return backend().underlying().toInt8(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Int8recCOp(
+				new OpBE<Int8recOp>(id, cast(code)) {
+					@Override
+					protected Int8recOp write() {
+						return backend().underlying().toInt8(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Int16recCOp toInt16(CodeId id, Code code) {
-		return new Int16recCOp(new OpBE<Int16recOp>(id, cast(code)) {
-			@Override
-			protected Int16recOp write() {
-				return backend().underlying().toInt16(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Int16recCOp(
+				new OpBE<Int16recOp>(id, cast(code)) {
+					@Override
+					protected Int16recOp write() {
+						return backend().underlying().toInt16(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Int32recCOp toInt32(CodeId id, Code code) {
-		return new Int32recCOp(new OpBE<Int32recOp>(id, cast(code)) {
-			@Override
-			protected Int32recOp write() {
-				return backend().underlying().toInt32(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Int32recCOp(
+				new OpBE<Int32recOp>(id, cast(code)) {
+					@Override
+					protected Int32recOp write() {
+						return backend().underlying().toInt32(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Int64recCOp toInt64(CodeId id, Code code) {
-		return new Int64recCOp(new OpBE<Int64recOp>(id, cast(code)) {
-			@Override
-			protected Int64recOp write() {
-				return backend().underlying().toInt64(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Int64recCOp(
+				new OpBE<Int64recOp>(id, cast(code)) {
+					@Override
+					protected Int64recOp write() {
+						return backend().underlying().toInt64(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Fp32recCOp toFp32(CodeId id, Code code) {
-		return new Fp32recCOp(new OpBE<Fp32recOp>(id, cast(code)) {
-			@Override
-			protected Fp32recOp write() {
-				return backend().underlying().toFp32(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Fp32recCOp(
+				new OpBE<Fp32recOp>(id, cast(code)) {
+					@Override
+					protected Fp32recOp write() {
+						return backend().underlying().toFp32(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final Fp64recOp toFp64(CodeId id, Code code) {
-		return new Fp64recCOp(new OpBE<Fp64recOp>(id, cast(code)) {
-			@Override
-			protected Fp64recOp write() {
-				return backend().underlying().toFp64(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new Fp64recCOp(
+				new OpBE<Fp64recOp>(id, cast(code)) {
+					@Override
+					protected Fp64recOp write() {
+						return backend().underlying().toFp64(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public final RelRecCOp toRel(CodeId id, Code code) {
-		return new RelRecCOp(new OpBE<RelRecOp>(id, cast(code)) {
-			@Override
-			protected RelRecOp write() {
-				return backend().underlying().toRel(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new RelRecCOp(
+				new OpBE<RelRecOp>(id, cast(code)) {
+					@Override
+					protected RelRecOp write() {
+						return backend().underlying().toRel(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
 	public DataCOp toData(CodeId id, Code code) {
-		return new DataCOp(new OpBE<DataOp>(id, cast(code)) {
-			@Override
-			protected DataOp write() {
-				return backend().underlying().toData(
-						getId(),
-						code().getUnderlying());
-			}
-		});
-	}
-
-	@Override
-	public AnyCOp toAny(CodeId id, Code code) {
-		return new AnyCOp(new OpBE<AnyOp>(id, cast(code)) {
-			@Override
-			protected AnyOp write() {
-				return backend().underlying().toAny(
-						getId(),
-						code().getUnderlying());
-			}
-		});
+		return new DataCOp(
+				new OpBE<DataOp>(id, cast(code)) {
+					@Override
+					protected DataOp write() {
+						return backend().underlying().toData(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				getAllocClass());
 	}
 
 	@Override
@@ -177,6 +187,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								getBackend().underlying(signature));
 					}
 				},
+				getAllocClass(),
 				signature);
 	}
 
@@ -195,12 +206,13 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								getBackend().underlying(type));
 					}
 				},
+				getAllocClass(),
 				type));
 	}
 
 	@Override
-	public AnyCOp create(OpBE<AnyOp> underlying, Ptr<AnyOp> constant) {
-		return new AnyCOp(underlying, constant);
+	public AnyCOp create(OpBE<AnyOp> backend, Ptr<AnyOp> constant) {
+		return new AnyCOp(backend, getAllocClass(), constant);
 	}
 
 }

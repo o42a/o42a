@@ -58,8 +58,12 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		this.underlyingStruct = null;
 	}
 
+	public final Type<S> getType() {
+		return getTypeAllocation().getData().getInstance();
+	}
+
 	@Override
-	public ContainerCDAlloc<S> getTypeAllocation() {
+	public final ContainerCDAlloc<S> getTypeAllocation() {
 		return (ContainerCDAlloc<S>) super.getTypeAllocation();
 	}
 
@@ -138,6 +142,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 								code().getUnderlying());
 					}
 				},
+				allocClass,
 				type,
 				getPointer()));
 	}

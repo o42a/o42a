@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.ConstBackend;
@@ -107,6 +108,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								getUnderlying());
 					}
 				},
+				alloc.getSignature(),
 				alloc.getPointer());
 	}
 
@@ -194,6 +196,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return getUnderlying().nullPtr();
 					}
 				},
+				CONSTANT_ALLOC_CLASS,
 				getBackend().getGenerator().getGlobals().nullPtr());
 	}
 
@@ -206,6 +209,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return getUnderlying().nullDataPtr();
 					}
 				},
+				CONSTANT_ALLOC_CLASS,
 				getBackend().getGenerator().getGlobals().nullDataPtr());
 	}
 
@@ -213,8 +217,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final <S extends StructOp<S>> S nullPtr(DataAllocation<S> type) {
 
 		final ContainerCDAlloc<S> typeAlloc = (ContainerCDAlloc<S>) type;
-		final Type<S> originalType =
-				typeAlloc.getData().getInstance().getType();
+		final Type<S> originalType = typeAlloc.getType();
 
 		return originalType.op(new CStruct<S>(
 				new OpBE<S>(null, this) {
@@ -227,6 +230,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return getUnderlying().nullPtr(underlyingType);
 					}
 				},
+				CONSTANT_ALLOC_CLASS,
 				originalType,
 				getBackend().getGenerator().getGlobals().nullPtr(
 						originalType)));
@@ -243,8 +247,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 								getBackend().underlying(signature));
 					}
 				},
-				getBackend().getGenerator().getFunctions().nullPtr(
-						signature));
+				signature,
+				getBackend()
+				.getGenerator()
+				.getFunctions()
+				.nullPtr(signature));
 	}
 
 	@Override

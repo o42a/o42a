@@ -157,20 +157,6 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	private <O extends Op> O create(CodeId id, CCode<?> code, O value) {
-		if (value instanceof StructOp) {
-
-			final StructOp<?> struct = (StructOp<?>) value;
-			final CStruct<?> str = cast(struct);
-
-			if (str.getCode() == code) {
-				return (O) struct;
-			}
-
-			return (O) struct.getType().op(new CStruct(
-					new AliasBE(id, code, str.backend()),
-					struct.getType(),
-					str.getConstant()));
-		}
 
 		final COp val = cast(value);
 

@@ -20,10 +20,9 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
+import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
-import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -36,155 +35,213 @@ public final class CFunc<F extends Func<F>>
 		extends PtrCOp<F, FuncPtr<F>>
 		implements FuncCaller<F> {
 
-	public CFunc(OpBE<F> backend, FuncPtr<F> constant) {
-		super(backend, constant);
+	private final Signature<F> signature;
+
+	public CFunc(OpBE<F> backend, Signature<F> signature) {
+		super(backend, FUNC_ALLOC_CLASS);
+		this.signature = signature;
+	}
+
+	public CFunc(OpBE<F> backend, Signature<F> signature, FuncPtr<F> constant) {
+		super(backend, FUNC_ALLOC_CLASS, constant);
+		this.signature = signature;
 	}
 
 	@Override
 	public final Signature<F> getSignature() {
-		return getUnderlyingSignature().getOriginal();
-	}
-
-	public final CSignature<F> getUnderlyingSignature() {
-		return (CSignature<F>) backend().underlying().getSignature();
+		return this.signature;
 	}
 
 	@Override
 	public F create(OpBE<F> backend, FuncPtr<F> constant) {
-		return getSignature().op(new CFunc<F>(backend, constant));
+		return getSignature().op(new CFunc<F>(
+				backend,
+				getSignature(),
+				constant));
 	}
 
 	@Override
-	public final void call(Code code, Op... args) {
-		getUnderlying().caller().call(underlying(code), underlyingArgs(args));
+	public final void call(final Code code, final Op... args) {
+		new InstrBE(cast(code)) {
+			@Override
+			public void reveal() {
+				backend().underlying().caller().call(
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		};
 	}
 
 	@Override
-	public final Int8cOp callInt8(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Int8op underlyingResult = getUnderlying().caller().callInt8(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Int8cOp(ccode, underlyingResult, null);
+	public final Int8cOp callInt8(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Int8cOp(new OpBE<Int8op>(id, cast(code)) {
+			@Override
+			protected Int8op write() {
+				return backend().underlying().caller().callInt8(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final Int16cOp callInt16(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Int16op underlyingResult = getUnderlying().caller().callInt16(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Int16cOp(ccode, underlyingResult, null);
+	public final Int16cOp callInt16(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Int16cOp(new OpBE<Int16op>(id, cast(code)) {
+			@Override
+			protected Int16op write() {
+				return backend().underlying().caller().callInt16(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final Int32cOp callInt32(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Int32op underlyingResult = getUnderlying().caller().callInt32(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Int32cOp(ccode, underlyingResult, null);
+	public final Int32cOp callInt32(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
+			@Override
+			protected Int32op write() {
+				return backend().underlying().caller().callInt32(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final Int64cOp callInt64(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Int64op underlyingResult = getUnderlying().caller().callInt64(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Int64cOp(ccode, underlyingResult, null);
+	public final Int64cOp callInt64(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Int64cOp(new OpBE<Int64op>(id, cast(code)) {
+			@Override
+			protected Int64op write() {
+				return backend().underlying().caller().callInt64(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final Fp32cOp callFp32(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Fp32op underlyingResult = getUnderlying().caller().callFp32(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Fp32cOp(ccode, underlyingResult, null);
+	public final Fp32cOp callFp32(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Fp32cOp(new OpBE<Fp32op>(id, cast(code)) {
+			@Override
+			protected Fp32op write() {
+				return backend().underlying().caller().callFp32(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final Fp64cOp callFp64(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final Fp64op underlyingResult = getUnderlying().caller().callFp64(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new Fp64cOp(ccode, underlyingResult, null);
+	public final Fp64cOp callFp64(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new Fp64cOp(new OpBE<Fp64op>(id, cast(code)) {
+			@Override
+			protected Fp64op write() {
+				return backend().underlying().caller().callFp64(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final BoolCOp callBool(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final BoolOp underlyingResult = getUnderlying().caller().callBool(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new BoolCOp(ccode, underlyingResult, null);
+	public final BoolCOp callBool(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new BoolCOp(new OpBE<BoolOp>(id, cast(code)) {
+			@Override
+			protected BoolOp write() {
+				return backend().underlying().caller().callBool(
+						getId(),
+						code().getUnderlying(),
+						underlyingArgs(args));
+			}
+		});
 	}
 
 	@Override
-	public final AnyCOp callAny(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final AnyOp underlyingResult = getUnderlying().caller().callAny(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new AnyCOp(ccode, underlyingResult, null);
+	public final AnyCOp callAny(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new AnyCOp(
+				new OpBE<AnyOp>(id, cast(code)) {
+					@Override
+					protected AnyOp write() {
+						return backend().underlying().caller().callAny(
+								getId(),
+								code().getUnderlying(),
+								underlyingArgs(args));
+					}
+				},
+				null);
 	}
 
 	@Override
-	public final DataCOp callData(CodeId id, Code code, Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final DataOp underlyingResult = getUnderlying().caller().callData(
-				id,
-				ccode.getUnderlying(),
-				underlyingArgs(args));
-
-		return new DataCOp(ccode, underlyingResult, null);
+	public final DataCOp callData(
+			final CodeId id,
+			final Code code,
+			final Op... args) {
+		return new DataCOp(
+				new OpBE<DataOp>(id, cast(code)) {
+					@Override
+					protected DataOp write() {
+						return backend().underlying().caller().callData(
+								getId(),
+								code().getUnderlying(),
+								underlyingArgs(args));
+					}
+				},
+				null);
 	}
 
 	@Override
 	public <S extends StructOp<S>> S callPtr(
-			CodeId id,
-			Code code,
-			Type<S> type,
-			Op... args) {
-
-		final CCode<?> ccode = cast(code);
-		final S underlyingResult = getUnderlying().caller().callPtr(
-				id,
-				ccode.getUnderlying(),
-				getBackend().underlying(type),
-				underlyingArgs(args));
-
-		return type.op(new CStruct<S>(ccode, underlyingResult, type, null));
+			final CodeId id,
+			final Code code,
+			final Type<S> type,
+			final Op... args) {
+		return type.op(new CStruct<S>(
+				new OpBE<S>(id, cast(code)) {
+					@Override
+					protected S write() {
+						return backend().underlying().caller().callPtr(
+								getId(),
+								code().getUnderlying(),
+								getBackend().underlying(type),
+								underlyingArgs(args));
+					}
+				},
+				null,
+				type));
 	}
 
-	private Op[] underlyingArgs(Op[] args) {
+	private Op[] underlyingArgs(final Op[] args) {
 		if (args.length == 0) {
 			return args;
 		}
@@ -192,7 +249,7 @@ public final class CFunc<F extends Func<F>>
 		final Op[] underlying = new Op[args.length];
 
 		for (int i = 0; i < args.length; ++i) {
-			underlying[i] = underlying(args[i]);
+			underlying[i] = cast(args[i]).backend().underlying();
 		}
 
 		return underlying;
