@@ -21,7 +21,7 @@ package org.o42a.backend.constant.data.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
@@ -87,12 +87,16 @@ public abstract class RecCDAlloc<
 
 	@Override
 	public final P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
-
-		final CCode<?> ccode = cast(writer);
-		final P underlyingOp =
-				getUnderlyingPtr().op(id, ccode.getUnderlying());
-
-		return op(ccode, underlyingOp);
+		return op(
+				new OpBE<P>(id, cast(writer)) {
+					@Override
+					protected P write() {
+						return getUnderlyingPtr().op(
+								getId(),
+								code().getUnderlying());
+					}
+				},
+				allocClass);
 	}
 
 	@Override
@@ -104,6 +108,6 @@ public abstract class RecCDAlloc<
 
 	protected abstract R allocateUnderlying(SubData<?> container, String name);
 
-	protected abstract P op(CCode<?> code, P underlying);
+	protected abstract P op(OpBE<P> backend, AllocClass allocClass);
 
 }

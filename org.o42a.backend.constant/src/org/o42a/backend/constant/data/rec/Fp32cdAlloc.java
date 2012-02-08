@@ -19,10 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Fp32recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Fp32recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Fp32rec;
 import org.o42a.codegen.data.SubData;
 
@@ -38,13 +39,13 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 	}
 
 	@Override
-	protected Fp32recCOp op(CCode<?> code, Fp32recOp underlying) {
-		return new Fp32recCOp(code, underlying, getPointer());
+	protected Fp32rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addFp32(name, this);
 	}
 
 	@Override
-	protected Fp32rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addFp32(name, this);
+	protected Fp32recOp op(OpBE<Fp32recOp> backend, AllocClass allocClass) {
+		return new Fp32recCOp(backend, allocClass, getPointer());
 	}
 
 }

@@ -19,14 +19,12 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
-import org.o42a.codegen.data.AnyRec;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 
 
 public final class AnyRecCDAlloc
@@ -46,8 +44,8 @@ public final class AnyRecCDAlloc
 	}
 
 	@Override
-	protected AnyRecOp op(CCode<?> code, AnyRecOp underlyingOp) {
-		return new AnyRecCOp(code, underlyingOp, getPointer());
+	protected AnyRecOp op(OpBE<AnyRecOp> backend, AllocClass allocClass) {
+		return new AnyRecCOp(backend, allocClass, getPointer());
 	}
 
 }

@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
 
@@ -46,18 +47,22 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 		nest();
 	}
 
-	@Override
-	protected FuncCOp<F> op(CCode<?> code, FuncOp<F> underlying) {
-		return new FuncCOp<F>(code, underlying, getPointer());
+	public final Signature<F> getSignature() {
+		return this.signature;
 	}
 
 	@Override
 	protected FuncRec<F> allocateUnderlying(SubData<?> container, String name) {
 
 		final CSignature<F> underlyingSignature =
-				getBackend().underlying(this.signature);
+				getBackend().underlying(getSignature());
 
 		return container.addFuncPtr(name, underlyingSignature, this);
+	}
+
+	@Override
+	protected FuncOp<F> op(OpBE<FuncOp<F>> backend, AllocClass allocClass) {
+		return new FuncCOp<F>(backend, allocClass, getSignature());
 	}
 
 }

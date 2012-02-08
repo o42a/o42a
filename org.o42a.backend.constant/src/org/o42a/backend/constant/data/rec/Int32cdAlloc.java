@@ -19,10 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int32recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Int32recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
 
@@ -39,13 +40,13 @@ public final class Int32cdAlloc
 	}
 
 	@Override
-	protected Int32recCOp op(CCode<?> code, Int32recOp underlying) {
-		return new Int32recCOp(code, underlying, getPointer());
+	protected Int32rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addInt32(name, this);
 	}
 
 	@Override
-	protected Int32rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt32(name, this);
+	protected Int32recOp op(OpBE<Int32recOp> backend, AllocClass allocClass) {
+		return new Int32recCOp(backend, allocClass, getPointer());
 	}
 
 }
