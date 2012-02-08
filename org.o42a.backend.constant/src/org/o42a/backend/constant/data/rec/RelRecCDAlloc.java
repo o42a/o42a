@@ -19,13 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.RelRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.RelRecOp;
-import org.o42a.codegen.data.RelPtr;
-import org.o42a.codegen.data.RelRec;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 
 
 public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
@@ -39,13 +37,13 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 	}
 
 	@Override
-	protected RelRecCOp op(CCode<?> code, RelRecOp underlying) {
-		return new RelRecCOp(code, underlying, getPointer());
+	protected RelRec allocateUnderlying(SubData<?> container, String name) {
+		return container.addRelPtr(name, this);
 	}
 
 	@Override
-	protected RelRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addRelPtr(name, this);
+	protected RelRecOp op(OpBE<RelRecOp> backend, AllocClass allocClass) {
+		return new RelRecCOp(backend, allocClass, getPointer());
 	}
 
 }

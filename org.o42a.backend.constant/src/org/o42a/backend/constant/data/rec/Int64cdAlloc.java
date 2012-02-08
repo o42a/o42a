@@ -19,14 +19,12 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int64recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
-import org.o42a.codegen.data.Int64rec;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.*;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
@@ -62,12 +60,13 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
-	protected Int64recCOp op(CCode<?> code, Int64recOp underlying) {
-		return new Int64recCOp(code, underlying, getPointer());
-	}
-
-	@Override
 	protected Int64rec allocateUnderlying(SubData<?> container, String name) {
 		return container.addInt64(name, this);
 	}
+
+	@Override
+	protected Int64recOp op(OpBE<Int64recOp> backend, AllocClass allocClass) {
+		return new Int64recCOp(backend, allocClass, getPointer());
+	}
+
 }

@@ -19,10 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int8recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Int8recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.SubData;
 
@@ -38,13 +39,13 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 	}
 
 	@Override
-	protected Int8recCOp op(CCode<?> code, Int8recOp underlying) {
-		return new Int8recCOp(code, underlying, getPointer());
+	protected Int8rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addInt8(name, this);
 	}
 
 	@Override
-	protected Int8rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt8(name, this);
+	protected Int8recOp op(OpBE<Int8recOp> backend, AllocClass allocClass) {
+		return new Int8recCOp(backend, allocClass, getPointer());
 	}
 
 }

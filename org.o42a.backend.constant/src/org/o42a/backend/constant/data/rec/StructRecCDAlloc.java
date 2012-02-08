@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CType;
@@ -63,8 +63,14 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	protected StructRecCOp<S> op(CCode<?> code, StructRecOp<S> underlying) {
-		return new StructRecCOp<S>(code, underlying, getType(), getPointer());
+	protected StructRecOp<S> op(
+			OpBE<StructRecOp<S>> backend,
+			AllocClass allocClass) {
+		return new StructRecCOp<S>(
+				backend,
+				allocClass,
+				getType(),
+				getPointer());
 	}
 
 }

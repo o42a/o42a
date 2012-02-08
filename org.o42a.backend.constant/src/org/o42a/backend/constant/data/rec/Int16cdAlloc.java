@@ -19,10 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int16recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Int16recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int16rec;
 import org.o42a.codegen.data.SubData;
 
@@ -39,13 +40,12 @@ public final class Int16cdAlloc
 	}
 
 	@Override
-	protected Int16recCOp op(CCode<?> code, Int16recOp underlying) {
-		return new Int16recCOp(code, underlying, getPointer());
-	}
-
-	@Override
 	protected Int16rec allocateUnderlying(SubData<?> container, String name) {
 		return container.addInt16(name, this);
 	}
 
+	@Override
+	protected Int16recOp op(OpBE<Int16recOp> backend, AllocClass allocClass) {
+		return new Int16recCOp(backend, allocClass, getPointer());
+	}
 }

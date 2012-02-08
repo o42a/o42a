@@ -19,10 +19,11 @@
 */
 package org.o42a.backend.constant.data.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Fp64recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.Fp64recOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Fp64rec;
 import org.o42a.codegen.data.SubData;
 
@@ -38,13 +39,13 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 	}
 
 	@Override
-	protected Fp64recCOp op(CCode<?> code, Fp64recOp underlying) {
-		return new Fp64recCOp(code, underlying, getPointer());
+	protected Fp64rec allocateUnderlying(SubData<?> container, String name) {
+		return container.addFp64(name, this);
 	}
 
 	@Override
-	protected Fp64rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addFp64(name, this);
+	protected Fp64recOp op(OpBE<Fp64recOp> backend, AllocClass allocClass) {
+		return new Fp64recCOp(backend, allocClass, getPointer());
 	}
 
 }
