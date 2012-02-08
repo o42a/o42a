@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.op.Fp32llOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32op;
@@ -42,14 +40,11 @@ public final class Fp32recLLOp
 
 	@Override
 	public Fp32recLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new Fp32recLLOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
+		return new Fp32recLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected Fp32op createLoaded(
-			CodeId id,
-			long blockPtr,
-			long nativePtr) {
+	protected Fp32op createLoaded(CodeId id, long blockPtr, long nativePtr) {
 		return new Fp32llOp(id, blockPtr, nativePtr);
 	}
 

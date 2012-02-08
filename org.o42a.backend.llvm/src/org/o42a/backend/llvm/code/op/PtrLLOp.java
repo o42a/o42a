@@ -22,6 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 import static org.o42a.backend.llvm.code.LLCode.typePtr;
+import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
@@ -48,7 +49,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long blockPtr,
 			long nativePtr) {
 		this.id = id;
-		this.allocClass = allocClass;
+		this.allocClass = allocClass != null ? allocClass : DEFAULT_ALLOC_CLASS;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}

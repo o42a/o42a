@@ -218,11 +218,7 @@ public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
 
 	@Override
 	public AnyLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new AnyLLOp(
-				id,
-				getAllocClass(),
-				blockPtr,
-				nativePtr);
+		return new AnyLLOp(id, null, blockPtr, nativePtr);
 	}
 
 }

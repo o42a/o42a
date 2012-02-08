@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.code.rec;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
 import org.o42a.backend.llvm.code.op.Int16llOp;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int16op;
@@ -42,14 +40,11 @@ public final class Int16recLLOp
 
 	@Override
 	public Int16recLLOp create(CodeId id, long blockPtr, long nativePtr) {
-		return new Int16recLLOp(id, AUTO_ALLOC_CLASS, blockPtr, nativePtr);
+		return new Int16recLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected Int16op createLoaded(
-			CodeId id,
-			long blockPtr,
-			long nativePtr) {
+	protected Int16op createLoaded(CodeId id, long blockPtr, long nativePtr) {
 		return new Int16llOp(id, blockPtr, nativePtr);
 	}
 

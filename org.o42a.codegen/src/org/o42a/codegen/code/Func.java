@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
@@ -41,7 +43,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 
 	@Override
 	public final AllocClass getAllocClass() {
-		return AllocClass.CONSTANT_ALLOC_CLASS;
+		return FUNC_ALLOC_CLASS;
 	}
 
 	public final Signature<F> getSignature() {

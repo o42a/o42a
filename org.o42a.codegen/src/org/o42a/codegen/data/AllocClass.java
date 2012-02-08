@@ -26,6 +26,9 @@ public enum AllocClass {
 	STATIC_ALLOC_CLASS,
 	CONSTANT_ALLOC_CLASS;
 
+	public static final AllocClass DEFAULT_ALLOC_CLASS = AUTO_ALLOC_CLASS;
+	public static final AllocClass FUNC_ALLOC_CLASS = CONSTANT_ALLOC_CLASS;
+
 	public final boolean isStatic() {
 		return this != AUTO_ALLOC_CLASS;
 	}

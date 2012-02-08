@@ -21,8 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
@@ -46,7 +45,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 			Signature<F> signature,
 			long blockPtr,
 			long nativePtr) {
-		super(id, CONSTANT_ALLOC_CLASS, 0L, nativePtr);
+		super(id, FUNC_ALLOC_CLASS, 0L, nativePtr);
 		this.signature = signature;
 	}
 
@@ -127,11 +126,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final LLCode llvm = llvm(code);
 
-		return new AnyLLOp(
-				id,
-				getAllocClass(),
-				llvm.nextPtr(),
-				call(id, llvm, args));
+		return new AnyLLOp(id, null, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
@@ -139,11 +134,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		final LLCode llvm = llvm(code);
 
-		return new DataLLOp(
-				id,
-				getAllocClass(),
-				llvm.nextPtr(),
-				call(id, llvm, args));
+		return new DataLLOp(id, null, llvm.nextPtr(), call(id, llvm, args));
 	}
 
 	@Override
@@ -157,7 +148,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 		return type.op(new LLStruct<S>(
 				id,
-				AUTO_ALLOC_CLASS,
+				null,
 				type,
 				llvm.nextPtr(),
 				call(id, llvm, args)));

@@ -20,8 +20,6 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.FuncLLOp;
 import org.o42a.backend.llvm.code.op.PtrLLOp;
@@ -193,7 +191,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new StructRecLLOp<SS>(
 				id,
-				AUTO_ALLOC_CLASS,
+				null,
 				field.getType(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
@@ -237,7 +235,7 @@ public class LLStruct<S extends StructOp<S>>
 
 		return new FuncLLOp<F>(
 				id,
-				CONSTANT_ALLOC_CLASS,
+				getAllocClass(),
 				llvm.nextPtr(),
 				field(id, llvm, field),
 				field.getSignature());
@@ -247,7 +245,7 @@ public class LLStruct<S extends StructOp<S>>
 	public S create(CodeId id, long blockPtr, long nativePtr) {
 		return getType().op(new LLStruct<S>(
 				id,
-				AUTO_ALLOC_CLASS,
+				null,
 				this.type,
 				blockPtr,
 				nativePtr));
