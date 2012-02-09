@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -70,12 +70,12 @@ public class StructRecCOp<S extends StructOp<S>>
 	}
 
 	@Override
-	protected S underlyingConstant(CCode<?> code, Ptr<S> constant) {
+	protected S underlyingConstant(CCodePart<?> part, Ptr<S> constant) {
 
 		final ContainerCDAlloc<S> alloc =
 				(ContainerCDAlloc<S>) constant.getAllocation();
 
-		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
+		return alloc.getUnderlyingPtr().op(null, part.underlying());
 	}
 
 }

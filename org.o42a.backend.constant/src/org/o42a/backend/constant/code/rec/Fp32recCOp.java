@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.Fp32cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp32op;
@@ -54,8 +54,8 @@ public final class Fp32recCOp
 	}
 
 	@Override
-	protected Fp32op underlyingConstant(CCode<?> code, Float constant) {
-		return code.fp32(constant);
+	protected Fp32op underlyingConstant(CCodePart<?> part, Float constant) {
+		return part.underlying().fp32(constant);
 	}
 
 }

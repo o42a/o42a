@@ -91,7 +91,7 @@ public final class RelCDAlloc implements RelAllocation {
 					protected RelOp write() {
 						return getUnderlying().op(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getPointer());

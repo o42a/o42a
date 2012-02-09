@@ -64,7 +64,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().shl(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								nb.backend().underlying());
 					}
 				},
@@ -89,7 +89,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().shl(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								numBits);
 					}
 				},
@@ -116,7 +116,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().lshr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								nb.backend().underlying());
 					}
 				},
@@ -141,7 +141,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().lshr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								numBits);
 					}
 				},
@@ -168,7 +168,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().ashr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								nb.backend().underlying());
 					}
 				},
@@ -193,7 +193,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().ashr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								numBits);
 					}
 				},
@@ -220,7 +220,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().and(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								op.backend().underlying());
 					}
 				},
@@ -247,7 +247,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().or(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								op.backend().underlying());
 					}
 				},
@@ -274,7 +274,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().xor(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								op.backend().underlying());
 					}
 				},
@@ -299,7 +299,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 					protected U write() {
 						return backend().underlying().comp(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				null);
@@ -322,7 +322,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().lowestBit(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}

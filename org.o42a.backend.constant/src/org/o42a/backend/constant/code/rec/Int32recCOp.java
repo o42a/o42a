@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.Int32cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int32op;
@@ -56,8 +56,8 @@ public final class Int32recCOp
 	}
 
 	@Override
-	protected Int32op underlyingConstant(CCode<?> code, Integer constant) {
-		return code.getUnderlying().int32(constant);
+	protected Int32op underlyingConstant(CCodePart<?> part, Integer constant) {
+		return part.underlying().int32(constant);
 	}
 
 }

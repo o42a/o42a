@@ -23,6 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -63,7 +64,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().neg(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -87,7 +88,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().add(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						s.backend().underlying());
 			}
 		});
@@ -112,7 +113,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().sub(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						s.backend().underlying());
 			}
 		});
@@ -137,7 +138,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().mul(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						m.backend().underlying());
 			}
 		});
@@ -162,7 +163,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().div(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						d.backend().underlying());
 			}
 		});
@@ -187,7 +188,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected U write() {
 				return backend().underlying().rem(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						d.backend().underlying());
 			}
 		});
@@ -212,7 +213,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().eq(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -237,7 +238,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().ne(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -262,7 +263,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().gt(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -287,7 +288,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().ge(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -312,7 +313,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().lt(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -337,7 +338,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected BoolOp write() {
 				return backend().underlying().le(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -357,7 +358,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Int8op write() {
 				return backend().underlying().toInt8(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -376,7 +377,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Int16op write() {
 				return backend().underlying().toInt16(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -395,7 +396,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Int32op write() {
 				return backend().underlying().toInt32(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -414,7 +415,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Int64op write() {
 				return backend().underlying().toInt64(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -433,7 +434,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Fp32op write() {
 				return backend().underlying().toFp32(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -452,7 +453,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 			protected Fp64op write() {
 				return backend().underlying().toFp64(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -466,12 +467,12 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		new TermBE(ccode) {
 			@Override
 			protected void emit() {
-				backend().underlying().returnValue(block().getUnderlying());
+				backend().underlying().returnValue(part().underlying());
 			}
 		};
 	}
 
-	protected abstract U underlyingConstant(CCode<?> code, T constant);
+	protected abstract U underlyingConstant(CCodePart<?> part, T constant);
 
 	protected abstract T neg(T value);
 
@@ -509,7 +510,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		@Override
 		protected U write() {
-			return this.op.underlyingConstant(code(), this.constant);
+			return this.op.underlyingConstant(part(), this.constant);
 		}
 
 		@SuppressWarnings("unchecked")

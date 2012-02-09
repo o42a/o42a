@@ -23,6 +23,7 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
@@ -53,8 +54,8 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public final CCode<?> getCode() {
-		return backend().code();
+	public final CCodePart<?> part() {
+		return backend().part();
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			protected O write() {
 				return backend().underlying().select(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						trueVal.backend().underlying(),
 						cast(falseValue).backend().underlying());
 			}
@@ -127,7 +128,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		new TermBE(ccode) {
 			@Override
 			protected void emit() {
-				backend().underlying().returnValue(block().getUnderlying());
+				backend().underlying().returnValue(part().underlying());
 			}
 		};
 	}
@@ -155,7 +156,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 		final COp val = cast(value);
 
-		if (val.getCode() == code) {
+		if (val.part() == code.nextPart()) {
 			return value;
 		}
 
@@ -174,7 +175,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			protected S write() {
 				return backend().underlying().select(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						trueValue.backend().underlying(),
 						falseValue.backend().underlying());
 			}
@@ -197,7 +198,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 		@Override
 		protected BoolOp write() {
-			return code().getUnderlying().bool(this.constant);
+			return part().underlying().bool(this.constant);
 		}
 
 	}

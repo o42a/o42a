@@ -81,7 +81,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		new TermBE(ccode) {
 			@Override
 			protected void emit() {
-				backend().underlying().returnValue(block().getUnderlying());
+				backend().underlying().returnValue(part().underlying());
 			}
 		};
 	}
@@ -100,7 +100,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 			protected BoolOp write() {
 				return backend().underlying().isNull(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}
@@ -124,7 +124,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 			protected BoolOp write() {
 				return backend().underlying().eq(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						o.backend().underlying());
 			}
 		});
@@ -138,7 +138,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
 
 		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
-			if (getCode() == ccode) {
+			if (part() == ccode.nextPart()) {
 				return (P) this;
 			}
 			return create(new AliasBE<P>(id, ccode, backend()), getConstant());
@@ -150,7 +150,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 					protected P write() {
 						return backend().underlying().offset(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								idx.backend().underlying());
 					}
 				},
@@ -165,7 +165,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 					protected AnyOp write() {
 						return backend().underlying().toAny(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());

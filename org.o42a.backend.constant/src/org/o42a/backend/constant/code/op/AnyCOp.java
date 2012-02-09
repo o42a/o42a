@@ -54,7 +54,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected AnyRecOp write() {
 						return backend().underlying().toPtr(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -68,7 +68,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Int8recOp write() {
 						return backend().underlying().toInt8(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -82,7 +82,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Int16recOp write() {
 						return backend().underlying().toInt16(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -96,7 +96,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Int32recOp write() {
 						return backend().underlying().toInt32(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -110,7 +110,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Int64recOp write() {
 						return backend().underlying().toInt64(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -124,7 +124,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Fp32recOp write() {
 						return backend().underlying().toFp32(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -138,7 +138,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected Fp64recOp write() {
 						return backend().underlying().toFp64(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -152,7 +152,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected RelRecOp write() {
 						return backend().underlying().toRel(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -166,7 +166,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected DataOp write() {
 						return backend().underlying().toData(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -183,7 +183,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected FuncOp<F> write() {
 						return backend().underlying().toFunc(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(signature));
 					}
 				},
@@ -202,7 +202,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					protected S write() {
 						return backend().underlying().to(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(type));
 					}
 				},

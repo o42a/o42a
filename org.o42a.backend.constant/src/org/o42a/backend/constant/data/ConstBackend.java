@@ -63,30 +63,6 @@ public class ConstBackend {
 		return (CBlock<?>) writer;
 	}
 
-	public static Code underlying(Code code) {
-		return cast(code).getUnderlying();
-	}
-
-	public static AllocationCode underlying(AllocationCode code) {
-		return cast(code).getUnderlying();
-	}
-
-	public static Block underlying(Block code) {
-		return cast(code).getUnderlying();
-	}
-
-	public static CodeWriter underlying(CodeWriter writer) {
-		return cast(writer).getUnderlying().writer();
-	}
-
-	public static AllocationWriter underlying(AllocationWriter writer) {
-		return cast(writer).getUnderlying().writer();
-	}
-
-	public static BlockWriter underlying(BlockWriter writer) {
-		return cast(writer).getUnderlying().writer();
-	}
-
 	public static CCodePos cast(CodePos codePos) {
 		return (CCodePos) codePos;
 	}

@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,22 +19,24 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.*;
 
 
-final class CCodeBlock extends CBlock<Block> {
+final class CFunctionPart<F extends Func<F>>
+		extends CBlockPart {
 
-	CCodeBlock(CCode<?> enclosing, Block code) {
-		super(enclosing.getBackend(), enclosing.getFunction(), code);
+	CFunctionPart(CFunction<F> function) {
+		super(function);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final CFunction<F> function() {
+		return (CFunction<F>) code();
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
-	protected CBlockPart createFirstBlock() {
-		return new CBlockPart(this);
+	protected Block createUnderlying(Code underlying) {
+		return (Function<?>) underlying;
 	}
 
 }

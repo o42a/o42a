@@ -22,6 +22,7 @@ package org.o42a.backend.constant.code.rec;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.rec.RecCDAlloc;
 import org.o42a.codegen.CodeId;
@@ -72,7 +73,7 @@ public abstract class RecCOp<
 					new ConstBE<O, T>(id, ccode, constant) {
 						@Override
 						protected O write() {
-							return underlyingConstant(code(), this.constant);
+							return underlyingConstant(part(), this.constant);
 						}
 					},
 					constant);
@@ -84,7 +85,7 @@ public abstract class RecCOp<
 					protected O write() {
 						return backend().underlying().load(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				null);
@@ -96,7 +97,7 @@ public abstract class RecCOp<
 			@Override
 			protected void emit() {
 				backend().underlying().store(
-						code().getUnderlying(),
+						part().underlying(),
 						cast(value).backend().underlying());
 			}
 		};
@@ -104,6 +105,6 @@ public abstract class RecCOp<
 
 	protected abstract O loaded(OpBE<O> backend, T constant);
 
-	protected abstract O underlyingConstant(CCode<?> code, T constant);
+	protected abstract O underlyingConstant(CCodePart<?> part, T constant);
 
 }

@@ -20,17 +20,20 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CBlock;
+import org.o42a.backend.constant.code.CCodePart;
+import org.o42a.codegen.code.Block;
 
 
 public abstract class TermBE extends AbstractBE {
 
+	private final CCodePart<Block> part;
+
 	public TermBE(CBlock<?> code) {
-		super(code);
-		code.term(this);
+		this.part = code.term(this);
 	}
 
-	public final CBlock<?> block() {
-		return (CBlock<?>) code();
+	public final CCodePart<Block> part() {
+		return this.part;
 	}
 
 }

@@ -19,13 +19,17 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.codegen.code.Code;
+
 
 public interface OpRecord {
+
+	boolean isEmptyOp();
 
 	OpRecord getNext();
 
 	void setNext(OpRecord next);
 
-	void reveal();
+	void reveal(Code underlying);
 
 }

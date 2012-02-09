@@ -33,49 +33,63 @@ import org.o42a.codegen.code.op.BoolOp;
 public abstract class CBlock<B extends Block> extends CCode<B>
 		implements BlockWriter {
 
-	private CCodePos head;
-	private CCodePos tail;
+	private CBlockPart firstPart;
+	private CBlockPart lastPart;
+	private CBlockPart nextPart;
+	private int blockSeq;
 
-	public CBlock(
-			ConstBackend backend,
-			CFunction<?> function,
-			B code,
-			B underlying) {
-		super(backend, function, code, underlying);
+	public CBlock(ConstBackend backend, CFunction<?> function, B code) {
+		super(backend, function, code);
+	}
+
+	@Override
+	public boolean created() {
+		return this.firstPart != null && this.firstPart.exists();
+	}
+
+	@Override
+	public boolean exists() {
+		return this.nextPart != null && this.nextPart.exists();
 	}
 
 	@Override
 	public CodePos head() {
-
-		final CodePos underlyingHead = getUnderlying().head();
-
-		if (this.head != null && this.head.getUnderlying() == underlyingHead) {
-			return this.head;
-		}
-
-		return this.head = new CCodePos(this, underlyingHead);
+		return firstPart().head();
 	}
 
 	@Override
 	public CodePos tail() {
-
-		final CodePos underlyingTail = getUnderlying().tail();
-
-		if (this.tail != null && this.tail.getUnderlying() == underlyingTail) {
-			return this.tail;
+		if (this.nextPart != null && !this.nextPart.isEmpty()) {
+			this.nextPart = null;
 		}
+		return nextPart().head();
+	}
 
-		return this.tail = new CCodePos(this, underlyingTail);
+	@Override
+	public CBlockPart nextPart() {
+		if (this.nextPart != null) {
+			return this.nextPart;
+		}
+		if (this.firstPart == null) {
+			return firstPart();
+		}
+		return this.nextPart = this.lastPart.createNextPart(
+				getId().anonymous(++this.blockSeq));
 	}
 
 	@Override
 	public final void go(final CodePos pos) {
+
+		final CCodePos cpos = cast(pos);
+
 		new TermBE(this) {
 			@Override
 			protected void emit() {
-				getUnderlying().go(cast(pos).getUnderlying());
+				part().underlying().go(cpos.getUnderlying());
 			}
 		};
+
+		cpos.part().comeFrom(this);
 	}
 
 	@Override
@@ -97,15 +111,21 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return;
 		}
 
+		final CCodePos trueCPos = cast(truePos);
+		final CCodePos falseCPos = cast(falsePos);
+
 		new TermBE(this) {
 			@Override
 			protected void emit() {
 				cond.backend().underlying().go(
-						block().getUnderlying(),
-						cast(truePos).getUnderlying(),
-						cast(falsePos).getUnderlying());
+						part().underlying(),
+						trueCPos.getUnderlying(),
+						falseCPos.getUnderlying());
 			}
 		};
+
+		trueCPos.comeFrom(this);
+		falseCPos.comeFrom(this);
 	}
 
 	@Override
@@ -114,7 +134,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		new TermBE(this) {
 			@Override
 			protected void emit() {
-				block().getUnderlying().returnVoid();
+				part().underlying().returnVoid();
 			}
 		};
 	}
@@ -123,15 +143,22 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		getFunction().getCallback().beforeReturn(code());
 	}
 
-	public final <T extends TermBE> T term(T op) {
-		// TODO end block.
-		return record(op);
+	@SuppressWarnings("unchecked")
+	public final CCodePart<Block> term(TermBE op) {
+		this.nextPart = null;
+		return (CCodePart<Block>) record(op);
 	}
 
-	@Override
-	protected OpRecords records() {
-		// TODO Auto-generated method stub
-		return null;
+	protected final CBlockPart firstPart() {
+		if (this.firstPart != null) {
+			return this.firstPart;
+		}
+
+		this.firstPart = createFirstBlock();
+
+		return this.nextPart = this.lastPart = this.firstPart;
 	}
+
+	protected abstract CBlockPart createFirstBlock();
 
 }

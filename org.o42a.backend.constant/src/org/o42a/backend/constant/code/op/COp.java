@@ -19,13 +19,13 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.code.op.Op;
 
 
 public interface COp<U extends Op, T> extends Op {
 
-	CCode<?> getCode();
+	CCodePart<?> part();
 
 	boolean isConstant();
 

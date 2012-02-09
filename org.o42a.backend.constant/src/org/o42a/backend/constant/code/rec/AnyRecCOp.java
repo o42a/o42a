@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.AnyCOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.AnyCDAlloc;
@@ -55,11 +55,11 @@ public final class AnyRecCOp
 	}
 
 	@Override
-	protected AnyOp underlyingConstant(CCode<?> code, Ptr<AnyOp> constant) {
+	protected AnyOp underlyingConstant(CCodePart<?> part, Ptr<AnyOp> constant) {
 
 		final AnyCDAlloc alloc = (AnyCDAlloc) constant.getAllocation();
 
-		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
+		return alloc.getUnderlyingPtr().op(null, part.underlying());
 	}
 
 }

@@ -24,8 +24,13 @@ import org.o42a.codegen.code.Code;
 
 class CCodeInset extends CInset<Code> {
 
-	CCodeInset(CCode<?> enclosing, Code code, Code underlying) {
-		super(enclosing, code, underlying);
+	CCodeInset(CCode<?> enclosing, Code code) {
+		super(enclosing, code);
+	}
+
+	@Override
+	protected Code createUnderlying(Code enclosingUnderlying) {
+		return enclosingUnderlying.inset(getId().getLocal());
 	}
 
 }

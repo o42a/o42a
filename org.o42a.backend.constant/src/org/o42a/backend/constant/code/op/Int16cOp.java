@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int16op;
 
@@ -44,8 +45,8 @@ public final class Int16cOp extends IntCOp<Int16op, Short> implements Int16op {
 	}
 
 	@Override
-	protected Int16op underlyingConstant(CCode<?> code, Short constant) {
-		return code.getUnderlying().int16(constant);
+	protected Int16op underlyingConstant(CCodePart<?> part, Short constant) {
+		return part.underlying().int16(constant);
 	}
 
 	@Override

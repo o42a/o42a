@@ -73,7 +73,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected AnyRecOp write() {
 						return backend().underlying().writer().field(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								alloc.getUnderlying());
 					}
 				},
@@ -105,7 +105,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Int8recOp write() {
 						return backend().underlying().writer().int8(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -138,7 +138,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Int16recOp write() {
 						return backend().underlying().writer().int16(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -171,7 +171,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Int32recOp write() {
 						return backend().underlying().writer().int32(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -204,7 +204,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Int64recOp write() {
 						return backend().underlying().writer().int64(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -237,7 +237,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Fp32recOp write() {
 						return backend().underlying().writer().fp32(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -270,7 +270,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected Fp64recOp write() {
 						return backend().underlying().writer().fp64(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -303,7 +303,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected AnyRecOp write() {
 						return backend().underlying().writer().ptr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -336,7 +336,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected DataRecOp write() {
 						return backend().underlying().writer().ptr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -372,7 +372,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected StructRecOp<SS> write() {
 						return backend().underlying().writer().ptr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -406,7 +406,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected RelRecOp write() {
 						return backend().underlying().writer().relPtr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -444,7 +444,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected SS write() {
 						return backend().underlying().writer().struct(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld);
 					}
 				},
@@ -481,7 +481,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected FuncOp<F> write() {
 						return backend().underlying().writer().func(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								fld.getUnderlying());
 					}
 				},
@@ -498,7 +498,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected DataOp write() {
 						return backend().underlying().toData(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				getAllocClass());
@@ -518,7 +518,7 @@ public final class CStruct<S extends StructOp<S>>
 					protected SS write() {
 						return backend().underlying().to(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(type));
 					}
 				},

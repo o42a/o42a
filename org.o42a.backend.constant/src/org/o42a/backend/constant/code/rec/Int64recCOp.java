@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.Int64cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int64op;
@@ -56,8 +56,8 @@ public final class Int64recCOp
 	}
 
 	@Override
-	protected Int64op underlyingConstant(CCode<?> code, Long constant) {
-		return code.getUnderlying().int64(constant);
+	protected Int64op underlyingConstant(CCodePart<?> part, Long constant) {
+		return part.underlying().int64(constant);
 	}
 
 }

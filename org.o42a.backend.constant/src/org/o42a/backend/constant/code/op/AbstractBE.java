@@ -19,21 +19,17 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.OpRecord;
+import org.o42a.codegen.code.Code;
 
 
 abstract class AbstractBE implements OpRecord {
 
-	private final CCode<?> code;
 	private OpRecord next;
 
-	AbstractBE(CCode<?> code) {
-		this.code = code;
-	}
-
-	public final CCode<?> code() {
-		return this.code;
+	@Override
+	public final boolean isEmptyOp() {
+		return false;
 	}
 
 	@Override
@@ -47,7 +43,7 @@ abstract class AbstractBE implements OpRecord {
 	}
 
 	@Override
-	public void reveal() {
+	public void reveal(Code underlying) {
 		emit();
 	}
 

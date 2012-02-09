@@ -19,38 +19,23 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.util.Chain;
+import org.o42a.codegen.code.Code;
 
 
-public class OpRecords extends Chain<OpRecord> implements OpRecord {
+final class CInsetPart<C extends Code> extends CCodePart<C> {
 
-	private OpRecord next;
+	CInsetPart(CInset<C> inset) {
+		super(inset, inset.getId());
+	}
 
-	@Override
-	public final OpRecord getNext() {
-		return this.next;
+	@SuppressWarnings("unchecked")
+	public final CInset<C> inset() {
+		return (CInset<C>) code();
 	}
 
 	@Override
-	public final void setNext(OpRecord next) {
-		this.next = next;
-	}
-
-	@Override
-	public void reveal() {
-		for (OpRecord record : this) {
-			record.reveal();
-		}
-	}
-
-	@Override
-	protected OpRecord next(OpRecord item) {
-		return item.getNext();
-	}
-
-	@Override
-	protected void setNext(OpRecord prev, OpRecord next) {
-		prev.setNext(next);
+	protected C createUnderlying(Code underlying) {
+		return inset().createUnderlying(underlying);
 	}
 
 }

@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
@@ -43,12 +43,12 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	}
 
 	public final ConstBackend getBackend() {
-		return getCode().getBackend();
+		return part().code().getBackend();
 	}
 
 	@Override
-	public final CCode<?> getCode() {
-		return backend().code();
+	public final CCodePart<?> part() {
+		return backend().part();
 	}
 
 	@Override

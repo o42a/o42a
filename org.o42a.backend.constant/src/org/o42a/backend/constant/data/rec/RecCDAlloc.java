@@ -93,7 +93,7 @@ public abstract class RecCDAlloc<
 					protected P write() {
 						return getUnderlyingPtr().op(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				allocClass);
