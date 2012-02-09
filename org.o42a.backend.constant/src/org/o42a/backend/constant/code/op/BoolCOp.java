@@ -63,11 +63,6 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public final OpBE<BoolOp> record() {
-		return backend();
-	}
-
-	@Override
 	public CodeId getId() {
 		return backend().getId();
 	}
@@ -131,8 +126,8 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		ccode.beforeReturn();
 		new TermBE(ccode) {
 			@Override
-			public void reveal() {
-				backend().underlying().returnValue(code().getUnderlying());
+			protected void emit() {
+				backend().underlying().returnValue(block().getUnderlying());
 			}
 		};
 	}

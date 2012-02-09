@@ -72,7 +72,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	public final void go(final CodePos pos) {
 		new TermBE(this) {
 			@Override
-			public void reveal() {
+			protected void emit() {
 				getUnderlying().go(cast(pos).getUnderlying());
 			}
 		};
@@ -99,9 +99,9 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 		new TermBE(this) {
 			@Override
-			public void reveal() {
+			protected void emit() {
 				cond.backend().underlying().go(
-						code().getUnderlying(),
+						block().getUnderlying(),
 						cast(truePos).getUnderlying(),
 						cast(falsePos).getUnderlying());
 			}
@@ -113,8 +113,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		beforeReturn();
 		new TermBE(this) {
 			@Override
-			public void reveal() {
-				code().getUnderlying().returnVoid();
+			protected void emit() {
+				block().getUnderlying().returnVoid();
 			}
 		};
 	}

@@ -64,7 +64,7 @@ public final class CFunc<F extends Func<F>>
 	public final void call(final Code code, final Op... args) {
 		new InstrBE(cast(code)) {
 			@Override
-			public void reveal() {
+			protected void emit() {
 				backend().underlying().caller().call(
 						code().getUnderlying(),
 						underlyingArgs(args));

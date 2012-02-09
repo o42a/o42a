@@ -94,7 +94,7 @@ public abstract class RecCOp<
 	public final void store(final Code code, final O value) {
 		new InstrBE(cast(code)) {
 			@Override
-			public void reveal() {
+			protected void emit() {
 				backend().underlying().store(
 						code().getUnderlying(),
 						cast(value).backend().underlying());

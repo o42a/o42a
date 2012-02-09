@@ -465,8 +465,8 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		ccode.beforeReturn();
 		new TermBE(ccode) {
 			@Override
-			public void reveal() {
-				backend().underlying().returnValue(code().getUnderlying());
+			protected void emit() {
+				backend().underlying().returnValue(block().getUnderlying());
 			}
 		};
 	}

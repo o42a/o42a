@@ -22,7 +22,7 @@ package org.o42a.backend.constant.code;
 import org.o42a.codegen.code.Code;
 
 
-abstract class CInset<C extends Code> extends CCode<C> implements RecordedOp {
+abstract class CInset<C extends Code> extends CCode<C> {
 
 	private final OpRecords records = new OpRecords();
 
@@ -32,11 +32,6 @@ abstract class CInset<C extends Code> extends CCode<C> implements RecordedOp {
 				enclosing.getFunction(),
 				code,
 				underlying);
-	}
-
-	@Override
-	public final OpRecord record() {
-		return records();
 	}
 
 	@Override

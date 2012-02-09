@@ -38,19 +38,12 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 		return this.id;
 	}
 
-	@Override
-	public void reveal() {
-		underlying();
-	}
-
 	public final U underlying() {
 		if (this.underlying != null) {
 			return this.underlying;
 		}
 		return this.underlying = write();
 	}
-
-	protected abstract U write();
 
 	@Override
 	public String toString() {
@@ -59,5 +52,12 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 		}
 		return this.id.toString();
 	}
+
+	@Override
+	protected void emit() {
+		underlying();
+	}
+
+	protected abstract U write();
 
 }

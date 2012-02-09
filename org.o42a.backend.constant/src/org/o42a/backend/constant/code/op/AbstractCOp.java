@@ -57,11 +57,6 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	}
 
 	@Override
-	public final OpBE<U> record() {
-		return backend();
-	}
-
-	@Override
 	public final CodeId getId() {
 		return backend().getId();
 	}
