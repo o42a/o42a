@@ -17,11 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code;
+package org.o42a.backend.constant.code.op;
+
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.OpRecord;
 
 
-public interface RecordedOp {
+abstract class AbstractBE implements OpRecord {
 
-	OpRecord record();
+	private final CCode<?> code;
+	private OpRecord next;
+
+	AbstractBE(CCode<?> code) {
+		this.code = code;
+	}
+
+	public final CCode<?> code() {
+		return this.code;
+	}
+
+	@Override
+	public final OpRecord getNext() {
+		return this.next;
+	}
+
+	@Override
+	public final void setNext(OpRecord next) {
+		this.next = next;
+	}
+
+	@Override
+	public void reveal() {
+		emit();
+	}
+
+	protected abstract void emit();
 
 }

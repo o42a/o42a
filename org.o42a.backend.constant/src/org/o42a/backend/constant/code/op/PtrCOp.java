@@ -80,8 +80,8 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		ccode.beforeReturn();
 		new TermBE(ccode) {
 			@Override
-			public void reveal() {
-				backend().underlying().returnValue(code().getUnderlying());
+			protected void emit() {
+				backend().underlying().returnValue(block().getUnderlying());
 			}
 		};
 	}

@@ -20,31 +20,13 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.OpRecord;
 
 
-public abstract class InstrBE implements OpRecord {
-
-	private final CCode<?> code;
-	private OpRecord next;
+public abstract class InstrBE extends AbstractBE {
 
 	public InstrBE(CCode<?> code) {
-		this.code = code;
+		super(code);
 		code.op(this);
-	}
-
-	public final CCode<?> code() {
-		return this.code;
-	}
-
-	@Override
-	public final OpRecord getNext() {
-		return this.next;
-	}
-
-	@Override
-	public final void setNext(OpRecord next) {
-		this.next = next;
 	}
 
 }

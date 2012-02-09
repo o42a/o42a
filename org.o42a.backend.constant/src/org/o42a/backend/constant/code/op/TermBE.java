@@ -20,31 +20,17 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CBlock;
-import org.o42a.backend.constant.code.OpRecord;
 
 
-public abstract class TermBE implements OpRecord {
-
-	private final CBlock<?> code;
-	private OpRecord next;
+public abstract class TermBE extends AbstractBE {
 
 	public TermBE(CBlock<?> code) {
-		this.code = code;
+		super(code);
 		code.term(this);
 	}
 
-	public final CBlock<?> code() {
-		return this.code;
-	}
-
-	@Override
-	public final OpRecord getNext() {
-		return this.next;
-	}
-
-	@Override
-	public final void setNext(OpRecord next) {
-		this.next = next;
+	public final CBlock<?> block() {
+		return (CBlock<?>) code();
 	}
 
 }
