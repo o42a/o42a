@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.DataCDAlloc;
@@ -59,11 +59,13 @@ public final class DataRecCOp
 	}
 
 	@Override
-	protected DataOp underlyingConstant(CCode<?> code, Ptr<DataOp> constant) {
+	protected DataOp underlyingConstant(
+			CCodePart<?> part,
+			Ptr<DataOp> constant) {
 
 		final DataCDAlloc alloc = (DataCDAlloc) constant.getAllocation();
 
-		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
+		return alloc.getUnderlyingPtr().op(null, part.underlying());
 	}
 
 }

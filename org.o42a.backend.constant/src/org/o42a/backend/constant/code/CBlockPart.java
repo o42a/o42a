@@ -19,37 +19,46 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 
 
-abstract class CInset<C extends Code> extends CCode<C> {
+class CBlockPart extends CCodePart<Block> {
 
-	private final CInsetPart<C> part;
+	private final CCodePos head;
+	private CBlockPart nextPart;
 
-	CInset(CCode<?> enclosing, C code) {
-		super(enclosing.getBackend(), enclosing.getFunction(), code);
-		this.part = new CInsetPart<C>(this);
+	CBlockPart(CBlock<?> block) {
+		this(block, block.getId());
+	}
+
+	private CBlockPart(CCode<?> code, CodeId id) {
+		super(code, id);
+		this.head = new CCodePos(this);
+	}
+
+	public final CBlock<?> block() {
+		return (CBlock<?>) code();
+	}
+
+	public final CCodePos head() {
+		return this.head;
 	}
 
 	@Override
-	public final boolean created() {
-		return !this.part.isEmpty();
+	protected Block createUnderlying(Code underlying) {
+		return underlying.addBlock(getId().getLocal());
 	}
 
-	@Override
-	public final boolean exists() {
-		return created();
+	final CBlockPart createNextPart(CodeId id) {
+		assert this.nextPart != null :
+			"Next part of " + this + " already created";
+		return this.nextPart = new CBlockPart(block(), id);
 	}
 
-	@Override
-	public void done() {
+	final CBlockPart getNextPart() {
+		return this.nextPart;
 	}
-
-	@Override
-	public CCodePart<C> nextPart() {
-		return this.part;
-	}
-
-	protected abstract C createUnderlying(Code enclosingUnderlying);
 
 }

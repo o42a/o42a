@@ -44,7 +44,7 @@ public final class DataCDAlloc extends CDAlloc<DataOp, Data<DataOp>> {
 					protected DataOp write() {
 						return getUnderlyingPtr().op(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				allocClass,

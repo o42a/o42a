@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp64op;
 
@@ -44,8 +45,8 @@ public final class Fp64cOp extends FpCOp<Fp64op, Double> implements Fp64op {
 	}
 
 	@Override
-	protected Fp64op underlyingConstant(CCode<?> code, Double constant) {
-		return code.getUnderlying().fp64(constant);
+	protected Fp64op underlyingConstant(CCodePart<?> part, Double constant) {
+		return part.underlying().fp64(constant);
 	}
 
 	@Override

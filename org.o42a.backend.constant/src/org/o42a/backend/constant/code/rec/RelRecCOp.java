@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.RelCOp;
 import org.o42a.backend.constant.data.RelCDAlloc;
@@ -56,11 +56,11 @@ public final class RelRecCOp
 	}
 
 	@Override
-	protected RelOp underlyingConstant(CCode<?> code, RelPtr constant) {
+	protected RelOp underlyingConstant(CCodePart<?> part, RelPtr constant) {
 
 		final RelCDAlloc alloc = (RelCDAlloc) constant.getAllocation();
 
-		return alloc.getUnderlying().op(null, code.getUnderlying());
+		return alloc.getUnderlying().op(null, part.underlying());
 	}
 
 }

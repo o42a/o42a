@@ -20,13 +20,19 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 
 
 public abstract class InstrBE extends AbstractBE {
 
+	private final CCodePart<?> part;
+
 	public InstrBE(CCode<?> code) {
-		super(code);
-		code.op(this);
+		this.part = code.op(this);
+	}
+
+	public final CCodePart<?> part() {
+		return this.part;
 	}
 
 }

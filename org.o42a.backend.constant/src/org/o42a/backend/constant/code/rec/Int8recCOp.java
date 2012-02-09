@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.Int8cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int8op;
@@ -54,8 +54,8 @@ public final class Int8recCOp
 	}
 
 	@Override
-	protected Int8op underlyingConstant(CCode<?> code, Byte constant) {
-		return code.getUnderlying().int8(constant);
+	protected Int8op underlyingConstant(CCodePart<?> part, Byte constant) {
+		return part.underlying().int8(constant);
 	}
 
 }

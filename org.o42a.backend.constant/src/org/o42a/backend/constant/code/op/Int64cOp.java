@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int64op;
 
@@ -44,8 +45,8 @@ public final class Int64cOp extends IntCOp<Int64op, Long> implements Int64op {
 	}
 
 	@Override
-	protected Int64op underlyingConstant(CCode<?> code, Long constant) {
-		return code.getUnderlying().int64(constant);
+	protected Int64op underlyingConstant(CCodePart<?> part, Long constant) {
+		return part.underlying().int64(constant);
 	}
 
 	@Override

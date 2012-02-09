@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.Fp64cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Fp64op;
@@ -54,8 +54,8 @@ public final class Fp64recCOp
 	}
 
 	@Override
-	protected Fp64op underlyingConstant(CCode<?> code, Double constant) {
-		return code.getUnderlying().fp64(constant);
+	protected Fp64op underlyingConstant(CCodePart<?> part, Double constant) {
+		return part.underlying().fp64(constant);
 	}
 
 }

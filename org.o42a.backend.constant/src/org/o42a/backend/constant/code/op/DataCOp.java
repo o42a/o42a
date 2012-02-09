@@ -60,7 +60,7 @@ public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 					protected S write() {
 						return backend().underlying().to(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(type));
 					}
 				},

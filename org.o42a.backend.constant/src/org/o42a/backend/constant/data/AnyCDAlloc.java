@@ -44,7 +44,7 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
 					protected AnyOp write() {
 						return getUnderlyingPtr().op(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				allocClass,

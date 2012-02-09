@@ -42,18 +42,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	private final ConstBackend backend;
 	private final CFunction<?> function;
 	private final C code;
-	private final C underlying;
 
-	CCode(
-			ConstBackend backend,
-			CFunction<?> function,
-			C code,
-			C underlying) {
+	CCode(ConstBackend backend, CFunction<?> function, C code) {
 		this.backend = backend;
 		this.function = function != null ? function : (CFunction<?>) this;
 		this.code = code;
-		this.underlying = underlying;
-		underlying.setOpNames(code.getOpNames());
 	}
 
 	public final ConstBackend getBackend() {
@@ -68,28 +61,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return this.code;
 	}
 
-	public final C getUnderlying() {
-		return this.underlying;
-	}
-
-	@Override
-	public boolean created() {
-		return getUnderlying().created();
-	}
-
-	@Override
-	public boolean exists() {
-		return getUnderlying().exists();
-	}
-
-	@Override
-	public void done() {
-		getUnderlying().done();
-	}
+	public abstract CCodePart<?> nextPart();
 
 	@Override
 	public final CodeId getId() {
-		return getUnderlying().getId();
+		return code().getId();
 	}
 
 	@Override
@@ -105,7 +81,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 					protected F write() {
 						return alloc.getUnderlyingPtr().op(
 								getId(),
-								getUnderlying());
+								part().underlying());
 					}
 				},
 				alloc.getSignature(),
@@ -114,31 +90,17 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CodeWriter inset(Code code) {
-		return recordInset(new CCodeInset(
-				this,
-				code,
-				getUnderlying().inset(code.getId().getLocal())));
+		return recordCode(new CCodeInset(this, code));
 	}
 
 	@Override
 	public final CAllocation allocation(AllocationCode code) {
-
-		final CodeId id = code.getId();
-
-		return recordInset(new CAllocation(
-				this,
-				code,
-				code.isDisposable()
-				? getUnderlying().allocate(id.getLocal())
-				: getUnderlying().undisposable(id.getLocal())));
+		return recordCode(new CAllocation(this, code));
 	}
 
 	@Override
 	public final CCodeBlock block(Block code) {
-		return new CCodeBlock(
-				this,
-				code,
-				getUnderlying().addBlock(code.getId().getLocal()));
+		return recordCode(new CCodeBlock(this, code));
 	}
 
 	@Override
@@ -182,7 +144,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<RelOp>(null, this) {
 					@Override
 					protected RelOp write() {
-						return getUnderlying().nullRelPtr();
+						return part().underlying().nullRelPtr();
 					}
 				});
 	}
@@ -193,7 +155,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<AnyOp>(null, this) {
 					@Override
 					protected AnyOp write() {
-						return getUnderlying().nullPtr();
+						return part().underlying().nullPtr();
 					}
 				},
 				CONSTANT_ALLOC_CLASS,
@@ -206,7 +168,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<DataOp>(null, this) {
 					@Override
 					protected DataOp write() {
-						return getUnderlying().nullDataPtr();
+						return part().underlying().nullDataPtr();
 					}
 				},
 				CONSTANT_ALLOC_CLASS,
@@ -227,7 +189,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						final CType<S> underlyingType =
 								typeAlloc.getUnderlyingInstance();
 
-						return getUnderlying().nullPtr(underlyingType);
+						return part().underlying().nullPtr(underlyingType);
 					}
 				},
 				CONSTANT_ALLOC_CLASS,
@@ -243,7 +205,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<F>(null, this) {
 					@Override
 					protected F write() {
-						return getUnderlying().nullPtr(
+						return part().underlying().nullPtr(
 								getBackend().underlying(signature));
 					}
 				},
@@ -266,7 +228,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<O>(id, this) {
 					@Override
 					protected O write() {
-						return (O) code().getUnderlying().phi(
+						return (O) part().underlying().phi(
 								getId(),
 								cop.backend().underlying());
 					}
@@ -290,7 +252,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				new OpBE<O>(id, this) {
 					@Override
 					protected O write() {
-						 return getUnderlying().phi(
+						 return part().underlying().phi(
 									getId(),
 									cop1.backend().underlying(),
 									cop2.backend().underlying());
@@ -299,27 +261,30 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				null);
 	}
 
-	public final <O extends InstrBE> O op(O op) {
+	public final CCodePart<?> op(InstrBE op) {
 		return record(op);
 	}
 
 	@Override
 	public String toString() {
-		if (this.underlying == null) {
+		if (this.code == null) {
 			return super.toString();
 		}
-		return this.underlying.toString();
+		return this.code.toString();
 	}
 
-	protected abstract OpRecords records();
+	final CCodePart<?> record(OpRecord op) {
 
-	final <R extends OpRecord> R record(R op) {
-		return records().add(op);
+		final CCodePart<?> part = nextPart();
+
+		part.add(op);
+
+		return part;
 	}
 
-	private final <I extends CInset<?>> I recordInset(I inset) {
-		record(inset.records());
-		return inset;
+	private final <CC extends CCode<?>> CC recordCode(CC code) {
+		record(code.nextPart());
+		return code;
 	}
 
 }

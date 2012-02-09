@@ -19,9 +19,10 @@
 */
 package org.o42a.backend.constant.code;
 
-import static org.o42a.backend.constant.data.ConstBackend.underlying;
+import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
+import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
@@ -29,6 +30,7 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyRecOp;
@@ -42,11 +44,8 @@ public final class CAllocation
 		extends CInset<AllocationCode>
 		implements AllocationWriter {
 
-	CAllocation(
-			CCode<?> enclosing,
-			AllocationCode code,
-			AllocationCode underlying) {
-		super(enclosing, code, underlying);
+	CAllocation(CCode<?> enclosing, AllocationCode code) {
+		super(enclosing, code);
 	}
 
 	@Override
@@ -55,7 +54,13 @@ public final class CAllocation
 				new OpBE<AnyRecOp>(id, this) {
 					@Override
 					protected AnyRecOp write() {
-						return getUnderlying().writer().allocatePtr(getId());
+
+						@SuppressWarnings("unchecked")
+						final CCodePart<AllocationCode> part =
+								(CCodePart<AllocationCode>) part();
+
+						return part.underlying().writer().allocatePtr(
+								getId());
 					}
 				},
 				AUTO_ALLOC_CLASS);
@@ -73,7 +78,12 @@ public final class CAllocation
 				new OpBE<StructRecOp<S>>(id, this) {
 					@Override
 					protected StructRecOp<S> write() {
-						return getUnderlying().writer().allocatePtr(
+
+						@SuppressWarnings("unchecked")
+						final CCodePart<AllocationCode> part =
+								(CCodePart<AllocationCode>) part();
+
+						return part.underlying().writer().allocatePtr(
 								getId(),
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
@@ -95,7 +105,12 @@ public final class CAllocation
 				new OpBE<S>(id, this) {
 					@Override
 					protected S write() {
-						return getUnderlying().writer().allocateStruct(
+
+						@SuppressWarnings("unchecked")
+						final CCodePart<AllocationCode> part =
+								(CCodePart<AllocationCode>) part();
+
+						return part.underlying().writer().allocateStruct(
 								getId(),
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
@@ -105,8 +120,27 @@ public final class CAllocation
 	}
 
 	@Override
-	public void dispose(CodeWriter writer) {
-		getUnderlying().writer().dispose(underlying(writer));
+	public void dispose(final CodeWriter writer) {
+		new InstrBE(cast(writer)) {
+			@Override
+			protected void emit() {
+
+				@SuppressWarnings("unchecked")
+				final CCodePart<AllocationCode> part =
+						(CCodePart<AllocationCode>) part();
+
+				part.underlying().writer().dispose(
+						cast(writer).nextPart().underlying().writer());
+			}
+		};
+	}
+
+	@Override
+	protected AllocationCode createUnderlying(Code enclosingUnderlying) {
+		if (code().isDisposable()) {
+			return enclosingUnderlying.allocate(getId().getLocal());
+		}
+		return enclosingUnderlying.undisposable(getId().getLocal());
 	}
 
 }

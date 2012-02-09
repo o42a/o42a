@@ -25,29 +25,39 @@ import org.o42a.codegen.code.CodePos;
 
 public final class CCodePos implements CodePos {
 
-	private final CBlock<?> code;
-	private final CodePos underlying;
+	private final CBlockPart part;
 
-	public CCodePos(CBlock<?> code, CodePos underlying) {
-		this.code = code;
-		this.underlying = underlying;
+	public CCodePos(CBlockPart part) {
+		this.part = part;
+	}
+
+	public final CCodePart<Block> part() {
+		return this.part;
 	}
 
 	@Override
-	public Block code() {
-		return this.code.code();
+	public final Block code() {
+		return this.part.block().code();
 	}
 
 	public final CodePos getUnderlying() {
-		return this.underlying;
+		return this.part.underlying().head();
+	}
+
+	public final void comeFrom(CCodePart<Block> from) {
+		part().comeFrom(from);
+	}
+
+	public final void comeFrom(CBlock<?> from) {
+		part().comeFrom(from);
 	}
 
 	@Override
 	public String toString() {
-		if (this.underlying == null) {
+		if (this.part == null) {
 			return super.toString();
 		}
-		return this.underlying.toString();
+		return this.part.toString();
 	}
 
 }

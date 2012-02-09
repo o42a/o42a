@@ -139,7 +139,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 					protected S write() {
 						return getUnderlying().getPointer().op(
 								getId(),
-								code().getUnderlying());
+								part().underlying());
 					}
 				},
 				allocClass,

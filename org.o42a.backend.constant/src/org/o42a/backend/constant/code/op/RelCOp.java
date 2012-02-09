@@ -48,7 +48,7 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 					protected AnyOp write() {
 						return backend().underlying().offset(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								cast(from).backend().underlying());
 					}
 				},
@@ -67,7 +67,7 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 			protected Int32op write() {
 				return backend().underlying().toInt32(
 						getId(),
-						code().getUnderlying());
+						part().underlying());
 			}
 		});
 	}

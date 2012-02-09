@@ -66,7 +66,7 @@ public final class CFunc<F extends Func<F>>
 			@Override
 			protected void emit() {
 				backend().underlying().caller().call(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		};
@@ -82,7 +82,7 @@ public final class CFunc<F extends Func<F>>
 			protected Int8op write() {
 				return backend().underlying().caller().callInt8(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -98,7 +98,7 @@ public final class CFunc<F extends Func<F>>
 			protected Int16op write() {
 				return backend().underlying().caller().callInt16(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -114,7 +114,7 @@ public final class CFunc<F extends Func<F>>
 			protected Int32op write() {
 				return backend().underlying().caller().callInt32(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -130,7 +130,7 @@ public final class CFunc<F extends Func<F>>
 			protected Int64op write() {
 				return backend().underlying().caller().callInt64(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -146,7 +146,7 @@ public final class CFunc<F extends Func<F>>
 			protected Fp32op write() {
 				return backend().underlying().caller().callFp32(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -162,7 +162,7 @@ public final class CFunc<F extends Func<F>>
 			protected Fp64op write() {
 				return backend().underlying().caller().callFp64(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -178,7 +178,7 @@ public final class CFunc<F extends Func<F>>
 			protected BoolOp write() {
 				return backend().underlying().caller().callBool(
 						getId(),
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArgs(args));
 			}
 		});
@@ -195,7 +195,7 @@ public final class CFunc<F extends Func<F>>
 					protected AnyOp write() {
 						return backend().underlying().caller().callAny(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArgs(args));
 					}
 				},
@@ -213,7 +213,7 @@ public final class CFunc<F extends Func<F>>
 					protected DataOp write() {
 						return backend().underlying().caller().callData(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArgs(args));
 					}
 				},
@@ -232,7 +232,7 @@ public final class CFunc<F extends Func<F>>
 					protected S write() {
 						return backend().underlying().caller().callPtr(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(type),
 								underlyingArgs(args));
 					}

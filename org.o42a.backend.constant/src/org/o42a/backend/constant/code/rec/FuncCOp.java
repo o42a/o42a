@@ -21,7 +21,7 @@ package org.o42a.backend.constant.code.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.CFunc;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.func.CFAlloc;
@@ -71,7 +71,7 @@ public final class FuncCOp<F extends Func<F>>
 					protected FuncOp<FF> write() {
 						return backend().underlying().toFunc(
 								getId(),
-								code().getUnderlying(),
+								part().underlying(),
 								getBackend().underlying(signature));
 					}
 				},
@@ -91,11 +91,11 @@ public final class FuncCOp<F extends Func<F>>
 	}
 
 	@Override
-	protected F underlyingConstant(CCode<?> code, FuncPtr<F> constant) {
+	protected F underlyingConstant(CCodePart<?> part, FuncPtr<F> constant) {
 
 		final CFAlloc<F> alloc = (CFAlloc<F>) constant.getAllocation();
 
-		return alloc.getUnderlyingPtr().op(null, code.getUnderlying());
+		return alloc.getUnderlyingPtr().op(null, part.underlying());
 	}
 
 }

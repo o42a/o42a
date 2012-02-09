@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32op;
 
@@ -44,8 +45,8 @@ public final class Fp32cOp extends FpCOp<Fp32op, Float> implements Fp32op {
 	}
 
 	@Override
-	protected Fp32op underlyingConstant(CCode<?> code, Float constant) {
-		return code.getUnderlying().fp32(constant);
+	protected Fp32op underlyingConstant(CCodePart<?> part, Float constant) {
+		return part.underlying().fp32(constant);
 	}
 
 	@Override

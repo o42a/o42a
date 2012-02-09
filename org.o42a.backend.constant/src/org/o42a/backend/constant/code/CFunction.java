@@ -25,6 +25,7 @@ import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.func.CFAlloc;
+import org.o42a.backend.constant.data.func.FunctionCFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
@@ -39,21 +40,19 @@ public class CFunction<F extends Func<F>>
 		implements FuncWriter<F> {
 
 	private final CodeCallback callback;
-	private final CFAlloc<F> allocation;
+	private FunctionCFAlloc<F> allocation;
+	private Function<F> underlying;
 
 	CFunction(
 			ConstBackend backend,
 			Function<F> function,
-			CodeCallback callback,
-			CFAlloc<F> allocation,
-			Function<F> underlying) {
-		super(backend, null, function, underlying);
+			CodeCallback callback) {
+		super(backend, null, function);
 		this.callback = callback;
-		this.allocation = allocation;
 	}
 
-	public final CSignature<F> getUnderlyingSignature() {
-		return this.allocation.getUnderlyingSignature();
+	public final Function<F> getUnderlying() {
+		return this.underlying;
 	}
 
 	public final CodeCallback getCallback() {
@@ -62,7 +61,17 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	public final CFAlloc<F> getAllocation() {
-		return this.allocation;
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+
+		final Function<F> function = code();
+		final Function<F> underlying = getUnderlying();
+
+		return this.allocation = new FunctionCFAlloc<F>(
+				function,
+				underlying.getPointer(),
+				getBackend().underlying(function.getSignature()));
 	}
 
 	@Override
@@ -71,7 +80,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Int8op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -83,7 +92,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Int16op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -95,7 +104,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Int32op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -107,7 +116,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Int64op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -119,7 +128,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Fp32op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -131,7 +140,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected Fp64op write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -143,7 +152,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected BoolOp write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -155,7 +164,7 @@ public class CFunction<F extends Func<F>>
 			@Override
 			protected RelOp write() {
 				return getUnderlying().arg(
-						code().getUnderlying(),
+						part().underlying(),
 						underlyingArg(arg));
 			}
 		});
@@ -168,7 +177,7 @@ public class CFunction<F extends Func<F>>
 					@Override
 					protected AnyOp write() {
 						return getUnderlying().arg(
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArg(arg));
 					}
 				},
@@ -182,7 +191,7 @@ public class CFunction<F extends Func<F>>
 					@Override
 					protected DataOp write() {
 						return getUnderlying().arg(
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArg(arg));
 					}
 				},
@@ -199,7 +208,7 @@ public class CFunction<F extends Func<F>>
 					@Override
 					protected S write() {
 						return getUnderlying().arg(
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArg(arg));
 					}
 				},
@@ -217,17 +226,52 @@ public class CFunction<F extends Func<F>>
 					@Override
 					protected FF write() {
 						return getUnderlying().arg(
-								code().getUnderlying(),
+								part().underlying(),
 								underlyingArg(arg));
 					}
 				},
 				signature));
 	}
 
+	@Override
+	public void done() {
+		this.underlying = createUnderlying();
+		reveal();
+	}
+
+	@Override
+	protected CBlockPart createFirstBlock() {
+		return new CFunctionPart<F>(this);
+	}
+
+	private Function<F> createUnderlying() {
+
+		final Function<F> function = code();
+		final FunctionSettings underlyingSettings = function.update(
+				getBackend().getUnderlyingGenerator().newFunction());
+		final CSignature<F> underlyingSignature =
+				getBackend().underlying(function.getSignature());
+
+		return underlyingSettings.create(
+				function.getId(),
+				underlyingSignature);
+	}
+
+	private void reveal() {
+
+		CBlockPart part = firstPart();
+
+		do {
+			part.reveal(getUnderlying());
+			part = part.getNextPart();
+		} while (part != null);
+	}
+
 	@SuppressWarnings("unchecked")
 	private final <O extends Op> Arg<O> underlyingArg(Arg<O> arg) {
 
-		final CSignature<F> underlyingSignature = getUnderlyingSignature();
+		final CSignature<F> underlyingSignature =
+				getAllocation().getUnderlyingSignature();
 		final Generator underlyingGenerator =
 				underlyingSignature.getBackend().getUnderlyingGenerator();
 		final Arg<?>[] underlyingArgs =
