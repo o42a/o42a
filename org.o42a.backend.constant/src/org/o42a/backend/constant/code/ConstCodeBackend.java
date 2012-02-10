@@ -19,7 +19,6 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.code.signature.CSignatureWriter;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.func.ExternCFAlloc;
@@ -58,16 +57,7 @@ public class ConstCodeBackend implements CodeBackend {
 	public <F extends Func<F>> FuncAllocation<F> externFunction(
 			CodeId id,
 			FuncPtr<F> pointer) {
-
-		final CSignature<F> underlyingSignature =
-				getBackend().underlying(pointer.getSignature());
-
-		return new ExternCFAlloc<F>(
-				id.getId(),
-				getBackend().getUnderlyingGenerator().externalFunction(
-						id.getId(),
-						underlyingSignature),
-				underlyingSignature);
+		return new ExternCFAlloc<F>(getBackend(), pointer, id.getId());
 	}
 
 }

@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.code.backend;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -28,6 +29,8 @@ public interface BlockWriter extends CodeWriter {
 	CodePos head();
 
 	CodePos tail();
+
+	BlockWriter block(Block code);
 
 	void go(CodePos pos);
 

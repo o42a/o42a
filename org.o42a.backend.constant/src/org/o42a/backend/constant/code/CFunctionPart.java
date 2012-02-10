@@ -19,7 +19,9 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Function;
 
 
 final class CFunctionPart<F extends Func<F>>
@@ -34,9 +36,10 @@ final class CFunctionPart<F extends Func<F>>
 		return (CFunction<F>) code();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Block createUnderlying(Code underlying) {
-		return (Function<?>) underlying;
+	protected Function<F> createUnderlying(Block underlyingEnclosing) {
+		return (Function<F>) underlyingEnclosing;
 	}
 
 }

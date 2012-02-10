@@ -59,7 +59,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	public final Type<S> getType() {
-		return getTypeAllocation().getData().getInstance();
+		return getUnderlyingInstance().getOriginal().getType();
 	}
 
 	@Override

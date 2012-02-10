@@ -22,10 +22,27 @@ package org.o42a.backend.constant.code;
 import org.o42a.codegen.code.Code;
 
 
-final class CInsetPart<C extends Code> extends CCodePart<C> {
+final class CInsetPart<C extends Code>
+		extends CCodePart<C>
+		implements OpRecord {
+
+	private C underlying;
+	private OpRecord next;
 
 	CInsetPart(CInset<C> inset) {
 		super(inset, inset.getId());
+	}
+
+	@Override
+	public boolean isEmptyOp() {
+		return !hasOps();
+	}
+
+	@Override
+	public final C underlying() {
+		assert this.underlying != null :
+			"Code part is not revealed yet: " + this;
+		return this.underlying;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -34,8 +51,19 @@ final class CInsetPart<C extends Code> extends CCodePart<C> {
 	}
 
 	@Override
-	protected C createUnderlying(Code underlying) {
-		return inset().createUnderlying(underlying);
+	public final OpRecord getNext() {
+		return this.next;
+	}
+
+	@Override
+	public final void setNext(OpRecord next) {
+		this.next = next;
+	}
+
+	@Override
+	public final void reveal(Code underlying) {
+		this.underlying = inset().createUnderlying(underlying);
+		revealRecords();
 	}
 
 }

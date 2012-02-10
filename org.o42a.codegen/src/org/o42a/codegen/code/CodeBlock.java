@@ -52,7 +52,7 @@ class CodeBlock extends Block {
 		if (this.writer != null) {
 			return this.writer;
 		}
-		return this.writer = getEnclosing().writer().block(this);
+		return this.writer = getEnclosing().getBlock().writer().block(this);
 	}
 
 }

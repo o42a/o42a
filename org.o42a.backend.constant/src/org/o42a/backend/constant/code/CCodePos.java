@@ -44,12 +44,14 @@ public final class CCodePos implements CodePos {
 		return this.part.underlying().head();
 	}
 
-	public final void comeFrom(CCodePart<Block> from) {
-		part().comeFrom(from);
+	public final CCodePos comeFrom(CCodePart<Block> from) {
+		this.part.comeFrom(from);
+		return this;
 	}
 
-	public final void comeFrom(CBlock<?> from) {
-		part().comeFrom(from);
+	public final CCodePos comeFrom(CBlock<?> from) {
+		this.part.comeFrom(from);
+		return this;
 	}
 
 	@Override

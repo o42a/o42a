@@ -35,15 +35,13 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 public abstract class CFAlloc<F extends Func<F>>
 		implements FuncAllocation<F> {
 
+	private final FuncPtr<F> pointer;
 	private final CSignature<F> underlyingSignature;
 	private FuncPtr<F> underlyingPtr;
-	private FuncPtr<F> pointer;
 
-	public CFAlloc(
-			FuncPtr<F> underlyingPtr,
-			CSignature<F> underlyingSignature) {
-		this.underlyingPtr = underlyingPtr;
-		this.underlyingSignature = underlyingSignature;
+	public CFAlloc(ConstBackend backend, FuncPtr<F> pointer) {
+		this.pointer = pointer;
+		this.underlyingSignature = backend.underlying(pointer.getSignature());
 	}
 
 	public final ConstBackend getBackend() {
@@ -51,14 +49,14 @@ public abstract class CFAlloc<F extends Func<F>>
 	}
 
 	public final FuncPtr<F> getPointer() {
-		if (this.pointer != null) {
-			return this.pointer;
-		}
-		return this.pointer = pointer();
+		return this.pointer;
 	}
 
 	public final FuncPtr<F> getUnderlyingPtr() {
-		return this.underlyingPtr;
+		if (this.underlyingPtr != null) {
+			return this.underlyingPtr;
+		}
+		return this.underlyingPtr = createUnderlyingPtr();
 	}
 
 	public final CSignature<F> getUnderlyingSignature() {
@@ -67,7 +65,7 @@ public abstract class CFAlloc<F extends Func<F>>
 
 	@Override
 	public Signature<F> getSignature() {
-		return this.underlyingSignature.getOriginal();
+		return getUnderlyingSignature().getOriginal();
 	}
 
 	@Override
@@ -86,6 +84,6 @@ public abstract class CFAlloc<F extends Func<F>>
 		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
 	}
 
-	protected abstract FuncPtr<F> pointer();
+	protected abstract FuncPtr<F> createUnderlyingPtr();
 
 }

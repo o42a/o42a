@@ -20,21 +20,15 @@
 package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.util.Chain;
 
 
-public abstract class CCodePart<C extends Code>
-		extends Chain<OpRecord>
-		implements OpRecord {
+public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 
 	private final CCode<?> code;
 	private final CodeId id;
-	private OpRecord next;
-	private C underlying;
-	private boolean notEmptyOp;
-	private boolean hasEntries;
+	private boolean hasOps;
 
 	public CCodePart(CCode<?> code, CodeId id) {
 		this.code = code;
@@ -49,47 +43,22 @@ public abstract class CCodePart<C extends Code>
 		return this.code;
 	}
 
-	@Override
-	public boolean isEmptyOp() {
-		if (this.notEmptyOp) {
-			return false;
+	public abstract C underlying();
+
+	public final boolean hasOps() {
+		if (this.hasOps) {
+			return true;
 		}
 		if (isEmpty()) {
-			return true;
+			return false;
 		}
 		for (OpRecord record : this) {
 			if (!record.isEmptyOp()) {
-				this.notEmptyOp = true;
+				this.hasOps = true;
 				return false;
 			}
 		}
 		return true;
-	}
-
-	public final boolean exists() {
-		return this.hasEntries || !isEmptyOp();
-	}
-
-	public final C underlying() {
-		return this.underlying;
-	}
-
-	@Override
-	public final OpRecord getNext() {
-		return this.next;
-	}
-
-	@Override
-	public final void setNext(OpRecord next) {
-		this.next = next;
-	}
-
-	@Override
-	public final void reveal(Code underlying) {
-		this.underlying = createUnderlying(underlying);
-		for (OpRecord record : this) {
-			record.reveal(this.underlying);
-		}
 	}
 
 	@Override
@@ -110,14 +79,13 @@ public abstract class CCodePart<C extends Code>
 		prev.setNext(next);
 	}
 
-	protected abstract C createUnderlying(Code underlying);
+	protected final void revealRecords() {
 
-	final void comeFrom(CBlock<?> block) {
-		comeFrom(block.nextPart());
-	}
+		final C underlying = underlying();
 
-	final void comeFrom(CCodePart<Block> from) {
-		this.hasEntries = true;
+		for (OpRecord record : this) {
+			record.reveal(underlying);
+		}
 	}
 
 }

@@ -61,6 +61,8 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return this.code;
 	}
 
+	public abstract CBlock<?> block();
+
 	public abstract CCodePart<?> nextPart();
 
 	@Override
@@ -90,17 +92,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CodeWriter inset(Code code) {
-		return recordCode(new CCodeInset(this, code));
+		return recordInset(new CCodeInset(this, code));
 	}
 
 	@Override
 	public final CAllocation allocation(AllocationCode code) {
-		return recordCode(new CAllocation(this, code));
-	}
-
-	@Override
-	public final CCodeBlock block(Block code) {
-		return recordCode(new CCodeBlock(this, code));
+		return recordInset(new CAllocation(this, code));
 	}
 
 	@Override
@@ -282,7 +279,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return part;
 	}
 
-	private final <CC extends CCode<?>> CC recordCode(CC code) {
+	private final <CC extends CInset<?>> CC recordInset(CC code) {
 		record(code.nextPart());
 		return code;
 	}

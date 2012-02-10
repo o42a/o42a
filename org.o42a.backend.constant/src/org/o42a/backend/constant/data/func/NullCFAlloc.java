@@ -19,23 +19,23 @@
 */
 package org.o42a.backend.constant.data.func;
 
-import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 
 
 public class NullCFAlloc<F extends Func<F>> extends CFAlloc<F> {
 
-	public NullCFAlloc(
-			FuncPtr<F> underlyingPtr,
-			CSignature<F> underlyingSignature) {
-		super(underlyingPtr, underlyingSignature);
+	public NullCFAlloc(ConstBackend backend, FuncPtr<F> pointer) {
+		super(backend, pointer);
 	}
 
 	@Override
-	protected FuncPtr<F> pointer() {
-		return getBackend().getGenerator().getFunctions().nullPtr(
-				getSignature());
+	protected FuncPtr<F> createUnderlyingPtr() {
+		return getBackend()
+				.getUnderlyingGenerator()
+				.getFunctions()
+				.nullPtr(getUnderlyingSignature());
 	}
 
 }

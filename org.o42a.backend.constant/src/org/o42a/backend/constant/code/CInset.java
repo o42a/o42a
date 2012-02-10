@@ -24,11 +24,18 @@ import org.o42a.codegen.code.Code;
 
 abstract class CInset<C extends Code> extends CCode<C> {
 
+	private final CBlock<?> block;
 	private final CInsetPart<C> part;
 
 	CInset(CCode<?> enclosing, C code) {
 		super(enclosing.getBackend(), enclosing.getFunction(), code);
 		this.part = new CInsetPart<C>(this);
+		this.block = enclosing.block();
+	}
+
+	@Override
+	public final CBlock<?> block() {
+		return this.block;
 	}
 
 	@Override
@@ -46,7 +53,7 @@ abstract class CInset<C extends Code> extends CCode<C> {
 	}
 
 	@Override
-	public CCodePart<C> nextPart() {
+	public CInsetPart<C> nextPart() {
 		return this.part;
 	}
 

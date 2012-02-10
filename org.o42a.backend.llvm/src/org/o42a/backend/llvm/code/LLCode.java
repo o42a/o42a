@@ -211,11 +211,6 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public LLBlock block(Block code) {
-		return new LLCodeBlock(this, code);
-	}
-
-	@Override
 	public Int8llOp int8(byte value) {
 		return new Int8llOp(
 				this.code.opId(null),
