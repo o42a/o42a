@@ -28,17 +28,11 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 
 public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 
-	final Signature<F> signature;
-	final FuncAllocation<F> allocation;
+	private final Signature<F> signature;
 
-	FuncPtr(
-			CodeId id,
-			Signature<F> signature,
-			FuncAllocation<F> allocation,
-			boolean isNull) {
+	FuncPtr(CodeId id, Signature<F> signature, boolean isNull) {
 		super(id, true, isNull);
 		this.signature = signature;
-		this.allocation = allocation;
 	}
 
 	public final Signature<F> getSignature() {
@@ -47,9 +41,7 @@ public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 
 	public abstract Function<F> getFunction();
 
-	public final FuncAllocation<F> getAllocation() {
-		return this.allocation;
-	}
+	public abstract FuncAllocation<F> getAllocation();
 
 	public F op(CodeId id, Code code) {
 		code.assertIncomplete();
@@ -63,12 +55,12 @@ public abstract class FuncPtr<F extends Func<F>> extends AbstractPtr {
 		}
 
 		return this.signature.op(
-				code.writer().caller(resultId, this.allocation));
+				code.writer().caller(resultId, getAllocation()));
 	}
 
 	@Override
 	protected DataAllocation<AnyOp> allocationToAny() {
-		return this.allocation.toAny();
+		return getAllocation().toAny();
 	}
 
 }

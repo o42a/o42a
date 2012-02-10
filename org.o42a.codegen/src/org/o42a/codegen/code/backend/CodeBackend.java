@@ -20,9 +20,7 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
@@ -36,6 +34,6 @@ public interface CodeBackend {
 
 	<F extends Func<F>> FuncAllocation<F> externFunction(
 			CodeId id,
-			Signature<F> signature);
+			FuncPtr<F> pointer);
 
 }

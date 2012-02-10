@@ -48,9 +48,7 @@ public abstract class Functions {
 
 	public final <F extends Func<F>> FuncPtr<F> nullPtr(
 			Signature<F> signature) {
-		return new NullFuncPtr<F>(
-				signature,
-				getGenerator().getFunctions().dataWriter().nullPtr(signature));
+		return new NullFuncPtr<F>(allocate(signature));
 	}
 
 	public final FunctionSettings newFunction() {
@@ -69,10 +67,8 @@ public abstract class Functions {
 		}
 
 		final CodeId id = getGenerator().rawId(name);
-		final ExternFuncPtr<F> extern = new ExternFuncPtr<F>(
-				id,
-				signature,
-				codeBackend().externFunction(id, allocate(signature)));
+		final ExternFuncPtr<F> extern =
+				new ExternFuncPtr<F>(id, allocate(signature));
 
 		this.externals.put(name, extern);
 		addFunction(id, signature, extern);

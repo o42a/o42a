@@ -25,11 +25,10 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 
 final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
-	ExternFuncPtr(
-			CodeId id,
-			Signature<F> signature,
-			FuncAllocation<F> allocation) {
-		super(id, signature, allocation, false);
+	private FuncAllocation<F> allocation;
+
+	ExternFuncPtr(CodeId id, Signature<F> signature) {
+		super(id, signature, false);
 	}
 
 	@Override
@@ -38,8 +37,21 @@ final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 	}
 
 	@Override
+	public FuncAllocation<F> getAllocation() {
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+
+		final Functions functions =
+				getSignature().getGenerator().getFunctions();
+
+		return this.allocation =
+				functions.codeBackend().externFunction(getId(), this);
+	}
+
+	@Override
 	public String toString() {
-		return "exten " + getId();
+		return "exten " + getSignature().toString(getId().toString());
 	}
 
 }

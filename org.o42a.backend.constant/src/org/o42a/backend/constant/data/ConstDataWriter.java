@@ -80,8 +80,9 @@ public final class ConstDataWriter implements DataWriter {
 
 	@Override
 	public final <F extends Func<F>> CFAlloc<F> nullPtr(
-			Signature<F> signature) {
+			FuncPtr<F> pointer) {
 
+		final Signature<F> signature = pointer.getSignature();
 		final CSignature<F> underlyingSignature =
 				getBackend().underlying(signature);
 		final FuncPtr<F> underlyingNull =
