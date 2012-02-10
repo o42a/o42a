@@ -268,7 +268,9 @@ bool BackendModule::writeCode() {
 	OTRACE("========= " << this->getModuleIdentifier() << " verification\n");
 
 	if (verifyModule(*this, PrintMessageAction)) {
-		return false;
+		if (OutFormat.getValue() != OUTF_LL) {
+			return false;
+		}
 	}
 
 	OTRACE("========== " << this->getModuleIdentifier() << " generation\n");
