@@ -124,13 +124,8 @@ public final class CAllocation
 		new InstrBE(cast(writer)) {
 			@Override
 			protected void emit() {
-
-				@SuppressWarnings("unchecked")
-				final CCodePart<AllocationCode> part =
-						(CCodePart<AllocationCode>) part();
-
-				part.underlying().writer().dispose(
-						cast(writer).nextPart().underlying().writer());
+				nextPart().underlying().writer().dispose(
+						part().underlying().writer());
 			}
 		};
 	}

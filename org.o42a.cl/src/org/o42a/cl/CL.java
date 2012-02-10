@@ -84,7 +84,7 @@ public class CL {
 		final Analyzer analyzer = new Analyzer("compiler");
 		final LLVMGenerator llvmGenerator =
 				newGenerator(null, analyzer, llvmArgs);
-		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
+		final Generator generator = new ConstGenerator(llvmGenerator);
 
 		try {
 

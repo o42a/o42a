@@ -30,14 +30,21 @@ import org.o42a.util.ArrayUtil;
 
 public final class AllocationCode extends Code {
 
+	private final Block block;
 	private final AllocationWriter writer;
 	private final boolean disposable;
 	private Code exits[];
 
 	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
+		this.block = enclosing.getBlock();
 		this.disposable = disposable;
 		this.writer = enclosing.writer().allocation(this);
+	}
+
+	@Override
+	public final Block getBlock() {
+		return this.block;
 	}
 
 	public final boolean isDisposable() {

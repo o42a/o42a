@@ -32,6 +32,11 @@ public abstract class TermBE extends AbstractBE {
 		this.part = code.term(this);
 	}
 
+	public TermBE(CCodePart<Block> part) {
+		this.part = part;
+		part.add(this);
+	}
+
 	public final CCodePart<Block> part() {
 		return this.part;
 	}

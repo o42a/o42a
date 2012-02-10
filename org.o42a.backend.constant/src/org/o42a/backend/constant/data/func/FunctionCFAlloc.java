@@ -19,28 +19,23 @@
 */
 package org.o42a.backend.constant.data.func;
 
-import org.o42a.backend.constant.code.signature.CSignature;
+import org.o42a.backend.constant.code.CFunction;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
 
 
-public final class FunctionCFAlloc<F extends Func<F>>
-		extends CFAlloc<F> {
+public final class FunctionCFAlloc<F extends Func<F>> extends CFAlloc<F> {
 
-	private final Function<F> function;
+	private final CFunction<F> function;
 
-	public FunctionCFAlloc(
-			Function<F> function,
-			FuncPtr<F> underlyingPtr,
-			CSignature<F> underlyingSignature) {
-		super(underlyingPtr, underlyingSignature);
+	public FunctionCFAlloc(CFunction<F> function) {
+		super(function.getBackend(), function.code().getPointer());
 		this.function = function;
 	}
 
 	@Override
-	protected FuncPtr<F> pointer() {
-		return this.function.getPointer();
+	protected FuncPtr<F> createUnderlyingPtr() {
+		return this.function.getUnderlying().getPointer();
 	}
 
 }

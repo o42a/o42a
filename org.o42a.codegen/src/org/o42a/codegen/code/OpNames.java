@@ -81,4 +81,27 @@ public class OpNames {
 
 	}
 
+	static final class InsetOpNames extends OpNames {
+
+		InsetOpNames(Code code) {
+			super(code);
+		}
+
+		@Override
+		public CodeId nestedId(CodeId name) {
+
+			final CodeId local = code().getId().getLocal();
+			final CodeId codeName;
+
+			if (name == null) {
+				codeName = local.anonymous(nextBlock());
+			} else {
+				codeName = local.sub(name);
+			}
+
+			return super.nestedId(codeName);
+		}
+
+	}
+
 }

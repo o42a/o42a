@@ -64,14 +64,7 @@ public class CFunction<F extends Func<F>>
 		if (this.allocation != null) {
 			return this.allocation;
 		}
-
-		final Function<F> function = code();
-		final Function<F> underlying = getUnderlying();
-
-		return this.allocation = new FunctionCFAlloc<F>(
-				function,
-				underlying.getPointer(),
-				getBackend().underlying(function.getSignature()));
+		return this.allocation = new FunctionCFAlloc<F>(this);
 	}
 
 	@Override
@@ -236,6 +229,7 @@ public class CFunction<F extends Func<F>>
 	@Override
 	public void done() {
 		this.underlying = createUnderlying();
+		initUnderlying(getUnderlying());
 		reveal();
 	}
 
@@ -255,16 +249,6 @@ public class CFunction<F extends Func<F>>
 		return underlyingSettings.create(
 				function.getId(),
 				underlyingSignature);
-	}
-
-	private void reveal() {
-
-		CBlockPart part = firstPart();
-
-		do {
-			part.reveal(getUnderlying());
-			part = part.getNextPart();
-		} while (part != null);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -25,11 +25,18 @@ import org.o42a.codegen.code.backend.CodeWriter;
 
 final class Inset extends Code {
 
+	private final Block block;
 	private final CodeWriter writer;
 
 	Inset(Code enclosing, CodeId name) {
 		super(enclosing, name);
+		this.block = enclosing.getBlock();
 		this.writer = enclosing.writer().inset(this);
+	}
+
+	@Override
+	public final Block getBlock() {
+		return this.block;
 	}
 
 	@Override

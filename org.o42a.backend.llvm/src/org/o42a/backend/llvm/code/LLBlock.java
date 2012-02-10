@@ -99,6 +99,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
+	public LLBlock block(Block code) {
+		return new LLCodeBlock(this, code);
+	}
+
+	@Override
 	public void go(CodePos pos) {
 		instr(go(nextPtr(), nextInstr(), blockPtr(pos)));
 		endBlock();

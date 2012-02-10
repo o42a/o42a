@@ -38,6 +38,11 @@ public abstract class Block extends OpBlockBase {
 		super(generator, id);
 	}
 
+	@Override
+	public final Block getBlock() {
+		return this;
+	}
+
 	public final CodePos head() {
 		if (created()) {
 			return writer().head();

@@ -21,20 +21,26 @@ package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 
 
 class CBlockPart extends CCodePart<Block> {
 
 	private final CCodePos head;
 	private CBlockPart nextPart;
+	private Block underlying;
+	private final int index;
+	private boolean hasEntries;
+	private boolean terminated;
 
 	CBlockPart(CBlock<?> block) {
-		this(block, block.getId());
+		this(block, 0);
 	}
 
-	private CBlockPart(CCode<?> code, CodeId id) {
-		super(code, id);
+	private CBlockPart(CBlock<?> block, int index) {
+		super(
+				block,
+				index != 0 ? block.getId().anonymous(index) : block.getId());
+		this.index = index;
 		this.head = new CCodePos(this);
 	}
 
@@ -46,19 +52,65 @@ class CBlockPart extends CCodePart<Block> {
 		return this.head;
 	}
 
+	public final boolean exists() {
+		return this.hasEntries || hasOps();
+	}
+
+	public final boolean isTerminated() {
+		return this.terminated;
+	}
+
 	@Override
-	protected Block createUnderlying(Code underlying) {
-		return underlying.addBlock(getId().getLocal());
+	public Block underlying() {
+		assert this.underlying != null :
+			"Block part not revealed yet: " + this;
+		return this.underlying;
 	}
 
-	final CBlockPart createNextPart(CodeId id) {
-		assert this.nextPart != null :
+	public final void initUnderlying(Block underlyingEnclosing) {
+		this.underlying = createUnderlying(underlyingEnclosing);
+		if (this.nextPart != null) {
+			this.nextPart.initUnderlying(underlyingEnclosing);
+		}
+	}
+
+	public final void reveal() {
+		revealRecords();
+		if (this.nextPart != null) {
+			this.nextPart.reveal();
+		}
+	}
+
+	protected Block createUnderlying(Block underlyingEnclosing) {
+
+		final CodeId localId = block().getId().getLocal();
+		final CodeId partName;
+
+		if (this.index == 0) {
+			partName = localId;
+		} else {
+			partName = localId.anonymous(this.index);
+		}
+
+		return underlyingEnclosing.addBlock(partName);
+	}
+
+	final CBlockPart createNextPart(int index) {
+		assert this.nextPart == null :
 			"Next part of " + this + " already created";
-		return this.nextPart = new CBlockPart(block(), id);
+		return this.nextPart = new CBlockPart(block(), index);
 	}
 
-	final CBlockPart getNextPart() {
-		return this.nextPart;
+	final void comeFrom(CBlock<?> block) {
+		comeFrom(block.nextPart());
+	}
+
+	final void comeFrom(CCodePart<Block> from) {
+		this.hasEntries = true;
+	}
+
+	final void terminate() {
+		this.terminated = true;
 	}
 
 }
