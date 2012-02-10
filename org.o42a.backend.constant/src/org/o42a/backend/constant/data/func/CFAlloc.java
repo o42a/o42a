@@ -35,8 +35,8 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 public abstract class CFAlloc<F extends Func<F>>
 		implements FuncAllocation<F> {
 
-	private final FuncPtr<F> underlyingPtr;
 	private final CSignature<F> underlyingSignature;
+	private FuncPtr<F> underlyingPtr;
 	private FuncPtr<F> pointer;
 
 	public CFAlloc(

@@ -87,6 +87,10 @@ public abstract class Signature<F extends Func<F>> {
 
 	@Override
 	public String toString() {
+		return toString(getId().toString());
+	}
+
+	public String toString(String name) {
 
 		final StringBuilder out = new StringBuilder();
 
@@ -95,7 +99,7 @@ public abstract class Signature<F extends Func<F>> {
 		} else {
 			out.append("? ");
 		}
-		out.append(getId());
+		out.append(name);
 		out.append('(');
 		for (int i = 0; i < this.args.length; ++i) {
 			if (i != 0) {

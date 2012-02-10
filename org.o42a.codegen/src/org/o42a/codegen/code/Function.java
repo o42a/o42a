@@ -30,8 +30,8 @@ public final class Function<F extends Func<F>> extends Block {
 	private final FunctionSettings settings;
 	private final Signature<F> signature;
 	private final FunctionBuilder<F> builder;
+	private final FuncPtr<F> pointer;
 	private FuncWriter<F> writer;
-	private FuncPtr<F> pointer;
 
 	Function(
 			FunctionSettings settings,
@@ -43,6 +43,7 @@ public final class Function<F extends Func<F>> extends Block {
 		this.settings = settings;
 		this.builder = builder;
 		this.signature = getGenerator().getFunctions().allocate(signature);
+		this.pointer = new ConstructingFuncPtr<F>(this);
 	}
 
 	public final Signature<F> getSignature() {
@@ -54,7 +55,6 @@ public final class Function<F extends Func<F>> extends Block {
 	}
 
 	public final FuncPtr<F> getPointer() {
-		writer();// init writer
 		return this.pointer;
 	}
 
@@ -91,7 +91,7 @@ public final class Function<F extends Func<F>> extends Block {
 			"Argument " + arg + " does not belong to " + getSignature()
 			+ ". It is defined in " + arg.getSignature();
 
-		final O op = arg.get(code, this.writer);
+		final O op = arg.get(code, writer());
 
 		assert op != null :
 			"Argument " + arg + " not present in " + this;
@@ -107,18 +107,14 @@ public final class Function<F extends Func<F>> extends Block {
 
 		final Functions functions = getGenerator().getFunctions();
 
-		this.writer = getGenerator().getFunctions().codeBackend().addFunction(
+		return this.writer = functions.codeBackend().addFunction(
 				this,
 				functions.createCodeCallback(this));
-		this.pointer =
-				new ConstructingFuncPtr<F>(this, this.writer.getAllocation());
-
-		return this.writer;
 	}
 
 	@Override
 	public String toString() {
-		return getId().getId() + '(' + this.signature + ')';
+		return getSignature().toString(getId().toString());
 	}
 
 	final void build() {

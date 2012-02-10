@@ -37,19 +37,13 @@ public final class LLFAlloc<F extends Func<F>>
 	private final LLVMId llvmId;
 	private final Signature<F> signature;
 
-	public LLFAlloc(
-			LLVMModule module,
-			LLVMId llvmId,
-			Signature<F> signature) {
+	public LLFAlloc(LLVMModule module, LLVMId llvmId, Signature<F> signature) {
 		this.module = module;
 		this.llvmId = llvmId;
 		this.signature = signature;
 	}
 
-	public LLFAlloc(
-			LLVMModule module,
-			long nativePtr,
-			Signature<F> signature) {
+	public LLFAlloc(LLVMModule module, long nativePtr, Signature<F> signature) {
 		this.module = module;
 		this.llvmId = LLVMId.nullId(nativePtr, true);
 		this.signature = signature;

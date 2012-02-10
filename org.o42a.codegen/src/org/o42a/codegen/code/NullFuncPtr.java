@@ -24,18 +24,32 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 
 final class NullFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
-	NullFuncPtr(Signature<F> signature, FuncAllocation<F> allocation) {
-		super(signature.getId().detail("null"), signature, allocation, true);
+	private FuncAllocation<F> allocation;
+
+	NullFuncPtr(Signature<F> signature) {
+		super(signature.getId().detail("null"), signature, true);
 	}
 
 	@Override
-	public Function<F> getFunction() {
+	public final Function<F> getFunction() {
 		return null;
 	}
 
 	@Override
+	public final FuncAllocation<F> getAllocation() {
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+
+		final Functions functions =
+				getSignature().getGenerator().getFunctions();
+
+		return this.allocation = functions.dataWriter().nullPtr(this);
+	}
+
+	@Override
 	public String toString() {
-		return this.allocation.toString();
+		return getSignature().toString("NULL");
 	}
 
 }
