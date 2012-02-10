@@ -153,6 +153,8 @@ public class ConsoleModule extends AnnotatedModule {
 		.toInt32(null, main)
 		.load(null, main)
 		.returnValue(main);
+
+		main.done();
 	}
 
 	@Override
