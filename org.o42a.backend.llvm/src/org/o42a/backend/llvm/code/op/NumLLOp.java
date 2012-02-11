@@ -21,7 +21,6 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
@@ -109,26 +108,6 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	@Override
 	public String toString() {
 		return this.id.toString();
-	}
-
-	protected final CodeId castId(CodeId id, Code code, String suffix) {
-		return LLCode.castId(this, id, code, suffix);
-	}
-
-	protected final CodeId castId(CodeId id, Code code, CodeId suffix) {
-		return LLCode.castId(this, id, code, suffix);
-	}
-
-	protected final CodeId unaryId(CodeId id, Code code, String op) {
-		return LLCode.unaryId(this, id, code, op);
-	}
-
-	protected final CodeId binaryId(
-			CodeId id,
-			Code code,
-			String op,
-			O operand) {
-		return LLCode.binaryId(this, id, code, op, operand);
 	}
 
 }

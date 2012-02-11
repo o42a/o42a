@@ -43,7 +43,7 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = unaryId(id, code, "neg");
+		final CodeId resultId = code.getOpNames().unaryId(id, "neg", this);
 
 		return create(
 				resultId,
@@ -62,7 +62,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "add", summand);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "add", this, summand);
 
 		return create(
 				resultId,
@@ -82,7 +83,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "sub", subtrahend);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "sub", this, subtrahend);
 
 		return create(
 				resultId,
@@ -102,7 +104,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "mul", multiplier);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "mul", this, multiplier);
 
 		return create(
 				resultId,
@@ -122,7 +125,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "div", divisor);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "div", this, divisor);
 
 		return create(
 				resultId,
@@ -142,7 +146,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "rem", divisor);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "rem", this, divisor);
 
 		return create(
 				resultId,
@@ -162,7 +167,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "eq", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "eq", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -182,7 +188,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "ne", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "ne", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -202,7 +209,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "gt", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "gt", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -222,7 +230,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "ge", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "ge", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -242,7 +251,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "lt", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "lt", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -262,7 +272,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = binaryId(id, code, "le", other);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "le", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -282,7 +293,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "int8");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "int8", this);
 
 		return new Int8llOp(
 				resultId,
@@ -302,7 +314,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "int16");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "int16", this);
 
 		return new Int16llOp(
 				resultId,
@@ -322,7 +335,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "int32");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "int32", this);
 
 		return new Int32llOp(
 				resultId,
@@ -342,7 +356,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "int64");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "int64", this);
 
 		return new Int64llOp(
 				resultId,
@@ -362,7 +377,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "fp32");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "fp32", this);
 
 		return new Fp32llOp(
 				resultId,
@@ -381,7 +397,8 @@ public abstract class FpLLOp<O extends FpOp<O>, T extends O>
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = castId(id, code, "fp64");
+		final CodeId resultId =
+				code.getOpNames().castId(id, "fp64", this);
 
 		return new Fp64llOp(
 				resultId,

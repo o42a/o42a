@@ -107,43 +107,6 @@ public abstract class LLCode implements CodeWriter {
 		return allocation.getTypePtr();
 	}
 
-	public static CodeId castId(Op op, CodeId id, Code code, String suffix) {
-		if (id != null) {
-			return code.opId(id);
-		}
-		return op.getId().type(code.id(suffix));
-	}
-
-	public static CodeId castId(Op op, CodeId id, Code code, CodeId suffix) {
-		if (id != null) {
-			return code.opId(id);
-		}
-		return op.getId().type(suffix);
-	}
-
-	public static CodeId unaryId(
-			Op op,
-			CodeId id,
-			Code code,
-			String operator) {
-		if (id != null) {
-			return code.opId(id);
-		}
-		return code.getGenerator().id(operator).detail(op.getId());
-	}
-
-	public static CodeId binaryId(
-			Op left,
-			CodeId id,
-			Code code,
-			String operator,
-			Op right) {
-		if (id != null) {
-			return code.opId(id);
-		}
-		return left.getId().detail(operator).detail(right.getId());
-	}
-
 	private final LLVMModule module;
 	private final LLFunction<?> function;
 	private final Code code;
