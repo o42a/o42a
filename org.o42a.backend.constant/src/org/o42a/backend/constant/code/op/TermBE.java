@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CBlock;
+import org.o42a.backend.constant.code.CBlockPart;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.code.Block;
 
@@ -32,9 +33,10 @@ public abstract class TermBE extends AbstractBE {
 		this.part = code.term(this);
 	}
 
-	public TermBE(CCodePart<Block> part) {
+	public TermBE(CBlockPart part) {
 		this.part = part;
 		part.add(this);
+		part.terminate();
 	}
 
 	public final CCodePart<Block> part() {
