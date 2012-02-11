@@ -40,8 +40,14 @@ final class CInsetPart<C extends Code>
 
 	@Override
 	public final C underlying() {
+		if (this.underlying != null) {
+			return this.underlying;
+		}
+
+		inset().getEnclosingPart().revealUpTo(this);
 		assert this.underlying != null :
-			"Code part is not revealed yet: " + this;
+			"Inset \"" + this + "\" not revealed yet";
+
 		return this.underlying;
 	}
 
@@ -62,6 +68,11 @@ final class CInsetPart<C extends Code>
 
 	@Override
 	public final void reveal(Code underlying) {
+		if (!hasOps()) {
+			return;
+		}
+		assert this.underlying == null :
+			"Insset \"" + this + "\" already revealed";
 		this.underlying = inset().createUnderlying(underlying);
 		revealRecords();
 	}

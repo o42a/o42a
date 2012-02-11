@@ -92,12 +92,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final CodeWriter inset(Code code) {
-		return recordInset(new CCodeInset(this, code));
+		return new CCodeInset(this, code);
 	}
 
 	@Override
 	public final CAllocation allocation(AllocationCode code) {
-		return recordInset(new CAllocation(this, code));
+		return new CAllocation(this, code);
 	}
 
 	@Override
@@ -272,6 +272,10 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return this.code.toString();
 	}
 
+	final CCodePart<?> inset(CInset<?> inset) {
+		return record(inset.nextPart());
+	}
+
 	final CCodePart<?> record(OpRecord op) {
 
 		final CCodePart<?> part = nextPart();
@@ -279,11 +283,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		part.add(op);
 
 		return part;
-	}
-
-	private final <CC extends CInset<?>> CC recordInset(CC code) {
-		record(code.nextPart());
-		return code;
 	}
 
 }

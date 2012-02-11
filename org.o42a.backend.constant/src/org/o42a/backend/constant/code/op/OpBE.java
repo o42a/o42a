@@ -44,7 +44,12 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 		if (this.underlying != null) {
 			return this.underlying;
 		}
-		return this.underlying = write();
+
+		part().revealUpTo(this);
+		assert this.underlying != null :
+			this + " not emitted yet ";
+
+		return this.underlying;
 	}
 
 	@Override
@@ -57,7 +62,7 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 
 	@Override
 	protected void emit() {
-		underlying();
+		this.underlying = write();
 	}
 
 	protected abstract U write();

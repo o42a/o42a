@@ -50,6 +50,7 @@ public abstract class CodeBase {
 	}
 
 	private boolean complete;
+	private boolean done;
 
 	public abstract boolean created();
 
@@ -60,9 +61,11 @@ public abstract class CodeBase {
 	}
 
 	public void done() {
-		if (!complete()) {
+		if (this.done) {
 			return;
 		}
+		this.done = true;
+		complete();
 		if (created()) {
 			writer().done();
 		}
@@ -76,12 +79,8 @@ public abstract class CodeBase {
 		return true;
 	}
 
-	protected boolean complete() {
-		if (this.complete) {
-			return false;
-		}
+	protected final void complete() {
 		this.complete = true;
-		return true;
 	}
 
 }

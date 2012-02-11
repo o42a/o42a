@@ -28,6 +28,8 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 
 	private final CCode<?> code;
 	private final CodeId id;
+	private OpRecord lastRevealed;
+	private boolean revealing;
 	private boolean hasOps;
 
 	public CCodePart(CCode<?> code, CodeId id) {
@@ -60,6 +62,41 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		return false;
 	}
 
+	public void revealUpTo(OpRecord last) {
+		assert !this.revealing :
+			"Already revealing " + this;
+
+		final C underlying = underlying();
+
+		this.revealing = true;
+		try {
+
+			OpRecord record;
+			if (this.lastRevealed == null) {
+				record = getFirst();
+			} else {
+				record = this.lastRevealed.getNext();
+				if (record == null) {
+					return;// All revealed
+				}
+			}
+
+			for (;;) {
+				assert record != null :
+					"Nothing to reveal";
+				record.reveal(underlying);
+				if (record == last) {
+					break;
+				}
+				record = record.getNext();
+			}
+
+			this.lastRevealed = record;
+		} finally {
+			this.revealing = false;
+		}
+	}
+
 	@Override
 	protected OpRecord next(OpRecord item) {
 		return item.getNext();
@@ -79,12 +116,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	}
 
 	protected final void revealRecords() {
-
-		final C underlying = underlying();
-
-		for (OpRecord record : this) {
-			record.reveal(underlying);
-		}
+		revealUpTo(getLast());
 	}
 
 }
