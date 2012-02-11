@@ -87,12 +87,13 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			final O falseValue) {
 
 		final CCode<?> ccode = cast(code);
+		final CodeId selectId = id != null ? id : getId().sub("select");
 
 		if (isConstant()) {
 			if (getConstant()) {
-				return create(id, ccode, trueValue);
+				return create(selectId, ccode, trueValue);
 			}
-			return create(id, ccode, falseValue);
+			return create(selectId, ccode, falseValue);
 		}
 
 		if (trueValue instanceof StructOp) {
@@ -102,12 +103,12 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			@SuppressWarnings("rawtypes")
 			final CStruct falseStruct = cast((StructOp) falseValue);
 
-			return selectStruct(id, ccode, trueStruct, falseStruct);
+			return selectStruct(selectId, ccode, trueStruct, falseStruct);
 		}
 
 		final COp<O, ?> trueVal = cast(trueValue);
 
-		return trueVal.create(new OpBE<O>(id, ccode) {
+		return trueVal.create(new OpBE<O>(selectId, ccode) {
 			@Override
 			protected O write() {
 				return backend().underlying().select(

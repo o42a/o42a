@@ -67,7 +67,10 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	@Override
 	public T shl(CodeId id, Code code, int numBits) {
-		return shl(null, code, constantValue(code, numBits));
+		return shl(
+				code.getOpNames().binaryId(id, "shl", this, numBits),
+				code,
+				constantValue(code, numBits));
 	}
 
 	@Override
@@ -93,7 +96,10 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	@Override
 	public T lshr(CodeId id, Code code, int numBits) {
-		return lshr(null, code, constantValue(code, numBits));
+		return lshr(
+				code.getOpNames().binaryId(id, "lshr", this, numBits),
+				code,
+				constantValue(code, numBits));
 	}
 
 	@Override
@@ -119,7 +125,10 @@ public abstract class IntLLOp<O extends IntOp<O>, T extends O>
 
 	@Override
 	public T ashr(CodeId id, Code code, int numBits) {
-		return ashr(null, code, constantValue(code, numBits));
+		return ashr(
+				code.getOpNames().binaryId(id, "ashr", this, numBits),
+				code,
+				constantValue(code, numBits));
 	}
 
 	@Override

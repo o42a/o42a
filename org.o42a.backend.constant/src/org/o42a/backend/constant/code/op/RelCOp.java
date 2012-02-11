@@ -42,8 +42,11 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 			final CodeId id,
 			final Code code,
 			final PtrOp<?> from) {
+
+		final CodeId resultId = code.getOpNames().offsetId(id, from, this);
+
 		return new AnyCOp(
-				new OpBE<AnyOp>(id, cast(code)) {
+				new OpBE<AnyOp>(resultId, cast(code)) {
 					@Override
 					protected AnyOp write() {
 						return backend().underlying().offset(
@@ -62,7 +65,10 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 
 	@Override
 	public final Int32cOp toInt32(CodeId id, Code code) {
-		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
+
+		final CodeId resultId = code.getOpNames().castId(id, "int32", this);
+
+		return new Int32cOp(new OpBE<Int32op>(resultId, cast(code)) {
 			@Override
 			protected Int32op write() {
 				return backend().underlying().toInt32(

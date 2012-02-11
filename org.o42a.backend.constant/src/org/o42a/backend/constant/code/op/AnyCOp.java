@@ -48,8 +48,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final AnyRecCOp toPtr(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "any", this);
+
 		return new AnyRecCOp(
-				new OpBE<AnyRecOp>(id, cast(code)) {
+				new OpBE<AnyRecOp>(castId, cast(code)) {
 					@Override
 					protected AnyRecOp write() {
 						return backend().underlying().toPtr(
@@ -62,8 +65,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Int8recCOp toInt8(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "int8", this);
+
 		return new Int8recCOp(
-				new OpBE<Int8recOp>(id, cast(code)) {
+				new OpBE<Int8recOp>(castId, cast(code)) {
 					@Override
 					protected Int8recOp write() {
 						return backend().underlying().toInt8(
@@ -76,8 +82,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Int16recCOp toInt16(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "int16", this);
+
 		return new Int16recCOp(
-				new OpBE<Int16recOp>(id, cast(code)) {
+				new OpBE<Int16recOp>(castId, cast(code)) {
 					@Override
 					protected Int16recOp write() {
 						return backend().underlying().toInt16(
@@ -90,8 +99,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Int32recCOp toInt32(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "int32", this);
+
 		return new Int32recCOp(
-				new OpBE<Int32recOp>(id, cast(code)) {
+				new OpBE<Int32recOp>(castId, cast(code)) {
 					@Override
 					protected Int32recOp write() {
 						return backend().underlying().toInt32(
@@ -104,8 +116,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Int64recCOp toInt64(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "int64", this);
+
 		return new Int64recCOp(
-				new OpBE<Int64recOp>(id, cast(code)) {
+				new OpBE<Int64recOp>(castId, cast(code)) {
 					@Override
 					protected Int64recOp write() {
 						return backend().underlying().toInt64(
@@ -118,8 +133,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Fp32recCOp toFp32(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "fp32", this);
+
 		return new Fp32recCOp(
-				new OpBE<Fp32recOp>(id, cast(code)) {
+				new OpBE<Fp32recOp>(castId, cast(code)) {
 					@Override
 					protected Fp32recOp write() {
 						return backend().underlying().toFp32(
@@ -132,8 +150,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final Fp64recOp toFp64(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "fp64", this);
+
 		return new Fp64recCOp(
-				new OpBE<Fp64recOp>(id, cast(code)) {
+				new OpBE<Fp64recOp>(castId, cast(code)) {
 					@Override
 					protected Fp64recOp write() {
 						return backend().underlying().toFp64(
@@ -146,8 +167,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public final RelRecCOp toRel(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "rel", this);
+
 		return new RelRecCOp(
-				new OpBE<RelRecOp>(id, cast(code)) {
+				new OpBE<RelRecOp>(castId, cast(code)) {
 					@Override
 					protected RelRecOp write() {
 						return backend().underlying().toRel(
@@ -160,8 +184,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 
 	@Override
 	public DataCOp toData(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "data", this);
+
 		return new DataCOp(
-				new OpBE<DataOp>(id, cast(code)) {
+				new OpBE<DataOp>(castId, cast(code)) {
 					@Override
 					protected DataOp write() {
 						return backend().underlying().toData(
@@ -177,8 +204,12 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 			final CodeId id,
 			final Code code,
 			final Signature<F> signature) {
+
+		final CodeId castId =
+				code.getOpNames().castId(id, signature.getId(), this);
+
 		return new FuncCOp<F>(
-				new OpBE<FuncOp<F>>(id, cast(code)) {
+				new OpBE<FuncOp<F>>(castId, cast(code)) {
 					@Override
 					protected FuncOp<F> write() {
 						return backend().underlying().toFunc(
@@ -196,8 +227,11 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 			final CodeId id,
 			final Code code,
 			final Type<S> type) {
+
+		final CodeId castId = code.getOpNames().castId(id, type.getId(), this);
+
 		return type.op(new CStruct<S>(
-				new OpBE<S>(id, cast(code)) {
+				new OpBE<S>(castId, cast(code)) {
 					@Override
 					protected S write() {
 						return backend().underlying().to(

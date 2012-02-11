@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.o42a.analysis.Analyzer;
+import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.codegen.Generator;
 import org.o42a.common.source.FileSourceTree;
@@ -83,7 +84,7 @@ public class CL {
 		final Analyzer analyzer = new Analyzer("compiler");
 		final LLVMGenerator llvmGenerator =
 				newGenerator(null, analyzer, llvmArgs);
-		final Generator generator = llvmGenerator;//new ConstGenerator(llvmGenerator);
+		final Generator generator = new ConstGenerator(llvmGenerator);
 
 		try {
 

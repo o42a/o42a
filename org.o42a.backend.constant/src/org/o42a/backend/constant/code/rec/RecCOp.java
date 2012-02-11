@@ -65,12 +65,13 @@ public abstract class RecCOp<
 	@Override
 	public final O load(CodeId id, Code code) {
 
+		final CodeId derefId = code.getOpNames().derefId(id, this);
 		final CCode<?> ccode = cast(code);
 		final T constant = getConstantValue();
 
 		if (constant != null) {
 			return loaded(
-					new ConstBE<O, T>(id, ccode, constant) {
+					new ConstBE<O, T>(derefId, ccode, constant) {
 						@Override
 						protected O write() {
 							return underlyingConstant(part(), this.constant);
@@ -80,7 +81,7 @@ public abstract class RecCOp<
 		}
 
 		return loaded(
-				new OpBE<O>(id, ccode) {
+				new OpBE<O>(derefId, ccode) {
 					@Override
 					protected O write() {
 						return backend().underlying().load(

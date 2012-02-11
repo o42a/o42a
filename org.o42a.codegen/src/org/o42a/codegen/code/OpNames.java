@@ -20,8 +20,7 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.*;
 
 
 public class OpNames {
@@ -84,11 +83,27 @@ public class OpNames {
 		return left.getId().detail(operator).detail(right.getId());
 	}
 
-	public final CodeId derefId(CodeId id, PtrOp<?> op) {
+	public final CodeId binaryId(
+			CodeId id,
+			String operator,
+			Op left,
+			long right) {
 		if (id != null) {
 			return id;
 		}
-		return op.getId().detail("deref");
+		return left.getId().detail(operator).detail(Long.toString(right));
+	}
+
+	public final CodeId derefId(CodeId id, PtrOp<?> ptr) {
+		return unaryId(id, "deref", ptr);
+	}
+
+	public final CodeId offsetId(CodeId id, PtrOp<?> from, RelOp offset) {
+		return binaryId(id, "off", from, offset);
+	}
+
+	public final CodeId indexId(CodeId id, PtrOp<?> from, IntOp<?> index) {
+		return binaryId(id, "idx", from, index);
 	}
 
 	@Override

@@ -176,7 +176,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Int8llOp int8(byte value) {
 		return new Int8llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				int8(getModule().getNativePtr(), value));
 	}
@@ -184,7 +184,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Int16llOp int16(short value) {
 		return new Int16llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				int16(getModule().getNativePtr(), value));
 	}
@@ -192,7 +192,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Int32llOp int32(int value) {
 		return new Int32llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				int32(getModule().getNativePtr(), value));
 	}
@@ -200,7 +200,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Int64llOp int64(long value) {
 		return new Int64llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				int64(getModule().getNativePtr(), value));
 	}
@@ -208,7 +208,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Fp32llOp fp32(float value) {
 		return new Fp32llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				fp32(getModule().getNativePtr(), value));
 	}
@@ -216,7 +216,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public Fp64llOp fp64(double value) {
 		return new Fp64llOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				fp64(getModule().getNativePtr(), value));
 	}
@@ -224,7 +224,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public BoolLLOp bool(boolean value) {
 		return new BoolLLOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				bool(getModule().getNativePtr(), value));
 	}
@@ -232,7 +232,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public RelOp nullRelPtr() {
 		return new RelLLOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				nextPtr(),
 				int32(getModule().getNativePtr(), 0));
 	}
@@ -240,7 +240,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public AnyLLOp nullPtr() {
 		return new AnyLLOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				CONSTANT_ALLOC_CLASS,
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
@@ -249,7 +249,7 @@ public abstract class LLCode implements CodeWriter {
 	@Override
 	public DataLLOp nullDataPtr() {
 		return new DataLLOp(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				CONSTANT_ALLOC_CLASS,
 				nextPtr(),
 				nullPtr(getModule().getNativePtr()));
@@ -262,7 +262,7 @@ public abstract class LLCode implements CodeWriter {
 				(ContainerLLDAlloc<S>) type;
 
 		return allocation.getType().op(new LLStruct<S>(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				CONSTANT_ALLOC_CLASS,
 				allocation,
 				nextPtr(),
@@ -275,7 +275,7 @@ public abstract class LLCode implements CodeWriter {
 		final LLSignature<F> allocation = llvm(getModule(), signature);
 
 		return new LLFunc<F>(
-				this.code.opId(null),
+				code().getOpNames().opId(null),
 				signature,
 				nextPtr(),
 				nullFuncPtr(allocation.getNativePtr()));
@@ -286,24 +286,28 @@ public abstract class LLCode implements CodeWriter {
 
 		final LLOp<O> o = llvm(op);
 
-		return o.create(id, nextPtr(), o.getNativePtr());
+		return o.create(
+				id != null ? id : op.getId(),
+			nextPtr(), o.getNativePtr());
 	}
 
 	@Override
 	public <O extends Op> O phi(CodeId id, O op1, O op2) {
 
+		final CodeId resultId =
+				code().getOpNames().binaryId(id, "phi", op1, op2);
 		final long nextPtr = nextPtr();
 		final LLOp<O> o1 = llvm(op1);
 		final LLOp<O> o2 = llvm(op2);
 		final NativeBuffer ids = getModule().ids();
 
 		return o1.create(
-				id,
+				resultId,
 				nextPtr,
 				instr(phi2(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(id),
+						ids.writeCodeId(resultId),
 						ids.length(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
@@ -325,7 +329,7 @@ public abstract class LLCode implements CodeWriter {
 		final NativeBuffer ids = getModule().ids();
 
 		return trueOp.create(
-				id,
+				selectId,
 				nextPtr,
 				instr(select(
 						nextPtr,

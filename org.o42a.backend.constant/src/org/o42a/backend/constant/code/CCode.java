@@ -102,43 +102,43 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	public final Int8cOp int8(byte value) {
-		return new Int8cOp(null, this, value);
+		return new Int8cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int16cOp int16(short value) {
-		return new Int16cOp(null, this, value);
+		return new Int16cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int32cOp int32(int value) {
-		return new Int32cOp(null, this, value);
+		return new Int32cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Int64cOp int64(long value) {
-		return new Int64cOp(null, this, value);
+		return new Int64cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Fp32cOp fp32(float value) {
-		return new Fp32cOp(null, this, value);
+		return new Fp32cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final Fp64cOp fp64(double value) {
-		return new Fp64cOp(null, this, value);
+		return new Fp64cOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final BoolCOp bool(boolean value) {
-		return new BoolCOp(null, this, value);
+		return new BoolCOp(code().getOpNames().opId(null), this, value);
 	}
 
 	@Override
 	public final RelCOp nullRelPtr() {
 		return new RelCOp(
-				new OpBE<RelOp>(null, this) {
+				new OpBE<RelOp>(code().getOpNames().opId(null), this) {
 					@Override
 					protected RelOp write() {
 						return part().underlying().nullRelPtr();
@@ -149,7 +149,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final AnyCOp nullPtr() {
 		return new AnyCOp(
-				new OpBE<AnyOp>(null, this) {
+				new OpBE<AnyOp>(code().getOpNames().opId(null), this) {
 					@Override
 					protected AnyOp write() {
 						return part().underlying().nullPtr();
@@ -162,7 +162,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final DataCOp nullDataPtr() {
 		return new DataCOp(
-				new OpBE<DataOp>(null, this) {
+				new OpBE<DataOp>(code().getOpNames().opId(null), this) {
 					@Override
 					protected DataOp write() {
 						return part().underlying().nullDataPtr();
@@ -179,7 +179,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		final Type<S> originalType = typeAlloc.getType();
 
 		return originalType.op(new CStruct<S>(
-				new OpBE<S>(null, this) {
+				new OpBE<S>(code().getOpNames().opId(null), this) {
 					@Override
 					protected S write() {
 
@@ -199,7 +199,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final <F extends Func<F>> CFunc<F> nullPtr(
 			final Signature<F> signature) {
 		return new CFunc<F>(
-				new OpBE<F>(null, this) {
+				new OpBE<F>(code().getOpNames().opId(null), this) {
 					@Override
 					protected F write() {
 						return part().underlying().nullPtr(
@@ -217,7 +217,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@SuppressWarnings("unchecked")
 	public final <O extends Op> O phi(CodeId id, O op) {
 
-		final COp<?, ?> cop = cast((StructOp<?>) op);
+		final COp<?, ?> cop = cast(op);
 		@SuppressWarnings("rawtypes")
 		final COp res = cop;
 
@@ -236,17 +236,19 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
 
+		final CodeId resultId =
+				code().getOpNames().binaryId(id, "phi", op1, op2);
 		final COp<O, ?> cop1 = cast(op1);
 		final COp<O, ?> cop2 = cast(op2);
 
 		if (cop1.isConstant() && cop2.isConstant()) {
 			if (cop1.getConstant().equals(cop2.getConstant())) {
-				return phi(id, op1);
+				return phi(resultId, op1);
 			}
 		}
 
 		return cop1.create(
-				new OpBE<O>(id, this) {
+				new OpBE<O>(resultId, this) {
 					@Override
 					protected O write() {
 						 return part().underlying().phi(
