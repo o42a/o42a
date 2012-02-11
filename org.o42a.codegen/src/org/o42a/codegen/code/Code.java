@@ -64,11 +64,11 @@ public abstract class Code extends DebugCodeBase {
 	}
 
 	public final Code inset(String name) {
-		return new Inset(this, id(name));
+		return new InsetCode(this, id(name));
 	}
 
 	public final Code inset(CodeId name) {
-		return new Inset(this, name);
+		return new InsetCode(this, name);
 	}
 
 	public final AllocationCode allocate() {

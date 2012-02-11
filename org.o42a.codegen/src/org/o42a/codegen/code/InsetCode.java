@@ -20,31 +20,21 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.backend.CodeWriter;
 
 
-abstract class Inset extends Code {
+final class InsetCode extends Inset {
 
-	private final Block block;
+	private final CodeWriter writer;
 
-	Inset(Code enclosing, CodeId name) {
+	public InsetCode(Code enclosing, CodeId name) {
 		super(enclosing, name);
-		this.block = enclosing.getBlock();
-		setOpNames(new OpNames.InsetOpNames(this));
+		this.writer = enclosing.writer().inset(this);
 	}
 
 	@Override
-	public final Block getBlock() {
-		return this.block;
-	}
-
-	@Override
-	public final boolean created() {
-		return writer().created();
-	}
-
-	@Override
-	public final boolean exists() {
-		return writer().exists();
+	public final CodeWriter writer() {
+		return this.writer;
 	}
 
 }

@@ -28,37 +28,20 @@ import org.o42a.codegen.data.Type;
 import org.o42a.util.ArrayUtil;
 
 
-public final class AllocationCode extends Code {
+public final class AllocationCode extends Inset {
 
-	private final Block block;
 	private final AllocationWriter writer;
 	private final boolean disposable;
 	private Code exits[];
 
 	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
 		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
-		this.block = enclosing.getBlock();
 		this.disposable = disposable;
 		this.writer = enclosing.writer().allocation(this);
 	}
 
-	@Override
-	public final Block getBlock() {
-		return this.block;
-	}
-
 	public final boolean isDisposable() {
 		return this.disposable;
-	}
-
-	@Override
-	public boolean created() {
-		return writer().created();
-	}
-
-	@Override
-	public final boolean exists() {
-		return writer().exists();
 	}
 
 	public final AnyRecOp allocatePtr(CodeId id) {
