@@ -69,13 +69,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId;
-
-		if (id != null) {
-			resultId = code.opId(id);
-		} else {
-			resultId = getId().detail("offset_from").detail(from.getId());
-		}
+		final CodeId resultId = code.getOpNames().offsetId(id, from, this);
 
 		return new AnyLLOp(
 				resultId,
@@ -93,7 +87,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 	@Override
 	public Int32llOp toInt32(CodeId id, Code code) {
 		return new Int32llOp(
-				code.opId(id),
+				code.getOpNames().castId(id, "int32", this),
 				getBlockPtr(),
 				getNativePtr());
 	}

@@ -29,7 +29,7 @@ public class AliasBE<U extends Op> extends OpBE<U> {
 	private final OpBE<U> backend;
 
 	AliasBE(CodeId id, CCode<?> code, OpBE<U> backend) {
-		super(id, code);
+		super(id != null ? id : backend.getId(), code);
 		this.backend = backend;
 	}
 

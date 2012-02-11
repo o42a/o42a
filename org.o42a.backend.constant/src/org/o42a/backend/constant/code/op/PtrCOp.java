@@ -90,12 +90,13 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	public final BoolCOp isNull(CodeId id, Code code) {
 
 		final CCode<?> ccode = cast(code);
+		final CodeId resultId = code.getOpNames().unaryId(id, "is_null", this);
 
 		if (isConstant()) {
-			return new BoolCOp(id, ccode, getConstant().isNull());
+			return new BoolCOp(resultId, ccode, getConstant().isNull());
 		}
 
-		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().isNull(
@@ -109,17 +110,18 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	public final BoolCOp eq(CodeId id, Code code, P other) {
 
 		final CCode<?> ccode = cast(code);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "eq", this, other);
 		final COp<P, ?> o = cast(other);
 
 		if (isConstant() && o.isConstant()) {
 			return new BoolCOp(
-					id,
+					resultId,
 					ccode,
 					getConstant().equals(o.getConstant()));
 		}
 
-
-		return new BoolCOp(new OpBE<BoolOp>(id, ccode) {
+		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().eq(
@@ -135,17 +137,20 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	public final P offset(CodeId id, Code code, IntOp<?> index) {
 
 		final CCode<?> ccode = cast(code);
+		final CodeId resultId = code.getOpNames().indexId(id, this, index);
 		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
 
 		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
 			if (part() == ccode.nextPart()) {
 				return (P) this;
 			}
-			return create(new AliasBE<P>(id, ccode, backend()), getConstant());
+			return create(
+					new AliasBE<P>(resultId, ccode, backend()),
+					getConstant());
 		}
 
 		return create(
-				new OpBE<P>(id, ccode) {
+				new OpBE<P>(resultId, ccode) {
 					@Override
 					protected P write() {
 						return backend().underlying().offset(
@@ -159,8 +164,11 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 	@Override
 	public AnyCOp toAny(CodeId id, Code code) {
+
+		final CodeId resultId = code.getOpNames().castId(id, "any", this);
+
 		return new AnyCOp(
-				new OpBE<AnyOp>(id, cast(code)) {
+				new OpBE<AnyOp>(resultId, cast(code)) {
 					@Override
 					protected AnyOp write() {
 						return backend().underlying().toAny(

@@ -129,9 +129,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId offsetId =
-				id != null
-				? id : getId().detail("offset_by").detail(index.getId());
+		final CodeId offsetId = code.getOpNames().indexId(id, this, index);
 
 		return create(
 				offsetId,
@@ -170,7 +168,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = code.getOpNames().castId(id, "struct", this);
+		final CodeId castId = code.getOpNames().castId(id, "data", this);
 
 		return new DataLLOp(
 				castId,
