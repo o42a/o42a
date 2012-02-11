@@ -197,6 +197,8 @@ public class ConsoleModule extends AnnotatedModule {
 				main.getPointer().op(null, debugMain),
 				debugMain.arg(debugMain, MAIN.argc()),
 				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
+
+		debugMain.done();
 	}
 
 	private ValOp callMain(Function<DebuggableMainFunc> main) {
