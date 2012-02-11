@@ -50,7 +50,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = derefId(id, code);
+		final CodeId resultId = code.getOpNames().derefId(id, this);
 
 		return createLoaded(
 				resultId,

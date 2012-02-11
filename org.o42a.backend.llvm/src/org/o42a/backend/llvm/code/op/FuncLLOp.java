@@ -59,7 +59,7 @@ public final class FuncLLOp<F extends Func<F>>
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = derefId(id, code);
+		final CodeId resultId = code.getOpNames().derefId(id, this);
 
 		return getSignature().op(new LLFunc<F>(
 				resultId,

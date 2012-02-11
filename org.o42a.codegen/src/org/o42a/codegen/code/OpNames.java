@@ -20,6 +20,8 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.PtrOp;
 
 
 public class OpNames {
@@ -36,20 +38,57 @@ public class OpNames {
 		return this.code;
 	}
 
-	public CodeId opId(CodeId id) {
-		if (id != null) {
-			return id;
-		}
-		return this.code.getId().setLocal(
-				this.code.getGenerator().id().anonymous(nextOp()));
-	}
-
 	public CodeId nestedId(CodeId name) {
 		if (name != null) {
 			return this.code.getId().setLocal(name);
 		}
-		return this.code.getId().setLocal(
-				this.code.getGenerator().id().anonymous(nextBlock()));
+		return code().getId().setLocal(code().id().anonymous(nextBlock()));
+	}
+
+	public final CodeId opId(CodeId id) {
+		if (id != null) {
+			return id;
+		}
+		return code().getId().setLocal(code().id().anonymous(nextOp()));
+	}
+
+	public final CodeId castId(CodeId id, String type, Op op) {
+		if (id != null) {
+			return id;
+		}
+		return op.getId().type(code().id(type));
+	}
+
+	public final CodeId castId(CodeId id, CodeId type, Op op) {
+		if (id != null) {
+			return id;
+		}
+		return op.getId().type(type);
+	}
+
+	public final CodeId unaryId(CodeId id, String operator, Op op) {
+		if (id != null) {
+			return id;
+		}
+		return code().id(operator).detail(op.getId());
+	}
+
+	public final CodeId binaryId(
+			CodeId id,
+			String operator,
+			Op left,
+			Op right) {
+		if (id != null) {
+			return id;
+		}
+		return left.getId().detail(operator).detail(right.getId());
+	}
+
+	public final CodeId derefId(CodeId id, PtrOp<?> op) {
+		if (id != null) {
+			return id;
+		}
+		return op.getId().detail("deref");
 	}
 
 	@Override

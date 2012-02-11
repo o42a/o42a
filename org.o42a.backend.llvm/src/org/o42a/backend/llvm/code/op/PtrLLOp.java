@@ -89,7 +89,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = LLCode.unaryId(this, id, code, "is_null");
+		final CodeId resultId = code.getOpNames().unaryId(id, "is_null", this);
 
 		return new BoolLLOp(
 				resultId,
@@ -109,7 +109,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
 		final CodeId resultId =
-				LLCode.binaryId(this, id, code, "eq", other);
+				 code.getOpNames().binaryId(id, "eq", this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -151,7 +151,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = castId(id, code, "any");
+		final CodeId castId = code.getOpNames().castId(id, "any", this);
 
 		return new AnyLLOp(
 				castId,
@@ -170,7 +170,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = castId(id, code, "struct");
+		final CodeId castId = code.getOpNames().castId(id, "struct", this);
 
 		return new DataLLOp(
 				castId,
@@ -192,7 +192,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = castId(id, code, type.getId());
+		final CodeId castId = code.getOpNames().castId(id, type.getId(), this);
 
 		return type.op(new LLStruct<SS>(
 				castId,
@@ -234,21 +234,6 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 	@Override
 	public String toString() {
 		return this.id.toString();
-	}
-
-	protected final CodeId castId(CodeId id, Code code, String suffix) {
-		return LLCode.castId(this, id, code, suffix);
-	}
-
-	protected final CodeId castId(CodeId id, Code code, CodeId suffix) {
-		return LLCode.castId(this, id, code, suffix);
-	}
-
-	protected final CodeId derefId(CodeId id, Code code) {
-		if (id != null) {
-			return code.opId(id);
-		}
-		return getId().detail("deref");
 	}
 
 	protected static native long field(

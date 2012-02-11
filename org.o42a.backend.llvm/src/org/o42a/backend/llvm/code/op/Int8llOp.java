@@ -35,7 +35,10 @@ public final class Int8llOp extends IntLLOp<Int8op, Int8llOp>
 
 	@Override
 	public Int8op comp(CodeId id, Code code) {
-		return xor(unaryId(id, code, "comp"), code, code.int8((byte) -1));
+		return xor(
+				code.getOpNames().unaryId(id, "comp", this),
+				code,
+				code.int8((byte) -1));
 	}
 
 	@Override

@@ -35,7 +35,10 @@ public final class Int32llOp extends IntLLOp<Int32op, Int32llOp>
 
 	@Override
 	public Int32op comp(CodeId id, Code code) {
-		return xor(unaryId(id, code, "comp"), code, code.int32(-1));
+		return xor(
+				code.getOpNames().unaryId(id, "comp", this),
+				code,
+				code.int32(-1));
 	}
 
 	@Override
