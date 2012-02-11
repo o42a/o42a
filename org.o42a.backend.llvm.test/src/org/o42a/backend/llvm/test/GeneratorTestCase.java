@@ -23,29 +23,40 @@ import static org.o42a.backend.llvm.LLVMGenerator.newGenerator;
 
 import java.util.ArrayList;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.llvm.LLVMGenerator;
+import org.o42a.codegen.Generator;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
 public class GeneratorTestCase extends CompilerTestCase {
 
+	private Generator generator;
+
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
+		try {
+			generateCode(this.generator);
+			this.generator.write();
+		} finally {
+			this.generator.close();
+		}
+	}
 
+	@Override
+	protected Analyzer createAnalyzer() {
+
+		final Analyzer analyzer = super.createAnalyzer();
 		final LLVMGenerator llvmGenerator = newGenerator(
 				"test",
-				this.analyzer,
+				analyzer,
 				parseArgs(System.getProperty("llvm.args", "")));
-		final ConstGenerator generator = new ConstGenerator(llvmGenerator);
 
-		try {
-			generateCode(generator);
-			generator.write();
-		} finally {
-			generator.close();
-		}
+		this.generator = new ConstGenerator(llvmGenerator);
+
+		return analyzer;
 	}
 
 	private String[] parseArgs(String args) {

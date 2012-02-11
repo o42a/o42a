@@ -26,11 +26,17 @@ abstract class CInset<C extends Code> extends CCode<C> {
 
 	private final CBlock<?> block;
 	private final CInsetPart<C> part;
+	private final CCodePart<?> enclosingPart;
 
 	CInset(CCode<?> enclosing, C code) {
 		super(enclosing.getBackend(), enclosing.getFunction(), code);
-		this.part = new CInsetPart<C>(this);
 		this.block = enclosing.block();
+		this.part = new CInsetPart<C>(this);
+		this.enclosingPart = enclosing.inset(this);
+	}
+
+	public final CCodePart<?> getEnclosingPart() {
+		return this.enclosingPart;
 	}
 
 	@Override
@@ -40,7 +46,7 @@ abstract class CInset<C extends Code> extends CCode<C> {
 
 	@Override
 	public final boolean created() {
-		return !this.part.isEmpty();
+		return this.part.hasOps();
 	}
 
 	@Override

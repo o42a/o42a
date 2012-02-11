@@ -121,10 +121,16 @@ public final class CAllocation
 
 	@Override
 	public void dispose(final CodeWriter writer) {
+
+		final CInsetPart<AllocationCode> allocPart = nextPart();
+
 		new InstrBE(cast(writer)) {
 			@Override
 			protected void emit() {
-				nextPart().underlying().writer().dispose(
+				if (!allocPart.hasOps()) {
+					return;
+				}
+				allocPart.underlying().writer().dispose(
 						part().underlying().writer());
 			}
 		};

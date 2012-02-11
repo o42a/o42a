@@ -95,7 +95,10 @@ public class OpNames {
 	}
 
 	public final CodeId derefId(CodeId id, PtrOp<?> ptr) {
-		return unaryId(id, "deref", ptr);
+		if (id != null) {
+			return id;
+		}
+		return ptr.getId().detail("deref");
 	}
 
 	public final CodeId offsetId(CodeId id, PtrOp<?> from, RelOp offset) {
