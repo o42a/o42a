@@ -52,7 +52,10 @@ public class CFunction<F extends Func<F>>
 	}
 
 	public final Function<F> getUnderlying() {
-		return this.underlying;
+		if (this.underlying != null) {
+			return this.underlying;
+		}
+		return this.underlying = createUnderlying();
 	}
 
 	public final CodeCallback getCallback() {
@@ -228,7 +231,6 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
-		this.underlying = createUnderlying();
 		initUnderlying(getUnderlying());
 		reveal();
 	}

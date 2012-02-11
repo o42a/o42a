@@ -44,8 +44,13 @@ public final class CCodePos implements CodePos {
 		return this.part.underlying().head();
 	}
 
-	public final CCodePos comeFrom(CCodePart<Block> from) {
+	public final CCodePos comeFrom(CBlockPart from) {
 		this.part.comeFrom(from);
+		return this;
+	}
+
+	public final CCodePos comeFromPrev(CBlockPart prev) {
+		this.part.comeFromPrev(prev);
 		return this;
 	}
 

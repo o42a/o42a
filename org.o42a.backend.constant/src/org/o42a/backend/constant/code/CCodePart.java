@@ -54,11 +54,10 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		}
 		for (OpRecord record : this) {
 			if (!record.isEmptyOp()) {
-				this.hasOps = true;
-				return false;
+				return this.hasOps = true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override

@@ -68,7 +68,10 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	@Override
 	public CodePos tail() {
-		if (this.nextPart != null && !this.nextPart.isEmpty()) {
+		if (this.nextPart != null) {
+			if (!this.nextPart.hasOps()) {
+				return this.nextPart.head();
+			}
 			this.nextPart = null;
 		}
 		return nextPart().head();
@@ -84,23 +87,11 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		}
 
 		final CBlockPart prev = this.lastPart;
-
-		this.nextPart = this.lastPart =
-				this.lastPart.createNextPart(++this.blockSeq);
+		final CBlockPart next = addNextPart();
 
 		if (!prev.isTerminated()) {
-
-			final CCodePos nextHead = this.nextPart.head().comeFrom(prev);
-
-			new TermBE(prev) {
-				@Override
-				protected void emit() {
-
-					final CBlockPart part = (CBlockPart) part();
-
-					part.underlying().go(nextHead.getUnderlying());
-				}
-			};
+			next.head().comeFromPrev(prev);
+			prev.terminate();
 		}
 
 		return this.nextPart;
@@ -143,16 +134,38 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return;
 		}
 
-		final CCodePos trueCPos = cast(truePos).comeFrom(this);
-		final CCodePos falseCPos = cast(falsePos).comeFrom(this);
+		final CBlockPart prev = nextPart();
+		CBlockPart next = null;
 
-		new TermBE(this) {
+		final CCodePos trueCPos = cast(truePos);
+		final CCodePos actualTruePos;
+
+		if (trueCPos != null) {
+			actualTruePos = trueCPos.comeFrom(prev);
+		} else {
+			next = addNextPart();
+			actualTruePos = next.head().comeFrom(prev);
+		}
+
+		final CCodePos falseCPos = cast(falsePos);
+		final CCodePos actualFalsePos;
+
+		if (falseCPos != null) {
+			actualFalsePos = falseCPos.comeFrom(prev);
+		} else {
+			if (next == null) {
+				next = addNextPart();
+			}
+			actualFalsePos = next.head().comeFrom(prev);
+		}
+
+		new TermBE(prev) {
 			@Override
 			protected void emit() {
 				cond.backend().underlying().go(
 						part().underlying(),
-						trueCPos.getUnderlying(),
-						falseCPos.getUnderlying());
+						actualTruePos.getUnderlying(),
+						actualFalsePos.getUnderlying());
 			}
 		};
 	}
@@ -216,6 +229,11 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		for (CBlock<?> subBlock : this.subBlocks) {
 			subBlock.reveal();
 		}
+	}
+
+	private final CBlockPart addNextPart() {
+		return this.nextPart = this.lastPart =
+				this.lastPart.createNextPart(++this.blockSeq);
 	}
 
 	private static final class SubBlocks extends Chain<CBlock<?>> {

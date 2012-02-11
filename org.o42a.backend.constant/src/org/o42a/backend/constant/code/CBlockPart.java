@@ -23,14 +23,18 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 
 
-class CBlockPart extends CCodePart<Block> {
+public class CBlockPart extends CCodePart<Block> {
+
+	private static final byte ENTRY_BLOCK = 0x01;
+	private static final byte ENTRY_PREV_PART = 0x02;
+	private static final byte TERMINATED = 0x04;
+	private static final byte HAS_ENTRIES = ENTRY_BLOCK;
 
 	private final CCodePos head;
 	private CBlockPart nextPart;
 	private Block underlying;
 	private final int index;
-	private boolean hasEntries;
-	private boolean terminated;
+	private byte flags;
 
 	CBlockPart(CBlock<?> block) {
 		this(block, 0);
@@ -53,11 +57,15 @@ class CBlockPart extends CCodePart<Block> {
 	}
 
 	public final boolean exists() {
-		return this.hasEntries || hasOps();
+		return (this.flags & HAS_ENTRIES) != 0 || hasOps();
 	}
 
 	public final boolean isTerminated() {
-		return this.terminated;
+		return (this.flags & TERMINATED) != 0;
+	}
+
+	public final void terminate() {
+		this.flags |= TERMINATED;
 	}
 
 	@Override
@@ -68,6 +76,12 @@ class CBlockPart extends CCodePart<Block> {
 	}
 
 	public final void initUnderlying(Block underlyingEnclosing) {
+		if (!exists()) {
+			assert this.nextPart == null :
+				"Block part \"" + this
+				+ "\" does not exist, but has continuation";
+			return;
+		}
 		this.underlying = createUnderlying(underlyingEnclosing);
 		if (this.nextPart != null) {
 			this.nextPart.initUnderlying(underlyingEnclosing);
@@ -75,8 +89,14 @@ class CBlockPart extends CCodePart<Block> {
 	}
 
 	public final void reveal() {
+		if (!exists()) {
+			return;
+		}
 		revealRecords();
 		if (this.nextPart != null) {
+			if ((this.nextPart.flags & ENTRY_PREV_PART) != 0) {
+				underlying().go(this.nextPart.head().getUnderlying());
+			}
 			this.nextPart.reveal();
 		}
 	}
@@ -105,12 +125,12 @@ class CBlockPart extends CCodePart<Block> {
 		comeFrom(block.nextPart());
 	}
 
-	final void comeFrom(CCodePart<Block> from) {
-		this.hasEntries = true;
+	final void comeFrom(CBlockPart from) {
+		this.flags |= ENTRY_BLOCK;
 	}
 
-	final void terminate() {
-		this.terminated = true;
+	final void comeFromPrev(CBlockPart from) {
+		this.flags |= ENTRY_PREV_PART;
 	}
 
 }
