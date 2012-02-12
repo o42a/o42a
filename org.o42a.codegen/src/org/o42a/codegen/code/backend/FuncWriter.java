@@ -56,4 +56,6 @@ public interface FuncWriter<F extends Func<F>> extends BlockWriter {
 			Arg<FF> arg,
 			Signature<FF> signature);
 
+	void done();
+
 }

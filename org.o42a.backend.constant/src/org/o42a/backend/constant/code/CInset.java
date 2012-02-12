@@ -55,10 +55,6 @@ abstract class CInset<C extends Code> extends CCode<C> {
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
 	public CInsetPart<C> nextPart() {
 		return this.part;
 	}

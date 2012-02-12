@@ -32,8 +32,6 @@ public interface CodeWriter {
 
 	boolean exists();
 
-	void done();
-
 	CodeId getId();
 
 	<F extends Func<F>> FuncCaller<F> caller(

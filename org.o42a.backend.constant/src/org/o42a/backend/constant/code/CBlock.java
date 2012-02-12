@@ -208,9 +208,9 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	protected abstract CBlockPart createFirstBlock();
 
-	final void initUnderlying(Block underlyingEnclosing) {
+	final boolean initUnderlying(Block underlyingEnclosing) {
 		if (!created()) {
-			return;
+			return false;
 		}
 		this.firstPart.initUnderlying(underlyingEnclosing);
 
@@ -219,6 +219,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		for (CBlock<?> subBlock : this.subBlocks) {
 			subBlock.initUnderlying(underlying);
 		}
+
+		return true;
 	}
 
 	final void reveal() {
