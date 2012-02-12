@@ -20,13 +20,14 @@
 package org.o42a.backend.constant.data.func;
 
 import org.o42a.backend.constant.code.signature.CSignature;
-import org.o42a.backend.constant.data.AnyCDAlloc;
-import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.backend.constant.data.*;
 import org.o42a.backend.constant.data.rec.FuncRecCDAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -81,9 +82,23 @@ public abstract class CFAlloc<F extends Func<F>>
 
 	@Override
 	public AnyCDAlloc toAny() {
-		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
+		return new AnyCDAlloc(getBackend(), new ToAny());
 	}
 
 	protected abstract FuncPtr<F> createUnderlyingPtr();
+
+	private final class ToAny extends UnderAlloc<AnyOp> {
+
+		@Override
+		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp, ?> alloc) {
+			return getUnderlyingPtr().toAny();
+		}
+
+		@Override
+		public String toString() {
+			return "(any*) " + CFAlloc.this;
+		}
+
+	}
 
 }

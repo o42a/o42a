@@ -19,12 +19,9 @@
 */
 package org.o42a.backend.constant.data.struct;
 
-import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.backend.constant.data.ContainerCDAlloc;
-import org.o42a.backend.constant.data.TopLevelCDAlloc;
+import org.o42a.backend.constant.data.*;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Allocated;
-import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
 
@@ -48,8 +45,8 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 		nest();
 	}
 
-	public StructCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
-		super(backend, underlyingPtr);
+	public StructCDAlloc(ConstBackend backend, UnderAlloc<S> underAlloc) {
+		super(backend, underAlloc);
 		this.topLevel = null;
 		this.enclosing = null;
 	}

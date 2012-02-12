@@ -26,14 +26,16 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
 public final class DataCDAlloc extends CDAlloc<DataOp, Data<DataOp>> {
 
-	public DataCDAlloc(ConstBackend backend, Ptr<DataOp> underlyingPtr) {
-		super(backend, underlyingPtr);
+	public DataCDAlloc(ConstBackend backend, UnderAlloc<DataOp> underlAlloc) {
+		super(backend, underlAlloc);
 	}
 
 	@Override
