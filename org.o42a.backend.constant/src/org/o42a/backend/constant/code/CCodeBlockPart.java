@@ -17,30 +17,43 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.op;
+package org.o42a.backend.constant.code;
 
-import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.Block;
 
 
-public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
+final class CCodeBlockPart extends CBlockPart {
 
-	protected final T constant;
+	CCodeBlockPart(CCodeBlock block) {
+		super(block);
+	}
 
-	public ConstBE(CodeId id, CCode<?> code, T constant) {
-		super(id, code);
-		this.constant = constant;
+	private CCodeBlockPart(CBlock<?> block, int index) {
+		super(
+				block,
+				index != 0 ? block.getId().anonymous(index) : block.getId(),
+				index);
 	}
 
 	@Override
-	public final boolean isEmptyOp() {
-		return true;
+	protected CBlockPart newNextPart(int index) {
+		return new CCodeBlockPart(block(), index);
 	}
 
 	@Override
-	public String toString() {
-		return this.constant.toString();
+	protected Block createUnderlying(Block underlyingEnclosing) {
+
+		final CodeId localId = block().getId().getLocal();
+		final CodeId partName;
+
+		if (index() == 0) {
+			partName = localId;
+		} else {
+			partName = localId.anonymous(index());
+		}
+
+		return underlyingEnclosing.addBlock(partName);
 	}
 
 }

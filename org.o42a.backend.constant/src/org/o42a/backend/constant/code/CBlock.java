@@ -209,7 +209,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	protected abstract CBlockPart createFirstBlock();
 
 	final void initUnderlying(Block underlyingEnclosing) {
-		if (this.firstPart == null) {
+		if (!created()) {
 			return;
 		}
 		this.firstPart.initUnderlying(underlyingEnclosing);
@@ -222,7 +222,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	final void reveal() {
-		if (this.firstPart == null) {
+		if (!created()) {
 			return;
 		}
 		this.firstPart.reveal();

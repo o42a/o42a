@@ -39,13 +39,13 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	private final Boolean constant;
 
 	public BoolCOp(OpBE<BoolOp> backend) {
-		this.backend = backend;
-		this.constant = null;
+		this(backend, null);
 	}
 
 	public BoolCOp(OpBE<BoolOp> backend, Boolean constant) {
 		this.backend = backend;
 		this.constant = constant;
+		this.backend.init(this);
 	}
 
 	public BoolCOp(CodeId id, CCode<?> code, boolean constant) {

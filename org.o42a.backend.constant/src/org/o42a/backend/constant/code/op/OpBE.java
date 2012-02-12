@@ -28,6 +28,7 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 
 	private final CodeId id;
 	private U underlying;
+	private COp<U, ?> op;
 
 	public OpBE(CodeId id, CCode<?> code) {
 		super(code);
@@ -38,6 +39,11 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 
 	public final CodeId getId() {
 		return this.id;
+	}
+
+	@Override
+	public boolean isEmptyOp() {
+		return this.op.getConstant() != null;
 	}
 
 	public final U underlying() {
@@ -66,5 +72,9 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 	}
 
 	protected abstract U write();
+
+	final void init(COp<U, ?> op) {
+		this.op = op;
+	}
 
 }

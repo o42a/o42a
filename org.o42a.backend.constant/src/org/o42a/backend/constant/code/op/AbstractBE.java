@@ -28,7 +28,7 @@ abstract class AbstractBE implements OpRecord {
 	private OpRecord next;
 
 	@Override
-	public final boolean isEmptyOp() {
+	public boolean isEmptyOp() {
 		return false;
 	}
 

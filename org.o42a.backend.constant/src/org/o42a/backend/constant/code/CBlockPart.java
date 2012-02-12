@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 
 
-public class CBlockPart extends CCodePart<Block> {
+public abstract class CBlockPart extends CCodePart<Block> {
 
 	private static final byte ENTRY_BLOCK = 0x01;
 	private static final byte ENTRY_PREV_PART = 0x02;
@@ -37,19 +37,21 @@ public class CBlockPart extends CCodePart<Block> {
 	private byte flags;
 
 	CBlockPart(CBlock<?> block) {
-		this(block, 0);
+		this(block, block.getId(), 0);
 	}
 
-	private CBlockPart(CBlock<?> block, int index) {
-		super(
-				block,
-				index != 0 ? block.getId().anonymous(index) : block.getId());
+	CBlockPart(CBlock<?> block, CodeId id, int index) {
+		super(block, id);
 		this.index = index;
 		this.head = new CCodePos(this);
 	}
 
 	public final CBlock<?> block() {
 		return (CBlock<?>) code();
+	}
+
+	public final int index() {
+		return this.index;
 	}
 
 	public final CCodePos head() {
@@ -69,7 +71,7 @@ public class CBlockPart extends CCodePart<Block> {
 	}
 
 	@Override
-	public Block underlying() {
+	public final Block underlying() {
 		assert this.underlying != null :
 			"Block part not revealed yet: " + this;
 		return this.underlying;
@@ -82,6 +84,8 @@ public class CBlockPart extends CCodePart<Block> {
 				+ "\" does not exist, but has continuation";
 			return;
 		}
+		assert this.underlying == null :
+			"Block part \"" + getId() + "\" already created";
 		this.underlying = createUnderlying(underlyingEnclosing);
 		if (this.nextPart != null) {
 			this.nextPart.initUnderlying(underlyingEnclosing);
@@ -101,24 +105,14 @@ public class CBlockPart extends CCodePart<Block> {
 		}
 	}
 
-	protected Block createUnderlying(Block underlyingEnclosing) {
+	protected abstract CBlockPart newNextPart(int index);
 
-		final CodeId localId = block().getId().getLocal();
-		final CodeId partName;
-
-		if (this.index == 0) {
-			partName = localId;
-		} else {
-			partName = localId.anonymous(this.index);
-		}
-
-		return underlyingEnclosing.addBlock(partName);
-	}
+	protected abstract Block createUnderlying(Block underlyingEnclosing);
 
 	final CBlockPart createNextPart(int index) {
 		assert this.nextPart == null :
 			"Next part of " + this + " already created";
-		return this.nextPart = new CBlockPart(block(), index);
+		return this.nextPart = newNextPart(index);
 	}
 
 	final void comeFrom(CBlock<?> block) {

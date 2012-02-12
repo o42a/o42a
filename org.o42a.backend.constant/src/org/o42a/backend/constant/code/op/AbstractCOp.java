@@ -33,13 +33,13 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	private final T constant;
 
 	public AbstractCOp(OpBE<U> backend) {
-		this.backend = backend;
-		this.constant = null;
+		this(backend, null);
 	}
 
 	public AbstractCOp(OpBE<U> backend, T constant) {
 		this.backend = backend;
 		this.constant = constant;
+		this.backend.init(this);
 	}
 
 	public final ConstBackend getBackend() {
