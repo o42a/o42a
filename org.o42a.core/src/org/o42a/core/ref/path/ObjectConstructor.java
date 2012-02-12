@@ -162,6 +162,8 @@ public abstract class ObjectConstructor extends Placed {
 			ancestorNotFound.nullPtr().returnValue(ancestorNotFound);
 		}
 
+		ancestorFunc.done();
+
 		return ancestorFunc;
 	}
 
