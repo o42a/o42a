@@ -540,7 +540,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		@Override
 		protected U write() {
-			return this.op.underlyingConstant(part(), this.constant);
+			return this.op.underlyingConstant(part(), constant());
 		}
 
 		@SuppressWarnings("unchecked")

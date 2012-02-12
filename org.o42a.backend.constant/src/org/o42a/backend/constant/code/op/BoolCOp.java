@@ -49,7 +49,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	public BoolCOp(CodeId id, CCode<?> code, boolean constant) {
-		this.backend = new ConstBE(id, code, constant);
+		this.backend = new BoolConstBE(id, code, constant);
 		this.constant = constant;
 	}
 
@@ -183,23 +183,15 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		});
 	}
 
-	private static final class ConstBE extends OpBE<BoolOp> {
+	private static final class BoolConstBE extends ConstBE<BoolOp, Boolean> {
 
-		private final boolean constant;
-
-		ConstBE(CodeId id, CCode<?> code, boolean constant) {
-			super(id, code);
-			this.constant = constant;
-		}
-
-		@Override
-		public String toString() {
-			return Boolean.toString(this.constant);
+		BoolConstBE(CodeId id, CCode<?> code, boolean constant) {
+			super(id, code, constant);
 		}
 
 		@Override
 		protected BoolOp write() {
-			return part().underlying().bool(this.constant);
+			return part().underlying().bool(constant());
 		}
 
 	}
