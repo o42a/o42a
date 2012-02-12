@@ -21,14 +21,16 @@ package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Function;
 
 
-final class CFunctionPart<F extends Func<F>>
-		extends CBlockPart {
+final class CFunctionPart<F extends Func<F>> extends CBlockPart {
 
 	CFunctionPart(CFunction<F> function) {
 		super(function);
+	}
+
+	private CFunctionPart(CFunction<F> function, int index) {
+		super(function, function.getId().anonymous(index), index);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -36,10 +38,17 @@ final class CFunctionPart<F extends Func<F>>
 		return (CFunction<F>) code();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	protected Function<F> createUnderlying(Block underlyingEnclosing) {
-		return (Function<F>) underlyingEnclosing;
+	protected CBlockPart newNextPart(int index) {
+		return new CFunctionPart<F>(function(), index);
+	}
+
+	@Override
+	protected Block createUnderlying(Block underlyingEnclosing) {
+		if (index() == 0) {
+			return underlyingEnclosing;
+		}
+		return underlyingEnclosing.addBlock(getId());
 	}
 
 }

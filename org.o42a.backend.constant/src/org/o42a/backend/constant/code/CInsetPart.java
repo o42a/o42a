@@ -68,7 +68,7 @@ final class CInsetPart<C extends Code>
 
 	@Override
 	public final void reveal(Code underlying) {
-		if (!hasOps()) {
+		if (isEmpty()) {
 			return;
 		}
 		assert this.underlying == null :

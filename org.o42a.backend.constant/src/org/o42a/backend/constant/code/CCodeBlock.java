@@ -34,7 +34,7 @@ final class CCodeBlock extends CBlock<Block> {
 
 	@Override
 	protected CBlockPart createFirstBlock() {
-		return new CBlockPart(this);
+		return new CCodeBlockPart(this);
 	}
 
 }

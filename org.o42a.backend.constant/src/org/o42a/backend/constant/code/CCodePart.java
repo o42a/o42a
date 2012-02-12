@@ -82,8 +82,6 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 			}
 
 			for (;;) {
-				assert record != null :
-					"Nothing to reveal";
 				record.reveal(underlying);
 				if (record == last) {
 					break;
