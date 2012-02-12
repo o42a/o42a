@@ -53,8 +53,8 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		this.underlyingStruct = underlyingStruct;
 	}
 
-	public ContainerCDAlloc(ConstBackend backend, Ptr<S> underlyingPtr) {
-		super(backend, underlyingPtr);
+	public ContainerCDAlloc(ConstBackend backend, UnderAlloc<S> underlAlloc) {
+		super(backend, underlAlloc);
 		this.underlyingStruct = null;
 	}
 

@@ -22,7 +22,6 @@ package org.o42a.backend.constant.data;
 import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.func.NullCFAlloc;
 import org.o42a.backend.constant.data.rec.*;
-import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
 import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.codegen.code.Func;
@@ -47,33 +46,52 @@ public final class ConstDataWriter implements DataWriter {
 
 	@Override
 	public final AnyCDAlloc nullPtr() {
-
-		final Ptr<AnyOp> underlyingNull =
-				getBackend().getUnderlyingGenerator()
-				.getGlobals().nullPtr();
-
-		return new AnyCDAlloc(getBackend(), underlyingNull);
+		return new AnyCDAlloc(
+				getBackend(),
+				new UnderAlloc<AnyOp>() {
+					@Override
+					public Ptr<AnyOp> allocateUnderlying(
+							CDAlloc<AnyOp, ?> alloc) {
+						return alloc.getBackend()
+								.getUnderlyingGenerator()
+								.getGlobals()
+								.nullPtr();
+					}
+				});
 	}
 
 	@Override
 	public final DataCDAlloc nullDataPtr() {
-
-		final Ptr<DataOp> underlyingNull =
-				getBackend().getUnderlyingGenerator()
-				.getGlobals().nullDataPtr();
-
-		return new DataCDAlloc(getBackend(), underlyingNull);
+		return new DataCDAlloc(
+				getBackend(),
+				new UnderAlloc<DataOp>() {
+					@Override
+					public Ptr<DataOp> allocateUnderlying(
+							CDAlloc<DataOp, ?> alloc) {
+						return alloc.getBackend()
+								.getUnderlyingGenerator()
+								.getGlobals()
+								.nullDataPtr();
+					}
+				});
 	}
 
 	@Override
-	public final <S extends StructOp<S>> StructCDAlloc<S> nullPtr(Type<S> type) {
+	public final <S extends StructOp<S>> StructCDAlloc<S> nullPtr(
+			final Type<S> type) {
+		return new StructCDAlloc<S>(
+				getBackend(),
+				new UnderAlloc<S>() {
+					@Override
+					public Ptr<S> allocateUnderlying(CDAlloc<S, ?> alloc) {
 
-		final CType<S> underlyingType = getBackend().underlying(type);
-		final Ptr<S> underlyingNull =
-				getBackend().getUnderlyingGenerator().getGlobals().nullPtr(
-						underlyingType);
+						final ConstBackend backend = alloc.getBackend();
 
-		return new StructCDAlloc<S>(getBackend(), underlyingNull);
+						return backend.getUnderlyingGenerator()
+								.getGlobals()
+								.nullPtr(backend.underlying(type));
+					}
+				});
 	}
 
 	@Override

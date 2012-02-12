@@ -19,6 +19,10 @@
 */
 package org.o42a.backend.constant.data;
 
+import static org.o42a.backend.constant.data.UnderAlloc.anyUnderAlloc;
+import static org.o42a.backend.constant.data.UnderAlloc.dataUnderAlloc;
+import static org.o42a.backend.constant.data.UnderAlloc.defaultUnderAlloc;
+
 import org.o42a.backend.constant.data.rec.PtrRecCDAlloc;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -32,26 +36,25 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	private final ConstBackend backend;
 	private final CDAlloc<P, D> typeAllocation;
+	private final UnderAlloc<P> underAlloc;
 	private D underlying;
 	private Ptr<P> underlyingPtr;
 	private final D data;
 	private int index;
 
-	public CDAlloc(
-			ConstBackend backend,
-			D data,
-			CDAlloc<P, D> typeAllocation) {
+	public CDAlloc(ConstBackend backend, D data, CDAlloc<P, D> typeAllocation) {
 		this.backend = backend;
-		this.data = data;
 		this.typeAllocation = typeAllocation;
+		this.underAlloc = defaultUnderAlloc();
+		this.data = data;
 	}
 
-	public CDAlloc(ConstBackend backend, Ptr<P> underlyingPtr) {
+	public CDAlloc(ConstBackend backend, UnderAlloc<P> underAlloc) {
 		this.backend = backend;
-		this.data = null;
 		this.typeAllocation = null;
+		this.underAlloc = underAlloc;
+		this.data = null;
 		this.underlying = null;
-		this.underlyingPtr = underlyingPtr;
 	}
 
 	public final ConstBackend getBackend() {
@@ -82,20 +85,20 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		return this.index;
 	}
 
-	public D getUnderlying() {
+	public final D getUnderlying() {
 		if (this.underlying == null) {
-			assert this.underlyingPtr == null :
+			assert this.underAlloc.isDefault() :
 				"Can not allocate " + this;
 			getTopLevel().initUnderlying(null);
 		}
 		return this.underlying;
 	}
 
-	public Ptr<P> getUnderlyingPtr() {
+	public final Ptr<P> getUnderlyingPtr() {
 		if (this.underlyingPtr != null) {
 			return this.underlyingPtr;
 		}
-		return this.underlyingPtr = getUnderlying().getPointer();
+		return this.underlyingPtr = this.underAlloc.allocateUnderlying(this);
 	}
 
 	@Override
@@ -119,12 +122,12 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
-		return new AnyCDAlloc(getBackend(), getUnderlyingPtr().toAny());
+		return new AnyCDAlloc(getBackend(), anyUnderAlloc(this));
 	}
 
 	@Override
 	public DataAllocation<DataOp> toData() {
-		return new DataCDAlloc(getBackend(), getUnderlyingPtr().toData());
+		return new DataCDAlloc(getBackend(), dataUnderAlloc(this));
 	}
 
 	@Override

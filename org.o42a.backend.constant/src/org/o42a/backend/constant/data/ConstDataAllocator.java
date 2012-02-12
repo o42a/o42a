@@ -46,21 +46,23 @@ public class ConstDataAllocator implements DataAllocator {
 
 	@Override
 	public DataAllocation<AnyOp> addBinary(
-			CodeId id,
-			boolean isConstant,
-			byte[] data,
-			int start,
-			int end) {
+			final CodeId id,
+			final boolean isConstant,
+			final byte[] data,
+			final int start,
+			final int end) {
 
-		final Ptr<AnyOp> underlyingBinary =
-				getBackend().getUnderlyingGenerator().addBinary(
+		return new AnyCDAlloc(getBackend(), new UnderAlloc<AnyOp>() {
+			@Override
+			public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp, ?> alloc) {
+				return alloc.getBackend().getUnderlyingGenerator().addBinary(
 						id,
 						isConstant,
 						data,
 						start,
 						end);
-
-		return new AnyCDAlloc(getBackend(), underlyingBinary);
+			}
+		});
 	}
 
 	@Override
