@@ -51,10 +51,6 @@ class LLInset extends LLCode {
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
 	public final long nextPtr() {
 		return this.blockPtr;
 	}

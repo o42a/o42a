@@ -29,10 +29,6 @@ final class CCodeBlock extends CBlock<Block> {
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
 	protected CBlockPart createFirstBlock() {
 		return new CCodeBlockPart(this);
 	}

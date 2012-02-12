@@ -231,8 +231,11 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
-		initUnderlying(getUnderlying());
+		if (!initUnderlying(getUnderlying())) {
+			return;
+		}
 		reveal();
+		getUnderlying().done();
 	}
 
 	@Override

@@ -33,10 +33,6 @@ final class LLCodeBlock extends LLBlock {
 	}
 
 	@Override
-	public void done() {
-	}
-
-	@Override
 	protected long createFirtsBlock() {
 		return createBlock(getFunction(), getId());
 	}

@@ -50,7 +50,6 @@ public abstract class CodeBase {
 	}
 
 	private boolean complete;
-	private boolean done;
 
 	public abstract boolean created();
 
@@ -61,14 +60,7 @@ public abstract class CodeBase {
 	}
 
 	public void done() {
-		if (this.done) {
-			return;
-		}
-		this.done = true;
 		complete();
-		if (created()) {
-			writer().done();
-		}
 	}
 
 	public abstract CodeWriter writer();

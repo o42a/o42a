@@ -32,6 +32,7 @@ public final class Function<F extends Func<F>> extends Block {
 	private final FunctionBuilder<F> builder;
 	private final FuncPtr<F> pointer;
 	private FuncWriter<F> writer;
+	private boolean done;
 
 	Function(
 			FunctionSettings settings,
@@ -110,6 +111,18 @@ public final class Function<F extends Func<F>> extends Block {
 		return this.writer = functions.codeBackend().addFunction(
 				this,
 				functions.createCodeCallback(this));
+	}
+
+	@Override
+	public void done() {
+		if (this.done) {
+			return;
+		}
+		this.done = true;
+		super.done();
+		if (created()) {
+			writer().done();
+		}
 	}
 
 	@Override
