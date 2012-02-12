@@ -26,7 +26,7 @@ import org.o42a.codegen.code.op.Op;
 
 public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 
-	protected final T constant;
+	private final T constant;
 
 	public ConstBE(CodeId id, CCode<?> code, T constant) {
 		super(id, code);
@@ -36,6 +36,10 @@ public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 	@Override
 	public final boolean isEmptyOp() {
 		return true;
+	}
+
+	public final T constant() {
+		return this.constant;
 	}
 
 	@Override

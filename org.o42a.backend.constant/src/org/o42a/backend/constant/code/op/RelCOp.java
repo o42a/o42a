@@ -21,9 +21,12 @@ package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.RelPtr;
 
 
@@ -43,10 +46,32 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 			final Code code,
 			final PtrOp<?> from) {
 
+		final CCode<?> ccode = cast(code);
 		final CodeId resultId = code.getOpNames().offsetId(id, from, this);
 
+		if (isConstant() && from.equals(getConstant().getRelativeTo())) {
+
+			final Ptr<AnyOp> target = getConstant().getPointer().toAny();
+
+			return new AnyCOp(
+					new ConstBE<AnyOp, Ptr<AnyOp>>(resultId, ccode, target) {
+						@Override
+						protected AnyOp write() {
+
+							final AnyCDAlloc alloc =
+									(AnyCDAlloc) constant().getAllocation();
+
+							return alloc.getUnderlyingPtr().op(
+									getId(),
+									part().underlying());
+						}
+					},
+					null,
+					target);
+		}
+
 		return new AnyCOp(
-				new OpBE<AnyOp>(resultId, cast(code)) {
+				new OpBE<AnyOp>(resultId, ccode) {
 					@Override
 					protected AnyOp write() {
 						return backend().underlying().offset(

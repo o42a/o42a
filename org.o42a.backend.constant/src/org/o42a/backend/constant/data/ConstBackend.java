@@ -92,27 +92,13 @@ public class ConstBackend {
 		return (CStruct<S>) op.writer();
 	}
 
-	public static <S extends StructOp<S>> StructOp<S> underlying(
-			StructOp<S> op) {
-		return cast(op).backend().underlying();
-	}
-
 	public static <F extends Func<F>> CFAlloc<F> cast(
 			FuncAllocation<F> funcAllocation) {
 		return (CFAlloc<F>) funcAllocation;
 	}
 
-	public static <F extends Func<F>> FuncAllocation<F> underlying(
-			FuncAllocation<F> funcAllocation) {
-		return cast(funcAllocation).getUnderlyingPtr().getAllocation();
-	}
-
 	public static <F extends Func<F>> CFunc<F> cast(Func<F> func) {
 		return (CFunc<F>) func.caller();
-	}
-
-	public static <F extends Func<F>> F underlying(Func<F> func) {
-		return cast(func).backend().underlying();
 	}
 
 	private final ConstGenerator generator;
