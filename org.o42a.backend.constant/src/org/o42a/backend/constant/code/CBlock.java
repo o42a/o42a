@@ -175,10 +175,6 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		};
 	}
 
-	final void resetNextPart() {
-		this.nextPart = null;
-	}
-
 	protected final CBlockPart firstPart() {
 		if (this.firstPart != null) {
 			return this.firstPart;
@@ -191,19 +187,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	protected abstract CBlockPart createFirstBlock();
 
-	final boolean initUnderlying(Block underlyingEnclosing) {
-		if (!created()) {
-			return false;
-		}
-		this.firstPart.initUnderlying(underlyingEnclosing);
-
-		final Block underlying = this.firstPart.underlying();
-
-		for (CBlock<?> subBlock : this.subBlocks) {
-			subBlock.initUnderlying(underlying);
-		}
-
-		return true;
+	final void resetNextPart() {
+		this.nextPart = null;
 	}
 
 	final void reveal() {

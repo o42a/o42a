@@ -28,6 +28,8 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	private static final short ENTRY_BLOCK = 0x01;
 	private static final short ENTRY_PREV_PART = 0x02;
 	private static final short MULTIPLE_ENTRIES = 0x04;
+	private static final short JOINT = 0x08;
+	private static final short REVEALED = 0x10;
 
 	private static final short HAS_ENTRIES = ENTRY_BLOCK;
 
@@ -75,41 +77,16 @@ public abstract class CBlockPart extends CCodePart<Block> {
 
 	@Override
 	public final Block underlying() {
-		assert this.underlying != null :
-			"Block part not revealed yet: " + this;
-		return this.underlying;
-	}
-
-	public final void initUnderlying(Block underlyingEnclosing) {
-		if (!exists()) {
-			assert this.nextPart == null :
-				"Block part \"" + this
-				+ "\" does not exist, but has continuation";
-			return;
+		if (this.underlying != null) {
+			return this.underlying;
 		}
-		assert this.underlying == null :
-			"Block part \"" + getId() + "\" already created";
-
-		if (hasOps()) {
-
-		}
-
-		this.underlying = createUnderlying(underlyingEnclosing);
-		if (this.nextPart != null) {
-			this.nextPart.initUnderlying(underlyingEnclosing);
-		}
+		return this.underlying = initUnderlying();
 	}
 
 	public final void reveal() {
-		if (!exists()) {
-			return;
+		if (!isJoint()) {// Do not reveal a joint part explicitly.
+			revealPart();
 		}
-		if (!isEmpty()) {
-			revealRecords();
-		}
-		assert isTerminated() :
-			this + " not terminated properly";
-		this.terminator.emit();
 		if (this.nextPart != null) {
 			this.nextPart.reveal();
 		}
@@ -117,7 +94,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 
 	protected abstract CBlockPart newNextPart(int index);
 
-	protected abstract Block createUnderlying(Block underlyingEnclosing);
+	protected abstract Block createUnderlying();
 
 	final CBlockPart createNextPart(int index) {
 		assert this.nextPart == null :
@@ -131,10 +108,10 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		} else {
 			this.flags |= MULTIPLE_ENTRIES;
 		}
-		if (entry.conditional() || !entry.continuation()) {
-			this.flags |= ENTRY_BLOCK;
-		} else {
+		if (entry.continuation()) {
 			this.flags |= ENTRY_PREV_PART;
+		} else {
+			this.flags |= ENTRY_BLOCK;
 		}
 	}
 
@@ -143,6 +120,96 @@ public abstract class CBlockPart extends CCodePart<Block> {
 			this + " is terminated already";
 		this.terminator = terminator;
 		return this;
+	}
+
+	private final Block initUnderlying() {
+		if (!exists()) {
+			assert this.nextPart == null :
+				"Block part \"" + this
+				+ "\" does not exist, but has continuation";
+			return null;
+		}
+		assert isTerminated() :
+			this + " does not have terminator";
+		assert this.underlying == null :
+			"Underlying block already created for " + this;
+
+		final CBlockPart joinWith = join();
+
+		if (joinWith != null) {
+			this.flags |= JOINT;
+			return joinWith.underlying();
+		}
+
+		return createUnderlying();
+	}
+
+	private final boolean isJoint() {
+		underlying();
+		return (this.flags & JOINT) != 0;
+	}
+
+	private CBlockPart join() {
+		if ((this.flags & MULTIPLE_ENTRIES) != 0) {
+			return null;// Can only join with single entry part.
+		}
+		if (this.firstEntry == null) {
+			return null;// Only happens for functions.
+		}
+
+		final JumpBE jump = this.firstEntry.toJump();
+
+		if (jump.conditional()) {
+			return null;// Previous block is branched.
+		}
+
+		return jump.part();// Join with entry block.
+	}
+
+	private void revealPart() {
+		assert (this.flags & REVEALED) == 0 :
+			this + " already revealed";
+		this.flags |= REVEALED;
+
+		if (!exists()) {
+			assert this.nextPart == null :
+				"Part \"" + this + "\" does not exist, but has a next part";
+			return;
+		}
+		if (!isEmpty()) {
+			revealRecords();
+		}
+
+		final CBlockPart nextJoint = nextJoint();
+
+		if (nextJoint != null) {
+			nextJoint.revealPart();
+		} else {
+			this.terminator.emit();
+		}
+	}
+
+	private CBlockPart nextJoint() {
+
+		final JumpBE jump = this.terminator.toJump();
+
+		if (jump == null || jump.conditional()) {
+			return null;
+		}
+
+		final CBlockPart nextPart = jump.target().part();
+
+		if (nextPart == this) {
+			return null;
+		}
+		if (nextPart.underlying() != underlying()) {
+			return null;
+		}
+
+		assert nextPart.isJoint() :
+			nextPart + " expected to be joint with " + this;
+
+		return nextPart;
 	}
 
 }

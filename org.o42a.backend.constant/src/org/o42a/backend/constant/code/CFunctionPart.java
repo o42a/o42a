@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Function;
 
 
 final class CFunctionPart<F extends Func<F>> extends CBlockPart {
@@ -44,11 +45,15 @@ final class CFunctionPart<F extends Func<F>> extends CBlockPart {
 	}
 
 	@Override
-	protected Block createUnderlying(Block underlyingEnclosing) {
+	protected Block createUnderlying() {
+
+		final Function<F> underlyingFunction = function().getUnderlying();
+
 		if (index() == 0) {
-			return underlyingEnclosing;
+			return underlyingFunction;
 		}
-		return underlyingEnclosing.addBlock(getId());
+
+		return underlyingFunction.addBlock(getId());
 	}
 
 }

@@ -24,8 +24,15 @@ import org.o42a.codegen.code.Block;
 
 final class CCodeBlock extends CBlock<Block> {
 
-	CCodeBlock(CCode<?> enclosing, Block code) {
+	private final CBlock<?> enclosing;
+
+	CCodeBlock(CBlock<?> enclosing, Block code) {
 		super(enclosing.getBackend(), enclosing.getFunction(), code);
+		this.enclosing = enclosing;
+	}
+
+	public final CBlock<?> getEnclosing() {
+		return this.enclosing;
 	}
 
 	@Override

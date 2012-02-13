@@ -32,16 +32,15 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		target.part().comeFrom(this);
 	}
 
+	public abstract boolean conditional();
+
 	public final CCodePos target() {
 		return this.target;
 	}
 
 	@Override
-	public final CBlockPart singleExit() {
-		if (conditional()) {
-			return null;
-		}
-		return target().part();
+	public final JumpBE toJump() {
+		return this;
 	}
 
 	static class Unconditional extends JumpBE {
@@ -146,13 +145,13 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		}
 
 		@Override
-		public boolean conditional() {
-			return true;
+		public boolean continuation() {
+			return false;
 		}
 
 		@Override
-		public boolean continuation() {
-			return false;
+		public JumpBE toJump() {
+			return this.jump;
 		}
 
 		@Override

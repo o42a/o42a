@@ -32,7 +32,7 @@ public abstract class ReturnBE extends TermBE {
 	}
 
 	@Override
-	public final CBlockPart singleExit() {
+	public final JumpBE toJump() {
 		return null;
 	}
 
