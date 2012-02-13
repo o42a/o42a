@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,37 +19,16 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
 
+public abstract class ReturnBE extends TermBE {
 
-public final class CCodePos implements CodePos {
+	public ReturnBE(CBlockPart part) {
+		super(part);
 
-	private final CBlockPart part;
+		final CBlock<?> block = part.block();
 
-	public CCodePos(CBlockPart part) {
-		this.part = part;
-	}
-
-	public final CBlockPart part() {
-		return this.part;
-	}
-
-	@Override
-	public final Block code() {
-		return part().block().code();
-	}
-
-	public final CodePos getUnderlying() {
-		return part().underlying().head();
-	}
-
-	@Override
-	public String toString() {
-		if (this.part == null) {
-			return super.toString();
-		}
-		return this.part.toString();
+		block.getFunction().getCallback().beforeReturn(block.code());
+		block.resetNextPart();
 	}
 
 }

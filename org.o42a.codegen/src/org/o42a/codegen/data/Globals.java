@@ -129,7 +129,7 @@ public abstract class Globals {
 			global = global.getNext();
 		} while (global != null);
 
-		this.globals.empty();
+		this.globals.clear();
 
 		return true;
 	}

@@ -83,7 +83,7 @@ final class MemberEntries extends Chain<MemberEntry> {
 				}
 				// Register first pending.
 				this.registering = getFirst();
-				empty();
+				clear();
 			} else {
 				// Register next pending.
 				this.registering = this.registering.removeNext();

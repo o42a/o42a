@@ -24,8 +24,8 @@ import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
-import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -73,11 +73,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 	@Override
 	public final void returnValue(Block code) {
-
-		final CBlock<?> ccode = cast(code);
-
-		ccode.beforeReturn();
-		new TermBE(ccode) {
+		new ReturnBE(cast(code).nextPart()) {
 			@Override
 			protected void emit() {
 				backend().underlying().returnValue(part().underlying());

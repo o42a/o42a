@@ -21,9 +21,9 @@ package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.CBlock;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
+import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -490,11 +490,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 	@Override
 	public final void returnValue(Block code) {
-
-		final CBlock<?> ccode = cast(code);
-
-		ccode.beforeReturn();
-		new TermBE(ccode) {
+		new ReturnBE(cast(code).nextPart()) {
 			@Override
 			protected void emit() {
 				backend().underlying().returnValue(part().underlying());

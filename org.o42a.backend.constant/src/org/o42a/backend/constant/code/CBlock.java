@@ -22,7 +22,6 @@ package org.o42a.backend.constant.code;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.BoolCOp;
-import org.o42a.backend.constant.code.op.TermBE;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
@@ -72,7 +71,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			if (!this.nextPart.hasOps()) {
 				return this.nextPart.head();
 			}
-			this.nextPart = null;
+			resetNextPart();
 		}
 		return nextPart().head();
 	}
@@ -90,8 +89,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		final CBlockPart next = addNextPart();
 
 		if (!prev.isTerminated()) {
-			next.head().comeFromPrev(prev);
-			prev.terminate();
+			new JumpBE.Next(prev, next.head());
 		}
 
 		return this.nextPart;
@@ -104,15 +102,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	@Override
 	public final void go(final CodePos pos) {
-
-		final CCodePos cpos = cast(pos).comeFrom(this);
-
-		new TermBE(this) {
-			@Override
-			protected void emit() {
-				part().underlying().go(cpos.getUnderlying());
-			}
-		};
+		new JumpBE.Unconditional(nextPart(), cast(pos));
+		resetNextPart();
 	}
 
 	@Override
@@ -135,31 +126,51 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		}
 
 		final CBlockPart prev = nextPart();
-		CBlockPart next = null;
+
+		resetNextPart();
 
 		final CCodePos trueCPos = cast(truePos);
 		final CCodePos actualTruePos;
+		final CBlockPart nextTrue;
 
 		if (trueCPos != null) {
-			actualTruePos = trueCPos.comeFrom(prev);
+			nextTrue = null;
+			actualTruePos = trueCPos;
 		} else {
-			next = addNextPart();
-			actualTruePos = next.head().comeFrom(prev);
+			nextTrue = addNextPart();
+			actualTruePos = nextTrue.head();
 		}
 
 		final CCodePos falseCPos = cast(falsePos);
 		final CCodePos actualFalsePos;
+		final CBlockPart nextFalse;
 
 		if (falseCPos != null) {
-			actualFalsePos = falseCPos.comeFrom(prev);
+			nextFalse = null;
+			actualFalsePos = falseCPos;
 		} else {
-			if (next == null) {
-				next = addNextPart();
+			if (nextTrue == null) {
+				nextFalse = addNextPart();
+			} else {
+				nextFalse = nextTrue;
 			}
-			actualFalsePos = next.head().comeFrom(prev);
+			actualFalsePos = nextFalse.head();
 		}
 
-		new TermBE(prev) {
+		if (actualTruePos == actualFalsePos) {
+			new JumpBE.Unconditional(prev, actualTruePos);
+			return;
+		}
+
+		new JumpBE(prev, actualTruePos) {
+			@Override
+			public boolean conditional() {
+				return true;
+			}
+			@Override
+			public boolean toNext() {
+				return nextTrue != null;
+			}
 			@Override
 			protected void emit() {
 				cond.backend().underlying().go(
@@ -168,12 +179,25 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 						actualFalsePos.getUnderlying());
 			}
 		};
+		actualFalsePos.part().comeFrom(new EntryBE() {
+			@Override
+			public CBlockPart part() {
+				return prev;
+			}
+			@Override
+			public boolean conditional() {
+				return false;
+			}
+			@Override
+			public boolean toNext() {
+				return nextFalse != null;
+			}
+		});
 	}
 
 	@Override
 	public final void returnVoid() {
-		beforeReturn();
-		new TermBE(this) {
+		new ReturnBE(nextPart()) {
 			@Override
 			protected void emit() {
 				part().underlying().returnVoid();
@@ -181,19 +205,8 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		};
 	}
 
-	public final void beforeReturn() {
-		getFunction().getCallback().beforeReturn(code());
-	}
-
-	@SuppressWarnings("unchecked")
-	public final CCodePart<Block> term(TermBE op) {
-
-		final CCodePart<Block> part = (CCodePart<Block>) record(op);
-
-		this.lastPart.terminate();
+	final void resetNextPart() {
 		this.nextPart = null;
-
-		return part;
 	}
 
 	protected final CBlockPart firstPart() {
@@ -231,6 +244,13 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		for (CBlock<?> subBlock : this.subBlocks) {
 			subBlock.reveal();
 		}
+	}
+
+	final void clear() {
+		this.firstPart = null;
+		this.lastPart = null;
+		this.nextPart = null;
+		this.subBlocks.clear();
 	}
 
 	private final CBlockPart addNextPart() {
