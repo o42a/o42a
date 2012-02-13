@@ -32,6 +32,8 @@ public abstract class TermBE {
 		return this.part;
 	}
 
+	public abstract CBlockPart singleExit();
+
 	protected abstract void emit();
 
 }

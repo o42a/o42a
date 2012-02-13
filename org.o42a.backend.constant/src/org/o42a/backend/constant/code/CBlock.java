@@ -168,7 +168,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				return true;
 			}
 			@Override
-			public boolean toNext() {
+			public boolean continuation() {
 				return nextTrue != null;
 			}
 			@Override
@@ -189,7 +189,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 				return false;
 			}
 			@Override
-			public boolean toNext() {
+			public boolean continuation() {
 				return nextFalse != null;
 			}
 		});

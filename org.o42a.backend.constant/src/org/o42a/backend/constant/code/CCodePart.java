@@ -30,7 +30,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	private final CodeId id;
 	private OpRecord lastRevealed;
 	private boolean revealing;
-	private boolean hasOps;
+	private boolean hasRecords;
 
 	public CCodePart(CCode<?> code, CodeId id) {
 		this.code = code;
@@ -46,13 +46,6 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	}
 
 	public abstract C underlying();
-
-	public final boolean hasOps() {
-		if (this.hasOps) {
-			return true;
-		}
-		return this.hasOps = determineHasOps();
-	}
 
 	public void revealUpTo(OpRecord last) {
 		assert !this.revealing :
@@ -92,6 +85,21 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		return item.getNext();
 	}
 
+	protected final boolean hasRecords() {
+		if (this.hasRecords) {
+			return true;
+		}
+		if (isEmpty()) {
+			return false;
+		}
+		for (OpRecord record : this) {
+			if (!record.isNoOp()) {
+				return this.hasRecords = true;
+			}
+		}
+		return false;
+	}
+
 	@Override
 	public String toString() {
 		if (this.id == null) {
@@ -103,18 +111,6 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	@Override
 	protected void setNext(OpRecord prev, OpRecord next) {
 		prev.setNext(next);
-	}
-
-	protected boolean determineHasOps() {
-		if (isEmpty()) {
-			return false;
-		}
-		for (OpRecord record : this) {
-			if (!record.isEmptyOp()) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	protected final void revealRecords() {

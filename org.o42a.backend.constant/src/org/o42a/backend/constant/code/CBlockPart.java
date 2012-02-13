@@ -58,6 +58,10 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return this.head;
 	}
 
+	public final boolean hasOps() {
+		return isTerminated() || hasRecords();
+	}
+
 	public final boolean exists() {
 		return (this.flags & HAS_ENTRIES) != 0 || hasOps();
 	}
@@ -82,6 +86,11 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		}
 		assert this.underlying == null :
 			"Block part \"" + getId() + "\" already created";
+
+		if (hasOps()) {
+
+		}
+
 		this.underlying = createUnderlying(underlyingEnclosing);
 		if (this.nextPart != null) {
 			this.nextPart.initUnderlying(underlyingEnclosing);
@@ -103,11 +112,6 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		}
 	}
 
-	@Override
-	protected boolean determineHasOps() {
-		return isTerminated() || super.determineHasOps();
-	}
-
 	protected abstract CBlockPart newNextPart(int index);
 
 	protected abstract Block createUnderlying(Block underlyingEnclosing);
@@ -119,7 +123,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	}
 
 	final void comeFrom(EntryBE entry) {
-		if (entry.conditional() || !entry.toNext()) {
+		if (entry.conditional() || !entry.continuation()) {
 			this.flags |= ENTRY_BLOCK;
 		} else {
 			this.flags |= ENTRY_PREV_PART;

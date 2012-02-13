@@ -31,4 +31,9 @@ public abstract class ReturnBE extends TermBE {
 		block.resetNextPart();
 	}
 
+	@Override
+	public final CBlockPart singleExit() {
+		return null;
+	}
+
 }
