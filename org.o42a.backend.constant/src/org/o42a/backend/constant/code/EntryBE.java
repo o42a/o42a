@@ -24,8 +24,8 @@ public interface EntryBE {
 
 	CBlockPart part();
 
-	boolean conditional();
-
 	boolean continuation();
+
+	JumpBE toJump();
 
 }

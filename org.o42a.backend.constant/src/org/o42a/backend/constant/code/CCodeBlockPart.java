@@ -29,7 +29,7 @@ final class CCodeBlockPart extends CBlockPart {
 		super(block);
 	}
 
-	private CCodeBlockPart(CBlock<?> block, int index) {
+	private CCodeBlockPart(CCodeBlock block, int index) {
 		super(
 				block,
 				index != 0 ? block.getId().anonymous(index) : block.getId(),
@@ -38,13 +38,14 @@ final class CCodeBlockPart extends CBlockPart {
 
 	@Override
 	protected CBlockPart newNextPart(int index) {
-		return new CCodeBlockPart(block(), index);
+		return new CCodeBlockPart(codeBlock(), index);
 	}
 
 	@Override
-	protected Block createUnderlying(Block underlyingEnclosing) {
+	protected Block createUnderlying() {
 
-		final CodeId localId = block().getId().getLocal();
+		final CCodeBlock block = codeBlock();
+		final CodeId localId = block.getId().getLocal();
 		final CodeId partName;
 
 		if (index() == 0) {
@@ -53,7 +54,11 @@ final class CCodeBlockPart extends CBlockPart {
 			partName = localId.anonymous(index());
 		}
 
-		return underlyingEnclosing.addBlock(partName);
+		return block.getEnclosing().firstPart().underlying().addBlock(partName);
+	}
+
+	private final CCodeBlock codeBlock() {
+		return (CCodeBlock) code();
 	}
 
 }

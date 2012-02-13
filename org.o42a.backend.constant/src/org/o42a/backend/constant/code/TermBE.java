@@ -32,7 +32,7 @@ public abstract class TermBE {
 		return this.part;
 	}
 
-	public abstract CBlockPart singleExit();
+	public abstract JumpBE toJump();
 
 	protected abstract void emit();
 
