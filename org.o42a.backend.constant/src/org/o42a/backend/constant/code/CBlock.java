@@ -162,37 +162,7 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 			return;
 		}
 
-		new JumpBE(prev, actualTruePos) {
-			@Override
-			public boolean conditional() {
-				return true;
-			}
-			@Override
-			public boolean continuation() {
-				return nextTrue != null;
-			}
-			@Override
-			protected void emit() {
-				cond.backend().underlying().go(
-						part().underlying(),
-						actualTruePos.getUnderlying(),
-						actualFalsePos.getUnderlying());
-			}
-		};
-		actualFalsePos.part().comeFrom(new EntryBE() {
-			@Override
-			public CBlockPart part() {
-				return prev;
-			}
-			@Override
-			public boolean conditional() {
-				return false;
-			}
-			@Override
-			public boolean continuation() {
-				return nextFalse != null;
-			}
-		});
+		new JumpBE.Conditional(prev, cond, actualTruePos, actualFalsePos);
 	}
 
 	@Override

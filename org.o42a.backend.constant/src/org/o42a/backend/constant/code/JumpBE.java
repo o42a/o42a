@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.backend.constant.code.op.BoolCOp;
+
 
 public abstract class JumpBE extends TermBE implements EntryBE {
 
@@ -84,6 +86,83 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		@Override
 		public String toString() {
 			return part() + ".." + target();
+		}
+
+	}
+
+	static final class Conditional extends JumpBE {
+
+		private final BoolCOp condition;
+		private final CCodePos falseTarget;
+
+		Conditional(
+				CBlockPart part,
+				BoolCOp condition,
+				CCodePos trueTarget,
+				CCodePos falseTarget) {
+			super(part, trueTarget);
+			this.condition = condition;
+			this.falseTarget = falseTarget;
+			new FalseEntryBE(this);
+		}
+
+		@Override
+		public boolean conditional() {
+			return true;
+		}
+
+		@Override
+		public boolean continuation() {
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			return (part() + ": " + this.condition
+					+ "? " + target() + " : " + this.falseTarget);
+		}
+		@Override
+		protected void emit() {
+			this.condition.backend().underlying().go(
+					part().underlying(),
+					target().getUnderlying(),
+					this.falseTarget.getUnderlying());
+		}
+
+	}
+
+	private static final class FalseEntryBE implements EntryBE {
+
+		private final Conditional jump;
+
+		FalseEntryBE(Conditional jump) {
+			this.jump = jump;
+			jump.falseTarget.part().comeFrom(this);
+		}
+
+		@Override
+		public CBlockPart part() {
+			return part();
+		}
+
+		@Override
+		public boolean conditional() {
+			return true;
+		}
+
+		@Override
+		public boolean continuation() {
+			return false;
+		}
+
+		@Override
+		public String toString() {
+			if (this.jump == null) {
+				return super.toString();
+			}
+			return (part() + ": --" + this.jump.condition
+					+ "? " + this.jump.falseTarget
+					+ " : " + this.jump.target());
 		}
 
 	}

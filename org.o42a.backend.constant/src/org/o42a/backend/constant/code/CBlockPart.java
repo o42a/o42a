@@ -25,16 +25,19 @@ import org.o42a.codegen.code.Block;
 
 public abstract class CBlockPart extends CCodePart<Block> {
 
-	private static final byte ENTRY_BLOCK = 0x01;
-	private static final byte ENTRY_PREV_PART = 0x02;
-	private static final byte HAS_ENTRIES = ENTRY_BLOCK;
+	private static final short ENTRY_BLOCK = 0x01;
+	private static final short ENTRY_PREV_PART = 0x02;
+	private static final short MULTIPLE_ENTRIES = 0x04;
+
+	private static final short HAS_ENTRIES = ENTRY_BLOCK;
 
 	private final CCodePos head;
+	private EntryBE firstEntry;
 	private CBlockPart nextPart;
+	private TermBE terminator;
 	private Block underlying;
 	private final int index;
-	private byte flags;
-	private TermBE terminator;
+	private short flags;
 
 	CBlockPart(CBlock<?> block) {
 		this(block, block.getId(), 0);
@@ -123,6 +126,11 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	}
 
 	final void comeFrom(EntryBE entry) {
+		if (this.firstEntry == null) {
+			this.firstEntry = entry;
+		} else {
+			this.flags |= MULTIPLE_ENTRIES;
+		}
 		if (entry.conditional() || !entry.continuation()) {
 			this.flags |= ENTRY_BLOCK;
 		} else {
