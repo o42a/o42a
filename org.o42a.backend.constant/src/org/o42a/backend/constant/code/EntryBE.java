@@ -17,36 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.op;
-
-import org.o42a.backend.constant.code.OpRecord;
-import org.o42a.codegen.code.Code;
+package org.o42a.backend.constant.code;
 
 
-abstract class AbstractBE implements OpRecord {
+public interface EntryBE {
 
-	private OpRecord next;
+	CBlockPart part();
 
-	@Override
-	public boolean isEmptyOp() {
-		return false;
-	}
+	boolean conditional();
 
-	@Override
-	public final OpRecord getNext() {
-		return this.next;
-	}
-
-	@Override
-	public final void setNext(OpRecord next) {
-		this.next = next;
-	}
-
-	@Override
-	public void reveal(Code underlying) {
-		emit();
-	}
-
-	protected abstract void emit();
+	boolean toNext();
 
 }

@@ -27,7 +27,6 @@ public abstract class CBlockPart extends CCodePart<Block> {
 
 	private static final byte ENTRY_BLOCK = 0x01;
 	private static final byte ENTRY_PREV_PART = 0x02;
-	private static final byte TERMINATED = 0x04;
 	private static final byte HAS_ENTRIES = ENTRY_BLOCK;
 
 	private final CCodePos head;
@@ -35,6 +34,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	private Block underlying;
 	private final int index;
 	private byte flags;
+	private TermBE terminator;
 
 	CBlockPart(CBlock<?> block) {
 		this(block, block.getId(), 0);
@@ -63,11 +63,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	}
 
 	public final boolean isTerminated() {
-		return (this.flags & TERMINATED) != 0;
-	}
-
-	public final void terminate() {
-		this.flags |= TERMINATED;
+		return this.terminator != null;
 	}
 
 	@Override
@@ -96,13 +92,20 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		if (!exists()) {
 			return;
 		}
-		revealRecords();
+		if (!isEmpty()) {
+			revealRecords();
+		}
+		assert isTerminated() :
+			this + " not terminated properly";
+		this.terminator.emit();
 		if (this.nextPart != null) {
-			if ((this.nextPart.flags & ENTRY_PREV_PART) != 0) {
-				underlying().go(this.nextPart.head().getUnderlying());
-			}
 			this.nextPart.reveal();
 		}
+	}
+
+	@Override
+	protected boolean determineHasOps() {
+		return isTerminated() || super.determineHasOps();
 	}
 
 	protected abstract CBlockPart newNextPart(int index);
@@ -115,16 +118,19 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return this.nextPart = newNextPart(index);
 	}
 
-	final void comeFrom(CBlock<?> block) {
-		comeFrom(block.nextPart());
+	final void comeFrom(EntryBE entry) {
+		if (entry.conditional() || !entry.toNext()) {
+			this.flags |= ENTRY_BLOCK;
+		} else {
+			this.flags |= ENTRY_PREV_PART;
+		}
 	}
 
-	final void comeFrom(CBlockPart from) {
-		this.flags |= ENTRY_BLOCK;
-	}
-
-	final void comeFromPrev(CBlockPart from) {
-		this.flags |= ENTRY_PREV_PART;
+	final CBlockPart terminate(TermBE terminator) {
+		assert !isTerminated() :
+			this + " is terminated already";
+		this.terminator = terminator;
+		return this;
 	}
 
 }

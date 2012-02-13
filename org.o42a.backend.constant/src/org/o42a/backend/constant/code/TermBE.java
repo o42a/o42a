@@ -17,30 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.op;
-
-import org.o42a.backend.constant.code.CBlock;
-import org.o42a.backend.constant.code.CBlockPart;
-import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.code.Block;
+package org.o42a.backend.constant.code;
 
 
-public abstract class TermBE extends AbstractBE {
+public abstract class TermBE {
 
-	private final CCodePart<Block> part;
+	private final CBlockPart part;
 
-	public TermBE(CBlock<?> code) {
-		this.part = code.term(this);
+	TermBE(CBlockPart part) {
+		this.part = part.terminate(this);
 	}
 
-	public TermBE(CBlockPart part) {
-		this.part = part;
-		part.add(this);
-		part.terminate();
-	}
-
-	public final CCodePart<Block> part() {
+	public final CBlockPart part() {
 		return this.part;
 	}
+
+	protected abstract void emit();
 
 }

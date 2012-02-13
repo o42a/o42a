@@ -51,15 +51,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		if (this.hasOps) {
 			return true;
 		}
-		if (isEmpty()) {
-			return false;
-		}
-		for (OpRecord record : this) {
-			if (!record.isEmptyOp()) {
-				return this.hasOps = true;
-			}
-		}
-		return false;
+		return this.hasOps = determineHasOps();
 	}
 
 	public void revealUpTo(OpRecord last) {
@@ -111,6 +103,18 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	@Override
 	protected void setNext(OpRecord prev, OpRecord next) {
 		prev.setNext(next);
+	}
+
+	protected boolean determineHasOps() {
+		if (isEmpty()) {
+			return false;
+		}
+		for (OpRecord record : this) {
+			if (!record.isEmptyOp()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected final void revealRecords() {

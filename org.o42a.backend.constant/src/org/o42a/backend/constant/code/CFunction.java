@@ -236,6 +236,7 @@ public class CFunction<F extends Func<F>>
 		}
 		reveal();
 		getUnderlying().done();
+		clear();
 	}
 
 	@Override

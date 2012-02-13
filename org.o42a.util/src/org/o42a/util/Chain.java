@@ -51,7 +51,7 @@ public abstract class Chain<T> implements Iterable<T> {
 		return this.first == null;
 	}
 
-	public final void empty() {
+	public final void clear() {
 		this.first = this.last = null;
 	}
 
