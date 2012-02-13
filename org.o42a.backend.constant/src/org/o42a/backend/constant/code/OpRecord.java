@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 
 public interface OpRecord {
 
-	boolean isEmptyOp();
+	boolean isNoOp();
 
 	OpRecord getNext();
 

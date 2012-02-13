@@ -127,7 +127,7 @@ public final class CAllocation
 		new InstrBE(cast(writer)) {
 			@Override
 			protected void emit() {
-				if (!allocPart.hasOps()) {
+				if (allocPart.isNoOp()) {
 					return;
 				}
 				allocPart.underlying().writer().dispose(

@@ -34,6 +34,14 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		return this.target;
 	}
 
+	@Override
+	public final CBlockPart singleExit() {
+		if (conditional()) {
+			return null;
+		}
+		return target().part();
+	}
+
 	static class Unconditional extends JumpBE {
 
 		Unconditional(CBlockPart part, CCodePos target) {
@@ -46,7 +54,7 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		}
 
 		@Override
-		public boolean toNext() {
+		public boolean continuation() {
 			return false;
 		}
 
@@ -69,7 +77,7 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		}
 
 		@Override
-		public boolean toNext() {
+		public boolean continuation() {
 			return true;
 		}
 

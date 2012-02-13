@@ -34,8 +34,8 @@ final class CInsetPart<C extends Code>
 	}
 
 	@Override
-	public boolean isEmptyOp() {
-		return !hasOps();
+	public final boolean isNoOp() {
+		return !hasRecords();
 	}
 
 	@Override

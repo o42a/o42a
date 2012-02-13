@@ -34,7 +34,7 @@ public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 	}
 
 	@Override
-	public final boolean isEmptyOp() {
+	public final boolean isNoOp() {
 		return true;
 	}
 

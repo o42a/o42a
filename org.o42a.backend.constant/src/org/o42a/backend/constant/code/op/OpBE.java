@@ -42,7 +42,7 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 	}
 
 	@Override
-	public boolean isEmptyOp() {
+	public boolean isNoOp() {
 		return this.op.getConstant() != null;
 	}
 

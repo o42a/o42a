@@ -35,7 +35,7 @@ public abstract class InstrBE implements OpRecord {
 	}
 
 	@Override
-	public boolean isEmptyOp() {
+	public boolean isNoOp() {
 		return false;
 	}
 

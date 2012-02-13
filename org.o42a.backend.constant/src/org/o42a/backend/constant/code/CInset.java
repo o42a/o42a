@@ -46,7 +46,7 @@ abstract class CInset<C extends Code> extends CCode<C> {
 
 	@Override
 	public final boolean created() {
-		return this.part.hasOps();
+		return !this.part.isNoOp();
 	}
 
 	@Override

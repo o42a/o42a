@@ -26,6 +26,6 @@ public interface EntryBE {
 
 	boolean conditional();
 
-	boolean toNext();
+	boolean continuation();
 
 }
