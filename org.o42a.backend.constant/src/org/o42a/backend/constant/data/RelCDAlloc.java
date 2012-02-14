@@ -88,6 +88,9 @@ public final class RelCDAlloc implements RelAllocation {
 		return new RelCOp(
 				new OpBE<RelOp>(id, cast(writer)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected RelOp write() {
 						return getUnderlying().op(
 								getId(),

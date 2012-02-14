@@ -62,6 +62,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return create(new OpBE<U>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected U write() {
 				return backend().underlying().neg(
 						getId(),
@@ -87,6 +91,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return create(new OpBE<U>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(s);
+			}
 			@Override
 			protected U write() {
 				return backend().underlying().add(
@@ -115,6 +124,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return create(new OpBE<U>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(s);
+			}
+			@Override
 			protected U write() {
 				return backend().underlying().sub(
 						getId(),
@@ -142,6 +156,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return create(new OpBE<U>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(m);
+			}
+			@Override
 			protected U write() {
 				return backend().underlying().mul(
 						getId(),
@@ -168,6 +187,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return create(new OpBE<U>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(d);
+			}
 			@Override
 			protected U write() {
 				return backend().underlying().div(
@@ -197,6 +221,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return create(new OpBE<U>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(d);
+			}
+			@Override
 			protected U write() {
 				return backend().underlying().rem(
 						getId(),
@@ -223,6 +252,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().eq(
@@ -251,6 +285,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
+			@Override
 			protected BoolOp write() {
 				return backend().underlying().ne(
 						getId(),
@@ -277,6 +316,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().gt(
@@ -305,6 +349,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
+			@Override
 			protected BoolOp write() {
 				return backend().underlying().ge(
 						getId(),
@@ -331,6 +380,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().lt(
@@ -359,6 +413,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
+			@Override
 			protected BoolOp write() {
 				return backend().underlying().le(
 						getId(),
@@ -380,6 +439,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new Int8cOp(new OpBE<Int8op>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected Int8op write() {
 				return backend().underlying().toInt8(
 						getId(),
@@ -399,6 +462,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return new Int16cOp(new OpBE<Int16op>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected Int16op write() {
 				return backend().underlying().toInt16(
@@ -420,6 +487,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new Int32cOp(new OpBE<Int32op>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected Int32op write() {
 				return backend().underlying().toInt32(
 						getId(),
@@ -439,6 +510,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		}
 
 		return new Int64cOp(new OpBE<Int64op>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected Int64op write() {
 				return backend().underlying().toInt64(
@@ -460,6 +535,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new Fp32cOp(new OpBE<Fp32op>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected Fp32op write() {
 				return backend().underlying().toFp32(
 						getId(),
@@ -480,6 +559,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		return new Fp64cOp(new OpBE<Fp64op>(resultId, ccode) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected Fp64op write() {
 				return backend().underlying().toFp64(
 						getId(),
@@ -491,6 +574,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	@Override
 	public final void returnValue(Block code) {
 		new ReturnBE(cast(code).nextPart()) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected void emit() {
 				backend().underlying().returnValue(part().underlying());

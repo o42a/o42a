@@ -43,6 +43,9 @@ public final class DataCDAlloc extends CDAlloc<DataOp, Data<DataOp>> {
 		return new DataCOp(
 				new OpBE<DataOp>(id, cast(writer)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected DataOp write() {
 						return getUnderlyingPtr().op(
 								getId(),

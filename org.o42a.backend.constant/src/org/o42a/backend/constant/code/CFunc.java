@@ -64,6 +64,13 @@ public final class CFunc<F extends Func<F>>
 	public final void call(final Code code, final Op... args) {
 		new InstrBE(cast(code)) {
 			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
+			@Override
 			protected void emit() {
 				backend().underlying().caller().call(
 						part().underlying(),
@@ -78,6 +85,13 @@ public final class CFunc<F extends Func<F>>
 			final Code code,
 			final Op... args) {
 		return new Int8cOp(new OpBE<Int8op>(id, cast(code)) {
+			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
 			@Override
 			protected Int8op write() {
 				return backend().underlying().caller().callInt8(
@@ -95,6 +109,13 @@ public final class CFunc<F extends Func<F>>
 			final Op... args) {
 		return new Int16cOp(new OpBE<Int16op>(id, cast(code)) {
 			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
+			@Override
 			protected Int16op write() {
 				return backend().underlying().caller().callInt16(
 						getId(),
@@ -110,6 +131,13 @@ public final class CFunc<F extends Func<F>>
 			final Code code,
 			final Op... args) {
 		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
+			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
 			@Override
 			protected Int32op write() {
 				return backend().underlying().caller().callInt32(
@@ -127,6 +155,13 @@ public final class CFunc<F extends Func<F>>
 			final Op... args) {
 		return new Int64cOp(new OpBE<Int64op>(id, cast(code)) {
 			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
+			@Override
 			protected Int64op write() {
 				return backend().underlying().caller().callInt64(
 						getId(),
@@ -142,6 +177,13 @@ public final class CFunc<F extends Func<F>>
 			final Code code,
 			final Op... args) {
 		return new Fp32cOp(new OpBE<Fp32op>(id, cast(code)) {
+			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
 			@Override
 			protected Fp32op write() {
 				return backend().underlying().caller().callFp32(
@@ -159,6 +201,13 @@ public final class CFunc<F extends Func<F>>
 			final Op... args) {
 		return new Fp64cOp(new OpBE<Fp64op>(id, cast(code)) {
 			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
+			@Override
 			protected Fp64op write() {
 				return backend().underlying().caller().callFp64(
 						getId(),
@@ -174,6 +223,13 @@ public final class CFunc<F extends Func<F>>
 			final Code code,
 			final Op... args) {
 		return new BoolCOp(new OpBE<BoolOp>(id, cast(code)) {
+			@Override
+			public void prepare() {
+				// The function call is always emitted.
+				alwaysEmit();
+				use(backend());
+				useArgs(this, args);
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().caller().callBool(
@@ -192,6 +248,13 @@ public final class CFunc<F extends Func<F>>
 		return new AnyCOp(
 				new OpBE<AnyOp>(id, cast(code)) {
 					@Override
+					public void prepare() {
+						// The function call is always emitted.
+						alwaysEmit();
+						use(backend());
+						useArgs(this, args);
+					}
+					@Override
 					protected AnyOp write() {
 						return backend().underlying().caller().callAny(
 								getId(),
@@ -209,6 +272,13 @@ public final class CFunc<F extends Func<F>>
 			final Op... args) {
 		return new DataCOp(
 				new OpBE<DataOp>(id, cast(code)) {
+					@Override
+					public void prepare() {
+						// The function call is always emitted.
+						alwaysEmit();
+						use(backend());
+						useArgs(this, args);
+					}
 					@Override
 					protected DataOp write() {
 						return backend().underlying().caller().callData(
@@ -229,6 +299,13 @@ public final class CFunc<F extends Func<F>>
 		return type.op(new CStruct<S>(
 				new OpBE<S>(id, cast(code)) {
 					@Override
+					public void prepare() {
+						// The function call is always emitted.
+						alwaysEmit();
+						use(backend());
+						useArgs(this, args);
+					}
+					@Override
 					protected S write() {
 						return backend().underlying().caller().callPtr(
 								getId(),
@@ -239,6 +316,15 @@ public final class CFunc<F extends Func<F>>
 				},
 				null,
 				type));
+	}
+
+	private void useArgs(InstrBE instr, final Op[] args) {
+		if (args.length == 0) {
+			return;
+		}
+		for (Op arg : args) {
+			instr.use(cast(arg).backend());
+		}
 	}
 
 	private Op[] underlyingArgs(final Op[] args) {

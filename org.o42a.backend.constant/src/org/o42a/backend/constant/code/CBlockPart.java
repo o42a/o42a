@@ -83,15 +83,6 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return this.underlying = initUnderlying();
 	}
 
-	public final void reveal() {
-		if (!isJoint()) {// Do not reveal a joint part explicitly.
-			revealPart();
-		}
-		if (this.nextPart != null) {
-			this.nextPart.reveal();
-		}
-	}
-
 	protected abstract CBlockPart newNextPart(int index);
 
 	protected abstract Block createUnderlying();
@@ -120,6 +111,25 @@ public abstract class CBlockPart extends CCodePart<Block> {
 			this + " is terminated already";
 		this.terminator = terminator;
 		return this;
+	}
+
+	final void prepare() {
+		prepareRecords();
+		if (this.nextPart != null) {
+			this.nextPart.prepare();
+		}
+		if (this.terminator != null) {
+			this.terminator.prepare();
+		}
+	}
+
+	final void reveal() {
+		if (!isJoint()) {// Do not reveal a joint part explicitly.
+			revealPart();
+		}
+		if (this.nextPart != null) {
+			this.nextPart.reveal();
+		}
 	}
 
 	private final Block initUnderlying() {
@@ -185,7 +195,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		if (nextJoint != null) {
 			nextJoint.revealPart();
 		} else {
-			this.terminator.emit();
+			this.terminator.reveal();
 		}
 	}
 

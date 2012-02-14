@@ -63,6 +63,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(nb);
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().shl(
 								getId(),
@@ -89,6 +94,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		return create(
 				new OpBE<U>(resultId, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected U write() {
 						return backend().underlying().shl(
@@ -119,6 +128,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(nb);
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().lshr(
 								getId(),
@@ -145,6 +159,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		return create(
 				new OpBE<U>(resultId, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected U write() {
 						return backend().underlying().lshr(
@@ -175,6 +193,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(nb);
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().ashr(
 								getId(),
@@ -201,6 +224,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		return create(
 				new OpBE<U>(resultId, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected U write() {
 						return backend().underlying().ashr(
@@ -231,6 +258,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(op);
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().and(
 								getId(),
@@ -259,6 +291,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 
 		return create(
 				new OpBE<U>(resultId, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+						use(op);
+					}
 					@Override
 					protected U write() {
 						return backend().underlying().or(
@@ -289,6 +326,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(op);
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().xor(
 								getId(),
@@ -315,6 +357,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		return create(
 				new OpBE<U>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected U write() {
 						return backend().underlying().comp(
 								getId(),
@@ -339,6 +385,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().lowestBit(

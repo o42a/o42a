@@ -60,6 +60,10 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		}
 
 		@Override
+		public void prepare() {
+		}
+
+		@Override
 		public String toString() {
 			return part() + "->" + target();
 		}
@@ -116,10 +120,16 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 		}
 
 		@Override
+		public void prepare() {
+			use(this.condition);
+		}
+
+		@Override
 		public String toString() {
 			return (part() + ": " + this.condition
 					+ "? " + target() + " : " + this.falseTarget);
 		}
+
 		@Override
 		protected void emit() {
 			this.condition.backend().underlying().go(

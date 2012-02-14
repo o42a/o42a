@@ -90,6 +90,9 @@ public abstract class RecCDAlloc<
 		return op(
 				new OpBE<P>(id, cast(writer)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected P write() {
 						return getUnderlyingPtr().op(
 								getId(),

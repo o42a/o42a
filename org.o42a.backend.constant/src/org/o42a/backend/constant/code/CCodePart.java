@@ -50,13 +50,11 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	public void revealUpTo(OpRecord last) {
 		assert !this.revealing :
 			"Already revealing " + this;
-
-		final C underlying = underlying();
-
 		this.revealing = true;
 		try {
 
 			OpRecord record;
+
 			if (this.lastRevealed == null) {
 				record = getFirst();
 			} else {
@@ -67,7 +65,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 			}
 
 			for (;;) {
-				record.reveal(underlying);
+				record.reveal();
 				if (record == last) {
 					break;
 				}
@@ -111,6 +109,12 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 	@Override
 	protected void setNext(OpRecord prev, OpRecord next) {
 		prev.setNext(next);
+	}
+
+	protected final void prepareRecords() {
+		for (OpRecord record : this) {
+			record.prepare();
+		}
 	}
 
 	protected final void revealRecords() {

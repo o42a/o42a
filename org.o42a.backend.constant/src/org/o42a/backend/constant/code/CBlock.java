@@ -169,6 +169,9 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	public final void returnVoid() {
 		new ReturnBE(nextPart()) {
 			@Override
+			public void prepare() {
+			}
+			@Override
 			protected void emit() {
 				part().underlying().returnVoid();
 			}
@@ -189,6 +192,16 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	final void resetNextPart() {
 		this.nextPart = null;
+	}
+
+	final void prepare() {
+		if (!created()) {
+			return;
+		}
+		this.firstPart.prepare();
+		for (CBlock<?> subBlock : this.subBlocks) {
+			subBlock.prepare();
+		}
 	}
 
 	final void reveal() {
