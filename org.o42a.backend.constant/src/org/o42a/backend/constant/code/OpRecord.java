@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Code;
-
 
 public interface OpRecord {
 
@@ -30,6 +28,8 @@ public interface OpRecord {
 
 	void setNext(OpRecord next);
 
-	void reveal(Code underlying);
+	void prepare();
+
+	void reveal();
 
 }

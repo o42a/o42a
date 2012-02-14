@@ -68,6 +68,10 @@ public final class FuncCOp<F extends Func<F>>
 		return new FuncCOp<FF>(
 				new OpBE<FuncOp<FF>>(id, cast(code)) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected FuncOp<FF> write() {
 						return backend().underlying().toFunc(
 								getId(),

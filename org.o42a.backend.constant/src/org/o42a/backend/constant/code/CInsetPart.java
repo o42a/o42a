@@ -67,13 +67,19 @@ final class CInsetPart<C extends Code>
 	}
 
 	@Override
-	public final void reveal(Code underlying) {
+	public void prepare() {
+		prepareRecords();
+	}
+
+	@Override
+	public final void reveal() {
 		if (isEmpty()) {
 			return;
 		}
 		assert this.underlying == null :
 			"Insset \"" + this + "\" already revealed";
-		this.underlying = inset().createUnderlying(underlying);
+		this.underlying = inset().createUnderlying(
+				inset().getEnclosingPart().underlying());
 		revealRecords();
 	}
 

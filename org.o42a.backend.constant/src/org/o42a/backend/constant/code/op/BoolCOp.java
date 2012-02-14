@@ -110,6 +110,10 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 		return trueVal.create(new OpBE<O>(selectId, ccode) {
 			@Override
+			public void prepare() {
+
+			}
+			@Override
 			protected O write() {
 				return backend().underlying().select(
 						getId(),
@@ -123,6 +127,10 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	@Override
 	public void returnValue(Block code) {
 		new ReturnBE(cast(code).nextPart()) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected void emit() {
 				backend().underlying().returnValue(part().underlying());
@@ -168,6 +176,12 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			final CStruct<S> trueValue,
 			final CStruct<S> falseValue) {
 		return trueValue.create(new OpBE<S>(id, code) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(trueValue);
+				use(falseValue);
+			}
 			@Override
 			protected S write() {
 				return backend().underlying().select(

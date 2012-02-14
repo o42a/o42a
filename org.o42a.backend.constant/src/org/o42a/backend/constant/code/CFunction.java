@@ -74,6 +74,9 @@ public class CFunction<F extends Func<F>>
 	public final Int8cOp int8arg(final Code code, final Arg<Int8op> arg) {
 		return new Int8cOp(new OpBE<Int8op>(arg.getId(), cast(code)) {
 			@Override
+			public void prepare() {
+			}
+			@Override
 			protected Int8op write() {
 				return getUnderlying().arg(
 						part().underlying(),
@@ -85,6 +88,9 @@ public class CFunction<F extends Func<F>>
 	@Override
 	public final Int16cOp int16arg(final Code code, final Arg<Int16op> arg) {
 		return new Int16cOp(new OpBE<Int16op>(arg.getId(), cast(code)) {
+			@Override
+			public void prepare() {
+			}
 			@Override
 			protected Int16op write() {
 				return getUnderlying().arg(
@@ -98,6 +104,9 @@ public class CFunction<F extends Func<F>>
 	public final Int32cOp int32arg(final Code code, final Arg<Int32op> arg) {
 		return new Int32cOp(new OpBE<Int32op>(arg.getId(), cast(code)) {
 			@Override
+			public void prepare() {
+			}
+			@Override
 			protected Int32op write() {
 				return getUnderlying().arg(
 						part().underlying(),
@@ -109,6 +118,9 @@ public class CFunction<F extends Func<F>>
 	@Override
 	public final Int64cOp int64arg(final Code code, final Arg<Int64op> arg) {
 		return new Int64cOp(new OpBE<Int64op>(arg.getId(), cast(code)) {
+			@Override
+			public void prepare() {
+			}
 			@Override
 			protected Int64op write() {
 				return getUnderlying().arg(
@@ -122,6 +134,9 @@ public class CFunction<F extends Func<F>>
 	public final Fp32cOp fp32arg(final Code code, final Arg<Fp32op> arg) {
 		return new Fp32cOp(new OpBE<Fp32op>(arg.getId(), cast(code)) {
 			@Override
+			public void prepare() {
+			}
+			@Override
 			protected Fp32op write() {
 				return getUnderlying().arg(
 						part().underlying(),
@@ -133,6 +148,9 @@ public class CFunction<F extends Func<F>>
 	@Override
 	public final Fp64cOp fp64arg(final Code code, final Arg<Fp64op> arg) {
 		return new Fp64cOp(new OpBE<Fp64op>(arg.getId(), cast(code)) {
+			@Override
+			public void prepare() {
+			}
 			@Override
 			protected Fp64op write() {
 				return getUnderlying().arg(
@@ -146,6 +164,9 @@ public class CFunction<F extends Func<F>>
 	public final BoolCOp boolArg(final Code code, final Arg<BoolOp> arg) {
 		return new BoolCOp(new OpBE<BoolOp>(arg.getId(), cast(code)) {
 			@Override
+			public void prepare() {
+			}
+			@Override
 			protected BoolOp write() {
 				return getUnderlying().arg(
 						part().underlying(),
@@ -157,6 +178,9 @@ public class CFunction<F extends Func<F>>
 	@Override
 	public final RelCOp relPtrArg(final Code code, final Arg<RelOp> arg) {
 		return new RelCOp(new OpBE<RelOp>(arg.getId(), cast(code)) {
+			@Override
+			public void prepare() {
+			}
 			@Override
 			protected RelOp write() {
 				return getUnderlying().arg(
@@ -171,6 +195,9 @@ public class CFunction<F extends Func<F>>
 		return new AnyCOp(
 				new OpBE<AnyOp>(arg.getId(), cast(code)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected AnyOp write() {
 						return getUnderlying().arg(
 								part().underlying(),
@@ -184,6 +211,9 @@ public class CFunction<F extends Func<F>>
 	public final DataCOp dataArg(final Code code, final Arg<DataOp> arg) {
 		return new DataCOp(
 				new OpBE<DataOp>(arg.getId(), cast(code)) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected DataOp write() {
 						return getUnderlying().arg(
@@ -201,6 +231,9 @@ public class CFunction<F extends Func<F>>
 			final Type<S> type) {
 		return type.op(new CStruct<S>(
 				new OpBE<S>(arg.getId(), cast(code)) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected S write() {
 						return getUnderlying().arg(
@@ -220,6 +253,9 @@ public class CFunction<F extends Func<F>>
 		return signature.op(new CFunc<FF>(
 				new OpBE<FF>(arg.getId(), cast(code)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected FF write() {
 						return getUnderlying().arg(
 								part().underlying(),
@@ -231,6 +267,7 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
+		prepare();
 		reveal();
 		getUnderlying().done();
 		clear();

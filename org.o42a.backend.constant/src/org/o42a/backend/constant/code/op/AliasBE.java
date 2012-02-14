@@ -34,6 +34,11 @@ public final class AliasBE<U extends Op> extends OpBE<U> {
 	}
 
 	@Override
+	public void prepare() {
+		use(this.aliased).prepare();
+	}
+
+	@Override
 	protected U write() {
 		return part().underlying().phi(getId(), this.aliased.underlying());
 	}

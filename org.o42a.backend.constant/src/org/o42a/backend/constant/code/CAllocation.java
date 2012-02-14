@@ -53,6 +53,9 @@ public final class CAllocation
 		return new AnyRecCOp(
 				new OpBE<AnyRecOp>(id, this) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected AnyRecOp write() {
 
 						@SuppressWarnings("unchecked")
@@ -76,6 +79,9 @@ public final class CAllocation
 
 		return new StructRecCOp<S>(
 				new OpBE<StructRecOp<S>>(id, this) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected StructRecOp<S> write() {
 
@@ -104,6 +110,9 @@ public final class CAllocation
 		return type.op(new CStruct<S>(
 				new OpBE<S>(id, this) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected S write() {
 
 						@SuppressWarnings("unchecked")
@@ -125,6 +134,10 @@ public final class CAllocation
 		final CInsetPart<AllocationCode> allocPart = nextPart();
 
 		new InstrBE(cast(writer)) {
+			@Override
+			public void prepare() {
+				alwaysEmit();
+			}
 			@Override
 			protected void emit() {
 				if (allocPart.isNoOp()) {
