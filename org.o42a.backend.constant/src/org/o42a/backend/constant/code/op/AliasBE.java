@@ -24,18 +24,23 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
 
 
-public class AliasBE<U extends Op> extends OpBE<U> {
+public final class AliasBE<U extends Op> extends OpBE<U> {
 
-	private final OpBE<U> backend;
+	private final OpBE<U> aliased;
 
-	AliasBE(CodeId id, CCode<?> code, OpBE<U> backend) {
-		super(id != null ? id : backend.getId(), code);
-		this.backend = backend;
+	public AliasBE(CodeId id, CCode<?> code, OpBE<U> aliased) {
+		super(id != null ? id : aliased.getId(), code);
+		this.aliased = aliased;
+	}
+
+	@Override
+	public void prepare() {
+		use(this.aliased).prepare();
 	}
 
 	@Override
 	protected U write() {
-		return this.backend.underlying();
+		return part().underlying().phi(getId(), this.aliased.underlying());
 	}
 
 }

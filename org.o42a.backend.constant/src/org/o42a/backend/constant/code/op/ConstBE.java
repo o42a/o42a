@@ -43,6 +43,10 @@ public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 	}
 
 	@Override
+	public void prepare() {
+	}
+
+	@Override
 	public String toString() {
 		return this.constant.toString();
 	}

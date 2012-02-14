@@ -83,6 +83,10 @@ public abstract class RecCOp<
 		return loaded(
 				new OpBE<O>(derefId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected O write() {
 						return backend().underlying().load(
 								getId(),
@@ -94,12 +98,25 @@ public abstract class RecCOp<
 
 	@Override
 	public final void store(final Code code, final O value) {
+
+		final COp<O, ?> cValue = cast(value);
+
 		new InstrBE(cast(code)) {
+			@Override
+			public void prepare() {
+				alwaysEmit();
+				use(backend());
+				use(cValue);
+			}
+			@Override
+			public String toString() {
+				return RecCOp.this + " = " + value;
+			}
 			@Override
 			protected void emit() {
 				backend().underlying().store(
 						part().underlying(),
-						cast(value).backend().underlying());
+						cValue.backend().underlying());
 			}
 		};
 	}

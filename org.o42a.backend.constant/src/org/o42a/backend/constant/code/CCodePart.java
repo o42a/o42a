@@ -24,10 +24,11 @@ import org.o42a.codegen.code.Code;
 import org.o42a.util.Chain;
 
 
-public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
+public abstract class CCodePart<C extends Code> {
 
 	private final CCode<?> code;
 	private final CodeId id;
+	private final OpRecords records = new OpRecords();
 	private OpRecord lastRevealed;
 	private boolean revealing;
 	private boolean hasRecords;
@@ -45,20 +46,24 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		return this.code;
 	}
 
+	public final boolean isEmpty() {
+		return this.records.isEmpty();
+	}
+
 	public abstract C underlying();
 
 	public void revealUpTo(OpRecord last) {
+		assert last.part() == this :
+			last + " belongs to " + last.part() + ", but " + this + " expected";
 		assert !this.revealing :
 			"Already revealing " + this;
-
-		final C underlying = underlying();
-
 		this.revealing = true;
 		try {
 
 			OpRecord record;
+
 			if (this.lastRevealed == null) {
-				record = getFirst();
+				record = this.records.getFirst();
 			} else {
 				record = this.lastRevealed.getNext();
 				if (record == null) {
@@ -67,7 +72,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 			}
 
 			for (;;) {
-				record.reveal(underlying);
+				record.reveal();
 				if (record == last) {
 					break;
 				}
@@ -80,11 +85,6 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		}
 	}
 
-	@Override
-	protected OpRecord next(OpRecord item) {
-		return item.getNext();
-	}
-
 	protected final boolean hasRecords() {
 		if (this.hasRecords) {
 			return true;
@@ -92,7 +92,7 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		if (isEmpty()) {
 			return false;
 		}
-		for (OpRecord record : this) {
+		for (OpRecord record : this.records) {
 			if (!record.isNoOp()) {
 				return this.hasRecords = true;
 			}
@@ -108,13 +108,32 @@ public abstract class CCodePart<C extends Code> extends Chain<OpRecord> {
 		return this.id.toString();
 	}
 
-	@Override
-	protected void setNext(OpRecord prev, OpRecord next) {
-		prev.setNext(next);
+	protected final void prepareRecords() {
+		for (OpRecord record : this.records) {
+			record.prepare();
+		}
 	}
 
 	protected final void revealRecords() {
-		revealUpTo(getLast());
+		revealUpTo(this.records.getLast());
+	}
+
+	final void add(OpRecord op) {
+		this.records.add(op);
+	}
+
+	private static final class OpRecords extends Chain<OpRecord> {
+
+		@Override
+		protected OpRecord next(OpRecord item) {
+			return item.getNext();
+		}
+
+		@Override
+		protected void setNext(OpRecord prev, OpRecord next) {
+			prev.setNext(next);
+		}
+
 	}
 
 }

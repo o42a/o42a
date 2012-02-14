@@ -67,7 +67,7 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 	}
 
 	@Override
-	protected void emit() {
+	protected final void emit() {
 		this.underlying = write();
 	}
 

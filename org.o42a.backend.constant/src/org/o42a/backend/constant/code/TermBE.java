@@ -19,21 +19,26 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.backend.constant.code.op.AbstractBE;
 
-public abstract class TermBE {
+
+public abstract class TermBE extends AbstractBE {
 
 	private final CBlockPart part;
 
 	TermBE(CBlockPart part) {
 		this.part = part.terminate(this);
+		alwaysEmit();
 	}
 
+	@Override
 	public final CBlockPart part() {
 		return this.part;
 	}
 
 	public abstract JumpBE toJump();
 
-	protected abstract void emit();
+	@Override
+	public abstract void prepare();
 
 }
