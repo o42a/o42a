@@ -22,15 +22,20 @@ package org.o42a.codegen.data;
 
 public enum AllocClass {
 
+	UNKNOWN_ALLOC_CLASS,
 	AUTO_ALLOC_CLASS,
 	STATIC_ALLOC_CLASS,
 	CONSTANT_ALLOC_CLASS;
 
-	public static final AllocClass DEFAULT_ALLOC_CLASS = AUTO_ALLOC_CLASS;
+	public static final AllocClass DEFAULT_ALLOC_CLASS = UNKNOWN_ALLOC_CLASS;
 	public static final AllocClass FUNC_ALLOC_CLASS = CONSTANT_ALLOC_CLASS;
 
 	public final boolean isStatic() {
-		return this != AUTO_ALLOC_CLASS;
+		return ordinal() >= STATIC_ALLOC_CLASS.ordinal();
+	}
+
+	public final boolean isAuto() {
+		return this == AUTO_ALLOC_CLASS;
 	}
 
 }

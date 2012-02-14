@@ -80,6 +80,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return new CFunc<F>(
 				new OpBE<F>(id, this) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected F write() {
 						return alloc.getUnderlyingPtr().op(
 								getId(),
@@ -140,6 +143,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return new RelCOp(
 				new OpBE<RelOp>(code().getOpNames().opId(null), this) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected RelOp write() {
 						return part().underlying().nullRelPtr();
 					}
@@ -150,6 +156,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final AnyCOp nullPtr() {
 		return new AnyCOp(
 				new OpBE<AnyOp>(code().getOpNames().opId(null), this) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected AnyOp write() {
 						return part().underlying().nullPtr();
@@ -163,6 +172,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public final DataCOp nullDataPtr() {
 		return new DataCOp(
 				new OpBE<DataOp>(code().getOpNames().opId(null), this) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected DataOp write() {
 						return part().underlying().nullDataPtr();
@@ -180,6 +192,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 		return originalType.op(new CStruct<S>(
 				new OpBE<S>(code().getOpNames().opId(null), this) {
+					@Override
+					public void prepare() {
+					}
 					@Override
 					protected S write() {
 
@@ -201,6 +216,9 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 		return new CFunc<F>(
 				new OpBE<F>(code().getOpNames().opId(null), this) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected F write() {
 						return part().underlying().nullPtr(
 								getBackend().underlying(signature));
@@ -217,19 +235,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@SuppressWarnings("unchecked")
 	public final <O extends Op> O phi(CodeId id, O op) {
 
-		final COp<?, ?> cop = cast(op);
+		final COp<O, ?> cop = cast(op);
 		@SuppressWarnings("rawtypes")
 		final COp res = cop;
 
 		return (O) res.create(
-				new OpBE<O>(id, this) {
-					@Override
-					protected O write() {
-						return (O) part().underlying().phi(
-								getId(),
-								cop.backend().underlying());
-					}
-				},
+				new AliasBE<O>(id, this, cop.backend()),
 				cop.getConstant());
 	}
 
@@ -249,6 +260,11 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 		return cop1.create(
 				new OpBE<O>(resultId, this) {
+					@Override
+					public void prepare() {
+						use(cop1);
+						use(cop2);
+					}
 					@Override
 					protected O write() {
 						 return part().underlying().phi(

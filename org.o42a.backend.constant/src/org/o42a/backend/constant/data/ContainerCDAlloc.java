@@ -136,6 +136,9 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return type.op(new CStruct<S>(
 				new OpBE<S>(id, ccode) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected S write() {
 						return getUnderlying().getPointer().op(
 								getId(),

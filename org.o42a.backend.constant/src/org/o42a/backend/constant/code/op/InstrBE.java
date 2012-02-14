@@ -22,13 +22,12 @@ package org.o42a.backend.constant.code.op;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.OpRecord;
-import org.o42a.codegen.code.Code;
 
 
-public abstract class InstrBE implements OpRecord {
+public abstract class InstrBE extends AbstractBE implements OpRecord {
 
-	private OpRecord next;
 	private final CCodePart<?> part;
+	private OpRecord next;
 
 	public InstrBE(CCode<?> code) {
 		this.part = code.op(this);
@@ -39,6 +38,7 @@ public abstract class InstrBE implements OpRecord {
 		return false;
 	}
 
+	@Override
 	public final CCodePart<?> part() {
 		return this.part;
 	}
@@ -54,10 +54,6 @@ public abstract class InstrBE implements OpRecord {
 	}
 
 	@Override
-	public void reveal(Code underlying) {
-		emit();
-	}
-
-	protected abstract void emit();
+	public abstract void prepare();
 
 }

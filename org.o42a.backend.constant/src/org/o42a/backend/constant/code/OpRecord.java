@@ -19,10 +19,10 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Code;
-
 
 public interface OpRecord {
+
+	CCodePart<?> part();
 
 	boolean isNoOp();
 
@@ -30,6 +30,8 @@ public interface OpRecord {
 
 	void setNext(OpRecord next);
 
-	void reveal(Code underlying);
+	void prepare();
+
+	void reveal();
 
 }

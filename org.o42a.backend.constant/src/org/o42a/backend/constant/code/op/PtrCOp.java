@@ -75,6 +75,10 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	public final void returnValue(Block code) {
 		new ReturnBE(cast(code).nextPart()) {
 			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
 			protected void emit() {
 				backend().underlying().returnValue(part().underlying());
 			}
@@ -92,6 +96,10 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().isNull(
@@ -117,6 +125,11 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		}
 
 		return new BoolCOp(new OpBE<BoolOp>(resultId, ccode) {
+			@Override
+			public void prepare() {
+				use(backend());
+				use(o);
+			}
 			@Override
 			protected BoolOp write() {
 				return backend().underlying().eq(
@@ -147,6 +160,11 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		return create(
 				new OpBE<P>(resultId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+						use(idx);
+					}
+					@Override
 					protected P write() {
 						return backend().underlying().offset(
 								getId(),
@@ -164,6 +182,10 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 		return new AnyCOp(
 				new OpBE<AnyOp>(resultId, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected AnyOp write() {
 						return backend().underlying().toAny(

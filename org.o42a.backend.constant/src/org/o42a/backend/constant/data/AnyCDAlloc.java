@@ -43,6 +43,9 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
 		return new AnyCOp(
 				new OpBE<AnyOp>(id, cast(writer)) {
 					@Override
+					public void prepare() {
+					}
+					@Override
 					protected AnyOp write() {
 						return getUnderlyingPtr().op(
 								getId(),

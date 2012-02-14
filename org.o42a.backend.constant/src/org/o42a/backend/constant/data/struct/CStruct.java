@@ -70,6 +70,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new AnyRecCOp(
 				new OpBE<AnyRecOp>(id, cast(code)) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected AnyRecOp write() {
 						return backend().underlying().writer().field(
 								getId(),
@@ -101,6 +105,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return new Int8recCOp(
 				new OpBE<Int8recOp>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected Int8recOp write() {
 						return backend().underlying().writer().int8(
@@ -135,6 +143,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new Int16recCOp(
 				new OpBE<Int16recOp>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected Int16recOp write() {
 						return backend().underlying().writer().int16(
 								getId(),
@@ -167,6 +179,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return new Int32recCOp(
 				new OpBE<Int32recOp>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected Int32recOp write() {
 						return backend().underlying().writer().int32(
@@ -201,6 +217,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new Int64recCOp(
 				new OpBE<Int64recOp>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected Int64recOp write() {
 						return backend().underlying().writer().int64(
 								getId(),
@@ -233,6 +253,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return new Fp32recCOp(
 				new OpBE<Fp32recOp>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected Fp32recOp write() {
 						return backend().underlying().writer().fp32(
@@ -267,6 +291,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new Fp64recCOp(
 				new OpBE<Fp64recOp>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected Fp64recOp write() {
 						return backend().underlying().writer().fp64(
 								getId(),
@@ -300,6 +328,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new AnyRecCOp(
 				new OpBE<AnyRecOp>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected AnyRecOp write() {
 						return backend().underlying().writer().ptr(
 								getId(),
@@ -332,6 +364,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return new DataRecCOp(
 				new OpBE<DataRecOp>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected DataRecOp write() {
 						return backend().underlying().writer().ptr(
@@ -369,6 +405,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new StructRecCOp<SS>(
 				new OpBE<StructRecOp<SS>>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected StructRecOp<SS> write() {
 						return backend().underlying().writer().ptr(
 								getId(),
@@ -402,6 +442,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return new RelRecCOp(
 				new OpBE<RelRecOp>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected RelRecOp write() {
 						return backend().underlying().writer().relPtr(
@@ -441,6 +485,10 @@ public final class CStruct<S extends StructOp<S>>
 		return field.op(new CStruct<SS>(
 				new OpBE<SS>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected SS write() {
 						return backend().underlying().writer().struct(
 								getId(),
@@ -478,6 +526,10 @@ public final class CStruct<S extends StructOp<S>>
 		return new FuncCOp<F>(
 				new OpBE<FuncOp<F>>(id, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected FuncOp<F> write() {
 						return backend().underlying().writer().func(
 								getId(),
@@ -494,6 +546,10 @@ public final class CStruct<S extends StructOp<S>>
 	public DataCOp toData(CodeId id, Code code) {
 		return new DataCOp(
 				new OpBE<DataOp>(id, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected DataOp write() {
 						return backend().underlying().toData(
@@ -514,6 +570,10 @@ public final class CStruct<S extends StructOp<S>>
 
 		return type.op(new CStruct<SS>(
 				new OpBE<SS>(id, ccode) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
 					@Override
 					protected SS write() {
 						return backend().underlying().to(

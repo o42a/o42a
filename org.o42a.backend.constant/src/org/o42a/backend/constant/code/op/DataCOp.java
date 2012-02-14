@@ -58,6 +58,10 @@ public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 		return type.op(new CStruct<S>(
 				new OpBE<S>(castId, ccode) {
 					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
 					protected S write() {
 						return backend().underlying().to(
 								getId(),
