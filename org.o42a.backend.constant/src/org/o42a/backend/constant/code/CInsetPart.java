@@ -34,6 +34,11 @@ final class CInsetPart<C extends Code>
 	}
 
 	@Override
+	public CCodePart<?> part() {
+		return inset().getEnclosingPart();
+	}
+
+	@Override
 	public final boolean isNoOp() {
 		return !hasRecords();
 	}

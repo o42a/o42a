@@ -22,6 +22,8 @@ package org.o42a.backend.constant.code;
 
 public interface OpRecord {
 
+	CCodePart<?> part();
+
 	boolean isNoOp();
 
 	OpRecord getNext();

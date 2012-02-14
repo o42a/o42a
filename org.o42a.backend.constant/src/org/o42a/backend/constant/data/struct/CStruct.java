@@ -72,9 +72,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected AnyRecOp write() {
@@ -111,9 +108,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Int8recOp write() {
@@ -151,9 +145,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Int16recOp write() {
@@ -191,9 +182,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Int32recOp write() {
@@ -231,9 +219,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Int64recOp write() {
@@ -271,9 +256,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Fp32recOp write() {
@@ -311,9 +293,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected Fp64recOp write() {
@@ -351,9 +330,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected AnyRecOp write() {
@@ -391,9 +367,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected DataRecOp write() {
@@ -434,9 +407,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected StructRecOp<SS> write() {
@@ -475,9 +445,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected RelRecOp write() {
@@ -520,9 +487,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected SS write() {
@@ -564,9 +528,6 @@ public final class CStruct<S extends StructOp<S>>
 					@Override
 					public void prepare() {
 						use(backend());
-						if (!getAllocClass().isStatic()) {
-							useBy(backend());
-						}
 					}
 					@Override
 					protected FuncOp<F> write() {

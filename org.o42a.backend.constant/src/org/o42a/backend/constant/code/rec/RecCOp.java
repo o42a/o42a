@@ -104,10 +104,13 @@ public abstract class RecCOp<
 		new InstrBE(cast(code)) {
 			@Override
 			public void prepare() {
-				// Always emit the storage.
 				alwaysEmit();
 				use(backend());
 				use(cValue);
+			}
+			@Override
+			public String toString() {
+				return RecCOp.this + " = " + value;
 			}
 			@Override
 			protected void emit() {
