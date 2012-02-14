@@ -217,19 +217,12 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@SuppressWarnings("unchecked")
 	public final <O extends Op> O phi(CodeId id, O op) {
 
-		final COp<?, ?> cop = cast(op);
+		final COp<O, ?> cop = cast(op);
 		@SuppressWarnings("rawtypes")
 		final COp res = cop;
 
 		return (O) res.create(
-				new OpBE<O>(id, this) {
-					@Override
-					protected O write() {
-						return (O) part().underlying().phi(
-								getId(),
-								cop.backend().underlying());
-					}
-				},
+				new AliasBE<O>(id, this, cop.backend()),
 				cop.getConstant());
 	}
 
