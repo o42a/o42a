@@ -188,9 +188,8 @@ public class ConsoleModule extends AnnotatedModule {
 						generator.rawId("main"),
 						MAIN);
 		final FuncPtr<DebugExecMainFunc> executeMain =
-				generator.externalFunction(
-						"o42a_dbg_exec_main",
-						DEBUG_EXEC_MAIN);
+				generator.externalFunction()
+				.link("o42a_dbg_exec_main", DEBUG_EXEC_MAIN);
 
 		executeMain.op(null, debugMain).call(
 				debugMain,

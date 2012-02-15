@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.data.func;
 
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.code.ExternalFunctionSettings;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 
@@ -38,9 +39,12 @@ public class ExternCFAlloc<F extends Func<F>> extends CFAlloc<F> {
 
 	@Override
 	protected FuncPtr<F> createUnderlyingPtr() {
-		return getBackend().getUnderlyingGenerator().externalFunction(
-				this.name,
-				getUnderlyingSignature());
+
+		final ExternalFunctionSettings settings =
+				getBackend().getUnderlyingGenerator().externalFunction();
+
+		return settings.set(getPointer())
+				.link(this.name, getUnderlyingSignature());
 	}
 
 }

@@ -117,9 +117,9 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		protected FuncPtr<ObjectRefFunc> constructorStub() {
-			return getGenerator().externalFunction(
-					"o42a_obj_ref_stub",
-					OBJECT_REF);
+			return getGenerator()
+					.externalFunction()
+					.link("o42a_obj_ref_stub", OBJECT_REF);
 		}
 
 	}

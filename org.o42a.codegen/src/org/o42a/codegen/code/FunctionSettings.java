@@ -20,39 +20,27 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 
 
-public final class FunctionSettings {
-
-	private final Functions functions;
-
-	private boolean exported;
+public final class FunctionSettings
+		extends AbstractFunctionSettings<FunctionSettings> {
 
 	FunctionSettings(Functions functions) {
-		this.functions = functions;
-	}
-
-	public final Generator getGenerator() {
-		return this.functions.getGenerator();
-	}
-
-	public final boolean isExported() {
-		return this.exported;
+		super(functions);
 	}
 
 	public final FunctionSettings export() {
-		this.exported = true;
+		this.flags |= EXPORTED;
 		return this;
 	}
 
-	public FunctionSettings dontExport() {
-		this.exported = false;
+	public final FunctionSettings dontExport() {
+		this.flags &= ~EXPORTED;
 		return this;
 	}
 
-	public final FunctionSettings set(FunctionSettings settings) {
-		this.exported = settings.exported;
+	public final FunctionSettings set(FunctionProperties properties) {
+		this.flags = properties.getFunctionFlags();
 		return this;
 	}
 
@@ -63,7 +51,7 @@ public final class FunctionSettings {
 		final Function<F> function =
 				new Function<F>(this, id, signature, null);
 
-		this.functions.addFunction(id, signature, function.getPointer());
+		functions().addFunction(id, signature, function.getPointer());
 
 		return function;
 	}
@@ -76,7 +64,7 @@ public final class FunctionSettings {
 		final Function<F> function =
 				new Function<F>(this, id, signature, builder);
 
-		this.functions.addFunction(id, function);
+		functions().addFunction(id, function);
 
 		return function;
 	}

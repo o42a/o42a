@@ -19,6 +19,8 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.common.adapter.ParseFunc.PARSE;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedSources;
@@ -274,9 +276,8 @@ public abstract strictfp class FloatByString extends ByString<Double> {
 	}
 
 	private FuncPtr<ParseFunc> parseFunc(Generator generator) {
-		return generator.externalFunction(
-				"o42a_float_by_str",
-				ParseFunc.PARSE);
+		return generator.externalFunction()
+				.link("o42a_float_by_str", PARSE);
 	}
 
 	private boolean hasError(

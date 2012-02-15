@@ -95,9 +95,10 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 		final Block code = dirs.code();
 		final ArrayItem[] items = array.getItems();
 		final FuncPtr<ValAllocFunc> func =
-				dirs.getGenerator().externalFunction(
-						"o42a_array_alloc",
-						VAL_ALLOC);
+				dirs.getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_array_alloc", VAL_ALLOC);
 		AnyRecOp data = func.op(null, code)
 				.allocate(dirs, items.length)
 				.toPtr(code.id("items"), code);

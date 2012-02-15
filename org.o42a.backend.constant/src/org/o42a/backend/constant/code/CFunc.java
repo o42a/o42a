@@ -47,6 +47,13 @@ public final class CFunc<F extends Func<F>>
 		this.signature = signature;
 	}
 
+	public final boolean hasSideEffects() {
+
+		final FuncPtr<F> constant = getConstant();
+
+		return constant == null || constant.hasSideEffects();
+	}
+
 	@Override
 	public final Signature<F> getSignature() {
 		return this.signature;
@@ -54,10 +61,8 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public F create(OpBE<F> backend, FuncPtr<F> constant) {
-		return getSignature().op(new CFunc<F>(
-				backend,
-				getSignature(),
-				constant));
+		return getSignature().op(
+				new CFunc<F>(backend, getSignature(), constant));
 	}
 
 	@Override
@@ -65,8 +70,10 @@ public final class CFunc<F extends Func<F>>
 		new InstrBE(cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -87,8 +94,10 @@ public final class CFunc<F extends Func<F>>
 		return new Int8cOp(new OpBE<Int8op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -110,8 +119,10 @@ public final class CFunc<F extends Func<F>>
 		return new Int16cOp(new OpBE<Int16op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -133,8 +144,10 @@ public final class CFunc<F extends Func<F>>
 		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -156,8 +169,10 @@ public final class CFunc<F extends Func<F>>
 		return new Int64cOp(new OpBE<Int64op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -179,8 +194,10 @@ public final class CFunc<F extends Func<F>>
 		return new Fp32cOp(new OpBE<Fp32op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -202,8 +219,10 @@ public final class CFunc<F extends Func<F>>
 		return new Fp64cOp(new OpBE<Fp64op>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -225,8 +244,10 @@ public final class CFunc<F extends Func<F>>
 		return new BoolCOp(new OpBE<BoolOp>(id, cast(code)) {
 			@Override
 			public void prepare() {
-				// The function call is always emitted.
-				alwaysEmit();
+				if (hasSideEffects()) {
+					// The function call with side effects is always emitted.
+					alwaysEmit();
+				}
 				use(backend());
 				useArgs(this, args);
 			}
@@ -249,8 +270,11 @@ public final class CFunc<F extends Func<F>>
 				new OpBE<AnyOp>(id, cast(code)) {
 					@Override
 					public void prepare() {
-						// The function call is always emitted.
-						alwaysEmit();
+						if (hasSideEffects()) {
+							// The function call with side effects
+							// is always emitted.
+							alwaysEmit();
+						}
 						use(backend());
 						useArgs(this, args);
 					}
@@ -274,8 +298,11 @@ public final class CFunc<F extends Func<F>>
 				new OpBE<DataOp>(id, cast(code)) {
 					@Override
 					public void prepare() {
-						// The function call is always emitted.
-						alwaysEmit();
+						if (hasSideEffects()) {
+							// The function call with side effects
+							// is always emitted.
+							alwaysEmit();
+						}
 						use(backend());
 						useArgs(this, args);
 					}
@@ -300,8 +327,11 @@ public final class CFunc<F extends Func<F>>
 				new OpBE<S>(id, cast(code)) {
 					@Override
 					public void prepare() {
-						// The function call is always emitted.
-						alwaysEmit();
+						if (hasSideEffects()) {
+							// The function call with side effects
+							// is always emitted.
+							alwaysEmit();
+						}
 						use(backend());
 						useArgs(this, args);
 					}

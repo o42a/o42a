@@ -55,25 +55,8 @@ public abstract class Functions {
 		return new FunctionSettings(this);
 	}
 
-	public <F extends Func<F>> FuncPtr<F> externalFunction(
-			String name,
-			Signature<F> signature) {
-
-		@SuppressWarnings("unchecked")
-		final FuncPtr<F> found = (FuncPtr<F>) this.externals.get(name);
-
-		if (found != null) {
-			return found;
-		}
-
-		final CodeId id = getGenerator().rawId(name);
-		final ExternFuncPtr<F> extern =
-				new ExternFuncPtr<F>(id, allocate(signature));
-
-		this.externals.put(name, extern);
-		addFunction(id, signature, extern);
-
-		return extern;
+	public final ExternalFunctionSettings externalFunction() {
+		return new ExternalFunctionSettings(this);
 	}
 
 	public final <F extends Func<F>> Signature<F> allocate(
@@ -111,6 +94,28 @@ public abstract class Functions {
 			CodeId id,
 			Function<F> function) {
 		this.functions.add(function);
+	}
+
+	final <F extends Func<F>> FuncPtr<F> externalFunction(
+			String name,
+			Signature<F> signature,
+			ExternalFunctionSettings settings) {
+
+		@SuppressWarnings("unchecked")
+		final FuncPtr<F> found = (FuncPtr<F>) this.externals.get(name);
+
+		if (found != null) {
+			return found;
+		}
+
+		final CodeId id = getGenerator().rawId(name);
+		final ExternFuncPtr<F> extern =
+				new ExternFuncPtr<F>(id, allocate(signature), settings);
+
+		this.externals.put(name, extern);
+		addFunction(id, signature, extern);
+
+		return extern;
 	}
 
 }
