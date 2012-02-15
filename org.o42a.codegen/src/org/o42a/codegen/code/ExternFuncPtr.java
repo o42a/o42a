@@ -25,15 +25,35 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 
 final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 
+	private final ExternalFunctionSettings settings;
 	private FuncAllocation<F> allocation;
 
-	ExternFuncPtr(CodeId id, Signature<F> signature) {
+	ExternFuncPtr(
+			CodeId id,
+			Signature<F> signature,
+			ExternalFunctionSettings settings) {
 		super(id, signature, false);
+		this.settings = settings;
 	}
 
 	@Override
-	public Function<F> getFunction() {
+	public final Function<F> getFunction() {
 		return null;
+	}
+
+	@Override
+	public final boolean isExported() {
+		return true;
+	}
+
+	@Override
+	public final boolean hasSideEffects() {
+		return this.settings.hasSideEffects();
+	}
+
+	@Override
+	public final int getFunctionFlags() {
+		return this.settings.getFunctionFlags();
 	}
 
 	@Override

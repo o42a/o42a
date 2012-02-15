@@ -91,10 +91,8 @@ public abstract class Generator {
 		return getFunctions().newFunction();
 	}
 
-	public final <F extends Func<F>> FuncPtr<F> externalFunction(
-			String name,
-			Signature<F> signature) {
-		return getFunctions().externalFunction(name, signature);
+	public final ExternalFunctionSettings externalFunction() {
+		return getFunctions().externalFunction();
 	}
 
 	public final GlobalSettings newGlobal() {

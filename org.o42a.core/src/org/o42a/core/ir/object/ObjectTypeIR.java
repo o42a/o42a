@@ -250,15 +250,16 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 	}
 
 	private FuncPtr<ObjectRefFunc> nullObjectRef() {
-		return getGenerator().externalFunction(
-				"o42a_obj_ref_null",
-				OBJECT_REF);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_obj_ref_null", OBJECT_REF);
 	}
 
 	private FuncPtr<ObjectRefFunc> stubObjectRef() {
-		return getGenerator().externalFunction(
-				"o42a_obj_ref_stub",
-				OBJECT_REF);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_ref_stub", OBJECT_REF);
 	}
 
 	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectIRData instance) {

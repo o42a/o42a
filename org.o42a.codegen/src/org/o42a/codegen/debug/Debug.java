@@ -241,7 +241,9 @@ public class Debug {
 			return this.enterFunc;
 		}
 		return this.enterFunc =
-				getGenerator().externalFunction("o42a_dbg_enter", DEBUG_TRACE);
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_enter", DEBUG_TRACE);
 	}
 
 	private FuncPtr<DebugTraceFunc> exitFunc() {
@@ -249,16 +251,19 @@ public class Debug {
 			return this.exitFunc;
 		}
 		return this.exitFunc =
-				getGenerator().externalFunction("o42a_dbg_exit", DEBUG_TRACE);
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_exit", DEBUG_TRACE);
 	}
 
 	private FuncPtr<DebugExecCommandFunc> execCommandFunc() {
 		if (this.execCommandFunc != null) {
 			return this.execCommandFunc;
 		}
-		return this.execCommandFunc = getGenerator().externalFunction(
-				"o42a_dbg_exec_command",
-				DEBUG_EXEC_COMMAND);
+		return this.execCommandFunc =
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_exec_command", DEBUG_EXEC_COMMAND);
 	}
 
 	private static final class DebugCodeCallback implements CodeCallback {

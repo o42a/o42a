@@ -19,6 +19,8 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.common.adapter.ParseWithRadixFunc.PARSE_WITH_RADIX;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedSources;
@@ -57,9 +59,8 @@ public abstract class IntegerByString extends ByString<Long> {
 	}
 
 	private FuncPtr<ParseWithRadixFunc> parseFunc(Generator generator) {
-		return generator.externalFunction(
-				"o42a_int_by_str",
-				ParseWithRadixFunc.PARSE_WITH_RADIX);
+		return generator.externalFunction()
+				.link("o42a_int_by_str", PARSE_WITH_RADIX);
 	}
 
 	private Long integerByString(

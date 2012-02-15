@@ -210,9 +210,9 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		@Override
 		protected FuncPtr<ObjectConstructorFunc> constructorStub() {
-			return getGenerator().externalFunction(
-					"o42a_obj_constructor_stub",
-					OBJECT_CONSTRUCTOR);
+			return getGenerator()
+					.externalFunction()
+					.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
 		}
 
 	}

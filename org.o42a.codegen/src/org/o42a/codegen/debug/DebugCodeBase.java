@@ -182,9 +182,9 @@ public abstract class DebugCodeBase extends CodeBase {
 		}
 
 		final FuncPtr<DebugNameFunc> func =
-				this.generator.externalFunction(
-						"o42a_dbg_mem_name",
-						DEBUG_NAME);
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_mem_name", DEBUG_NAME);
 
 		func.op(null, code()).call(
 				code(),
@@ -201,9 +201,9 @@ public abstract class DebugCodeBase extends CodeBase {
 		}
 
 		final FuncPtr<DebugNameFunc> debugFunc =
-				this.generator.externalFunction(
-						"o42a_dbg_func_name",
-						DEBUG_NAME);
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_func_name", DEBUG_NAME);
 
 		debugFunc.op(null, code()).call(
 				code(),
@@ -233,9 +233,9 @@ public abstract class DebugCodeBase extends CodeBase {
 		}
 
 		final FuncPtr<DebugDumpFunc> func =
-				this.generator.externalFunction(
-						"o42a_dbg_dump_mem",
-						DEBUG_DUMP);
+				getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_dump_mem", DEBUG_DUMP);
 		final Code code = code();
 
 		func.op(null, code).call(
@@ -246,13 +246,15 @@ public abstract class DebugCodeBase extends CodeBase {
 	}
 
 	private FuncPtr<DebugPrintFunc> printFunc() {
-		return this.generator.externalFunction("o42a_dbg_print", DEBUG_PRINT);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_print", DEBUG_PRINT);
 	}
 
 	private FuncPtr<DebugPrintFunc> printWoPrefixFunc() {
-		return this.generator.externalFunction(
-				"o42a_dbg_print_wo_prefix",
-				DEBUG_PRINT);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_dbg_print_wo_prefix", DEBUG_PRINT);
 	}
 
 	private Ptr<AnyOp> binaryMessage(String message) {

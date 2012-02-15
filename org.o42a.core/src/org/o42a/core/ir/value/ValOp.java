@@ -349,7 +349,9 @@ public final class ValOp extends IROp implements CondOp {
 	public void use(Code code) {
 
 		final FuncPtr<ValUseFunc> func =
-				code.getGenerator().externalFunction("o42a_val_use", VAL_USE);
+				code.getGenerator()
+				.externalFunction()
+				.link("o42a_val_use", VAL_USE);
 
 		func.op(null, code).call(code, this);
 	}
@@ -357,7 +359,9 @@ public final class ValOp extends IROp implements CondOp {
 	public void unuse(Code code) {
 
 		final FuncPtr<ValUseFunc> func =
-				code.getGenerator().externalFunction("o42a_val_unuse", VAL_USE);
+				code.getGenerator()
+				.externalFunction()
+				.link("o42a_val_unuse", VAL_USE);
 
 		func.op(null, code).call(code, this);
 	}

@@ -181,9 +181,9 @@ final class ArrayCopyValueDef extends ValueDef {
 		final ValOp from = this.ref.op(host).writeValue(fromDirs);
 
 		final FuncPtr<ValCopyFunc> func =
-				dirs.getGenerator().externalFunction(
-						"o42a_array_copy",
-						VAL_COPY);
+				dirs.getGenerator()
+				.externalFunction()
+				.link("o42a_array_copy", VAL_COPY);
 
 		func.op(null, dirs.code()).copy(dirs, from);
 		fromDirs.done();

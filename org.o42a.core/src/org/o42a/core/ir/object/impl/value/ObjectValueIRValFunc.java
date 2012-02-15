@@ -349,27 +349,27 @@ public abstract class ObjectValueIRValFunc
 	}
 
 	final FuncPtr<ObjectValFunc> falseValFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_false",
-				OBJECT_VAL);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_false", OBJECT_VAL);
 	}
 
 	final FuncPtr<ObjectValFunc> voidValFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_void",
-				OBJECT_VAL);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_void", OBJECT_VAL);
 	}
 
 	final FuncPtr<ObjectValFunc> unknownValFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_unknown",
-				OBJECT_VAL);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_unknown", OBJECT_VAL);
 	}
 
 	final FuncPtr<ObjectValFunc> stubFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_val_stub",
-				OBJECT_VAL);
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_stub", OBJECT_VAL);
 	}
 
 	private ValOp writeExplicitDefs(

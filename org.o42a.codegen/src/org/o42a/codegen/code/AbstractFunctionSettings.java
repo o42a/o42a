@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,46 +19,54 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.codegen.Generator;
 
 
-final class ConstructingFuncPtr<F extends Func<F>> extends FuncPtr<F> {
+abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
+	implements FunctionProperties {
 
-	private final Function<F> function;
+	private final Functions functions;
+	int flags;
 
-	ConstructingFuncPtr(Function<F> function) {
-		super(function.getId(), function.getSignature(), false);
-		this.function = function;
+	AbstractFunctionSettings(Functions functions) {
+		this.functions = functions;
 	}
 
-	@Override
-	public final Function<F> getFunction() {
-		return this.function;
-	}
-
-	@Override
-	public final boolean isExported() {
-		return getFunction().isExported();
-	}
-
-	@Override
-	public final boolean hasSideEffects() {
-		return getFunction().hasSideEffects();
+	public final Generator getGenerator() {
+		return this.functions.getGenerator();
 	}
 
 	@Override
 	public final int getFunctionFlags() {
-		return getFunction().getFunctionFlags();
+		return this.flags;
 	}
 
 	@Override
-	public final FuncAllocation<F> getAllocation() {
-		return getFunction().writer().getAllocation();
+	public final boolean isExported() {
+		return (this.flags & EXPORTED) != 0;
 	}
 
 	@Override
-	public String toString() {
-		return "&" + this.function;
+	public final boolean hasSideEffects() {
+		return (this.flags & NO_SIDE_EFFECTS) == 0;
+	}
+
+	public final S sideEffects(boolean sideEffects) {
+		if (sideEffects) {
+			this.flags &= ~NO_SIDE_EFFECTS;
+		} else {
+			this.flags |= NO_SIDE_EFFECTS;
+		}
+		return self();
+	}
+
+	final Functions functions() {
+		return this.functions;
+	}
+
+	@SuppressWarnings("unchecked")
+	final S self() {
+		return (S) this;
 	}
 
 }

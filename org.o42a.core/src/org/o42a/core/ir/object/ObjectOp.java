@@ -403,9 +403,13 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 	}
 
 	private FuncPtr<CastObjectFunc> castFunc(boolean reportError) {
-		return getGenerator().externalFunction(
-				reportError ? "o42a_obj_cast_or_error" : "o42a_obj_cast",
-				CAST_OBJECT);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link(
+						reportError
+						? "o42a_obj_cast_or_error" : "o42a_obj_cast",
+						CAST_OBJECT);
 	}
 
 	private final ObjectBodyIR.Op body(Code code) {

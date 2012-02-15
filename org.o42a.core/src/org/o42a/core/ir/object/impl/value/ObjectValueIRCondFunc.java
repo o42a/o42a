@@ -462,27 +462,31 @@ public abstract class ObjectValueIRCondFunc
 	}
 
 	private FuncPtr<ObjectCondFunc> trueFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_true",
-				OBJECT_COND);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_obj_cond_true", OBJECT_COND);
 	}
 
 	private FuncPtr<ObjectCondFunc> falseFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_false",
-				OBJECT_COND);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_obj_cond_false", OBJECT_COND);
 	}
 
 	private FuncPtr<ObjectCondFunc> unknownFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_unknown",
-				OBJECT_COND);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_obj_cond_unknown", OBJECT_COND);
 	}
 
 	private FuncPtr<ObjectCondFunc> stubFunc() {
-		return getGenerator().externalFunction(
-				"o42a_obj_cond_stub",
-				OBJECT_COND);
+		return getGenerator()
+				.externalFunction()
+				.sideEffects(false)
+				.link("o42a_obj_cond_stub", OBJECT_COND);
 	}
 
 	private final class CondCollector extends DefCollector<CondDef> {

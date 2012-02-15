@@ -249,9 +249,9 @@ final class SubString extends AnnotatedBuiltin {
 
 		final Code code = substringDirs.code();
 		final FuncPtr<SubStringFunc> funcPtr =
-				substringDirs.getGenerator().externalFunction(
-						"o42a_str_sub",
-						SUB_STRING);
+				substringDirs.getGenerator()
+				.externalFunction()
+				.link("o42a_str_sub", SUB_STRING);
 		final SubStringFunc func = funcPtr.op(null, code);
 
 		final ValOp substring = func.substring(

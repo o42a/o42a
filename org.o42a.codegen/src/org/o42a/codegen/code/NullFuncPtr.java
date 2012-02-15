@@ -36,6 +36,21 @@ final class NullFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 	}
 
 	@Override
+	public final boolean isExported() {
+		return false;
+	}
+
+	@Override
+	public final boolean hasSideEffects() {
+		return true;
+	}
+
+	@Override
+	public final int getFunctionFlags() {
+		return 0;
+	}
+
+	@Override
 	public final FuncAllocation<F> getAllocation() {
 		if (this.allocation != null) {
 			return this.allocation;

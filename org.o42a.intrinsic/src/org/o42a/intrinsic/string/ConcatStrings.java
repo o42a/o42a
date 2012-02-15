@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.string;
 
+import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedBuiltin;
@@ -154,9 +156,9 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final Code code = withDirs.code();
 		final FuncPtr<ConcatFunc> funcPtr =
-				code.getGenerator().externalFunction(
-						"o42a_str_concat",
-						ConcatFunc.CONCAT);
+				code.getGenerator()
+				.externalFunction()
+				.link("o42a_str_concat", CONCAT);
 		final ConcatFunc func = funcPtr.op(null, code);
 		final ValOp result = dirs.value();
 

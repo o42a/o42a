@@ -21,6 +21,7 @@ package org.o42a.lib.console.impl;
 
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.value.Value.voidValue;
+import static org.o42a.lib.console.impl.PrintFunc.PRINT;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -120,9 +121,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	}
 
 	private FuncPtr<PrintFunc> printFunc(Generator generator) {
-		return generator.externalFunction(
-				AbstractPrint.this.funcName,
-				PrintFunc.PRINT);
+		return generator.externalFunction().link(this.funcName, PRINT);
 	}
 
 	private final class Inline extends InlineValue {

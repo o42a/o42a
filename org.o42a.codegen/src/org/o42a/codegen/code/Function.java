@@ -25,7 +25,9 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.debug.DebugEnvOp;
 
 
-public final class Function<F extends Func<F>> extends Block {
+public final class Function<F extends Func<F>>
+		extends Block
+		implements FunctionProperties {
 
 	private final FunctionSettings settings;
 	private final Signature<F> signature;
@@ -51,8 +53,19 @@ public final class Function<F extends Func<F>> extends Block {
 		return this.signature;
 	}
 
+	@Override
 	public final boolean isExported() {
 		return this.settings.isExported();
+	}
+
+	@Override
+	public final boolean hasSideEffects() {
+		return this.settings.hasSideEffects();
+	}
+
+	@Override
+	public final int getFunctionFlags() {
+		return this.settings.getFunctionFlags();
 	}
 
 	public final FuncPtr<F> getPointer() {
@@ -67,10 +80,6 @@ public final class Function<F extends Func<F>> extends Block {
 	@Override
 	public final boolean exists() {
 		return this.writer != null && this.writer.exists();
-	}
-
-	public final FunctionSettings update(FunctionSettings settings) {
-		return settings.set(this.settings);
 	}
 
 	public final DebugEnvOp debugEnv(Code code) {
