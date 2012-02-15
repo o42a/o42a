@@ -59,12 +59,12 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	@Override
 	public DataAllocation<AnyOp> addBinary(
-			CodeId id,
-			boolean isConstant,
+			Ptr<AnyOp> pointer,
 			byte[] data,
 			int start,
 			int end) {
 
+		final CodeId id = pointer.getId();
 		final NativeBuffer ids = getModule().ids();
 		final long nativePtr = binaryConstant(
 				getModulePtr(),
@@ -73,7 +73,7 @@ public class LLVMDataAllocator implements DataAllocator {
 				data,
 				start,
 				end,
-				isConstant);
+				pointer.isPtrToConstant());
 
 		return new AnyLLDAlloc(getModule(), dataId(id, nativePtr), null);
 	}

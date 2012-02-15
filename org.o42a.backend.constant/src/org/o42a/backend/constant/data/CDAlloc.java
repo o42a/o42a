@@ -40,6 +40,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	private D underlying;
 	private Ptr<P> underlyingPtr;
 	private final D data;
+	private final Ptr<P> pointer;
 	private int index;
 
 	public CDAlloc(ConstBackend backend, D data, CDAlloc<P, D> typeAllocation) {
@@ -47,13 +48,18 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		this.typeAllocation = typeAllocation;
 		this.underAlloc = defaultUnderAlloc();
 		this.data = data;
+		this.pointer = data.getPointer();
 	}
 
-	public CDAlloc(ConstBackend backend, UnderAlloc<P> underAlloc) {
+	public CDAlloc(
+			ConstBackend backend,
+			Ptr<P> pointer,
+			UnderAlloc<P> underAlloc) {
 		this.backend = backend;
 		this.typeAllocation = null;
 		this.underAlloc = underAlloc;
 		this.data = null;
+		this.pointer = pointer;
 		this.underlying = null;
 	}
 
@@ -70,7 +76,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 	}
 
 	public final Ptr<P> getPointer() {
-		return this.data != null ? this.data.getPointer() : null;
+		return this.pointer;
 	}
 
 	public final boolean isUnderlyingAllocated() {
@@ -122,12 +128,18 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 
 	@Override
 	public DataAllocation<AnyOp> toAny() {
-		return new AnyCDAlloc(getBackend(), anyUnderAlloc(this));
+		return new AnyCDAlloc(
+				getBackend(),
+				getPointer().toAny(),
+				anyUnderAlloc(this));
 	}
 
 	@Override
 	public DataAllocation<DataOp> toData() {
-		return new DataCDAlloc(getBackend(), dataUnderAlloc(this));
+		return new DataCDAlloc(
+				getBackend(),
+				getPointer().toData(),
+				dataUnderAlloc(this));
 	}
 
 	@Override

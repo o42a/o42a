@@ -25,9 +25,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -46,7 +44,7 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public DataAllocation<AnyOp> nullPtr() {
+	public DataAllocation<AnyOp> nullPtr(Ptr<AnyOp> pointer) {
 		return new AnyLLDAlloc(
 				getModule(),
 				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),
@@ -54,7 +52,7 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public DataAllocation<DataOp> nullDataPtr() {
+	public DataAllocation<DataOp> nullDataPtr(Ptr<DataOp> pointer) {
 		return new DataLLDAlloc(
 				getModule(),
 				LLVMId.nullId(nullPtr(getModule().getNativePtr()), false),
@@ -62,7 +60,7 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type) {
+	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Ptr<S> pointer, Type<S> type) {
 
 		final ContainerLLDAlloc<S> typeAlloc =
 				(ContainerLLDAlloc<S>) type.pointer(type.getGenerator())

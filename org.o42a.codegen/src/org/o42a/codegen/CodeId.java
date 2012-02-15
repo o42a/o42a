@@ -84,6 +84,12 @@ public abstract class CodeId implements Cloneable {
 		return separate(Separator.TYPE, type);
 	}
 
+	public final CodeId type(String type) {
+		assert type != null :
+			"Identifier not specified";
+		return separate(Separator.TYPE, type, false);
+	}
+
 	public final CodeId in(CodeId in) {
 		assert in != null :
 			"Identifier not specified";

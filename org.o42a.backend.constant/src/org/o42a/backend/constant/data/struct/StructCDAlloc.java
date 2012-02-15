@@ -22,6 +22,7 @@ package org.o42a.backend.constant.data.struct;
 import org.o42a.backend.constant.data.*;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Allocated;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SubData;
 
 
@@ -45,8 +46,11 @@ public class StructCDAlloc<S extends StructOp<S>> extends ContainerCDAlloc<S> {
 		nest();
 	}
 
-	public StructCDAlloc(ConstBackend backend, UnderAlloc<S> underAlloc) {
-		super(backend, underAlloc);
+	public StructCDAlloc(
+			ConstBackend backend,
+			Ptr<S> pointer,
+			UnderAlloc<S> underAlloc) {
+		super(backend, pointer, underAlloc);
 		this.topLevel = null;
 		this.enclosing = null;
 	}

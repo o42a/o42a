@@ -45,9 +45,10 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public final AnyCDAlloc nullPtr() {
+	public final AnyCDAlloc nullPtr(Ptr<AnyOp> pointer) {
 		return new AnyCDAlloc(
 				getBackend(),
+				pointer,
 				new UnderAlloc<AnyOp>() {
 					@Override
 					public Ptr<AnyOp> allocateUnderlying(
@@ -61,9 +62,10 @@ public final class ConstDataWriter implements DataWriter {
 	}
 
 	@Override
-	public final DataCDAlloc nullDataPtr() {
+	public final DataCDAlloc nullDataPtr(Ptr<DataOp> pointer) {
 		return new DataCDAlloc(
 				getBackend(),
+				pointer,
 				new UnderAlloc<DataOp>() {
 					@Override
 					public Ptr<DataOp> allocateUnderlying(
@@ -78,9 +80,11 @@ public final class ConstDataWriter implements DataWriter {
 
 	@Override
 	public final <S extends StructOp<S>> StructCDAlloc<S> nullPtr(
+			final Ptr<S> pointer,
 			final Type<S> type) {
 		return new StructCDAlloc<S>(
 				getBackend(),
+				pointer,
 				new UnderAlloc<S>() {
 					@Override
 					public Ptr<S> allocateUnderlying(CDAlloc<S, ?> alloc) {

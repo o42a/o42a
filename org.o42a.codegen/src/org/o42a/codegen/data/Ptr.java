@@ -30,37 +30,39 @@ import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 
 
-public class Ptr<P extends PtrOp<P>> extends AbstractPtr {
+public abstract class Ptr<P extends PtrOp<P>> extends AbstractPtr {
 
 	private DataAllocation<P> allocation;
 
-	Ptr(Data<?> data, boolean ptrToConstant, boolean isNull) {
-		super(data.getId(), ptrToConstant, isNull);
-	}
-
-	Ptr(
-			CodeId id,
-			DataAllocation<P> allocation,
-			boolean ptrToConstant,
-			boolean isNull) {
+	Ptr(CodeId id, boolean ptrToConstant, boolean isNull) {
 		super(id, ptrToConstant, isNull);
-		this.allocation = allocation;
 	}
 
 	public final DataAllocation<P> getAllocation() {
-		return this.allocation;
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+		return this.allocation = createAllocation();
 	}
 
 	public final RelPtr relativeTo(Ptr<?> ptr) {
 		return new RelPtr(this, ptr);
 	}
 
-	public final Ptr<DataOp> toData() {
-		return new Ptr<DataOp>(
-				getId().detail("struct"),
-				this.allocation.toData(),
-				isPtrToConstant(),
-				isNull());
+	public Ptr<DataOp> toData() {
+
+		final CodeId id = getId().type("data");
+
+		return new Ptr<DataOp>(id, isPtrToConstant(), isNull()) {
+			@Override
+			public Ptr<DataOp> toData() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<DataOp> createAllocation() {
+				return Ptr.this.getAllocation().toData();
+			}
+		};
 	}
 
 	public final P op(CodeId id, Code code) {
@@ -80,9 +82,11 @@ public class Ptr<P extends PtrOp<P>> extends AbstractPtr {
 		return this.allocation.toString();
 	}
 
+	protected abstract DataAllocation<P> createAllocation();
+
 	@Override
 	protected DataAllocation<AnyOp> allocationToAny() {
-		return this.allocation.toAny();
+		return getAllocation().toAny();
 	}
 
 	final void setAllocation(DataAllocation<P> allocation) {

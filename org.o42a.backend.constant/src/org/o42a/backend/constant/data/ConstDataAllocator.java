@@ -23,7 +23,6 @@ import org.o42a.backend.constant.data.rec.*;
 import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
 import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.backend.constant.data.struct.TypeCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -46,23 +45,27 @@ public class ConstDataAllocator implements DataAllocator {
 
 	@Override
 	public DataAllocation<AnyOp> addBinary(
-			final CodeId id,
-			final boolean isConstant,
+			final Ptr<AnyOp> pointer,
 			final byte[] data,
 			final int start,
 			final int end) {
-
-		return new AnyCDAlloc(getBackend(), new UnderAlloc<AnyOp>() {
-			@Override
-			public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp, ?> alloc) {
-				return alloc.getBackend().getUnderlyingGenerator().addBinary(
-						id,
-						isConstant,
-						data,
-						start,
-						end);
-			}
-		});
+		return new AnyCDAlloc(
+				getBackend(),
+				pointer,
+				new UnderAlloc<AnyOp>() {
+					@Override
+					public Ptr<AnyOp> allocateUnderlying(
+							CDAlloc<AnyOp, ?> alloc) {
+						return alloc.getBackend()
+								.getUnderlyingGenerator()
+								.addBinary(
+										pointer.getId(),
+										pointer.isPtrToConstant(),
+										data,
+										start,
+										end);
+					}
+				});
 	}
 
 	@Override
