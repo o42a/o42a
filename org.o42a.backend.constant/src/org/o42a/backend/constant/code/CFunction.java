@@ -42,6 +42,7 @@ public class CFunction<F extends Func<F>>
 	private final CodeCallback callback;
 	private FunctionCFAlloc<F> allocation;
 	private Function<F> underlying;
+	private byte status;
 
 	CFunction(
 			ConstBackend backend,
@@ -55,7 +56,12 @@ public class CFunction<F extends Func<F>>
 		if (this.underlying != null) {
 			return this.underlying;
 		}
-		return this.underlying = createUnderlying();
+		this.underlying = createUnderlying();
+		if (this.status < 0) {
+			// Function already built, but not emitted yet. Emit it now.
+			emit();
+		}
+		return this.underlying;
 	}
 
 	public final CodeCallback getCallback() {
@@ -267,6 +273,23 @@ public class CFunction<F extends Func<F>>
 
 	@Override
 	public void done() {
+		if (this.status > 0) {
+			// Underlying function already emitted.
+			return;
+		}
+		if (this.underlying != null) {
+			// Underlying function already created, but not emitted yet.
+			emit();
+			return;
+		}
+		this.status = -1;// Emit underlying function when requested.
+		if (code().isExported()) {
+			getUnderlying();// Eagerly initialize underlying exported functions.
+		}
+	}
+
+	private void emit() {
+		this.status = 1;
 		prepare();
 		reveal();
 		getUnderlying().done();
@@ -281,8 +304,10 @@ public class CFunction<F extends Func<F>>
 	private Function<F> createUnderlying() {
 
 		final Function<F> function = code();
-		final FunctionSettings underlyingSettings = function.update(
-				getBackend().getUnderlyingGenerator().newFunction());
+		final FunctionSettings underlyingSettings =
+				getBackend().getUnderlyingGenerator()
+				.newFunction()
+				.set(function);
 		final CSignature<F> underlyingSignature =
 				getBackend().underlying(function.getSignature());
 
