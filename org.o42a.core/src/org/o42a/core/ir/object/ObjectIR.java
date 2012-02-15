@@ -58,7 +58,7 @@ public class ObjectIR  {
 	}
 
 	public final CodeId getId() {
-		return getStruct().codeId(getGenerator());
+		return getScopeIR().getId();
 	}
 
 	public final boolean isExact() {
@@ -68,7 +68,7 @@ public class ObjectIR  {
 	}
 
 	public final ScopeIR getScopeIR() {
-		return this.object.getScope().ir(getGenerator());
+		return getObject().getScope().ir(getGenerator());
 	}
 
 	public final ObjectBodyIR getBodyType() {
@@ -180,9 +180,6 @@ public class ObjectIR  {
 		return this.object + " IR";
 	}
 
-	protected void allocateData() {
-	}
-
 	protected ObjectValueIR createValueIR() {
 		return new ObjectValueIR(this);
 	}
@@ -201,7 +198,6 @@ public class ObjectIR  {
 
 		getGenerator().newGlobal().struct(this.struct);
 		getScopeIR().targetAllocated();
-		allocateData();
 
 		return this.struct;
 	}
