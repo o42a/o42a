@@ -40,6 +40,11 @@ public final class Int32cdAlloc
 	}
 
 	@Override
+	public Integer underlyingValue(Integer value) {
+		return value;
+	}
+
+	@Override
 	protected Int32rec allocateUnderlying(SubData<?> container, String name) {
 		return container.addInt32(name, this);
 	}

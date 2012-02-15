@@ -40,6 +40,11 @@ public final class Int16cdAlloc
 	}
 
 	@Override
+	public Short underlyingValue(Short value) {
+		return value;
+	}
+
+	@Override
 	protected Int16rec allocateUnderlying(SubData<?> container, String name) {
 		return container.addInt16(name, this);
 	}

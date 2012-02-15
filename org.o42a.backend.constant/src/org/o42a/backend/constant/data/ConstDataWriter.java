@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.constant.data;
 
-import static org.o42a.util.func.Getter.valueGetter;
-
 import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.func.NullCFAlloc;
 import org.o42a.backend.constant.data.rec.*;
@@ -32,7 +30,6 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.func.Getter;
 
 
 public final class ConstDataWriter implements DataWriter {
@@ -139,7 +136,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Int8cdAlloc dest = (Int8cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 	@Override
@@ -150,7 +147,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Int16cdAlloc dest = (Int16cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 	@Override
@@ -159,7 +156,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Int32cdAlloc dest = (Int32cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 	@Override
@@ -168,7 +165,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 	@Override
@@ -180,12 +177,7 @@ public final class ConstDataWriter implements DataWriter {
 		final AnyCDAlloc valueAlloc = (AnyCDAlloc) valueAllocation;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setNativePtr(new Getter<Ptr<AnyOp>>() {
-			@Override
-			public Ptr<AnyOp> get() {
-				return valueAlloc.getUnderlyingPtr();
-			}
-		});
+		dest.setNativePtr(valueAlloc.getPointer());
 	}
 
 	@Override
@@ -194,7 +186,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Fp32cdAlloc dest = (Fp32cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 	@Override
@@ -203,7 +195,7 @@ public final class ConstDataWriter implements DataWriter {
 		final Fp64cdAlloc dest = (Fp64cdAlloc) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(valueGetter(value));
+		dest.setValue(value);
 	}
 
 }

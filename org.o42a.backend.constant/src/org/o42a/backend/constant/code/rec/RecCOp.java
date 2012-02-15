@@ -51,15 +51,13 @@ public abstract class RecCOp<
 			return null;
 		}
 
-		@SuppressWarnings("unchecked")
-		final RecCDAlloc<?, ?, T> alloc =
-				(RecCDAlloc<?, ?, T>) getConstant().getAllocation();
+		final RecCDAlloc<?, ?, T> alloc = getAllocation();
 
 		if (!alloc.isConstant()) {
 			return null;
 		}
 
-		return alloc.getValue().get();
+		return alloc.getValue();
 	}
 
 	@Override
@@ -74,7 +72,10 @@ public abstract class RecCOp<
 					new ConstBE<O, T>(derefId, ccode, constant) {
 						@Override
 						protected O write() {
-							return underlyingConstant(part(), constant());
+							return underlyingConstant(
+									part(),
+									getAllocation().underlyingValue(
+											constant()));
 						}
 					},
 					constant);
@@ -124,5 +125,10 @@ public abstract class RecCOp<
 	protected abstract O loaded(OpBE<O> backend, T constant);
 
 	protected abstract O underlyingConstant(CCodePart<?> part, T constant);
+
+	@SuppressWarnings("unchecked")
+	private RecCDAlloc<?, ?, T> getAllocation() {
+		return (RecCDAlloc<?, ?, T>) getConstant().getAllocation();
+	}
 
 }
