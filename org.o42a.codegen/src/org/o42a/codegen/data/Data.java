@@ -90,7 +90,12 @@ public abstract class Data<P extends PtrOp<P>> {
 	}
 
 	Ptr<P> createPointer() {
-		return new Ptr<P>(this, isConstant(), false);
+		return new Ptr<P>(getId(), isConstant(), false) {
+			@Override
+			protected DataAllocation<P> createAllocation() {
+				return null;// Will be assigned on allocation.
+			}
+		};
 	}
 
 	final void allocateData() {

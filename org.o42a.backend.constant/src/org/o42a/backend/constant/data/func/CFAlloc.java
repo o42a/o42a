@@ -82,7 +82,7 @@ public abstract class CFAlloc<F extends Func<F>>
 
 	@Override
 	public AnyCDAlloc toAny() {
-		return new AnyCDAlloc(getBackend(), new ToAny());
+		return new AnyCDAlloc(getBackend(), getPointer().toAny(), new ToAny());
 	}
 
 	protected abstract FuncPtr<F> createUnderlyingPtr();

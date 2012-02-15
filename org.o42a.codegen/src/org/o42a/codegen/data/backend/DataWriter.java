@@ -22,18 +22,18 @@ package org.o42a.codegen.data.backend;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.Global;
-import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public interface DataWriter {
 
-	DataAllocation<AnyOp> nullPtr();
+	DataAllocation<AnyOp> nullPtr(Ptr<AnyOp> pointer);
 
-	DataAllocation<DataOp> nullDataPtr();
+	DataAllocation<DataOp> nullDataPtr(Ptr<DataOp> pointer);
 
-	<S extends StructOp<S>> DataAllocation<S> nullPtr(Type<S> type);
+	<S extends StructOp<S>> DataAllocation<S> nullPtr(
+			Ptr<S> pointer,
+			Type<S> type);
 
 	<F extends Func<F>> FuncAllocation<F> nullPtr(FuncPtr<F> pointer);
 

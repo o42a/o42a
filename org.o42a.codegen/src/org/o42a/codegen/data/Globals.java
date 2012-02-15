@@ -26,6 +26,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -54,30 +55,47 @@ public abstract class Globals {
 		if (this.nullPtr != null) {
 			return this.nullPtr;
 		}
-		return this.nullPtr = new Ptr<AnyOp>(
-				getGenerator().id("null"),
-				dataWriter().nullPtr(),
-				true,
-				true);
+
+		final CodeId id = getGenerator().id("any_null");
+
+		return this.nullPtr = new Ptr<AnyOp>(id, true, true) {
+			@Override
+			public Ptr<AnyOp> toAny() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<AnyOp> createAllocation() {
+				return dataWriter().nullPtr(this);
+			}
+		};
 	}
 
 	public final Ptr<DataOp> nullDataPtr() {
 		if (this.nullDataPtr != null) {
 			return this.nullDataPtr;
 		}
-		return this.nullDataPtr = new Ptr<DataOp>(
-				getGenerator().id("null"),
-				dataWriter().nullDataPtr(),
-				true,
-				true);
+
+		final CodeId id = getGenerator().id("data_null");
+
+		return this.nullDataPtr = new Ptr<DataOp>(id, true, true) {
+			@Override
+			public Ptr<DataOp> toData() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<DataOp> createAllocation() {
+				return dataWriter().nullDataPtr(this);
+			}
+		};
 	}
 
-	public final <S extends StructOp<S>> Ptr<S> nullPtr(Type<S> type) {
-		return new Ptr<S>(
-				type.getId().detail("null"),
-				dataWriter().nullPtr(type),
-				true,
-				true);
+	public final <S extends StructOp<S>> Ptr<S> nullPtr(final Type<S> type) {
+		return new Ptr<S>(type.getId().detail("null"), true, true) {
+			@Override
+			protected DataAllocation<S> createAllocation() {
+				return dataWriter().nullPtr(this, type);
+			}
+		};
 	}
 
 	public final <
@@ -104,16 +122,21 @@ public abstract class Globals {
 	}
 
 	public Ptr<AnyOp> addBinary(
-			CodeId id,
-			boolean isConstant,
-			byte[] data,
-			int start,
-			int end) {
-		return new Ptr<AnyOp>(
-				id,
-				dataAllocator().addBinary(id, isConstant, data, start, end),
-				isConstant,
-				false);
+			final CodeId id,
+			final boolean isConstant,
+			final byte[] data,
+			final int start,
+			final int end) {
+		return new Ptr<AnyOp>(id, isConstant, false) {
+			@Override
+			public Ptr<AnyOp> toAny() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<AnyOp> createAllocation() {
+				return dataAllocator().addBinary(this, data, start, end);
+			}
+		};
 	}
 
 	public boolean write() {

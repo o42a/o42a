@@ -49,6 +49,7 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	public final void setNativePtr(Ptr<AnyOp> pointer) {
 		this.nativePtr = pointer;
 		super.setValue(null);
+		assert pointer != null;
 	}
 
 	@Override
@@ -64,9 +65,9 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 					(AnyCDAlloc) this.nativePtr.getAllocation();
 			final Ptr<AnyOp> underlyingPtr = alloc.getUnderlyingPtr();
 
-			instance.setNativePtr(underlyingPtr);
+			instance.setConstant(isConstant()).setNativePtr(underlyingPtr);
 		} else {
-			instance.setValue(getValue());
+			instance.setConstant(isConstant()).setValue(getValue());
 		}
 	}
 

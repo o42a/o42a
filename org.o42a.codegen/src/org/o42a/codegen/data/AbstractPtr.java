@@ -48,12 +48,20 @@ public abstract class AbstractPtr {
 		return this.isNull;
 	}
 
-	public final Ptr<AnyOp> toAny() {
-		return new Ptr<AnyOp>(
-				getId().detail("any"),
-				allocationToAny(),
-				isPtrToConstant(),
-				isNull());
+	public Ptr<AnyOp> toAny() {
+
+		final CodeId id = getId().type("any");
+
+		return new Ptr<AnyOp>(id, isPtrToConstant(), isNull()) {
+			@Override
+			public Ptr<AnyOp> toAny() {
+				return this;
+			}
+			@Override
+			protected DataAllocation<AnyOp> createAllocation() {
+				return AbstractPtr.this.allocationToAny();
+			}
+		};
 	}
 
 	@Override
