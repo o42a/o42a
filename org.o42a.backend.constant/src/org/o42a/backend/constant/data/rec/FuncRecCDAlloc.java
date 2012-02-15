@@ -23,6 +23,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Signature;
@@ -49,6 +50,14 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 
 	public final Signature<F> getSignature() {
 		return this.signature;
+	}
+
+	@Override
+	public FuncPtr<F> underlyingValue(FuncPtr<F> value) {
+
+		final CFAlloc<F> alloc = (CFAlloc<F>) value.getAllocation();
+
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override

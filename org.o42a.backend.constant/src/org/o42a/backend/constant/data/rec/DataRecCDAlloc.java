@@ -22,6 +22,7 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.DataRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.DataCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.*;
@@ -36,6 +37,15 @@ public final class DataRecCDAlloc
 			DataRecCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
 		nest();
+	}
+
+	@Override
+	public Ptr<DataOp> underlyingValue(Ptr<DataOp> value) {
+
+		final DataCDAlloc alloc =
+				(DataCDAlloc) value.getAllocation();
+
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override

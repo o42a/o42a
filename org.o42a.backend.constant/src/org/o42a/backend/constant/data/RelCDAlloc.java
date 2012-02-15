@@ -32,7 +32,6 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
-import org.o42a.util.func.Getter;
 
 
 public final class RelCDAlloc implements RelAllocation {
@@ -81,12 +80,7 @@ public final class RelCDAlloc implements RelAllocation {
 		final RelRecCDAlloc dest = (RelRecCDAlloc) detination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(new Getter<RelPtr>() {
-			@Override
-			public RelPtr get() {
-				return getUnderlying();
-			}
-		});
+		dest.setValue(getPointer());
 	}
 
 	@Override

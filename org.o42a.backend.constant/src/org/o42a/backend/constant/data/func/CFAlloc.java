@@ -31,7 +31,6 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
-import org.o42a.util.func.Getter;
 
 
 public abstract class CFAlloc<F extends Func<F>>
@@ -78,12 +77,7 @@ public abstract class CFAlloc<F extends Func<F>>
 		final FuncRecCDAlloc<F> dest = (FuncRecCDAlloc<F>) detsination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(new Getter<FuncPtr<F>>() {
-			@Override
-			public FuncPtr<F> get() {
-				return getUnderlyingPtr();
-			}
-		});
+		dest.setValue(getPointer());
 	}
 
 	@Override

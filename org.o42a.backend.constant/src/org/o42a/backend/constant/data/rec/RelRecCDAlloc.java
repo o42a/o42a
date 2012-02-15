@@ -22,6 +22,7 @@ package org.o42a.backend.constant.data.rec;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.RelRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.RelCDAlloc;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.*;
 
@@ -34,6 +35,15 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 			RelRecCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
 		nest();
+	}
+
+	@Override
+	public RelPtr underlyingValue(RelPtr value) {
+
+		final RelCDAlloc alloc =
+				(RelCDAlloc) value.getAllocation();
+
+		return alloc.getUnderlying();
 	}
 
 	@Override

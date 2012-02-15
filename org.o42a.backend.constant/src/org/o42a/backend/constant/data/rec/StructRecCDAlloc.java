@@ -23,6 +23,7 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CType;
+import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
@@ -53,6 +54,15 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 
 	public final Type<S> getType() {
 		return getUnderlyingType().getOriginal();
+	}
+
+	@Override
+	public Ptr<S> underlyingValue(Ptr<S> value) {
+
+		final StructCDAlloc<S> alloc =
+				(StructCDAlloc<S>) value.getAllocation();
+
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override

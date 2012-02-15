@@ -39,6 +39,11 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 	}
 
 	@Override
+	public Float underlyingValue(Float value) {
+		return value;
+	}
+
+	@Override
 	protected Fp32rec allocateUnderlying(SubData<?> container, String name) {
 		return container.addFp32(name, this);
 	}

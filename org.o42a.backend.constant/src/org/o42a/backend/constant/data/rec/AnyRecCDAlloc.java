@@ -21,6 +21,7 @@ package org.o42a.backend.constant.data.rec;
 
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
+import org.o42a.backend.constant.data.AnyCDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
@@ -36,6 +37,15 @@ public final class AnyRecCDAlloc
 			AnyRecCDAlloc typeAllocation) {
 		super(enclosing, data, typeAllocation);
 		nest();
+	}
+
+	@Override
+	public Ptr<AnyOp> underlyingValue(Ptr<AnyOp> value) {
+
+		final AnyCDAlloc alloc =
+				(AnyCDAlloc) value.getAllocation();
+
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override
