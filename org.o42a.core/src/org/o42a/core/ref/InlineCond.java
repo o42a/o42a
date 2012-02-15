@@ -24,7 +24,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.normalizer.InlineFalse;
 import org.o42a.core.ref.impl.normalizer.InlineTrue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
-import org.o42a.util.Cancelable;
+import org.o42a.util.func.Cancelable;
 
 
 public abstract class InlineCond implements Cancelable {

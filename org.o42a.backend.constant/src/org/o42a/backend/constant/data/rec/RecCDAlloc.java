@@ -29,6 +29,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public abstract class RecCDAlloc<
@@ -38,7 +39,7 @@ public abstract class RecCDAlloc<
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
-	private T value;
+	private Getter<? extends T> value;
 	private boolean constant;
 
 	public RecCDAlloc(
@@ -68,11 +69,11 @@ public abstract class RecCDAlloc<
 		this.constant = constant;
 	}
 
-	public final T getValue() {
+	public final Getter<? extends T> getValue() {
 		return this.value;
 	}
 
-	public void setValue(T value) {
+	public void setValue(Getter<? extends T> value) {
 		this.value = value;
 	}
 
@@ -82,7 +83,7 @@ public abstract class RecCDAlloc<
 
 	@Override
 	public void fill(R instance) {
-		getUnderlying().setConstant(isConstant()).setValue(getValue());
+		getUnderlying().setConstant(isConstant()).setValue(getValue().get());
 	}
 
 	@Override

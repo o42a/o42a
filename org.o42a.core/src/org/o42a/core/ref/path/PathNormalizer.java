@@ -21,9 +21,9 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.Prediction.scopePrediction;
-import static org.o42a.util.Cancellation.NOT_CANCELABLE;
-import static org.o42a.util.Cancellation.appendCancelable;
-import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.func.Cancellation.NOT_CANCELABLE;
+import static org.o42a.util.func.Cancellation.appendCancelable;
+import static org.o42a.util.func.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.*;
-import org.o42a.util.Cancelable;
+import org.o42a.util.func.Cancelable;
 
 
 public final class PathNormalizer {

@@ -20,7 +20,7 @@
 package org.o42a.core.def;
 
 import static org.o42a.core.ref.InlineValue.inlineUnknown;
-import static org.o42a.util.Cancellation.cancelUpToNull;
+import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import org.o42a.core.def.impl.InlineValueDefs;
 import org.o42a.core.ref.InlineValue;

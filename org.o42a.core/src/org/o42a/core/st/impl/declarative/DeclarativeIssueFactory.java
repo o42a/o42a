@@ -26,7 +26,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
-import org.o42a.util.Lambda;
+import org.o42a.util.func.Lambda;
 
 
 public class DeclarativeIssueFactory extends DeclarativeFactory {

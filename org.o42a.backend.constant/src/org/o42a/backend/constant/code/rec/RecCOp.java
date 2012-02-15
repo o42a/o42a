@@ -59,7 +59,7 @@ public abstract class RecCOp<
 			return null;
 		}
 
-		return alloc.getValue();
+		return alloc.getValue().get();
 	}
 
 	@Override

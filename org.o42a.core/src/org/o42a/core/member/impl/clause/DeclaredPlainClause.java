@@ -30,7 +30,7 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.Holder;
+import org.o42a.util.func.Holder;
 
 
 public final class DeclaredPlainClause extends PlainClause {

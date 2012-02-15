@@ -38,7 +38,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.Holder;
+import org.o42a.util.func.Holder;
 
 
 public abstract class TypeRef extends RescopableRef<TypeRef> {

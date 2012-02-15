@@ -27,7 +27,7 @@ import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.util.Lambda;
+import org.o42a.util.func.Lambda;
 
 
 class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {

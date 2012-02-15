@@ -25,11 +25,12 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
-	private Ptr<AnyOp> nativePtr;
+	private Getter<? extends Ptr<AnyOp>> nativePtr;
 
 	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -40,12 +41,12 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
-	public void setValue(Long value) {
+	public void setValue(Getter<? extends Long> value) {
 		super.setValue(value);
 		this.nativePtr = null;
 	}
 
-	public void setNativePtr(Ptr<AnyOp> pointer) {
+	public void setNativePtr(Getter<? extends Ptr<AnyOp>> pointer) {
 		this.nativePtr = pointer;
 		super.setValue(null);
 	}
@@ -53,9 +54,9 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	@Override
 	public void fill(Int64rec instance) {
 		if (this.nativePtr != null) {
-			instance.setNativePtr(this.nativePtr);
+			instance.setNativePtr(this.nativePtr.get());
 		} else {
-			instance.setValue(getValue());
+			instance.setValue(getValue().get());
 		}
 	}
 
