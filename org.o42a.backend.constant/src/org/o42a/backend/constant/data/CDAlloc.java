@@ -29,6 +29,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.func.Getter;
 
 
 public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
@@ -140,7 +141,12 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 				(PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>>) destination;
 
 		dest.setConstant(dest.getData().isConstant());
-		dest.setValue(getUnderlyingPtr());
+		dest.setValue(new Getter<Ptr<P>>() {
+			@Override
+			public Ptr<P> get() {
+				return getUnderlyingPtr();
+			}
+		});
 	}
 
 	@Override

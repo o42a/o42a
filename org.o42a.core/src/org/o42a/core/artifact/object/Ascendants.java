@@ -37,7 +37,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Lambda;
+import org.o42a.util.func.Lambda;
 
 
 public class Ascendants

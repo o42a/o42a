@@ -39,8 +39,8 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Lambda;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.func.Lambda;
 import org.o42a.util.log.Loggable;
 
 

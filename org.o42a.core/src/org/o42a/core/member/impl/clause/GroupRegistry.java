@@ -29,7 +29,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.util.Lambda;
+import org.o42a.util.func.Lambda;
 
 
 final class GroupRegistry

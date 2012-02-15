@@ -23,7 +23,7 @@ import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
-import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.func.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.FullResolution;
-import org.o42a.util.Cancelable;
+import org.o42a.util.func.Cancelable;
 
 
 final class NormalizedPath implements NormalPath {

@@ -216,8 +216,16 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 			return;
 		}
 
+		final ObjectIR ownerIR = owner.ir(getGenerator());
+
+		if (ownerIR.isExact()) {
+			// No need to fill an owner if it's exactly known.
+			instance.ownerType().setConstant(true).setNull();
+			return;
+		}
+
 		final ObjectIRType ownerType =
-				owner.ir(getGenerator()).getTypeIR().getObjectType();
+				ownerIR.getTypeIR().getObjectType();
 
 		instance.ownerType().setConstant(true).setValue(
 				ownerType.pointer(instance.getGenerator()));

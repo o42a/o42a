@@ -19,7 +19,7 @@
 */
 package org.o42a.core.def.impl;
 
-import static org.o42a.util.Cancellation.cancelAll;
+import static org.o42a.util.func.Cancellation.cancelAll;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;

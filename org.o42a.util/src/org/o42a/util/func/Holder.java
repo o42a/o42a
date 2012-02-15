@@ -17,10 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util;
+package org.o42a.util.func;
 
 
-public final class Holder<T> {
+public final class Holder<T> extends Getter<T> {
 
 	private final T value;
 
@@ -28,6 +28,7 @@ public final class Holder<T> {
 		this.value = value;
 	}
 
+	@Override
 	public final T get() {
 		return this.value;
 	}

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Utilities
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,17 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st;
-
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.func.Cancelable;
+package org.o42a.util.func;
 
 
-public interface InlineCommand extends Cancelable {
+public abstract class Getter<T> {
 
-	void writeCond(Control control);
+	public static <T> Getter<? extends T> valueGetter(T value) {
+		return new ValueGetter<T>(value);
+	}
 
-	void writeValue(Control control, ValOp result);
+	public abstract T get();
+
+	private static final class ValueGetter<T> extends Getter<T> {
+
+		private final T value;
+
+		ValueGetter(T value) {
+			this.value = value;
+		}
+
+		@Override
+		public final T get() {
+			return this.value;
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.value);
+		}
+
+	}
 
 }

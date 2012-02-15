@@ -21,8 +21,8 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 import static org.o42a.core.st.impl.imperative.InlineSentence.inlineSentence;
-import static org.o42a.util.Cancellation.cancelAll;
-import static org.o42a.util.Cancellation.cancelUpToNull;
+import static org.o42a.util.func.Cancellation.cancelAll;
+import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import java.util.List;
 

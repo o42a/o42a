@@ -19,8 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.util.Cancellation.cancelAll;
-import static org.o42a.util.Cancellation.cancelUpToNull;
+import static org.o42a.util.func.Cancellation.cancelAll;
+import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ import org.o42a.core.st.Definer;
 import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Cancelable;
+import org.o42a.util.func.Cancelable;
 
 
 final class InlineCommands implements Cancelable {
