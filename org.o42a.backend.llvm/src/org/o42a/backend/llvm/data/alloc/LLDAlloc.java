@@ -34,9 +34,7 @@ public abstract class LLDAlloc<P extends PtrOp<P>>
 	private final LLVMModule module;
 	private final ContainerLLDAlloc<?> enclosing;
 
-	public LLDAlloc(
-			LLVMModule module,
-			ContainerLLDAlloc<?> enclosing) {
+	public LLDAlloc(LLVMModule module, ContainerLLDAlloc<?> enclosing) {
 		this.module = module;
 		this.enclosing = enclosing;
 	}
