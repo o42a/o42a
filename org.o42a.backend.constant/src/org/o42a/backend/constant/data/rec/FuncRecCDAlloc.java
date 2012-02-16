@@ -31,6 +31,7 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.func.Getter;
 
 
 public final class FuncRecCDAlloc<F extends Func<F>>
@@ -53,11 +54,22 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 	}
 
 	@Override
-	public FuncPtr<F> underlyingValue(FuncPtr<F> value) {
+	public Getter<FuncPtr<F>> underlyingValue(final Getter<FuncPtr<F>> value) {
+		return new Getter<FuncPtr<F>>() {
+			@Override
+			public FuncPtr<F> get() {
 
-		final CFAlloc<F> alloc = (CFAlloc<F>) value.getAllocation();
+				final CFAlloc<F> alloc =
+						(CFAlloc<F>) value.get().getAllocation();
 
-		return alloc.getUnderlyingPtr();
+				return alloc.getUnderlyingPtr();
+			}
+			@Override
+			public String toString() {
+				return String.valueOf(value);
+			}
+		};
+
 	}
 
 	@Override

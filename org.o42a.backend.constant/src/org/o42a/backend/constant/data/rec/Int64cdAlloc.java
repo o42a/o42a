@@ -26,11 +26,12 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
-	private Ptr<AnyOp> nativePtr;
+	private Getter<Ptr<AnyOp>> nativePtr;
 
 	public Int64cdAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -41,19 +42,19 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	}
 
 	@Override
-	public final void setValue(Long value) {
+	public final void setValue(Getter<Long> value) {
 		super.setValue(value);
 		this.nativePtr = null;
 	}
 
-	public final void setNativePtr(Ptr<AnyOp> pointer) {
+	public final void setNativePtr(Getter<Ptr<AnyOp>> pointer) {
 		this.nativePtr = pointer;
 		super.setValue(null);
 		assert pointer != null;
 	}
 
 	@Override
-	public Long underlyingValue(Long value) {
+	public Getter<Long> underlyingValue(Getter<Long> value) {
 		return value;
 	}
 
@@ -62,7 +63,7 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 		if (this.nativePtr != null) {
 
 			final AnyCDAlloc alloc =
-					(AnyCDAlloc) this.nativePtr.getAllocation();
+					(AnyCDAlloc) this.nativePtr.get().getAllocation();
 			final Ptr<AnyOp> underlyingPtr = alloc.getUnderlyingPtr();
 
 			instance.setAttributes(getData()).setNativePtr(underlyingPtr);

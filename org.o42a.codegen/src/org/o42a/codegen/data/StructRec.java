@@ -86,7 +86,7 @@ public final class StructRec<S extends StructOp<S>>
 		fill(writer);
 		assert getValue() != null :
 			this + " has no value";
-		getValue().getAllocation().write(writer, getAllocation());
+		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 
 }

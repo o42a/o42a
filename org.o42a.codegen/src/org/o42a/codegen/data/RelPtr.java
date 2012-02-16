@@ -23,9 +23,10 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.func.Getter;
 
 
-public final class RelPtr {
+public final class RelPtr implements Getter<RelPtr> {
 
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;
@@ -39,6 +40,11 @@ public final class RelPtr {
 				this.pointer.getId()
 				.detail("relative_to")
 				.detail(relativeTo.getId());
+	}
+
+	@Override
+	public final RelPtr get() {
+		return this;
 	}
 
 	public final CodeId getId() {

@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.func.Getter;
 
 
 public final class Int32cdAlloc
@@ -40,7 +41,7 @@ public final class Int32cdAlloc
 	}
 
 	@Override
-	public Integer underlyingValue(Integer value) {
+	public Getter<Integer> underlyingValue(Getter<Integer> value) {
 		return value;
 	}
 

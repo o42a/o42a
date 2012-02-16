@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.func.Holder.holder;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -51,6 +53,11 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 	@Override
 	public final Int8rec setAttributes(RecAttributes attributes) {
 		super.setAttributes(attributes);
+		return this;
+	}
+
+	public final Int8rec setValue(byte value) {
+		setValue(holder(value));
 		return this;
 	}
 

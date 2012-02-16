@@ -98,7 +98,7 @@ public abstract class ObjectValueIRFunc<F extends Func<F>>
 				objectIR.getBodyType().getObjectIR().getTypeIR();
 		final ObjectIRData data = typeIR.getObjectData();
 
-		return func(data).getValue();
+		return func(data).getValue().get();
 	}
 
 	public int addSources(SourceInfo[] destination, SourceInfo[] sources) {

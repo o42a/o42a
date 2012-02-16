@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.Fp64recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Fp64rec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.func.Getter;
 
 
 public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
@@ -39,7 +40,7 @@ public final class Fp64cdAlloc extends RecCDAlloc<Fp64rec, Fp64recOp, Double> {
 	}
 
 	@Override
-	public Double underlyingValue(Double value) {
+	public Getter<Double> underlyingValue(Getter<Double> value) {
 		return value;
 	}
 
