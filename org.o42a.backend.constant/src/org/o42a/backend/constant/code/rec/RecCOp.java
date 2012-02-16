@@ -33,6 +33,7 @@ import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
+import org.o42a.util.func.Getter;
 
 
 public abstract class RecCOp<
@@ -53,16 +54,18 @@ public abstract class RecCOp<
 			return null;
 		}
 
+		getBackend().getGenerator().getGlobals().write();
+
 		final RecCDAlloc<?, ?, T> alloc = getAllocation();
 		final Rec<?, T> rec = alloc.getData();
 
 		if (!rec.isConstant() || rec.isLowLevel()) {
 			return null;
 		}
-		assert alloc.getValue() != null :
-			"Null value";
 
-		return alloc.getValue().get();
+		final Getter<T> value = alloc.getValue();
+
+		return value != null ? value.get() : null;
 	}
 
 	@Override
