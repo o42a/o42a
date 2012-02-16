@@ -27,7 +27,7 @@ import org.o42a.codegen.debug.DebugEnvOp;
 
 public final class Function<F extends Func<F>>
 		extends Block
-		implements FunctionProperties {
+		implements FunctionAttributes {
 
 	private final FunctionSettings settings;
 	private final Signature<F> signature;

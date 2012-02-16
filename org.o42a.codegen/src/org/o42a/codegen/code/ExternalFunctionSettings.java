@@ -30,7 +30,7 @@ public final class ExternalFunctionSettings
 		this.flags = EXPORTED;
 	}
 
-	public final ExternalFunctionSettings set(FunctionProperties properties) {
+	public final ExternalFunctionSettings set(FunctionAttributes properties) {
 		this.flags = properties.getFunctionFlags() | EXPORTED;
 		return this;
 	}
