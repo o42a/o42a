@@ -43,6 +43,18 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 	}
 
 	@Override
+	public final Int32rec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final Int32rec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt32(
 				getEnclosing().getAllocation(),

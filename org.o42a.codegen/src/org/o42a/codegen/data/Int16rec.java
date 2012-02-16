@@ -43,6 +43,18 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 	}
 
 	@Override
+	public final Int16rec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final Int16rec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateInt16(
 				getEnclosing().getAllocation(),

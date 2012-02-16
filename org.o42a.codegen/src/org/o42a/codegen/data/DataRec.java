@@ -47,7 +47,19 @@ public final class DataRec extends PtrRec<DataRecOp, Ptr<DataOp>> {
 	}
 
 	@Override
-	public void setNull() {
+	public final DataRec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final DataRec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
+	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullDataPtr());
 	}
 

@@ -43,6 +43,18 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	}
 
 	@Override
+	public final Fp32rec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final Fp32rec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp32(
 				getEnclosing().getAllocation(),

@@ -47,13 +47,13 @@ final class GlobalInstanceData<S extends StructOp<S>>
 	}
 
 	@Override
-	public final boolean isConstant() {
-		return this.global.isConstant();
+	public Type<?> getEnclosing() {
+		return null;
 	}
 
 	@Override
-	public Type<?> getEnclosing() {
-		return null;
+	public final int getDataFlags() {
+		return getGlobal().getDataFlags() & DATA_FLAGS;
 	}
 
 	@Override

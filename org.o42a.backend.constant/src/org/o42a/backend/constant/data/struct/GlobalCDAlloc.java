@@ -67,8 +67,11 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 	protected Allocated<S, ?> startUnderlyingAllocation(
 			SubData<?> container) {
 
-		final GlobalSettings globalSettings = this.global.update(
-				getBackend().getUnderlyingGenerator().newGlobal());
+		final GlobalSettings globalSettings =
+				getBackend()
+				.getUnderlyingGenerator()
+				.newGlobal()
+				.set(this.global);
 
 		if (isStruct()) {
 			return globalSettings.allocateStruct(getUnderlyingStruct());

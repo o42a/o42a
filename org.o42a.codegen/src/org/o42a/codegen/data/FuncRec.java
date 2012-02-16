@@ -60,7 +60,19 @@ public final class FuncRec<F extends Func<F>>
 		return this;
 	}
 
-	public void setNull() {
+	@Override
+	public final FuncRec<F> setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final FuncRec<F> setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	public final void setNull() {
 		setValue(getGenerator().getFunctions().nullPtr(getSignature()));
 	}
 

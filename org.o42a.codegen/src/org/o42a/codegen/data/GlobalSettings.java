@@ -24,12 +24,11 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public final class GlobalSettings {
+public final class GlobalSettings implements GlobalAttributes {
 
 	private final Globals globals;
 
-	private boolean exported;
-	private boolean constant;
+	private int flags;
 
 	GlobalSettings(Globals globals) {
 		this.globals = globals;
@@ -39,42 +38,50 @@ public final class GlobalSettings {
 		return this.globals.getGenerator();
 	}
 
+	@Override
 	public final boolean isExported() {
-		return this.exported;
+		return (this.flags & EXPORTED) != 0;
 	}
 
 	public final GlobalSettings export() {
-		this.exported = true;
+		this.flags |= EXPORTED;
 		return this;
 	}
 
 	public GlobalSettings dontExport() {
-		this.exported = false;
+		this.flags &= ~EXPORTED;
 		return this;
 	}
 
+	@Override
 	public final boolean isConstant() {
-		return this.constant;
+		return (this.flags & CONSTANT) != 0;
 	}
 
 	public final GlobalSettings setConstant() {
-		this.constant = true;
+		this.flags |= CONSTANT;
 		return this;
 	}
 
 	public final GlobalSettings setVariable() {
-		this.constant = false;
+		this.flags &= ~CONSTANT;
 		return this;
 	}
 
 	public final GlobalSettings setConstant(boolean constant) {
-		this.constant = constant;
-		return this;
+		if (constant) {
+			return setConstant();
+		}
+		return setVariable();
 	}
 
-	public final GlobalSettings set(GlobalSettings settings) {
-		this.exported = settings.exported;
-		this.constant = settings.constant;
+	@Override
+	public final int getDataFlags() {
+		return this.flags;
+	}
+
+	public final GlobalSettings set(GlobalAttributes attributes) {
+		this.flags = attributes.getDataFlags() & GLOBAL_FLAGS;
 		return this;
 	}
 

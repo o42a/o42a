@@ -25,13 +25,15 @@ import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Rec<P extends PtrOp<P>, T> extends Data<P> {
+public abstract class Rec<P extends PtrOp<P>, T>
+		extends Data<P>
+		implements RecAttributes {
 
 	private final SubData<?> enclosing;
 	@SuppressWarnings("rawtypes")
 	private final Content content;
 	private T value;
-	private boolean constant;
+	private int flags;
 
 	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
 		super(enclosing.getGenerator(), id);
@@ -44,14 +46,37 @@ public abstract class Rec<P extends PtrOp<P>, T> extends Data<P> {
 		return this.enclosing.getGlobal();
 	}
 
-	@Override
-	public boolean isConstant() {
-		return this.constant || this.enclosing.isConstant();
+	public Rec<P, T> setConstant(boolean constant) {
+		if (constant) {
+			this.flags |= CONSTANT;
+		} else {
+			this.flags &= ~CONSTANT;
+		}
+		return this;
 	}
 
-	public Rec<P, T> setConstant(boolean constant) {
-		this.constant = constant;
+	@Override
+	public final boolean isLowLevel() {
+		return (getDataFlags() & LOW_LEVEL) != 0;
+	}
+
+	public Rec<P, T> setLowLevel(boolean lowLevel) {
+		if (lowLevel) {
+			this.flags |= LOW_LEVEL;
+		} else {
+			this.flags &= ~LOW_LEVEL;
+		}
 		return this;
+	}
+
+	public Rec<P, T> setAttributes(RecAttributes attributes) {
+		this.flags = attributes.getDataFlags();
+		return this;
+	}
+
+	@Override
+	public final int getDataFlags() {
+		return this.flags | (this.enclosing.getDataFlags() & NESTED_FLAGS);
 	}
 
 	@Override

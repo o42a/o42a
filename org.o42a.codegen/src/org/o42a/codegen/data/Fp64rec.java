@@ -43,6 +43,18 @@ public final class Fp64rec extends Rec<Fp64recOp, Double> {
 	}
 
 	@Override
+	public final Fp64rec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final Fp64rec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
 	protected void allocate(DataAllocator allocator) {
 		setAllocation(allocator.allocateFp64(
 				getEnclosing().getAllocation(),

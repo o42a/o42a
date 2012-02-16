@@ -39,22 +39,25 @@ final class GlobalStructData<S extends StructOp<S>>
 	}
 
 	@Override
-	public Global<S, ?> getGlobal() {
+	public final Global<S, ?> getGlobal() {
 		return this.global;
 	}
 
 	@Override
-	public final boolean isConstant() {
-		return this.global.isConstant();
-	}
-
-	@Override
-	public Type<?> getEnclosing() {
+	public final Type<?> getEnclosing() {
 		return null;
 	}
 
 	@Override
+	public final int getDataFlags() {
+		return getGlobal().getDataFlags() & DATA_FLAGS;
+	}
+
+	@Override
 	public String toString() {
+		if (this.global == null) {
+			return super.toString();
+		}
 		return this.global.toString();
 	}
 
@@ -64,12 +67,12 @@ final class GlobalStructData<S extends StructOp<S>>
 		return allocator.begin(
 				this,
 				getInstance().getAllocation(),
-				this.global);
+				getGlobal());
 	}
 
 	@Override
 	protected void endTypeAllocation(DataAllocator allocator) {
-		allocator.end(this.global);
+		allocator.end(getGlobal());
 	}
 
 	@Override

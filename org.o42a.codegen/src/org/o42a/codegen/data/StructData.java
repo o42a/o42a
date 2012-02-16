@@ -38,18 +38,18 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	}
 
 	@Override
-	public Global<?, ?> getGlobal() {
+	public final Global<?, ?> getGlobal() {
 		return this.global;
 	}
 
 	@Override
-	public final boolean isConstant() {
-		return this.global.isConstant();
+	public final Type<?> getEnclosing() {
+		return this.enclosing;
 	}
 
 	@Override
-	public Type<?> getEnclosing() {
-		return this.enclosing;
+	public final int getDataFlags() {
+		return getGlobal().getDataFlags() & DATA_FLAGS;
 	}
 
 	@Override
