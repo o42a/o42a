@@ -39,7 +39,7 @@ public final class FunctionSettings
 		return this;
 	}
 
-	public final FunctionSettings set(FunctionProperties properties) {
+	public final FunctionSettings set(FunctionAttributes properties) {
 		this.flags = properties.getFunctionFlags();
 		return this;
 	}

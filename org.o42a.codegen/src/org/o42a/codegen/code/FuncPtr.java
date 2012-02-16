@@ -28,7 +28,7 @@ import org.o42a.codegen.data.backend.FuncAllocation;
 
 public abstract class FuncPtr<F extends Func<F>>
 		extends AbstractPtr
-		implements FunctionProperties {
+		implements FunctionAttributes {
 
 	private final Signature<F> signature;
 

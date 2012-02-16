@@ -23,7 +23,7 @@ import org.o42a.codegen.Generator;
 
 
 abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
-	implements FunctionProperties {
+	implements FunctionAttributes {
 
 	private final Functions functions;
 	int flags;

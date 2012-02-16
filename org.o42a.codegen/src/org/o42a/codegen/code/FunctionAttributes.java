@@ -20,7 +20,7 @@
 package org.o42a.codegen.code;
 
 
-public interface FunctionProperties {
+public interface FunctionAttributes {
 
 	int EXPORTED = 0x01;
 	int NO_SIDE_EFFECTS = 0x02;
