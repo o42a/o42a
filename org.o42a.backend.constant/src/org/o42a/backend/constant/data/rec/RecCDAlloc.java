@@ -28,14 +28,16 @@ import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.Rec;
+import org.o42a.codegen.data.SubData;
 import org.o42a.util.func.Getter;
 
 
 public abstract class RecCDAlloc<
 		R extends Rec<P, T>,
 		P extends PtrOp<P>,
-		T> extends CDAlloc<P, R> implements Content<R> {
+		T> extends CDAlloc<P, R> implements Getter<T> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
@@ -48,6 +50,11 @@ public abstract class RecCDAlloc<
 		super(enclosing.getBackend(), data, typeAllocation);
 		this.topLevel = enclosing.getTopLevel();
 		this.enclosing = enclosing;
+	}
+
+	@Override
+	public T get() {
+		return underlyingValue(getValue().get());
 	}
 
 	@Override
@@ -65,21 +72,13 @@ public abstract class RecCDAlloc<
 	}
 
 	public void setValue(Getter<T> value) {
+		if (isUnderlyingAllocated()) {
+			getUnderlying().setAttributes(getData());
+		}
 		this.value = value;
 	}
 
-	public abstract Getter<T> underlyingValue(Getter<T> value);
-
-	@Override
-	public void allocated(R instance) {
-	}
-
-	@Override
-	public void fill(R instance) {
-		getUnderlying()
-		.setAttributes(getData())
-		.setValue(underlyingValue(getValue()));
-	}
+	public abstract T underlyingValue(T value);
 
 	@Override
 	public final P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
@@ -99,10 +98,16 @@ public abstract class RecCDAlloc<
 	}
 
 	@Override
-	protected final R allocateUnderlying(SubData<?> container) {
-		return allocateUnderlying(
+	protected R allocateUnderlying(SubData<?> container) {
+
+		final R underlying = allocateUnderlying(
 				container,
 				getData().getId().getLocal().getId());
+
+		underlying.setAttributes(getData());
+		underlying.setValue(this);
+
+		return underlying;
 	}
 
 	protected abstract R allocateUnderlying(SubData<?> container, String name);

@@ -20,7 +20,6 @@
 package org.o42a.backend.constant.code.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.util.func.Holder.holder;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
@@ -82,8 +81,8 @@ public abstract class RecCOp<
 						protected O write() {
 							return underlyingConstant(
 									part(),
-									getAllocation().underlyingValue(
-											holder(constant())).get());
+									getAllocation()
+									.underlyingValue(constant()));
 						}
 					},
 					constant);

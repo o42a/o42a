@@ -25,7 +25,6 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.RelCDAlloc;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.*;
-import org.o42a.util.func.Getter;
 
 
 public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
@@ -39,27 +38,16 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 	}
 
 	@Override
-	public Getter<RelPtr> underlyingValue(final Getter<RelPtr> value) {
-		return new Getter<RelPtr>() {
-			@Override
-			public RelPtr get() {
+	public RelPtr underlyingValue(RelPtr value) {
 
-				final RelCDAlloc alloc =
-						(RelCDAlloc) value.get().getAllocation();
+		final RelCDAlloc alloc = (RelCDAlloc) value.get().getAllocation();
 
-				return alloc.getUnderlying();
-			}
-			@Override
-			public String toString() {
-				return String.valueOf(value);
-			}
-		};
-
+		return alloc.getUnderlying();
 	}
 
 	@Override
 	protected RelRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addRelPtr(name, this);
+		return container.addRelPtr(name);
 	}
 
 	@Override

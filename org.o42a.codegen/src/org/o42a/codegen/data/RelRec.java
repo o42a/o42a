@@ -27,8 +27,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class RelRec extends Rec<RelRecOp, RelPtr> {
 
-	RelRec(SubData<?> enclosing, CodeId id, Content<RelRec> content) {
-		super(enclosing, id, content);
+	RelRec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -68,7 +68,6 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 

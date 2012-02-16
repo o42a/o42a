@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Int16rec extends Rec<Int16recOp, Short> {
 
-	Int16rec(SubData<?> enclosing, CodeId id, Content<Int16rec> content) {
-		super(enclosing, id, content);
+	Int16rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		writer.writeInt16(getPointer().getAllocation(), getValue());
 	}
 

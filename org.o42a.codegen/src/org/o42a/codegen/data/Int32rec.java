@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Int32rec extends Rec<Int32recOp, Integer> {
 
-	Int32rec(SubData<?> enclosing, CodeId id, Content<Int32rec> content) {
-		super(enclosing, id, content);
+	Int32rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		writer.writeInt32(getPointer().getAllocation(), getValue());
 	}
 

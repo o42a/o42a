@@ -21,8 +21,6 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.backend.DataAllocation;
-import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.func.Getter;
 
 
@@ -31,15 +29,12 @@ public abstract class Rec<P extends PtrOp<P>, T>
 		implements RecAttributes {
 
 	private final SubData<?> enclosing;
-	@SuppressWarnings("rawtypes")
-	private final Content content;
 	private Getter<T> value;
 	private int flags;
 
-	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
+	Rec(SubData<?> enclosing, CodeId id) {
 		super(enclosing.getGenerator(), id);
 		this.enclosing = enclosing;
-		this.content = content != null ? content : Type.emptyContent();
 	}
 
 	@Override
@@ -111,18 +106,6 @@ public abstract class Rec<P extends PtrOp<P>, T>
 		}
 
 		return out.toString();
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void setAllocation(DataAllocation<P> allocation) {
-		super.setAllocation(allocation);
-		this.content.allocated(this);
-	}
-
-	@SuppressWarnings("unchecked")
-	protected final void fill(DataWriter writer) {
-		this.content.fill(this);
 	}
 
 }

@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Int8rec extends Rec<Int8recOp, Byte> {
 
-	Int8rec(SubData<?> enclosing, CodeId id, Content<Int8rec> content) {
-		super(enclosing, id, content);
+	Int8rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		writer.writeInt8(getPointer().getAllocation(), getValue());
 	}
 

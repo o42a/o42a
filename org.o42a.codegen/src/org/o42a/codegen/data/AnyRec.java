@@ -28,8 +28,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 
-	AnyRec(SubData<?> enclosing, CodeId id, Content<AnyRec> content) {
-		super(enclosing, id, content);
+	AnyRec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -70,7 +70,6 @@ public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 
