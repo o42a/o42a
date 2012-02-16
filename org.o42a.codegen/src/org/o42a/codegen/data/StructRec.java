@@ -56,6 +56,18 @@ public final class StructRec<S extends StructOp<S>>
 	}
 
 	@Override
+	public final StructRec<S> setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final StructRec<S> setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
 	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr(getType()));
 	}

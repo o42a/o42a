@@ -39,7 +39,6 @@ public abstract class RecCDAlloc<
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
 	private T value;
-	private boolean constant;
 
 	public RecCDAlloc(
 			ContainerCDAlloc<?> enclosing,
@@ -60,14 +59,6 @@ public abstract class RecCDAlloc<
 		return this.enclosing;
 	}
 
-	public final boolean isConstant() {
-		return this.constant;
-	}
-
-	public final void setConstant(boolean constant) {
-		this.constant = constant;
-	}
-
 	public final T getValue() {
 		return this.value;
 	}
@@ -84,10 +75,9 @@ public abstract class RecCDAlloc<
 
 	@Override
 	public void fill(R instance) {
-
-		final T underlyingValue = underlyingValue(getValue());
-
-		getUnderlying().setConstant(isConstant()).setValue(underlyingValue);
+		getUnderlying()
+		.setAttributes(getData())
+		.setValue(underlyingValue(getValue()));
 	}
 
 	@Override

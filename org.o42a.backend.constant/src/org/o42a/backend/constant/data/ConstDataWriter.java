@@ -139,7 +139,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int8cdAlloc dest = (Int8cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -150,7 +149,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int16cdAlloc dest = (Int16cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -159,7 +157,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int32cdAlloc dest = (Int32cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -168,7 +165,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -180,7 +176,6 @@ public final class ConstDataWriter implements DataWriter {
 		final Int64cdAlloc dest = (Int64cdAlloc) destination;
 		final AnyCDAlloc valueAlloc = (AnyCDAlloc) valueAllocation;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setNativePtr(valueAlloc.getPointer());
 	}
 
@@ -189,7 +184,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Fp32cdAlloc dest = (Fp32cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 
@@ -198,7 +192,6 @@ public final class ConstDataWriter implements DataWriter {
 
 		final Fp64cdAlloc dest = (Fp64cdAlloc) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(value);
 	}
 

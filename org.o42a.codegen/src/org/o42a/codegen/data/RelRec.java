@@ -32,7 +32,7 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 	}
 
 	@Override
-	public DataType getDataType() {
+	public final DataType getDataType() {
 		return DataType.REL_PTR;
 	}
 
@@ -42,7 +42,19 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 		return this;
 	}
 
-	public void setNull() {
+	@Override
+	public final RelRec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final RelRec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	public final void setNull() {
 		setValue(getPointer().relativeTo(getPointer()));
 	}
 

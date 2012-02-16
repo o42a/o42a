@@ -27,7 +27,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Data<P extends PtrOp<P>> {
+public abstract class Data<P extends PtrOp<P>> implements DataAttributes {
 
 	private final Generator generator;
 	private final CodeId id;
@@ -47,7 +47,10 @@ public abstract class Data<P extends PtrOp<P>> {
 		return this.generator;
 	}
 
-	public abstract boolean isConstant();
+	@Override
+	public final boolean isConstant() {
+		return (getDataFlags() & CONSTANT) != 0;
+	}
 
 	public abstract Global<?, ?> getGlobal();
 

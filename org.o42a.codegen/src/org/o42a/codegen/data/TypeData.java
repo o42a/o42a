@@ -26,8 +26,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-final class TypeData<S extends StructOp<S>>
-		extends AbstractTypeData<S> {
+final class TypeData<S extends StructOp<S>> extends AbstractTypeData<S> {
 
 	TypeData(Generator generator, Type<S> type) {
 		super(generator, type.codeId(generator).removeLocal(), type);
@@ -39,13 +38,13 @@ final class TypeData<S extends StructOp<S>>
 	}
 
 	@Override
-	public boolean isConstant() {
-		return true;
+	public Type<?> getEnclosing() {
+		return null;
 	}
 
 	@Override
-	public Type<?> getEnclosing() {
-		return null;
+	public int getDataFlags() {
+		return CONSTANT;
 	}
 
 	@Override

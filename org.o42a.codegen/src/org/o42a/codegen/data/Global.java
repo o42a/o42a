@@ -24,7 +24,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public final class Global<S extends StructOp<S>, T extends Type<S>> {
+public final class Global<S extends StructOp<S>, T extends Type<S>>
+		implements GlobalAttributes {
 
 	private final GlobalSettings settings;
 	private final CodeId id;
@@ -55,12 +56,19 @@ public final class Global<S extends StructOp<S>, T extends Type<S>> {
 		return this.id;
 	}
 
+	@Override
 	public final boolean isExported() {
 		return this.settings.isExported();
 	}
 
+	@Override
 	public final boolean isConstant() {
 		return this.settings.isConstant();
+	}
+
+	@Override
+	public int getDataFlags() {
+		return this.settings.getDataFlags();
 	}
 
 	public final Ptr<S> getPointer() {
@@ -69,10 +77,6 @@ public final class Global<S extends StructOp<S>, T extends Type<S>> {
 
 	public final T getInstance() {
 		return this.instance;
-	}
-
-	public final GlobalSettings update(GlobalSettings settings) {
-		return settings.set(this.settings);
 	}
 
 	@Override

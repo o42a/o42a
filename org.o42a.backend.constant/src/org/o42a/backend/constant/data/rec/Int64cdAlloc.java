@@ -65,9 +65,9 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 					(AnyCDAlloc) this.nativePtr.getAllocation();
 			final Ptr<AnyOp> underlyingPtr = alloc.getUnderlyingPtr();
 
-			instance.setConstant(isConstant()).setNativePtr(underlyingPtr);
+			instance.setAttributes(getData()).setNativePtr(underlyingPtr);
 		} else {
-			instance.setConstant(isConstant()).setValue(getValue());
+			instance.setAttributes(getData()).setValue(getValue());
 		}
 	}
 

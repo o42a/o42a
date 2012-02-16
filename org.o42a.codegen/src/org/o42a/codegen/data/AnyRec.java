@@ -33,13 +33,30 @@ public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 	}
 
 	@Override
+	public final DataType getDataType() {
+		return DataType.PTR;
+	}
+
+	@Override
 	public final AnyRec setConstant(boolean constant) {
 		super.setConstant(constant);
 		return this;
 	}
 
 	@Override
-	public void setNull() {
+	public final AnyRec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final AnyRec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
+	@Override
+	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr());
 	}
 

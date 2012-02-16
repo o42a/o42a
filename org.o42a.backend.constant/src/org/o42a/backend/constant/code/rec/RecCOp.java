@@ -53,7 +53,7 @@ public abstract class RecCOp<
 
 		final RecCDAlloc<?, ?, T> alloc = getAllocation();
 
-		if (!alloc.isConstant()) {
+		if (!alloc.getData().isConstant()) {
 			return null;
 		}
 

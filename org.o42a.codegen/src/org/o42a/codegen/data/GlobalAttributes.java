@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,35 +19,12 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.PtrOp;
 
+public interface GlobalAttributes extends DataAttributes {
 
-public abstract class PtrRec<P extends PtrOp<P>, T extends Ptr<?>>
-		extends Rec<P, T> {
+	int EXPORTED = 0x010000;
+	int GLOBAL_FLAGS = 0x111111;
 
-	PtrRec(SubData<?> enclosing, CodeId id, Content<?> content) {
-		super(enclosing, id, content);
-	}
-
-	@Override
-	public PtrRec<P, T> setConstant(boolean constant) {
-		super.setConstant(constant);
-		return this;
-	}
-
-	@Override
-	public PtrRec<P, T> setLowLevel(boolean lowLevel) {
-		super.setLowLevel(lowLevel);
-		return this;
-	}
-
-	@Override
-	public PtrRec<P, T> setAttributes(RecAttributes attributes) {
-		super.setAttributes(attributes);
-		return this;
-	}
-
-	public abstract void setNull();
+	boolean isExported();
 
 }

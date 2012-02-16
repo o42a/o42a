@@ -151,7 +151,6 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		final PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>> dest =
 				(PtrRecCDAlloc<PtrRec<RR, Ptr<P>>, RR, Ptr<P>>) destination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getPointer());
 	}
 

@@ -45,6 +45,18 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 		return this;
 	}
 
+	@Override
+	public final Int64rec setLowLevel(boolean lowLevel) {
+		super.setLowLevel(lowLevel);
+		return this;
+	}
+
+	@Override
+	public final Int64rec setAttributes(RecAttributes attributes) {
+		super.setAttributes(attributes);
+		return this;
+	}
+
 	public final Ptr<AnyOp> getNativePtr() {
 		return this.nativePtr;
 	}

@@ -76,7 +76,6 @@ public abstract class CFAlloc<F extends Func<F>>
 
 		final FuncRecCDAlloc<F> dest = (FuncRecCDAlloc<F>) detsination;
 
-		dest.setConstant(dest.getData().isConstant());
 		dest.setValue(getPointer());
 	}
 
