@@ -26,7 +26,6 @@ import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int16rec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.util.func.Getter;
 
 
 public final class Int16cdAlloc
@@ -41,13 +40,13 @@ public final class Int16cdAlloc
 	}
 
 	@Override
-	public Getter<Short> underlyingValue(Getter<Short> value) {
+	public Short underlyingValue(Short value) {
 		return value;
 	}
 
 	@Override
 	protected Int16rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt16(name, this);
+		return container.addInt16(name);
 	}
 
 	@Override

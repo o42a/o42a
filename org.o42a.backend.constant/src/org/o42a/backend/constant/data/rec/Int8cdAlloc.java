@@ -26,7 +26,6 @@ import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int8rec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.util.func.Getter;
 
 
 public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
@@ -40,13 +39,13 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 	}
 
 	@Override
-	public Getter<Byte> underlyingValue(Getter<Byte> value) {
+	public Byte underlyingValue(Byte value) {
 		return value;
 	}
 
 	@Override
 	protected Int8rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt8(name, this);
+		return container.addInt8(name);
 	}
 
 	@Override

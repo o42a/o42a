@@ -31,7 +31,6 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.util.func.Getter;
 
 
 public final class FuncRecCDAlloc<F extends Func<F>>
@@ -54,22 +53,11 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 	}
 
 	@Override
-	public Getter<FuncPtr<F>> underlyingValue(final Getter<FuncPtr<F>> value) {
-		return new Getter<FuncPtr<F>>() {
-			@Override
-			public FuncPtr<F> get() {
+	public FuncPtr<F> underlyingValue(final FuncPtr<F> value) {
 
-				final CFAlloc<F> alloc =
-						(CFAlloc<F>) value.get().getAllocation();
+		final CFAlloc<F> alloc = (CFAlloc<F>) value.get().getAllocation();
 
-				return alloc.getUnderlyingPtr();
-			}
-			@Override
-			public String toString() {
-				return String.valueOf(value);
-			}
-		};
-
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override
@@ -78,7 +66,7 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 		final CSignature<F> underlyingSignature =
 				getBackend().underlying(getSignature());
 
-		return container.addFuncPtr(name, underlyingSignature, this);
+		return container.addFuncPtr(name, underlyingSignature);
 	}
 
 	@Override

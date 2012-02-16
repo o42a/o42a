@@ -31,12 +31,8 @@ public final class StructRec<S extends StructOp<S>>
 
 	private final Type<S> type;
 
-	StructRec(
-			SubData<?> enclosing,
-			CodeId id,
-			Type<S> type,
-			Content<StructRec<S>> content) {
-		super(enclosing, id, content);
+	StructRec(SubData<?> enclosing, CodeId id, Type<S> type) {
+		super(enclosing, id);
 		this.type = type;
 	}
 
@@ -83,7 +79,6 @@ public final class StructRec<S extends StructOp<S>>
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		assert getValue() != null :
 			this + " has no value";
 		getValue().get().getAllocation().write(writer, getAllocation());

@@ -33,12 +33,8 @@ public final class FuncRec<F extends Func<F>>
 
 	private final Signature<F> signature;
 
-	FuncRec(
-			SubData<?> enclosing,
-			CodeId id,
-			Signature<F> signature,
-			Content<FuncRec<F>> content) {
-		super(enclosing, id, content);
+	FuncRec(SubData<?> enclosing, CodeId id, Signature<F> signature) {
+		super(enclosing, id);
 		this.signature = signature;
 	}
 
@@ -87,7 +83,6 @@ public final class FuncRec<F extends Func<F>>
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 

@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public class Fp32rec extends Rec<Fp32recOp, Float> {
 
-	Fp32rec(SubData<?> enclosing, CodeId id, Content<Fp32rec> content) {
-		super(enclosing, id, content);
+	Fp32rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		writer.writeFp32(getAllocation(), getValue());
 	}
 }

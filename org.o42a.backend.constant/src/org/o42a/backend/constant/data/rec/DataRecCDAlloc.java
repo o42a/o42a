@@ -26,7 +26,6 @@ import org.o42a.backend.constant.data.DataCDAlloc;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.*;
-import org.o42a.util.func.Getter;
 
 
 public final class DataRecCDAlloc
@@ -41,27 +40,16 @@ public final class DataRecCDAlloc
 	}
 
 	@Override
-	public Getter<Ptr<DataOp>> underlyingValue(
-			final Getter<Ptr<DataOp>> value) {
-		return new Getter<Ptr<DataOp>>() {
-			@Override
-			public Ptr<DataOp> get() {
+	public Ptr<DataOp> underlyingValue(Ptr<DataOp> value) {
 
-				final DataCDAlloc alloc =
-						(DataCDAlloc) value.get().getAllocation();
+		final DataCDAlloc alloc = (DataCDAlloc) value.get().getAllocation();
 
-				return alloc.getUnderlyingPtr();
-			}
-			@Override
-			public String toString() {
-				return String.valueOf(value);
-			}
-		};
+		return alloc.getUnderlyingPtr();
 	}
 
 	@Override
 	protected DataRec allocateUnderlying(SubData<?> container, String name) {
-		return container.addDataPtr(name, this);
+		return container.addDataPtr(name);
 	}
 
 	@Override

@@ -29,8 +29,8 @@ import org.o42a.codegen.data.backend.DataWriter;
 
 public final class Fp64rec extends Rec<Fp64recOp, Double> {
 
-	Fp64rec(SubData<?> enclosing, CodeId id, Content<Fp64rec> content) {
-		super(enclosing, id, content);
+	Fp64rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -71,7 +71,6 @@ public final class Fp64rec extends Rec<Fp64recOp, Double> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 		writer.writeFp64(getAllocation(), getValue());
 	}
 

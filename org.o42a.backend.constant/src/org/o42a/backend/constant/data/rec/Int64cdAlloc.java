@@ -50,36 +50,60 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 	public final void setNativePtr(Getter<Ptr<AnyOp>> pointer) {
 		this.nativePtr = pointer;
 		super.setValue(null);
-		assert pointer != null;
-	}
-
-	@Override
-	public Getter<Long> underlyingValue(Getter<Long> value) {
-		return value;
-	}
-
-	@Override
-	public void fill(Int64rec instance) {
-		if (this.nativePtr != null) {
-
-			final AnyCDAlloc alloc =
-					(AnyCDAlloc) this.nativePtr.get().getAllocation();
-			final Ptr<AnyOp> underlyingPtr = alloc.getUnderlyingPtr();
-
-			instance.setAttributes(getData()).setNativePtr(underlyingPtr);
-		} else {
-			instance.setAttributes(getData()).setValue(getValue());
+		if (isUnderlyingAllocated()) {
+			getUnderlying().setNativePtr(new UnderlyingNativePtr(pointer));
 		}
 	}
 
 	@Override
+	public Long underlyingValue(Long value) {
+		return value;
+	}
+
+	@Override
+	protected Int64rec allocateUnderlying(SubData<?> container) {
+
+		final Int64rec underlying = super.allocateUnderlying(container);
+
+		if (this.nativePtr != null) {
+			underlying.setNativePtr(new UnderlyingNativePtr(this.nativePtr));
+		}
+
+		return underlying;
+	}
+
+	@Override
 	protected Int64rec allocateUnderlying(SubData<?> container, String name) {
-		return container.addInt64(name, this);
+		return container.addInt64(name);
 	}
 
 	@Override
 	protected Int64recOp op(OpBE<Int64recOp> backend, AllocClass allocClass) {
 		return new Int64recCOp(backend, allocClass, getPointer());
+	}
+
+	private static final class UnderlyingNativePtr implements Getter<Ptr<AnyOp>> {
+
+		private final Getter<Ptr<AnyOp>> nativePtr;
+
+		UnderlyingNativePtr(Getter<Ptr<AnyOp>> nativePtr) {
+			this.nativePtr = nativePtr;
+		}
+
+		@Override
+		public Ptr<AnyOp> get() {
+
+			final AnyCDAlloc alloc =
+					(AnyCDAlloc) this.nativePtr.get().getAllocation();
+
+			return alloc.getUnderlyingPtr();
+		}
+
+		@Override
+		public String toString() {
+			return String.valueOf(this.nativePtr);
+		}
+
 	}
 
 }

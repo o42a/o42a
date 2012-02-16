@@ -33,8 +33,8 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 
 	private Getter<Ptr<AnyOp>> nativePtr;
 
-	Int64rec(SubData<?> enclosing, CodeId id, Content<Int64rec> content) {
-		super(enclosing, id, content);
+	Int64rec(SubData<?> enclosing, CodeId id) {
+		super(enclosing, id);
 	}
 
 	@Override
@@ -90,7 +90,6 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 
 	@Override
 	protected void write(DataWriter writer) {
-		fill(writer);
 
 		final Getter<Ptr<AnyOp>> nativePtr = getNativePtr();
 
