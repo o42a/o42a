@@ -23,6 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.func.Getter;
 
 
 public abstract class Rec<P extends PtrOp<P>, T>
@@ -32,7 +33,7 @@ public abstract class Rec<P extends PtrOp<P>, T>
 	private final SubData<?> enclosing;
 	@SuppressWarnings("rawtypes")
 	private final Content content;
-	private T value;
+	private Getter<T> value;
 	private int flags;
 
 	Rec(SubData<?> enclosing, CodeId id, Content<?> content) {
@@ -89,11 +90,11 @@ public abstract class Rec<P extends PtrOp<P>, T>
 		return null;
 	}
 
-	public final T getValue() {
+	public final Getter<T> getValue() {
 		return this.value;
 	}
 
-	public void setValue(T value) {
+	public void setValue(Getter<T> value) {
 		this.value = value;
 	}
 

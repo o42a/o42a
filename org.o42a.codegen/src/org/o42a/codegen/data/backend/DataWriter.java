@@ -23,6 +23,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public interface DataWriter {
@@ -53,20 +54,24 @@ public interface DataWriter {
 			DataAllocation<S> destination,
 			Global<S, ?> global);
 
-	void writeInt8(DataAllocation<Int8recOp> destination, byte value);
+	void writeInt8(DataAllocation<Int8recOp> destination, Getter<Byte> value);
 
-	void writeInt16(DataAllocation<Int16recOp> destination, short value);
+	void writeInt16(
+			DataAllocation<Int16recOp> destination,
+			Getter<Short> value);
 
-	void writeInt32(DataAllocation<Int32recOp> destination, int value);
+	void writeInt32(
+			DataAllocation<Int32recOp> destination,
+			Getter<Integer> value);
 
-	void writeInt64(DataAllocation<Int64recOp> destination, long value);
+	void writeInt64(DataAllocation<Int64recOp> destination, Getter<Long> value);
 
 	void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
-			DataAllocation<AnyOp> valueAllocation);
+			Getter<Ptr<AnyOp>> value);
 
-	void writeFp32(DataAllocation<Fp32recOp> destination, float value);
+	void writeFp32(DataAllocation<Fp32recOp> destination, Getter<Float> value);
 
-	void writeFp64(DataAllocation<Fp64recOp> destination, double value);
+	void writeFp64(DataAllocation<Fp64recOp> destination, Getter<Double> value);
 
 }

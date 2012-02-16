@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.func.Holder.holder;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -51,6 +53,11 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	@Override
 	public final Fp32rec setAttributes(RecAttributes attributes) {
 		super.setAttributes(attributes);
+		return this;
+	}
+
+	public final Fp32rec setValue(float value) {
+		setValue(holder(value));
 		return this;
 	}
 

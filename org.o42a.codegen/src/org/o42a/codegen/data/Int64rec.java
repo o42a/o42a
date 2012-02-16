@@ -19,16 +19,19 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.func.Holder.holder;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.func.Getter;
 
 
 public final class Int64rec extends Rec<Int64recOp, Long> {
 
-	private Ptr<AnyOp> nativePtr;
+	private Getter<Ptr<AnyOp>> nativePtr;
 
 	Int64rec(SubData<?> enclosing, CodeId id, Content<Int64rec> content) {
 		super(enclosing, id, content);
@@ -57,19 +60,24 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 		return this;
 	}
 
-	public final Ptr<AnyOp> getNativePtr() {
+	public final Getter<Ptr<AnyOp>> getNativePtr() {
 		return this.nativePtr;
 	}
 
-	public final void setNativePtr(Ptr<AnyOp> nativePtr) {
+	public final void setNativePtr(Getter<Ptr<AnyOp>> nativePtr) {
 		this.nativePtr = nativePtr;
 		super.setValue(null);
 	}
 
 	@Override
-	public void setValue(Long value) {
+	public final void setValue(Getter<Long> value) {
 		this.nativePtr = null;
 		super.setValue(value);
+	}
+
+	public final Int64rec setValue(long value) {
+		setValue(holder(value));
+		return this;
 	}
 
 	@Override
@@ -83,10 +91,13 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		if (this.nativePtr != null) {
+
+		final Getter<Ptr<AnyOp>> nativePtr = getNativePtr();
+
+		if (nativePtr != null) {
 			writer.writeNativePtrAsInt64(
 					getAllocation(),
-					this.nativePtr.getAllocation());
+					nativePtr);
 		} else {
 			writer.writeInt64(getAllocation(), getValue());
 		}

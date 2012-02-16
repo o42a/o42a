@@ -27,6 +27,7 @@ import org.o42a.backend.constant.data.struct.StructCDAlloc;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public final class StructRecCDAlloc<S extends StructOp<S>>
@@ -57,12 +58,21 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	public Ptr<S> underlyingValue(Ptr<S> value) {
+	public Getter<Ptr<S>> underlyingValue(final Getter<Ptr<S>> value) {
+		return new Getter<Ptr<S>>() {
+			@Override
+			public Ptr<S> get() {
 
-		final StructCDAlloc<S> alloc =
-				(StructCDAlloc<S>) value.getAllocation();
+				final StructCDAlloc<S> alloc =
+						(StructCDAlloc<S>) value.get().getAllocation();
 
-		return alloc.getUnderlyingPtr();
+				return alloc.getUnderlyingPtr();
+			}
+			@Override
+			public String toString() {
+				return String.valueOf(value);
+			}
+		};
 	}
 
 	@Override

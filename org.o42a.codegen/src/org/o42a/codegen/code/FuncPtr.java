@@ -24,17 +24,23 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.func.Getter;
 
 
 public abstract class FuncPtr<F extends Func<F>>
 		extends AbstractPtr
-		implements FunctionAttributes {
+		implements FunctionAttributes, Getter<FuncPtr<F>> {
 
 	private final Signature<F> signature;
 
 	FuncPtr(CodeId id, Signature<F> signature, boolean isNull) {
 		super(id, true, isNull);
 		this.signature = signature;
+	}
+
+	@Override
+	public final FuncPtr<F> get() {
+		return this;
 	}
 
 	public final Signature<F> getSignature() {

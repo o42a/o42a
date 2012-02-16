@@ -88,7 +88,7 @@ public final class FuncRec<F extends Func<F>>
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().getAllocation().write(writer, getAllocation());
+		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 
 }

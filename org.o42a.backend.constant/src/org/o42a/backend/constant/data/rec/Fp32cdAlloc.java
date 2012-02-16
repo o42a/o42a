@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Fp32rec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.func.Getter;
 
 
 public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
@@ -39,7 +40,7 @@ public final class Fp32cdAlloc extends RecCDAlloc<Fp32rec, Fp32recOp, Float> {
 	}
 
 	@Override
-	public Float underlyingValue(Float value) {
+	public Getter<Float> underlyingValue(Getter<Float> value) {
 		return value;
 	}
 

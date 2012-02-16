@@ -69,7 +69,7 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 	@Override
 	protected void write(DataWriter writer) {
 		fill(writer);
-		getValue().getAllocation().write(writer, getAllocation());
+		getValue().get().getAllocation().write(writer, getAllocation());
 	}
 
 }

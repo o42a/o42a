@@ -26,6 +26,7 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.func.Getter;
 
 
 public final class AnyRecCDAlloc
@@ -40,12 +41,21 @@ public final class AnyRecCDAlloc
 	}
 
 	@Override
-	public Ptr<AnyOp> underlyingValue(Ptr<AnyOp> value) {
+	public Getter<Ptr<AnyOp>> underlyingValue(final Getter<Ptr<AnyOp>> value) {
+		return new Getter<Ptr<AnyOp>>() {
+			@Override
+			public Ptr<AnyOp> get() {
 
-		final AnyCDAlloc alloc =
-				(AnyCDAlloc) value.getAllocation();
+				final AnyCDAlloc alloc =
+						(AnyCDAlloc) value.get().getAllocation();
 
-		return alloc.getUnderlyingPtr();
+				return alloc.getUnderlyingPtr();
+			}
+			@Override
+			public String toString() {
+				return String.valueOf(value);
+			}
+		};
 	}
 
 	@Override

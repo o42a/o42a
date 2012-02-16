@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.func.Holder.holder;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -51,6 +53,11 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 	@Override
 	public final Int16rec setAttributes(RecAttributes attributes) {
 		super.setAttributes(attributes);
+		return this;
+	}
+
+	public final Int16rec setValue(short value) {
+		setValue(holder(value));
 		return this;
 	}
 

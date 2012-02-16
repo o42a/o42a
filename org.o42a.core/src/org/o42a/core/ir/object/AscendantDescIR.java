@@ -51,7 +51,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	}
 
 	@Override
-	public void fill(Type instance) {
+	public void fill(final Type instance) {
 
 		final Generator generator = instance.getGenerator();
 		final ObjectIR ascendantIR =

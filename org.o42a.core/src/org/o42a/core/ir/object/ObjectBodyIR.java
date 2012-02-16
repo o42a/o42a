@@ -46,6 +46,7 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.func.Getter;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
@@ -91,25 +92,26 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	public void setKind(Kind kind) {
 
-		final Integer value = this.flags.getValue();
+		final Getter<Integer> value = this.flags.getValue();
 
 		if (value == null) {
 			this.flags.setConstant(true).setValue(kind.ordinal());
 			return;
 		}
 
-		this.flags.setValue((value.intValue() & ~KIND_MASK) | kind.ordinal());
+		this.flags.setValue(
+				(value.get().intValue() & ~KIND_MASK) | kind.ordinal());
 	}
 
 	public Kind getKind() {
 
-		final Integer value = this.flags.getValue();
+		final Getter<Integer> value = this.flags.getValue();
 
 		if (value == null) {
 			return null;
 		}
 
-		return Kind.values()[value.intValue() & KIND_MASK];
+		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
 	public ObjectMethodsIR getMethodsIR() {

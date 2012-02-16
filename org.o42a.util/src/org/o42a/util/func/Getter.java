@@ -20,32 +20,8 @@
 package org.o42a.util.func;
 
 
-public abstract class Getter<T> {
+public interface Getter<T> {
 
-	public static <T> Getter<? extends T> valueGetter(T value) {
-		return new ValueGetter<T>(value);
-	}
-
-	public abstract T get();
-
-	private static final class ValueGetter<T> extends Getter<T> {
-
-		private final T value;
-
-		ValueGetter(T value) {
-			this.value = value;
-		}
-
-		@Override
-		public final T get() {
-			return this.value;
-		}
-
-		@Override
-		public String toString() {
-			return String.valueOf(this.value);
-		}
-
-	}
+	T get();
 
 }

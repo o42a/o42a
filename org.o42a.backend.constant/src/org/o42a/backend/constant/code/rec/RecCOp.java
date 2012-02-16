@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.rec;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.util.func.Holder.holder;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
@@ -31,6 +32,7 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.Rec;
 
 
 public abstract class RecCOp<
@@ -52,12 +54,15 @@ public abstract class RecCOp<
 		}
 
 		final RecCDAlloc<?, ?, T> alloc = getAllocation();
+		final Rec<?, T> rec = alloc.getData();
 
-		if (!alloc.getData().isConstant()) {
+		if (!rec.isConstant() || rec.isLowLevel()) {
 			return null;
 		}
+		assert alloc.getValue() != null :
+			"Null value";
 
-		return alloc.getValue();
+		return alloc.getValue().get();
 	}
 
 	@Override
@@ -75,7 +80,7 @@ public abstract class RecCOp<
 							return underlyingConstant(
 									part(),
 									getAllocation().underlyingValue(
-											constant()));
+											holder(constant())).get());
 						}
 					},
 					constant);

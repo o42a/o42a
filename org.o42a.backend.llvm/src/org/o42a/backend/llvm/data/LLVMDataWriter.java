@@ -28,6 +28,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.func.Getter;
 
 
 public class LLVMDataWriter implements DataWriter {
@@ -124,38 +125,38 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeInt8(
 			DataAllocation<Int8recOp> destination,
-			byte value) {
-		writeInt8(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Byte> value) {
+		writeInt8(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeInt16(
 			DataAllocation<Int16recOp> destination,
-			short value) {
-		writeInt16(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Short> value) {
+		writeInt16(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeInt32(
 			DataAllocation<Int32recOp> destination,
-			int value) {
-		writeInt32(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Integer> value) {
+		writeInt32(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeInt64(
 			DataAllocation<Int64recOp> destination,
-			long value) {
-		writeInt64(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Long> value) {
+		writeInt64(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeNativePtrAsInt64(
 			DataAllocation<Int64recOp> destination,
-			DataAllocation<AnyOp> valueAllocation) {
+			Getter<Ptr<AnyOp>> value) {
 
 		final LLDAlloc<?> alloc =
-				(LLDAlloc<?>) valueAllocation;
+				(LLDAlloc<?>) value.get().getAllocation();
 
 		writePtrAsInt64(
 				getModule().getNativePtr(), getStructPtr(),
@@ -165,15 +166,15 @@ public class LLVMDataWriter implements DataWriter {
 	@Override
 	public void writeFp32(
 			DataAllocation<Fp32recOp> destination,
-			float value) {
-		writeFp32(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Float> value) {
+		writeFp32(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	@Override
 	public void writeFp64(
 			DataAllocation<Fp64recOp> destination,
-			double value) {
-		writeFp64(getModule().getNativePtr(), getStructPtr(), value);
+			Getter<Double> value) {
+		writeFp64(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
 	public final void writeDataId(LLVMId llvmId) {

@@ -26,6 +26,7 @@ import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Int16rec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.func.Getter;
 
 
 public final class Int16cdAlloc
@@ -40,7 +41,7 @@ public final class Int16cdAlloc
 	}
 
 	@Override
-	public Short underlyingValue(Short value) {
+	public Getter<Short> underlyingValue(Getter<Short> value) {
 		return value;
 	}
 

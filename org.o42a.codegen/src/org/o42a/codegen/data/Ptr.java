@@ -28,14 +28,22 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.func.Getter;
 
 
-public abstract class Ptr<P extends PtrOp<P>> extends AbstractPtr {
+public abstract class Ptr<P extends PtrOp<P>>
+		extends AbstractPtr
+		implements Getter<Ptr<P>> {
 
 	private DataAllocation<P> allocation;
 
 	Ptr(CodeId id, boolean ptrToConstant, boolean isNull) {
 		super(id, ptrToConstant, isNull);
+	}
+
+	@Override
+	public final Ptr<P> get() {
+		return this;
 	}
 
 	public final DataAllocation<P> getAllocation() {
