@@ -40,6 +40,7 @@ import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.util.func.Getter;
 
 
 public final class ObjectTypeIR implements Content<ObjectIRType> {
@@ -104,8 +105,16 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 		fillOwnerTypePointer(data);
 		fillAncestor(data);
-		instance.mainBodyLayout().setConstant(true).setValue(
-				getObjectIR().getMainBodyIR().layout(generator).toBinaryForm());
+		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
+				new Getter<Integer>() {
+					@Override
+					public Integer get() {
+						return getObjectIR()
+								.getMainBodyIR()
+								.layout(generator)
+								.toBinaryForm();
+					}
+				});
 
 		getObjectIR().getValueIR().fill(this);
 	}
