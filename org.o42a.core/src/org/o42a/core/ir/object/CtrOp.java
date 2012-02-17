@@ -22,7 +22,6 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.op.NewObjectFunc.NEW_OBJECT;
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -30,12 +29,15 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.FuncRec;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.NewObjectFunc;
 
 
 public class CtrOp extends IROp {
@@ -53,41 +55,7 @@ public class CtrOp extends IROp {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
-			ObjectOp scope,
-			ObjectRefFunc ancestorFunc,
-			ObjectOp sample) {
-
-		final CodeDirs subDirs = dirs.begin(
-				"new_object",
-				"New object: sample=" + sample
-				+ ", ancestorFunc=" + ancestorFunc
-				+ ", scope=" + scope);
-		final Block code = subDirs.code();
-
-		ptr().scopeType(code).store(code, scope.objectType(code).ptr());
-		ptr().ancestorFunc(code).store(code, ancestorFunc);
-		ptr().type(code).store(code, sample.objectType(code).ptr());
-
-		final DataOp result = newFunc().op(null, code).newObject(code, this);
-		final Block nullObject = code.addBlock("null_new_object");
-
-		result.isNull(null, code).go(code, nullObject.head());
-
-		if (nullObject.exists()) {
-			nullObject.go(subDirs.falseDir());
-		}
-
-		subDirs.end();
-
-		return anonymousObject(
-				sample.getBuilder(),
-				result,
-				sample.getWellKnownType());
-	}
-
-	public ObjectOp newObject(
-			CodeDirs dirs,
-			ObjectOp scope,
+			ObjectOp owner,
 			ObjectOp ancestor,
 			ObjectOp sample) {
 
@@ -97,14 +65,11 @@ public class CtrOp extends IROp {
 				+ ", ancestor=" + ancestor);
 		final Block code = subDirs.code();
 
-		if (scope != null) {
-			ptr().scopeType(code).store(code, scope.objectType(code).ptr());
+		if (owner != null) {
+			ptr().ownerType(code).store(code, owner.objectType(code).ptr());
 		} else {
-			ptr().scopeType(code).store(code, code.nullPtr(OBJECT_TYPE));
+			ptr().ownerType(code).store(code, code.nullPtr(OBJECT_TYPE));
 		}
-		ptr().ancestorFunc(code).store(
-				code,
-				code.nullPtr(OBJECT_REF));
 		ptr().ancestorType(code).store(
 				code,
 				ancestor != null
@@ -142,12 +107,8 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> scopeType(Code code) {
-			return ptr(null, code, getType().scopeType());
-		}
-
-		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return func(null, code, getType().ancestorFunc());
+		public final StructRecOp<ObjectIRType.Op> ownerType(Code code) {
+			return ptr(null, code, getType().ownerType());
 		}
 
 		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
@@ -166,8 +127,7 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> scopeType;
-		private FuncRec<ObjectRefFunc> ancestorFunc;
+		private StructRec<ObjectIRType.Op> ownerType;
 		private StructRec<ObjectIRType.Op> ancestorType;
 		private StructRec<ObjectIRType.Op> type;
 
@@ -179,12 +139,8 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectIRType.Op> scopeType() {
-			return this.scopeType;
-		}
-
-		public final FuncRec<ObjectRefFunc> ancestorFunc() {
-			return this.ancestorFunc;
+		public final StructRec<ObjectIRType.Op> ownerType() {
+			return this.ownerType;
 		}
 
 		public final StructRec<ObjectIRType.Op> ancestorType() {
@@ -202,8 +158,7 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.scopeType = data.addPtr("scope_type", OBJECT_TYPE);
-			this.ancestorFunc = data.addFuncPtr("ancestor_f", OBJECT_REF);
+			this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
 			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 			this.type = data.addPtr("type", OBJECT_TYPE);
 		}

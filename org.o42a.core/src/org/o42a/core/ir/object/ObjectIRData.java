@@ -58,7 +58,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private FuncRec<ObjectCondFunc> conditionFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private StructRec<ObjectIRType.Op> ancestorType;
-	private StructRec<ObjectIRType.Op> ownerType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
@@ -101,10 +100,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.propositionFunc;
 	}
 
-	public final StructRec<ObjectIRType.Op> ownerType() {
-		return this.ownerType;
-	}
-
 	public final StructRec<ObjectIRType.Op> ancestorType() {
 		return this.ancestorType;
 	}
@@ -141,7 +136,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.conditionFunc = data.addFuncPtr("condition_f", OBJECT_COND);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
-		this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
 		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");

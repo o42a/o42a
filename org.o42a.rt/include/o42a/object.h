@@ -266,13 +266,6 @@ typedef struct o42a_obj_data {
 	o42a_obj_val_ft *proposition_f;
 
 	/**
-	 * Pointer to the type of this object's owner (i.e. enclosing object).
-	 *
-	 * May be NULL when object is local.
-	 */
-	union o42a_obj_type *owner_type;
-
-	/**
 	 * Ancestor type.
 	 *
 	 * Pointer to ancestor object data.
@@ -468,16 +461,9 @@ typedef struct o42a_obj_ctr {
 	/**
 	 * Pointer to enclosing object's type.
 	 *
-	 * NULL when constructing object within imperative code.
+	 * May be NULL when constructing object is local or exactly known.
 	 */
-	o42a_obj_type_t *scope_type;
-
-	/**
-	 * Ancestor finder function.
-	 *
-	 * When NULL an ancestor_type should be used.
-	 */
-	o42a_obj_ref_ft *ancestor_f;
+	o42a_obj_type_t *owner_type;
 
 	/**
 	 * Ancestor type.
@@ -498,6 +484,13 @@ typedef struct o42a_obj_ctr {
 typedef struct o42a_obj_ctable {
 
 	O42A_HEADER;
+
+	/**
+	 * Pointer to the type of this object's owner (i.e. enclosing object).
+	 *
+	 * May be NULL when constructing object is local or exactly known.
+	 */
+	union o42a_obj_type *owner_type;
 
 	o42a_obj_type_t *const ancestor_type;
 

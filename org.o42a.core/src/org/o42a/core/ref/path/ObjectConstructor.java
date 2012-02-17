@@ -21,14 +21,9 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.def.Definitions.emptyDefinitions;
-import static org.o42a.core.ir.CodeBuilder.codeBuilder;
-import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.IdentityHashMap;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Function;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
@@ -36,13 +31,11 @@ import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.def.Definitions;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.FieldDefinition;
@@ -142,50 +135,6 @@ public abstract class ObjectConstructor extends Placed {
 			propagated + " already pinned";
 	}
 
-	private Function<ObjectRefFunc> ancestorFunc(CodeBuilder enclosing) {
-
-		final Function<ObjectRefFunc> ancestorFunc =
-				enclosing.getGenerator().newFunction().create(
-						enclosing.nextId(),
-						OBJECT_REF);
-
-		final Block ancestorNotFound =
-				ancestorFunc.addBlock("ancestor_not_found");
-		final CodeBuilder builder = codeBuilder(
-				ancestorFunc,
-				ancestorNotFound.head(),
-				getScope(),
-				DERIVED);
-
-		buildAncestorFunc(builder, ancestorFunc);
-		if (ancestorNotFound.exists()) {
-			ancestorNotFound.nullPtr().returnValue(ancestorNotFound);
-		}
-
-		ancestorFunc.done();
-
-		return ancestorFunc;
-	}
-
-	private void buildAncestorFunc(CodeBuilder builder, Block code) {
-
-		final Block ancestorFailed = code.addBlock("ancestor_failed");
-		final ObjectOp ancestor = buildAncestor(
-				builder.falseWhenUnknown(code, ancestorFailed.head()));
-
-		if (ancestor == null) {
-			code.nullPtr().returnValue(code);
-		} else {
-			ancestor.toAny(code).returnValue(code);
-		}
-
-		if (ancestorFailed.exists()) {
-			getContext().getFalse()
-			.ir(builder.getGenerator()).op(builder, ancestorFailed)
-			.ptr().toAny(null, ancestorFailed).returnValue(ancestorFailed);
-		}
-	}
-
 	private ObjectOp buildAncestor(CodeDirs dirs) {
 		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
 	}
@@ -283,26 +232,31 @@ public abstract class ObjectConstructor extends Placed {
 				return target;
 			}
 
-			if (local == null) {
-				return getBuilder().newObject(
-						dirs,
-						host().materialize(dirs),
-						ancestorFunc(getBuilder()).getPointer().op(
-								null,
-								dirs.code()),
-						sample);
+			final ObjectOp owner;
+
+			if (local != null) {
+				owner = null;
+			} else {
+
+				final ObjectOp ownerObject = host().materialize(dirs);
+
+				if (ownerObject.getPrecision().isExact()) {
+					owner = null;
+				} else {
+					owner = ownerObject;
+				}
 			}
 
 			return getBuilder().newObject(
 					dirs,
-					null,
+					owner,
 					buildAncestor(dirs),
 					sample);
 		}
 
 		@Override
 		public String toString() {
-			return ObjectConstructor.this.toString();
+			return String.valueOf(ObjectConstructor.this);
 		}
 
 	}

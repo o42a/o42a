@@ -595,7 +595,6 @@ static o42a_obj_rtype_t *propagate_object(
 	data->condition_f = adata->condition_f;
 	data->proposition_f = adata->proposition_f;
 
-	data->owner_type = ctr->scope_type;
 	data->ancestor_type = adata->ancestor_type;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -611,6 +610,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 	// propagate bodies
 	o42a_obj_ctable_t ctable = {
+		owner_type: ctr->owner_type,
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
@@ -749,34 +749,15 @@ o42a_obj_t *o42a_obj_new(
 	O42A_ENTER(return NULL);
 
 	o42a_obj_t *ancestor = NULL;
-	o42a_obj_type_t *atype = NULL;
+	o42a_obj_type_t *atype = ctr->ancestor_type;
 
-	if (ctr->ancestor_f) {
-		o42a_debug_func_name("Ancestor function: ", ctr->ancestor_f);
-		o42a_debug_mem_name("Ancestor scope: ", ctr->scope_type);
-		O42A_DO("Ancestor evaluation");
-		ancestor = O42A((*ctr->ancestor_f) (
-				O42A_ARGS
-				o42a_obj_by_data(O42A_ARGS &ctr->scope_type->type.data)));
-		O42A_DONE;
-		o42a_debug_mem_name("Ancestor: ", ancestor);
-		if (ancestor) {
-			atype = O42A(o42a_obj_type(O42A_ARGS ancestor));
-			if (atype->type.data.flags & O42A_OBJ_VOID) {
-				atype = NULL;
-				ancestor = NULL;
-			}
-		}
-	} else {
-		atype = ctr->ancestor_type;
-		if (atype) {
-			if (atype->type.data.flags & O42A_OBJ_VOID) {
-				atype = NULL;
-			} else {
-				ancestor = O42A(o42a_obj_by_data(
-						O42A_ARGS
-						&ctr->ancestor_type->type.data));
-			}
+	if (atype) {
+		if (atype->type.data.flags & O42A_OBJ_VOID) {
+			atype = NULL;
+		} else {
+			ancestor = O42A(o42a_obj_by_data(
+					O42A_ARGS
+					&ctr->ancestor_type->type.data));
 		}
 	}
 
@@ -931,7 +912,6 @@ o42a_obj_t *o42a_obj_new(
 	data->condition_f = sdata->condition_f;
 	data->proposition_f = sdata->proposition_f;
 
-	data->owner_type = ctr->scope_type;
 	data->ancestor_type = atype;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -947,6 +927,7 @@ o42a_obj_t *o42a_obj_new(
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
+		owner_type: ctr->owner_type,
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
