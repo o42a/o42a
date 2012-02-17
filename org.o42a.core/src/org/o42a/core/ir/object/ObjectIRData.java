@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
@@ -34,7 +33,6 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.op.ObjectCondFunc;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValType;
@@ -59,7 +57,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectCondFunc> conditionFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
-	private FuncRec<ObjectRefFunc> ancestorFunc;
 	private StructRec<ObjectIRType.Op> ancestorType;
 	private StructRec<ObjectIRType.Op> ownerType;
 	private RelList<ObjectBodyIR> ascendants;
@@ -108,10 +105,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.ownerType;
 	}
 
-	public final FuncRec<ObjectRefFunc> ancestorFunc() {
-		return this.ancestorFunc;
-	}
-
 	public final StructRec<ObjectIRType.Op> ancestorType() {
 		return this.ancestorType;
 	}
@@ -149,7 +142,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.conditionFunc = data.addFuncPtr("condition_f", OBJECT_COND);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
 		this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
-		this.ancestorFunc = data.addFuncPtr("ancestor_f", OBJECT_REF);
 		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");
@@ -216,10 +208,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
 			return func(null, code, getType().propositionFunc());
-		}
-
-		public final FuncOp<ObjectRefFunc> ancestorFunc(Code code) {
-			return func(null, code, getType().ancestorFunc());
 		}
 
 		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {

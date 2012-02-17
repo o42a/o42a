@@ -20,6 +20,6 @@
 Use namespace 'Console'
 Use namespace 'Test'
 
-@Main :=> *{$}
+@Main := *{$}
 
 Run tests

@@ -596,7 +596,6 @@ static o42a_obj_rtype_t *propagate_object(
 	data->proposition_f = adata->proposition_f;
 
 	data->owner_type = ctr->scope_type;
-	data->ancestor_f = ctr->ancestor_f;
 	data->ancestor_type = adata->ancestor_type;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -933,7 +932,6 @@ o42a_obj_t *o42a_obj_new(
 	data->proposition_f = sdata->proposition_f;
 
 	data->owner_type = ctr->scope_type;
-	data->ancestor_f = ctr->ancestor_f;
 	data->ancestor_type = atype;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
