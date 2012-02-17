@@ -118,7 +118,7 @@ public abstract class CodeBuilder {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
-			ObjectOp scope,
+			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
 
@@ -127,7 +127,7 @@ public abstract class CodeBuilder {
 		final CodeDirs subDirs = alloc.dirs();
 		final ObjectOp result = ctr.op(this).newObject(
 				subDirs,
-				scope,
+				owner,
 				ancestor,
 				sample.ir(getGenerator()).op(this, subDirs.code()));
 

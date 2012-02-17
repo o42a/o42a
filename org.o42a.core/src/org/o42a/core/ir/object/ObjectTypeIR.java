@@ -98,7 +98,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
 
-		fillOwnerTypePointer(data);
 		fillAncestor(data);
 		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
 				new Getter<Integer>() {
@@ -110,7 +109,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
-
 		getObjectIR().getValueIR().fill(this);
 	}
 
@@ -207,32 +205,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 
 		return flags;
-	}
-
-	private void fillOwnerTypePointer(ObjectIRData instance) {
-
-		final Obj owner =
-				getObjectIR().getObject().getScope()
-				.getEnclosingContainer().toObject();
-
-		if (owner == null) {
-			instance.ownerType().setConstant(true).setNull();
-			return;
-		}
-
-		final ObjectIR ownerIR = owner.ir(getGenerator());
-
-		if (ownerIR.isExact()) {
-			// No need to fill an owner if it's exactly known.
-			instance.ownerType().setConstant(true).setNull();
-			return;
-		}
-
-		final ObjectIRType ownerType =
-				ownerIR.getTypeIR().getObjectType();
-
-		instance.ownerType().setConstant(true).setValue(
-				ownerType.pointer(instance.getGenerator()));
 	}
 
 	private void fillAncestor(ObjectIRData instance) {
