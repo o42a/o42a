@@ -32,6 +32,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 
 
@@ -96,6 +97,17 @@ public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
 	@Override
 	protected Type getType() {
 		return SCOPE_FLD;
+	}
+
+	@Override
+	protected boolean mayOmit() {
+		if (super.mayOmit()) {
+			return true;
+		}
+
+		final ObjectIR scopeIR = getField().getArtifact().ir(getGenerator());
+
+		return scopeIR.isExact();
 	}
 
 	@Override
