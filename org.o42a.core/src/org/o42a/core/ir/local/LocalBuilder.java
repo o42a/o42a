@@ -57,12 +57,12 @@ public class LocalBuilder extends CodeBuilder {
 	@Override
 	public ObjectOp newObject(
 			CodeDirs dirs,
-			ObjectOp scope,
+			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
 
 		final ObjectOp newObject =
-				super.newObject(dirs, scope, ancestor, sample);
+				super.newObject(dirs, owner, ancestor, sample);
 
 		newObject.fillDeps(dirs, sample);
 
