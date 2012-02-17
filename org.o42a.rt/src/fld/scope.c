@@ -32,8 +32,7 @@ void o42a_fld_scope_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 		// Update only the scope of body propagated from field
 		// or the one of main body.
 
-		o42a_obj_type_t *const owner_type =
-				ctable->object_type->data.owner_type;
+		o42a_obj_type_t *const owner_type = ctable->owner_type;
 
 		if (owner_type) {
 			to->object =

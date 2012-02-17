@@ -232,9 +232,24 @@ public abstract class ObjectConstructor extends Placed {
 				return target;
 			}
 
+			final ObjectOp owner;
+
+			if (local != null) {
+				owner = null;
+			} else {
+
+				final ObjectOp ownerObject = host().materialize(dirs);
+
+				if (ownerObject.getPrecision().isExact()) {
+					owner = null;
+				} else {
+					owner = ownerObject;
+				}
+			}
+
 			return getBuilder().newObject(
 					dirs,
-					null,
+					owner,
 					buildAncestor(dirs),
 					sample);
 		}

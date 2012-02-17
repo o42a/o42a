@@ -55,7 +55,7 @@ public class CtrOp extends IROp {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
-			ObjectOp scope,
+			ObjectOp owner,
 			ObjectOp ancestor,
 			ObjectOp sample) {
 
@@ -65,10 +65,10 @@ public class CtrOp extends IROp {
 				+ ", ancestor=" + ancestor);
 		final Block code = subDirs.code();
 
-		if (scope != null) {
-			ptr().scopeType(code).store(code, scope.objectType(code).ptr());
+		if (owner != null) {
+			ptr().ownerType(code).store(code, owner.objectType(code).ptr());
 		} else {
-			ptr().scopeType(code).store(code, code.nullPtr(OBJECT_TYPE));
+			ptr().ownerType(code).store(code, code.nullPtr(OBJECT_TYPE));
 		}
 		ptr().ancestorType(code).store(
 				code,
@@ -107,8 +107,8 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> scopeType(Code code) {
-			return ptr(null, code, getType().scopeType());
+		public final StructRecOp<ObjectIRType.Op> ownerType(Code code) {
+			return ptr(null, code, getType().ownerType());
 		}
 
 		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
@@ -127,7 +127,7 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> scopeType;
+		private StructRec<ObjectIRType.Op> ownerType;
 		private StructRec<ObjectIRType.Op> ancestorType;
 		private StructRec<ObjectIRType.Op> type;
 
@@ -139,8 +139,8 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectIRType.Op> scopeType() {
-			return this.scopeType;
+		public final StructRec<ObjectIRType.Op> ownerType() {
+			return this.ownerType;
 		}
 
 		public final StructRec<ObjectIRType.Op> ancestorType() {
@@ -158,7 +158,7 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.scopeType = data.addPtr("scope_type", OBJECT_TYPE);
+			this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
 			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 			this.type = data.addPtr("type", OBJECT_TYPE);
 		}

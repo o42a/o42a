@@ -595,7 +595,6 @@ static o42a_obj_rtype_t *propagate_object(
 	data->condition_f = adata->condition_f;
 	data->proposition_f = adata->proposition_f;
 
-	data->owner_type = ctr->scope_type;
 	data->ancestor_type = adata->ancestor_type;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -611,6 +610,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 	// propagate bodies
 	o42a_obj_ctable_t ctable = {
+		owner_type: ctr->owner_type,
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
@@ -912,7 +912,6 @@ o42a_obj_t *o42a_obj_new(
 	data->condition_f = sdata->condition_f;
 	data->proposition_f = sdata->proposition_f;
 
-	data->owner_type = ctr->scope_type;
 	data->ancestor_type = atype;
 
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -928,6 +927,7 @@ o42a_obj_t *o42a_obj_new(
 
 	// propagate sample and inherit ancestor
 	o42a_obj_ctable_t ctable = {
+		owner_type: ctr->owner_type,
 		ancestor_type: atype,
 		sample_type: sstype,
 		object_type: type,
