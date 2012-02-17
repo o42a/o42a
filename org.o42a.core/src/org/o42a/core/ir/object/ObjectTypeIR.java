@@ -19,23 +19,18 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectIRData.*;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
 
 import java.util.HashMap;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.object.impl.ObjectTypeIRAncestorFunc;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -247,7 +242,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 		if (ancestorBodyIR == null) {
 			instance.ancestorType().setConstant(true).setNull();
-			instance.ancestorFunc().setConstant(true).setValue(nullObjectRef());
 			return;
 		}
 
@@ -255,37 +249,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				ancestorBodyIR.getAscendant().ir(
 						getGenerator()).getTypeIR().getObjectType()
 						.pointer(instance.getGenerator()));
-		if (getObjectIR().getObject().type().derivation().isUsed(
-				getGenerator().getAnalyzer(),
-				RUNTIME_DERIVATION_USAGE)) {
-			instance.ancestorFunc().setConstant(true).setValue(
-					createAncestorFunc(instance));
-		} else {
-			instance.ancestorFunc().setConstant(true).setValue(
-					stubObjectRef());
-		}
-	}
-
-	private FuncPtr<ObjectRefFunc> nullObjectRef() {
-		return getGenerator()
-				.externalFunction()
-				.sideEffects(false)
-				.link("o42a_obj_ref_null", OBJECT_REF);
-	}
-
-	private FuncPtr<ObjectRefFunc> stubObjectRef() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_ref_stub", OBJECT_REF);
-	}
-
-	private FuncPtr<ObjectRefFunc> createAncestorFunc(ObjectIRData instance) {
-		return getGenerator().newFunction().create(
-					this.objectIRStruct
-					.codeId(instance.getGenerator())
-					.detail("ancestor"),
-					OBJECT_REF,
-					new ObjectTypeIRAncestorFunc(getObjectIR())).getPointer();
 	}
 
 }
