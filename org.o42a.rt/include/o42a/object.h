@@ -273,17 +273,6 @@ typedef struct o42a_obj_data {
 	union o42a_obj_type *owner_type;
 
 	/**
-	 * Object ancestor finder function.
-	 *
-	 * Accepts pointer to object's owner as argument.
-	 *
-	 * May be NULL when ancestor_type is static.
-	 *
-	 * \return ancestor pointer or NULL when ancestor is void.
-	 */
-	o42a_obj_ref_ft *ancestor_f;
-
-	/**
 	 * Ancestor type.
 	 *
 	 * Pointer to ancestor object data.
@@ -487,8 +476,6 @@ typedef struct o42a_obj_ctr {
 	 * Ancestor finder function.
 	 *
 	 * When NULL an ancestor_type should be used.
-	 *
-	 * See o42a_obj_data_t.ancestor_f.
 	 */
 	o42a_obj_ref_ft *ancestor_f;
 
