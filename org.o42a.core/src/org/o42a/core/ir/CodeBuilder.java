@@ -119,26 +119,6 @@ public abstract class CodeBuilder {
 	public ObjectOp newObject(
 			CodeDirs dirs,
 			ObjectOp scope,
-			ObjectRefFunc ancestorFunc,
-			Obj sample) {
-
-		final AllocationDirs alloc = dirs.allocate("new_object");
-		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
-		final CodeDirs subDirs = alloc.dirs();
-		final ObjectOp result = ctr.op(this).newObject(
-				subDirs,
-				scope,
-				ancestorFunc,
-				sample.ir(getGenerator()).op(this, subDirs.code()));
-
-		alloc.done();
-
-		return result;
-	}
-
-	public ObjectOp newObject(
-			CodeDirs dirs,
-			ObjectOp scope,
 			ObjectOp ancestor,
 			Obj sample) {
 

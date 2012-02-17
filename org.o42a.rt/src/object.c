@@ -749,34 +749,15 @@ o42a_obj_t *o42a_obj_new(
 	O42A_ENTER(return NULL);
 
 	o42a_obj_t *ancestor = NULL;
-	o42a_obj_type_t *atype = NULL;
+	o42a_obj_type_t *atype = ctr->ancestor_type;
 
-	if (ctr->ancestor_f) {
-		o42a_debug_func_name("Ancestor function: ", ctr->ancestor_f);
-		o42a_debug_mem_name("Ancestor scope: ", ctr->scope_type);
-		O42A_DO("Ancestor evaluation");
-		ancestor = O42A((*ctr->ancestor_f) (
-				O42A_ARGS
-				o42a_obj_by_data(O42A_ARGS &ctr->scope_type->type.data)));
-		O42A_DONE;
-		o42a_debug_mem_name("Ancestor: ", ancestor);
-		if (ancestor) {
-			atype = O42A(o42a_obj_type(O42A_ARGS ancestor));
-			if (atype->type.data.flags & O42A_OBJ_VOID) {
-				atype = NULL;
-				ancestor = NULL;
-			}
-		}
-	} else {
-		atype = ctr->ancestor_type;
-		if (atype) {
-			if (atype->type.data.flags & O42A_OBJ_VOID) {
-				atype = NULL;
-			} else {
-				ancestor = O42A(o42a_obj_by_data(
-						O42A_ARGS
-						&ctr->ancestor_type->type.data));
-			}
+	if (atype) {
+		if (atype->type.data.flags & O42A_OBJ_VOID) {
+			atype = NULL;
+		} else {
+			ancestor = O42A(o42a_obj_by_data(
+					O42A_ARGS
+					&ctr->ancestor_type->type.data));
 		}
 	}
 

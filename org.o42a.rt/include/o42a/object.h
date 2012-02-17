@@ -473,13 +473,6 @@ typedef struct o42a_obj_ctr {
 	o42a_obj_type_t *scope_type;
 
 	/**
-	 * Ancestor finder function.
-	 *
-	 * When NULL an ancestor_type should be used.
-	 */
-	o42a_obj_ref_ft *ancestor_f;
-
-	/**
 	 * Ancestor type.
 	 *
 	 * Ignored when ancestor_f specified.
