@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.FuncCOp;
 import org.o42a.backend.constant.code.signature.CSignature;
@@ -71,7 +73,7 @@ public final class FuncRecCDAlloc<F extends Func<F>>
 
 	@Override
 	protected FuncOp<F> op(OpBE<FuncOp<F>> backend, AllocClass allocClass) {
-		return new FuncCOp<F>(backend, allocClass, getSignature());
+		return new FuncCOp<F>(backend, allocRecStore(allocClass), getSignature());
 	}
 
 }

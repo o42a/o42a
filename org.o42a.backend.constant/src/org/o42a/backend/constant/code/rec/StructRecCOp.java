@@ -25,7 +25,6 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
@@ -38,18 +37,18 @@ public class StructRecCOp<S extends StructOp<S>>
 
 	public StructRecCOp(
 			OpBE<StructRecOp<S>> backend,
-			AllocClass allocClass,
+			RecStore store,
 			Type<S> type) {
-		super(backend, allocClass);
+		super(backend, store);
 		this.type = type;
 	}
 
 	public StructRecCOp(
 			OpBE<StructRecOp<S>> backend,
-			AllocClass allocClass,
+			RecStore store,
 			Type<S> type,
 			Ptr<StructRecOp<S>> constant) {
-		super(backend, allocClass, constant);
+		super(backend, store, constant);
 		this.type = type;
 	}
 

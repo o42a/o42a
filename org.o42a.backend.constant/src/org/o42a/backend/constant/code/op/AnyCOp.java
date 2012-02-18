@@ -19,7 +19,9 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
 
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -64,7 +66,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -85,7 +87,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -106,7 +108,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -127,7 +129,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -148,7 +150,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -169,7 +171,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -211,7 +213,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								part().underlying());
 					}
 				},
-				getAllocClass());
+				allocRecStore(getAllocClass()));
 	}
 
 	@Override
@@ -258,7 +260,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								getBackend().underlying(signature));
 					}
 				},
-				getAllocClass(),
+				allocRecStore(getAllocClass()),
 				signature);
 	}
 
@@ -284,7 +286,7 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 								getBackend().underlying(type));
 					}
 				},
-				getAllocClass(),
+				allocStructStore(getAllocClass()),
 				type));
 	}
 

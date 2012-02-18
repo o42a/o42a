@@ -28,7 +28,6 @@ import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -40,18 +39,18 @@ public final class FuncCOp<F extends Func<F>>
 
 	public FuncCOp(
 			OpBE<FuncOp<F>> backend,
-			AllocClass allocClass,
+			RecStore store,
 			Signature<F> signature) {
-		super(backend, allocClass);
+		super(backend, store);
 		this.signature = signature;
 	}
 
 	public FuncCOp(
 			OpBE<FuncOp<F>> backend,
-			AllocClass allocClass,
+			RecStore store,
 			Signature<F> signature,
 			Ptr<FuncOp<F>> constant) {
-		super(backend, allocClass, constant);
+		super(backend, store, constant);
 		this.signature = signature;
 	}
 
@@ -79,7 +78,7 @@ public final class FuncCOp<F extends Func<F>>
 								getBackend().underlying(signature));
 					}
 				},
-				getAllocClass(),
+				store(),
 				signature);
 	}
 

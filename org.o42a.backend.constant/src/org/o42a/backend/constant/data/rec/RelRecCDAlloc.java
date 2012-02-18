@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.RelRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -52,7 +54,7 @@ public final class RelRecCDAlloc extends RecCDAlloc<RelRec, RelRecOp, RelPtr> {
 
 	@Override
 	protected RelRecOp op(OpBE<RelRecOp> backend, AllocClass allocClass) {
-		return new RelRecCOp(backend, allocClass, getPointer());
+		return new RelRecCOp(backend, allocRecStore(allocClass), getPointer());
 	}
 
 }

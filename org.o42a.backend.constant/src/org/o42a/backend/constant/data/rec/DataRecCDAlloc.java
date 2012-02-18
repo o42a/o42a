@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.DataRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -54,7 +56,7 @@ public final class DataRecCDAlloc
 
 	@Override
 	protected DataRecOp op(OpBE<DataRecOp> backend, AllocClass allocClass) {
-		return new DataRecCOp(backend, allocClass, getPointer());
+		return new DataRecCOp(backend, allocRecStore(allocClass), getPointer());
 	}
 
 }

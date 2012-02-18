@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
@@ -204,7 +205,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 						return part().underlying().nullPtr(underlyingType);
 					}
 				},
-				CONSTANT_ALLOC_CLASS,
+				autoStructStore(),
 				originalType,
 				getBackend().getGenerator().getGlobals().nullPtr(
 						originalType)));

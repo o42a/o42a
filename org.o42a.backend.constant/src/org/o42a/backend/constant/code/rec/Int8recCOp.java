@@ -24,7 +24,6 @@ import org.o42a.backend.constant.code.op.Int8cOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Int8op;
 import org.o42a.codegen.code.op.Int8recOp;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
@@ -32,15 +31,15 @@ public final class Int8recCOp
 		extends RecCOp<Int8recOp, Int8op, Byte>
 		implements Int8recOp {
 
-	public Int8recCOp(OpBE<Int8recOp> backend, AllocClass allocClass) {
-		super(backend, allocClass);
+	public Int8recCOp(OpBE<Int8recOp> backend, RecStore store) {
+		super(backend, store);
 	}
 
 	public Int8recCOp(
 			OpBE<Int8recOp> backend,
-			AllocClass allocClass,
+			RecStore store,
 			Ptr<Int8recOp> constant) {
-		super(backend, allocClass, constant);
+		super(backend, store, constant);
 	}
 
 	@Override

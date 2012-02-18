@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.data.struct;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
@@ -41,24 +42,31 @@ public final class CStruct<S extends StructOp<S>>
 		extends PtrCOp<S, Ptr<S>>
 		implements StructWriter<S> {
 
+	private final StructStore store;
 	private final Type<S> type;
 
-	public CStruct(OpBE<S> backend, AllocClass allocClass, Type<S> type) {
-		this(backend, allocClass, type, null);
+	public CStruct(OpBE<S> backend, StructStore store, Type<S> type) {
+		this(backend, store, type, null);
 	}
 
 	public CStruct(
 			OpBE<S> backend,
-			AllocClass allocClass,
+			StructStore store,
 			Type<S> type,
 			Ptr<S> constant) {
-		super(backend, allocClass, constant);
+		super(backend, store != null ? store.getAllocClass() : null, constant);
 		this.type = type;
+		this.store = store != null ? store : allocStructStore(getAllocClass());
+		this.store.init(this);
 	}
 
 	@Override
 	public final Type<S> getType() {
 		return this.type;
+	}
+
+	public final StructStore store() {
+		return this.store;
 	}
 
 	@Override
@@ -71,7 +79,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<AnyRecOp>(id, cast(code)) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected AnyRecOp write() {
@@ -81,7 +88,7 @@ public final class CStruct<S extends StructOp<S>>
 								alloc.getUnderlying());
 					}
 				},
-				getAllocClass());
+				store().fieldStore(this, field));
 	}
 
 	@Override
@@ -107,7 +114,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Int8recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Int8recOp write() {
@@ -117,7 +123,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -144,7 +150,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Int16recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Int16recOp write() {
@@ -154,7 +159,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -181,7 +186,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Int32recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Int32recOp write() {
@@ -191,7 +195,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -218,7 +222,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Int64recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Int64recOp write() {
@@ -228,7 +231,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -255,7 +258,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Fp32recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Fp32recOp write() {
@@ -265,7 +267,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -292,7 +294,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<Fp64recOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected Fp64recOp write() {
@@ -302,7 +303,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -329,7 +330,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<AnyRecOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected AnyRecOp write() {
@@ -339,7 +339,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -366,7 +366,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<DataRecOp>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected DataRecOp write() {
@@ -376,7 +375,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -416,7 +415,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				field.getType(),
 				pointer);
 	}
@@ -454,7 +453,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				pointer);
 	}
 
@@ -486,7 +485,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<SS>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected SS write() {
@@ -496,7 +494,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld);
 					}
 				},
-				getAllocClass(),
+				store().subStore(this, field),
 				field.getType(),
 				pointer));
 	}
@@ -527,7 +525,6 @@ public final class CStruct<S extends StructOp<S>>
 				new OpBE<FuncOp<F>>(id, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
 					}
 					@Override
 					protected FuncOp<F> write() {
@@ -537,7 +534,7 @@ public final class CStruct<S extends StructOp<S>>
 								fld.getUnderlying());
 					}
 				},
-				getAllocClass(),
+				store().fieldStore(this, field),
 				field.getSignature(),
 				pointer);
 	}
@@ -582,7 +579,7 @@ public final class CStruct<S extends StructOp<S>>
 								getBackend().underlying(type));
 					}
 				},
-				getAllocClass(),
+				allocStructStore(getAllocClass()),
 				type,
 				null));
 	}

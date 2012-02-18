@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.code.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
@@ -29,7 +30,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
 import org.o42a.util.func.Getter;
@@ -40,12 +40,19 @@ public abstract class RecCOp<
 		O extends Op,
 		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
 
-	public RecCOp(OpBE<R> backend, AllocClass allocClass) {
-		super(backend, allocClass);
+	private final RecStore store;
+
+	public RecCOp(OpBE<R> backend, RecStore store) {
+		this(backend, store, null);
 	}
 
-	public RecCOp(OpBE<R> backend, AllocClass allocClass, Ptr<R> constant) {
-		super(backend, allocClass, constant);
+	public RecCOp(OpBE<R> backend, RecStore store, Ptr<R> constant) {
+		super(
+				backend,
+				store != null ? store.getAllocClass() : null,
+				constant);
+		this.store = store != null ? store : allocRecStore(getAllocClass());
+		this.store.init(this);
 	}
 
 	public final T getConstantValue() {
@@ -65,6 +72,10 @@ public abstract class RecCOp<
 		final Getter<T> value = alloc.getValue();
 
 		return value != null ? value.get() : null;
+	}
+
+	public final RecStore store() {
+		return this.store;
 	}
 
 	@Override
@@ -92,7 +103,7 @@ public abstract class RecCOp<
 				new OpBE<O>(derefId, ccode) {
 					@Override
 					public void prepare() {
-						use(backend());
+						store().load(RecCOp.this, this);
 					}
 					@Override
 					protected O write() {
@@ -112,9 +123,7 @@ public abstract class RecCOp<
 		new InstrBE(cast(code)) {
 			@Override
 			public void prepare() {
-				alwaysEmit();
-				use(backend());
-				use(cValue);
+				store().store(this, RecCOp.this, cValue.backend());
 			}
 			@Override
 			public String toString() {
