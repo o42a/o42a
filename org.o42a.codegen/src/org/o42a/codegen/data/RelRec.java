@@ -20,7 +20,9 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -56,6 +58,11 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 
 	public final void setNull() {
 		setValue(getPointer().relativeTo(getPointer()));
+	}
+
+	@Override
+	public RelRecOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.relPtr(id, code, this);
 	}
 
 	@Override

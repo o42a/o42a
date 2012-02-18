@@ -31,7 +31,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
@@ -71,18 +70,6 @@ public class LLStruct<S extends StructOp<S>>
 	@Override
 	public Type<S> getType() {
 		return this.type.getType();
-	}
-
-	@Override
-	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
-
-		final LLCode llvm = llvm(code);
-
-		return new AnyRecLLOp(
-				id,
-				getAllocClass(),
-				llvm.nextPtr(),
-				field(id, llvm, field));
 	}
 
 	@Override

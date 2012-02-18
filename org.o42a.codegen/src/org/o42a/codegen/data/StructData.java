@@ -20,6 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -50,6 +51,11 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	@Override
 	public final int getDataFlags() {
 		return getGlobal().getDataFlags() & DATA_FLAGS;
+	}
+
+	@Override
+	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.struct(id, code, getInstance());
 	}
 
 	@Override

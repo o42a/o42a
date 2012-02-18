@@ -19,7 +19,9 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -45,6 +47,11 @@ final class TypeData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	@Override
 	public int getDataFlags() {
 		return CONSTANT;
+	}
+
+	@Override
+	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

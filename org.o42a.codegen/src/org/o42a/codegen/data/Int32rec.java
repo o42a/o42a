@@ -22,7 +22,9 @@ package org.o42a.codegen.data;
 import static org.o42a.util.func.Holder.holder;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32recOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -59,6 +61,11 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 	public final Int32rec setValue(int value) {
 		setValue(holder(value));
 		return this;
+	}
+
+	@Override
+	public Int32recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.int32(id, code, this);
 	}
 
 	@Override

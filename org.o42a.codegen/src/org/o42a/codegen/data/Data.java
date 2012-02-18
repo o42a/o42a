@@ -21,7 +21,9 @@ package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -74,6 +76,8 @@ public abstract class Data<P extends PtrOp<P>> implements DataAttributes {
 	public final DataLayout getLayout() {
 		return getAllocation().getLayout();
 	}
+
+	public abstract P fieldOf(CodeId id, Code code, StructOp<?> struct);
 
 	@Override
 	public String toString() {

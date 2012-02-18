@@ -20,8 +20,10 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -58,6 +60,11 @@ public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 	@Override
 	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr());
+	}
+
+	@Override
+	public AnyRecOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.ptr(id, code, this);
 	}
 
 	@Override

@@ -20,10 +20,9 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -70,6 +69,11 @@ public final class FuncRec<F extends Func<F>>
 
 	public final void setNull() {
 		setValue(getGenerator().getFunctions().nullPtr(getSignature()));
+	}
+
+	@Override
+	public FuncOp<F> fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.func(id, code, this);
 	}
 
 	@Override

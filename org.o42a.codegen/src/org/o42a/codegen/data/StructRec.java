@@ -20,6 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.backend.DataAllocator;
@@ -66,6 +67,11 @@ public final class StructRec<S extends StructOp<S>>
 	@Override
 	public final void setNull() {
 		setValue(getGenerator().getGlobals().nullPtr(getType()));
+	}
+
+	@Override
+	public StructRecOp<S> fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.ptr(id, code, this);
 	}
 
 	@Override

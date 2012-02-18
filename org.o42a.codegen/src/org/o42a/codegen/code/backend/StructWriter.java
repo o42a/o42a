@@ -30,8 +30,6 @@ public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 
 	Type<S> getType();
 
-	AnyRecOp field(CodeId id, Code code, Data<?> field);
-
 	Int8recOp int8(CodeId id, Code code, Int8rec field);
 
 	Int16recOp int16(CodeId id, Code code, Int16rec field);

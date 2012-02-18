@@ -20,6 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -61,6 +62,11 @@ final class TypeInstanceData<S extends StructOp<S>>
 		}
 
 		return global.getDataFlags() & DATA_FLAGS;
+	}
+
+	@Override
+	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.struct(id, code, getInstance());
 	}
 
 	@Override

@@ -55,10 +55,10 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
-			final RecOp<?, ?> fieldOp =
-					writer().field(getId().sub(field.getId()), code, field);
+			final CodeId fieldId = fieldId(null, code, field);
+			final PtrOp<?> fieldPtr = field.fieldOf(fieldId, code, this);
 
-			fieldOp.allocated(code, this);
+			fieldPtr.allocated(code, this);
 		}
 	}
 
@@ -80,6 +80,78 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 	@Override
 	public final S offset(CodeId id, Code code, IntOp<?> index) {
 		return writer().offset(id, code, index);
+	}
+
+	public final Int8recOp int8(CodeId id, Code code, Int8rec field) {
+		return writer().int8(fieldId(id, code, field), code, field);
+	}
+
+	public final Int16recOp int16(
+			CodeId id,
+			Code code,
+			Int16rec field) {
+		return writer().int16(fieldId(id, code, field), code, field);
+	}
+
+	public final Int32recOp int32(
+			CodeId id,
+			Code code,
+			Int32rec field) {
+		return writer().int32(fieldId(id, code, field), code, field);
+	}
+
+	public final Int64recOp int64(
+			CodeId id,
+			Code code,
+			Int64rec field) {
+		return writer().int64(fieldId(id, code, field), code, field);
+	}
+
+	public final Fp32recOp fp32(CodeId id, Code code, Fp32rec field) {
+		return writer().fp32(fieldId(id, code, field), code, field);
+	}
+
+	public final Fp64recOp fp64(CodeId id, Code code, Fp64rec field) {
+		return writer().fp64(fieldId(id, code, field), code, field);
+	}
+
+	public final AnyRecOp ptr(CodeId id, Code code, AnyRec field) {
+		return writer().ptr(fieldId(id, code, field), code, field);
+	}
+
+	public final DataRecOp ptr(CodeId id, Code code, DataRec field) {
+		return writer().ptr(fieldId(id, code, field), code, field);
+	}
+
+	public final <SS extends StructOp<SS>> StructRecOp<SS> ptr(
+			CodeId id,
+			Code code,
+			StructRec<SS> field) {
+		return writer().ptr(fieldId(id, code, field), code, field);
+	}
+
+	public final RelRecOp relPtr(
+			CodeId id,
+			Code code,
+			RelRec field) {
+		return writer().relPtr(fieldId(id, code, field), code, field);
+	}
+
+	public final <SS extends StructOp<SS>> SS struct(
+			CodeId id,
+			Code code,
+			Type<SS> field) {
+		return writer().struct(
+				fieldId(id, code, field.data(code.getGenerator()).getId()),
+				code,
+				field);
+	}
+
+	public final <F extends Func<F>> FuncOp<F> func(
+			CodeId id,
+			Code code,
+			FuncRec<F> field) {
+		return writer().func(fieldId(id, code, field), code, field);
 	}
 
 	@Override
@@ -108,82 +180,6 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 		}
 
 		return id.toString();
-	}
-
-	protected final RecOp<?, ?> field(CodeId id, Code code, Data<?> field) {
-		return writer().field(fieldId(id, code, field), code, field);
-	}
-
-	protected final Int8recOp int8(CodeId id, Code code, Int8rec field) {
-		return writer().int8(fieldId(id, code, field), code, field);
-	}
-
-	protected final Int16recOp int16(
-			CodeId id,
-			Code code,
-			Int16rec field) {
-		return writer().int16(fieldId(id, code, field), code, field);
-	}
-
-	protected final Int32recOp int32(
-			CodeId id,
-			Code code,
-			Int32rec field) {
-		return writer().int32(fieldId(id, code, field), code, field);
-	}
-
-	protected final Int64recOp int64(
-			CodeId id,
-			Code code,
-			Int64rec field) {
-		return writer().int64(fieldId(id, code, field), code, field);
-	}
-
-	protected final Fp32recOp fp32(CodeId id, Code code, Fp32rec field) {
-		return writer().fp32(fieldId(id, code, field), code, field);
-	}
-
-	protected final Fp64recOp fp64(CodeId id, Code code, Fp64rec field) {
-		return writer().fp64(fieldId(id, code, field), code, field);
-	}
-
-	protected final AnyRecOp ptr(CodeId id, Code code, AnyRec field) {
-		return writer().ptr(fieldId(id, code, field), code, field);
-	}
-
-	protected final DataRecOp ptr(CodeId id, Code code, DataRec field) {
-		return writer().ptr(fieldId(id, code, field), code, field);
-	}
-
-	protected final <SS extends StructOp<SS>> StructRecOp<SS> ptr(
-			CodeId id,
-			Code code,
-			StructRec<SS> field) {
-		return writer().ptr(fieldId(id, code, field), code, field);
-	}
-
-	protected final RelRecOp relPtr(
-			CodeId id,
-			Code code,
-			RelRec field) {
-		return writer().relPtr(fieldId(id, code, field), code, field);
-	}
-
-	protected final <SS extends StructOp<SS>> SS struct(
-			CodeId id,
-			Code code,
-			Type<SS> field) {
-		return writer().struct(
-				fieldId(id, code, field.data(code.getGenerator()).getId()),
-				code,
-				field);
-	}
-
-	protected final <F extends Func<F>> FuncOp<F> func(
-			CodeId id,
-			Code code,
-			FuncRec<F> field) {
-		return writer().func(fieldId(id, code, field), code, field);
 	}
 
 	protected CodeId fieldId(Code code, CodeId local) {
