@@ -22,9 +22,7 @@ package org.o42a.backend.constant.code.op;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
@@ -69,10 +67,6 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	@Override
 	public final T getConstant() {
 		return this.constant;
-	}
-
-	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override

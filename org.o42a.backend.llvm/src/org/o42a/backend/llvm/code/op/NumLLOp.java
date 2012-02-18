@@ -22,11 +22,9 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
-import org.o42a.codegen.code.op.StructOp;
 
 
 public abstract class NumLLOp<O extends NumOp<O>, T extends O>
@@ -55,10 +53,6 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	@Override
 	public final long getNativePtr() {
 		return this.nativePtr;
-	}
-
-	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override
