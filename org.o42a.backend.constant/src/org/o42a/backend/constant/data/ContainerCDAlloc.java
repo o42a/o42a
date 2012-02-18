@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.data;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
 
 import java.util.ArrayList;
 
@@ -148,7 +149,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 								part().underlying());
 					}
 				},
-				allocClass,
+				allocStructStore(allocClass),
 				type,
 				getPointer()));
 	}

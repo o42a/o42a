@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int16recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -51,6 +53,6 @@ public final class Int16cdAlloc
 
 	@Override
 	protected Int16recOp op(OpBE<Int16recOp> backend, AllocClass allocClass) {
-		return new Int16recCOp(backend, allocClass, getPointer());
+		return new Int16recCOp(backend, allocRecStore(allocClass), getPointer());
 	}
 }

@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int64recCOp;
 import org.o42a.backend.constant.data.AnyCDAlloc;
@@ -79,7 +81,7 @@ public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {
 
 	@Override
 	protected Int64recOp op(OpBE<Int64recOp> backend, AllocClass allocClass) {
-		return new Int64recCOp(backend, allocClass, getPointer());
+		return new Int64recCOp(backend, allocRecStore(allocClass), getPointer());
 	}
 
 	private static final class UnderlyingNativePtr implements Getter<Ptr<AnyOp>> {

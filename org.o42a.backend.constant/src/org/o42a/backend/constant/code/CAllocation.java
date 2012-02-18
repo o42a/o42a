@@ -19,8 +19,9 @@
 */
 package org.o42a.backend.constant.code;
 
+import static org.o42a.backend.constant.code.rec.RecStore.autoRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
+import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
@@ -66,7 +67,7 @@ public final class CAllocation
 								getId());
 					}
 				},
-				AUTO_ALLOC_CLASS);
+				autoRecStore());
 	}
 
 	@Override
@@ -94,7 +95,7 @@ public final class CAllocation
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
 				},
-				AUTO_ALLOC_CLASS,
+				autoRecStore(),
 				typeAlloc.getType());
 	}
 
@@ -124,7 +125,7 @@ public final class CAllocation
 								typeAlloc.getUnderlyingPtr().getAllocation());
 					}
 				},
-				AUTO_ALLOC_CLASS,
+				autoStructStore(),
 				type));
 	}
 

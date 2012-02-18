@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
+import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -69,7 +70,7 @@ public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 								getBackend().underlying(type));
 					}
 				},
-				getAllocClass(),
+				allocStructStore(getAllocClass()),
 				type));
 	}
 

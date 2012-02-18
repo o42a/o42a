@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.Int8recCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -50,7 +52,7 @@ public final class Int8cdAlloc extends RecCDAlloc<Int8rec, Int8recOp, Byte> {
 
 	@Override
 	protected Int8recOp op(OpBE<Int8recOp> backend, AllocClass allocClass) {
-		return new Int8recCOp(backend, allocClass, getPointer());
+		return new Int8recCOp(backend, allocRecStore(allocClass), getPointer());
 	}
 
 }

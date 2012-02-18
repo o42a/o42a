@@ -288,17 +288,17 @@ public class CFunction<F extends Func<F>>
 		}
 	}
 
+	@Override
+	protected CBlockPart createFirstBlock() {
+		return new CFunctionPart<F>(this);
+	}
+
 	private void emit() {
 		this.status = 1;
 		prepare();
 		reveal();
 		getUnderlying().done();
 		clear();
-	}
-
-	@Override
-	protected CBlockPart createFirstBlock() {
-		return new CFunctionPart<F>(this);
 	}
 
 	private Function<F> createUnderlying() {

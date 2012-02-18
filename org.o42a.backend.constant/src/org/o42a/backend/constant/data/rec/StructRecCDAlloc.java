@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.constant.data.rec;
 
+import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
+
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
@@ -78,7 +80,7 @@ public final class StructRecCDAlloc<S extends StructOp<S>>
 			AllocClass allocClass) {
 		return new StructRecCOp<S>(
 				backend,
-				allocClass,
+				allocRecStore(allocClass),
 				getType(),
 				getPointer());
 	}
