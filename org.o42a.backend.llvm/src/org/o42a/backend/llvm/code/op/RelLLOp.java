@@ -25,11 +25,9 @@ import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.code.op.RelOp;
-import org.o42a.codegen.code.op.StructOp;
 
 
 public final class RelLLOp implements LLOp<RelOp>, RelOp {
@@ -57,10 +55,6 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 	@Override
 	public long getNativePtr() {
 		return this.nativePtr;
-	}
-
-	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override

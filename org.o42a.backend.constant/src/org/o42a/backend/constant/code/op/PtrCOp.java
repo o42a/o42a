@@ -27,6 +27,7 @@ import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
@@ -72,17 +73,7 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	}
 
 	@Override
-	public final void returnValue(Block code) {
-		new ReturnBE(cast(code).nextPart()) {
-			@Override
-			public void prepare() {
-				use(backend());
-			}
-			@Override
-			protected void emit() {
-				backend().underlying().returnValue(part().underlying());
-			}
-		};
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override
@@ -194,6 +185,20 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 					}
 				},
 				getAllocClass());
+	}
+
+	@Override
+	public final void returnValue(Block code) {
+		new ReturnBE(cast(code).nextPart()) {
+			@Override
+			public void prepare() {
+				use(backend());
+			}
+			@Override
+			protected void emit() {
+				backend().underlying().returnValue(part().underlying());
+			}
+		};
 	}
 
 }
