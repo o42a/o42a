@@ -28,6 +28,7 @@
 #include "llvm/Module.h"
 #include "llvm/Value.h"
 #include "llvm/Support/IRBuilder.h"
+#include "llvm/Target/TargetData.h"
 
 using namespace llvm;
 
@@ -261,10 +262,14 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocatePtr(
 		jint idLen) {
 
 	MAKE_BUILDER;
-	Value *result = builder.CreateAlloca(
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
+			builder.GetInsertBlock()->getParent()->getParent());
+	AllocaInst *result = builder.CreateAlloca(
 			builder.getInt8PtrTy(),
 			0,
 			StringRef(from_ptr<char>(id), idLen));
+
+	result->setAlignment(module->getTargetData().getPointerPrefAlignment());
 
 	return to_ptr<Value>(result);
 }
@@ -279,11 +284,15 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStructPtr(
 		jlong typePtr) {
 
 	MAKE_BUILDER;
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
+			builder.GetInsertBlock()->getParent()->getParent());
 	Type *type = from_ptr<Type>(typePtr);
-	Value *result = builder.CreateAlloca(
+	AllocaInst *result = builder.CreateAlloca(
 			type->getPointerTo(),
 			0,
 			StringRef(from_ptr<char>(id), idLen));
+
+	result->setAlignment(module->getTargetData().getPointerPrefAlignment());
 
 	return to_ptr<Value>(result);
 }
@@ -298,11 +307,15 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_allocateStruct(
 		jlong typePtr) {
 
 	MAKE_BUILDER;
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
+			builder.GetInsertBlock()->getParent()->getParent());
 	Type *type = from_ptr<Type>(typePtr);
-	Value *result = builder.CreateAlloca(
+	AllocaInst *result = builder.CreateAlloca(
 			type,
 			0,
 			StringRef(from_ptr<char>(id), idLen));
+
+	result->setAlignment(module->getTargetData().getPrefTypeAlignment(type));
 
 	return to_ptr<Value>(result);
 }
