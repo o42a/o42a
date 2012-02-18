@@ -19,11 +19,14 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.codegen.code.op.Op;
 
 
-public interface COp<U extends Op, T> extends Op {
+public interface COp<U extends Op, T> extends Op, UserInfo {
 
 	CCodePart<?> part();
 
@@ -36,5 +39,10 @@ public interface COp<U extends Op, T> extends Op {
 	U create(OpBE<U> backend, T constant);
 
 	OpBE<U> backend();
+
+	void useBy(UserInfo user);
+
+	@Override
+	User<SimpleUsage> toUser();
 
 }

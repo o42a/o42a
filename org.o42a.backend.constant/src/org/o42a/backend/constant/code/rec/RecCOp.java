@@ -22,6 +22,8 @@ package org.o42a.backend.constant.code.rec;
 import static org.o42a.backend.constant.code.rec.RecStore.allocRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.*;
@@ -41,6 +43,7 @@ public abstract class RecCOp<
 		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
 
 	private final RecStore store;
+	private final Usable<SimpleUsage> explicitUses;
 
 	public RecCOp(OpBE<R> backend, RecStore store) {
 		this(backend, store, null);
@@ -52,7 +55,7 @@ public abstract class RecCOp<
 				store != null ? store.getAllocClass() : null,
 				constant);
 		this.store = store != null ? store : allocRecStore(getAllocClass());
-		this.store.init(this);
+		this.explicitUses = this.store.init(this, allUses());
 	}
 
 	public final T getConstantValue() {
@@ -120,7 +123,7 @@ public abstract class RecCOp<
 
 		final COp<O, ?> cValue = cast(value);
 
-		new InstrBE(cast(code)) {
+		new BaseInstrBE(cast(code)) {
 			@Override
 			public void prepare() {
 				store().store(this, RecCOp.this, cValue.backend());
@@ -136,6 +139,11 @@ public abstract class RecCOp<
 						cValue.backend().underlying());
 			}
 		};
+	}
+
+	@Override
+	protected final Usable<SimpleUsage> explicitUses() {
+		return this.explicitUses;
 	}
 
 	protected abstract O loaded(OpBE<O> backend, T constant);

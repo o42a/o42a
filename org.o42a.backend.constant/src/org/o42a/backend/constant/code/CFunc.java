@@ -67,7 +67,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final void call(final Code code, final Op... args) {
-		new InstrBE(cast(code)) {
+		new BaseInstrBE(cast(code)) {
 			@Override
 			public void prepare() {
 				if (hasSideEffects()) {

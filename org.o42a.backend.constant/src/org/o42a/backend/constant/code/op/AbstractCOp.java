@@ -19,6 +19,10 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
+
+import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
@@ -29,6 +33,7 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 
 	private final OpBE<U> backend;
 	private final T constant;
+	private final Usable<SimpleUsage> allUses;
 
 	public AbstractCOp(OpBE<U> backend) {
 		this(backend, null);
@@ -37,6 +42,7 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	public AbstractCOp(OpBE<U> backend, T constant) {
 		this.backend = backend;
 		this.constant = constant;
+		this.allUses = simpleUsable(this);
 		this.backend.init(this);
 	}
 
@@ -75,11 +81,29 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	}
 
 	@Override
+	public final void useBy(UserInfo user) {
+		explicitUses().useBy(user, SIMPLE_USAGE);
+	}
+
+	@Override
+	public final User<SimpleUsage> toUser() {
+		return allUses().toUser();
+	}
+
+	@Override
 	public String toString() {
 		if (this.backend == null) {
 			return super.toString();
 		}
 		return this.backend.toString();
+	}
+
+	protected final Usable<SimpleUsage> allUses() {
+		return this.allUses;
+	}
+
+	protected Usable<SimpleUsage> explicitUses() {
+		return allUses();
 	}
 
 }

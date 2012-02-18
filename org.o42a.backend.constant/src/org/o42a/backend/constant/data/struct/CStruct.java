@@ -22,6 +22,8 @@ package org.o42a.backend.constant.data.struct;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.OpBE;
@@ -43,6 +45,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	private final StructStore store;
 	private final Type<S> type;
+	private final Usable<SimpleUsage> explicitUses;
 
 	public CStruct(OpBE<S> backend, StructStore store, Type<S> type) {
 		this(backend, store, type, null);
@@ -56,7 +59,7 @@ public final class CStruct<S extends StructOp<S>>
 		super(backend, store != null ? store.getAllocClass() : null, constant);
 		this.type = type;
 		this.store = store != null ? store : allocStructStore(getAllocClass());
-		this.store.init(this);
+		this.explicitUses = this.store.init(this, allUses());
 	}
 
 	@Override
@@ -564,6 +567,11 @@ public final class CStruct<S extends StructOp<S>>
 	@Override
 	public S create(OpBE<S> backend, Ptr<S> constant) {
 		return getType().op(new CStruct<S>(backend, null, getType(), constant));
+	}
+
+	@Override
+	protected final Usable<SimpleUsage> explicitUses() {
+		return this.explicitUses;
 	}
 
 }

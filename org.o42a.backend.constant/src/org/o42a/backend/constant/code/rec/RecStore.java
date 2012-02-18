@@ -21,6 +21,8 @@ package org.o42a.backend.constant.code.rec;
 
 import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.code.op.Op;
@@ -73,6 +75,15 @@ public abstract class RecStore {
 		return String.valueOf(this.allocClass);
 	}
 
-	protected abstract void init(RecCOp<?, ?, ?> rec);
+	protected abstract Usable<SimpleUsage> init(
+			RecCOp<?, ?, ?> rec,
+			Usable<SimpleUsage> allUses);
+
+	protected static final Usable<SimpleUsage> init(
+			RecStore store,
+			RecCOp<?, ?, ?> rec,
+			Usable<SimpleUsage> allUses) {
+		return store.init(rec, allUses);
+	}
 
 }

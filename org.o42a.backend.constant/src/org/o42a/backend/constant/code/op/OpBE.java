@@ -19,6 +19,9 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
@@ -56,6 +59,16 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 			this + " not emitted yet ";
 
 		return this.underlying;
+	}
+
+	@Override
+	public final User<SimpleUsage> toUser() {
+		return this.op.toUser();
+	}
+
+	@Override
+	public final void useBy(UserInfo user) {
+		this.op.useBy(user);
 	}
 
 	@Override

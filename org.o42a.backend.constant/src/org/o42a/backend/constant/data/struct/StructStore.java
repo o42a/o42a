@@ -19,11 +19,11 @@
 */
 package org.o42a.backend.constant.data.struct;
 
-import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
-
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.rec.RecStore;
 import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Rec;
 import org.o42a.codegen.data.Type;
 
 
@@ -42,7 +42,7 @@ public abstract class StructStore {
 	}
 
 	public static StructStore autoStructStore() {
-		return allocStructStore(AUTO_ALLOC_CLASS);
+		return new AutoStructStore();
 	}
 
 	public static StructStore allocStructStore(AllocClass allocClass) {
@@ -59,7 +59,7 @@ public abstract class StructStore {
 		return this.allocClass;
 	}
 
-	public abstract RecStore fieldStore(CStruct<?> struct, Data<?> field);
+	public abstract RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field);
 
 	public abstract StructStore subStore(CStruct<?> struct, Type<?> field);
 
@@ -68,6 +68,8 @@ public abstract class StructStore {
 		return String.valueOf(this.allocClass);
 	}
 
-	protected abstract void init(CStruct<?> struct);
+	protected abstract Usable<SimpleUsage> init(
+			CStruct<?> struct,
+			Usable<SimpleUsage> allUses);
 
 }

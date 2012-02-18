@@ -20,23 +20,17 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
-import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.analysis.use.*;
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.backend.constant.ConstGenerator;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.ConstBackend;
 
 
 public abstract class AbstractBE implements UserInfo {
-
-	private final Usable<SimpleUsage> uses;
-
-	public AbstractBE() {
-		this.uses = simpleUsable(this);
-	}
 
 	private final ConstBackend getBackend() {
 		return part().code().getBackend();
@@ -55,23 +49,19 @@ public abstract class AbstractBE implements UserInfo {
 	public abstract void prepare();
 
 	public final void reveal() {
-		if (this.uses.isUsed(getAnalyzer(), ALL_SIMPLE_USAGES)) {
+		if (toUser().isUsed(getAnalyzer(), ALL_SIMPLE_USAGES)) {
 			emit();
 		}
 	}
 
 	@Override
-	public final User<?> toUser() {
-		return this.uses.toUser();
-	}
+	public abstract User<SimpleUsage> toUser();
 
 	public final void alwaysEmit() {
 		useBy(getAnalyzer());
 	}
 
-	public final void useBy(UserInfo user) {
-		this.uses.useBy(user, SIMPLE_USAGE);
-	}
+	public abstract void useBy(UserInfo user);
 
 	public final <BE extends AbstractBE> BE use(BE backend) {
 		backend.useBy(this);
