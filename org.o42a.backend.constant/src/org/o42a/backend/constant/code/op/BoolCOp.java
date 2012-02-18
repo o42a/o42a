@@ -19,8 +19,11 @@
 */
 package org.o42a.backend.constant.code.op;
 
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.ReturnBE;
@@ -37,6 +40,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 	private final OpBE<BoolOp> backend;
 	private final Boolean constant;
+	private final Usable<SimpleUsage> allUses;
 
 	public BoolCOp(OpBE<BoolOp> backend) {
 		this(backend, null);
@@ -45,12 +49,12 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	public BoolCOp(OpBE<BoolOp> backend, Boolean constant) {
 		this.backend = backend;
 		this.constant = constant;
+		this.allUses = simpleUsable(this);
 		this.backend.init(this);
 	}
 
 	public BoolCOp(CodeId id, CCode<?> code, boolean constant) {
-		this.backend = new BoolConstBE(id, code, constant);
-		this.constant = constant;
+		this(new BoolConstBE(id, code, constant), constant);
 	}
 
 	@Override
@@ -146,6 +150,16 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	@Override
 	public BoolOp create(OpBE<BoolOp> backend, Boolean constant) {
 		return new BoolCOp(backend, constant);
+	}
+
+	@Override
+	public final void useBy(UserInfo user) {
+		this.allUses.useBy(user, SIMPLE_USAGE);
+	}
+
+	@Override
+	public User<SimpleUsage> toUser() {
+		return this.allUses.toUser();
 	}
 
 	@Override

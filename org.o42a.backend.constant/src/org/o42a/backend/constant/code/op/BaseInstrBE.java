@@ -17,44 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code.rec;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.analysis.use.SimpleUsage;
-import org.o42a.analysis.use.Usable;
-import org.o42a.backend.constant.code.op.InstrBE;
-import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.data.AllocClass;
+import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
+import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
+
+import org.o42a.analysis.use.*;
+import org.o42a.backend.constant.code.CCode;
 
 
-final class AllocRecStore extends RecStore {
+public abstract class BaseInstrBE extends InstrBE {
 
-	AllocRecStore(AllocClass allocClass) {
-		super(allocClass);
+	private final Usable<SimpleUsage> uses;
+
+	public BaseInstrBE(CCode<?> code) {
+		super(code);
+		this.uses = simpleUsable(this);
 	}
 
 	@Override
-	public <O extends Op> void store(
-			InstrBE instr,
-			RecCOp<?, O, ?> rec,
-			OpBE<O> value) {
-		instr.alwaysEmit();
-		instr.use(rec);
-		instr.use(value);
+	public User<SimpleUsage> toUser() {
+		return this.uses.toUser();
 	}
 
 	@Override
-	public <O extends Op> void load(
-			RecCOp<?, O, ?> rec,
-			OpBE<O> value) {
-		value.use(rec);
-	}
-
-	@Override
-	protected Usable<SimpleUsage> init(
-			RecCOp<?, ?, ?> rec,
-			Usable<SimpleUsage> allUses) {
-		return allUses;
+	public void useBy(UserInfo user) {
+		this.uses.useBy(user, SIMPLE_USAGE);
 	}
 
 }

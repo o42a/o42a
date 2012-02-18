@@ -23,7 +23,7 @@ import static org.o42a.backend.constant.code.rec.RecStore.autoRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 
-import org.o42a.backend.constant.code.op.InstrBE;
+import org.o42a.backend.constant.code.op.BaseInstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
@@ -134,7 +134,7 @@ public final class CAllocation
 
 		final CInsetPart<AllocationCode> allocPart = nextPart();
 
-		new InstrBE(cast(writer)) {
+		new BaseInstrBE(cast(writer)) {
 			@Override
 			public void prepare() {
 				alwaysEmit();

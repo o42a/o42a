@@ -19,13 +19,15 @@
 */
 package org.o42a.backend.constant.data.struct;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.rec.RecCOp;
 import org.o42a.backend.constant.code.rec.RecStore;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Rec;
 import org.o42a.codegen.data.Type;
 
 
@@ -36,7 +38,7 @@ final class AllocStructStore extends StructStore {
 	}
 
 	@Override
-	public RecStore fieldStore(CStruct<?> struct, Data<?> field) {
+	public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
 		return new FieldStore(getAllocClass(), struct);
 	}
 
@@ -46,17 +48,20 @@ final class AllocStructStore extends StructStore {
 	}
 
 	@Override
-	protected void init(CStruct<?> struct) {
+	protected final Usable<SimpleUsage> init(
+			CStruct<?> struct,
+			Usable<SimpleUsage> allUses) {
+		return allUses;
 	}
 
 	private static final class FieldStore extends RecStore {
 
-		private final CStruct<?> struct;
+		private final CStruct<?> enclosing;
 		private final RecStore recStore;
 
 		FieldStore(AllocClass allocClass, CStruct<?> struct) {
 			super(allocClass);
-			this.struct = struct;
+			this.enclosing = struct;
 			this.recStore = allocRecStore(allocClass);
 		}
 
@@ -74,25 +79,28 @@ final class AllocStructStore extends StructStore {
 		}
 
 		@Override
-		protected void init(RecCOp<?, ?, ?> rec) {
-			rec.backend().use(this.struct);
+		protected Usable<SimpleUsage> init(
+				RecCOp<?, ?, ?> rec,
+				Usable<SimpleUsage> allUses) {
+			this.enclosing.useBy(allUses);
+			return init(this.recStore, rec, allUses);
 		}
 
 	}
 
 	private static final class SubStore extends StructStore {
 
-		private final CStruct<?> struct;
+		private final CStruct<?> enclosing;
 		private final AllocStructStore structStore;
 
-		SubStore(AllocStructStore allocStore, CStruct<?> struct) {
+		SubStore(AllocStructStore allocStore, CStruct<?> enclosing) {
 			super(allocStore.getAllocClass());
-			this.struct = struct;
+			this.enclosing = enclosing;
 			this.structStore = allocStore;
 		}
 
 		@Override
-		public RecStore fieldStore(CStruct<?> struct, Data<?> field) {
+		public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
 			return this.structStore.fieldStore(struct, field);
 		}
 
@@ -102,8 +110,11 @@ final class AllocStructStore extends StructStore {
 		}
 
 		@Override
-		protected void init(CStruct<?> struct) {
-			struct.backend().use(this.struct);
+		protected Usable<SimpleUsage> init(
+				CStruct<?> struct,
+				Usable<SimpleUsage> allUses) {
+			struct.backend().use(this.enclosing);
+			return allUses;
 		}
 
 	}

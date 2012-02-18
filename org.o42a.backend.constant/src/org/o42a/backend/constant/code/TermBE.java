@@ -19,6 +19,9 @@
 */
 package org.o42a.backend.constant.code;
 
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
 import org.o42a.backend.constant.code.op.AbstractBE;
 
 
@@ -28,7 +31,6 @@ public abstract class TermBE extends AbstractBE {
 
 	TermBE(CBlockPart part) {
 		this.part = part.terminate(this);
-		alwaysEmit();
 	}
 
 	@Override
@@ -40,5 +42,14 @@ public abstract class TermBE extends AbstractBE {
 
 	@Override
 	public abstract void prepare();
+
+	@Override
+	public final User<SimpleUsage> toUser() {
+		return getAnalyzer().toUseCase();
+	}
+
+	@Override
+	public void useBy(UserInfo user) {
+	}
 
 }
