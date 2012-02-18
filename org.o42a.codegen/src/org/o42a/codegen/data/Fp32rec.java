@@ -22,7 +22,9 @@ package org.o42a.codegen.data;
 import static org.o42a.util.func.Holder.holder;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp32recOp;
+import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
@@ -59,6 +61,11 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	public final Fp32rec setValue(float value) {
 		setValue(holder(value));
 		return this;
+	}
+
+	@Override
+	public Fp32recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		return struct.fp32(id, code, this);
 	}
 
 	@Override

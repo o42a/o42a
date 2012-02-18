@@ -119,6 +119,8 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			if (enclosing == null) {
 				name(code).store(code, code.nullPtr());
 				enclosing(code).store(code, code.nullRelPtr());
+				typeCode(code).store(code, code.int32(0));
+				typeInfo(code).store(code, code.nullPtr());
 			} else {
 
 				final CodeId fieldName = getType().codeId(generator);
@@ -129,19 +131,24 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 								generator.id("DEBUG").sub("field_name")
 								.sub(fieldName),
 								fieldName.toString()).op(null, code));
+
+				final Type<?> enclosingType = enclosing.getType();
+
 				enclosing(code).store(
 						code,
-						getType().pointer(generator).relativeTo(
-								enclosing.getType().pointer(
-										generator)).op(null, code));
+						getType()
+						.pointer(generator)
+						.relativeTo(enclosingType.pointer(generator))
+						.op(null, code));
+
+				final DebugTypeInfo typeInfo =
+						debug.typeInfo(enclosing.getType());
+
+				typeCode(code).store(code, code.int32(typeInfo.getCode()));
+				typeInfo(code).store(
+						code,
+						typeInfo.pointer(generator).toAny().op(null, code));
 			}
-
-			final DebugTypeInfo typeInfo = debug.typeInfo(getType());
-
-			typeCode(code).store(code, code.int32(typeInfo.getCode()));
-			typeInfo(code).store(
-					code,
-					typeInfo.pointer(generator).toAny().op(null, code));
 
 			super.allocated(code, enclosing);
 		}

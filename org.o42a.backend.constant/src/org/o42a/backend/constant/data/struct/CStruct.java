@@ -27,7 +27,6 @@ import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.PtrCOp;
 import org.o42a.backend.constant.code.rec.*;
-import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
 import org.o42a.codegen.CodeId;
@@ -67,28 +66,6 @@ public final class CStruct<S extends StructOp<S>>
 
 	public final StructStore store() {
 		return this.store;
-	}
-
-	@Override
-	public AnyRecOp field(CodeId id, Code code, Data<?> field) {
-
-		final CDAlloc<?, ?> alloc =
-				(CDAlloc<?, ?>) field.getPointer().getAllocation();
-
-		return new AnyRecCOp(
-				new OpBE<AnyRecOp>(id, cast(code)) {
-					@Override
-					public void prepare() {
-					}
-					@Override
-					protected AnyRecOp write() {
-						return backend().underlying().writer().field(
-								getId(),
-								part().underlying(),
-								alloc.getUnderlying());
-					}
-				},
-				store().fieldStore(this, field));
 	}
 
 	@Override

@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
@@ -54,6 +56,11 @@ final class GlobalInstanceData<S extends StructOp<S>>
 	@Override
 	public final int getDataFlags() {
 		return getGlobal().getDataFlags() & DATA_FLAGS;
+	}
+
+	@Override
+	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
