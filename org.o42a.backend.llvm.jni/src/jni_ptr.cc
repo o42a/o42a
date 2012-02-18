@@ -28,7 +28,6 @@
 #include "llvm/Module.h"
 #include "llvm/Value.h"
 #include "llvm/Support/IRBuilder.h"
-#include "llvm/Target/TargetData.h"
 
 using namespace llvm;
 
@@ -69,17 +68,10 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		jlong pointerPtr) {
 
 	MAKE_BUILDER;
-	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
-			builder.GetInsertBlock()->getParent()->getParent());
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	LoadInst *result = builder.CreateLoad(
 			pointer,
 			StringRef(from_ptr<char>(id), idLen));
-	PointerType *type = static_cast<PointerType*>(pointer->getType());
-
-	result->setAlignment(
-			module->getTargetData().getABITypeAlignment(
-					type->getElementType()));
 
 	return to_ptr<Value>(result);
 }
@@ -93,16 +85,9 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		jlong valuePtr) {
 
 	MAKE_BUILDER;
-	o42ac::BackendModule *module = static_cast<o42ac::BackendModule*>(
-			builder.GetInsertBlock()->getParent()->getParent());
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	StoreInst *result = builder.CreateStore(value, pointer);
-	PointerType *type = static_cast<PointerType*>(pointer->getType());
-
-	result->setAlignment(
-			module->getTargetData().getABITypeAlignment(
-					type->getElementType()));
 
 	return to_ptr<Value>(result);
 }
