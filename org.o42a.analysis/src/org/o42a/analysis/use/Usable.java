@@ -103,7 +103,7 @@ public abstract class Usable<U extends Usage<U>> implements UserInfo, Uses<U> {
 			if (useFlag.isUsed()) {
 				return useFlag;
 			}
-			unknown |= useFlag.isKnown();
+			unknown |= !useFlag.isKnown();
 		}
 
 		return unknown ? uc.checkUseFlag() : uc.unusedFlag();

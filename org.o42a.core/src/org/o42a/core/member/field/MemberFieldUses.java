@@ -103,7 +103,7 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			if (useFlag.isUsed()) {
 				return useFlag;
 			}
-			unknown |= useFlag.isKnown();
+			unknown |= !useFlag.isKnown();
 		}
 
 		return unknown ? uc.checkUseFlag() : uc.unusedFlag();

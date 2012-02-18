@@ -30,16 +30,6 @@ public class UseTracker {
 		return this.useFlag;
 	}
 
-	public final void update() {
-		if (this.useFlag != null) {
-
-			final UseCase useCase = this.useFlag.getUseCase();
-
-			this.updateRev = useCase.update();
-			this.useFlag = useCase.checkUseFlag();
-		}
-	}
-
 	public final boolean start(UseCase useCase) {
 		if (!useCase.caseFlag(this.useFlag)) {
 			// Use flag belongs to another use case.
@@ -78,26 +68,6 @@ public class UseTracker {
 		return true;
 	}
 
-	public final <U extends Usage<U>> boolean require(Uses<U> use) {
-
-		final AllUsages<U> allUsages = use.allUsages();
-		final UseCase useCase = this.useFlag.getUseCase();
-		final UseFlag used = use.selectUse(useCase, allUsages);
-
-		if (used.isUsed()) {
-			useCase.end(this);
-			return true;
-		}
-
-		if (useCase.end(this)) {
-			this.useFlag = useCase.unusedFlag();
-		} else {
-			this.useFlag = used;
-		}
-
-		return false;
-	}
-
 	public final <U extends Usage<U>> boolean useBy(Uses<U> use) {
 
 		final AllUsages<U> allUsages = use.allUsages();
@@ -105,9 +75,6 @@ public class UseTracker {
 		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (!used.isUsed()) {
-			if (useCase.end(this)) {
-				this.useFlag = useCase.unusedFlag();
-			}
 			return false;
 		}
 
@@ -115,17 +82,6 @@ public class UseTracker {
 		this.useFlag = used;
 
 		return true;
-	}
-
-	public final UseFlag used() {
-
-		final UseCase useCase = this.useFlag.getUseCase();
-
-		if (useCase.end(this)) {
-			return this.useFlag = useCase.usedFlag();
-		}
-
-		return this.useFlag;
 	}
 
 	public final UseFlag unused() {
