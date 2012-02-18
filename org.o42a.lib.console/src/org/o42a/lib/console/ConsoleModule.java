@@ -213,8 +213,6 @@ public class ConsoleModule extends AnnotatedModule {
 		final ValDirs dirs =
 				builder.falseWhenUnknown(main, exit.head())
 				.value(alloc.id("exec_main"), result);
-		final Block code = dirs.code();
-
 		final ValOp programResult;
 
 		if (this.inlineMain != null) {
@@ -222,7 +220,6 @@ public class ConsoleModule extends AnnotatedModule {
 		} else {
 			programResult = this.main.op(builder.host()).writeValue(dirs);
 		}
-		result.store(code, programResult);
 
 		dirs.done();
 		alloc.done();
@@ -234,7 +231,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 		main.debug("Execution succeed");
 
-		return result;
+		return programResult;
 	}
 
 }
