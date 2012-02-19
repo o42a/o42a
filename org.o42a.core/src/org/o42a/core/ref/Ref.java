@@ -35,7 +35,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.RefStOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -361,6 +361,11 @@ public class Ref extends Statement {
 		return getPath().fieldDefinition(distribute());
 	}
 
+	@Override
+	public final RefStOp op(CodeBuilder builder) {
+		return (RefStOp) super.op(builder);
+	}
+
 	public final RefOp op(HostOp host) {
 
 		final RefOp op = this.op;
@@ -388,11 +393,11 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(CodeBuilder builder) {
+	protected final RefStOp createOp(CodeBuilder builder) {
 		if (this.inline != null) {
-			return new InlineOp(builder, this, this.inline);
+			return new InlineOp(builder, this);
 		}
-		return new Op(builder, this, op(builder.host()));
+		return new Op(builder, this);
 	}
 
 	final void refFullyResolved() {
@@ -460,30 +465,24 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class Op extends StOp {
+	private static final class Op extends RefStOp {
 
-		private final RefOp ref;
-
-		Op(
-				CodeBuilder builder,
-				Statement statement,
-				RefOp ref) {
-			super(builder, statement);
-			this.ref = ref;
+		Op(CodeBuilder builder, Ref ref) {
+			super(builder, ref);
 		}
 
 		@Override
-		public void writeLogicalValue(Control control) {
+		public void writeCond(Control control) {
 
 			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 					control.code(),
 					control.falseDir());
 
-			this.ref.writeLogicalValue(dirs);
+			getRef().op(control.host()).writeLogicalValue(dirs);
 		}
 
 		@Override
-		public void writeValue(Control control, ValOp result) {
+		public void write(Control control, ValOp result) {
 
 			final Block code = control.code();
 			final ValDirs dirs =
@@ -492,7 +491,7 @@ public class Ref extends Statement {
 							control.falseDir())
 					.value(code.id("local_val"), result);
 
-			result.store(code, this.ref.writeValue(dirs));
+			result.store(code, getRef().op(control.host()).writeValue(dirs));
 
 			dirs.done();
 
@@ -501,30 +500,24 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class InlineOp extends StOp {
+	private static final class InlineOp extends RefStOp {
 
-		private final InlineValue inline;
-
-		InlineOp(
-				CodeBuilder builder,
-				Statement statement,
-				InlineValue inline) {
-			super(builder, statement);
-			this.inline = inline;
+		InlineOp(CodeBuilder builder, Ref ref) {
+			super(builder, ref);
 		}
 
 		@Override
-		public void writeLogicalValue(Control control) {
+		public void writeCond(Control control) {
 
 			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 					control.code(),
 					control.falseDir());
 
-			this.inline.writeCond(dirs, getBuilder().host());
+			getRef().inline.writeCond(dirs, getBuilder().host());
 		}
 
 		@Override
-		public void writeValue(Control control, ValOp result) {
+		public void write(Control control, ValOp result) {
 
 			final Block code = control.code();
 			final ValDirs dirs =
@@ -535,7 +528,7 @@ public class Ref extends Statement {
 
 			result.store(
 					code,
-					this.inline.writeValue(dirs, getBuilder().host()));
+					getRef().inline.writeValue(dirs, getBuilder().host()));
 
 			dirs.done();
 
@@ -544,10 +537,14 @@ public class Ref extends Statement {
 
 		@Override
 		public String toString() {
-			if (this.inline == null) {
+
+			final Ref ref = getRef();
+
+			if (ref == null) {
 				return super.toString();
 			}
-			return this.inline.toString();
+
+			return ref.inline.toString();
 		}
 
 	}
@@ -561,17 +558,7 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			this.inline.writeCond(dirs, control.host());
-		}
-
-		@Override
-		public void writeValue(Control control, ValOp result) {
+		public void write(Control control, ValOp result) {
 
 			final Block code = control.code();
 			final ValDirs dirs =

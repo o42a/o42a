@@ -42,18 +42,13 @@ public final class LocalFieldOp extends StOp {
 	}
 
 	@Override
-	public void writeValue(Control control, ValOp result) {
+	public void write(Control control, ValOp result) {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 		final LclOp op =
 				fieldIR.allocate(control.getBuilder(), control.allocation());
 
 		op.write(control, result);
-	}
-
-	@Override
-	public void writeLogicalValue(Control control) {
-		throw new UnsupportedOperationException();
 	}
 
 }

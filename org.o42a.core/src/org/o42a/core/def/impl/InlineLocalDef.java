@@ -40,12 +40,7 @@ final class InlineLocalDef extends InlineValue {
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
-
-		final InlineControl control = new InlineControl(dirs);
-
-		this.command.writeCond(control);
-
-		control.end();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -54,7 +49,7 @@ final class InlineLocalDef extends InlineValue {
 		final InlineControl control = new InlineControl(dirs.dirs());
 		final ValOp value = dirs.value();
 
-		this.command.writeValue(control, value);
+		this.command.write(control, value);
 
 		control.end();
 

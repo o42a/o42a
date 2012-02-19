@@ -41,7 +41,7 @@ final class VariableAssignmentOp extends StOp {
 	}
 
 	@Override
-	public void writeValue(Control control, ValOp result) {
+	public void write(Control control, ValOp result) {
 
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),
@@ -60,11 +60,6 @@ final class VariableAssignmentOp extends StOp {
 		destination.assign(subDirs, value);
 
 		subDirs.end();
-	}
-
-	@Override
-	public void writeLogicalValue(Control control) {
-		throw new UnsupportedOperationException();
 	}
 
 }

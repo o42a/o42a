@@ -127,7 +127,7 @@ public final class LocalIRFunc
 		final Control control =
 				builder.createControl(code, exit.head(), failure.head());
 
-		op.writeValue(control, result);
+		op.write(control, result);
 
 		control.end();
 

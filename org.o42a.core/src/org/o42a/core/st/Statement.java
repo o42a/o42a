@@ -70,7 +70,7 @@ public abstract class Statement extends Placed {
 
 	public abstract void normalizeImperative(Normalizer normalizer);
 
-	public final StOp op(CodeBuilder builder) {
+	public StOp op(CodeBuilder builder) {
 
 		final StOp op = this.op;
 

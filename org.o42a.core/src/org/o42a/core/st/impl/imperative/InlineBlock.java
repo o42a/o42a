@@ -79,12 +79,7 @@ public class InlineBlock implements InlineCommand {
 	}
 
 	@Override
-	public void writeCond(Control control) {
-		writeSentences(control, null, this.block, this);
-	}
-
-	@Override
-	public void writeValue(Control control, ValOp result) {
+	public void write(Control control, ValOp result) {
 		writeSentences(control, result, this.block, this);
 	}
 

@@ -51,8 +51,6 @@ public abstract class StOp {
 		return this.statement;
 	}
 
-	public abstract void writeLogicalValue(Control control);
-
-	public abstract void writeValue(Control control, ValOp result);
+	public abstract void write(Control control, ValOp result);
 
 }

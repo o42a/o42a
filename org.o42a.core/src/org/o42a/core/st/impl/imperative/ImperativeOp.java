@@ -28,7 +28,6 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.InlineCommand;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -252,20 +251,9 @@ final class ImperativeOp {
 
 				final StOp op = statement.op(control.getBuilder());
 
-				if (result == null) {
-					op.writeLogicalValue(control);
-				} else {
-					op.writeValue(control, result);
-				}
+				op.write(control, result);
 			} else {
-
-				final InlineCommand inline = inlines.get(i);
-
-				if (result == null) {
-					inline.writeCond(control);
-				} else {
-					inline.writeValue(control, result);
-				}
+				inlines.get(i).write(control, result);
 			}
 		}
 	}
