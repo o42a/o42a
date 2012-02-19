@@ -26,7 +26,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.op.IROp;
-import org.o42a.core.ir.value.ValOp;
 
 
 public abstract class LclOp extends IROp implements HostOp {
@@ -52,7 +51,7 @@ public abstract class LclOp extends IROp implements HostOp {
 		return null;
 	}
 
-	public abstract void write(Control control, ValOp result);
+	public abstract void write(Control control);
 
 	@Override
 	public String toString() {

@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -79,8 +78,8 @@ public class InlineBlock implements InlineCmd {
 	}
 
 	@Override
-	public void write(Control control, ValOp result) {
-		writeSentences(control, result, this.block, this);
+	public void write(Control control) {
+		writeSentences(control, this.block, this);
 	}
 
 	@Override

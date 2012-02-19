@@ -23,6 +23,7 @@ import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.value.ValOp;
 
 
 abstract class MainControl extends Control {
@@ -30,19 +31,21 @@ abstract class MainControl extends Control {
 	private final CodeBuilder builder;
 	private final Block code;
 	private final CodePos exit;
-
-	private int seq;
 	private final CodePos falseDir;
+	private final ValOp result;
+	private int seq;
 
 	MainControl(
 			CodeBuilder builder,
 			Block code,
 			CodePos exit,
-			CodePos falseDir) {
+			CodePos falseDir,
+			ValOp result) {
 		this.code = code;
 		this.builder = builder;
 		this.exit = exit;
 		this.falseDir = falseDir;
+		this.result = result;
 	}
 
 	@Override
@@ -72,6 +75,10 @@ abstract class MainControl extends Control {
 
 	final CodeBuilder builder() {
 		return this.builder;
+	}
+
+	final ValOp mainResult() {
+		return this.result;
 	}
 
 	@Override

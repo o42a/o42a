@@ -21,7 +21,6 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
@@ -51,6 +50,6 @@ public abstract class Cmd {
 		return this.statement;
 	}
 
-	public abstract void write(Control control, ValOp result);
+	public abstract void write(Control control);
 
 }

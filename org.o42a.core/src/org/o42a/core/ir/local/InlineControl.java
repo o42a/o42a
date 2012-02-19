@@ -21,19 +21,20 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
 
 
 public class InlineControl extends MainControl {
 
 	private Block returnCode;
 
-	public InlineControl(CodeDirs dirs) {
+	public InlineControl(ValDirs dirs) {
 		super(
 				dirs.getBuilder(),
 				dirs.code(),
 				dirs.unknownDir(),
-				dirs.falseDir());
+				dirs.falseDir(),
+				dirs.value());
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.value.ValOp;
 
 
 final class DefaultMainControl extends MainControl {
@@ -31,8 +32,9 @@ final class DefaultMainControl extends MainControl {
 			LocalBuilder builder,
 			Block code,
 			CodePos exit,
-			CodePos falseDir) {
-		super(builder, code, exit, falseDir);
+			CodePos falseDir,
+			ValOp result) {
+		super(builder, code, exit, falseDir, result);
 	}
 
 	@Override

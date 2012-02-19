@@ -26,7 +26,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -38,7 +37,6 @@ final class ImperativeOp {
 
 	public static void writeSentences(
 			Control control,
-			ValOp result,
 			ImperativeBlock block,
 			InlineBlock inline) {
 
@@ -63,7 +61,6 @@ final class ImperativeOp {
 
 			writeSentence(
 					blockControl,
-					result,
 					sentence,
 					inline != null ? inline.get(i) : null,
 					Integer.toString(i));
@@ -91,7 +88,6 @@ final class ImperativeOp {
 
 	private static void writeSentence(
 			Control control,
-			ValOp result,
 			ImperativeSentence sentence,
 			InlineSentence inline,
 			String index) {
@@ -109,7 +105,6 @@ final class ImperativeOp {
 
 			writeSentence(
 					prereqControl,
-					null,
 					prerequisite,
 					inline != null ? inline.getPrerequisite() : null,
 					index + "_prereq");
@@ -129,7 +124,6 @@ final class ImperativeOp {
 			if (len != 0) {
 				writeStatements(
 						control,
-						result,
 						alternatives.get(0),
 						inline != null ? inline.get(0) : null);
 			}
@@ -177,7 +171,6 @@ final class ImperativeOp {
 
 			writeStatements(
 					altControl,
-					result,
 					alt,
 					inline != null ? inline.get(i) : null);
 
@@ -233,7 +226,6 @@ final class ImperativeOp {
 
 	private static void writeStatements(
 			Control control,
-			ValOp result,
 			Imperatives statements,
 			InlineCommands inlines) {
 
@@ -251,9 +243,9 @@ final class ImperativeOp {
 
 				final Cmd cmd = statement.cmd(control.getBuilder());
 
-				cmd.write(control, result);
+				cmd.write(control);
 			} else {
-				inlines.get(i).write(control, result);
+				inlines.get(i).write(control);
 			}
 		}
 	}

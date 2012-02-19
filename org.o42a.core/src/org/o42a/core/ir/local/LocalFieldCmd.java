@@ -20,7 +20,6 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.Field;
 
@@ -42,13 +41,13 @@ public final class LocalFieldCmd extends Cmd {
 	}
 
 	@Override
-	public void write(Control control, ValOp result) {
+	public void write(Control control) {
 
 		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
 		final LclOp op =
 				fieldIR.allocate(control.getBuilder(), control.allocation());
 
-		op.write(control, result);
+		op.write(control);
 	}
 
 }
