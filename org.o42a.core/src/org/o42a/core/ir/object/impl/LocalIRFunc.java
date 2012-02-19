@@ -124,10 +124,13 @@ public final class LocalIRFunc
 		final Cmd cmd = getScope().getBlock().cmd(builder);
 		final Block exit = code.addBlock("exit");
 		final Block failure = code.addBlock("failure");
-		final Control control =
-				builder.createControl(code, exit.head(), failure.head());
+		final Control control = builder.createControl(
+				code,
+				exit.head(),
+				failure.head(),
+				result);
 
-		cmd.write(control, result);
+		cmd.write(control);
 
 		control.end();
 

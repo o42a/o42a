@@ -27,6 +27,7 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -63,6 +64,10 @@ public abstract class Control {
 		return getBuilder().owner();
 	}
 
+	public final ValOp result() {
+		return main().mainResult();
+	}
+
 	public abstract AllocationCode allocation();
 
 	public final boolean isDone() {
@@ -79,7 +84,8 @@ public abstract class Control {
 
 	public abstract CodePos falseDir();
 
-	public final void returnValue() {
+	public final void returnValue(ValOp value) {
+		result().store(code(), value);
 		code().go(returnDir());
 		if (!isDone()) {
 			this.reachability = VALUE_RETURNED;

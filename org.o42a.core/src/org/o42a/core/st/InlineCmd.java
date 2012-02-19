@@ -20,12 +20,11 @@
 package org.o42a.core.st;
 
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.func.Cancelable;
 
 
 public interface InlineCmd extends Cancelable {
 
-	void write(Control control, ValOp result);
+	void write(Control control);
 
 }

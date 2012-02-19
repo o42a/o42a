@@ -20,7 +20,6 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
@@ -31,7 +30,7 @@ final class NoCmd extends Cmd {
 	}
 
 	@Override
-	public void write(Control control, ValOp result) {
+	public void write(Control control) {
 	}
 
 }

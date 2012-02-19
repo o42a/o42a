@@ -24,7 +24,6 @@ import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
@@ -35,8 +34,8 @@ public final class ImperativeBlockCmd extends Cmd {
 	}
 
 	@Override
-	public void write(Control control, ValOp result) {
-		writeSentences(control, result, getBlock(), null);
+	public void write(Control control) {
+		writeSentences(control, getBlock(), null);
 	}
 
 	private final ImperativeBlock getBlock() {

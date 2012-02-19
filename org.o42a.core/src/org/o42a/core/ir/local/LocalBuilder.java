@@ -29,6 +29,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
+import org.o42a.core.ir.value.ValOp;
 
 
 public class LocalBuilder extends CodeBuilder {
@@ -72,8 +73,9 @@ public class LocalBuilder extends CodeBuilder {
 	public final Control createControl(
 			Block code,
 			CodePos exit,
-			CodePos falseDir) {
-		return new DefaultMainControl(this, code, exit, falseDir);
+			CodePos falseDir,
+			ValOp result) {
+		return new DefaultMainControl(this, code, exit, falseDir, result);
 	}
 
 	private ObjectOp owner(Code code, LocalIR scopeIR) {

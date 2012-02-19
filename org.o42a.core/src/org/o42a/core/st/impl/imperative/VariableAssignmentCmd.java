@@ -24,7 +24,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.value.ValOp;
 
 
 final class VariableAssignmentCmd extends Cmd {
@@ -41,7 +40,7 @@ final class VariableAssignmentCmd extends Cmd {
 	}
 
 	@Override
-	public void write(Control control, ValOp result) {
+	public void write(Control control) {
 
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),

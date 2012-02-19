@@ -482,20 +482,19 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void write(Control control, ValOp result) {
+		public void write(Control control) {
 
 			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), result);
-
-			result.store(code, getRef().op(control.host()).writeValue(dirs));
+					.value(code.id("local_val"), control.result());
+			final ValOp value = getRef().op(control.host()).writeValue(dirs);
 
 			dirs.done();
 
-			control.returnValue();
+			control.returnValue(value);
 		}
 
 	}
@@ -517,22 +516,20 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void write(Control control, ValOp result) {
+		public void write(Control control) {
 
 			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), result);
-
-			result.store(
-					code,
-					getRef().inline.writeValue(dirs, getBuilder().host()));
+					.value(code.id("local_val"), control.result());
+			final ValOp value =
+					getRef().inline.writeValue(dirs, getBuilder().host());
 
 			dirs.done();
 
-			control.returnValue();
+			control.returnValue(value);
 		}
 
 		@Override
@@ -558,22 +555,19 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void write(Control control, ValOp result) {
+		public void write(Control control) {
 
 			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), result);
-
-			result.store(
-					code,
-					this.inline.writeValue(dirs, control.host()));
+					.value(code.id("local_val"), control.result());
+			final ValOp value = this.inline.writeValue(dirs, control.host());
 
 			dirs.done();
 
-			control.returnValue();
+			control.returnValue(value);
 		}
 
 		@Override

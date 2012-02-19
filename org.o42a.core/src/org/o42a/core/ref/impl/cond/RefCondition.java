@@ -24,7 +24,6 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
@@ -114,7 +113,7 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void write(Control control, ValOp result) {
+		public void write(Control control) {
 
 			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 					control.code(),
@@ -145,7 +144,7 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void write(Control control, ValOp result) {
+		public void write(Control control) {
 
 			final Ref ref = (Ref) getStatement();
 
