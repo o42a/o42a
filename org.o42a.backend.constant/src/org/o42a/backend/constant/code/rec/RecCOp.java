@@ -93,10 +93,7 @@ public abstract class RecCOp<
 					new ConstBE<O, T>(derefId, ccode, constant) {
 						@Override
 						protected O write() {
-							return underlyingConstant(
-									part(),
-									getAllocation()
-									.underlyingValue(constant()));
+							return underlyingConstant(part(), constant());
 						}
 					},
 					constant);

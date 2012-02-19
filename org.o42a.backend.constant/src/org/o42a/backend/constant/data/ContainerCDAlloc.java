@@ -216,15 +216,14 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 			return null;
 		}
 		if (hasSameType(enclosing)) {
-			return enclosing.nested.get(alloc.getIndex());
+			return this.nested.get(alloc.getIndex());
 		}
 
 		final ContainerCDAlloc<?> enclosingField =
 				(ContainerCDAlloc<?>) field(enclosing);
 
-		if (enclosingField == null) {
-			return null;
-		}
+		assert enclosingField != null :
+			"No such field: " + alloc + " in " + this;
 
 		return enclosingField.nested.get(alloc.getIndex());
 	}
