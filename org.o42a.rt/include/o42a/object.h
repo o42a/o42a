@@ -515,17 +515,6 @@ typedef struct o42a_obj_ctable {
 } o42a_obj_ctable_t;
 
 
-extern const struct {
-
-	O42A_HEADER;
-
-	const o42a_obj_stype_t *void_type;
-
-	const o42a_obj_stype_t *false_type;
-
-} o42a;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif

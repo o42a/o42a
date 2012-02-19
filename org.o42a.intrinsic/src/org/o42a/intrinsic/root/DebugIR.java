@@ -54,6 +54,7 @@ public class DebugIR extends Struct<DebugIR.Op> {
 
 	@Override
 	protected void allocate(SubData<Op> data) {
+		// Allocate prior to runtime one to prevent ObjectIRData recursion.
 		RUNTIME_OBJECT_TYPE.data(getGenerator());
 		this.rtypeTypeInfo = data.addPtr("rtype_type_info");
 	}

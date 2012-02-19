@@ -37,10 +37,18 @@ public class RuntimeObjectType extends Type<RuntimeObjectType.Op> {
 	public static final RuntimeObjectType RUNTIME_OBJECT_TYPE =
 			new RuntimeObjectType();
 
+	private static final Type<?>[] TYPE_DEPENDENCIES =
+			new Type<?>[] {OBJECT_TYPE};
+
 	private ObjectIRData data;
 	private StructRec<ObjectIRType.Op> sample;
 
 	private RuntimeObjectType() {
+	}
+
+	@Override
+	public final Type<?>[] getTypeDependencies() {
+		return TYPE_DEPENDENCIES;
 	}
 
 	public final ObjectIRData data() {

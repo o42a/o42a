@@ -38,6 +38,7 @@ public abstract class Type<S extends StructOp<S>>
 
 	@SuppressWarnings("rawtypes")
 	private static final EmptyContent<?> EMPTY_CONTENT = new EmptyContent();
+	private static final Type<?>[] NO_DEPENDENCIES = new Type<?>[0];
 
 	@SuppressWarnings("unchecked")
 	public static <T> Content<T> emptyContent() {
@@ -83,6 +84,10 @@ public abstract class Type<S extends StructOp<S>>
 
 	public final Type<S> getType() {
 		return this.type;
+	}
+
+	public Type<?>[] getTypeDependencies() {
+		return NO_DEPENDENCIES;
 	}
 
 	public final CodeId codeId(Generator generator) {
@@ -238,15 +243,27 @@ public abstract class Type<S extends StructOp<S>>
 
 	final SubData<S> createTypeData(Generator generator) {
 		if (this.data == null) {
-			return this.data = new TypeData<S>(generator, this);
+			return initTypeData(generator);
 		}
 		if (this.data.getGenerator() != generator) {
 			assert this.data instanceof TypeData :
 				"Wrong data type of " + codeId(generator) + ": "
 				+ this.data.getClass().getName();
-			return this.data = new TypeData<S>(generator, this);
+			initTypeData(generator);
 		}
 		return null;
+	}
+
+	private final SubData<S> initTypeData(Generator generator) {
+		this.data = new TypeData<S>(generator, this);
+		allocateTypeDependencies(generator);
+		return this.data;
+	}
+
+	private final void allocateTypeDependencies(Generator generator) {
+		for (Type<?> type : getTypeDependencies()) {
+			type.pointer(generator);
+		}
 	}
 
 	private final Data<S> data(Generator generator, boolean fullyAllocated) {

@@ -161,8 +161,6 @@ public class CompilerIntrinsics extends Intrinsics {
 
 	public void resolveAll(Analyzer analyzer) {
 		// False object can be used by runtime, so it should always present.
-		getFalse().type().useBy(this.user);
-		getFalse().value().explicitUseBy(this.user);
 
 		final FullResolution fullResolution =
 				this.root.getContext().fullResolution();
@@ -183,10 +181,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void generateAll(Generator generator) {
-
-		final IntrinsicsIR intrinsicsIR = new IntrinsicsIR(this);
-
-		generator.newGlobal().setConstant().export().struct(intrinsicsIR);
 		if (generator.isDebug()) {
 			generator.newGlobal().export().struct(new DebugIR());
 		}

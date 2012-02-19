@@ -33,7 +33,7 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 
 	public TypeCDAlloc(ConstBackend backend, SubData<S> data, Type<S> type) {
 		super(backend, data, null, null);
-		this.underlyingType = new CType<S>(type);
+		this.underlyingType = new CType<S>(backend, type);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -51,8 +51,7 @@ public class TypeCDAlloc<S extends StructOp<S>> extends TopLevelCDAlloc<S> {
 	}
 
 	@Override
-	protected Allocated<S, ?> startUnderlyingAllocation(
-			SubData<?> container) {
+	protected Allocated<S, ?> startUnderlyingAllocation(SubData<?> container) {
 		return getBackend().getUnderlyingGenerator().getGlobals().allocateType(
 				this.underlyingType);
 	}

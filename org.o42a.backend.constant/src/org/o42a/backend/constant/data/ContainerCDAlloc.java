@@ -160,6 +160,20 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return this.underlyingAllocated.getData();
 	}
 
+	@Override
+	protected void initUnderlying(SubData<?> container) {
+		super.initUnderlying(container);
+
+		final SubData<S> underlying = getUnderlying();
+
+		for (CDAlloc<?, ?> nested : this.nested) {
+			nested.initUnderlying(underlying);
+		}
+		if (isContainerAllocated()) {
+			this.underlyingAllocated.done();
+		}
+	}
+
 	protected abstract Allocated<S, ?> startUnderlyingAllocation(
 			SubData<?> container);
 
@@ -178,20 +192,6 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	final void containerAllocated() {
 		this.containerAllocated = true;
 		if (isUnderlyingAllocated()) {
-			this.underlyingAllocated.done();
-		}
-	}
-
-	@Override
-	void initUnderlying(SubData<?> container) {
-		super.initUnderlying(container);
-
-		final SubData<S> underlying = getUnderlying();
-
-		for (CDAlloc<?, ?> nested : this.nested) {
-			nested.initUnderlying(underlying);
-		}
-		if (isContainerAllocated()) {
 			this.underlyingAllocated.done();
 		}
 	}
