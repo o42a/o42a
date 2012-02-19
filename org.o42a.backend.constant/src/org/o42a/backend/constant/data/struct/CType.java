@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.constant.data.struct;
 
+import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -31,9 +32,16 @@ import org.o42a.codegen.data.Type;
 public final class CType<S extends StructOp<S>> extends Struct<S> {
 
 	private final Type<S> original;
+	private Type<?>[] dependencies;
+	private final ConstBackend backend;
 
-	public CType(Type<S> original) {
+	public CType(ConstBackend backend, Type<S> original) {
+		this.backend = backend;
 		this.original = original;
+	}
+
+	public final ConstBackend getBackend() {
+		return this.backend;
 	}
 
 	@Override
@@ -54,6 +62,27 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 	@Override
 	public boolean isDebuggable() {
 		return false;
+	}
+
+	@Override
+	public Type<?>[] getTypeDependencies() {
+		if (this.dependencies != null) {
+			return this.dependencies;
+		}
+
+		final Type<?>[] originalDeps = getOriginal().getTypeDependencies();
+
+		if (originalDeps.length == 0) {
+			return this.dependencies = originalDeps;
+		}
+
+		final CType<?>[] deps = new CType<?>[originalDeps.length];
+
+		for (int i = 0; i < deps.length; ++i) {
+			deps[i] = getBackend().underlying(originalDeps[i]);
+		}
+
+		return this.dependencies = deps;
 	}
 
 	public final Type<S> getOriginal() {

@@ -205,13 +205,11 @@ o42a_obj_body_t *o42a_obj_cast_or_error(
 
 	o42a_obj_body_t *const result = O42A(o42a_obj_cast(O42A_ARGS object, type));
 
-	if (result) {
-		O42A_RETURN result;
+	if (!result) {
+		o42a_error_print(O42A_ARGS "Cast failure");
 	}
 
-	o42a_error_print(O42A_ARGS "Cast failure");
-
-	O42A_RETURN o42a_obj_by_data(O42A_ARGS &o42a.false_type->data);
+	O42A_RETURN result;
 }
 
 static inline void copy_ancestor_ascendants(

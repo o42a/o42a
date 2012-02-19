@@ -113,7 +113,7 @@ public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
 
 		code.dumpName("To", type.ptr());
 
-		final DataOp resultPtr =
+		final DataOp castResult =
 				castFunc(reportError)
 				.op(null, code)
 				.cast(
@@ -122,16 +122,30 @@ public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
 						this,
 						type);
 
+		final DataOp resultPtr;
+
 		if (!reportError) {
+			resultPtr = castResult;
 
 			final Block castNull = code.addBlock("cast_null");
 
-			resultPtr.isNull(null, code).go(code, castNull.head());
+			castResult.isNull(null, code).go(code, castNull.head());
 
 			if (castNull.exists()) {
 				castNull.debug("Cast failed");
 				castNull.go(subDirs.falseDir());
 			}
+		} else {
+
+			final DataOp falsePtr = getContext()
+					.getFalse()
+					.ir(getGenerator())
+					.op(getBuilder(), code)
+					.toData(code);
+
+			resultPtr =
+					castResult.isNull(null, code)
+					.select(null, code, falsePtr, castResult);
 		}
 
 		final ObjectOp result =

@@ -166,9 +166,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 		this.index = getEnclosing().nest(this);
 	}
 
-	protected abstract D allocateUnderlying(SubData<?> container);
-
-	void initUnderlying(SubData<?> container) {
+	protected void initUnderlying(SubData<?> container) {
 		this.underlying = allocateUnderlying(container);
 		assert this.underlying != null :
 			"Failed to allocate underlying data for " + this;
@@ -176,5 +174,7 @@ public abstract class CDAlloc<P extends PtrOp<P>, D extends Data<P>>
 				== getBackend().getUnderlyingGenerator()):
 					"Wrong underlying generator of " + this.underlying;
 	}
+
+	protected abstract D allocateUnderlying(SubData<?> container);
 
 }

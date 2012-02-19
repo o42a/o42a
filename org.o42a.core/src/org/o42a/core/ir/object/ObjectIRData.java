@@ -48,6 +48,9 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
+	private static final Type<?>[] TYPE_DEPENDENCIES =
+			new Type<?>[] {OBJECT_TYPE};
+
 	private RelRec object;
 	private Int32rec flags;
 	private RelRec start;
@@ -62,6 +65,11 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private RelList<ObjectBodyIR> samples;
 
 	private ObjectIRData() {
+	}
+
+	@Override
+	public final Type<?>[] getTypeDependencies() {
+		return TYPE_DEPENDENCIES;
 	}
 
 	public final RelRec object() {

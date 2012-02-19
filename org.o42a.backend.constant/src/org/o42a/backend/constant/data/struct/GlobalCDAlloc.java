@@ -41,7 +41,7 @@ public class GlobalCDAlloc<S extends StructOp<S>>
 				data,
 				typeAllocation,
 				typeAllocation != null
-				? null : new CType<S>(global.getInstance()));
+				? null : new CType<S>(backend, global.getInstance()));
 		this.global = global;
 	}
 

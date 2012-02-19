@@ -105,6 +105,8 @@ public abstract class Globals {
 
 		final SubData<S> data = type.createTypeData(getGenerator());
 
+		assert data != null :
+			"Failed to allocate type " + type;
 		data.startAllocation(dataAllocator());
 
 		return new Allocated<S, T>(type, type, type.getInstanceData());
