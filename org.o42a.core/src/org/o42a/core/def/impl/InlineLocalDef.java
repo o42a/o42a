@@ -47,13 +47,12 @@ final class InlineLocalDef extends InlineValue {
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
 		final InlineControl control = new InlineControl(dirs);
-		final ValOp value = dirs.value();
 
 		this.command.write(control);
 
 		control.end();
 
-		return value;
+		return control.finalResult();
 	}
 
 	@Override

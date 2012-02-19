@@ -35,20 +35,26 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 
 
-public final class ValOp extends IROp implements CondOp {
+public abstract class ValOp extends IROp implements CondOp {
+
+	public static ValOp allocateVal(
+			String name,
+			AllocationCode code,
+			CodeBuilder builder,
+			ValueStruct<?, ?> valueStruct) {
+
+		final CodeId valId =
+				code.getId().setLocal(name != null ? name : "value");
+
+		return new AllocatedValOp(valId, code, builder, valueStruct);
+	}
 
 	private final ValueStruct<?, ?> valueStruct;
-	private final Val constant;
 	private ValStoreMode storeMode = ASSIGNMENT_VAL_STORE;
 
-	ValOp(
-			CodeBuilder builder,
-			ValType.Op ptr,
-			ValueStruct<?, ?> valueStruct,
-			Val constant) {
-		super(builder, ptr);
+	ValOp(CodeBuilder builder, ValueStruct<?, ?> valueStruct) {
+		super(builder);
 		this.valueStruct = valueStruct;
-		this.constant = constant;
 	}
 
 	public final ValueType<?> getValueType() {
@@ -63,17 +69,13 @@ public final class ValOp extends IROp implements CondOp {
 	}
 
 	public final boolean isConstant() {
-		return this.constant != null;
+		return getConstant() != null;
 	}
 
-	public final Val getConstant() {
-		return this.constant;
-	}
+	public abstract Val getConstant();
 
 	@Override
-	public final ValType.Op ptr() {
-		return (ValType.Op) super.ptr();
-	}
+	public abstract ValType.Op ptr();
 
 	public final ValStoreMode getStoreMode() {
 		if (ptr().isAllocatedOnStack()) {
@@ -333,9 +335,12 @@ public final class ValOp extends IROp implements CondOp {
 
 	@Override
 	public final void go(Block code, CodeDirs dirs) {
-		if (this.constant != null) {
-			if (!this.constant.getCondition()) {
-				if (this.constant.isUnknown()) {
+
+		final Val constant = getConstant();
+
+		if (constant != null) {
+			if (!constant.getCondition()) {
+				if (constant.isUnknown()) {
 					code.go(dirs.unknownDir());
 				} else {
 					code.go(dirs.falseDir());
@@ -366,17 +371,6 @@ public final class ValOp extends IROp implements CondOp {
 		func.op(null, code).call(code, this);
 	}
 
-	@Override
-	public String toString() {
-		if (this.constant != null) {
-			return this.constant.toString();
-		}
-		if (this.valueStruct == null) {
-			return super.toString();
-		}
-		return "(" + this.valueStruct + ") " + ptr();
-	}
-
 	private BoolOp loadFlag(
 			CodeId id,
 			String defaultId,
@@ -398,6 +392,121 @@ public final class ValOp extends IROp implements CondOp {
 				numberOfTrailingZeros(mask));
 
 		return uexternal.lowestBit(flagId, code);
+	}
+
+	static final class FinalValOp extends ValOp {
+
+		private final ValType.Op ptr;
+
+		FinalValOp(
+				CodeBuilder builder,
+				ValType.Op ptr,
+				ValueStruct<?, ?> valueStruct) {
+			super(builder, valueStruct);
+			this.ptr = ptr;
+		}
+
+		@Override
+		public final Val getConstant() {
+			return null;
+		}
+
+		@Override
+		public final ValType.Op ptr() {
+			return this.ptr;
+		}
+
+		@Override
+		public String toString() {
+
+			final ValueStruct<?, ?> valueStruct = getValueStruct();
+
+			if (valueStruct == null) {
+				return super.toString();
+			}
+
+			return "(" + valueStruct + ") " + ptr();
+		}
+
+	}
+
+	static final class ConstValOp extends ValOp {
+
+		private final ValType.Op ptr;
+		private final Val constant;
+
+		ConstValOp(CodeBuilder builder, ValType.Op ptr, Val constant) {
+			super(builder, constant.getValueStruct());
+			this.ptr = ptr;
+			this.constant = constant;
+		}
+
+		@Override
+		public final Val getConstant() {
+			return this.constant;
+		}
+
+		@Override
+		public final ValType.Op ptr() {
+			return this.ptr;
+		}
+
+		@Override
+		public String toString() {
+			if (this.constant == null) {
+				return super.toString();
+			}
+			return this.constant.toString();
+		}
+
+	}
+
+	private static final class AllocatedValOp extends ValOp {
+
+		private final CodeId id;
+		private final AllocationCode code;
+		private ValType.Op ptr;
+
+		AllocatedValOp(
+				CodeId id,
+				AllocationCode code,
+				CodeBuilder builder,
+				ValueStruct<?, ?> valueStruct) {
+			super(builder, valueStruct);
+			this.id = id;
+			this.code = code;
+		}
+
+		@Override
+		public final CodeId getId() {
+			return this.id;
+		}
+
+		@Override
+		public final Val getConstant() {
+			return null;
+		}
+
+		@Override
+		public ValType.Op ptr() {
+			if (this.ptr != null) {
+				return this.ptr;
+			}
+
+			this.ptr = this.code.allocate(this.id.getLocal(), ValType.VAL_TYPE);
+			storeIndefinite(this.code);
+
+			return this.ptr;
+		}
+
+		@Override
+		public String toString() {
+			if (this.id == null) {
+				return super.toString();
+			}
+			return "(" + getValueStruct() + ") " + this.id;
+		}
+
 	}
 
 }

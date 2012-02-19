@@ -25,10 +25,10 @@ import org.o42a.codegen.data.Content;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.FinalIROp;
 
 
-public abstract class LclOp extends IROp implements HostOp {
+public abstract class LclOp extends FinalIROp implements HostOp {
 
 	private final FieldIR<?> fieldIR;
 

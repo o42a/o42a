@@ -31,12 +31,10 @@ import org.o42a.core.source.CompilerContext;
 
 public abstract class IROp {
 
-	private final PtrOp<?> ptr;
 	private final CodeBuilder builder;
 
-	public IROp(CodeBuilder builder, PtrOp<?> ptr) {
+	public IROp(CodeBuilder builder) {
 		this.builder = builder;
-		this.ptr = ptr;
 	}
 
 	public final CompilerContext getContext() {
@@ -55,16 +53,14 @@ public abstract class IROp {
 		return ptr().getId();
 	}
 
-	public PtrOp<?> ptr() {
-		return this.ptr;
-	}
+	public abstract PtrOp<?> ptr();
 
 	public final DataOp toData(Code code) {
 		return toAny(code).toData(null, code);
 	}
 
 	public final AnyOp toAny(Code code) {
-		return this.ptr.toAny(null, code);
+		return ptr().toAny(null, code);
 	}
 
 }

@@ -85,7 +85,7 @@ public abstract class Control {
 	public abstract CodePos falseDir();
 
 	public final void returnValue(ValOp value) {
-		result().store(code(), value);
+		main().storeResult(code(), value);
 		code().go(returnDir());
 		if (!isDone()) {
 			this.reachability = VALUE_RETURNED;
