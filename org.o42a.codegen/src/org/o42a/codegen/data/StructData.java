@@ -63,7 +63,7 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 		return allocator.enter(
 				getEnclosing().getAllocation(),
 				this,
-				getInstance().getAllocation());
+				getInstance().pointer(getGenerator()).getProtoAllocation());
 	}
 
 	@Override

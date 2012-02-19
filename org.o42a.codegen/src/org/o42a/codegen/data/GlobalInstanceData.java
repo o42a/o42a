@@ -70,7 +70,10 @@ final class GlobalInstanceData<S extends StructOp<S>>
 
 	@Override
 	protected boolean startAllocation(DataAllocator allocator) {
-		setAllocation(allocator.begin(this, getAllocation(), this.global));
+		setAllocation(allocator.begin(
+				this,
+				getPointer().getProtoAllocation(),
+				this.global));
 		return true;
 	}
 

@@ -70,7 +70,7 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 		setAllocation(allocator.allocateRelPtr(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

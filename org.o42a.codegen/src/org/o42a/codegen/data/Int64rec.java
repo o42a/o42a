@@ -92,7 +92,7 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 		setAllocation(allocator.allocateInt64(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

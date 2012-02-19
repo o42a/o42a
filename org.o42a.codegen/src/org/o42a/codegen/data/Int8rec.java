@@ -73,7 +73,7 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 		setAllocation(allocator.allocateInt8(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

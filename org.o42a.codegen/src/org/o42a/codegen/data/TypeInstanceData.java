@@ -79,7 +79,7 @@ final class TypeInstanceData<S extends StructOp<S>>
 		setAllocation(allocator.enter(
 				getEnclosing().getAllocation(),
 				this,
-				getInstance().getAllocation()));
+				getInstance().pointer(getGenerator()).getProtoAllocation()));
 		return true;
 	}
 

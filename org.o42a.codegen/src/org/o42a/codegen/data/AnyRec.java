@@ -72,7 +72,7 @@ public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 		setAllocation(allocator.allocatePtr(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 		final AllocationCode allocation = code.undisposable("stack_frame");
 
-		return allocate(allocation, id, DEBUG_STACK_FRAME_TYPE);
+		return allocation.allocate(id, DEBUG_STACK_FRAME_TYPE);
 	}
 
 	private final Generator generator;

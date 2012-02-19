@@ -19,35 +19,10 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.backend.DataAllocation;
 
 
 public abstract class CodeBase {
-
-	protected static <P extends PtrOp<P>> DataAllocation<P> dataAllocation(
-			Data<P> data) {
-		return data.getAllocation();
-	}
-
-	protected static <S extends StructOp<S>> S allocate(
-			AllocationCode code,
-			CodeId id,
-			Type<S> type) {
-		assert code.assertIncomplete();
-
-		final S result = code.writer().allocateStruct(
-				code.opId(id),
-				dataAllocation(type.data(code.getGenerator())));
-
-		result.allocated(code, null);
-
-		return result;
-	}
 
 	private boolean complete;
 

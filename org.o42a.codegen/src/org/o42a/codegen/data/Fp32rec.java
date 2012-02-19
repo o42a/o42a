@@ -73,7 +73,7 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 		setAllocation(allocator.allocateFp32(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

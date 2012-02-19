@@ -81,7 +81,7 @@ public final class FuncRec<F extends Func<F>>
 		setAllocation(allocator.allocateFuncPtr(
 				getEnclosing().pointer(getGenerator()).getAllocation(),
 				this,
-				getAllocation(),
+				getPointer().getProtoAllocation(),
 				getSignature()));
 	}
 

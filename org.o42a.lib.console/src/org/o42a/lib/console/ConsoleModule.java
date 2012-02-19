@@ -133,28 +133,24 @@ public class ConsoleModule extends AnnotatedModule {
 
 		this.main.assertFullyResolved();
 
-		final Function<DebuggableMainFunc> main;
-
-		if (generator.isDebug()) {
-			main = generator.newFunction().create(
-					generator.rawId("__o42a_main__"),
-					DEBUGGABLE_MAIN);
-			generateDebugMain(generator, main);
-		} else {
-			main = generator.newFunction().export().create(
+		if (!generator.isDebug()) {
+			generator.newFunction().export().create(
 					generator.rawId("main"),
-					DEBUGGABLE_MAIN);
+					DEBUGGABLE_MAIN,
+					new Main());
+			return;
 		}
 
-		final ValOp result = callMain(main);
+		final Function<DebuggableMainFunc> main =
+				generator.newFunction().create(
+						generator.rawId("__o42a_main__"),
+						DEBUGGABLE_MAIN,
+						new Main());
 
-		result.rawValue(main.id("execution_result_ptr"), main)
-		.toAny(null, main)
-		.toInt32(null, main)
-		.load(null, main)
-		.returnValue(main);
-
-		main.done();
+		generator.newFunction().export().create(
+				generator.rawId("main"),
+				MAIN,
+				new DebugMain(main));
 	}
 
 	@Override
@@ -177,27 +173,6 @@ public class ConsoleModule extends AnnotatedModule {
 					new Normalizer(analyzer, this.main.getScope()),
 					this.main.getScope());
 		}
-	}
-
-	private void generateDebugMain(
-			Generator generator,
-			Function<DebuggableMainFunc> main) {
-
-		final Function<MainFunc> debugMain =
-				generator.newFunction().export().create(
-						generator.rawId("main"),
-						MAIN);
-		final FuncPtr<DebugExecMainFunc> executeMain =
-				generator.externalFunction()
-				.link("o42a_dbg_exec_main", DEBUG_EXEC_MAIN);
-
-		executeMain.op(null, debugMain).call(
-				debugMain,
-				main.getPointer().op(null, debugMain),
-				debugMain.arg(debugMain, MAIN.argc()),
-				debugMain.arg(debugMain, MAIN.argv())).returnValue(debugMain);
-
-		debugMain.done();
 	}
 
 	private ValOp callMain(Function<DebuggableMainFunc> main) {
@@ -233,6 +208,47 @@ public class ConsoleModule extends AnnotatedModule {
 		main.debug("Execution succeed");
 
 		return programResult;
+	}
+
+	private final class Main implements FunctionBuilder<DebuggableMainFunc> {
+
+		@Override
+		public void build(Function<DebuggableMainFunc> function) {
+
+			final ValOp result = callMain(function);
+
+			result.rawValue(function.id("execution_result_ptr"), function)
+			.load(null, function)
+			.toInt32(null, function)
+			.returnValue(function);
+		}
+
+	}
+
+	private static final class DebugMain implements FunctionBuilder<MainFunc> {
+
+		private final Function<DebuggableMainFunc> main;
+
+		DebugMain(Function<DebuggableMainFunc> main) {
+			this.main = main;
+		}
+
+		@Override
+		public void build(Function<MainFunc> function) {
+			final FuncPtr<DebugExecMainFunc> executeMain =
+					function.getGenerator()
+					.externalFunction()
+					.link("o42a_dbg_exec_main", DEBUG_EXEC_MAIN);
+
+			executeMain.op(null, function)
+			.call(
+					function,
+					this.main.getPointer().op(null, function),
+					function.arg(function, MAIN.argc()),
+					function.arg(function, MAIN.argv()))
+			.returnValue(function);
+		}
+
 	}
 
 }

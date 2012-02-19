@@ -73,7 +73,7 @@ public final class Int32rec extends Rec<Int32recOp, Integer> {
 		setAllocation(allocator.allocateInt32(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override
