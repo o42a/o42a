@@ -22,6 +22,7 @@ package org.o42a.core.def.impl;
 import static org.o42a.util.func.Cancellation.cancelAll;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -49,6 +50,11 @@ public class InlineValueDefs extends InlineValue {
 			blocks[i] = code.addBlock("val_" + i);
 		}
 		code.go(blocks[0].head());
+
+		Code firstValueInset = null;
+		ValOp firstValue = null;
+		int numValues = 0;
+
 		for (int i = 0; i < this.inlines.length; ++i) {
 
 			final int nextIdx = i + 1;
@@ -60,14 +66,31 @@ public class InlineValueDefs extends InlineValue {
 			final ValDirs defDirs = dirs.getBuilder()
 					.splitWhenUnknown(block, dirs.falseDir(), nextDir)
 					.value(block.id("val"), result);
+			final ValOp value = this.inlines[i].writeValue(defDirs, host);
 
-			result.store(block, this.inlines[i].writeValue(defDirs, host));
+			if (block.exists()) {
+				if (numValues == 0) {
+					firstValueInset = block.inset("fst_val");
+					firstValue = value;
+					numValues = 1;
+				} else {
+					if (numValues == 1) {
+						result.store(firstValueInset, firstValue);
+						numValues = 2;
+					}
+					result.store(block, value);
+				}
+			}
 
 			defDirs.done();
 
 			if (block.exists()) {
 				block.go(code.tail());
 			}
+		}
+
+		if (numValues == 1) {
+			return firstValue;
 		}
 
 		return result;
