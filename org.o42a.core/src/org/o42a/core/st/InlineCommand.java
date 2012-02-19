@@ -26,8 +26,6 @@ import org.o42a.util.func.Cancelable;
 
 public interface InlineCommand extends Cancelable {
 
-	void writeCond(Control control);
-
-	void writeValue(Control control, ValOp result);
+	void write(Control control, ValOp result);
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
-
-import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
+package org.o42a.core.ir.local;
 
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.StOp;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.ref.Ref;
 
 
-public final class ImperativeBlockOp extends StOp {
+public abstract class RefStOp extends StOp {
 
-	public ImperativeBlockOp(CodeBuilder builder, ImperativeBlock block) {
-		super(builder, block);
+	public RefStOp(CodeBuilder builder, Ref ref) {
+		super(builder, ref);
 	}
 
-	@Override
-	public void write(Control control, ValOp result) {
-		writeSentences(control, result, getBlock(), null);
+	public final Ref getRef() {
+		return (Ref) getStatement();
 	}
 
-	private final ImperativeBlock getBlock() {
-		return (ImperativeBlock) getStatement();
-	}
+	public abstract void writeCond(Control control);
 
 }

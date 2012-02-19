@@ -118,16 +118,11 @@ public final class EllipsisStatement extends Statement {
 		}
 
 		@Override
-		public void writeValue(Control control, ValOp result) {
+		public void write(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
 			control.exitBraces(st, st.name);
-		}
-
-		@Override
-		public void writeLogicalValue(Control control) {
-			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -139,16 +134,11 @@ public final class EllipsisStatement extends Statement {
 		}
 
 		@Override
-		public void writeValue(Control control, ValOp result) {
+		public void write(Control control, ValOp result) {
 
 			final EllipsisStatement st = (EllipsisStatement) getStatement();
 
 			control.repeat(st, st.name);
-		}
-
-		@Override
-		public void writeLogicalValue(Control control) {
-			throw new UnsupportedOperationException();
 		}
 
 	}

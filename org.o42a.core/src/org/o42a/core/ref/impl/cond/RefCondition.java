@@ -23,8 +23,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
@@ -69,15 +71,14 @@ public final class RefCondition extends Statement {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
-		final InlineCommand value =
-				this.ref.inlineImperative(normalizer, valueStruct, origin);
+		final InlineValue value = this.ref.inline(normalizer, origin);
 
 		if (value == null) {
 			this.ref.normalize(normalizer.getAnalyzer());
 			return null;
 		}
 
-		return new Inline(valueStruct, value);
+		return new InlineCmd(valueStruct, value);
 	}
 
 	@Override
@@ -104,22 +105,22 @@ public final class RefCondition extends Statement {
 		return this.conditionalEnv;
 	}
 
-	private static final class Inline implements InlineCommand {
+	private static final class InlineCmd implements InlineCommand {
 
-		private final InlineCommand value;
+		private final InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineCommand value) {
+		InlineCmd(ValueStruct<?, ?> valueStruct, InlineValue value) {
 			this.value = value;
 		}
 
 		@Override
-		public void writeCond(Control control) {
-			this.value.writeCond(control);
-		}
+		public void write(Control control, ValOp result) {
 
-		@Override
-		public void writeValue(Control control, ValOp result) {
-			writeCond(control);
+			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+					control.code(),
+					control.falseDir());
+
+			this.value.writeCond(dirs, control.host());
 		}
 
 		@Override
@@ -144,13 +145,11 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void writeLogicalValue(Control control) {
-			getStatement().op(getBuilder()).writeLogicalValue(control);
-		}
+		public void write(Control control, ValOp result) {
 
-		@Override
-		public void writeValue(Control control, ValOp result) {
-			writeLogicalValue(control);
+			final Ref ref = (Ref) getStatement();
+
+			ref.op(getBuilder()).writeCond(control);
 		}
 
 	}
