@@ -105,10 +105,7 @@ abstract class ArrayLength extends AnnotatedBuiltin {
 		return this.array = path.bind(this, getScope()).target(distribute());
 	}
 
-	private ValOp write(
-			ValDirs dirs,
-			HostOp host,
-			InlineValue inlineArray) {
+	private ValOp write(ValDirs dirs, HostOp host, InlineValue inlineArray) {
 
 		final ValDirs arrayDirs =
 				dirs.dirs().value(valueStruct(getScope()), "array_val");
