@@ -25,6 +25,7 @@ public class UseTracker {
 	private UseFlag useFlag;
 	private int updateRev;
 	private int checkRev;
+	private boolean hasUnknown;
 
 	public final UseFlag getUseFlag() {
 		return this.useFlag;
@@ -37,6 +38,7 @@ public class UseTracker {
 			this.useFlag = useCase.checkUseFlag();
 			this.updateRev = useCase.getUpdateRev();
 			this.checkRev = useCase.start(this);
+			this.hasUnknown = false;
 			return true;
 		}
 
@@ -48,6 +50,7 @@ public class UseTracker {
 			this.useFlag = useCase.checkUseFlag();
 			this.updateRev = updateRev;
 			this.checkRev = useCase.start(this);
+			this.hasUnknown = false;
 			return true;
 		}
 
@@ -64,6 +67,7 @@ public class UseTracker {
 			return false;
 		}
 		this.checkRev = checkRev;
+		this.hasUnknown = false;
 
 		return true;
 	}
@@ -75,6 +79,7 @@ public class UseTracker {
 		final UseFlag used = use.selectUse(useCase, allUsages);
 
 		if (!used.isUsed()) {
+			this.hasUnknown |= !used.isKnown();
 			return false;
 		}
 
@@ -88,7 +93,7 @@ public class UseTracker {
 
 		final UseCase useCase = this.useFlag.getUseCase();
 
-		if (useCase.end(this)) {
+		if (useCase.end(this) || !this.hasUnknown) {
 			return this.useFlag = useCase.unusedFlag();
 		}
 
