@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.ValOp;
 
 final class DefaultMainControl extends MainControl {
 
+	private final ValOp result;
 	private Block returnCode;
 
 	public DefaultMainControl(
@@ -34,7 +35,18 @@ final class DefaultMainControl extends MainControl {
 			CodePos exit,
 			CodePos falseDir,
 			ValOp result) {
-		super(builder, code, exit, falseDir, result);
+		super(builder, code, exit, falseDir);
+		this.result = result;
+	}
+
+	@Override
+	final ValOp mainResult() {
+		return this.result;
+	}
+
+	@Override
+	void storeResult(Block code, ValOp value) {
+		result().store(code, value);
 	}
 
 	@Override

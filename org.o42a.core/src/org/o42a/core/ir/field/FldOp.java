@@ -24,11 +24,11 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.FinalIROp;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class FldOp extends IROp implements HostOp {
+public abstract class FldOp extends FinalIROp implements HostOp {
 
 	private final Fld fld;
 	private final ObjOp host;

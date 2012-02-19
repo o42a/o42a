@@ -32,20 +32,17 @@ abstract class MainControl extends Control {
 	private final Block code;
 	private final CodePos exit;
 	private final CodePos falseDir;
-	private final ValOp result;
 	private int seq;
 
 	MainControl(
 			CodeBuilder builder,
 			Block code,
 			CodePos exit,
-			CodePos falseDir,
-			ValOp result) {
+			CodePos falseDir) {
 		this.code = code;
 		this.builder = builder;
 		this.exit = exit;
 		this.falseDir = falseDir;
-		this.result = result;
 	}
 
 	@Override
@@ -77,9 +74,7 @@ abstract class MainControl extends Control {
 		return this.builder;
 	}
 
-	final ValOp mainResult() {
-		return this.result;
-	}
+	abstract ValOp mainResult();
 
 	@Override
 	final MainControl main() {
@@ -106,5 +101,7 @@ abstract class MainControl extends Control {
 	final String anonymousName() {
 		return Integer.toString(++this.seq);
 	}
+
+	abstract void storeResult(Block code, ValOp value);
 
 }

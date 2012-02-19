@@ -20,21 +20,31 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 
 
 public class InlineControl extends MainControl {
 
+	private final ValDirs dirs;
 	private Block returnCode;
+	private ValOp finalResult;
+	private Code singleResultInset;
+	private byte results;
 
 	public InlineControl(ValDirs dirs) {
 		super(
 				dirs.getBuilder(),
 				dirs.code(),
 				dirs.unknownDir(),
-				dirs.falseDir(),
-				dirs.value());
+				dirs.falseDir());
+		this.dirs = dirs;
+	}
+
+	public final ValOp finalResult() {
+		return this.finalResult != null ? this.finalResult : result();
 	}
 
 	@Override
@@ -44,6 +54,28 @@ public class InlineControl extends MainControl {
 		if (this.returnCode != null) {
 			this.returnCode.go(code().tail());
 		}
+	}
+
+	@Override
+	final ValOp mainResult() {
+		return this.dirs.value();
+	}
+
+	@Override
+	void storeResult(Block code, ValOp value) {
+		if (this.results == 0) {
+			this.singleResultInset = code.inset("sgl_res");
+			this.finalResult = value;
+			this.results = 1;
+			return;
+		}
+		if (this.results == 1) {
+			result().store(this.singleResultInset, this.finalResult);
+			this.singleResultInset = null;
+			this.finalResult = result();
+			this.results = 2;
+		}
+		result().store(code, value);
 	}
 
 	@Override

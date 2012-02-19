@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
+import static org.o42a.core.ir.value.ValOp.allocateVal;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -28,7 +28,6 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValStoreMode;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -49,27 +48,11 @@ public abstract class ValDirs {
 	}
 
 	public final ValStoreMode getStoreMode() {
-
-		final TopLevelValDirs topLevel = topLevel();
-		final ValOp value = topLevel.value;
-
-		if (value != null) {
-			return value.getStoreMode();
-		}
-
-		return topLevel.storeMode;
+		return topLevel().value().getStoreMode();
 	}
 
 	public final ValDirs setStoreMode(ValStoreMode storeMode) {
-
-		final TopLevelValDirs topLevel = topLevel();
-		final ValOp value = topLevel.value;
-
-		topLevel.storeMode = storeMode;
-		if (value != null) {
-			value.setStoreMode(storeMode);
-		}
-
+		topLevel().value().setStoreMode(storeMode);
 		return this;
 	}
 
@@ -220,8 +203,7 @@ public abstract class ValDirs {
 
 		private final CodeDirs enclosing;
 		private final AllocationDirs allocation;
-		private ValOp value;
-		private ValStoreMode storeMode;
+		private final ValOp value;
 
 		TopLevelValDirs(
 				CodeDirs enclosing,
@@ -233,8 +215,12 @@ public abstract class ValDirs {
 					valueStruct);
 			this.dirs = enclosing;
 			this.enclosing = enclosing;
-			this.storeMode = ASSIGNMENT_VAL_STORE;
 			this.allocation = enclosing.allocate(name);
+			this.value = allocateVal(
+					"value",
+					this.allocation.code(),
+					getBuilder(),
+					valueStruct);
 		}
 
 		TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
@@ -245,20 +231,12 @@ public abstract class ValDirs {
 			this.dirs = enclosing;
 			this.enclosing = enclosing;
 			this.value = value;
-			this.storeMode = value.getStoreMode();
 			this.allocation = null;
 		}
 
 		@Override
-		public ValOp value() {
-			if (this.value != null) {
-				return this.value;
-			}
-			return this.value =
-					this.allocation.allocate(id("value"), ValType.VAL_TYPE)
-					.op(getBuilder(), getValueStruct())
-					.storeIndefinite(this.allocation.code())
-					.setStoreMode(this.storeMode);
+		public final ValOp value() {
+			return this.value;
 		}
 
 		@Override

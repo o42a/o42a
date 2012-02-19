@@ -21,7 +21,7 @@ package org.o42a.lib.console;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.CodeBuilder.hostlessBuilder;
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+import static org.o42a.core.ir.value.ValOp.allocateVal;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
@@ -206,10 +206,11 @@ public class ConsoleModule extends AnnotatedModule {
 		final CodeBuilder builder = hostlessBuilder(getContext(), main);
 		final Block exit = main.addBlock("exit");
 		final AllocationCode alloc = main.undisposable();
-		final ValOp result =
-				alloc.allocate(null, VAL_TYPE)
-				.op(builder, ValueStruct.INTEGER)
-				.storeIndefinite(alloc);
+		final ValOp result = allocateVal(
+				"result",
+				alloc,
+				builder,
+				ValueStruct.INTEGER);
 		final ValDirs dirs =
 				builder.falseWhenUnknown(main, exit.head())
 				.value(alloc.id("exec_main"), result);

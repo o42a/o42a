@@ -36,11 +36,11 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.FinalIROp;
 import org.o42a.core.ir.op.NewObjectFunc;
 
 
-public class CtrOp extends IROp {
+public class CtrOp extends FinalIROp {
 
 	public static final Type CTR_TYPE = new Type();
 

@@ -42,7 +42,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
+public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,

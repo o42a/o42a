@@ -29,13 +29,13 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.DepIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.FinalIROp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
 
 
-public class DepOp extends IROp implements HostOp {
+public class DepOp extends FinalIROp implements HostOp {
 
 	private final ObjOp host;
 	private final DepIR depIR;

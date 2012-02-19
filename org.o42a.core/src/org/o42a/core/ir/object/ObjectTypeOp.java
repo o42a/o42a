@@ -29,7 +29,7 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 
 
-public class ObjectTypeOp extends IROp {
+public class ObjectTypeOp extends FinalIROp {
 
 	private final ObjectPrecision precision;
 
