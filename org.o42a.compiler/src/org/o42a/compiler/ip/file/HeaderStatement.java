@@ -25,7 +25,7 @@ import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
@@ -76,7 +76,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public final InlineCommand inlineImperative(
+	public final InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -102,7 +102,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(CodeBuilder builder) {
+	protected final Cmd createCmd(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

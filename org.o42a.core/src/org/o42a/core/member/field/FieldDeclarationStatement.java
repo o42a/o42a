@@ -25,8 +25,8 @@ import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.LocalFieldOp;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.LocalFieldCmd;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;
@@ -100,8 +100,8 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
-		return new LocalFieldOp(
+	protected Cmd createCmd(CodeBuilder builder) {
+		return new LocalFieldCmd(
 				builder,
 				this,
 				this.member.toField().field(dummyUser()));

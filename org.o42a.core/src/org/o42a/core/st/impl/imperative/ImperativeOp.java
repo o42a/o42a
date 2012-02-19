@@ -24,8 +24,8 @@ import java.util.List;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Statement;
@@ -249,9 +249,9 @@ final class ImperativeOp {
 			}
 			if (inlines == null) {
 
-				final StOp op = statement.op(control.getBuilder());
+				final Cmd cmd = statement.cmd(control.getBuilder());
 
-				op.write(control, result);
+				cmd.write(control, result);
 			} else {
 				inlines.get(i).write(control, result);
 			}

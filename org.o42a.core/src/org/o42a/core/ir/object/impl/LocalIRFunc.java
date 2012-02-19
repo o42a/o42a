@@ -121,13 +121,13 @@ public final class LocalIRFunc
 
 	private void build(LocalBuilder builder, Block code, ValOp result) {
 
-		final StOp op = getScope().getBlock().op(builder);
+		final Cmd cmd = getScope().getBlock().cmd(builder);
 		final Block exit = code.addBlock("exit");
 		final Block failure = code.addBlock("failure");
 		final Control control =
 				builder.createControl(code, exit.head(), failure.head());
 
-		op.write(control, result);
+		cmd.write(control, result);
 
 		control.end();
 

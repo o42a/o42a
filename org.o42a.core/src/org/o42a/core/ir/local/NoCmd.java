@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2012 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st;
+package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.func.Cancelable;
+import org.o42a.core.st.Statement;
 
 
-public interface InlineCommand extends Cancelable {
+final class NoCmd extends Cmd {
 
-	void write(Control control, ValOp result);
+	NoCmd(CodeBuilder builder, Statement statement) {
+		super(builder, statement);
+	}
+
+	@Override
+	public void write(Control control, ValOp result) {
+	}
 
 }

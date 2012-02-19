@@ -30,13 +30,13 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.st.InlineCommand;
+import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueStruct;
 
 
-public class InlineBlock implements InlineCommand {
+public class InlineBlock implements InlineCmd {
 
 	public static InlineBlock inlineBlock(
 			Normalizer normalizer,

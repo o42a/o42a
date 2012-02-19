@@ -35,7 +35,7 @@ import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.RefStOp;
+import org.o42a.core.ir.local.RefCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -248,7 +248,7 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -259,7 +259,7 @@ public class Ref extends Statement {
 			return null;
 		}
 
-		return new InlineCmd(inline);
+		return new InlineRef(inline);
 	}
 
 	public final void normalize(Analyzer analyzer) {
@@ -362,8 +362,8 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public final RefStOp op(CodeBuilder builder) {
-		return (RefStOp) super.op(builder);
+	public final RefCmd cmd(CodeBuilder builder) {
+		return (RefCmd) super.cmd(builder);
 	}
 
 	public final RefOp op(HostOp host) {
@@ -393,11 +393,11 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	protected final RefStOp createOp(CodeBuilder builder) {
+	protected final RefCmd createCmd(CodeBuilder builder) {
 		if (this.inline != null) {
-			return new InlineOp(builder, this);
+			return new InlineRefCmdImpl(builder, this);
 		}
-		return new Op(builder, this);
+		return new RefCmdImpl(builder, this);
 	}
 
 	final void refFullyResolved() {
@@ -465,9 +465,9 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class Op extends RefStOp {
+	private static final class RefCmdImpl extends RefCmd {
 
-		Op(CodeBuilder builder, Ref ref) {
+		RefCmdImpl(CodeBuilder builder, Ref ref) {
 			super(builder, ref);
 		}
 
@@ -500,9 +500,9 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class InlineOp extends RefStOp {
+	private static final class InlineRefCmdImpl extends RefCmd {
 
-		InlineOp(CodeBuilder builder, Ref ref) {
+		InlineRefCmdImpl(CodeBuilder builder, Ref ref) {
 			super(builder, ref);
 		}
 
@@ -549,11 +549,11 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class InlineCmd implements InlineCommand {
+	private static final class InlineRef implements InlineCmd {
 
 		private final InlineValue inline;
 
-		InlineCmd(InlineValue inline) {
+		InlineRef(InlineValue inline) {
 			this.inline = inline;
 		}
 

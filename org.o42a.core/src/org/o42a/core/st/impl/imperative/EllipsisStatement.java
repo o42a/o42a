@@ -23,7 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
@@ -74,7 +74,7 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -104,16 +104,16 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
+	protected Cmd createCmd(CodeBuilder builder) {
 		if (this.exit) {
-			return new ExitOp(builder, this);
+			return new ExitCmd(builder, this);
 		}
-		return new RepeatOp(builder, this);
+		return new RepeatCmd(builder, this);
 	}
 
-	private static final class ExitOp extends StOp {
+	private static final class ExitCmd extends Cmd {
 
-		ExitOp(CodeBuilder builder, EllipsisStatement statement) {
+		ExitCmd(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 
@@ -127,9 +127,9 @@ public final class EllipsisStatement extends Statement {
 
 	}
 
-	private static final class RepeatOp extends StOp {
+	private static final class RepeatCmd extends Cmd {
 
-		RepeatOp(CodeBuilder builder, EllipsisStatement statement) {
+		RepeatCmd(CodeBuilder builder, EllipsisStatement statement) {
 			super(builder, statement);
 		}
 

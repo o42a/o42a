@@ -19,10 +19,10 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.ir.local.StOp.noStOp;
+import static org.o42a.core.ir.local.Cmd.noCmd;
 
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 
 
 enum AssignmentKind {
@@ -30,8 +30,8 @@ enum AssignmentKind {
 	ASSIGNMENT_ERROR() {
 
 		@Override
-		public StOp op(CodeBuilder builder, AssignmentStatement assignment) {
-			return noStOp(builder, assignment);
+		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
+			return noCmd(builder, assignment);
 		}
 
 	},
@@ -39,8 +39,8 @@ enum AssignmentKind {
 	VARIABLE_ASSIGNMENT() {
 
 		@Override
-		public StOp op(CodeBuilder builder, AssignmentStatement assignment) {
-			return new VariableAssignmentOp(builder, assignment);
+		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
+			return new VariableAssignmentCmd(builder, assignment);
 		}
 
 	};
@@ -49,7 +49,7 @@ enum AssignmentKind {
 		return this == ASSIGNMENT_ERROR;
 	}
 
-	public abstract StOp op(
+	public abstract Cmd op(
 			CodeBuilder builder,
 			AssignmentStatement assignment);
 

@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -229,7 +229,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -251,8 +251,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
-		return new ImperativeBlockOp(builder, this);
+	protected Cmd createCmd(CodeBuilder builder) {
+		return new ImperativeBlockCmd(builder, this);
 	}
 
 	@Override

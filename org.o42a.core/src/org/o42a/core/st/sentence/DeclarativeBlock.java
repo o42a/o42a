@@ -29,11 +29,11 @@ import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.InlineCommand;
+import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.BlockDefiner;
@@ -166,7 +166,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -179,7 +179,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
+	protected Cmd createCmd(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

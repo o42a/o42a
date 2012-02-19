@@ -23,7 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
@@ -96,7 +96,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -119,7 +119,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
+	protected Cmd createCmd(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 
