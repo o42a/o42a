@@ -72,7 +72,7 @@ public final class DataRec extends PtrRec<DataRecOp, Ptr<DataOp>> {
 		setAllocation(allocator.allocateDataPtr(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

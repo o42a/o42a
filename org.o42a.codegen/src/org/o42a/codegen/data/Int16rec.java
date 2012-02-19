@@ -73,7 +73,7 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 		setAllocation(allocator.allocateInt16(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

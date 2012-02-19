@@ -66,7 +66,10 @@ public abstract class AbstractPtr {
 
 	@Override
 	public String toString() {
-		return getId().toString();
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
 	}
 
 	protected abstract DataAllocation<AnyOp> allocationToAny();

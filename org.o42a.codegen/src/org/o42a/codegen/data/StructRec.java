@@ -79,7 +79,7 @@ public final class StructRec<S extends StructOp<S>>
 		setAllocation(allocator.allocatePtr(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation(),
+				getPointer().getProtoAllocation(),
 				this.type.pointer(getGenerator()).getAllocation()));
 	}
 

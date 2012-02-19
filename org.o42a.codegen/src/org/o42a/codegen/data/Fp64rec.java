@@ -73,7 +73,7 @@ public final class Fp64rec extends Rec<Fp64recOp, Double> {
 		setAllocation(allocator.allocateFp64(
 				getEnclosing().getAllocation(),
 				this,
-				getAllocation()));
+				getPointer().getProtoAllocation()));
 	}
 
 	@Override

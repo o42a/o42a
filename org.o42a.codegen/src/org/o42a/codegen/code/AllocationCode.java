@@ -59,7 +59,15 @@ public final class AllocationCode extends Inset {
 	}
 
 	public <S extends StructOp<S>> S allocate(CodeId id, Type<S> type) {
-		return allocate(this, id, type);
+		assert assertIncomplete();
+
+		final S result = writer().allocateStruct(
+				opId(id),
+				type.data(getGenerator()).getPointer().getAllocation());
+
+		result.allocated(this, null);
+
+		return result;
 	}
 
 	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
@@ -69,7 +77,7 @@ public final class AllocationCode extends Inset {
 
 		final StructRecOp<S> result = writer().allocatePtr(
 				opId(id),
-				dataAllocation(type.data(getGenerator())));
+				type.data(getGenerator()).getPointer().getAllocation());
 
 		result.allocated(this, null);
 

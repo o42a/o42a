@@ -36,6 +36,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 		implements Getter<Ptr<P>> {
 
 	private DataAllocation<P> allocation;
+	private DataAllocation<P> protoAllocation;
 
 	Ptr(CodeId id, boolean ptrToConstant, boolean isNull) {
 		super(id, ptrToConstant, isNull);
@@ -51,6 +52,10 @@ public abstract class Ptr<P extends PtrOp<P>>
 			return this.allocation;
 		}
 		return this.allocation = createAllocation();
+	}
+
+	public final DataAllocation<P> getProtoAllocation() {
+		return this.protoAllocation;
 	}
 
 	public final RelPtr relativeTo(Ptr<?> ptr) {
@@ -85,11 +90,6 @@ public abstract class Ptr<P extends PtrOp<P>>
 				c.writer());
 	}
 
-	@Override
-	public String toString() {
-		return this.allocation.toString();
-	}
-
 	protected abstract DataAllocation<P> createAllocation();
 
 	@Override
@@ -98,12 +98,14 @@ public abstract class Ptr<P extends PtrOp<P>>
 	}
 
 	final void setAllocation(DataAllocation<P> allocation) {
+		assert this.allocation == null :
+			"Allocation already present";
 		this.allocation = allocation;
 	}
 
 	@SuppressWarnings("unchecked")
-	final void copyAllocation(Data<?> data) {
-		this.allocation = (DataAllocation<P>) data.getAllocation();
+	final void copyAllocation(Data<?> proto) {
+		this.protoAllocation = (DataAllocation<P>) proto.getAllocation();
 	}
 
 }

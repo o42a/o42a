@@ -57,7 +57,7 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 
 			final ContainerLLDAlloc<?> typeAllocation =
 					(ContainerLLDAlloc<?>) type.pointer(module.getGenerator())
-					.getAllocation();
+					.getProtoAllocation();
 
 			this.typeAllocated = typeAllocation.isTypeAllocated();
 		}
