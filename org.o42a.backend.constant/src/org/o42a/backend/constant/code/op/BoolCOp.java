@@ -27,13 +27,11 @@ import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.ReturnBE;
-import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.StructOp;
 
 
 public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
@@ -82,7 +80,6 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		return this.constant;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <O extends Op> O select(
 			final CodeId id,
@@ -100,22 +97,15 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 			return create(selectId, ccode, falseValue);
 		}
 
-		if (trueValue instanceof StructOp) {
-
-			@SuppressWarnings("rawtypes")
-			final CStruct trueStruct = cast((StructOp) trueValue);
-			@SuppressWarnings("rawtypes")
-			final CStruct falseStruct = cast((StructOp) falseValue);
-
-			return selectStruct(selectId, ccode, trueStruct, falseStruct);
-		}
-
 		final COp<O, ?> trueVal = cast(trueValue);
+		final COp<O, ?> falseVal = cast(falseValue);
 
 		return trueVal.create(new OpBE<O>(selectId, ccode) {
 			@Override
 			public void prepare() {
-
+				use(backend());
+				use(trueVal);
+				use(falseVal);
 			}
 			@Override
 			protected O write() {
@@ -123,7 +113,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 						getId(),
 						part().underlying(),
 						trueVal.backend().underlying(),
-						cast(falseValue).backend().underlying());
+						falseVal.backend().underlying());
 			}
 		});
 	}
@@ -182,29 +172,6 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		return (O) val.create(
 				new AliasBE(id, code, val.backend()),
 				val.getConstant());
-	}
-
-	private <S extends StructOp<S>> S selectStruct(
-			final CodeId id,
-			final CCode<?> code,
-			final CStruct<S> trueValue,
-			final CStruct<S> falseValue) {
-		return trueValue.create(new OpBE<S>(id, code) {
-			@Override
-			public void prepare() {
-				use(backend());
-				use(trueValue);
-				use(falseValue);
-			}
-			@Override
-			protected S write() {
-				return backend().underlying().select(
-						getId(),
-						part().underlying(),
-						trueValue.backend().underlying(),
-						falseValue.backend().underlying());
-			}
-		});
 	}
 
 	private static final class BoolConstBE extends ConstBE<BoolOp, Boolean> {
