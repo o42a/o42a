@@ -31,7 +31,7 @@ import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
@@ -106,7 +106,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -146,7 +146,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
+	protected Cmd createCmd(CodeBuilder builder) {
 		return getAssignmentKind().op(builder, this);
 	}
 

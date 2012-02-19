@@ -35,7 +35,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.InlineCommand;
+import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -201,7 +201,7 @@ public class LocalDef extends ValueDef {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
-		final InlineCommand inline = getBlock().inlineImperative(
+		final InlineCmd inline = getBlock().inlineImperative(
 				normalizer,
 				valueStruct,
 				this.localPrefix.rescope(getScope()));

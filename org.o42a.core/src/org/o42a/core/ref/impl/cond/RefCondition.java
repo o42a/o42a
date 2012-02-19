@@ -21,8 +21,8 @@ package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.StOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
@@ -66,7 +66,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public InlineCommand inlineImperative(
+	public InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -78,7 +78,7 @@ public final class RefCondition extends Statement {
 			return null;
 		}
 
-		return new InlineCmd(valueStruct, value);
+		return new Inline(valueStruct, value);
 	}
 
 	@Override
@@ -97,19 +97,19 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	protected StOp createOp(CodeBuilder builder) {
-		return new Op(builder, this.ref);
+	protected Cmd createCmd(CodeBuilder builder) {
+		return new CondCmd(builder, this.ref);
 	}
 
 	final StatementEnv getConditionalEnv() {
 		return this.conditionalEnv;
 	}
 
-	private static final class InlineCmd implements InlineCommand {
+	private static final class Inline implements InlineCmd {
 
 		private final InlineValue value;
 
-		InlineCmd(ValueStruct<?, ?> valueStruct, InlineValue value) {
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
 			this.value = value;
 		}
 
@@ -138,9 +138,9 @@ public final class RefCondition extends Statement {
 
 	}
 
-	private static final class Op extends StOp {
+	private static final class CondCmd extends Cmd {
 
-		Op(CodeBuilder builder, Statement statement) {
+		CondCmd(CodeBuilder builder, Statement statement) {
 			super(builder, statement);
 		}
 
@@ -149,7 +149,7 @@ public final class RefCondition extends Statement {
 
 			final Ref ref = (Ref) getStatement();
 
-			ref.op(getBuilder()).writeCond(control);
+			ref.cmd(getBuilder()).writeCond(control);
 		}
 
 	}

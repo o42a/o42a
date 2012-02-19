@@ -25,15 +25,15 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
-import org.o42a.core.st.InlineCommand;
+import org.o42a.core.st.InlineCmd;
 import org.o42a.core.value.ValueStruct;
 
 
 final class InlineLocalDef extends InlineValue {
 
-	private final InlineCommand command;
+	private final InlineCmd command;
 
-	InlineLocalDef(ValueStruct<?, ?> valueStruct, InlineCommand command) {
+	InlineLocalDef(ValueStruct<?, ?> valueStruct, InlineCmd command) {
 		super(valueStruct);
 		this.command = command;
 	}

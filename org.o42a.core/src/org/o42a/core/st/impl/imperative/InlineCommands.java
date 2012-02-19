@@ -27,7 +27,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.InlineCommand;
+import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.func.Cancelable;
@@ -42,12 +42,12 @@ final class InlineCommands implements Cancelable {
 			Imperatives imperatives) {
 
 		final List<Definer> definers = imperatives.getDefiners();
-		final InlineCommand[] inlines = new InlineCommand[definers.size()];
+		final InlineCmd[] inlines = new InlineCmd[definers.size()];
 		int i = 0;
 
 		for (Definer definer : definers) {
 
-			final InlineCommand inline =
+			final InlineCmd inline =
 					definer.getStatement().inlineImperative(
 							normalizer,
 							valueStruct,
@@ -63,13 +63,13 @@ final class InlineCommands implements Cancelable {
 		return new InlineCommands(inlines);
 	}
 
-	private final InlineCommand[] commands;
+	private final InlineCmd[] commands;
 
-	private InlineCommands(InlineCommand[] statements) {
+	private InlineCommands(InlineCmd[] statements) {
 		this.commands = statements;
 	}
 
-	public final InlineCommand get(int index) {
+	public final InlineCmd get(int index) {
 		return this.commands[index];
 	}
 

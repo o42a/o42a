@@ -19,36 +19,38 @@
 */
 package org.o42a.core.ir.local;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.field.Field;
+import org.o42a.core.st.Statement;
 
 
-public final class LocalFieldOp extends StOp {
+public abstract class Cmd {
 
-	private final Field<?> field;
-
-	public LocalFieldOp(
-			CodeBuilder builder,
-			DeclarationStatement statement,
-			Field<?> field) {
-		super(builder, statement);
-		this.field = field;
+	public static Cmd noCmd(CodeBuilder builder, Statement statement) {
+		return new NoCmd(builder, statement);
 	}
 
-	public final Field<?> getField() {
-		return this.field;
+	private final CodeBuilder builder;
+	private final Statement statement;
+
+	public Cmd(CodeBuilder builder, Statement statement) {
+		this.builder = builder;
+		this.statement = statement;
 	}
 
-	@Override
-	public void write(Control control, ValOp result) {
-
-		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
-		final LclOp op =
-				fieldIR.allocate(control.getBuilder(), control.allocation());
-
-		op.write(control, result);
+	public final Generator getGenerator() {
+		return getBuilder().getGenerator();
 	}
+
+	public final CodeBuilder getBuilder() {
+		return this.builder;
+	}
+
+	public final Statement getStatement() {
+		return this.statement;
+	}
+
+	public abstract void write(Control control, ValOp result);
 
 }

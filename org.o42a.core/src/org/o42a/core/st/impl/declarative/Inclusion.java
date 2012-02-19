@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
@@ -48,7 +48,7 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	public final InlineCommand inlineImperative(
+	public final InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -71,7 +71,7 @@ public abstract class Inclusion extends Statement {
 	}
 
 	@Override
-	protected final StOp createOp(CodeBuilder builder) {
+	protected final Cmd createCmd(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

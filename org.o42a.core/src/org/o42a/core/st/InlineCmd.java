@@ -17,22 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.local;
+package org.o42a.core.st;
 
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.util.func.Cancelable;
 
 
-public abstract class RefStOp extends StOp {
+public interface InlineCmd extends Cancelable {
 
-	public RefStOp(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
-	}
-
-	public final Ref getRef() {
-		return (Ref) getStatement();
-	}
-
-	public abstract void writeCond(Control control);
+	void write(Control control, ValOp result);
 
 }

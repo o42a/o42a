@@ -23,7 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.StOp;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.source.LocationInfo;
@@ -34,7 +34,7 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class Statement extends Placed {
 
-	private StOp op;
+	private Cmd cmd;
 	private boolean fullyResolved;
 
 	public Statement(LocationInfo location, Distributor distributor) {
@@ -63,24 +63,24 @@ public abstract class Statement extends Placed {
 		}
 	}
 
-	public abstract InlineCommand inlineImperative(
+	public abstract InlineCmd inlineImperative(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
 
 	public abstract void normalizeImperative(Normalizer normalizer);
 
-	public StOp op(CodeBuilder builder) {
+	public Cmd cmd(CodeBuilder builder) {
 
-		final StOp op = this.op;
+		final Cmd cmd = this.cmd;
 
-		if (op != null && op.getBuilder() == builder) {
-			return op;
+		if (cmd != null && cmd.getBuilder() == builder) {
+			return cmd;
 		}
 
 		assert assertFullyResolved();
 
-		return this.op = createOp(builder);
+		return this.cmd = createCmd(builder);
 	}
 
 	public final boolean assertFullyResolved() {
@@ -91,7 +91,7 @@ public abstract class Statement extends Placed {
 
 	protected abstract void fullyResolveImperative(LocalResolver resolver);
 
-	protected abstract StOp createOp(CodeBuilder builder);
+	protected abstract Cmd createCmd(CodeBuilder builder);
 
 	protected final void fullyResolved() {
 		this.fullyResolved = true;
