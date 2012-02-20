@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a LLVM Back-end Tests
 Bundle-SymbolicName: org.o42a.backend.llvm.test;singleton:=true
-Bundle-Version: 0.1.4
+Bundle-Version: 0.1.5
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4;bundle-version="4.5.0",
- org.o42a.backend.constant;bundle-version="0.1.4",
- org.o42a.backend.llvm;bundle-version="0.1.4",
- org.o42a.compiler;bundle-version="0.1.4",
- org.o42a.compiler.test;bundle-version="0.1.4"
+ org.o42a.backend.constant;bundle-version="0.1.5",
+ org.o42a.backend.llvm;bundle-version="0.1.5",
+ org.o42a.compiler;bundle-version="0.1.5",
+ org.o42a.compiler.test;bundle-version="0.1.5"
 Bundle-ActivationPolicy: lazy
