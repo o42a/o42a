@@ -19,7 +19,7 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
 

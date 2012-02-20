@@ -22,7 +22,7 @@ package org.o42a.core.ref.type;
 import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;

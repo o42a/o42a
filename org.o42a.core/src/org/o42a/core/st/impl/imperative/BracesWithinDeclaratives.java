@@ -21,7 +21,6 @@ package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
@@ -29,6 +28,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;

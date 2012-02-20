@@ -21,7 +21,7 @@ package org.o42a.core.source;
 
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 
 
 public abstract class Intrinsics {

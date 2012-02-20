@@ -21,8 +21,8 @@ package org.o42a.core.ref;
 
 import org.o42a.analysis.use.*;
 import org.o42a.core.Container;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.object.Obj;
 
 
 public abstract class RefUsage extends Usage<RefUsage> {

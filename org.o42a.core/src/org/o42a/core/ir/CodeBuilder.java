@@ -27,11 +27,11 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 

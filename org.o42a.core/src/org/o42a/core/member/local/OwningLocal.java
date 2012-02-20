@@ -19,9 +19,9 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.Obj;
 
 
 class OwningLocal extends MemberOwner {

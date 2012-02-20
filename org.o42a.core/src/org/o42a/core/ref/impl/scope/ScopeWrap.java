@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref.impl.scope;
 
-import static org.o42a.core.ref.impl.path.Wrapper.wrapperPrefix;
 import static org.o42a.core.ref.impl.scope.CompoundScopeUpgrade.compoundScopeUpgrade;
+import static org.o42a.core.ref.path.impl.Wrapper.wrapperPrefix;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolver;

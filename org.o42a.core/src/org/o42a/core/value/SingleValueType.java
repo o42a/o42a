@@ -21,9 +21,9 @@ package org.o42a.core.value;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.ValueDef;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;

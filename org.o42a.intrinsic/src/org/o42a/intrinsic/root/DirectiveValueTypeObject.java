@@ -23,8 +23,8 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Directive;
@@ -44,7 +44,7 @@ public class DirectiveValueTypeObject
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
+	public Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ascendantDefinitions) {
 

@@ -21,24 +21,27 @@ package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.artifact.object.ValuePartUsage.VALUE_PART_ACCESS;
-import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.DefCollector.explicitDef;
 import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
+import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
+import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.*;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.CondDef;
-import org.o42a.core.def.CondDefs;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.def.CondDef;
+import org.o42a.core.object.def.CondDefs;
+import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.type.Sample;
+import org.o42a.core.object.value.CondPart;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.Condition;
 

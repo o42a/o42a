@@ -27,10 +27,10 @@ import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Derivation;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Accessor;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Derivation;
 import org.o42a.core.value.ValueType;
 
 

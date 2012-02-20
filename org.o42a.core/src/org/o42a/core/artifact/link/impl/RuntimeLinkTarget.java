@@ -20,16 +20,19 @@
 package org.o42a.core.artifact.link.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.ConstructionMode.RUNTIME_CONSTRUCTION;
-import static org.o42a.core.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
+import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.object.ConstructionMode;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 
 
 public final class RuntimeLinkTarget extends Obj {

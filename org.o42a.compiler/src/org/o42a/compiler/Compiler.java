@@ -33,7 +33,7 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.compiler.ip.file.*;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.*;
 import org.o42a.parser.Parser;

@@ -24,13 +24,13 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 import java.util.Collection;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.Accessor;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.util.ArrayUtil;
 

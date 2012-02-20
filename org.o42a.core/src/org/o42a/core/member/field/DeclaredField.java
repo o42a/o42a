@@ -29,7 +29,7 @@ import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.impl.field.FieldInclusions;
+import org.o42a.core.member.field.impl.FieldInclusions;
 
 
 public abstract class DeclaredField<

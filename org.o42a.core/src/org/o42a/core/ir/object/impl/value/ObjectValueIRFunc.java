@@ -22,11 +22,11 @@ package org.o42a.core.ir.object.impl.value;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.def.SourceInfo;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.impl.ObjectIRFunc;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.def.SourceInfo;
 
 
 public abstract class ObjectValueIRFunc<F extends Func<F>>

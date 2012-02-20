@@ -19,13 +19,13 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.def.Def.sourceOf;
+import static org.o42a.core.object.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondDef;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.CondDef;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;

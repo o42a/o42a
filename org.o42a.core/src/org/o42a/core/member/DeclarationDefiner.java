@@ -20,8 +20,8 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Instruction;

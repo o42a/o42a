@@ -20,9 +20,9 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.Value;

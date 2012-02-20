@@ -24,7 +24,6 @@ import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.Obj;
 
 
 public final class ObjOp extends ObjectOp {

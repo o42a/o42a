@@ -25,13 +25,13 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 public final class ObjectFieldIR extends FieldIR<Obj> {

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.object.Obj;
 
 
 public interface ClauseContainer {

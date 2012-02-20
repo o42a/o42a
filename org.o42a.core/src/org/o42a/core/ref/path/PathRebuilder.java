@@ -23,7 +23,7 @@ import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 
 import java.util.Arrays;
 
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;

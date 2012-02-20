@@ -26,8 +26,8 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;

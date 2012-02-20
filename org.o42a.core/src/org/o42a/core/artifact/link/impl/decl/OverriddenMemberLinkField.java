@@ -21,7 +21,7 @@ package org.o42a.core.artifact.link.impl.decl;
 
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.impl.field.OverriddenMemberField;
+import org.o42a.core.member.field.impl.OverriddenMemberField;
 
 
 public class OverriddenMemberLinkField

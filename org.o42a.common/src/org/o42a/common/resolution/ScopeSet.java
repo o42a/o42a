@@ -19,13 +19,13 @@
 */
 package org.o42a.common.resolution;
 
-import static org.o42a.core.artifact.object.Derivation.IMPLICIT_SAMPLE;
+import static org.o42a.core.object.type.Derivation.IMPLICIT_SAMPLE;
 
 import java.util.HashSet;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 
 
 public class ScopeSet {

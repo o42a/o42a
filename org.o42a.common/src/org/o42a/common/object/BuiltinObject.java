@@ -23,8 +23,11 @@ import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 

@@ -21,8 +21,8 @@ package org.o42a.intrinsic.array;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.ValueTypeObject;
-import org.o42a.core.artifact.array.ArrayValueStruct;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.value.ValueType;
 
 

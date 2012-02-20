@@ -19,18 +19,14 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
-import static org.o42a.core.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectMembers;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -39,9 +35,13 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.ObjectConstructorStep;
-import org.o42a.core.ref.impl.path.ObjectFieldDefinition;
+import org.o42a.core.ref.path.impl.ObjectConstructorStep;
+import org.o42a.core.ref.path.impl.ObjectFieldDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;

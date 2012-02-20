@@ -20,10 +20,10 @@
 package org.o42a.common.def;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;

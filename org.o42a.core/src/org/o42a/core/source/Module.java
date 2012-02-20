@@ -29,12 +29,15 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.ObjectMemberRegistry;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.common.ObjectMemberRegistry;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 

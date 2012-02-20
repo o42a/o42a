@@ -22,8 +22,8 @@ package org.o42a.core.st.impl.declarative;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;

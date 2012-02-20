@@ -28,9 +28,6 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyRecOp;
-import org.o42a.core.artifact.array.Array;
-import org.o42a.core.artifact.array.ArrayItem;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
@@ -39,6 +36,9 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValAllocFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.Array;
+import org.o42a.core.object.array.ArrayItem;
 
 
 class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {

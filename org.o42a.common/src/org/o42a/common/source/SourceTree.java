@@ -24,9 +24,9 @@ import static org.o42a.common.object.CompiledObject.compileField;
 import java.util.Iterator;
 
 import org.o42a.common.object.CompiledField;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.SourceFileName;

@@ -21,11 +21,11 @@ package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.ArrayElement;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.impl.path.DummyPathWalker;
+import org.o42a.core.ref.path.impl.DummyPathWalker;
 
 
 public interface PathWalker {

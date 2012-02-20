@@ -23,12 +23,12 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.Condition;
 
 

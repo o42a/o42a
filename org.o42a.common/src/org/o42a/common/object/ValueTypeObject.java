@@ -20,8 +20,8 @@
 package org.o42a.common.object;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -40,7 +40,7 @@ public abstract class ValueTypeObject extends AnnotatedObject {
 	}
 
 	@Override
-	protected Definitions overrideDefinitions(
+	public Definitions overrideDefinitions(
 			Scope scope,
 			Definitions ascentantDefinitions) {
 		return value().getValueStruct().noValueDefinitions(this, scope);

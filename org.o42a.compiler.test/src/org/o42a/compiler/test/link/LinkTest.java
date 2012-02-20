@@ -25,8 +25,8 @@ import static org.junit.Assert.assertSame;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 public class LinkTest extends CompilerTestCase {

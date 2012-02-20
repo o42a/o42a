@@ -28,11 +28,11 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.*;
-import org.o42a.core.artifact.array.Array;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
+import org.o42a.core.object.array.Array;
 
 
 public class ArrayIR {

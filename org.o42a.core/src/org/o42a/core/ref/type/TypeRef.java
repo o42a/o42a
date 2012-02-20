@@ -20,15 +20,15 @@
 package org.o42a.core.ref.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.ConstructionMode;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectType;
+import org.o42a.core.object.ConstructionMode;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.common.RescopableRef;

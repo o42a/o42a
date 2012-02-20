@@ -27,9 +27,9 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 

@@ -31,8 +31,8 @@ import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.object.Obj;
 
 
 public final class OverriderDescIR implements Content<OverriderDescIR.Type> {

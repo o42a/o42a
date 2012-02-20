@@ -20,9 +20,9 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -33,7 +33,6 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
@@ -41,6 +40,7 @@ import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
+import org.o42a.core.object.Obj;
 
 
 public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {

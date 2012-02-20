@@ -22,11 +22,11 @@ package org.o42a.core.ir.object;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
 
 
 public class ObjectTypeOp extends FinalIROp {

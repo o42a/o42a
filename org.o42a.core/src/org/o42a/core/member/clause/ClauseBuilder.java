@@ -20,14 +20,14 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.impl.clause.DeclaredGroupClause.declaredGroupClause;
-import static org.o42a.core.member.impl.clause.DeclaredPlainClause.plainClause;
+import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
+import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
 
 import org.o42a.core.*;
 import org.o42a.core.member.*;
+import org.o42a.core.member.clause.impl.*;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.member.impl.clause.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;

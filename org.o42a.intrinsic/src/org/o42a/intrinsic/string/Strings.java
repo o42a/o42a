@@ -22,8 +22,8 @@ package org.o42a.intrinsic.string;
 import org.o42a.common.object.AnnotatedObject;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.intrinsic.root.Root;
 
 

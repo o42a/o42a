@@ -34,7 +34,7 @@ import org.o42a.analysis.use.Usable;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.*;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;

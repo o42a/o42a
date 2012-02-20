@@ -22,10 +22,10 @@ package org.o42a.core.member.clause;
 import java.util.HashMap;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;

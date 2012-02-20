@@ -21,8 +21,8 @@ package org.o42a.core.artifact.common;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.FieldUses;
+import org.o42a.core.object.Obj;
 
 
 public abstract class MaterializableArtifact<

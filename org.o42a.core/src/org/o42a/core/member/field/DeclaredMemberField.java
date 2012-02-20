@@ -23,9 +23,9 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.impl.decl.OverriddenMemberLinkField;
-import org.o42a.core.artifact.object.impl.OverriddenMemberObjectField;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.impl.OverriddenMemberObjectField;
 
 
 final class DeclaredMemberField extends MemberField {

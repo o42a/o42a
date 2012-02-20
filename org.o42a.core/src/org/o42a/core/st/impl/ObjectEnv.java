@@ -22,7 +22,7 @@ package org.o42a.core.st.impl;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.value.ValueStruct;

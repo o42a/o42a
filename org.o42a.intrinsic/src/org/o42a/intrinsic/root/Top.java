@@ -26,13 +26,13 @@ import java.util.Collection;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.ConstructionMode;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.object.Accessor;
+import org.o42a.core.object.ConstructionMode;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;

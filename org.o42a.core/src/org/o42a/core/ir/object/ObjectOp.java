@@ -29,7 +29,6 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
@@ -38,6 +37,7 @@ import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 

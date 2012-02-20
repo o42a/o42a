@@ -19,11 +19,11 @@
 */
 package org.o42a.common.object;
 
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectField;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.common.ObjectField;
 import org.o42a.core.source.FieldCompiler;
 
 

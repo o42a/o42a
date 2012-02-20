@@ -20,9 +20,9 @@
 package org.o42a.core.member.local;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.impl.local.ExplicitLocalScope;
+import org.o42a.core.member.local.impl.ExplicitLocalScope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 

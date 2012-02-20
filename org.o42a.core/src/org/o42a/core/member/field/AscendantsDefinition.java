@@ -21,7 +21,7 @@ package org.o42a.core.member.field;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.artifact.object.AscendantsBuilder;
+import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;

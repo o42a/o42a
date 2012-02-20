@@ -23,8 +23,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
