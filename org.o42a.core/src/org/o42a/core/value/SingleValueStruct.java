@@ -23,8 +23,8 @@ import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.ValueDef;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;

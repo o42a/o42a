@@ -26,7 +26,7 @@ import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;

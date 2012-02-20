@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.DerivationUsage.ALL_DERIVATION_USAGES;
+import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import java.util.Collection;
 
@@ -28,12 +28,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 
 

@@ -22,8 +22,8 @@ package org.o42a.core.ref.path;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.impl.path.PathFragmentFieldDefinition;
-import org.o42a.core.ref.impl.path.PathFragmentStep;
+import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
+import org.o42a.core.ref.path.impl.PathFragmentStep;
 
 
 public abstract class PathFragment {

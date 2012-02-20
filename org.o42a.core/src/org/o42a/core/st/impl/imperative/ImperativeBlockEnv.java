@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.def.impl.LocalDef.localDef;
+import static org.o42a.core.object.def.impl.LocalDef.localDef;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;

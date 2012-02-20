@@ -31,7 +31,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
@@ -39,6 +38,7 @@ import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 public class ObjFld extends RefFld<ObjectConstructorFunc> {

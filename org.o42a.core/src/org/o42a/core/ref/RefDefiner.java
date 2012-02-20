@@ -22,9 +22,9 @@ package org.o42a.core.ref;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.Definitions;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.impl.RefEnv;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;

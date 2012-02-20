@@ -21,9 +21,9 @@ package org.o42a.compiler.ip.file;
 
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
-import org.o42a.core.artifact.object.Ascendants;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectSource;
 

@@ -25,11 +25,11 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.object.Obj;
 
 
 public abstract class RefFldOp<

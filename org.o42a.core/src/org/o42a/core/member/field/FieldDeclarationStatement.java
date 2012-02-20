@@ -25,8 +25,8 @@ import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.LocalFieldCmd;
 import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.LocalFieldCmd;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;

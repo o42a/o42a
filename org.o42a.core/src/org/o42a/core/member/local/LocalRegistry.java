@@ -21,7 +21,6 @@ package org.o42a.core.member.local;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.MemberRegistry;
@@ -30,6 +29,7 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.Obj;
 
 
 public class LocalRegistry extends MemberRegistry {

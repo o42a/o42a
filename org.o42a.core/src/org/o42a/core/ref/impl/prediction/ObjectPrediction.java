@@ -23,8 +23,8 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Derivative;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Derivative;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 

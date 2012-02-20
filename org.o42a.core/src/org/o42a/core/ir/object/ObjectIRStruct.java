@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.artifact.object.Derivation.IMPLICIT_PROPAGATION;
+import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,9 +33,9 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.artifact.object.Sample;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
 

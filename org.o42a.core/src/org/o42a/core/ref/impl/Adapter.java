@@ -25,8 +25,8 @@ import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.object.ObjectType;
 import org.o42a.core.member.Member;
+import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;

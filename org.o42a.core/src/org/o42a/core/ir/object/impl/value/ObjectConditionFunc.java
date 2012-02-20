@@ -20,10 +20,10 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.CondPart;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.op.ObjectCondFunc;
+import org.o42a.core.object.value.CondPart;
 import org.o42a.core.value.Condition;
 
 

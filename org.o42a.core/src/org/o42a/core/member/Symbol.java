@@ -25,8 +25,8 @@ import java.util.EnumMap;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Accessor;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Accessor;
+import org.o42a.core.object.Obj;
 
 
 public final class Symbol {

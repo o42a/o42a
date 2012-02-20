@@ -27,10 +27,10 @@ import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.impl.path.*;
+import org.o42a.core.object.Obj;
+import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;

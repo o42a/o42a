@@ -22,14 +22,14 @@ package org.o42a.core.artifact;
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.impl.decl.DeclaredLinkField;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.impl.decl.DeclaredObjectField;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.link.LinkFieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.impl.decl.DeclaredObjectField;
 
 
 public abstract class ArtifactKind<A extends Artifact<A>> {

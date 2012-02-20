@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 

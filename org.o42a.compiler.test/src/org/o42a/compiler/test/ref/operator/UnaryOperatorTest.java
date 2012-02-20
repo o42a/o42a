@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 
 
 public class UnaryOperatorTest extends CompilerTestCase {

@@ -22,8 +22,8 @@ package org.o42a.core.st.impl.imperative;
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 

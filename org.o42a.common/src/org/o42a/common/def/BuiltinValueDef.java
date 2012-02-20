@@ -23,11 +23,11 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;

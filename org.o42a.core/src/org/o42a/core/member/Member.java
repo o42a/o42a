@@ -25,11 +25,11 @@ import java.util.*;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
-import org.o42a.core.artifact.object.ObjectType;
-import org.o42a.core.artifact.object.Sample;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;

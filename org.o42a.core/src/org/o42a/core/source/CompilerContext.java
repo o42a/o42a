@@ -21,7 +21,7 @@ package org.o42a.core.source;
 
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
 import org.o42a.util.log.Loggable;

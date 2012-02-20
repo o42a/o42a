@@ -21,8 +21,8 @@ package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 
 

@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
 
 
 public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {

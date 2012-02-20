@@ -27,10 +27,10 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.array.Array;
-import org.o42a.core.artifact.array.ArrayItem;
-import org.o42a.core.artifact.array.ArrayValueStruct;
-import org.o42a.core.artifact.object.Obj;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.Array;
+import org.o42a.core.object.array.ArrayItem;
+import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.value.ValueType;
 
 

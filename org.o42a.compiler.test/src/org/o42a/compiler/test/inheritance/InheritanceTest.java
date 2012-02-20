@@ -22,13 +22,13 @@ package org.o42a.compiler.test.inheritance;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
-import static org.o42a.core.artifact.object.Derivation.MEMBER_OVERRIDE;
+import static org.o42a.core.object.type.Derivation.MEMBER_OVERRIDE;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 

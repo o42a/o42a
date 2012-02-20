@@ -25,8 +25,6 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.impl.value.*;
@@ -35,6 +33,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 

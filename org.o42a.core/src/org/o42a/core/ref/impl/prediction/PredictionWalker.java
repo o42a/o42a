@@ -26,10 +26,10 @@ import static org.o42a.core.ref.Prediction.unpredicted;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.array.ArrayElement;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;

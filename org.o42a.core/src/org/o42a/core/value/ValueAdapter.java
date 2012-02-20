@@ -20,9 +20,9 @@
 package org.o42a.core.value;
 
 import org.o42a.core.Scope;
-import org.o42a.core.def.CondDef;
-import org.o42a.core.def.ValueDef;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.CondDef;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.impl.RawValueAdapter;

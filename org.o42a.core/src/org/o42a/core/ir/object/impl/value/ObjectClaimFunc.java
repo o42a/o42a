@@ -20,10 +20,10 @@
 package org.o42a.core.ir.object.impl.value;
 
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.object.value.ValuePart;
 
 
 public final class ObjectClaimFunc extends ObjectValueIRValFunc {

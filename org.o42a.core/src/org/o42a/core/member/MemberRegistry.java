@@ -20,7 +20,6 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseFactory;
@@ -29,6 +28,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalFactory;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 

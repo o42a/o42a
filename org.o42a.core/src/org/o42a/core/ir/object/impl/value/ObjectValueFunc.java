@@ -19,13 +19,12 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
-import static org.o42a.core.artifact.object.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
-import org.o42a.core.artifact.object.ValuePart;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.object.value.ValuePart;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 

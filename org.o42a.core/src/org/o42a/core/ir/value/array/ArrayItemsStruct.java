@@ -30,11 +30,11 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.array.Array;
-import org.o42a.core.artifact.array.ArrayItem;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.Array;
+import org.o42a.core.object.array.ArrayItem;
 
 
 public class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {

@@ -20,9 +20,9 @@
 package org.o42a.common.object;
 
 import org.o42a.common.source.URLSourceTree;
-import org.o42a.core.artifact.object.ObjectMembers;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.ObjectMembers;
 
 
 public class AnnotatedObject extends CompiledObject {

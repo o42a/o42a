@@ -21,11 +21,11 @@ package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.DefinedObject;
-import org.o42a.core.artifact.object.Ascendants;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.common.DefinedObject;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;

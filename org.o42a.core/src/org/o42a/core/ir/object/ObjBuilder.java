@@ -24,9 +24,9 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.ObjectFunc;
+import org.o42a.core.object.Obj;
 
 
 public final class ObjBuilder extends CodeBuilder {

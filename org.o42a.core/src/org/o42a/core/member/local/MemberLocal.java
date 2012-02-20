@@ -23,14 +23,14 @@ import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.object.Obj;
-import org.o42a.core.artifact.object.OwningObject;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.impl.local.PropagatedMemberLocal;
+import org.o42a.core.member.local.impl.PropagatedMemberLocal;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.OwningObject;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 

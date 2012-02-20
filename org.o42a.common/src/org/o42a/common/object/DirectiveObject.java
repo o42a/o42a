@@ -21,8 +21,8 @@ package org.o42a.common.object;
 
 import static org.o42a.core.value.ValueType.DIRECTIVE;
 
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.Directive;
 

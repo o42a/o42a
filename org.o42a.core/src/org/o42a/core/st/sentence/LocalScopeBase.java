@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import org.o42a.core.member.impl.clause.LocalScopeClauseBase;
+import org.o42a.core.member.clause.impl.LocalScopeClauseBase;
 
 
 public abstract class LocalScopeBase extends LocalScopeClauseBase {

@@ -25,10 +25,10 @@ import java.util.Iterator;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.def.CondDef;
-import org.o42a.core.def.impl.LogicalCondDef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.object.def.CondDef;
+import org.o42a.core.object.def.impl.LogicalCondDef;
 import org.o42a.core.ref.impl.logical.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;

@@ -24,15 +24,15 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.ArrayList;
 
-import org.o42a.core.artifact.Accessor;
 import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.Role;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.object.Accessor;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.Role;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.BoundPath;

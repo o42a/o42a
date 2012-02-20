@@ -26,7 +26,7 @@ import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.core.artifact.object.Ascendants;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;

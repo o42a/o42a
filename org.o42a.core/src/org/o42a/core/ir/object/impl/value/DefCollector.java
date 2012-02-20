@@ -21,10 +21,13 @@ package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Def;
-import org.o42a.core.def.Defs;
-import org.o42a.core.def.SourceInfo;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.Defs;
+import org.o42a.core.object.def.SourceInfo;
+import org.o42a.core.object.type.Derivation;
+import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
 

@@ -21,8 +21,8 @@ package org.o42a.common.object;
 
 import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinValueDef;
-import org.o42a.core.def.Definitions;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.def.Definitions;
 
 
 public abstract class AnnotatedBuiltin

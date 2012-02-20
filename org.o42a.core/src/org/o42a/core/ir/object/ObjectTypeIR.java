@@ -28,13 +28,13 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.object.Obj;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.object.Obj;
 import org.o42a.util.func.Getter;
 
 

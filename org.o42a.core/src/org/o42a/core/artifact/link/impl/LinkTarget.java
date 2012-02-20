@@ -19,12 +19,15 @@
 */
 package org.o42a.core.artifact.link.impl;
 
-import static org.o42a.core.artifact.object.ConstructionMode.STRICT_CONSTRUCTION;
+import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.object.*;
-import org.o42a.core.def.Definitions;
+import org.o42a.core.object.ConstructionMode;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectMembers;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 
 
