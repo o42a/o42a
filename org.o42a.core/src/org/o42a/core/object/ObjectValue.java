@@ -30,7 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.def.DefKind;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.object.value.ObjectValueBase;
+import org.o42a.core.object.value.ObjectValueParts;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -41,7 +41,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public final class ObjectValue extends ObjectValueBase {
+public final class ObjectValue extends ObjectValueParts {
 
 	private static final byte FULLY_RESOLVED = 1;
 	private static final byte NORMALIZED = 2;
