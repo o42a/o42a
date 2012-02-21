@@ -139,7 +139,7 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 		this.uses = ValuePartUsage.usable(this);
 
-		final ObjectValueBase objectValue = getObjectValue();
+		final ObjectValueParts objectValue = getObjectValue();
 		final Obj object = objectValue.getObject();
 		final Usable<ValueUsage> valueUses = objectValue.uses();
 
