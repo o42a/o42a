@@ -23,7 +23,6 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
@@ -35,7 +34,7 @@ public abstract class ExpressionParser implements Parser<ExpressionNode> {
 	public static final Parser<ExpressionNode> IMPERATIVE_EXPRESSION =
 			new Imperative();
 
-	private ExpressionParser(Grammar grammar) {
+	private ExpressionParser() {
 	}
 
 	@Override

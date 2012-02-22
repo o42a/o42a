@@ -24,9 +24,7 @@ import static org.o42a.util.string.Characters.MINUS;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.ref.AdapterRefNode;
-import org.o42a.ast.ref.MemberRefNode;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.ValueTypeNode;
@@ -55,16 +53,40 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 		for (;;) {
 
-			final int next = context.next();
+			final int c = context.next();
+			final int next;
+
+			if (c != '`') {
+				next = c;
+			} else {
+
+				final BodyRefNode bodyRef = context.parse(bodyRef(expression));
+
+				if (bodyRef == null) {
+					return expression;
+				}
+
+				expression = bodyRef;
+
+				final MemberRefNode memberRef =
+						context.parse(memberRef(expression, false));
+
+				if (memberRef != null) {
+					expression = memberRef;
+					continue;
+				}
+
+				next = context.next();
+			}
 
 			switch (next) {
 			case ':':
 
-				final MemberRefNode fieldRef =
+				final MemberRefNode memberRef =
 						context.parse(memberRef(expression, true));
 
-				if (fieldRef != null) {
-					expression = fieldRef;
+				if (memberRef != null) {
+					expression = memberRef;
 					continue;
 				}
 
@@ -126,7 +148,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '[':
 			return context.parse(this.grammar.brackets());
 		default:
-			if (Grammar.isDigit(c)) {
+			if (isDigit(c)) {
 				return context.parse(decimal());
 			}
 

@@ -32,6 +32,8 @@ public interface RefNodeVisitor<R, P> {
 
 	R visitAdapterRef(AdapterRefNode ref, P p);
 
+	R visitBodyRef(BodyRefNode ref, P p);
+
 	R visitAscendantRef(AscendantRefNode ref, P p);
 
 }

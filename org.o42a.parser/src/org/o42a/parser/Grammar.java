@@ -114,6 +114,10 @@ public class Grammar {
 		return new AdapterRefParser(owner);
 	}
 
+	public static Parser<BodyRefNode> bodyRef(ExpressionNode owner) {
+		return new BodyRefParser(owner);
+	}
+
 	public static Parser<AscendantRefNode> ascendantRef() {
 		return AscendantRefParser.ASCENDANT_REF;
 	}
