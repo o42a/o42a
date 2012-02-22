@@ -17,13 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.type;
 
-import org.o42a.ast.Node;
+import org.o42a.ast.atom.SignType;
 
 
-public interface TypeNode extends Node {
+public enum DefinitionKind implements SignType {
 
-	<R, P> R accept(TypeNodeVisitor<R, P> visitor, P p);
+	LINK("`"),
+	VARIABLE("``");
+
+	private final String sign;
+
+	DefinitionKind(String sign) {
+		this.sign = sign;
+	}
+
+	@Override
+	public String getSign() {
+		return this.sign;
+	}
 
 }

@@ -24,9 +24,12 @@ import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 
+import org.o42a.ast.clause.AbstractClauseVisitor;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;

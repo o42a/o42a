@@ -21,9 +21,9 @@ package org.o42a.ast.ref;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.AbstractExpressionNode;
-import org.o42a.ast.expression.AscendantSpecNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.field.TypeNodeVisitor;
+import org.o42a.ast.type.AscendantSpecNodeVisitor;
+import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 

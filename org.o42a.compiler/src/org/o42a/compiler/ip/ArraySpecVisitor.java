@@ -19,8 +19,7 @@
 */
 package org.o42a.compiler.ip;
 
-import org.o42a.ast.expression.*;
-import org.o42a.ast.field.ArrayTypeNode;
+import org.o42a.ast.type.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.ValueStructFinder;
 

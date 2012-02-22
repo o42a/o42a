@@ -23,10 +23,10 @@ import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
-import org.o42a.ast.expression.AscendantSpecNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.field.TypeNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
+import org.o42a.ast.type.AscendantSpecNodeVisitor;
+import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 

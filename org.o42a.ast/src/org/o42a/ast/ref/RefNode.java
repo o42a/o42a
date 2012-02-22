@@ -19,9 +19,9 @@
 */
 package org.o42a.ast.ref;
 
-import org.o42a.ast.expression.AscendantSpecNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.type.AscendantSpecNode;
+import org.o42a.ast.type.TypeNode;
 
 
 public interface RefNode extends TypeNode, ExpressionNode, AscendantSpecNode {

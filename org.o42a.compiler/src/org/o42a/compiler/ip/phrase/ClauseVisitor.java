@@ -24,8 +24,10 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.clause.AbstractClauseVisitor;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.type.InterfaceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;

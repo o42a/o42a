@@ -32,6 +32,8 @@ import org.o42a.ast.field.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;

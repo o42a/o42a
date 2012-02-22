@@ -17,33 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.clause;
 
-import org.o42a.ast.Node;
-import org.o42a.ast.expression.AscendantsNode;
-import org.o42a.ast.ref.AbstractRefVisitor;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.expression.*;
 
 
-public abstract class AbstractTypeVisitor<R, P>
-		extends AbstractRefVisitor<R, P>
-		implements TypeNodeVisitor<R, P> {
+public abstract class AbstractClauseVisitor<R, P>
+		implements ClauseNodeVisitor<R, P> {
 
 	@Override
-	public R visitAscendants(AscendantsNode ascendants, P p) {
-		return visitType(ascendants, p);
+	public R visitName(NameNode name, P p) {
+		return visitClause(name, p);
 	}
 
 	@Override
-	public R visitArrayType(ArrayTypeNode arrayType, P p) {
-		return visitType(arrayType, p);
+	public R visitBraces(BracesNode braces, P p) {
+		return visitClause(braces, p);
 	}
 
 	@Override
-	protected R visitRef(RefNode ref, P p) {
-		return visitType(ref, p);
+	public R visitParentheses(ParenthesesNode parentheses, P p) {
+		return visitClause(parentheses, p);
 	}
 
-	protected abstract R visitType(Node type, P p);
+	@Override
+	public R visitBrackets(BracketsNode brackets, P p) {
+		return visitClause(brackets, p);
+	}
+
+	@Override
+	public R visitText(TextNode text, P p) {
+		return visitClause(text, p);
+	}
+
+	protected abstract R visitClause(ClauseNode clause, P p);
 
 }

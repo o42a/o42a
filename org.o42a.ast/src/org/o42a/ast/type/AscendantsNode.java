@@ -17,39 +17,40 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.type;
 
-import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.expression.AbstractExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 
 
-public abstract class AbstractClauseVisitor<R, P>
-		implements ClauseNodeVisitor<R, P> {
+public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 
-	@Override
-	public R visitName(NameNode name, P p) {
-		return visitClause(name, p);
+	private final AscendantNode[] ascendants;
+
+	public AscendantsNode(AscendantNode[] ascendants) {
+		super(ascendants);
+		this.ascendants = ascendants;
+	}
+
+	public AscendantNode[] getAscendants() {
+		return this.ascendants;
 	}
 
 	@Override
-	public R visitBraces(BracesNode braces, P p) {
-		return visitClause(braces, p);
+	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitAscendants(this, p);
 	}
 
 	@Override
-	public R visitParentheses(ParenthesesNode parentheses, P p) {
-		return visitClause(parentheses, p);
+	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitAscendants(this, p);
 	}
 
 	@Override
-	public R visitBrackets(BracketsNode brackets, P p) {
-		return visitClause(brackets, p);
+	public void printContent(StringBuilder out) {
+		for (AscendantNode ascendant : this.ascendants) {
+			ascendant.printContent(out);
+		}
 	}
-
-	@Override
-	public R visitText(TextNode text, P p) {
-		return visitClause(text, p);
-	}
-
-	protected abstract R visitClause(ClauseNode clause, P p);
 
 }

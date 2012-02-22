@@ -20,11 +20,12 @@
 package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
-import static org.o42a.parser.grammar.field.InterfaceParser.INTERFACE;
+import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.*;
+import org.o42a.ast.type.InterfaceNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;

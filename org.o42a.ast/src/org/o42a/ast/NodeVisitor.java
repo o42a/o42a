@@ -22,9 +22,8 @@ package org.o42a.ast;
 import org.o42a.ast.atom.*;
 import org.o42a.ast.clause.*;
 import org.o42a.ast.expression.ArgumentNode;
-import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.expression.AscendantSpecNodeVisitor;
-import org.o42a.ast.field.*;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.sentence.AlternativeNode;
@@ -32,6 +31,7 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
+import org.o42a.ast.type.*;
 
 
 public abstract class NodeVisitor<R, P>

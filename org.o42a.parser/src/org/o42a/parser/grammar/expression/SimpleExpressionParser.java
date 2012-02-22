@@ -22,15 +22,18 @@ package org.o42a.parser.grammar.expression;
 import static org.o42a.parser.Grammar.*;
 import static org.o42a.util.string.Characters.MINUS;
 
-import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.AdapterRefNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.parser.grammar.type.ValueTypeParser;
 
 
 public class SimpleExpressionParser implements Parser<ExpressionNode> {
@@ -51,7 +54,10 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		}
 
 		for (;;) {
-			switch (context.next()) {
+
+			final int next = context.next();
+
+			switch (next) {
 			case ':':
 
 				final MemberRefNode fieldRef =
@@ -75,6 +81,17 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				return expression;
 			default:
+				if (next == '(' && expression instanceof TypeNode) {
+
+					final TypeNode ascendant = (TypeNode) expression;
+					final ValueTypeNode valueType =
+							context.parse(new ValueTypeParser(ascendant));
+
+					if (valueType != null) {
+						expression = valueType;
+						continue;
+					}
+				}
 
 				final PhraseNode phrase =
 						context.parse(this.grammar.phrase(expression));

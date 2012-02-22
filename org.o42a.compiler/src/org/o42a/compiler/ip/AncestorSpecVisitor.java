@@ -22,9 +22,9 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
 import static org.o42a.compiler.ip.ArraySpecVisitor.arrayStructFinder;
 
-import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
+import org.o42a.ast.type.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.ValueStructFinder;
 

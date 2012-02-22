@@ -17,15 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.field;
+package org.o42a.parser.grammar.type;
 
-import static org.o42a.parser.grammar.field.TypeParser.TYPE;
+import static org.o42a.parser.grammar.type.TypeParser.TYPE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
-import org.o42a.ast.field.DefinitionKind;
-import org.o42a.ast.field.InterfaceNode;
-import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.InterfaceNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;

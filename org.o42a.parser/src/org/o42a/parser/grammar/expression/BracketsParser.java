@@ -21,7 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.ast.expression.BracketsNode.Bracket.CLOSING_BRACKET;
 import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
-import static org.o42a.parser.grammar.field.InterfaceParser.INTERFACE;
+import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
 import org.o42a.ast.expression.BracketsNode.Bracket;
-import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.type.InterfaceNode;
 import org.o42a.parser.*;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;

@@ -17,16 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.field;
+package org.o42a.parser.grammar.type;
 
 import static org.o42a.parser.Grammar.ascendants;
 import static org.o42a.parser.Grammar.ref;
 import static org.o42a.parser.Grammar.samples;
 
-import org.o42a.ast.expression.AscendantsNode;
-import org.o42a.ast.field.ArrayTypeNode;
-import org.o42a.ast.field.TypeNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.ArrayTypeNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 

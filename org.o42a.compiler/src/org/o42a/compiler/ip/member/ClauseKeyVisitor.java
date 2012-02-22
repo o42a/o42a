@@ -29,6 +29,7 @@ import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseKeyVisitor;
 import org.o42a.ast.clause.ClauseKeyNode;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;

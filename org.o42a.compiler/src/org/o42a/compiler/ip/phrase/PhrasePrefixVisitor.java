@@ -23,8 +23,8 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
-import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;

@@ -17,14 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.field;
+package org.o42a.parser.grammar.type;
 
-import static org.o42a.parser.grammar.field.TypeParser.TYPE;
+import static org.o42a.parser.grammar.type.TypeParser.TYPE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.field.ArrayTypeNode;
-import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.type.ArrayTypeNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -36,7 +36,7 @@ public class ArrayTypeParser implements Parser<ArrayTypeNode> {
 
 	private final TypeNode ancestor;
 
-	ArrayTypeParser(TypeNode ancestor) {
+	public ArrayTypeParser(TypeNode ancestor) {
 		this.ancestor = ancestor;
 	}
 

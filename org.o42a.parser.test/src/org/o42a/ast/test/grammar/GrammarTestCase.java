@@ -23,8 +23,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Rule;
 import org.o42a.ast.Node;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.BlockNode;
-import org.o42a.ast.expression.ClauseNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.AlternativeNode;

@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,40 +17,45 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.type;
 
-import org.o42a.ast.field.TypeNode;
-import org.o42a.ast.field.TypeNodeVisitor;
+import org.o42a.ast.expression.AbstractExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
 
 
-public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
+public class ValueTypeNode extends AbstractExpressionNode implements TypeNode {
 
-	private final AscendantNode[] ascendants;
+	private final TypeNode ascendant;
+	private final InterfaceNode valueType;
 
-	public AscendantsNode(AscendantNode[] ascendants) {
-		super(ascendants);
-		this.ascendants = ascendants;
+	public ValueTypeNode(TypeNode ascendant, InterfaceNode valueType) {
+		super(ascendant.getStart(), valueType.getEnd());
+		this.ascendant = ascendant;
+		this.valueType = valueType;
 	}
 
-	public AscendantNode[] getAscendants() {
-		return this.ascendants;
+	public final TypeNode getAscendant() {
+		return this.ascendant;
+	}
+
+	public final InterfaceNode getValueType() {
+		return this.valueType;
 	}
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAscendants(this, p);
+		return visitor.visitValueType(this, p);
 	}
 
 	@Override
-	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitAscendants(this, p);
+	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitValueType(this, p);
 	}
 
 	@Override
 	public void printContent(StringBuilder out) {
-		for (AscendantNode ascendant : this.ascendants) {
-			ascendant.printContent(out);
-		}
+		this.ascendant.printContent(out);
+		this.valueType.printContent(out);
 	}
 
 }

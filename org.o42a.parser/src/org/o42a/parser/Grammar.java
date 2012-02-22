@@ -32,6 +32,7 @@ import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.*;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.parser.grammar.atom.*;
 import org.o42a.parser.grammar.clause.ClauseDeclaratorParser;
 import org.o42a.parser.grammar.expression.*;
@@ -42,6 +43,7 @@ import org.o42a.parser.grammar.file.InclusionParser;
 import org.o42a.parser.grammar.ref.*;
 import org.o42a.parser.grammar.sentence.*;
 import org.o42a.parser.grammar.statement.*;
+import org.o42a.parser.grammar.type.AscendantsParser;
 
 
 public class Grammar {

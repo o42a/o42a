@@ -22,9 +22,9 @@ package org.o42a.compiler.ip.ref.array;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.field.DefinitionKind;
-import org.o42a.ast.field.InterfaceNode;
-import org.o42a.ast.field.TypeNode;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.InterfaceNode;
+import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;

@@ -17,17 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.expression;
+package org.o42a.parser.grammar.type;
 
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.parser.grammar.field.ArrayTypeParser.ARRAY_TYPE;
+import static org.o42a.parser.grammar.type.ArrayTypeParser.ARRAY_TYPE;
 
 import java.util.ArrayList;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.*;
-import org.o42a.ast.expression.AscendantNode.Separator;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode.Separator;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
