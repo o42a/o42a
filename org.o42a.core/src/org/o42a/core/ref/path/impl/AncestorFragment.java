@@ -24,6 +24,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
@@ -56,6 +57,12 @@ public class AncestorFragment extends PathFragment {
 
 		if (materializationOf != object) {
 			return ancestor(start, materializationOf.getTypeRef());
+		}
+
+		final ObjectLink materializedLink = object.getMaterializedLink();
+
+		if (materializedLink != null) {
+			return ancestor(start, materializedLink.getTypeRef());
 		}
 
 		return ancestor(start, object.type().getAncestor());
