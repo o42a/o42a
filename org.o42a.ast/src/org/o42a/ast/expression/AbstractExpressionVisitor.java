@@ -22,6 +22,8 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.ValueTypeNode;
 
 
 public abstract class AbstractExpressionVisitor<R, P>
@@ -51,6 +53,11 @@ public abstract class AbstractExpressionVisitor<R, P>
 	@Override
 	public R visitAscendants(AscendantsNode ascendants, P p) {
 		return visitExpression(ascendants, p);
+	}
+
+	@Override
+	public R visitValueType(ValueTypeNode valueType, P p) {
+		return visitExpression(valueType, p);
 	}
 
 	@Override

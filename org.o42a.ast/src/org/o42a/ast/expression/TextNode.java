@@ -22,6 +22,8 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.StringNode;
 import org.o42a.ast.atom.StringNode.Quote;
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.clause.ClauseNodeVisitor;
 
 
 public class TextNode extends AbstractExpressionNode implements ClauseNode {

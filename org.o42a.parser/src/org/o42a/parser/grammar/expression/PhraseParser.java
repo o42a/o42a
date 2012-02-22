@@ -24,7 +24,7 @@ import static org.o42a.parser.Grammar.*;
 import java.util.ArrayList;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.ClauseNode;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.parser.Grammar;

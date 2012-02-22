@@ -25,7 +25,11 @@ import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
 import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantSpecNode;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.SampleSpecVisitor;

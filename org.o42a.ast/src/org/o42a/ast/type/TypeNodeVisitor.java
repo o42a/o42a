@@ -17,15 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.type;
 
-import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 
 
 public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitAscendants(AscendantsNode ascendants, P p);
+
+	R visitValueType(ValueTypeNode valueType, P p);
 
 	R visitArrayType(ArrayTypeNode arrayType, P p);
 

@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,13 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.type;
 
 import org.o42a.ast.Node;
 
 
-public interface MemberKeyNode extends Node {
+public interface AscendantSpecNode extends Node {
 
-	<R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p);
+	<R, P> R accept(AscendantSpecNodeVisitor<R, P> visitor, P p);
 
 }

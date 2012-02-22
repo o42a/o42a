@@ -23,6 +23,9 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.AbstractStatementNode;
 import org.o42a.ast.statement.StatementNodeVisitor;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.InterfaceNode;
+import org.o42a.ast.type.TypeNode;
 
 
 public class DeclaratorNode extends AbstractStatementNode {

@@ -21,11 +21,15 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.ref.RefNodeVisitor;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.ValueTypeNode;
 
 
 public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitAscendants(AscendantsNode ascendants, P p);
+
+	R visitValueType(ValueTypeNode valueType, P p);
 
 	R visitDecimal(DecimalNode decimal, P p);
 

@@ -12,6 +12,7 @@ Export-Package: org.o42a.ast,
  org.o42a.ast.file,
  org.o42a.ast.ref,
  org.o42a.ast.sentence,
- org.o42a.ast.statement
+ org.o42a.ast.statement,
+ org.o42a.ast.type
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.o42a.util;bundle-version="0.1.5";visibility:=reexport

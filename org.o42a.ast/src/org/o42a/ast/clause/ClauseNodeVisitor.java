@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.clause;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.expression.*;
 
 
 public interface ClauseNodeVisitor<R, P> {

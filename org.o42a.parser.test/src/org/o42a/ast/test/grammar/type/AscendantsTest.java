@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.test.grammar.expression;
+package org.o42a.ast.test.grammar.type;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,10 +25,10 @@ import static org.junit.Assert.assertNull;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
-import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.expression.AscendantsNode;
-import org.o42a.ast.field.ArrayTypeNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
+import org.o42a.ast.type.ArrayTypeNode;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
 
 
 public class AscendantsTest extends GrammarTestCase {

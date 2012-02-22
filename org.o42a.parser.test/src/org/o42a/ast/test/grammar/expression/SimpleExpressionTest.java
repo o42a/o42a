@@ -27,6 +27,7 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
+import org.o42a.ast.type.AscendantsNode;
 
 
 public class SimpleExpressionTest extends GrammarTestCase {

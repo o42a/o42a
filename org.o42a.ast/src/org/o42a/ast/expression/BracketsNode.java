@@ -21,7 +21,9 @@ package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.field.InterfaceNode;
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.clause.ClauseNodeVisitor;
+import org.o42a.ast.type.InterfaceNode;
 
 
 public class BracketsNode extends AbstractExpressionNode implements ClauseNode {

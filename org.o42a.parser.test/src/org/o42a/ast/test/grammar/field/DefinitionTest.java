@@ -27,12 +27,11 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
-import org.o42a.ast.expression.AscendantNode;
-import org.o42a.ast.expression.AscendantsNode;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
+import org.o42a.ast.type.*;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 

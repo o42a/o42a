@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.atom;
 
-import org.o42a.ast.expression.ClauseNode;
-import org.o42a.ast.expression.ClauseNodeVisitor;
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.clause.ClauseNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
 

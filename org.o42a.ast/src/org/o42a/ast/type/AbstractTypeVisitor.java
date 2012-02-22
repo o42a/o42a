@@ -17,13 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.expression;
+package org.o42a.ast.type;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.ref.AbstractRefVisitor;
+import org.o42a.ast.ref.RefNode;
 
 
-public interface ClauseNode extends Node {
+public abstract class AbstractTypeVisitor<R, P>
+		extends AbstractRefVisitor<R, P>
+		implements TypeNodeVisitor<R, P> {
 
-	<R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p);
+	@Override
+	public R visitAscendants(AscendantsNode ascendants, P p) {
+		return visitType(ascendants, p);
+	}
+
+	@Override
+	public R visitValueType(ValueTypeNode valueType, P p) {
+		return visitType(valueType, p);
+	}
+
+	@Override
+	public R visitArrayType(ArrayTypeNode arrayType, P p) {
+		return visitType(arrayType, p);
+	}
+
+	@Override
+	protected R visitRef(RefNode ref, P p) {
+		return visitType(ref, p);
+	}
+
+	protected abstract R visitType(Node type, P p);
 
 }

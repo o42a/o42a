@@ -22,8 +22,8 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 
-import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.type.*;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;

@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.type;
 
-import org.o42a.ast.atom.SignType;
+import org.o42a.ast.ref.RefNodeVisitor;
 
 
-public enum DefinitionKind implements SignType {
+public interface AscendantSpecNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
-	LINK("`"),
-	VARIABLE("``");
-
-	private final String sign;
-
-	DefinitionKind(String sign) {
-		this.sign = sign;
-	}
-
-	@Override
-	public String getSign() {
-		return this.sign;
-	}
+	R visitArrayType(ArrayTypeNode arrayType, P p);
 
 }

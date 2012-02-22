@@ -28,9 +28,9 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.field.DefinitionKind;
-import org.o42a.ast.field.InterfaceNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.InterfaceNode;
 
 
 public class ArrayTest extends GrammarTestCase {

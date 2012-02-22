@@ -25,6 +25,7 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import org.junit.Test;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
+import org.o42a.ast.type.AscendantsNode;
 
 
 public class ExpressionTest extends GrammarTestCase {

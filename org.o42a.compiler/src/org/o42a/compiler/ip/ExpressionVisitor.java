@@ -32,6 +32,7 @@ import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.operator.LogicalExpression;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;

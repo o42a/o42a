@@ -22,6 +22,7 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ClauseNode;
 
 
 public class PhraseNode

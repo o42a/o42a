@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.type;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.expression.BracketsNode.Bracket;
 
 
