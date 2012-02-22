@@ -33,23 +33,36 @@ import org.o42a.ast.type.AscendantsNode;
 public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
-	public void fieldRef() {
+	public void memberRef() {
 		to(MemberRefNode.class, parse("foo:bar"));
-		to(MemberRefNode.class, parse("foo():bar"));
-		to(MemberRefNode.class, parse("(foo):bar"));
+		to(MemberRefNode.class, parse("foo (): bar"));
+		to(MemberRefNode.class, parse("(foo): bar"));
+		to(MemberRefNode.class, parse("(foo)` bar"));
+		to(MemberRefNode.class, parse("foo ()` bar"));
 	}
 
 	@Test
 	public void adapterRef() {
-		to(AdapterRefNode.class, parse("foo@@bar"));
-		to(AdapterRefNode.class, parse("foo()@@bar"));
-		to(AdapterRefNode.class, parse("(foo)@@bar"));
+		to(AdapterRefNode.class, parse("foo @@bar"));
+		to(AdapterRefNode.class, parse("foo () @@bar"));
+		to(AdapterRefNode.class, parse("(foo) @@bar"));
+		to(AdapterRefNode.class, parse("foo ()` @@bar"));
+		to(AdapterRefNode.class, parse("(foo)` @@bar"));
 		to(AdapterRefNode.class, parse("*@@bar"));
 		to(AdapterRefNode.class, parse(":@@bar"));
 		to(AdapterRefNode.class, parse("::@@bar"));
 		to(AdapterRefNode.class, parse("$@@bar"));
 		to(AdapterRefNode.class, parse("$$@@bar"));
 		to(AdapterRefNode.class, parse("^@@bar"));
+	}
+
+	@Test
+	public void bodyRef() {
+		to(BodyRefNode.class, parse("(foo)`"));
+		to(BodyRefNode.class, parse("foo()`"));
+		to(BodyRefNode.class, parse("\"\"`"));
+		to(BodyRefNode.class, parse("123 456`"));
+		to(BodyRefNode.class, parse("foo_ bar`"));
 	}
 
 	@Test
@@ -115,10 +128,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void call() {
-		to(PhraseNode.class, parse("foo()"));
-		to(PhraseNode.class, parse("&foo()"));
-		to(PhraseNode.class, parse("foo & bar()"));
-		to(PhraseNode.class, parse("&foo & bar()"));
+		to(PhraseNode.class, parse("foo ()"));
+		to(PhraseNode.class, parse("&foo ()"));
+		to(PhraseNode.class, parse("foo & bar ()"));
+		to(PhraseNode.class, parse("&foo & bar ()"));
 		to(PhraseNode.class, parse("*()"));
 	}
 
@@ -130,8 +143,14 @@ public class SimpleExpressionTest extends GrammarTestCase {
 
 	@Test
 	public void simplePhrase() {
-		to(PhraseNode.class, parse("foo{bar}"));
-		to(PhraseNode.class, parse("foo[bar]"));
+		to(PhraseNode.class, parse("foo {bar}"));
+		to(PhraseNode.class, parse("foo [bar]"));
+	}
+
+	@Test
+	public void phrase() {
+		to(PhraseNode.class, parse("foo_ bar"));
+		to(PhraseNode.class, parse("(foo`) bar"));
 	}
 
 	@Test

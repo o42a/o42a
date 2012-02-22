@@ -65,12 +65,14 @@ public class RefParser implements Parser<RefNode> {
 			return owner;
 		}
 
-		final RefNode ref = context.parse(new QNameParser(owner, false));
+		final RefNode ref = context.parse(new SubRefParser(owner, false));
 
 		return ref != null ? ref : owner;
 	}
 
-	private RefNode parseAscendantRef(ParserContext context, RefNode owner) {
+	private static RefNode parseAscendantRef(
+			ParserContext context,
+			RefNode owner) {
 		if (owner == null) {
 			return null;
 		}
@@ -78,47 +80,14 @@ public class RefParser implements Parser<RefNode> {
 			return owner;
 		}
 
-		final AscendantRefNode ascendantRef = context.parse(ascendantRef(owner));
+		final AscendantRefNode ascendantRef =
+				context.parse(ascendantRef(owner));
 
 		if (ascendantRef != null) {
 			return ascendantRef;
 		}
 
 		return owner;
-	}
-
-	private static final class QNameParser implements Parser<RefNode> {
-
-		private final RefNode owner;
-		private final boolean qualifierExpected;
-
-		public QNameParser(RefNode owner, boolean qualifierExpected) {
-			this.owner = owner;
-			this.qualifierExpected = qualifierExpected;
-		}
-
-		@Override
-		public RefNode parse(ParserContext context) {
-			if (this.owner != null && context.next() == '@') {
-				return context.parse(new AdapterRefParser(this.owner));
-			}
-
-			final MemberRefParser fieldRefParser =
-					new MemberRefParser(this.owner, this.qualifierExpected);
-			final MemberRefNode ref = context.parse(fieldRefParser);
-
-			if (ref == null) {
-				return null;
-			}
-			if (context.isEOF()) {
-				return ref;
-			}
-
-			final RefNode childRef = context.parse(new QNameParser(ref, true));
-
-			return childRef != null ? childRef : ref;
-		}
-
 	}
 
 }

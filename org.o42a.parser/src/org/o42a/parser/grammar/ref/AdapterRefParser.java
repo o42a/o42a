@@ -19,7 +19,7 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import static org.o42a.parser.grammar.ref.RefParser.REF;
+import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -49,7 +49,7 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 			return null;
 		}
 
-		final RefNode ref = context.parse(REF);
+		final RefNode ref = context.parse(ref());
 
 		if (ref == null) {
 			context.getLogger().missingType(qualifier);
