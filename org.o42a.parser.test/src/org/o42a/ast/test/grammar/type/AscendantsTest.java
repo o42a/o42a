@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.type;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.test.grammar.GrammarTestCase;
@@ -135,7 +135,7 @@ public class AscendantsTest extends GrammarTestCase {
 	private AscendantsNode parse(String text) {
 		return to(
 				AscendantsNode.class,
-				parse(DECLARATIVE.simpleExpression(), text));
+				parse(simpleExpression(), text));
 	}
 
 }

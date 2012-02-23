@@ -19,45 +19,41 @@
 */
 package org.o42a.parser.grammar.expression;
 
-import static org.o42a.parser.Grammar.DECLARATIVE;
-import static org.o42a.parser.Grammar.IMPERATIVE;
+import static org.o42a.parser.Grammar.binaryExpression;
+import static org.o42a.parser.Grammar.simpleExpression;
 
+import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public abstract class ExpressionParser implements Parser<ExpressionNode> {
+public final class ExpressionParser implements Parser<ExpressionNode> {
 
-	public static final Parser<ExpressionNode> DECLARATIVE_EXPRESSION =
-			new Declarative();
-	public static final Parser<ExpressionNode> IMPERATIVE_EXPRESSION =
-			new Imperative();
+	public static final ExpressionParser EXPRESSION = new ExpressionParser();
 
 	private ExpressionParser() {
 	}
 
 	@Override
 	public ExpressionNode parse(ParserContext context) {
-		return context.parse(DECLARATIVE.operand());
-	}
 
-	private static final class Declarative implements Parser<ExpressionNode> {
+		final ExpressionNode expression = context.parse(simpleExpression());
 
-		@Override
-		public ExpressionNode parse(ParserContext context) {
-			return context.parse(DECLARATIVE.operand());
+		if (expression == null) {
+			return null;
+		}
+		if (!context.isEOF()) {
+
+			final BinaryNode binaryExpression =
+					context.parse(binaryExpression(expression));
+
+			if (binaryExpression != null) {
+				return binaryExpression;
+			}
 		}
 
-	}
-
-	private static final class Imperative implements Parser<ExpressionNode> {
-
-		@Override
-		public ExpressionNode parse(ParserContext context) {
-			return context.parse(IMPERATIVE.operand());
-		}
-
+		return expression;
 	}
 
 }

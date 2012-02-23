@@ -167,33 +167,55 @@ public class Grammar {
 		return InclusionParser.INCLUSION;
 	}
 
+	public static final Parser<ExpressionNode> expression() {
+		return ExpressionParser.EXPRESSION;
+	}
+
+	public static final Parser<ExpressionNode> simpleExpression() {
+		return SimpleExpressionParser.SIMPLE_EXPRESSION;
+	}
+
+	public static final Parser<PhraseNode> phrase(ExpressionNode prefix) {
+		return new PhraseParser(prefix);
+	}
+
+	public static final Parser<UnaryNode> unaryExpression() {
+		return UnaryExpressionParser.UNARY_EXPRESSION;
+	}
+
+	public static final Parser<BinaryNode> binaryExpression(
+			ExpressionNode leftOperand) {
+		return new BinaryExpressionParser(leftOperand);
+	}
+
+	public static final Parser<BracketsNode> brackets() {
+		return BracketsParser.BRACKETS;
+	}
+
+	public static final Parser<SelfAssignmentNode> selfAssignment() {
+		return SelfAssignmentParser.SELF_ASSIGNMENT;
+	}
+
+	public static final Parser<DeclaratorNode> declarator(
+			DeclarableNode declarable) {
+		return new DeclaratorParser(declarable);
+	}
+
 	public static boolean isDigit(int c) {
 		return '0' <= c && c <= '9';
 	}
 
-	private final Parser<ExpressionNode> expression;
-	private final Parser<ExpressionNode> operand;
-	private final Parser<ExpressionNode> simpleExpression;
-	private final Parser<UnaryNode> unaryExpression;
 	private final Parser<StatementNode> statement;
-	private final Parser<SelfAssignmentNode> selfAssignment;
 	private final Parser<ClauseDeclaratorNode> clauseDeclarator;
-	private final Parser<BracketsNode> brackets;
 	private final Parser<ParenthesesNode> parentheses;
 	private final Parser<SentenceNode[]> content;
 	private final Parser<SentenceNode> sentence;
 	private final Parser<AlternativeNode[]> disjunction;
 	private final Parser<SerialNode[]> conjunction;
 
-	private Grammar(Parser<ExpressionNode> expression) {
-		this.expression = expression;
-		this.operand = new OperandParser(this);
-		this.simpleExpression = new SimpleExpressionParser(this);
-		this.unaryExpression = new UnaryExpressionParser(this);
-		this.selfAssignment = new SelfAssignmentParser(this);
+	private Grammar() {
 		this.clauseDeclarator = new ClauseDeclaratorParser(this);
 		this.statement = new StatementParser(this);
-		this.brackets = new BracketsParser(this);
 		this.parentheses = new ParenthesesParser(this);
 		this.content = new ContentParser(this);
 		this.sentence = new SentenceParser(this);
@@ -209,41 +231,8 @@ public class Grammar {
 		return this == IMPERATIVE;
 	}
 
-	public final Parser<ExpressionNode> expression() {
-		return this.expression;
-	}
-
-	public final Parser<ExpressionNode> operand() {
-		return this.operand;
-	}
-
-	public final Parser<ExpressionNode> simpleExpression() {
-		return this.simpleExpression;
-	}
-
-	public final Parser<PhraseNode> phrase(ExpressionNode prefix) {
-		return new PhraseParser(this, prefix);
-	}
-
-	public final Parser<UnaryNode> unaryExpression() {
-		return this.unaryExpression;
-	}
-
-	public final Parser<BinaryNode> binaryExpression(
-			ExpressionNode leftOperand) {
-		return new BinaryExpressionParser(this, leftOperand);
-	}
-
 	public final Parser<StatementNode> statement() {
 		return this.statement;
-	}
-
-	public final Parser<SelfAssignmentNode> selfAssignment() {
-		return this.selfAssignment;
-	}
-
-	public final Parser<DeclaratorNode> declarator(DeclarableNode declarable) {
-		return new DeclaratorParser(this, declarable);
 	}
 
 	public final Parser<ClauseDeclaratorNode> clauseDeclarator() {
@@ -252,10 +241,6 @@ public class Grammar {
 
 	public final Parser<ParenthesesNode> parentheses() {
 		return this.parentheses;
-	}
-
-	public final Parser<BracketsNode> brackets() {
-		return this.brackets;
 	}
 
 	public final Parser<SentenceNode[]> content() {
@@ -276,10 +261,6 @@ public class Grammar {
 
 	private static final class DeclarativeGrammar extends Grammar {
 
-		private DeclarativeGrammar() {
-			super(ExpressionParser.DECLARATIVE_EXPRESSION);
-		}
-
 		@Override
 		public String toString() {
 			return "DECLARATIVE";
@@ -288,10 +269,6 @@ public class Grammar {
 	}
 
 	private static final class ImperativeGrammar extends Grammar {
-
-		private ImperativeGrammar() {
-			super(ExpressionParser.IMPERATIVE_EXPRESSION);
-		}
 
 		@Override
 		public String toString() {

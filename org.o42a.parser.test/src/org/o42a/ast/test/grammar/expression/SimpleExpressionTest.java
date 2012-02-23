@@ -19,7 +19,7 @@
 */
 package org.o42a.ast.test.grammar.expression;
 
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.Node;
@@ -176,7 +176,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	private Node parse(String text) {
-		return parse(DECLARATIVE.simpleExpression(), text);
+		return parse(simpleExpression(), text);
 	}
 
 }

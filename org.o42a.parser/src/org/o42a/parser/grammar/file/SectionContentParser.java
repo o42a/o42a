@@ -47,8 +47,7 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 
 		for (;;) {
 
-			final SentenceNode sentence =
-					context.parse(DECLARATIVE.sentence());
+			final SentenceNode sentence = context.parse(DECLARATIVE.sentence());
 
 			if (sentence == null) {
 				return createResult(sentences, null, null);

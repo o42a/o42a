@@ -19,13 +19,13 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.parser.Grammar.simpleExpression;
 import static org.o42a.util.string.Characters.MINUS;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.expression.UnaryOperator;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -33,10 +33,10 @@ import org.o42a.util.io.SourcePosition;
 
 public class UnaryExpressionParser implements Parser<UnaryNode> {
 
-	private final Grammar grammar;
+	public static final UnaryExpressionParser UNARY_EXPRESSION =
+			new UnaryExpressionParser();
 
-	public UnaryExpressionParser(Grammar grammar) {
-		this.grammar = grammar;
+	private UnaryExpressionParser() {
 	}
 
 	@Override
@@ -88,8 +88,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 
 		context.acceptComments(false, sign);
 
-		final ExpressionNode parameter =
-				context.parse(this.grammar.simpleExpression());
+		final ExpressionNode parameter = context.parse(simpleExpression());
 
 		if (parameter == null) {
 			context.getLogger().missingOperand(

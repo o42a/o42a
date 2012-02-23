@@ -19,11 +19,12 @@
 */
 package org.o42a.parser.grammar.statement;
 
+import static org.o42a.parser.Grammar.expression;
+
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.AssignmentNode.AssignmentOperator;
 import org.o42a.ast.statement.SelfAssignmentNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -31,10 +32,10 @@ import org.o42a.util.io.SourcePosition;
 
 public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 
-	private final Grammar grammar;
+	public static final SelfAssignmentParser SELF_ASSIGNMENT =
+			new SelfAssignmentParser();
 
-	public SelfAssignmentParser(Grammar grammar) {
-		this.grammar = grammar;
+	private SelfAssignmentParser() {
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class SelfAssignmentParser implements Parser<SelfAssignmentNode> {
 
 		context.acceptComments(false, prefix);
 
-		final ExpressionNode value = context.parse(this.grammar.expression());
+		final ExpressionNode value = context.parse(expression());
 
 		if (value == null) {
 			context.getLogger().missingValue(context.current());

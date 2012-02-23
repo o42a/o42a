@@ -19,7 +19,7 @@
 */
 package org.o42a.parser.grammar.statement;
 
-import static org.o42a.parser.Grammar.IMPERATIVE;
+import static org.o42a.parser.Grammar.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -56,7 +56,7 @@ public class AssignmentParser implements Parser<AssignmentNode> {
 
 		context.acceptComments(false, operator);
 
-		final ExpressionNode value = context.parse(IMPERATIVE.expression());
+		final ExpressionNode value = context.parse(expression());
 
 		if (value == null) {
 			context.getLogger().missingValue(operator);

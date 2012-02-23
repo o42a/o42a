@@ -19,8 +19,8 @@
 */
 package org.o42a.parser.grammar.clause;
 
-import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.declarableAdapter;
+import static org.o42a.parser.Grammar.phrase;
 import static org.o42a.parser.Grammar.ref;
 import static org.o42a.parser.grammar.clause.ClauseRequirementParser.CLAUSE_REQUIREMENT;
 import static org.o42a.parser.grammar.clause.OutcomeParser.OUTCOME;
@@ -107,7 +107,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return null;
 		}
 
-		final PhraseNode phrase = context.parse(DECLARATIVE.phrase(ref));
+		final PhraseNode phrase = context.parse(phrase(ref));
 
 		if (phrase != null) {
 			return phrase;

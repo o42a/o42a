@@ -23,12 +23,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
 import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.field.*;
+import org.o42a.ast.field.DeclarationTarget;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.*;
@@ -155,7 +156,7 @@ public class DefinitionTest extends GrammarTestCase {
 
 		assertName("foo", field);
 
-		return this.worker.parse(DECLARATIVE.declarator(field));
+		return this.worker.parse(declarator(field));
 	}
 
 }

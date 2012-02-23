@@ -28,7 +28,6 @@ import org.o42a.ast.ref.*;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.ValueTypeNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.parser.grammar.type.ValueTypeParser;
@@ -36,10 +35,10 @@ import org.o42a.parser.grammar.type.ValueTypeParser;
 
 public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
-	private final Grammar grammar;
+	public static final SimpleExpressionParser SIMPLE_EXPRESSION =
+			new SimpleExpressionParser();
 
-	public SimpleExpressionParser(Grammar grammar) {
-		this.grammar = grammar;
+	private SimpleExpressionParser() {
 	}
 
 	@Override
@@ -115,8 +114,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 					}
 				}
 
-				final PhraseNode phrase =
-						context.parse(this.grammar.phrase(expression));
+				final PhraseNode phrase = context.parse(phrase(expression));
 
 				if (phrase != null) {
 					expression = phrase;
@@ -136,9 +134,9 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '+':
 		case '-':
 		case MINUS:
-			return context.parse(this.grammar.unaryExpression());
+			return context.parse(unaryExpression());
 		case '(':
-			return context.parse(this.grammar.parentheses());
+			return context.parse(DECLARATIVE.parentheses());
 		case '&':
 			return context.parse(samples());
 		case '"':
@@ -146,7 +144,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '\\':
 			return context.parse(text());
 		case '[':
-			return context.parse(this.grammar.brackets());
+			return context.parse(brackets());
 		default:
 			if (isDigit(c)) {
 				return context.parse(decimal());

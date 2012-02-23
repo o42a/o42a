@@ -27,19 +27,18 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
 public class PhraseParser implements Parser<PhraseNode> {
 
-	private final ExpressionNode prefix;
-	private final ClauseParser clauseParser;
+	private static final ClauseParser CLAUSE = new ClauseParser();
 
-	public PhraseParser(Grammar grammar, ExpressionNode prefix) {
+	private final ExpressionNode prefix;
+
+	public PhraseParser(ExpressionNode prefix) {
 		this.prefix = prefix;
-		this.clauseParser = new ClauseParser(grammar);
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 		for (;;) {
 
-			final ClauseNode clause = context.parse(this.clauseParser);
+			final ClauseNode clause = context.parse(CLAUSE);
 
 			if (clause == null) {
 				break;
@@ -71,10 +70,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 	private static final class ClauseParser implements Parser<ClauseNode> {
 
-		private final Grammar grammar;
-
-		ClauseParser(Grammar grammar) {
-			this.grammar = grammar;
+		ClauseParser() {
 		}
 
 		@Override
@@ -84,7 +80,7 @@ public class PhraseParser implements Parser<PhraseNode> {
 
 			switch (c) {
 			case '[':
-				return context.parse(this.grammar.brackets());
+				return context.parse(brackets());
 			case '(':
 				return context.parse(DECLARATIVE.parentheses());
 			case '{':

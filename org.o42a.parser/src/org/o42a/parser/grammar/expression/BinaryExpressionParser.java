@@ -19,13 +19,13 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.parser.Grammar.expression;
 import static org.o42a.util.string.Characters.MINUS;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -35,11 +35,9 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 
 	private static final OperatorParser OPERATOR = new OperatorParser();
 
-	private final Grammar grammar;
 	private final ExpressionNode leftOperand;
 
-	public BinaryExpressionParser(Grammar grammar, ExpressionNode leftOperand) {
-		this.grammar = grammar;
+	public BinaryExpressionParser(ExpressionNode leftOperand) {
 		this.leftOperand = leftOperand;
 	}
 
@@ -53,7 +51,7 @@ public class BinaryExpressionParser implements Parser<BinaryNode> {
 		}
 
 		final BinaryOperator operator = sign.getType();
-		ExpressionNode rightOperand = context.parse(this.grammar.operand());
+		ExpressionNode rightOperand = context.parse(expression());
 
 		if (rightOperand == null) {
 			context.getLogger().missingRightOperand(

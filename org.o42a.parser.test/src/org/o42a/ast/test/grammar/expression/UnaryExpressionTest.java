@@ -21,7 +21,7 @@ package org.o42a.ast.test.grammar.expression;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.unaryExpression;
 
 import org.junit.Test;
 import org.o42a.ast.expression.UnaryNode;
@@ -116,7 +116,7 @@ public class UnaryExpressionTest extends GrammarTestCase {
 	}
 
 	private UnaryNode parse(String text) {
-		return parse(DECLARATIVE.unaryExpression(), text);
+		return parse(unaryExpression(), text);
 	}
 
 }

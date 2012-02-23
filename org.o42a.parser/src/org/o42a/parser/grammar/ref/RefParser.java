@@ -21,7 +21,9 @@ package org.o42a.parser.grammar.ref;
 
 import static org.o42a.parser.Grammar.*;
 
-import org.o42a.ast.ref.*;
+import org.o42a.ast.ref.AscendantRefNode;
+import org.o42a.ast.ref.IntrinsicRefNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
