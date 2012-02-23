@@ -76,6 +76,10 @@ public final class Root$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.root.Root$$integers(this))
 			.getScope().toField(),
+			new org.o42a.intrinsic.link.LinkValueTypeObject(
+					owner,
+					new org.o42a.intrinsic.link.LinkValueTypeObject$$Sources(this))
+			.getScope().toField(),
 			new org.o42a.intrinsic.string.StringValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.string.StringValueTypeObject$$Sources(this))
@@ -91,6 +95,10 @@ public final class Root$$Sources implements AnnotatedSources {
 			new org.o42a.intrinsic.root.UseObject(
 					owner,
 					new org.o42a.intrinsic.root.UseObject$$Sources(this))
+			.getScope().toField(),
+			new org.o42a.intrinsic.link.VariableValueTypeObject(
+					owner,
+					new org.o42a.intrinsic.link.VariableValueTypeObject$$Sources(this))
 			.getScope().toField(),
 			new org.o42a.intrinsic.array.VariableArrayValueTypeObject(
 					owner,

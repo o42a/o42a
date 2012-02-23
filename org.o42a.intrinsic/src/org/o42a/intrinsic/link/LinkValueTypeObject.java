@@ -1,6 +1,6 @@
 /*
     Intrinsics
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,7 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Array :=> void
-==============
+package org.o42a.intrinsic.link;
 
-Length :=< integer
+import org.o42a.common.object.AnnotatedSources;
+import org.o42a.common.object.SourcePath;
+import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.link.LinkValueType;
+import org.o42a.intrinsic.root.Root;
+
+
+@SourcePath(relativeTo = Root.class, value = "link.o42a")
+public class LinkValueTypeObject extends AbstractLinkValueTypeObject {
+
+	public LinkValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
+		super(owner, sources, LinkValueType.LINK);
+	}
+
+}

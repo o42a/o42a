@@ -124,6 +124,16 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
+	public Obj getLink() {
+		return this.root.getLink();
+	}
+
+	@Override
+	public Obj getVariable() {
+		return this.root.getVariable();
+	}
+
+	@Override
 	public Obj getVariableArray() {
 		return this.root.getVariableArray();
 	}
