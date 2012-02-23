@@ -65,6 +65,8 @@ public class Root extends Obj {
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
+	private Obj linkObject;
+	private Obj variableObject;
 	private Obj variableArrayObject;
 	private Obj constantArrayObject;
 
@@ -116,6 +118,22 @@ public class Root extends Obj {
 		}
 		return this.stringObject =
 				field("string").substance(dummyUser()).toObject();
+	}
+
+	public final Obj getLink() {
+		if (this.linkObject != null) {
+			return this.linkObject;
+		}
+		return this.linkObject =
+				field("link").substance(dummyUser()).toObject();
+	}
+
+	public final Obj getVariable() {
+		if (this.variableObject != null) {
+			return this.variableObject;
+		}
+		return this.variableObject =
+				field("variable").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getVariableArray() {

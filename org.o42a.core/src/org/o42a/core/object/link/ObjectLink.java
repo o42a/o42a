@@ -76,7 +76,12 @@ public abstract class ObjectLink
 		return this;
 	}
 
-	public abstract boolean isVariable();
+	public abstract LinkValueType getValueType();
+
+	public boolean isRuntime() {
+		return (getValueType().isVariable()
+				|| getScope().getConstructionMode().isRuntime());
+	}
 
 	public final TypeRef getTypeRef() {
 		return getTargetRef().getTypeRef();
@@ -224,7 +229,7 @@ public abstract class ObjectLink
 	}
 
 	private Obj createMaterialization() {
-		if (isVariable() || getScope().getConstructionMode().isRuntime()) {
+		if (isRuntime()) {
 			return new RuntimeLinkTarget(this);
 		}
 
