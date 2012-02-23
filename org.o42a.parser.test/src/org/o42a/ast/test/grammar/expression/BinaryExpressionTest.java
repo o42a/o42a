@@ -21,7 +21,8 @@ package org.o42a.ast.test.grammar.expression;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.binaryExpression;
+import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.expression.BinaryNode;
@@ -110,10 +111,9 @@ public class BinaryExpressionTest extends GrammarTestCase {
 				new StringSource(getClass().getSimpleName(), text));
 
 		final ExpressionNode expression =
-				this.worker.parse(DECLARATIVE.simpleExpression());
+				this.worker.parse(simpleExpression());
 
-		return this.worker.parse(
-				DECLARATIVE.binaryExpression(expression));
+		return this.worker.parse(binaryExpression(expression));
 	}
 
 }

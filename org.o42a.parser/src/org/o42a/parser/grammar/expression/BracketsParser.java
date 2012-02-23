@@ -21,6 +21,7 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.ast.expression.BracketsNode.Bracket.CLOSING_BRACKET;
 import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
+import static org.o42a.parser.Grammar.expression;
 import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import java.util.ArrayList;
@@ -31,17 +32,18 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
 import org.o42a.ast.expression.BracketsNode.Bracket;
 import org.o42a.ast.type.InterfaceNode;
-import org.o42a.parser.*;
+import org.o42a.parser.Expectations;
+import org.o42a.parser.Parser;
+import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
 
 
-public class BracketsParser implements Parser<BracketsNode> {
+public final class BracketsParser implements Parser<BracketsNode> {
 
-	private final Parser<ExpressionNode> elementParser;
+	public static final BracketsParser BRACKETS = new BracketsParser();
 
-	public BracketsParser(Grammar grammar) {
-		this.elementParser = grammar.expression();
+	private BracketsParser() {
 	}
 
 	@Override
@@ -63,7 +65,7 @@ public class BracketsParser implements Parser<BracketsNode> {
 		for (;;) {
 
 			final ArgumentNode argument = expectations.parse(
-					new ArgumentParser(separator, this.elementParser));
+					new ArgumentParser(separator, expression()));
 
 			if (argument != null) {
 				argument.addComments(prevSeparators);

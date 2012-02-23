@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.type;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
@@ -126,7 +126,7 @@ public class ValueTypeTest extends GrammarTestCase {
 	private ValueTypeNode parse(String text) {
 		return to(
 				ValueTypeNode.class,
-				parse(DECLARATIVE.simpleExpression(), text));
+				parse(simpleExpression(), text));
 	}
 
 }

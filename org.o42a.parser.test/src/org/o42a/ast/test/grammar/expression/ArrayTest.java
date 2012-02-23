@@ -23,7 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.brackets;
 
 import org.junit.Test;
 import org.o42a.ast.expression.ArgumentNode;
@@ -105,7 +105,7 @@ public class ArrayTest extends GrammarTestCase {
 
 	private BracketsNode parse(String... lines) {
 
-		final BracketsNode result = parseLines(DECLARATIVE.brackets(), lines);
+		final BracketsNode result = parseLines(brackets(), lines);
 
 		assertNotNull(result.getInterface());
 

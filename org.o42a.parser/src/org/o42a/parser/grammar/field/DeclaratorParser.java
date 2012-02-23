@@ -20,13 +20,15 @@
 package org.o42a.parser.grammar.field;
 
 import static org.o42a.ast.field.DeclarationTarget.*;
+import static org.o42a.parser.Grammar.expression;
 import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.field.*;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarationTarget;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.type.InterfaceNode;
-import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -37,11 +39,9 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 	private static final DefinitionAssignmentParser DEFINITION_ASSIGNMENT =
 			new DefinitionAssignmentParser();
 
-	private final Grammar grammar;
 	private final DeclarableNode declarable;
 
-	public DeclaratorParser(Grammar grammar, DeclarableNode declarable) {
-		this.grammar = grammar;
+	public DeclaratorParser(DeclarableNode declarable) {
 		this.declarable = declarable;
 	}
 
@@ -67,8 +67,7 @@ public class DeclaratorParser implements Parser<DeclaratorNode> {
 			iface = null;
 		}
 
-		final ExpressionNode definition =
-				context.parse(this.grammar.expression());
+		final ExpressionNode definition = context.parse(expression());
 
 		if (definition == null) {
 			context.getLogger().missingValue(context.current());

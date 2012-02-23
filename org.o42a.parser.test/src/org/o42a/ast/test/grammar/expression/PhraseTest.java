@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.expression;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.expression;
 
 import org.junit.Test;
 import org.o42a.ast.atom.NameNode;
@@ -256,9 +256,7 @@ public class PhraseTest extends GrammarTestCase {
 	}
 
 	private PhraseNode parse(String... lines) {
-		return to(PhraseNode.class, parseLines(
-				DECLARATIVE.expression(),
-				lines));
+		return to(PhraseNode.class, parseLines(expression(), lines));
 	}
 
 }

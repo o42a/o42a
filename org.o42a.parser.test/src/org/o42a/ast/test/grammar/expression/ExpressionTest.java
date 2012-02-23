@@ -20,7 +20,7 @@
 package org.o42a.ast.test.grammar.expression;
 
 import static org.junit.Assert.assertEquals;
-import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.expression;
 
 import org.junit.Test;
 import org.o42a.ast.expression.*;
@@ -149,7 +149,7 @@ public class ExpressionTest extends GrammarTestCase {
 	}
 
 	private ExpressionNode parse(String text) {
-		return parse(DECLARATIVE.expression(), text);
+		return parse(expression(), text);
 	}
 
 }

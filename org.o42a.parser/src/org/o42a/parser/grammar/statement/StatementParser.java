@@ -33,7 +33,6 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.parser.grammar.field.DeclaratorParser;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
 
@@ -69,8 +68,7 @@ public class StatementParser implements Parser<StatementNode> {
 				return null;
 			}
 
-			final ExpressionNode expression =
-					context.parse(this.grammar.expression());
+			final ExpressionNode expression = context.parse(expression());
 
 			if (expression != null) {
 				logUnexpected(context, firstUnexpected, start);
@@ -97,7 +95,7 @@ public class StatementParser implements Parser<StatementNode> {
 	private StatementNode parseStatement(ParserContext context) {
 		switch (context.next()) {
 		case '=':
-			return context.parse(this.grammar.selfAssignment());
+			return context.parse(selfAssignment());
 		case '@':
 
 			final DeclarableAdapterNode declarableAdapter =
@@ -107,10 +105,11 @@ public class StatementParser implements Parser<StatementNode> {
 				return null;
 			}
 
-			return context.parse(
-					new DeclaratorParser(this.grammar, declarableAdapter));
+			return context.parse(declarator(declarableAdapter));
 		case '{':
 			return context.parse(braces());
+		case '(':
+			return context.parse(this.grammar.parentheses());
 		case '<':
 			return context.parse(this.grammar.clauseDeclarator());
 		case '*':
@@ -145,7 +144,7 @@ public class StatementParser implements Parser<StatementNode> {
 			}
 
 			final DeclaratorNode declarator =
-					context.parse(this.grammar.declarator(declarable));
+					context.parse(Grammar.declarator(declarable));
 
 			if (declarator != null) {
 				return declarator;
