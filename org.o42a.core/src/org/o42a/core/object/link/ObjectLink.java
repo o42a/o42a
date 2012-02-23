@@ -21,6 +21,7 @@ package org.o42a.core.object.link;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.*;
 import org.o42a.core.artifact.Artifact;
@@ -35,10 +36,15 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.object.link.impl.LinkTarget;
 import org.o42a.core.object.link.impl.RuntimeLinkTarget;
+import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 
 
 public abstract class ObjectLink
@@ -49,6 +55,7 @@ public abstract class ObjectLink
 	private final ScopePlace place;
 	private TargetRef targetRef;
 	private Obj materialization;
+	private LinkValueStruct valueStruct;
 
 	public ObjectLink(LocationInfo location, Distributor distributor) {
 		super(location);
@@ -78,6 +85,13 @@ public abstract class ObjectLink
 
 	public abstract LinkValueType getValueType();
 
+	public final LinkValueStruct getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+		return this.valueStruct = getValueType().linkStruct(getTypeRef());
+	}
+
 	public boolean isRuntime() {
 		return (getValueType().isVariable()
 				|| getScope().getConstructionMode().isRuntime());
@@ -92,6 +106,34 @@ public abstract class ObjectLink
 			define();
 		}
 		return this.targetRef;
+	}
+
+	public ValueKnowledge getKnowledge() {
+
+		final TargetRef targetRef = getTargetRef();
+		final Resolution resolution =
+				targetRef.resolve(targetRef.getScope().dummyResolver());
+
+		if (resolution.isError() || !resolution.isResolved()) {
+			return UNKNOWN_VALUE;
+		}
+
+		final Obj target = resolution.materialize();
+
+		if (target == null) {
+			return UNKNOWN_VALUE;
+		}
+		if (target.getConstructionMode().isRuntime()) {
+			if (!getValueType().isVariable()) {
+				return RUNTIME_CONSTRUCTED_VALUE;
+			}
+			return VARIABLE_VALUE;
+		}
+		if (!getValueType().isVariable()) {
+			return KNOWN_VALUE;
+		}
+
+		return INITIALLY_KNOWN_VALUE;
 	}
 
 	public final Obj materialize() {
@@ -129,6 +171,10 @@ public abstract class ObjectLink
 	@Override
 	public final Namespace toNamespace() {
 		return null;
+	}
+
+	public final Value<ObjectLink> toValue() {
+		return getValueStruct().compilerValue(this);
 	}
 
 	@Override
@@ -175,6 +221,10 @@ public abstract class ObjectLink
 		return findLinkIn(scope);
 	}
 
+	public void resolveAll(Resolver resolver) {
+		getTypeRef().resolveAll(resolver);
+	}
+
 	@Override
 	public final Distributor distribute() {
 		return Placed.distribute(this);
@@ -188,6 +238,8 @@ public abstract class ObjectLink
 	protected abstract TargetRef buildTargetRef();
 
 	protected abstract ObjectLink findLinkIn(Scope enclosing);
+
+	protected abstract ObjectLink prefixWith(PrefixPath prefix);
 
 	private void define() {
 		this.targetRef = buildTargetRef();

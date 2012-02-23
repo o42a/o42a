@@ -65,8 +65,16 @@ public final class LinkValueStruct
 
 	@Override
 	public TypeRelation relationTo(ValueStruct<?, ?> other) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (valueType != getValueType()) {
+			return TypeRelation.INCOMPATIBLE;
+		}
+
+		final LinkValueStruct otherLinkStruct = (LinkValueStruct) other;
+
+		return getTypeRef().relationTo(otherLinkStruct.getTypeRef(), false);
 	}
 
 	@Override
@@ -85,46 +93,91 @@ public final class LinkValueStruct
 
 	@Override
 	public LinkValueStruct prefixWith(PrefixPath prefix) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return getValueType().linkStruct(newTypeRef);
 	}
 
 	@Override
 	public LinkValueStruct upgradeScope(Scope toScope) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.upgradeScope(toScope);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return getValueType().linkStruct(newTypeRef);
 	}
 
 	@Override
 	public ScopeInfo toScoped() {
-		// TODO Auto-generated method stub
-		return null;
+		return getTypeRef();
 	}
 
 	@Override
 	public LinkValueStruct reproduce(Reproducer reproducer) {
-		// TODO Auto-generated method stub
-		return null;
+
+		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
+
+		if (typeRef == null) {
+			return null;
+		}
+
+		return getValueType().linkStruct(typeRef);
 	}
 
 	@Override
 	protected ValueKnowledge valueKnowledge(ObjectLink value) {
-		// TODO Auto-generated method stub
-		return null;
+		return value.getKnowledge();
 	}
 
 	@Override
 	protected Value<ObjectLink> prefixValueWith(
 			Value<ObjectLink> value,
 			PrefixPath prefix) {
-		// TODO Auto-generated method stub
-		return null;
+		if (value.getKnowledge().hasCompilerValue()) {
+
+			final ObjectLink link = value.getCompilerValue();
+
+			if (prefix.emptyFor(link)) {
+				return value;
+			}
+
+			return link.prefixWith(prefix).toValue();
+		}
+
+		final LinkValueStruct initialStruct =
+				(LinkValueStruct) value.getValueStruct();
+		final LinkValueStruct rescopedStruct =
+				initialStruct.prefixWith(prefix);
+
+		if (initialStruct == rescopedStruct) {
+			return value;
+		}
+		if (!value.getKnowledge().isKnownToCompiler()) {
+			return rescopedStruct.runtimeValue();
+		}
+		if (value.getKnowledge().getCondition().isUnknown()) {
+			return rescopedStruct.unknownValue();
+		}
+
+		return rescopedStruct.falseValue();
 	}
 
 	@Override
 	protected void resolveAll(Value<ObjectLink> value, Resolver resolver) {
-		// TODO Auto-generated method stub
-
+		getTypeRef().resolveAll(resolver);
+		if (value.getKnowledge().hasCompilerValue()) {
+			value.resolveAll(resolver);
+		}
 	}
 
 	@Override
