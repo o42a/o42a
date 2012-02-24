@@ -24,7 +24,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.ArrayValueType;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.impl.LinkConstantValueDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
@@ -96,7 +95,7 @@ public final class LinkValueStruct
 			return false;
 		}
 
-		final LinkValueStruct otherLinkStruct = (LinkValueStruct) other;
+		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
 		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
@@ -104,13 +103,11 @@ public final class LinkValueStruct
 	@Override
 	public boolean convertibleFrom(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
-		if (!(valueType instanceof ArrayValueType)) {
+		if (otherLinkStruct == null) {
 			return false;
 		}
-
-		final LinkValueStruct otherLinkStruct = (LinkValueStruct) other;
 
 		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
@@ -159,8 +156,13 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public ScopeInfo toScoped() {
+	public final ScopeInfo toScoped() {
 		return getTypeRef();
+	}
+
+	@Override
+	public final LinkValueStruct toLinkStruct() {
+		return this;
 	}
 
 	@Override

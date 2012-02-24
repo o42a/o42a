@@ -22,6 +22,7 @@ package org.o42a.core.value;
 import org.o42a.core.Scope;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.impl.ArrayValueType;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
@@ -85,6 +86,8 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 				.staticTypeRef(scope.distribute(),
 				valueStructFinder);
 	}
+
+	public abstract LinkValueType toLinkType();
 
 	@Override
 	public String toString() {

@@ -19,13 +19,11 @@
 */
 package org.o42a.core.value;
 
-import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
@@ -70,22 +68,12 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
-			return rawValueAdapter(ref);
-		}
-
-		final Ref adapter = ref.adapt(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
-
-		return adapter.valueAdapter(null);
+	public final ScopeInfo toScoped() {
+		return null;
 	}
 
 	@Override
-	public final ScopeInfo toScoped() {
+	public final LinkValueStruct toLinkStruct() {
 		return null;
 	}
 

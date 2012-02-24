@@ -65,4 +65,9 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		return new LinkValueStruct(this, typeRef);
 	}
 
+	@Override
+	public final LinkValueType toLinkType() {
+		return this;
+	}
+
 }
