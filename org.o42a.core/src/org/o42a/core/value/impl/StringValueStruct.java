@@ -25,8 +25,8 @@ import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.ExternalValueStructIR;
-import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.ir.value.struct.ExternalValueStructIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;

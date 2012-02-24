@@ -21,6 +21,7 @@ package org.o42a.core.object.link;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
 import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.*;
@@ -42,6 +43,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
@@ -58,9 +60,30 @@ public abstract class ObjectLink
 	private LinkValueStruct valueStruct;
 
 	public ObjectLink(LocationInfo location, Distributor distributor) {
+		this(location, distributor, null);
+	}
+
+	public ObjectLink(
+			LocationInfo location,
+			Distributor distributor,
+			TargetRef targetRef) {
 		super(location);
 		this.enclosing = distributor.getContainer();
 		this.place = distributor.getPlace();
+		this.targetRef = targetRef;
+		if (targetRef != null) {
+			targetRef.assertSameScope(this);
+		}
+	}
+
+	protected ObjectLink(ObjectLink prototype, TargetRef targetRef) {
+		this(
+				new Location(
+						targetRef.getContext(),
+						targetRef.getScope().getLoggable().setReason(
+								logDeclaration(prototype))),
+				prototype.distributeIn(targetRef.getScope().getContainer()),
+				targetRef);
 	}
 
 	@Override

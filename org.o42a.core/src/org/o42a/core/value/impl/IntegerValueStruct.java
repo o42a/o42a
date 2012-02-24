@@ -21,9 +21,9 @@ package org.o42a.core.value.impl;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.value.AbstractValueStructIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.ir.value.struct.AbstractValueStructIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 

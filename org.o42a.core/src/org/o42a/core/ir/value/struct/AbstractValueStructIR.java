@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value;
+package org.o42a.core.ir.value.struct;
 
 import java.util.HashMap;
 
@@ -25,6 +25,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 
 

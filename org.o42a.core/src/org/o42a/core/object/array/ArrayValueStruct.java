@@ -24,7 +24,7 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.*;
 import org.o42a.core.object.def.ValueDef;

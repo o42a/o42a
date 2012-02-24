@@ -1,0 +1,148 @@
+/*
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.core.object.link.impl;
+
+import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.ref.*;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+
+
+public final class LinkConstantValueDef extends ValueDef {
+
+	private final Value<ObjectLink> value;
+	private LinkValueStruct valueStruct;
+
+	public LinkConstantValueDef(
+			Obj source,
+			LocationInfo location,
+			LinkValueStruct valueStruct,
+			ObjectLink value) {
+		super(
+				source,
+				location,
+				noScopeUpgrade(valueStruct.toScoped().getScope()));
+		this.value = valueStruct.compilerValue(value);
+	}
+
+	private LinkConstantValueDef(
+			LinkConstantValueDef prototype,
+			ScopeUpgrade scopeUpgrade) {
+		super(prototype, scopeUpgrade);
+		this.value = prototype.value;
+	}
+
+	@Override
+	public LinkValueStruct getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+
+		final LinkValueStruct valueStruct =
+				(LinkValueStruct) this.value.getValueStruct();
+
+		return this.valueStruct =
+				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
+	}
+
+	public final ObjectLink getLink() {
+		return this.value.getCompilerValue();
+	}
+
+	@Override
+	public void normalize(Normalizer normalizer) {
+	}
+
+	@Override
+	protected boolean hasConstantValue() {
+		if (getValueType().isVariable()) {
+			return false;
+		}
+		return getLink().getTargetRef().getRef().isStatic();
+	}
+
+	@Override
+	protected Value<?> calculateValue(Resolver resolver) {
+		return this.value;
+	}
+
+	@Override
+	protected ValueDef create(
+			ScopeUpgrade upgrade,
+			ScopeUpgrade additionalUpgrade) {
+		return new LinkConstantValueDef(this, upgrade);
+	}
+
+	@Override
+	protected Logical buildPrerequisite() {
+		return logicalTrue(this, getSource().getScope());
+	}
+
+	@Override
+	protected Logical buildPrecondition() {
+		return logicalTrue(this, getSource().getScope());
+	}
+
+	@Override
+	protected Logical buildLogical() {
+		return logicalTrue(this, getSource().getScope());
+	}
+
+	@Override
+	protected void fullyResolveDef(Resolver resolver) {
+		this.value.resolveAll(resolver);
+	}
+
+	@Override
+	protected InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+		return null;
+	}
+
+	@Override
+	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+		if (hasConstantValue()) {
+			return this.value.op(dirs.getBuilder(), dirs.code());
+		}
+
+		final ObjectOp target =
+				getLink()
+				.getTargetRef()
+				.getRef()
+				.op(host)
+				.target(dirs.dirs())
+				.materialize(dirs.dirs());
+
+		return dirs.value().store(dirs.code(), target.toAny(dirs.code()));
+	}
+
+}

@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ir.value;
 
+import org.o42a.core.ir.value.struct.ValueStorageIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
+
 
 public enum ValStoreMode {
 
