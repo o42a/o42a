@@ -42,10 +42,7 @@ import org.o42a.core.value.ValueStruct;
 
 final class ArrayCopyValueDef extends ValueDef {
 
-	static Value<?> arrayValue(
-			Ref ref,
-			Resolver resolver,
-			boolean toConstant) {
+	static Value<?> arrayValue(Ref ref, Resolver resolver, boolean toConstant) {
 
 		final Resolution arrayResolution = ref.resolve(resolver);
 

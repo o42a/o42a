@@ -22,9 +22,13 @@ package org.o42a.core.object.link;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.ir.value.ValueStructIR;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.impl.ArrayValueType;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.impl.LinkConstantValueDef;
+import org.o42a.core.object.link.impl.LinkValueAdapter;
+import org.o42a.core.object.link.impl.LinkValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -45,13 +49,20 @@ public final class LinkValueStruct
 		this.typeRef = typeRef;
 	}
 
+	public final TypeRef getTypeRef() {
+		return this.typeRef;
+	}
+
 	@Override
 	public final LinkValueType getValueType() {
 		return (LinkValueType) super.getValueType();
 	}
 
-	public final TypeRef getTypeRef() {
-		return this.typeRef;
+	public final LinkValueStruct setValueType(LinkValueType valueType) {
+		if (valueType == getValueType()) {
+			return this;
+		}
+		return valueType.linkStruct(getTypeRef());
 	}
 
 	@Override
@@ -59,8 +70,7 @@ public final class LinkValueStruct
 			Obj source,
 			LocationInfo location,
 			ObjectLink value) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LinkConstantValueDef(source, location, this, value);
 	}
 
 	@Override
@@ -78,17 +88,48 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	public boolean assignableFrom(ValueStruct<?, ?> other) {
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (valueType != getValueType()) {
+			return false;
+		}
+
+		final LinkValueStruct otherLinkStruct = (LinkValueStruct) other;
+
+		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
+	}
+
+	@Override
 	public boolean convertibleFrom(ValueStruct<?, ?> other) {
-		// TODO Auto-generated method stub
-		return false;
+
+		final ValueType<?> valueType = other.getValueType();
+
+		if (!(valueType instanceof ArrayValueType)) {
+			return false;
+		}
+
+		final LinkValueStruct otherLinkStruct = (LinkValueStruct) other;
+
+		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
 
 	@Override
 	public ValueAdapter defaultAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct) {
-		// TODO Auto-generated method stub
-		return null;
+		if (expectedStruct == null || expectedStruct.convertibleFrom(this)) {
+			return new LinkValueAdapter(
+					ref,
+					(LinkValueStruct) expectedStruct);
+		}
+
+		final Ref adapter = ref.adapt(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return adapter.valueAdapter(null);
 	}
 
 	@Override
@@ -183,8 +224,7 @@ public final class LinkValueStruct
 	@Override
 	protected ValueStructIR<LinkValueStruct, ObjectLink> createIR(
 			Generator generator) {
-		// TODO Auto-generated method stub
-		return null;
+		return new LinkValueStructIR(generator, this);
 	}
 
 }

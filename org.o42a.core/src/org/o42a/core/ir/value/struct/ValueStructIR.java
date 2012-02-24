@@ -17,13 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value;
+package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
@@ -62,6 +65,27 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return false;
 	}
 
+	public final ValueStorageIR getTempStorage() {
+		if (this.tempStorage != null) {
+			return this.tempStorage;
+		}
+		return this.tempStorage = createTempStorage();
+	}
+
+	public final ValueStorageIR getInitialStorage() {
+		if (this.initialStorage != null) {
+			return this.initialStorage;
+		}
+		return this.initialStorage = createInitialStorage();
+	}
+
+	public final ValueStorageIR getAssignmentStorage() {
+		if (this.assignmentStorage != null) {
+			return this.assignmentStorage;
+		}
+		return this.assignmentStorage = createTempStorage();
+	}
+
 	public abstract Val val(T value);
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
@@ -72,27 +96,6 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 			return super.toString();
 		}
 		return this.valueStruct + " IR";
-	}
-
-	protected final ValueStorageIR getTempStorage() {
-		if (this.tempStorage != null) {
-			return this.tempStorage;
-		}
-		return this.tempStorage = createTempStorage();
-	}
-
-	protected final ValueStorageIR getInitialStorage() {
-		if (this.initialStorage != null) {
-			return this.initialStorage;
-		}
-		return this.initialStorage = createInitialStorage();
-	}
-
-	protected final ValueStorageIR getAssignmentStorage() {
-		if (this.assignmentStorage != null) {
-			return this.assignmentStorage;
-		}
-		return this.assignmentStorage = createTempStorage();
 	}
 
 	protected ValueStorageIR createTempStorage() {
@@ -153,12 +156,27 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		}
 
 		@Override
+		public void storePtr(Code code, ValOp target, AnyOp pointer) {
+			assert hasValue() :
+				"Can not store value to " + getValueStruct();
+			assert !hasLength() :
+				"Can not store pointer without length to " + getValueStruct();
+			target.value(null, code)
+			.toPtr(null, code)
+			.store(code, code.nullPtr());
+			target.flags(null, code)
+			.store(code, code.int32(Val.CONDITION_FLAG));
+		}
+
+		@Override
 		public void storePtr(
 				Code code,
 				ValOp target,
 				AnyOp pointer,
 				DataAlignment alignment,
 				Int32op length) {
+			assert hasValue() :
+				"Can not store value to " + getValueStruct();
 			assert hasLength() :
 				"Can not store pointer to value of scalar type: "
 				+ getValueStruct();
@@ -174,15 +192,16 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 		@Override
 		public void storeNull(Code code, ValOp target) {
-			assert hasLength() :
-				"Can not store pointer to value of scalar type: "
-				+ getValueStruct();
+			assert hasValue() :
+				"Can not store value to " + getValueStruct();
 			target.value(null, code)
 			.toPtr(null, code)
 			.store(code, code.nullPtr());
 			target.flags(null, code)
 			.store(code, code.int32(Val.CONDITION_FLAG));
-			target.length(null, code).store(code, code.int32(0));
+			if (hasLength()) {
+				target.length(null, code).store(code, code.int32(0));
+			}
 		}
 
 	}
@@ -200,6 +219,11 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 			if (hasLength() && !value.ptr().getAllocClass().isStatic()) {
 				target.use(code);
 			}
+		}
+
+		@Override
+		public void storePtr(Code code, ValOp target, AnyOp pointer) {
+			getTempStorage().storePtr(code, target, pointer);
 		}
 
 		@Override
@@ -222,9 +246,8 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 		@Override
 		public void storeNull(Code code, ValOp target) {
-			assert hasLength() :
-				"Can not store pointer to value of scalar type: "
-				+ getValueStruct();
+			assert hasValue() :
+				"Can not store value to " + getValueStruct();
 			target.value(null, code)
 			.toPtr(null, code)
 			.store(code, code.nullPtr());
@@ -250,6 +273,11 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 				target.unuse(code);
 			}
 			getInitialStorage().storeCopy(code, target, value);
+		}
+
+		@Override
+		public void storePtr(Code code, ValOp target, AnyOp pointer) {
+			getInitialStorage().storePtr(code, target, pointer);
 		}
 
 		@Override

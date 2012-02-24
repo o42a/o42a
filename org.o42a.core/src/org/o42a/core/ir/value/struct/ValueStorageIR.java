@@ -17,11 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value;
+package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.util.DataAlignment;
 
 
@@ -30,6 +32,11 @@ public interface ValueStorageIR {
 	void storeVal(Code code, ValOp target, Val value);
 
 	void storeCopy(Code code, ValOp target, ValOp value);
+
+	void storePtr(
+			Code code,
+			ValOp target,
+			AnyOp pointer);
 
 	void storePtr(
 			Code code,
