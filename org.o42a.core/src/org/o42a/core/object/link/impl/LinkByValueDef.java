@@ -22,9 +22,12 @@ package org.o42a.core.object.link.impl;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.value.Value.falseValue;
 
+import org.o42a.codegen.code.Block;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -38,12 +41,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-final class LinkCopyValueDef extends ValueDef {
+public class LinkByValueDef extends ValueDef {
 
-	static Value<?> linkValue(
+	static Value<?> linkByValue(
 			Ref ref,
 			Resolver resolver,
-			LinkValueType toLinkType) {
+			LinkValueStruct linkStruct) {
 
 		final Resolution linkResolution = ref.resolve(resolver);
 
@@ -54,58 +57,51 @@ final class LinkCopyValueDef extends ValueDef {
 		final Obj linkObject = linkResolution.materialize();
 		final Value<?> value =
 				linkObject.value().explicitUseBy(resolver).getValue();
-		final LinkValueStruct sourceStruct =
-				value.getValueStruct().toLinkStruct();
-		final LinkValueStruct resultStruct =
-				sourceStruct.setValueType(toLinkType);
+		final ValueStruct<?, ?> targetStruct =
+				value.getValueStruct();
 
 		if (value.getKnowledge().isFalse()) {
-			return resultStruct.falseValue();
+			return linkStruct.falseValue();
 		}
 		if (!value.getKnowledge().isKnownToCompiler()) {
-			return resultStruct.runtimeValue();
+			return linkStruct.runtimeValue();
 		}
-		if (sourceStruct.getValueType().isVariable()) {
+		if (targetStruct.getValueType().isVariable()) {
 			// Variable can not be copied at compile time.
-			return resultStruct.runtimeValue();
+			return linkStruct.runtimeValue();
 		}
 
-		final PrefixPath prefix =
-				ref.getPath().toPrefix(resolver.getScope());
-		final ObjectLink sourceLink =
-				sourceStruct.cast(value).getCompilerValue();
 		final TargetRef targetRef =
-				sourceLink.getTargetRef().prefixWith(prefix);
+				ref.toTargetRef(linkStruct.getTypeRef());
 
-		return resultStruct.compilerValue(
-				new LinkCopy(sourceLink, toLinkType, targetRef));
+		return linkStruct.compilerValue(new TargetLink(
+				targetRef,
+				ref.distribute(),
+				linkStruct.getValueType()));
 	}
 
 	private final Ref ref;
-	private final LinkValueType toLinkType;
-	private LinkValueStruct toStruct;
-	private LinkValueStruct fromStruct;
+	private final LinkValueStruct linkStruct;
 
-	LinkCopyValueDef(Ref ref, LinkValueType toLinkType) {
+	public LinkByValueDef(Ref ref, LinkValueStruct linkStruct) {
 		super(sourceOf(ref), ref, ScopeUpgrade.noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
-		this.toLinkType = toLinkType;
+		this.linkStruct = linkStruct;
 	}
 
-	private LinkCopyValueDef(
-			LinkCopyValueDef prototype,
-			ScopeUpgrade scopeUpgrade) {
+	public LinkByValueDef(
+			LinkByValueDef prototype,
+			ScopeUpgrade scopeUpgrade,
+			ScopeUpgrade additionalUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
-		this.toLinkType = prototype.toLinkType;
+		this.linkStruct =
+				prototype.linkStruct.prefixWith(additionalUpgrade.toPrefix());
 	}
 
 	@Override
-	public LinkValueStruct getValueStruct() {
-		if (this.toStruct != null) {
-			return this.toStruct;
-		}
-		return this.toStruct = fromValueStruct().setValueType(this.toLinkType);
+	public final LinkValueStruct getValueStruct() {
+		return this.linkStruct;
 	}
 
 	@Override
@@ -114,7 +110,7 @@ final class LinkCopyValueDef extends ValueDef {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return false;
+		return this.ref.isStatic();
 	}
 
 	@Override
@@ -134,19 +130,19 @@ final class LinkCopyValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return linkValue(this.ref, resolver, this.toLinkType);
+		return linkByValue(this.ref, resolver, getValueStruct());
 	}
 
 	@Override
 	protected ValueDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new LinkCopyValueDef(this, upgrade);
+		return new LinkByValueDef(this, upgrade, additionalUpgrade);
 	}
 
 	@Override
 	protected void fullyResolveDef(Resolver resolver) {
-		this.ref.resolve(resolver).resolveValue();
+		this.ref.resolve(resolver).resolveTarget();
 	}
 
 	@Override
@@ -158,56 +154,34 @@ final class LinkCopyValueDef extends ValueDef {
 
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		if (getValueStruct().assignableFrom(fromValueStruct())) {
-			return this.ref.op(host).writeValue(dirs);
-		}
 
-		final ValDirs fromDirs = dirs.dirs().value(fromValueStruct());
-		final ValOp from = this.ref.op(host).writeValue(fromDirs);
-		final ValOp result = dirs.value().store(dirs.code(), from);
+		final Block code = dirs.code();
+		final ObjectOp target =
+				this.ref.op(host).target(dirs.dirs()).materialize(dirs.dirs());
 
-		fromDirs.done();
-
-		return result;
+		return dirs.value().store(code, target.toAny(code));
 	}
 
-	private final LinkValueStruct fromValueStruct() {
-		if (this.fromStruct != null) {
-			return this.fromStruct;
+	private static final class TargetLink extends ObjectLink {
+
+		private final LinkValueType linkType;
+
+		TargetLink(
+				TargetRef targetRef,
+				Distributor distributor,
+				LinkValueType linkType) {
+			super(targetRef, distributor, targetRef);
+			this.linkType = linkType;
 		}
 
-		final Scope scope = getScopeUpgrade().rescope(getScope());
-
-		return this.fromStruct = this.ref.valueStruct(scope).prefixWith(
-				getScopeUpgrade().toPrefix()).toLinkStruct();
-	}
-
-	private static final class LinkCopy extends ObjectLink {
-
-		private final LinkValueType toLinkType;
-		private final ObjectLink copyOf;
-
-		LinkCopy(
-				ObjectLink copyOf,
-				LinkValueType toLinkType,
-				TargetRef targetRef) {
-			super(
-					copyOf,
-					copyOf.distributeIn(targetRef.getScope().getContainer()),
-					targetRef);
-			this.toLinkType = toLinkType;
-			this.copyOf = copyOf;
-		}
-
-		LinkCopy(LinkCopy prototype, TargetRef targetRef) {
+		TargetLink(TargetLink prototype, TargetRef targetRef) {
 			super(prototype, targetRef);
-			this.toLinkType = prototype.toLinkType;
-			this.copyOf = prototype.copyOf;
+			this.linkType = prototype.linkType;
 		}
 
 		@Override
 		public LinkValueType getValueType() {
-			return this.toLinkType;
+			return this.linkType;
 		}
 
 		@Override
@@ -217,12 +191,16 @@ final class LinkCopyValueDef extends ValueDef {
 
 		@Override
 		protected ObjectLink findLinkIn(Scope enclosing) {
-			return this.copyOf.findIn(enclosing);
+
+			final TargetRef targetRef =
+					getTargetRef().upgradeScope(enclosing);
+
+			return new TargetLink(this, targetRef);
 		}
 
 		@Override
 		protected ObjectLink prefixWith(PrefixPath prefix) {
-			return new LinkCopy(
+			return new TargetLink(
 					this,
 					getTargetRef().prefixWith(prefix));
 		}

@@ -22,6 +22,7 @@ package org.o42a.core.object.array.impl;
 import org.o42a.codegen.Generator;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
@@ -58,6 +59,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		}
 
 		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
+	}
+
+	@Override
+	public final LinkValueType toLinkType() {
+		return null;
 	}
 
 	public final ArrayValueTypeIR ir(Generator generator) {

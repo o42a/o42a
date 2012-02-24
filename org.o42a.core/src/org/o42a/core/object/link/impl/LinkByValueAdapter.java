@@ -19,7 +19,7 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.object.link.impl.LinkCopyValueDef.linkValue;
+import static org.o42a.core.object.link.impl.LinkByValueDef.linkByValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
@@ -30,15 +30,18 @@ import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.value.*;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 
 
-public class LinkValueAdapter extends ValueAdapter {
+public class LinkByValueAdapter extends ValueAdapter {
 
 	private final Ref ref;
 	private final LinkValueStruct expectedStruct;
 
-	public LinkValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
+	public LinkByValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
 		this.ref = ref;
 		this.expectedStruct = expectedStruct;
 	}
@@ -52,18 +55,17 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public LinkValueStruct valueStruct(Scope scope) {
 
 		final LinkValueType expectedType = getExpectedStruct().getValueType();
-		final LinkValueStruct valueStruct =
-				ref().valueStruct(scope).toLinkStruct();
+		final TypeRef typeRef = ref().ancestor(ref());
 
-		return valueStruct.setValueType(expectedType);
+		return expectedType.linkStruct(typeRef);
 	}
 
 	@Override
 	public ValueDef valueDef() {
-		return new LinkCopyValueDef(ref(), getExpectedStruct().getValueType());
+		return new LinkByValueDef(ref(), getExpectedStruct());
 	}
 
 	@Override
@@ -78,10 +80,10 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> initialValue(LocalResolver resolver) {
-		return linkValue(
+		return linkByValue(
 				ref(),
 				resolver,
-				getExpectedStruct().getValueType());
+				valueStruct(resolver.getScope()));
 	}
 
 	@Override

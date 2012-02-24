@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.value.ValueAdapter.rawValueAdapter;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -26,6 +28,8 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -137,9 +141,41 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return (Value<T>) value;
 	}
 
-	public abstract ValueAdapter defaultAdapter(
+	public ValueAdapter defaultAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct);
+			ValueStruct<?, ?> expectedStruct) {
+		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
+			return rawValueAdapter(ref);
+		}
+
+		final LinkValueStruct expectedLinkStruct =
+				expectedStruct.toLinkStruct();
+
+		if (expectedLinkStruct != null) {
+
+			final ValueStruct<?, ?> expectedTargetStruct =
+					expectedLinkStruct.getTypeRef().getValueStruct();
+
+			return new LinkByValueAdapter(
+					adapterRef(ref, expectedTargetStruct),
+					expectedLinkStruct);
+		}
+
+		final Ref adapter = ref.adapt(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return adapter.valueAdapter(null);
+	}
+
+	public Ref adapterRef(Ref ref, ValueStruct<?, ?> expectedStruct) {
+		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
+			return ref;
+		}
+		return ref.adapt(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+	}
 
 	public final boolean isScoped() {
 		return toScoped() != null;
@@ -161,6 +197,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	}
 
 	public abstract ScopeInfo toScoped();
+
+	public abstract LinkValueStruct toLinkStruct();
 
 	public abstract S reproduce(Reproducer reproducer);
 

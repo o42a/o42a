@@ -82,14 +82,12 @@ final class ArrayCopyValueDef extends ValueDef {
 			defItems[i] = new ArrayItem(i, defValueRef);
 		}
 
-		final Value<Array> result = sourceStruct.compilerValue(
+		return resultStruct.compilerValue(
 				new Array(
 						array,
 						array.distributeIn(ref.getContainer()),
 						array.getValueStruct().prefixWith(prefix),
 						defItems));
-
-		return result;
 	}
 
 	private final Ref ref;

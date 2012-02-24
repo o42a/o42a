@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
@@ -93,6 +94,11 @@ public abstract class SingleValueType<T>
 
 	public final Value<T> cast(Value<?> value) {
 		return struct().cast(value);
+	}
+
+	@Override
+	public final LinkValueType toLinkType() {
+		return null;
 	}
 
 }

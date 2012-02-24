@@ -28,6 +28,7 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.*;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -132,17 +133,17 @@ public final class ArrayValueStruct
 					ref,
 					(ArrayValueStruct) expectedStruct);
 		}
-
-		final Ref adapter = ref.adapt(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
-
-		return adapter.valueAdapter(null);
+		return super.defaultAdapter(ref, expectedStruct);
 	}
 
 	@Override
 	public final ScopeInfo toScoped() {
 		return getItemTypeRef();
+	}
+
+	@Override
+	public final LinkValueStruct toLinkStruct() {
+		return null;
 	}
 
 	@Override
