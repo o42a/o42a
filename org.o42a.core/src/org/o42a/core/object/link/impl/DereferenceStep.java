@@ -154,15 +154,14 @@ public class DereferenceStep extends Step {
 	private static final class LinkAncestor extends PathFragment {
 
 		@Override
-		public BoundPath expand(PathExpander expander, int index, Scope start) {
+		public Path expand(PathExpander expander, int index, Scope start) {
 
 			final LinkValueStruct linkStruct =
 					start.toObject().value().getValueStruct().toLinkStruct();
 			final TypeRef typeRef = linkStruct.getTypeRef();
 
 			return start.getEnclosingScopePath()
-					.bind(typeRef, start)
-					.append(typeRef.getPath());
+					.append(typeRef.getPath().getPath());
 		}
 
 		@Override

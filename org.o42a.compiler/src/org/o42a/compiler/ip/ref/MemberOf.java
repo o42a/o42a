@@ -30,7 +30,6 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.object.Role;
 import org.o42a.core.ref.common.PlacedPathFragment;
 import org.o42a.core.ref.common.RoleResolver;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -53,7 +52,7 @@ public class MemberOf extends PlacedPathFragment {
 	}
 
 	@Override
-	public BoundPath expand(PathExpander expander, int index, Scope owner) {
+	public Path expand(PathExpander expander, int index, Scope owner) {
 
 		final Scope scope = getScope();
 		final AccessorResolver accessorResolver = new AccessorResolver();
@@ -93,7 +92,7 @@ public class MemberOf extends PlacedPathFragment {
 			return null;
 		}
 
-		return memberPath.bind(this, owner);
+		return memberPath;
 	}
 
 	@Override
