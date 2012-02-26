@@ -39,7 +39,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
@@ -52,7 +51,6 @@ public class AssignmentStatement extends Statement {
 
 	public AssignmentStatement(
 			LocationInfo location,
-			Imperatives enclosing,
 			Ref destination,
 			Ref value) {
 		super(location, destination.distribute());

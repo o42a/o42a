@@ -297,6 +297,13 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 		return this.member.toString();
 	}
 
+	/**
+	 * Merge field with another one.
+	 *
+	 * <p>Supported only for declared fields.</p>
+	 *
+	 * @param field field to merge with.
+	 */
 	protected void merge(Field<?> field) {
 		throw new UnsupportedOperationException(
 				"Field " + this + " can not have variants");

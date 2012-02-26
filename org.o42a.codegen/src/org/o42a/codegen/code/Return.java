@@ -61,11 +61,7 @@ public abstract class Return<O> {
 			FuncCaller<?> caller,
 			Op... args);
 
-	protected final CodeId callId(
-			CodeId id,
-			Code code,
-			FuncCaller<?> caller,
-			Op... args) {
+	protected final CodeId callId(CodeId id, Code code, FuncCaller<?> caller) {
 		if (id != null) {
 			return code.opId(id);
 		}
@@ -113,7 +109,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callInt8(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -138,7 +134,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callInt16(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -163,7 +159,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callInt32(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -188,7 +184,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callInt64(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -213,7 +209,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callFp32(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -238,7 +234,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callFp64(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -263,7 +259,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callBool(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -288,7 +284,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callAny(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -313,7 +309,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callData(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					args);
 		}
@@ -346,7 +342,7 @@ public abstract class Return<O> {
 				FuncCaller<?> caller,
 				Op... args) {
 			return caller.callPtr(
-					callId(id, code, caller, args),
+					callId(id, code, caller),
 					code,
 					this.type,
 					args);

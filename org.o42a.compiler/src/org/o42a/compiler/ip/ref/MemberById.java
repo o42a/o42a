@@ -110,12 +110,14 @@ public class MemberById extends PlacedPathFragment {
 			Container container,
 			Obj declaredIn,
 			boolean excludeContainer) {
+		if (!excludeContainer) {
 
-		final Path memberOfContainer =
-				memberOfContainer(container, declaredIn);
+			final Path memberOfContainer =
+					memberOfContainer(container, declaredIn);
 
-		if (memberOfContainer != null) {
-			return memberOfContainer;
+			if (memberOfContainer != null) {
+				return memberOfContainer;
+			}
 		}
 
 		final Container enclosing = container.getEnclosingContainer();

@@ -188,7 +188,7 @@ public class ConsoleModule extends AnnotatedModule {
 				ValueStruct.INTEGER);
 		final ValDirs dirs =
 				builder.falseWhenUnknown(main, exit.head())
-				.value(alloc.id("exec_main"), result);
+				.value(result);
 		final ValOp programResult;
 
 		if (this.inlineMain != null) {

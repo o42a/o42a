@@ -162,7 +162,7 @@ public abstract class ObjectConstructor extends Placed {
 			final Member enclosingMember = getEnclosingContainer().toMember();
 
 			if (enclosingMember.isPropagated()) {
-				enclosingMember.pin(getScope().getEnclosingScope());
+				enclosingMember.pin();
 			}
 		}
 

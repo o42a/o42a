@@ -489,7 +489,7 @@ public class Ref extends Statement {
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), control.result());
+					.value(control.result());
 			final ValOp value = getRef().op(control.host()).writeValue(dirs);
 
 			dirs.done();
@@ -523,7 +523,7 @@ public class Ref extends Statement {
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), control.result());
+					.value(control.result());
 			final ValOp value =
 					getRef().inline.writeValue(dirs, getBuilder().host());
 
@@ -562,7 +562,7 @@ public class Ref extends Statement {
 					control.getBuilder().falseWhenUnknown(
 							code,
 							control.falseDir())
-					.value(code.id("local_val"), control.result());
+					.value(control.result());
 			final ValOp value = this.inline.writeValue(dirs, control.host());
 
 			dirs.done();

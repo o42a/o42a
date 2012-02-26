@@ -117,29 +117,6 @@ public class ObjectTypeOp extends FinalIROp {
 		return function.call(dirs, body(code, body));
 	}
 
-	public final ValOp writeOverriddenValue(ValDirs dirs) {
-		// TODO overridden value
-		return null;
-	}
-
-	public final void writeOverriddenRequirement(CodeDirs dirs) {
-		// TODO overridden requirement
-	}
-
-	public final void writeOverriddenCondition(CodeDirs dirs) {
-		// TODO overridden condition
-	}
-
-	public final ValOp writeOverriddenClaim(ValDirs dirs) {
-		// TODO overridden claim
-		return null;
-	}
-
-	public final ValOp writeOverriddenProposition(ValDirs dirs) {
-		// TODO overridden definition
-		return null;
-	}
-
 	@Override
 	public String toString() {
 		return "ObjectData[" + ptr().toString() + ']';

@@ -101,64 +101,64 @@ final class LLSignatureWriter<F extends Func<F>>
 
 	@Override
 	public void addInt8(Arg<Int8op> arg) {
-		addParam(arg, this.module.int8type());
+		addParam(this.module.int8type());
 	}
 
 	@Override
 	public void addInt16(Arg<Int16op> arg) {
-		addParam(arg, this.module.int16type());
+		addParam(this.module.int16type());
 	}
 
 	@Override
 	public void addInt32(Arg<Int32op> arg) {
-		addParam(arg, this.module.int32type());
+		addParam(this.module.int32type());
 	}
 
 	@Override
 	public void addInt64(Arg<Int64op> arg) {
-		addParam(arg, this.module.int64type());
+		addParam(this.module.int64type());
 	}
 
 	@Override
 	public void addFp32(Arg<Fp32op> arg) {
-		addParam(arg, this.module.fp32type());
+		addParam(this.module.fp32type());
 	}
 
 	@Override
 	public void addFp64(Arg<Fp64op> arg) {
-		addParam(arg, this.module.fp64type());
+		addParam(this.module.fp64type());
 	}
 
 	@Override
 	public void addBool(Arg<BoolOp> arg) {
-		addParam(arg, this.module.boolType());
+		addParam(this.module.boolType());
 	}
 
 	@Override
 	public void addRelPtr(Arg<RelOp> arg) {
-		addParam(arg, this.module.relPtrType());
+		addParam(this.module.relPtrType());
 	}
 
 	@Override
 	public void addPtr(Arg<AnyOp> arg) {
-		addParam(arg, this.module.anyType());
+		addParam(this.module.anyType());
 	}
 
 	@Override
 	public void addData(Arg<DataOp> arg) {
-		addParam(arg, this.module.anyType());
+		addParam(this.module.anyType());
 	}
 
 	@Override
 	public <S extends StructOp<S>> void addPtr(Arg<S> arg, Type<S> type) {
-		addParam(arg, this.module.pointerTo(type));
+		addParam(this.module.pointerTo(type));
 	}
 
 	@Override
 	public <FF extends Func<FF>> void addFuncPtr(
 			Arg<FF> arg,
 			Signature<FF> signature) {
-		addParam(arg, this.module.pointerTo(signature));
+		addParam(this.module.pointerTo(signature));
 	}
 
 	@Override
@@ -169,7 +169,7 @@ final class LLSignatureWriter<F extends Func<F>>
 		return new LLSignature<F>(this.signature, signaturePtr);
 	}
 
-	private void addParam(Arg<?> arg, long param) {
+	private void addParam(long param) {
 
 		final int len = this.params.length;
 

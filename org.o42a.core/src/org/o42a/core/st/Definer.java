@@ -101,6 +101,15 @@ public abstract class Definer implements PlaceInfo {
 
 	public abstract Action initialLogicalValue(LocalResolver resolver);
 
+	/**
+	 * Called to replace the statement with another one.
+	 *
+	 * <p>Supported only for inclusion statement.<p>
+	 *
+	 * @param statement replacement statement.
+	 *
+	 * @return replacement definer.
+	 */
 	public Definer replaceWith(Statement statement) {
 		throw new UnsupportedOperationException();
 	}

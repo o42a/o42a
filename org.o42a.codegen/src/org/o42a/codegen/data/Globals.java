@@ -194,13 +194,11 @@ public abstract class Globals {
 		return global;
 	}
 
-	final void allocatingType(AbstractTypeData<?> typeData) {
+	final void allocatingType() {
 		++this.typesAllocating;
 	}
 
-	final void allocatedType(
-			AbstractTypeData<?> typeData,
-			boolean immediately) {
+	final void allocatedType(boolean immediately) {
 		if (immediately) {
 			--this.typesAllocating;
 		}

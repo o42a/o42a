@@ -64,7 +64,7 @@ public final class FunctionSettings
 		final Function<F> function =
 				new Function<F>(this, id, signature, builder);
 
-		functions().addFunction(id, function);
+		functions().addFunction(function);
 
 		return function;
 	}

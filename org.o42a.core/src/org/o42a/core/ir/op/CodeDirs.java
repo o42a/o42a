@@ -157,8 +157,8 @@ public class CodeDirs {
 		return new ValDirs.TopLevelValDirs(this, name, valueStruct);
 	}
 
-	public final ValDirs value(CodeId name, ValOp value) {
-		return new ValDirs.TopLevelValDirs(this, name, value);
+	public final ValDirs value(ValOp value) {
+		return new ValDirs.TopLevelValDirs(this, value);
 	}
 
 	public final ValDirs value(ValDirs storage) {

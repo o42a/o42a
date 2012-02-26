@@ -554,7 +554,7 @@ public abstract class Obj
 		final Member member = toMember();
 
 		if (member != null) {
-			member.pin(getScope());
+			member.pin();
 		}
 	}
 

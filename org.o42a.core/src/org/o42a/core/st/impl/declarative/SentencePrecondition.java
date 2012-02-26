@@ -92,7 +92,7 @@ public final class SentencePrecondition {
 			return;
 		}
 		if (targets.haveCondition()) {
-			addCondition(sentence, targets);
+			addCondition(sentence);
 		}
 		if (targets.haveDeclaration()) {
 			if (!checkAmbiguity(sentence, targets)) {
@@ -102,9 +102,7 @@ public final class SentencePrecondition {
 		}
 	}
 
-	protected void addCondition(
-			DeclarativeSentence sentence,
-			DefinitionTargets targets) {
+	protected void addCondition(DeclarativeSentence sentence) {
 		if (sentence.isClaim()) {
 			this.requirements.addSentence(sentence);
 		} else {

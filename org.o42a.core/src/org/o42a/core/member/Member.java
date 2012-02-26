@@ -183,7 +183,7 @@ public abstract class Member extends Placed {
 		return getScope().derivedFrom(other.getDefinedIn());
 	}
 
-	public void pin(Scope scope) {
+	public final void pin() {
 		getMemberOwner().pinMember(this);
 	}
 

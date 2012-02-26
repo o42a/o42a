@@ -74,7 +74,7 @@ public abstract class ObjectIRFunc {
 		return code.nullDataPtr();
 	}
 
-	public boolean writeFalseValue(CodeDirs dirs, ObjectOp body) {
+	public boolean writeFalseValue(CodeDirs dirs) {
 
 		final Condition finalCondition =
 				getObjectIR().getValueIR().condition().getFinal();

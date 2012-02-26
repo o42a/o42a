@@ -103,7 +103,7 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 
 		endTypeAllocation(globals.dataAllocator());
 		getInstance().setAllocated(getGenerator());
-		globals.allocatedType(this, immediately);
+		globals.allocatedType(immediately);
 		postTypeAllocation();
 	}
 
@@ -122,7 +122,7 @@ abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 		final Globals globals = getGenerator().getGlobals();
 
 		if (immediately) {
-			globals.allocatingType(this);
+			globals.allocatingType();
 		}
 		setAllocation(startTypeAllocation(globals.dataAllocator()));
 

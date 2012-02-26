@@ -66,7 +66,7 @@ class TreeDefinitionSource<S extends Source>
 	public TreeCompilerContext<S> sectionContext(
 			LogInfo location,
 			SectionTag tag) {
-		return getParentContext().sectionContext(location, tag, this.sourceTree);
+		return getParentContext().sectionContext(tag, this.sourceTree);
 	}
 
 	@Override

@@ -74,7 +74,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 
 			final ValDirs dirs =
 					falseWhenUnknown(builder, function, failure.head())
-					.value(function.id("array"), value);
+					.value(value);
 
 			allocateItems(dirs);
 
