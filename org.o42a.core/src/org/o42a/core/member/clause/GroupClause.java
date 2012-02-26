@@ -45,10 +45,6 @@ public abstract class GroupClause extends Clause implements Container {
 			"Attempt to create group instead of plain clause";
 	}
 
-	protected GroupClause(MemberClause clause, GroupClause propagatedFroms) {
-		super(clause);
-	}
-
 	@Override
 	public Scope getScope() {
 		return toMember().getScope();

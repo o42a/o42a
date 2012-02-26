@@ -398,7 +398,7 @@ public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
 						code,
 						falseCode.head(),
 						unknownCode.head())
-				.value(code.id("obj_val"), value);
+				.value(value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
 		writeValue(valDirs, null);

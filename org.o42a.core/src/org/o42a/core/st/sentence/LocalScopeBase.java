@@ -24,7 +24,6 @@ import org.o42a.core.member.clause.impl.LocalScopeClauseBase;
 
 public abstract class LocalScopeBase extends LocalScopeClauseBase {
 
-	protected void setBlock(ImperativeBlock block) {
-	}
+	protected abstract void setBlock(ImperativeBlock block);
 
 }

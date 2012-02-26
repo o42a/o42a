@@ -45,7 +45,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 			Signature<F> signature,
 			long blockPtr,
 			long nativePtr) {
-		super(id, FUNC_ALLOC_CLASS, 0L, nativePtr);
+		super(id, FUNC_ALLOC_CLASS, blockPtr, nativePtr);
 		this.signature = signature;
 	}
 

@@ -130,19 +130,14 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
-		final RefFldOp<?, C> fld = op(code, builder.host());
-
-		final ObjectOp result = construct(builder, dirs, fld);
+		final ObjectOp result = construct(builder, dirs);
 		final DataOp res = result.toData(code);
 
-		fld.ptr().object(null, code).store(code, res);
+		op(code, builder.host()).ptr().object(null, code).store(code, res);
 		res.returnValue(code);
 	}
 
-	protected ObjectOp construct(
-			ObjBuilder builder,
-			CodeDirs dirs,
-			RefFldOp<?, C> fld) {
+	protected ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
 
 		final Artifact<?> artifact = getField().getArtifact();
 		final Obj object = artifact.toObject();

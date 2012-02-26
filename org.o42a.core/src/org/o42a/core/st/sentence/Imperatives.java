@@ -86,7 +86,7 @@ public class Imperatives extends Statements<Imperatives> {
 					"Assignment is prohibited within issue");
 			return;
 		}
-		statement(new AssignmentStatement(location, this, destination, value));
+		statement(new AssignmentStatement(location, destination, value));
 	}
 
 	@Override

@@ -55,11 +55,9 @@ final class GeneratorFunctions extends Functions {
 	}
 
 	@Override
-	protected <F extends Func<F>> void addFunction(
-			CodeId id,
-			Function<F> function) {
-		getGenerator().addFunction(id, function.getPointer());
-		super.addFunction(id, function);
+	protected <F extends Func<F>> void addFunction(Function<F> function) {
+		getGenerator().addFunction(function.getId(), function.getPointer());
+		super.addFunction(function);
 	}
 
 }

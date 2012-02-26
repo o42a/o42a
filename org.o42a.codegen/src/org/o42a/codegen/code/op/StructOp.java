@@ -182,6 +182,14 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 		return id.toString();
 	}
 
+	/**
+	 * Builds an identifier of field access operation.
+	 *
+	 * @param code code.
+	 * @param local local part of identifier.
+	 *
+	 * @return full identifier.
+	 */
 	protected CodeId fieldId(Code code, CodeId local) {
 		return getId().setLocal(local);
 	}

@@ -90,9 +90,7 @@ public abstract class Functions {
 			Signature<F> signature,
 			FuncPtr<F> function);
 
-	protected <F extends Func<F>> void addFunction(
-			CodeId id,
-			Function<F> function) {
+	protected <F extends Func<F>> void addFunction(Function<F> function) {
 		this.functions.add(function);
 	}
 

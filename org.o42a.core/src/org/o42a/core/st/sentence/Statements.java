@@ -156,8 +156,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return parentheses(
 				-1,
 				location,
-				nextDistributor(container),
-				getMemberRegistry());
+				nextDistributor(container));
 	}
 
 	public final ImperativeBlock braces(LocationInfo location) {
@@ -306,8 +305,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	Block<S> parentheses(
 			int index,
 			LocationInfo location,
-			Distributor distributor,
-			MemberRegistry memberRegistry) {
+			Distributor distributor) {
 
 		@SuppressWarnings("unchecked")
 		final Block<S> parentheses =

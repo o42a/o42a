@@ -26,7 +26,6 @@ import java.util.Iterator;
 import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.util.io.Source;
-import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Logger;
 
 
@@ -112,7 +111,6 @@ public class TreeCompilerContext<S extends Source>
 	}
 
 	protected TreeCompilerContext<S> sectionContext(
-			LogInfo location,
 			SectionTag tag,
 			SourceTree<S> sourceTree) {
 		return new TreeCompilerContext<S>(this, sourceTree, tag, null);

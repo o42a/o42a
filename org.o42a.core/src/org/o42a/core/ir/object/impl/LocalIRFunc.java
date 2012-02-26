@@ -55,7 +55,7 @@ public final class LocalIRFunc
 				dirs.begin(body != null ? "Value for " + body : "Value");
 		final Code code = subDirs.code();
 
-		if (writeFalseValue(subDirs.dirs(), body)) {
+		if (writeFalseValue(subDirs.dirs())) {
 			subDirs.done();
 			return falseValue().op(subDirs.getBuilder(), code);
 		}

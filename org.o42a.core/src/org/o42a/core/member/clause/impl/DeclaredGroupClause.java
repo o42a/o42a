@@ -63,7 +63,7 @@ public final class DeclaredGroupClause
 	DeclaredGroupClause(
 			MemberClause clause,
 			DeclaredGroupClause propagatedFrom) {
-		super(clause, propagatedFrom);
+		super(clause);
 		this.builder = propagatedFrom.builder;
 		this.definition = propagatedFrom.definition;
 		this.imperative = propagatedFrom.imperative;

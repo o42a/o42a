@@ -47,7 +47,7 @@ public final class UseCase
 	UseCase(String name, boolean steady) {
 		super(ALL_SIMPLE_USAGES);
 		this.name = name;
-		this.steady = true;
+		this.steady = steady;
 		this.unusedFlag = this.usedFlag = new UseFlag(this, (byte) 1);
 		this.checkUseFlag = new UseFlag(this, (byte) 0);
 	}

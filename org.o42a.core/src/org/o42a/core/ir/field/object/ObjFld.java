@@ -98,8 +98,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				.branch(code, "construct", "delegate");
 		final DataOp result1 = construct(
 				builder,
-				builder.falseWhenUnknown(construct, dirs.falseDir()),
-				new ObjFldOp(this, host, fld)).toData(construct);
+				builder.falseWhenUnknown(construct, dirs.falseDir())).toData(construct);
 
 		construct.go(code.tail());
 

@@ -254,7 +254,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 					.toField()
 					.field(dummyUser());
 
-			if (!generateField(declaredField, field)) {
+			if (!generateField(declaredField)) {
 				continue;
 			}
 
@@ -268,11 +268,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 	}
 
-	private boolean generateField(MemberField declaredField, Field<?> field) {
+	private boolean generateField(MemberField declaredField) {
 
 		final Generator generator = getGenerator();
-		final FieldAnalysis declarationAnalysis =
-				declaredField.getAnalysis();
+		final FieldAnalysis declarationAnalysis = declaredField.getAnalysis();
 
 		if (!declarationAnalysis.isUsed(
 				generator.getAnalyzer(),

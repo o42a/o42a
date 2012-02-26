@@ -174,7 +174,7 @@ public abstract class ObjectValueIRValFunc
 				function,
 				failure.head(),
 				unknown.head())
-				.value(function.id(suffix() + "_val"), result);
+				.value(result);
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
 
@@ -398,7 +398,7 @@ public abstract class ObjectValueIRValFunc
 							block,
 							dirs.falseDir(),
 							collector.next(i))
-							.value(block.id("val"), result);
+							.value(result);
 
 					result.store(block, writeAncestorDef(defDirs, host));
 
@@ -414,7 +414,7 @@ public abstract class ObjectValueIRValFunc
 			final ValDirs defDirs = dirs.getBuilder().splitWhenUnknown(
 					block,
 					dirs.falseDir(),
-					collector.next(i)).value(block.id("val"), result);
+					collector.next(i)).value(result);
 
 			result.store(block, def.write(defDirs, host));
 

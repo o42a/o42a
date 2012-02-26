@@ -223,7 +223,7 @@ public abstract class ValDirs {
 					valueStruct);
 		}
 
-		TopLevelValDirs(CodeDirs enclosing, CodeId name, ValOp value) {
+		TopLevelValDirs(CodeDirs enclosing, ValOp value) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),

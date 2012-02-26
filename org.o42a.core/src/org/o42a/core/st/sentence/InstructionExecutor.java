@@ -63,8 +63,7 @@ final class InstructionExecutor implements InstructionContext {
 		return this.block = this.statements.parentheses(
 				this.index,
 				this.definer,
-				this.definer.distribute(),
-				this.statements.getMemberRegistry());
+				this.definer.distribute());
 	}
 
 	@Override

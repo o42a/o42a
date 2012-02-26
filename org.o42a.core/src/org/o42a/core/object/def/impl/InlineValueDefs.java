@@ -65,7 +65,7 @@ public class InlineValueDefs extends InlineValue {
 
 			final ValDirs defDirs = dirs.getBuilder()
 					.splitWhenUnknown(block, dirs.falseDir(), nextDir)
-					.value(block.id("val"), result);
+					.value(result);
 			final ValOp value = this.inlines[i].writeValue(defDirs, host);
 
 			if (block.exists()) {

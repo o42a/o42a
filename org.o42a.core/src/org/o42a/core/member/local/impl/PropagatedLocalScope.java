@@ -111,6 +111,12 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
+	protected void setBlock(ImperativeBlock block) {
+		assert block.isTopLevel() :
+			block + " is not a top-level imperative block";
+	}
+
+	@Override
 	protected final ExplicitLocalScope explicit() {
 		return this.explicit;
 	}

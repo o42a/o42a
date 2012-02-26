@@ -80,6 +80,14 @@ public abstract class ComparisonOperator {
 
 	public abstract ValueStruct<?, ?> getValueStruct();
 
+	/**
+	 * Validate the phrase against operator considerations.
+	 *
+	 * @param phrase the phrase to validate.
+	 *
+	 * @return <code>true</code> if error found,
+	 * or <code>false</code> otherwise.
+	 */
 	public boolean checkError(Ref phrase) {
 		return false;
 	}

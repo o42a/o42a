@@ -96,9 +96,7 @@ public abstract class CodeId implements Cloneable {
 		return separate(Separator.IN, in);
 	}
 
-	public boolean compatibleWith(CodeIdFactory factory) {
-		return false;
-	}
+	public abstract boolean compatibleWith(CodeIdFactory factory);
 
 	public final int length() {
 		return getId().length();
