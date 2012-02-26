@@ -536,8 +536,7 @@ public class BoundPath extends Location {
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.
 
-				final BoundPath replacement =
-						fragment.expand(tracker, i, prev);
+				final BoundPath replacement = fragment.expand(tracker, i, prev);
 
 				if (replacement == null) {
 					// Error occurred.

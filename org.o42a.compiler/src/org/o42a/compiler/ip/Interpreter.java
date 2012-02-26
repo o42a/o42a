@@ -34,6 +34,7 @@ import org.o42a.ast.type.ArrayTypeNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
+import org.o42a.compiler.ip.ref.PathCompilerRefVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.MemberId;
@@ -52,6 +53,15 @@ import org.o42a.core.value.ValueType;
 public enum Interpreter {
 
 	PLAIN_IP(new RefVisitor()) {
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+	},
+
+	PATH_COMPILER_IP(new PathCompilerRefVisitor()) {
 
 		@Override
 		public MemberId memberName(String name) {
