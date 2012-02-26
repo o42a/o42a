@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -162,6 +163,10 @@ public class RefInterpreter {
 			path = path.append(scope.getEnclosingScopePath());
 			scope = enclosingScope;
 		}
+	}
+
+	public static boolean isRootRef(ExpressionNode node) {
+		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
 	}
 
 	private RefInterpreter() {

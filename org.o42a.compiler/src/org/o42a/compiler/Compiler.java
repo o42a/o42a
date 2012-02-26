@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler;
 
-import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.ModuleRefVisitor.MODULE_REF_VISITOR;
-import static org.o42a.compiler.ip.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
+import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
+import static org.o42a.compiler.ip.ref.ModuleRefVisitor.MODULE_REF_VISITOR;
+import static org.o42a.compiler.ip.ref.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.parser.Grammar.*;
 
@@ -109,7 +109,9 @@ public class Compiler implements SourceCompiler {
 
 			return pathWithAlias(
 					node,
-					node.accept(PLAIN_IP.refVisitor(), scope.distribute()));
+					node.accept(
+							PATH_COMPILER_IP.refVisitor(),
+							scope.distribute()));
 		}
 
 		final SourcePosition pos =

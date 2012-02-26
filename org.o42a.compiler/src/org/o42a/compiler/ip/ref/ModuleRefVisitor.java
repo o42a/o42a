@@ -17,11 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.compiler.ip.ref;
 
-import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
+import static org.o42a.compiler.ip.ref.owner.Owner.neverDerefOwner;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -29,7 +30,7 @@ import static org.o42a.core.ref.path.Path.modulePath;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.compiler.ip.RefVisitor.Owner;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -75,7 +76,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		}
 
 		final Ref declaredIn =
-				declaredInNode.accept(PLAIN_IP.expressionVisitor(), p);
+				declaredInNode.accept(PATH_COMPILER_IP.refVisitor(), p);
 
 		if (declaredIn == null) {
 			return null;
@@ -122,13 +123,13 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			final StaticTypeRef declaredIn = declaredIn(ref.getDeclaredIn(), p);
 
 			if (owner != null) {
-				return owner.memberRefOwner(
+				return owner.member(
 						location(p, ref),
-						PLAIN_IP.memberName(ref.getName().getName()),
+						PATH_COMPILER_IP.memberName(ref.getName().getName()),
 						declaredIn);
 			}
 
-			return new Owner(moduleRef(ref, p));
+			return neverDerefOwner(moduleRef(ref, p));
 		}
 
 		@Override
@@ -146,7 +147,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 				return null;
 			}
 
-			return owner.memberRefOwner(
+			return owner.member(
 					location(p, ref),
 					adapterId(type.toStaticTypeRef()),
 					declaredIn(ref.getDeclaredIn(), p));
