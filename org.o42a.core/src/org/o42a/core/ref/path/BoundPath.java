@@ -536,7 +536,7 @@ public class BoundPath extends Location {
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.
 
-				final BoundPath replacement = fragment.expand(tracker, i, prev);
+				final Path replacement = fragment.expand(tracker, i, prev);
 
 				if (replacement == null) {
 					// Error occurred.
@@ -564,7 +564,7 @@ public class BoundPath extends Location {
 					final PrefixPath replacementPrefix = toPrefix(i);
 
 					replacementBindings =
-							replacement.getRawPath().getBindings().prefixWith(
+							replacement.getBindings().prefixWith(
 									replacementPrefix);
 				}
 

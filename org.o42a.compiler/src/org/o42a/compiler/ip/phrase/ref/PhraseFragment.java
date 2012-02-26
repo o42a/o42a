@@ -27,9 +27,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.*;
 
 
 class PhraseFragment extends PathFragment {
@@ -55,7 +53,7 @@ class PhraseFragment extends PathFragment {
 	}
 
 	@Override
-	public BoundPath expand(PathExpander expander, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 		return buildPath(this.phrase);
 	}
 
@@ -64,7 +62,7 @@ class PhraseFragment extends PathFragment {
 		return this.phrase.toString();
 	}
 
-	private BoundPath buildPath(Phrase phrase) {
+	private Path buildPath(Phrase phrase) {
 
 		final MainPhraseContext context = phrase.getMainContext();
 		final Ref ref;
@@ -91,7 +89,7 @@ class PhraseFragment extends PathFragment {
 		final PhraseContinuation nextPart = context.getNextPart();
 
 		if (nextPart == null) {
-			return terminated.getPath();
+			return terminated.getPath().getPath();
 		}
 
 		return buildPath(phrase.asPrefix(terminated, nextPart));

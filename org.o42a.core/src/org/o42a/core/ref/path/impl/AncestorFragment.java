@@ -25,7 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.ObjectLink;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
@@ -41,7 +41,7 @@ public class AncestorFragment extends PathFragment {
 	}
 
 	@Override
-	public BoundPath expand(PathExpander expander, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 
 		final Artifact<?> artifact = start.getArtifact();
 
@@ -54,7 +54,7 @@ public class AncestorFragment extends PathFragment {
 
 			final TypeRef typeRef = artifact.getTypeRef();
 
-			return SELF_PATH.bind(typeRef, start).append(ancestor(
+			return SELF_PATH.append(ancestor(
 					artifact.materialize().getScope(),
 					typeRef));
 		}
@@ -79,15 +79,13 @@ public class AncestorFragment extends PathFragment {
 		return "^^";
 	}
 
-	private BoundPath ancestor(Scope objectScope, TypeRef ancestor) {
+	private Path ancestor(Scope objectScope, TypeRef ancestor) {
 		if (ancestor == null) {
-			return ValueType.VOID
-					.path(objectScope.getContext().getIntrinsics())
-					.bind(ancestor, objectScope);
+			return ValueType.VOID.path(
+					objectScope.getContext().getIntrinsics());
 		}
 		return objectScope.getEnclosingScopePath()
-				.bind(ancestor, objectScope)
-				.append(ancestor.getPath());
+				.append(ancestor.getPath().getPath());
 	}
 
 }

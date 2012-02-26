@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.ref.owner.Owner.redundantBodyRef;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.source.LocationInfo;
@@ -39,13 +39,13 @@ final class BodyRefFragment extends PathFragment {
 	}
 
 	@Override
-	public BoundPath expand(PathExpander expander, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 		if (!canDereference(start)) {
 			redundantBodyRef(
 					expander.getPath().getLogger(),
 					this.location);
 		}
-		return SELF_PATH.bind(expander.getPath(), start);
+		return SELF_PATH;
 	}
 
 	@Override

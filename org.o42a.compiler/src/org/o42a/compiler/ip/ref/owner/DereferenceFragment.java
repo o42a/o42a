@@ -23,7 +23,7 @@ import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 
@@ -37,11 +37,11 @@ final class DereferenceFragment extends PathFragment {
 	}
 
 	@Override
-	public BoundPath expand(PathExpander expander, int index, Scope start) {
+	public Path expand(PathExpander expander, int index, Scope start) {
 		if (!canDereference(start)) {
-			return SELF_PATH.bind(expander.getPath(), start);
+			return SELF_PATH;
 		}
-		return SELF_PATH.dereference().bind(expander.getPath(), start);
+		return SELF_PATH.dereference();
 	}
 
 	@Override

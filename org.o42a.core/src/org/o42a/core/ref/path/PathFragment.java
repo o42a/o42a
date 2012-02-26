@@ -28,10 +28,7 @@ import org.o42a.core.ref.path.impl.PathFragmentStep;
 
 public abstract class PathFragment {
 
-	public abstract BoundPath expand(
-			PathExpander expander,
-			int index,
-			Scope start);
+	public abstract Path expand(PathExpander expander, int index, Scope start);
 
 	public FieldDefinition fieldDefinition(
 			BoundPath path,
