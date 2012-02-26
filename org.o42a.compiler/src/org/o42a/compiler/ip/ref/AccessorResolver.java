@@ -27,6 +27,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -97,6 +98,15 @@ final class AccessorResolver implements PathWalker {
 	public boolean member(Container container, Step step, Member member) {
 		this.owner = false;
 		updateDeclaration(container, member.substance(dummyUser()));
+		this.enclosed = false;
+		this.inheritant = false;
+		return true;
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		this.owner = false;
+		updateDeclaration(linkObject, link.getTarget());
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;

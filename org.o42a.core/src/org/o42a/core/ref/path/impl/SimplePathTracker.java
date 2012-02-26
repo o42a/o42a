@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -60,6 +61,11 @@ public class SimplePathTracker extends PathTracker {
 	@Override
 	public boolean member(Container container, Step step, Member member) {
 		return walk(walker().member(container, step, member));
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		return walk(walker().dereference(linkObject, step, link));
 	}
 
 	@Override

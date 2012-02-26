@@ -56,7 +56,7 @@ public abstract class ObjectLink
 	private final Container enclosing;
 	private final ScopePlace place;
 	private TargetRef targetRef;
-	private Obj materialization;
+	private Obj target;
 	private LinkValueStruct valueStruct;
 
 	public ObjectLink(LocationInfo location, Distributor distributor) {
@@ -131,6 +131,13 @@ public abstract class ObjectLink
 		return this.targetRef;
 	}
 
+	public final Obj getTarget() {
+		if (this.target != null) {
+			return this.target;
+		}
+		return this.target = createTarget();
+	}
+
 	public ValueKnowledge getKnowledge() {
 
 		final TargetRef targetRef = getTargetRef();
@@ -157,13 +164,6 @@ public abstract class ObjectLink
 		}
 
 		return INITIALLY_KNOWN_VALUE;
-	}
-
-	public final Obj materialize() {
-		if (this.materialization != null) {
-			return this.materialization;
-		}
-		return this.materialization = createMaterialization();
 	}
 
 	@Override
@@ -303,7 +303,7 @@ public abstract class ObjectLink
 		}
 	}
 
-	private Obj createMaterialization() {
+	private Obj createTarget() {
 		if (isRuntime()) {
 			return new RuntimeLinkTarget(this);
 		}

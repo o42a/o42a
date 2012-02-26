@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -121,6 +122,18 @@ public class CompoundPathWalker implements PathWalker {
 
 		for (PathWalker walker : getWalkers()) {
 			proceed = walker.member(container, step, member) & proceed;
+		}
+
+		return proceed;
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+
+		boolean proceed = true;
+
+		for (PathWalker walker : getWalkers()) {
+			proceed = walker.dereference(linkObject, step, link) & proceed;
 		}
 
 		return proceed;

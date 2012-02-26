@@ -31,6 +31,7 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
@@ -116,7 +117,7 @@ public class OutcomeBuilder implements PathWalker {
 
 			if (this.container.getScope() == memberScope) {
 				// Clause in the same scope.
-				// Enclosing scope as a topmost container.
+				// Enclosing scope is a topmost container.
 
 				final MemberContainer memberContainer =
 						memberScope.getContainer();
@@ -138,6 +139,15 @@ public class OutcomeBuilder implements PathWalker {
 
 		this.outcome = this.outcome.append(field.getKey());
 
+		return true;
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		if (!initOutcome()) {
+			return false;
+		}
+		this.outcome = this.outcome.dereference();
 		return true;
 	}
 

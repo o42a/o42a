@@ -31,6 +31,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
@@ -146,11 +147,13 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		return mayProceedInsidePrototype();
+	}
+
+	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		if (!mayProceedInsidePrototype()) {
-			return false;
-		}
-		return true;
+		return mayProceedInsidePrototype();
 	}
 
 	@Override

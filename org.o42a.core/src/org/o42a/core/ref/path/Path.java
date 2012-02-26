@@ -30,6 +30,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.impl.DereferenceStep;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -140,6 +141,10 @@ public final class Path {
 		assert fragment != null :
 			"Path fragment not specified";
 		return append(new PathFragmentStep(fragment));
+	}
+
+	public final Path dereference() {
+		return append(new DereferenceStep());
 	}
 
 	public final Path newObject(ObjectConstructor constructor) {

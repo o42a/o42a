@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.DummyPathWalker;
 
@@ -45,6 +46,8 @@ public interface PathWalker {
 	boolean up(Container enclosed, Step step, Container enclosing);
 
 	boolean member(Container container, Step step, Member member);
+
+	boolean dereference(Obj linkObject, Step step, ObjectLink link);
 
 	boolean arrayElement(Obj array, Step step, ArrayElement element);
 

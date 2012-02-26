@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -69,6 +70,11 @@ public final class DummyPathWalker implements PathWalker {
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
+		return true;
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
 		return true;
 	}
 
