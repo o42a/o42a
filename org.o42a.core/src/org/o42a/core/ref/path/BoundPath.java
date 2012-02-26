@@ -29,6 +29,7 @@ import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 
 import java.util.Arrays;
 
@@ -170,9 +171,9 @@ public class BoundPath extends Location {
 		final Step[] steps = getRawSteps();
 
 		if (steps.length == 0) {
-			return new AncestorFragment().toPath().bind(
-					location,
-					distributor.getScope()).typeRef(distributor);
+			return ANCESTOR_FRAGMENT.toPath()
+					.bind(location, distributor.getScope())
+					.typeRef(distributor);
 		}
 
 		final Step lastStep = steps[steps.length - 1];
@@ -194,6 +195,10 @@ public class BoundPath extends Location {
 
 	public final BoundPath append(PathFragment fragment) {
 		return getRawPath().append(fragment).bind(this, getOrigin());
+	}
+
+	public final BoundPath dereference() {
+		return getRawPath().dereference().bind(this, getOrigin());
 	}
 
 	public final BoundPath arrayItem(Ref indexRef) {

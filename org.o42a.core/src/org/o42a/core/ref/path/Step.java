@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
+import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
@@ -30,7 +31,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.path.impl.AncestorFragment;
 import org.o42a.core.ref.path.impl.ObjectFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
@@ -95,7 +95,7 @@ public abstract class Step {
 			BoundPath path,
 			LocationInfo location,
 			Distributor distributor) {
-		return path.append(new AncestorFragment()).typeRef(distributor);
+		return path.append(ANCESTOR_FRAGMENT).typeRef(distributor);
 	}
 
 	protected abstract FieldDefinition fieldDefinition(

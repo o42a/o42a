@@ -123,7 +123,7 @@ public abstract class Obj
 		return this;
 	}
 
-	public ObjectLink getMaterializedLink() {
+	public ObjectLink getDereferencedLink() {
 		return null;
 	}
 

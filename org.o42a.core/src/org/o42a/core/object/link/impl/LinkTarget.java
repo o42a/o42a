@@ -41,7 +41,7 @@ public class LinkTarget extends Obj {
 	}
 
 	@Override
-	public final ObjectLink getMaterializedLink() {
+	public final ObjectLink getDereferencedLink() {
 		return this.link;
 	}
 
@@ -85,7 +85,7 @@ public class LinkTarget extends Obj {
 
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
-		return this.link.findIn(enclosing).materialize();
+		return this.link.findIn(enclosing).getTarget();
 	}
 
 }

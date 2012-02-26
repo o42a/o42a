@@ -28,6 +28,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
@@ -121,6 +122,12 @@ public final class ResolutionRootFinder implements PathWalker {
 			return up(container, step, substance);
 		}
 
+		return false;
+	}
+
+	@Override
+	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		this.root = linkObject;
 		return false;
 	}
 

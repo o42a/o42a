@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -128,6 +129,19 @@ public class PathRecorder extends PathTracker {
 			@Override
 			public boolean replay(PathWalker walker) {
 				return walker.member(container, step, member);
+			}
+		});
+	}
+
+	@Override
+	public boolean dereference(
+			final Obj linkObject,
+			final Step step,
+			final ObjectLink link) {
+		return record(new Record() {
+			@Override
+			public boolean replay(PathWalker walker) {
+				return walker.dereference(linkObject, step, link);
 			}
 		});
 	}

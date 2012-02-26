@@ -34,6 +34,12 @@ import org.o42a.core.value.ValueType;
 
 public class AncestorFragment extends PathFragment {
 
+	public static final AncestorFragment ANCESTOR_FRAGMENT =
+			new AncestorFragment();
+
+	private AncestorFragment() {
+	}
+
 	@Override
 	public BoundPath expand(PathExpander expander, int index, Scope start) {
 
@@ -59,10 +65,10 @@ public class AncestorFragment extends PathFragment {
 			return ancestor(start, materializationOf.getTypeRef());
 		}
 
-		final ObjectLink materializedLink = object.getMaterializedLink();
+		final ObjectLink dereferencedLink = object.getDereferencedLink();
 
-		if (materializedLink != null) {
-			return ancestor(start, materializedLink.getTypeRef());
+		if (dereferencedLink != null) {
+			return ancestor(start, dereferencedLink.getTypeRef());
 		}
 
 		return ancestor(start, object.type().getAncestor());

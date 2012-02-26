@@ -89,7 +89,7 @@ final class ArrayElementStep extends Step {
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
-			array.value().resolveAll(resolver);
+			arrayValue.resolveAll(resolver);
 		}
 
 		final ArrayValueStruct arrayStruct =
