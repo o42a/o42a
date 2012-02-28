@@ -20,9 +20,16 @@
 package org.o42a.ast.test.grammar.statement;
 
 import static org.o42a.parser.Grammar.DECLARATIVE;
+import static org.o42a.parser.Grammar.IMPERATIVE;
 
 import org.junit.Test;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
+import org.o42a.ast.expression.BinaryNode;
+import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.ref.BodyRefNode;
+import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.ast.statement.SelfAssignmentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
@@ -49,10 +56,23 @@ public class StatementTest extends GrammarTestCase {
 		parse(ClauseDeclaratorNode.class, "<*> {foo}");
 	}
 
+	@Test
+	public void parentheses() {
+		parse(ParenthesesNode.class, "(foo)");
+		parse(MemberRefNode.class, "(foo): bar");
+		parse(PhraseNode.class, "(foo) bar");
+		parse(PhraseNode.class, "(foo)\n_(bar)");
+		parse(BinaryNode.class, "(foo) + bar");
+		parse(BodyRefNode.class, "(foo)`");
+		to(
+				AssignmentNode.class,
+				parse(IMPERATIVE.statement(), "(foo) = bar"));
+	}
+
 	private <T> T parse(Class<? extends T> nodeType, String text) {
 		return to(
 				nodeType,
-				super.parse(DECLARATIVE.statement(), text));
+				parse(DECLARATIVE.statement(), text));
 	}
 
 }

@@ -171,8 +171,17 @@ public class Grammar {
 		return ExpressionParser.EXPRESSION;
 	}
 
+	public static final Parser<ExpressionNode> expression(ExpressionNode base) {
+		return new ExpressionParser(base);
+	}
+
 	public static final Parser<ExpressionNode> simpleExpression() {
 		return SimpleExpressionParser.SIMPLE_EXPRESSION;
+	}
+
+	public static final Parser<ExpressionNode> simpleExpression(
+			ExpressionNode base) {
+		return new SimpleExpressionParser(base);
 	}
 
 	public static final Parser<PhraseNode> phrase(ExpressionNode prefix) {
