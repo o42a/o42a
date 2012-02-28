@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.AdapterFieldVisitor.ADAPTER_FIELD_VISITOR;
+import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -102,8 +102,9 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Ref adapter =
-				adapterNode.getMember().accept(ADAPTER_FIELD_VISITOR, p);
+		final Ref adapter = adapterNode.getMember().accept(
+				ADAPTER_FIELD_REF_IP.refVisitor(),
+				p);
 
 		if (adapter == null) {
 			return null;

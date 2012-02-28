@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.AdapterFieldVisitor.ADAPTER_FIELD_VISITOR;
+import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDeclaration;
@@ -30,7 +30,9 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseKeyVisitor;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.AbstractExpressionVisitor;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
@@ -111,7 +113,7 @@ final class ClauseKeyVisitor
 				p,
 				null,
 				adapterId(adapter.getMember().accept(
-						ADAPTER_FIELD_VISITOR,
+						ADAPTER_FIELD_REF_IP.refVisitor(),
 						p).toStaticTypeRef()));
 	}
 

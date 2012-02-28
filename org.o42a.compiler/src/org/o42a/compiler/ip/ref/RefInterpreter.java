@@ -19,23 +19,50 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
+import static org.o42a.core.member.MemberId.clauseName;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ExpressionNodeVisitor;
+import org.o42a.ast.ref.IntrinsicRefNode;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.owner.Owner;
+import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
-public class RefInterpreter {
+public abstract class RefInterpreter {
+
+	public static final RefInterpreter PLAIN_REF_IP =
+			new PlainRefIp();
+	public static final RefInterpreter PATH_COMPLIER_REF_IP =
+			new PathCompilerRefIp();
+	public static final RefInterpreter CLAUSE_DEF_REF_IP =
+			new ClauseDefRefIp();
+	public static final RefInterpreter CLAUSE_DECL_REF_IP =
+			new ClauseDeclRefIp();
+	public static final RefInterpreter ADAPTER_FIELD_REF_IP =
+			new AdapterFieldRefIp();
 
 	public static Path enclosingModulePath(Container of) {
 
@@ -72,11 +99,120 @@ public class RefInterpreter {
 		}
 	}
 
-	public static Path parentPath(
-			Interpreter ip,
-			LocationInfo location,
-			String name,
-			Container of) {
+	public static Path clauseObjectPath(LocationInfo location, Scope of) {
+
+		Scope scope = of;
+		Path path = Path.SELF_PATH;
+
+		for (;;) {
+
+			final Clause clause = scope.getContainer().toClause();
+
+			if (clause == null) {
+
+				final Obj object = scope.toObject();
+
+				if (object == null) {
+					location.getContext().getLogger().error(
+							"unresolved_object_intrinsic",
+							location,
+							"Enclosing object not found");
+					return null;
+				}
+
+				return path;
+			}
+
+			final Scope enclosingScope = scope.getEnclosingScope();
+
+			if (enclosingScope == null) {
+				return null;
+			}
+
+			path = path.append(scope.getEnclosingScopePath());
+			scope = enclosingScope;
+		}
+	}
+
+	public static boolean isRootRef(ExpressionNode node) {
+		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
+	}
+
+	private static boolean match(String name, Container container) {
+
+		final Member member = container.toMember();
+
+		if (member == null) {
+			return false;
+		}
+		if (name == null) {
+			return true;
+		}
+
+		return name.equals(member.getKey().getName());
+	}
+
+	private static void unresolvedParent(LocationInfo location, String name) {
+		location.getContext().getLogger().error(
+				"unresolved_parent",
+				location,
+				"Enclosing member '%s' can not be found",
+				name);
+	}
+
+	private final OwnerFactory ownerFactory;
+	private final RefVisitor refVisitor;
+	private final OwnerVisitor ownerVisitor;
+
+	RefInterpreter(OwnerFactory ownerFactory) {
+		this.ownerFactory = ownerFactory;
+		this.refVisitor = new RefVisitor(this);
+		this.ownerVisitor = new OwnerVisitor(this);
+	}
+
+	public abstract Interpreter ip();
+
+	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
+		return this.refVisitor;
+	}
+
+	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
+		return this.ownerVisitor;
+	}
+
+	public abstract MemberId memberName(String name);
+
+	public final OwnerFactory ownerFactory() {
+		return this.ownerFactory;
+	}
+
+	public Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
+		p.getLogger().error(
+				"prohibited_object_intrinsic",
+				ref,
+				"$object$ intrinsic is allowed only within clauses");
+		return errorRef(location(p, ref), p);
+	}
+
+	public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+		if (declaredInNode == null) {
+			return null;
+		}
+
+		final Ref declaredIn = declaredInNode.accept(refVisitor(), p);
+
+		if (declaredIn == null) {
+			return null;
+		}
+
+		return declaredIn.toStaticTypeRef();
+	}
+
+	public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+		return refVisitor();
+	}
+
+	public Path parentPath(LocationInfo location, String name, Container of) {
 
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
@@ -84,7 +220,7 @@ public class RefInterpreter {
 		Container container = of;
 
 		for (;;) {
-			if (match(name, container) && !skip(ip, nested)) {
+			if (match(name, container) && !skip(nested)) {
 				return path.append(parentPath);
 			}
 
@@ -130,67 +266,11 @@ public class RefInterpreter {
 		}
 	}
 
-	public static Path clauseObjectPath(LocationInfo location, Scope of) {
-
-		Scope scope = of;
-		Path path = Path.SELF_PATH;
-
-		for (;;) {
-
-			final Clause clause = scope.getContainer().toClause();
-
-			if (clause == null) {
-
-				final Obj object = scope.toObject();
-
-				if (object == null) {
-					location.getContext().getLogger().error(
-							"unresolved_object_intrinsic",
-							location,
-							"Enclosing object not found");
-					return null;
-				}
-
-				return path;
-			}
-
-			final Scope enclosingScope = scope.getEnclosingScope();
-
-			if (enclosingScope == null) {
-				return null;
-			}
-
-			path = path.append(scope.getEnclosingScopePath());
-			scope = enclosingScope;
-		}
-	}
-
-	public static boolean isRootRef(ExpressionNode node) {
-		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
-	}
-
-	private RefInterpreter() {
-	}
-
-	private static boolean match(String name, Container container) {
-
-		final Member member = container.toMember();
-
-		if (member == null) {
-			return false;
-		}
-		if (name == null) {
-			return true;
-		}
-
-		return name.equals(member.getKey().getName());
-	}
-
-	private static boolean skip(Interpreter ip, Container nested) {
+	private boolean skip(Container nested) {
 		if (nested == null) {
 			return false;
 		}
-		if (ip == CLAUSE_DECL_IP) {
+		if (this == CLAUSE_DECL_REF_IP) {
 			return false;
 		}
 		// Top-level expression clause
@@ -198,12 +278,130 @@ public class RefInterpreter {
 		return prototypeExpressionClause(nested);
 	}
 
-	private static void unresolvedParent(LocationInfo location, String name) {
-		location.getContext().getLogger().error(
-				"unresolved_parent",
-				location,
-				"Enclosing member '%s' can not be found",
-				name);
+	private static final class PlainRefIp extends RefInterpreter {
+
+		PlainRefIp() {
+			super(DEFAULT_OWNER_FACTORY);
+		}
+
+		@Override
+		public Interpreter ip() {
+			return PLAIN_IP;
+		}
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+	}
+
+	private static final class PathCompilerRefIp extends RefInterpreter {
+
+		PathCompilerRefIp() {
+			super(NEVER_DEREF_OWNER_FACTORY);
+		}
+
+		@Override
+		public Interpreter ip() {
+			return PATH_COMPILER_IP;
+		}
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+	}
+
+	private static abstract class ClauseRefIp extends RefInterpreter {
+
+		ClauseRefIp(OwnerFactory ownerFactory) {
+			super(ownerFactory);
+		}
+
+		@Override
+		public Ref objectIntrinsic(IntrinsicRefNode ref, Distributor p) {
+
+			final Location location = location(p, ref);
+			final Path path = clauseObjectPath(location, p.getScope());
+
+			if (path == null) {
+				return errorRef(location, p);
+			}
+
+			return path.bind(location, p.getScope()).target(p);
+		}
+
+	}
+
+	private static final class ClauseDefRefIp extends ClauseRefIp {
+
+		ClauseDefRefIp() {
+			super(DEFAULT_OWNER_FACTORY);
+		}
+
+		@Override
+		public Interpreter ip() {
+			return CLAUSE_DEF_IP;
+		}
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+		@Override
+		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+			return PLAIN_REF_IP.refVisitor();
+		}
+
+	}
+
+	private static final class ClauseDeclRefIp extends ClauseRefIp {
+
+		ClauseDeclRefIp() {
+			super(NEVER_DEREF_OWNER_FACTORY);
+		}
+
+		@Override
+		public Interpreter ip() {
+			return CLAUSE_DECL_IP;
+		}
+
+		@Override
+		public MemberId memberName(String name) {
+			return clauseName(name);
+		}
+
+	}
+
+	private static final class AdapterFieldRefIp extends RefInterpreter {
+
+		AdapterFieldRefIp() {
+			super(DEFAULT_OWNER_FACTORY);
+		}
+
+		@Override
+		public Interpreter ip() {
+			return PLAIN_IP;
+		}
+
+		@Override
+		public MemberId memberName(String name) {
+			return fieldName(name);
+		}
+
+		@Override
+		public StaticTypeRef declaredIn(RefNode declaredInNode, Distributor p) {
+			return null;
+		}
+
+		@Override
+		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
+			return PLAIN_REF_IP.refVisitor();
+		}
+
 	}
 
 }

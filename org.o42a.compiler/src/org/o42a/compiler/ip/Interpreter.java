@@ -20,9 +20,7 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
-import static org.o42a.core.member.MemberId.clauseName;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.BlockNode;
@@ -35,9 +33,9 @@ import org.o42a.ast.type.ArrayTypeNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
+import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.array.ArrayValueStruct;
@@ -52,43 +50,12 @@ import org.o42a.core.value.ValueType;
 
 public enum Interpreter {
 
-	PLAIN_IP(new RefVisitor()) {
+	PLAIN_IP(PLAIN_REF_IP),
+	PATH_COMPILER_IP(PATH_COMPLIER_REF_IP),
+	CLAUSE_DEF_IP(CLAUSE_DEF_REF_IP),
+	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
 
-		@Override
-		public MemberId memberName(String name) {
-			return fieldName(name);
-		}
-
-	},
-
-	PATH_COMPILER_IP(new RefVisitor(NEVER_DEREF_OWNER_FACTORY)) {
-
-		@Override
-		public MemberId memberName(String name) {
-			return fieldName(name);
-		}
-
-	},
-
-	CLAUSE_DEF_IP(new ClauseRefVisitor(true)) {
-
-		@Override
-		public MemberId memberName(String name) {
-			return fieldName(name);
-		}
-
-	},
-
-	CLAUSE_DECL_IP(new ClauseRefVisitor(false)) {
-
-		@Override
-		public MemberId memberName(String name) {
-			return clauseName(name);
-		}
-
-	};
-
-	private final RefNodeVisitor<Ref, Distributor> refVisitor;
+	private final RefInterpreter refInterpreter;
 	private final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor;
 	private final ExpressionNodeVisitor<
 			FieldDefinition,
@@ -101,9 +68,8 @@ public enum Interpreter {
 			Distributor> staticAncestorVisitor;
 	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
 
-	Interpreter(RefVisitor refVisitor) {
-		this.refVisitor = refVisitor;
-		refVisitor.init(this);
+	Interpreter(RefInterpreter refInterpreter) {
+		this.refInterpreter = refInterpreter;
 		this.expressionVisitor = new ExpressionVisitor(this);
 		this.definitionVisitor = new DefinitionVisitor(this);
 		this.ancestorVisitor = new AncestorVisitor(this, null);
@@ -111,8 +77,12 @@ public enum Interpreter {
 		this.typeVisitor = new TypeVisitor(this, null);
 	}
 
+	public final RefInterpreter refIp() {
+		return this.refInterpreter;
+	}
+
 	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
-		return this.refVisitor;
+		return this.refInterpreter.refVisitor();
 	}
 
 	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
@@ -154,8 +124,6 @@ public enum Interpreter {
 			BlockNode<?> node) {
 		return new ContentBuilder(statementVisitor, node);
 	}
-
-	public abstract MemberId memberName(String name);
 
 	public static void addContent(
 			StatementVisitor statementVisitor,
