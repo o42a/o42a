@@ -33,6 +33,7 @@ import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
@@ -152,29 +153,25 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 				expectedStruct.toLinkStruct();
 
 		if (expectedLinkStruct != null) {
-
-			final ValueStruct<?, ?> expectedTargetStruct =
-					expectedLinkStruct.getTypeRef().getValueStruct();
-
 			return new LinkByValueAdapter(
-					adapterRef(ref, expectedTargetStruct),
+					adapterRef(ref, expectedLinkStruct.getTypeRef()),
 					expectedLinkStruct);
 		}
 
-		final Ref adapter = ref.adapt(
+		final Ref adapter = adapterRef(
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
 		return adapter.valueAdapter(null);
 	}
 
-	public Ref adapterRef(Ref ref, ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
-			return ref;
-		}
-		return ref.adapt(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+	public Ref adapterRef(Ref ref, TypeRef expectedTypeRef) {
+
+		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
+
+		adapter.ancestor(adapter).checkDerivedFrom(expectedTypeRef);
+
+		return adapter;
 	}
 
 	public final boolean isScoped() {
