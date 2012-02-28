@@ -29,6 +29,7 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.ref.Ref;
 
@@ -66,16 +67,16 @@ final class OverriderDeclarableVisitor
 			ClauseBuilder p) {
 
 		final MemberRefNode memberNode = adapter.getMember();
-		final Ref adapterType = memberNode.accept(
-				ADAPTER_FIELD_REF_IP.refVisitor(),
+		final Owner adapterId = memberNode.accept(
+				ADAPTER_FIELD_REF_IP.ownerVisitor(),
 				p.distribute());
 
-		if (adapterType == null) {
+		if (adapterId == null) {
 			return null;
 		}
 
-		final ClauseBuilder builder =
-				p.setOverridden(adapterId(adapterType.toStaticTypeRef()));
+		final ClauseBuilder builder = p.setOverridden(
+				adapterId(adapterId.bodyRef().toStaticTypeRef()));
 
 		return setDeclaredIn(memberNode, builder);
 	}
