@@ -28,6 +28,7 @@ import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
+import org.o42a.core.value.ValueStructFinder;
 
 
 final class PhrasePrefixVisitor
@@ -36,7 +37,14 @@ final class PhrasePrefixVisitor
 	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
 			new PhrasePrefixVisitor();
 
+	private final ValueStructFinder valueStructFinder;
+
 	private PhrasePrefixVisitor() {
+		this.valueStructFinder = null;
+	}
+
+	PhrasePrefixVisitor(ValueStructFinder valueStructFinder) {
+		this.valueStructFinder = valueStructFinder;
 	}
 
 	@Override
@@ -49,10 +57,13 @@ final class PhrasePrefixVisitor
 
 		final Distributor distributor = p.distribute();
 		final AncestorTypeRef ancestor =
-				expression.accept(p.ip().ancestorVisitor(null), distributor);
+				expression.accept(
+						p.ip().ancestorVisitor(this.valueStructFinder),
+						distributor);
 
 		if (ancestor == null || ancestor.isImplied()) {
-			return p.setImpliedAncestor(location(p, expression));
+			return p.setImpliedAncestor(location(p, expression))
+					.setValueStruct(this.valueStructFinder);
 		}
 
 		return p.setAncestor(ancestor.getAncestor());

@@ -27,6 +27,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
@@ -35,6 +36,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 
 	private TypeRef ancestor;
+	private ValueStructFinder valueStruct;
 	private StaticTypeRef[] samples = NO_SAMPLES;
 
 	public AscendantsDefinition(
@@ -69,6 +71,21 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		final AscendantsDefinition clone = clone();
 
 		clone.ancestor = ancestor;
+
+		return clone;
+	}
+
+	public final ValueStructFinder getValueStruct() {
+		return this.valueStruct;
+	}
+
+
+	public final AscendantsDefinition setValueStruct(
+			ValueStructFinder valueStruct) {
+
+		final AscendantsDefinition clone = clone();
+
+		clone.valueStruct = valueStruct;
 
 		return clone;
 	}
@@ -117,6 +134,9 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 			result = ascendants;
 		} else {
 			result = ascendants.setAncestor(this.ancestor);
+		}
+		if (this.valueStruct != null) {
+			result = result.setValueStruct(this.valueStruct);
 		}
 		for (StaticTypeRef sample : this.samples) {
 			result = result.addExplicitSample(sample);

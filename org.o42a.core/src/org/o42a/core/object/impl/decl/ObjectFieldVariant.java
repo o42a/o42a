@@ -39,6 +39,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueStructFinder;
 
 
 final class ObjectFieldVariant
@@ -93,6 +94,12 @@ final class ObjectFieldVariant
 	@Override
 	public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
 		this.ascendants = this.ascendants.setAncestor(explicitAncestor);
+		return this;
+	}
+
+	@Override
+	public ObjectDefiner setValueStruct(ValueStructFinder valueStruct) {
+		this.ascendants = this.ascendants.setValueStruct(valueStruct);
 		return this;
 	}
 

@@ -337,8 +337,15 @@ final class MainPhraseContext extends PhraseContext {
 					getLogger().error(
 							"prohibited_phrase_samples",
 							samples[0],
-							"Samples prohibited when the first clause of phrase"
-							+ " is an expression");
+							"The samples are prohibited when the top-level "
+							+ "clause of phrase is an expression");
+				}
+				if (getPhrase().getValueStruct() != null) {
+					getLogger().error(
+							"prohibited_phrase_type_parameters",
+							getPhrase(),
+							"The value type is prohibited when the top-level "
+							+ " clause of phrase is an expression");
 				}
 			}
 		}

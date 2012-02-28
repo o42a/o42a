@@ -33,6 +33,7 @@ import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.compiler.ip.operator.LogicalExpression;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
@@ -160,6 +161,18 @@ public final class ExpressionVisitor
 		}
 
 		return ascendants(ip(), ascendants, p).toRef();
+	}
+
+	@Override
+	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
+
+		final Phrase phrase = ascendants(ip(), valueType, p);
+
+		if (phrase == null) {
+			return super.visitValueType(valueType, p);
+		}
+
+		return phrase.toRef();
 	}
 
 	@Override

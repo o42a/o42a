@@ -24,9 +24,10 @@ import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueStructFinder;
 
 
-public class PhrasePrefix extends PhrasePart {
+public final class PhrasePrefix extends PhrasePart {
 
 	private AscendantsDefinition ascendants;
 
@@ -39,8 +40,17 @@ public class PhrasePrefix extends PhrasePart {
 		return getAscendants().getAncestor();
 	}
 
-	public PhrasePrefix setAncestor(TypeRef ancestor) {
+	public final PhrasePrefix setAncestor(TypeRef ancestor) {
 		this.ascendants = this.ascendants.setAncestor(ancestor);
+		return this;
+	}
+
+	public final ValueStructFinder getValueStruct() {
+		return this.ascendants.getValueStruct();
+	}
+
+	public final PhrasePrefix setValueStruct(ValueStructFinder valueStruct) {
+		this.ascendants = this.ascendants.setValueStruct(valueStruct);
 		return this;
 	}
 

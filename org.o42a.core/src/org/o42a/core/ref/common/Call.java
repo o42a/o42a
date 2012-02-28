@@ -60,7 +60,8 @@ public class Call extends ObjectConstructor {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return this.ascendants.getAncestor();
+		return this.ascendants.getAncestor().setValueStruct(
+				this.ascendants.getValueStruct());
 	}
 
 	@Override

@@ -30,8 +30,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
 
-final class TypeVisitor
-		extends AbstractTypeVisitor<TypeRef, Distributor> {
+final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
 	private final ValueStructFinder valueStructFinder;
@@ -68,15 +67,31 @@ final class TypeVisitor
 	}
 
 	@Override
-	protected TypeRef visitRef(RefNode node, Distributor p) {
+	public TypeRef visitValueType(ValueTypeNode valueType, Distributor p) {
 
-		final Ref ref = node.accept(ip().refVisitor(), p);
+		final TypeNode ascendantNode = valueType.getAscendant();
 
-		if (ref == null) {
-			return null;
+		if (ascendantNode == null) {
+			return super.visitValueType(valueType, p);
 		}
 
-		return ref.toTypeRef(this.valueStructFinder);
+		final ValueStructFinder vsFinder;
+		final InterfaceNode ifaceNode = valueType.getValueType();
+
+		if (this.valueStructFinder != null) {
+			p.getLogger().error(
+					"redundant_value_type",
+					ifaceNode,
+					"Redundant value type");
+			vsFinder = this.valueStructFinder;
+		} else {
+			vsFinder = ip().typeParameters(ifaceNode, p);
+			if (vsFinder == null) {
+				return null;
+			}
+		}
+
+		return ascendantNode.accept(new TypeVisitor(ip(), vsFinder), p);
 	}
 
 	@Override
@@ -92,6 +107,18 @@ final class TypeVisitor
 				new TypeVisitor(ip(), ip().arrayValueStruct(arrayType));
 
 		return ancestorNode.accept(typeVisitor, p);
+	}
+
+	@Override
+	protected TypeRef visitRef(RefNode node, Distributor p) {
+
+		final Ref ref = node.accept(ip().refVisitor(), p);
+
+		if (ref == null) {
+			return null;
+		}
+
+		return ref.toTypeRef(this.valueStructFinder);
 	}
 
 	@Override
