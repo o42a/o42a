@@ -42,6 +42,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.value.TypeParameters;
 
 
 final class MainPhraseContext extends PhraseContext {
@@ -340,10 +341,14 @@ final class MainPhraseContext extends PhraseContext {
 							"The samples are prohibited when the top-level "
 							+ "clause of phrase is an expression");
 				}
-				if (getPhrase().getValueStruct() != null) {
+
+				final TypeParameters typeParameters =
+						getPhrase().getTypeParameters();
+
+				if (typeParameters != null) {
 					getLogger().error(
 							"prohibited_phrase_type_parameters",
-							getPhrase(),
+							typeParameters,
 							"The value type is prohibited when the top-level "
 							+ " clause of phrase is an expression");
 				}

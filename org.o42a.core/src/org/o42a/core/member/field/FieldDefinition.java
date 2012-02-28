@@ -25,12 +25,10 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
-import org.o42a.core.member.field.impl.DefaultFieldDefinition;
 import org.o42a.core.member.field.impl.InvalidFieldDefinition;
 import org.o42a.core.member.field.impl.RescopedFieldDefinition;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.BlockBuilder;
 
 
 public abstract class FieldDefinition extends Placed {
@@ -41,25 +39,11 @@ public abstract class FieldDefinition extends Placed {
 		return new InvalidFieldDefinition(location, distributor);
 	}
 
-	public static FieldDefinition fieldDefinition(
-			LocationInfo location,
-			AscendantsDefinition ascendants,
-			BlockBuilder definition) {
-		return new DefaultFieldDefinition(
-				location,
-				ascendants.distribute(),
-				ascendants,
-				definition != null
-				? definition : emptyBlock(location));
-	}
-
 	public static FieldDefinition impliedDefinition(
 			LocationInfo location,
 			Distributor scope) {
-		return new DefaultFieldDefinition(
+		return new AscendantsDefinition(location, scope).fieldDefinition(
 				location,
-				scope,
-				new AscendantsDefinition(location, scope),
 				emptyBlock(location));
 	}
 

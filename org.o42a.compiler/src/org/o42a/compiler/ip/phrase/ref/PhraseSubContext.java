@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.phrase.ref;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 
 import org.o42a.compiler.ip.phrase.part.NextClause;
 import org.o42a.core.Distributor;
@@ -151,9 +150,8 @@ class PhraseSubContext extends PhraseContext {
 
 			definition = substitutution.toFieldDefinition();
 		} else {
-			definition = fieldDefinition(
+			definition = ascendants(location, distributor).fieldDefinition(
 					location,
-					ascendants(location, distributor),
 					instance.getDefinition());
 		}
 
