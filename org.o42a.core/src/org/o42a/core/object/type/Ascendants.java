@@ -35,6 +35,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.core.value.ValueStructFinder;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.func.Lambda;
@@ -47,6 +48,7 @@ public class Ascendants
 
 	private final Obj object;
 	private TypeRef explicitAncestor;
+	private ValueStructFinder valueStruct;
 	private TypeRef ancestor;
 	private Sample[] samples = NO_SAMPLES;
 	private Sample[] discardedSamples = NO_SAMPLES;
@@ -73,6 +75,9 @@ public class Ascendants
 			} else {
 				this.ancestor = sampleAncestor();
 			}
+			if (this.valueStruct != null) {
+				this.ancestor = this.ancestor.setValueStruct(this.valueStruct);
+			}
 		}
 
 		return this.ancestor;
@@ -91,6 +96,16 @@ public class Ascendants
 
 		clone.explicitAncestor =
 				explicitAncestor.upgradeScope(getScope().getEnclosingScope());
+
+		return clone;
+	}
+
+	@Override
+	public Ascendants setValueStruct(ValueStructFinder valueStruct) {
+
+		final Ascendants clone = clone();
+
+		clone.valueStruct = valueStruct;
 
 		return clone;
 	}

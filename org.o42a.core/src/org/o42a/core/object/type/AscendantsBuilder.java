@@ -22,11 +22,14 @@ package org.o42a.core.object.type;
 import org.o42a.core.member.Member;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
 	A setAncestor(TypeRef explicitAncestor);
+
+	A setValueStruct(ValueStructFinder valueStruct);
 
 	A addExplicitSample(StaticTypeRef explicitAscendant);
 

@@ -27,9 +27,7 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
-import org.o42a.ast.type.AscendantNode;
-import org.o42a.ast.type.AscendantSpecNode;
-import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.SampleSpecVisitor;
@@ -39,6 +37,7 @@ import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.value.TypeParameters;
 
 
 public final class PhraseInterpreter {
@@ -64,6 +63,38 @@ public final class PhraseInterpreter {
 		final Phrase phrase =
 				new Phrase(ip, location(distributor, node), distributor);
 		final Phrase prefixed = prefix(phrase, node);
+
+		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
+	}
+
+	public static Phrase ascendants(
+			Interpreter ip,
+			ValueTypeNode node,
+			Distributor distributor) {
+
+		final TypeParameters typeParams =
+				ip.typeParameters(node.getValueType(), distributor);
+		final Phrase phrase =
+				new Phrase(ip, location(distributor, node), distributor);
+
+		final Phrase prefixed;
+		final TypeNode ascendantNode = node.getAscendant();
+
+		if (ascendantNode == null) {
+			prefixed =
+					phrase.setImpliedAncestor(location(distributor, node))
+					.setValueStruct(typeParams);
+		} else if (!(ascendantNode instanceof ExpressionNode)) {
+			return null;
+		} else {
+
+			final ExpressionNode ascendantExNode =
+					(ExpressionNode) ascendantNode;
+
+			prefixed = ascendantExNode.accept(
+					new PhrasePrefixVisitor(typeParams),
+					phrase);
+		}
 
 		return prefixed.declarations(emptyBlock(phrase)).getPhrase();
 	}

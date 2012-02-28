@@ -21,17 +21,18 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
+import static org.o42a.core.value.TypeParameters.immutableValueStruct;
+import static org.o42a.core.value.TypeParameters.mutableValueStruct;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.ArrayTypeNode;
-import org.o42a.ast.type.TypeNode;
-import org.o42a.ast.type.TypeNodeVisitor;
+import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.ref.owner.Owner;
@@ -44,9 +45,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 
 
 public enum Interpreter {
@@ -122,6 +121,29 @@ public enum Interpreter {
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {
 		return this.typeVisitor;
+	}
+
+	public final TypeParameters typeParameters(
+			InterfaceNode ifaceNode,
+			Distributor p) {
+
+		final TypeRef paramTypeRef =
+				ifaceNode.getType().accept(typeVisitor(), p);
+
+		if (paramTypeRef == null) {
+			return null;
+		}
+
+		final TypeParameters.Mutability mutability;
+		final SignNode<DefinitionKind> mutabilityNode = ifaceNode.getKind();
+
+		if (mutabilityNode.getType() == DefinitionKind.VARIABLE) {
+			mutability = mutableValueStruct(location(p, mutabilityNode), p);
+		} else {
+			mutability = immutableValueStruct(location(p, mutabilityNode), p);
+		}
+
+		return mutability.setTypeRef(paramTypeRef);
 	}
 
 	public static BlockBuilder contentBuilder(

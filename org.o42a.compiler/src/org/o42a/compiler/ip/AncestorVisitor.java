@@ -78,6 +78,7 @@ public class AncestorVisitor
 	protected AncestorTypeRef visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
+
 		final Ref ref = expression.accept(ip().expressionVisitor(), p);
 
 		if (ref == null) {

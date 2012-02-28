@@ -32,6 +32,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public class Phrase extends Placed {
@@ -73,6 +74,15 @@ public class Phrase extends Placed {
 			this.last = this.prefix = new PhrasePrefix(ancestor, this);
 		}
 		this.prefix.setAncestor(ancestor);
+		return this;
+	}
+
+	public final ValueStructFinder getValueStruct() {
+		return this.prefix.getValueStruct();
+	}
+
+	public final Phrase setValueStruct(ValueStructFinder valueStruct) {
+		this.prefix.setValueStruct(valueStruct);
 		return this;
 	}
 

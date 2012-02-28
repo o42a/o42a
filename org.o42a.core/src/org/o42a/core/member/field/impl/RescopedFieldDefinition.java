@@ -30,6 +30,7 @@ import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public final class RescopedFieldDefinition extends FieldDefinition {
@@ -100,6 +101,12 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		@Override
 		public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
 			this.definer.setAncestor(explicitAncestor.prefixWith(getPrefix()));
+			return this;
+		}
+
+		@Override
+		public ObjectDefiner setValueStruct(ValueStructFinder valueStruct) {
+			this.definer.setValueStruct(valueStruct);
 			return this;
 		}
 
