@@ -178,6 +178,28 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	protected ValueStruct<LinkValueStruct, ObjectLink> applyParameters(
+			TypeParameters parameters) {
+		if (parameters.isMutable()) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newTypeRef = parameters.getTypeRef();
+		final TypeRef oldTypeRef = getTypeRef();
+
+		if (!newTypeRef.checkDerivedFrom(oldTypeRef)) {
+			return this;
+		}
+
+		return getValueType().linkStruct(newTypeRef);
+	}
+
+	@Override
 	protected ValueKnowledge valueKnowledge(ObjectLink value) {
 		return value.getKnowledge();
 	}
