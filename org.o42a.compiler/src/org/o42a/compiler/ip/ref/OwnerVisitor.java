@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.compiler.ip.ref.RefInterpreter.isRootRef;
-import static org.o42a.compiler.ip.ref.RefInterpreter.parentPath;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.Ref.falseRef;
@@ -34,7 +33,6 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.compiler.ip.ref.MemberById;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
@@ -45,14 +43,14 @@ import org.o42a.core.source.Location;
 
 final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 
-	private final RefVisitor refVisitor;
+	private final RefInterpreter ip;
 
-	OwnerVisitor(RefVisitor refVisitor) {
-		this.refVisitor = refVisitor;
+	OwnerVisitor(RefInterpreter interpreter) {
+		this.ip = interpreter;
 	}
 
-	public final Interpreter ip() {
-		return this.refVisitor.ip();
+	public final RefInterpreter ip() {
+		return this.ip;
 	}
 
 	@Override
@@ -69,7 +67,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 					SELF_PATH.bind(location, p.getScope()).target(p));
 		case PARENT:
 			return owner(
-					parentPath(ip(), location, null, p.getContainer())
+					ip().parentPath(location, null, p.getContainer())
 					.bind(location, p.getScope())
 					.target(p));
 		case MODULE:
@@ -91,8 +89,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	public final Owner visitParentRef(ParentRefNode ref, Distributor p) {
 
 		final Location location = location(p, ref);
-		final Path parentPath = parentPath(
-				ip(),
+		final Path parentPath = ip().parentPath(
 				location,
 				ref.getName().getName(),
 				p.getContainer());
@@ -103,7 +100,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	@Override
 	public final Owner visitIntrinsicRef(IntrinsicRefNode ref, Distributor p) {
 		if ("object".equals(ref.getName().getName())) {
-			return owner(this.refVisitor.objectIntrinsic(ref, p));
+			return owner(ip().objectIntrinsic(ref, p));
 		}
 		return super.visitIntrinsicRef(ref, p);
 	}
@@ -141,21 +138,20 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			owner = null;
 		}
 
-		final StaticTypeRef declaredIn =
-				this.refVisitor.declaredIn(declaredInNode, p);
+		final StaticTypeRef declaredIn = ip().declaredIn(declaredInNode, p);
 
 		if (owner != null) {
 			return owner.member(
 					location(p, ref),
-					this.refVisitor.ip().memberName(ref.getName().getName()),
+					ip().memberName(ref.getName().getName()),
 					declaredIn);
 		}
 
 		return owner(new MemberById(
-				this.refVisitor.ip(),
+				ip().ip(),
 				location(p, ref.getName()),
 				p,
-				this.refVisitor.ip().memberName(ref.getName().getName()),
+				ip().memberName(ref.getName().getName()),
 				declaredIn).toRef());
 	}
 
@@ -168,8 +164,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			return null;
 		}
 
-		final Ref type =
-				ref.getType().accept(this.refVisitor.adapterTypeVisitor(), p);
+		final Ref type = ref.getType().accept(ip().adapterTypeVisitor(), p);
 
 		if (type == null) {
 			return null;
@@ -178,7 +173,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 		return owner.member(
 				location(p, ref),
 				adapterId(type.toStaticTypeRef()),
-				this.refVisitor.declaredIn(ref.getDeclaredIn(), p));
+				ip().declaredIn(ref.getDeclaredIn(), p));
 	}
 
 	@Override
@@ -204,15 +199,15 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			ExpressionNode expression,
 			Distributor p) {
 		return owner(
-				expression.accept(this.refVisitor.ip().expressionVisitor(), p));
+				expression.accept(ip().ip().expressionVisitor(), p));
 	}
 
 	private final Owner owner(Ref ownerRef) {
-		return this.refVisitor.ownerFactory().owner(ownerRef);
+		return this.ip.ownerFactory().owner(ownerRef);
 	}
 
 	private final Owner nonLinkOwner(Ref ownerRef) {
-		return this.refVisitor.ownerFactory().nonLinkOwner(ownerRef);
+		return this.ip.ownerFactory().nonLinkOwner(ownerRef);
 	}
 
 }

@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.member.AdapterFieldVisitor.ADAPTER_FIELD_VISITOR;
+import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.fieldName;
 
@@ -66,8 +66,9 @@ final class OverriderDeclarableVisitor
 			ClauseBuilder p) {
 
 		final MemberRefNode memberNode = adapter.getMember();
-		final Ref adapterType =
-				memberNode.accept(ADAPTER_FIELD_VISITOR, p.distribute());
+		final Ref adapterType = memberNode.accept(
+				ADAPTER_FIELD_REF_IP.refVisitor(),
+				p.distribute());
 
 		if (adapterType == null) {
 			return null;

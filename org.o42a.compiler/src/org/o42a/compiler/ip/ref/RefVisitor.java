@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.member;
+package org.o42a.compiler.ip.ref;
 
+import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.RefVisitor;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.StaticTypeRef;
 
 
-final class AdapterFieldVisitor extends RefVisitor {
+final class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
-	static final AdapterFieldVisitor ADAPTER_FIELD_VISITOR =
-			new AdapterFieldVisitor();
+	private final RefInterpreter interpreter;
 
-	AdapterFieldVisitor() {
-		init(Interpreter.PLAIN_IP);
+	RefVisitor(RefInterpreter interpreter) {
+		this.interpreter = interpreter;
 	}
 
 	@Override
-	protected StaticTypeRef declaredIn(
-			RefNode declaredInNode,
-			Distributor p) {
-		return null;
-	}
+	protected Ref visitRef(RefNode ref, Distributor p) {
 
-	@Override
-	protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
-		return Interpreter.PLAIN_IP.refVisitor();
+		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
+
+		return result != null ? result.ref() : null;
 	}
 
 }

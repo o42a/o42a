@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPLIER_REF_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
 import static org.o42a.compiler.ip.ref.owner.Owner.neverDerefOwner;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -125,7 +126,8 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			if (owner != null) {
 				return owner.member(
 						location(p, ref),
-						PATH_COMPILER_IP.memberName(ref.getName().getName()),
+						PATH_COMPLIER_REF_IP.memberName(
+								ref.getName().getName()),
 						declaredIn);
 			}
 
