@@ -24,8 +24,8 @@ import org.o42a.core.ref.Ref;
 
 final class NeverDerefOwner extends NonLinkOwner {
 
-	NeverDerefOwner(Ref owner) {
-		super(owner);
+	NeverDerefOwner(Ref ownerRef) {
+		super(ownerRef);
 	}
 
 	@Override

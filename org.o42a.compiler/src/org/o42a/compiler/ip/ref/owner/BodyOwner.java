@@ -27,22 +27,27 @@ class BodyOwner extends Owner {
 
 	private final LocationInfo location;
 
-	BodyOwner(LocationInfo location, Ref owner) {
-		super(owner);
+	BodyOwner(LocationInfo location, Ref ownerRef) {
+		super(ownerRef);
 		this.location = location;
 	}
 
 	@Override
 	public Ref ref() {
-		return this.owner.getPath()
+		return this.ownerRef.getPath()
 				.append(new BodyRefFragment(this.location))
-				.target(this.owner.distribute());
+				.target(this.ownerRef.distribute());
 	}
 
 	@Override
 	public Owner body(LocationInfo location) {
-		redundantBodyRef(this.owner.getLogger(), location);
+		redundantBodyRef(this.ownerRef.getLogger(), location);
 		return this;
+	}
+
+	@Override
+	public Ref bodyRef() {
+		return body(this.location).ref();
 	}
 
 }
