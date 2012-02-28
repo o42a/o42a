@@ -23,7 +23,6 @@ import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.addContent;
 import static org.o42a.compiler.ip.Interpreter.addSentence;
-import static org.o42a.core.member.field.FieldDefinition.fieldDefinition;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.ast.file.SectionNode;
@@ -191,9 +190,8 @@ final class Section implements LogInfo {
 			return;
 		}
 
-		final FieldDefinition fieldDefinition = fieldDefinition(
+		final FieldDefinition fieldDefinition = ascendants().fieldDefinition(
 				getLocation(),
-				ascendants(),
 				new SectionDefinition(this));
 
 		final FieldBuilder fieldBuilder =

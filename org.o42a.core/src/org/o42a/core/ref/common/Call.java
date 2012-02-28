@@ -61,17 +61,14 @@ public class Call extends ObjectConstructor {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return this.ascendants.getAncestor().setValueStruct(
-				this.ascendants.getValueStruct());
+				this.ascendants.getTypeParameters());
 	}
 
 	@Override
 	public FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return FieldDefinition.fieldDefinition(
-				this,
-				this.ascendants,
-				this.definitions);
+		return this.ascendants.fieldDefinition(this, this.definitions);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ package org.o42a.core.value;
 
 import org.o42a.core.*;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -28,7 +29,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public final class TypeParameters implements PlaceInfo, ValueStructFinder {
+public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	public static Mutability mutableValueStruct(
 			LocationInfo location,
@@ -102,6 +103,18 @@ public final class TypeParameters implements PlaceInfo, ValueStructFinder {
 	@Override
 	public final ValueStruct<?, ?> toValueStruct() {
 		return null;
+	}
+
+	public final TypeParameters prefixWith(PrefixPath prefix) {
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.prefixWith(prefix);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return new TypeParameters(newTypeRef, getMutability());
 	}
 
 	@Override

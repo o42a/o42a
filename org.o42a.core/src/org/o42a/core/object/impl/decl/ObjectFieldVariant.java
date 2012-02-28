@@ -38,8 +38,8 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
 
 
 final class ObjectFieldVariant
@@ -98,8 +98,8 @@ final class ObjectFieldVariant
 	}
 
 	@Override
-	public ObjectDefiner setValueStruct(ValueStructFinder valueStruct) {
-		this.ascendants = this.ascendants.setValueStruct(valueStruct);
+	public ObjectDefiner setTypeParameters(TypeParameters typeParameters) {
+		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
 		return this;
 	}
 

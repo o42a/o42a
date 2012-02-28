@@ -19,15 +19,19 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
+import org.o42a.core.member.field.impl.DefaultFieldDefinition;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.TypeParameters;
 import org.o42a.util.ArrayUtil;
 
 
@@ -36,7 +40,7 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	private static final StaticTypeRef[] NO_SAMPLES = new StaticTypeRef[0];
 
 	private TypeRef ancestor;
-	private ValueStructFinder valueStruct;
+	private TypeParameters typeParameters;
 	private StaticTypeRef[] samples = NO_SAMPLES;
 
 	public AscendantsDefinition(
@@ -75,17 +79,16 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return clone;
 	}
 
-	public final ValueStructFinder getValueStruct() {
-		return this.valueStruct;
+	public final TypeParameters getTypeParameters() {
+		return this.typeParameters;
 	}
 
-
-	public final AscendantsDefinition setValueStruct(
-			ValueStructFinder valueStruct) {
+	public final AscendantsDefinition setTypeParameters(
+			TypeParameters typeParameters) {
 
 		final AscendantsDefinition clone = clone();
 
-		clone.valueStruct = valueStruct;
+		clone.typeParameters = typeParameters;
 
 		return clone;
 	}
@@ -135,8 +138,8 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		} else {
 			result = ascendants.setAncestor(this.ancestor);
 		}
-		if (this.valueStruct != null) {
-			result = result.setValueStruct(this.valueStruct);
+		if (this.typeParameters != null) {
+			result = result.setTypeParameters(this.typeParameters);
 		}
 		for (StaticTypeRef sample : this.samples) {
 			result = result.addExplicitSample(sample);
@@ -204,6 +207,17 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		}
 
 		return create(this, reproducer.distribute(), ancestor, samples);
+	}
+
+	public final FieldDefinition fieldDefinition(
+			LocationInfo location,
+			BlockBuilder definition) {
+		return new DefaultFieldDefinition(
+				location,
+				distribute(),
+				this,
+				definition != null
+				? definition : emptyBlock(location));
 	}
 
 	@Override

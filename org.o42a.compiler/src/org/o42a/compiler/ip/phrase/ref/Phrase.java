@@ -32,7 +32,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.value.TypeParameters;
 
 
 public class Phrase extends Placed {
@@ -77,12 +77,12 @@ public class Phrase extends Placed {
 		return this;
 	}
 
-	public final ValueStructFinder getValueStruct() {
-		return this.prefix.getValueStruct();
+	public final TypeParameters getTypeParameters() {
+		return this.prefix.getTypeParameters();
 	}
 
-	public final Phrase setValueStruct(ValueStructFinder valueStruct) {
-		this.prefix.setValueStruct(valueStruct);
+	public final Phrase setTypeParameters(TypeParameters typeParameters) {
+		this.prefix.setTypeParameters(typeParameters);
 		return this;
 	}
 
