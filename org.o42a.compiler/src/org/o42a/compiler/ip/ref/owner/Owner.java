@@ -32,10 +32,6 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class Owner {
 
-	public static Owner neverDerefOwner(Ref owner) {
-		return new NeverDerefOwner(owner);
-	}
-
 	static void redundantBodyRef(CompilerLogger logger, LogInfo location) {
 		logger.error(
 				"redundant_body_ref",
@@ -43,15 +39,17 @@ public abstract class Owner {
 				"Redundant link body reference");
 	}
 
-	protected final Ref owner;
+	protected final Ref ownerRef;
 
-	Owner(Ref owner) {
-		this.owner = owner;
+	Owner(Ref ownerRef) {
+		this.ownerRef = ownerRef;
 	}
 
 	public abstract Ref ref();
 
 	public abstract Owner body(LocationInfo location);
+
+	public abstract Ref bodyRef();
 
 	public Owner member(
 			LocationInfo location,
@@ -59,7 +57,7 @@ public abstract class Owner {
 			StaticTypeRef declaredIn) {
 
 		final Ref owner = ref();
-		final Distributor distributor = this.owner.distribute();
+		final Distributor distributor = this.ownerRef.distribute();
 		final MemberOf memberOf = new MemberOf(
 				location,
 				distributor,
@@ -73,7 +71,7 @@ public abstract class Owner {
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.owner);
+		return String.valueOf(this.ownerRef);
 	}
 
 	protected Owner memberOwner(final Ref ref) {

@@ -27,20 +27,25 @@ import org.o42a.core.source.LocationInfo;
 
 final class DefaultOwner extends Owner {
 
-	DefaultOwner(Ref owner) {
-		super(owner);
+	DefaultOwner(Ref ownerRef) {
+		super(ownerRef);
 	}
 
 	@Override
 	public Ref ref() {
-		return this.owner.getPath()
+		return this.ownerRef.getPath()
 				.append(DEREFERENCE_FRAGMENT)
-				.target(this.owner.distribute());
+				.target(this.ownerRef.distribute());
 	}
 
 	@Override
 	public Owner body(LocationInfo location) {
-		return new BodyOwner(location, this.owner);
+		return new BodyOwner(location, this.ownerRef);
+	}
+
+	@Override
+	public Ref bodyRef() {
+		return ref();
 	}
 
 }

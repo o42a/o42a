@@ -25,19 +25,24 @@ import org.o42a.core.source.LocationInfo;
 
 class NonLinkOwner extends Owner {
 
-	NonLinkOwner(Ref owner) {
-		super(owner);
+	NonLinkOwner(Ref ownerRef) {
+		super(ownerRef);
 	}
 
 	@Override
 	public Ref ref() {
-		return this.owner;
+		return this.ownerRef;
 	}
 
 	@Override
 	public Owner body(LocationInfo location) {
-		redundantBodyRef(this.owner.getLogger(), location);
+		redundantBodyRef(this.ownerRef.getLogger(), location);
 		return this;
+	}
+
+	@Override
+	public Ref bodyRef() {
+		return ref();
 	}
 
 }

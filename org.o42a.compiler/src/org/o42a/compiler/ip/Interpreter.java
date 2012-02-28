@@ -34,6 +34,7 @@ import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -82,7 +83,11 @@ public enum Interpreter {
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
-		return this.refInterpreter.refVisitor();
+		return refIp().refVisitor();
+	}
+
+	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
+		return refIp().ownerVisitor();
 	}
 
 	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {

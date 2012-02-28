@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPLIER_REF_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
-import static org.o42a.compiler.ip.ref.owner.Owner.neverDerefOwner;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -131,7 +131,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 						declaredIn);
 			}
 
-			return neverDerefOwner(moduleRef(ref, p));
+			return NEVER_DEREF_OWNER_FACTORY.owner(moduleRef(ref, p));
 		}
 
 		@Override
