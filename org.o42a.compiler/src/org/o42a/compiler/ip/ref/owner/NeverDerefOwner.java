@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.ref.owner;
 import org.o42a.core.ref.Ref;
 
 
-final class NeverDerefOwner extends DontDerefOwner {
+final class NeverDerefOwner extends NonLinkOwner {
 
 	NeverDerefOwner(Ref owner) {
 		super(owner);

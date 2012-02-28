@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
 import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.MemberId.fieldName;
 
@@ -34,7 +35,6 @@ import org.o42a.ast.type.ArrayTypeNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
-import org.o42a.compiler.ip.ref.PathCompilerRefVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.MemberId;
@@ -61,7 +61,7 @@ public enum Interpreter {
 
 	},
 
-	PATH_COMPILER_IP(new PathCompilerRefVisitor()) {
+	PATH_COMPILER_IP(new RefVisitor(NEVER_DEREF_OWNER_FACTORY)) {
 
 		@Override
 		public MemberId memberName(String name) {

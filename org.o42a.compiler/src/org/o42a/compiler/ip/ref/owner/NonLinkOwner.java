@@ -17,25 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref;
+package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.ref.owner.Owner.neverDerefOwner;
-
-import org.o42a.compiler.ip.RefVisitor;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.LocationInfo;
 
 
-public class PathCompilerRefVisitor extends RefVisitor {
+class NonLinkOwner extends Owner {
 
-	@Override
-	protected Owner owner(Ref ref) {
-		return neverDerefOwner(ref);
+	NonLinkOwner(Ref owner) {
+		super(owner);
 	}
 
 	@Override
-	protected Owner bodyOwner(Ref ref) {
-		return neverDerefOwner(ref);
+	public Ref ref() {
+		return this.owner;
+	}
+
+	@Override
+	public Owner body(LocationInfo location) {
+		redundantBodyRef(this.owner.getLogger(), location);
+		return this;
 	}
 
 }

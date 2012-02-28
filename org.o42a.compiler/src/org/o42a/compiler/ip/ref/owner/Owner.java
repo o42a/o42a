@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-
 import org.o42a.compiler.ip.ref.MemberOf;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberId;
@@ -32,14 +31,6 @@ import org.o42a.util.log.LogInfo;
 
 
 public abstract class Owner {
-
-	public static Owner defaultOwner(Ref owner) {
-		return new DefaultOwner(owner);
-	}
-
-	public static Owner dontDerefOwner(Ref owner) {
-		return new DontDerefOwner(owner);
-	}
 
 	public static Owner neverDerefOwner(Ref owner) {
 		return new NeverDerefOwner(owner);
@@ -54,7 +45,7 @@ public abstract class Owner {
 
 	protected final Ref owner;
 
-	public Owner(Ref owner) {
+	Owner(Ref owner) {
 		this.owner = owner;
 	}
 
