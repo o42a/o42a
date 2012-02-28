@@ -20,10 +20,12 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.ref.*;
 import org.o42a.compiler.ip.ref.owner.Owner;
+import org.o42a.compiler.ip.ref.owner.OwnerFactory;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -32,13 +34,23 @@ import org.o42a.core.ref.type.StaticTypeRef;
 public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	private final OwnerVisitor ownerVisitor = new OwnerVisitor(this);
+	private final OwnerFactory ownerFactory;
 	private Interpreter ip;
 
 	public RefVisitor() {
+		this(DEFAULT_OWNER_FACTORY);
+	}
+
+	public RefVisitor(OwnerFactory ownerFactory) {
+		this.ownerFactory = ownerFactory;
 	}
 
 	public final Interpreter ip() {
 		return this.ip;
+	}
+
+	public final OwnerFactory ownerFactory() {
+		return this.ownerFactory;
 	}
 
 	@Override
@@ -77,14 +89,6 @@ public class RefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	protected RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
 		return this;
-	}
-
-	protected Owner owner(Ref ref) {
-		return Owner.defaultOwner(ref);
-	}
-
-	protected Owner bodyOwner(Ref ref) {
-		return Owner.dontDerefOwner(ref);
 	}
 
 }

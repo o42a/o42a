@@ -73,12 +73,12 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 					.bind(location, p.getScope())
 					.target(p));
 		case MODULE:
-			return bodyOwner(
+			return nonLinkOwner(
 					enclosingModulePath(p.getContainer())
 					.bind(location, p.getScope())
 					.target(p));
 		case ROOT:
-			return bodyOwner(
+			return nonLinkOwner(
 					ROOT_PATH.bind(location, p.getScope()).target(p));
 		}
 
@@ -125,10 +125,10 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 					final String name = nameNode.getName();
 
 					if ("void".equals(name)) {
-						return bodyOwner(voidRef(location(p, ref), p));
+						return nonLinkOwner(voidRef(location(p, ref), p));
 					}
 					if ("false".equals(name)) {
-						return bodyOwner(falseRef(location(p, ref), p));
+						return nonLinkOwner(falseRef(location(p, ref), p));
 					}
 				}
 			}
@@ -196,7 +196,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	@Override
 	protected Owner visitRef(RefNode ref, Distributor p) {
 		p.getContext().getLogger().invalidReference(ref);
-		return bodyOwner(errorRef(location(p, ref), p));
+		return nonLinkOwner(errorRef(location(p, ref), p));
 	}
 
 	@Override
@@ -207,12 +207,12 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 				expression.accept(this.refVisitor.ip().expressionVisitor(), p));
 	}
 
-	private final Owner owner(Ref ref) {
-		return this.refVisitor.owner(ref);
+	private final Owner owner(Ref ownerRef) {
+		return this.refVisitor.ownerFactory().owner(ownerRef);
 	}
 
-	private final Owner bodyOwner(Ref ref) {
-		return this.refVisitor.bodyOwner(ref);
+	private final Owner nonLinkOwner(Ref ownerRef) {
+		return this.refVisitor.ownerFactory().nonLinkOwner(ownerRef);
 	}
 
 }

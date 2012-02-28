@@ -22,6 +22,8 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.clauseObjectPath;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
 import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
@@ -37,6 +39,10 @@ final class ClauseRefVisitor extends RefVisitor {
 	private final boolean clauseDefinition;
 
 	ClauseRefVisitor(boolean clauseDefinition) {
+		super(
+				clauseDefinition
+				? DEFAULT_OWNER_FACTORY
+				: NEVER_DEREF_OWNER_FACTORY);
 		this.clauseDefinition = clauseDefinition;
 	}
 
