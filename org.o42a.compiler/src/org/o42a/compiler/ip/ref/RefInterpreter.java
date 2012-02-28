@@ -353,7 +353,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
-			return PLAIN_REF_IP.refVisitor();
+			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 
 	}
@@ -399,7 +399,7 @@ public abstract class RefInterpreter {
 
 		@Override
 		public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
-			return PLAIN_REF_IP.refVisitor();
+			return PLAIN_REF_IP.adapterTypeVisitor();
 		}
 
 	}
