@@ -226,6 +226,15 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return this.ir = createIR(generator);
 	}
 
+	protected ValueStruct<S,T> applyParameters(TypeParameters parameters) {
+		parameters.getLogger().error(
+				"unsupported_type_parameters",
+				parameters,
+				"Type parameters not supported by %s",
+				this);
+		return this;
+	}
+
 	protected abstract ValueKnowledge valueKnowledge(T value);
 
 	protected abstract Value<T> prefixValueWith(
