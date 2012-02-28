@@ -23,6 +23,7 @@ import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -109,7 +110,7 @@ public class StatementParser implements Parser<StatementNode> {
 		case '{':
 			return context.parse(braces());
 		case '(':
-			return context.parse(this.grammar.parentheses());
+			return parseParentheses(context);
 		case '<':
 			return context.parse(this.grammar.clauseDeclarator());
 		case '*':
@@ -120,7 +121,37 @@ public class StatementParser implements Parser<StatementNode> {
 		return null;
 	}
 
+	private StatementNode parseParentheses(ParserContext context) {
+
+		final ParenthesesNode parentheses =
+				context.parse(this.grammar.parentheses());
+		final ExpressionNode expression =
+				context.parse(expression(parentheses));
+		final ExpressionNode result;
+
+		if (expression != null) {
+			result = expression;
+		} else {
+			result = parentheses;
+		}
+
+		return parseAssignment(context, result);
+	}
+
 	private StatementNode startWithExpression(
+			ParserContext context,
+			ExpressionNode expression) {
+
+		final StatementNode assignment = parseAssignment(context, expression);
+
+		if (assignment != expression) {
+			return assignment;
+		}
+
+		return startWithDeclarable(context, expression);
+	}
+
+	private StatementNode parseAssignment(
 			ParserContext context,
 			ExpressionNode expression) {
 		if (this.grammar.isImperative() && context.next() == '=') {
@@ -132,10 +163,16 @@ public class StatementParser implements Parser<StatementNode> {
 				return assignment;
 			}
 		}
+
+		return expression;
+	}
+
+	private StatementNode startWithDeclarable(
+			ParserContext context,
+			ExpressionNode expression) {
 		if (expression instanceof DeclarableNode) {
 
 			final DeclarableNode declarable = (DeclarableNode) expression;
-
 			final NamedBlockNode namedBlock =
 					parseNamedBlock(context, declarable);
 

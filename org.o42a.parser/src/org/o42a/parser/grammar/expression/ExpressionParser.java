@@ -32,28 +32,49 @@ public final class ExpressionParser implements Parser<ExpressionNode> {
 
 	public static final ExpressionParser EXPRESSION = new ExpressionParser();
 
+	private final ExpressionNode base;
+
 	private ExpressionParser() {
+		this.base = null;
+	}
+
+	public ExpressionParser(ExpressionNode base) {
+		this.base = base;
 	}
 
 	@Override
 	public ExpressionNode parse(ParserContext context) {
 
-		final ExpressionNode expression = context.parse(simpleExpression());
+		final ExpressionNode left = parseLeft(context);
 
-		if (expression == null) {
+		if (left == null) {
 			return null;
 		}
 		if (!context.isEOF()) {
 
-			final BinaryNode binaryExpression =
-					context.parse(binaryExpression(expression));
+			final BinaryNode binary = context.parse(binaryExpression(left));
 
-			if (binaryExpression != null) {
-				return binaryExpression;
+			if (binary != null) {
+				return binary;
 			}
 		}
 
-		return expression;
+		return left != this.base ? left : null;
+	}
+
+	private ExpressionNode parseLeft(ParserContext context) {
+		if (this.base == null) {
+			return context.parse(simpleExpression());
+		}
+
+		final ExpressionNode simple =
+				context.parse(simpleExpression(this.base));
+
+		if (simple != null) {
+			return simple;
+		}
+
+		return this.base;
 	}
 
 }

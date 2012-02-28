@@ -38,17 +38,85 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 	public static final SimpleExpressionParser SIMPLE_EXPRESSION =
 			new SimpleExpressionParser();
 
+	private final ExpressionNode base;
+
 	private SimpleExpressionParser() {
+		this.base = null;
+	}
+
+	public SimpleExpressionParser(ExpressionNode base) {
+		this.base = base;
 	}
 
 	@Override
 	public ExpressionNode parse(ParserContext context) {
 
-		ExpressionNode expression = base(context);
+		ExpressionNode result;
 
-		if (expression == null) {
-			return null;
+		if (this.base != null) {
+			result = parse(context, this.base);
+			if (result == this.base) {
+				return null;
+			}
+		} else {
+
+			final ExpressionNode base = base(context);
+
+			if (base == null) {
+				return null;
+			}
+			result = parse(context, base);
 		}
+
+		return result;
+	}
+
+	private ExpressionNode base(ParserContext context) {
+		if (this.base != null) {
+			return this.base;
+		}
+
+		final int c = context.next();
+
+		switch (c) {
+		case '+':
+		case '-':
+		case MINUS:
+			return context.parse(unaryExpression());
+		case '(':
+			return context.parse(DECLARATIVE.parentheses());
+		case '&':
+			return context.parse(samples());
+		case '"':
+		case '\'':
+		case '\\':
+			return context.parse(text());
+		case '[':
+			return context.parse(brackets());
+		default:
+			if (isDigit(c)) {
+				return context.parse(decimal());
+			}
+
+			final RefNode ref = context.parse(ref());
+
+			if (ref == null) {
+				return null;
+			}
+
+			final AscendantsNode ascendants = context.parse(ascendants(ref));
+
+			if (ascendants != null) {
+				return ascendants;
+			}
+
+			return ref;
+		}
+	}
+
+	private ExpressionNode parse(ParserContext context, ExpressionNode base) {
+
+		ExpressionNode expression = base;
 
 		for (;;) {
 
@@ -123,46 +191,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 				return expression;
 			}
-		}
-	}
-
-	private ExpressionNode base(ParserContext context) {
-
-		final int c = context.next();
-
-		switch (c) {
-		case '+':
-		case '-':
-		case MINUS:
-			return context.parse(unaryExpression());
-		case '(':
-			return context.parse(DECLARATIVE.parentheses());
-		case '&':
-			return context.parse(samples());
-		case '"':
-		case '\'':
-		case '\\':
-			return context.parse(text());
-		case '[':
-			return context.parse(brackets());
-		default:
-			if (isDigit(c)) {
-				return context.parse(decimal());
-			}
-
-			final RefNode ref = context.parse(ref());
-
-			if (ref == null) {
-				return null;
-			}
-
-			final AscendantsNode ascendants = context.parse(ascendants(ref));
-
-			if (ascendants != null) {
-				return ascendants;
-			}
-
-			return ref;
 		}
 	}
 
