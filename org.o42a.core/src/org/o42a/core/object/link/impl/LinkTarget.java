@@ -36,7 +36,7 @@ public class LinkTarget extends Obj {
 	private final ObjectLink link;
 
 	public LinkTarget(ObjectLink link) {
-		super(link, link.distributeIn(link.getScope().getEnclosingContainer()));
+		super(link, link.distributeIn(link.getScope().getContainer()));
 		this.link = link;
 	}
 
@@ -64,7 +64,7 @@ public class LinkTarget extends Obj {
 	protected Obj findWrapped() {
 
 		final Resolver resolver =
-				getScope().getEnclosingScope().newResolver(content());
+				getScope().getEnclosingScope().dummyResolver();
 
 		return this.link.getTargetRef().resolve(resolver).materialize();
 	}

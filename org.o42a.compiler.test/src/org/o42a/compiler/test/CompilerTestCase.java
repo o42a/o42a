@@ -165,6 +165,18 @@ public abstract class CompilerTestCase {
 		return definiteValue(field.getArtifact(), valueStruct);
 	}
 
+	public static <T> T definiteValue(
+			Artifact<?> artifact,
+			Class<? extends T> valueClass) {
+		return valueClass.cast(definiteValue(artifact));
+	}
+
+	public static <T> T definiteValue(
+			Field<?> field,
+			Class<? extends T> valueClass) {
+		return valueClass.cast(definiteValue(field));
+	}
+
 	public static void assertTrueValue(LogicalValue condition) {
 		assertTrue(condition + " is not true", condition.isTrue());
 	}

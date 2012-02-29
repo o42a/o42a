@@ -169,7 +169,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
 
-		adapter.ancestor(adapter).checkDerivedFrom(expectedTypeRef);
+		adapter.toTypeRef().checkDerivedFrom(expectedTypeRef);
 
 		return adapter;
 	}

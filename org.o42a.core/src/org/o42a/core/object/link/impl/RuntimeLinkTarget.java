@@ -40,7 +40,7 @@ public final class RuntimeLinkTarget extends Obj {
 	private final ObjectLink link;
 
 	public RuntimeLinkTarget(ObjectLink link) {
-		super(link, link.distributeIn(link.getScope().getEnclosingContainer()));
+		super(link, link.distributeIn(link.getScope().getContainer()));
 		this.link = link;
 	}
 
