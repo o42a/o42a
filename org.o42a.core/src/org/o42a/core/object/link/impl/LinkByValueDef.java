@@ -95,13 +95,12 @@ public class LinkByValueDef extends ValueDef {
 			ScopeUpgrade additionalUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
-		this.linkStruct =
-				prototype.linkStruct.prefixWith(additionalUpgrade.toPrefix());
+		this.linkStruct = prototype.linkStruct;
 	}
 
 	@Override
 	public final LinkValueStruct getValueStruct() {
-		return this.linkStruct;
+		return this.linkStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
 	@Override
@@ -130,7 +129,7 @@ public class LinkByValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return linkByValue(this.ref, resolver, getValueStruct());
+		return linkByValue(this.ref, resolver, this.linkStruct);
 	}
 
 	@Override

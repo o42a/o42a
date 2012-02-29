@@ -178,6 +178,11 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	public String toString() {
+		return getValueType() + "(`" + this.typeRef + ')';
+	}
+
+	@Override
 	protected ValueStruct<LinkValueStruct, ObjectLink> applyParameters(
 			TypeParameters parameters) {
 		if (parameters.isMutable()) {

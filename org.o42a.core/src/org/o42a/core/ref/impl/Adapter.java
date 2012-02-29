@@ -79,6 +79,11 @@ public final class Adapter extends PathFragment implements LocationInfo {
 		return path.append(CAST_TO_VOID);
 	}
 
+	@Override
+	public String toString() {
+		return "@@" + this.adapterType;
+	}
+
 	private Path path(Scope start) {
 
 		final ObjectType objectType = start.getArtifact().materialize().type();

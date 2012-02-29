@@ -31,6 +31,7 @@ import org.o42a.core.value.ValueType;
 public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 
 	public static final LinkValueType LINK = new LinkValueType("link") {
+
 		@Override
 		public Path path(Intrinsics intrinsics) {
 
@@ -38,6 +39,12 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 
 			return ROOT_PATH.append(link.getScope().toField().getKey());
 		}
+
+		@Override
+		public String toString() {
+			return "LINK";
+		}
+
 	};
 
 	public static final LinkValueType VARIABLE = new LinkValueType("variable") {
@@ -48,6 +55,11 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 			final Obj variable = intrinsics.getVariable();
 
 			return ROOT_PATH.append(variable.getScope().toField().getKey());
+		}
+
+		@Override
+		public String toString() {
+			return "VARIABLE";
 		}
 
 	};
