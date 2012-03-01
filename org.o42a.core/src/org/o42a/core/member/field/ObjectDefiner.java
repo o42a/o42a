@@ -19,14 +19,13 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.AscendantsBuilder;
 import org.o42a.core.st.sentence.BlockBuilder;
 
 
 public interface ObjectDefiner
-		extends FieldDefiner<Obj>, AscendantsBuilder<ObjectDefiner> {
+		extends FieldDefiner, AscendantsBuilder<ObjectDefiner> {
 
 	Ascendants getImplicitAscendants();
 

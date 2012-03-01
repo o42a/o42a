@@ -19,13 +19,12 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public interface LinkDefiner extends FieldDefiner<Link> {
+public interface LinkDefiner extends FieldDefiner {
 
 	TypeRef getTypeRef();
 

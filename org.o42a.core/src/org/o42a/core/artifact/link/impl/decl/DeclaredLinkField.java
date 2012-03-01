@@ -140,7 +140,7 @@ public final class DeclaredLinkField
 						"It is required to specify a "
 						+ (isVariable()
 								? "variable initializer" : "link target")
-						+ "for field '%s', as it's definition is ambiguous",
+						+ " for field '%s', as it's definition is ambiguous",
 						getDisplayName());
 				errorReported = true;
 				invalid();

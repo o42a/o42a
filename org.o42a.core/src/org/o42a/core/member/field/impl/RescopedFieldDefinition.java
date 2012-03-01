@@ -19,11 +19,9 @@
 */
 package org.o42a.core.member.field.impl;
 
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -89,7 +87,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public Field<Obj> getField() {
+		public Field<?> getField() {
 			return getField();
 		}
 
@@ -154,7 +152,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public Field<Link> getField() {
+		public Field<?> getField() {
 			return this.definer.getField();
 		}
 

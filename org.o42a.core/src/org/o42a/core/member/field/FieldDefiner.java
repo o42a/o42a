@@ -19,11 +19,9 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.artifact.Artifact;
 
+public interface FieldDefiner {
 
-public interface FieldDefiner<A extends Artifact<A>> {
-
-	Field<A> getField();
+	Field<?> getField();
 
 }
