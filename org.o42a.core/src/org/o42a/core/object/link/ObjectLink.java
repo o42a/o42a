@@ -31,6 +31,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
@@ -273,18 +274,21 @@ public abstract class ObjectLink
 					"Link target is missing");
 			this.targetRef = falseRef(
 					this,
-					getScope().getEnclosingScope().distribute())
+					distribute())
 					.toTargetRef(null);
 			return;
 		}
-		this.targetRef.assertSameScope(getScope().getEnclosingScope());
+		this.targetRef.assertScopeIs(getScope());
 
-		this.targetRef.assertScopeIs(getScope().getEnclosingScope());
-		Role.INSTANCE.checkUseBy(
-				this,
-				this.targetRef.getRef(),
-				this.targetRef.getPrefix().rescope(
-						this.targetRef.getScope()));
+		final Field<?> field = getScope().toField();
+
+		if (field == null || !(field.isAbstract() || field.isPrototype())) {
+			Role.INSTANCE.checkUseBy(
+					this,
+					this.targetRef.getRef(),
+					this.targetRef.getPrefix().rescope(
+							this.targetRef.getScope()));
+		}
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();
 

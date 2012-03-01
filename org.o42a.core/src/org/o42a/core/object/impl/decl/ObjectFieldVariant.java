@@ -19,15 +19,12 @@
 */
 package org.o42a.core.object.impl.decl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Logical;
@@ -209,12 +206,8 @@ final class ObjectFieldVariant
 				return this.expectedValueStruct;
 			}
 
-			final ObjectType objectType =
-					this.variant.getField().getArtifact().type();
-			final Obj ancestorObject =
-					objectType.getAncestor().typeObject(dummyUser());
 			final ValueStruct<?, ?> ancestorValueStruct =
-					ancestorObject.value().getValueStruct();
+					this.variant.getField().toObject().value().getValueStruct();
 
 			if (!ancestorValueStruct.isScoped()) {
 				return this.expectedValueStruct = ancestorValueStruct;

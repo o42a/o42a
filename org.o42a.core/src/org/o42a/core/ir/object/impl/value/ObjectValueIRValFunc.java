@@ -203,7 +203,7 @@ public abstract class ObjectValueIRValFunc
 
 	protected Value<?> determineConstant() {
 
-		final Value<?> constant = defs().getConstant();
+		final Value<?> constant = defs().constant(definitions());
 
 		if (!constant.getKnowledge().isKnown()) {
 			return getValueStruct().runtimeValue();
@@ -221,7 +221,9 @@ public abstract class ObjectValueIRValFunc
 		if (!canStub()) {
 			return getValueStruct().runtimeValue();
 		}
-		return defs().value(getObject().getScope().dummyResolver());
+		return defs().value(
+				definitions(),
+				getObject().getScope().dummyResolver());
 	}
 
 	@Override

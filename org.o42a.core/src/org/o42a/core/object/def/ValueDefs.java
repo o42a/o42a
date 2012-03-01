@@ -28,7 +28,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
@@ -41,15 +40,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			"Value definition kind expected";
 	}
 
-	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return isEmpty() ? ValueStruct.VOID : get()[0].getValueStruct();
-	}
-
-	public final Value<?> getConstant() {
+	public final Value<?> constant(Definitions definitions) {
 		if (this.constant != null) {
 			return this.constant;
 		}
@@ -63,10 +54,10 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			}
 		}
 
-		return this.constant = getValueStruct().unknownValue();
+		return this.constant = definitions.getValueStruct().unknownValue();
 	}
 
-	public final Value<?> value(Resolver resolver) {
+	public final Value<?> value(Definitions definitions, Resolver resolver) {
 		for (ValueDef def : get()) {
 
 			final Value<?> value = def.value(resolver);
@@ -76,7 +67,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			}
 		}
 
-		return getValueStruct().unknownValue();
+		return definitions.getValueStruct().unknownValue();
 	}
 
 	@Override
@@ -165,6 +156,21 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		}
 
 		return new InlineValueDefs(inlines);
+	}
+
+	boolean upgradeValueStruct(
+			Definitions definitions,
+			ValueStruct<?, ?> valueStruct) {
+
+		boolean ok = true;
+
+		for (ValueDef def : get()) {
+			if (!valueStruct.assignableFrom(def.getValueStruct())) {
+				definitions.getLogger().incompatible(def, valueStruct);
+			}
+		}
+
+		return ok;
 	}
 
 }

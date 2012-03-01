@@ -60,6 +60,11 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
+	public String toString() {
+		return "->";
+	}
+
+	@Override
 	protected TypeRef ancestor(
 			BoundPath path,
 			LocationInfo location,
@@ -104,17 +109,21 @@ public class DereferenceStep extends Step {
 			this.linkStruct = linkStruct;
 		}
 
-		final Value<ObjectLink> linkValue =
-				linkStruct.cast(linkObjectValue.getValue());
+		final Value<?> value = linkObjectValue.getValue();
 		final ObjectLink link;
 
-		if (linkValue.getKnowledge().isKnownToCompiler()) {
+		if (!value.getKnowledge().isKnownToCompiler()) {
+			link = new RtLink(path, start);
+		} else if (value.getKnowledge().isFalse()) {
+			link = new RtLink(path, start);
+		} else {
+
+			final Value<ObjectLink> linkValue = linkStruct.cast(value);
+
 			if (linkValue.getKnowledge().isFalse()) {
 				return null;
 			}
 			link = linkValue.getCompilerValue();
-		} else {
-			link = new RtLink(path, start);
 		}
 
 		walker.dereference(linkObject, this, link);
