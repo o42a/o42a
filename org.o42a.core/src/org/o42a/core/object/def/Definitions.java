@@ -30,6 +30,7 @@ import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 import org.o42a.util.log.LogInfo;
@@ -260,13 +261,13 @@ public class Definitions extends Scoped {
 			break;
 		}
 
-		final Value<?> claim = claims().getConstant();
+		final Value<?> claim = claims().constant(this);
 
 		if (!claim.getKnowledge().hasUnknownCondition()) {
 			return claim;
 		}
 
-		return propositions().getConstant();
+		return propositions().constant(this);
 	}
 
 	public final CondDefs requirements() {
@@ -328,13 +329,13 @@ public class Definitions extends Scoped {
 			return condition.toValue(valueStruct());
 		}
 
-		final Value<?> claim = claims().value(resolver);
+		final Value<?> claim = claims().value(this, resolver);
 
 		if (!claim.getKnowledge().hasUnknownCondition()) {
 			return claim;
 		}
 
-		return propositions().value(resolver);
+		return propositions().value(this, resolver);
 	}
 
 	public Definitions refine(Def<?> refinement) {
@@ -375,7 +376,9 @@ public class Definitions extends Scoped {
 			return this;
 		}
 
-		return refinePropositions(valueStruct, new ValueDefs(PROPOSITION, value));
+		return refinePropositions(
+				valueStruct,
+				new ValueDefs(PROPOSITION, value));
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -476,6 +479,34 @@ public class Definitions extends Scoped {
 			return this;
 		}
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, scope));
+	}
+
+	public final Definitions upgradeValueStruct(ValueStruct<?, ?> valueStruct) {
+
+		final ValueStruct<?, ?> objectValueStruct = getValueStruct();
+
+		if (objectValueStruct != null
+				&& valueStruct.relationTo(objectValueStruct)
+				== TypeRelation.SAME) {
+			return this;
+		}
+
+		final boolean claimsOk =
+				claims().upgradeValueStruct(this, valueStruct);
+		final boolean propositionsOk =
+				propositions().upgradeValueStruct(this, valueStruct);
+
+		if (!claimsOk || !propositionsOk) {
+			return this;
+		}
+
+		return new Definitions(
+				this,
+				valueStruct,
+				requirements(),
+				conditions(),
+				claims(),
+				propositions());
 	}
 
 	public Definitions requirementPart(LocationInfo location) {

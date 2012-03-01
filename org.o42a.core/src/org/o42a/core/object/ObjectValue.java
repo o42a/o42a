@@ -122,7 +122,8 @@ public final class ObjectValue extends ObjectValueParts {
 
 		final Definitions definitions = object.overrideDefinitions(
 				object.getScope(),
-				getOverriddenDefinitions());
+				getOverriddenDefinitions())
+				.upgradeValueStruct(getValueStruct());
 
 		if (!object.getConstructionMode().isRuntime()) {
 			return this.definitions = definitions;
