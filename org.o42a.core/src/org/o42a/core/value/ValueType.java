@@ -69,6 +69,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 		return this == NONE;
 	}
 
+	public final boolean isLink() {
+		return toLinkType() != null;
+	}
+
 	public abstract boolean isVariable();
 
 	public abstract Path path(Intrinsics intrinsics);

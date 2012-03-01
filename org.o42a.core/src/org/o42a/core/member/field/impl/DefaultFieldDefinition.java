@@ -19,12 +19,17 @@
 */
 package org.o42a.core.member.field.impl;
 
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
+import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.core.value.ValueType;
 
 
 public final class DefaultFieldDefinition extends FieldDefinition {
@@ -47,6 +52,15 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	public void defineObject(ObjectDefiner definer) {
 		this.ascendants.updateAscendants(definer);
 		definer.define(this.definitions);
+	}
+
+	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		if (!linkDefiner(definer) || isLink()) {
+			defineObject(definer);
+			return;
+		}
+		definer.define(valueBlock(getValue()));
 	}
 
 	@Override
@@ -79,6 +93,38 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 				distribute(),
 				this.ascendants,
 				this.definitions).toRef();
+	}
+
+	private boolean isLink() {
+
+		final TypeRef ancestor = this.ascendants.getAncestor();
+		boolean link = false;
+
+		if (ancestor != null) {
+
+			final ValueType<?> valueType = ancestor.getValueType();
+
+			if (!valueType.isVoid()) {
+				if (!valueType.isLink()) {
+					return false;
+				}
+				link = true;
+			}
+		}
+
+		for (StaticTypeRef sample : this.ascendants.getSamples()) {
+
+			final ValueType<?> valueType = sample.getValueType();
+
+			if (!valueType.isVoid()) {
+				if (!valueType.isLink()) {
+					return false;
+				}
+				link = true;
+			}
+		}
+
+		return link;
 	}
 
 }

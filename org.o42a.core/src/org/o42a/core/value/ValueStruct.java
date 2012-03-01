@@ -87,6 +87,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return ((ValueStruct<?, ?>) this) == NONE;
 	}
 
+	public final boolean isLink() {
+		return getValueType().isLink();
+	}
+
 	public final Value<T> compilerValue(T value) {
 
 		final ValueKnowledge knowledge = valueKnowledge(value);

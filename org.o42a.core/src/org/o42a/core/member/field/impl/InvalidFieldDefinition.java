@@ -44,6 +44,10 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void overrideObject(ObjectDefiner definer) {
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 	}
 

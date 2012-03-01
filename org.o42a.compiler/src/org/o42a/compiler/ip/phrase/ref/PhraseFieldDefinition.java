@@ -40,6 +40,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		getDefinition().overrideObject(definer);
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 		getDefinition().defineLink(definer);
 	}

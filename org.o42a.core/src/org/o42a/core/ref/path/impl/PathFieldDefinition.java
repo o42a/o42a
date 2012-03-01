@@ -19,6 +19,9 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ref.path.impl.ObjectFieldDefinition.pathToLink;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
@@ -38,6 +41,17 @@ public final class PathFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(this.path.typeRef(distribute()));
+	}
+
+	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		if (!linkDefiner(definer) || pathToLink(this.path)) {
+			defineObject(definer);
+			return;
+		}
+		definer.define(valueBlock(this.path.target(
+				definer.getField().distributeIn(
+						this.path.getOrigin().getContainer()))));
 	}
 
 	@Override

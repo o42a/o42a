@@ -29,6 +29,7 @@ import org.o42a.core.member.field.impl.InvalidFieldDefinition;
 import org.o42a.core.member.field.impl.RescopedFieldDefinition;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class FieldDefinition extends Placed {
@@ -47,6 +48,28 @@ public abstract class FieldDefinition extends Placed {
 				emptyBlock(location));
 	}
 
+	public static boolean linkDefiner(ObjectDefiner definer) {
+
+		final Field<?>[] allOverridden = definer.getField().getOverridden();
+		boolean link = false;
+
+		for (Field<?> overridden : allOverridden) {
+
+			final ValueType<?> valueType =
+					overridden.toObject().value().getValueType();
+
+			if (valueType.isVoid()) {
+				continue;
+			}
+			if (!valueType.isLink()) {
+				return false;
+			}
+			link = true;
+		}
+
+		return link;
+	}
+
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
@@ -56,6 +79,8 @@ public abstract class FieldDefinition extends Placed {
 	}
 
 	public abstract void defineObject(ObjectDefiner definer);
+
+	public abstract void overrideObject(ObjectDefiner definer);
 
 	public abstract void defineLink(LinkDefiner definer);
 
