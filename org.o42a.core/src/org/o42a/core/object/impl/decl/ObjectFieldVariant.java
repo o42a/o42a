@@ -136,7 +136,11 @@ final class ObjectFieldVariant
 			Ascendants ascendants) {
 		this.implicitAscendants = implicitAscendants;
 		this.ascendants = ascendants;
-		getDefinition().defineObject(this);
+		if (getField().isOverride()) {
+			getDefinition().overrideObject(this);
+		} else {
+			getDefinition().defineObject(this);
+		}
 		return this.ascendants;
 	}
 

@@ -44,6 +44,11 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		getDefinition().overrideObject(definer);
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 		getDefinition().defineLink(definer);
 	}

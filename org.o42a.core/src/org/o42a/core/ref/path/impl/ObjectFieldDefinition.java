@@ -19,14 +19,38 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolution;
 
 
 public final class ObjectFieldDefinition extends FieldDefinition {
+
+	static boolean pathToLink(BoundPath path) {
+
+		final PathResolution resolution = path.resolve(
+				pathResolver(path.getOrigin(), dummyUser()));
+
+		if (resolution.isError()) {
+			return false;
+		}
+
+		final Obj object = resolution.getArtifact().toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		return object.value().getValueType().isLink();
+	}
 
 	private final BoundPath path;
 
@@ -38,6 +62,17 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.addImplicitSample(this.path.staticTypeRef(distribute()));
+	}
+
+	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		if (!linkDefiner(definer) || pathToLink(this.path)) {
+			defineObject(definer);
+			return;
+		}
+		definer.define(valueBlock(this.path.target(
+				definer.getField().distributeIn(
+						this.path.getOrigin().getContainer()))));
 	}
 
 	@Override

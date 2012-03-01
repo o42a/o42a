@@ -114,6 +114,13 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
+		public void overrideObject(ObjectDefiner definer) {
+			this.phrase.getMainContext().setImplicitAscendants(
+					definer.getImplicitAscendants());
+			this.definition.overrideObject(definer);
+		}
+
+		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(definer);
 		}

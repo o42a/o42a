@@ -72,6 +72,11 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		defineObject(definer);
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 		throw new UnsupportedOperationException();
 	}

@@ -43,6 +43,11 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void overrideObject(ObjectDefiner definer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void defineLink(LinkDefiner definer) {
 
 		final TargetRef targetRef =
