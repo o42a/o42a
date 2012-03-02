@@ -33,7 +33,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
-import org.o42a.util.log.LogInfo;
 
 
 public class Definitions extends Scoped {
@@ -701,7 +700,7 @@ public class Definitions extends Scoped {
 	}
 
 	private ValueStruct<?, ?> compatibleStruct(
-			LogInfo refinement,
+			LocationInfo refinement,
 			ValueStruct<?, ?> valueStruct) {
 		if (valueStruct == null) {
 			return getValueStruct();
@@ -713,7 +712,12 @@ public class Definitions extends Scoped {
 			return getValueStruct();
 		}
 
-		getLogger().incompatible(refinement, getValueStruct());
+		System.err.println("(!)");
+		getValueStruct().assignableFrom(valueStruct);
+
+		refinement.getContext().getLogger().incompatible(
+				refinement,
+				getValueStruct());
 
 		return ValueStruct.NONE;
 	}
