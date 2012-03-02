@@ -144,9 +144,16 @@ public final class ObjectValue extends ObjectValueParts {
 
 			final Definitions wrappedDefinitions =
 					wrapped.value().getDefinitions();
+			final Definitions explicitDefinitions;
+
+			if (getValueType().isVoid()) {
+				explicitDefinitions = wrappedDefinitions.toVoid();
+			} else {
+				explicitDefinitions = wrappedDefinitions;
+			}
 
 			return this.explicitDefinitions =
-					wrappedDefinitions.wrapBy(object.getScope());
+					explicitDefinitions.wrapBy(object.getScope());
 		}
 
 		this.explicitDefinitions = object.explicitDefinitions();
