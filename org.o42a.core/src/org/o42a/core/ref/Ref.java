@@ -193,9 +193,7 @@ public class Ref extends Statement {
 		final BoundPath path = getPath();
 
 		if (path.isSelf()) {
-			return Path.SELF_PATH
-					.bind(this, reproducer.getScope())
-					.target(reproducer.distribute());
+			return reproducer.getPhrasePrefix();
 		}
 
 		final PathReproducer pathReproducer = path.reproducer(reproducer);
