@@ -96,7 +96,7 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
-		return enter(step, link.getTarget().getScope());
+		return enter(step, linkObject.getScope());
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		return enter(step, object.getScope());
+		return enter(step, object.getScope().getEnclosingScope());
 	}
 
 	@Override
@@ -174,7 +174,6 @@ public class OddPathFragmentRemover implements PathWalker {
 
 		private final Scope start;
 		private int removeUpTo;
-
 
 		Entry(Scope start) {
 			this.start = start;

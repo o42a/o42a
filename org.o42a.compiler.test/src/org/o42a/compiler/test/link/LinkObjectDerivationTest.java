@@ -56,7 +56,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := link (`integer) [1]",
-				"  Bar := link (`foo) [foo]",
+				"  Bar := link (`integer) [foo]",
 				")",
 				"B := a (Foo = 2)");
 
