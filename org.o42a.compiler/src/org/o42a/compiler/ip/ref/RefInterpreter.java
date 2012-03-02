@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.ref;
 import static org.o42a.compiler.ip.Interpreter.*;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.MemberId.clauseName;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -55,7 +55,7 @@ public abstract class RefInterpreter {
 
 	public static final RefInterpreter PLAIN_REF_IP =
 			new PlainRefIp();
-	public static final RefInterpreter PATH_COMPLIER_REF_IP =
+	public static final RefInterpreter PATH_COMPILER_REF_IP =
 			new PathCompilerRefIp();
 	public static final RefInterpreter CLAUSE_DEF_REF_IP =
 			new ClauseDefRefIp();
@@ -161,19 +161,33 @@ public abstract class RefInterpreter {
 	}
 
 	private final OwnerFactory ownerFactory;
-	private final RefVisitor refVisitor;
+	private final DerefVisitor derefVisitor;
+	private final BodyRefVisitor bodyRefVisitor;
 	private final OwnerVisitor ownerVisitor;
 
 	RefInterpreter(OwnerFactory ownerFactory) {
 		this.ownerFactory = ownerFactory;
-		this.refVisitor = new RefVisitor(this);
+		this.derefVisitor = new DerefVisitor(this);
+		this.bodyRefVisitor = new BodyRefVisitor(this);
 		this.ownerVisitor = new OwnerVisitor(this);
 	}
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
-		return this.refVisitor;
+	public final RefNodeVisitor<Ref, Distributor> refVisitor(
+			boolean dereference) {
+		if (dereference) {
+			return derefVisitor();
+		}
+		return bodyRefVisitor();
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
+		return this.derefVisitor;
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
+		return this.bodyRefVisitor;
 	}
 
 	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
@@ -199,7 +213,7 @@ public abstract class RefInterpreter {
 			return null;
 		}
 
-		final Ref declaredIn = declaredInNode.accept(refVisitor(), p);
+		final Ref declaredIn = declaredInNode.accept(bodyRefVisitor(), p);
 
 		if (declaredIn == null) {
 			return null;
@@ -209,7 +223,7 @@ public abstract class RefInterpreter {
 	}
 
 	public RefNodeVisitor<Ref, Distributor> adapterTypeVisitor() {
-		return refVisitor();
+		return bodyRefVisitor();
 	}
 
 	public Path parentPath(LocationInfo location, String name, Container of) {
@@ -299,7 +313,7 @@ public abstract class RefInterpreter {
 	private static final class PathCompilerRefIp extends RefInterpreter {
 
 		PathCompilerRefIp() {
-			super(NEVER_DEREF_OWNER_FACTORY);
+			super(NON_LINK_OWNER_FACTORY);
 		}
 
 		@Override
@@ -361,7 +375,7 @@ public abstract class RefInterpreter {
 	private static final class ClauseDeclRefIp extends ClauseRefIp {
 
 		ClauseDeclRefIp() {
-			super(NEVER_DEREF_OWNER_FACTORY);
+			super(NON_LINK_OWNER_FACTORY);
 		}
 
 		@Override

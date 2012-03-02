@@ -199,7 +199,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			ExpressionNode expression,
 			Distributor p) {
 		return owner(
-				expression.accept(ip().ip().expressionVisitor(), p));
+				expression.accept(ip().ip().expressionVisitor(false), p));
 	}
 
 	private final Owner owner(Ref ownerRef) {

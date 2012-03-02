@@ -104,8 +104,9 @@ public final class PhraseInterpreter {
 			UnaryNode node,
 			Distributor distributor) {
 
-		final Ref operand =
-				node.getOperand().accept(ip.expressionVisitor(), distributor);
+		final Ref operand = node.getOperand().accept(
+				ip.expressionVisitor(true),
+				distributor);
 
 		if (operand == null) {
 			return null;
@@ -133,7 +134,7 @@ public final class PhraseInterpreter {
 			Distributor distributor) {
 
 		final Ref left = node.getLeftOperand().accept(
-				ip.expressionVisitor(),
+				ip.expressionVisitor(true),
 				distributor);
 
 		if (left == null) {
@@ -151,8 +152,9 @@ public final class PhraseInterpreter {
 			return null;
 		}
 
-		final Ref right =
-				rightOperand.accept(ip.expressionVisitor(), distributor);
+		final Ref right = rightOperand.accept(
+				ip.expressionVisitor(true),
+				distributor);
 
 		if (right == null) {
 			return null;

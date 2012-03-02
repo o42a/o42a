@@ -32,7 +32,6 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
@@ -98,8 +97,9 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		}
 
 		final Distributor distributor = p.nextDistributor();
-		final Owner destination =
-				destinationNode.accept(ip().ownerVisitor(), distributor);
+		final Ref destination = destinationNode.accept(
+				ip().expressionVisitor(false),
+				distributor);
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (destination == null || value == null) {
@@ -108,7 +108,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		p.assign(
 				location(p, assignment.getOperator()),
-				destination.bodyRef(),
+				destination,
 				value);
 
 		return null;

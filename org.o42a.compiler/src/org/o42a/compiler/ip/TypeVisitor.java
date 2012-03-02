@@ -112,7 +112,7 @@ final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 	@Override
 	protected TypeRef visitRef(RefNode node, Distributor p) {
 
-		final Ref ref = node.accept(ip().refVisitor(), p);
+		final Ref ref = node.accept(ip().bodyRefVisitor(), p);
 
 		if (ref == null) {
 			return null;

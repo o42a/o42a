@@ -38,10 +38,15 @@ public class AncestorVisitor
 
 	private final Interpreter ip;
 	private final ValueStructFinder valueStructFinder;
+	private final boolean dereference;
 
-	AncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
+	AncestorVisitor(
+			Interpreter ip,
+			ValueStructFinder valueStructFinder,
+			boolean dereference) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
+		this.dereference = dereference;
 	}
 
 	public final Interpreter ip() {
@@ -79,7 +84,8 @@ public class AncestorVisitor
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref ref = expression.accept(ip().expressionVisitor(), p);
+		final Ref ref =
+				expression.accept(ip().expressionVisitor(this.dereference), p);
 
 		if (ref == null) {
 			return null;

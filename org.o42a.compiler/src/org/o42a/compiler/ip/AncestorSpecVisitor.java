@@ -62,7 +62,7 @@ public final class AncestorSpecVisitor
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
-			ancestorVisitor = ip.ancestorVisitor(arrayStructFinder);
+			ancestorVisitor = ip.ancestorVisitor(arrayStructFinder, false);
 		} else {
 			ancestorVisitor = ip.staticAncestorVisitor(arrayStructFinder);
 		}

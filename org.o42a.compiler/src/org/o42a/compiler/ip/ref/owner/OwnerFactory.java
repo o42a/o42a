@@ -26,8 +26,8 @@ public abstract class OwnerFactory {
 
 	public static final OwnerFactory DEFAULT_OWNER_FACTORY =
 			new DefaultOwnerFactory();
-	public static final OwnerFactory NEVER_DEREF_OWNER_FACTORY =
-			new NeverDerefOwnerFactory();
+	public static final OwnerFactory NON_LINK_OWNER_FACTORY =
+			new NonLinkOwnerFactory();
 
 	public abstract Owner owner(Ref ownerRef);
 
@@ -47,7 +47,7 @@ public abstract class OwnerFactory {
 
 	}
 
-	private static final class NeverDerefOwnerFactory extends OwnerFactory {
+	private static final class NonLinkOwnerFactory extends OwnerFactory {
 
 		@Override
 		public Owner owner(Ref ownerRef) {

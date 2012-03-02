@@ -58,8 +58,9 @@ public final class DefinitionVisitor
 			ExpressionNode expression,
 			FieldDeclaration p) {
 
-		final Ref definition =
-				expression.accept(ip().expressionVisitor(), p.distribute());
+		final Ref definition = expression.accept(
+				ip().expressionVisitor(false),
+				p.distribute());
 
 		if (definition == null) {
 			return null;

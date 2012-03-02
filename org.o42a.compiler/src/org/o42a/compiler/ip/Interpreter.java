@@ -51,12 +51,13 @@ import org.o42a.core.value.*;
 public enum Interpreter {
 
 	PLAIN_IP(PLAIN_REF_IP),
-	PATH_COMPILER_IP(PATH_COMPLIER_REF_IP),
+	PATH_COMPILER_IP(PATH_COMPILER_REF_IP),
 	CLAUSE_DEF_IP(CLAUSE_DEF_REF_IP),
 	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
 
 	private final RefInterpreter refInterpreter;
-	private final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor;
+	private final ExpressionNodeVisitor<Ref, Distributor> derefExVisitor;
+	private final ExpressionVisitor bodyExVisitor;
 	private final ExpressionNodeVisitor<
 			FieldDefinition,
 			FieldDeclaration> definitionVisitor;
@@ -70,9 +71,10 @@ public enum Interpreter {
 
 	Interpreter(RefInterpreter refInterpreter) {
 		this.refInterpreter = refInterpreter;
-		this.expressionVisitor = new ExpressionVisitor(this);
+		this.derefExVisitor = new ExpressionVisitor(this, true);
+		this.bodyExVisitor = new ExpressionVisitor(this, false);
 		this.definitionVisitor = new DefinitionVisitor(this);
-		this.ancestorVisitor = new AncestorVisitor(this, null);
+		this.ancestorVisitor = new AncestorVisitor(this, null, true);
 		this.staticAncestorVisitor = new StaticAncestorVisitor(this, null);
 		this.typeVisitor = new TypeVisitor(this, null);
 	}
@@ -81,16 +83,29 @@ public enum Interpreter {
 		return this.refInterpreter;
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
-		return refIp().refVisitor();
+	public final RefNodeVisitor<Ref, Distributor> refVisitor(
+			boolean dereference) {
+		return refIp().refVisitor(dereference);
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
+		return refIp().derefVisitor();
+	}
+
+	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
+		return refIp().bodyRefVisitor();
 	}
 
 	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
 		return refIp().ownerVisitor();
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
-		return this.expressionVisitor;
+	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
+			boolean dereference) {
+		if (dereference) {
+			return this.derefExVisitor;
+		}
+		return this.bodyExVisitor;
 	}
 
 	public final ExpressionNodeVisitor<
@@ -102,11 +117,12 @@ public enum Interpreter {
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> ancestorVisitor(
-					ValueStructFinder valueStructFinder) {
-		if (valueStructFinder == null) {
+					ValueStructFinder valueStructFinder,
+					boolean dereference) {
+		if (valueStructFinder == null && dereference) {
 			return this.ancestorVisitor;
 		}
-		return new AncestorVisitor(this, valueStructFinder);
+		return new AncestorVisitor(this, valueStructFinder, dereference);
 	}
 
 	public final ExpressionNodeVisitor<

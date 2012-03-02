@@ -84,7 +84,7 @@ final class SectionAscendantsVisitor
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref ref = expression.accept(PLAIN_IP.expressionVisitor(), p);
+		final Ref ref = expression.accept(PLAIN_IP.expressionVisitor(true), p);
 
 		if (ref == null) {
 			return null;

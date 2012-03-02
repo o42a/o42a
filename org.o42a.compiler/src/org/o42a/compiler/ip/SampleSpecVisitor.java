@@ -80,7 +80,7 @@ public class SampleSpecVisitor
 	@Override
 	protected StaticTypeRef visitRef(RefNode ref, Distributor p) {
 
-		final Ref sampleRef = ref.accept(this.ip.refVisitor(), p);
+		final Ref sampleRef = ref.accept(this.ip.bodyRefVisitor(), p);
 
 		if (sampleRef == null) {
 			return null;
