@@ -481,6 +481,19 @@ public class Definitions extends Scoped {
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, scope));
 	}
 
+	public final Definitions toVoid() {
+		if (isEmpty() || getValueType().isVoid()) {
+			return this;
+		}
+		return new Definitions(
+				this,
+				ValueStruct.VOID,
+				requirements(),
+				conditions(),
+				claims().toVoid(),
+				propositions().toVoid());
+	}
+
 	public final Definitions upgradeValueStruct(ValueStruct<?, ?> valueStruct) {
 
 		final ValueStruct<?, ?> objectValueStruct = getValueStruct();

@@ -173,5 +173,22 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		return ok;
 	}
 
+	final ValueDefs toVoid() {
+
+		final ValueDef[] oldDefs = get();
+
+		if (oldDefs.length == 0) {
+			return this;
+		}
+
+		final ValueDef[] newDefs = new ValueDef[oldDefs.length];
+
+		for (int i = 0; i < newDefs.length; ++i) {
+			newDefs[i] = oldDefs[i].toVoid();
+		}
+
+		return new ValueDefs(getDefKind(), newDefs);
+	}
+
 }
 
