@@ -31,7 +31,6 @@ import org.o42a.ast.Node;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.compiler.ip.operator.LogicalExpression;
@@ -46,17 +45,15 @@ public final class ExpressionVisitor
 		extends AbstractExpressionVisitor<Ref, Distributor> {
 
 	private final Interpreter ip;
+	private final boolean dereference;
 
-	protected ExpressionVisitor(Interpreter ip) {
+	protected ExpressionVisitor(Interpreter ip, boolean dereference) {
 		this.ip = ip;
+		this.dereference = dereference;
 	}
 
 	public final Interpreter ip() {
 		return this.ip;
-	}
-
-	public final RefNodeVisitor<Ref, Distributor> refVisitor() {
-		return ip().refVisitor();
 	}
 
 	@Override
@@ -182,7 +179,7 @@ public final class ExpressionVisitor
 
 	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
-		return ref.accept(refVisitor(), p);
+		return ref.accept(ip().refVisitor(this.dereference), p);
 	}
 
 	@Override
@@ -191,7 +188,7 @@ public final class ExpressionVisitor
 		return errorRef(location(p, expression), p);
 	}
 
-	private Ref integer(Distributor p, long value, Node node) {
+	private final Ref integer(Distributor p, long value, Node node) {
 
 		final Location location = location(p, node);
 

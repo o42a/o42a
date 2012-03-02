@@ -37,9 +37,9 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
+import org.o42a.core.ref.Ref;
 
 
 final class ClauseKeyVisitor
@@ -110,8 +110,8 @@ final class ClauseKeyVisitor
 			DeclarableAdapterNode adapter,
 			Distributor p) {
 
-		final Owner adapterId = adapter.getMember().accept(
-				ADAPTER_FIELD_REF_IP.ownerVisitor(),
+		final Ref adapterId = adapter.getMember().accept(
+				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
 				p);
 
 		if (adapterId == null) {
@@ -122,7 +122,7 @@ final class ClauseKeyVisitor
 				location(p, adapter),
 				p,
 				null,
-				adapterId(adapterId.bodyRef().toStaticTypeRef()));
+				adapterId(adapterId.toStaticTypeRef()));
 	}
 
 	@Override

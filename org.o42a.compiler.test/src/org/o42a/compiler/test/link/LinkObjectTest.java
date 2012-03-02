@@ -62,7 +62,7 @@ public class LinkObjectTest extends CompilerTestCase {
 	public void typedLink() {
 		compile(
 				"A := 1",
-				"B := link` (`integer) [a]");
+				"B := link (`integer) [a]");
 
 		final Obj a = field("a").getArtifact().toObject();
 		final Obj b = field("b").getArtifact().materialize();
@@ -84,7 +84,7 @@ public class LinkObjectTest extends CompilerTestCase {
 	@Test
 	public void linkToRef() {
 		compile(
-				"A := void (Foo := 1; bar := link` (`foo) [foo])",
+				"A := void (Foo := 1; bar := link (`foo) [foo])",
 				"B := a (Foo = 2)");
 
 		final Obj a = field("a").getArtifact().toObject();
@@ -108,7 +108,7 @@ public class LinkObjectTest extends CompilerTestCase {
 	@Test
 	public void staticLink() {
 		compile(
-				"A := void (Foo := 1; bar := link` (`&foo) [&foo])",
+				"A := void (Foo := 1; bar := link (`&foo) [&foo])",
 				"B := a (Foo = 2)");
 
 		final Obj a = field("a").getArtifact().toObject();

@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
@@ -32,7 +33,6 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -150,7 +150,7 @@ public class ClauseInterpreter {
 		}
 
 		return builder.setOutcome(outcomeValueNode.accept(
-				Interpreter.CLAUSE_DEF_IP.refVisitor(),
+				CLAUSE_DEF_IP.derefVisitor(),
 				builder.distribute()));
 	}
 
@@ -185,7 +185,7 @@ public class ClauseInterpreter {
 			}
 
 			reusedRef = clauseNode.accept(
-					CLAUSE_DECL_IP.refVisitor(),
+					CLAUSE_DECL_IP.derefVisitor(),
 					builder.distribute());
 
 			if (reusedRef == null) {

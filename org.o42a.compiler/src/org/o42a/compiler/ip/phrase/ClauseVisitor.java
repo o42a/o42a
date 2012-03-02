@@ -108,8 +108,9 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 			return p.string(location(p, text), text.getText()).getPhrase();
 		}
 
-		final Ref value =
-				text.accept(p.ip().expressionVisitor(), p.distribute());
+		final Ref value = text.accept(
+				p.ip().expressionVisitor(false),
+				p.distribute());
 
 		if (value != null) {
 			return p.argument(value).getPhrase();

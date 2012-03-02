@@ -35,7 +35,6 @@ import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.type.DefinitionKind;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -103,8 +102,8 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Owner adapterId = adapterNode.getMember().accept(
-				ADAPTER_FIELD_REF_IP.ownerVisitor(),
+		final Ref adapterId = adapterNode.getMember().accept(
+				ADAPTER_FIELD_REF_IP.bodyRefVisitor(),
 				p);
 
 		if (adapterId == null) {
@@ -114,7 +113,7 @@ public final class FieldDeclarableVisitor
 		FieldDeclaration declaration = fieldDeclaration(
 				location(p, adapterNode),
 				p,
-				adapterId(adapterId.bodyRef().toStaticTypeRef()));
+				adapterId(adapterId.toStaticTypeRef()));
 
 		declaration = update(declaration, this.declarator);
 		declaration = setDeclaredIn(declaration, memberNode);
@@ -141,7 +140,7 @@ public final class FieldDeclarableVisitor
 			return null;
 		}
 
-		final Ref declaredIn = node.accept(ip.refVisitor(), distributor);
+		final Ref declaredIn = node.accept(ip.bodyRefVisitor(), distributor);
 
 		if (declaredIn == null) {
 			return null;

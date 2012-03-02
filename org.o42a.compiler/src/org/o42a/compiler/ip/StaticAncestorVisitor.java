@@ -22,15 +22,15 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
 
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
 
 
 final class StaticAncestorVisitor extends AncestorVisitor {
 
 	StaticAncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
-		super(ip, valueStructFinder);
+		super(ip, valueStructFinder, false);
 	}
 
 	@Override
@@ -38,13 +38,14 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref result = expression.accept(ip().expressionVisitor(), p);
+		final Owner result = expression.accept(ip().ownerVisitor(), p);
 
 		if (result == null) {
 			return null;
 		}
 
-		return ancestorTypeRef(result.toStaticTypeRef(getValueStructFinder()));
+		return ancestorTypeRef(
+				result.bodyRef().toStaticTypeRef(getValueStructFinder()));
 	}
 
 }

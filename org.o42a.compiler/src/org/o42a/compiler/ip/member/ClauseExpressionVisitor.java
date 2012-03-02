@@ -88,7 +88,7 @@ class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final Ref ref = expression.accept(
-				CLAUSE_DEF_IP.expressionVisitor(),
+				CLAUSE_DEF_IP.expressionVisitor(true),
 				p.distribute());
 
 		if (ref == null) {
@@ -141,7 +141,7 @@ class ClauseExpressionVisitor
 
 			final Distributor distributor = p.distribute();
 			final Ref ancestor = expression.accept(
-					CLAUSE_DEF_IP.expressionVisitor(),
+					CLAUSE_DEF_IP.expressionVisitor(true),
 					distributor);
 
 			if (ancestor == null) {

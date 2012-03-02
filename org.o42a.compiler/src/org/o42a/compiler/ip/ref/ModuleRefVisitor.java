@@ -19,11 +19,10 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.compiler.ip.Interpreter.PATH_COMPILER_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPLIER_REF_IP;
+import static org.o42a.compiler.ip.ref.RefInterpreter.PATH_COMPILER_REF_IP;
 import static org.o42a.compiler.ip.ref.RefInterpreter.enclosingModulePath;
-import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NEVER_DEREF_OWNER_FACTORY;
+import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -54,7 +53,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
-		return result != null ? result.ref() : null;
+		return result != null ? result.bodyRef() : null;
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 		final Owner result = ref.accept(this.ownerVisitor, p);
 
-		return result != null ? result.ref() : null;
+		return result != null ? result.bodyRef() : null;
 	}
 
 	@Override
@@ -75,15 +74,7 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 		if (declaredInNode == null) {
 			return null;
 		}
-
-		final Ref declaredIn =
-				declaredInNode.accept(PATH_COMPILER_IP.refVisitor(), p);
-
-		if (declaredIn == null) {
-			return null;
-		}
-
-		return declaredIn.toStaticTypeRef();
+		return PATH_COMPILER_REF_IP.declaredIn(declaredInNode, p);
 	}
 
 	protected Ref moduleRef(MemberRefNode moduleRef, Distributor p) {
@@ -126,12 +117,12 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			if (owner != null) {
 				return owner.member(
 						location(p, ref),
-						PATH_COMPLIER_REF_IP.memberName(
+						PATH_COMPILER_REF_IP.memberName(
 								ref.getName().getName()),
 						declaredIn);
 			}
 
-			return NEVER_DEREF_OWNER_FACTORY.owner(moduleRef(ref, p));
+			return NON_LINK_OWNER_FACTORY.owner(moduleRef(ref, p));
 		}
 
 		@Override

@@ -1,6 +1,6 @@
 /*
     Compiler
-    Copyright (C) 2012 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,37 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.ref.owner;
+package org.o42a.compiler.ip.ref;
 
+import org.o42a.ast.ref.AbstractRefVisitor;
+import org.o42a.ast.ref.RefNode;
+import org.o42a.compiler.ip.ref.owner.Owner;
+import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.LocationInfo;
 
 
-class BodyOwner extends Owner {
+final class BodyRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
-	private final LocationInfo location;
+	private final RefInterpreter interpreter;
 
-	BodyOwner(LocationInfo location, Ref ownerRef) {
-		super(ownerRef);
-		this.location = location;
+	BodyRefVisitor(RefInterpreter interpreter) {
+		this.interpreter = interpreter;
 	}
 
 	@Override
-	public Ref deref() {
-		return this.ownerRef.getPath()
-				.append(new BodyRefFragment(this.location))
-				.target(this.ownerRef.distribute());
-	}
+	protected Ref visitRef(RefNode ref, Distributor p) {
 
-	@Override
-	public Owner body(LocationInfo location) {
-		redundantBodyRef(this.ownerRef.getLogger(), location);
-		return this;
-	}
+		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
 
-	@Override
-	public Ref bodyRef() {
-		return body(this.location).deref();
+		return result != null ? result.bodyRef() : null;
 	}
 
 }
