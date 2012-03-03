@@ -118,7 +118,6 @@ public abstract class KnownLink extends ObjectLink {
 
 	@Override
 	public void resolveAll(Resolver resolver) {
-		super.resolveAll(resolver);
 		getTargetRef().resolveAll(resolver);
 	}
 

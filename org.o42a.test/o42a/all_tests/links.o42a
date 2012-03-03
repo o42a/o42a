@@ -1,0 +1,39 @@
+/*
+    Tests
+    Copyright (C) 2012 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+Use namespace 'Test'
+
+Links := test
+=============
+
+Static link := link (`integer) [1]
+
+Runtime link := link (`integer) [rt-integer '2']
+
+Run tests
+
+Target and body := test {
+  Assert [static link`] "Static link body is false"
+  Assert [static link] "Static link target is false"
+  Assert [static link == 1] "Wrong static link target"
+
+  Assert [runtime link`] "Runtime link body is false"
+  Assert [runtime link] "Runtime link target is false"
+  Assert [runtime link == 2] "Wrong runtime link target"  
+}

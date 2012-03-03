@@ -23,6 +23,7 @@ import static org.o42a.core.ref.InlineValue.inlineUnknown;
 import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import org.o42a.core.object.def.impl.InlineValueDefs;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -188,6 +189,12 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		}
 
 		return new ValueDefs(getDefKind(), newDefs);
+	}
+
+	final void resolveTargets(TargetResolver wrapper) {
+		for (ValueDef def : get()) {
+			def.resolveTarget(wrapper);
+		}
 	}
 
 }

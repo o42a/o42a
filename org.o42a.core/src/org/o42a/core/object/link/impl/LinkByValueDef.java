@@ -138,6 +138,11 @@ public class LinkByValueDef extends ValueDef {
 	}
 
 	@Override
+	protected void resolveTarget(TargetResolver resolver) {
+		resolver.resolveTarget(this.ref.getResolution().toObject());
+	}
+
+	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.ref.resolve(resolver).resolveTarget();
 	}

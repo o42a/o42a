@@ -166,9 +166,7 @@ public abstract class ObjectLink
 		return findLinkIn(scope);
 	}
 
-	public void resolveAll(Resolver resolver) {
-		getTypeRef().resolveAll(resolver);
-	}
+	public abstract void resolveAll(Resolver resolver);
 
 	@Override
 	public final Distributor distribute() {

@@ -163,7 +163,7 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 				"Can not store pointer without length to " + getValueStruct();
 			target.value(null, code)
 			.toPtr(null, code)
-			.store(code, code.nullPtr());
+			.store(code, pointer);
 			target.flags(null, code)
 			.store(code, code.int32(Val.CONDITION_FLAG));
 		}

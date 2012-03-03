@@ -30,6 +30,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -114,6 +115,11 @@ public final class LinkConstantValueDef extends ValueDef {
 	@Override
 	protected Logical buildLogical() {
 		return logicalTrue(this, getSource().getScope());
+	}
+
+	@Override
+	protected void resolveTarget(TargetResolver resolver) {
+		resolver.resolveTarget(getLink().getTarget());
 	}
 
 	@Override
