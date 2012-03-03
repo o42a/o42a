@@ -28,6 +28,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
@@ -38,15 +39,15 @@ public class AncestorVisitor
 
 	private final Interpreter ip;
 	private final ValueStructFinder valueStructFinder;
-	private final boolean dereference;
+	private final Referral referral;
 
 	AncestorVisitor(
 			Interpreter ip,
 			ValueStructFinder valueStructFinder,
-			boolean dereference) {
+			Referral referral) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
-		this.dereference = dereference;
+		this.referral = referral;
 	}
 
 	public final Interpreter ip() {
@@ -85,7 +86,7 @@ public class AncestorVisitor
 			Distributor p) {
 
 		final Ref ref =
-				expression.accept(ip().expressionVisitor(this.dereference), p);
+				expression.accept(this.referral.expressionVisitor(ip()), p);
 
 		if (ref == null) {
 			return null;

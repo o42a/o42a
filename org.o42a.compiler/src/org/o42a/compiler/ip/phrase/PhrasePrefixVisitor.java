@@ -21,6 +21,8 @@ package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.prefix;
+import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
+import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -60,7 +62,8 @@ final class PhrasePrefixVisitor
 				expression.accept(
 						p.ip().ancestorVisitor(
 								this.typeParameters,
-								this.typeParameters == null),
+								this.typeParameters == null
+								? TARGET_REFERRAL : BODY_REFERRAL),
 						distributor);
 
 		if (ancestor == null || ancestor.isImplied()) {

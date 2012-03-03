@@ -98,7 +98,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		final Distributor distributor = p.nextDistributor();
 		final Ref destination = destinationNode.accept(
-				ip().expressionVisitor(false),
+				ip().bodyExVisitor(),
 				distributor);
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 

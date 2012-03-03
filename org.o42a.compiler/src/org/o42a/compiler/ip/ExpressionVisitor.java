@@ -36,6 +36,7 @@ import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.compiler.ip.operator.LogicalExpression;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
@@ -45,11 +46,11 @@ public final class ExpressionVisitor
 		extends AbstractExpressionVisitor<Ref, Distributor> {
 
 	private final Interpreter ip;
-	private final boolean dereference;
+	private final Referral referral;
 
-	protected ExpressionVisitor(Interpreter ip, boolean dereference) {
+	protected ExpressionVisitor(Interpreter ip, Referral referral) {
 		this.ip = ip;
-		this.dereference = dereference;
+		this.referral = referral;
 	}
 
 	public final Interpreter ip() {
@@ -179,7 +180,7 @@ public final class ExpressionVisitor
 
 	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
-		return ref.accept(ip().refVisitor(this.dereference), p);
+		return ref.accept(this.referral.refVisitor(ip()), p);
 	}
 
 	@Override

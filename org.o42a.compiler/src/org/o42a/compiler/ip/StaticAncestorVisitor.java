@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
+import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.ref.owner.Owner;
@@ -30,7 +31,7 @@ import org.o42a.core.value.ValueStructFinder;
 final class StaticAncestorVisitor extends AncestorVisitor {
 
 	StaticAncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
-		super(ip, valueStructFinder, false);
+		super(ip, valueStructFinder, BODY_REFERRAL);
 	}
 
 	@Override

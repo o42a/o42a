@@ -21,6 +21,8 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
+import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
+import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.core.value.TypeParameters.immutableValueStruct;
 import static org.o42a.core.value.TypeParameters.mutableValueStruct;
 
@@ -36,6 +38,7 @@ import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.ref.owner.Owner;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -71,21 +74,16 @@ public enum Interpreter {
 
 	Interpreter(RefInterpreter refInterpreter) {
 		this.refInterpreter = refInterpreter;
-		this.derefExVisitor = new ExpressionVisitor(this, true);
-		this.bodyExVisitor = new ExpressionVisitor(this, false);
+		this.derefExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
+		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
 		this.definitionVisitor = new DefinitionVisitor(this);
-		this.ancestorVisitor = new AncestorVisitor(this, null, true);
+		this.ancestorVisitor = new AncestorVisitor(this, null, TARGET_REFERRAL);
 		this.staticAncestorVisitor = new StaticAncestorVisitor(this, null);
 		this.typeVisitor = new TypeVisitor(this, null);
 	}
 
 	public final RefInterpreter refIp() {
 		return this.refInterpreter;
-	}
-
-	public final RefNodeVisitor<Ref, Distributor> refVisitor(
-			boolean dereference) {
-		return refIp().refVisitor(dereference);
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
@@ -100,11 +98,11 @@ public enum Interpreter {
 		return refIp().ownerVisitor();
 	}
 
-	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
-			boolean dereference) {
-		if (dereference) {
-			return this.derefExVisitor;
-		}
+	public final ExpressionNodeVisitor<Ref, Distributor> derefExVisitor() {
+		return this.derefExVisitor;
+	}
+
+	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor() {
 		return this.bodyExVisitor;
 	}
 
@@ -118,11 +116,11 @@ public enum Interpreter {
 			AncestorTypeRef,
 			Distributor> ancestorVisitor(
 					ValueStructFinder valueStructFinder,
-					boolean dereference) {
-		if (valueStructFinder == null && dereference) {
+					Referral referral) {
+		if (valueStructFinder == null && referral == TARGET_REFERRAL) {
 			return this.ancestorVisitor;
 		}
-		return new AncestorVisitor(this, valueStructFinder, dereference);
+		return new AncestorVisitor(this, valueStructFinder, referral);
 	}
 
 	public final ExpressionNodeVisitor<

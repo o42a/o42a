@@ -174,14 +174,6 @@ public abstract class RefInterpreter {
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, Distributor> refVisitor(
-			boolean dereference) {
-		if (dereference) {
-			return derefVisitor();
-		}
-		return bodyRefVisitor();
-	}
-
 	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
 		return this.derefVisitor;
 	}
