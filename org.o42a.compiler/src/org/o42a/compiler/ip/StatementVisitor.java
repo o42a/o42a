@@ -45,7 +45,7 @@ public abstract class StatementVisitor
 	}
 
 	public final ExpressionNodeVisitor<Ref, Distributor> expressionVisitor() {
-		return ip().derefExVisitor();
+		return ip().targetExVisitor();
 	}
 
 	public final CompilerContext getContext() {

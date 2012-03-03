@@ -53,18 +53,18 @@ public abstract class Referral {
 
 		@Override
 		public RefNodeVisitor<Ref, Distributor> refVisitor(RefInterpreter ip) {
-			return ip.derefVisitor();
+			return ip.targetRefVisitor();
 		}
 
 		@Override
 		public ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
 				Interpreter ip) {
-			return ip.derefExVisitor();
+			return ip.targetExVisitor();
 		}
 
 		@Override
 		public Ref refer(Owner owner) {
-			return owner.deref();
+			return owner.targetRef();
 		}
 
 	}

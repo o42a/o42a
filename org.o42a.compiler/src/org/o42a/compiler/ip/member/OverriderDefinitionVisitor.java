@@ -108,7 +108,7 @@ final class OverriderDefinitionVisitor
 
 		final Distributor distributor = p.distribute();
 		final Ref ref = expression.accept(
-				CLAUSE_DEF_IP.derefExVisitor(),
+				CLAUSE_DEF_IP.targetExVisitor(),
 				distributor);
 
 		if (ref == null) {

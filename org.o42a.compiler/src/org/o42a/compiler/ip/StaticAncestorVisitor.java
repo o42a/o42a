@@ -23,8 +23,8 @@ import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
 
 
@@ -39,14 +39,13 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Owner result = expression.accept(ip().ownerVisitor(), p);
+		final Ref result = expression.accept(ip().bodyExVisitor(), p);
 
 		if (result == null) {
 			return null;
 		}
 
-		return ancestorTypeRef(
-				result.bodyRef().toStaticTypeRef(getValueStructFinder()));
+		return ancestorTypeRef(result.toStaticTypeRef(getValueStructFinder()));
 	}
 
 }

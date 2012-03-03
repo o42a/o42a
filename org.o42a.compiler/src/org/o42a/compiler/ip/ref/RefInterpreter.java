@@ -161,21 +161,21 @@ public abstract class RefInterpreter {
 	}
 
 	private final OwnerFactory ownerFactory;
-	private final DerefVisitor derefVisitor;
+	private final TargetRefVisitor targetRefVisitor;
 	private final BodyRefVisitor bodyRefVisitor;
 	private final OwnerVisitor ownerVisitor;
 
 	RefInterpreter(OwnerFactory ownerFactory) {
 		this.ownerFactory = ownerFactory;
-		this.derefVisitor = new DerefVisitor(this);
+		this.targetRefVisitor = new TargetRefVisitor(this);
 		this.bodyRefVisitor = new BodyRefVisitor(this);
 		this.ownerVisitor = new OwnerVisitor(this);
 	}
 
 	public abstract Interpreter ip();
 
-	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
-		return this.derefVisitor;
+	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
+		return this.targetRefVisitor;
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {

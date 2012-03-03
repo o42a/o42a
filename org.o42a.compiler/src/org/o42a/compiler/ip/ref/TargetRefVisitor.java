@@ -26,11 +26,11 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
 
-final class DerefVisitor extends AbstractRefVisitor<Ref, Distributor> {
+final class TargetRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 	private final RefInterpreter interpreter;
 
-	DerefVisitor(RefInterpreter interpreter) {
+	TargetRefVisitor(RefInterpreter interpreter) {
 		this.interpreter = interpreter;
 	}
 
@@ -39,7 +39,7 @@ final class DerefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 
 		final Owner result = ref.accept(this.interpreter.ownerVisitor(), p);
 
-		return result != null ? result.deref() : null;
+		return result != null ? result.targetRef() : null;
 	}
 
 }

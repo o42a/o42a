@@ -110,7 +110,7 @@ public class Compiler implements SourceCompiler {
 			return pathWithAlias(
 					node,
 					node.accept(
-							PATH_COMPILER_IP.derefVisitor(),
+							PATH_COMPILER_IP.targetRefVisitor(),
 							scope.distribute()));
 		}
 
