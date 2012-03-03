@@ -37,7 +37,6 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
-import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
@@ -59,7 +58,7 @@ public enum Interpreter {
 	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
 
 	private final RefInterpreter refInterpreter;
-	private final ExpressionNodeVisitor<Ref, Distributor> derefExVisitor;
+	private final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor;
 	private final ExpressionVisitor bodyExVisitor;
 	private final ExpressionNodeVisitor<
 			FieldDefinition,
@@ -74,7 +73,7 @@ public enum Interpreter {
 
 	Interpreter(RefInterpreter refInterpreter) {
 		this.refInterpreter = refInterpreter;
-		this.derefExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
+		this.targetExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
 		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
 		this.definitionVisitor = new DefinitionVisitor(this);
 		this.ancestorVisitor = new AncestorVisitor(this, null, TARGET_REFERRAL);
@@ -86,20 +85,16 @@ public enum Interpreter {
 		return this.refInterpreter;
 	}
 
-	public final RefNodeVisitor<Ref, Distributor> derefVisitor() {
-		return refIp().derefVisitor();
+	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
+		return refIp().targetRefVisitor();
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> bodyRefVisitor() {
 		return refIp().bodyRefVisitor();
 	}
 
-	public final ExpressionNodeVisitor<Owner, Distributor> ownerVisitor() {
-		return refIp().ownerVisitor();
-	}
-
-	public final ExpressionNodeVisitor<Ref, Distributor> derefExVisitor() {
-		return this.derefExVisitor;
+	public final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor() {
+		return this.targetExVisitor;
 	}
 
 	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor() {

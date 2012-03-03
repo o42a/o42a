@@ -45,7 +45,7 @@ public abstract class Owner {
 		this.ownerRef = ownerRef;
 	}
 
-	public abstract Ref deref();
+	public abstract Ref targetRef();
 
 	public abstract Owner body(LocationInfo location);
 
@@ -56,7 +56,7 @@ public abstract class Owner {
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
 
-		final Ref owner = deref();
+		final Ref owner = targetRef();
 		final Distributor distributor = this.ownerRef.distribute();
 		final MemberOf memberOf = new MemberOf(
 				location,

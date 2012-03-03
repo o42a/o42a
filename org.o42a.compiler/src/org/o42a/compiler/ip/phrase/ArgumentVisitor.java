@@ -48,7 +48,7 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 	protected Phrase visitExpression(ExpressionNode expression, Phrase p) {
 
 		final Ref value = expression.accept(
-				p.ip().derefExVisitor(),
+				p.ip().targetExVisitor(),
 				p.distribute());
 
 		if (value != null) {

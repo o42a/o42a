@@ -140,7 +140,7 @@ final class ArrayObject extends ConstructedObject {
 			if (itemNode != null) {
 
 				final Ref itemRef = itemNode.accept(
-						this.constructor.ip().derefExVisitor(),
+						this.constructor.ip().targetExVisitor(),
 						enclosing);
 
 				if (itemRef != null) {

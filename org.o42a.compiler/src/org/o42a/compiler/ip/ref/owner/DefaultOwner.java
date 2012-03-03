@@ -32,7 +32,7 @@ final class DefaultOwner extends Owner {
 	}
 
 	@Override
-	public Ref deref() {
+	public Ref targetRef() {
 		return this.ownerRef.getPath()
 				.append(DEREFERENCE_FRAGMENT)
 				.target(this.ownerRef.distribute());

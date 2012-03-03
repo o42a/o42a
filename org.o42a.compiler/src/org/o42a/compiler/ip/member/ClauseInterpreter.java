@@ -150,7 +150,7 @@ public class ClauseInterpreter {
 		}
 
 		return builder.setOutcome(outcomeValueNode.accept(
-				CLAUSE_DEF_IP.derefVisitor(),
+				CLAUSE_DEF_IP.targetRefVisitor(),
 				builder.distribute()));
 	}
 
@@ -185,7 +185,7 @@ public class ClauseInterpreter {
 			}
 
 			reusedRef = clauseNode.accept(
-					CLAUSE_DECL_IP.derefVisitor(),
+					CLAUSE_DECL_IP.targetRefVisitor(),
 					builder.distribute());
 
 			if (reusedRef == null) {

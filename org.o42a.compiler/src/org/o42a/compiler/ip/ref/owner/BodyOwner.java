@@ -33,7 +33,7 @@ class BodyOwner extends Owner {
 	}
 
 	@Override
-	public Ref deref() {
+	public Ref targetRef() {
 		return this.ownerRef.getPath()
 				.append(new BodyRefFragment(this.location))
 				.target(this.ownerRef.distribute());
@@ -47,7 +47,7 @@ class BodyOwner extends Owner {
 
 	@Override
 	public Ref bodyRef() {
-		return body(this.location).deref();
+		return body(this.location).targetRef();
 	}
 
 }

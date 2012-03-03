@@ -30,7 +30,7 @@ class NonLinkOwner extends Owner {
 	}
 
 	@Override
-	public Ref deref() {
+	public Ref targetRef() {
 		return this.ownerRef;
 	}
 
@@ -42,7 +42,7 @@ class NonLinkOwner extends Owner {
 
 	@Override
 	public Ref bodyRef() {
-		return deref();
+		return targetRef();
 	}
 
 }
