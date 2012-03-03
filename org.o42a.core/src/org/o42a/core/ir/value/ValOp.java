@@ -316,9 +316,7 @@ public abstract class ValOp extends IROp implements CondOp {
 		return this;
 	}
 
-	public final ValOp store(
-			Code code,
-			AnyOp pointer) {
+	public final ValOp store(Code code, AnyOp pointer) {
 		getStoreMode().storage(this).storePtr(
 				code,
 				this,

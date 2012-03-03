@@ -29,6 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineValueDef;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
@@ -203,6 +204,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 
 	protected CondDef createCondDef() {
 		return new ValueCondDef(this);
+	}
+
+	protected void resolveTarget(TargetResolver resolver) {
 	}
 
 	@Override

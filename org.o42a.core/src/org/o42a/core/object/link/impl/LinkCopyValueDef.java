@@ -143,6 +143,14 @@ final class LinkCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	protected void resolveTarget(TargetResolver resolver) {
+
+		final Obj object = this.ref.getResolution().toObject();
+
+		object.value().getDefinitions().resolveTargets(resolver);
+	}
+
+	@Override
 	protected void fullyResolveDef(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
 	}

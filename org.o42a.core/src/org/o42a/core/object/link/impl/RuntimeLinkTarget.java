@@ -21,6 +21,8 @@ package org.o42a.core.object.link.impl;
 
 import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.link.TargetResolver.wrapTargetTypeBy;
+import static org.o42a.core.object.link.TargetResolver.wrapTargetValueBy;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -80,10 +82,11 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolve() {
 		super.fullyResolve();
 
-		final Obj target = this.link.getTarget();
+		final Obj linkObject = linkObject();
 
-		if (target != null) {
-			target.type().wrapBy(type());
+		if (linkObject != null) {
+			linkObject.value().getDefinitions().resolveTargets(
+					wrapTargetTypeBy(this));
 		}
 	}
 
@@ -91,16 +94,21 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolveDefinitions() {
 		super.fullyResolveDefinitions();
 
-		final Obj target = this.link.getTarget();
+		final Obj linkObject = linkObject();
 
-		if (target != null) {
-			target.value().wrapBy(value());
+		if (linkObject != null) {
+			linkObject.value().getDefinitions().resolveTargets(
+					wrapTargetValueBy(this));
 		}
 	}
 
 	@Override
 	protected ObjectIR createIR(Generator generator) {
 		return this.link.getTarget().toObject().ir(generator);
+	}
+
+	private Obj linkObject() {
+		return this.link.getScope().toObject();
 	}
 
 }

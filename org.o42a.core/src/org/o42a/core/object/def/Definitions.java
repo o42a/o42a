@@ -29,6 +29,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
@@ -519,6 +520,11 @@ public class Definitions extends Scoped {
 				conditions(),
 				claims(),
 				propositions());
+	}
+
+	public void resolveTargets(TargetResolver resolver) {
+		claims().resolveTargets(resolver);
+		propositions().resolveTargets(resolver);
 	}
 
 	public Definitions requirementPart(LocationInfo location) {

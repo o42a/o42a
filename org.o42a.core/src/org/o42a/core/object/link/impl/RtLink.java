@@ -24,6 +24,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -65,6 +66,11 @@ final class RtLink extends ObjectLink {
 	@Override
 	public boolean isRuntime() {
 		return true;
+	}
+
+	@Override
+	public void resolveAll(Resolver resolver) {
+		getTarget().resolveAll();
 	}
 
 	@Override
