@@ -28,8 +28,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -38,14 +38,14 @@ import org.o42a.core.value.ValueStruct;
 
 public final class LinkConstantValueDef extends ValueDef {
 
-	private final Value<ObjectLink> value;
+	private final Value<KnownLink> value;
 	private LinkValueStruct valueStruct;
 
 	public LinkConstantValueDef(
 			Obj source,
 			LocationInfo location,
 			LinkValueStruct valueStruct,
-			ObjectLink value) {
+			KnownLink value) {
 		super(
 				source,
 				location,
@@ -73,7 +73,7 @@ public final class LinkConstantValueDef extends ValueDef {
 				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
-	public final ObjectLink getLink() {
+	public final KnownLink getLink() {
 		return this.value.getCompilerValue();
 	}
 

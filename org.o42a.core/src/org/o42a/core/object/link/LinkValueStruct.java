@@ -39,12 +39,12 @@ import org.o42a.core.value.*;
 
 
 public final class LinkValueStruct
-		extends ValueStruct<LinkValueStruct, ObjectLink> {
+		extends ValueStruct<LinkValueStruct, KnownLink> {
 
 	private final TypeRef typeRef;
 
 	LinkValueStruct(LinkValueType valueType, TypeRef typeRef) {
-		super(valueType, ObjectLink.class);
+		super(valueType, KnownLink.class);
 		this.typeRef = typeRef;
 	}
 
@@ -68,7 +68,7 @@ public final class LinkValueStruct
 	public ValueDef constantDef(
 			Obj source,
 			LocationInfo location,
-			ObjectLink value) {
+			KnownLink value) {
 		return new LinkConstantValueDef(source, location, this, value);
 	}
 
@@ -183,7 +183,7 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected ValueStruct<LinkValueStruct, ObjectLink> applyParameters(
+	protected ValueStruct<LinkValueStruct, KnownLink> applyParameters(
 			TypeParameters parameters) {
 		if (parameters.isMutable()) {
 			parameters.getLogger().error(
@@ -205,17 +205,17 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected ValueKnowledge valueKnowledge(ObjectLink value) {
+	protected ValueKnowledge valueKnowledge(KnownLink value) {
 		return value.getKnowledge();
 	}
 
 	@Override
-	protected Value<ObjectLink> prefixValueWith(
-			Value<ObjectLink> value,
+	protected Value<KnownLink> prefixValueWith(
+			Value<KnownLink> value,
 			PrefixPath prefix) {
 		if (value.getKnowledge().hasCompilerValue()) {
 
-			final ObjectLink link = value.getCompilerValue();
+			final KnownLink link = value.getCompilerValue();
 
 			if (prefix.emptyFor(link)) {
 				return value;
@@ -243,7 +243,7 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected void resolveAll(Value<ObjectLink> value, Resolver resolver) {
+	protected void resolveAll(Value<KnownLink> value, Resolver resolver) {
 		getTypeRef().resolveAll(resolver);
 		if (value.getKnowledge().hasCompilerValue()) {
 			value.resolveAll(resolver);
@@ -251,7 +251,7 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected ValueStructIR<LinkValueStruct, ObjectLink> createIR(
+	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
 			Generator generator) {
 		return new LinkValueStructIR(generator, this);
 	}
