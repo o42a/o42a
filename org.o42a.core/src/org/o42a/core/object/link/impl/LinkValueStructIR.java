@@ -27,12 +27,12 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.AbstractValueStructIR;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.ObjectLink;
 
 
 public class LinkValueStructIR
-		extends AbstractValueStructIR<LinkValueStruct, ObjectLink> {
+		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
 
 	private int constSeq;
 
@@ -41,7 +41,7 @@ public class LinkValueStructIR
 	}
 
 	@Override
-	public Val val(ObjectLink value) {
+	public Val val(KnownLink value) {
 
 		final Obj target =
 				value.getTargetRef().getRef().getResolution().materialize();
@@ -57,7 +57,7 @@ public class LinkValueStructIR
 	}
 
 	@Override
-	protected CodeId constId(ObjectLink value) {
+	protected CodeId constId(KnownLink value) {
 		return getGenerator().id("CONST").sub("LINK")
 				.anonymous(++this.constSeq);
 	}

@@ -29,9 +29,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
@@ -72,7 +70,7 @@ final class LinkCopyValueDef extends ValueDef {
 
 		final PrefixPath prefix =
 				ref.getPath().toPrefix(resolver.getScope());
-		final ObjectLink sourceLink =
+		final KnownLink sourceLink =
 				sourceStruct.cast(value).getCompilerValue();
 		final TargetRef targetRef =
 				sourceLink.getTargetRef().prefixWith(prefix);
@@ -182,7 +180,7 @@ final class LinkCopyValueDef extends ValueDef {
 				getScopeUpgrade().toPrefix()).toLinkStruct();
 	}
 
-	private static final class LinkCopy extends ObjectLink {
+	private static final class LinkCopy extends KnownLink {
 
 		private final LinkValueType toLinkType;
 		private final ObjectLink copyOf;
@@ -221,7 +219,7 @@ final class LinkCopyValueDef extends ValueDef {
 		}
 
 		@Override
-		protected ObjectLink prefixWith(PrefixPath prefix) {
+		protected KnownLink prefixWith(PrefixPath prefix) {
 			return new LinkCopy(
 					this,
 					getTargetRef().prefixWith(prefix));

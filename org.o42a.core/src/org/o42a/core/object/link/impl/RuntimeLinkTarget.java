@@ -19,13 +19,11 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.ConstructionMode.RUNTIME_CONSTRUCTION;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
@@ -82,11 +80,10 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolve() {
 		super.fullyResolve();
 
-		final Artifact<?> target =
-				this.link.getTargetRef().artifact(dummyUser());
+		final Obj target = this.link.getTarget();
 
 		if (target != null) {
-			target.materialize().type().wrapBy(type());
+			target.type().wrapBy(type());
 		}
 	}
 
@@ -94,18 +91,16 @@ public final class RuntimeLinkTarget extends Obj {
 	protected void fullyResolveDefinitions() {
 		super.fullyResolveDefinitions();
 
-		final Artifact<?> target =
-				this.link.getTargetRef().artifact(dummyUser());
+		final Obj target = this.link.getTarget();
 
 		if (target != null) {
-			target.materialize().value().wrapBy(value());
+			target.value().wrapBy(value());
 		}
 	}
 
 	@Override
 	protected ObjectIR createIR(Generator generator) {
-		return this.link.getTargetRef().artifact(dummyUser())
-				.toObject().ir(generator);
+		return this.link.getTarget().toObject().ir(generator);
 	}
 
 }

@@ -20,12 +20,10 @@
 package org.o42a.core.object.link.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.object.link.ObjectLink;
-import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
@@ -36,17 +34,24 @@ final class RtLink extends ObjectLink {
 		super(location, linkScope.distribute());
 	}
 
-	private RtLink(ObjectLink prototype, TargetRef targetRef) {
-		super(prototype, targetRef);
+	@Override
+	public TypeRef getTypeRef() {
+
+		final Obj linkObject = linkObject();
+
+		final LinkValueStruct linkStruct =
+				linkObject.value().getValueStruct().toLinkStruct();
+
+		assert linkStruct != null :
+			linkObject + " is not a link object";
+
+		return linkStruct.getTypeRef();
 	}
 
 	@Override
 	public LinkValueType getValueType() {
 
-		final Obj linkObject = getScope().toObject();
-
-		assert linkObject != null :
-			linkObject + " is not an object";
+		final Obj linkObject = linkObject();
 
 		final LinkValueType linkType =
 				linkObject.value().getValueType().toLinkType();
@@ -63,22 +68,8 @@ final class RtLink extends ObjectLink {
 	}
 
 	@Override
-	protected TargetRef buildTargetRef() {
-
-		final Obj linkObject = getScope().toObject();
-
-		assert linkObject != null :
-			linkObject + " is not an object";
-
-		final LinkValueStruct linkStruct =
-				linkObject.value().getValueStruct().toLinkStruct();
-
-		assert linkStruct != null :
-			linkObject + " is not a link object";
-
-		final TypeRef typeRef = linkStruct.getTypeRef();
-
-		return typeRef.getRescopedRef().toTargetRef(typeRef);
+	protected Obj createTarget() {
+		return new RuntimeLinkTarget(this);
 	}
 
 	@Override
@@ -86,9 +77,14 @@ final class RtLink extends ObjectLink {
 		return new RtLink(this, enclosing);
 	}
 
-	@Override
-	protected ObjectLink prefixWith(PrefixPath prefix) {
-		return new RtLink(this, getTargetRef().prefixWith(prefix));
+	private Obj linkObject() {
+
+		final Obj linkObject = getScope().toObject();
+
+		assert linkObject != null :
+			linkObject + " is not an object";
+
+		return linkObject;
 	}
 
 }

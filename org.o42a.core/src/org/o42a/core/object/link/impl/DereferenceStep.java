@@ -34,6 +34,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.RefUsage;
@@ -118,7 +119,7 @@ public class DereferenceStep extends Step {
 			link = new RtLink(path, start);
 		} else {
 
-			final Value<ObjectLink> linkValue = linkStruct.cast(value);
+			final Value<KnownLink> linkValue = linkStruct.cast(value);
 
 			if (linkValue.getKnowledge().isFalse()) {
 				return null;

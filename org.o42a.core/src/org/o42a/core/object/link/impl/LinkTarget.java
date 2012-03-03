@@ -26,22 +26,22 @@ import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 
 
 public class LinkTarget extends Obj {
 
-	private final ObjectLink link;
+	private final KnownLink link;
 
-	public LinkTarget(ObjectLink link) {
+	public LinkTarget(KnownLink link) {
 		super(link, link.distributeIn(link.getScope().getContainer()));
 		this.link = link;
 	}
 
 	@Override
-	public final ObjectLink getDereferencedLink() {
+	public final KnownLink getDereferencedLink() {
 		return this.link;
 	}
 
