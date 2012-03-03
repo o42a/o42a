@@ -59,7 +59,7 @@ public final class DefinitionVisitor
 			FieldDeclaration p) {
 
 		final Ref definition = expression.accept(
-				ip().expressionVisitor(false),
+				ip().bodyExVisitor(),
 				p.distribute());
 
 		if (definition == null) {
