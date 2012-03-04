@@ -21,7 +21,9 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.*;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.VALUE_ASSIGNMENT;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -136,14 +138,20 @@ public class AssignmentStatement extends Statement {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind;
 		}
+		if (this.value.getResolution().isError()) {
+			return this.assignmentKind = ASSIGNMENT_ERROR;
+		}
 
 		final Resolution destResolution = this.destination.getResolution();
-		final Resolution valueResolution = this.value.getResolution();
+
+		if (destResolution.isError()) {
+			return this.assignmentKind = ASSIGNMENT_ERROR;
+		}
+
 		final Obj object = destResolution.toObject();
 
 		if (object != null) {
-			return this.assignmentKind =
-					valueAssignment(object, valueResolution);
+			return this.assignmentKind = valueAssignment(object);
 		}
 
 		final Link link = destResolution.toLink();
@@ -159,9 +167,7 @@ public class AssignmentStatement extends Statement {
 		return this.assignmentKind = variableAssignment();
 	}
 
-	private AssignmentKind valueAssignment(
-			Obj destination,
-			Resolution valueResolution) {
+	private AssignmentKind valueAssignment(Obj destination) {
 
 		final LinkValueStruct destStruct =
 				destination.value().getValueStruct().toLinkStruct();
@@ -177,27 +183,12 @@ public class AssignmentStatement extends Statement {
 		final TypeRef destTypeRef =
 				destStruct.getTypeRef().prefixWith(
 						this.destination.getPath().toPrefix(getScope()));
-		final Obj objectValue = valueResolution.toObject();
-		final TypeRef valueTypeRef;
-		final AssignmentKind assignmentKind;
 
-		if (objectValue.value().getValueType().isLink()) {
-			valueTypeRef =
-					objectValue.value()
-					.getValueStruct()
-					.toLinkStruct()
-					.getTypeRef()
-					.prefixWith(this.value.getPath().toPrefix(getScope()));
-			assignmentKind = TARGET_ASSIGNMENT;
-		} else {
-			valueTypeRef = this.value.toTypeRef();
-			assignmentKind = VALUE_ASSIGNMENT;
-		}
-		if (!valueTypeRef.checkDerivedFrom(destTypeRef)) {
+		if (!this.value.toTypeRef().checkDerivedFrom(destTypeRef)) {
 			return ASSIGNMENT_ERROR;
 		}
 
-		return assignmentKind;
+		return VALUE_ASSIGNMENT;
 	}
 
 	private AssignmentKind variableAssignment() {

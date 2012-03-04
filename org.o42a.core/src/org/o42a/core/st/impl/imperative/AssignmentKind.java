@@ -112,48 +112,6 @@ enum AssignmentKind {
 			return new VariableAssignmentCmd(builder, assignment);
 		}
 
-	},
-
-
-	TARGET_ASSIGNMENT() {
-
-		@Override
-		public void resolve(
-				LocalResolver resolver,
-				Ref destination,
-				Ref value) {
-
-			final Ref destTarget =
-					destination.getPath()
-					.dereference()
-					.target(destination.distribute());
-			final Ref valTarget =
-					value.getPath()
-					.dereference()
-					.target(value.distribute());
-			final Resolution val =
-					valTarget.resolve(resolver).resolveTarget();
-			final Resolution dest =
-					destTarget.resolve(resolver).resolveTarget();
-
-			if (dest.isError() || val.isError()) {
-				return;
-			}
-
-			final Obj destObj = dest.materialize();
-			final Obj valObj = val.materialize();
-
-			valObj.value().wrapBy(destObj.value());
-			destObj.value().wrapBy(valObj.value());
-			valObj.type().wrapBy(destObj.type());
-			destObj.type().wrapBy(valObj.type());
-		}
-
-		@Override
-		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
-			return new TargetAssignmentCmd(builder, assignment);
-		}
-
 	};
 
 	public final boolean isError() {
