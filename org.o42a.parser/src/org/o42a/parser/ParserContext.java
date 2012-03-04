@@ -186,8 +186,12 @@ public final class ParserContext {
 		}
 	}
 
+	public final boolean hasPending() {
+		return this.pending > 0;
+	}
+
 	public void skip() {
-		if (this.pending > 0) {
+		if (hasPending()) {
 			this.current.move(this.pendingOffset, this.worker.lastChar());
 			this.pending = 0;
 		}

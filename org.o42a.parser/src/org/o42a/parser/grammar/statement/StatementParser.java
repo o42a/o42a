@@ -22,6 +22,7 @@ package org.o42a.parser.grammar.statement;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -58,6 +59,7 @@ public class StatementParser implements Parser<StatementNode> {
 
 			if (statement != null) {
 				logUnexpected(context, firstUnexpected, start);
+				skipUnexpected(context);
 				return statement;
 			}
 			if (context.isEOF()) {
@@ -73,20 +75,25 @@ public class StatementParser implements Parser<StatementNode> {
 
 			if (expression != null) {
 				logUnexpected(context, firstUnexpected, start);
-				return startWithExpression(context, expression);
+
+				final StatementNode result =
+						startWithExpression(context, expression);
+
+				skipUnexpected(context);
+
+				return result;
 			}
-			if (context.asExpected()) {
+			if (context.isEOF()
+					|| context.lastChar() == '\n'
+					|| context.asExpected()) {
 				logUnexpected(context, firstUnexpected, start);
 				return null;
 			}
 			if (firstUnexpected == null) {
-				if (context.skipComments(true) != null) {
-					return null;
-				}
 				firstUnexpected = start;
 			}
 			context.acceptAll();
-			if (context.acceptComments(true) != null) {
+			if (context.acceptComments(false) != null) {
 				logUnexpected(context, firstUnexpected, start);
 				firstUnexpected = null;
 			}
@@ -125,6 +132,11 @@ public class StatementParser implements Parser<StatementNode> {
 
 		final ParenthesesNode parentheses =
 				context.parse(this.grammar.parentheses());
+
+		if (parentheses == null) {
+			return null;
+		}
+
 		final ExpressionNode expression =
 				context.parse(expression(parentheses));
 		final ExpressionNode result;
@@ -181,7 +193,7 @@ public class StatementParser implements Parser<StatementNode> {
 			}
 
 			final DeclaratorNode declarator =
-					context.parse(Grammar.declarator(declarable));
+					context.parse(declarator(declarable));
 
 			if (declarator != null) {
 				return declarator;
@@ -228,6 +240,36 @@ public class StatementParser implements Parser<StatementNode> {
 		}
 		context.getLogger().syntaxError(
 				new SourceRange(firstUnexpected, current));
+	}
+
+	private static void skipUnexpected(ParserContext context) {
+
+		SourcePosition first = null;
+		int c = context.hasPending() ? context.lastChar() : context.next();
+
+		for (;;) {
+
+			final SourcePosition start = context.current().fix();
+
+			if (context.isEOF()
+					|| c == '\n'
+					|| context.asExpected()) {
+				logUnexpected(context, first, start);
+				return;
+			}
+			if (first == null) {
+				first = start;
+			}
+			context.acceptAll();
+
+			final SeparatorNodes comments = context.acceptComments(false);
+
+			if (comments != null && comments.haveComments()) {
+				logUnexpected(context, first, start);
+				first = null;
+			}
+			c = context.next();
+		}
 	}
 
 }

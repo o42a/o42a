@@ -27,6 +27,7 @@ import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.expression.PhraseNode;
+import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.BodyRefNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.statement.AssignmentNode;
@@ -67,6 +68,17 @@ public class StatementTest extends GrammarTestCase {
 		to(
 				AssignmentNode.class,
 				parse(IMPERATIVE.statement(), "(foo) = bar"));
+	}
+
+	@Test
+	public void invalidDeclarator() {
+		expectError("syntax_error");
+		parse(DeclaratorNode.class, "A := boo () B = bar()");
+	}
+
+	@Test
+	public void validDeclarator() {
+		parse(DeclaratorNode.class, "A := boo (`bar) baz");
 	}
 
 	private <T> T parse(Class<? extends T> nodeType, String text) {
