@@ -123,7 +123,7 @@ final class ArrayElementOp extends PathOp {
 	private AnyRecOp itemRec(ValDirs dirs, Int64op index) {
 
 		final ValOp array =
-				host().materialize(dirs.dirs()).writeValue(dirs);
+				host().materialize(dirs.dirs()).value().writeValue(dirs);
 
 		checkIndex(dirs.dirs(), index, array);
 

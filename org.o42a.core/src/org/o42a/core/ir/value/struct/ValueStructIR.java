@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.value.struct;
 
-import static org.o42a.core.ir.value.struct.ValueIR.defaultValueIR;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
@@ -30,6 +28,7 @@ import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
@@ -93,8 +92,8 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
 
-	public ValueIR<?> valueIR(ObjectIR bodyIR) {
-		return defaultValueIR(bodyIR);
+	public ValueIR<?> valueIR(ObjectIR objectIR) {
+		return new DefaultValueIR(getValueStruct(), objectIR);
 	}
 
 	@Override

@@ -21,21 +21,25 @@ package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.value.impl.DefaultValueIR;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class ValueIR<O extends ValueOp> {
 
-	public static ValueIR<?> defaultValueIR(ObjectIR bodyIR) {
-		return new DefaultValueIR(bodyIR);
-	}
-
 	private final ObjectIR objectIR;
+	private final ValueStruct<?, ?> valueStruct;
 
-	public ValueIR(ObjectIR objectIR) {
+	public ValueIR(ValueStruct<?, ?> valueStruct, ObjectIR objectIR) {
+		assert valueStruct != null :
+			"Value structo not specified";
 		assert objectIR != null :
 			"Body not specified";
+		this.valueStruct = valueStruct;
 		this.objectIR = objectIR;
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return this.valueStruct;
 	}
 
 	public final ObjectIR getObjectIR() {

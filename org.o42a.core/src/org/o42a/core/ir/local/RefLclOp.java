@@ -118,7 +118,7 @@ public final class RefLclOp extends LclOp {
 				object);
 
 		ptr().object(code).store(code, newObject.toData(code));
-		newObject.writeLogicalValue(dirs);
+		newObject.value().writeCond(dirs);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public final class RefLclOp extends LclOp {
 		final ObjectOp object = value.materialize(dirs);
 
 		ptr().object(code).store(code, object.toData(code));
-		object.writeLogicalValue(dirs);
+		object.value().writeCond(dirs);
 	}
 
 	public static final class Op extends LclOp.Op<Op> {

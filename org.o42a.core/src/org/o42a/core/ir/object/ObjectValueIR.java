@@ -33,6 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
@@ -96,8 +97,8 @@ public class ObjectValueIR {
 		return claim ? claim() : proposition();
 	}
 
-	public ObjValOp op(CodeBuilder builder, Code code) {
-		return getObjectIR().op(builder, code);
+	public final ValueOp op(CodeBuilder builder, Code code) {
+		return getObjectIR().op(builder, code).value();
 	}
 
 	public final ValOp writeValue(ValDirs dirs, ObjOp host, ObjectOp body) {

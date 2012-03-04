@@ -88,7 +88,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				boundKnown,
 				castObject.toData(boundKnown));
 		boundKnown.dump("Assigned: ", ptr());
-		castObject.writeLogicalValue(boundKnownDirs);
+		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());
 
 		// Bound is not known yet.

@@ -56,11 +56,14 @@ public class RefOp {
 
 		final HostOp target = target(dirs);
 
-		target.materialize(dirs).writeLogicalValue(dirs);
+		target.materialize(dirs).value().writeCond(dirs);
 	}
 
 	public ValOp writeValue(ValDirs dirs) {
-		return target(dirs.dirs()).materialize(dirs.dirs()).writeValue(dirs);
+		return target(dirs.dirs())
+				.materialize(dirs.dirs())
+				.value()
+				.writeValue(dirs);
 	}
 
 	public HostOp target(CodeDirs dirs) {
