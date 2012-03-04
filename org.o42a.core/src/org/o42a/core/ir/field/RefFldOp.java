@@ -37,8 +37,8 @@ public abstract class RefFldOp<
 		C extends ObjectFunc<C>>
 				extends FldOp {
 
-	public RefFldOp(RefFld<C> fld, ObjOp host, RefFld.Op<S, C> ptr) {
-		super(fld, host, ptr);
+	public RefFldOp(RefFld<C> fld, ObjOp host) {
+		super(fld, host);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -47,11 +47,8 @@ public abstract class RefFldOp<
 		return (RefFld<C>) super.fld();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public S ptr() {
-		return (S) super.ptr();
-	}
+	public abstract S ptr();
 
 	@Override
 	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {

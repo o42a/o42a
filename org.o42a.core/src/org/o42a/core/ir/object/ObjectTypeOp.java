@@ -29,15 +29,17 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 
 
-public class ObjectTypeOp extends FinalIROp {
+public final class ObjectTypeOp extends IROp {
 
 	private final ObjectPrecision precision;
+	private final ObjectIRType.Op ptr;
 
 	ObjectTypeOp(
 			CodeBuilder builder,
 			ObjectIRType.Op ptr,
 			ObjectPrecision precision) {
-		super(builder, ptr);
+		super(builder);
+		this.ptr = ptr;
 		this.precision = precision;
 	}
 
@@ -47,7 +49,7 @@ public class ObjectTypeOp extends FinalIROp {
 
 	@Override
 	public final ObjectIRType.Op ptr() {
-		return (ObjectIRType.Op) super.ptr();
+		return this.ptr;
 	}
 
 	public final ObjectOp object(Code code, Obj wellKnownType) {

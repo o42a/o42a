@@ -38,13 +38,21 @@ import org.o42a.core.ir.op.ObjectRefFunc;
 
 public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
+	private final VarFld.Op ptr;
+
 	VarFldOp(VarFld fld, ObjOp host, VarFld.Op ptr) {
-		super(fld, host, ptr);
+		super(fld, host);
+		this.ptr = ptr;
 	}
 
 	@Override
-	public VarFld fld() {
+	public final VarFld fld() {
 		return (VarFld) super.fld();
+	}
+
+	@Override
+	public final VarFld.Op ptr() {
+		return this.ptr;
 	}
 
 	@Override

@@ -24,17 +24,17 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.FinalIROp;
+import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
 
 
-public abstract class FldOp extends FinalIROp implements HostOp {
+public abstract class FldOp extends IROp implements HostOp {
 
 	private final Fld fld;
 	private final ObjOp host;
 
-	public FldOp(Fld fld, ObjOp host, Fld.Op<?> ptr) {
-		super(host.getBuilder(), ptr);
+	public FldOp(Fld fld, ObjOp host) {
+		super(host.getBuilder());
 		this.fld = fld;
 		this.host = host;
 	}
@@ -60,9 +60,7 @@ public abstract class FldOp extends FinalIROp implements HostOp {
 	}
 
 	@Override
-	public Fld.Op<?> ptr() {
-		return (Fld.Op<?>) super.ptr();
-	}
+	public abstract Fld.Op<?> ptr();
 
 	@Override
 	public final LocalOp toLocal() {

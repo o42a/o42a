@@ -33,8 +33,11 @@ import org.o42a.core.object.Obj;
 
 public class ScopeFldOp extends FldOp {
 
+	private final ScopeFld.Op ptr;
+
 	ScopeFldOp(ScopeFld field, ObjOp host, ScopeFld.Op ptr) {
-		super(field, host, ptr);
+		super(field, host);
+		this.ptr = ptr;
 	}
 
 	@Override
@@ -44,7 +47,7 @@ public class ScopeFldOp extends FldOp {
 
 	@Override
 	public final ScopeFld.Op ptr() {
-		return (ScopeFld.Op) super.ptr();
+		return this.ptr;
 	}
 
 	public ObjectOp target(CodeDirs dirs) {

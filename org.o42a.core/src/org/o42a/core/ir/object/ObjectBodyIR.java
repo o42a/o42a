@@ -371,7 +371,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				CodeBuilder builder,
 				Obj ascendant,
 				ObjectPrecision precision) {
-			return op(null, builder, ascendant, precision);
+			return op(builder, null, ascendant, precision);
 		}
 
 		public final ObjectIRType.Op loadObjectType(Code code) {
@@ -424,13 +424,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 
 		final ObjOp op(
-				ObjectIR objectIR,
 				CodeBuilder builder,
+				ObjectIR objectIR,
 				Obj ascendant,
 				ObjectPrecision precision) {
 			return new ObjOp(
-					objectIR != null ? objectIR : getType().getObjectIR(),
 					builder,
+					objectIR != null ? objectIR : getType().getObjectIR(),
 					this,
 					ascendant,
 					precision);

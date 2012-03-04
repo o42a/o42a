@@ -28,13 +28,21 @@ import org.o42a.core.ir.op.ObjectRefFunc;
 
 public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 
+	private final LinkFld.Op ptr;
+
 	LinkFldOp(LinkFld fld, ObjOp host, LinkFld.Op ptr) {
-		super(fld, host, ptr);
+		super(fld, host);
+		this.ptr = ptr;
 	}
 
 	@Override
-	public LinkFld fld() {
+	public final LinkFld fld() {
 		return (LinkFld) super.fld();
+	}
+
+	@Override
+	public final LinkFld.Op ptr() {
+		return this.ptr;
 	}
 
 	@Override

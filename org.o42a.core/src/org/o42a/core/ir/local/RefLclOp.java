@@ -47,8 +47,11 @@ public final class RefLclOp extends LclOp {
 
 	public static final Type REF_LCL = new Type();
 
+	private final Op ptr;
+
 	private RefLclOp(CodeBuilder builder, FieldIR<?> fieldIR, Op ptr) {
-		super(builder, fieldIR, ptr);
+		super(builder, fieldIR);
+		this.ptr = ptr;
 	}
 
 	public final Artifact<?> getArtifact() {
@@ -68,8 +71,8 @@ public final class RefLclOp extends LclOp {
 	}
 
 	@Override
-	public Op ptr() {
-		return (Op) super.ptr();
+	public final Op ptr() {
+		return this.ptr;
 	}
 
 	@Override

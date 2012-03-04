@@ -28,7 +28,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
@@ -42,7 +41,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
+public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
@@ -54,14 +53,14 @@ public abstract class ObjectOp extends FinalIROp implements HostOp, ObjValOp {
 	private final ObjectPrecision precision;
 	private final ObjectTypeOp objectType;
 
-	ObjectOp(CodeBuilder builder, PtrOp<?> ptr, ObjectPrecision precision) {
-		super(builder, ptr);
+	ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
+		super(builder);
 		this.precision = precision;
 		this.objectType = null;
 	}
 
-	ObjectOp(PtrOp<?> ptr, ObjectTypeOp objectType) {
-		super(objectType.getBuilder(), ptr);
+	ObjectOp(ObjectTypeOp objectType) {
+		super(objectType.getBuilder());
 		this.objectType = objectType;
 		this.precision = objectType.getPrecision();
 	}

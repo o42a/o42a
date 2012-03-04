@@ -36,21 +36,24 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.FinalIROp;
+import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.NewObjectFunc;
 
 
-public class CtrOp extends FinalIROp {
+public class CtrOp extends IROp {
 
 	public static final Type CTR_TYPE = new Type();
 
+	private final Op ptr;
+
 	private CtrOp(CodeBuilder builder, Op ptr) {
-		super(builder, ptr);
+		super(builder);
+		this.ptr = ptr;
 	}
 
 	@Override
 	public final Op ptr() {
-		return (Op) super.ptr();
+		return this.ptr;
 	}
 
 	public ObjectOp newObject(

@@ -27,13 +27,21 @@ import org.o42a.core.ir.op.CodeDirs;
 
 public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 
+	private final ObjFld.Op ptr;
+
 	ObjFldOp(ObjFld fld, ObjOp host, ObjFld.Op ptr) {
-		super(fld, host, ptr);
+		super(fld, host);
+		this.ptr = ptr;
 	}
 
 	@Override
-	public ObjFld fld() {
+	public final ObjFld fld() {
 		return (ObjFld) super.fld();
+	}
+
+	@Override
+	public final ObjFld.Op ptr() {
+		return this.ptr;
 	}
 
 	@Override
