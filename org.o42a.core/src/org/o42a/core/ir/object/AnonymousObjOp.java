@@ -36,17 +36,20 @@ import org.o42a.core.object.Obj;
 
 final class AnonymousObjOp extends ObjectOp {
 
+	private final DataOp ptr;
 	private final Obj wellKnownType;
 
 	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
-		super(ptr, data);
+		super(data);
+		this.ptr = ptr;
 		assert wellKnownType != null :
 			"Object type not specified";
 		this.wellKnownType = wellKnownType;
 	}
 
 	AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
-		super(builder, ptr, DERIVED);
+		super(builder, DERIVED);
+		this.ptr = ptr;
 		assert wellKnownType != null :
 			"Object type not specified";
 		this.wellKnownType = wellKnownType;
@@ -59,7 +62,7 @@ final class AnonymousObjOp extends ObjectOp {
 
 	@Override
 	public final DataOp ptr() {
-		return (DataOp) super.ptr();
+		return this.ptr;
 	}
 
 	@Override

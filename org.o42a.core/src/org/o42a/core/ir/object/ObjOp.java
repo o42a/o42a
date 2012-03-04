@@ -27,7 +27,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
-import org.o42a.core.ir.object.ObjectBodyIR.Op;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -39,6 +38,7 @@ import org.o42a.core.object.Obj;
 public final class ObjOp extends ObjectOp {
 
 	private final ObjectIR objectIR;
+	private final ObjectBodyIR.Op ptr;
 	private final Obj ascendant;
 
 	ObjOp(
@@ -46,8 +46,9 @@ public final class ObjOp extends ObjectOp {
 			ObjectBodyIR.Op ptr,
 			Obj ascendant,
 			ObjectTypeOp data) {
-		super(ptr, data);
+		super(data);
 		this.objectIR = objectIR;
+		this.ptr = ptr;
 		assert ascendant != null :
 			"Object ascendant not specified";
 		this.ascendant = ascendant;
@@ -59,12 +60,13 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	ObjOp(
-			ObjectIR objectIR,
 			CodeBuilder builder,
+			ObjectIR objectIR,
 			ObjectBodyIR.Op ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
-		super(builder, ptr, precision);
+		super(builder, precision);
+		this.ptr = ptr;
 		this.objectIR = objectIR;
 		assert ascendant != null :
 			"Object ascendant not specified";
@@ -77,7 +79,8 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectBodyIR.Op ptr) {
-		super(builder, ptr, ObjectPrecision.EXACT);
+		super(builder, ObjectPrecision.EXACT);
+		this.ptr = ptr;
 		this.ascendant = objectIR.getObject();
 		this.objectIR = objectIR;
 	}
@@ -93,7 +96,7 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public final ObjectBodyIR.Op ptr() {
-		return (Op) super.ptr();
+		return this.ptr;
 	}
 
 	@Override
@@ -218,7 +221,7 @@ public final class ObjOp extends ObjectOp {
 			return ascendantBody.op(getObjectIR(), cachedData, ascendant);
 		}
 
-		return ascendantBody.op(getObjectIR(), getBuilder(), ascendant, EXACT);
+		return ascendantBody.op(getBuilder(), getObjectIR(), ascendant, EXACT);
 	}
 
 	@Override

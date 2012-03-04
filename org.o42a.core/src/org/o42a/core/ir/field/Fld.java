@@ -43,8 +43,8 @@ public abstract class Fld {
 
 	private final Field<?> field;
 	private final ObjectBodyIR bodyIR;
-	private final boolean omitted;
 	private Type<?> instance;
+	private final boolean omitted;
 
 	public Fld(ObjectBodyIR bodyIR, Field<?> field) {
 		this.field = field;

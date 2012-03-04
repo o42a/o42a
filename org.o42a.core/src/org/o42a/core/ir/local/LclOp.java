@@ -25,15 +25,15 @@ import org.o42a.codegen.data.Content;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.op.FinalIROp;
+import org.o42a.core.ir.op.IROp;
 
 
-public abstract class LclOp extends FinalIROp implements HostOp {
+public abstract class LclOp extends IROp implements HostOp {
 
 	private final FieldIR<?> fieldIR;
 
-	LclOp(CodeBuilder builder, FieldIR<?> fieldIR, Op<?> ptr) {
-		super(builder, ptr);
+	LclOp(CodeBuilder builder, FieldIR<?> fieldIR) {
+		super(builder);
 		this.fieldIR = fieldIR;
 	}
 
@@ -42,9 +42,7 @@ public abstract class LclOp extends FinalIROp implements HostOp {
 	}
 
 	@Override
-	public Op<?> ptr() {
-		return (Op<?>) super.ptr();
-	}
+	public abstract Op<?> ptr();
 
 	@Override
 	public final LocalOp toLocal() {
