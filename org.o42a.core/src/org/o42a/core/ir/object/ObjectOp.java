@@ -181,7 +181,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		throw new UnsupportedOperationException();
+		value().assign(dirs, value.materialize(dirs));
 	}
 
 	@Override

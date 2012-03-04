@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,16 +19,25 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.link.LinkValueStruct;
 
 
-final class VariableAssignmentCmd extends Cmd {
+final class TargetAssignmentCmd extends Cmd {
 
-	VariableAssignmentCmd(CodeBuilder builder, AssignmentStatement assignment) {
+	TargetAssignmentCmd(CodeBuilder builder, AssignmentStatement assignment) {
 		super(builder, assignment);
 	}
 
@@ -50,12 +59,31 @@ final class VariableAssignmentCmd extends Cmd {
 				assignment.getDestination()
 				.op(control.host())
 				.target(subDirs);
-		final HostOp value =
-				assignment.getValue().op(control.host())
-				.target(subDirs);
+		final ObjectOp link =
+				assignment.getValue()
+				.op(control.host())
+				.target(subDirs)
+				.materialize(subDirs);
+
+		final LinkValueStruct linkStruct =
+				link.value().getValueStruct().toLinkStruct();
+		final ValDirs targetDirs = subDirs.value(linkStruct, "target");
+		final Block code = targetDirs.code();
+		final ValOp targetVal = link.value().writeValue(targetDirs);
+
+		final DataOp targetPtr =
+				targetVal.value(code.id("ptarget"), code)
+				.toPtr(null, code)
+				.load(null, code)
+				.toData(null, code);
+		final ObjectOp value = anonymousObject(
+				getBuilder(),
+				targetPtr,
+				linkStruct.getTypeRef().typeObject(dummyUser()));
 
 		destination.assign(subDirs, value);
 
+		targetDirs.done();
 		subDirs.end();
 	}
 

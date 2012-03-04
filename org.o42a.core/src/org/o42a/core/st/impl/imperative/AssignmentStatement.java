@@ -19,20 +19,19 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.*;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -125,22 +124,7 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {
-		if (getAssignmentKind().isError()) {
-			return;
-		}
-
-		final Resolution value =
-				this.value.resolve(resolver).resolveValue();
-		final Resolution destination =
-				this.destination.resolve(resolver).resolveAssignee();
-
-		if (!destination.isError() && !value.isError()) {
-			destination.materialize().value().wrapBy(
-					value.materialize().value());
-			if (resolver.getScope() == getScope()) {
-				destination.toLink().assign(this.value);
-			}
-		}
+		getAssignmentKind().resolve(resolver, this.destination, this.value);
 	}
 
 	@Override
@@ -155,6 +139,13 @@ public class AssignmentStatement extends Statement {
 
 		final Resolution destResolution = this.destination.getResolution();
 		final Resolution valueResolution = this.value.getResolution();
+		final Obj object = destResolution.toObject();
+
+		if (object != null) {
+			return this.assignmentKind =
+					valueAssignment(object, valueResolution);
+		}
+
 		final Link link = destResolution.toLink();
 
 		if (link == null || !link.isVariable()) {
@@ -165,47 +156,60 @@ public class AssignmentStatement extends Statement {
 			return this.assignmentKind = ASSIGNMENT_ERROR;
 		}
 
+		return this.assignmentKind = variableAssignment();
+	}
+
+	private AssignmentKind valueAssignment(
+			Obj destination,
+			Resolution valueResolution) {
+
+		final LinkValueStruct destStruct =
+				destination.value().getValueStruct().toLinkStruct();
+
+		if (destStruct == null || destStruct.getValueType() != VARIABLE) {
+			getLogger().error(
+					"not_variable_assigned",
+					this.destination,
+					"Can only assign to variable");
+			return ASSIGNMENT_ERROR;
+		}
+
+		final TypeRef destTypeRef =
+				destStruct.getTypeRef().prefixWith(
+						this.destination.getPath().toPrefix(getScope()));
+		final Obj objectValue = valueResolution.toObject();
+		final TypeRef valueTypeRef;
+		final AssignmentKind assignmentKind;
+
+		if (objectValue.value().getValueType().isLink()) {
+			valueTypeRef =
+					objectValue.value()
+					.getValueStruct()
+					.toLinkStruct()
+					.getTypeRef()
+					.prefixWith(this.value.getPath().toPrefix(getScope()));
+			assignmentKind = TARGET_ASSIGNMENT;
+		} else {
+			valueTypeRef = this.value.toTypeRef();
+			assignmentKind = VALUE_ASSIGNMENT;
+		}
+		if (!valueTypeRef.checkDerivedFrom(destTypeRef)) {
+			return ASSIGNMENT_ERROR;
+		}
+
+		return assignmentKind;
+	}
+
+	private AssignmentKind variableAssignment() {
+
 		final TypeRef variableTypeRef =
 				this.destination.ancestor(this.destination);
 
 		if (!this.value.toTypeRef().checkDerivedFrom(variableTypeRef)) {
-			return this.assignmentKind = ASSIGNMENT_ERROR;
+			return ASSIGNMENT_ERROR;
 		}
 
-		return this.assignmentKind = variableAssignment(link, valueResolution);
-	}
-
-	private AssignmentKind variableAssignment(
-			Link destination,
-			Resolution valueResolution) {
-
-		final Obj objectValue = valueResolution.toObject();
-		final TypeRef valueType;
-
-		if (objectValue != null) {
-			valueType = objectValue.type().getAncestor();
-		} else {
-
-			final Artifact<?> artifactValue = valueResolution.toArtifact();
-
-			valueType = artifactValue.getTypeRef();
-
-			if (valueType == null) {
-				getLogger().error(
-						"illegal_value_assigned",
-						this.value,
-						"Illegal value assigned");
-				return ASSIGNMENT_ERROR;
-			}
-		}
-		if (destination.getTypeRef().type(dummyUser()).derivedFrom(
-				valueType.type(dummyUser()))) {
-			return VARIABLE_ASSIGNMENT;
-		}
-
-		getLogger().incompatible(destination, valueType);
-
-		return ASSIGNMENT_ERROR;
+		return VARIABLE_ASSIGNMENT;
 	}
 
 	private static final class AssignmentDefiner extends Definer {
