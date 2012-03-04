@@ -103,11 +103,11 @@ public abstract class PathOp implements HostOp {
 	}
 
 	public void writeLogicalValue(CodeDirs dirs) {
-		materialize(dirs).writeLogicalValue(dirs);
+		materialize(dirs).value().writeCond(dirs);
 	}
 
 	public ValOp writeValue(ValDirs dirs) {
-		return materialize(dirs.dirs()).writeValue(dirs);
+		return materialize(dirs.dirs()).value().writeValue(dirs);
 	}
 
 	public abstract HostOp target(CodeDirs dirs);

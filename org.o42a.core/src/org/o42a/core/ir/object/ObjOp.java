@@ -30,6 +30,8 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
@@ -40,6 +42,7 @@ public final class ObjOp extends ObjectOp {
 	private final ObjectIR objectIR;
 	private final ObjectBodyIR.Op ptr;
 	private final Obj ascendant;
+	private ValueOp value;
 
 	ObjOp(
 			ObjectIR objectIR,
@@ -100,41 +103,20 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-		if (!getPrecision().isExact()) {
-			return super.writeValue(dirs, body);
+	public final ValueOp value() {
+		if (this.value != null) {
+			return this.value;
 		}
 
-		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getObjectValueIR();
+		final ValueIR<?> valueIR =
+				getAscendant().ir(getGenerator()).getValueIR();
+		final ValueOp value = valueIR.op(this);
 
-		return valueIR.writeValue(dirs, this, body);
-	}
-
-	@Override
-	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
 		if (!getPrecision().isExact()) {
-			super.writeRequirement(dirs, body);
-			return;
+			return this.value = value;
 		}
 
-		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getObjectValueIR();
-
-		valueIR.writeRequirement(dirs, this, body);
-	}
-
-	@Override
-	public void writeCondition(CodeDirs dirs, ObjOp body) {
-		if (!getPrecision().isExact()) {
-			super.writeCondition(dirs, body);
-			return;
-		}
-
-		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getObjectValueIR();
-
-		valueIR.writeCondition(dirs, this, body);
+		return this.value = new ExactValueOp(value);
 	}
 
 	@Override
@@ -224,32 +206,53 @@ public final class ObjOp extends ObjectOp {
 		return ascendantBody.op(getBuilder(), getObjectIR(), ascendant, EXACT);
 	}
 
-	@Override
-	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-		if (!getPrecision().isExact()) {
-			return super.writeClaim(dirs, body);
-		}
-
-		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getObjectValueIR();
-
-		return valueIR.writeClaim(dirs, this, body);
-	}
-
-	@Override
-	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-		if (!getPrecision().isExact()) {
-			return super.writeProposition(dirs, body);
-		}
-
-		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getObjectValueIR();
-
-		return valueIR.writeProposition(dirs, this, body);
-	}
-
 	private final ObjectIR getObjectIR() {
 		return this.objectIR;
+	}
+
+	private static final class ExactValueOp extends ValueOp {
+
+		ExactValueOp(ValueOp value) {
+			super(value.getValueIR(), value.object());
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, ObjectOp body) {
+			return objectValueIR().writeValue(dirs, obj(), body);
+		}
+
+		@Override
+		public void writeRequirement(CodeDirs dirs, ObjectOp body) {
+			objectValueIR().writeRequirement(dirs, obj(), body);
+		}
+
+		@Override
+		public void writeCondition(CodeDirs dirs, ObjOp body) {
+			objectValueIR().writeCondition(dirs, obj(), body);
+		}
+
+		@Override
+		protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+			return objectValueIR().writeClaim(dirs, obj(), body);
+		}
+
+		@Override
+		protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
+			return objectValueIR().writeProposition(dirs, obj(), body);
+		}
+
+		private final ObjOp obj() {
+			return (ObjOp) object();
+		}
+
+		private final ObjectIR objectIR() {
+			return obj().getAscendant().ir(getGenerator());
+		}
+
+		private final ObjectValueIR objectValueIR() {
+			return objectIR().getObjectValueIR();
+		}
+
 	}
 
 }

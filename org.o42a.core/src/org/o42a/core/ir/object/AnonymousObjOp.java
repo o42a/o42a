@@ -29,6 +29,8 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
@@ -38,6 +40,7 @@ final class AnonymousObjOp extends ObjectOp {
 
 	private final DataOp ptr;
 	private final Obj wellKnownType;
+	private ValueOp value;
 
 	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
 		super(data);
@@ -63,6 +66,18 @@ final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public final DataOp ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public final ValueOp value() {
+		if (this.value != null) {
+			return this.value;
+		}
+
+		final ValueIR<?> valueIR =
+				getWellKnownType().ir(getGenerator()).getValueIR();
+
+		return this.value = valueIR.op(this);
 	}
 
 	@Override
