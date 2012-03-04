@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.statement;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -36,7 +35,6 @@ import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
-import org.o42a.util.io.SourceRange;
 
 
 public class StatementParser implements Parser<StatementNode> {
@@ -58,13 +56,13 @@ public class StatementParser implements Parser<StatementNode> {
 			final StatementNode statement = parseStatement(context);
 
 			if (statement != null) {
-				logUnexpected(context, firstUnexpected, start);
-				skipUnexpected(context);
+				context.logUnexpected(firstUnexpected, start);
+				context.acceptUnexpected();
 				return statement;
 			}
 			if (context.isEOF()) {
 				if (firstUnexpected != null) {
-					logUnexpected(context, firstUnexpected, start);
+					context.logUnexpected(firstUnexpected, start);
 				} else {
 					context.getLogger().eof(start);
 				}
@@ -74,27 +72,27 @@ public class StatementParser implements Parser<StatementNode> {
 			final ExpressionNode expression = context.parse(expression());
 
 			if (expression != null) {
-				logUnexpected(context, firstUnexpected, start);
+				context.logUnexpected(firstUnexpected, start);
 
 				final StatementNode result =
 						startWithExpression(context, expression);
 
-				skipUnexpected(context);
+				context.acceptUnexpected();
 
 				return result;
 			}
-			if (context.isEOF()
-					|| context.lastChar() == '\n'
-					|| context.asExpected()) {
-				logUnexpected(context, firstUnexpected, start);
+			// Unexpected input before the statement.
+			// Possibly multiple lines.
+			if (!context.unexpected()) {
+				context.logUnexpected(firstUnexpected, start);
 				return null;
 			}
 			if (firstUnexpected == null) {
 				firstUnexpected = start;
 			}
 			context.acceptAll();
-			if (context.acceptComments(false) != null) {
-				logUnexpected(context, firstUnexpected, start);
+			if (context.acceptComments(true) != null) {
+				context.logUnexpected(firstUnexpected, start);
 				firstUnexpected = null;
 			}
 		}
@@ -229,47 +227,6 @@ public class StatementParser implements Parser<StatementNode> {
 		}
 
 		return namedBlock;
-	}
-
-	private static void logUnexpected(
-			ParserContext context,
-			SourcePosition firstUnexpected,
-			SourcePosition current) {
-		if (firstUnexpected == null) {
-			return;
-		}
-		context.getLogger().syntaxError(
-				new SourceRange(firstUnexpected, current));
-	}
-
-	private static void skipUnexpected(ParserContext context) {
-
-		SourcePosition first = null;
-		int c = context.hasPending() ? context.lastChar() : context.next();
-
-		for (;;) {
-
-			final SourcePosition start = context.current().fix();
-
-			if (context.isEOF()
-					|| c == '\n'
-					|| context.asExpected()) {
-				logUnexpected(context, first, start);
-				return;
-			}
-			if (first == null) {
-				first = start;
-			}
-			context.acceptAll();
-
-			final SeparatorNodes comments = context.acceptComments(false);
-
-			if (comments != null && comments.haveComments()) {
-				logUnexpected(context, first, start);
-				first = null;
-			}
-			c = context.next();
-		}
 	}
 
 }
