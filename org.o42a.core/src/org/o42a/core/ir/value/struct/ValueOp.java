@@ -115,37 +115,13 @@ public abstract class ValueOp {
 		return value;
 	}
 
-	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-
-		final ValDirs dubDirs = dirs.begin(
-				"Value of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object().objectType(dubDirs.code()).writeValue(dubDirs, body);
-
-		dubDirs.done();
-
-		return result;
-	}
+	public abstract ValOp writeValue(ValDirs dirs, ObjectOp body);
 
 	public final void writeRequirement(CodeDirs dirs) {
 		writeRequirement(dirs, null);
 	}
 
-	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
-
-		final CodeDirs subDirs;
-
-		if (body != null) {
-			subDirs = dirs.begin("obj_req", "Requirement of " + body);
-		} else {
-			subDirs = dirs.begin("obj_req", "Requirement");
-		}
-
-		object().objectType(subDirs.code()).writeRequirement(subDirs, body);
-
-		subDirs.end();
-	}
+	public abstract void writeRequirement(CodeDirs dirs, ObjectOp body);
 
 	public final ValOp writeClaim(ValDirs dirs) {
 		return writeClaim(dirs, null);
@@ -155,20 +131,7 @@ public abstract class ValueOp {
 		writeCondition(dirs, null);
 	}
 
-	public void writeCondition(CodeDirs dirs, ObjOp body) {
-
-		final CodeDirs subDirs;
-
-		if (body != null) {
-			subDirs = dirs.begin("obj_cond", "Condition of " + body);
-		} else {
-			subDirs = dirs.begin("obj_cond", "Condition");
-		}
-
-		object().objectType(subDirs.code()).writeCondition(subDirs, body);
-
-		subDirs.end();
-	}
+	public abstract void writeCondition(CodeDirs dirs, ObjOp body);
 
 	public final ValOp writeProposition(ValDirs dirs) {
 		return writeProposition(dirs, null);
@@ -179,35 +142,9 @@ public abstract class ValueOp {
 		return "ValueOp[" + this.object + ']';
 	}
 
-	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+	protected abstract ValOp writeClaim(ValDirs dirs, ObjectOp body);
 
-		final ValDirs subDirs = dirs.begin(
-				"Claim of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object()
-				.objectType(subDirs.code())
-				.writeClaim(subDirs, body);
-
-		subDirs.done();
-
-		return result;
-	}
-
-	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-
-		final ValDirs subDirs = dirs.begin(
-				"Proposition of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object()
-				.objectType(subDirs.code())
-				.writeProposition(subDirs, body);
-
-		subDirs.done();
-
-		return result;
-	}
+	protected abstract ValOp writeProposition(ValDirs dirs, ObjectOp body);
 
 	private void evaluateAndStoreValue(
 			Block code,
