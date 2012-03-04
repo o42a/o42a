@@ -137,6 +137,10 @@ public abstract class ValueOp {
 		return writeProposition(dirs, null);
 	}
 
+	public void assign(CodeDirs dirs, ObjectOp value) {
+		throw new UnsupportedOperationException();
+	}
+
 	@Override
 	public String toString() {
 		return "ValueOp[" + this.object + ']';

@@ -23,11 +23,22 @@ import static org.o42a.core.ir.local.Cmd.noCmd;
 
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 
 
 enum AssignmentKind {
 
 	ASSIGNMENT_ERROR() {
+
+		@Override
+		public void resolve(
+				LocalResolver resolver,
+				Ref destination,
+				Ref value) {
+		}
 
 		@Override
 		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
@@ -39,8 +50,108 @@ enum AssignmentKind {
 	VARIABLE_ASSIGNMENT() {
 
 		@Override
+		public void resolve(
+				LocalResolver resolver,
+				Ref destination,
+				Ref value) {
+
+			final Resolution val = value.resolve(resolver).resolveValue();
+			final Resolution dest =
+					destination.resolve(resolver).resolveAssignee();
+
+			if (dest.isError() || val.isError()) {
+				return;
+			}
+
+			dest.materialize().value().wrapBy(
+					val.materialize().value());
+			if (resolver.getScope() == destination.getScope()) {
+				dest.toLink().assign(value);
+			}
+		}
+
+		@Override
 		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
 			return new VariableAssignmentCmd(builder, assignment);
+		}
+
+	},
+
+	VALUE_ASSIGNMENT() {
+
+		@Override
+		public void resolve(
+				LocalResolver resolver,
+				Ref destination,
+				Ref value) {
+
+			final Ref destTarget =
+					destination.getPath()
+					.dereference()
+					.target(destination.distribute());
+			final Resolution val =
+					value.resolve(resolver).resolveTarget();
+			final Resolution dest =
+					destTarget.resolve(resolver).resolveTarget();
+
+			if (dest.isError() || val.isError()) {
+				return;
+			}
+
+			final Obj destObj = dest.materialize();
+			final Obj valObj = val.materialize();
+
+			valObj.value().wrapBy(destObj.value());
+			destObj.value().wrapBy(valObj.value());
+			valObj.type().wrapBy(destObj.type());
+			destObj.type().wrapBy(valObj.type());
+		}
+
+		@Override
+		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
+			return new VariableAssignmentCmd(builder, assignment);
+		}
+
+	},
+
+
+	TARGET_ASSIGNMENT() {
+
+		@Override
+		public void resolve(
+				LocalResolver resolver,
+				Ref destination,
+				Ref value) {
+
+			final Ref destTarget =
+					destination.getPath()
+					.dereference()
+					.target(destination.distribute());
+			final Ref valTarget =
+					value.getPath()
+					.dereference()
+					.target(value.distribute());
+			final Resolution val =
+					valTarget.resolve(resolver).resolveTarget();
+			final Resolution dest =
+					destTarget.resolve(resolver).resolveTarget();
+
+			if (dest.isError() || val.isError()) {
+				return;
+			}
+
+			final Obj destObj = dest.materialize();
+			final Obj valObj = val.materialize();
+
+			valObj.value().wrapBy(destObj.value());
+			destObj.value().wrapBy(valObj.value());
+			valObj.type().wrapBy(destObj.type());
+			destObj.type().wrapBy(valObj.type());
+		}
+
+		@Override
+		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
+			return new TargetAssignmentCmd(builder, assignment);
 		}
 
 	};
@@ -48,6 +159,11 @@ enum AssignmentKind {
 	public final boolean isError() {
 		return this == ASSIGNMENT_ERROR;
 	}
+
+	public abstract void resolve(
+			LocalResolver resolver,
+			Ref destination,
+			Ref value);
 
 	public abstract Cmd op(
 			CodeBuilder builder,
