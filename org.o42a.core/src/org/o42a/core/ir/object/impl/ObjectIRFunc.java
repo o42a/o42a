@@ -77,7 +77,7 @@ public abstract class ObjectIRFunc {
 	public boolean writeFalseValue(CodeDirs dirs) {
 
 		final Condition finalCondition =
-				getObjectIR().getValueIR().condition().getFinal();
+				getObjectIR().getObjectValueIR().condition().getFinal();
 
 		if (!finalCondition.isFalse()) {
 			return false;

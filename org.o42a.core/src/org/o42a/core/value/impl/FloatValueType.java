@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.SingleValueStruct;
@@ -40,9 +41,14 @@ public final class FloatValueType extends SingleValueType<Double> {
 	}
 
 	@Override
+	public Obj typeObject(Intrinsics intrinsics) {
+		return intrinsics.getFloat();
+	}
+
+	@Override
 	public Path path(Intrinsics intrinsics) {
 		return Path.ROOT_PATH.append(
-				intrinsics.getFloat().getScope().toField().getKey());
+				typeObject(intrinsics).getScope().toField().getKey());
 	}
 
 }

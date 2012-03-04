@@ -48,15 +48,17 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	}
 
 	@Override
+	public Obj typeObject(Intrinsics intrinsics) {
+		if (!isConstant()) {
+			return intrinsics.getVariableArray();
+		}
+		return intrinsics.getConstantArray();
+	}
+
+	@Override
 	public Path path(Intrinsics intrinsics) {
 
-		final Obj array;
-
-		if (!isConstant()) {
-			array = intrinsics.getVariableArray();
-		} else {
-			array = intrinsics.getConstantArray();
-		}
+		final Obj array = typeObject(intrinsics);
 
 		return Path.ROOT_PATH.append(array.getScope().toField().getKey());
 	}

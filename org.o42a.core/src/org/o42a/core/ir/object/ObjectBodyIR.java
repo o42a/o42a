@@ -46,6 +46,8 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.func.Getter;
 
 
@@ -182,6 +184,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.methods = data.addDataPtr("methods");
 		this.flags = data.addInt32("flags");
+		allocateValueBody(data);
 		allocateFields(data);
 		allocateDeps(data);
 	}
@@ -230,6 +233,20 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final ObjectIR ascendantIR = getAscendant().ir(getGenerator());
 
 		this.methodsIR = ascendantIR.getMainBodyIR().getMethodsIR();
+	}
+
+	private void allocateValueBody(SubData<Op> data) {
+
+		final Obj ascendant = getAscendant();
+		final ValueStruct<?, ?> valueStruct =
+				ascendant.value().getValueStruct();
+		final ValueType<?> valueType = valueStruct.getValueType();
+		final Obj typeObject =
+				valueType.typeObject(ascendant.getContext().getIntrinsics());
+
+		if (ascendant == typeObject) {
+			getObjectIR().getValueIR().allocateBody(this, data);
+		}
 	}
 
 	private final void allocateFields(SubData<Op> data) {

@@ -20,6 +20,7 @@
 package org.o42a.core.value;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.impl.ArrayValueType;
 import org.o42a.core.object.link.LinkValueType;
@@ -74,6 +75,8 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	}
 
 	public abstract boolean isVariable();
+
+	public abstract Obj typeObject(Intrinsics intrinsics);
 
 	public abstract Path path(Intrinsics intrinsics);
 

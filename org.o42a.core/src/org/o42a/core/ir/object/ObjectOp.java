@@ -34,6 +34,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
@@ -52,6 +53,7 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 
 	private final ObjectPrecision precision;
 	private final ObjectTypeOp objectType;
+	private ValueOp value;
 
 	ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
 		super(builder);
@@ -153,6 +155,14 @@ public abstract class ObjectOp extends IROp implements HostOp, ObjValOp {
 		subDirs.end();
 
 		return result;
+	}
+
+	public final ValueOp value() {
+		if (this.value != null) {
+			return this.value;
+		}
+		return this.value =
+				getWellKnownType().ir(getGenerator()).getValueIR().op(this);
 	}
 
 	@Override

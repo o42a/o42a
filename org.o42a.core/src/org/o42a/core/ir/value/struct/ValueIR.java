@@ -1,0 +1,63 @@
+/*
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.core.ir.value.struct;
+
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.value.impl.DefaultValueIR;
+
+
+public abstract class ValueIR<O extends ValueOp> {
+
+	public static ValueIR<?> defaultValueIR(ObjectIR bodyIR) {
+		return new DefaultValueIR(bodyIR);
+	}
+
+	private final ObjectIR objectIR;
+
+	public ValueIR(ObjectIR objectIR) {
+		assert objectIR != null :
+			"Body not specified";
+		this.objectIR = objectIR;
+	}
+
+	public final ObjectIR getObjectIR() {
+		return this.objectIR;
+	}
+
+	public abstract void allocateBody(
+			ObjectBodyIR bodyIR,
+			SubData<?> data);
+
+	public abstract void allocateMethods(
+			ObjectMethodsIR methodsIR,
+			SubData<?> data);
+
+	public abstract O op(ObjectOp object);
+
+	@Override
+	public String toString() {
+		if (this.objectIR == null) {
+			return super.toString();
+		}
+		return "ValueIR[" + this.objectIR.getObject() + ']';
+	}
+
+}

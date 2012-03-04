@@ -36,7 +36,7 @@ public abstract class ObjectLocalIR extends ScopeIR {
 		super(generator, scope);
 
 		final LocalIR localIR = (LocalIR) this;
-		final ObjectValueIR ownerValueIR = localIR.getOwnerIR().getValueIR();
+		final ObjectValueIR ownerValueIR = localIR.getOwnerIR().getObjectValueIR();
 
 		this.function = new LocalIRFunc(localIR, ownerValueIR.getLocals());
 	}
