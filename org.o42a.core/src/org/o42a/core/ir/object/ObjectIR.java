@@ -31,6 +31,7 @@ import org.o42a.codegen.data.Data;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
@@ -41,12 +42,15 @@ public class ObjectIR  {
 
 	private final Generator generator;
 	private final Obj object;
+	private final ValueIR<?> valueIR;
 	private ObjectIRStruct struct;
-	private ObjectValueIR valueIR;
+	private ObjectValueIR objectValueIR;
 
 	public ObjectIR(Generator generator, Obj object) {
 		this.generator = generator;
 		this.object = object;
+		this.valueIR =
+				object.value().getValueStruct().ir(generator).valueIR(this);
 	}
 
 	public final Generator getGenerator() {
@@ -114,11 +118,15 @@ public class ObjectIR  {
 		return getStruct().typeIR();
 	}
 
-	public final ObjectValueIR getValueIR() {
-		if (this.valueIR != null) {
-			return this.valueIR;
+	public final ValueIR<?> getValueIR() {
+		return this.valueIR;
+	}
+
+	public final ObjectValueIR getObjectValueIR() {
+		if (this.objectValueIR != null) {
+			return this.objectValueIR;
 		}
-		return this.valueIR = new ObjectValueIR(this);
+		return this.objectValueIR = new ObjectValueIR(this);
 	}
 
 	public final Data<?> getData() {

@@ -33,16 +33,8 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	public static final LinkValueType LINK = new LinkValueType("link") {
 
 		@Override
-		public Path path(Intrinsics intrinsics) {
-
-			final Obj link = intrinsics.getLink();
-
-			return ROOT_PATH.append(link.getScope().toField().getKey());
-		}
-
-		@Override
-		public String toString() {
-			return "LINK";
+		public Obj typeObject(Intrinsics intrinsics) {
+			return intrinsics.getLink();
 		}
 
 	};
@@ -50,16 +42,8 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	public static final LinkValueType VARIABLE = new LinkValueType("variable") {
 
 		@Override
-		public Path path(Intrinsics intrinsics) {
-
-			final Obj variable = intrinsics.getVariable();
-
-			return ROOT_PATH.append(variable.getScope().toField().getKey());
-		}
-
-		@Override
-		public String toString() {
-			return "VARIABLE";
+		public Obj typeObject(Intrinsics intrinsics) {
+			return intrinsics.getVariable();
 		}
 
 	};
@@ -71,6 +55,14 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	@Override
 	public final boolean isVariable() {
 		return this != LINK;
+	}
+
+	@Override
+	public Path path(Intrinsics intrinsics) {
+
+		final Obj link = typeObject(intrinsics);
+
+		return ROOT_PATH.append(link.getScope().toField().getKey());
 	}
 
 	public final LinkValueStruct linkStruct(TypeRef typeRef) {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ir.value.struct;
 
-import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
-import org.o42a.core.value.Void;
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.object.ObjectOp;
 
 
-public final class VoidValueType extends SingleValueType<Void> {
+public abstract class ValueOp {
 
-	public static VoidValueType INSTANCE = new VoidValueType();
+	private final ObjectOp object;
 
-	private VoidValueType() {
-		super("void");
+	public ValueOp(ObjectOp object) {
+		this.object = object;
+	}
+
+	public final Generator getGenerator() {
+		return object().getGenerator();
+	}
+
+	public final CodeBuilder getBuilder() {
+		return object().getBuilder();
+	}
+
+	public final ObjectOp object() {
+		return this.object;
 	}
 
 	@Override
-	public SingleValueStruct<Void> struct() {
-		return ValueStruct.VOID;
-	}
-
-	@Override
-	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getVoid();
-	}
-
-	@Override
-	public Path path(Intrinsics intrinsics) {
-		return Path.VOID_PATH;
+	public String toString() {
+		return "ValueOp[" + this.object + ']';
 	}
 
 }

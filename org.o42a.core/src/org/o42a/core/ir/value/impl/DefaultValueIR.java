@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.ir.value.impl;
 
-import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
-import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueOp;
 
 
-public final class DirectiveValueType extends SingleValueType<Directive> {
+public final class DefaultValueIR extends ValueIR<DefaultValueIR.Op> {
 
-	public static final DirectiveValueType INSTANCE = new DirectiveValueType();
-
-	private DirectiveValueType() {
-		super("directive");
+	public DefaultValueIR(ObjectIR objectIR) {
+		super(objectIR);
 	}
 
 	@Override
-	public Obj typeObject(Intrinsics intrinsics) {
-		return intrinsics.getDirective();
+	public void allocateBody(ObjectBodyIR bodyIR, SubData<?> data) {
 	}
 
 	@Override
-	public SingleValueStruct<Directive> struct() {
-		return ValueStruct.DIRECTIVE;
+	public void allocateMethods(ObjectMethodsIR methodsIR, SubData<?> data) {
 	}
 
 	@Override
-	public Path path(Intrinsics intrinsics) {
-		return Path.ROOT_PATH.append(
-				typeObject(intrinsics).getScope().toField().getKey());
+	public Op op(ObjectOp object) {
+		return new Op(object);
+	}
+
+	public static final class Op extends ValueOp {
+
+		Op(ObjectOp object) {
+			super(object);
+		}
+
 	}
 
 }

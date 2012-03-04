@@ -91,7 +91,7 @@ public final class ObjOp extends ObjectOp {
 
 	@Override
 	public final Obj getWellKnownType() {
-		return this.ascendant;
+		return getAscendant();
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+				getAscendant().ir(getGenerator()).getObjectValueIR();
 
 		return valueIR.writeValue(dirs, this, body);
 	}
@@ -119,7 +119,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+				getAscendant().ir(getGenerator()).getObjectValueIR();
 
 		valueIR.writeRequirement(dirs, this, body);
 	}
@@ -132,7 +132,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+				getAscendant().ir(getGenerator()).getObjectValueIR();
 
 		valueIR.writeCondition(dirs, this, body);
 	}
@@ -231,7 +231,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+				getAscendant().ir(getGenerator()).getObjectValueIR();
 
 		return valueIR.writeClaim(dirs, this, body);
 	}
@@ -243,7 +243,7 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		final ObjectValueIR valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+				getAscendant().ir(getGenerator()).getObjectValueIR();
 
 		return valueIR.writeProposition(dirs, this, body);
 	}

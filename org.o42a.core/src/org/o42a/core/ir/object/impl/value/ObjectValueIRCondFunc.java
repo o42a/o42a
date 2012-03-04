@@ -263,7 +263,7 @@ public abstract class ObjectValueIRCondFunc
 		}
 
 		final ObjectValueIR reuseFromIR =
-				reuseFrom.ir(getGenerator()).allocate().getValueIR();
+				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
 		final FuncPtr<ObjectCondFunc> reused =
 				reuseFromIR.condition(isRequirement()).getNotStub();
 

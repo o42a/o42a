@@ -307,7 +307,7 @@ public abstract class ObjectValueIRValFunc
 		}
 
 		final ObjectValueIR reuseFromIR =
-				reuseFrom.ir(getGenerator()).allocate().getValueIR();
+				reuseFrom.ir(getGenerator()).allocate().getObjectValueIR();
 		final FuncPtr<ObjectValFunc> reused =
 				reuseFromIR.value(isClaim()).getNotStub();
 

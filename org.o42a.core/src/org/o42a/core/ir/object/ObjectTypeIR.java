@@ -109,7 +109,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
-		getObjectIR().getValueIR().fill(this);
+		getObjectIR().getObjectValueIR().fill(this);
 	}
 
 	public ObjectTypeOp op(CodeBuilder builder, Code code) {
@@ -142,7 +142,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		getObjectType().fields().allocateItems(data);
 		getObjectType().overriders().allocateItems(data);
 
-		getObjectIR().getValueIR().allocate(this);
+		getObjectIR().getObjectValueIR().allocate(this);
 	}
 
 	private void fillFields() {
