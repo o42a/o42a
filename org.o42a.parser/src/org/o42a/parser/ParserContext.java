@@ -26,6 +26,8 @@ import java.io.IOException;
 import org.o42a.ast.Node;
 import org.o42a.ast.Position;
 import org.o42a.ast.atom.SeparatorNodes;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
 import org.o42a.util.io.SourceReader;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
@@ -248,6 +250,10 @@ public final class ParserContext {
 		return this.worker.lastChar();
 	}
 
+	public final int pendingOrNext() {
+		return hasPending() ? lastChar() : next();
+	}
+
 	public final boolean isEOF() {
 		return isFailed() || this.current.charOffset() >= this.worker.eof();
 	}
@@ -282,6 +288,43 @@ public final class ParserContext {
 
 	public final boolean asExpected() {
 		return getExpectations().asExpected(this);
+	}
+
+	public final boolean unexpected() {
+		return !isEOF() && pendingOrNext() != '\n' && !asExpected();
+	}
+
+	public final void logUnexpected(SourcePosition from, SourcePosition to) {
+		if (from == null) {
+			return;
+		}
+		getLogger().syntaxError(new SourceRange(from, to));
+	}
+
+	public void acceptUnexpected() {
+
+		SourcePosition first = null;
+
+		for (;;) {
+
+			final SourcePosition start = current().fix();
+
+			if (!unexpected()) {
+				logUnexpected(first, start);
+				return;
+			}
+			if (first == null) {
+				first = start;
+			}
+			acceptAll();
+
+			final SeparatorNodes comments = acceptComments(false);
+
+			if (comments != null && comments.haveComments()) {
+				logUnexpected(first, start);
+				first = null;
+			}
+		}
 	}
 
 	protected <T> T parse(Parser<T> parser, Expectations expectations) {
