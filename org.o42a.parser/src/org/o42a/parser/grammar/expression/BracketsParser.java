@@ -162,6 +162,36 @@ public final class BracketsParser implements Parser<BracketsNode> {
 				new SourceRange(firstUnexpected, current));
 	}
 
+	private static void skipUnexpected(ParserContext context) {
+
+		SourcePosition first = null;
+		int c = context.hasPending() ? context.lastChar() : context.next();
+
+		for (;;) {
+
+			final SourcePosition start = context.current().fix();
+
+			if (context.isEOF()
+					|| c == '\n'
+					|| context.asExpected()) {
+				logUnexpected(context, first, start);
+				return;
+			}
+			if (first == null) {
+				first = start;
+			}
+			context.acceptAll();
+
+			final SeparatorNodes comments = context.acceptComments(false);
+
+			if (comments != null && comments.haveComments()) {
+				logUnexpected(context, first, start);
+				first = null;
+			}
+			c = context.next();
+		}
+	}
+
 	private static final class ArgumentParser implements Parser<ArgumentNode> {
 
 		private final SignNode<Separator> separator;
@@ -186,6 +216,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 				if (value != null) {
 					logUnexpected(context, firstUnexpected, start);
+					skipUnexpected(context);
 					return new ArgumentNode(this.separator, value);
 				}
 				if (context.isEOF()) {
@@ -196,18 +227,17 @@ public final class BracketsParser implements Parser<BracketsNode> {
 					}
 					return null;
 				}
-				if (context.asExpected()) {
+				if (context.isEOF()
+						|| context.lastChar() == '\n'
+						|| context.asExpected()) {
 					logUnexpected(context, firstUnexpected, start);
 					return null;
 				}
 				if (firstUnexpected == null) {
-					if (context.skipComments(true) != null) {
-						return null;
-					}
 					firstUnexpected = start;
 				}
 				context.acceptAll();
-				if (context.acceptComments(true) != null) {
+				if (context.acceptComments(false) != null) {
 					logUnexpected(context, firstUnexpected, start);
 					firstUnexpected = null;
 				}
