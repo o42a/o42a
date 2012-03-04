@@ -718,9 +718,6 @@ public class Definitions extends Scoped {
 			return getValueStruct();
 		}
 
-		System.err.println("(!)");
-		getValueStruct().assignableFrom(valueStruct);
-
 		refinement.getContext().getLogger().incompatible(
 				refinement,
 				getValueStruct());
