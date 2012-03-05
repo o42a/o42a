@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,38 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.object.link.impl;
+
+import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.object.link.LinkValueStruct;
 
 
-public enum FldKind {
+public class VariableValueStructIR extends LinkValueStructIR {
 
-	OBJ(0, false, false),
-	LINK(1, false, false),
-	VAR(2, true, false),
-	SCOPE(3, false, true),
-	DEP(4, false, true),
-	ASSIGNER(5, true, true);
-
-	private final int code;
-	private final boolean variable;
-	private final boolean synthetic;
-
-	FldKind(int code, boolean variable, boolean synthetic) {
-		this.code = code;
-		this.variable = variable;
-		this.synthetic = synthetic;
+	public VariableValueStructIR(
+			Generator generator,
+			LinkValueStruct valueStruct) {
+		super(generator, valueStruct);
 	}
 
-	public final int getCode() {
-		return this.code;
-	}
-
-	public final boolean isVariable() {
-		return this.variable;
-	}
-
-	public final boolean isSynthetic() {
-		return this.synthetic;
+	@Override
+	public ValueIR<?> valueIR(ObjectIR objectIR) {
+		return new VariableIR(getValueStruct(), objectIR);
 	}
 
 }

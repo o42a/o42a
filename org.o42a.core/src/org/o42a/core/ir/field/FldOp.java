@@ -48,7 +48,7 @@ public abstract class FldOp extends IROp implements HostOp {
 		if (!isOmitted()) {
 			return super.getId();
 		}
-		return fld().getField().ir(getGenerator()).getId();
+		return fld().getId();
 	}
 
 	public Fld fld() {

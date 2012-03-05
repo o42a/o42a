@@ -43,7 +43,7 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
 
 
-public abstract class RefFld<C extends ObjectFunc<C>> extends Fld {
+public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	private final Obj target;
 	private Obj targetAscendant;

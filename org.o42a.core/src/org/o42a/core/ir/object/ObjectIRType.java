@@ -123,7 +123,7 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 			final Generator generator = fld.getGenerator();
 			final CodeId id =
 					generator.id("field")
-					.detail(fld.getField().ir(generator).getId().getLocal());
+					.detail(fld.getId().getLocal());
 			final FieldDescIR.Type desc =
 					data.addInstance(id, FIELD_DESC_IR, item);
 
@@ -144,7 +144,7 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 			final Generator generator = fld.getGenerator();
 			final CodeId id =
 					generator.id("overrider")
-					.detail(fld.getField().ir(generator).getId());
+					.detail(fld.getId());
 			final OverriderDescIR.Type desc =
 					data.addInstance(id, OVERRIDER_DESC_IR, item);
 

@@ -212,8 +212,11 @@ public final class ObjOp extends ObjectOp {
 
 	private static final class ExactValueOp extends ValueOp {
 
+		private final ValueOp value;
+
 		ExactValueOp(ValueOp value) {
 			super(value.getValueIR(), value.object());
+			this.value = value;
 		}
 
 		@Override
@@ -227,18 +230,23 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
+		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+			return objectValueIR().writeClaim(dirs, obj(), body);
+		}
+
+		@Override
 		public void writeCondition(CodeDirs dirs, ObjOp body) {
 			objectValueIR().writeCondition(dirs, obj(), body);
 		}
 
 		@Override
-		protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-			return objectValueIR().writeClaim(dirs, obj(), body);
+		public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
+			return objectValueIR().writeProposition(dirs, obj(), body);
 		}
 
 		@Override
-		protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-			return objectValueIR().writeProposition(dirs, obj(), body);
+		public void assign(CodeDirs dirs, ObjectOp value) {
+			this.value.assign(dirs, value);
 		}
 
 		private final ObjOp obj() {

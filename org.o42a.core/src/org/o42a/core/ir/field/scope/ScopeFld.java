@@ -27,6 +27,7 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.FieldFld;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
@@ -36,7 +37,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public final class ScopeFld extends Fld implements Content<ScopeFld.Type> {
+public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 
 	public static final Type SCOPE_FLD = new Type();
 

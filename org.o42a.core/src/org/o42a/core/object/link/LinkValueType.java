@@ -21,7 +21,10 @@ package org.o42a.core.object.link;
 
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
+import org.o42a.codegen.Generator;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.impl.LinkValueStructIR;
+import org.o42a.core.object.link.impl.VariableValueStructIR;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
@@ -37,6 +40,13 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 			return intrinsics.getLink();
 		}
 
+		@Override
+		LinkValueStructIR structIR(
+				Generator generator,
+				LinkValueStruct linkStruct) {
+			return new LinkValueStructIR(generator, linkStruct);
+		}
+
 	};
 
 	public static final LinkValueType VARIABLE = new LinkValueType("variable") {
@@ -44,6 +54,13 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		@Override
 		public Obj typeObject(Intrinsics intrinsics) {
 			return intrinsics.getVariable();
+		}
+
+		@Override
+		LinkValueStructIR structIR(
+				Generator generator,
+				LinkValueStruct linkStruct) {
+			return new VariableValueStructIR(generator, linkStruct);
 		}
 
 	};
@@ -73,5 +90,9 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	public final LinkValueType toLinkType() {
 		return this;
 	}
+
+	abstract LinkValueStructIR structIR(
+			Generator generator,
+			LinkValueStruct linkStruct);
 
 }

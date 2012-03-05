@@ -55,6 +55,10 @@ public enum TypeRelation {
 		return this == SAME || this == DERIVATIVE;
 	}
 
+	public final boolean isSame() {
+		return this == SAME;
+	}
+
 	public TypeRelation revert(boolean revert) {
 		return revert ? revert() : this;
 	}

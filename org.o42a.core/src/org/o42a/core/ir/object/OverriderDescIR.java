@@ -61,8 +61,8 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 				this.fld.getDeclaredIn().ir(this.fld.getGenerator());
 		final FieldDescIR fieldDescIR =
 				declaredInIR.getTypeIR().fieldDescIR(
-						this.fld.getField().getKey());
-		final Obj definedIn = this.fld.getField().getDefinedIn().toObject();
+						this.fld.getKey());
+		final Obj definedIn = this.fld.getDefinedIn();
 		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
 
 		instance.field().setConstant(true).setValue(

@@ -245,7 +245,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 
 		if (ascendant == typeObject) {
-			getObjectIR().getValueIR().allocateBody(this, data);
+			addFld(getObjectIR().getValueIR().allocateBody(this, data));
 		}
 	}
 
@@ -276,12 +276,15 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final FieldIRBase<?> fieldIR = field.ir(generator);
-			final Fld fld = fieldIR.allocate(data, this);
 
-			if (fld != null) {
-				this.fieldList.add(fld);
-				this.fieldMap.put(field.getKey(), fld);
-			}
+			addFld(fieldIR.allocate(data, this));
+		}
+	}
+
+	private final void addFld(Fld fld) {
+		if (fld != null) {
+			this.fieldList.add(fld);
+			this.fieldMap.put(fld.getKey(), fld);
 		}
 	}
 

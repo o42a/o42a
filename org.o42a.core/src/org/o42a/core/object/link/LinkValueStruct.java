@@ -27,7 +27,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.impl.LinkConstantValueDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
-import org.o42a.core.object.link.impl.LinkValueStructIR;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -253,7 +252,7 @@ public final class LinkValueStruct
 	@Override
 	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
 			Generator generator) {
-		return new LinkValueStructIR(generator, this);
+		return getValueType().structIR(generator, this);
 	}
 
 }
