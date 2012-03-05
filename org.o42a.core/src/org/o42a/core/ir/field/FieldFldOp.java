@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,36 +19,27 @@
 */
 package org.o42a.core.ir.field;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.core.ir.object.ObjOp;
 
-public enum FldKind {
 
-	OBJ(0, false, false),
-	LINK(1, false, false),
-	VAR(2, true, false),
-	SCOPE(3, false, true),
-	DEP(4, false, true),
-	ASSIGNER(5, true, true);
+public abstract class FieldFldOp extends FldOp {
 
-	private final int code;
-	private final boolean variable;
-	private final boolean synthetic;
-
-	FldKind(int code, boolean variable, boolean synthetic) {
-		this.code = code;
-		this.variable = variable;
-		this.synthetic = synthetic;
+	public FieldFldOp(FieldFld fld, ObjOp host) {
+		super(fld, host);
 	}
 
-	public final int getCode() {
-		return this.code;
+	@Override
+	public CodeId getId() {
+		if (!isOmitted()) {
+			return super.getId();
+		}
+		return fld().getField().ir(getGenerator()).getId();
 	}
 
-	public final boolean isVariable() {
-		return this.variable;
-	}
-
-	public final boolean isSynthetic() {
-		return this.synthetic;
+	@Override
+	public FieldFld fld() {
+		return (FieldFld) super.fld();
 	}
 
 }

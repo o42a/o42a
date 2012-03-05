@@ -127,6 +127,8 @@ public abstract class ValueOp {
 		return writeClaim(dirs, null);
 	}
 
+	public abstract ValOp writeClaim(ValDirs dirs, ObjectOp body);
+
 	public final void writeCondition(CodeDirs dirs) {
 		writeCondition(dirs, null);
 	}
@@ -137,18 +139,14 @@ public abstract class ValueOp {
 		return writeProposition(dirs, null);
 	}
 
-	public void assign(CodeDirs dirs, ObjectOp value) {
-		throw new UnsupportedOperationException();
-	}
+	public abstract ValOp writeProposition(ValDirs dirs, ObjectOp body);
+
+	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
 	@Override
 	public String toString() {
 		return "ValueOp[" + this.object + ']';
 	}
-
-	protected abstract ValOp writeClaim(ValDirs dirs, ObjectOp body);
-
-	protected abstract ValOp writeProposition(ValDirs dirs, ObjectOp body);
 
 	private void evaluateAndStoreValue(
 			Block code,

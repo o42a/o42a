@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value.impl;
 
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.value.ValueStruct;
@@ -32,7 +33,8 @@ public final class DefaultValueIR extends ValueIR<DefaultValueOp> {
 	}
 
 	@Override
-	public void allocateBody(ObjectBodyIR bodyIR, SubData<?> data) {
+	public Fld allocateBody(ObjectBodyIR bodyIR, SubData<?> data) {
+		return null;
 	}
 
 	@Override

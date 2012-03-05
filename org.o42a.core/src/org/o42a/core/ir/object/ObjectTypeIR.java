@@ -159,7 +159,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 			fields.add(fieldDescIR);
 			if (!fld.getKind().isSynthetic()) {
-				this.fieldDescs.put(fld.getField().getKey(), fieldDescIR);
+				this.fieldDescs.put(fld.getKey(), fieldDescIR);
 			}
 		}
 

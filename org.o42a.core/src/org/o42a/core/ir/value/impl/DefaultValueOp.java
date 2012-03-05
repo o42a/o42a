@@ -28,9 +28,9 @@ import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
 
 
-final class DefaultValueOp extends ValueOp {
+public final class DefaultValueOp extends ValueOp {
 
-	DefaultValueOp(ValueIR<?> valueIR, ObjectOp object) {
+	public DefaultValueOp(ValueIR<?> valueIR, ObjectOp object) {
 		super(valueIR, object);
 	}
 
@@ -65,6 +65,22 @@ final class DefaultValueOp extends ValueOp {
 	}
 
 	@Override
+	public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+
+		final ValDirs subDirs = dirs.begin(
+				"Claim of "
+				+ (body != null ? body + " by " + this : toString()));
+		final ValOp result =
+				object()
+				.objectType(subDirs.code())
+				.writeClaim(subDirs, body);
+
+		subDirs.done();
+
+		return result;
+	}
+
+	@Override
 	public void writeCondition(CodeDirs dirs, ObjOp body) {
 
 		final CodeDirs subDirs;
@@ -81,23 +97,7 @@ final class DefaultValueOp extends ValueOp {
 	}
 
 	@Override
-	protected ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-
-		final ValDirs subDirs = dirs.begin(
-				"Claim of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object()
-				.objectType(subDirs.code())
-				.writeClaim(subDirs, body);
-
-		subDirs.done();
-
-		return result;
-	}
-
-	@Override
-	protected ValOp writeProposition(ValDirs dirs, ObjectOp body) {
+	public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
 		final ValDirs subDirs = dirs.begin(
 				"Proposition of "
@@ -110,6 +110,11 @@ final class DefaultValueOp extends ValueOp {
 		subDirs.done();
 
 		return result;
+	}
+
+	@Override
+	public void assign(CodeDirs dirs, ObjectOp value) {
+		throw new UnsupportedOperationException();
 	}
 
 }
