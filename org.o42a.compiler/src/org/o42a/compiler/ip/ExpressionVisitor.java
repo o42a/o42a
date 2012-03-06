@@ -20,14 +20,13 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
+import static org.o42a.compiler.ip.Interpreter.integer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
 import static org.o42a.core.ref.Ref.errorRef;
-import static org.o42a.core.value.ValueType.INTEGER;
 import static org.o42a.core.value.ValueType.STRING;
 
-import org.o42a.ast.Node;
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.RefNode;
@@ -39,7 +38,6 @@ import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.Location;
 
 
 public final class ExpressionVisitor
@@ -59,17 +57,7 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitDecimal(DecimalNode decimal, Distributor p) {
-
-		final long value;
-
-		try {
-			value = Long.parseLong(decimal.getNumber());
-		} catch (NumberFormatException e) {
-			p.getContext().getLogger().notInteger(decimal, decimal.getNumber());
-			return integer(p, 0L, decimal);
-		}
-
-		return integer(p, value, decimal);
+		return integer(decimal, p);
 	}
 
 	@Override
@@ -187,13 +175,6 @@ public final class ExpressionVisitor
 	protected Ref visitExpression(ExpressionNode expression, Distributor p) {
 		p.getLogger().invalidExpression(expression);
 		return errorRef(location(p, expression), p);
-	}
-
-	private final Ref integer(Distributor p, long value, Node node) {
-
-		final Location location = location(p, node);
-
-		return INTEGER.constantRef(location, p, value);
 	}
 
 }

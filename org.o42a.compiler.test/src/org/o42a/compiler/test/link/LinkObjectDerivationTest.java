@@ -36,7 +36,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 	@Test
 	public void inheritLink() {
 		compile(
-				"A := link (`integer) [42]",
+				"A := link (`integer) 42",
 				"B := a (= 43)");
 
 		final Field<?> a = field("a");

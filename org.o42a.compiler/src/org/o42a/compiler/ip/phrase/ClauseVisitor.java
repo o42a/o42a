@@ -20,9 +20,11 @@
 package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
+import static org.o42a.compiler.ip.Interpreter.integer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
 
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseVisitor;
 import org.o42a.ast.clause.ClauseNode;
@@ -115,6 +117,18 @@ final class ClauseVisitor extends AbstractClauseVisitor<Phrase, Phrase> {
 		}
 
 		return p.emptyArgument(location(p, text)).getPhrase();
+	}
+
+	@Override
+	public Phrase visitDecimal(DecimalNode decimal, Phrase p) {
+
+		final Ref integer = integer(decimal, p.distribute());
+
+		if (integer == null) {
+			return p;
+		}
+
+		return p.argument(integer).getPhrase();
 	}
 
 	@Override

@@ -25,8 +25,10 @@ import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.expression;
 
 import org.junit.Test;
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.StringNode;
+import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
@@ -253,6 +255,56 @@ public class PhraseTest extends GrammarTestCase {
 
 		assertName("foo", result.getPrefix());
 		assertThat(result.getClauses().length, is(2));
+	}
+
+	@Test
+	public void decimalAfterName() {
+
+		final PhraseNode result = parse("foo_ 42");
+
+		assertName("foo", result.getPrefix());
+
+		final ClauseNode[] clauses = result.getClauses();
+
+		assertThat(clauses.length, is(1));
+
+		final DecimalNode decimal = to(DecimalNode.class, clauses[0]);
+
+		assertThat(decimal.getNumber(), is("42"));
+	}
+
+	@Test
+	public void decimalAfterText() {
+
+		final PhraseNode result = parse("foo 'bar' 'baz' 42");
+
+		assertName("foo", result.getPrefix());
+
+		final ClauseNode[] clauses = result.getClauses();
+
+		assertThat(clauses.length, is(2));
+		to(TextNode.class, clauses[0]);
+
+		final DecimalNode decimal = to(DecimalNode.class, clauses[1]);
+
+		assertThat(decimal.getNumber(), is("42"));
+	}
+
+	@Test
+	public void decimalAfterCall() {
+
+		final PhraseNode result = parse("foo (bar) 123 456");
+
+		assertName("foo", result.getPrefix());
+
+		final ClauseNode[] clauses = result.getClauses();
+
+		assertThat(clauses.length, is(2));
+		to(ParenthesesNode.class, clauses[0]);
+
+		final DecimalNode decimal = to(DecimalNode.class, clauses[1]);
+
+		assertThat(decimal.getNumber(), is("123456"));
 	}
 
 	private PhraseNode parse(String... lines) {

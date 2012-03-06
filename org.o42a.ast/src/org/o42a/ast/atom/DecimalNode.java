@@ -19,6 +19,8 @@
 */
 package org.o42a.ast.atom;
 
+import org.o42a.ast.clause.ClauseNode;
+import org.o42a.ast.clause.ClauseNodeVisitor;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.util.io.SourcePosition;
@@ -26,7 +28,7 @@ import org.o42a.util.io.SourcePosition;
 
 public class DecimalNode
 		extends AbstractExpressionNode
-		implements AtomNode {
+		implements AtomNode, ClauseNode {
 
 	private final String number;
 
@@ -49,6 +51,11 @@ public class DecimalNode
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitDecimal(this, p);
+	}
+
+	@Override
+	public <R, P> R accept(ClauseNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitDecimal(this, p);
 	}
 

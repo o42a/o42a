@@ -90,6 +90,9 @@ public class PhraseParser implements Parser<PhraseNode> {
 			case '"':
 				return context.parse(text());
 			default:
+				if (isDigit(c)) {
+					return context.parse(decimal());
+				}
 
 				final NameNode name = context.parse(name());
 
