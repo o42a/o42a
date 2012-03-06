@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,27 +21,24 @@
 #include "o42a/object.h"
 
 
-void o42a_fld_var_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_assigner_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	const o42a_fld_var *const from = &ctable->from.fld->var;
-	o42a_fld_var *const to = &ctable->to.fld->var;
+	const o42a_fld_assigner *const from = &ctable->from.fld->assigner;
+	o42a_fld_assigner *const to = &ctable->to.fld->assigner;
 
-	to->object = NULL;
-	to->constructor = from->constructor;
 	to->bound = NULL;
 	to->assigner_f = from->assigner_f;
 
 	O42A_RETURN;
 }
 
-void o42a_fld_var_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_assigner_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
-	const o42a_fld_var *const from = &ctable->from.fld->var;
-	o42a_fld_var *const to = &ctable->to.fld->var;
+	const o42a_fld_assigner *const from = &ctable->from.fld->assigner;
+	o42a_fld_assigner *const to = &ctable->to.fld->assigner;
 
-	to->object = NULL;
 	to->bound = NULL;
 
 	o42a_obj_overrider_t *const overrider =
@@ -62,7 +59,6 @@ void o42a_fld_var_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 			const o42a_fld_var *const ovr =
 					O42A(&o42a_fld_by_overrider(O42A_ARGS overrider)->var);
 
-			to->constructor = ovr->constructor;
 			to->assigner_f = ovr->assigner_f;
 
 			O42A_RETURN;
@@ -70,7 +66,6 @@ void o42a_fld_var_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	}
 
 	// Use definition from ancestor.
-	to->constructor = from->constructor;
 	to->assigner_f = from->assigner_f;
 
 	O42A_RETURN;

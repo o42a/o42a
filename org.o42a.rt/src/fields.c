@@ -43,6 +43,10 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		propagate: NULL,
 		inherit: NULL,
 	},
+	{// variable assigner
+		propagate: &o42a_fld_assigner_propagate,
+		inherit: &o42a_fld_assigner_inherit,
+	},
 };
 
 
