@@ -37,6 +37,8 @@ enum o42a_fld_kind {
 
 	O42A_FLD_DEP = 4,
 
+	O42A_FLD_ASSIGNER = 5,
+
 };
 
 typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
@@ -50,6 +52,17 @@ typedef const struct o42a_fld_desc {
 	o42a_fld_copy_ft *const propagate;
 
 } o42a_fld_desc_t;
+
+
+/**
+ * Variable assigner function.
+ *
+ * \param object[in] object pointer.
+ * \param value[out] value to assign.
+ *
+ * \return O42A_TRUE on success or O42A_FALSE on failure.
+ */
+typedef o42a_bool_t o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
 
 
 #ifdef __cplusplus

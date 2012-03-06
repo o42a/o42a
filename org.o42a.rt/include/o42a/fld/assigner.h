@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,31 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FIELDS_H
-#define O42A_FIELDS_H
+#ifndef O42A_FLD_ASSIGNER_H
+#define O42A_FLD_ASSIGNER_H
 
-#include "o42a/fld/assigner.h"
-#include "o42a/fld/link.h"
-#include "o42a/fld/obj.h"
-#include "o42a/fld/scope.h"
-#include "o42a/fld/var.h"
+#include "o42a/field.h"
 
 
-union o42a_fld {
+typedef struct {
 
 	O42A_HEADER;
 
-	o42a_fld_obj obj;
+	o42a_obj_stype_t *bound;
 
-	o42a_fld_link link;
+	o42a_obj_assigner_ft *assigner_f;
 
-	o42a_fld_var var;
-
-	o42a_fld_scope scope;
-
-	o42a_fld_assigner assigner;
-
-};
+} o42a_fld_assigner;
 
 
-#endif /* O42A_FIELDS_H */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+void o42a_fld_assigner_propagate(O42A_DECLS o42a_obj_ctable_t*);
+
+void o42a_fld_assigner_inherit(O42A_DECLS o42a_obj_ctable_t*);
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* O42A_FLD_ASSIGNER_H */
