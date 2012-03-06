@@ -25,8 +25,10 @@ import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.core.value.TypeParameters.immutableValueStruct;
 import static org.o42a.core.value.TypeParameters.mutableValueStruct;
+import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
@@ -56,6 +58,22 @@ public enum Interpreter {
 	PATH_COMPILER_IP(PATH_COMPILER_REF_IP),
 	CLAUSE_DEF_IP(CLAUSE_DEF_REF_IP),
 	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
+
+	public static Ref integer(DecimalNode decimal, Distributor distributor) {
+
+		final long value;
+
+		try {
+			value = Long.parseLong(decimal.getNumber());
+		} catch (NumberFormatException e) {
+			distributor.getContext().getLogger().notInteger(
+					decimal,
+					decimal.getNumber());
+			return integer(distributor, 0L, decimal);
+		}
+
+		return integer(distributor, value, decimal);
+	}
 
 	private final RefInterpreter refInterpreter;
 	private final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor;
@@ -251,6 +269,13 @@ public enum Interpreter {
 		final TypeRef itemTypeRef = itemTypeNode.accept(typeVisitor(), p);
 
 		return new ArrayValueStruct(itemTypeRef, constant);
+	}
+
+	private static final Ref integer(Distributor p, long value, Node node) {
+
+		final Location location = location(p, node);
+
+		return INTEGER.constantRef(location, p, value);
 	}
 
 	private static void fillSentence(

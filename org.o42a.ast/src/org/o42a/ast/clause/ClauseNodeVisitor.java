@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.clause;
 
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 
@@ -34,5 +35,7 @@ public interface ClauseNodeVisitor<R, P> {
 	R visitBrackets(BracketsNode brackets, P p);
 
 	R visitText(TextNode text, P p);
+
+	R visitDecimal(DecimalNode decimal, P p);
 
 }

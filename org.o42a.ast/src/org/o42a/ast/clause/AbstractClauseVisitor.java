@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.clause;
 
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.*;
 
@@ -49,6 +50,11 @@ public abstract class AbstractClauseVisitor<R, P>
 	@Override
 	public R visitText(TextNode text, P p) {
 		return visitClause(text, p);
+	}
+
+	@Override
+	public R visitDecimal(DecimalNode decimal, P p) {
+		return visitClause(decimal, p);
 	}
 
 	protected abstract R visitClause(ClauseNode clause, P p);
