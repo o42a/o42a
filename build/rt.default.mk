@@ -1,7 +1,7 @@
 #
 # Default build settings.
 #
-# Copy this to file named org.o42a.rt.mk and customize.
+# Copy this to file named rt.mk and customize.
 #
 
 includes = -I /usr/include
