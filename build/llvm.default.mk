@@ -1,7 +1,7 @@
 #
 # Default build settings.
 #
-# Copy this to file named org.o42a.backend.llvm.jni.mk and customize.
+# Copy this to file named llvm.mk and customize.
 #
 
 # Path to "javah" executable.

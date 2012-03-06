@@ -26,8 +26,8 @@ java_classes_dir = ../org.o42a.backend.llvm/bin
 java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm
 java_package = org.o42a.backend.llvm
 build_dir = ../build
-default_mk = $(build_dir)/org.o42a.backend.llvm.jni.default.mk
-common_mk = $(build_dir)/org.o42a.backend.llvm.jni.mk
+default_mk = $(build_dir)/llvm.default.mk
+common_mk = $(build_dir)/llvm.mk
 target_dir = ../target
 so_lib = $(target_dir)/$(so_name)
 

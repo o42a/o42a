@@ -12,9 +12,9 @@ syntax: regexp
 ^target$
 
 syntax: regexp
-^build/org\.o42a\.backend\.llvm\.jni\.mk$
+^build/llvm\.mk$
 syntax: regexp
-^build/org\.o42a\.rt\.mk$
+^build/rt\.mk$
 syntax: regexp
 ^build/o42a\.properties$
 
