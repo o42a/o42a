@@ -102,9 +102,7 @@ enum AssignmentKind {
 			final Obj valObj = val.materialize();
 
 			valObj.value().wrapBy(destObj.value());
-			destObj.value().wrapBy(valObj.value());
 			valObj.type().wrapBy(destObj.type());
-			destObj.type().wrapBy(valObj.type());
 		}
 
 		@Override
