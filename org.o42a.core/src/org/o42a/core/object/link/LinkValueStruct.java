@@ -177,6 +177,11 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	public void resolveAll(Resolver resolver) {
+		getTypeRef().resolveAll(resolver);
+	}
+
+	@Override
 	public String toString() {
 		return getValueType() + "(`" + this.typeRef + ')';
 	}

@@ -177,6 +177,11 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	public void resolveAll(Resolver resolver) {
+		getItemTypeRef().resolveAll(resolver);
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();

@@ -93,6 +93,10 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
+	public void resolveAll(Resolver resolver) {
+	}
+
+	@Override
 	public String toString() {
 
 		final ValueType<SingleValueStruct<T>> valueType = getValueType();

@@ -30,7 +30,7 @@ import org.o42a.intrinsic.root.Root;
 public class VariableValueTypeObject extends AbstractLinkValueTypeObject {
 
 	public VariableValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, LinkValueType.LINK);
+		super(owner, sources, LinkValueType.VARIABLE);
 	}
 
 }

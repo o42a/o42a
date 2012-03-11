@@ -46,7 +46,7 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		throw new UnsupportedOperationException();
+		materialize(dirs).assign(dirs, value.materialize(dirs));
 	}
 
 }

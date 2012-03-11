@@ -258,6 +258,7 @@ public final class ObjectValue extends ObjectValueParts {
 			object.resolveAll();
 			explicitUseBy(user);
 			object.fullyResolveDefinitions();
+			getValueStruct().resolveAll(object.getScope().newResolver(user));
 		} finally {
 			fullResolution.end();
 		}
