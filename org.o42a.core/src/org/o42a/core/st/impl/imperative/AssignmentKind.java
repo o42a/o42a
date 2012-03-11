@@ -84,6 +84,7 @@ enum AssignmentKind {
 				LocalResolver resolver,
 				Ref destination,
 				Ref value) {
+			destination.resolve(resolver).resolveAssignee();
 
 			final Ref destTarget =
 					destination.getPath()

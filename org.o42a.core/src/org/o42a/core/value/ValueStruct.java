@@ -203,6 +203,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract S reproduce(Reproducer reproducer);
 
+	public abstract void resolveAll(Resolver resolver);
+
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
 			this + " is not assignable from " + other;
