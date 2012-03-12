@@ -22,7 +22,9 @@ package org.o42a.core.ref.type;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
+import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
@@ -40,27 +42,97 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 import org.o42a.util.func.Holder;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class TypeRef implements ScopeInfo {
 
+	public static TypeRef typeRef(
+			Ref ref,
+			ValueStructFinder valueStructFinder) {
+		if (ref.isKnownStatic()) {
+			return ref.toStaticTypeRef(valueStructFinder);
+		}
+
+		final ValueStructFinder vsFinder;
+		final ValueStruct<?, ?> valueStruct;
+
+		if (valueStructFinder != null) {
+			vsFinder = valueStructFinder;
+			valueStruct = valueStructFinder.toValueStruct();
+		} else {
+			vsFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			valueStruct = null;
+		}
+
+		return new DefaultTypeRef(
+				ref,
+				emptyPrefix(ref.getScope()),
+				vsFinder,
+				valueStruct);
+	}
+
+	public static StaticTypeRef staticTypeRef(
+			Ref ref,
+			ValueStructFinder valueStructFinder) {
+
+		final ValueStructFinder vsFinder;
+		final ValueStruct<?, ?> valueStruct;
+
+		if (valueStructFinder != null) {
+			vsFinder = valueStructFinder;
+			valueStruct = valueStructFinder.toValueStruct();
+		} else {
+			vsFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			valueStruct = null;
+		}
+
+		return new StaticTypeRef(
+				ref,
+				ref,
+				emptyPrefix(ref.getScope()),
+				vsFinder,
+				valueStruct);
+	}
+
+	private final Ref ref;
 	private final PrefixPath prefix;
+	private final ValueStructFinder valueStructFinder;
 	private Ref rescopedRef;
+	private ValueStruct<?, ?> valueStruct;
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
 	private boolean allResolved;
 
-	public TypeRef(PrefixPath prefix) {
+	public TypeRef(
+			Ref ref,
+			PrefixPath prefix,
+			ValueStructFinder valueStructFinder,
+			ValueStruct<?, ?> valueStruct) {
+		this.ref = ref;
 		this.prefix = prefix;
+		this.valueStructFinder = valueStructFinder;
+		this.valueStruct = valueStruct;
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return getRef().getContext();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return getRef().getLoggable();
 	}
 
 	@Override
 	public final Scope getScope() {
-		return this.prefix.getStart();
+		return getPrefix().getStart();
 	}
 
 	public final PrefixPath getPrefix() {
@@ -69,7 +141,9 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public abstract boolean isStatic();
 
-	public abstract Ref getRef();
+	public final Ref getRef() {
+		return this.ref;
+	}
 
 	public abstract Ref getIntactRef();
 
@@ -78,6 +152,23 @@ public abstract class TypeRef implements ScopeInfo {
 			return this.rescopedRef;
 		}
 		return this.rescopedRef = getRef().prefixWith(getPrefix());
+	}
+
+	public ValueStruct<?, ?> getValueStruct() {
+		if (this.valueStruct != null) {
+			return this.valueStruct;
+		}
+
+		final ValueStruct<?, ?> defaultValueStruct =
+				getRef().valueStruct(getRef().getScope());
+		final ValueStruct<?, ?> valueStruct =
+				this.valueStructFinder.valueStructBy(
+						getRef(),
+						defaultValueStruct);
+
+		assert defaultValueStruct.assertAssignableFrom(valueStruct);
+
+		return this.valueStruct = valueStruct.prefixWith(getPrefix());
 	}
 
 	public final BoundPath getPath() {
@@ -171,9 +262,26 @@ public abstract class TypeRef implements ScopeInfo {
 		return getValueStruct().getValueType();
 	}
 
-	public abstract ValueStruct<?, ?> getValueStruct();
+	public TypeRef setValueStruct(ValueStructFinder valueStructFinder) {
 
-	public abstract TypeRef setValueStruct(ValueStructFinder valueStructFinder);
+		final ValueStructFinder vsFinder;
+		final ValueStruct<?, ?> valueStruct;
+
+		if (valueStructFinder != null) {
+			vsFinder = valueStructFinder;
+			valueStruct = valueStructFinder.toValueStruct();
+		} else {
+			vsFinder = DEFAULT_VALUE_STRUCT_FINDER;
+			valueStruct = null;
+		}
+
+		return create(
+				getRef(),
+				getIntactRef(),
+				getPrefix(),
+				vsFinder,
+				valueStruct);
+	}
 
 	public boolean validate() {
 		return type(dummyUser()) != null;
@@ -197,7 +305,14 @@ public abstract class TypeRef implements ScopeInfo {
 		return relationTo(other, false, true).isDerivative();
 	}
 
-	public abstract StaticTypeRef toStatic();
+	public StaticTypeRef toStatic() {
+		return new StaticTypeRef(
+				getRef(),
+				getIntactRef(),
+				getPrefix(),
+				this.valueStructFinder,
+				this.valueStruct);
+	}
 
 	public final TypeRef commonDerivative(TypeRef other) {
 		return relationTo(other).isPreferredDerivative() ? this : other;
@@ -219,7 +334,20 @@ public abstract class TypeRef implements ScopeInfo {
 			return this;
 		}
 
-		return create(newPrefix, prefix);
+		final ValueStruct<?, ?> valueStruct;
+
+		if (this.valueStruct == null) {
+			valueStruct = null;
+		} else {
+			valueStruct = this.valueStruct.prefixWith(prefix);
+		}
+
+		return create(
+				getRef(),
+				getIntactRef(),
+				newPrefix,
+				this.valueStructFinder,
+				valueStruct);
 	}
 
 	public TypeRef upgradeScope(Scope toScope) {
@@ -283,12 +411,23 @@ public abstract class TypeRef implements ScopeInfo {
 			}
 		}
 
-		return createReproduction(
-				reproducer,
-				rescopedReproducer,
+		final ValueStruct<?, ?> valueStruct;
+
+		if (this.valueStruct == null) {
+			valueStruct = null;
+		} else {
+			valueStruct = this.valueStruct.reproduce(reproducer);
+			if (valueStruct == null) {
+				return null;
+			}
+		}
+
+		return create(
 				ref,
 				intactRef,
-				prefix);
+				prefix,
+				this.valueStructFinder,
+				valueStruct);
 	}
 
 	public RefOp op(CodeDirs dirs, HostOp host) {
@@ -321,16 +460,20 @@ public abstract class TypeRef implements ScopeInfo {
 		return true;
 	}
 
-	protected abstract TypeRef create(
-			PrefixPath prefix,
-			PrefixPath additionalPrefix);
+	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
+	}
 
-	protected abstract TypeRef createReproduction(
-			Reproducer reproducer,
-			Reproducer rescopedReproducer,
+	protected abstract TypeRef create(
 			Ref ref,
-			Ref untouchedRef,
-			PrefixPath prefix);
+			Ref intactRef,
+			PrefixPath prefix,
+			ValueStructFinder valueStructFinder,
+			ValueStruct<?, ?> valueStruct);
 
 	private TypeRelation relationTo(
 			TypeRef other,

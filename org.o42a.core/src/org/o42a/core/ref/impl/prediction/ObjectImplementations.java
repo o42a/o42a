@@ -90,7 +90,7 @@ final class ObjectImplementations extends Prediction {
 		}
 
 		return this.ancestorPrediction =
-				predictRef(ancestor.getRef(), this.enclosing);
+				predictRef(ancestor.getRescopedRef(), this.enclosing);
 	}
 
 	private static final class Iter implements Iterator<Scope> {
