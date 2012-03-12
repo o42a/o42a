@@ -34,32 +34,32 @@ import org.o42a.util.log.Loggable;
 public final class DefaultStaticTypeRef extends StaticTypeRef {
 
 	private final Ref fixedRef;
-	private final Ref untouchedRef;
+	private final Ref intactRef;
 	private final ValueStructFinder valueStructFinder;
 	private ValueStruct<?, ?> valueStruct;
 
 	public DefaultStaticTypeRef(
 			Ref ref,
-			Ref untouchedRef,
+			Ref intactRef,
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
 		super(prefix);
 		this.fixedRef = ref.toStatic();
-		this.untouchedRef = untouchedRef;
-		ref.assertSameScope(untouchedRef);
+		this.intactRef = intactRef;
+		ref.assertSameScope(intactRef);
 		this.valueStructFinder = valueStructFinder;
 		this.valueStruct = valueStruct;
 	}
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.untouchedRef.getContext();
+		return this.intactRef.getContext();
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.untouchedRef.getLoggable();
+		return this.intactRef.getLoggable();
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 	}
 
 	@Override
-	public final Ref getUntachedRef() {
-		return this.untouchedRef;
+	public final Ref getIntactRef() {
+		return this.intactRef;
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 
 		return new DefaultStaticTypeRef(
 				getRef(),
-				getUntachedRef(),
+				getIntactRef(),
 				getPrefix(),
 				vsFinder,
 				valueStruct);
@@ -135,7 +135,7 @@ public final class DefaultStaticTypeRef extends StaticTypeRef {
 
 		return new DefaultStaticTypeRef(
 				getRef(),
-				getUntachedRef(),
+				getIntactRef(),
 				prefix,
 				this.valueStructFinder,
 				valueStruct);

@@ -70,7 +70,7 @@ public final class DefaultTypeRef extends TypeRef {
 	}
 
 	@Override
-	public final Ref getUntachedRef() {
+	public final Ref getIntactRef() {
 		return this.ref;
 	}
 
@@ -117,7 +117,7 @@ public final class DefaultTypeRef extends TypeRef {
 	public StaticTypeRef toStatic() {
 		return new DefaultStaticTypeRef(
 				getRef(),
-				getUntachedRef(),
+				getIntactRef(),
 				getPrefix(),
 				this.valueStructFinder,
 				this.valueStruct);

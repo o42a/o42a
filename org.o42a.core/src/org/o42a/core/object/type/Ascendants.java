@@ -376,8 +376,8 @@ public class Ascendants
 		}
 		return Role.PROTOTYPE.checkUseBy(
 				getObject(),
-				checkUse.getRef(),
-				checkUse.getPrefix().rescope(checkUse.getScope()));
+				checkUse.getRescopedRef(),
+				checkUse.getScope());
 	}
 
 	private TypeRef sampleAncestor() {
