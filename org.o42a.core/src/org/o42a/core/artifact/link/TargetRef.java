@@ -19,55 +19,42 @@
 */
 package org.o42a.core.artifact.link;
 
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
+import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
 
-public final class TargetRef extends RescopableRef<TargetRef> {
+public final class TargetRef implements ScopeInfo {
 
 	public static TargetRef targetRef(Ref ref, TypeRef typeRef) {
 		if (typeRef != null) {
-			return new TargetRef(
-					ref,
-					typeRef,
-					emptyPrefix(ref.getScope()));
+			return new TargetRef(ref, typeRef);
 		}
-		return new TargetRef(
-				ref,
-				ref.ancestor(ref),
-				emptyPrefix(ref.getScope()));
-	}
-
-	public static TargetRef targetRef(
-			Ref ref,
-			TypeRef typeRef,
-			PrefixPath prefix) {
-		if (typeRef != null) {
-			return new TargetRef(ref, typeRef, prefix);
-		}
-		return new TargetRef(
-				ref,
-				ref.ancestor(ref).prefixWith(prefix),
-				prefix);
+		return new TargetRef(ref, ref.ancestor(ref));
 	}
 
 	private final Ref ref;
 	private final TypeRef typeRef;
+	private boolean allResolved;
 
-	private TargetRef(Ref ref, TypeRef typeRef, PrefixPath prefix) {
-		super(prefix);
+	private TargetRef(Ref ref, TypeRef typeRef) {
 		this.ref = ref;
 		this.typeRef = typeRef;
 		typeRef.assertSameScope(this);
@@ -75,43 +62,140 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.ref.getContext();
+		return getRef().getContext();
 	}
 
 	@Override
 	public final Loggable getLoggable() {
-		return this.ref.getLoggable();
+		return getRef().getLoggable();
 	}
 
 	@Override
+	public final Scope getScope() {
+		return getRef().getScope();
+	}
+
 	public final Ref getRef() {
 		return this.ref;
 	}
 
-	public TypeRef getTypeRef() {
+	public final TypeRef getTypeRef() {
 		return this.typeRef;
 	}
 
+	public final boolean isStatic() {
+		return getRef().isStatic();
+	}
+
 	public final TypeRef toTypeRef() {
-		return getRef().toTypeRef().prefixWith(getPrefix());
+		return getRef().toTypeRef();
 	}
 
 	public final TargetRef toStatic() {
 		return new TargetRef(
-				this.ref.toStatic(),
-				this.typeRef.toStatic(),
-				getPrefix());
+				getRef().toStatic(),
+				this.typeRef.toStatic());
 	}
 
-	public RefOp ref(CodeDirs dirs, ObjOp host) {
+	public final Artifact<?> artifact(UserInfo user) {
 
-		final HostOp rescopedHost = getPrefix().write(dirs, host);
+		final Resolution resolution = resolve(getScope().newResolver(user));
 
-		return getRef().op(rescopedHost);
+		return resolution.isError() ? null : resolution.toArtifact();
 	}
 
-	public HostOp target(CodeDirs dirs, ObjOp host) {
+	public final Resolution resolve(Resolver resolver) {
+		return getRef().resolve(resolver);
+	}
+
+	public final Value<?> value(Resolver resolver) {
+		return getRef().value(resolver);
+	}
+
+	public TargetRef prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
+		return new TargetRef(
+				getRef().prefixWith(prefix),
+				getTypeRef().prefixWith(prefix));
+	}
+
+	public TargetRef upgradeScope(Scope toScope) {
+		if (toScope == getScope()) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(this, toScope));
+	}
+
+	public TargetRef rescope(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+		return prefixWith(scope.pathTo(getScope()));
+	}
+
+	public void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			getTypeRef().resolveAll(resolver);
+			getRef().resolve(resolver).resolveTarget();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public TargetRef reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Ref ref = getRef().reproduce(reproducer);
+
+		if (ref == null) {
+			return null;
+		}
+
+		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
+
+		if (typeRef == null) {
+			return null;
+		}
+
+		return new TargetRef(ref, typeRef);
+	}
+
+	public final RefOp ref(CodeDirs dirs, ObjOp host) {
+		return getRef().op(host);
+	}
+
+	public final HostOp target(CodeDirs dirs, ObjOp host) {
 		return ref(dirs, host).target(dirs);
+	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
 	}
 
 	@Override
@@ -120,36 +204,6 @@ public final class TargetRef extends RescopableRef<TargetRef> {
 			return super.toString();
 		}
 		return "(" + this.typeRef + ") " + this.ref;
-	}
-
-	@Override
-	protected TargetRef create(PrefixPath prefix, PrefixPath additionalPrefix) {
-		return new TargetRef(
-				getRef(),
-				getTypeRef().prefixWith(additionalPrefix),
-				prefix);
-	}
-
-	@Override
-	protected TargetRef createReproduction(
-			Reproducer reproducer,
-			Reproducer rescopedReproducer,
-			Ref ref,
-			PrefixPath prefix) {
-
-		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
-
-		if (typeRef == null) {
-			return null;
-		}
-
-		return new TargetRef(ref, typeRef, prefix);
-	}
-
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		this.typeRef.resolveAll(resolver);
-		this.ref.resolve(resolver).resolveTarget();
 	}
 
 }

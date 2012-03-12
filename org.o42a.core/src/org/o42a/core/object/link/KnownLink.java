@@ -144,8 +144,7 @@ public abstract class KnownLink extends ObjectLink {
 			Role.INSTANCE.checkUseBy(
 					this,
 					this.targetRef.getRef(),
-					this.targetRef.getPrefix().rescope(
-							this.targetRef.getScope()));
+					this.targetRef.getScope());
 		}
 
 		final TypeRef typeRef = this.targetRef.getTypeRef();

@@ -87,7 +87,7 @@ public final class LinkConstantValueDef extends ValueDef {
 		if (getValueType().isVariable()) {
 			return false;
 		}
-		return getLink().getTargetRef().getRef().isStatic();
+		return getLink().getTargetRef().isStatic();
 	}
 
 	@Override
