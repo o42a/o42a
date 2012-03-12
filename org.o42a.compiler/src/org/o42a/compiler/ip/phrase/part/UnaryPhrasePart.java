@@ -53,7 +53,7 @@ public class UnaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public Ref substitute(Distributor distributor) {
-		return getPhrase().getAncestor().getRescopedRef().rescope(
+		return getPhrase().getAncestor().getRef().rescope(
 				distributor.getScope());
 	}
 
@@ -67,7 +67,7 @@ public class UnaryPhrasePart extends PhraseContinuation {
 		final Statements<?> statements =
 				definition.propose(this).alternative(this);
 
-		statements.selfAssign(getPhrase().getAncestor().getRescopedRef());
+		statements.selfAssign(getPhrase().getAncestor().getRef());
 	}
 
 	@Override

@@ -275,7 +275,7 @@ class PhraseSubContext extends PhraseContext {
 		@Override
 		public Ref getPhrasePrefix() {
 			return this.instance.getContext().getPhrase().getPrefix()
-					.getAncestor().getRescopedRef();
+					.getAncestor().getRef();
 		}
 
 		@Override

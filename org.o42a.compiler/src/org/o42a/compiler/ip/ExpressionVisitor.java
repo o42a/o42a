@@ -143,7 +143,7 @@ public final class ExpressionVisitor
 				return super.visitAscendants(ascendants, p);
 			}
 
-			return ancestor.getAncestor().getRescopedRef();
+			return ancestor.getAncestor().getRef();
 		}
 
 		return ascendants(ip(), ascendants, p).toRef();

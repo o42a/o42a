@@ -35,14 +35,14 @@ public final class StaticTypeRef extends TypeRef {
 	private final Ref intactRef;
 
 	StaticTypeRef(
-			Ref ref,
+			Ref unprefixedRef,
 			Ref intactRef,
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
-		super(ref.toStatic(), prefix, valueStructFinder, valueStruct);
+		super(unprefixedRef, prefix, valueStructFinder, valueStruct);
 		this.intactRef = intactRef;
-		ref.assertSameScope(intactRef);
+		unprefixedRef.assertSameScope(intactRef);
 	}
 
 	@Override
@@ -124,13 +124,13 @@ public final class StaticTypeRef extends TypeRef {
 
 	@Override
 	protected StaticTypeRef create(
-			Ref ref,
+			Ref unprefixedRef,
 			Ref intactRef,
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
 		return new StaticTypeRef(
-				ref,
+				unprefixedRef,
 				intactRef,
 				prefix,
 				valueStructFinder,

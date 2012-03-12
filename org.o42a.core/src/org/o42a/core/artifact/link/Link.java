@@ -176,7 +176,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 		Role.PROTOTYPE.checkUseBy(
 				this,
-				typeRef.getRescopedRef(),
+				typeRef.getRef(),
 				typeRef.getScope());
 
 		final TypeRelation relation =
