@@ -22,37 +22,63 @@ package org.o42a.core.ref.type;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
+import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.ScopeInfo;
+import org.o42a.core.Scoped;
 import org.o42a.core.artifact.Artifact;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.common.RescopableRef;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.*;
 import org.o42a.util.func.Holder;
 
 
-public abstract class TypeRef extends RescopableRef<TypeRef> {
+public abstract class TypeRef implements ScopeInfo {
 
+	private final PrefixPath prefix;
+	private Ref rescopedRef;
 	private TypeRef ancestor;
 	private Holder<ObjectType> type;
+	private boolean allResolved;
 
 	public TypeRef(PrefixPath prefix) {
-		super(prefix);
+		this.prefix = prefix;
+	}
+
+	@Override
+	public final Scope getScope() {
+		return this.prefix.getStart();
+	}
+
+	public final PrefixPath getPrefix() {
+		return this.prefix;
 	}
 
 	public abstract boolean isStatic();
 
-	public abstract Ref getUntachedRef();
+	public abstract Ref getRef();
+
+	public abstract Ref getIntactRef();
+
+	public final Ref getRescopedRef() {
+		if (this.rescopedRef != null) {
+			return this.rescopedRef;
+		}
+		return this.rescopedRef = getRef().prefixWith(getPrefix());
+	}
 
 	public final BoundPath getPath() {
 
@@ -69,7 +95,7 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 			return this.ancestor;
 		}
 
-		final TypeRef ancestor = getUntachedRef().ancestor(this);
+		final TypeRef ancestor = getIntactRef().ancestor(this);
 
 		return this.ancestor = ancestor.prefixWith(getPrefix());
 	}
@@ -83,6 +109,25 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		}
 
 		return object.getConstructionMode();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
+
+	public final Artifact<?> artifact(UserInfo user) {
+
+		final Resolution resolution = resolve(getScope().newResolver(user));
+
+		return resolution.isError() ? null : resolution.toArtifact();
+	}
+
+	public final Resolution resolve(Resolver resolver) {
+		return getRescopedRef().resolve(resolver);
+	}
+
+	public final Value<?> value(Resolver resolver) {
+		return getRescopedRef().value(resolver);
 	}
 
 	public ObjectType type(UserInfo user) {
@@ -162,20 +207,78 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 		return relationTo(other).isPreferredAscendant() ? this : other;
 	}
 
-	@Override
-	protected final TypeRef createReproduction(
-			Reproducer reproducer,
-			Reproducer rescopedReproducer,
-			Ref ref,
-			PrefixPath prefix) {
+	public TypeRef prefixWith(PrefixPath prefix) {
+		if (prefix.emptyFor(this)) {
+			return this;
+		}
 
-		final Ref untouchedRef;
+		final PrefixPath oldPrefix = getPrefix();
+		final PrefixPath newPrefix = oldPrefix.and(prefix);
 
-		if (getRef() == getUntachedRef()) {
-			untouchedRef = ref;
+		if (newPrefix == oldPrefix) {
+			return this;
+		}
+
+		return create(newPrefix, prefix);
+	}
+
+	public TypeRef upgradeScope(Scope toScope) {
+		if (toScope == getScope()) {
+			return this;
+		}
+		return prefixWith(upgradePrefix(this, toScope));
+	}
+
+	public TypeRef rescope(Scope scope) {
+		if (getScope() == scope) {
+			return this;
+		}
+		return prefixWith(scope.pathTo(getScope()));
+	}
+
+	public void resolveAll(Resolver resolver) {
+		this.allResolved = true;
+		getContext().fullResolution().start();
+		try {
+			getPrefix().resolveAll(resolver);
+			getRef().resolve(getPrefix().rescope(resolver)).resolveType();
+			getRescopedRef().resolve(resolver).resolveType();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public TypeRef reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final Scope rescoped =
+				getPrefix().rescope(reproducer.getReproducingScope());
+		final Reproducer rescopedReproducer = reproducer.reproducerOf(rescoped);
+
+		if (rescopedReproducer == null) {
+			reproducer.getLogger().notReproducible(this);
+			return null;
+		}
+
+		final PrefixPath prefix = getPrefix().reproduce(reproducer);
+
+		if (prefix == null) {
+			return null;
+		}
+
+		final Ref ref = getRef().reproduce(rescopedReproducer);
+
+		if (ref == null) {
+			return null;
+		}
+
+		final Ref intactRef;
+
+		if (getRef() == getIntactRef()) {
+			intactRef = ref;
 		} else {
-			untouchedRef = getUntachedRef().reproduce(rescopedReproducer);
-			if (untouchedRef == null) {
+			intactRef = getIntactRef().reproduce(rescopedReproducer);
+			if (intactRef == null) {
 				return null;
 			}
 		}
@@ -184,14 +287,43 @@ public abstract class TypeRef extends RescopableRef<TypeRef> {
 				reproducer,
 				rescopedReproducer,
 				ref,
-				untouchedRef,
+				intactRef,
 				prefix);
 	}
 
-	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getRef().resolve(resolver).resolveType();
+	public RefOp op(CodeDirs dirs, HostOp host) {
+		return getRescopedRef().op(host);
 	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	public final boolean assertFullyResolved() {
+		assert this.allResolved :
+			this + " is not fully resolved";
+		return true;
+	}
+
+	protected abstract TypeRef create(
+			PrefixPath prefix,
+			PrefixPath additionalPrefix);
 
 	protected abstract TypeRef createReproduction(
 			Reproducer reproducer,
