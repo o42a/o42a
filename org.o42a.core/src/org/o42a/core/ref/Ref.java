@@ -22,9 +22,9 @@ package org.o42a.core.ref;
 import static org.o42a.core.artifact.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
-import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
+import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
+import static org.o42a.core.ref.type.TypeRef.typeRef;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
@@ -49,8 +49,6 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.impl.DefaultStaticTypeRef;
-import org.o42a.core.ref.type.impl.DefaultTypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.*;
@@ -318,33 +316,16 @@ public class Ref extends Statement {
 	}
 
 	public TypeRef toTypeRef(ValueStructFinder valueStructFinder) {
-		if (isKnownStatic()) {
-			toStaticTypeRef(valueStructFinder);
-		}
-
-		final ValueStructFinder vsFinder = vsFinder(valueStructFinder);
-
-		return new DefaultTypeRef(
-				this,
-				emptyPrefix(getScope()),
-				vsFinder,
-				vsFinder.toValueStruct());
+		return typeRef(this, valueStructFinder);
 	}
 
 	public final StaticTypeRef toStaticTypeRef() {
 		return toStaticTypeRef(null);
 	}
 
-	public StaticTypeRef toStaticTypeRef(ValueStructFinder valueStructFinder) {
-
-		final ValueStructFinder vsFinder = vsFinder(valueStructFinder);
-
-		return new DefaultStaticTypeRef(
-				this,
-				this,
-				emptyPrefix(getScope()),
-				vsFinder,
-				vsFinder.toValueStruct());
+	public final StaticTypeRef toStaticTypeRef(
+			ValueStructFinder valueStructFinder) {
+		return staticTypeRef(this, valueStructFinder);
 	}
 
 	public final TargetRef toTargetRef(TypeRef typeRef) {
@@ -400,13 +381,6 @@ public class Ref extends Statement {
 
 	final void refFullyResolved() {
 		fullyResolved();
-	}
-
-	private static ValueStructFinder vsFinder(ValueStructFinder finder) {
-		if (finder != null) {
-			return finder;
-		}
-		return DEFAULT_VALUE_STRUCT_FINDER;
 	}
 
 	private Ref reproducePart(Reproducer reproducer, Path path) {
