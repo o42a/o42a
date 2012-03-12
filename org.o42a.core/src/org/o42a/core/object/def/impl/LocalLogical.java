@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package org.o42a.core.object.def.impl;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -29,7 +30,6 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
-
 
 
 final class LocalLogical extends Logical {

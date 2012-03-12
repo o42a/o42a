@@ -28,34 +28,34 @@ import org.o42a.core.value.ValueStructFinder;
 final class DefaultTypeRef extends TypeRef {
 
 	DefaultTypeRef(
-			Ref ref,
+			Ref unprefixedRef,
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
-		super(ref, prefix, valueStructFinder, valueStruct);
+		super(unprefixedRef, prefix, valueStructFinder, valueStruct);
 	}
 
 	@Override
 	public boolean isStatic() {
-		return getRescopedRef().isStatic();
+		return getRef().isStatic();
 	}
 
 	@Override
 	public final Ref getIntactRef() {
-		return getRef();
+		return getUnprefixedRef();
 	}
 
 	@Override
 	protected DefaultTypeRef create(
-			Ref ref,
+			Ref unprefixedRef,
 			Ref intactRef,
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct) {
-		assert ref == intactRef :
-			ref + " should be the same as " + intactRef;
+		assert unprefixedRef == intactRef :
+			unprefixedRef + " should be the same as " + intactRef;
 		return new DefaultTypeRef(
-				ref,
+				unprefixedRef,
 				prefix,
 				valueStructFinder,
 				valueStruct);

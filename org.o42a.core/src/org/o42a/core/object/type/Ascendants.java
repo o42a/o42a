@@ -376,7 +376,7 @@ public class Ascendants
 		}
 		return Role.PROTOTYPE.checkUseBy(
 				getObject(),
-				checkUse.getRescopedRef(),
+				checkUse.getRef(),
 				checkUse.getScope());
 	}
 

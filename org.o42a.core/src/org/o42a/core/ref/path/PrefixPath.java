@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
-
 import org.o42a.core.PlaceInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -144,12 +142,6 @@ public final class PrefixPath {
 
 		return startWithPrefix(reproducer, pathReproduction)
 				.append(reproducedPart);
-	}
-
-	public final void resolveAll(Resolver resolver) {
-		bind(getStart()).walk(
-				resolver.toFullPathResolver(CONTAINER_REF_USAGE),
-				resolver.getWalker());
 	}
 
 	public HostOp write(CodeDirs dirs, HostOp host) {

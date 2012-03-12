@@ -100,7 +100,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 	@Override
 	public Ref getPhrasePrefix() {
 		return this.context.getMainContext().getPhrase().getAncestor()
-				.getRescopedRef();
+				.getRef();
 	}
 
 	@Override

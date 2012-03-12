@@ -151,7 +151,7 @@ public abstract class KnownLink extends ObjectLink {
 
 		Role.PROTOTYPE.checkUseBy(
 				this,
-				typeRef.getRescopedRef(),
+				typeRef.getRef(),
 				typeRef.getScope());
 
 		final TypeRelation relation =
