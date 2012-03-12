@@ -54,7 +54,9 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 				this.variant.getTargetRef().reproduce(this.reproducer);
 
 		if (targetRef != null) {
-			definer.setTargetRef(targetRef.getRef(), targetRef.getTypeRef());
+			definer.setTargetRef(
+					targetRef.getRef(),
+					targetRef.getTypeRef());
 		}
 	}
 

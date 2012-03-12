@@ -176,7 +176,7 @@ public class MemberStep extends AbstractMemberStep {
 				return;
 			}
 			normalizer.append(
-					link.getTargetRef().getRescopedRef().getPath(),
+					link.getTargetRef().getRef().getPath(),
 					new NestedNormalizer() {
 						@Override
 						public boolean onlyValueUsed() {
