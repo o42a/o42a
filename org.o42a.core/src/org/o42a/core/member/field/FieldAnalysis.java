@@ -92,7 +92,7 @@ public class FieldAnalysis {
 		if (this.member == null) {
 			return super.toString();
 		}
-		return "MemberAnalysis[" + this.member + ']';
+		return "FieldAnalysis[" + this.member + ']';
 	}
 
 	final void registerArtifact(Artifact<?> artifact) {

@@ -138,6 +138,10 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 		return getArtifact().getKind();
 	}
 
+	public final FieldAnalysis getAnalysis() {
+		return toMember().getAnalysis();
+	}
+
 	/**
 	 * The first field declaration.
 	 *
