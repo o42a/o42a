@@ -858,6 +858,7 @@ public abstract class Obj
 
 	private void resolveAllMembers() {
 
+		final LinkUses linkUses = type().linkUses();
 		final boolean abstractAllowed =
 				isAbstract()
 				|| isPrototype()
@@ -870,9 +871,16 @@ public abstract class Obj
 						this,
 						member.getDisplayName());
 			}
-			if (member.isClone() && member.toField() == null) {
-				// Only field clones require full resolution.
-				continue;
+
+			final MemberField field = member.toField();
+
+			if (field == null) {
+				if (member.isClone()) {
+					// Only field clones require full resolution.
+					continue;
+				}
+			} else if (linkUses != null) {
+				linkUses.fieldChanged(field);
 			}
 			member.resolveAll();
 		}

@@ -49,6 +49,7 @@ public final class ObjectType implements UserInfo {
 	private Obj lastDefinition;
 	private Usable<TypeUsage> uses;
 	private Usable<DerivationUsage> derivationUses;
+	private LinkUses linkUses;
 	private ObjectResolution resolution = NOT_RESOLVED;
 	private Ascendants ascendants;
 	private Map<Scope, Derivation> allAscendants;
@@ -204,6 +205,12 @@ public final class ObjectType implements UserInfo {
 				RUNTIME_DERIVATION_USAGE);
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
+
+			final LinkUses linkUses = linkUses();
+
+			if (linkUses != null) {
+				linkUses.useAsAncestor(derived);
+			}
 			if (derived.getWrapped() == null) {
 				registerDerivative(
 						derived.getScope().getEnclosingScope(),
@@ -226,6 +233,12 @@ public final class ObjectType implements UserInfo {
 		if (!derived.isClone()) {
 			trackAscendantDefsUsage(derived);
 			trackAncestorDefsUpdates(derived);
+
+			final LinkUses linkUses = linkUses();
+
+			if (linkUses != null) {
+				linkUses.useAsSample(sample);
+			}
 			if (derived.getWrapped() == null) {
 				registerDerivative(sample.getScope(), sample);
 			}
@@ -238,6 +251,16 @@ public final class ObjectType implements UserInfo {
 
 	final void setResolution(ObjectResolution resolution) {
 		this.resolution = resolution;
+	}
+
+	final LinkUses linkUses() {
+		if (this.linkUses != null) {
+			return this.linkUses;
+		}
+		if (!getObject().value().getValueType().isLink()) {
+			return null;
+		}
+		return this.linkUses = new LinkUses(this);
 	}
 
 	final boolean resolve(boolean skipIfResolving) {
