@@ -20,9 +20,10 @@ as main priorities. This achieved by
 * **powerful, yet restrained, semantics**, and
 * **expressive and natural syntax**.
 
->>>>>>>>>>>> See the [Mission Statement](http://o42a.org/devel/mission Mission Statement)
+>>>>>>>>>>>> See the [Mission Statement](http://o42a.org/devel/mission).
 
->>>>>>>>>>>> Take a look at the [feature list](http://o42a.org/docs/intro/features)
+>>>>>>>>>>>> Take a look at the
+[feature list](http://o42a.org/docs/intro/features)
 for overall language description.
 
 >>>>>>>>>>>> Read [documentation](http://o42a.org/docs/) for the details.
@@ -37,7 +38,8 @@ Implementation status is draft. The majority of the language features are
 already in place. Development is currently focused on compiler stability,
 testing and implementation of the missing features.
 
->>>>>>>>>>>> See the detailed [development](http://o42a.org/devel/) status and plan.
+>>>>>>>>>>>> See the detailed [development](http://o42a.org/devel/)
+status and plan.
 
 Hello, World!
 -------------
@@ -49,4 +51,5 @@ Here is a "Hello, World!" program written in o42a:
       Print "Hello, World!" nl.
     }
 
->>>>>>>>>>>> See the [explanation](http://o42a.org/docs/intro/hello_world_explained).
+>>>>>>>>>>>> See the
+[explanation](http://o42a.org/docs/intro/hello_world_explained).
