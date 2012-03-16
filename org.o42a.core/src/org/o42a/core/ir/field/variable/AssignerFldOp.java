@@ -66,6 +66,11 @@ public final class AssignerFldOp extends FldOp {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 
 		final Block code = dirs.code();

@@ -98,6 +98,11 @@ public abstract class PathOp implements HostOp {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		return target(dirs).dereference(dirs);
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		target(dirs).assign(dirs, value);
 	}

@@ -92,6 +92,11 @@ public final class RefLclOp extends LclOp {
 		return target(dirs);
 	}
 
+	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		return target(dirs).dereference(dirs);
+	}
+
 	public ObjectOp target(CodeDirs dirs) {
 
 		final Block code = dirs.code();

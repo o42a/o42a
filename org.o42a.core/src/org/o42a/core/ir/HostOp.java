@@ -41,6 +41,8 @@ public interface HostOp {
 
 	ObjectOp materialize(CodeDirs dirs);
 
+	ObjectOp dereference(CodeDirs dirs);
+
 	void assign(CodeDirs dirs, HostOp value);
 
 }

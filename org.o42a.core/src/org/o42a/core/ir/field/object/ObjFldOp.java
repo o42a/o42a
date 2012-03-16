@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.object;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 
 
@@ -42,6 +43,11 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	@Override
 	public final ObjFld.Op ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		return target(dirs).dereference(dirs);
 	}
 
 	@Override

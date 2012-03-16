@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
 
@@ -32,13 +33,13 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
-import org.o42a.core.ir.op.CastObjectFunc;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.LinkValueStruct;
 
 
 public abstract class ObjectOp extends IROp implements HostOp {
@@ -177,6 +178,33 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	@Override
 	public final ObjectOp materialize(CodeDirs dirs) {
 		return this;
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+
+		final LinkValueStruct linkStruct =
+				getWellKnownType().value().getValueStruct().toLinkStruct();
+
+		assert linkStruct != null :
+			"Not a link: " + this;
+
+		final ValDirs valDirs = dirs.value(linkStruct, "link");
+		final ValOp value = value().writeValue(valDirs);
+		final Block code = valDirs.code();
+
+		final DataOp ptr =
+				value.value(null, code)
+				.toPtr(null, code)
+				.load(null, code)
+				.toData(code.id("target"), code);
+
+		valDirs.done();
+
+		return anonymousObject(
+				getBuilder(),
+				ptr,
+				linkStruct.getTypeRef().typeObject(dummyUser()));
 	}
 
 	@Override

@@ -88,6 +88,11 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}

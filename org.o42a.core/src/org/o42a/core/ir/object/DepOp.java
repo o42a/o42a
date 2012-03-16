@@ -87,6 +87,11 @@ public class DepOp extends IROp implements HostOp {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		return materialize(dirs).dereference(dirs);
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}
