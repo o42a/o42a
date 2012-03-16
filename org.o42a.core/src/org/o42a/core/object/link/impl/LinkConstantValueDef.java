@@ -79,6 +79,11 @@ public final class LinkConstantValueDef extends ValueDef {
 	}
 
 	@Override
+	public Ref target() {
+		return this.value.getCompilerValue().getTargetRef().getRef();
+	}
+
+	@Override
 	public void normalize(Normalizer normalizer) {
 	}
 

@@ -156,6 +156,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return value.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
+	public Ref target() {
+		return null;
+	}
+
 	public final ValueDef toVoid() {
 		return toCondition().toValue();
 	}

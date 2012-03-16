@@ -22,6 +22,7 @@ package org.o42a.core.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.link.LinkUsage.*;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.Usable;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.link.LinkUsage;
@@ -46,12 +47,22 @@ public class LinkUses {
 		return this.type;
 	}
 
+	public final boolean simplifiedLink(Analyzer analyzer) {
+		return !uses().isUsed(analyzer, ALL_LINK_USAGES);
+	}
+
 	@Override
 	public String toString() {
 		if (this.type == null) {
 			return super.toString();
 		}
 		return "LinkUses[" + this.type + ']';
+	}
+
+	void determineTargetComplexity() {
+		if (getObject().value().getDefinitions().target() == null) {
+			uses().useBy(getObject().content(), COMPLEX_LINK_TARGET);
+		}
 	}
 
 	void useAsAncestor(Obj derived) {
@@ -67,14 +78,16 @@ public class LinkUses {
 			return;
 		}
 
-		deriveFieldChanges(derived);
+		deriveComplexity(derived);
 
 		final Usable<LinkUsage> derivedUses = derived.type().linkUses().uses();
 
 		uses().useBy(
 				derivedUses.selectiveUser(LINK_FIELD_CHANGES),
 				LINK_FIELD_CHANGES);
-
+		uses().useBy(
+				derivedUses.selectiveUser(COMPLEX_LINK_TARGET),
+				COMPLEX_LINK_TARGET);
 	}
 
 	void fieldChanged(MemberField field) {
@@ -109,14 +122,14 @@ public class LinkUses {
 	}
 
 	private void explicitlyDerivedBy(Obj derived) {
-		deriveFieldChanges(derived);
+		deriveComplexity(derived);
 		uses().useBy(derived.content(), LINK_DERIVATION);
 	}
 
-	private void deriveFieldChanges(Obj derived) {
+	private void deriveComplexity(Obj derived) {
 		derived.type().linkUses().uses().useBy(
-				uses().selectiveUser(DERIVED_LINK_USE_SELECTOR),
-				DERIVED_LINK_FIELD_CHANGES);
+				uses().selectiveUser(LINK_COMPLEXITY_SELECTOR),
+				DERIVED_LINK_COMPLEXITY);
 	}
 
 }

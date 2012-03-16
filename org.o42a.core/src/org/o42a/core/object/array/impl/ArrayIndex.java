@@ -20,9 +20,7 @@
 package org.o42a.core.object.array.impl;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathBinding;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.st.Reproducer;
 
 
@@ -37,6 +35,22 @@ public class ArrayIndex implements PathBinding<Ref> {
 	@Override
 	public Ref getBound() {
 		return this.indexRef;
+	}
+
+	@Override
+	public PathBinding<Ref> modifyPath(PathModifier modifier) {
+
+		final BoundPath indexPath =
+				this.indexRef.getPath().modifyPath(modifier);
+
+		if (indexPath == null) {
+			return null;
+		}
+
+		return new ArrayIndex(
+				indexPath.target(
+						this.indexRef.distributeIn(
+								indexPath.getOrigin().getContainer())));
 	}
 
 	@Override

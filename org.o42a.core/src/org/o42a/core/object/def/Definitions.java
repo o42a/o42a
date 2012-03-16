@@ -20,6 +20,9 @@
 package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.DefKind.*;
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
+import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
+import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
@@ -29,8 +32,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
+import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
@@ -161,6 +166,7 @@ public class Definitions extends Scoped {
 	private final ValueDefs propositions;
 
 	private Value<?> constant;
+	private DefTarget target;
 
 	Definitions(
 			LocationInfo location,
@@ -658,6 +664,62 @@ public class Definitions extends Scoped {
 		conditions().normalize(normalizer);
 		claims().normalize(normalizer);
 		propositions().normalize(normalizer);
+	}
+
+	public DefTarget target() {
+		if (this.target != null) {
+			return this.target;
+		}
+
+		final LinkValueStruct linkStruct = getValueStruct().toLinkStruct();
+
+		if (linkStruct == null) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		final CondDefs requirements = requirements();
+
+		if (!requirements.isEmpty() && !requirements.getConstant().isTrue()) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		final CondDefs conditions = conditions();
+
+		if (!conditions.isEmpty() && !conditions.getConstant().isTrue()) {
+			return this.target = NO_DEF_TARGET;
+		}
+		if (!claims().isEmpty()) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		final ValueDef[] defs = propositions().get();
+
+		if (defs.length == 0) {
+			return this.target = UNKNOWN_DEF_TARGET;
+		}
+		if (defs.length != 1) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		final Ref target = defs[0].target();
+
+		if (target == null) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		final BoundPath targetPath =
+				defTarget(target.getPath(), getScope().getEnclosingScope());
+
+		if (targetPath == null) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		assert targetPath.getOrigin() == getScope().getEnclosingScope() :
+			"Wrong target scope: " + targetPath.getOrigin()
+			+ ", but " + getScope().getEnclosingScope() + " expected";
+
+		return this.target = new DefTarget(targetPath.target(
+				target.distributeIn(targetPath.getOrigin().getContainer())));
 	}
 
 	@Override

@@ -50,12 +50,6 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		return FldKind.LINK;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Field<Link> getField() {
-		return (Field<Link>) super.getField();
-	}
-
 	@Override
 	public Type getInstance() {
 		return (Type) super.getInstance();

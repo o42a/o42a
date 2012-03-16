@@ -102,6 +102,11 @@ public class LinkByValueDef extends ValueDef {
 	}
 
 	@Override
+	public Ref target() {
+		return this.ref;
+	}
+
+	@Override
 	public void normalize(Normalizer normalizer) {
 	}
 

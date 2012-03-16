@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,17 +19,13 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.st.Reproducer;
+import org.o42a.core.Scope;
 
 
-public interface PathBinding<B> {
+public interface PathModifier {
 
-	B getBound();
+	Scope getScope();
 
-	PathBinding<B> modifyPath(PathModifier modifier);
-
-	PathBinding<B> prefixWith(PrefixPath prefix);
-
-	public abstract PathBinding<B> reproduce(Reproducer reproducer);
+	BoundPath modifyPath(BoundPath path);
 
 }

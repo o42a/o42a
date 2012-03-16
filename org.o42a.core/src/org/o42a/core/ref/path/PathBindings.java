@@ -90,6 +90,27 @@ public final class PathBindings {
 		return new PathBindings(bindings);
 	}
 
+	PathBindings modifyPaths(PathModifier modifier) {
+		if (isEmpty()) {
+			return this;
+		}
+
+		final HashMap<PathBinding<?>, PathBinding<?>> newBindings =
+				new HashMap<PathBinding<?>, PathBinding<?>>(
+						this.bindings.size());
+
+		for (Map.Entry<PathBinding<?>, PathBinding<?>> e
+				: this.bindings.entrySet()) {
+
+			final PathBinding<?> newBinding = e.getValue().modifyPath(modifier);
+
+			newBindings.put(e.getKey(), newBinding);
+		}
+
+
+		return new PathBindings(newBindings);
+	}
+
 	PathBindings prefixWith(PrefixPath prefix) {
 
 		final PathBindings prefixBindings = prefix.getBindings();
@@ -116,7 +137,6 @@ public final class PathBindings {
 
 			newBindings.put(e.getKey(), newBinding);
 		}
-
 
 		return new PathBindings(newBindings);
 	}

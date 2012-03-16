@@ -26,6 +26,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
@@ -34,6 +35,9 @@ import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.link.LinkValueStruct;
 
 
 public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
@@ -63,7 +67,21 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 
-		final Link variable = fld().getField().getArtifact();
+		final Obj targetType;
+		final Artifact<?> artifact = fld().getField().getArtifact();
+		final Link variable = artifact.toLink();
+
+		if (variable != null) {
+			targetType = variable.getTypeRef().typeObject(dummyUser());
+		} else {
+
+			final ObjectValue objectValue = artifact.toObject().value();
+			final LinkValueStruct linkStruct =
+					objectValue.getValueStruct().toLinkStruct();
+
+			targetType = linkStruct.getTypeRef().typeObject(dummyUser());
+		}
+
 		final Block code = dirs.code();
 		final ObjectOp valueObject = value.materialize(dirs);
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
@@ -86,7 +104,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				boundKnown.id("cast_target"),
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
-				variable.getTypeRef().typeObject(dummyUser()),
+				targetType,
 				true);
 
 		ptr().object(null, boundKnown).store(

@@ -107,6 +107,11 @@ final class LinkCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	public Ref target() {
+		return this.ref.getPath().dereference().target(this.ref.distribute());
+	}
+
+	@Override
 	public void normalize(Normalizer normalizer) {
 	}
 

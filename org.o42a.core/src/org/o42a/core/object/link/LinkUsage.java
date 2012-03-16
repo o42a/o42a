@@ -34,10 +34,16 @@ public class LinkUsage extends Usage<LinkUsage> {
 			new LinkUsage("LinkDerivation");
 
 	/**
-	 * Field changes derived from ascendant.
+	 * Link complexity derived from ascendant.
 	 */
-	public static final LinkUsage DERIVED_LINK_FIELD_CHANGES =
-			new LinkUsage("DerivedLinkFieldChanges");
+	public static final LinkUsage DERIVED_LINK_COMPLEXITY =
+			new LinkUsage("DerivedLinkComplexity");
+
+	/**
+	 * Complex field target definition.
+	 */
+	public static final LinkUsage COMPLEX_LINK_TARGET =
+			new LinkUsage("ComlplexLinkTarget");
 
 	/**
 	 * Fields changed. I.e. new field declared or existing field overridden.
@@ -45,8 +51,10 @@ public class LinkUsage extends Usage<LinkUsage> {
 	public static final LinkUsage LINK_FIELD_CHANGES =
 			new LinkUsage("LinkFieldChanges");
 
-	public static final UseSelector<LinkUsage> DERIVED_LINK_USE_SELECTOR =
-			DERIVED_LINK_FIELD_CHANGES.or(LINK_FIELD_CHANGES);
+	public static final UseSelector<LinkUsage> LINK_COMPLEXITY_SELECTOR =
+			DERIVED_LINK_COMPLEXITY
+			.or(LINK_FIELD_CHANGES)
+			.or(COMPLEX_LINK_TARGET);
 
 	public static final Usable<LinkUsage> usable(Object used) {
 		return ALL_LINK_USAGES.usable(used);

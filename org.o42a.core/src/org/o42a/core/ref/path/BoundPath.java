@@ -224,6 +224,32 @@ public class BoundPath extends Location {
 		return append(path.getRawPath());
 	}
 
+	public final BoundPath modifyPath(PathModifier modifier) {
+
+		final BoundPath newPath = modifier.modifyPath(this);
+
+		if (newPath == null) {
+			return null;
+		}
+		if (getBindings().isEmpty()) {
+			return newPath;
+		}
+
+		final PathBindings newBindings = getBindings().modifyPaths(modifier);
+
+		if (newBindings == null) {
+			return null;
+		}
+
+		final Path rawPath = newPath.getRawPath();
+
+		return new Path(
+				rawPath.getKind(),
+				newBindings,
+				rawPath.isStatic(),
+				rawPath.getSteps()).bind(newPath, newPath.getOrigin());
+	}
+
 	public final BoundPath prefixWith(PrefixPath prefix) {
 
 		final Path oldPath = getRawPath();
