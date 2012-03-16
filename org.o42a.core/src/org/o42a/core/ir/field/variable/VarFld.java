@@ -64,12 +64,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		return FldKind.VAR;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Field<Link> getField() {
-		return (Field<Link>) super.getField();
-	}
-
 	@Override
 	public Type getInstance() {
 		return (Type) super.getInstance();
@@ -124,7 +118,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	}
 
 	private FuncPtr<VariableAssignerFunc> reusedAssigner() {
-		for (Field<Link> overridden : getField().getOverridden()) {
+		for (Field<?> overridden : getField().getOverridden()) {
 
 			final TypeRelation relation =
 					overridden.getArtifact().getTypeRef().relationTo(

@@ -41,6 +41,10 @@ import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.LinkValueStruct;
 
 
 public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
@@ -59,6 +63,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
 		this.target = field.getArtifact().materialize();
+	}
+
+	public final boolean isLink() {
+		return getKind() != FldKind.OBJ;
 	}
 
 	public final Obj getTarget() {
@@ -142,19 +150,28 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		final Artifact<?> artifact = getField().getArtifact();
 		final Obj object = artifact.toObject();
 
-		if (object != null) {
-			return builder.newObject(
-					dirs,
-					builder.host(),
-					builder.objectAncestor(dirs, object),
-					object);
+		if (object == null) {
+
+			final Link link = artifact.toLink();
+			final HostOp target =
+					link.getTargetRef().target(dirs, builder.host());
+
+			return target.materialize(dirs);
+		}
+		if (isLink()) {
+
+			final ObjectValue objectValue = object.value();
+
+			if (objectValue.getValueType().isLink()) {
+				return constructLinkTarget(builder, dirs, objectValue);
+			}
 		}
 
-		final Link link = artifact.toLink();
-		final HostOp target =
-				link.getTargetRef().target(dirs, builder.host());
-
-		return target.materialize(dirs);
+		return builder.newObject(
+				dirs,
+				builder.host(),
+				builder.objectAncestor(dirs, object),
+				object);
 	}
 
 	protected final Obj targetType(Obj bodyType) {
@@ -165,13 +182,23 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 				.artifact(dummyUser());
 		final Obj object = artifact.toObject();
 
-		if (object != null) {
-			return object;
+		if (object == null) {
+
+			final Link link = artifact.toLink();
+
+			return link.getTypeRef().typeObject(dummyUser());
+		}
+		if (isLink()) {
+
+			final LinkValueStruct linkStruct =
+					object.value().getValueStruct().toLinkStruct();
+
+			if (linkStruct != null) {
+				return linkStruct.getTypeRef().typeObject(dummyUser());
+			}
 		}
 
-		final Link link = artifact.toLink();
-
-		return link.getTypeRef().typeObject(dummyUser());
+		return object;
 	}
 
 	@Override
@@ -232,9 +259,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			return null;
 		}
 
-		// field is a clone of overridden one
-		// reuse constructor from overridden field
-
+		// Field is a clone of overridden one.
+		// Reuse constructor from overridden field.
 		final Field<?> lastDefinition = getField().getLastDefinition();
 		final Obj overriddenOwner =
 				lastDefinition.getEnclosingScope().toObject();
@@ -245,6 +271,37 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 				(RefFld<C>) overriddenOwnerIR.fld(getField().getKey());
 
 		return overriddenFld.constructor;
+	}
+
+	private ObjectOp constructLinkTarget(
+			ObjBuilder builder,
+			CodeDirs dirs,
+			ObjectValue objectValue) {
+
+		final LinkValueStruct linkStruct =
+				objectValue.getValueStruct().toLinkStruct();
+		final Definitions definitions = objectValue.getDefinitions();
+		final DefTarget target = definitions.target();
+
+		assert target.exists() :
+			"Link target can not be constructed";
+
+		if (target.isUnknown()) {
+			dirs.code().go(dirs.unknownDir());
+			return builder.getContext()
+					.getFalse()
+					.ir(getGenerator())
+					.op(builder, dirs.code());
+		}
+
+		return target.getRef()
+				.op(builder.host())
+				.target(dirs)
+				.materialize(dirs)
+				.cast(
+						null,
+						dirs,
+						linkStruct.getTypeRef().typeObject(dummyUser()));
 	}
 
 	public static abstract class Op<S extends Op<S, C>, C extends ObjectFunc<C>>

@@ -185,6 +185,12 @@ public final class ObjectType implements UserInfo {
 		getAscendants().resolveAll();
 		registerInAncestor();
 		registerSamples();
+
+		final LinkUses linkUses = linkUses();
+
+		if (linkUses != null) {
+			linkUses.determineTargetComplexity();
+		}
 	}
 
 	@Override
