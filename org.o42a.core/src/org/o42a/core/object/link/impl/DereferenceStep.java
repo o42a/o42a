@@ -19,18 +19,16 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.PathOp;
+import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
@@ -192,25 +190,13 @@ public class DereferenceStep extends Step {
 		}
 
 		@Override
+		public ObjectOp dereference(CodeDirs dirs) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public HostOp target(CodeDirs dirs) {
-
-			final LinkValueStruct linkStruct = DereferenceStep.this.linkStruct;
-			final ValDirs valDirs = dirs.value(linkStruct, "link");
-			final ValOp value = start().writeValue(valDirs);
-			final Block code = valDirs.code();
-
-			final DataOp ptr =
-					value.value(null, code)
-					.toPtr(null, code)
-					.load(null, code)
-					.toData(code.id("target"), code);
-
-			valDirs.done();
-
-			return anonymousObject(
-					getBuilder(),
-					ptr,
-					linkStruct.getTypeRef().typeObject(dummyUser()));
+			return start().dereference(dirs);
 		}
 
 	}

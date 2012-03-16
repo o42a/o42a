@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.link;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectRefFunc;
 
@@ -43,6 +44,11 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 	@Override
 	public final LinkFld.Op ptr() {
 		return this.ptr;
+	}
+
+	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

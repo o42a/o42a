@@ -81,6 +81,11 @@ public class ScopeFldOp extends FieldFldOp {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		return target(dirs).dereference(dirs);
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}

@@ -56,6 +56,11 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public ObjectOp dereference(CodeDirs dirs) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 
 		final Link variable = fld().getField().getArtifact();

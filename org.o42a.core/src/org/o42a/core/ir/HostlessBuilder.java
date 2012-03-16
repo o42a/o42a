@@ -86,6 +86,11 @@ final class HostlessBuilder extends CodeBuilder {
 		}
 
 		@Override
+		public ObjectOp dereference(CodeDirs dirs) {
+			return null;
+		}
+
+		@Override
 		public void assign(CodeDirs dirs, HostOp value) {
 			throw new UnsupportedOperationException();
 		}
