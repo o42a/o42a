@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
@@ -28,10 +29,16 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.RefFld;
+import org.o42a.core.ir.field.link.LinkFld;
+import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.local.RefLclOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.LinkValueType;
 
 
 public final class ObjectFieldIR extends FieldIR<Obj> {
@@ -49,11 +56,65 @@ public final class ObjectFieldIR extends FieldIR<Obj> {
 	}
 
 	@Override
-	protected ObjFld declare(SubData<?> data, ObjectBodyIR bodyIR) {
+	protected RefFld<?> declare(SubData<?> data, ObjectBodyIR bodyIR) {
+
+		final RefFld<?> linkFld = declareLink(data, bodyIR);
+
+		if (linkFld != null) {
+			return linkFld;
+		}
 
 		final ObjFld fld = new ObjFld(bodyIR, getField());
 
 		fld.allocate(data, getField().getArtifact());
+
+		return fld;
+	}
+
+	private RefFld<?> declareLink(SubData<?> data, ObjectBodyIR bodyIR) {
+
+		final Field<Obj> field = getField();
+		final Obj object = field.toObject();
+		final LinkValueType linkType =
+				object.value().getValueType().toLinkType();
+
+		if (linkType == null) {
+			return null;
+		}
+
+		final LinkUses linkUses = object.type().linkUses();
+
+		if (!linkUses.simplifiedLink(getGenerator().getAnalyzer())) {
+			return null;
+		}
+
+		final Obj ascendant =
+				object.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.typeObject(dummyUser());
+		final Obj target;
+		final DefTarget defTarget =
+				object.value().getDefinitions().target();
+
+		if (defTarget.isUnknown()) {
+			target = ascendant;
+		} else {
+			target = defTarget.getRef().getResolution().materialize();
+		}
+
+		final RefFld<?> fld;
+
+		if (linkType == LinkValueType.LINK) {
+			fld = new LinkFld(bodyIR, field, target);
+		} else if (linkType == LinkValueType.VARIABLE) {
+			fld = new VarFld(bodyIR, field, target);
+		} else {
+			return null;
+		}
+
+		fld.allocate(data, ascendant);
 
 		return fld;
 	}

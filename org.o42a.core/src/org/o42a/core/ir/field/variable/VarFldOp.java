@@ -61,7 +61,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs) {
-		throw new UnsupportedOperationException();
+		return target(dirs);
 	}
 
 	@Override

@@ -59,10 +59,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	private FuncPtr<C> constructor;
 
-	public RefFld(ObjectBodyIR bodyIR, Field<?> field) {
+	public RefFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
-		this.target = field.getArtifact().materialize();
+		this.target = target;
 	}
 
 	public final boolean isLink() {

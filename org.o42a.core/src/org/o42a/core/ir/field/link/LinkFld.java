@@ -27,7 +27,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjOp;
@@ -35,14 +34,15 @@ import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.ir.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
 
 
 public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public static final Type LINK_FLD = new Type();
 
-	public LinkFld(ObjectBodyIR bodyIR, Field<Link> field) {
-		super(bodyIR, field);
+	public LinkFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
+		super(bodyIR, field, target);
 	}
 
 	@Override

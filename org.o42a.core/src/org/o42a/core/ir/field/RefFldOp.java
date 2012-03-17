@@ -77,26 +77,16 @@ public abstract class RefFldOp<
 		code.dumpName(kind + " host: ", host().ptr());
 
 		final DataOp ptr = ptr().target(code, host());
-		final Obj targetAscendant = fld().getTargetAscendant();
-		final Obj targetType;
-
 		final Obj hostAscendant = host().getAscendant();
-		final Obj hostPtrAscendant = host().ptr().getAscendant();
-
-		if (hostAscendant == hostPtrAscendant) {
-			targetType = targetAscendant;
-		} else if (fld().getBodyIR().getAscendant() == hostPtrAscendant) {
-			targetType = fld().targetType(hostAscendant);
-		} else {
-			targetType = targetAscendant;
-		}
+		final Obj targetType = fld().targetType(hostAscendant);
 
 		if (host().getPrecision().isExact()) {
 
 			final ObjectBodyIR.Op targetBodyPtr = ptr.to(
 					null,
 					code,
-					targetAscendant.ir(getGenerator()).getBodyType());
+					fld().getTargetAscendant()
+					.ir(getGenerator()).getBodyType());
 
 			return targetBodyPtr.op(
 					getBuilder(),
