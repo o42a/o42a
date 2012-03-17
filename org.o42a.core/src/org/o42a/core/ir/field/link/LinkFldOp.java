@@ -48,7 +48,7 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 
 	@Override
 	public ObjectOp dereference(CodeDirs dirs) {
-		throw new UnsupportedOperationException();
+		return target(dirs);
 	}
 
 	@Override

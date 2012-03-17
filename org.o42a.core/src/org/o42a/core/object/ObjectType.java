@@ -176,6 +176,16 @@ public final class ObjectType implements UserInfo {
 		return derivations != null && derivations.is(derivation);
 	}
 
+	public final LinkUses linkUses() {
+		if (this.linkUses != null) {
+			return this.linkUses;
+		}
+		if (!getObject().value().getValueType().isLink()) {
+			return null;
+		}
+		return this.linkUses = new LinkUses(this);
+	}
+
 	public final void wrapBy(ObjectType type) {
 		useBy(type);
 		derivationUses().useBy(type.rtDerivation(), RUNTIME_DERIVATION_USAGE);
@@ -257,16 +267,6 @@ public final class ObjectType implements UserInfo {
 
 	final void setResolution(ObjectResolution resolution) {
 		this.resolution = resolution;
-	}
-
-	final LinkUses linkUses() {
-		if (this.linkUses != null) {
-			return this.linkUses;
-		}
-		if (!getObject().value().getValueType().isLink()) {
-			return null;
-		}
-		return this.linkUses = new LinkUses(this);
 	}
 
 	final boolean resolve(boolean skipIfResolving) {

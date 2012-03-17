@@ -37,7 +37,6 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.*;
@@ -55,8 +54,8 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	private FuncPtr<VariableAssignerFunc> assigner;
 
-	public VarFld(ObjectBodyIR bodyIR, Field<Link> field) {
-		super(bodyIR, field);
+	public VarFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
+		super(bodyIR, field, target);
 	}
 
 	@Override
@@ -103,8 +102,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	protected void fill() {
 		super.fill();
 
-		final Obj type =
-				getField().getArtifact().getTypeRef().typeObject(dummyUser());
+		final Obj type = getTypeRef().typeObject(dummyUser());
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		getInstance().bound().setValue(
@@ -121,9 +119,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		for (Field<?> overridden : getField().getOverridden()) {
 
 			final TypeRelation relation =
-					overridden.getArtifact().getTypeRef().relationTo(
-							getField().getArtifact().getTypeRef(),
-							false);
+					typeRef(overridden).relationTo(getTypeRef(), false);
 
 			if (relation == TypeRelation.SAME) {
 				// Variable has the same interface type as one
@@ -144,6 +140,25 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		return null;
 	}
 
+	private static TypeRef typeRef(Field<?> field) {
+
+		final TypeRef typeRef = field.getArtifact().getTypeRef();
+
+		if (typeRef != null) {
+			return typeRef;
+		}
+
+		return field.toObject()
+				.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef();
+	}
+
+	private final TypeRef getTypeRef() {
+		return typeRef(getField());
+	}
+
 	private void buildAssigner(Function<VariableAssignerFunc> assigner) {
 
 		final Block failure = assigner.addBlock("failure");
@@ -157,7 +172,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				builder.falseWhenUnknown(assigner, failure.head());
 
 		final VarFldOp fld = op(assigner, builder.host());
-		final TypeRef typeRef = getField().getArtifact().getTypeRef();
+		final TypeRef typeRef = getTypeRef();
 		final Obj typeObject = typeRef.typeObject(dummyUser());
 		final RefOp boundRef = typeRef.op(dirs, builder.host());
 		final ObjectTypeOp bound =

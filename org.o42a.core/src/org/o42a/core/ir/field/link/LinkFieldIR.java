@@ -48,9 +48,9 @@ public final class LinkFieldIR extends FieldIR<Link> {
 		final Field<Link> field = getField();
 
 		if (field.getArtifact().isVariable()) {
-			fld = new VarFld(bodyIR, field);
+			fld = new VarFld(bodyIR, field, field.getArtifact().materialize());
 		} else {
-			fld = new LinkFld(bodyIR, field);
+			fld = new LinkFld(bodyIR, field, field.getArtifact().materialize());
 		}
 
 		fld.allocate(
