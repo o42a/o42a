@@ -60,7 +60,7 @@ public class LinkUses {
 	}
 
 	void determineTargetComplexity() {
-		if (getObject().value().getDefinitions().target() == null) {
+		if (!getObject().value().getDefinitions().target().exists()) {
 			uses().useBy(getObject().content(), COMPLEX_LINK_TARGET);
 		}
 	}
