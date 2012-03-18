@@ -32,11 +32,13 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.object.link.KnownLink;
-import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.*;
+import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -47,6 +49,7 @@ public class DereferenceStep extends Step {
 	private static final LinkAncestor LINK_ANCESTOR = new LinkAncestor();
 
 	private LinkValueStruct linkStruct;
+	private ObjectStepUses uses;
 
 	@Override
 	public PathKind getPathKind() {
@@ -55,7 +58,7 @@ public class DereferenceStep extends Step {
 
 	@Override
 	public RefUsage getObjectUsage() {
-		return RefUsage.VALUE_REF_USAGE;
+		return RefUsage.DEREF_USAGE;
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class DereferenceStep extends Step {
 
 	@Override
 	protected Container resolve(
-			PathResolver resolver,
+			final PathResolver resolver,
 			BoundPath path,
 			int index,
 			Scope start,
@@ -95,7 +98,15 @@ public class DereferenceStep extends Step {
 				linkObject.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
-			linkObject.value().resolveAll(resolver);
+			uses().useBy(resolver, path, index);
+			linkObjectValue.resolveAll(resolver);
+			linkObjectValue.getDefinitions().resolveTargets(
+					new TargetResolver() {
+						@Override
+						public void resolveTarget(Obj target) {
+							target.value().resolveAll(resolver);
+						}
+					});
 		}
 
 		final LinkValueStruct linkStruct =
@@ -141,14 +152,12 @@ public class DereferenceStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		// TODO Auto-generated method stub
-
+		normalizeDeref(normalizer);
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		// TODO Auto-generated method stub
-
+		normalizeDeref(normalizer);
 	}
 
 	@Override
@@ -161,6 +170,58 @@ public class DereferenceStep extends Step {
 	@Override
 	protected PathOp op(PathOp start) {
 		return new Op(start, this);
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private void normalizeDeref(final PathNormalizer normalizer) {
+
+		final Obj linkObject =
+				normalizer.lastPrediction().getScope().toObject();
+		final LinkValueType linkType =
+				linkObject.value().getValueType().toLinkType();
+
+		if (linkType.isVariable()) {
+			normalizer.cancel();// Can not normalize variables.
+			return;
+		}
+
+		final DefTarget defTarget =
+				linkObject.value().getDefinitions().target();
+
+		if (!defTarget.exists() || defTarget.isUnknown()) {
+			normalizer.cancel();
+			return;
+		}
+		if (linkUpdated(normalizer)) {
+			normalizer.cancel();
+			return;
+		}
+
+		final Ref target = defTarget.getRef();
+
+		normalizer.append(
+				target.getPath(),
+				uses().nestedNormalizer(normalizer));
+	}
+
+	private boolean linkUpdated(PathNormalizer normalizer) {
+
+		final Prediction prediction = normalizer.lastPrediction();
+		final Scope stepStart = prediction.getScope();
+
+		for (Scope replacement : prediction) {
+			if (replacement != stepStart) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static final class LinkAncestor extends PathFragment {

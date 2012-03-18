@@ -93,13 +93,13 @@ public class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
-	protected void normalize(final PathNormalizer normalizer) {
-		normalize(normalizer, false);
+	protected void normalize(PathNormalizer normalizer) {
+		normalizeMember(normalizer);
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalize(normalizer, true);
+		normalizeMember(normalizer);
 	}
 
 	@Override
@@ -131,7 +131,7 @@ public class MemberStep extends AbstractMemberStep {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	private void normalize(final PathNormalizer normalizer, boolean isStatic) {
+	private void normalizeMember(PathNormalizer normalizer) {
 
 		final Prediction lastPrediction = normalizer.lastPrediction();
 		final Member member = resolveMember(
@@ -177,17 +177,16 @@ public class MemberStep extends AbstractMemberStep {
 			}
 			normalizer.append(
 					link.getTargetRef().getRef().getPath(),
-					new NestedNormalizer() {
-						@Override
-						public boolean onlyValueUsed() {
-							return uses().onlyValueUsed(normalizer);
-						}
-					});
+					uses().nestedNormalizer(normalizer));
 			return;
 		}
 
 		final Obj object = artifact.toObject();
 
+		if (uses().onlyDereferenced(normalizer)) {
+			normalizer.skipToNext(prediction);
+			return;
+		}
 		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
 				// Not last object step.
