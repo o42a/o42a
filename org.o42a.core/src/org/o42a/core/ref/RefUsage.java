@@ -21,6 +21,7 @@ package org.o42a.core.ref;
 
 import org.o42a.analysis.use.*;
 import org.o42a.core.Container;
+import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 
@@ -34,6 +35,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new ValueUsage("RefLogical");
 	public static final RefUsage VALUE_REF_USAGE =
 			new ValueUsage("RefValue");
+	public static final RefUsage DEREF_USAGE =
+			new ResolutionUsage("DerefValue");
 	public static final RefUsage TYPE_REF_USAGE =
 			new TypeUsage("RefType");
 	public static final RefUsage CONTAINER_REF_USAGE =
@@ -47,6 +50,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			LOGICAL_REF_USAGE.or(VALUE_REF_USAGE);
 	public static final UseSelector<RefUsage> NON_VALUE_REF_USAGES =
 			VALUE_REF_USAGES.not();
+	public static final UseSelector<RefUsage> NON_DEREF_USAGES =
+			DEREF_USAGE.not();
 
 	public static Uses<RefUsage> alwaysUsed() {
 		return ALL_REF_USAGES.alwaysUsed();
@@ -68,9 +73,13 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		super(ALL_REF_USAGES, name);
 	}
 
-	protected abstract void fullyResolve(
+	public abstract void fullyResolve(Artifact<?> artifact, UserInfo user);
+
+	protected void fullyResolve(
 			Resolution resolution,
-			Container resolved);
+			Container resolved) {
+		fullyResolve(resolved.toArtifact(), resolution.getResolver());
+	}
 
 	private static final class ValueUsage extends RefUsage {
 
@@ -79,12 +88,12 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void fullyResolve(Resolution resolution, Container resolved) {
+		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
 
-			final Obj materialized = resolved.toArtifact().materialize();
+			final Obj materialized = artifact.materialize();
 
 			if (materialized != null) {
-				materialized.value().resolveAll(resolution.getResolver());
+				materialized.value().resolveAll(user);
 			}
 		}
 
@@ -97,12 +106,12 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		protected void fullyResolve(Resolution resolution, Container resolved) {
+		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
 
-			final Obj materialized = resolved.toArtifact().materialize();
+			final Obj materialized = artifact.materialize();
 
 			if (materialized != null) {
-				materialized.type().useBy(resolution.getResolver());
+				materialized.type().useBy(user);
 			}
 		}
 
@@ -115,6 +124,11 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
+		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
+			artifact.resolveAll();
+		}
+
+		@Override
 		protected void fullyResolve(Resolution resolution, Container resolved) {
 
 			final Clause clause = resolved.toClause();
@@ -122,7 +136,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			if (clause != null) {
 				clause.resolveAll();
 			} else {
-				resolved.toArtifact().resolveAll();
+				fullyResolve(resolved.toArtifact(), resolution.getResolver());
 			}
 		}
 

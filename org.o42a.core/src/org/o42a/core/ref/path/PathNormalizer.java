@@ -183,6 +183,11 @@ public final class PathNormalizer {
 				new SameNormalStep(getPath().getSteps()[getStepIndex()]));
 	}
 
+	public final void skipToNext(Prediction prediction) {
+		this.stepPrediction = prediction;
+		this.stepNormalized = true;
+	}
+
 	public final boolean up(Scope enclosing) {
 		if (isNormalizationStarted()) {
 

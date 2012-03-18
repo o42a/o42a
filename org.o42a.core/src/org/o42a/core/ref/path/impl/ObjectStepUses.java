@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ref.RefUsage.NON_DEREF_USAGES;
 import static org.o42a.core.ref.RefUsage.NON_VALUE_REF_USAGES;
 import static org.o42a.core.ref.RefUsage.usable;
 
@@ -108,12 +109,55 @@ public class ObjectStepUses {
 		return normalizer.getStepIndex() + 1 == normalizer.getPath().length();
 	}
 
+	public final boolean onlyDereferenced(PathNormalizer normalizer) {
+		if (!uses().hasUses()) {
+			return false;
+		}
+		if (!uses().hasUses(NON_DEREF_USAGES)) {
+			return true;
+		}
+		if (!normalizer.isNested()) {
+			return false;
+		}
+		if (!normalizer.getNested().onlyDereferenced()) {
+			return false;
+		}
+
+		return normalizer.getStepIndex() + 1 == normalizer.getPath().length();
+	}
+
+	public final NestedNormalizer nestedNormalizer(PathNormalizer normalizer) {
+		return new Nested(this, normalizer);
+	}
+
 	@Override
 	public String toString() {
 		if (this.uses == null) {
 			return super.toString();
 		}
 		return this.uses.toString();
+	}
+
+	private static final class Nested implements NestedNormalizer {
+
+		private final ObjectStepUses uses;
+		private final PathNormalizer normalizer;
+
+		Nested(ObjectStepUses uses, PathNormalizer normalizer) {
+			this.uses = uses;
+			this.normalizer = normalizer;
+		}
+
+		@Override
+		public boolean onlyValueUsed() {
+			return this.uses.onlyValueUsed(this.normalizer);
+		}
+
+		@Override
+		public boolean onlyDereferenced() {
+			return this.uses.onlyDereferenced(this.normalizer);
+		}
+
 	}
 
 }

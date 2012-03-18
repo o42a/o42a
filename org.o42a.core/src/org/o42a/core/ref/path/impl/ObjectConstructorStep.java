@@ -175,6 +175,11 @@ public class ObjectConstructorStep extends Step {
 			normalizer.cancel();
 			return;
 		}
+		if (uses().onlyDereferenced(normalizer)) {
+			normalizer.skipToNext(
+					object.getScope().predict(normalizer.lastPrediction()));
+			return;
+		}
 		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
 				// Not a last step - go on.

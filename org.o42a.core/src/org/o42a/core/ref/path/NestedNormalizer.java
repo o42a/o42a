@@ -24,4 +24,6 @@ public interface NestedNormalizer {
 
 	boolean onlyValueUsed();
 
+	boolean onlyDereferenced();
+
 }

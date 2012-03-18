@@ -149,12 +149,7 @@ public final class RefDep extends Dep {
 		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
 		normalizer.append(
 				getDepRef().getPath(),
-				new NestedNormalizer() {
-					@Override
-					public boolean onlyValueUsed() {
-						return uses().onlyValueUsed(normalizer);
-					}
-				});
+				uses().nestedNormalizer(normalizer));
 	}
 
 	@Override
