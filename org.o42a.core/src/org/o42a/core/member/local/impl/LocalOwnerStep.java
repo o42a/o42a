@@ -109,7 +109,8 @@ public final class LocalOwnerStep extends Step {
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.up(
 				normalizer.lastPrediction().getScope()
-				.toLocal().getOwner().getScope());
+				.toLocal().getOwner().getScope(),
+				toPath());
 	}
 
 	@Override

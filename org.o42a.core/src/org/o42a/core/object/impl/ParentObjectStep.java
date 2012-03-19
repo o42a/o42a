@@ -34,7 +34,6 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
-import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.AbstractMemberStep;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
@@ -159,7 +158,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 		final Container enclosing = member.substance(dummyUser());
 
-		if (!normalizer.up(enclosing.getScope())) {
+		if (!normalizer.up(enclosing.getScope(), toPath())) {
 			return;
 		}
 
@@ -168,9 +167,8 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 		if (!uses().onlyValueUsed(normalizer)) {
 			if (!normalizer.isLastStep()) {
-				// Not last object step.
-				// Leave the step as is.
-				normalizer.skip(prediction, new SameNormalStep(this));
+				// Do not add parent step,
+				// as normalized path start is just reached.
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
