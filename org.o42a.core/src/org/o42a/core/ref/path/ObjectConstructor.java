@@ -33,7 +33,6 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -129,19 +128,6 @@ public abstract class ObjectConstructor extends Placed {
 		return propagated;
 	}
 
-	private void pinPropagated(Propagated propagated) {
-		if (this.propagated == null) {
-			this.propagated = new IdentityHashMap<Scope, Obj>();
-		}
-
-		final Obj pinned = this.propagated.put(
-				propagated.getScope().getEnclosingScope(),
-				propagated);
-
-		assert pinned == null || pinned == propagated :
-			propagated + " already pinned";
-	}
-
 	private ObjectOp buildAncestor(CodeDirs dirs) {
 		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
 	}
@@ -160,17 +146,6 @@ public abstract class ObjectConstructor extends Placed {
 					constructor.toRef()
 					.toStaticTypeRef()
 					.upgradeScope(scope);
-		}
-
-		@Override
-		public void pin() {
-			this.constructor.pinPropagated(this);
-
-			final Member enclosingMember = getEnclosingContainer().toMember();
-
-			if (enclosingMember.isPropagated()) {
-				enclosingMember.pin();
-			}
 		}
 
 		@Override
