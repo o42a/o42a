@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Obj;
 
@@ -37,16 +36,6 @@ class OwningLocal extends MemberOwner {
 
 	public final LocalScope getLocal() {
 		return getContainer().toLocal();
-	}
-
-	@Override
-	protected void pinMember(Member member) {
-
-		final Obj owner = getLocal().getOwner();
-
-		if (owner.isClone()) {
-			owner.pin();
-		}
 	}
 
 }

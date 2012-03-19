@@ -107,6 +107,4 @@ public abstract class MemberOwner implements PlaceInfo {
 		return this.container.toString();
 	}
 
-	protected abstract void pinMember(Member member);
-
 }

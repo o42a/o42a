@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object;
 
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 
 
@@ -36,13 +35,6 @@ public class OwningObject extends MemberOwner {
 
 	public final Obj getObject() {
 		return getContainer().toObject();
-	}
-
-	@Override
-	protected void pinMember(Member member) {
-		if (getObject().isClone()) {
-			getObject().pin();
-		}
 	}
 
 }
