@@ -117,9 +117,16 @@ public abstract class ObjectConstructor extends Placed {
 			if (cached != null) {
 				return cached;
 			}
+		} else {
+			this.propagated = new IdentityHashMap<Scope, Obj>();
 		}
 
-		return new Propagated(scope, this, getConstructed());
+		final Propagated propagated =
+				new Propagated(scope, this, getConstructed());
+
+		this.propagated.put(scope, propagated);
+
+		return propagated;
 	}
 
 	private void pinPropagated(Propagated propagated) {
