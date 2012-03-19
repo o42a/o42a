@@ -139,7 +139,8 @@ public class MemberStep extends AbstractMemberStep {
 				normalizer.getStepIndex(),
 				lastPrediction.getScope());
 
-		if (lastPrediction.getScope() != member.getDefinedIn()) {
+		if (lastPrediction.getScope().getLastDefinition()
+				!= member.getDefinedIn()) {
 			// Require explicitly declared member.
 			normalizer.cancel();
 			return;
@@ -222,7 +223,8 @@ public class MemberStep extends AbstractMemberStep {
 			PathNormalizer normalizer,
 			Prediction prediction) {
 
-		final Scope stepStart = normalizer.lastPrediction().getScope();
+		final Scope stepStart =
+				normalizer.lastPrediction().getScope().getLastDefinition();
 
 		for (Scope replacement : prediction) {
 			if (fieldOf(replacement).getDefinedIn() != stepStart) {
