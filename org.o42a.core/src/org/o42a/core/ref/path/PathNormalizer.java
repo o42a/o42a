@@ -188,14 +188,12 @@ public final class PathNormalizer {
 		this.stepNormalized = true;
 	}
 
-	public final boolean up(Scope enclosing) {
+	public final boolean up(Scope enclosing, Path enclosingPath) {
 		if (isNormalizationStarted()) {
 
 			final Prediction lastPrediction = lastPrediction();
-			final Scope current = lastPrediction.getScope();
 
-			this.normalSteps.add(
-					new NormalPathStep(current.getEnclosingScopePath()));
+			this.normalSteps.add(new NormalPathStep(enclosingPath));
 			overrideNonIgnored();
 
 			this.stepPrediction =

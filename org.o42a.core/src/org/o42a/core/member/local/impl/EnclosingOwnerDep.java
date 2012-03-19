@@ -142,7 +142,9 @@ public final class EnclosingOwnerDep extends Dep {
 	protected void normalizeDep(
 			PathNormalizer normalizer,
 			LocalScope local) {
-		normalizer.up(local.getOwner().getScope());
+		normalizer.up(
+				local.getOwner().getScope(),
+				local.getEnclosingScopePath());
 	}
 
 	@Override

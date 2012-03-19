@@ -111,7 +111,7 @@ public abstract class AbstractMemberStep extends Step {
 		final Artifact<?> artifact = start.getArtifact();
 
 		if (artifact != null) {
-			member = start.getArtifact().materialize().member(this.memberKey);
+			member = artifact.materialize().member(this.memberKey);
 		} else {
 			member = start.getContainer().member(this.memberKey);
 		}

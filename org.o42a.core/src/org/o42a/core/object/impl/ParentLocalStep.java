@@ -151,7 +151,7 @@ public final class ParentLocalStep extends Step {
 		final Container result =
 				object.getScope().getEnclosingContainer();
 
-		normalizer.up(result.getScope());
+		normalizer.up(result.getScope(), toPath());
 	}
 
 	@Override
