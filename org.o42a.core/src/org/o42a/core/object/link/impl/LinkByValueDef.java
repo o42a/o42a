@@ -20,7 +20,6 @@
 package org.o42a.core.object.link.impl;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
@@ -46,31 +45,19 @@ public class LinkByValueDef extends ValueDef {
 			Resolver resolver,
 			LinkValueStruct linkStruct) {
 
-		final Resolution linkResolution = ref.resolve(resolver);
+		final Resolution targetResolution = ref.resolve(resolver);
 
-		if (linkResolution.isError()) {
-			return falseValue();
-		}
-
-		final Obj linkObject = linkResolution.materialize();
-		final Value<?> value =
-				linkObject.value().explicitUseBy(resolver).getValue();
-		final ValueStruct<?, ?> targetStruct =
-				value.getValueStruct();
-
-		if (value.getKnowledge().isFalse()) {
+		if (targetResolution.isError() || targetResolution.isFalse()) {
 			return linkStruct.falseValue();
 		}
-		if (!value.getKnowledge().isKnownToCompiler()) {
-			return linkStruct.runtimeValue();
-		}
-		if (targetStruct.getValueType().isVariable()) {
-			// Variable can not be copied at compile time.
+
+		final Obj target = targetResolution.materialize();
+
+		if (target.getConstructionMode().isRuntime()) {
 			return linkStruct.runtimeValue();
 		}
 
-		final TargetRef targetRef =
-				ref.toTargetRef(linkStruct.getTypeRef());
+		final TargetRef targetRef = ref.toTargetRef(linkStruct.getTypeRef());
 
 		return linkStruct.compilerValue(new TargetLink(
 				targetRef,
