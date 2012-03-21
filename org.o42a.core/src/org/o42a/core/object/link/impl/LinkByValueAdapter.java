@@ -80,10 +80,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> initialValue(LocalResolver resolver) {
-		return linkByValue(
-				ref(),
-				resolver,
-				valueStruct(resolver.getScope()));
+		return linkByValue(ref(), valueStruct(resolver.getScope()));
 	}
 
 	@Override

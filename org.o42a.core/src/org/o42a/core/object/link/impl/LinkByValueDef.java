@@ -29,7 +29,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
@@ -40,27 +39,9 @@ import org.o42a.core.value.ValueStruct;
 
 public class LinkByValueDef extends ValueDef {
 
-	static Value<?> linkByValue(
-			Ref ref,
-			Resolver resolver,
-			LinkValueStruct linkStruct) {
-
-		final Resolution targetResolution = ref.resolve(resolver);
-
-		if (targetResolution.isError() || targetResolution.isFalse()) {
-			return linkStruct.falseValue();
-		}
-
-		final Obj target = targetResolution.materialize();
-
-		if (target.getConstructionMode().isRuntime()) {
-			return linkStruct.runtimeValue();
-		}
-
-		final TargetRef targetRef = ref.toTargetRef(linkStruct.getTypeRef());
-
+	static Value<?> linkByValue(Ref ref, LinkValueStruct linkStruct) {
 		return linkStruct.compilerValue(new TargetLink(
-				targetRef,
+				ref.toTargetRef(linkStruct.getTypeRef()),
 				ref.distribute(),
 				linkStruct.getValueType()));
 	}
@@ -119,7 +100,7 @@ public class LinkByValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return linkByValue(this.ref, resolver, this.linkStruct);
+		return linkByValue(this.ref, this.linkStruct);
 	}
 
 	@Override
