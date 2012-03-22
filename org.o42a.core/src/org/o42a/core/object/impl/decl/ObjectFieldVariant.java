@@ -22,33 +22,27 @@ package org.o42a.core.object.impl.decl;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.field.FieldVariant;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
 
 
-final class ObjectFieldVariant
-		extends FieldVariant<Obj>
-		implements ObjectDefiner {
+final class ObjectFieldVariant extends FieldVariant<Obj> {
 
 	private DeclarativeBlock content;
-	private Ascendants implicitAscendants;
-	private Ascendants ascendants;
 	private Definer definer;
+	private Ascendants ascendants;
 
-	public ObjectFieldVariant(
+	ObjectFieldVariant(
 			DeclaredObjectField field,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
@@ -84,46 +78,6 @@ final class ObjectFieldVariant
 	}
 
 	@Override
-	public final Ascendants getImplicitAscendants() {
-		return this.implicitAscendants;
-	}
-
-	@Override
-	public ObjectDefiner setAncestor(TypeRef explicitAncestor) {
-		this.ascendants = this.ascendants.setAncestor(explicitAncestor);
-		return this;
-	}
-
-	@Override
-	public ObjectDefiner setTypeParameters(TypeParameters typeParameters) {
-		this.ascendants = this.ascendants.setTypeParameters(typeParameters);
-		return this;
-	}
-
-	@Override
-	public ObjectDefiner addExplicitSample(StaticTypeRef explicitAscendant) {
-		this.ascendants = this.ascendants.addExplicitSample(explicitAscendant);
-		return this;
-	}
-
-	@Override
-	public ObjectDefiner addImplicitSample(StaticTypeRef implicitAscendant) {
-		this.ascendants = this.ascendants.addImplicitSample(implicitAscendant);
-		return this;
-	}
-
-	@Override
-	public ObjectDefiner addMemberOverride(Member overriddenMember) {
-		this.ascendants = this.ascendants.addMemberOverride(overriddenMember);
-		return this;
-	}
-
-	@Override
-	public void define(BlockBuilder definitions) {
-		definitions.buildBlock(getContent());
-	}
-
-	@Override
 	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
 		return new ReproducedObjectDefinition(this, reproducer);
 	}
@@ -131,14 +85,17 @@ final class ObjectFieldVariant
 	Ascendants buildAscendants(
 			Ascendants implicitAscendants,
 			Ascendants ascendants) {
-		this.implicitAscendants = implicitAscendants;
-		this.ascendants = ascendants;
+
+		final ObjectDefinerImpl definer =
+				new ObjectDefinerImpl(this, implicitAscendants, ascendants);
+
 		if (getField().isOverride()) {
-			getDefinition().overrideObject(this);
+			getDefinition().overrideObject(definer);
 		} else {
-			getDefinition().defineObject(this);
+			getDefinition().defineObject(definer);
 		}
-		return this.ascendants;
+
+		return this.ascendants = definer.getAscendants();
 	}
 
 	void declareMembers() {
