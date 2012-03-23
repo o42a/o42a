@@ -31,7 +31,6 @@ import org.o42a.core.st.Reproducer;
 final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 
 	private TypeRef typeRef;
-	private TargetRef defaultTargetRef;
 	private TargetRef targetRef;
 
 	LinkFieldVariant(
@@ -44,11 +43,6 @@ final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 	@Override
 	public TypeRef getTypeRef() {
 		return this.typeRef;
-	}
-
-	@Override
-	public TargetRef getDefaultTargetRef() {
-		return this.defaultTargetRef;
 	}
 
 	@Override
@@ -79,7 +73,7 @@ final class LinkFieldVariant extends FieldVariant<Link> implements LinkDefiner {
 		}
 
 		this.typeRef = typeRef;
-		this.targetRef = this.defaultTargetRef = defaultTargetRef;
+		this.targetRef = defaultTargetRef;
 
 		getDefinition().defineLink(this);
 

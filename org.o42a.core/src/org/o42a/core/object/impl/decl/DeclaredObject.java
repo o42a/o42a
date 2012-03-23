@@ -39,6 +39,11 @@ class DeclaredObject extends Obj {
 	}
 
 	@Override
+	public boolean isValid() {
+		return this.field.validate();
+	}
+
+	@Override
 	public String toString() {
 		return this.field != null ? this.field.toString() : super.toString();
 	}

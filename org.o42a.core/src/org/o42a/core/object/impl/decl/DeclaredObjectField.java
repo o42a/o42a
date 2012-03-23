@@ -35,6 +35,7 @@ public class DeclaredObjectField
 
 	private Ascendants ascendants;
 	private Registry memberRegistry;
+	private boolean invalid;
 
 	public DeclaredObjectField(MemberField member) {
 		super(member, ArtifactKind.OBJECT);
@@ -118,6 +119,20 @@ public class DeclaredObjectField
 		for (ObjectFieldVariant variant : getVariants()) {
 			variant.declareMembers();
 		}
+	}
+
+	final void invalid() {
+		this.invalid = true;
+	}
+
+	final boolean validate() {
+		for (ObjectFieldVariant variant : getVariants()) {
+			if (!variant.getDefinition().isValid()) {
+				return false;
+			}
+		}
+		toObject().resolveAll();
+		return !this.invalid;
 	}
 
 	private final class Registry extends ObjectMemberRegistry {
