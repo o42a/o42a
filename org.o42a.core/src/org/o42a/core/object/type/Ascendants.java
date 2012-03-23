@@ -38,7 +38,6 @@ import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.func.Lambda;
 
 
 public class Ascendants
@@ -205,19 +204,15 @@ public class Ascendants
 		}
 	}
 
-	public final Ascendants declareMember() {
-		return declareField(null);
-	}
-
-	public Ascendants declareField(Lambda<Ascendants, Ascendants> explicit) {
+	public Ascendants declareField(FieldAscendants fieldAscendants) {
 
 		final Member member = getScope().toMember();
 
 		if (member.isOverride()) {
-			return overrideMember(member, explicit);
+			return overrideMember(member, fieldAscendants);
 		}
 
-		return declareMember(member, explicit);
+		return declareMember(member, fieldAscendants);
 	}
 
 	public void validate() {
@@ -309,19 +304,17 @@ public class Ascendants
 
 	private Ascendants declareMember(
 			Member member,
-			Lambda<Ascendants, Ascendants> explicit) {
+			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final AdapterId adapterId = member.getId().getAdapterId();
 
-		if (adapterId != null) {
+		if (adapterId != null && !fieldAscendants.isLinkAscendants()) {
 			ascendants = ascendants.addExplicitSample(
 					adapterId.adapterType(enclosingScope));
 		}
-		if (explicit != null) {
-			ascendants = explicit.get(ascendants);
-		}
+		ascendants = fieldAscendants.updateAscendants(ascendants);
 		if (!ascendants.isEmpty()) {
 			return ascendants;
 		}
@@ -333,7 +326,7 @@ public class Ascendants
 
 	private Ascendants overrideMember(
 			Member member,
-			Lambda<Ascendants, Ascendants> explicit) {
+			FieldAscendants fieldAscendants) {
 
 		Ascendants ascendants = this;
 		final ObjectType containerType =
@@ -363,11 +356,7 @@ public class Ascendants
 			}
 		}
 
-		if (explicit == null) {
-			return ascendants;
-		}
-
-		return explicit.get(ascendants);
+		return fieldAscendants.updateAscendants(ascendants);
 	}
 
 	private boolean validateUse(TypeRef checkUse) {

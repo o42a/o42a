@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.impl.decl;
 
-import java.util.List;
-
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.field.*;
@@ -28,10 +26,12 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.object.type.FieldAscendants;
 
 
 public class DeclaredObjectField
-		extends DeclaredField<Obj, ObjectFieldVariant> {
+		extends DeclaredField<Obj, ObjectFieldVariant>
+		implements FieldAscendants {
 
 	private Ascendants ascendants;
 	private Registry memberRegistry;
@@ -42,6 +42,29 @@ public class DeclaredObjectField
 
 	public DeclaredObjectField(MemberField member, Field<Obj> propagatedFrom) {
 		super(member, propagatedFrom);
+	}
+
+	@Override
+	public boolean isLinkAscendants() {
+		for (ObjectFieldVariant variant : getVariants()) {
+			if (variant.getDefinition().isLink()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Ascendants updateAscendants(Ascendants ascendants) {
+		this.ascendants = ascendants;
+
+		for (ObjectFieldVariant variant : getVariants()) {
+			this.ascendants = variant.buildAscendants(
+					ascendants,
+					this.ascendants);
+		}
+
+		return this.ascendants;
 	}
 
 	@Override
@@ -78,20 +101,6 @@ public class DeclaredObjectField
 			this.memberRegistry = new Registry();
 		}
 		return this.memberRegistry;
-	}
-
-	Ascendants buildAscendants(Ascendants implicitAscendants) {
-		this.ascendants = implicitAscendants;
-
-		final List<ObjectFieldVariant> variants = getVariants();
-
-		for (ObjectFieldVariant variant : variants) {
-			this.ascendants = variant.buildAscendants(
-					implicitAscendants,
-					this.ascendants);
-		}
-
-		return this.ascendants;
 	}
 
 	Definitions define(Scope scope) {

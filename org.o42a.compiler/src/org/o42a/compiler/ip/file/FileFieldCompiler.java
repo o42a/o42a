@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.file;
 
+import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
+
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.core.member.MemberOwner;
@@ -44,7 +46,8 @@ public class FileFieldCompiler
 
 	@Override
 	public Ascendants buildAscendants(Ascendants ascendants) {
-		return super.buildAscendants(ascendants).declareMember();
+		return super.buildAscendants(ascendants)
+				.declareField(NO_FIELD_ASCENDANTS);
 	}
 
 	@Override
