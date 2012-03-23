@@ -78,6 +78,8 @@ public abstract class FieldDefinition extends Placed {
 		return true;
 	}
 
+	public abstract boolean isLink();
+
 	public abstract void defineObject(ObjectDefiner definer);
 
 	public abstract void overrideObject(ObjectDefiner definer);

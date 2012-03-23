@@ -60,6 +60,26 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+
+		final PathResolution resolution =
+				this.path.resolve(
+						pathResolver(this.path.getOrigin(), dummyUser()));
+
+		if (resolution.isError()) {
+			return false;
+		}
+
+		final Obj object = resolution.getResult().toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		return object.value().getValueType().isLink();
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.addImplicitSample(this.path.staticTypeRef(distribute()));
 	}
