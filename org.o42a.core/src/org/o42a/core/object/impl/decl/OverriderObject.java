@@ -20,6 +20,7 @@
 package org.o42a.core.object.impl.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.MemberField;
@@ -45,7 +46,8 @@ final class OverriderObject extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return this.field.buildAscendants(new Ascendants(this).declareMember());
+		return this.field.updateAscendants(
+				new Ascendants(this).declareField(NO_FIELD_ASCENDANTS));
 	}
 
 	@Override

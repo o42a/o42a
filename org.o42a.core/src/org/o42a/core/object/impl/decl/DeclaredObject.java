@@ -27,10 +27,9 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.util.func.Lambda;
 
 
-class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {
+class DeclaredObject extends Obj {
 
 	private final DeclaredObjectField field;
 
@@ -40,18 +39,13 @@ class DeclaredObject extends Obj implements Lambda<Ascendants, Ascendants> {
 	}
 
 	@Override
-	public Ascendants get(Ascendants ascendants) {
-		return this.field.buildAscendants(ascendants);
-	}
-
-	@Override
 	public String toString() {
 		return this.field != null ? this.field.toString() : super.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).declareField(this);
+		return new Ascendants(this).declareField(this.field);
 	}
 
 	@Override

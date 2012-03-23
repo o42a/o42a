@@ -21,6 +21,7 @@ package org.o42a.core.object.impl.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
@@ -51,7 +52,7 @@ public final class PropagatedObject extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).declareMember();
+		return new Ascendants(this).declareField(NO_FIELD_ASCENDANTS);
 	}
 
 	@Override

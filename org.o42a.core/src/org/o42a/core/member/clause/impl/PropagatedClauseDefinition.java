@@ -20,6 +20,7 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -63,7 +64,7 @@ final class PropagatedClauseDefinition extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).declareMember();
+		return new Ascendants(this).declareField(NO_FIELD_ASCENDANTS);
 	}
 
 	@Override
