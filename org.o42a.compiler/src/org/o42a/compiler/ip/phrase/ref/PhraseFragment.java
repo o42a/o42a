@@ -107,6 +107,11 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
+		public boolean isLink() {
+			return this.definition.isLink();
+		}
+
+		@Override
 		public void defineObject(ObjectDefiner definer) {
 			this.phrase.getMainContext().setImplicitAscendants(
 					definer.getImplicitAscendants());

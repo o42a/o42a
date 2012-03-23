@@ -49,6 +49,32 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+
+		final TypeRef ancestor = this.ascendants.getAncestor();
+
+		if (ancestor != null) {
+
+			final ValueType<?> valueType = ancestor.getValueType();
+
+			if (!valueType.isVoid()) {
+				return valueType.isLink();
+			}
+		}
+
+		for (StaticTypeRef sample : this.ascendants.getSamples()) {
+
+			final ValueType<?> valueType = sample.getValueType();
+
+			if (!valueType.isVoid()) {
+				return valueType.isLink();
+			}
+		}
+
+		return false;
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 		this.ascendants.updateAscendants(definer);
 		definer.define(this.definitions);
@@ -93,38 +119,6 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 				distribute(),
 				this.ascendants,
 				this.definitions).toRef();
-	}
-
-	private boolean isLink() {
-
-		final TypeRef ancestor = this.ascendants.getAncestor();
-		boolean link = false;
-
-		if (ancestor != null) {
-
-			final ValueType<?> valueType = ancestor.getValueType();
-
-			if (!valueType.isVoid()) {
-				if (!valueType.isLink()) {
-					return false;
-				}
-				link = true;
-			}
-		}
-
-		for (StaticTypeRef sample : this.ascendants.getSamples()) {
-
-			final ValueType<?> valueType = sample.getValueType();
-
-			if (!valueType.isVoid()) {
-				if (!valueType.isLink()) {
-					return false;
-				}
-				link = true;
-			}
-		}
-
-		return link;
 	}
 
 }

@@ -35,6 +35,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+		return getDefinition().isLink();
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 		getDefinition().defineObject(definer);
 	}

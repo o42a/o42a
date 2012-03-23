@@ -38,6 +38,11 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+		return this.variant.getDefinition().isLink();
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 		throw new UnsupportedOperationException();
 	}

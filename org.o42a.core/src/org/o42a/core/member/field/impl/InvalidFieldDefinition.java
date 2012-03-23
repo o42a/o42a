@@ -40,6 +40,11 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+		return false;
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 	}
 

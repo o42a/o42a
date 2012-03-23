@@ -47,6 +47,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public boolean isLink() {
+		return this.definition.isLink();
+	}
+
+	@Override
 	public void defineObject(ObjectDefiner definer) {
 		this.definition.defineObject(new RescopedObjectDefiner(definer));
 	}

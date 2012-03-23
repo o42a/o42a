@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.impl.ObjectFieldDefinition.pathToLink;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
@@ -26,7 +28,9 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolution;
 
 
 public final class PathFieldDefinition extends FieldDefinition {
@@ -36,6 +40,26 @@ public final class PathFieldDefinition extends FieldDefinition {
 	public PathFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
 		this.path = path;
+	}
+
+	@Override
+	public boolean isLink() {
+
+		final PathResolution resolution =
+				this.path.resolve(
+						pathResolver(this.path.getOrigin(), dummyUser()));
+
+		if (resolution.isError()) {
+			return false;
+		}
+
+		final Obj object = resolution.getResult().toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		return object.value().getValueType().isLink();
 	}
 
 	@Override
