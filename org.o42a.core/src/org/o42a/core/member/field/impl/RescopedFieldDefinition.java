@@ -172,11 +172,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public TargetRef getDefaultTargetRef() {
-			return this.definer.getDefaultTargetRef();
-		}
-
-		@Override
 		public TargetRef getTargetRef() {
 			return this.definer.getTargetRef();
 		}

@@ -28,8 +28,6 @@ public interface LinkDefiner extends FieldDefiner {
 
 	TypeRef getTypeRef();
 
-	TargetRef getDefaultTargetRef();
-
 	TargetRef getTargetRef();
 
 	void setTargetRef(Ref targetRef, TypeRef defaultType);

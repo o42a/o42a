@@ -85,15 +85,24 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 	Ascendants buildAscendants(
 			Ascendants implicitAscendants,
 			Ascendants ascendants) {
+		if (!getDeclaration().isLink()) {
 
-		final ObjectDefinerImpl definer =
-				new ObjectDefinerImpl(this, implicitAscendants, ascendants);
+			final ObjectDefinerImpl definer =
+					new ObjectDefinerImpl(this, implicitAscendants, ascendants);
 
-		if (getField().isOverride()) {
-			getDefinition().overrideObject(definer);
-		} else {
-			getDefinition().defineObject(definer);
+			if (getField().isOverride()) {
+				getDefinition().overrideObject(definer);
+			} else {
+				getDefinition().defineObject(definer);
+			}
+
+			return this.ascendants = definer.getAscendants();
 		}
+
+		final LinkDefinerImpl definer =
+				new LinkDefinerImpl(this, ascendants);
+
+		getDefinition().defineLink(definer);
 
 		return this.ascendants = definer.getAscendants();
 	}
@@ -124,7 +133,7 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 		return this.definer;
 	}
 
-	private final DeclaredObjectField getObjectField() {
+	final DeclaredObjectField getObjectField() {
 		return (DeclaredObjectField) getField();
 	}
 
