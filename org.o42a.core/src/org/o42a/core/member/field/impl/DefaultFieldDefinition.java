@@ -25,11 +25,8 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
-import org.o42a.core.value.ValueType;
 
 
 public final class DefaultFieldDefinition extends FieldDefinition {
@@ -50,28 +47,7 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public boolean isLink() {
-
-		final TypeRef ancestor = this.ascendants.getAncestor();
-
-		if (ancestor != null) {
-
-			final ValueType<?> valueType = ancestor.getValueType();
-
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
-			}
-		}
-
-		for (StaticTypeRef sample : this.ascendants.getSamples()) {
-
-			final ValueType<?> valueType = sample.getValueType();
-
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
-			}
-		}
-
-		return false;
+		return this.ascendants.isLinkAscendants();
 	}
 
 	@Override

@@ -108,7 +108,7 @@ class PhraseFragment extends PathFragment {
 
 		@Override
 		public boolean isLink() {
-			return this.definition.isLink();
+			return this.phrase.getPrefix().getAscendants().isLinkAscendants();
 		}
 
 		@Override

@@ -74,7 +74,7 @@ public class DeclaredObjectField
 
 	@Override
 	protected Obj overrideArtifact() {
-		return new OverriderObject(this);
+		return new DeclaredObject(this);
 	}
 
 	@Override
