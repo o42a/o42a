@@ -49,6 +49,10 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
+	}
+
+	@Override
 	public boolean isLink() {
 		return this.variant.getDefinition().isLink();
 	}

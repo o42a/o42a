@@ -23,6 +23,7 @@ import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.Call;
 import org.o42a.core.source.LocationInfo;
@@ -43,6 +44,10 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 		super(location, scope);
 		this.ascendants = ascendants;
 		this.definitions = definitions;
+	}
+
+	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
 	}
 
 	@Override

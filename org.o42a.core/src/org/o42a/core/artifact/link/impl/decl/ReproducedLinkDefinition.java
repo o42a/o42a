@@ -23,6 +23,7 @@ import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.Reproducer;
 
 
@@ -35,6 +36,10 @@ final class ReproducedLinkDefinition extends FieldDefinition {
 		super(variant, reproducer.distribute());
 		this.variant = variant;
 		this.reproducer = reproducer;
+	}
+
+	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -32,6 +33,10 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 			LocationInfo location,
 			Distributor distributor) {
 		super(location, distributor);
+	}
+
+	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
 	}
 
 	@Override

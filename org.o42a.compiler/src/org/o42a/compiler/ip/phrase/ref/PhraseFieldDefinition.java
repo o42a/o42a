@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.phrase.ref;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.type.Ascendants;
 
 
 final class PhraseFieldDefinition extends FieldDefinition {
@@ -32,6 +33,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	PhraseFieldDefinition(Phrase phrase) {
 		super(phrase, phrase.distribute());
 		this.phrase = phrase;
+	}
+
+	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
+		getDefinition().setImplicitAscendants(ascendants);
 	}
 
 	@Override
@@ -68,8 +74,7 @@ final class PhraseFieldDefinition extends FieldDefinition {
 			return this.definition;
 		}
 
-		final MainPhraseContext mainContext =
-				this.phrase.getMainContext();
+		final MainPhraseContext mainContext = this.phrase.getMainContext();
 
 		return this.definition = mainContext.getAscendants().fieldDefinition(
 				this,

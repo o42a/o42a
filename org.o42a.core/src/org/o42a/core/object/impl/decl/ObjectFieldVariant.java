@@ -90,6 +90,7 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 			final ObjectDefinerImpl definer =
 					new ObjectDefinerImpl(this, implicitAscendants, ascendants);
 
+			getDefinition().setImplicitAscendants(implicitAscendants);
 			if (getField().isOverride()) {
 				getDefinition().overrideObject(definer);
 			} else {
