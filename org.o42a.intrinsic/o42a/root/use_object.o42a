@@ -20,6 +20,10 @@
 Use object :=> directive
 ========================
 
+Module := `$$string(False)
+Object := `$$string(False)
+Alias := `$$string(False)
+
 <*'Object path' | from | as ...> Object = ()
 <*[Object path] | from | as ...> Object = ()
 
@@ -32,7 +36,3 @@ Use object :=> directive
   <*'Object alias' | *> Alias = ()
   <*[Object alias] | *> Alias = ()
 )
-
-Module := `string(False)
-Object := `string(False)
-Alias := `string(False)

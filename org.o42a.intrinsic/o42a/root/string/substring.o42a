@@ -32,4 +32,4 @@ Substring :=> string
 )
 
 From := `0
-To := (`integer) string:: length
+To := (`$$integer) string:: length
