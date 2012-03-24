@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 
@@ -107,8 +108,13 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
+		public void setImplicitAscendants(Ascendants ascendants) {
+			this.phrase.getMainContext().setImplicitAscendants(ascendants);
+		}
+
+		@Override
 		public boolean isLink() {
-			return this.phrase.getPrefix().getAscendants().isLinkAscendants();
+			return this.definition.isLink();
 		}
 
 		@Override

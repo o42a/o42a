@@ -27,6 +27,7 @@ import org.o42a.core.Placed;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.impl.InvalidFieldDefinition;
 import org.o42a.core.member.field.impl.RescopedFieldDefinition;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
@@ -73,6 +74,8 @@ public abstract class FieldDefinition extends Placed {
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
+
+	public abstract void setImplicitAscendants(Ascendants ascendants);
 
 	public boolean isValid() {
 		return true;

@@ -97,6 +97,16 @@ public class DeclaredObjectField
 		return new PropagatedObject(this);
 	}
 
+	void initDefinitions(Obj object) {
+
+		final Ascendants ascendants =
+				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
+
+		for (ObjectFieldVariant variant : getVariants()) {
+			variant.getDefinition().setImplicitAscendants(ascendants);
+		}
+	}
+
 	ObjectMemberRegistry getMemberRegistry() {
 		if (this.memberRegistry == null) {
 			this.memberRegistry = new Registry();
@@ -131,7 +141,6 @@ public class DeclaredObjectField
 				return false;
 			}
 		}
-		toObject().resolveAll();
 		return !this.invalid;
 	}
 

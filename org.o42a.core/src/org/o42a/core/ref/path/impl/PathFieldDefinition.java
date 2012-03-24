@@ -29,6 +29,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 
@@ -40,6 +41,10 @@ public final class PathFieldDefinition extends FieldDefinition {
 	public PathFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
 		this.path = path;
+	}
+
+	@Override
+	public void setImplicitAscendants(Ascendants ascendants) {
 	}
 
 	@Override
