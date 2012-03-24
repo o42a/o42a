@@ -25,11 +25,11 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Namespace;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.PathWithAlias;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
@@ -39,13 +39,11 @@ import org.o42a.core.value.ValueType;
 @SourcePath(relativeTo = Root.class, value = "use_namespace.o42a")
 public class UseNamespace extends DirectiveObject {
 
-	private final MemberKey moduleKey;
-	private final MemberKey objectKey;
+	private Ref module;
+	private Ref object;
 
 	public UseNamespace(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
-		this.moduleKey = fieldName("module").key(getScope());
-		this.objectKey = fieldName("object").key(getScope());
 	}
 
 	@Override
@@ -58,32 +56,21 @@ public class UseNamespace extends DirectiveObject {
 			return;
 		}
 
-		final Obj object = directive.getResolution().materialize();
-		final Field<?> moduleField =
-				object.member(this.moduleKey).toField().field(context);
-		final Value<?> moduleValue =
-				moduleField.getArtifact().materialize()
-				.value().explicitUseBy(context).getValue();
+		final Scope scope = directive.getResolution().getScope();
+		final Resolver resolver = scope.dummyResolver();
+		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(
-					moduleField,
-					moduleField.getDisplayName());
+			getLogger().unresolvedValue(directive, "module");
 			return;
 		}
 
 		final String moduleId = stringValue(moduleValue);
 
-		final Field<?> objectField =
-				object.member(this.objectKey).toField().field(context);
-		final Value<?> objectValue =
-				objectField.getArtifact().materialize()
-				.value().explicitUseBy(context).getValue();
+		final Value<?> objectValue = object().value(resolver);
 
 		if (!objectValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(
-					objectField,
-					objectField.getDisplayName());
+			getLogger().unresolvedValue(directive, "object");
 			return;
 		}
 
@@ -106,6 +93,28 @@ public class UseNamespace extends DirectiveObject {
 		}
 
 		namespace.useNamespace(path.getPath());
+	}
+
+	private final Ref module() {
+		if (this.module != null) {
+			return this.module;
+		}
+
+		final Path path =
+				fieldName("module").key(getScope()).toPath().mayDereference();
+
+		return this.module = path.bind(this, getScope()).target(distribute());
+	}
+
+	private final Ref object() {
+		if (this.object != null) {
+			return this.object;
+		}
+
+		final Path path =
+				fieldName("object").key(getScope()).toPath().mayDereference();
+
+		return this.object = path.bind(this, getScope()).target(distribute());
 	}
 
 	private static String stringValue(Value<?> value) {

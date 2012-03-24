@@ -20,4 +20,4 @@
 Array :=> void
 ==============
 
-Length :=< integer
+Length :=< $$integer

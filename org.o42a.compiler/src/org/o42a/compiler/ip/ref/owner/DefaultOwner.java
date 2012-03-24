@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.ref.owner.DereferenceFragment.DEREFERENCE_FRAGMENT;
-
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
@@ -34,7 +32,7 @@ final class DefaultOwner extends Owner {
 	@Override
 	public Ref targetRef() {
 		return this.ownerRef.getPath()
-				.append(DEREFERENCE_FRAGMENT)
+				.mayDereference()
 				.target(this.ownerRef.distribute());
 	}
 

@@ -19,11 +19,11 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.ref.owner.DereferenceFragment.canDereference;
 import static org.o42a.compiler.ip.ref.owner.Owner.redundantBodyRef;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
@@ -31,6 +31,17 @@ import org.o42a.core.source.LocationInfo;
 
 
 final class BodyRefFragment extends PathFragment {
+
+	static boolean canDereference(Scope start) {
+
+		final Obj object = start.toObject();
+
+		if (object == null) {
+			return false;
+		}
+
+		return object.value().getValueType().toLinkType() != null;
+	}
 
 	private final LocationInfo location;
 
