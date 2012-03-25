@@ -32,7 +32,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.type.Ascendants;
@@ -114,10 +113,13 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			return this.text;
 		}
 
-		final MemberKey key = field("text", Accessor.DECLARATION).getKey();
+		final Path path =
+				field("text", Accessor.DECLARATION)
+				.getKey()
+				.toPath()
+				.mayDereference();
 
-		return this.text =
-				key.toPath().bind(this, getScope()).target(distribute());
+		return this.text = path.bind(this, getScope()).target(distribute());
 	}
 
 	private FuncPtr<PrintFunc> printFunc(Generator generator) {
