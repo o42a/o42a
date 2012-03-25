@@ -125,12 +125,12 @@ public class ObjectConstructorStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalize(normalizer, false);
+		normalizeConstructor(normalizer);
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalize(normalizer, true);
+		normalizeConstructor(normalizer);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public class ObjectConstructorStep extends Step {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	private void normalize(PathNormalizer normalizer, boolean isStatic) {
+	private void normalizeConstructor(PathNormalizer normalizer) {
 
 		final Obj object = this.constructor.resolve(
 				normalizer.lastPrediction().getScope());

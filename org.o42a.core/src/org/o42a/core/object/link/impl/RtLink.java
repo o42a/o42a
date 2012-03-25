@@ -75,7 +75,7 @@ final class RtLink extends ObjectLink {
 
 	@Override
 	protected Obj createTarget() {
-		return new RuntimeLinkTarget(this);
+		return new RtLinkTarget(this);
 	}
 
 	@Override

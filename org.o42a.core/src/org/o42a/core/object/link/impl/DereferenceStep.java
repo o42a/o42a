@@ -181,8 +181,14 @@ public class DereferenceStep extends Step {
 
 	private void normalizeDeref(final PathNormalizer normalizer) {
 
-		final Obj linkObject =
-				normalizer.lastPrediction().getScope().toObject();
+		final Prediction nextPrediction = normalizer.nextPrediction();
+
+		if (nextPrediction == null) {
+			normalizer.cancel();
+			return;
+		}
+
+		final Obj linkObject = nextPrediction.getScope().toObject();
 		final LinkValueType linkType =
 				linkObject.value().getValueType().toLinkType();
 
@@ -212,7 +218,7 @@ public class DereferenceStep extends Step {
 
 	private boolean linkUpdated(PathNormalizer normalizer) {
 
-		final Prediction prediction = normalizer.lastPrediction();
+		final Prediction prediction = normalizer.nextPrediction();
 		final Scope stepStart = prediction.getScope();
 
 		for (Scope replacement : prediction) {

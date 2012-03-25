@@ -65,6 +65,7 @@ public final class PathNormalizer {
 
 	private Prediction stepStart;
 	private Prediction stepPrediction;
+	private Prediction nextPrediction;
 	private int stepIndex;
 	private boolean stepNormalized;
 
@@ -146,6 +147,10 @@ public final class PathNormalizer {
 		return this.stepPrediction;
 	}
 
+	public final Prediction nextPrediction() {
+		return this.nextPrediction;
+	}
+
 	public final boolean isNormalizationStarted() {
 		return this.data.normalizationStarted;
 	}
@@ -184,7 +189,8 @@ public final class PathNormalizer {
 	}
 
 	public final void skipToNext(Prediction prediction) {
-		this.stepPrediction = prediction;
+		this.stepPrediction = lastPrediction();
+		this.nextPrediction = prediction;
 		this.stepNormalized = true;
 	}
 
@@ -200,6 +206,7 @@ public final class PathNormalizer {
 					lastPrediction.isExact()
 					? exactPrediction(enclosing)
 					: scopePrediction(enclosing);
+			this.nextPrediction = null;
 
 			final Step step = getPath().getSteps()[getStepIndex()];
 			final Path nonNormalizedRemainder =
@@ -211,6 +218,7 @@ public final class PathNormalizer {
 			}
 			addRest();
 			this.data.normalizationFinished = true;
+
 			return false;
 		}
 
@@ -229,6 +237,7 @@ public final class PathNormalizer {
 				lastPrediction.isExact()
 				? exactPrediction(enclosing)
 				: scopePrediction(enclosing);
+		this.nextPrediction = null;
 
 		return true;
 	}
@@ -264,6 +273,7 @@ public final class PathNormalizer {
 		} else {
 			this.stepNormalized = normalizer.stepNormalized;
 			this.stepPrediction = normalizer.stepPrediction;
+			this.nextPrediction = normalizer.nextPrediction;
 		}
 	}
 
@@ -416,6 +426,7 @@ public final class PathNormalizer {
 
 	private final void add(Prediction prediction, NormalStep normalStep) {
 		this.stepPrediction = prediction;
+		this.nextPrediction = null;
 		this.stepNormalized = true;
 		this.normalSteps.add(normalStep);
 	}

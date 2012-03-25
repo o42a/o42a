@@ -31,7 +31,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.object.link.impl.LinkTarget;
-import org.o42a.core.object.link.impl.RuntimeLinkTarget;
+import org.o42a.core.object.link.impl.RtLinkTarget;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -169,7 +169,7 @@ public abstract class KnownLink extends ObjectLink {
 	@Override
 	protected final Obj createTarget() {
 		if (isRuntime()) {
-			return new RuntimeLinkTarget(this);
+			return new RtLinkTarget(this);
 		}
 
 		final Artifact<?> artifact = getTargetRef().artifact(dummyUser());
@@ -181,7 +181,7 @@ public abstract class KnownLink extends ObjectLink {
 		final Obj target = artifact.materialize();
 
 		if (target.getConstructionMode().isRuntime()) {
-			return new RuntimeLinkTarget(this);
+			return new RtLinkTarget(this);
 		}
 
 		return new LinkTarget(this);

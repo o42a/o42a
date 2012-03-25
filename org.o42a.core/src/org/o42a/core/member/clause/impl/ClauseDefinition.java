@@ -78,17 +78,16 @@ final class ClauseDefinition extends Obj {
 	@Override
 	protected Ascendants buildAscendants() {
 
-		Ascendants ascendants = new Ascendants(this);
 		final MemberKey overridden = toClause().getOverridden();
 
 		if (overridden != null) {
-			ascendants = overrideMember(ascendants);
+			return overrideMember();
 		}
+
+		final Ascendants ascendants = new Ascendants(this);
+
 		if (!toClause().isSubstitution()) {
 			return toClause().getAscendants().updateAscendants(ascendants);
-		}
-		if (overridden != null) {
-			return ascendants;
 		}
 
 		return ascendants.setAncestor(
@@ -146,10 +145,10 @@ final class ClauseDefinition extends Obj {
 		}
 	}
 
-	private Ascendants overrideMember(Ascendants in) {
+	private Ascendants overrideMember() {
 
+		Ascendants ascendants = new Ascendants(this);
 		final MemberKey memberKey = toClause().getOverridden();
-		Ascendants ascendants = in;
 		final Obj container = toMember().getContainer().toObject();
 		final Member overridden = container.member(memberKey);
 
@@ -158,14 +157,26 @@ final class ClauseDefinition extends Obj {
 		}
 
 		final Container substance = overridden.substance(dummyUser());
+		final Obj object = substance.toObject();
 
-		if (substance.toObject() == null) {
-			return ascendants.setAncestor(
+		if (object == null) {
+			ascendants = ascendants.setAncestor(
 					substance.toArtifact().getTypeRef()
 					.upgradeScope(getScope().getEnclosingScope()));
+		} else {
+			ascendants = ascendants.addMemberOverride(overridden);
+		}
+		if (toClause().isSubstitution()) {
+			return ascendants;
+		}
+		if (object == null) {
+			return toClause().getAscendants().updateAscendants(ascendants);
+		}
+		if (!object.value().getValueType().isLink()) {
+			return toClause().getAscendants().updateAscendants(ascendants);
 		}
 
-		return ascendants.addMemberOverride(overridden);
+		return ascendants;
 	}
 
 	private static final class TerminatorRegistry extends ObjectMemberRegistry {

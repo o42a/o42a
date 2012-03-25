@@ -35,11 +35,11 @@ import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.object.type.Ascendants;
 
 
-public final class RuntimeLinkTarget extends Obj {
+public final class RtLinkTarget extends Obj {
 
 	private final ObjectLink link;
 
-	public RuntimeLinkTarget(ObjectLink link) {
+	public RtLinkTarget(ObjectLink link) {
 		super(link, link.distributeIn(link.getScope().getContainer()));
 		this.link = link;
 	}
