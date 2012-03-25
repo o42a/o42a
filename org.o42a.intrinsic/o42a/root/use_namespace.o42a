@@ -20,8 +20,8 @@
 Use namespace :=> directive
 ===========================
 
-Module := `$$string(False)
-Object := `$$string(False)
+Module := link (`$$string) [string(False)]
+Object := link (`$$string) [string(False)]
 
 <*'Module id' | object> Module = ()
 <*[Module id] | object> Module = ()
