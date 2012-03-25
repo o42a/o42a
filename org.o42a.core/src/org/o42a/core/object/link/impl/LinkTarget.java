@@ -46,11 +46,6 @@ public class LinkTarget extends Obj {
 	}
 
 	@Override
-	public boolean isPropagated() {
-		return getWrapped().isPropagated();
-	}
-
-	@Override
 	public ConstructionMode getConstructionMode() {
 		return STRICT_CONSTRUCTION;
 	}
