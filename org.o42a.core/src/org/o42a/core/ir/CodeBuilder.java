@@ -70,6 +70,22 @@ public abstract class CodeBuilder {
 		return new HostlessBuilder(context, function);
 	}
 
+	public static ObjectOp objectAncestor(
+			CodeDirs dirs,
+			HostOp host,
+			Obj object) {
+
+		final TypeRef ancestorType = object.type().getAncestor();
+
+		if (ancestorType == null) {
+			return null;
+		}
+
+		final RefOp ancestor = ancestorType.op(dirs, host);
+
+		return ancestor.target(dirs).materialize(dirs);
+	}
+
 	private final CompilerContext context;
 	private final Function<?> function;
 	private int nameSeq;
@@ -136,17 +152,8 @@ public abstract class CodeBuilder {
 		return result;
 	}
 
-	public ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
-
-		final TypeRef ancestorType = object.type().getAncestor();
-
-		if (ancestorType == null) {
-			return null;
-		}
-
-		final RefOp ancestor = ancestorType.op(dirs, host());
-
-		return ancestor.target(dirs).materialize(dirs);
+	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
+		return objectAncestor(dirs, host(), object);
 	}
 
 }

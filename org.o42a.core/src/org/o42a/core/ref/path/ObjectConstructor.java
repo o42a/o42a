@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ir.CodeBuilder.objectAncestor;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
@@ -128,8 +129,8 @@ public abstract class ObjectConstructor extends Placed {
 		return propagated;
 	}
 
-	private ObjectOp buildAncestor(CodeDirs dirs) {
-		return dirs.getBuilder().objectAncestor(dirs, getConstructed());
+	private ObjectOp buildAncestor(CodeDirs dirs, HostOp host) {
+		return objectAncestor(dirs, host, getConstructed());
 	}
 
 	private static final class Propagated extends Obj {
@@ -232,7 +233,7 @@ public abstract class ObjectConstructor extends Placed {
 			return getBuilder().newObject(
 					dirs,
 					owner,
-					buildAncestor(dirs),
+					buildAncestor(dirs, local != null ? local : owner),
 					sample);
 		}
 
