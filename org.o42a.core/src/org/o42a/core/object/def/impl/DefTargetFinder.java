@@ -78,7 +78,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	@Override
 	public boolean start(BoundPath path, Scope start) {
 		this.originalPath = path;
-		return path.getBindings().isEmpty();
+		return true;
 	}
 
 	@Override
@@ -93,7 +93,6 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		appendIfExist(step);
 		return true;
 	}
 
@@ -119,7 +118,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
-		return false;
+		return appendIfExist(step);
 	}
 
 	@Override

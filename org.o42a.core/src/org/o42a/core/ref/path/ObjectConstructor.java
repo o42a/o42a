@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ir.CodeBuilder.hostlessBuilder;
 import static org.o42a.core.ir.CodeBuilder.objectAncestor;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
@@ -28,6 +29,7 @@ import java.util.IdentityHashMap;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -129,10 +131,6 @@ public abstract class ObjectConstructor extends Placed {
 		return propagated;
 	}
 
-	private ObjectOp buildAncestor(CodeDirs dirs, HostOp host) {
-		return objectAncestor(dirs, host, getConstructed());
-	}
-
 	private static final class Propagated extends Obj {
 
 		private final ObjectConstructor constructor;
@@ -184,62 +182,77 @@ public abstract class ObjectConstructor extends Placed {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-
-			final LocalOp local = host().toLocal();
-
-			if (local != null) {
-				assert local.getBuilder() == getBuilder() :
-					"Wrong builder used when instantiating local object: "
-					+ this + ", while " + local.getBuilder() + " expected";
-			}
-
-			final Obj sample = getConstructed();
-
-			if (!sample.type().derivation().isUsed(
+			if (!getConstructed().type().derivation().isUsed(
 					dirs.getGenerator().getAnalyzer(),
 					RUNTIME_DERIVATION_USAGE)) {
-
-				final ObjOp target = sample.ir(dirs.getGenerator()).op(
-						getBuilder(),
-						dirs.code());
-
-				if (dirs.isDebug()) {
-					dirs.code().dumpName(
-							"Static object: ",
-							target.toData(dirs.code()));
-				}
-				if (local != null) {
-					target.fillDeps(dirs, sample);
-				}
-
-				return target;
+				return exactObject(dirs);
 			}
 
-			final ObjectOp owner;
-
-			if (local != null) {
-				owner = null;
-			} else {
-
-				final ObjectOp ownerObject = host().materialize(dirs);
-
-				if (ownerObject.getPrecision().isExact()) {
-					owner = null;
-				} else {
-					owner = ownerObject;
-				}
-			}
-
-			return getBuilder().newObject(
-					dirs,
-					owner,
-					buildAncestor(dirs, local != null ? local : owner),
-					sample);
+			return newObject(dirs);
 		}
 
 		@Override
 		public String toString() {
 			return String.valueOf(ObjectConstructor.this);
+		}
+
+		private HostOp exactObject(CodeDirs dirs) {
+
+			final Obj sample = getConstructed();
+			final LocalOp local = host().toLocal();
+			final ObjOp target = sample.ir(dirs.getGenerator()).op(
+					getBuilder(),
+					dirs.code());
+
+			if (dirs.isDebug()) {
+				dirs.code().dumpName(
+						"Static object: ",
+						target.toData(dirs.code()));
+			}
+			if (local != null) {
+				target.fillDeps(dirs, sample);
+			}
+
+			return target;
+		}
+
+		private HostOp newObject(CodeDirs dirs) {
+
+			final ObjectOp owner;
+			final CodeBuilder ancestorBuilder;
+			final HostOp ancestorHost;
+			final LocalOp local = host().toLocal();
+
+			if (local != null) {
+				owner = null;
+				ancestorBuilder = getBuilder();
+				ancestorHost = local;
+			} else {
+
+				final ObjectOp ownerObject = host().materialize(dirs);
+
+				if (ownerObject == null
+						|| ownerObject.getPrecision().isExact()) {
+					owner = null;
+					ancestorBuilder = hostlessBuilder(
+							getContext(),
+							getBuilder().getFunction());
+					ancestorHost = ancestorBuilder.host();
+				} else {
+					owner = ownerObject;
+					ancestorBuilder = getBuilder();
+					ancestorHost = ownerObject;
+				}
+			}
+
+			return ancestorBuilder.newObject(
+					dirs,
+					owner,
+					objectAncestor(
+							dirs,
+							ancestorHost,
+							getConstructed()),
+					getConstructed());
 		}
 
 	}
