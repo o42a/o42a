@@ -35,7 +35,8 @@ default_mk = $(build_dir)/rt.default.mk
 common_mk = $(build_dir)/rt.mk
 target_dir = ../target
 release_so_lib = $(target_dir)/$(so_name)
-debug_so_lib = $(target_dir)/$(subst .,_debug.,$(so_name))
+debug_so_name = $(subst .,_debug.,$(so_name))
+debug_so_lib = $(target_dir)/$(debug_so_name)
 
 release_flags = $(release_cppflags) $(release_cflags)
 debug_flags = $(debug_cppflags) $(debug_cflags)
@@ -97,14 +98,14 @@ clean :
 $(release_so_lib) : $(subst .o,.rel.o,$(objects))
 $(release_so_lib) :
 	mkdir -p $(target_dir)
-	$(LD) $(LDFLAGS) -shared -o $@ $+
+	$(LD) $(LDFLAGS) -shared -soname=$(so_name) -o $@ $+
 
 # Build debug shared library.
 $(debug_so_lib) : $(srcdir)/debug.o
 $(debug_so_lib) : $(subst .o,.dbg.o,$(objects))
 $(debug_so_lib) :
 	mkdir -p $(target_dir)
-	$(LD) $(LDFLAGS) -shared -o $@ $+
+	$(LD) $(LDFLAGS) -shared -soname=$(debug_so_name) -o $@ $+
 
 
 # Compile individual files.
