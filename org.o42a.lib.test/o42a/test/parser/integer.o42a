@@ -20,4 +20,4 @@
 Integer :=> rt-integer
 ======================
 
-Input :=< `$$string
+Input :=< link (`$$string)
