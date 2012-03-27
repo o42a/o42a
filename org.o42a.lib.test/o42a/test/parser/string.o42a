@@ -20,4 +20,4 @@
 String :=> rt-string
 ====================
 
-Input :=< `$$string
+Input :=< link (`$$string)
