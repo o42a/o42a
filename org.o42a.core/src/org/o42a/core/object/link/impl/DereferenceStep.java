@@ -100,13 +100,6 @@ public class DereferenceStep extends Step {
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver, path, index);
 			linkObjectValue.resolveAll(resolver);
-			linkObjectValue.getDefinitions().resolveTargets(
-					new TargetResolver() {
-						@Override
-						public void resolveTarget(Obj target) {
-							target.value().resolveAll(resolver);
-						}
-					});
 		}
 
 		final LinkValueStruct linkStruct =

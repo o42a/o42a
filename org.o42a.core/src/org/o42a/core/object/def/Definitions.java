@@ -24,6 +24,7 @@ import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import java.util.Collection;
@@ -654,6 +655,14 @@ public class Definitions extends Scoped {
 			conditions().resolveAll(this);
 			claims().resolveAll(this);
 			propositions().resolveAll(this);
+
+			final Ref targetRef = target().getRef();
+
+			if (targetRef != null) {
+				targetRef.resolve(
+						getScope().getEnclosingScope().dummyResolver())
+						.resolveAll(TARGET_REF_USAGE);
+			}
 		} finally {
 			getContext().fullResolution().end();
 		}
