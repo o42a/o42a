@@ -38,6 +38,10 @@ import org.o42a.core.source.CompilerContext;
 
 public abstract class CodeBuilder {
 
+	public static CodeBuilder defaultBuilder(Function<?> function, Obj object) {
+		return new DefaultBuilder(function, object);
+	}
+
 	public static CodeBuilder codeBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
