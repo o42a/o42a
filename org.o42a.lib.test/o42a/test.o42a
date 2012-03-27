@@ -78,7 +78,7 @@ Assert :=> void(
 
     A message reported when condition fails.
    */
-  Message := `"Error"
+  Message := link (`string) "Error"
   
   {
     --Condition? Fail [message]
