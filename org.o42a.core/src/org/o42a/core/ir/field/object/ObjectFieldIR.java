@@ -98,6 +98,9 @@ public final class ObjectFieldIR extends FieldIR<Obj> {
 		final DefTarget defTarget =
 				object.value().getDefinitions().target();
 
+		assert defTarget.exists() :
+			"Link target does not exist: " + object;
+
 		if (defTarget.isUnknown()) {
 			target = ascendant;
 		} else {

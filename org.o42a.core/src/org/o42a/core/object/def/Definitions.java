@@ -680,6 +680,12 @@ public class Definitions extends Scoped {
 			return this.target;
 		}
 
+		final Obj cloneOf = getScope().toObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.target = cloneOf.value().getDefinitions().target();
+		}
+
 		final LinkValueStruct linkStruct = getValueStruct().toLinkStruct();
 
 		if (linkStruct == null) {

@@ -183,6 +183,13 @@ public final class ObjectType implements UserInfo {
 		if (!getObject().value().getValueType().isLink()) {
 			return null;
 		}
+
+		final Obj cloneOf = getObject().getCloneOf();
+
+		if (cloneOf != null) {
+			return this.linkUses = cloneOf.type().linkUses();
+		}
+
 		return this.linkUses = new LinkUses(this);
 	}
 
