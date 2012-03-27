@@ -20,17 +20,17 @@
 Print to console :=> void
 ==========================
 
-<*Printer> Void(
+<*Printer> Void (
   <*> (
     <*Content> {
       <*Invoker> Print to console (
         <*[] | content> Text = ()
         <*'' | content> Text = ()
       )
-      <Nl | content> Print to console(Text = "\n")
+      <Nl | content> Print to console (Text = "\n")
     }
     = Void
   )
 )
 
-Text :=< `""
+Text :=< link (`string)
