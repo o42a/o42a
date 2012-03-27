@@ -69,6 +69,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		return getKind() != FldKind.OBJ;
 	}
 
+	public final boolean isSimulatedLink() {
+		return isLink() && getField().toObject() != null;
+	}
+
 	public final Obj getTarget() {
 		return this.target;
 	}
@@ -113,14 +117,16 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			this.constructor = reusedConstructor;
 			return;
 		}
+		if (!isSimulatedLink()) {
 
-		final FieldAnalysis analysis = getField().toMember().getAnalysis();
+			final FieldAnalysis analysis = getField().getAnalysis();
 
-		if (!analysis.derivation().isUsed(
-				getGenerator().getAnalyzer(),
-				RUNTIME_DERIVATION_USAGE)) {
-			this.constructor = getType().constructorStub();
-			return;
+			if (!analysis.derivation().isUsed(
+					getGenerator().getAnalyzer(),
+					RUNTIME_DERIVATION_USAGE)) {
+				this.constructor = getType().constructorStub();
+				return;
+			}
 		}
 
 		this.constructor = getGenerator().newFunction().create(
