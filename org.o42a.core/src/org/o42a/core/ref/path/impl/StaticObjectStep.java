@@ -90,12 +90,12 @@ public class StaticObjectStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalizer.cancel();
+		normalizer.finish();
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalizer.cancel();
+		normalizer.finish();
 	}
 
 	@Override

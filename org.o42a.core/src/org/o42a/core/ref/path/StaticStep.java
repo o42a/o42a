@@ -105,7 +105,7 @@ final class StaticStep extends Step {
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalizer.cancel();
+		normalizer.finish();
 	}
 
 	@Override

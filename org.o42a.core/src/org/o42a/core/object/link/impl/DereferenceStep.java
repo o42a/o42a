@@ -186,7 +186,7 @@ public class DereferenceStep extends Step {
 				linkObject.value().getValueType().toLinkType();
 
 		if (linkType.isVariable()) {
-			normalizer.cancel();// Can not normalize variables.
+			normalizer.finish();// Can not normalize variables.
 			return;
 		}
 
@@ -194,11 +194,11 @@ public class DereferenceStep extends Step {
 				linkObject.value().getDefinitions().target();
 
 		if (!defTarget.exists() || defTarget.isUnknown()) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (linkUpdated(normalizer)) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 

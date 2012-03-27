@@ -91,12 +91,12 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
-		normalize(normalizer, false);
+		normalizeParent(normalizer);
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
-		normalize(normalizer, true);
+		normalizeParent(normalizer);
 	}
 
 	@Override
@@ -144,18 +144,12 @@ public final class ParentObjectStep extends AbstractMemberStep {
 		return this.uses = new ObjectStepUses(this);
 	}
 
-	private void normalize(PathNormalizer normalizer, boolean isStatic) {
+	private void normalizeParent(PathNormalizer normalizer) {
 
 		final Member member = resolveMember(
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
 				normalizer.lastPrediction().getScope());
-
-		if (member == null) {
-			normalizer.cancel();
-			return;
-		}
-
 		final Container enclosing = member.substance(dummyUser());
 
 		if (!normalizer.up(enclosing.getScope(), toPath())) {
@@ -172,11 +166,11 @@ public final class ParentObjectStep extends AbstractMemberStep {
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (definitionsChange(object, prediction)) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -184,7 +178,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 				normalizer.getNormalizer());
 
 		if (inline == null) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
