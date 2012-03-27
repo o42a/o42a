@@ -142,7 +142,7 @@ public class MemberStep extends AbstractMemberStep {
 		if (lastPrediction.getScope().getLastDefinition()
 				!= member.getDefinedIn()) {
 			// Require explicitly declared member.
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -158,7 +158,7 @@ public class MemberStep extends AbstractMemberStep {
 		final Prediction prediction = field.predict(lastPrediction);
 
 		if (!prediction.isPredicted()) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -168,12 +168,12 @@ public class MemberStep extends AbstractMemberStep {
 		if (link != null) {
 			if (link.isVariable()
 					|| link.materialize().getConstructionMode().isRuntime()) {
-				normalizer.cancel();
+				normalizer.finish();
 				return;
 			}
 			// Append the link target.
 			if (linkUpdated(normalizer, prediction)) {
-				normalizer.cancel();
+				normalizer.finish();
 				return;
 			}
 			normalizer.append(
@@ -196,15 +196,15 @@ public class MemberStep extends AbstractMemberStep {
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (object.getConstructionMode().isRuntime()) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (definitionsChange(object, prediction)) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -212,7 +212,7 @@ public class MemberStep extends AbstractMemberStep {
 				normalizer.getNormalizer());
 
 		if (inline == null) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -228,7 +228,6 @@ public class MemberStep extends AbstractMemberStep {
 
 		for (Scope replacement : prediction) {
 			if (fieldOf(replacement).getDefinedIn() != stepStart) {
-				normalizer.cancel();
 				return true;
 			}
 		}

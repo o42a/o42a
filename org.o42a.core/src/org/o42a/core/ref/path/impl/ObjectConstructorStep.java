@@ -172,7 +172,7 @@ public class ObjectConstructorStep extends Step {
 				normalizer.lastPrediction().getScope());
 
 		if (object.getConstructionMode().isRuntime()) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (uses().onlyDereferenced(normalizer)) {
@@ -189,7 +189,7 @@ public class ObjectConstructorStep extends Step {
 				return;
 			}
 			// Can not in-line object used otherwise but by value.
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -197,11 +197,11 @@ public class ObjectConstructorStep extends Step {
 				object.getScope().predict(normalizer.lastPrediction());
 
 		if (!prediction.isPredicted()) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 		if (definitionsChange(object, prediction)) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 
@@ -209,7 +209,7 @@ public class ObjectConstructorStep extends Step {
 				normalizer.getNormalizer());
 
 		if (inline == null) {
-			normalizer.cancel();
+			normalizer.finish();
 			return;
 		}
 

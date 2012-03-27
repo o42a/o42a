@@ -216,7 +216,7 @@ public final class PathNormalizer {
 				this.normalSteps.add(
 						new NormalPathStep(nonNormalizedRemainder));
 			}
-			addRest();
+			addRest(getStepIndex() + 1);
 			this.data.normalizationFinished = true;
 
 			return false;
@@ -269,7 +269,7 @@ public final class PathNormalizer {
 		normalPath.appendTo(this.normalSteps);
 
 		if (normalizer.isNormalizationFinished()) {
-			addRest();
+			addRest(getStepIndex() + 1);
 		} else {
 			this.stepNormalized = normalizer.stepNormalized;
 			this.stepPrediction = normalizer.stepPrediction;
@@ -279,6 +279,29 @@ public final class PathNormalizer {
 
 	public final void cancel() {
 		this.stepNormalized = false;
+	}
+
+	public final boolean finish() {
+		if (!isNormalizationStarted()) {
+			cancel();
+			return false;
+		}
+		if (isAbsolute()) {
+			cancel();
+			return false;
+		}
+
+		if (this.nextPrediction != null) {
+			// Previous step is skipped. Add it too.
+			addRest(getStepIndex() - 1);
+		} else {
+			addRest(getStepIndex());
+		}
+		this.stepPrediction = null;
+		this.nextPrediction = null;
+		this.data.normalizationFinished = true;
+
+		return true;
 	}
 
 	@Override
@@ -450,10 +473,7 @@ public final class PathNormalizer {
 		this.overrideNonIgnored = true;
 	}
 
-	private void addRest() {
-
-		final int nextStep = getStepIndex() + 1;
-
+	private void addRest(int nextStep) {
 		if (nextStep < getPath().length()) {
 			this.normalSteps.add(new PathRemainderNormalStep(
 					getPath().getPath(),
