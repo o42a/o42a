@@ -20,5 +20,5 @@
 Multiply :=> $$integer
 =====================
 
-Left operand :=< `$$integer
-Right operand :=< `$$integer
+Left operand :=< link (`$$integer)
+Right operand :=< link (`$$integer)

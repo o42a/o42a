@@ -22,4 +22,4 @@ Char :=> string
 
 <*[]> Index = ()
 
-Index :=< `$$integer
+Index :=< link (`$$integer)

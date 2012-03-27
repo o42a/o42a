@@ -35,7 +35,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -142,11 +141,13 @@ final class StringChar extends AnnotatedBuiltin {
 			return this.index;
 		}
 
-		final MemberKey indexKey =
-				field("index", Accessor.DECLARATION).getKey();
+		final Path path =
+				field("index", Accessor.DECLARATION)
+				.getKey()
+				.toPath()
+				.mayDereference();
 
-		return this.index =
-				indexKey.toPath().bind(this, getScope()).target(distribute());
+		return this.index = path.bind(this, getScope()).target(distribute());
 	}
 
 	private static ValOp write(
