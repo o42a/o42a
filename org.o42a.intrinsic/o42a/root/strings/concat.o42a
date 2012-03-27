@@ -20,5 +20,5 @@
 Concat :=> $$string
 ==================
 
-What :=< `$$string
-With :=< `$$string
+What :=< link (`$$string)
+With :=< link (`$$string)
