@@ -156,6 +156,32 @@ public class Ascendants
 		return getSamples().length == 0;
 	}
 
+	public final boolean isLinkAscendants() {
+
+		final TypeRef ancestor = getExplicitAncestor();
+
+		if (ancestor != null) {
+
+			final ValueType<?> valueType = ancestor.getValueType();
+
+			if (!valueType.isVoid()) {
+				return valueType.isLink();
+			}
+		}
+
+		for (Sample sample : getSamples()) {
+
+			final ValueType<?> valueType =
+					sample.getObject().value().getValueType();
+
+			if (!valueType.isVoid()) {
+				return valueType.isLink();
+			}
+		}
+
+		return false;
+	}
+
 	@Override
 	public Ascendants addExplicitSample(StaticTypeRef explicitAscendant) {
 
