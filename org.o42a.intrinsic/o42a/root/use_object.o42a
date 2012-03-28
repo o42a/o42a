@@ -20,9 +20,9 @@
 Use object :=> directive
 ========================
 
-Module := link (`$$string) [string(False)]
-Object := link (`$$string) [string(False)]
-Alias := link (`$$string) [string(False)]
+Module := `$$string (False)
+Object := `$$string (False)
+Alias := `$$string (False)
 
 <*'Object path' | from | as ...> Object = ()
 <*[Object path] | from | as ...> Object = ()

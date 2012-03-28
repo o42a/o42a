@@ -20,4 +20,4 @@
 Minus :=> $$integer
 ==================
 
-Operand :=< link (`$$integer)
+Operand :=< `$$integer

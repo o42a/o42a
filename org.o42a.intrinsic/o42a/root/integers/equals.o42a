@@ -20,5 +20,5 @@
 Equals :=> void
 ================
 
-What :=< link (`$$integer)
-To :=< link (`$$integer)
+What :=< `$$integer
+To :=< `$$integer

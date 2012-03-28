@@ -31,5 +31,5 @@ Substring :=> string
   <*[]> To = ()
 )
 
-From := link (`$$integer) 0
-To := link (`$$integer) [string:: length]
+From := `0
+To := (`$$integer) string:: length

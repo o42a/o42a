@@ -20,5 +20,5 @@
 Subtract :=> $$integer
 =====================
 
-Left operand :=< link (`$$integer)
-Right operand :=< link (`$$integer)
+Left operand :=< `$$integer
+Right operand :=< `$$integer

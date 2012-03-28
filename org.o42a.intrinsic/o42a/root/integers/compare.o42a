@@ -20,5 +20,5 @@
 Compare :=> $$integer
 ====================
 
-What :=< $$link (`$$integer)
-With :=< $$link (`$$integer)
+What :=< `$$integer
+With :=< `$$integer
