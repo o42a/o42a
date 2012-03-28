@@ -71,14 +71,14 @@ Assert :=> void (
 
     Otherwise, an error reported.
    */
-  Condition :=< link (`void)
+  Condition :=< `void
 
   /*
     Error message.
 
     A message reported when condition fails.
    */
-  Message := link (`string) "Error"
+  Message := `"Error"
   
   {
     --Condition? Fail [message]
