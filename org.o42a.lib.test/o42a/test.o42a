@@ -29,27 +29,27 @@ Use object 'Print error' from 'Console'
   The 'run tests' directive searches for all tests in enclosing object
   and executes them.
  */
-Test :=> void(
+Test :=> void (
 
   /*
     Optional test name.
     
     Will be generated automatically if omitted.
   */
-  Name := string(False)
+  Name := string (False)
 
   <*> (<*{}> (). = Void)
 
 )
 
 /* Failure message. */
-Fail :=> void(
+Fail :=> void (
   <*> {
-    <*> Print error(
+    <*> Print error (
       <*[]> Text = ()
       <*''> Text = ()
     )
-    Print error(
+    Print error (
       Text = "\n"
     )
     = Void
@@ -64,14 +64,14 @@ Fail :=> void(
   where condition is arbitrary expression and error message is a message
   to report when condition fails.
  */
-Assert :=> void(
+Assert :=> void (
 
   /*
     Condition which should be satisfied.
 
     Otherwise, an error reported.
    */
-  Condition :=< `void
+  Condition :=< link (`void)
 
   /*
     Error message.

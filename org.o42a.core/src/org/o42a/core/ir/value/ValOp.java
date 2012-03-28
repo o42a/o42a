@@ -261,7 +261,7 @@ public abstract class ValOp extends IROp implements CondOp {
 	}
 
 	public ValOp store(Code code, Val value) {
-		assert (value.getValueStruct() == getValueStruct()
+		assert (value.getValueType() == getValueType()
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
