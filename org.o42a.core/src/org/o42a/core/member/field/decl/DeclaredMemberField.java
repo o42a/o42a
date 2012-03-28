@@ -17,22 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.link.impl.decl.OverriddenMemberLinkField;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.object.impl.OverriddenMemberObjectField;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.MemberField;
 
 
-final class DeclaredMemberField extends MemberField {
+public final class DeclaredMemberField extends MemberField {
 
 	private final FieldBuilder builder;
 	private FieldDeclarationStatement statement;
 
-	DeclaredMemberField(FieldBuilder builder) {
+	public DeclaredMemberField(FieldBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
 		this.builder = builder;
 	}
@@ -49,22 +50,18 @@ final class DeclaredMemberField extends MemberField {
 
 	@Override
 	public MemberField propagateTo(MemberOwner owner) {
-
-		final ArtifactKind<?> artifactKind = getArtifactKind();
-
-		if (artifactKind.isLink()) {
-			return new OverriddenMemberLinkField(owner, this);
-		}
-
 		return new OverriddenMemberObjectField(owner, this);
+	}
+
+	public final void setStatement(FieldDeclarationStatement statement) {
+		this.statement = statement;
 	}
 
 	@Override
 	protected Field<?> createField() {
 
-		final DeclaredField<?, ?> field =
-				getArtifactKind().declareField(this);
-		final FieldVariant<?> variant = field.variant(
+		final DeclaredField field = new DeclaredField(this);
+		final FieldVariant variant = field.variant(
 				this.builder.getDeclaration(),
 				this.builder.getDefinition());
 
@@ -73,12 +70,8 @@ final class DeclaredMemberField extends MemberField {
 		return field;
 	}
 
-	final DeclaredField<?, ?> toDeclaredField() {
-		return (DeclaredField<?, ?>) toField().field(dummyUser());
-	}
-
-	final void setStatement(FieldDeclarationStatement statement) {
-		this.statement = statement;
+	final DeclaredField toDeclaredField() {
+		return (DeclaredField) toField().field(dummyUser());
 	}
 
 }

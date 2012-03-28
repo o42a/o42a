@@ -17,11 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.object.def.Definitions.emptyDefinitions;
+import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -29,51 +32,43 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 
 
-class DeclaredObject extends Obj {
+public final class PropagatedObject extends Obj {
 
-	private final DeclaredObjectField field;
-
-	DeclaredObject(DeclaredObjectField field) {
-		super(field);
-		this.field = field;
-	}
-
-	@Override
-	public boolean isValid() {
-		return this.field.validate();
+	public PropagatedObject(Field<Obj> field) {
+		super(field, field.getOverridden()[0].getArtifact());
 	}
 
 	@Override
 	public String toString() {
-		return this.field != null ? this.field.toString() : super.toString();
+
+		final Scope scope = getScope();
+
+		if (scope == null) {
+			return super.toString();
+		}
+
+		return scope.toString();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		this.field.initDefinitions(this);
-		return new Ascendants(this).declareField(this.field);
+		return new Ascendants(this).declareField(NO_FIELD_ASCENDANTS);
 	}
 
 	@Override
 	protected void declareMembers(ObjectMembers members) {
-		this.field.getMemberRegistry().registerMembers(members);
-	}
-
-	@Override
-	protected void updateMembers() {
-		this.field.updateMembers();
 	}
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.define(getScope());
+		return emptyDefinitions(this, getScope());
 	}
 
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
 
-		final MemberField field =
-				enclosing.getContainer().member(this.field.getKey()).toField();
+		final MemberField field = enclosing.getContainer().member(
+				getScope().toField().getKey()).toField();
 
 		return field.artifact(dummyUser()).materialize();
 	}

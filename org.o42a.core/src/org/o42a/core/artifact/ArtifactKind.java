@@ -21,15 +21,11 @@ package org.o42a.core.artifact;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.artifact.link.impl.decl.DeclaredLinkField;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.link.LinkFieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
-import org.o42a.core.member.field.DeclaredField;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.impl.decl.DeclaredObjectField;
 
 
 public abstract class ArtifactKind<A extends Artifact<A>> {
@@ -61,8 +57,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		return (Field<A>) field;
 	}
 
-	public abstract DeclaredField<A, ?> declareField(MemberField member);
-
 	public abstract FieldIR<A> fieldIR(Generator generator, Field<A> field);
 
 	public final boolean is(ArtifactKind<?> kind) {
@@ -70,11 +64,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 	}
 
 	private static final class ObjectKind extends ArtifactKind<Obj> {
-
-		@Override
-		public DeclaredField<Obj, ?> declareField(MemberField member) {
-			return new DeclaredObjectField(member);
-		}
 
 		@Override
 		public Obj cast(Artifact<?> artifact) {
@@ -99,11 +88,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 		LinkKind(boolean variable) {
 			this.variable = variable;
-		}
-
-		@Override
-		public DeclaredField<Link, ?> declareField(MemberField member) {
-			return new DeclaredLinkField(member, this);
 		}
 
 		@Override

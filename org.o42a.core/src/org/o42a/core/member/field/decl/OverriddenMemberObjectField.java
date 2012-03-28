@@ -17,31 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.link.impl.decl;
+package org.o42a.core.member.field.decl;
 
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.field.impl.OverriddenMemberField;
 
 
-public class OverriddenMemberLinkField
-		extends OverriddenMemberField<DeclaredLinkField> {
+final class OverriddenMemberObjectField
+		extends OverriddenMemberField<DeclaredField> {
 
-	public OverriddenMemberLinkField(
+	OverriddenMemberObjectField(
 			MemberOwner owner,
 			MemberField propagatedFrom) {
 		super(owner, propagatedFrom);
 	}
 
 	@Override
-	public OverriddenMemberLinkField propagateTo(MemberOwner owner) {
-		return new OverriddenMemberLinkField(owner, this);
+	public OverriddenMemberObjectField propagateTo(MemberOwner owner) {
+		return new OverriddenMemberObjectField(owner, this);
 	}
 
 	@Override
-	protected DeclaredLinkField propagateField(
-			DeclaredLinkField propagatedFrom) {
-		return new DeclaredLinkField(this, propagatedFrom);
+	protected DeclaredField propagateField(
+			DeclaredField propagatedFrom) {
+		return new DeclaredField(this, propagatedFrom);
 	}
 
 }

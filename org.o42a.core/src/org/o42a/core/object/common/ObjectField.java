@@ -24,8 +24,8 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.field.decl.PropagatedObject;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.impl.decl.PropagatedObject;
 
 
 public abstract class ObjectField extends Field<Obj> {

@@ -20,14 +20,14 @@
 package org.o42a.core.member.field.impl;
 
 import org.o42a.core.member.AbstractInclusions;
-import org.o42a.core.member.field.DeclaredField;
+import org.o42a.core.member.field.decl.DeclaredField;
 
 
 public final class FieldInclusions extends AbstractInclusions {
 
-	private final DeclaredField<?, ?> field;
+	private final DeclaredField field;
 
-	public FieldInclusions(DeclaredField<?, ?> field) {
+	public FieldInclusions(DeclaredField field) {
 		this.field = field;
 	}
 

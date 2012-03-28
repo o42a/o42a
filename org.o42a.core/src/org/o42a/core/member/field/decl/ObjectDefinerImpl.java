@@ -17,10 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
 
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -31,12 +30,12 @@ import org.o42a.core.value.TypeParameters;
 
 final class ObjectDefinerImpl implements ObjectDefiner {
 
-	private final ObjectFieldVariant variant;
+	private final FieldVariant variant;
 	private final Ascendants implicitAscendants;
 	private Ascendants ascendants;
 
 	ObjectDefinerImpl(
-			ObjectFieldVariant variant,
+			FieldVariant variant,
 			Ascendants implicitAscendants,
 			Ascendants ascendants) {
 		this.variant = variant;
@@ -45,7 +44,7 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public final Field<?> getField() {
+	public final DeclaredField getField() {
 		return this.variant.getField();
 	}
 

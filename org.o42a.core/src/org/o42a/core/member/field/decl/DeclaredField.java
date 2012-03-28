@@ -17,11 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
+
+import static org.o42a.core.member.Inclusions.noInclusions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.artifact.ArtifactKind;
+import org.o42a.core.member.Inclusions;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.impl.FieldInclusions;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
@@ -29,25 +37,33 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
 
 
-public class DeclaredObjectField
-		extends DeclaredField<Obj, ObjectFieldVariant>
+public final class DeclaredField
+		extends Field<Obj>
 		implements FieldAscendants {
 
+	private final ArrayList<FieldVariant> variants =
+			new ArrayList<FieldVariant>(1);
 	private Ascendants ascendants;
 	private Registry memberRegistry;
 	private boolean invalid;
 
-	public DeclaredObjectField(MemberField member) {
-		super(member, ArtifactKind.OBJECT);
+	public DeclaredField(MemberField member) {
+		super(member);
 	}
 
-	public DeclaredObjectField(MemberField member, Field<Obj> propagatedFrom) {
-		super(member, propagatedFrom);
+	protected DeclaredField(MemberField member, Field<Obj> propagatedFrom) {
+		super(member);
+		setScopeArtifact(new PropagatedObject(this));
+	}
+
+	@Override
+	public final ArtifactKind<Obj> getArtifactKind() {
+		return ArtifactKind.OBJECT;
 	}
 
 	@Override
 	public boolean isLinkAscendants() {
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			if (variant.getDefinition().isLink()) {
 				return true;
 			}
@@ -59,7 +75,7 @@ public class DeclaredObjectField
 	public Ascendants updateAscendants(Ascendants ascendants) {
 		this.ascendants = ascendants;
 
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			this.ascendants = variant.buildAscendants(
 					ascendants,
 					this.ascendants);
@@ -69,32 +85,97 @@ public class DeclaredObjectField
 	}
 
 	@Override
+	public Obj getArtifact() {
+		if (getScopeArtifact() == null) {
+			if (!getKey().isValid()) {
+
+				final Obj falseObject = getContext().getFalse();
+
+				setScopeArtifact(falseObject);
+			} else if (isOverride()) {
+				setScopeArtifact(overrideArtifact());
+			} else {
+				setScopeArtifact(declareArtifact());
+			}
+		}
+
+		return getScopeArtifact();
+	}
+
+	public final List<FieldVariant> getVariants() {
+		return this.variants;
+	}
+
+	public final boolean ownsCompilerContext() {
+
+		final Scope enclosingScope = getEnclosingScope();
+		final Member enclosingMember = enclosingScope.toMember();
+
+		if (enclosingMember == null) {
+			return enclosingScope.getContext() != getContext();
+		}
+
+		return !enclosingMember.allContexts().contains(getContext());
+	}
+
+	public final Inclusions newInclusions() {
+		if (!ownsCompilerContext()) {
+			return noInclusions();
+		}
+		return new FieldInclusions(this);
+	}
+
+	protected void mergeVariant(FieldVariant variant) {
+
+		final FieldVariant newVariant =
+				variant(variant.getDeclaration(), variant.getDefinition());
+
+		newVariant.setStatement(variant.getStatement());
+	}
+
 	protected Obj declareArtifact() {
 		return new DeclaredObject(this);
 	}
 
-	@Override
 	protected Obj overrideArtifact() {
 		return new DeclaredObject(this);
 	}
 
 	@Override
-	protected void merge(DeclaredField<Obj, ObjectFieldVariant> other) {
-		for (FieldVariant<Obj> variant : other.getVariants()) {
+	protected final void merge(Field<?> field) {
+		if (!(field instanceof DeclaredField)) {
+			getLogger().ambiguousMember(field, getDisplayName());
+			return;
+		}
+		if (field.getArtifactKind() != getArtifactKind()) {
+			getLogger().wrongArtifactKind(
+					this,
+					field.getArtifactKind(),
+					getArtifactKind());
+			return;
+		}
+
+		final DeclaredField declaredField =
+				(DeclaredField) field.toKind(getArtifactKind());
+
+		for (FieldVariant variant : declaredField.getVariants()) {
 			mergeVariant(variant);
 		}
 	}
 
-	@Override
-	protected ObjectFieldVariant createVariant(
+	FieldVariant variant(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		return new ObjectFieldVariant(this, declaration, definition);
-	}
+		if (!declaration.validateVariantDeclaration(this)) {
+			return null;
+		}
 
-	@Override
-	protected Obj propagateArtifact(Field<Obj> overridden) {
-		return new PropagatedObject(this);
+		final FieldVariant variant =
+				new FieldVariant(this, declaration, definition);
+
+		this.variants.add(variant);
+
+		return variant;
 	}
 
 	void initDefinitions(Obj object) {
@@ -102,7 +183,7 @@ public class DeclaredObjectField
 		final Ascendants ascendants =
 				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
 
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			variant.getDefinition().setImplicitAscendants(ascendants);
 		}
 	}
@@ -118,7 +199,7 @@ public class DeclaredObjectField
 
 		Definitions result = null;
 
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			result = variant.define(result, scope);
 		}
 
@@ -126,7 +207,7 @@ public class DeclaredObjectField
 	}
 
 	void updateMembers() {
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			variant.declareMembers();
 		}
 	}
@@ -136,7 +217,7 @@ public class DeclaredObjectField
 	}
 
 	final boolean validate() {
-		for (ObjectFieldVariant variant : getVariants()) {
+		for (FieldVariant variant : getVariants()) {
 			if (!variant.getDefinition().isValid()) {
 				return false;
 			}
