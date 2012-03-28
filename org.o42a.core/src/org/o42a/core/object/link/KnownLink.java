@@ -138,7 +138,7 @@ public abstract class KnownLink extends ObjectLink {
 		}
 		this.targetRef.assertScopeIs(getScope());
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		if (field == null || !(field.isAbstract() || field.isPrototype())) {
 			Role.INSTANCE.checkUseBy(

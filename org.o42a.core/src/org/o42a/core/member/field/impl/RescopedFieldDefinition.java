@@ -102,7 +102,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public Field<?> getField() {
+		public Field getField() {
 			return this.definer.getField();
 		}
 
@@ -167,7 +167,7 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public Field<?> getField() {
+		public Field getField() {
 			return this.definer.getField();
 		}
 

@@ -34,8 +34,8 @@ public class UnaryExpressionDefinitionTest extends CompilerTestCase {
 	public void plus() {
 		compile("A := 1. B := integer(= +A).");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));
@@ -45,8 +45,8 @@ public class UnaryExpressionDefinitionTest extends CompilerTestCase {
 	public void minus() {
 		compile("A := 1. B := integer(= -A).");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(-1L));

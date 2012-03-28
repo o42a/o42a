@@ -239,7 +239,7 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field toField() {
 		return null;
 	}
 

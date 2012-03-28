@@ -50,7 +50,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	private static final MemberField[] NO_MERGED = new MemberField[0];
 
 	private final FieldDeclaration declaration;
-	private Field<?> field;
+	private Field field;
 	private MemberKey key;
 	private Visibility visibility;
 	private MemberField[] mergedWith = NO_MERGED;
@@ -151,7 +151,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return this.analysis = new FieldAnalysis(this);
 	}
 
-	public final Field<?> field(UserInfo user) {
+	public final Field field(UserInfo user) {
 		if (this.field != null) {
 			useBy(user);
 			return this.field;
@@ -306,7 +306,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		}
 	}
 
-	protected final void setField(UserInfo user, Field<?> field) {
+	protected final void setField(UserInfo user, Field field) {
 		this.field = field;
 		useBy(user);
 		for (MemberField merged : getMergedWith()) {
@@ -314,7 +314,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		}
 	}
 
-	protected abstract Field<?> createField();
+	protected abstract Field createField();
 
 	protected final MemberField[] getMergedWith() {
 		return this.mergedWith;

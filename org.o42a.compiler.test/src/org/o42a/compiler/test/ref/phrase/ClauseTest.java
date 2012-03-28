@@ -36,7 +36,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A := void(<*[arg]> integer)",
 				"B := a[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -50,7 +50,7 @@ public class ClauseTest extends CompilerTestCase {
 				")",
 				"B := a_name(=2)");
 
-		final Field<?> bFoo = field("b", "foo");
+		final Field bFoo = field("b", "foo");
 
 		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
 	}
@@ -61,7 +61,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A := void(<*'arg'>)",
 				"B := a'b'");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 	}
@@ -72,7 +72,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A := void(<*'arg'>)",
 				"B := a['b']");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 	}
@@ -83,7 +83,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A := void(<*[arg]>)",
 				"B := a\"b\"");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 	}
@@ -94,7 +94,7 @@ public class ClauseTest extends CompilerTestCase {
 				"A := string(<*implicit> = string(<*''> ()))",
 				"B := a 'b'");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 	}
@@ -110,8 +110,8 @@ public class ClauseTest extends CompilerTestCase {
 				")",
 				"B := a \"b\"");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, ValueType.STRING), is("b"));
 	}

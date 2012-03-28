@@ -28,25 +28,25 @@ import org.o42a.core.member.field.decl.PropagatedObject;
 import org.o42a.core.object.Obj;
 
 
-public abstract class ObjectField extends Field<Obj> {
+public abstract class ObjectField extends Field {
 
 	public ObjectField(MemberOwner owner, FieldDeclaration declaration) {
 		super(new MemberObjectField(owner, declaration));
 		((MemberObjectField) toMember()).init(this);
 	}
 
-	protected ObjectField(MemberField member, Field<Obj> propagatedFrom) {
+	protected ObjectField(MemberField member, Field propagatedFrom) {
 		super(member);
 		setScopeArtifact(propagateArtifact(propagatedFrom));
 	}
 
 	protected ObjectField(
 			MemberField member,
-			Field<Obj> propagatedFrom,
+			Field propagatedFrom,
 			boolean propagateArtifact) {
 		super(member);
 		if (propagateArtifact) {
-			setScopeArtifact(propagateArtifact(propagatedFrom));
+			setScopeArtifact(new PropagatedObject(this));
 		}
 	}
 
@@ -67,7 +67,7 @@ public abstract class ObjectField extends Field<Obj> {
 
 	protected abstract ObjectField propagate(MemberField member);
 
-	protected Obj propagateArtifact(Field<Obj> overridden) {
+	protected Obj propagateArtifact(Field overridden) {
 		return new PropagatedObject(this);
 	}
 

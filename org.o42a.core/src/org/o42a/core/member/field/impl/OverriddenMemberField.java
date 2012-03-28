@@ -29,8 +29,8 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.source.Location;
 
 
-public abstract class OverriddenMemberField<F extends Field<?>>
-	extends MemberField {
+public abstract class OverriddenMemberField<F extends Field>
+		extends MemberField {
 
 	private final MemberField propagatedFrom;
 

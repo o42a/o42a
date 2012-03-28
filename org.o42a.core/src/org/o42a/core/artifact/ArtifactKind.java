@@ -19,12 +19,7 @@
 */
 package org.o42a.core.artifact;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.artifact.link.Link;
-import org.o42a.core.ir.field.FieldIR;
-import org.o42a.core.ir.field.link.LinkFieldIR;
-import org.o42a.core.ir.field.object.ObjectFieldIR;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
@@ -50,15 +45,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 
 	public abstract A cast(Artifact<?> artifact);
 
-	@SuppressWarnings("unchecked")
-	public final Field<A> cast(Field<?> field) {
-		assert field.getArtifact().getKind() == this :
-			field + " is not " + this;
-		return (Field<A>) field;
-	}
-
-	public abstract FieldIR<A> fieldIR(Generator generator, Field<A> field);
-
 	public final boolean is(ArtifactKind<?> kind) {
 		return this == kind;
 	}
@@ -68,11 +54,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public Obj cast(Artifact<?> artifact) {
 			return artifact.toObject();
-		}
-
-		@Override
-		public FieldIR<Obj> fieldIR(Generator generator, Field<Obj> field) {
-			return new ObjectFieldIR(generator, field);
 		}
 
 		@Override
@@ -93,11 +74,6 @@ public abstract class ArtifactKind<A extends Artifact<A>> {
 		@Override
 		public Link cast(Artifact<?> artifact) {
 			return artifact.toLink();
-		}
-
-		@Override
-		public FieldIR<Link> fieldIR(Generator generator, Field<Link> field) {
-			return new LinkFieldIR(generator, field);
 		}
 
 		@Override

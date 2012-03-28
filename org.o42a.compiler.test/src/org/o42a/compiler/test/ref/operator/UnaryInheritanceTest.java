@@ -30,9 +30,9 @@ import org.o42a.core.value.ValueType;
 
 public class UnaryInheritanceTest extends CompilerTestCase {
 
-	private Field<?> aBar;
-	private Field<?> bBar;
-	private Field<?> cBar;
+	private Field aBar;
+	private Field bBar;
+	private Field cBar;
 
 	@Test
 	public void plus() {

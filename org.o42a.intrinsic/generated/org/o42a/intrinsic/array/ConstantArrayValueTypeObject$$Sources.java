@@ -32,8 +32,8 @@ public final class ConstantArrayValueTypeObject$$Sources implements AnnotatedSou
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.intrinsic.array.ConstantArrayLength(
 					owner,
 					new org.o42a.intrinsic.array.ConstantArrayLength$$Sources(this))

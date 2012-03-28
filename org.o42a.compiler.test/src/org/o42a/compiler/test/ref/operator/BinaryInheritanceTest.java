@@ -30,10 +30,10 @@ import org.o42a.core.value.ValueType;
 
 public class BinaryInheritanceTest extends CompilerTestCase {
 
-	private Field<?> aResult;
-	private Field<?> bResult;
-	private Field<?> cResult;
-	private Field<?> dResult;
+	private Field aResult;
+	private Field bResult;
+	private Field cResult;
+	private Field dResult;
 
 	@Test
 	public void add() {

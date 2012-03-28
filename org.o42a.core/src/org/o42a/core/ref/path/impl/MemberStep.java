@@ -83,7 +83,7 @@ public class MemberStep extends AbstractMemberStep {
 	@Override
 	protected Scope revert(Scope target) {
 
-		final Field<?> field = fieldOf(target);
+		final Field field = fieldOf(target);
 
 		if (field != null && field.getKey().equals(getMemberKey())) {
 			return target.getEnclosingScope();
@@ -154,7 +154,7 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		final Field<?> field = memberField.field(dummyUser());
+		final Field field = memberField.field(dummyUser());
 		final Prediction prediction = field.predict(lastPrediction);
 
 		if (!prediction.isPredicted()) {

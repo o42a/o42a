@@ -26,24 +26,24 @@ import org.o42a.core.member.field.Field;
 
 public final class LocalFieldCmd extends Cmd {
 
-	private final Field<?> field;
+	private final Field field;
 
 	public LocalFieldCmd(
 			CodeBuilder builder,
 			DeclarationStatement statement,
-			Field<?> field) {
+			Field field) {
 		super(builder, statement);
 		this.field = field;
 	}
 
-	public final Field<?> getField() {
+	public final Field getField() {
 		return this.field;
 	}
 
 	@Override
 	public void write(Control control) {
 
-		final LocalFieldIRBase<?> fieldIR = this.field.ir(getGenerator());
+		final LocalFieldIRBase fieldIR = this.field.ir(getGenerator());
 		final LclOp op =
 				fieldIR.allocate(control.getBuilder(), control.allocation());
 

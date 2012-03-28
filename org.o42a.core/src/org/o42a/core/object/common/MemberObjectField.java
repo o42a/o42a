@@ -52,7 +52,7 @@ final class MemberObjectField extends MemberField {
 	}
 
 	@Override
-	protected Field<?> createField() {
+	protected Field createField() {
 		throw new UnsupportedOperationException();
 	}
 

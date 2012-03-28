@@ -40,12 +40,12 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 				"A := integer(= 1).",
 				"B := A().");
 
-		final Field<?> a = field("a");
+		final Field a = field("a");
 
 		assertTrueValue(valueOf(a));
 		assertThat(definiteValue(a, ValueType.INTEGER), is(1L));
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertTrueValue(valueOf(b));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(1L));

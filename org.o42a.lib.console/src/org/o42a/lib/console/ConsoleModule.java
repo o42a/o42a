@@ -85,7 +85,7 @@ public class ConsoleModule extends AnnotatedModule {
 			return null;
 		}
 
-		final Field<?> mainAdapter = mainMember.toField().field(dummyUser());
+		final Field mainAdapter = mainMember.toField().field(dummyUser());
 
 		if (mainAdapter == null) {
 			return null;

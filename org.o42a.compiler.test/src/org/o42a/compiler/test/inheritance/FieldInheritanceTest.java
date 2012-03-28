@@ -43,9 +43,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 				"B := a.",
 				"C := b.");
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
 		assertTrue(bFoo.isPropagated());
@@ -63,9 +63,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 				"B := a(Foo = 12).",
 				"C := b.");
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
 		assertFalse(bFoo.isPropagated());
@@ -83,9 +83,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 				"B := a(Foo @a = 12).",
 				"C := b.");
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertThat(bFoo.getKey(), is(aFoo.getKey()));
 		assertFalse(bFoo.isPropagated());
@@ -103,9 +103,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 				"B := a(Foo := 12).",
 				"C := b.");
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertEquals(12L, definiteValue(bFoo));
 		assertThat(
@@ -126,11 +126,11 @@ public class FieldInheritanceTest extends CompilerTestCase {
 				"B := z(Foo @a = 12).",
 				"C := b.");
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> z = field("z");
-		final Field<?> zFoo = field(z, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field z = field("z");
+		final Field zFoo = field(z, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertEquals(321L, definiteValue(zFoo));
 
@@ -148,13 +148,13 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		assertThat(cFoo.getKey(), is(zFoo.getKey()));
 		assertTrue(cFoo.isPropagated());
 
-		final Field<?> baFoo =
+		final Field baFoo =
 				this.b.member(aFoo.getKey()).toField().field(USE_CASE);
 
 		assertEquals(12L, definiteValue(baFoo));
 		assertFalse(baFoo.isPropagated());
 
-		final Field<?> caFoo =
+		final Field caFoo =
 				this.c.member(aFoo.getKey()).toField().field(USE_CASE);
 
 		assertEquals(12L, definiteValue(caFoo));

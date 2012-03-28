@@ -187,7 +187,7 @@ public class Root extends Obj {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		this.memberRegistry.registerMembers(members);
-		for (Field<?> field : this.sources.fields(toMemberOwner())) {
+		for (Field field : this.sources.fields(toMemberOwner())) {
 			members.addMember(field.toMember());
 		}
 	}

@@ -48,8 +48,8 @@ public final class ConsoleModule$$Sources implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.lib.console.impl.Print(
 					owner,
 					new org.o42a.lib.console.impl.Print$$Sources(this))

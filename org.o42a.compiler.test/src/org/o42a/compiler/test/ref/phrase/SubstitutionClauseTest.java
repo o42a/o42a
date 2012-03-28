@@ -41,7 +41,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 				")",
 				"B := a[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -54,7 +54,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 				")",
 				"B := a[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -69,7 +69,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 				")",
 				"B := a[val]");
 
-		final Field<?> bFoo = field("b", "foo");
+		final Field bFoo = field("b", "foo");
 		final Obj bFooTarget =
 				definiteValue(bFoo, ObjectLink.class).getTarget();
 

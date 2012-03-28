@@ -39,7 +39,7 @@ public final class AdapterId extends MemberId {
 
 	public static Scope adapterTypeScope(Obj adapterType) {
 
-		final Field<?> typeField = adapterType.getScope().toField();
+		final Field typeField = adapterType.getScope().toField();
 
 		if (typeField == null) {
 			return adapterType.getScope();

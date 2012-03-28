@@ -66,8 +66,8 @@ public class ResolutionTest extends CompilerTestCase {
 				"= 24");
 		compile("B := a(= 44)");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));
@@ -84,8 +84,8 @@ public class ResolutionTest extends CompilerTestCase {
 				"(*** Inc ***)",
 				"B := a(= 44)");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));

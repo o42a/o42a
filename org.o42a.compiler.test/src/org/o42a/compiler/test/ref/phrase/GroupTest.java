@@ -38,7 +38,7 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -54,8 +54,8 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A() set[2]");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
@@ -71,8 +71,8 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A[2]");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 	}
@@ -87,7 +87,7 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A() set[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -104,7 +104,7 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -121,7 +121,7 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}
@@ -136,7 +136,7 @@ public class GroupTest extends CompilerTestCase {
 				")",
 				"B := A[2]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 	}

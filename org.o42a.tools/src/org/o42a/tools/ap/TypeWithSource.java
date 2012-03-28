@@ -620,13 +620,13 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		out.println();
 		out.println("\t@Override");
 		out.println(
-				"\tpublic Field<?>[]"
+				"\tpublic Field[]"
 				+ " fields(MemberOwner owner) {");
 
 		if (this.subEntries == null) {
-			out.println("\t\treturn new Field<?>[0];");
+			out.println("\t\treturn new Field[0];");
 		} else {
-			out.println("\t\treturn new Field<?>[] {");
+			out.println("\t\treturn new Field[] {");
 			printFields(out);
 			out.println("\t\t};");
 		}

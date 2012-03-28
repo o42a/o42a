@@ -26,7 +26,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Container;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.Fld;
@@ -36,14 +35,13 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 
 
-public abstract class FieldIRBase<A extends Artifact<A>>
-		extends LocalFieldIRBase<A> {
+public abstract class FieldIRBase extends LocalFieldIRBase {
 
 	private final CodeId id;
 	private Fld lastFld;
 	private boolean targetAllocated;
 
-	public FieldIRBase(Generator generator, Field<A> field) {
+	public FieldIRBase(Generator generator, Field field) {
 		super(generator, field);
 		this.id = encodeMemberId(
 				field.getEnclosingScope().ir(generator),

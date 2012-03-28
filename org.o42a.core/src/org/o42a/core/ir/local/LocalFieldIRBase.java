@@ -21,23 +21,21 @@ package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.field.Field;
 
 
-public abstract class LocalFieldIRBase<A extends Artifact<A>> extends ScopeIR {
+public abstract class LocalFieldIRBase extends ScopeIR {
 
 	private LclOp local;
 
-	public LocalFieldIRBase(Generator generator, Field<A> field) {
+	public LocalFieldIRBase(Generator generator, Field field) {
 		super(generator, field);
 	}
 
-	@SuppressWarnings("unchecked")
-	public final Field<A> getField() {
-		return (Field<A>) getScope();
+	public final Field getField() {
+		return getScope().toField();
 	}
 
 	public LclOp getLocal() {

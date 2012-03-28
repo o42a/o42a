@@ -93,13 +93,13 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj b = field("b").getArtifact().toObject();
 
 		final Obj aFoo = field(a, "foo").getArtifact().toObject();
-		final Field<?> aBar = field(a, "bar");
+		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
 		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
 		final Obj bFoo = field(b, "foo").getArtifact().toObject();
-		final Field<?> bBar = field(b, "bar");
+		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
 		assertThat(bBarTarget.getWrapped(), sameInstance(bFoo));
@@ -118,12 +118,12 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj b = field("b").getArtifact().toObject();
 
 		final Obj aFoo = field(a, "foo").getArtifact().toObject();
-		final Field<?> aBar = field(a, "bar");
+		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
 		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
-		final Field<?> bBar = field(b, "bar");
+		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
 		assertThat(bBarTarget.getWrapped(), sameInstance(aFoo));

@@ -40,7 +40,7 @@ public class ImperativeGroupTest extends CompilerTestCase {
 				")",
 				"B := A[5]");
 
-		final Field<?> b = field("b");
+		final Field b = field("b");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(5L));
 	}

@@ -34,7 +34,6 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
 
 
 public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
@@ -43,19 +42,13 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 
 	private ObjectBodyIR target;
 
-	public ScopeFld(ObjectBodyIR bodyIR, Field<Obj> field) {
+	public ScopeFld(ObjectBodyIR bodyIR, Field field) {
 		super(bodyIR, field);
 	}
 
 	@Override
 	public final FldKind getKind() {
 		return FldKind.SCOPE;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public final Field<Obj> getField() {
-		return (Field<Obj>) super.getField();
 	}
 
 	@Override

@@ -97,7 +97,7 @@ public interface Scope extends PlaceInfo {
 
     Member toMember();
 
-    Field<?> toField();
+    Field toField();
 
     Obj toObject();
 

@@ -28,7 +28,6 @@ import org.o42a.common.resolution.ScopeSet;
 import org.o42a.common.source.SourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -95,8 +94,8 @@ public class CompiledObject extends Obj {
 		this.compiler = field.getCompiler();
 	}
 
-	public final Field<Obj> getField() {
-		return getScope().toField().toKind(ArtifactKind.OBJECT);
+	public final Field getField() {
+		return getScope().toField();
 	}
 
 	@Override

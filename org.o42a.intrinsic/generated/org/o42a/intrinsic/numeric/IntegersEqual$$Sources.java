@@ -32,8 +32,8 @@ public final class IntegersEqual$$Sources implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[0];
+	public Field[] fields(MemberOwner owner) {
+		return new Field[0];
 	}
 
 }

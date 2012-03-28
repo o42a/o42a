@@ -221,7 +221,7 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Field<?> toField() {
+	public final Field toField() {
 		return null;
 	}
 

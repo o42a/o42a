@@ -55,12 +55,12 @@ public abstract class CompilerTestCase {
 		return artifact.materialize().value().getValue();
 	}
 
-	public static Value<?> valueOf(Field<?> field) {
+	public static Value<?> valueOf(Field field) {
 		return valueOf(field.getArtifact());
 	}
 
 	public static <T> Value<T> valueOf(
-			Field<?> field,
+			Field field,
 			SingleValueType<T> valueType) {
 		return valueOf(field, valueType.struct());
 	}
@@ -72,7 +72,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static <T> Value<T> valueOf(
-			Field<?> field,
+			Field field,
 			ValueStruct<?, T> valueStruct) {
 		return valueOf(field.getArtifact(), valueStruct);
 	}
@@ -151,18 +151,18 @@ public abstract class CompilerTestCase {
 		return valueStruct.cast(definiteValue);
 	}
 
-	public static <T> T definiteValue(Field<?> field) {
+	public static <T> T definiteValue(Field field) {
 		return definiteValue(field.getArtifact());
 	}
 
 	public static <T> T definiteValue(
-			Field<?> field,
+			Field field,
 			SingleValueType<T> valueType) {
 		return definiteValue(field.getArtifact(), valueType.struct());
 	}
 
 	public static <T> T definiteValue(
-			Field<?> field,
+			Field field,
 			ValueStruct<?, T> valueStruct) {
 		return definiteValue(field.getArtifact(), valueStruct);
 	}
@@ -174,7 +174,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static <T> T definiteValue(
-			Field<?> field,
+			Field field,
 			Class<? extends T> valueClass) {
 		return valueClass.cast(definiteValue(field));
 	}
@@ -226,7 +226,7 @@ public abstract class CompilerTestCase {
 				value.getKnowledge().hasUnknownCondition());
 	}
 
-	public static void assertTrueVoid(Field<?> field) {
+	public static void assertTrueVoid(Field field) {
 		assertTrueVoid(field.getArtifact().materialize());
 	}
 
@@ -238,7 +238,7 @@ public abstract class CompilerTestCase {
 		assertTrueValue(object.value().getValue());
 	}
 
-	public static void assertFalseVoid(Field<?> field) {
+	public static void assertFalseVoid(Field field) {
 		assertFalseVoid(field.getArtifact().materialize());
 	}
 
@@ -250,7 +250,7 @@ public abstract class CompilerTestCase {
 		assertFalseValue(object.value().getValue());
 	}
 
-	public static void assertUnknownVoid(Field<?> field) {
+	public static void assertUnknownVoid(Field field) {
 		assertUnknownVoid(field.getArtifact().materialize());
 	}
 
@@ -262,19 +262,19 @@ public abstract class CompilerTestCase {
 		assertKnownValue(object.value().getValue());
 	}
 
-	public static Field<?> field(
-			Field<?> container,
+	public static Field field(
+			Field container,
 			String name,
 			String... names) {
 		return field(container.getArtifact(), name, names);
 	}
 
-	public static Field<?> field(
+	public static Field field(
 			Artifact<?> container,
 			String name,
 			String... names) {
 
-		Field<?> field = field(container, name, Accessor.PUBLIC);
+		Field field = field(container, name, Accessor.PUBLIC);
 
 		for (String n : names) {
 			field = field(field, n, Accessor.PUBLIC);
@@ -283,14 +283,14 @@ public abstract class CompilerTestCase {
 		return field;
 	}
 
-	public static Field<?> field(
-			Field<?> container,
+	public static Field field(
+			Field container,
 			String name,
 			Accessor accessor) {
 		return field(container.getArtifact(), name, accessor);
 	}
 
-	public static Field<?> field(
+	public static Field field(
 			Artifact<?> container,
 			String name,
 			Accessor accessor) {
@@ -311,7 +311,7 @@ public abstract class CompilerTestCase {
 			return null;
 		}
 
-		final Field<?> field = member.toField().field(USE_CASE);
+		final Field field = member.toField().field(USE_CASE);
 
 		assertNotNull(member + " is not a field", field);
 
@@ -347,7 +347,7 @@ public abstract class CompilerTestCase {
 		this.errors.expectError(code);
 	}
 
-	public Field<?> field(String name, String... names) {
+	public Field field(String name, String... names) {
 		return field(this.module, name, names);
 	}
 

@@ -266,7 +266,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				continue;
 			}
 
-			final Field<?> field =
+			final Field field =
 					object.member(declaredField.getKey())
 					.toField()
 					.field(dummyUser());
@@ -275,7 +275,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				continue;
 			}
 
-			final FieldIRBase<?> fieldIR = field.ir(generator);
+			final FieldIRBase fieldIR = field.ir(generator);
 
 			addFld(fieldIR.allocate(data, this));
 		}

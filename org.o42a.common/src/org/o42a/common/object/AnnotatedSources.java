@@ -28,6 +28,6 @@ public interface AnnotatedSources {
 
 	URLSourceTree getSourceTree();
 
-	Field<?>[] fields(MemberOwner owner);
+	Field[] fields(MemberOwner owner);
 
 }
