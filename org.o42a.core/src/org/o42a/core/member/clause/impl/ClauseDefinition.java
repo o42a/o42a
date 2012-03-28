@@ -28,6 +28,7 @@ import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -65,6 +66,20 @@ final class ClauseDefinition extends Obj {
 	public DeclarativeBlock getDeclarations() {
 		getMembers();// construct declarations
 		return this.declarations;
+	}
+
+	@Override
+	public MemberClause clause(MemberId memberId, Obj declaredIn) {
+
+		final Obj clauseDeclaredIn;
+
+		if (declaredIn != null) {
+			clauseDeclaredIn = declaredIn;
+		} else {
+			clauseDeclaredIn = type().getLastDefinition();
+		}
+
+		return super.clause(memberId, clauseDeclaredIn);
 	}
 
 	@Override
