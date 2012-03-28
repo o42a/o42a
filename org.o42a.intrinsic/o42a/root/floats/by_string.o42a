@@ -20,4 +20,4 @@
 By string :=> $$float
 ===================
 
-Input :=< link (`$$string)
+Input :=< `$$string
