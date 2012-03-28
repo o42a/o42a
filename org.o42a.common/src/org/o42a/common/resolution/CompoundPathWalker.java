@@ -176,6 +176,13 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+		for (PathWalker walker : getWalkers()) {
+			walker.pathTrimmed(path, root);
+		}
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 		for (PathWalker walker : getWalkers()) {
 			walker.abortedAt(last, brokenStep);

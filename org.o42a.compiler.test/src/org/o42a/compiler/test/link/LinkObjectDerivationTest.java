@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.value.ValueType;
 
 
@@ -42,7 +41,7 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		final Field<?> a = field("a");
 		final Field<?> b = field("b");
 
-		final Obj aTarget = definiteValue(a, ObjectLink.class).getTarget();
+		final Obj aTarget = linkTarget(a);
 
 		assertThat(definiteValue(aTarget, ValueType.INTEGER), is(42L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(43L));
@@ -63,10 +62,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		final Field<?> aBar = field(field("a"), "bar");
 		final Field<?> bBar = field(field("b"), "bar");
 
-		final Obj aBarTarget =
-				definiteValue(aBar, ObjectLink.class).getTarget();
-		final Obj bBarTarget =
-				definiteValue(bBar, ObjectLink.class).getTarget();
+		final Obj aBarTarget = linkTarget(aBar);
+		final Obj bBarTarget = linkTarget(bBar);
 
 		assertThat(definiteValue(aBarTarget, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bBarTarget, ValueType.INTEGER), is(2L));
@@ -87,12 +84,9 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 		final Field<?> cBar = field(field("c"), "bar");
 		final Field<?> dBar = field(field("d"), "bar");
 
-		final Obj bBarTarget =
-				definiteValue(bBar, ObjectLink.class).getTarget();
-		final Obj cBarTarget =
-				definiteValue(cBar, ObjectLink.class).getTarget();
-		final Obj dBarTarget =
-				definiteValue(dBar, ObjectLink.class).getTarget();
+		final Obj bBarTarget = linkTarget(bBar);
+		final Obj cBarTarget = linkTarget(cBar);
+		final Obj dBarTarget = linkTarget(dBar);
 
 		assertThat(definiteValue(bBarTarget, ValueType.INTEGER), is(2L));
 		assertThat(definiteValue(cBarTarget, ValueType.INTEGER), is(2L));

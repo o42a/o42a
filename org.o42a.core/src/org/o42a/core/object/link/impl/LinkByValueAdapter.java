@@ -40,6 +40,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	private final Ref ref;
 	private final LinkValueStruct expectedStruct;
+	private LinkValueStruct linkStruct;
 
 	public LinkByValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
 		this.ref = ref;
@@ -56,11 +57,14 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	@Override
 	public LinkValueStruct valueStruct(Scope scope) {
+		if (this.linkStruct != null) {
+			return this.linkStruct;
+		}
 
 		final LinkValueType expectedType = getExpectedStruct().getValueType();
 		final TypeRef typeRef = ref().ancestor(ref());
 
-		return expectedType.linkStruct(typeRef);
+		return this.linkStruct = expectedType.linkStruct(typeRef);
 	}
 
 	@Override

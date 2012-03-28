@@ -85,7 +85,7 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 	Ascendants buildAscendants(
 			Ascendants implicitAscendants,
 			Ascendants ascendants) {
-		if (!getDeclaration().isLink()) {
+		if (!getDeclaration().isLink() && !getDeclaration().isVariable()) {
 
 			final ObjectDefinerImpl definer =
 					new ObjectDefinerImpl(this, implicitAscendants, ascendants);

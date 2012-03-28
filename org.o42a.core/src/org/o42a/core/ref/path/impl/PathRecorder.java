@@ -50,15 +50,6 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public void setAbsolute(Scope root) {
-		this.records.clear();
-		if (!this.absolute) {
-			this.absolute = true;
-			this.start = root;
-		}
-	}
-
-	@Override
 	public boolean replay(PathWalker walker) {
 		if (this.absolute) {
 			if (!walker.root(getPath(), this.start)) {
@@ -180,6 +171,16 @@ public class PathRecorder extends PathTracker {
 				return walker.object(step, object);
 			}
 		});
+	}
+
+	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+		this.records.clear();
+		if (!this.absolute) {
+			this.absolute = true;
+			this.start = root;
+		}
+		super.pathTrimmed(path, root);
 	}
 
 	@Override

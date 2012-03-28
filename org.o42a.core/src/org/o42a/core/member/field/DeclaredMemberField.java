@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.link.impl.decl.OverriddenMemberLinkField;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.impl.OverriddenMemberObjectField;
 
@@ -31,7 +30,6 @@ import org.o42a.core.object.impl.OverriddenMemberObjectField;
 final class DeclaredMemberField extends MemberField {
 
 	private final FieldBuilder builder;
-	private ArtifactKind<?> artifactKind;
 	private FieldDeclarationStatement statement;
 
 	DeclaredMemberField(FieldBuilder builder) {
@@ -41,17 +39,7 @@ final class DeclaredMemberField extends MemberField {
 
 	@Override
 	public ArtifactKind<?> getArtifactKind() {
-		if (this.artifactKind != null) {
-			return this.artifactKind;
-		}
-
-		final ArtifactKind<?> kind = determineArtifactKind();
-
-		if (kind == null) {
-			return this.artifactKind = ArtifactKind.OBJECT;
-		}
-
-		return this.artifactKind = kind;
+		return ArtifactKind.OBJECT;
 	}
 
 	@Override
@@ -69,30 +57,6 @@ final class DeclaredMemberField extends MemberField {
 		}
 
 		return new OverriddenMemberObjectField(owner, this);
-	}
-
-	protected ArtifactKind<?> determineArtifactKind() {
-
-		ArtifactKind<?> kind;
-		final Member[] overridden = getOverridden();
-
-		if (overridden.length > 0) {
-			kind = overridden[0].toField().getArtifactKind();
-		} else if (getDeclaration().isVariable()) {
-			kind = ArtifactKind.VARIABLE;
-		} else if (getDeclaration().isLink()) {
-			kind = ArtifactKind.LINK;
-		} else {
-			kind = ArtifactKind.OBJECT;
-		}
-
-		validateArtifactKind(kind);
-
-		for (MemberField merged : getMergedWith()) {
-			kind = determineArtifactKind(merged, kind);
-		}
-
-		return kind;
 	}
 
 	@Override
@@ -115,47 +79,6 @@ final class DeclaredMemberField extends MemberField {
 
 	final void setStatement(FieldDeclarationStatement statement) {
 		this.statement = statement;
-	}
-
-	private ArtifactKind<?> determineArtifactKind(
-			MemberField member,
-			ArtifactKind<?> expectedKind) {
-
-		final ArtifactKind<?> memberKind = member.getArtifactKind();
-
-		if (memberKind == null) {
-			return expectedKind;
-		}
-		if (expectedKind == null) {
-			if (validateArtifactKind(memberKind)) {
-				return memberKind;
-			}
-			return expectedKind;
-		}
-		if (expectedKind == memberKind) {
-			return expectedKind;
-		}
-
-		getLogger().error(
-				"ambiguous_artifact_kind",
-				member,
-				"Field artifact kind is ambiguous: " + memberKind
-				+ ", while " + expectedKind + " expected");
-
-		return expectedKind;
-	}
-
-	private boolean validateArtifactKind(ArtifactKind<?> kind) {
-		if (getDeclaration().isLink() && !kind.is(ArtifactKind.LINK)) {
-			getLogger().prohibitedLinkType(getDeclaration());
-			return false;
-		}
-		if (getDeclaration().isVariable()
-				&& !kind.is(ArtifactKind.VARIABLE)) {
-			getLogger().prohibitedVariableType(getDeclaration());
-			return false;
-		}
-		return true;
 	}
 
 }

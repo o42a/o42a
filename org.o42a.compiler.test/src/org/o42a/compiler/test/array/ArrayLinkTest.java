@@ -27,7 +27,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.link.Link;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayItem;
 import org.o42a.core.object.array.ArrayValueStruct;
@@ -40,17 +40,20 @@ public class ArrayLinkTest extends CompilerTestCase {
 	public void qualifiedConstantArray() {
 		compile("A := `[(`integer) 1, 2, 3]");
 
-		final Link a = field("a").getArtifact().toLink();
-
+		final Obj a = field("a").toObject();
 		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.getTypeRef().getValueStruct();
+				(ArrayValueStruct) a.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getValueStruct();
 
 		assertTrue(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
 
-		final Array array = definiteValue(a);
+		final Array array = definiteValue(linkTarget(a));
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
@@ -69,17 +72,20 @@ public class ArrayLinkTest extends CompilerTestCase {
 	public void unqualifiedConstantArray() {
 		compile("A := `[`1, 2, 3]");
 
-		final Link a = field("a").getArtifact().toLink();
-
+		final Obj a = field("a").toObject();
 		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.getTypeRef().getValueStruct();
+				(ArrayValueStruct) a.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getValueStruct();
 
 		assertTrue(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
 
-		final Array array = definiteValue(a);
+		final Array array = definiteValue(linkTarget(a));
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
@@ -98,17 +104,20 @@ public class ArrayLinkTest extends CompilerTestCase {
 	public void qualifiedVariableArray() {
 		compile("A := `[(``integer) 1, 2, 3]");
 
-		final Link a = field("a").getArtifact().toLink();
-
+		final Obj a = field("a").toObject();
 		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.getTypeRef().getValueStruct();
+				(ArrayValueStruct) a.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getValueStruct();
 
 		assertFalse(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
 
-		final Array array = definiteValue(a);
+		final Array array = definiteValue(linkTarget(a));
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
@@ -121,17 +130,20 @@ public class ArrayLinkTest extends CompilerTestCase {
 	public void unqualifiedVariableArray() {
 		compile("A := `[``1, 2, 3]");
 
-		final Link a = field("a").getArtifact().toLink();
-
+		final Obj a = field("a").toObject();
 		final ArrayValueStruct arraySruct =
-				(ArrayValueStruct) a.getTypeRef().getValueStruct();
+				(ArrayValueStruct) a.value()
+				.getValueStruct()
+				.toLinkStruct()
+				.getTypeRef()
+				.getValueStruct();
 
 		assertFalse(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
 
-		final Array array = definiteValue(a);
+		final Array array = definiteValue(linkTarget(a));
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));

@@ -122,6 +122,10 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 	}
 

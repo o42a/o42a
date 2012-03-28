@@ -55,6 +55,22 @@ public interface PathWalker {
 
 	boolean object(Step step, Obj object);
 
+	/**
+	 * Informs walker about path trimming.
+	 *
+	 * <p>This can happen when some PathFragment is absolute. In this case
+	 * the beginning of the Path gets trimmed and step index starts over from
+	 * zero.</p>
+	 *
+	 * <p>This only happens at path rebuild phase. So, this method won't be
+	 * called for ordinary path walkers, as they applied to already rebuild
+	 * paths.</p>
+	 *
+	 * @param path rebuilding path.
+	 * @param root root scope.
+	 */
+	void pathTrimmed(BoundPath path, Scope root);
+
 	void abortedAt(Scope last, Step brokenStep);
 
 	boolean done(Container result);

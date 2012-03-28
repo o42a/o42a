@@ -30,11 +30,13 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UseCase;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
+import org.o42a.core.Scope;
 import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.*;
@@ -175,6 +177,14 @@ public abstract class CompilerTestCase {
 			Field<?> field,
 			Class<? extends T> valueClass) {
 		return valueClass.cast(definiteValue(field));
+	}
+
+	public static Obj linkTarget(Obj object) {
+		return definiteValue(object, ObjectLink.class).getTarget();
+	}
+
+	public static Obj linkTarget(Scope scope) {
+		return linkTarget(scope.toObject());
 	}
 
 	public static void assertTrueValue(LogicalValue condition) {

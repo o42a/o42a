@@ -288,9 +288,13 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 			statement.define(defaultEnv(this));
 
-			this.cmp = statement.toMember().getKey().toPath().bind(
-					this,
-					getScope()).target(distribute());
+			this.cmp = statement
+					.toMember()
+					.getKey()
+					.toPath()
+					.mayDereference()
+					.bind(this, getScope())
+					.target(distribute());
 
 			memberRegistry.registerMembers(members);
 		}
