@@ -45,7 +45,7 @@ public class AnnotatedObject extends CompiledObject {
 	@Override
 	protected void declareMembers(ObjectMembers members) {
 		super.declareMembers(members);
-		for (Field<?> field : getSources().fields(toMemberOwner())) {
+		for (Field field : getSources().fields(toMemberOwner())) {
 			members.addMember(field.toMember());
 		}
 	}

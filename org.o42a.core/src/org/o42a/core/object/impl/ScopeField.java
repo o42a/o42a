@@ -78,7 +78,7 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	public Obj getArtifact() {
+	public Obj toObject() {
 
 		final Obj artifact = getScopeArtifact();
 
@@ -122,18 +122,18 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	protected Obj propagateArtifact(Field<Obj> overridden) {
+	protected Obj propagateArtifact(Field overridden) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected FieldIR<Obj> createIR(Generator generator) {
+	protected FieldIR createIR(Generator generator) {
 		return new IR(generator, this);
 	}
 
-	private static final class IR extends FieldIR<Obj> {
+	private static final class IR extends FieldIR {
 
-		IR(Generator generator, Field<Obj> field) {
+		IR(Generator generator, Field field) {
 			super(generator, field);
 		}
 

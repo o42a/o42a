@@ -41,7 +41,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 	public static final Type LINK_FLD = new Type();
 
-	public LinkFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
+	public LinkFld(ObjectBodyIR bodyIR, Field field, Obj target) {
 		super(bodyIR, field, target);
 	}
 

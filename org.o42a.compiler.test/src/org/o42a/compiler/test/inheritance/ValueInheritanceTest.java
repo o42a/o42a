@@ -30,8 +30,8 @@ import org.o42a.core.value.ValueType;
 
 public class ValueInheritanceTest extends CompilerTestCase {
 
-	private Field<?> a;
-	private Field<?> b;
+	private Field a;
+	private Field b;
 
 	@Test
 	public void inheritValue() {

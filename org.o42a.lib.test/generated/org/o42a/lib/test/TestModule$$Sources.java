@@ -50,8 +50,8 @@ public final class TestModule$$Sources implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.common.object.AnnotatedObject(
 					owner,
 					new org.o42a.lib.test.TestModule$$parser(this))

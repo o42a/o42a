@@ -30,8 +30,8 @@ public final class TestModule$$parser implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.lib.test.rt.parser.ParseFloat(
 					owner,
 					new org.o42a.lib.test.rt.parser.ParseFloat$$Sources(this))

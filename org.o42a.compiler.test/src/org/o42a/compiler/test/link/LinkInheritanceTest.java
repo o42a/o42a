@@ -38,8 +38,8 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				"A := `42",
 				"B := a (= 43)");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		final Obj aTarget = linkTarget(a);
 
@@ -59,8 +59,8 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Field<?> aBar = field(field("a"), "bar");
-		final Field<?> bBar = field(field("b"), "bar");
+		final Field aBar = field(field("a"), "bar");
+		final Field bBar = field(field("b"), "bar");
 
 		assertThat(
 				definiteValue(linkTarget(aBar), ValueType.INTEGER),
@@ -81,9 +81,9 @@ public class LinkInheritanceTest extends CompilerTestCase {
 				"C := b",
 				"D := b ()");
 
-		final Field<?> bBar = field(field("b"), "bar");
-		final Field<?> cBar = field(field("c"), "bar");
-		final Field<?> dBar = field(field("d"), "bar");
+		final Field bBar = field(field("b"), "bar");
+		final Field cBar = field(field("c"), "bar");
+		final Field dBar = field(field("d"), "bar");
 
 		assertThat(
 				definiteValue(linkTarget(bBar), ValueType.INTEGER),

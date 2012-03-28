@@ -51,10 +51,10 @@ public abstract class FieldDefinition extends Placed {
 
 	public static boolean linkDefiner(ObjectDefiner definer) {
 
-		final Field<?>[] allOverridden = definer.getField().getOverridden();
+		final Field[] allOverridden = definer.getField().getOverridden();
 		boolean link = false;
 
-		for (Field<?> overridden : allOverridden) {
+		for (Field overridden : allOverridden) {
 
 			final ValueType<?> valueType =
 					overridden.toObject().value().getValueType();

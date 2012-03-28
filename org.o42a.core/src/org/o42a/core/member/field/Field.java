@@ -26,12 +26,10 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopePlace;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.ir.field.FieldIR;
+import org.o42a.core.ir.field.object.ObjectFieldIR;
 import org.o42a.core.member.*;
-import org.o42a.core.member.field.impl.FieldContainer;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
@@ -39,11 +37,11 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
+public abstract class Field extends ArtifactScope<Obj> {
 
-	public static Field<?> fieldOf(Scope scope) {
+	public static Field fieldOf(Scope scope) {
 
-		final Field<?> field = scope.toField();
+		final Field field = scope.toField();
 
 		if (field != null) {
 			return field;
@@ -56,10 +54,9 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 
 	private final MemberField member;
 	private Path enclosingScopePath;
-	private Field<A>[] overridden;
+	private Field[] overridden;
 
-	private MemberContainer container;
-	private FieldIR<A> ir;
+	private FieldIR ir;
 
 	public Field(MemberField member) {
 		this.member = member;
@@ -105,17 +102,12 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 
 	@Override
 	public final MemberContainer getContainer() {
-		if (this.container != null) {
-			return this.container;
-		}
+		return toObject();
+	}
 
-		final Obj object = getArtifact().toObject();
-
-		if (object != null) {
-			return this.container = object;
-		}
-
-		return this.container = new FieldContainer(this);
+	@Override
+	public final Obj getArtifact() {
+		return toObject();
 	}
 
 	public boolean isScopeField() {
@@ -134,10 +126,6 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 		return this.member.getKey();
 	}
 
-	public ArtifactKind<A> getArtifactKind() {
-		return getArtifact().getKind();
-	}
-
 	public final FieldAnalysis getAnalysis() {
 		return toMember().getAnalysis();
 	}
@@ -147,12 +135,11 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	 *
 	 * @return field, first declared by <code>:=</code>.
 	 */
-	public Field<A> getOriginal() {
+	public Field getOriginal() {
 
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
-		final Field<A> original =
-				member.toField().field(dummyUser()).toKind(getArtifactKind());
+		final Field original = member.toField().field(dummyUser());
 
 		assert original.getArtifact().getKind() == getArtifact().getKind() :
 			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
@@ -171,9 +158,8 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	}
 
 	@Override
-	public final Field<A> getFirstDeclaration() {
-		return this.member.getFirstDeclaration().toField().field(dummyUser())
-				.toKind(getArtifactKind());
+	public final Field getFirstDeclaration() {
+		return this.member.getFirstDeclaration().toField().field(dummyUser());
 	}
 
 	/**
@@ -183,9 +169,8 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	 * with multiple inheritance.
 	 */
 	@Override
-	public final Field<A> getLastDefinition() {
-		return this.member.getLastDefinition().toField().field(dummyUser())
-				.toKind(getArtifactKind());
+	public final Field getLastDefinition() {
+		return this.member.getLastDefinition().toField().field(dummyUser());
 	}
 
 	/**
@@ -204,7 +189,7 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 		return toMember().isClone();
 	}
 
-	public Field<A>[] getOverridden() {
+	public Field[] getOverridden() {
 		if (this.overridden == null) {
 			this.overridden = overriddenFields();
 		}
@@ -217,16 +202,11 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	}
 
 	@Override
-	public final Field<A> toField() {
-		return this;
-	}
+	public abstract Obj toObject();
 
-	@SuppressWarnings("unchecked")
-	public final <K extends Artifact<K>> Field<K> toKind(ArtifactKind<K> kind) {
-		if (getArtifactKind().is(kind)) {
-			return (Field<K>) this;
-		}
-		return null;
+	@Override
+	public final Field toField() {
+		return this;
 	}
 
 	public String getDisplayName() {
@@ -279,7 +259,7 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 			}
 		}
 
-		final Field<?> field2 = other.toField();
+		final Field field2 = other.toField();
 
 		if (field2 == null) {
 			return false;
@@ -289,7 +269,7 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	}
 
 	@Override
-	public final FieldIR<A> ir(Generator generator) {
+	public final FieldIR ir(Generator generator) {
 		if (this.ir == null || this.ir.getGenerator() != generator) {
 			this.ir = createIR(generator);
 		}
@@ -308,28 +288,25 @@ public abstract class Field<A extends Artifact<A>> extends ArtifactScope<A> {
 	 *
 	 * @param field field to merge with.
 	 */
-	protected void merge(Field<?> field) {
+	protected void merge(Field field) {
 		throw new UnsupportedOperationException(
 				"Field " + this + " can not have variants");
 	}
 
-	protected FieldIR<A> createIR(Generator generator) {
-		return getArtifact().getKind().fieldIR(generator, this);
+	protected FieldIR createIR(Generator generator) {
+		return new ObjectFieldIR(generator, this);
 	}
 
-	@SuppressWarnings("unchecked")
-	private Field<A>[] overriddenFields() {
+	private Field[] overriddenFields() {
 
-		final ArtifactKind<A> artifactKind = getArtifactKind();
 		final Member[] overriddenMembers = this.member.getOverridden();
-		final Field<A>[] overridden = new Field[overriddenMembers.length];
+		final Field[] overridden = new Field[overriddenMembers.length];
 
 		for (int i = 0; i < overridden.length; ++i) {
 			overridden[i] =
 					overriddenMembers[i]
 					.toField()
-					.field(dummyUser())
-					.toKind(artifactKind);
+					.field(dummyUser());
 		}
 
 		return overridden;

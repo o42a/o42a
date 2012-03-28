@@ -38,26 +38,19 @@ import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
 
 
 public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	public static final Type OBJ_FLD = new Type();
 
-	public ObjFld(ObjectBodyIR bodyIR, Field<Obj> field) {
+	public ObjFld(ObjectBodyIR bodyIR, Field field) {
 		super(bodyIR, field, field.getArtifact());
 	}
 
 	@Override
 	public final FldKind getKind() {
 		return FldKind.OBJ;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Field<Obj> getField() {
-		return (Field<Obj>) super.getField();
 	}
 
 	@Override
@@ -98,7 +91,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				.branch(code, "construct", "delegate");
 		final DataOp result1 = construct(
 				builder,
-				builder.falseWhenUnknown(construct, dirs.falseDir())).toData(construct);
+				builder.falseWhenUnknown(construct, dirs.falseDir()))
+				.toData(construct);
 
 		construct.go(code.tail());
 

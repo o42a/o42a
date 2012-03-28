@@ -37,9 +37,9 @@ import org.o42a.core.object.ObjectType;
 
 public abstract class FieldFld extends Fld {
 
-	private Field<?> field;
+	private Field field;
 
-	public FieldFld(ObjectBodyIR bodyIR, Field<?> field) {
+	public FieldFld(ObjectBodyIR bodyIR, Field field) {
 		super(bodyIR);
 		this.field = field;
 
@@ -48,7 +48,7 @@ public abstract class FieldFld extends Fld {
 			"Attempt to generate never accessed field " + getField();
 	}
 
-	public Field<?> getField() {
+	public final Field getField() {
 		return this.field;
 	}
 
@@ -65,7 +65,7 @@ public abstract class FieldFld extends Fld {
 	@Override
 	public boolean isOverrider() {
 
-		final Field<?> field = getField();
+		final Field field = getField();
 
 		if (!field.isOverride()) {
 			// New field declaration.
@@ -95,7 +95,7 @@ public abstract class FieldFld extends Fld {
 	@Override
 	public final Obj getDeclaredIn() {
 
-		final Field<?> original = getField().getOriginal();
+		final Field original = getField().getOriginal();
 
 		return original.getEnclosingContainer().toObject();
 	}

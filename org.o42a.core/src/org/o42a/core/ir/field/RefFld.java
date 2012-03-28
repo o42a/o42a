@@ -59,7 +59,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	private FuncPtr<C> constructor;
 
-	public RefFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
+	public RefFld(ObjectBodyIR bodyIR, Field field, Obj target) {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
 		this.target = target;
@@ -267,7 +267,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		// Field is a clone of overridden one.
 		// Reuse constructor from overridden field.
-		final Field<?> lastDefinition = getField().getLastDefinition();
+		final Field lastDefinition = getField().getLastDefinition();
 		final Obj overriddenOwner =
 				lastDefinition.getEnclosingScope().toObject();
 		final ObjectIR overriddenOwnerIR =

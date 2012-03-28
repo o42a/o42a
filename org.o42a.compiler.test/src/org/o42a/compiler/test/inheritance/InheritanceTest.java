@@ -78,7 +78,7 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void fieldDeclaration() {
 
-		final Field<?> aFoo = field(this.a, "foo");
+		final Field aFoo = field(this.a, "foo");
 
 		assertThat(aFoo, notNullValue());
 		assertFalse(aFoo.isPropagated());
@@ -91,8 +91,8 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void fieldOverride() {
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
 
 		assertFalse(bFoo.isPropagated());
 		assertTrue(
@@ -105,9 +105,9 @@ public class InheritanceTest extends CompilerTestCase {
 	@Test
 	public void fieldPropagation() {
 
-		final Field<?> aFoo = field(this.a, "foo");
-		final Field<?> bFoo = field(this.b, "foo");
-		final Field<?> cFoo = field(this.c, "foo");
+		final Field aFoo = field(this.a, "foo");
+		final Field bFoo = field(this.b, "foo");
+		final Field cFoo = field(this.c, "foo");
 
 		assertTrue(cFoo.isPropagated());
 		assertTrue(

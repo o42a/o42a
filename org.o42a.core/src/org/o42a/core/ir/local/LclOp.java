@@ -30,14 +30,14 @@ import org.o42a.core.ir.op.IROp;
 
 public abstract class LclOp extends IROp implements HostOp {
 
-	private final FieldIR<?> fieldIR;
+	private final FieldIR fieldIR;
 
-	LclOp(CodeBuilder builder, FieldIR<?> fieldIR) {
+	LclOp(CodeBuilder builder, FieldIR fieldIR) {
 		super(builder);
 		this.fieldIR = fieldIR;
 	}
 
-	public FieldIR<?> getFieldIR() {
+	public final FieldIR getFieldIR() {
 		return this.fieldIR;
 	}
 
@@ -71,7 +71,7 @@ public abstract class LclOp extends IROp implements HostOp {
 			return (Type<S>) super.getType();
 		}
 
-		public abstract LclOp op(CodeBuilder builder, FieldIR<?> fieldIR);
+		public abstract LclOp op(CodeBuilder builder, FieldIR fieldIR);
 
 	}
 

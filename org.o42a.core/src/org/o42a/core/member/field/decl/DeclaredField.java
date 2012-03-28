@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
@@ -37,9 +36,7 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
 
 
-public final class DeclaredField
-		extends Field<Obj>
-		implements FieldAscendants {
+public final class DeclaredField extends Field implements FieldAscendants {
 
 	private final ArrayList<FieldVariant> variants =
 			new ArrayList<FieldVariant>(1);
@@ -51,14 +48,9 @@ public final class DeclaredField
 		super(member);
 	}
 
-	protected DeclaredField(MemberField member, Field<Obj> propagatedFrom) {
+	protected DeclaredField(MemberField member, Field propagatedFrom) {
 		super(member);
 		setScopeArtifact(new PropagatedObject(this));
-	}
-
-	@Override
-	public final ArtifactKind<Obj> getArtifactKind() {
-		return ArtifactKind.OBJECT;
 	}
 
 	@Override
@@ -84,8 +76,12 @@ public final class DeclaredField
 		return this.ascendants;
 	}
 
+	public final List<FieldVariant> getVariants() {
+		return this.variants;
+	}
+
 	@Override
-	public Obj getArtifact() {
+	public Obj toObject() {
 		if (getScopeArtifact() == null) {
 			if (!getKey().isValid()) {
 
@@ -100,10 +96,6 @@ public final class DeclaredField
 		}
 
 		return getScopeArtifact();
-	}
-
-	public final List<FieldVariant> getVariants() {
-		return this.variants;
 	}
 
 	public final boolean ownsCompilerContext() {
@@ -142,21 +134,13 @@ public final class DeclaredField
 	}
 
 	@Override
-	protected final void merge(Field<?> field) {
+	protected final void merge(Field field) {
 		if (!(field instanceof DeclaredField)) {
 			getLogger().ambiguousMember(field, getDisplayName());
 			return;
 		}
-		if (field.getArtifactKind() != getArtifactKind()) {
-			getLogger().wrongArtifactKind(
-					this,
-					field.getArtifactKind(),
-					getArtifactKind());
-			return;
-		}
 
-		final DeclaredField declaredField =
-				(DeclaredField) field.toKind(getArtifactKind());
+		final DeclaredField declaredField = (DeclaredField) field;
 
 		for (FieldVariant variant : declaredField.getVariants()) {
 			mergeVariant(variant);

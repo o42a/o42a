@@ -32,8 +32,8 @@ public final class VariableArrayValueTypeObject$$Sources implements AnnotatedSou
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.intrinsic.array.VariableArrayLength(
 					owner,
 					new org.o42a.intrinsic.array.VariableArrayLength$$Sources(this))

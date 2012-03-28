@@ -58,7 +58,7 @@ public final class DeclaredMemberField extends MemberField {
 	}
 
 	@Override
-	protected Field<?> createField() {
+	protected Field createField() {
 
 		final DeclaredField field = new DeclaredField(this);
 		final FieldVariant variant = field.variant(

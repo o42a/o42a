@@ -30,8 +30,8 @@ public final class Root$$integers implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.intrinsic.numeric.AddIntegers(
 					owner,
 					new org.o42a.intrinsic.numeric.AddIntegers$$Sources(this))

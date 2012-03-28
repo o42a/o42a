@@ -123,14 +123,14 @@ public abstract class Artifact<A extends Artifact<A>> extends Placed {
 
 	public boolean isAbstract() {
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		return field != null && field.isAbstract();
 	}
 
 	public boolean isPrototype() {
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		return field != null && field.isPrototype();
 	}

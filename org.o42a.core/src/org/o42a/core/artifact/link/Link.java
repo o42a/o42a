@@ -106,7 +106,7 @@ public abstract class Link extends MaterializableArtifact<Link> {
 
 	public final void assign(Ref value) {
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		if (field != null) {
 			field.toMember().assign(value);

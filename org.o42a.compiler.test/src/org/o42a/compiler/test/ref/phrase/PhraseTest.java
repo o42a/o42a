@@ -39,9 +39,9 @@ public class PhraseTest extends CompilerTestCase {
 				")",
 				"B := a[2]'b'");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
-		final Field<?> bar = field(foo, "bar");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
+		final Field bar = field(foo, "bar");
 
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
 		assertThat(definiteValue(bar, ValueType.STRING), is("b"));
@@ -56,8 +56,8 @@ public class PhraseTest extends CompilerTestCase {
 				")",
 				"B := a[2]'b'");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(b, ValueType.INTEGER), is(2L));
 		assertThat(definiteValue(foo, ValueType.STRING), is("b"));

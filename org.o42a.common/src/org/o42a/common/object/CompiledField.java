@@ -49,7 +49,7 @@ public final class CompiledField extends ObjectField {
 	}
 
 	@Override
-	public final Obj getArtifact() {
+	public final Obj toObject() {
 
 		final Obj object = getScopeArtifact();
 

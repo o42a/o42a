@@ -256,7 +256,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public Field<?> toField() {
+	public Field toField() {
 		return null;
 	}
 

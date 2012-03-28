@@ -49,7 +49,7 @@ public final class RefLclOp extends LclOp {
 
 	private final Op ptr;
 
-	private RefLclOp(CodeBuilder builder, FieldIR<?> fieldIR, Op ptr) {
+	private RefLclOp(CodeBuilder builder, FieldIR fieldIR, Op ptr) {
 		super(builder, fieldIR);
 		this.ptr = ptr;
 	}
@@ -150,7 +150,7 @@ public final class RefLclOp extends LclOp {
 		}
 
 		@Override
-		public RefLclOp op(CodeBuilder builder, FieldIR<?> fieldIR) {
+		public RefLclOp op(CodeBuilder builder, FieldIR fieldIR) {
 			return new RefLclOp(builder, fieldIR, this);
 		}
 

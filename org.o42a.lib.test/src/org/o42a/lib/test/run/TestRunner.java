@@ -51,7 +51,7 @@ final class TestRunner extends ConstructedObject {
 			TestModule module,
 			UserInfo user,
 			ImperativeSentence sentence,
-			Field<?> field) {
+			Field field) {
 		if (field.getVisibility() != Visibility.PUBLIC) {
 			return; // Only public fields recognized as tests.
 		}
@@ -101,7 +101,7 @@ final class TestRunner extends ConstructedObject {
 	private static void run(
 			ImperativeSentence sentence,
 			String name,
-			Field<?> field) {
+			Field field) {
 
 		final Imperatives statements =
 				sentence.alternative(sentence.getBlock());
@@ -127,7 +127,7 @@ final class TestRunner extends ConstructedObject {
 
 	private static String testName(
 			ImperativeSentence sentence,
-			Field<?> field,
+			Field field,
 			Obj test) {
 
 		final Obj nameObject =

@@ -50,8 +50,8 @@ public final class Root$$Sources implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.intrinsic.array.ConstantArrayValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.array.ConstantArrayValueTypeObject$$Sources(this))

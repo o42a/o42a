@@ -138,7 +138,7 @@ public abstract class Obj
 	@Override
 	public Member toMember() {
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		return field != null ? field.toMember() : null;
 	}
@@ -571,7 +571,7 @@ public abstract class Obj
 
 	protected Obj findWrapped() {
 
-		final Field<?> field = getScope().toField();
+		final Field field = getScope().toField();
 
 		if (field == null) {
 			return this;
@@ -889,7 +889,7 @@ public abstract class Obj
 				continue;
 			}
 
-			final Field<?> field = memberField.field(dummyUser());
+			final Field field = memberField.field(dummyUser());
 
 			if (field.isScopeField()) {
 				continue;

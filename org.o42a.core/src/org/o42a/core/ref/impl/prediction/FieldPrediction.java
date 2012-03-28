@@ -38,13 +38,8 @@ public class FieldPrediction extends Prediction {
 
 	public static Prediction predictField(
 			Prediction enclosing,
-			Field<?> field) {
+			Field field) {
 		assert enclosing.assertEncloses(field);
-
-		if (field.getArtifactKind().isVariable()) {
-			// Variables can not be predicted for now.
-			return unpredicted(field);
-		}
 
 		switch (enclosing.getPredicted()) {
 		case EXACTLY_PREDICTED:
@@ -59,7 +54,7 @@ public class FieldPrediction extends Prediction {
 				"Unsupported prediction: " + enclosing.getPredicted());
 	}
 
-	private FieldPrediction(Prediction enclosing, Field<?> field) {
+	private FieldPrediction(Prediction enclosing, Field field) {
 		super(field);
 		this.enclosing = enclosing;
 		field.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
@@ -94,7 +89,7 @@ public class FieldPrediction extends Prediction {
 		private final MemberKey fieldKey;
 		private OverridersItr overriders;
 
-		Itr(Prediction enclosing, Field<?> field) {
+		Itr(Prediction enclosing, Field field) {
 			this.enclosing = enclosing;
 			this.fieldKey = field.getKey();
 			this.enclosings = enclosing.iterator();
@@ -156,7 +151,7 @@ public class FieldPrediction extends Prediction {
 		private final ReplacementsItr replacements;
 		private Iterator<Scope> impls;
 
-		OverridersItr(Prediction enclosing, Field<?> start) {
+		OverridersItr(Prediction enclosing, Field start) {
 			this.enclosing = enclosing;
 			this.replacements = new ReplacementsItr(start);
 			start.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
@@ -199,7 +194,7 @@ public class FieldPrediction extends Prediction {
 					return false;
 				}
 
-				final Field<?> field = this.replacements.next();
+				final Field field = this.replacements.next();
 				final Prediction enclosing;
 
 				if (this.enclosing.isExact()) {
@@ -220,13 +215,13 @@ public class FieldPrediction extends Prediction {
 
 	}
 
-	private static final class ReplacementsItr implements Iterator<Field<?>> {
+	private static final class ReplacementsItr implements Iterator<Field> {
 
-		private final Field<?> start;
+		private final Field start;
 		private Iterator<FieldReplacement> replacements;
 		private ReplacementsItr sub;
 
-		ReplacementsItr(Field<?> start) {
+		ReplacementsItr(Field start) {
 			this.start = start;
 		}
 
@@ -242,7 +237,7 @@ public class FieldPrediction extends Prediction {
 		}
 
 		@Override
-		public Field<?> next() {
+		public Field next() {
 			if (this.replacements == null) {
 				this.replacements =
 						this.start.toMember().allReplacements().iterator();

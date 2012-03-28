@@ -20,14 +20,13 @@
 package org.o42a.core.ir.field;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.object.FieldIRBase;
 import org.o42a.core.member.field.Field;
 
 
-public abstract class FieldIR<A extends Artifact<A>> extends FieldIRBase<A> {
+public abstract class FieldIR extends FieldIRBase {
 
-	public FieldIR(Generator generator, Field<A> field) {
+	public FieldIR(Generator generator, Field field) {
 		super(generator, field);
 	}
 

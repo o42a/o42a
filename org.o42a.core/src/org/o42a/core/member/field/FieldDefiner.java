@@ -22,6 +22,6 @@ package org.o42a.core.member.field;
 
 public interface FieldDefiner {
 
-	Field<?> getField();
+	Field getField();
 
 }

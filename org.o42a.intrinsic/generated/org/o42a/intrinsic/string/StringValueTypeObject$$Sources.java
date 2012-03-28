@@ -32,8 +32,8 @@ public final class StringValueTypeObject$$Sources implements AnnotatedSources {
 	}
 
 	@Override
-	public Field<?>[] fields(MemberOwner owner) {
-		return new Field<?>[] {
+	public Field[] fields(MemberOwner owner) {
+		return new Field[] {
 			new org.o42a.intrinsic.string.StringChar(
 					owner,
 					new org.o42a.intrinsic.string.StringChar$$Sources(this))

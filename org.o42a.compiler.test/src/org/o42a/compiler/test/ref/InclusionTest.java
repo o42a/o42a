@@ -39,7 +39,7 @@ public class InclusionTest extends CompilerTestCase {
 				"= 42");
 		compile("");
 
-		final Field<?> included = field("included");
+		final Field included = field("included");
 
 		assertThat(definiteValue(included, ValueType.INTEGER), is(42L));
 	}
@@ -53,7 +53,7 @@ public class InclusionTest extends CompilerTestCase {
 				"= 42");
 		compile("(*** Inc ***)");
 
-		final Field<?> included = field("included");
+		final Field included = field("included");
 
 		assertThat(definiteValue(included, ValueType.INTEGER), is(42L));
 	}

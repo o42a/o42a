@@ -40,8 +40,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 				")",
 				"B := a[2]bar'b'");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
@@ -59,8 +59,8 @@ public class ClauseReuseTest extends CompilerTestCase {
 				")",
 				"B := a[2]bar'b'");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
 
 		assertThat(definiteValue(b, ValueType.STRING), is("b"));
 		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
@@ -78,9 +78,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 				")",
 				"B := a () set 'c'");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
-		final Field<?> bar = field(b, "bar");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
+		final Field bar = field(b, "bar");
 
 		assertThat(definiteValue(foo, ValueType.STRING), is("a"));
 		assertThat(definiteValue(bar, ValueType.STRING), is("c"));
@@ -99,9 +99,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 				")",
 				"B := a 'c' [\"d\"]");
 
-		final Field<?> b = field("b");
-		final Field<?> foo = field(b, "foo");
-		final Field<?> bar = field(b, "bar");
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
+		final Field bar = field(b, "bar");
 
 		assertThat(definiteValue(foo, ValueType.STRING), is("c"));
 		assertThat(definiteValue(bar, ValueType.STRING), is("d"));

@@ -38,8 +38,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"A := link (`integer) 42",
 				"B := a (= 43)");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
+		final Field a = field("a");
+		final Field b = field("b");
 
 		final Obj aTarget = linkTarget(a);
 
@@ -59,8 +59,8 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Field<?> aBar = field(field("a"), "bar");
-		final Field<?> bBar = field(field("b"), "bar");
+		final Field aBar = field(field("a"), "bar");
+		final Field bBar = field(field("b"), "bar");
 
 		final Obj aBarTarget = linkTarget(aBar);
 		final Obj bBarTarget = linkTarget(bBar);
@@ -80,9 +80,9 @@ public class LinkObjectDerivationTest extends CompilerTestCase {
 				"C := b",
 				"D := b ()");
 
-		final Field<?> bBar = field(field("b"), "bar");
-		final Field<?> cBar = field(field("c"), "bar");
-		final Field<?> dBar = field(field("d"), "bar");
+		final Field bBar = field(field("b"), "bar");
+		final Field cBar = field(field("c"), "bar");
+		final Field dBar = field(field("d"), "bar");
 
 		final Obj bBarTarget = linkTarget(bBar);
 		final Obj cBarTarget = linkTarget(cBar);

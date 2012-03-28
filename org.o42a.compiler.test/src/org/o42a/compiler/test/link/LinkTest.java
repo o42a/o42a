@@ -70,13 +70,13 @@ public class LinkTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		final Obj aFoo = field(a, "foo").toObject();
-		final Field<?> aBar = field(a, "bar");
+		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
 		assertSame(aFoo, aBarTarget.getWrapped());
 
 		final Obj bFoo = field(b, "foo").toObject();
-		final Field<?> bBar = field(b, "bar");
+		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
 		assertSame(bFoo, bBarTarget.getWrapped());
@@ -92,12 +92,12 @@ public class LinkTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		final Obj aFoo = field(a, "foo").getArtifact().toObject();
-		final Field<?> aBar = field(a, "bar");
+		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
 		assertSame(aFoo, aBarTarget.getWrapped());
 
-		final Field<?> bBar = field(b, "bar");
+		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
 		assertSame(aFoo, bBarTarget.getWrapped());

@@ -30,9 +30,9 @@ import org.o42a.core.value.ValueType;
 
 public class BinaryDefinitionTest extends CompilerTestCase {
 
-	private Field<?> c;
-	private Field<?> d;
-	private Field<?> e;
+	private Field c;
+	private Field d;
+	private Field e;
 
 	@Test
 	public void add() {

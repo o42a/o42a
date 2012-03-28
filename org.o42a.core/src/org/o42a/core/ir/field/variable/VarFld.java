@@ -54,7 +54,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	private FuncPtr<VariableAssignerFunc> assigner;
 
-	public VarFld(ObjectBodyIR bodyIR, Field<?> field, Obj target) {
+	public VarFld(ObjectBodyIR bodyIR, Field field, Obj target) {
 		super(bodyIR, field, target);
 	}
 
@@ -116,7 +116,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	}
 
 	private FuncPtr<VariableAssignerFunc> reusedAssigner() {
-		for (Field<?> overridden : getField().getOverridden()) {
+		for (Field overridden : getField().getOverridden()) {
 
 			final TypeRelation relation =
 					typeRef(overridden).relationTo(getTypeRef(), false);
@@ -140,7 +140,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		return null;
 	}
 
-	private static TypeRef typeRef(Field<?> field) {
+	private static TypeRef typeRef(Field field) {
 
 		final TypeRef typeRef = field.getArtifact().getTypeRef();
 

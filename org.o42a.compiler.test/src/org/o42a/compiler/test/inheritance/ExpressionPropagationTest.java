@@ -44,13 +44,13 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 				").",
 				"C := B.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-		final Field<?> c = field("c");
+		final Field a = field("a");
+		final Field b = field("b");
+		final Field c = field("c");
 
-		final Field<?> aFoo = field(a, "foo");
-		final Field<?> bFoo = field(b, "foo");
-		final Field<?> cFoo = field(c, "foo");
+		final Field aFoo = field(a, "foo");
+		final Field bFoo = field(b, "foo");
+		final Field cFoo = field(c, "foo");
 
 		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
@@ -75,13 +75,13 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 				").",
 				"C := B.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-		final Field<?> c = field("c");
+		final Field a = field("a");
+		final Field b = field("b");
+		final Field c = field("c");
 
-		final Field<?> aFoo = field(a, "foo");
-		final Field<?> bFoo = field(b, "foo");
-		final Field<?> cFoo = field(c, "foo");
+		final Field aFoo = field(a, "foo");
+		final Field bFoo = field(b, "foo");
+		final Field cFoo = field(c, "foo");
 
 		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
@@ -103,13 +103,13 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 				").",
 				"C := B.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-		final Field<?> c = field("c");
+		final Field a = field("a");
+		final Field b = field("b");
+		final Field c = field("c");
 
-		final Field<?> aFoo = field(a, "foo");
-		final Field<?> bFoo = field(b, "foo");
-		final Field<?> cFoo = field(c, "foo");
+		final Field aFoo = field(a, "foo");
+		final Field bFoo = field(b, "foo");
+		final Field cFoo = field(c, "foo");
 
 		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));
@@ -133,13 +133,13 @@ public class ExpressionPropagationTest extends CompilerTestCase {
 				").",
 				"C := B.");
 
-		final Field<?> a = field("a");
-		final Field<?> b = field("b");
-		final Field<?> c = field("c");
+		final Field a = field("a");
+		final Field b = field("b");
+		final Field c = field("c");
 
-		final Field<?> aFoo = field(a, "foo");
-		final Field<?> bFoo = field(b, "foo");
-		final Field<?> cFoo = field(c, "foo");
+		final Field aFoo = field(a, "foo");
+		final Field bFoo = field(b, "foo");
+		final Field cFoo = field(c, "foo");
 
 		assertThat(definiteValue(aFoo, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(bFoo, ValueType.INTEGER), is(2L));

@@ -41,9 +41,9 @@ import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.LinkValueType;
 
 
-public final class ObjectFieldIR extends FieldIR<Obj> {
+public final class ObjectFieldIR extends FieldIR {
 
-	public ObjectFieldIR(Generator generator, Field<Obj> field) {
+	public ObjectFieldIR(Generator generator, Field field) {
 		super(generator, field);
 	}
 
@@ -73,7 +73,7 @@ public final class ObjectFieldIR extends FieldIR<Obj> {
 
 	private RefFld<?> declareLink(SubData<?> data, ObjectBodyIR bodyIR) {
 
-		final Field<Obj> field = getField();
+		final Field field = getField();
 		final Obj object = field.toObject();
 		final LinkValueType linkType =
 				object.value().getValueType().toLinkType();

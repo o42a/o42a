@@ -26,7 +26,6 @@ import org.o42a.core.ScopePlace;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
@@ -42,7 +41,9 @@ public abstract class StandaloneArtifactScope<A extends Artifact<A>>
 
 	private ScopeIR ir;
 
-	public StandaloneArtifactScope(LocationInfo location, Distributor enclosing) {
+	public StandaloneArtifactScope(
+			LocationInfo location,
+			Distributor enclosing) {
 		this.context = location.getContext();
 		this.loggable = location.getLoggable();
 		this.enclosingContainer = enclosing.getContainer();
@@ -86,7 +87,7 @@ public abstract class StandaloneArtifactScope<A extends Artifact<A>>
 	}
 
 	@Override
-	public final Field<Obj> toField() {
+	public final Field toField() {
 		return null;
 	}
 

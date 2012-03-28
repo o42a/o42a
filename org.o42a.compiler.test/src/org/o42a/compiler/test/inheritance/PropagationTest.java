@@ -73,11 +73,11 @@ public class PropagationTest extends CompilerTestCase {
 		assertTrue(bBar.type().inherits(
 				bFoo.type()));
 
-		final Field<?> aFooScope =
+		final Field aFooScope =
 				aFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
 				.toField()
 				.field(USE_CASE);
-		final Field<?> bFooScope =
+		final Field bFooScope =
 				bFoo.member(SCOPE_FIELD_ID, Accessor.INHERITANT)
 				.toField()
 				.field(USE_CASE);
