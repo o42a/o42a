@@ -20,4 +20,4 @@
 Float :=> rt-float
 ==================
 
-Input :=< link (`$$string)
+Input :=< `$$string
