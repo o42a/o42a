@@ -33,4 +33,4 @@ Print to console :=> void
   )
 )
 
-Text :=< link (`string)
+Text :=< `string
