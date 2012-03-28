@@ -24,6 +24,8 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.ObjectLink;
 
 
 public class BuiltinRefTest extends CompilerTestCase {
@@ -32,40 +34,44 @@ public class BuiltinRefTest extends CompilerTestCase {
 	public void voidRef() {
 		compile("A := `void");
 
-		assertThat(
-				field("a").getArtifact().materialize().getWrapped(),
-				is(this.context.getVoid()));
-		assertTrueVoid(field("a"));
+		final Obj aTarget =
+				definiteValue(field("a"), ObjectLink.class).getTarget();
+
+		assertThat(aTarget.getWrapped(), is(this.context.getVoid()));
+		assertTrueVoid(aTarget);
 	}
 
 	@Test
 	public void rootVoidRef() {
-		compile("A := `void");
+		compile("A := `$$void");
 
-		assertThat(
-				field("a").getArtifact().materialize().getWrapped(),
-				is(this.context.getVoid()));
-		assertTrueVoid(field("a"));
+		final Obj aTarget =
+				definiteValue(field("a"), ObjectLink.class).getTarget();
+
+		assertThat(aTarget.getWrapped(), is(this.context.getVoid()));
+		assertTrueVoid(aTarget);
 	}
 
 	@Test
 	public void falseRef() {
 		compile("A := `false");
 
-		assertThat(
-				field("a").getArtifact().materialize().getWrapped(),
-				is(this.context.getFalse()));
-		assertFalseVoid(field("a"));
+		final Obj aTarget =
+				definiteValue(field("a"), ObjectLink.class).getTarget();
+
+		assertThat(aTarget.getWrapped(), is(this.context.getFalse()));
+		assertFalseVoid(aTarget);
 	}
 
 	@Test
 	public void rootFalseRef() {
 		compile("A := `$$false");
 
-		assertThat(
-				field("a").getArtifact().materialize().getWrapped(),
-				is(this.context.getFalse()));
-		assertFalseVoid(field("a"));
+		final Obj aTarget =
+				definiteValue(field("a"), ObjectLink.class).getTarget();
+
+		assertThat(aTarget.getWrapped(), is(this.context.getFalse()));
+		assertFalseVoid(aTarget);
 	}
 
 }

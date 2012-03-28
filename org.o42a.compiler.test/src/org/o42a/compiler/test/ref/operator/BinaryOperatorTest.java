@@ -24,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
+import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
@@ -32,74 +33,77 @@ public class BinaryOperatorTest extends CompilerTestCase {
 	@Test
 	public void add() {
 		compile(
-				"Compute :=> void(",
+				"Compute :=> void (",
 				"  Left :=< `void",
 				"  Right :=< `integer",
 				")",
-				"A := void(",
-				"  <*Eval> Compute(",
+				"A := void (",
+				"  <*Eval> Compute (",
 				"    <@Operators: add | eval> Left = void",
 				"    <@Operators: operand> Right = integer",
 				"  )",
 				")",
 				"B := a + 3");
 
-		assertTrueVoid(field("b", "left"));
-		assertThat(
-				definiteValue(field("b", "right"), ValueType.INTEGER),
-				is(3L));
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
 	@Test
 	public void subtract() {
 		compile(
-				"Compute :=> void(",
+				"Compute :=> void (",
 				"  Left :=< `void",
 				"  Right :=< `integer",
 				")",
-				"A := void(",
-				"  <*Eval> Compute(",
+				"A := void (",
+				"  <*Eval> Compute (",
 				"    <@Operators: subtract | eval> Left = void",
 				"    <@Operators: operand> Right = integer",
 				"  )",
 				")",
 				"B := a - 3");
 
-		assertTrueVoid(field("b", "left"));
-		assertThat(
-				definiteValue(field("b", "right"), ValueType.INTEGER),
-				is(3L));
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
 	@Test
 	public void multiply() {
 		compile(
-				"Compute :=> void(",
+				"Compute :=> void (",
 				"  Left :=< `void",
 				"  Right :=< `integer",
 				")",
-				"A := void(",
-				"  <*Eval> Compute(",
+				"A := void (",
+				"  <*Eval> Compute (",
 				"    <@Operators: multiply | eval> Left = void",
 				"    <@Operators: operand> Right = integer",
 				"  )",
 				")",
 				"B := a * 3");
 
-		assertTrueVoid(field("b", "left"));
-		assertThat(
-				definiteValue(field("b", "right"), ValueType.INTEGER),
-				is(3L));
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
 	@Test
 	public void divide() {
 		compile(
-				"Compute :=> void(",
+				"Compute :=> void (",
 				"  Left :=< `void",
 				"  Right :=< `integer",
 				")",
-				"A := void(",
+				"A := void (",
 				"  <*Eval> Compute(",
 				"    <@Operators: divide | eval> Left = void",
 				"    <@Operators: operand> Right = integer",
@@ -107,10 +111,11 @@ public class BinaryOperatorTest extends CompilerTestCase {
 				")",
 				"B := a / 3");
 
-		assertTrueVoid(field("b", "left"));
-		assertThat(
-				definiteValue(field("b", "right"), ValueType.INTEGER),
-				is(3L));
+		final Obj leftTarget = linkTarget(field("b", "left"));
+		final Obj rightTarget = linkTarget(field("b", "right"));
+
+		assertTrueVoid(leftTarget);
+		assertThat(definiteValue(rightTarget, ValueType.INTEGER), is(3L));
 	}
 
 }

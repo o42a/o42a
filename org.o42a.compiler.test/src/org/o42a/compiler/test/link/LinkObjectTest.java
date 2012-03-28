@@ -30,7 +30,6 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.value.ValueType;
 
 
@@ -45,7 +44,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj a = field("a").getArtifact().toObject();
 		final Obj b = field("b").getArtifact().toObject();
 
-		final Obj bTarget = definiteValue(b, ObjectLink.class).getTarget();
+		final Obj bTarget = linkTarget(b);
 
 		assertThat(
 				b.value()
@@ -67,7 +66,7 @@ public class LinkObjectTest extends CompilerTestCase {
 		final Obj a = field("a").getArtifact().toObject();
 		final Obj b = field("b").getArtifact().materialize();
 
-		final Obj bTarget = definiteValue(b, ObjectLink.class).getTarget();
+		final Obj bTarget = linkTarget(b);
 
 		assertThat(
 				b.value()
@@ -95,15 +94,13 @@ public class LinkObjectTest extends CompilerTestCase {
 
 		final Obj aFoo = field(a, "foo").getArtifact().toObject();
 		final Field<?> aBar = field(a, "bar");
-		final Obj aBarTarget =
-				definiteValue(aBar, ObjectLink.class).getTarget();
+		final Obj aBarTarget = linkTarget(aBar);
 
 		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
 		final Obj bFoo = field(b, "foo").getArtifact().toObject();
 		final Field<?> bBar = field(b, "bar");
-		final Obj bBarTarget =
-				definiteValue(bBar, ObjectLink.class).getTarget();
+		final Obj bBarTarget = linkTarget(bBar);
 
 		assertThat(bBarTarget.getWrapped(), sameInstance(bFoo));
 	}
@@ -122,14 +119,12 @@ public class LinkObjectTest extends CompilerTestCase {
 
 		final Obj aFoo = field(a, "foo").getArtifact().toObject();
 		final Field<?> aBar = field(a, "bar");
-		final Obj aBarTarget =
-				definiteValue(aBar, ObjectLink.class).getTarget();
+		final Obj aBarTarget = linkTarget(aBar);
 
 		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
 		final Field<?> bBar = field(b, "bar");
-		final Obj bBarTarget =
-				definiteValue(bBar, ObjectLink.class).getTarget();
+		final Obj bBarTarget = linkTarget(bBar);
 
 		assertThat(bBarTarget.getWrapped(), sameInstance(aFoo));
 	}

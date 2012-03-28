@@ -35,7 +35,9 @@ public class ArrayLengthTest extends CompilerTestCase {
 				"Array := (`$$array) [`1, 2]",
 				"Len := `array: length");
 
-		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(2L));
+		assertThat(
+				definiteValue(linkTarget(field("len")), ValueType.INTEGER),
+				is(2L));
 	}
 
 	@Test
@@ -45,7 +47,9 @@ public class ArrayLengthTest extends CompilerTestCase {
 				"Array := (`$$array) [`1, rt-integer '2']",
 				"Len := `array: length");
 
-		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(2L));
+		assertThat(
+				definiteValue(linkTarget(field("len")), ValueType.INTEGER),
+				is(2L));
 	}
 
 	@Test

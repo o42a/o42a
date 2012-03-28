@@ -39,6 +39,8 @@ public class LinkValueAdapter extends ValueAdapter {
 	private final LinkValueStruct expectedStruct;
 
 	public LinkValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
+		assert expectedStruct != null :
+			"Link value structure not specified";
 		this.ref = ref;
 		this.expectedStruct = expectedStruct;
 	}

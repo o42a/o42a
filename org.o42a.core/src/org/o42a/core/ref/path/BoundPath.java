@@ -614,7 +614,7 @@ public class BoundPath extends Location {
 					// Continue from the ROOT.
 					prev = root();
 					i = 0;
-					tracker.setAbsolute(prev);
+					tracker.pathTrimmed(this, prev);
 				} else {
 					// Replacement is a relative path.
 					// Replace the current step.

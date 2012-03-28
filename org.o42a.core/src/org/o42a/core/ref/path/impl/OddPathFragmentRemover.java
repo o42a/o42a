@@ -38,11 +38,9 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	private static final Entry NO_ENTRY = new Entry(null);
 
-	private final BoundPath path;
 	private final ArrayList<Entry> entries;
 
 	public OddPathFragmentRemover(BoundPath path) {
-		this.path = path;
 		this.entries = new ArrayList<Entry>(path.rawLength());
 	}
 
@@ -73,7 +71,6 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean up(Container enclosed, Step step, Container enclosing) {
-		handlePathTrimming(step);
 
 		final Scope enclosingScope = enclosing.getScope();
 		final int size = this.entries.size();
@@ -115,6 +112,11 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+		this.entries.clear();
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 	}
 
@@ -150,24 +152,13 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	private boolean skip(Step step) {
-		handlePathTrimming(step);
 		this.entries.add(NO_ENTRY);
 		return true;
 	}
 
 	private boolean enter(Step step, Scope start) {
-		handlePathTrimming(step);
 		this.entries.add(new Entry(start));
 		return true;
-	}
-
-	private void handlePathTrimming(Step step) {
-		if (this.path.firstStep() == step) {
-			// This can happen when some PathFragment is absolute.
-			// In this case the beginning of the Path gets trimmed
-			// and step index starts over from zero.
-			this.entries.clear();
-		}
 	}
 
 	private static final class Entry {

@@ -23,7 +23,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
@@ -37,8 +36,8 @@ public class RuntimeValueTest extends CompilerTestCase {
 				"A := rt-integer '5'",
 				"B := a");
 
-		assertRuntimeInteger(field("a"));
-		assertRuntimeInteger(field("b"));
+		assertRuntimeInteger(field("a").toObject());
+		assertRuntimeInteger(field("b").toObject());
 	}
 
 	@Test
@@ -48,8 +47,8 @@ public class RuntimeValueTest extends CompilerTestCase {
 				"A := (`integer) rt-integer '5'",
 				"B := (`integer) a");
 
-		assertRuntimeInteger(field("a"));
-		assertRuntimeInteger(field("b"));
+		assertRuntimeInteger(linkTarget(field("a")));
+		assertRuntimeInteger(linkTarget(field("b")));
 	}
 
 	@Test
@@ -59,14 +58,11 @@ public class RuntimeValueTest extends CompilerTestCase {
 				"A := integer({= Rt-integer '5'})",
 				"B := a");
 
-		assertRuntimeInteger(field("a"));
-		assertRuntimeInteger(field("b"));
+		assertRuntimeInteger(field("a").toObject());
+		assertRuntimeInteger(field("b").toObject());
 	}
 
-	private static void assertRuntimeInteger(Field<?> field) {
-
-		final Obj object = field.getArtifact().materialize();
-
+	private static void assertRuntimeInteger(Obj object) {
 		assertEquals(ValueType.INTEGER, object.value().getValueType());
 		assertRuntimeValue(object.value().getValue());
 	}

@@ -167,7 +167,6 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 		for (ValueDef def : get()) {
 			if (!valueStruct.assignableFrom(def.getValueStruct())) {
-				valueStruct.assignableFrom(def.getValueStruct());
 				definitions.getLogger().incompatible(def, valueStruct);
 			}
 		}

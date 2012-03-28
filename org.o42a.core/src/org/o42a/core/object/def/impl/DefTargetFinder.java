@@ -142,6 +142,10 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+	}
+
+	@Override
 	public void abortedAt(Scope last, Step brokenStep) {
 		this.path = null;
 	}

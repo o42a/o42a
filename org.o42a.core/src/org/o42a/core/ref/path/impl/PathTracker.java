@@ -49,9 +49,6 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 		return this.aborted;
 	}
 
-	public void setAbsolute(Scope root) {
-	}
-
 	@Override
 	public boolean replay(PathWalker walker) {
 		throw new IllegalStateException();
@@ -65,6 +62,11 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 	@Override
 	public final boolean start(BoundPath path, Scope start) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void pathTrimmed(BoundPath path, Scope root) {
+		walker().pathTrimmed(path, root);
 	}
 
 	@Override
