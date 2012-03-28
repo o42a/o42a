@@ -108,10 +108,7 @@ llvm_version = $(shell $(llvm_config) --version)
 
 ifeq ($(strip $(llvm_so)),)
 
-llvm_so = $(shell $(llvm_config) --libdir)/libLLVM-$(llvm_version).so
-llvm_ldflags = $(shell \
-	([ -f "$(llvm_so)" ] && echo -l:$(llvm_so)) \
-	|| echo -lLLVM-$(llvm_version))
+llvm_ldflags = -Wl,-rpath=$(shell $(llvm_config) --libdir) -lLLVM-$(llvm_version)
 
 else
 
