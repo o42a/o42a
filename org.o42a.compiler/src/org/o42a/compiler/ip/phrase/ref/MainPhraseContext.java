@@ -183,8 +183,10 @@ final class MainPhraseContext extends PhraseContext {
 			}
 		}
 
-		if (this.implicitAscendants != null) {
-			for (Sample sample : this.implicitAscendants.getSamples()) {
+		final Ascendants implicitAscendants = effectiveImplicitAscendants();
+
+		if (implicitAscendants != null) {
+			for (Sample sample : implicitAscendants.getSamples()) {
 
 				final NextClause found = findClause(
 						sample.typeObject(dummyUser()),
@@ -211,10 +213,10 @@ final class MainPhraseContext extends PhraseContext {
 			if (found.found()) {
 				return found;
 			}
-		} else if (this.implicitAscendants != null) {
+		} else if (implicitAscendants != null) {
 
 			final TypeRef implicitAncestor =
-					this.implicitAscendants.getExplicitAncestor();
+					implicitAscendants.getExplicitAncestor();
 
 			if (implicitAncestor != null) {
 
@@ -231,6 +233,31 @@ final class MainPhraseContext extends PhraseContext {
 		}
 
 		return clauseNotFound(what);
+	}
+
+	private Ascendants effectiveImplicitAscendants() {
+		if (this.implicitAscendants == null) {
+			return null;
+		}
+		if (getAscendants().isEmpty()) {
+			// Only implicit ascendants is known.
+			// Search for clauses there.
+			return this.implicitAscendants;
+		}
+		if (getAscendants().isLinkAscendants()) {
+			// Declaring link with link expression.
+			// Implicit ascendants will be searched for clauses.
+			return this.implicitAscendants;
+		}
+		if (this.implicitAscendants.isLinkAscendants()) {
+			// Declaring link by value.
+			// Clauses should be looked for in the link target,
+			// but not in the link body
+			return null;
+		}
+		// Not a link declaration.
+		// Search for clauses inside implicit clauses also.
+		return this.implicitAscendants;
 	}
 
 	private void build() {
