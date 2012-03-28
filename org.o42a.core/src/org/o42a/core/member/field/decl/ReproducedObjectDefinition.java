@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -37,12 +37,10 @@ import org.o42a.core.st.sentence.*;
 
 final class ReproducedObjectDefinition extends FieldDefinition {
 
-	private final ObjectFieldVariant variant;
+	private final FieldVariant variant;
 	private final Reproducer reproducer;
 
-	ReproducedObjectDefinition(
-			ObjectFieldVariant variant,
-			Reproducer reproducer) {
+	ReproducedObjectDefinition(FieldVariant variant, Reproducer reproducer) {
 		super(variant, reproducer.distribute());
 		this.variant = variant;
 		this.reproducer = reproducer;

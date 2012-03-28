@@ -31,10 +31,10 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -111,10 +111,13 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			return this.what;
 		}
 
-		final MemberKey fromKey = field("what", Accessor.DECLARATION).getKey();
+		final Path path =
+				field("what", Accessor.DECLARATION)
+				.getKey()
+				.toPath()
+				.dereference();
 
-		return this.what =
-				fromKey.toPath().bind(this, getScope()).target(distribute());
+		return this.what = path.bind(this, getScope()).target(distribute());
 	}
 
 	private Ref with() {
@@ -122,10 +125,13 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			return this.with;
 		}
 
-		final MemberKey toKey = field("with", Accessor.DECLARATION).getKey();
+		final Path path =
+				field("with", Accessor.DECLARATION)
+				.getKey()
+				.toPath()
+				.dereference();
 
-		return this.with =
-				toKey.toPath().bind(this, getScope()).target(distribute());
+		return this.with = path.bind(this, getScope()).target(distribute());
 	}
 
 	private static ValOp write(

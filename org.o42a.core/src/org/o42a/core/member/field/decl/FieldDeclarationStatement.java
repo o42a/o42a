@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
@@ -30,6 +30,9 @@ import org.o42a.core.ir.local.LocalFieldCmd;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -37,13 +40,13 @@ import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
 
 
-final class FieldDeclarationStatement extends DeclarationStatement {
+public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private final FieldBuilder builder;
 	private final DeclaredMemberField member;
 	private Definer definer;
 
-	FieldDeclarationStatement(
+	public FieldDeclarationStatement(
 			FieldBuilder builder,
 			DeclaredMemberField member) {
 		super(builder, builder.distribute());
@@ -114,7 +117,7 @@ final class FieldDeclarationStatement extends DeclarationStatement {
 					reproducer.distribute());
 		}
 
-		final FieldVariant<?> variant =
+		final FieldVariant variant =
 				this.member.toDeclaredField().getVariants().get(0);
 
 		return variant.reproduceDefinition(reproducer);

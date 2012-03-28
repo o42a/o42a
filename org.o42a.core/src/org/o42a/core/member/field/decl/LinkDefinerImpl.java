@@ -17,10 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
 
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.link.LinkValueType;
@@ -31,17 +30,17 @@ import org.o42a.core.ref.type.TypeRef;
 
 final class LinkDefinerImpl implements LinkDefiner {
 
-	private final ObjectFieldVariant variant;
+	private final FieldVariant variant;
 	private TargetRef targetRef;
 	private Ascendants ascendants;
 
-	LinkDefinerImpl(ObjectFieldVariant variant, Ascendants ascendants) {
+	LinkDefinerImpl(FieldVariant variant, Ascendants ascendants) {
 		this.variant = variant;
 		this.ascendants = ascendants;
 	}
 
 	@Override
-	public Field<?> getField() {
+	public DeclaredField getField() {
 		return this.variant.getField();
 	}
 
@@ -88,7 +87,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 						linkType.linkStruct(targetType));
 
 				if (!newAncestor.checkDerivedFrom(ancestor)) {
-					this.variant.getObjectField().invalid();
+					getField().invalid();
 				}
 
 				return newAncestor;

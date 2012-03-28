@@ -17,36 +17,42 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.impl.decl;
+package org.o42a.core.member.field.decl;
 
-import org.o42a.core.Container;
-import org.o42a.core.Namespace;
-import org.o42a.core.Scope;
+import org.o42a.core.*;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.FieldVariant;
-import org.o42a.core.object.Obj;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.log.Loggable;
 
 
-final class ObjectFieldVariant extends FieldVariant<Obj> {
+final class FieldVariant implements PlaceInfo {
 
+	private final DeclaredField field;
+	private final FieldDeclaration declaration;
+	private final FieldDefinition definition;
+	private FieldDeclarationStatement statement;
 	private DeclarativeBlock content;
 	private Definer definer;
 	private Ascendants ascendants;
 
-	ObjectFieldVariant(
-			DeclaredObjectField field,
+	FieldVariant(
+			DeclaredField field,
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		super(field, declaration, definition);
+		this.field = field;
+		this.declaration = declaration;
+		this.definition = definition;
 	}
 
 	public final Ascendants getAscendants() {
@@ -71,15 +77,106 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 		this.content = new DeclarativeBlock(
 				container,
 				container,
-				getObjectField().getMemberRegistry());
+				getField().getMemberRegistry());
 		this.definer = this.content.define(new VariantEnv(this));
 
 		return this.content;
 	}
 
 	@Override
+	public final Scope getScope() {
+		return this.declaration.getScope();
+	}
+
+	public final MemberField toMember() {
+		return this.field.toMember();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return this.declaration.getContext();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return this.declaration.getLoggable();
+	}
+
+	@Override
+	public final ScopePlace getPlace() {
+		return this.declaration.getPlace();
+	}
+
+	@Override
+	public final Container getContainer() {
+		return this.declaration.getContainer();
+	}
+
+	public final CompilerLogger getLogger() {
+		return this.field.getLogger();
+	}
+
+	public final DeclaredField getField() {
+		return this.field;
+	}
+
+	public final FieldDeclaration getDeclaration() {
+		return this.declaration;
+	}
+
+	public final FieldDefinition getDefinition() {
+		return this.definition;
+	}
+
+	public final StatementEnv getInitialEnv() {
+		return this.statement.getInitialEnv();
+	}
+
+	@Override
+	public final Distributor distribute() {
+		return this.declaration.distribute();
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return this.declaration.distributeIn(container);
+	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	@Override
+	public String toString() {
+		return "FieldVariant[" + this.field + "]:" + this.definition;
+	}
+
 	protected FieldDefinition reproduceDefinition(Reproducer reproducer) {
 		return new ReproducedObjectDefinition(this, reproducer);
+	}
+
+	final FieldDeclarationStatement getStatement() {
+		return this.statement;
+	}
+
+	final void setStatement(FieldDeclarationStatement statement) {
+		this.statement = statement;
 	}
 
 	Ascendants buildAscendants(
@@ -134,16 +231,12 @@ final class ObjectFieldVariant extends FieldVariant<Obj> {
 		return this.definer;
 	}
 
-	final DeclaredObjectField getObjectField() {
-		return (DeclaredObjectField) getField();
-	}
-
 	private static final class VariantEnv extends StatementEnv {
 
-		private final ObjectFieldVariant variant;
+		private final FieldVariant variant;
 		private ValueStruct<?, ?> expectedValueStruct;
 
-		VariantEnv(ObjectFieldVariant variant) {
+		VariantEnv(FieldVariant variant) {
 			this.variant = variant;
 		}
 
