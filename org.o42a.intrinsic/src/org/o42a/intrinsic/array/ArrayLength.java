@@ -27,7 +27,7 @@ import org.o42a.core.member.MemberOwner;
 @SourcePath(
 		relativeTo = ArrayValueTypeObject.class,
 		value = "length.o42a")
-final class ArrayLength extends AbstractRowLength {
+final class ArrayLength extends AbstractArrayLength {
 
 	ArrayLength(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);

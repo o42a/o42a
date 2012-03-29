@@ -43,7 +43,7 @@ public final class Root$$Sources implements AnnotatedSources {
 				"root.o42a");
 
 		this.sourceTree.add("number.o42a");
-		this.sourceTree.add("abstract_row.o42a");
+		this.sourceTree.add("abstract_array.o42a");
 		this.sourceTree.add("operators.o42a");
 
 		return this.sourceTree;

@@ -37,11 +37,11 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-abstract class AbstractRowLength extends AnnotatedBuiltin {
+abstract class AbstractArrayLength extends AnnotatedBuiltin {
 
 	private Ref array;
 
-	AbstractRowLength(MemberOwner owner, AnnotatedSources sources) {
+	AbstractArrayLength(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
