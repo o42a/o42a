@@ -169,13 +169,15 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 			final DeclarativeSentence prerequisite = getPrerequisite();
 
 			if (prerequisite == null) {
-				return def.toDefinitions();
+				return def.toDefinitions(
+						getBlock().getInitialEnv().getExpectedValueStruct());
 			}
 
 			final CondDef withPrereq = def.addPrerequisite(
 					prerequisite.getFinalEnv().fullLogical(getScope()));
 
-			return withPrereq.toDefinitions();
+			return withPrereq.toDefinitions(
+					getBlock().getInitialEnv().getExpectedValueStruct());
 		}
 
 		for (Declaratives alt : getAlternatives()) {

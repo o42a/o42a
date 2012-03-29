@@ -23,6 +23,8 @@ import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class AnnotatedBuiltin
@@ -40,7 +42,22 @@ public abstract class AnnotatedBuiltin
 
 	@Override
 	protected final Definitions explicitDefinitions() {
-		return new BuiltinValueDef(this).toDefinitions();
+
+		final ValueStruct<?, ?> ancestorValueStruct =
+				type().getAncestor().getValueStruct();
+		final ValueStruct<?, ?> valueStruct;
+
+		if (!ancestorValueStruct.isScoped()) {
+			valueStruct = ancestorValueStruct;
+		} else {
+
+			final PrefixPath prefix =
+					getScope().getEnclosingScopePath().toPrefix(getScope());
+
+			valueStruct = ancestorValueStruct.prefixWith(prefix);
+		}
+
+		return new BuiltinValueDef(this).toDefinitions(valueStruct);
 	}
 
 }

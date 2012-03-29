@@ -27,30 +27,30 @@ Name = "Imperative conditions"
 
 Run tests
 
-True := test(
+True := test (
 
-  Value := void({rt-void}. = Rt-void)
+  Value := void ({Rt-void}. = Rt-void)
   
   Assert [value] "Imperative is not true"
 )
 
-False := test(
+False := test (
 
-  Value := void({rt-false}. = Rt-void)
+  Value := void ({Rt-false}. = Rt-void)
   
   Assert [--value] "Imperative is not false"
 )
 
-Unknown := test(
+Unknown := test (
 
-  Value := void({Rt-false? = Rt-void})
+  Value := void ({Rt-false? = Rt-void})
   
   Assert [-+value] "Imperative is not unknown"
 )
 
-Empty := test(
+Empty := test (
 
-  Value := void({})
+  Value := void ({})
   
   Assert [-+value] "Empty imperative is not unknown"
 )

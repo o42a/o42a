@@ -25,6 +25,7 @@ import static org.o42a.core.value.Value.voidValue;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.common.def.BuiltinValueDef;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -35,6 +36,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
@@ -91,6 +93,11 @@ public final class VoidObject extends BuiltinObject {
 	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this);
+	}
+
+	@Override
+	protected Definitions explicitDefinitions() {
+		return new BuiltinValueDef(this).toDefinitions(ValueStruct.VOID);
 	}
 
 	@Override

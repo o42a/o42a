@@ -322,7 +322,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return self();
 	}
 
-	final void resolveAll(Definitions definitions) {
+	void resolveAll(Definitions definitions) {
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();

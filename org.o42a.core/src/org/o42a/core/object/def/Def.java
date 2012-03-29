@@ -208,8 +208,6 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 
 	public abstract CondDef toCondition();
 
-	public abstract Definitions toDefinitions();
-
 	public final void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();

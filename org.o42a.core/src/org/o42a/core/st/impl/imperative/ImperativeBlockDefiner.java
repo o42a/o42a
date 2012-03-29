@@ -27,6 +27,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.StatementEnv;
@@ -76,7 +77,11 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return env().apply(localDef(getBlock(), scope, this)).toDefinitions();
+
+		final ValueDef localDef = localDef(getBlock(), scope, this);
+
+		return env().apply(localDef).toDefinitions(
+				env().getExpectedValueStruct());
 	}
 
 	@Override

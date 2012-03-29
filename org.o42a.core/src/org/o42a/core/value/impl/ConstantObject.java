@@ -24,8 +24,10 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ConstantObject<T> extends ConstructedObject {
@@ -68,7 +70,22 @@ final class ConstantObject<T> extends ConstructedObject {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return new ConstantValueDef<T>(this).toDefinitions();
+
+		final ValueStruct<?, ?> ancestorValueStruct =
+				type().getAncestor().getValueStruct();
+		final ValueStruct<?, ?> valueStruct;
+
+		if (!ancestorValueStruct.isScoped()) {
+			valueStruct = ancestorValueStruct;
+		} else {
+
+			final PrefixPath prefix =
+					getScope().getEnclosingScopePath().toPrefix(getScope());
+
+			valueStruct = ancestorValueStruct.prefixWith(prefix);
+		}
+
+		return new ConstantValueDef<T>(this).toDefinitions(valueStruct);
 	}
 
 }
