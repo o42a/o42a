@@ -20,14 +20,14 @@
 package org.o42a.parser.grammar.type;
 
 import static org.o42a.parser.Grammar.ref;
-import static org.o42a.parser.grammar.type.ArrayTypeParser.ARRAY_TYPE;
 
 import java.util.ArrayList;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.AscendantNode.Separator;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -105,13 +105,7 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 
 			context.acceptComments(false, separator);
 
-			final AscendantSpecNode spec;
-
-			if (context.next() == '[') {
-				spec = context.parse(ARRAY_TYPE);
-			} else {
-				spec = context.parse(ref());
-			}
+			final RefNode spec = context.parse(ref());
 
 			if (spec == null) {
 				context.getLogger().missingAscendantSpec(context.current());

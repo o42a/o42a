@@ -38,8 +38,7 @@ public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
 		implements TypeNodeVisitor<R, P>,
 				AtomNodeVisitor<R, P>,
-				ClauseKeyNodeVisitor<R, P>,
-				AscendantSpecNodeVisitor<R, P> {
+				ClauseKeyNodeVisitor<R, P> {
 
 	@Override
 	public <S extends SignType> R visitSign(SignNode<S> sign, P p) {

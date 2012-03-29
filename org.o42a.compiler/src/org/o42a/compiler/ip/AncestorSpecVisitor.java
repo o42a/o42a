@@ -20,18 +20,19 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
-import static org.o42a.compiler.ip.ArraySpecVisitor.arrayStructFinder;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
+import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.ValueStructFinder;
 
 
 public final class AncestorSpecVisitor
-		extends AbstractAscendantSpecVisitor<AncestorTypeRef, Distributor> {
+		extends AbstractRefVisitor<AncestorTypeRef, Distributor> {
 
 	public static AncestorTypeRef parseAncestor(
 			Interpreter ip,
@@ -44,14 +45,7 @@ public final class AncestorSpecVisitor
 			return impliedAncestorTypeRef();
 		}
 
-		final ValueStructFinder arrayStructFinder =
-				arrayStructFinder(ip, ascendantsNode, distributor.getLogger());
-
-		return parseAncestor(
-				ip,
-				distributor,
-				ascendantNodes[0],
-				arrayStructFinder);
+		return parseAncestor(ip, distributor, ascendantNodes[0], null);
 	}
 
 	public static AncestorTypeRef parseAncestor(
@@ -85,17 +79,6 @@ public final class AncestorSpecVisitor
 	@Override
 	protected AncestorTypeRef visitRef(RefNode ref, Distributor p) {
 		return ref.accept(this.ancestorVisitor, p);
-	}
-
-	@Override
-	protected AncestorTypeRef visitAscendantSpec(
-			AscendantSpecNode spec,
-			Distributor p) {
-		p.getLogger().error(
-				"invalid_ancestor_spec",
-				spec,
-				"Invalid ancestor specifier");
-		return impliedAncestorTypeRef();
 	}
 
 }
