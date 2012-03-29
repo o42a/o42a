@@ -269,12 +269,7 @@ final class FieldVariant implements PlaceInfo {
 			final ValueStruct<?, ?> ancestorValueStruct =
 					this.variant.getField().toObject().value().getValueStruct();
 
-			if (!ancestorValueStruct.isScoped()) {
-				return this.expectedValueStruct = ancestorValueStruct;
-			}
-
-			return this.expectedValueStruct =
-					ancestorValueStruct.upgradeScope(this.variant.getField());
+			return this.expectedValueStruct = ancestorValueStruct;
 		}
 
 	}

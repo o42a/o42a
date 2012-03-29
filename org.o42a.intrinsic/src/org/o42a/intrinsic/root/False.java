@@ -101,7 +101,9 @@ public final class False extends BuiltinObject {
 
 	@Override
 	protected final Definitions explicitDefinitions() {
-		return new BuiltinValueDef(this).claim().toDefinitions();
+		return new BuiltinValueDef(this)
+				.claim()
+				.toDefinitions(ValueStruct.VOID);
 	}
 
 	@Override

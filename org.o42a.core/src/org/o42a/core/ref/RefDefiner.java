@@ -74,7 +74,7 @@ public class RefDefiner extends Definer {
 
 		final ValueDef def = getValueAdapter().valueDef();
 
-		return env().apply(def).toDefinitions();
+		return env().apply(def).toDefinitions(env().getExpectedValueStruct());
 	}
 
 	@Override

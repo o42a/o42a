@@ -93,7 +93,8 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public Definitions define(Scope scope) {
-		return this.refDefiner.getValueAdapter().condDef().toDefinitions();
+		return this.refDefiner.getValueAdapter().condDef().toDefinitions(
+				env().getExpectedValueStruct());
 	}
 
 	@Override

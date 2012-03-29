@@ -25,16 +25,18 @@ Values := test
 
 Name = "Imperative values"
 
-Value := test(
+Run tests
 
-  Value := integer({= rt-integer '1'}. = rt-integer '2')
+Value := test (
+
+  Value := integer ({= Rt-integer '1'}. = Rt-integer '2')
   
   Assert [value == 1] "Imperative value ignored"
 )
 
-Default value := test(
+Default value := test (
 
-  Value := integer({}. = rt-integer '2')
+  Value := integer ({}. = Rt-integer '2')
   
   Assert [value == 2] "Default value overridden by imperative block"
 )

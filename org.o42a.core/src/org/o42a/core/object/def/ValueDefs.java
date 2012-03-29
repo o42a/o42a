@@ -80,10 +80,6 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			Definitions definitions,
 			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		if (refinements.isEmpty()
-				&& definitions.getValueStruct() == valueStruct) {
-			return definitions;
-		}
 
 		final ValueDefs newClaims = addClaims(refinements);
 		final ValueDefs oldPropositions = definitions.propositions();
@@ -107,10 +103,6 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 			Definitions definitions,
 			ValueStruct<?, ?> valueStruct,
 			ValueDefs refinements) {
-		if (refinements.isEmpty()
-				&& definitions.getValueStruct() == valueStruct) {
-			return definitions;
-		}
 
 		final ValueDefs newPropositions = addPropositions(
 				definitions.claims(),
@@ -194,6 +186,22 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 	final void resolveTargets(TargetResolver wrapper) {
 		for (ValueDef def : get()) {
 			def.resolveTarget(wrapper);
+		}
+	}
+
+	@Override
+	void resolveAll(Definitions definitions) {
+		validate(definitions.getValueStruct());
+		super.resolveAll(definitions);
+	}
+
+	private void validate(ValueStruct<?, ?> valueStruct) {
+		for (ValueDef def : get()) {
+			if (!valueStruct.assertAssignableFrom(def.getValueStruct())) {
+				def.getContext().getLogger().incompatible(
+						def,
+						valueStruct);
+			}
 		}
 	}
 

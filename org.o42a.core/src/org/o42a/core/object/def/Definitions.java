@@ -27,8 +27,6 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
-import java.util.Collection;
-
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
@@ -72,92 +70,6 @@ public class Definitions extends Scoped {
 				conditions,
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
-	}
-
-	public static Definitions definitions(
-			LocationInfo location,
-			Scope scope,
-			Collection<? extends ValueDef> definitions) {
-
-		final int size = definitions.size();
-
-		if (size == 0) {
-			return emptyDefinitions(location, scope);
-		}
-
-		return definitions(
-				location,
-				scope,
-				definitions.toArray(new ValueDef[size]));
-	}
-
-	public static Definitions definitions(
-			LocationInfo location,
-			Scope scope,
-			ValueDef... definitions) {
-		if (definitions.length == 0) {
-			return emptyDefinitions(location, scope);
-		}
-
-		ValueStruct<?, ?> valueStruct = null;
-		int claimLen = 0;
-		int defLen = 0;
-
-		for (ValueDef definition : definitions) {
-			definition.assertScopeIs(scope);
-			if (valueStruct == null) {
-				valueStruct = definition.getValueStruct();
-			} else {
-
-				final ValueStruct<?, ?> struct = definition.getValueStruct();
-
-				if (struct != valueStruct) {
-					scope.getContext().getLogger().incompatible(
-							definition,
-							valueStruct);
-					continue;
-				}
-			}
-			if (definition.getPrerequisite().isFalse()) {
-				continue;// ignore definition with false prerequisite
-			}
-			defLen++;
-			if (definition.isClaim()) {
-				claimLen++;
-			}
-		}
-
-		if (defLen == 0) {
-			return emptyDefinitions(location, scope);
-		}
-
-		final ValueDef[] newClaims = new ValueDef[claimLen];
-		final ValueDef[] newPropositions = new ValueDef[defLen - claimLen];
-		int claimIdx = 0;
-		int propositionIdx = 0;
-
-		for (ValueDef definition : definitions) {
-			if (valueStruct != definition.getValueStruct()) {
-				continue;
-			}
-			if (definition.getPrerequisite().isFalse()) {
-				continue;
-			}
-			if (definition.isClaim()) {
-				newClaims[claimIdx++] = definition;
-			} else {
-				newPropositions[propositionIdx++] = definition;
-			}
-		}
-
-		return new Definitions(
-				location,
-				scope,
-				valueStruct,
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				new ValueDefs(CLAIM, newClaims),
-				new ValueDefs(PROPOSITION, newPropositions));
 	}
 
 	private final ValueStruct<?, ?> valueStruct;
@@ -345,89 +257,33 @@ public class Definitions extends Scoped {
 		return propositions().value(this, resolver);
 	}
 
-	public Definitions refine(Def<?> refinement) {
-		assertSameScope(refinement);
-		if (!refinement.isValue()) {
-
-			final CondDef condition = refinement.toCondition();
-
-			if (condition.hasPrerequisite()) {
-				if (condition.getPrerequisite().isFalse()) {
-					return this;
-				}
-			}
-
-			if (condition.isRequirement()) {
-				return refineRequirements(new CondDefs(REQUIREMENT, condition));
-			}
-			if (requirements().imply(condition)) {
-				return this;
-			}
-
-			return refineConditions(new CondDefs(CONDITION, condition));
-		}
-
-		final ValueDef value = refinement.toValue();
-		final ValueStruct<?, ?> valueStruct = compatibleStruct(value);
-
-		if (valueStruct.isNone()) {
-			return this;
-		}
-		if (value.getPrerequisite().isFalse()) {
-			return this;
-		}
-		if (value.isClaim()) {
-			return refineClaims(valueStruct, new ValueDefs(CLAIM, value));
-		}
-		if (claims().imply(value)) {
-			return this;
-		}
-
-		return refinePropositions(
-				valueStruct,
-				new ValueDefs(PROPOSITION, value));
-	}
-
 	public Definitions refine(Definitions refinements) {
 		assertSameScope(refinements);
 		if (refinements.isEmpty()) {
 			return this;
 		}
-
-		final ValueStruct<?, ?> valueStruct = compatibleStruct(refinements);
-
-		if (valueStruct != null && valueStruct.isNone()) {
-			return this;
+		if (isEmpty()) {
+			return refinements;
 		}
+
+		final ValueStruct<?, ?> valueStruct =
+				getValueStruct() != null
+				? getValueStruct() : refinements.getValueStruct();
 
 		return refineRequirements(refinements.requirements())
 				.refineConditions(refinements.conditions())
 				.refineClaims(valueStruct, refinements.claims())
-				.refinePropositions(valueStruct, refinements.propositions());
+				.refinePropositions(
+						valueStruct,
+						refinements.propositions());
 	}
 
 	public Definitions override(Definitions overriders) {
 		if (overriders.isEmpty()) {
 			return this;
 		}
-
-		final ValueStruct<?, ?> valueStruct;
-
-		if (hasValues()
-				&& getValueStruct().isVoid()
-				&& overriders.hasValues()) {
-			// void can be overridden by non-void
-			valueStruct = overriders.getValueStruct();
-		} else if (overriders.hasValues()
-				&& overriders.getValueStruct().isVoid()
-				&& hasValues()) {
-			// non-void can be overridden by void
-			valueStruct = getValueStruct();
-		} else {
-			valueStruct = compatibleStruct(overriders);
-			if (valueStruct != null && valueStruct.isNone()) {
-				return this;
-			}
+		if (isEmpty()) {
+			return overriders;
 		}
 
 		if (overriders.propositions().isEmpty()) {
@@ -435,20 +291,26 @@ public class Definitions extends Scoped {
 			if (overriders.conditions().isEmpty()) {
 				// No condition specified.
 				return refineRequirements(overriders.requirements())
-						.refineClaims(valueStruct, overriders.claims());
+						.refineClaims(
+								overriders.getValueStruct(),
+								overriders.claims());
 			}
 			return removeConditions()
 					.refineRequirements(overriders.requirements())
 					.refineConditions(overriders.conditions())
-					.refineClaims(valueStruct, overriders.claims());
+					.refineClaims(
+							overriders.getValueStruct(),
+							overriders.claims());
 		}
 
 		// Inherit claims, but not propositions.
 		return removePropositions()
 				.refineRequirements(overriders.requirements())
 				.refineConditions(overriders.conditions())
-				.refineClaims(valueStruct, overriders.claims())
-				.refinePropositions(valueStruct, overriders.propositions());
+				.refineClaims(overriders.getValueStruct(), overriders.claims())
+				.refinePropositions(
+						overriders.getValueStruct(),
+						overriders.propositions());
 	}
 
 	public Definitions claim() {
@@ -772,34 +634,6 @@ public class Definitions extends Scoped {
 
 	private final ValueStruct<?, ?> valueStruct() {
 		return this.valueStruct != null ? this.valueStruct : ValueStruct.VOID;
-	}
-
-	private ValueStruct<?, ?> compatibleStruct(ValueDef refinement) {
-		return compatibleStruct(refinement, refinement.getValueStruct());
-	}
-
-	private ValueStruct<?, ?> compatibleStruct(Definitions refinements) {
-		return compatibleStruct(refinements, refinements.getValueStruct());
-	}
-
-	private ValueStruct<?, ?> compatibleStruct(
-			LocationInfo refinement,
-			ValueStruct<?, ?> valueStruct) {
-		if (valueStruct == null) {
-			return getValueStruct();
-		}
-		if (getValueStruct() == null) {
-			return valueStruct;
-		}
-		if (getValueStruct().assignableFrom(valueStruct)) {
-			return getValueStruct();
-		}
-
-		refinement.getContext().getLogger().incompatible(
-				refinement,
-				getValueStruct());
-
-		return ValueStruct.NONE;
 	}
 
 	private final Definitions refineRequirements(CondDefs refinements) {

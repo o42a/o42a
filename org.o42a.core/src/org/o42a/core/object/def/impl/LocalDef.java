@@ -93,7 +93,8 @@ public class LocalDef extends ValueDef {
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
 
-		final Scope scope = this.localPrefix.rescope(getScope());
+		final Scope scope =
+				this.localPrefix.rescope(getScopeUpgrade().rescope(getScope()));
 
 		assert scope.toLocal() != null :
 			"Not a local scope: " + scope;
@@ -115,7 +116,8 @@ public class LocalDef extends ValueDef {
 			return;
 		}
 
-		final Scope localScope = this.localPrefix.rescope(getScope());
+		final Scope localScope =
+				this.localPrefix.rescope(getScopeUpgrade().rescope(getScope()));
 		final Normalizer imperativeNormalizer =
 				normalizer.forScope(localScope);
 

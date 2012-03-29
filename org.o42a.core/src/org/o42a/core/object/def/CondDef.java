@@ -29,6 +29,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class CondDef extends Def<CondDef> {
@@ -120,13 +121,12 @@ public abstract class CondDef extends Def<CondDef> {
 		return getLogical().logicalValue(rescoped).toCondition();
 	}
 
-	@Override
-	public Definitions toDefinitions() {
+	public Definitions toDefinitions(ValueStruct<?, ?> valueStruct) {
 		if (isRequirement()) {
 			return new Definitions(
 					this,
 					getScope(),
-					null,
+					valueStruct,
 					new CondDefs(DefKind.CLAIM, this),
 					NO_CONDITIONS,
 					NO_CLAIMS,

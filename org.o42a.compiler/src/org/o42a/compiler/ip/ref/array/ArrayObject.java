@@ -33,6 +33,7 @@ import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ConstructedObject;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
@@ -109,8 +110,14 @@ final class ArrayObject extends ConstructedObject {
 		final Array array = getArray();
 		final ValueDef def =
 				array.getValueStruct().constantDef(this, this, array);
+		final PrefixPath prefix =
+				getScope().getEnclosingScopePath().toPrefix(getScope());
 
-		return def.toDefinitions();
+		return def.toDefinitions(
+				type()
+				.getAncestor()
+				.getValueStruct()
+				.prefixWith(prefix));
 	}
 
 	private Array createArray() {

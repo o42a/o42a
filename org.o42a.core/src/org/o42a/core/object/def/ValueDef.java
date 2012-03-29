@@ -164,8 +164,9 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return toCondition().toValue();
 	}
 
-	@Override
-	public final Definitions toDefinitions() {
+	public final Definitions toDefinitions(ValueStruct<?, ?> valueStruct) {
+		assert valueStruct != null :
+			"Value structure expected";
 
 		final CondDefs conditions = new CondDefs(
 				DefKind.CONDITION,
@@ -175,7 +176,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 			return new Definitions(
 					this,
 					getScope(),
-					getValueStruct(),
+					valueStruct,
 					NO_REQUIREMENTS,
 					conditions,
 					new ValueDefs(DefKind.CLAIM, this),
@@ -185,7 +186,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return new Definitions(
 				this,
 				getScope(),
-				getValueStruct(),
+				valueStruct,
 				NO_REQUIREMENTS,
 				conditions,
 				NO_CLAIMS,
