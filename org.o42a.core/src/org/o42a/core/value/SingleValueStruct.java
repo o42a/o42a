@@ -22,6 +22,7 @@ package org.o42a.core.value;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Resolver;
@@ -74,6 +75,11 @@ public abstract class SingleValueStruct<T>
 
 	@Override
 	public final LinkValueStruct toLinkStruct() {
+		return null;
+	}
+
+	@Override
+	public final ArrayValueStruct toArrayStruct() {
 		return null;
 	}
 

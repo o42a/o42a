@@ -72,11 +72,11 @@ public enum ClauseId {
 
 	},
 
-	CONSTANT_ARRAY(true) {
+	ROW(true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "constant_array");
+			return absolutePath(context, "clauses", "row");
 		}
 
 		@Override
@@ -89,11 +89,11 @@ public enum ClauseId {
 
 	},
 
-	VARIABLE_ARRAY(true) {
+	ARRAY(true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "variable_array");
+			return absolutePath(context, "clauses", "array");
 		}
 
 		@Override

@@ -17,24 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.array.impl;
+package org.o42a.core.object.array;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.impl.ArrayValueTypeIR;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
 
 
 public class ArrayValueType extends ValueType<ArrayValueStruct> {
 
+	public static final ArrayValueType ROW = new ArrayValueType(true);
+	public static final ArrayValueType ARRAY = new ArrayValueType(false);
+
 	private final boolean constant;
 	private ArrayValueTypeIR ir;
 
-	public ArrayValueType(boolean constant) {
-		super(constant ? "const_array" : "array");
+	private ArrayValueType(boolean constant) {
+		super(constant ? "row" : "array");
 		this.constant = constant;
 	}
 
@@ -47,12 +51,16 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 		return this.constant;
 	}
 
+	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
+		return new ArrayValueStruct(this, itemTypeRef);
+	}
+
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
 		if (!isConstant()) {
-			return intrinsics.getVariableArray();
+			return intrinsics.getArray();
 		}
-		return intrinsics.getConstantArray();
+		return intrinsics.getRow();
 	}
 
 	@Override
@@ -66,6 +74,11 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 	@Override
 	public final LinkValueType toLinkType() {
 		return null;
+	}
+
+	@Override
+	public final ArrayValueType toArrayType() {
+		return this;
 	}
 
 	public final ArrayValueTypeIR ir(Generator generator) {

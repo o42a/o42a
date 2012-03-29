@@ -177,13 +177,11 @@ final class ArrayObject extends ConstructedObject {
 		if (!this.typeByItems) {
 			finalValueStruct = valueStruct;
 		} else if (arrayItemType != null) {
-			finalValueStruct = new ArrayValueStruct(
-					arrayItemType,
-					this.constructor.isConstant());
+			finalValueStruct =
+					this.constructor.getValueType().arrayStruct(arrayItemType);
 		} else {
-			finalValueStruct = new ArrayValueStruct(
-					ValueType.VOID.typeRef(this, getScope()),
-					this.constructor.isConstant());
+			finalValueStruct = this.constructor.getValueType().arrayStruct(
+					ValueType.VOID.typeRef(this, getScope()));
 		}
 
 		return new Array(this, distribute(), finalValueStruct, items);
@@ -201,11 +199,10 @@ final class ArrayObject extends ConstructedObject {
 		return new Array(
 				array,
 				this.reproducer.distribute(),
-				new ArrayValueStruct(
+				array.getValueType().arrayStruct(
 						errorRef(
 								array.getValueStruct().getItemTypeRef(),
-								distribute()).toTypeRef(),
-						array.isConstant()),
+								distribute()).toTypeRef()),
 				new ArrayItem[0]);
 	}
 

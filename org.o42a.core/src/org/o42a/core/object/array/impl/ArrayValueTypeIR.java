@@ -22,6 +22,7 @@ package org.o42a.core.object.array.impl;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.value.array.ArrayIRGenerator;
+import org.o42a.core.object.array.ArrayValueType;
 
 
 public class ArrayValueTypeIR implements ArrayIRGenerator {
@@ -30,7 +31,7 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 	private final ArrayValueType valueType;
 	private int idSeq;
 
-	ArrayValueTypeIR(Generator generator, ArrayValueType valueType) {
+	public ArrayValueTypeIR(Generator generator, ArrayValueType valueType) {
 		this.generator = generator;
 		this.valueType = valueType;
 	}
@@ -50,9 +51,9 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 		final String prefix;
 
 		if (getValueType().isConstant()) {
-			prefix = "CARRAY";
+			prefix = "ROW";
 		} else {
-			prefix = "VARRAY";
+			prefix = "ARRAY";
 		}
 
 		return getGenerator().id("DATA").sub(prefix).anonymous(++this.idSeq);

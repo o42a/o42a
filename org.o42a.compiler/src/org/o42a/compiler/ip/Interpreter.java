@@ -45,6 +45,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
@@ -258,7 +259,7 @@ public enum Interpreter {
 	public ArrayValueStruct arrayValueStruct(
 			ArrayTypeNode node,
 			Distributor p,
-			boolean constant) {
+			ArrayValueType arrayType) {
 
 		final TypeNode itemTypeNode = node.getItemType();
 
@@ -268,7 +269,11 @@ public enum Interpreter {
 
 		final TypeRef itemTypeRef = itemTypeNode.accept(typeVisitor(), p);
 
-		return new ArrayValueStruct(itemTypeRef, constant);
+		if (itemTypeRef == null) {
+			return null;
+		}
+
+		return arrayType.arrayStruct(itemTypeRef);
 	}
 
 	private static final Ref integer(Distributor p, long value, Node node) {
@@ -345,13 +350,9 @@ public enum Interpreter {
 			}
 
 			final ValueType<?> valueType = defaultStruct.getValueType();
-			final boolean constant;
+			final ArrayValueType arrayType = valueType.toArrayType();
 
-			if (valueType == ValueType.VAR_ARRAY) {
-				constant = false;
-			} else if (valueType == ValueType.CONST_ARRAY) {
-				constant = true;
-			} else {
+			if (arrayType == null) {
 				ref.getLogger().error(
 						"unexpected_array_type",
 						this.node,
@@ -361,7 +362,7 @@ public enum Interpreter {
 			}
 
 			final ArrayValueStruct arrayValueStruct =
-					arrayValueStruct(this.node, ref.distribute(), constant);
+					arrayValueStruct(this.node, ref.distribute(), arrayType);
 
 			if (arrayValueStruct == null) {
 				this.error = true;

@@ -29,6 +29,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
@@ -39,7 +40,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
-import org.o42a.core.value.ValueType;
 
 
 public class ArrayConstructor extends ObjectConstructor {
@@ -48,7 +48,8 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final BracketsNode node;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
-	private ArrayValueStruct arrayValueStruct;
+	private ArrayValueType arrayType;
+	private ArrayValueStruct arrayStruct;
 	private ValueStructFinder valueStructFinder;
 
 	public ArrayConstructor(
@@ -81,15 +82,21 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.node.getInterface();
 	}
 
-	public final boolean isConstant() {
+	public final ArrayValueType getValueType() {
+		if (this.arrayType != null) {
+			return this.arrayType;
+		}
 
 		final InterfaceNode interfaceNode = getInterfaceNode();
 
 		if (interfaceNode == null) {
-			return true;
+			return this.arrayType = ArrayValueType.ROW;
+		}
+		if (interfaceNode.getKind().getType() == DefinitionKind.LINK) {
+			return this.arrayType = ArrayValueType.ROW;
 		}
 
-		return interfaceNode.getKind().getType() == DefinitionKind.LINK;
+		return this.arrayType = ArrayValueType.ARRAY;
 	}
 
 	public final Interpreter ip() {
@@ -98,13 +105,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		if (!isConstant()) {
-			return ValueType.VAR_ARRAY.typeRef(
-					location,
-					getScope(),
-					valueStructFinder());
-		}
-		return ValueType.CONST_ARRAY.typeRef(
+		return getValueType().typeRef(
 				location,
 				getScope(),
 				valueStructFinder());
@@ -141,7 +142,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private boolean typeByItems() {
 		valueStructFinder();
-		if (this.arrayValueStruct != null) {
+		if (this.arrayStruct != null) {
 			return false;
 		}
 		return this.node.getArguments().length != 0;
@@ -152,15 +153,15 @@ public class ArrayConstructor extends ObjectConstructor {
 			return this.valueStructFinder;
 		}
 		if (this.reproducedFrom != null) {
-			if (this.reproducedFrom.arrayValueStruct == null) {
+			if (this.reproducedFrom.arrayStruct == null) {
 				return this.valueStructFinder =
 						this.reproducedFrom.valueStructFinder;
 			}
-			this.arrayValueStruct =
-					this.reproducedFrom.arrayValueStruct.reproduce(
+			this.arrayStruct =
+					this.reproducedFrom.arrayStruct.reproduce(
 							this.reproducer);
-			if (this.arrayValueStruct != null) {
-				return this.valueStructFinder = this.arrayValueStruct;
+			if (this.arrayStruct != null) {
+				return this.valueStructFinder = this.arrayStruct;
 			}
 			return this.valueStructFinder =
 					this.reproducedFrom.valueStructFinder;
@@ -185,10 +186,8 @@ public class ArrayConstructor extends ObjectConstructor {
 			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
 		}
 
-		return this.valueStructFinder = this.arrayValueStruct =
-				new ArrayValueStruct(
-						itemTypeRef,
-						iface.getKind().getType() == DefinitionKind.LINK);
+		return this.valueStructFinder = this.arrayStruct =
+				getValueType().arrayStruct(itemTypeRef);
 	}
 
 	private static final class ArrayStructByItems implements ValueStructFinder {

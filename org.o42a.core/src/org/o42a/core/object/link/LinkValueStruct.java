@@ -24,6 +24,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.impl.LinkConstantValueDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
@@ -184,6 +185,11 @@ public final class LinkValueStruct
 	@Override
 	public final LinkValueStruct toLinkStruct() {
 		return this;
+	}
+
+	@Override
+	public final ArrayValueStruct toArrayStruct() {
+		return null;
 	}
 
 	@Override

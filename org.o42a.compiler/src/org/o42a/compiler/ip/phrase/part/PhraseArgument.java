@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.phrase.part.NextClause.terminatePhrase;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
@@ -35,7 +34,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueType;
 
 
 public class PhraseArgument extends PhraseContinuation {
@@ -135,15 +133,7 @@ public class PhraseArgument extends PhraseContinuation {
 	}
 
 	private boolean isArray(TypeRef typeRef) {
-
-		final ValueType<?> valueType =
-				typeRef.typeObject(dummyUser()).value().getValueType();
-
-		if (valueType == ValueType.VAR_ARRAY) {
-			return true;
-		}
-
-		return valueType == ValueType.CONST_ARRAY;
+		return typeRef.getValueType().isArray();
 	}
 
 	private final class GetArrayItem implements PhraseTerminator {

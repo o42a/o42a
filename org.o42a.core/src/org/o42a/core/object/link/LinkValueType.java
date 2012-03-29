@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.link.impl.LinkValueStructIR;
 import org.o42a.core.object.link.impl.VariableValueStructIR;
 import org.o42a.core.ref.path.Path;
@@ -89,6 +90,11 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 	@Override
 	public final LinkValueType toLinkType() {
 		return this;
+	}
+
+	@Override
+	public final ArrayValueType toArrayType() {
+		return null;
 	}
 
 	abstract LinkValueStructIR structIR(

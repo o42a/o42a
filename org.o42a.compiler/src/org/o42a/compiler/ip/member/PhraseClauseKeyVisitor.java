@@ -87,7 +87,7 @@ final class PhraseClauseKeyVisitor
 				p,
 				extractName(p.getContext(), brackets),
 				iface.getKind().getType() == DefinitionKind.LINK
-				? ClauseId.CONSTANT_ARRAY : ClauseId.VARIABLE_ARRAY);
+				? ClauseId.ROW : ClauseId.ARRAY);
 	}
 
 	@Override

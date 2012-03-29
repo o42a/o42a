@@ -43,7 +43,7 @@ public final class Root$$Sources implements AnnotatedSources {
 				"root.o42a");
 
 		this.sourceTree.add("number.o42a");
-		this.sourceTree.add("array.o42a");
+		this.sourceTree.add("abstract_row.o42a");
 		this.sourceTree.add("operators.o42a");
 
 		return this.sourceTree;
@@ -52,9 +52,9 @@ public final class Root$$Sources implements AnnotatedSources {
 	@Override
 	public Field[] fields(MemberOwner owner) {
 		return new Field[] {
-			new org.o42a.intrinsic.array.ConstantArrayValueTypeObject(
+			new org.o42a.intrinsic.array.ArrayValueTypeObject(
 					owner,
-					new org.o42a.intrinsic.array.ConstantArrayValueTypeObject$$Sources(this))
+					new org.o42a.intrinsic.array.ArrayValueTypeObject$$Sources(this))
 			.getScope().toField(),
 			new org.o42a.intrinsic.root.DirectiveValueTypeObject(
 					owner,
@@ -80,6 +80,10 @@ public final class Root$$Sources implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.link.LinkValueTypeObject$$Sources(this))
 			.getScope().toField(),
+			new org.o42a.intrinsic.array.RowValueTypeObject(
+					owner,
+					new org.o42a.intrinsic.array.RowValueTypeObject$$Sources(this))
+			.getScope().toField(),
 			new org.o42a.intrinsic.string.StringValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.string.StringValueTypeObject$$Sources(this))
@@ -99,10 +103,6 @@ public final class Root$$Sources implements AnnotatedSources {
 			new org.o42a.intrinsic.link.VariableValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.link.VariableValueTypeObject$$Sources(this))
-			.getScope().toField(),
-			new org.o42a.intrinsic.array.VariableArrayValueTypeObject(
-					owner,
-					new org.o42a.intrinsic.array.VariableArrayValueTypeObject$$Sources(this))
 			.getScope().toField(),
 		};
 	}

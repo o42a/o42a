@@ -22,6 +22,7 @@ package org.o42a.core.value;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueType;
@@ -98,6 +99,11 @@ public abstract class SingleValueType<T>
 
 	@Override
 	public final LinkValueType toLinkType() {
+		return null;
+	}
+
+	@Override
+	public final ArrayValueType toArrayType() {
 		return null;
 	}
 

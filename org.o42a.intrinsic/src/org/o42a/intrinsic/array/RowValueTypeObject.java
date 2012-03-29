@@ -22,15 +22,17 @@ package org.o42a.intrinsic.array;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.intrinsic.root.Root;
 
 
-@SourcePath(
-		relativeTo = ConstantArrayValueTypeObject.class,
-		value = "length.o42a")
-final class ConstantArrayLength extends ArrayLength {
+@SourcePath(relativeTo = Root.class, value = "row.o42a")
+public class RowValueTypeObject extends AbstractRowValueTypeObject {
 
-	ConstantArrayLength(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources);
+	public RowValueTypeObject(
+			MemberOwner owner,
+			AnnotatedSources sources) {
+		super(owner, sources, ArrayValueType.ROW);
 	}
 
 }

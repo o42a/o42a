@@ -50,9 +50,9 @@ public abstract class Intrinsics {
 
 	public abstract Obj getVariable();
 
-	public abstract Obj getVariableArray();
+	public abstract Obj getArray();
 
-	public abstract Obj getConstantArray();
+	public abstract Obj getRow();
 
 	public abstract Module getModule(String moduleId);
 

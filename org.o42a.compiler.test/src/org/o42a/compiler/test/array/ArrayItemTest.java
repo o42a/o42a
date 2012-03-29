@@ -30,7 +30,7 @@ import org.o42a.core.value.ValueType;
 public class ArrayItemTest extends CompilerTestCase {
 
 	@Test
-	public void constantArrayItem() {
+	public void rowItem() {
 		compile(
 				"Array := [`1, 2, 3]",
 				"Item := array[1]");

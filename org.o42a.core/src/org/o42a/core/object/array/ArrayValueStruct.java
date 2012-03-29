@@ -26,7 +26,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.*;
+import org.o42a.core.object.array.impl.ArrayConstantValueDef;
+import org.o42a.core.object.array.impl.ArrayValueAdapter;
+import org.o42a.core.object.array.impl.ArrayValueStructIR;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Ref;
@@ -45,15 +47,20 @@ public final class ArrayValueStruct
 	private final TypeRef itemTypeRef;
 	private ArrayValueStruct constCounterpart;
 
-	public ArrayValueStruct(TypeRef itemTypeRef, boolean constant) {
-		super(
-				constant ? ValueType.CONST_ARRAY : ValueType.VAR_ARRAY,
-				Array.class);
+	ArrayValueStruct(ArrayValueType valueType, TypeRef itemTypeRef) {
+		super(valueType, Array.class);
+		assert itemTypeRef != null :
+			"Array item type not specified";
 		this.itemTypeRef = itemTypeRef;
 	}
 
 	public final boolean isConstant() {
 		return arrayValueType().isConstant();
+	}
+
+	@Override
+	public final ArrayValueType getValueType() {
+		return (ArrayValueType) super.getValueType();
 	}
 
 	public ArrayValueStruct setConstant(boolean constant) {
@@ -63,8 +70,9 @@ public final class ArrayValueStruct
 		if (this.constCounterpart != null) {
 			return this.constCounterpart;
 		}
-		return this.constCounterpart =
-				new ArrayValueStruct(this.itemTypeRef, constant);
+		return this.constCounterpart = new ArrayValueStruct(
+				constant ? ArrayValueType.ROW : ArrayValueType.ARRAY,
+				this.itemTypeRef);
 	}
 
 	public final TypeRef getItemTypeRef() {
@@ -112,14 +120,11 @@ public final class ArrayValueStruct
 	@Override
 	public boolean convertibleFrom(ValueStruct<?, ?> other) {
 
-		final ValueType<?> valueType = other.getValueType();
+		final ArrayValueStruct otherArrayStruct = other.toArrayStruct();
 
-		if (valueType != ValueType.VAR_ARRAY
-				&& valueType != ValueType.CONST_ARRAY) {
+		if (otherArrayStruct == null) {
 			return false;
 		}
-
-		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
 
 		return otherArrayStruct.getItemTypeRef().derivedFrom(getItemTypeRef());
 	}
@@ -147,13 +152,18 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	public final ArrayValueStruct toArrayStruct() {
+		return this;
+	}
+
+	@Override
 	public ArrayValueStruct prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(toScoped())) {
 			return this;
 		}
 		return new ArrayValueStruct(
-				getItemTypeRef().prefixWith(prefix),
-				isConstant());
+				getValueType(),
+				getItemTypeRef().prefixWith(prefix));
 	}
 
 	@Override
@@ -173,7 +183,7 @@ public final class ArrayValueStruct
 			return null;
 		}
 
-		return new ArrayValueStruct(itemTypeRef, isConstant());
+		return new ArrayValueStruct(getValueType(), itemTypeRef);
 	}
 
 	@Override
@@ -187,9 +197,9 @@ public final class ArrayValueStruct
 		final StringBuilder out = new StringBuilder();
 
 		if (isConstant()) {
-			out.append("Constant array[");
+			out.append("Row[");
 		} else {
-			out.append("Variable array[");
+			out.append("Array[");
 		}
 
 		out.append(this.itemTypeRef).append(']');
@@ -216,7 +226,7 @@ public final class ArrayValueStruct
 			return this;
 		}
 
-		return new ArrayValueStruct(newItemTypeRef, isConstant());
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override
@@ -278,7 +288,7 @@ public final class ArrayValueStruct
 	}
 
 	private final ArrayValueType arrayValueType() {
-		return (ArrayValueType) getValueType();
+		return getValueType();
 	}
 
 }
