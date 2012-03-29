@@ -28,7 +28,7 @@ import org.o42a.core.source.Module;
 
 public abstract class AnnotatedModule extends Module {
 
-	public static final String SOURCES_DESCRIPTOR_SUFFIX = "$$Sources";
+	public static final String SOURCES_DESCRIPTOR_SUFFIX = "__SRC";
 
 	public static AnnotatedSources moduleSources(Class<?> moduleClass) {
 		try {

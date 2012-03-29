@@ -293,10 +293,10 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 		final String localName = localDescriptorName(sourceName);
 
 		if (!isImplicit()) {
-			return getType().getSimpleName() + "$$" + localName;
+			return getType().getSimpleName() + "__" + localName;
 		}
 
-		return getParent().getDescriptorName() + "$$" + localName;
+		return getParent().getDescriptorName() + "__" + localName;
 	}
 
 	private String localDescriptorName(TypeSourceName sourceName) {
