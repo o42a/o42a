@@ -23,16 +23,17 @@ import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
+import org.o42a.ast.ref.RefNode;
 
 
 public class AscendantNode extends AbstractNode {
 
 	private final SignNode<Separator> separator;
-	private final AscendantSpecNode spec;
+	private final RefNode spec;
 
 	public AscendantNode(
 			SignNode<Separator> separator,
-			AscendantSpecNode spec) {
+			RefNode spec) {
 		super(separator, spec);
 		this.separator = separator;
 		this.spec = spec;
@@ -42,7 +43,7 @@ public class AscendantNode extends AbstractNode {
 		return this.separator;
 	}
 
-	public final AscendantSpecNode getSpec() {
+	public final RefNode getSpec() {
 		return this.spec;
 	}
 

@@ -22,7 +22,6 @@ package org.o42a.ast.ref;
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.AbstractExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
-import org.o42a.ast.type.AscendantSpecNodeVisitor;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
@@ -46,11 +45,6 @@ public abstract class AbstractRefNode
 
 	@Override
 	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
-	}
-
-	@Override
-	public final <R, P> R accept(AscendantSpecNodeVisitor<R, P> visitor, P p) {
 		return accept((RefNodeVisitor<R, P>) visitor, p);
 	}
 

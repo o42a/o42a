@@ -22,8 +22,10 @@ package org.o42a.compiler.ip;
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 
+import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
@@ -31,7 +33,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 
 
 public class SampleSpecVisitor
-		extends AbstractAscendantSpecVisitor<StaticTypeRef, Distributor> {
+		extends AbstractRefVisitor<StaticTypeRef, Distributor> {
 
 	private final Interpreter ip;
 
@@ -57,7 +59,7 @@ public class SampleSpecVisitor
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {
 
-			final AscendantSpecNode specNode = ascendantNodes[i].getSpec();
+			final RefNode specNode = ascendantNodes[i].getSpec();
 
 			if (specNode != null) {
 
@@ -87,13 +89,6 @@ public class SampleSpecVisitor
 		}
 
 		return sampleRef.toStaticTypeRef();
-	}
-
-	@Override
-	protected StaticTypeRef visitAscendantSpec(
-			AscendantSpecNode spec,
-			Distributor p) {
-		return null;
 	}
 
 }

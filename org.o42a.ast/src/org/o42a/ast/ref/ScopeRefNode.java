@@ -25,7 +25,6 @@ import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
-import org.o42a.ast.type.AscendantSpecNodeVisitor;
 import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.util.io.SourcePosition;
 
@@ -68,11 +67,6 @@ public class ScopeRefNode extends SignNode<ScopeType>
 	@Override
 	public <R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitScopeRef(this, p);
-	}
-
-	@Override
-	public final <R, P> R accept(AscendantSpecNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
 	}
 
 }

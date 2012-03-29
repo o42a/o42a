@@ -27,6 +27,7 @@ import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
@@ -187,7 +188,7 @@ public final class PhraseInterpreter {
 
 		for (int i = 1; i < ascendantNodes.length; ++i) {
 
-			final AscendantSpecNode specNode = ascendantNodes[i].getSpec();
+			final RefNode specNode = ascendantNodes[i].getSpec();
 
 			if (specNode != null) {
 

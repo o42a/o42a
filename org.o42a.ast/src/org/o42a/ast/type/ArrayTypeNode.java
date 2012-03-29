@@ -26,9 +26,7 @@ import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.expression.BracketsNode.Bracket;
 
 
-public class ArrayTypeNode
-		extends AbstractNode
-		implements TypeNode, AscendantSpecNode {
+public class ArrayTypeNode extends AbstractNode implements TypeNode {
 
 	private final TypeNode ancestor;
 	private final SignNode<BracketsNode.Bracket> opening;
@@ -67,11 +65,6 @@ public class ArrayTypeNode
 
 	@Override
 	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitArrayType(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(AscendantSpecNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitArrayType(this, p);
 	}
 
