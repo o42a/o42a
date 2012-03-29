@@ -50,7 +50,7 @@
 		<globmapper from="*" to="*/bin" handledirsep="true"/>
 	</pathconvert>
 
-	<import file="../build/common.build.xml" />
+	<import file="../build/common.build.xml"/>
 
 	<pathconvert property="project.jars" pathsep=" ">
 		<path>
@@ -89,7 +89,6 @@
 				id="package.resources" 
 				dir="."
 				includes="${package.includes}"/>
-			<filelist dir="../target" files="${project.jars}"/>
 			<manifest>
 				<attribute name="Class-Path" value="${project.jars}"/>
 				<attribute name="Main-Class" value="org.o42a.cl.CL"/>
