@@ -198,6 +198,28 @@ public final class ArrayValueStruct
 	}
 
 	@Override
+	protected ValueStruct<ArrayValueStruct, Array> applyParameters(
+			TypeParameters parameters) {
+		if (parameters.isMutable()) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newItemTypeRef = parameters.getTypeRef();
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+
+		if (!newItemTypeRef.checkDerivedFrom(oldItemTypeRef)) {
+			return this;
+		}
+
+		return new ArrayValueStruct(newItemTypeRef, isConstant());
+	}
+
+	@Override
 	protected ValueKnowledge valueKnowledge(Array value) {
 		return value.getValueKnowledge();
 	}
