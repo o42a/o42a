@@ -40,7 +40,7 @@ public class DefByArrayTest extends CompilerTestCase {
 	public void buildConstantArray() {
 		compile(
 				"A := [`\"a\", \"b\", \"c\"]",
-				"B := constant array & [string](",
+				"B := constant array (`string) (",
 				"  = A",
 				")");
 
@@ -73,7 +73,7 @@ public class DefByArrayTest extends CompilerTestCase {
 	public void buildVariableArray() {
 		compile(
 				"A := [`\"a\", \"b\", \"c\"]",
-				"B := variable array & [string](",
+				"B := variable array (`string) (",
 				"  = A",
 				")");
 
