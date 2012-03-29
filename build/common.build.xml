@@ -52,7 +52,7 @@
 		</path>
 		<regexpmapper
 			from="${root.dir}/(.*)$$"
-			to="../\1/bin" handledirsep="true"/>
+			to="${root.dir}/\1/bin" handledirsep="true"/>
 	</pathconvert>
 
 	<property 
@@ -81,6 +81,7 @@
 			implicit="true"
 			description="Nested elements of javac task"/>
 		<sequential>
+			<echo message="${project.classpath}"/>
 			<javac
 				srcdir="@{srcdir}" 
 				destdir="@{destdir}"

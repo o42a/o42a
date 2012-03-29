@@ -28,7 +28,7 @@
 
 	<property
 		name="compile.deps"
-		value="org.o42a.util,org.o42a.analysis,org.o42a.ast,org.o42a.codegen,org.o42a.core"/>
+		value="org.o42a.core,org.o42a.util,org.o42a.analysis,org.o42a.ast,org.o42a.codegen"/>
 
 	<import file="../build/common.build.xml"/>
 

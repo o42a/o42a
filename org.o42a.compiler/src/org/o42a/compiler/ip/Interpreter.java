@@ -253,7 +253,7 @@ public enum Interpreter {
 	}
 
 	public ValueStructFinder arrayValueStruct(ArrayTypeNode node) {
-		return new ArrayValueStructFinder(node);
+		return new ArrayValueStructFinder(this, node);
 	}
 
 	public ArrayValueStruct arrayValueStruct(
@@ -302,86 +302,6 @@ public enum Interpreter {
 				}
 			}
 		}
-	}
-
-	private static final class ContentBuilder extends BlockBuilder {
-
-		private final StatementVisitor statementVisitor;
-		private final BlockNode<?> block;
-
-		ContentBuilder(StatementVisitor statementVisitor, BlockNode<?> block) {
-			super(statementVisitor.getContext(), block);
-			this.statementVisitor = statementVisitor;
-			this.block = block;
-		}
-
-		@Override
-		public void buildBlock(Block<?> block) {
-			addContent(this.statementVisitor, block, this.block);
-		}
-
-		@Override
-		public String toString() {
-
-			final StringBuilder out = new StringBuilder();
-
-			this.block.printContent(out);
-
-			return out.toString();
-		}
-
-	}
-
-	private final class ArrayValueStructFinder implements ValueStructFinder {
-
-		private final ArrayTypeNode node;
-		private boolean error;
-
-		ArrayValueStructFinder(ArrayTypeNode node) {
-			this.node = node;
-		}
-
-		@Override
-		public ValueStruct<?, ?> valueStructBy(
-				Ref ref,
-				ValueStruct<?, ?> defaultStruct) {
-			if (this.error) {
-				return defaultStruct;
-			}
-
-			final ValueType<?> valueType = defaultStruct.getValueType();
-			final ArrayValueType arrayType = valueType.toArrayType();
-
-			if (arrayType == null) {
-				ref.getLogger().error(
-						"unexpected_array_type",
-						this.node,
-						"Array type can not be specified here");
-				this.error = true;
-				return defaultStruct;
-			}
-
-			final ArrayValueStruct arrayValueStruct =
-					arrayValueStruct(this.node, ref.distribute(), arrayType);
-
-			if (arrayValueStruct == null) {
-				this.error = true;
-				return defaultStruct;
-			}
-			if (!defaultStruct.assignableFrom(arrayValueStruct)) {
-				ref.getLogger().incompatible(this.node, defaultStruct);
-				this.error = true;
-				return defaultStruct;
-			}
-
-			return arrayValueStruct;
-		}
-
-		@Override
-		public ValueStruct<?, ?> toValueStruct() {
-			return null;
-		}
-
 	}
 
 }
