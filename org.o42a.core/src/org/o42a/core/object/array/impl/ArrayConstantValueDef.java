@@ -31,6 +31,7 @@ import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;

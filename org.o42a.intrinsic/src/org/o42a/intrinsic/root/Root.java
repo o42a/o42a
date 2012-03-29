@@ -46,7 +46,7 @@ import org.o42a.util.io.URLSource;
 
 
 @SourcePath("root.o42a")
-@RelatedSources({"number.o42a", "array.o42a", "operators.o42a"})
+@RelatedSources({"number.o42a", "abstract_row.o42a", "operators.o42a"})
 public class Root extends Obj {
 
 	public static Root createRoot(Scope topScope) {
@@ -67,8 +67,8 @@ public class Root extends Obj {
 	private Obj stringObject;
 	private Obj linkObject;
 	private Obj variableObject;
-	private Obj variableArrayObject;
-	private Obj constantArrayObject;
+	private Obj arrayObject;
+	private Obj rowObject;
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
@@ -136,20 +136,19 @@ public class Root extends Obj {
 				field("variable").substance(dummyUser()).toObject();
 	}
 
-	public final Obj getVariableArray() {
-		if (this.variableArrayObject != null) {
-			return this.variableArrayObject;
+	public final Obj getArray() {
+		if (this.arrayObject != null) {
+			return this.arrayObject;
 		}
-		return this.variableArrayObject =
-				field("variable_array").substance(dummyUser()).toObject();
+		return this.arrayObject =
+				field("array").substance(dummyUser()).toObject();
 	}
 
-	public final Obj getConstantArray() {
-		if (this.constantArrayObject != null) {
-			return this.constantArrayObject;
+	public final Obj getRow() {
+		if (this.rowObject != null) {
+			return this.rowObject;
 		}
-		return this.constantArrayObject =
-				field("constant_array").substance(dummyUser()).toObject();
+		return this.rowObject = field("row").substance(dummyUser()).toObject();
 	}
 
 	@Override

@@ -37,9 +37,9 @@ import org.o42a.core.value.ValueType;
 public class DefByArrayConstructorTest extends CompilerTestCase {
 
 	@Test
-	public void buildConstantArray() {
+	public void buildRow() {
 		compile(
-				"A := constant array (`string) [`",
+				"A := row (`string) [`",
 				"  \"a\", \"b\", \"c\"",
 				"]");
 
@@ -69,9 +69,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void buildVariableArray() {
+	public void buildArray() {
 		compile(
-				"A := variable array (`string) [`",
+				"A := array (`string) [`",
 				"  \"a\", \"b\", \"c\"",
 				"]");
 

@@ -26,6 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -200,6 +201,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract ScopeInfo toScoped();
 
 	public abstract LinkValueStruct toLinkStruct();
+
+	public abstract ArrayValueStruct toArrayStruct();
 
 	public abstract S reproduce(Reproducer reproducer);
 

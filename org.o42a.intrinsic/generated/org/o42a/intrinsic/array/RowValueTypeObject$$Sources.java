@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link VariableArrayLength}.
+ * o42a sources for {@link RowValueTypeObject}.
  * 
- * File: root/variable_array/length.o42a
+ * File: root/row.o42a
  */
-public final class VariableArrayLength$$Sources implements AnnotatedSources {
+public final class RowValueTypeObject$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public VariableArrayLength$$Sources(AnnotatedSources parent) {
+	public RowValueTypeObject$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,12 +28,17 @@ public final class VariableArrayLength$$Sources implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"length.o42a");
+				"row.o42a");
 	}
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[0];
+		return new Field[] {
+			new org.o42a.intrinsic.array.RowLength(
+					owner,
+					new org.o42a.intrinsic.array.RowLength$$Sources(this))
+			.getScope().toField(),
+		};
 	}
 
 }

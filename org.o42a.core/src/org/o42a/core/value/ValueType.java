@@ -21,8 +21,7 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.array.impl.ArrayValueType;
+import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -43,11 +42,6 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			StringValueType.INSTANCE;
 	public static final SingleValueType<Directive> DIRECTIVE =
 			DirectiveValueType.INSTANCE;
-
-	public static final ValueType<ArrayValueStruct> VAR_ARRAY =
-			new ArrayValueType(false);
-	public static final ValueType<ArrayValueStruct> CONST_ARRAY =
-			new ArrayValueType(true);
 
 	public static final SingleValueType<java.lang.Void> NONE =
 			NoneValueType.INSTANCE;
@@ -74,6 +68,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 		return toLinkType() != null;
 	}
 
+	public final boolean isArray() {
+		return toArrayType() != null;
+	}
+
 	public abstract boolean isVariable();
 
 	public abstract Obj typeObject(Intrinsics intrinsics);
@@ -95,6 +93,8 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	}
 
 	public abstract LinkValueType toLinkType();
+
+	public abstract ArrayValueType toArrayType();
 
 	@Override
 	public String toString() {

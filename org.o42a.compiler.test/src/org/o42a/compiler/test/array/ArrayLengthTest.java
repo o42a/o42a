@@ -30,9 +30,9 @@ import org.o42a.core.value.ValueType;
 public class ArrayLengthTest extends CompilerTestCase {
 
 	@Test
-	public void constantArrayLength() {
+	public void rowLength() {
 		compile(
-				"Array := (`$$array) [`1, 2]",
+				"Array := (`$$abstract row) [`1, 2]",
 				"Len := `array: length");
 
 		assertThat(
@@ -41,10 +41,10 @@ public class ArrayLengthTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void runtimeConstructedArrayLength() {
+	public void runtimeConstructedRowLength() {
 		compile(
 				"Use namespace 'Test'",
-				"Array := (`$$array) [`1, rt-integer '2']",
+				"Array := (`$$abstract row) [`1, rt-integer '2']",
 				"Len := `array: length");
 
 		assertThat(
@@ -53,7 +53,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void variableArrayLength() {
+	public void arrayLength() {
 		compile(
 				"Array := `[``1, 2, 3]",
 				"Len := array: length");
@@ -62,7 +62,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void emptyConstantArrayLength() {
+	public void emptyRowLength() {
 		compile(
 				"Array := [(`string)]",
 				"Len := array: length");
@@ -71,7 +71,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void emptyVariableArrayLength() {
+	public void emptyArrayLength() {
 		compile(
 				"Array := [(``string)]",
 				"Len := array: length");

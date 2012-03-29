@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link VariableArrayValueTypeObject}.
+ * o42a sources for {@link ArrayValueTypeObject}.
  * 
- * File: root/variable_array.o42a
+ * File: root/array.o42a
  */
-public final class VariableArrayValueTypeObject$$Sources implements AnnotatedSources {
+public final class ArrayValueTypeObject$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public VariableArrayValueTypeObject$$Sources(AnnotatedSources parent) {
+	public ArrayValueTypeObject$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,15 +28,15 @@ public final class VariableArrayValueTypeObject$$Sources implements AnnotatedSou
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"variable_array.o42a");
+				"array.o42a");
 	}
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
 		return new Field[] {
-			new org.o42a.intrinsic.array.VariableArrayLength(
+			new org.o42a.intrinsic.array.ArrayLength(
 					owner,
-					new org.o42a.intrinsic.array.VariableArrayLength$$Sources(this))
+					new org.o42a.intrinsic.array.ArrayLength$$Sources(this))
 			.getScope().toField(),
 		};
 	}

@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link ConstantArrayLength}.
+ * o42a sources for {@link RowLength}.
  * 
- * File: root/constant_array/length.o42a
+ * File: root/row/length.o42a
  */
-public final class ConstantArrayLength$$Sources implements AnnotatedSources {
+public final class RowLength$$Sources implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public ConstantArrayLength$$Sources(AnnotatedSources parent) {
+	public RowLength$$Sources(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 

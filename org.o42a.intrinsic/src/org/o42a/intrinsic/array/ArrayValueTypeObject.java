@@ -20,21 +20,19 @@
 package org.o42a.intrinsic.array;
 
 import org.o42a.common.object.AnnotatedSources;
-import org.o42a.common.object.ValueTypeObject;
+import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.intrinsic.root.Root;
 
 
-public abstract class ArrayValueTypeObject extends ValueTypeObject {
+@SourcePath(relativeTo = Root.class, value = "array.o42a")
+public class ArrayValueTypeObject extends AbstractRowValueTypeObject {
 
 	public ArrayValueTypeObject(
 			MemberOwner owner,
-			AnnotatedSources sources,
-			boolean constant) {
-		super(owner, sources);
-		setValueStruct(new ArrayValueStruct(
-				ValueType.VOID.typeRef(this, getScope()), constant));
+			AnnotatedSources sources) {
+		super(owner, sources, ArrayValueType.ARRAY);
 	}
 
 }

@@ -37,7 +37,7 @@ import org.o42a.core.value.ValueType;
 public class ArrayConstructorTest extends CompilerTestCase {
 
 	@Test
-	public void qualifiedConstantArray() {
+	public void qualifiedRow() {
 		compile("A := [(`integer) 1, 2, 3]");
 
 		final Obj a = field("a").toObject();
@@ -66,7 +66,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unqualifiedConstantArray() {
+	public void unqualifiedRow() {
 		compile("A := [`1, 2, 3]");
 
 		final Obj a = field("a").toObject();
@@ -95,7 +95,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void qualifiedVariableArray() {
+	public void qualifiedArray() {
 		compile("A := [(``integer) 1, 2, 3]");
 
 		final Obj a = field("a").toObject();
@@ -118,7 +118,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unqualifiedVariableArray() {
+	public void unqualifiedArray() {
 		compile("A := [``1, 2, 3]");
 
 		final Obj a = field("a").toObject();

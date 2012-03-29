@@ -89,6 +89,10 @@ public final class Array extends Placed {
 		return this.owner;
 	}
 
+	public final ArrayValueType getValueType() {
+		return getValueStruct().getValueType();
+	}
+
 	public final ArrayValueStruct getValueStruct() {
 		return this.valueStruct;
 	}

@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.ArrayValueType;
 
 
 public final class ArrayValueStructIR

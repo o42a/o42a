@@ -21,6 +21,6 @@ Clauses := void (
   Argument :=> void
   Imperative :=> void
   String :=> $$string
-  Constant array :=> $$constant array
-  Variable array :=> $$variable array
+  Row :=> $$row
+  Array :=> $$array
 )
