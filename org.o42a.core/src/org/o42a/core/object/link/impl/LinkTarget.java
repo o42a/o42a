@@ -64,7 +64,7 @@ public class LinkTarget extends Obj {
 		final Resolver resolver =
 				getScope().getEnclosingScope().dummyResolver();
 
-		return this.linkData.getTargetRef().resolve(resolver).materialize();
+		return this.linkData.getTargetRef().resolve(resolver).toObject();
 	}
 
 	@Override

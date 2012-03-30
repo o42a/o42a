@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.artifact.link.TargetRef;
+import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 

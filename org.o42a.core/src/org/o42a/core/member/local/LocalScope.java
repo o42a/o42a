@@ -27,7 +27,6 @@ import java.util.Set;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
@@ -114,11 +113,6 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final Artifact<?> getArtifact() {
-		return null;
-	}
-
-	@Override
 	public boolean isTopScope() {
 		return false;
 	}
@@ -198,11 +192,6 @@ public abstract class LocalScope
 	@Override
 	public final MemberLocal toMember() {
 		return this.member;
-	}
-
-	@Override
-	public final Artifact<?> toArtifact() {
-		return null;
 	}
 
 	@Override

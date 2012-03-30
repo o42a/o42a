@@ -88,7 +88,7 @@ public class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 			final Obj itemValue =
 					item.getValueRef()
 					.resolve(array.getOwner().getScope().dummyResolver())
-					.materialize();
+					.toObject();
 			final ObjectIR itemValueIR = itemValue.ir(getGenerator());
 			final ObjectBodyIR itemBodyIR = itemValueIR.bodyIR(itemAscendant);
 

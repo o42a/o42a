@@ -95,11 +95,6 @@ public abstract class PlainClause
 		return false;
 	}
 
-	@Override
-	public final Obj getArtifact() {
-		return getObject();
-	}
-
 	public abstract Obj getObject();
 
 	@Override

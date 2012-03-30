@@ -19,10 +19,7 @@
 */
 package org.o42a.core.ref.path.impl;
 
-import static org.o42a.core.ref.path.Path.SELF_PATH;
-
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.path.Path;
@@ -43,27 +40,10 @@ public class AncestorFragment extends PathFragment {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 
-		final Artifact<?> artifact = start.getArtifact();
+		final Obj object = start.toObject();
 
-		assert artifact != null :
-			"Only artifact may have an ancestor: " + start;
-
-		final Obj object = artifact.toObject();
-
-		if (object == null) {
-
-			final TypeRef typeRef = artifact.getTypeRef();
-
-			return SELF_PATH.append(ancestor(
-					artifact.materialize().getScope(),
-					typeRef));
-		}
-
-		final Artifact<?> materializationOf = object.getMaterializationOf();
-
-		if (materializationOf != object) {
-			return ancestor(start, materializationOf.getTypeRef());
-		}
+		assert object != null :
+			"Only object may have an ancestor: " + start;
 
 		final ObjectLink dereferencedLink = object.getDereferencedLink();
 

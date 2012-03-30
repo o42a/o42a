@@ -64,7 +64,7 @@ public class FloatCompareTest extends CompilerTestCase {
 
 	private Obj compare(String line, String... lines) {
 		compile(line, lines);
-		return field("result").getArtifact().materialize();
+		return field("result").toObject();
 	}
 
 }

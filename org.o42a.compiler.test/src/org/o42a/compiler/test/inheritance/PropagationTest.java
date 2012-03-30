@@ -45,15 +45,15 @@ public class PropagationTest extends CompilerTestCase {
 				"A := void(Foo := 1; bar := foo()).",
 				"B := &a(Foo = 3)");
 
-		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
-		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
+		final Obj aFoo = field(this.a, "foo").toObject();
+		final Obj bFoo = field(this.b, "foo").toObject();
 
 		assertTrue(bFoo.type().derivedFrom(
 				aFoo.type(),
 				Derivation.MEMBER_OVERRIDE));
 
-		final Obj aBar = field(this.a, "bar").getArtifact().toObject();
-		final Obj bBar = field(this.b, "bar").getArtifact().toObject();
+		final Obj aBar = field(this.a, "bar").toObject();
+		final Obj bBar = field(this.b, "bar").toObject();
 
 		assertThat(definiteValue(bBar, ValueType.INTEGER), is(3L));
 		assertTrue(bBar.type().derivedFrom(
@@ -82,12 +82,8 @@ public class PropagationTest extends CompilerTestCase {
 				.toField()
 				.field(USE_CASE);
 
-		assertThat(
-				aFooScope.getArtifact(),
-				is((Object) this.a));
-		assertThat(
-				bFooScope.getArtifact(),
-				is((Object) this.b));
+		assertThat(aFooScope.toObject(), is((Object) this.a));
+		assertThat(bFooScope.toObject(), is((Object) this.b));
 	}
 
 	@Test
@@ -96,15 +92,15 @@ public class PropagationTest extends CompilerTestCase {
 				"A := void(Foo := void(Bar := 1));",
 				"b := &a(Foo = *(Bar = 2))");
 
-		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
-		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
+		final Obj aFoo = field(this.a, "foo").toObject();
+		final Obj bFoo = field(this.b, "foo").toObject();
 
 		assertTrue(bFoo.type().derivedFrom(
 				aFoo.type(),
 				Derivation.MEMBER_OVERRIDE));
 
-		final Obj aBar = field(aFoo, "bar").getArtifact().toObject();
-		final Obj bBar = field(bFoo, "bar").getArtifact().toObject();
+		final Obj aBar = field(aFoo, "bar").toObject();
+		final Obj bBar = field(bFoo, "bar").toObject();
 
 		assertTrue(bBar.type().derivedFrom(
 				aBar.type(),
@@ -119,10 +115,10 @@ public class PropagationTest extends CompilerTestCase {
 				"a := void(Foo := &$foo(=3));",
 				"b := &a(Foo = &bar())");
 
-		final Obj foo = field("foo").getArtifact().toObject();
-		final Obj bar = field("bar").getArtifact().toObject();
-		final Obj aFoo = field(this.a, "foo").getArtifact().toObject();
-		final Obj bFoo = field(this.b, "foo").getArtifact().toObject();
+		final Obj foo = field("foo").toObject();
+		final Obj bar = field("bar").toObject();
+		final Obj aFoo = field(this.a, "foo").toObject();
+		final Obj bFoo = field(this.b, "foo").toObject();
 
 		assertTrue(aFoo.type().inherits(foo.type()));
 		assertFalse(aFoo.type().inherits(bar.type()));
@@ -138,8 +134,8 @@ public class PropagationTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.a = field("a").getArtifact().toObject();
-		this.b = field("b").getArtifact().toObject();
+		this.a = field("a").toObject();
+		this.b = field("b").toObject();
 	}
 
 

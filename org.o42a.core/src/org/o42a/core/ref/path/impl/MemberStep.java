@@ -28,8 +28,6 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -162,27 +160,7 @@ public class MemberStep extends AbstractMemberStep {
 			return;
 		}
 
-		final Artifact<?> artifact = field.getArtifact();
-		final Link link = artifact.toLink();
-
-		if (link != null) {
-			if (link.isVariable()
-					|| link.materialize().getConstructionMode().isRuntime()) {
-				normalizer.finish();
-				return;
-			}
-			// Append the link target.
-			if (linkUpdated(normalizer, prediction)) {
-				normalizer.finish();
-				return;
-			}
-			normalizer.append(
-					link.getTargetRef().getRef().getPath(),
-					uses().nestedNormalizer(normalizer));
-			return;
-		}
-
-		final Obj object = artifact.toObject();
+		final Obj object = field.toObject();
 
 		if (uses().onlyDereferenced(normalizer)) {
 			normalizer.skipToNext(prediction);
@@ -217,22 +195,6 @@ public class MemberStep extends AbstractMemberStep {
 		}
 
 		normalizer.inline(prediction, new InlineValueStep(inline));
-	}
-
-	private boolean linkUpdated(
-			PathNormalizer normalizer,
-			Prediction prediction) {
-
-		final Scope stepStart =
-				normalizer.lastPrediction().getScope().getLastDefinition();
-
-		for (Scope replacement : prediction) {
-			if (fieldOf(replacement).getDefinedIn() != stepStart) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 }

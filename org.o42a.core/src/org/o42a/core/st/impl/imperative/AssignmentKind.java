@@ -47,36 +47,6 @@ enum AssignmentKind {
 
 	},
 
-	VARIABLE_ASSIGNMENT() {
-
-		@Override
-		public void resolve(
-				LocalResolver resolver,
-				Ref destination,
-				Ref value) {
-
-			final Resolution val = value.resolve(resolver).resolveValue();
-			final Resolution dest =
-					destination.resolve(resolver).resolveAssignee();
-
-			if (dest.isError() || val.isError()) {
-				return;
-			}
-
-			dest.materialize().value().wrapBy(
-					val.materialize().value());
-			if (resolver.getScope() == destination.getScope()) {
-				dest.toLink().assign(value);
-			}
-		}
-
-		@Override
-		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
-			return new VariableAssignmentCmd(builder, assignment);
-		}
-
-	},
-
 	VALUE_ASSIGNMENT() {
 
 		@Override
@@ -99,8 +69,8 @@ enum AssignmentKind {
 				return;
 			}
 
-			final Obj destObj = dest.materialize();
-			final Obj valObj = val.materialize();
+			final Obj destObj = dest.toObject();
+			final Obj valObj = val.toObject();
 
 			valObj.value().wrapBy(destObj.value());
 			valObj.type().wrapBy(destObj.type());
@@ -133,8 +103,8 @@ enum AssignmentKind {
 				return;
 			}
 
-			final Obj destObj = dest.materialize();
-			final Obj valObj = val.materialize();
+			final Obj destObj = dest.toObject();
+			final Obj valObj = val.toObject();
 
 			valObj.value().wrapBy(destObj.value());
 			valObj.type().wrapBy(destObj.type());

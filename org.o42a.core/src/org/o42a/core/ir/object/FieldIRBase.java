@@ -60,7 +60,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 
 	@Override
 	public void allocate() {
-		getField().getArtifact().materialize().ir(getGenerator()).allocate();
+		getField().toObject().ir(getGenerator()).allocate();
 	}
 
 	@Override

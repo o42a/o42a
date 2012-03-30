@@ -21,24 +21,17 @@ package org.o42a.core.object.common;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.field.impl.OverriddenMemberField;
-import org.o42a.core.object.Obj;
 
 
 final class MemberObjectField extends MemberField {
 
 	MemberObjectField(MemberOwner owner, FieldDeclaration declaration) {
 		super(owner, declaration);
-	}
-
-	@Override
-	public final ArtifactKind<Obj> getArtifactKind() {
-		return ArtifactKind.OBJECT;
 	}
 
 	@Override

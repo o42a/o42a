@@ -31,7 +31,6 @@ import org.o42a.analysis.use.UseCase;
 import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Accessor;
@@ -51,12 +50,12 @@ public abstract class CompilerTestCase {
 	static final Compiler COMPILER = compiler();
 	static final CompilerIntrinsics INTRINSICS = intrinsics(COMPILER);
 
-	public static Value<?> valueOf(Artifact<?> artifact) {
-		return artifact.materialize().value().getValue();
+	public static Value<?> valueOf(Obj object) {
+		return object.value().getValue();
 	}
 
 	public static Value<?> valueOf(Field field) {
-		return valueOf(field.getArtifact());
+		return valueOf(field.toObject());
 	}
 
 	public static <T> Value<T> valueOf(
@@ -66,22 +65,22 @@ public abstract class CompilerTestCase {
 	}
 
 	public static <T> Value<T> valueOf(
-			Artifact<?> artifact,
+			Obj object,
 			SingleValueType<T> valueType) {
-		return valueOf(artifact, valueType.struct());
+		return valueOf(object, valueType.struct());
 	}
 
 	public static <T> Value<T> valueOf(
 			Field field,
 			ValueStruct<?, T> valueStruct) {
-		return valueOf(field.getArtifact(), valueStruct);
+		return valueOf(field.toObject(), valueStruct);
 	}
 
 	public static <T> Value<T> valueOf(
-			Artifact<?> artifact,
+			Obj object,
 			ValueStruct<?, T> valueStruct) {
 
-		final Value<?> value = valueOf(artifact);
+		final Value<?> value = valueOf(object);
 
 		assertEquals(
 				value + " has wrong type",
@@ -91,19 +90,10 @@ public abstract class CompilerTestCase {
 		return valueStruct.cast(value);
 	}
 
-	public static Obj toObject(Artifact<?> artifact) {
-
-		final Obj object = artifact.toObject();
-
-		assertNotNull("Not an object: " + artifact, object);
-
-		return object;
-	}
-
 	@SuppressWarnings("unchecked")
-	public static <T> T definiteValue(Artifact<?> artifact) {
+	public static <T> T definiteValue(Obj object) {
 
-		final Value<?> value = valueOf(artifact);
+		final Value<?> value = valueOf(object);
 
 		assertTrue(
 				"Value is not definite: " + value,
@@ -117,22 +107,22 @@ public abstract class CompilerTestCase {
 
 		final Object definiteValue = value.getCompilerValue();
 
-		assertNotNull(artifact + " has not definite value", definiteValue);
+		assertNotNull(object + " has not definite value", definiteValue);
 
 		return (T) definiteValue;
 	}
 
 	public static <T> T definiteValue(
-			Artifact<?> artifact,
+			Obj object,
 			SingleValueType<T> valueType) {
-		return definiteValue(artifact, valueType.struct());
+		return definiteValue(object, valueType.struct());
 	}
 
 	public static <T> T definiteValue(
-			Artifact<?> artifact,
+			Obj object,
 			ValueStruct<?, T> valueStruct) {
 
-		final Value<?> value = valueOf(artifact, valueStruct);
+		final Value<?> value = valueOf(object, valueStruct);
 
 		assertTrue(
 				"Value is not definite: " + value,
@@ -146,31 +136,31 @@ public abstract class CompilerTestCase {
 
 		final Object definiteValue = value.getCompilerValue();
 
-		assertNotNull(artifact + " has not definite value", definiteValue);
+		assertNotNull(object + " has not definite value", definiteValue);
 
 		return valueStruct.cast(definiteValue);
 	}
 
 	public static <T> T definiteValue(Field field) {
-		return definiteValue(field.getArtifact());
+		return definiteValue(field.toObject());
 	}
 
 	public static <T> T definiteValue(
 			Field field,
 			SingleValueType<T> valueType) {
-		return definiteValue(field.getArtifact(), valueType.struct());
+		return definiteValue(field.toObject(), valueType.struct());
 	}
 
 	public static <T> T definiteValue(
 			Field field,
 			ValueStruct<?, T> valueStruct) {
-		return definiteValue(field.getArtifact(), valueStruct);
+		return definiteValue(field.toObject(), valueStruct);
 	}
 
 	public static <T> T definiteValue(
-			Artifact<?> artifact,
+			Obj object,
 			Class<? extends T> valueClass) {
-		return valueClass.cast(definiteValue(artifact));
+		return valueClass.cast(definiteValue(object));
 	}
 
 	public static <T> T definiteValue(
@@ -227,7 +217,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertTrueVoid(Field field) {
-		assertTrueVoid(field.getArtifact().materialize());
+		assertTrueVoid(field.toObject());
 	}
 
 	public static void assertTrueVoid(Obj object) {
@@ -239,7 +229,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertFalseVoid(Field field) {
-		assertFalseVoid(field.getArtifact().materialize());
+		assertFalseVoid(field.toObject());
 	}
 
 	public static void assertFalseVoid(Obj object) {
@@ -251,7 +241,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static void assertUnknownVoid(Field field) {
-		assertUnknownVoid(field.getArtifact().materialize());
+		assertUnknownVoid(field.toObject());
 	}
 
 	public static void assertUnknownVoid(Obj object) {
@@ -266,11 +256,11 @@ public abstract class CompilerTestCase {
 			Field container,
 			String name,
 			String... names) {
-		return field(container.getArtifact(), name, names);
+		return field(container.toObject(), name, names);
 	}
 
 	public static Field field(
-			Artifact<?> container,
+			Obj container,
 			String name,
 			String... names) {
 
@@ -287,20 +277,16 @@ public abstract class CompilerTestCase {
 			Field container,
 			String name,
 			Accessor accessor) {
-		return field(container.getArtifact(), name, accessor);
+		return field(container.toObject(), name, accessor);
 	}
 
-	public static Field field(
-			Artifact<?> container,
-			String name,
-			Accessor accessor) {
+	public static Field field(Obj container, String name, Accessor accessor) {
 
-		final Obj object = container.materialize().toArtifact();
-		final Member member = object.field(name, accessor);
+		final Member member = container.field(name, accessor);
 
 		if (member == null) {
 
-			final Member m = object.field(name, Accessor.OWNER);
+			final Member m = container.field(name, Accessor.OWNER);
 
 			if (m == null) {
 				fail("No such field: " + name);

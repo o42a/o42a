@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.ArrayList;
 
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -75,11 +74,6 @@ public class Namespace extends AbstractContainer {
 	@Override
 	public Member toMember() {
 		return this.enclosing.toMember();
-	}
-
-	@Override
-	public final Artifact<?> toArtifact() {
-		return this.enclosing.toArtifact();
 	}
 
 	@Override

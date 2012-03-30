@@ -24,7 +24,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import org.o42a.common.resolution.CompoundPathWalker;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.object.Role;
@@ -54,7 +53,6 @@ public class MemberOf extends PlacedPathFragment {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope owner) {
 
-		final Scope scope = getScope();
 		final AccessorResolver accessorResolver = new AccessorResolver();
 		final RoleResolver roleResolver = new RoleResolver(Role.INSTANCE);
 		final CompoundPathWalker walker =
@@ -67,15 +65,7 @@ public class MemberOf extends PlacedPathFragment {
 			return null;
 		}
 
-		final Artifact<?> artifact = owner.getArtifact();
-		final MemberContainer container;
-
-		if (artifact != null) {
-			container = artifact.materialize();
-		} else {
-			container = scope.getContainer();
-		}
-
+		final MemberContainer container = owner.getContainer();
 		final Path memberPath = container.member(
 				this,
 				accessorResolver.getAccessor(),

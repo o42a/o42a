@@ -37,16 +37,16 @@ public abstract class ObjectField extends Field {
 
 	protected ObjectField(MemberField member, Field propagatedFrom) {
 		super(member);
-		setScopeArtifact(propagateArtifact(propagatedFrom));
+		setScopeObject(propagateObject(propagatedFrom));
 	}
 
 	protected ObjectField(
 			MemberField member,
 			Field propagatedFrom,
-			boolean propagateArtifact) {
+			boolean propagateObject) {
 		super(member);
-		if (propagateArtifact) {
-			setScopeArtifact(new PropagatedObject(this));
+		if (propagateObject) {
+			setScopeObject(new PropagatedObject(this));
 		}
 	}
 
@@ -62,12 +62,12 @@ public abstract class ObjectField extends Field {
 			return false;
 		}
 
-		return getArtifact().type().derivedFrom(otherObject.type());
+		return toObject().type().derivedFrom(otherObject.type());
 	}
 
 	protected abstract ObjectField propagate(MemberField member);
 
-	protected Obj propagateArtifact(Field overridden) {
+	protected Obj propagateObject(Field overridden) {
 		return new PropagatedObject(this);
 	}
 

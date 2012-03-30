@@ -26,7 +26,6 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.object.Obj;
@@ -41,7 +40,7 @@ public final class RefDep extends Dep {
 
 	private final String name;
 	private final Ref depRef;
-	private final Artifact<?> target;
+	private final Obj target;
 	private ObjectStepUses uses;
 
 	public RefDep(Obj object, Ref depRef, String name) {
@@ -57,7 +56,7 @@ public final class RefDep extends Dep {
 			object + " is not a local object";
 
 		this.target = this.depRef.resolve(
-				local.newResolver(dummyUser())).toArtifact();
+				local.newResolver(dummyUser())).toObject();
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public final class RefDep extends Dep {
 	}
 
 	@Override
-	public final Artifact<?> getDepTarget() {
+	public final Obj getDepTarget() {
 		return this.target;
 	}
 
@@ -130,7 +129,7 @@ public final class RefDep extends Dep {
 
 		walker.refDep(object, this, this.depRef);
 
-		return resolution.toArtifact().getContainer();
+		return resolution.toObject();
 	}
 
 	@Override

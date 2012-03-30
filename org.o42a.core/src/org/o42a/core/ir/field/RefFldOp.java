@@ -23,8 +23,6 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
@@ -52,14 +50,7 @@ public abstract class RefFldOp<
 
 	@Override
 	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
-
-		final Artifact<?> artifact = fld().getField().getArtifact();
-
-		if (artifact.getKind() == ArtifactKind.OBJECT) {
-			return target(dirs).field(dirs, memberKey);
-		}
-
-		return null;
+		return target(dirs).field(dirs, memberKey);
 	}
 
 	public ObjectOp target(CodeDirs dirs) {

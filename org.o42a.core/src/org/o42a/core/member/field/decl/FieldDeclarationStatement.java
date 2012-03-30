@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.LocalFieldCmd;
@@ -34,6 +33,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.Obj;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -145,10 +145,9 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 			final Member member =
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
-			final Artifact<?> artifact = member.toField().artifact(resolver);
+			final Obj object = member.toField().object(resolver);
 			final LogicalValue logicalValue =
-					artifact.materialize()
-					.value()
+					object.value()
 					.getDefinitions()
 					.value(resolver)
 					.getKnowledge()

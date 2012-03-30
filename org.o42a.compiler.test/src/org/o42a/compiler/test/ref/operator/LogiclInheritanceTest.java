@@ -93,9 +93,9 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.aBar = field("a", "bar").getArtifact().materialize();
-		this.bBar = field("b", "bar").getArtifact().materialize();
-		this.cBar = field("c", "bar").getArtifact().materialize();
+		this.aBar = field("a", "bar").toObject();
+		this.bBar = field("b", "bar").toObject();
+		this.cBar = field("c", "bar").toObject();
 	}
 
 }

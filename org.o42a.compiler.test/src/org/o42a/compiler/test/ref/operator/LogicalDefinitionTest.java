@@ -110,9 +110,9 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.a = field("a").getArtifact().materialize();
-		this.b = field("b").getArtifact().materialize();
-		this.c = field("c").getArtifact().materialize();
+		this.a = field("a").toObject();
+		this.b = field("b").toObject();
+		this.c = field("c").toObject();
 	}
 
 }

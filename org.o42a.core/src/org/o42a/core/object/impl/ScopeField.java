@@ -59,7 +59,7 @@ public final class ScopeField extends ObjectField {
 						memberId)
 				.setVisibility(Visibility.PROTECTED));
 		this.overridden = null;
-		setScopeArtifact(owner.getScope().getEnclosingContainer().toObject());
+		setScopeObject(owner.getScope().getEnclosingContainer().toObject());
 	}
 
 	private ScopeField(MemberField member, ScopeField overridden) {
@@ -80,14 +80,14 @@ public final class ScopeField extends ObjectField {
 	@Override
 	public Obj toObject() {
 
-		final Obj artifact = getScopeArtifact();
+		final Obj object = getScopeObject();
 
-		if (artifact != null) {
-			return artifact;
+		if (object != null) {
+			return object;
 		}
 
 		final UserInfo user = dummyUser();
-		final Obj newArtifact;
+		final Obj newObject;
 		final Obj newOwner = getEnclosingContainer().toObject();
 		final ObjectType newOwnerType = newOwner.type();
 		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
@@ -96,7 +96,7 @@ public final class ScopeField extends ObjectField {
 		if (ancestorMember != null) {
 			// Scope field present in ancestor.
 			// Preserve an ancestor`s scope.
-			newArtifact = ancestorMember.substance(user).toObject();
+			newObject = ancestorMember.substance(user).toObject();
 		} else {
 
 			final ObjectType origin = getKey().getOrigin().toObject().type();
@@ -104,16 +104,16 @@ public final class ScopeField extends ObjectField {
 			if (newOwnerType.derivedFrom(origin, IMPLICIT_PROPAGATION)) {
 				// Scope field declared in implicit sample.
 				// Update owner with an actual one.
-				newArtifact = newOwner.getEnclosingContainer().toObject();
+				newObject = newOwner.getEnclosingContainer().toObject();
 			} else {
 				// In the rest of the cases preserve an old scope.
-				newArtifact = this.overridden.getArtifact();
+				newObject = this.overridden.toObject();
 			}
 		}
 
-		setScopeArtifact(newArtifact);
+		setScopeObject(newObject);
 
-		return newArtifact;
+		return newObject;
 	}
 
 	@Override
@@ -122,7 +122,7 @@ public final class ScopeField extends ObjectField {
 	}
 
 	@Override
-	protected Obj propagateArtifact(Field overridden) {
+	protected Obj propagateObject(Field overridden) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -149,14 +149,15 @@ public final class ScopeField extends ObjectField {
 
 			fld.declare(
 					data,
-					getField().getArtifact().toObject().ir(
-							getGenerator()).getMainBodyIR());
+					getField().toObject().ir(getGenerator()).getMainBodyIR());
 
 			return fld;
 		}
 
 		@Override
-		protected LclOp allocateLocal(CodeBuilder builder, AllocationCode code) {
+		protected LclOp allocateLocal(
+				CodeBuilder builder,
+				AllocationCode code) {
 			throw new UnsupportedOperationException();
 		}
 

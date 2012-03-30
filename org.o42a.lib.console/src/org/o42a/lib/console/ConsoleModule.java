@@ -91,7 +91,7 @@ public class ConsoleModule extends AnnotatedModule {
 			return null;
 		}
 
-		final Obj main = mainAdapter.getArtifact().toObject();
+		final Obj main = mainAdapter.toObject();
 
 		if (main == null) {
 			return null;
@@ -166,8 +166,8 @@ public class ConsoleModule extends AnnotatedModule {
 	}
 
 	@Override
-	protected void normalizeArtifact(Analyzer analyzer) {
-		super.normalizeArtifact(analyzer);
+	protected void normalizeObject(Analyzer analyzer) {
+		super.normalizeObject(analyzer);
 		if (this.main != null) {
 			this.inlineMain = this.main.inline(
 					new Normalizer(analyzer, this.main.getScope()),

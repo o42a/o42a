@@ -41,8 +41,8 @@ public class LinkObjectTest extends CompilerTestCase {
 				"A := 1",
 				"B := link` [a]");
 
-		final Obj a = field("a").getArtifact().toObject();
-		final Obj b = field("b").getArtifact().toObject();
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
 		final Obj bTarget = linkTarget(b);
 
@@ -63,8 +63,8 @@ public class LinkObjectTest extends CompilerTestCase {
 				"A := 1",
 				"B := link (`integer) [a]");
 
-		final Obj a = field("a").getArtifact().toObject();
-		final Obj b = field("b").getArtifact().materialize();
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
 		final Obj bTarget = linkTarget(b);
 
@@ -89,16 +89,16 @@ public class LinkObjectTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Obj a = field("a").getArtifact().toObject();
-		final Obj b = field("b").getArtifact().toObject();
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
-		final Obj aFoo = field(a, "foo").getArtifact().toObject();
+		final Obj aFoo = field(a, "foo").toObject();
 		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
 		assertThat(aBarTarget.getWrapped(), sameInstance(aFoo));
 
-		final Obj bFoo = field(b, "foo").getArtifact().toObject();
+		final Obj bFoo = field(b, "foo").toObject();
 		final Field bBar = field(b, "bar");
 		final Obj bBarTarget = linkTarget(bBar);
 
@@ -114,10 +114,10 @@ public class LinkObjectTest extends CompilerTestCase {
 				")",
 				"B := a (Foo = 2)");
 
-		final Obj a = field("a").getArtifact().toObject();
-		final Obj b = field("b").getArtifact().toObject();
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
 
-		final Obj aFoo = field(a, "foo").getArtifact().toObject();
+		final Obj aFoo = field(a, "foo").toObject();
 		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 

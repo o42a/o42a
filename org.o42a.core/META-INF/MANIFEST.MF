@@ -5,9 +5,6 @@ Bundle-SymbolicName: org.o42a.core;singleton:=true
 Bundle-Version: 0.1.5
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.core,
- org.o42a.core.artifact,
- org.o42a.core.artifact.common,
- org.o42a.core.artifact.link,
  org.o42a.core.ir,
  org.o42a.core.ir.field,
  org.o42a.core.ir.local,

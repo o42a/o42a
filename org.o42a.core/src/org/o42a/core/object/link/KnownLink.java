@@ -22,7 +22,6 @@ package org.o42a.core.object.link;
 import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;

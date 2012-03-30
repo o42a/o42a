@@ -35,7 +35,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.InlineValue;
@@ -110,7 +110,7 @@ public final class VoidObject extends BuiltinObject {
 		return new VoidScope(topScope.getContext(), topScope.distribute());
 	}
 
-	private static final class VoidScope extends ObjectScope {
+	private static final class VoidScope extends StandaloneObjectScope {
 
 		VoidScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);

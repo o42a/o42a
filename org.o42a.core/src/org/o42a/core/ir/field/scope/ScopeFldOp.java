@@ -54,7 +54,7 @@ public class ScopeFldOp extends FieldFldOp {
 	public ObjectOp target(CodeDirs dirs) {
 		if (isOmitted()) {
 
-			final Obj target = fld().getField().getArtifact().toObject();
+			final Obj target = fld().getField().toObject();
 			final ObjectIR targetIR = target.ir(getGenerator());
 
 			return targetIR.op(getBuilder(), dirs.code());

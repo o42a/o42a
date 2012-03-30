@@ -24,7 +24,6 @@ import static org.o42a.core.AbstractContainer.parentContainer;
 import java.util.Collection;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -119,11 +118,6 @@ public abstract class GroupClause extends Clause implements Container {
 		}
 
 		return this.subClauses = subClauses;
-	}
-
-	@Override
-	public final Artifact<?> toArtifact() {
-		return getEnclosingContainer().toArtifact();
 	}
 
 	@Override

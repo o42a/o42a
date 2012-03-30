@@ -24,7 +24,6 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -112,7 +111,7 @@ public class LinkByValueDef extends ValueDef {
 
 	@Override
 	protected void resolveTarget(TargetResolver resolver) {
-		resolver.resolveTarget(this.ref.getResolution().materialize());
+		resolver.resolveTarget(this.ref.getResolution().toObject());
 	}
 
 	@Override

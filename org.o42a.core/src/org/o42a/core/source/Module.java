@@ -34,7 +34,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.StandaloneObjectScope;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
@@ -143,7 +143,7 @@ public class Module extends Obj {
 		return new ModuleScope(compiler, distributor);
 	}
 
-	private static final class ModuleScope extends ObjectScope {
+	private static final class ModuleScope extends StandaloneObjectScope {
 
 		ModuleScope(LocationInfo location, Distributor distributor) {
 			super(location, distributor);

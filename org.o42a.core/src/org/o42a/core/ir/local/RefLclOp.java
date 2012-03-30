@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.local;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.CodeId;
@@ -31,8 +30,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
@@ -54,20 +51,12 @@ public final class RefLclOp extends LclOp {
 		this.ptr = ptr;
 	}
 
-	public final Artifact<?> getArtifact() {
-		return getFieldIR().getField().getArtifact();
+	public final Obj getObject() {
+		return getFieldIR().getField().toObject();
 	}
 
 	public Obj getAscendant() {
-
-		final Artifact<?> artifact = getArtifact();
-		final Obj object = artifact.toObject();
-
-		if (object != null) {
-			return object;
-		}
-
-		return artifact.getTypeRef().typeObject(dummyUser());
+		return getObject();
 	}
 
 	@Override
@@ -78,7 +67,7 @@ public final class RefLclOp extends LclOp {
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
-		final Obj object = getArtifact().toObject();
+		final Obj object = getObject().toObject();
 
 		if (object == null) {
 			return null;
@@ -114,7 +103,7 @@ public final class RefLclOp extends LclOp {
 		final Block code = control.code();
 		final CodeDirs dirs =
 				control.getBuilder().falseWhenUnknown(code, control.falseDir());
-		final Obj object = getArtifact().materialize();
+		final Obj object = getObject();
 
 		final ObjectOp newObject = getBuilder().newObject(
 				dirs,
@@ -128,8 +117,6 @@ public final class RefLclOp extends LclOp {
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		assert getArtifact().getKind() == ArtifactKind.VARIABLE :
-			"Not a variable: " + getArtifact();
 
 		final Code code = dirs.code();
 		final ObjectOp object = value.materialize(dirs);

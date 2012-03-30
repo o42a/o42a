@@ -23,11 +23,11 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectScopeIR;
-import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class ObjScope extends ObjectScope {
+public final class ObjScope extends StandaloneObjectScope {
 
 	public ObjScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
@@ -35,7 +35,7 @@ public final class ObjScope extends ObjectScope {
 
 	@Override
 	protected ScopeIR createIR(Generator generator) {
-		return new ObjectScopeIR(generator, getArtifact());
+		return new ObjectScopeIR(generator, toObject());
 	}
 
 }

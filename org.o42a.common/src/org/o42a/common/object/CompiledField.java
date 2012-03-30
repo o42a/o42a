@@ -51,13 +51,13 @@ public final class CompiledField extends ObjectField {
 	@Override
 	public final Obj toObject() {
 
-		final Obj object = getScopeArtifact();
+		final Obj object = getScopeObject();
 
 		if (object != null) {
 			return object;
 		}
 
-		return setScopeArtifact(new CompiledObject(this));
+		return setScopeObject(new CompiledObject(this));
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public final class CompiledField extends ObjectField {
 	}
 
 	final void init(Obj object) {
-		setScopeArtifact(object);
+		setScopeObject(object);
 	}
 
 }

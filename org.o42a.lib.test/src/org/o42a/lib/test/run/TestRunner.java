@@ -25,7 +25,6 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
@@ -56,16 +55,10 @@ final class TestRunner extends ConstructedObject {
 			return; // Only public fields recognized as tests.
 		}
 
-		final Artifact<?> artifact = field.getArtifact();
+		final Obj test = field.toObject();
 
-		if (!artifact.isValid()) {
-			return;// Invalid artifact.
-		}
-
-		final Obj test = artifact.materialize();
-
-		if (test == null) {
-			return;
+		if (!test.isValid()) {
+			return;// Invalid test object.
 		}
 
 		final ObjectType testType = module.test(user);
@@ -82,16 +75,10 @@ final class TestRunner extends ConstructedObject {
 			return;
 		}
 
-		final Artifact<?> adapterArtifact =
-				adapterMember.toField().artifact(user);
+		final Obj adapter =
+				adapterMember.toField().object(user);
 
-		if (!adapterArtifact.isValid()) {
-			return;
-		}
-
-		final Obj adapter = adapterArtifact.materialize();
-
-		if (adapter == null) {
+		if (!adapter.isValid()) {
 			return;
 		}
 

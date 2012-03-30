@@ -33,9 +33,6 @@ import java.util.*;
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -58,18 +55,29 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.AbstractMemberStep;
 import org.o42a.core.ref.path.impl.StaticObjectStep;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.func.Holder;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class Obj
-		extends ObjectArtifact
+		extends ObjectBase
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
+
+	private ObjectContent content;
+	private ObjectContent clonesContent;
+	private Ref self;
+	private final Obj propagatedFrom;
+	private Holder<Obj> cloneOf;
+	private byte fullResolution;
+
 	private Obj wrapped;
 	private ObjectType type;
 	private ObjectValue value;
@@ -90,41 +98,85 @@ public abstract class Obj
 
 	private ObjectIR ir;
 
-	public Obj(LocationInfo location, Distributor enclosing) {
-		this(new ObjScope(location, enclosing));
-	}
-
 	public Obj(Scope scope) {
-		super(scope);
+		super(scope, new ObjectDistributor(scope, scope));
+		this.propagatedFrom = null;
 	}
 
 	protected Obj(ObjectScope scope) {
-		super(scope);
+		super(scope, new ObjectDistributor(scope, scope));
+		this.propagatedFrom = null;
+		scope.setScopeObject(this);
 	}
 
 	protected Obj(Scope scope, Obj sample) {
-		super(scope, sample);
+		super(scope, new ObjectDistributor(scope, sample));
+		this.propagatedFrom = sample;
+	}
+
+	protected Obj(ObjectScope scope, Obj sample) {
+		super(scope, new ObjectDistributor(scope, sample));
+		this.propagatedFrom = sample;
+		scope.setScopeObject(this);
+	}
+
+	public Obj(LocationInfo location, Distributor enclosing) {
+		this(new ObjScope(location, enclosing));
 	}
 
 	public Obj(Distributor enclosing, Obj sample) {
 		this(new ObjScope(sample, enclosing), sample);
 	}
 
-	protected Obj(ObjectScope scope, Obj sample) {
-		super(scope, sample);
-	}
-
 	@Override
-	public final ArtifactKind<Obj> getKind() {
-		return ArtifactKind.OBJECT;
+	public Obj getContainer() {
+		return this;
 	}
 
-	public Artifact<?> getMaterializationOf() {
-		return this;
+	public boolean isAbstract() {
+
+		final Field field = getScope().toField();
+
+		return field != null && field.isAbstract();
+	}
+
+	public boolean isPrototype() {
+
+		final Field field = getScope().toField();
+
+		return field != null && field.isPrototype();
+	}
+
+	public boolean isValid() {
+		return true;
 	}
 
 	public ObjectLink getDereferencedLink() {
 		return null;
+	}
+
+	public Obj getPropagatedFrom() {
+		return this.propagatedFrom;
+	}
+
+	public final boolean isClone() {
+		return getCloneOf() != null;
+	}
+
+	public boolean isPropagated() {
+		return getPropagatedFrom() != null;
+	}
+
+	public final Obj getCloneOf() {
+		if (this.cloneOf != null) {
+			return this.cloneOf.get();
+		}
+
+		final Obj cloneOf = findCloneOf();
+
+		this.cloneOf = new Holder<Obj>(cloneOf);
+
+		return cloneOf;
 	}
 
 	public ConstructionMode getConstructionMode() {
@@ -161,16 +213,6 @@ public abstract class Obj
 	@Override
 	public final Namespace toNamespace() {
 		return null;
-	}
-
-	@Override
-	public final Link toLink() {
-		return null;
-	}
-
-	@Override
-	public final Obj materialize() {
-		return this;
 	}
 
 	public final boolean isWrapper() {
@@ -412,10 +454,7 @@ public abstract class Obj
 		}
 
 		final Path adapterPath = adapter.getKey().toPath();
-
-		final Artifact<?> adapterArtifact =
-				adapter.substance(dummyUser()).toArtifact();
-		final Obj adapterObject = adapterArtifact.toObject();
+		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
 
 		if (adapterObject != null) {
 
@@ -427,28 +466,6 @@ public abstract class Obj
 			}
 
 			return adapterPath.append(foundInAdapterObject.getKey());
-		}
-
-		final TypeRef typeRef = adapterArtifact.getTypeRef();
-
-		if (typeRef != null) {
-
-			final ObjectType type = typeRef.type(dummyUser());
-
-			if (type == null) {
-				return null;
-			}
-
-			final Member foundInAdapterLink = type.getObject().objectMember(
-					accessor,
-					memberId,
-					declaredIn);
-
-			if (foundInAdapterLink == null) {
-				return null;
-			}
-
-			return adapterPath.append(foundInAdapterLink.getKey());
 		}
 
 		return null;
@@ -541,7 +558,6 @@ public abstract class Obj
 		return path.target(distributeIn(scope.getContainer()));
 	}
 
-	@Override
 	public final FieldUses fieldUses() {
 		if (this.fieldUses != null) {
 			return this.fieldUses;
@@ -549,13 +565,67 @@ public abstract class Obj
 		return this.fieldUses = new FieldUses(this);
 	}
 
+	public final Ref selfRef() {
+		if (this.self != null) {
+			return this.self;
+		}
+		return this.self =
+				Path.SELF_PATH
+				.bindStatically(this, getScope())
+				.target(distribute());
+	}
+
+	public final ObjectContent content() {
+		if (this.content != null) {
+			return this.content;
+		}
+
+		final Obj cloneOf = getCloneOf();
+
+		if (cloneOf != null) {
+			return this.content = cloneOf.clonesContent();
+		}
+
+		return this.content = new ObjectContent(this, false);
+	}
+
+	public final ObjectContent clonesContent() {
+		if (this.clonesContent != null) {
+			return this.clonesContent;
+		}
+
+		final Obj cloneOf = getCloneOf();
+
+		if (cloneOf != null) {
+			return this.clonesContent = cloneOf.clonesContent();
+		}
+
+		return this.clonesContent = new ObjectContent(this, true);
+	}
+
 	public StatementEnv definitionEnv() {
 		return new ObjectEnv(this);
 	}
 
-	public final void assertDerivedFrom(Obj type) {
-		assert type().derivedFrom(type.type()) :
-			this + " is not derived from " + type;
+	public final void resolveAll() {
+		if (this.fullResolution != 0) {
+			return;
+		}
+		this.fullResolution = 1;
+		getContext().fullResolution().start();
+		try {
+			fullyResolve();
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public final void normalize(Analyzer analyzer) {
+		if (this.fullResolution >= 2) {
+			return;
+		}
+		this.fullResolution = 2;
+		normalizeObject(analyzer);
 	}
 
 	public final ObjectIR ir(Generator generator) {
@@ -569,6 +639,37 @@ public abstract class Obj
 		return this.ir = createIR(generator);
 	}
 
+	public final boolean assertFullyResolved() {
+		assert this.fullResolution > 0
+			|| (isClone() && getCloneOf().fullResolution > 0):
+				this + " is not fully resolved";
+		return true;
+	}
+
+	public final void assertDerivedFrom(Obj type) {
+		assert type().derivedFrom(type.type()) :
+			this + " is not derived from " + type;
+	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append(getClass().getSimpleName()).append('[');
+		out.append(getContext());
+
+		final Loggable loggable = getLoggable();
+
+		if (loggable != null) {
+			out.append("]:[");
+			loggable.print(out);
+		}
+		out.append(']');
+
+		return out.toString();
+	}
+
 	protected Obj findWrapped() {
 
 		final Field field = getScope().toField();
@@ -577,14 +678,12 @@ public abstract class Obj
 			return this;
 		}
 
-		final Artifact<?> enclosingArtifact =
-				getScope().getEnclosingScope().getArtifact();
+		final Obj enclosingObject = getScope().getEnclosingScope().toObject();
 
-		if (enclosingArtifact == null) {
+		if (enclosingObject == null) {
 			return this;
 		}
 
-		final Obj enclosingObject = enclosingArtifact.materialize();
 		final Obj enclosingWrapped = enclosingObject.getWrapped();
 
 		if (enclosingWrapped == enclosingObject) {
@@ -593,8 +692,7 @@ public abstract class Obj
 
 		return enclosingWrapped.member(field.getKey())
 				.toField()
-				.artifact(dummyUser())
-				.materialize();
+				.object(dummyUser());
 	}
 
 	protected final void resolve() {
@@ -642,23 +740,7 @@ public abstract class Obj
 
 	protected abstract Definitions explicitDefinitions();
 
-	@Override
 	protected Obj findCloneOf() {
-
-		final Artifact<?> materializationOf = getMaterializationOf();
-
-		if (materializationOf != this) {
-
-			final Artifact<?> cloneOfMaterialization =
-					materializationOf.getCloneOf();
-
-			if (cloneOfMaterialization == null) {
-				return null;
-			}
-
-			return cloneOfMaterialization.materialize();
-		}
-
 		if (!isPropagated()) {
 			assert !getScope().isClone() :
 				this + " is not propagated, but scope "
@@ -737,7 +819,6 @@ public abstract class Obj
 		return dep;
 	}
 
-	@Override
 	protected void fullyResolve() {
 
 		final Obj wrapped = getWrapped();
@@ -765,8 +846,7 @@ public abstract class Obj
 		value().getDefinitions().resolveAll();
 	}
 
-	@Override
-	protected void normalizeArtifact(Analyzer analyzer) {
+	protected void normalizeObject(Analyzer analyzer) {
 
 		final Obj wrapped = getWrapped();
 
@@ -895,7 +975,7 @@ public abstract class Obj
 				continue;
 			}
 
-			field.getArtifact().normalize(analyzer);
+			field.toObject().normalize(analyzer);
 		}
 	}
 
@@ -925,6 +1005,43 @@ public abstract class Obj
 				sample + " is explicit";
 		}
 		return true;
+	}
+
+	private static final class ObjectDistributor extends Distributor {
+
+		private final Scope scope;
+		private final PlaceInfo placed;
+
+		ObjectDistributor(Scope scope, PlaceInfo placed) {
+			this.scope = scope;
+			this.placed = placed;
+		}
+
+		@Override
+		public Loggable getLoggable() {
+			return this.placed.getLoggable();
+		}
+
+		@Override
+		public CompilerContext getContext() {
+			return this.placed.getContext();
+		}
+
+		@Override
+		public ScopePlace getPlace() {
+			return this.placed.getPlace();
+		}
+
+		@Override
+		public Container getContainer() {
+			return null;
+		}
+
+		@Override
+		public Scope getScope() {
+			return this.scope;
+		}
+
 	}
 
 }

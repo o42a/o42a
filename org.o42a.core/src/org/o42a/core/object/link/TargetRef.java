@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact.link;
+package org.o42a.core.object.link;
 
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
@@ -25,11 +25,11 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
@@ -97,11 +97,11 @@ public final class TargetRef implements ScopeInfo {
 				this.typeRef.toStatic());
 	}
 
-	public final Artifact<?> artifact(UserInfo user) {
+	public final Obj target(UserInfo user) {
 
 		final Resolution resolution = resolve(getScope().newResolver(user));
 
-		return resolution.isError() ? null : resolution.toArtifact();
+		return resolution.isError() ? null : resolution.toObject();
 	}
 
 	public final Resolution resolve(Resolver resolver) {

@@ -24,14 +24,14 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 
 
 public class AdapterTest extends CompilerTestCase {
 
-	private Artifact<?> adapterType;
-	private Artifact<?> a;
+	private Obj adapterType;
+	private Obj a;
 
 	@Test
 	public void adapter() {
@@ -49,8 +49,8 @@ public class AdapterTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.adapterType = field("adapter").getArtifact();
-		this.a = field("a").getArtifact();
+		this.adapterType = field("adapter").toObject();
+		this.a = field("a").toObject();
 	}
 
 }

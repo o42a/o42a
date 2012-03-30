@@ -24,14 +24,13 @@ import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueType;
@@ -86,7 +85,7 @@ public final class Adapter extends PathFragment implements LocationInfo {
 
 	private Path path(Scope start) {
 
-		final ObjectType objectType = start.getArtifact().materialize().type();
+		final ObjectType objectType = start.toObject().type();
 
 		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
 			return Path.SELF_PATH;
@@ -116,15 +115,8 @@ public final class Adapter extends PathFragment implements LocationInfo {
 			return false;
 		}
 
-		final Artifact<?> artifact = start.getArtifact();
-		final TypeRef typeRef = artifact.getTypeRef();
-		final ValueType<?> valueType;
-
-		if (typeRef != null) {
-			valueType = typeRef.getValueType();
-		} else {
-			valueType = artifact.toObject().value().getValueType();
-		}
+		final Obj object = start.toObject();
+		final ValueType<?> valueType = object.value().getValueType();
 
 		return valueType.isVoid();
 	}

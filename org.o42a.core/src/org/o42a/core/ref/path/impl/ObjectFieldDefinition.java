@@ -44,7 +44,7 @@ public final class ObjectFieldDefinition extends FieldDefinition {
 			return false;
 		}
 
-		final Obj object = resolution.getArtifact().toObject();
+		final Obj object = resolution.getObject().toObject();
 
 		if (object == null) {
 			return false;
