@@ -22,8 +22,6 @@ package org.o42a.core.ref;
 import static org.o42a.core.ref.RefUsage.*;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
@@ -91,31 +89,23 @@ public final class Resolution implements ScopeInfo {
 		return getResolved().toClause();
 	}
 
-	public final Artifact<?> toArtifact() {
-		return getResolved().toArtifact();
-	}
-
 	public final Obj toObject() {
 		return getResolved().toObject();
 	}
 
-	public final Link toLink() {
-		return toArtifact().toLink();
-	}
-
 	public Directive toDirective() {
 
-		final Obj materialized = materialize();
+		final Obj object = toObject();
 
-		if (materialized == null) {
+		if (object == null) {
 			return null;
 		}
-		if (materialized.value().getValueType() != ValueType.DIRECTIVE) {
+		if (object.value().getValueType() != ValueType.DIRECTIVE) {
 			return null;
 		}
 
 		final Value<Directive> value = ValueStruct.DIRECTIVE.cast(
-				materialized.value().explicitUseBy(getResolver()).getValue());
+				object.value().explicitUseBy(getResolver()).getValue());
 
 		if (!value.getKnowledge().isKnown()) {
 			getResolver().getLogger().error(
@@ -126,17 +116,6 @@ public final class Resolution implements ScopeInfo {
 		}
 
 		return value.getCompilerValue();
-	}
-
-	public final Obj materialize() {
-
-		final Artifact<?> artifact = toArtifact();
-
-		if (artifact == null) {
-			return null;
-		}
-
-		return artifact.materialize();
 	}
 
 	public final Resolution resolveContainer() {

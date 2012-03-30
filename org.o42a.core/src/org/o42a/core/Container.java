@@ -19,7 +19,6 @@
 */
 package org.o42a.core;
 
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -37,8 +36,6 @@ public interface Container extends ScopeInfo {
 	Container getParentContainer();
 
 	Member toMember();
-
-	Artifact<?> toArtifact();
 
 	Obj toObject();
 

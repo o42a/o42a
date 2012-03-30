@@ -36,7 +36,7 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.InlineValue;
@@ -116,7 +116,7 @@ public final class False extends BuiltinObject {
 		return new FalseScope(topScope.getContext(), topScope.distribute());
 	}
 
-	private static final class FalseScope extends ObjectScope {
+	private static final class FalseScope extends StandaloneObjectScope {
 
 		FalseScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);

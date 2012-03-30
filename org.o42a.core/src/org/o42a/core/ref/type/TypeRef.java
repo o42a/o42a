@@ -30,7 +30,6 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
@@ -206,13 +205,6 @@ public abstract class TypeRef implements ScopeInfo {
 		return getContext().getLogger();
 	}
 
-	public final Artifact<?> artifact(UserInfo user) {
-
-		final Resolution resolution = resolve(getScope().newResolver(user));
-
-		return resolution.isError() ? null : resolution.toArtifact();
-	}
-
 	public final Resolution resolve(Resolver resolver) {
 		return getRef().resolve(resolver);
 	}
@@ -229,14 +221,14 @@ public abstract class TypeRef implements ScopeInfo {
 			return type != null ? type.useBy(user) : null;
 		}
 
-		final Artifact<?> artifact = artifact(user);
+		final Resolution resolution = resolve(getScope().newResolver(user));
 
-		if (artifact == null) {
+		if (resolution.isError()) {
 			this.type = new Holder<ObjectType>(null);
 			return null;
 		}
 
-		final Obj object = artifact.materialize();
+		final Obj object = resolution.toObject();
 
 		if (object == null) {
 			getScope().getLogger().notTypeRef(this);

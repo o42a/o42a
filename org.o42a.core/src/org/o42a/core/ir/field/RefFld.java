@@ -31,9 +31,6 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.*;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.link.Link;
-import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
@@ -67,10 +64,6 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	public final boolean isLink() {
 		return getKind() != FldKind.OBJ;
-	}
-
-	public final boolean isSimulatedLink() {
-		return isLink() && getField().toObject() != null;
 	}
 
 	public final Obj getTarget() {
@@ -117,7 +110,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			this.constructor = reusedConstructor;
 			return;
 		}
-		if (!isSimulatedLink()) {
+		if (!isLink()) {
 
 			final FieldAnalysis analysis = getField().getAnalysis();
 
@@ -153,17 +146,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	protected ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
 
-		final Artifact<?> artifact = getField().getArtifact();
-		final Obj object = artifact.toObject();
+		final Obj object = getField().toObject();
 
-		if (object == null) {
-
-			final Link link = artifact.toLink();
-			final HostOp target =
-					link.getTargetRef().target(dirs, builder.host());
-
-			return target.materialize(dirs);
-		}
 		if (isLink()) {
 
 			final ObjectValue objectValue = object.value();
@@ -182,18 +166,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	protected final Obj targetType(Obj bodyType) {
 
-		final Artifact<?> artifact =
+		final Obj object =
 				bodyType.member(getField().getKey())
 				.toField()
-				.artifact(dummyUser());
-		final Obj object = artifact.toObject();
+				.object(dummyUser());
 
-		if (object == null) {
-
-			final Link link = artifact.toLink();
-
-			return link.getTypeRef().typeObject(dummyUser());
-		}
 		if (isLink()) {
 
 			final LinkValueStruct linkStruct =

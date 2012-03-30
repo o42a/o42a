@@ -26,34 +26,25 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopePlace;
-import org.o42a.core.artifact.ArtifactScope;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.object.ObjectFieldIR;
-import org.o42a.core.member.*;
+import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.Visibility;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Field extends ArtifactScope<Obj> {
+public abstract class Field extends ObjectScope {
 
 	public static Field fieldOf(Scope scope) {
-
-		final Field field = scope.toField();
-
-		if (field != null) {
-			return field;
-		}
-
-		final Obj object = scope.toObject();
-
-		return object.getMaterializationOf().getScope().toField();
+		return scope.toField();
 	}
 
 	private final MemberField member;
-	private Path enclosingScopePath;
 	private Field[] overridden;
 
 	private FieldIR ir;
@@ -82,34 +73,6 @@ public abstract class Field extends ArtifactScope<Obj> {
 		return this.member.getContainer();
 	}
 
-	@Override
-	public Path getEnclosingScopePath() {
-		if (this.enclosingScopePath != null) {
-			return this.enclosingScopePath;
-		}
-		if (getEnclosingContainer().getScope().isTopScope()) {
-			return null;
-		}
-
-		final Obj object = getArtifact().toObject();
-
-		if (object == null) {
-			return null;
-		}
-
-		return this.enclosingScopePath = object.scopePath();
-	}
-
-	@Override
-	public final MemberContainer getContainer() {
-		return toObject();
-	}
-
-	@Override
-	public final Obj getArtifact() {
-		return toObject();
-	}
-
 	public boolean isScopeField() {
 		return false;
 	}
@@ -135,17 +98,12 @@ public abstract class Field extends ArtifactScope<Obj> {
 	 *
 	 * @return field, first declared by <code>:=</code>.
 	 */
-	public Field getOriginal() {
+	public final Field getOriginal() {
 
 		final MemberKey key = getKey();
 		final Member member = key.getOrigin().getContainer().member(key);
-		final Field original = member.toField().field(dummyUser());
 
-		assert original.getArtifact().getKind() == getArtifact().getKind() :
-			"Wrong " + this + " artifact kind: " + getArtifact().getKind()
-			+ ", while original had " + original.getArtifact().getKind();
-
-		return original;
+		return member.toField().field(dummyUser());
 	}
 
 	/**

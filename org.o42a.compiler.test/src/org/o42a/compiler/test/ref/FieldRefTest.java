@@ -39,7 +39,7 @@ public class FieldRefTest extends CompilerTestCase {
 				"A := void(Foo := 1).",
 				"B := &a: foo.");
 
-		final Obj foo = field(this.a, "foo").getArtifact().toObject();
+		final Obj foo = field(this.a, "foo").toObject();
 
 		assertTrue(this.b.type().inherits(foo.type()));
 		assertEquals(definiteValue(this.b), 1L);
@@ -51,7 +51,7 @@ public class FieldRefTest extends CompilerTestCase {
 				"A := void(Foo := 1).",
 				"B := a: foo");
 
-		final Obj foo = field(this.a, "foo").getArtifact().toObject();
+		final Obj foo = field(this.a, "foo").toObject();
 
 		assertTrue(this.b.type().inherits(foo.type()));
 		assertEquals(definiteValue(this.b), 1L);
@@ -63,7 +63,7 @@ public class FieldRefTest extends CompilerTestCase {
 				"A := void(Foo := 1).",
 				"B := * & a: foo");
 
-		final Obj foo = field(this.a, "foo").getArtifact().materialize();
+		final Obj foo = field(this.a, "foo").toObject();
 
 		assertFalse(this.b.type().inherits(foo.type()));
 		assertTrue(this.b.type().inherits(
@@ -77,8 +77,8 @@ public class FieldRefTest extends CompilerTestCase {
 				"A := void(Foo := 1).",
 				"B := void(Bar := a: foo)");
 
-		final Obj foo = field(this.a, "foo").getArtifact().toObject();
-		final Obj bar = field(this.b, "bar").getArtifact().toObject();
+		final Obj foo = field(this.a, "foo").toObject();
+		final Obj bar = field(this.b, "bar").toObject();
 
 		assertTrue(bar.type().inherits(foo.type()));
 		assertEquals(definiteValue(bar), 1L);
@@ -91,10 +91,10 @@ public class FieldRefTest extends CompilerTestCase {
 				"B := void(Bar := a: foo).",
 				"C := b(Bar = a: foo(= 2))");
 
-		final Obj c = field("c").getArtifact().toObject();
+		final Obj c = field("c").toObject();
 
-		final Obj foo = field(this.a, "foo").getArtifact().toObject();
-		final Obj bar = field(c, "bar").getArtifact().toObject();
+		final Obj foo = field(this.a, "foo").toObject();
+		final Obj bar = field(c, "bar").toObject();
 
 		assertTrue(bar.type().derivedFrom(foo.type()));
 		assertEquals(definiteValue(bar), 2L);
@@ -103,8 +103,8 @@ public class FieldRefTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.a = field("a").getArtifact().toObject();
-		this.b = field("b").getArtifact().toObject();
+		this.a = field("a").toObject();
+		this.b = field("b").toObject();
 	}
 
 }

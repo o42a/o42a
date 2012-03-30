@@ -112,9 +112,7 @@ public class LinkUses {
 			return;
 		}
 
-		uses().useBy(
-				field.field(dummyUser()).getArtifact().content(),
-				LINK_FIELD_CHANGES);
+		uses().useBy(field.object(dummyUser()).content(), LINK_FIELD_CHANGES);
 	}
 
 	private final Usable<LinkUsage> uses() {

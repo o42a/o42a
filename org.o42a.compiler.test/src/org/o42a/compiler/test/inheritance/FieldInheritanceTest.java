@@ -164,9 +164,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
-		this.a = field("a").getArtifact().toObject();
-		this.b = field("b").getArtifact().toObject();
-		this.c = field("c").getArtifact().toObject();
+		this.a = field("a").toObject();
+		this.b = field("b").toObject();
+		this.c = field("c").toObject();
 	}
 
 }

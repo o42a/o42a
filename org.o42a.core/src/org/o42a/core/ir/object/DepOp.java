@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
@@ -78,12 +77,11 @@ public class DepOp extends IROp implements HostOp {
 	public ObjectOp materialize(CodeDirs dirs) {
 
 		final Code code = dirs.code();
-		final Artifact<?> target = getDep().getDepTarget();
 
 		return anonymousObject(
 				getBuilder(),
 				ptr().object(code).load(null, code),
-				target.materialize());
+				getDep().getDepTarget());
 	}
 
 	@Override

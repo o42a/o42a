@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
@@ -45,8 +44,6 @@ public interface Scope extends PlaceInfo {
 
 	@Override
 	MemberContainer getContainer();
-
-	Artifact<?> getArtifact();
 
 	Scope getEnclosingScope();
 

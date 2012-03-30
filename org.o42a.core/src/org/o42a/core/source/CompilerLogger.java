@@ -19,7 +19,6 @@
 */
 package org.o42a.core.source;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
@@ -56,10 +55,6 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void abstractValue(LogInfo location) {
-		error("abstract_value", location, "Abstract value access");
-	}
-
 	public void ambiguousClause(LogInfo location, String clauseName) {
 		error(
 				"ambiguous_clause",
@@ -74,10 +69,6 @@ public class CompilerLogger implements Logger {
 				location,
 				"Member '%s' declaration is ambiguous",
 				fieldName);
-	}
-
-	public void ambiguousValue(LogInfo location) {
-		error("ambiguous_value", location, "Ambiguous value declaration");
 	}
 
 	public void arithmeticError(LogInfo location, String message) {
@@ -116,10 +107,6 @@ public class CompilerLogger implements Logger {
 		error("expected_clause_name", location, "Clause name expected here");
 	}
 
-	public void expectedDefinition(LogInfo location) {
-		error("expected_definition", location, "Definition expected here");
-	}
-
 	public void forbiddenAccess(LogInfo location, Object target) {
 		error(
 				"forbidden_access",
@@ -147,10 +134,6 @@ public class CompilerLogger implements Logger {
 		error("indefinite_value", location, "Indefinite value access");
 	}
 
-	public void invalidArtifact(LogInfo location) {
-		error("invalid_artifact", location, "Artifact is not valid");
-	}
-
 	public void invalidClause(LogInfo location) {
 		error("invalid_clause", location, "Invalid clause");
 	}
@@ -163,24 +146,8 @@ public class CompilerLogger implements Logger {
 		error("invalid_declaration", location, "Invalid declaration");
 	}
 
-	public void invalidDefinition(LogInfo location) {
-		error("invalid_definition", location, "Not a valid member definition");
-	}
-
 	public void invalidExpression(LogInfo location) {
 		error("invalid_expression", location, "Not a valid expression");
-	}
-
-	public void invalidInteger(LogInfo location, String reason) {
-		error(
-				"invalid_integer",
-				location,
-				"Invalid integer literal %s ",
-				reason);
-	}
-
-	public void invalidPhrasePrefix(LogInfo location) {
-		error("invalid_phrase_prefix", location, "Invalid phrase prefix");
 	}
 
 	public void invalidReference(LogInfo location) {
@@ -193,10 +160,6 @@ public class CompilerLogger implements Logger {
 
 	public void invalidType(LogInfo location) {
 		error("invalid_type", location, "Not a valid type reference");
-	}
-
-	public void noClauseTarget(LogInfo location) {
-		error("no_clause_target", location, "Clause has no target");
 	}
 
 	public void noDefinition(LogInfo location) {
@@ -218,17 +181,6 @@ public class CompilerLogger implements Logger {
 		error("not_adapter", location, "Adapter declaration expected");
 	}
 
-	public void notArrayItemInitializer(LogInfo location) {
-		error(
-				"not_array_item_initializer",
-				location,
-				"Array item initializer expected");
-	}
-
-	public void notArtifact(LogInfo location) {
-		error("not_artifact", location, "Not an artifact");
-	}
-
 	public void notClause(LogInfo location) {
 		error("not_clause", location, "Not clause");
 	}
@@ -243,10 +195,6 @@ public class CompilerLogger implements Logger {
 
 	public void notDerivedFrom(LogInfo location, Object ascendant) {
 		error("not_deried_from", location, "Not derived from %s", ascendant);
-	}
-
-	public void notFloat(LogInfo location, String literal) {
-		error("not_float", location, "Not a floating point value: %s", literal);
 	}
 
 	public void notInteger(LogInfo location, String literal) {
@@ -267,13 +215,6 @@ public class CompilerLogger implements Logger {
 
 	public void notObject(LogInfo location, Object target) {
 		error("not_object", location, "%s is not an object", target);
-	}
-
-	public void notObjectDeclaration(LogInfo location) {
-		error(
-				"not_object_declaration",
-				location,
-				"Object declaration expected");
 	}
 
 	public void notTypeRef(LogInfo location) {
@@ -317,26 +258,12 @@ public class CompilerLogger implements Logger {
 				"Ellipsis is only allowed within imperative block");
 	}
 
-	public void prohibitedDefinition(LogInfo location) {
-		error(
-				"prohibited_definition",
-				location,
-				"Definition is prohibited here");
-	}
-
 	public void prohibitedDirective(LogInfo location, String directiveName) {
 		error(
 				"prohibited_directive",
 				location,
 				"Directive '%s' is prohibited here",
 				directiveName);
-	}
-
-	public void prohibitedLinkType(LogInfo location) {
-		error(
-				"prohibited_link_type",
-				location,
-				"Link type is not expected here");
 	}
 
 	public void prohibitedLocal(LogInfo location) {
@@ -381,35 +308,12 @@ public class CompilerLogger implements Logger {
 				"Field can not be declared as prototype");
 	}
 
-	public void prohibitedVariableType(LogInfo location) {
-		error(
-				"prohibited_variable_type",
-				location,
-				"Variable type is not expected here");
-	}
-
 	public void recursiveResolution(LogInfo location, Object resolvable) {
 		error(
 				"recursive_resolution",
 				location,
 				"Infinite recursion when resolving %s",
 				resolvable);
-	}
-
-	public void requiredInitializer(LogInfo location) {
-		error("required_initializer", location, "Initializer required here");
-	}
-
-	public void unavailableSource(
-			LogInfo location,
-			String sourceName,
-			String reason) {
-		error(
-				"unavailable_source",
-				location,
-				"Source '%s' can not be opened: %s",
-				sourceName,
-				reason);
 	}
 
 	public void unexpectedAbstract(LogInfo location) {
@@ -423,35 +327,11 @@ public class CompilerLogger implements Logger {
 		error("unexpected_adapter", location, "Unexpected adapter declaration");
 	}
 
-	public void unexpectedArrayDimension(
-			LogInfo location,
-			int actual,
-			int expected) {
-		error(
-				"unexpected_array_dimension",
-				location,
-				"Unexpected array dimension: %d, but %d expected",
-				actual,
-				expected);
-	}
-
 	public void unexpectedPrototype(LogInfo location) {
 		error(
 				"unexpected_prototype",
 				location,
 				"Unexpected prototype declaration");
-	}
-
-	public void unexpectedType(
-			LogInfo location,
-			Object actual,
-			Object expected) {
-		error(
-				"unexpected_type",
-				location,
-				"Unexpected type: %s, but %s expected",
-				actual,
-				expected);
 	}
 
 	public void unexpectedVisibility(
@@ -482,18 +362,6 @@ public class CompilerLogger implements Logger {
 				location,
 				"Value of '%s' can not be resolved",
 				valuable);
-	}
-
-	public void wrongArtifactKind(
-			LogInfo location,
-			ArtifactKind<?> actual,
-			ArtifactKind<?> expected) {
-		error(
-				"wrong_artifact_kind",
-				location,
-				"Wrong kind of artifact: %s, but %s expected",
-				actual,
-				expected);
 	}
 
 	public final void error(

@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.DepKind;
@@ -59,7 +58,7 @@ public final class EnclosingOwnerDep extends Dep {
 	}
 
 	@Override
-	public final Artifact<?> getDepTarget() {
+	public final Obj getDepTarget() {
 		return this.target;
 	}
 

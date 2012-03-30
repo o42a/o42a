@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.o42a.analysis.use.UserInfo;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -210,11 +209,6 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public boolean isTopScope() {
 		return false;
-	}
-
-	@Override
-	public Artifact<?> getArtifact() {
-		return getContainer().toArtifact();
 	}
 
 	@Override

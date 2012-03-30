@@ -21,7 +21,6 @@ package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldBuilder;
@@ -36,11 +35,6 @@ public final class DeclaredMemberField extends MemberField {
 	public DeclaredMemberField(FieldBuilder builder) {
 		super(builder.getMemberOwner(), builder.getDeclaration());
 		this.builder = builder;
-	}
-
-	@Override
-	public ArtifactKind<?> getArtifactKind() {
-		return ArtifactKind.OBJECT;
 	}
 
 	@Override

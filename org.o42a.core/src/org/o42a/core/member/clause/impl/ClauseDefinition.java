@@ -174,18 +174,9 @@ final class ClauseDefinition extends Obj {
 		final Container substance = overridden.substance(dummyUser());
 		final Obj object = substance.toObject();
 
-		if (object == null) {
-			ascendants = ascendants.setAncestor(
-					substance.toArtifact().getTypeRef()
-					.upgradeScope(getScope().getEnclosingScope()));
-		} else {
-			ascendants = ascendants.addMemberOverride(overridden);
-		}
+		ascendants = ascendants.addMemberOverride(overridden);
 		if (toClause().isSubstitution()) {
 			return ascendants;
-		}
-		if (object == null) {
-			return toClause().getAscendants().updateAscendants(ascendants);
 		}
 		if (!object.value().getValueType().isLink()) {
 			return toClause().getAscendants().updateAscendants(ascendants);

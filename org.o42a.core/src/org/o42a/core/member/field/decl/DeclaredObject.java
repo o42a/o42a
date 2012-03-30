@@ -75,7 +75,7 @@ class DeclaredObject extends Obj {
 		final MemberField field =
 				enclosing.getContainer().member(this.field.getKey()).toField();
 
-		return field.artifact(dummyUser()).materialize();
+		return field.object(dummyUser());
 	}
 
 }

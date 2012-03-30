@@ -99,7 +99,7 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 			return true;
 		}
 
-		final ObjectIR scopeIR = getField().getArtifact().ir(getGenerator());
+		final ObjectIR scopeIR = getField().toObject().ir(getGenerator());
 
 		return scopeIR.isExact();
 	}

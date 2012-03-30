@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -107,14 +106,7 @@ public abstract class AbstractMemberStep extends Step {
 			int index,
 			Scope start) {
 
-		final Member member;
-		final Artifact<?> artifact = start.getArtifact();
-
-		if (artifact != null) {
-			member = artifact.materialize().member(this.memberKey);
-		} else {
-			member = start.getContainer().member(this.memberKey);
-		}
+		final Member member = start.getContainer().member(this.memberKey);
 
 		if (member == null) {
 			unresolved(path, index, start);

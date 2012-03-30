@@ -28,8 +28,6 @@ import java.util.*;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
@@ -89,8 +87,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	public final FieldDeclaration getDeclaration() {
 		return this.declaration;
 	}
-
-	public abstract ArtifactKind<?> getArtifactKind();
 
 	@Override
 	public final Visibility getVisibility() {
@@ -162,8 +158,8 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return this.field;
 	}
 
-	public final Artifact<?> artifact(UserInfo user) {
-		return field(user).getArtifact();
+	public final Obj object(UserInfo user) {
+		return field(user).toObject();
 	}
 
 	@Override
@@ -223,10 +219,10 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public void resolveAll() {
 
-		final Artifact<?> artifact = artifact(dummyUser());
+		final Obj object = object(dummyUser());
 
-		getAnalysis().registerArtifact(artifact);
-		artifact.resolveAll();
+		getAnalysis().registerObject(object);
+		object.resolveAll();
 		if (isOverride() && !isClone()) {
 			registerAsReplacement();
 		}

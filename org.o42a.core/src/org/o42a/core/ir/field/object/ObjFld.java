@@ -45,7 +45,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final Type OBJ_FLD = new Type();
 
 	public ObjFld(ObjectBodyIR bodyIR, Field field) {
-		super(bodyIR, field, field.getArtifact());
+		super(bodyIR, field, field.toObject());
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				dirs,
 				builder.host(),
 				ancestor,
-				getField().getArtifact().toObject());
+				getField().toObject());
 	}
 
 	public static final class Op extends RefFld.Op<Op, ObjectConstructorFunc> {

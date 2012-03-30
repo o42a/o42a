@@ -20,7 +20,6 @@
 package org.o42a.core.object.link;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -96,11 +95,6 @@ public abstract class ObjectLink
 
 	@Override
 	public final Member toMember() {
-		return null;
-	}
-
-	@Override
-	public final Artifact<?> toArtifact() {
 		return null;
 	}
 

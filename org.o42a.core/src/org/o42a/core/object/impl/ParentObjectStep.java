@@ -58,7 +58,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 			Scope start,
 			PathWalker walker) {
 
-		final Obj object = start.getArtifact().materialize();
+		final Obj object = start.toObject();
 
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver, path, index);

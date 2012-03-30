@@ -22,7 +22,6 @@ package org.o42a.core.member.field.impl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
-import org.o42a.core.artifact.ArtifactKind;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
@@ -46,11 +45,6 @@ public abstract class OverriddenMemberField<F extends Field>
 				owner,
 				propagatedFrom);
 		this.propagatedFrom = propagatedFrom;
-	}
-
-	@Override
-	public final ArtifactKind<?> getArtifactKind() {
-		return getPropagatedFrom().getArtifactKind();
 	}
 
 	@Override

@@ -21,11 +21,12 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.*;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.DEREF_ASSIGNMENT;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.VALUE_ASSIGNMENT;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -149,28 +150,22 @@ public class AssignmentStatement extends Statement {
 
 		final Obj object = destResolution.toObject();
 
-		if (object != null) {
-
-			final ObjectLink dereferencedLink = object.getDereferencedLink();
-
-			if (dereferencedLink != null && dereferencedLink.isSynthetic()) {
-				return this.assignmentKind = derefAssignment(dereferencedLink);
-			}
-
-			return this.assignmentKind = valueAssignment(object);
-		}
-
-		final Link link = destResolution.toLink();
-
-		if (link == null || !link.isVariable()) {
+		if (object == null) {
 			getLogger().error(
 					"not_variable_assigned",
 					this.destination,
 					"Can only assign to variable");
+
 			return this.assignmentKind = ASSIGNMENT_ERROR;
 		}
 
-		return this.assignmentKind = variableAssignment();
+		final ObjectLink dereferencedLink = object.getDereferencedLink();
+
+		if (dereferencedLink != null && dereferencedLink.isSynthetic()) {
+			return this.assignmentKind = derefAssignment(dereferencedLink);
+		}
+
+		return this.assignmentKind = valueAssignment(object);
 	}
 
 	private AssignmentKind derefAssignment(ObjectLink destination) {
@@ -219,18 +214,6 @@ public class AssignmentStatement extends Statement {
 		}
 
 		return VALUE_ASSIGNMENT;
-	}
-
-	private AssignmentKind variableAssignment() {
-
-		final TypeRef variableTypeRef =
-				this.destination.ancestor(this.destination);
-
-		if (!this.value.toTypeRef().checkDerivedFrom(variableTypeRef)) {
-			return ASSIGNMENT_ERROR;
-		}
-
-		return VARIABLE_ASSIGNMENT;
 	}
 
 	private static final class AssignmentDefiner extends Definer {

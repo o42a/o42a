@@ -171,7 +171,7 @@ public final class ParentLocalStep extends Step {
 		return new OpaqueLocalOp(start);
 	}
 
-	private final ObjectArtifact object() {
+	private final ObjectBase object() {
 		return this.object;
 	}
 

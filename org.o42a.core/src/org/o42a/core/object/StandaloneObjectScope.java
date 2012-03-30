@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,22 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.object;
+
+import static org.o42a.core.ref.impl.prediction.ObjectPrediction.predictObject;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Container;
-import org.o42a.core.Distributor;
-import org.o42a.core.ScopePlace;
+import org.o42a.core.*;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class StandaloneArtifactScope<A extends Artifact<A>>
-		extends ArtifactScope<A> {
+public abstract class StandaloneObjectScope extends ObjectScope {
 
 	private final CompilerContext context;
 	private final Loggable loggable;
@@ -41,7 +41,7 @@ public abstract class StandaloneArtifactScope<A extends Artifact<A>>
 
 	private ScopeIR ir;
 
-	public StandaloneArtifactScope(
+	protected StandaloneObjectScope(
 			LocationInfo location,
 			Distributor enclosing) {
 		this.context = location.getContext();
@@ -66,14 +66,21 @@ public abstract class StandaloneArtifactScope<A extends Artifact<A>>
 	}
 
 	@Override
-	public A getArtifact() {
+	public StandaloneObjectScope getFirstDeclaration() {
 
-		final A artifact = getScopeArtifact();
+		final Obj propagatedFrom = toObject().getPropagatedFrom();
 
-		assert artifact != null :
-			"Scope " + this + " not initialized yet";
+		if (propagatedFrom == null) {
+			return this;
+		}
 
-		return artifact;
+		return (StandaloneObjectScope) propagatedFrom.getScope()
+				.getFirstDeclaration();
+	}
+
+	@Override
+	public StandaloneObjectScope getLastDefinition() {
+		return getFirstDeclaration();
 	}
 
 	@Override
@@ -89,6 +96,37 @@ public abstract class StandaloneArtifactScope<A extends Artifact<A>>
 	@Override
 	public final Field toField() {
 		return null;
+	}
+
+	@Override
+	public Obj toObject() {
+
+		final Obj object = getScopeObject();
+
+		assert object != null :
+			"Scope " + this + " not initialized yet";
+
+		return object;
+	}
+
+	@Override
+	public final Prediction predict(Prediction enclosing) {
+		return predictObject(enclosing, toObject());
+	}
+
+	@Override
+	public boolean derivedFrom(Scope other) {
+		if (this == other) {
+			return true;
+		}
+
+		final Obj otherObject = other.toObject();
+
+		if (otherObject == null) {
+			return false;
+		}
+
+		return toObject().type().derivedFrom(otherObject.type());
 	}
 
 	@Override

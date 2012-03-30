@@ -50,7 +50,7 @@ public final class ObjectFieldIR extends FieldIR {
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
 
-		final Obj object = getField().getArtifact();
+		final Obj object = getField().toObject();
 
 		return object.ir(getGenerator()).op(builder, code);
 	}
@@ -66,7 +66,7 @@ public final class ObjectFieldIR extends FieldIR {
 
 		final ObjFld fld = new ObjFld(bodyIR, getField());
 
-		fld.allocate(data, getField().getArtifact());
+		fld.allocate(data, getField().toObject());
 
 		return fld;
 	}
@@ -104,7 +104,7 @@ public final class ObjectFieldIR extends FieldIR {
 		if (defTarget.isUnknown()) {
 			target = ascendant;
 		} else {
-			target = defTarget.getRef().getResolution().materialize();
+			target = defTarget.getRef().getResolution().toObject();
 		}
 
 		final RefFld<?> fld;

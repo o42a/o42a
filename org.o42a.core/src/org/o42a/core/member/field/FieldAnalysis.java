@@ -28,7 +28,6 @@ import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.DerivationUsage;
 
@@ -95,12 +94,12 @@ public class FieldAnalysis {
 		return "FieldAnalysis[" + this.member + ']';
 	}
 
-	final void registerArtifact(Artifact<?> artifact) {
+	final void registerObject(Obj object) {
 
 		final MemberFieldUses uses = uses();
 
-		uses.useBy(artifact.content().toUser(), SUBSTANCE_USAGE);
-		uses.useBy(artifact.fieldUses(), NESTED_USAGE);
+		uses.useBy(object.content().toUser(), SUBSTANCE_USAGE);
+		uses.useBy(object.fieldUses(), NESTED_USAGE);
 	}
 
 	final MemberFieldUses uses() {
@@ -159,8 +158,7 @@ public class FieldAnalysis {
 				owner.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
 
-		final Obj target =
-				member.substance(dummyUser()).toArtifact().materialize();
+		final Obj target = member.substance(dummyUser()).toObject();
 
 		if (target.getConstructionMode().isRuntime()) {
 			this.derivationUses.useBy(

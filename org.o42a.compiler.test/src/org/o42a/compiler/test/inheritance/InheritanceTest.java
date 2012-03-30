@@ -44,9 +44,9 @@ public class InheritanceTest extends CompilerTestCase {
 				"A := integer(= 1. Foo := 123456).",
 				"B := a(= 2. Foo = 1234567).",
 				"C := b().");
-		this.a = field("a").getArtifact().toObject();
-		this.b = field("b").getArtifact().toObject();
-		this.c = field("c").getArtifact().toObject();
+		this.a = field("a").toObject();
+		this.b = field("b").toObject();
+		this.c = field("c").toObject();
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class InheritanceTest extends CompilerTestCase {
 		assertThat(aFoo, notNullValue());
 		assertFalse(aFoo.isPropagated());
 		assertThat(
-				aFoo.getArtifact().toObject().type()
+				aFoo.toObject().type()
 				.getAncestor().typeObject(USE_CASE),
 				is(this.context.getIntrinsics().getInteger()));
 	}
@@ -96,9 +96,9 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertFalse(bFoo.isPropagated());
 		assertTrue(
-				bFoo.getArtifact().toObject().type()
+				bFoo.toObject().type()
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type(),
+						aFoo.toObject().type(),
 						MEMBER_OVERRIDE));
 	}
 
@@ -111,14 +111,14 @@ public class InheritanceTest extends CompilerTestCase {
 
 		assertTrue(cFoo.isPropagated());
 		assertTrue(
-				cFoo.getArtifact().toObject().type()
+				cFoo.toObject().type()
 				.derivedFrom(
-						aFoo.getArtifact().toObject().type(),
+						aFoo.toObject().type(),
 						MEMBER_OVERRIDE));
 		assertTrue(
-				cFoo.getArtifact().toObject().type()
+				cFoo.toObject().type()
 				.derivedFrom(
-						bFoo.getArtifact().toObject().type(),
+						bFoo.toObject().type(),
 						MEMBER_OVERRIDE));
 	}
 

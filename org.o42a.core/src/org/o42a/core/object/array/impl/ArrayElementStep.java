@@ -85,7 +85,7 @@ final class ArrayElementStep extends Step {
 		}
 
 		final Ref indexRef = indexRef(path);
-		final Obj array = start.getArtifact().materialize();
+		final Obj array = start.toObject();
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
@@ -112,7 +112,7 @@ final class ArrayElementStep extends Step {
 		}
 
 		final ObjectValue indexValue =
-				indexResolution.materialize().value().explicitUseBy(resolver);
+				indexResolution.toObject().value().explicitUseBy(resolver);
 
 		if (indexValue.getValueType() != ValueType.INTEGER) {
 			this.error = true;

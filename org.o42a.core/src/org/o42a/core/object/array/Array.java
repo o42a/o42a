@@ -219,7 +219,7 @@ public final class Array extends Placed {
 			if (!runtime) {
 
 				final Obj itemObject =
-						item.getValueRef().getResolution().materialize();
+						item.getValueRef().getResolution().toObject();
 
 				if (itemObject.getConstructionMode().isRuntime()) {
 					runtime = true;

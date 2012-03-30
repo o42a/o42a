@@ -24,8 +24,6 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
@@ -108,7 +106,7 @@ public abstract class LinkData<L extends ObjectLink> implements PlaceInfo {
 			return UNKNOWN_VALUE;
 		}
 
-		final Obj target = resolution.materialize();
+		final Obj target = resolution.toObject();
 
 		if (target == null) {
 			return UNKNOWN_VALUE;
@@ -135,14 +133,11 @@ public abstract class LinkData<L extends ObjectLink> implements PlaceInfo {
 			return new RtLinkTarget(getLink());
 		}
 
-		final Artifact<?> artifact = getTargetRef().artifact(dummyUser());
+		final Obj target = getTargetRef().target(dummyUser());
 
-		if (artifact == null) {
+		if (target == null) {
 			return getContext().getFalse();
 		}
-
-		final Obj target = artifact.materialize();
-
 		if (target.getConstructionMode().isRuntime()) {
 			return new RtLinkTarget(getLink());
 		}

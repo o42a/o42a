@@ -27,11 +27,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.object.ObjectScope;
+import org.o42a.core.object.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
 
 
-final class RootScope extends ObjectScope {
+final class RootScope extends StandaloneObjectScope {
 
 	RootScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);

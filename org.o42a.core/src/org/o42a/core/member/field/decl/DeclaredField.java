@@ -50,7 +50,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	protected DeclaredField(MemberField member, Field propagatedFrom) {
 		super(member);
-		setScopeArtifact(new PropagatedObject(this));
+		setScopeObject(new PropagatedObject(this));
 	}
 
 	@Override
@@ -82,20 +82,18 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	@Override
 	public Obj toObject() {
-		if (getScopeArtifact() == null) {
+		if (getScopeObject() == null) {
 			if (!getKey().isValid()) {
 
 				final Obj falseObject = getContext().getFalse();
 
-				setScopeArtifact(falseObject);
-			} else if (isOverride()) {
-				setScopeArtifact(overrideArtifact());
+				setScopeObject(falseObject);
 			} else {
-				setScopeArtifact(declareArtifact());
+				setScopeObject(new DeclaredObject(this));
 			}
 		}
 
-		return getScopeArtifact();
+		return getScopeObject();
 	}
 
 	public final boolean ownsCompilerContext() {
@@ -123,14 +121,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 				variant(variant.getDeclaration(), variant.getDefinition());
 
 		newVariant.setStatement(variant.getStatement());
-	}
-
-	protected Obj declareArtifact() {
-		return new DeclaredObject(this);
-	}
-
-	protected Obj overrideArtifact() {
-		return new DeclaredObject(this);
 	}
 
 	@Override
@@ -223,7 +213,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 			if (owner != null) {
 				return owner;
 			}
-			return setOwner(getArtifact());
+			return setOwner(toObject());
 		}
 
 	}

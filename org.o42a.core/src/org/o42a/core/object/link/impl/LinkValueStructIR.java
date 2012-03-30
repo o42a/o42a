@@ -47,7 +47,7 @@ public class LinkValueStructIR
 				value.getTargetRef()
 				.getRef()
 				.getResolution()
-				.materialize();
+				.toObject();
 		final ObjectIR targetIR = target.ir(getGenerator());
 		final Ptr<ObjectBodyIR.Op> mainBodyPtr =
 				targetIR.getMainBodyIR().pointer(getGenerator());

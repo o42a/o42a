@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.artifact;
+package org.o42a.core.object;
 
 import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
@@ -26,19 +26,19 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 
 
-public class ArtifactContent implements UserInfo {
+public class ObjectContent implements UserInfo {
 
-	private final Artifact<?> artifact;
+	private final Obj object;
 	private Usable<SimpleUsage> usable;
 	private final boolean clonesContent;
 
-	ArtifactContent(Artifact<?> artifact, boolean clonesContent) {
-		this.artifact = artifact;
+	ObjectContent(Obj object, boolean clonesContent) {
+		this.object = object;
 		this.clonesContent = clonesContent;
 	}
 
-	public final Artifact<?> getArtifact() {
-		return this.artifact;
+	public final Obj getObject() {
+		return this.object;
 	}
 
 	@Override
@@ -70,14 +70,14 @@ public class ArtifactContent implements UserInfo {
 
 	@Override
 	public String toString() {
-		if (this.artifact == null) {
+		if (this.object == null) {
 			return super.toString();
 		}
 
 		final StringBuilder out = new StringBuilder();
 
 		out.append(this.clonesContent ? "ClonesContent[" : "Content[");
-		out.append(this.artifact).append(']');
+		out.append(this.object).append(']');
 
 		return out.toString();
 	}

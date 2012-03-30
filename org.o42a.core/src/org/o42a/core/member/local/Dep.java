@@ -21,7 +21,6 @@ package org.o42a.core.member.local;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
@@ -71,7 +70,7 @@ public abstract class Dep extends Step {
 
 	public abstract Object getDepKey();
 
-	public abstract Artifact<?> getDepTarget();
+	public abstract Obj getDepTarget();
 
 	public abstract Ref getDepRef();
 

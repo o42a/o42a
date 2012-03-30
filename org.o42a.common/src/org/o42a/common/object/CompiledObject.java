@@ -148,7 +148,7 @@ public class CompiledObject extends Obj {
 		final MemberField field =
 				enclosing.getContainer().member(getField().getKey()).toField();
 
-		return field.artifact(dummyUser()).materialize();
+		return field.object(dummyUser());
 	}
 
 	protected final boolean reportError(Resolver resolver) {

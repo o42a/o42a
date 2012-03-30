@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.artifact.link.TargetRef.targetRef;
+import static org.o42a.core.object.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
@@ -30,7 +30,6 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Control;
@@ -42,6 +41,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefLogical;
 import org.o42a.core.ref.impl.cond.RefCondition;
@@ -89,7 +89,7 @@ public class Ref extends Statement {
 		}
 
 		final Definitions definitions =
-				getResolution().materialize().value().getDefinitions();
+				getResolution().toObject().value().getDefinitions();
 
 		return definitions.isConstant();
 	}
@@ -117,7 +117,7 @@ public class Ref extends Statement {
 
 		final Resolution resolution = resolve(scope.dummyResolver());
 		final ValueStruct<?, ?> valueStruct =
-				resolution.materialize().value().getValueStruct();
+				resolution.toObject().value().getValueStruct();
 
 		return valueStruct.prefixWith(getPath().toPrefix(scope));
 	}
@@ -149,7 +149,7 @@ public class Ref extends Statement {
 
 	public Value<?> value(Resolver resolver) {
 		return resolve(resolver)
-				.materialize()
+				.toObject()
 				.value()
 				.explicitUseBy(resolver)
 				.getValue()

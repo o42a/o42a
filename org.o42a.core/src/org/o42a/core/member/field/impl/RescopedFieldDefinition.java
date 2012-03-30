@@ -19,9 +19,9 @@
 */
 package org.o42a.core.member.field.impl;
 
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
+import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;

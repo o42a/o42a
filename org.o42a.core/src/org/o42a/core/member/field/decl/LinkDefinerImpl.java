@@ -19,10 +19,10 @@
 */
 package org.o42a.core.member.field.decl;
 
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.link.LinkValueType;
+import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;

@@ -20,7 +20,7 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
-import org.o42a.core.artifact.Artifact;
+import org.o42a.core.object.Obj;
 
 
 public final class PathResolution {
@@ -65,17 +65,17 @@ public final class PathResolution {
 		return this.result;
 	}
 
-	public final Artifact<?> getArtifact() {
+	public final Obj getObject() {
 		if (this.result == null) {
 			return null;
 		}
 
-		final Artifact<?> artifact = getResult().toArtifact();
+		final Obj object = getResult().toObject();
 
-		assert artifact != null :
-			"Path " + this.path + " should lead to artifact";
+		assert object != null :
+			"Path " + this.path + " should lead to object";
 
-		return artifact;
+		return object;
 	}
 
 	@Override

@@ -141,13 +141,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	}
 
 	private static TypeRef typeRef(Field field) {
-
-		final TypeRef typeRef = field.getArtifact().getTypeRef();
-
-		if (typeRef != null) {
-			return typeRef;
-		}
-
 		return field.toObject()
 				.value()
 				.getValueStruct()

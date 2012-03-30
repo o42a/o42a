@@ -23,7 +23,6 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -49,7 +48,7 @@ final class LinkCopyValueDef extends ValueDef {
 			return falseValue();
 		}
 
-		final Obj linkObject = linkResolution.materialize();
+		final Obj linkObject = linkResolution.toObject();
 		final Value<?> value =
 				linkObject.value().explicitUseBy(resolver).getValue();
 		final LinkValueStruct sourceStruct =

@@ -50,7 +50,7 @@ final class ArrayCopyValueDef extends ValueDef {
 			return falseValue();
 		}
 
-		final Obj arrayObject = arrayResolution.materialize();
+		final Obj arrayObject = arrayResolution.toObject();
 		final Value<?> value =
 				arrayObject.value().explicitUseBy(resolver).getValue();
 		final ArrayValueStruct sourceStruct =

@@ -26,8 +26,6 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructRecOp;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -68,19 +66,12 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	public void assign(CodeDirs dirs, HostOp value) {
 
 		final Obj targetType;
-		final Artifact<?> artifact = fld().getField().getArtifact();
-		final Link variable = artifact.toLink();
+		final Obj object = fld().getField().toObject();
+		final ObjectValue objectValue = object.value();
+		final LinkValueStruct linkStruct =
+				objectValue.getValueStruct().toLinkStruct();
 
-		if (variable != null) {
-			targetType = variable.getTypeRef().typeObject(dummyUser());
-		} else {
-
-			final ObjectValue objectValue = artifact.toObject().value();
-			final LinkValueStruct linkStruct =
-					objectValue.getValueStruct().toLinkStruct();
-
-			targetType = linkStruct.getTypeRef().typeObject(dummyUser());
-		}
+		targetType = linkStruct.getTypeRef().typeObject(dummyUser());
 
 		final Block code = dirs.code();
 		final ObjectOp valueObject = value.materialize(dirs);

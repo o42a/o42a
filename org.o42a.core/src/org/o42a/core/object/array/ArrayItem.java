@@ -20,10 +20,10 @@
 package org.o42a.core.object.array;
 
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.link.TargetRef;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.link.LinkData;
+import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;

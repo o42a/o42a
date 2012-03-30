@@ -35,7 +35,7 @@ import org.o42a.core.object.type.Ascendants;
 public final class PropagatedObject extends Obj {
 
 	public PropagatedObject(Field field) {
-		super(field, field.getOverridden()[0].getArtifact());
+		super(field, field.getOverridden()[0].toObject());
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public final class PropagatedObject extends Obj {
 		final MemberField field = enclosing.getContainer().member(
 				getScope().toField().getKey()).toField();
 
-		return field.artifact(dummyUser()).materialize();
+		return field.object(dummyUser());
 	}
 
 }

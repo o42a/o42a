@@ -19,30 +19,27 @@
 */
 package org.o42a.core.object.impl;
 
-import org.o42a.core.Scope;
-import org.o42a.core.artifact.Artifact;
-import org.o42a.core.artifact.ArtifactScope;
+import org.o42a.core.Distributor;
+import org.o42a.core.Placed;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogInfo;
 
 
-public abstract class ObjectArtifact extends Artifact<Obj> {
+public abstract class ObjectBase extends Placed {
 
-	public ObjectArtifact(Scope scope) {
-		super(scope);
+	public ObjectBase(
+			CompilerContext context,
+			LogInfo location,
+			Distributor distributor) {
+		super(context, location, distributor);
 	}
 
-	public ObjectArtifact(ArtifactScope<Obj> scope) {
-		super(scope);
-	}
-
-	protected ObjectArtifact(Scope scope, Obj sample) {
-		super(scope, sample);
-	}
-
-	protected ObjectArtifact(ArtifactScope<Obj> scope, Obj sample) {
-		super(scope, sample);
+	public ObjectBase(LocationInfo location, Distributor distributor) {
+		super(location, distributor);
 	}
 
 	protected abstract Dep addEnclosingOwnerDep(Obj owner);

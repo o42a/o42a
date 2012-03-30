@@ -35,7 +35,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 				"A :=> integer(<@Operators: plus> = 1)",
 				"B := + a");
 
-		final Obj b = field("b").getArtifact().materialize();
+		final Obj b = field("b").toObject();
 
 		assertTrue(b.type().derivedFrom(
 				this.context.getIntrinsics().getInteger().type()));
@@ -48,7 +48,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 				"A :=> integer(<@Operators: minus> = 1)",
 				"B := - a");
 
-		final Obj b = field("b").getArtifact().materialize();
+		final Obj b = field("b").toObject();
 
 		assertTrue(b.type().derivedFrom(
 				this.context.getIntrinsics().getInteger().type()));
@@ -61,7 +61,7 @@ public class UnaryOperatorTest extends CompilerTestCase {
 				"A := integer(= 2. <@Operators: plus>)",
 				"B := + a");
 
-		final Obj b = field("b").getArtifact().materialize();
+		final Obj b = field("b").toObject();
 
 		assertTrue(b.type().derivedFrom(
 				this.context.getIntrinsics().getInteger().type()));

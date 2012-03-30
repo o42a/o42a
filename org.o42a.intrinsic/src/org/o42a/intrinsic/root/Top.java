@@ -26,7 +26,6 @@ import java.util.Collection;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
@@ -105,11 +104,6 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public Member toMember() {
-		return null;
-	}
-
-	@Override
-	public Artifact<?> toArtifact() {
 		return null;
 	}
 

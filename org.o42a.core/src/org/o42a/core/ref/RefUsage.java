@@ -21,7 +21,6 @@ package org.o42a.core.ref;
 
 import org.o42a.analysis.use.*;
 import org.o42a.core.Container;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 
@@ -73,12 +72,12 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		super(ALL_REF_USAGES, name);
 	}
 
-	public abstract void fullyResolve(Artifact<?> artifact, UserInfo user);
+	public abstract void fullyResolve(Obj object, UserInfo user);
 
 	protected void fullyResolve(
 			Resolution resolution,
 			Container resolved) {
-		fullyResolve(resolved.toArtifact(), resolution.getResolver());
+		fullyResolve(resolved.toObject(), resolution.getResolver());
 	}
 
 	private static final class ValueUsage extends RefUsage {
@@ -88,13 +87,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
-
-			final Obj materialized = artifact.materialize();
-
-			if (materialized != null) {
-				materialized.value().resolveAll(user);
-			}
+		public void fullyResolve(Obj object, UserInfo user) {
+			object.value().resolveAll(user);
 		}
 
 	}
@@ -106,13 +100,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
-
-			final Obj materialized = artifact.materialize();
-
-			if (materialized != null) {
-				materialized.type().useBy(user);
-			}
+		public void fullyResolve(Obj object, UserInfo user) {
+			object.type().useBy(user);
 		}
 
 	}
@@ -124,8 +113,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Artifact<?> artifact, UserInfo user) {
-			artifact.resolveAll();
+		public void fullyResolve(Obj object, UserInfo user) {
+			object.resolveAll();
 		}
 
 		@Override
@@ -136,7 +125,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			if (clause != null) {
 				clause.resolveAll();
 			} else {
-				fullyResolve(resolved.toArtifact(), resolution.getResolver());
+				fullyResolve(resolved.toObject(), resolution.getResolver());
 			}
 		}
 

@@ -203,9 +203,8 @@ public class FieldPrediction extends Prediction {
 					enclosing = new SimplePrediction(field.getEnclosingScope());
 				}
 
-				final ObjectImplementations impls = new ObjectImplementations(
-						enclosing,
-						field.getArtifact().materialize());
+				final ObjectImplementations impls =
+						new ObjectImplementations(enclosing, field.toObject());
 
 				this.impls = impls.iterator();
 			} while (this.impls == null || !this.impls.hasNext());

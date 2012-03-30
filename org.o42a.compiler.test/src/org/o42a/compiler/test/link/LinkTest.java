@@ -91,7 +91,7 @@ public class LinkTest extends CompilerTestCase {
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
 
-		final Obj aFoo = field(a, "foo").getArtifact().toObject();
+		final Obj aFoo = field(a, "foo").toObject();
 		final Field aBar = field(a, "bar");
 		final Obj aBarTarget = linkTarget(aBar);
 
