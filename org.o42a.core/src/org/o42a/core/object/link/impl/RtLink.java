@@ -21,15 +21,15 @@ package org.o42a.core.object.link.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-final class RtLink extends ObjectLink {
+final class RtLink extends Link {
 
 	RtLink(LocationInfo location, Scope linkScope) {
 		super(location, linkScope.distribute());
@@ -84,7 +84,7 @@ final class RtLink extends ObjectLink {
 	}
 
 	@Override
-	protected ObjectLink findLinkIn(Scope enclosing) {
+	protected Link findLinkIn(Scope enclosing) {
 		return new RtLink(this, enclosing);
 	}
 

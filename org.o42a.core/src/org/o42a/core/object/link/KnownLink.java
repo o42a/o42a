@@ -32,7 +32,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
 
 
-public abstract class KnownLink extends ObjectLink {
+public abstract class KnownLink extends Link {
 
 	private final KnownLinkData data;
 
@@ -49,7 +49,7 @@ public abstract class KnownLink extends ObjectLink {
 		this.data = new KnownLinkData(this, targetRef);
 	}
 
-	protected KnownLink(ObjectLink prototype, TargetRef targetRef) {
+	protected KnownLink(Link prototype, TargetRef targetRef) {
 		this(
 				new Location(
 						targetRef.getContext(),

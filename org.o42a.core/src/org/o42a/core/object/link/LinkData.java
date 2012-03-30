@@ -39,7 +39,7 @@ import org.o42a.core.value.ValueKnowledge;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class LinkData<L extends ObjectLink> implements PlaceInfo {
+public abstract class LinkData<L extends Link> implements PlaceInfo {
 
 	private final L link;
 	private TargetRef targetRef;

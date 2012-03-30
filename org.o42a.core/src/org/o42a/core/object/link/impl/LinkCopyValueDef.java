@@ -195,10 +195,10 @@ final class LinkCopyValueDef extends ValueDef {
 	private static final class LinkCopy extends KnownLink {
 
 		private final LinkValueType toLinkType;
-		private final ObjectLink copyOf;
+		private final Link copyOf;
 
 		LinkCopy(
-				ObjectLink copyOf,
+				Link copyOf,
 				LinkValueType toLinkType,
 				TargetRef targetRef) {
 			super(
@@ -226,7 +226,7 @@ final class LinkCopyValueDef extends ValueDef {
 		}
 
 		@Override
-		protected ObjectLink findLinkIn(Scope enclosing) {
+		protected Link findLinkIn(Scope enclosing) {
 			return this.copyOf.findIn(enclosing);
 		}
 

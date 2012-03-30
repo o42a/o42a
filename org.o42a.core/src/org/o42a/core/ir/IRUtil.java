@@ -32,7 +32,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -209,7 +209,7 @@ public class IRUtil {
 		}
 
 		@Override
-		public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+		public boolean dereference(Obj linkObject, Step step, Link link) {
 			throw new IllegalStateException();
 		}
 

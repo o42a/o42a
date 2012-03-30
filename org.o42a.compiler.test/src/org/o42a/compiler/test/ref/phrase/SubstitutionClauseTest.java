@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.value.ValueType;
 
 
@@ -71,7 +71,7 @@ public class SubstitutionClauseTest extends CompilerTestCase {
 
 		final Field bFoo = field("b", "foo");
 		final Obj bFooTarget =
-				definiteValue(bFoo, ObjectLink.class).getTarget();
+				definiteValue(bFoo, Link.class).getTarget();
 
 		assertThat(definiteValue(bFooTarget, ValueType.INTEGER), is(1L));
 		assertSame(

@@ -26,7 +26,7 @@ import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -45,7 +45,7 @@ final class RtArrayElementObject extends Obj {
 	}
 
 	@Override
-	public ObjectLink getDereferencedLink() {
+	public Link getDereferencedLink() {
 		return this.element;
 	}
 
@@ -66,7 +66,7 @@ final class RtArrayElementObject extends Obj {
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
 
-		final ObjectLink link = this.element.findLinkIn(enclosing);
+		final Link link = this.element.findLinkIn(enclosing);
 
 		return link.getTarget();
 	}
