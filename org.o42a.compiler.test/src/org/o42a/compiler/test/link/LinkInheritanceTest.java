@@ -55,7 +55,7 @@ public class LinkInheritanceTest extends CompilerTestCase {
 		compile(
 				"A := void (",
 				"  Foo := `1",
-				"  Bar := foo",
+				"  Bar := foo`",
 				")",
 				"B := a (Foo = 2)");
 
@@ -71,12 +71,28 @@ public class LinkInheritanceTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void linkTargetPropagation() {
+		compile(
+				"A := void (",
+				"  Foo := `1",
+				"  Bar := foo",
+				")",
+				"B := a (Foo = 2)");
+
+		final Field aBar = field(field("a"), "bar");
+		final Field bBar = field(field("b"), "bar");
+
+		assertThat(definiteValue(aBar, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(bBar, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
 	public void staticLinkPropagation() {
 		compile(
 				"A :=> void (",
-				"  Foo :=< `&integer",
-				"  Bar := foo",
-				").",
+				"  Foo := `1",
+				"  Bar := &foo",
+				")",
 				"B := a (Foo = 2)",
 				"C := b",
 				"D := b ()");
@@ -87,13 +103,13 @@ public class LinkInheritanceTest extends CompilerTestCase {
 
 		assertThat(
 				definiteValue(linkTarget(bBar), ValueType.INTEGER),
-				is(2L));
+				is(1L));
 		assertThat(
 				definiteValue(linkTarget(cBar), ValueType.INTEGER),
-				is(2L));
+				is(1L));
 		assertThat(
 				definiteValue(linkTarget(dBar), ValueType.INTEGER),
-				is(2L));
+				is(1L));
 	}
 
 }
