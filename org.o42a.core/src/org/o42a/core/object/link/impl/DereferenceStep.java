@@ -113,7 +113,7 @@ public class DereferenceStep extends Step {
 		}
 
 		final Value<?> value = linkObjectValue.getValue();
-		final ObjectLink link;
+		final Link link;
 
 		if (!value.getKnowledge().isKnownToCompiler()) {
 			link = new RtLink(path, start);

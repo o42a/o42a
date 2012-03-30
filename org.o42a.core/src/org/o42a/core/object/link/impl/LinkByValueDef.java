@@ -164,7 +164,7 @@ public class LinkByValueDef extends ValueDef {
 		}
 
 		@Override
-		protected ObjectLink findLinkIn(Scope enclosing) {
+		protected Link findLinkIn(Scope enclosing) {
 
 			final TargetRef targetRef =
 					getTargetRef().upgradeScope(enclosing);

@@ -35,7 +35,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.*;
@@ -170,7 +170,7 @@ public abstract class CompilerTestCase {
 	}
 
 	public static Obj linkTarget(Obj object) {
-		return definiteValue(object, ObjectLink.class).getTarget();
+		return definiteValue(object, Link.class).getTarget();
 	}
 
 	public static Obj linkTarget(Scope scope) {

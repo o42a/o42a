@@ -32,8 +32,8 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -159,7 +159,7 @@ public class AssignmentStatement extends Statement {
 			return this.assignmentKind = ASSIGNMENT_ERROR;
 		}
 
-		final ObjectLink dereferencedLink = object.getDereferencedLink();
+		final Link dereferencedLink = object.getDereferencedLink();
 
 		if (dereferencedLink != null && dereferencedLink.isSynthetic()) {
 			return this.assignmentKind = derefAssignment(dereferencedLink);
@@ -168,7 +168,7 @@ public class AssignmentStatement extends Statement {
 		return this.assignmentKind = valueAssignment(object);
 	}
 
-	private AssignmentKind derefAssignment(ObjectLink destination) {
+	private AssignmentKind derefAssignment(Link destination) {
 
 		final LinkValueStruct destStruct =
 				destination.getValueStruct().toLinkStruct();

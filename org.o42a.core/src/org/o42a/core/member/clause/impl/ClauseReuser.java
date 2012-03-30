@@ -29,7 +29,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
@@ -145,7 +145,7 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
-	public boolean dereference(Obj linkObject, Step step, ObjectLink link) {
+	public boolean dereference(Obj linkObject, Step step, Link link) {
 		return invalidClauseReused();
 	}
 

@@ -31,21 +31,21 @@ import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.type.Ascendants;
 
 
 public final class RtLinkTarget extends Obj {
 
-	private final ObjectLink link;
+	private final Link link;
 
-	public RtLinkTarget(ObjectLink link) {
+	public RtLinkTarget(Link link) {
 		super(link, link.distributeIn(link.getScope().getContainer()));
 		this.link = link;
 	}
 
 	@Override
-	public final ObjectLink getDereferencedLink() {
+	public final Link getDereferencedLink() {
 		return this.link;
 	}
 

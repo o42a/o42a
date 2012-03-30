@@ -23,7 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Distributor;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectScopeIR;
-import org.o42a.core.object.StandaloneObjectScope;
+import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
 
 

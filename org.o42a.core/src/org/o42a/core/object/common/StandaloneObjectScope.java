@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object;
+package org.o42a.core.object.common;
 
 import static org.o42a.core.ref.impl.prediction.ObjectPrediction.predictObject;
 
@@ -26,6 +26,8 @@ import org.o42a.core.*;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;

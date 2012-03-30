@@ -47,7 +47,7 @@ import org.o42a.core.member.local.impl.EnclosingOwnerDep;
 import org.o42a.core.member.local.impl.RefDep;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
-import org.o42a.core.object.link.ObjectLink;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -151,7 +151,7 @@ public abstract class Obj
 		return true;
 	}
 
-	public ObjectLink getDereferencedLink() {
+	public Link getDereferencedLink() {
 		return null;
 	}
 

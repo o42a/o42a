@@ -33,16 +33,14 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ObjectLink
-		extends AbstractContainer
-		implements PlaceInfo {
+public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	private final Container enclosing;
 	private final ScopePlace place;
 	private LinkValueStruct valueStruct;
 	private Obj target;
 
-	public ObjectLink(LocationInfo location, Distributor distributor) {
+	public Link(LocationInfo location, Distributor distributor) {
 		super(location);
 		this.enclosing = distributor.getContainer();
 		this.place = distributor.getPlace();
@@ -149,7 +147,7 @@ public abstract class ObjectLink
 				declaredIn);
 	}
 
-	public final ObjectLink findIn(Scope scope) {
+	public final Link findIn(Scope scope) {
 
 		final Scope linkScope = getScope();
 
@@ -176,6 +174,6 @@ public abstract class ObjectLink
 
 	protected abstract Obj createTarget();
 
-	protected abstract ObjectLink findLinkIn(Scope enclosing);
+	protected abstract Link findLinkIn(Scope enclosing);
 
 }

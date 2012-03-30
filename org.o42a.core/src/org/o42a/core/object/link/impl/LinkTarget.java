@@ -26,8 +26,8 @@ import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkData;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 
@@ -44,7 +44,7 @@ public class LinkTarget extends Obj {
 	}
 
 	@Override
-	public final ObjectLink getDereferencedLink() {
+	public final Link getDereferencedLink() {
 		return this.linkData.getLink();
 	}
 

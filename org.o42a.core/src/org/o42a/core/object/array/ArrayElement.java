@@ -22,13 +22,13 @@ package org.o42a.core.object.array;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ArrayElement extends ObjectLink {
+public abstract class ArrayElement extends Link {
 
 	private final Obj owner;
 
