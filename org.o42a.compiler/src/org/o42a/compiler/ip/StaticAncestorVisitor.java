@@ -20,9 +20,9 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
-import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
@@ -30,8 +30,11 @@ import org.o42a.core.value.ValueStructFinder;
 
 final class StaticAncestorVisitor extends AncestorVisitor {
 
-	StaticAncestorVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
-		super(ip, valueStructFinder, BODY_REFERRAL);
+	StaticAncestorVisitor(
+			Interpreter ip,
+			ValueStructFinder valueStructFinder,
+			Referral referral) {
+		super(ip, valueStructFinder, referral);
 	}
 
 	@Override
@@ -39,7 +42,9 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref result = expression.accept(ip().bodyExVisitor(), p);
+		final Ref result = expression.accept(
+				referral().expressionVisitor(ip()),
+				p);
 
 		if (result == null) {
 			return null;
