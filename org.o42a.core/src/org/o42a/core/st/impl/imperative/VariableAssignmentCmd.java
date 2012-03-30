@@ -47,12 +47,9 @@ final class VariableAssignmentCmd extends Cmd {
 				dirs.begin("assign", assignment.toString());
 
 		final HostOp destination =
-				assignment.getDestination()
-				.op(control.host())
-				.target(subDirs);
+				assignment.getDestination().op(control.host()).target(subDirs);
 		final HostOp value =
-				assignment.getValue().op(control.host())
-				.target(subDirs);
+				assignment.getValue().op(control.host()).target(subDirs);
 
 		destination.assign(subDirs, value);
 

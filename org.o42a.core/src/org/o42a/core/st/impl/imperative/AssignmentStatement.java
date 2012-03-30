@@ -21,9 +21,7 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.ASSIGNMENT_ERROR;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.VALUE_ASSIGNMENT;
-import static org.o42a.core.st.impl.imperative.AssignmentKind.VARIABLE_ASSIGNMENT;
+import static org.o42a.core.st.impl.imperative.AssignmentKind.*;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -34,6 +32,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -151,6 +150,13 @@ public class AssignmentStatement extends Statement {
 		final Obj object = destResolution.toObject();
 
 		if (object != null) {
+
+			final ObjectLink dereferencedLink = object.getDereferencedLink();
+
+			if (dereferencedLink != null && dereferencedLink.isSynthetic()) {
+				return this.assignmentKind = derefAssignment(dereferencedLink);
+			}
+
 			return this.assignmentKind = valueAssignment(object);
 		}
 
@@ -165,6 +171,30 @@ public class AssignmentStatement extends Statement {
 		}
 
 		return this.assignmentKind = variableAssignment();
+	}
+
+	private AssignmentKind derefAssignment(ObjectLink destination) {
+
+		final LinkValueStruct destStruct =
+				destination.getValueStruct().toLinkStruct();
+
+		if (destStruct == null || destStruct.getValueType() != VARIABLE) {
+			getLogger().error(
+					"not_variable_assigned",
+					this.destination,
+					"Can only assign to variable");
+			return ASSIGNMENT_ERROR;
+		}
+
+		final TypeRef destTypeRef =
+				destStruct.getTypeRef().prefixWith(
+						this.destination.getPath().toPrefix(getScope()));
+
+		if (!this.value.toTypeRef().checkDerivedFrom(destTypeRef)) {
+			return ASSIGNMENT_ERROR;
+		}
+
+		return DEREF_ASSIGNMENT;
 	}
 
 	private AssignmentKind valueAssignment(Obj destination) {

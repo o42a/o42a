@@ -169,7 +169,7 @@ final class ArrayElementStep extends Step {
 
 				walker.arrayElement(array, this, item);
 
-				return item.getContainer();
+				return item.getTarget();
 			}
 		}
 
@@ -177,7 +177,7 @@ final class ArrayElementStep extends Step {
 
 		walker.arrayElement(array, this, element);
 
-		return element.getContainer();
+		return element.getTarget();
 	}
 
 	@Override

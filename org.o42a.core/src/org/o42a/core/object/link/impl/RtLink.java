@@ -64,7 +64,12 @@ final class RtLink extends ObjectLink {
 	}
 
 	@Override
-	public boolean isRuntime() {
+	public final boolean isSynthetic() {
+		return false;
+	}
+
+	@Override
+	public final boolean isRuntime() {
 		return true;
 	}
 

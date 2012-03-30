@@ -26,23 +26,26 @@ import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.link.KnownLink;
+import org.o42a.core.object.link.LinkData;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 
 
 public class LinkTarget extends Obj {
 
-	private final KnownLink link;
+	private final LinkData<?> linkData;
 
-	public LinkTarget(KnownLink link) {
-		super(link, link.distributeIn(link.getScope().getContainer()));
-		this.link = link;
+	public LinkTarget(LinkData<?> linkData) {
+		super(
+				linkData,
+				linkData.distributeIn(linkData.getScope().getContainer()));
+		this.linkData = linkData;
 	}
 
 	@Override
-	public final KnownLink getDereferencedLink() {
-		return this.link;
+	public final ObjectLink getDereferencedLink() {
+		return this.linkData.getLink();
 	}
 
 	@Override
@@ -52,7 +55,7 @@ public class LinkTarget extends Obj {
 
 	@Override
 	public String toString() {
-		return this.link.toString();
+		return this.linkData.toString();
 	}
 
 	@Override
@@ -61,12 +64,12 @@ public class LinkTarget extends Obj {
 		final Resolver resolver =
 				getScope().getEnclosingScope().dummyResolver();
 
-		return this.link.getTargetRef().resolve(resolver).materialize();
+		return this.linkData.getTargetRef().resolve(resolver).materialize();
 	}
 
 	@Override
 	protected Ascendants buildAscendants() {
-		return new Ascendants(this).setAncestor(this.link.getTypeRef());
+		return new Ascendants(this).setAncestor(this.linkData.getTypeRef());
 	}
 
 	@Override
@@ -80,7 +83,7 @@ public class LinkTarget extends Obj {
 
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
-		return this.link.findIn(enclosing).getTarget();
+		return getDereferencedLink().findIn(enclosing).getTarget();
 	}
 
 }

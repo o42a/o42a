@@ -58,13 +58,13 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.STRING),
+				definiteValue(items[0].getTarget(), ValueType.STRING),
 				is("a"));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.STRING),
+				definiteValue(items[1].getTarget(), ValueType.STRING),
 				is("b"));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.STRING),
+				definiteValue(items[2].getTarget(), ValueType.STRING),
 				is("c"));
 	}
 
@@ -89,9 +89,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].getArtifact().toLink().isVariable());
-		assertTrue(items[1].getArtifact().toLink().isVariable());
-		assertTrue(items[2].getArtifact().toLink().isVariable());
+		assertFalse(items[0].isConstant());
+		assertFalse(items[1].isConstant());
+		assertFalse(items[2].isConstant());
 	}
 
 }
