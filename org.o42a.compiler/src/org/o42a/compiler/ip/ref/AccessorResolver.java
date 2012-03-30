@@ -115,6 +115,7 @@ final class AccessorResolver implements PathWalker {
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
 		this.owner = false;
+		updateDeclaration(array, element.getTarget());
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;

@@ -55,13 +55,13 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[0].getTarget(), ValueType.INTEGER),
 				is(1L));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[1].getTarget(), ValueType.INTEGER),
 				is(2L));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[2].getTarget(), ValueType.INTEGER),
 				is(3L));
 	}
 
@@ -84,13 +84,13 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[0].getTarget(), ValueType.INTEGER),
 				is(1L));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[1].getTarget(), ValueType.INTEGER),
 				is(2L));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[2].getTarget(), ValueType.INTEGER),
 				is(3L));
 	}
 
@@ -112,9 +112,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].getArtifact().toLink().isVariable());
-		assertTrue(items[1].getArtifact().toLink().isVariable());
-		assertTrue(items[2].getArtifact().toLink().isVariable());
+		assertFalse(items[0].isConstant());
+		assertFalse(items[1].isConstant());
+		assertFalse(items[2].isConstant());
 	}
 
 	@Test
@@ -135,9 +135,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertTrue(items[0].getArtifact().toLink().isVariable());
-		assertTrue(items[1].getArtifact().toLink().isVariable());
-		assertTrue(items[2].getArtifact().toLink().isVariable());
+		assertFalse(items[0].isConstant());
+		assertFalse(items[1].isConstant());
+		assertFalse(items[2].isConstant());
 	}
 
 }

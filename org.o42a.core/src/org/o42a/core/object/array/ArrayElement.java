@@ -21,15 +21,14 @@ package org.o42a.core.object.array;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.common.MaterializableArtifactScope;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.object.link.LinkValueType;
+import org.o42a.core.object.link.ObjectLink;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
-public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
+public abstract class ArrayElement extends ObjectLink {
 
 	private final Obj owner;
 
@@ -45,47 +44,29 @@ public abstract class ArrayElement extends MaterializableArtifactScope<Link> {
 	}
 
 	public final ArrayValueStruct getArrayStruct() {
-		return (ArrayValueStruct) getOwner().value().getValueStruct();
+		return getOwner().value().getValueStruct().toArrayStruct();
+	}
+
+	@Override
+	public final boolean isSynthetic() {
+		return true;
+	}
+
+	@Override
+	public LinkValueType getValueType() {
+		return isConstant() ? LinkValueType.LINK : LinkValueType.VARIABLE;
 	}
 
 	public final boolean isConstant() {
 		return getArrayStruct().isConstant();
 	}
 
+	@Override
 	public final TypeRef getTypeRef() {
 		return getArrayStruct().getItemTypeRef();
 	}
 
 	@Override
-	public abstract Link getArtifact();
-
-	@Override
-	public Path getEnclosingScopePath() {
-		return null;
-	}
-
-	@Override
-	public ArrayElement getPropagatedFrom() {
-		return (ArrayElement) super.getPropagatedFrom();
-	}
-
-	@Override
-	public ArrayElement getFirstDeclaration() {
-		return (ArrayElement) super.getFirstDeclaration();
-	}
-
-	@Override
-	public ArrayElement getLastDefinition() {
-		return (ArrayElement) super.getLastDefinition();
-	}
-
-	@Override
-	public boolean derivedFrom(Scope other) {
-		if (this == other) {
-			return true;
-		}
-		return getArtifact().materialize().type().derivedFrom(
-				other.getArtifact().materialize().type());
-	}
+	protected abstract ArrayElement findLinkIn(Scope enclosing);
 
 }

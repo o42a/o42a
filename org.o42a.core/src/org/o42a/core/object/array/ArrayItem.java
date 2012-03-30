@@ -19,14 +19,11 @@
 */
 package org.o42a.core.object.array;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
-import org.o42a.core.artifact.ArtifactKind;
-import org.o42a.core.artifact.link.Link;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.link.LinkData;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -36,11 +33,13 @@ import org.o42a.core.value.Value;
 
 public final class ArrayItem extends ArrayElement {
 
+	private final ArrayItemData data;
 	private final int index;
 	private final Ref valueRef;
 
 	public ArrayItem(int index, Ref valueRef) {
 		super(valueRef, valueRef.distribute());
+		this.data = new ArrayItemData(this);
 		this.index = index;
 		this.valueRef = valueRef;
 	}
@@ -53,26 +52,6 @@ public final class ArrayItem extends ArrayElement {
 		return this.valueRef;
 	}
 
-	@Override
-	public Link getArtifact() {
-		return new ItemLink(this);
-	}
-
-	@Override
-	public final ArrayItem getPropagatedFrom() {
-		return (ArrayItem) super.getPropagatedFrom();
-	}
-
-	@Override
-	public final ArrayItem getFirstDeclaration() {
-		return (ArrayItem) super.getFirstDeclaration();
-	}
-
-	@Override
-	public final ArrayItem getLastDefinition() {
-		return (ArrayItem) super.getLastDefinition();
-	}
-
 	public ArrayItem prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {
 			return this;
@@ -80,8 +59,10 @@ public final class ArrayItem extends ArrayElement {
 		return new ArrayItem(getIndex(), getValueRef().prefixWith(prefix));
 	}
 
+	@Override
 	public void resolveAll(Resolver resolver) {
 		getValueRef().resolve(resolver).resolveValue();
+		this.data.resolveAll(resolver);
 	}
 
 	@Override
@@ -89,11 +70,31 @@ public final class ArrayItem extends ArrayElement {
 		if (this.valueRef == null) {
 			return super.toString();
 		}
-		return getEnclosingScope() + "[" + getIndex() + "]: " + getValueRef();
+		return getScope() + "[" + getIndex() + "]: " + getValueRef();
+	}
+
+	@Override
+	protected Obj createTarget() {
+		return this.data.createTarget();
+	}
+
+	@Override
+	protected ArrayElement findLinkIn(Scope enclosing) {
+
+		final Obj array = enclosing.toObject();
+		final ObjectValue arrayValue = array.value();
+		final ArrayValueStruct arrayStruct =
+				ArrayValueStruct.class.cast(arrayValue.getValueStruct());
+		final Value<Array> arrayVal =
+				arrayStruct.cast(arrayValue.getValue());
+		final ArrayItem[] items =
+				arrayVal.getCompilerValue().items(enclosing);
+
+		return items[getIndex()];
 	}
 
 	protected ArrayItem reproduce(Array array, Reproducer reproducer) {
-		getEnclosingScope().assertCompatible(reproducer.getReproducingScope());
+		getScope().assertCompatible(reproducer.getReproducingScope());
 
 		final Ref valueRef = getValueRef().reproduce(reproducer);
 
@@ -104,41 +105,19 @@ public final class ArrayItem extends ArrayElement {
 		return new ArrayItem(getIndex(), valueRef);
 	}
 
-	@Override
-	protected ScopeIR createIR(Generator generator) {
-		throw new UnsupportedOperationException();
-	}
+	private static final class ArrayItemData extends LinkData<ArrayItem> {
 
-	private static final class ItemLink extends Link {
+		ArrayItemData(ArrayItem link, TargetRef targetRef) {
+			super(link, targetRef);
+		}
 
-		private final ArrayItem item;
-
-		ItemLink(ArrayItem item) {
-			super(
-					item,
-					item.isConstant()
-					? ArtifactKind.LINK : ArtifactKind.VARIABLE);
-			this.item = item;
+		ArrayItemData(ArrayItem link) {
+			super(link);
 		}
 
 		@Override
 		protected TargetRef buildTargetRef() {
-			return this.item.getValueRef().toTargetRef(this.item.getTypeRef());
-		}
-
-		@Override
-		protected Link findLinkIn(Scope enclosing) {
-
-			final Obj array = enclosing.toObject();
-			final ObjectValue arrayValue = array.value();
-			final ArrayValueStruct arrayStruct =
-					ArrayValueStruct.class.cast(arrayValue.getValueStruct());
-			final Value<Array> arrayVal =
-					arrayStruct.cast(arrayValue.getValue());
-			final ArrayItem[] items =
-					arrayVal.getCompilerValue().items(enclosing);
-
-			return items[this.item.index].getArtifact();
+			return getLink().getValueRef().toTargetRef(getLink().getTypeRef());
 		}
 
 	}

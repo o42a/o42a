@@ -75,7 +75,7 @@ public final class RtLinkTarget extends Obj {
 
 	@Override
 	protected Obj findObjectIn(Scope enclosing) {
-		return this.link.findIn(enclosing).getTarget();
+		return getDereferencedLink().findIn(enclosing).getTarget();
 	}
 
 	@Override

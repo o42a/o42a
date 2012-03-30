@@ -78,6 +78,8 @@ public abstract class ObjectLink
 		return this.valueStruct = getValueType().linkStruct(getTypeRef());
 	}
 
+	public abstract boolean isSynthetic();
+
 	public boolean isRuntime() {
 		return (getValueType().isVariable()
 				|| getScope().getConstructionMode().isRuntime());

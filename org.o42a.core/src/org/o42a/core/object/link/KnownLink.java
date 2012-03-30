@@ -19,24 +19,14 @@
 */
 package org.o42a.core.object.link;
 
-import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.source.CompilerLogger.logDeclaration;
-import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.artifact.Artifact;
 import org.o42a.core.artifact.link.TargetRef;
-import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.Role;
-import org.o42a.core.object.link.impl.LinkTarget;
-import org.o42a.core.object.link.impl.RtLinkTarget;
-import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -45,10 +35,11 @@ import org.o42a.core.value.ValueKnowledge;
 
 public abstract class KnownLink extends ObjectLink {
 
-	private TargetRef targetRef;
+	private final KnownLinkData data;
 
 	public KnownLink(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
+		this.data = new KnownLinkData(this);
 	}
 
 	public KnownLink(
@@ -56,10 +47,7 @@ public abstract class KnownLink extends ObjectLink {
 			Distributor distributor,
 			TargetRef targetRef) {
 		super(location, distributor);
-		this.targetRef = targetRef;
-		if (targetRef != null) {
-			targetRef.assertSameScope(this);
-		}
+		this.data = new KnownLinkData(this, targetRef);
 	}
 
 	protected KnownLink(ObjectLink prototype, TargetRef targetRef) {
@@ -73,43 +61,21 @@ public abstract class KnownLink extends ObjectLink {
 	}
 
 	@Override
+	public final boolean isSynthetic() {
+		return false;
+	}
+
+	@Override
 	public final TypeRef getTypeRef() {
-		return getTargetRef().getTypeRef();
+		return this.data.getTypeRef();
 	}
 
 	public final TargetRef getTargetRef() {
-		if (this.targetRef == null) {
-			define();
-		}
-		return this.targetRef;
+		return this.data.getTargetRef();
 	}
 
-	public ValueKnowledge getKnowledge() {
-
-		final TargetRef targetRef = getTargetRef();
-		final Resolution resolution =
-				targetRef.resolve(targetRef.getScope().dummyResolver());
-
-		if (resolution.isError() || !resolution.isResolved()) {
-			return UNKNOWN_VALUE;
-		}
-
-		final Obj target = resolution.materialize();
-
-		if (target == null) {
-			return UNKNOWN_VALUE;
-		}
-		if (target.getConstructionMode().isRuntime()) {
-			if (!getValueType().isVariable()) {
-				return RUNTIME_CONSTRUCTED_VALUE;
-			}
-			return VARIABLE_VALUE;
-		}
-		if (!getValueType().isVariable()) {
-			return KNOWN_VALUE;
-		}
-
-		return INITIALLY_KNOWN_VALUE;
+	public final ValueKnowledge getKnowledge() {
+		return this.data.getKnowledge();
 	}
 
 	public final Value<KnownLink> toValue() {
@@ -118,73 +84,33 @@ public abstract class KnownLink extends ObjectLink {
 
 	@Override
 	public void resolveAll(Resolver resolver) {
-		getTargetRef().resolveAll(resolver);
+		this.data.resolveAll(resolver);
 	}
 
 	protected abstract KnownLink prefixWith(PrefixPath prefix);
-
-	private void define() {
-		this.targetRef = buildTargetRef();
-		if (this.targetRef == null) {
-			getLogger().error(
-					"missing_link_target",
-					this,
-					"Link target is missing");
-			this.targetRef = falseRef(
-					this,
-					distribute())
-					.toTargetRef(null);
-			return;
-		}
-		this.targetRef.assertScopeIs(getScope());
-
-		final Field field = getScope().toField();
-
-		if (field == null || !(field.isAbstract() || field.isPrototype())) {
-			Role.INSTANCE.checkUseBy(
-					this,
-					this.targetRef.getRef(),
-					this.targetRef.getScope());
-		}
-
-		final TypeRef typeRef = this.targetRef.getTypeRef();
-
-		Role.PROTOTYPE.checkUseBy(
-				this,
-				typeRef.getRef(),
-				typeRef.getScope());
-
-		final TypeRelation relation =
-				typeRef.relationTo(this.targetRef.toTypeRef());
-
-		if (!relation.isAscendant()) {
-			if (!relation.isError()) {
-				getLogger().notDerivedFrom(this.targetRef, typeRef);
-			}
-		}
-	}
 
 	protected abstract TargetRef buildTargetRef();
 
 	@Override
 	protected final Obj createTarget() {
-		if (isRuntime()) {
-			return new RtLinkTarget(this);
+		return this.data.createTarget();
+	}
+
+	private static final class KnownLinkData extends LinkData<KnownLink> {
+
+		KnownLinkData(KnownLink link) {
+			super(link);
 		}
 
-		final Artifact<?> artifact = getTargetRef().artifact(dummyUser());
-
-		if (artifact == null) {
-			return getContext().getFalse();
+		KnownLinkData(KnownLink link, TargetRef targetRef) {
+			super(link, targetRef);
 		}
 
-		final Obj target = artifact.materialize();
-
-		if (target.getConstructionMode().isRuntime()) {
-			return new RtLinkTarget(this);
+		@Override
+		protected TargetRef buildTargetRef() {
+			return getLink().buildTargetRef();
 		}
 
-		return new LinkTarget(this);
 	}
 
 }

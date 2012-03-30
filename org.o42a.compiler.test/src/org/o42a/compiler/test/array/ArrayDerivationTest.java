@@ -56,13 +56,13 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[0].getTarget(), ValueType.INTEGER),
 				is(1L));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[1].getTarget(), ValueType.INTEGER),
 				is(2L));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[2].getTarget(), ValueType.INTEGER),
 				is(3L));
 	}
 
@@ -89,13 +89,13 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertThat(items.length, is(3));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[0].getTarget(), ValueType.INTEGER),
 				is(1L));
 		assertThat(
-				definiteValue(items[1].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[1].getTarget(), ValueType.INTEGER),
 				is(2L));
 		assertThat(
-				definiteValue(items[2].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[2].getTarget(), ValueType.INTEGER),
 				is(3L));
 	}
 
@@ -124,7 +124,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertThat(items.length, is(1));
 		assertThat(
-				definiteValue(items[0].getArtifact(), ValueType.INTEGER),
+				definiteValue(items[0].getTarget(), ValueType.INTEGER),
 				is(6L));
 	}
 
