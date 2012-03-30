@@ -50,7 +50,8 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.*;
+import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueStructFinder;
 
 
 public enum Interpreter {
@@ -96,7 +97,8 @@ public enum Interpreter {
 		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
 		this.definitionVisitor = new DefinitionVisitor(this);
 		this.ancestorVisitor = new AncestorVisitor(this, null, TARGET_REFERRAL);
-		this.staticAncestorVisitor = new StaticAncestorVisitor(this, null);
+		this.staticAncestorVisitor =
+				new StaticAncestorVisitor(this, null, TARGET_REFERRAL);
 		this.typeVisitor = new TypeVisitor(this, null);
 	}
 
@@ -140,11 +142,12 @@ public enum Interpreter {
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> staticAncestorVisitor(
-					ValueStructFinder valueStructFinder) {
-		if (valueStructFinder == null) {
+					ValueStructFinder valueStructFinder,
+					Referral referral) {
+		if (valueStructFinder == null && referral == TARGET_REFERRAL) {
 			return this.staticAncestorVisitor;
 		}
-		return new StaticAncestorVisitor(this, valueStructFinder);
+		return new StaticAncestorVisitor(this, valueStructFinder, referral);
 	}
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {

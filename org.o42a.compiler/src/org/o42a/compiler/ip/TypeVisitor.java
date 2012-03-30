@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
+import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.ref.RefNode;
@@ -57,7 +58,8 @@ final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 				ip(),
 				p,
 				ascendantNodes[0],
-				this.valueStructFinder);
+				this.valueStructFinder,
+				BODY_REFERRAL);
 
 		if (ancestor.isImplied()) {
 			return super.visitAscendants(ascendants, p);

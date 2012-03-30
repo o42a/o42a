@@ -54,6 +54,10 @@ public class AncestorVisitor
 		return this.ip;
 	}
 
+	public final Referral referral() {
+		return this.referral;
+	}
+
 	public final ValueStructFinder getValueStructFinder() {
 		return this.valueStructFinder;
 	}

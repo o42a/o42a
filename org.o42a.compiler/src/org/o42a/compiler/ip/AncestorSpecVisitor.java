@@ -21,12 +21,14 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
+import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.ValueStructFinder;
 
@@ -45,22 +47,29 @@ public final class AncestorSpecVisitor
 			return impliedAncestorTypeRef();
 		}
 
-		return parseAncestor(ip, distributor, ascendantNodes[0], null);
+		return parseAncestor(
+				ip,
+				distributor,
+				ascendantNodes[0],
+				null,
+				ascendantNodes.length == 1 ? TARGET_REFERRAL : BODY_REFERRAL);
 	}
 
 	public static AncestorTypeRef parseAncestor(
 			Interpreter ip,
 			Distributor distributor,
 			AscendantNode ascendantNode,
-			ValueStructFinder arrayStructFinder) {
+			ValueStructFinder arrayStructFinder,
+			Referral referral) {
 
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
 			ancestorVisitor =
-					ip.ancestorVisitor(arrayStructFinder, BODY_REFERRAL);
+					ip.ancestorVisitor(arrayStructFinder, referral);
 		} else {
-			ancestorVisitor = ip.staticAncestorVisitor(arrayStructFinder);
+			ancestorVisitor =
+					ip.staticAncestorVisitor(arrayStructFinder, referral);
 		}
 
 		final AncestorSpecVisitor specVisitor =
