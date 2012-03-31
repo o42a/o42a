@@ -21,10 +21,9 @@ package org.o42a.compiler.ip.phrase;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 
-import org.o42a.ast.expression.AbstractExpressionVisitor;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.TextNode;
+import org.o42a.ast.expression.*;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
 
 
@@ -34,6 +33,18 @@ final class ArgumentVisitor extends AbstractExpressionVisitor<Phrase, Phrase> {
 			new ArgumentVisitor();
 
 	private ArgumentVisitor() {
+	}
+
+	@Override
+	public Phrase visitBrackets(BracketsNode brackets, Phrase p) {
+
+		final ArrayConstructor array = new ArrayConstructor(
+				p.ip(),
+				p.getContext(),
+				brackets,
+				p.distribute());
+
+		return p.array(array).getPhrase();
 	}
 
 	@Override

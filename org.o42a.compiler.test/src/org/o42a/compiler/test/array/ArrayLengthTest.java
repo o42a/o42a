@@ -32,7 +32,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	@Test
 	public void rowLength() {
 		compile(
-				"Array := (`$$abstract array) [`1, 2]",
+				"Array := (`$$abstract array) [1, 2]",
 				"Len := `array: length");
 
 		assertThat(
@@ -44,7 +44,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	public void runtimeConstructedRowLength() {
 		compile(
 				"Use namespace 'Test'",
-				"Array := (`$$abstract array) [`1, rt-integer '2']",
+				"Array := (`$$abstract array) [1, rt-integer '2']",
 				"Len := `array: length");
 
 		assertThat(
@@ -55,7 +55,7 @@ public class ArrayLengthTest extends CompilerTestCase {
 	@Test
 	public void arrayLength() {
 		compile(
-				"Array := `[``1, 2, 3]",
+				"Array := `$$array (`integer) [[1, 2, 3]]",
 				"Len := array: length");
 
 		assertThat(definiteValue(field("len"), ValueType.INTEGER), is(3L));

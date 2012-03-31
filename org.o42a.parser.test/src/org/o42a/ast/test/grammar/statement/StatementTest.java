@@ -79,7 +79,7 @@ public class StatementTest extends GrammarTestCase {
 	@Test
 	public void invalidDeclarator2() {
 		expectError("syntax_error");
-		parse(DeclaratorNode.class, "A := boo` 42");
+		parse(DeclaratorNode.class, "A := boo: 42");
 	}
 
 	@Test
@@ -88,6 +88,9 @@ public class StatementTest extends GrammarTestCase {
 		parse(DeclaratorNode.class, "A := boo (`bar) [baz]");
 		parse(DeclaratorNode.class, "A := boo (`integer) 42");
 		parse(DeclaratorNode.class, "A := boo` [42]");
+		parse(DeclaratorNode.class, "A := boo` 42");
+		parse(DeclaratorNode.class, "A := boo:: 42");
+		parse(DeclaratorNode.class, "A := boo_ 42");
 	}
 
 	private <T> T parse(Class<? extends T> nodeType, String text) {

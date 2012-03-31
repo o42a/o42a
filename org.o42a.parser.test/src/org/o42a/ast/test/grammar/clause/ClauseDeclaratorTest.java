@@ -112,6 +112,32 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void rowKey() {
+
+		final ClauseDeclaratorNode result = parse("<*[[foo]]> bar");
+		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
+
+		assertFalse(result.requiresContinuation());
+		assertEquals(
+				ScopeType.IMPLIED,
+				to(ScopeRefNode.class, phrase.getPrefix()).getType());
+
+		final BracketsNode key = singleClause(BracketsNode.class, phrase);
+
+		assertThat(key.getArguments().length, is(1));
+
+		final BracketsNode row =
+				to(BracketsNode.class, key.getArguments()[0].getValue());
+
+		assertThat(row.getArguments().length, is(1));
+
+		assertName("foo", row.getArguments()[0].getValue());
+		assertName("bar", result.getContent());
+		assertNothingReused(result);
+		checkParentheses(result);
+	}
+
+	@Test
 	public void content() {
 		to(ParenthesesNode.class, parse("<*> (foo)").getContent());
 		to(BracesNode.class, parse("<*> {foo}").getContent());

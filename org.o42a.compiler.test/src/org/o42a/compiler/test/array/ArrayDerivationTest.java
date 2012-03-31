@@ -38,7 +38,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 	@Test
 	public void inherit() {
 		compile(
-				"A := [`1, 2, 3]",
+				"A := [1, 2, 3]",
 				"B := a");
 
 		final Obj b = field("b").toObject();
@@ -70,7 +70,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 	public void deriveField() {
 		compile(
 				"A := void(",
-				"  Field := [`1, 2, 3]",
+				"  Field := [1, 2, 3]",
 				")",
 				"B := a");
 
@@ -105,7 +105,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 				"A := void(",
 				"  F := `1",
 				"  G := `2",
-				"  Field := [(`integer) f + g]",
+				"  Field := row (`integer) [[f + g]]",
 				")",
 				"B := a(f = 2; g = 4)");
 

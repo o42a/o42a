@@ -45,6 +45,8 @@ final class PhraseClauseKeyVisitor
 		extends AbstractClauseVisitor<ClauseDeclaration, Distributor> {
 
 	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
+	private static final BracketsExtractor BRACKETS_EXTRACTOR =
+			new BracketsExtractor();
 
 	private final PhraseNode phrase;
 
@@ -69,6 +71,17 @@ final class PhraseClauseKeyVisitor
 		final InterfaceNode iface = brackets.getInterface();
 
 		if (iface == null) {
+
+			final BracketsNode row = extractRow(brackets);
+
+			if (row != null) {
+				return clauseDeclaration(
+						location(p, this.phrase),
+						p,
+						extractName(p.getContext(), row),
+						ClauseId.ROW);
+			}
+
 			return clauseDeclaration(
 					location(p, this.phrase),
 					p,
@@ -116,6 +129,7 @@ final class PhraseClauseKeyVisitor
 	private static String extractName(
 			CompilerContext context,
 			BracketsNode brackets) {
+
 		final ArgumentNode[] arguments = brackets.getArguments();
 
 		if (arguments.length == 0) {
@@ -133,6 +147,26 @@ final class PhraseClauseKeyVisitor
 		}
 
 		return value.accept(NAME_EXTRACTOR, context);
+	}
+
+	private static BracketsNode extractRow(BracketsNode brackets) {
+
+		final ArgumentNode[] arguments = brackets.getArguments();
+
+		if (arguments.length == 0) {
+			return null;
+		}
+		if (arguments.length != 1) {
+			return null;
+		}
+
+		final ExpressionNode value = arguments[0].getValue();
+
+		if (value == null) {
+			return null;
+		}
+
+		return value.accept(BRACKETS_EXTRACTOR, null);
 	}
 
 	private static String extractName(
@@ -211,6 +245,25 @@ final class PhraseClauseKeyVisitor
 				StatementNode statement,
 				CompilerContext p) {
 			p.getLogger().expectedClauseName(statement);
+			return null;
+		}
+
+	}
+
+	private static final class BracketsExtractor
+			extends AbstractStatementVisitor<BracketsNode, Object> {
+
+		@Override
+		public BracketsNode visitBrackets(
+				BracketsNode brackets,
+				Object p) {
+			return brackets;
+		}
+
+		@Override
+		protected BracketsNode visitStatement(
+				StatementNode statement,
+				Object p) {
 			return null;
 		}
 
