@@ -38,7 +38,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 	@Test
 	public void qualifiedRow() {
-		compile("A := [(`integer) 1, 2, 3]");
+		compile("A := row (`integer) [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
 
@@ -67,7 +67,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 	@Test
 	public void unqualifiedRow() {
-		compile("A := [`1, 2, 3]");
+		compile("A := [1, 2, 3]");
 
 		final Obj a = field("a").toObject();
 
@@ -96,7 +96,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 	@Test
 	public void qualifiedArray() {
-		compile("A := [(``integer) 1, 2, 3]");
+		compile("A := array (`integer) [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
 
@@ -119,7 +119,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 	@Test
 	public void unqualifiedArray() {
-		compile("A := [``1, 2, 3]");
+		compile("A := array [[1, 2, 3]]");
 
 		final Obj a = field("a").toObject();
 
@@ -129,7 +129,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		assertFalse(arraySruct.isConstant());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
-				is(a.getContext().getIntrinsics().getInteger()));
+				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(a);
 		final ArrayItem[] items = array.items(a.getScope());

@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.ast.expression.BracketsNode;
@@ -142,10 +143,7 @@ public class ArrayConstructor extends ObjectConstructor {
 
 	private boolean typeByItems() {
 		valueStructFinder();
-		if (this.arrayStruct != null) {
-			return false;
-		}
-		return this.node.getArguments().length != 0;
+		return this.arrayStruct == null;
 	}
 
 	private ValueStructFinder valueStructFinder() {
@@ -167,15 +165,23 @@ public class ArrayConstructor extends ObjectConstructor {
 					this.reproducedFrom.valueStructFinder;
 		}
 
-		final InterfaceNode iface = this.node.getInterface();
+		final InterfaceNode iface = getInterfaceNode();
 
 		if (iface == null) {
+			if (this.node.getArguments().length == 0) {
+				return this.arrayStruct = getValueType().arrayStruct(
+						voidRef(this, distribute()).toTypeRef());
+			}
 			return this.valueStructFinder = new ArrayStructByItems(toRef());
 		}
 
 		final TypeNode type = iface.getType();
 
 		if (type == null) {
+			if (this.node.getArguments().length == 0) {
+				return this.arrayStruct = getValueType().arrayStruct(
+						voidRef(this, distribute()).toTypeRef());
+			}
 			return this.valueStructFinder = new ArrayStructByItems(toRef());
 		}
 

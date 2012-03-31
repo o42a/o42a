@@ -32,6 +32,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public final class MemberOverride extends Sample {
@@ -97,6 +98,10 @@ public final class MemberOverride extends Sample {
 
 		final Obj object = getObject();
 		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return ValueType.VOID.typeRef(this, getScope());
+		}
 
 		return ancestor.setValueStruct(valueStruct()).upgradeScope(getScope());
 	}

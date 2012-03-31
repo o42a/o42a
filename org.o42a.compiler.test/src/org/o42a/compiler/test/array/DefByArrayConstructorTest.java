@@ -39,9 +39,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildRow() {
 		compile(
-				"A := row (`string) [`",
+				"A := row (`string) [[",
 				"  \"a\", \"b\", \"c\"",
-				"]");
+				"]]");
 
 		final Obj a = field("a").toObject();
 
@@ -71,9 +71,9 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 	@Test
 	public void buildArray() {
 		compile(
-				"A := array (`string) [`",
+				"A := array (`string) [[",
 				"  \"a\", \"b\", \"c\"",
-				"]");
+				"]]");
 
 		final Obj a = field("a").toObject();
 

@@ -39,7 +39,7 @@ public class DefByArrayTest extends CompilerTestCase {
 	@Test
 	public void buildRow() {
 		compile(
-				"A := [`\"a\", \"b\", \"c\"]",
+				"A := [\"a\", \"b\", \"c\"]",
 				"B := row (`string) (",
 				"  = A",
 				")");
@@ -72,7 +72,7 @@ public class DefByArrayTest extends CompilerTestCase {
 	@Test
 	public void buildArray() {
 		compile(
-				"A := [`\"a\", \"b\", \"c\"]",
+				"A := [\"a\", \"b\", \"c\"]",
 				"B := array (`string) (",
 				"  = A",
 				")");

@@ -106,13 +106,6 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitBrackets(BracketsNode brackets, Distributor p) {
-		if (brackets.getInterface() == null) {
-			p.getLogger().error(
-					"invalid_array_initializer",
-					brackets,
-					"Invalid array initializer. Array item type is missing");
-			return errorRef(location(p, brackets), p);
-		}
 		return new ArrayConstructor(
 				this.ip,
 				p.getContext(),

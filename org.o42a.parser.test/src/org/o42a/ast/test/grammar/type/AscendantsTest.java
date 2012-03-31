@@ -26,7 +26,6 @@ import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.ArrayTypeNode;
 import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.AscendantsNode;
 
@@ -105,31 +104,6 @@ public class AscendantsTest extends GrammarTestCase {
 
 		assertNotNull(ascendants[3].getSeparator());
 		assertName("s3", ascendants[3].getSpec());
-	}
-
-	@Test
-	public void arrayType() {
-
-		final AscendantsNode result = parse("foo & [bar] & baz");
-		final AscendantNode[] ascendants = result.getAscendants();
-
-		assertEquals(3, ascendants.length);
-
-		assertNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getSpec());
-
-		assertNotNull(ascendants[1].getSeparator());
-
-		final ArrayTypeNode arrayType =
-				to(ArrayTypeNode.class, ascendants[1].getSpec());
-
-		assertNull(arrayType.getAncestor());
-		assertNotNull(arrayType.getOpening());
-		assertName("bar", arrayType.getItemType());
-		assertNotNull(arrayType.getClosing());
-
-		assertNotNull(ascendants[2].getSeparator());
-		assertName("baz", ascendants[2].getSpec());
 	}
 
 	private AscendantsNode parse(String text) {

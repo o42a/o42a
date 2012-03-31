@@ -32,7 +32,7 @@ public class ArrayItemTest extends CompilerTestCase {
 	@Test
 	public void rowItem() {
 		compile(
-				"Array := [`1, 2, 3]",
+				"Array := [1, 2, 3]",
 				"Item := array[1]");
 
 		assertThat(definiteValue(field("item"), ValueType.INTEGER), is(2L));

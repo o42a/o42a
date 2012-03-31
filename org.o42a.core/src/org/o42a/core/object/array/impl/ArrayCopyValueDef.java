@@ -85,8 +85,8 @@ final class ArrayCopyValueDef extends ValueDef {
 		return resultStruct.compilerValue(
 				new Array(
 						array,
-						array.distributeIn(ref.getContainer()),
-						array.getValueStruct().prefixWith(prefix),
+						array.distributeIn(resolver.getContainer()),
+						resultStruct.prefixWith(prefix),
 						defItems));
 	}
 
