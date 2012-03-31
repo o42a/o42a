@@ -132,13 +132,16 @@ public final class ArrayValueStruct
 	@Override
 	public ValueAdapter defaultAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null || expectedStruct.convertibleFrom(this)) {
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt
+				|| expectedStruct == null
+				|| expectedStruct.convertibleFrom(this)) {
 			return new ArrayValueAdapter(
 					ref,
 					(ArrayValueStruct) expectedStruct);
 		}
-		return super.defaultAdapter(ref, expectedStruct);
+		return super.defaultAdapter(ref, expectedStruct, adapt);
 	}
 
 	@Override

@@ -24,7 +24,7 @@ Init := test
 Run tests
 
 
-Array := [`1, 2, 3]
+Array := [1, 2, 3]
 
 Constant := test{
   Assert [array] "Constant array access failed"
@@ -41,7 +41,7 @@ Constant := test{
 }
 
 
-Var-array := [``4, 5, 6, 7]
+Var-array := $$array (`integer) [[4, 5, 6, 7]]
 
 Variable := test{
   Assert [var-array] "Variable array access failed"

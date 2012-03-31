@@ -39,6 +39,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
@@ -113,6 +114,28 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
+	public ValueAdapter valueAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (adapt
+				&& expectedStruct != null
+				&& getNode().getArguments().length == 0) {
+
+			final ArrayValueStruct arrayStruct = expectedStruct.toArrayStruct();
+
+			if (arrayStruct != null) {
+				assert this.arrayStruct != null :
+					"Array structure already determined";
+				this.valueStructFinder = this.arrayStruct =
+						arrayStruct.setConstant(true);
+			}
+		}
+
+		return super.valueAdapter(ref, expectedStruct, adapt);
+	}
+
+	@Override
 	public ArrayConstructor reproduce(PathReproducer reproducer) {
 		return new ArrayConstructor(this, reproducer.getReproducer());
 	}
@@ -169,8 +192,10 @@ public class ArrayConstructor extends ObjectConstructor {
 
 		if (iface == null) {
 			if (this.node.getArguments().length == 0) {
-				return this.arrayStruct = getValueType().arrayStruct(
-						voidRef(this, distribute()).toTypeRef());
+				return this.valueStructFinder =
+						this.arrayStruct =
+						getValueType().arrayStruct(
+								voidRef(this, distribute()).toTypeRef());
 			}
 			return this.valueStructFinder = new ArrayStructByItems(toRef());
 		}

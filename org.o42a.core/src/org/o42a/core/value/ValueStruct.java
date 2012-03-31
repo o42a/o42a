@@ -149,8 +149,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public ValueAdapter defaultAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null || expectedStruct.assignableFrom(this)) {
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt
+				|| expectedStruct == null
+				|| expectedStruct.assignableFrom(this)) {
 			return rawValueAdapter(ref);
 		}
 
@@ -167,7 +170,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
-		return adapter.valueAdapter(null);
+		return adapter.valueAdapter(expectedStruct, false);
 	}
 
 	public Ref adapterRef(Ref ref, TypeRef expectedTypeRef) {

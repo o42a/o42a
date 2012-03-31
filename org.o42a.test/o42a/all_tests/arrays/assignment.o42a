@@ -22,7 +22,7 @@ Use namespace 'Test'
 Assignment := test
 ==================
 
-Array := [``"a", "b", "c"]
+Array := $$array (`string) [["a", "b", "c"]]
 
 {
   Assert [array[1] == "b"] "Wrong array initialization"

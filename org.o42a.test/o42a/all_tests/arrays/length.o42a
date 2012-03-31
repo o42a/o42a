@@ -22,5 +22,6 @@ Use namespace 'Test'
 Length := test
 ==============
 
-Assert [[`1, rt-integer '2']: length == 2] "Wrong constant array length"
-Assert [[``1, rt-integer '2', 3]: length == 3] "Wrong length of variable array"
+Assert [[1, rt-integer '2']: length == 2] "Wrong constant array length"
+Assert [array (`integer) [[1, rt-integer '2', 3]]: length == 3]
+_ "Wrong length of variable array"
