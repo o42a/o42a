@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.field.Field.fieldOf;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
@@ -81,7 +80,7 @@ public class MemberStep extends AbstractMemberStep {
 	@Override
 	protected Scope revert(Scope target) {
 
-		final Field field = fieldOf(target);
+		final Field field = target.toField();
 
 		if (field != null && field.getKey().equals(getMemberKey())) {
 			return target.getEnclosingScope();

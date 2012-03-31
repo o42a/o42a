@@ -40,10 +40,6 @@ import org.o42a.util.log.Loggable;
 
 public abstract class Field extends ObjectScope {
 
-	public static Field fieldOf(Scope scope) {
-		return scope.toField();
-	}
-
 	private final MemberField member;
 	private Field[] overridden;
 
