@@ -82,26 +82,9 @@ public enum ClauseId {
 		@Override
 		public String toString(MemberId memberId, String name) {
 			if (name == null) {
-				return "[`]";
+				return "[[]]";
 			}
-			return "[`" + name + ']';
-		}
-
-	},
-
-	ARRAY(true) {
-
-		@Override
-		public Path adapterPath(CompilerContext context) {
-			return absolutePath(context, "clauses", "array");
-		}
-
-		@Override
-		public String toString(MemberId memberId, String name) {
-			if (name == null) {
-				return "[``]";
-			}
-			return "[``" + name + ']';
+			return "[[" + name + "]]";
 		}
 
 	},

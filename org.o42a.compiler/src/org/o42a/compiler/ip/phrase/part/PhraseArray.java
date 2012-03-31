@@ -39,10 +39,7 @@ public class PhraseArray extends PhraseContinuation {
 
 	@Override
 	public NextClause nextClause(PhraseContext context) {
-		return context.clauseById(
-				this,
-				this.array.getValueType().isConstant()
-				? ClauseId.ROW : ClauseId.ARRAY);
+		return context.clauseById(this, ClauseId.ROW);
 	}
 
 	@Override

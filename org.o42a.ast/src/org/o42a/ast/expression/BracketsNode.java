@@ -23,36 +23,28 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.clause.ClauseNodeVisitor;
-import org.o42a.ast.type.InterfaceNode;
 
 
 public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 
 	private final SignNode<Bracket> opening;
-	private final InterfaceNode iface;
 	private final ArgumentNode[] arguments;
 	private final SignNode<Bracket> closing;
 
 	public BracketsNode(
 			SignNode<Bracket> opening,
-			InterfaceNode iface,
 			ArgumentNode[] arguments,
 			SignNode<Bracket> closing) {
 		super(
 				opening.getStart(),
-				end(opening, iface, lastNode(arguments), closing));
+				end(opening, lastNode(arguments), closing));
 		this.opening = opening;
-		this.iface = iface;
 		this.arguments = arguments;
 		this.closing = closing;
 	}
 
 	public final SignNode<Bracket> getOpening() {
 		return this.opening;
-	}
-
-	public final InterfaceNode getInterface() {
-		return this.iface;
 	}
 
 	public final ArgumentNode[] getArguments() {
@@ -76,12 +68,6 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		out.append('[');
-		if (this.iface != null) {
-			this.iface.printContent(out);
-			if (this.iface.getOpening() != null) {
-				out.append(' ');
-			}
-		}
 		for (ArgumentNode argument : this.arguments) {
 			argument.printContent(out);
 		}

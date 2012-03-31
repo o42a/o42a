@@ -22,5 +22,4 @@ Clauses := void (
   Imperative :=> void
   String :=> $$string
   Row :=> $$row
-  Array :=> $$array
 )
