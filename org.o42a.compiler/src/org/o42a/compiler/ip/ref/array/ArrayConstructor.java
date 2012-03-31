@@ -20,12 +20,8 @@
 package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.ref.Ref.voidRef;
-import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
 import org.o42a.ast.expression.BracketsNode;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
@@ -50,7 +46,6 @@ public class ArrayConstructor extends ObjectConstructor {
 	private final BracketsNode node;
 	private final ArrayConstructor reproducedFrom;
 	private final Reproducer reproducer;
-	private ArrayValueType arrayType;
 	private ArrayValueStruct arrayStruct;
 	private ValueStructFinder valueStructFinder;
 
@@ -80,34 +75,13 @@ public class ArrayConstructor extends ObjectConstructor {
 		return this.node;
 	}
 
-	public final InterfaceNode getInterfaceNode() {
-		return this.node.getInterface();
-	}
-
-	public final ArrayValueType getValueType() {
-		if (this.arrayType != null) {
-			return this.arrayType;
-		}
-
-		final InterfaceNode interfaceNode = getInterfaceNode();
-
-		if (interfaceNode == null) {
-			return this.arrayType = ArrayValueType.ROW;
-		}
-		if (interfaceNode.getKind().getType() == DefinitionKind.LINK) {
-			return this.arrayType = ArrayValueType.ROW;
-		}
-
-		return this.arrayType = ArrayValueType.ARRAY;
-	}
-
 	public final Interpreter ip() {
 		return this.ip;
 	}
 
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
-		return getValueType().typeRef(
+		return ArrayValueType.ROW.typeRef(
 				location,
 				getScope(),
 				valueStructFinder());
@@ -188,37 +162,14 @@ public class ArrayConstructor extends ObjectConstructor {
 					this.reproducedFrom.valueStructFinder;
 		}
 
-		final InterfaceNode iface = getInterfaceNode();
-
-		if (iface == null) {
-			if (this.node.getArguments().length == 0) {
-				return this.valueStructFinder =
-						this.arrayStruct =
-						getValueType().arrayStruct(
-								voidRef(this, distribute()).toTypeRef());
-			}
-			return this.valueStructFinder = new ArrayStructByItems(toRef());
+		if (this.node.getArguments().length == 0) {
+			return this.valueStructFinder =
+					this.arrayStruct =
+					ArrayValueType.ROW.arrayStruct(
+							voidRef(this, distribute()).toTypeRef());
 		}
 
-		final TypeNode type = iface.getType();
-
-		if (type == null) {
-			if (this.node.getArguments().length == 0) {
-				return this.arrayStruct = getValueType().arrayStruct(
-						voidRef(this, distribute()).toTypeRef());
-			}
-			return this.valueStructFinder = new ArrayStructByItems(toRef());
-		}
-
-		final TypeRef itemTypeRef =
-				type.accept(this.ip.typeVisitor(), distribute());
-
-		if (itemTypeRef == null) {
-			return this.valueStructFinder = DEFAULT_VALUE_STRUCT_FINDER;
-		}
-
-		return this.valueStructFinder = this.arrayStruct =
-				getValueType().arrayStruct(itemTypeRef);
+		return this.valueStructFinder = new ArrayStructByItems(toRef());
 	}
 
 	private static final class ArrayStructByItems implements ValueStructFinder {

@@ -25,9 +25,7 @@ import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayItem;
-import org.o42a.core.object.array.ArrayValueStruct;
+import org.o42a.core.object.array.*;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.type.Ascendants;
@@ -177,10 +175,9 @@ final class ArrayObject extends ConstructedObject {
 		if (!this.typeByItems) {
 			finalValueStruct = valueStruct;
 		} else if (arrayItemType != null) {
-			finalValueStruct =
-					this.constructor.getValueType().arrayStruct(arrayItemType);
+			finalValueStruct = ArrayValueType.ROW.arrayStruct(arrayItemType);
 		} else {
-			finalValueStruct = this.constructor.getValueType().arrayStruct(
+			finalValueStruct = ArrayValueType.ROW.arrayStruct(
 					ValueType.VOID.typeRef(this, getScope()));
 		}
 

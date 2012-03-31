@@ -22,7 +22,6 @@ package org.o42a.parser.grammar.expression;
 import static org.o42a.ast.expression.BracketsNode.Bracket.CLOSING_BRACKET;
 import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
 import static org.o42a.parser.Grammar.expression;
-import static org.o42a.parser.grammar.type.InterfaceParser.INTERFACE;
 
 import java.util.ArrayList;
 
@@ -31,7 +30,6 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
 import org.o42a.ast.expression.BracketsNode.Bracket;
-import org.o42a.ast.type.InterfaceNode;
 import org.o42a.parser.Expectations;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -52,7 +50,6 @@ public final class BracketsParser implements Parser<BracketsNode> {
 		}
 
 		final SignNode<Bracket> opening = opening(context);
-		final InterfaceNode iface = context.parse(INTERFACE);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
 		SignNode<Bracket> closing = null;
 		SignNode<Separator> separator = null;
@@ -131,7 +128,6 @@ public final class BracketsParser implements Parser<BracketsNode> {
 				false,
 				new BracketsNode(
 						opening,
-						iface,
 						arguments.toArray(new ArgumentNode[arguments.size()]),
 						closing));
 	}

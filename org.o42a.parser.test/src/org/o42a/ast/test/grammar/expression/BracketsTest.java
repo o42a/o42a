@@ -126,12 +126,7 @@ public class BracketsTest extends GrammarTestCase {
 
 
 	private BracketsNode parse(String... lines) {
-
-		final BracketsNode result = parseLines(brackets(), lines);
-
-		assertNull(result.getInterface());
-
-		return result;
+		return parseLines(brackets(), lines);
 	}
 
 }

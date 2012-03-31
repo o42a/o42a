@@ -33,8 +33,6 @@ import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
 import org.o42a.ast.statement.AbstractStatementVisitor;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseId;
@@ -68,39 +66,21 @@ final class PhraseClauseKeyVisitor
 			BracketsNode brackets,
 			Distributor p) {
 
-		final InterfaceNode iface = brackets.getInterface();
+		final BracketsNode row = extractRow(brackets);
 
-		if (iface == null) {
-
-			final BracketsNode row = extractRow(brackets);
-
-			if (row != null) {
-				return clauseDeclaration(
-						location(p, this.phrase),
-						p,
-						extractName(p.getContext(), row),
-						ClauseId.ROW);
-			}
-
+		if (row != null) {
 			return clauseDeclaration(
 					location(p, this.phrase),
 					p,
-					extractName(p.getContext(), brackets),
-					ClauseId.ARGUMENT);
-		}
-
-		if (iface.getType() != null) {
-			p.getLogger().invalidDeclaration(iface.getType());
-		} else if (iface.getOpening() != null) {
-			p.getLogger().invalidDeclaration(iface.getOpening());
+					extractName(p.getContext(), row),
+					ClauseId.ROW);
 		}
 
 		return clauseDeclaration(
 				location(p, this.phrase),
 				p,
 				extractName(p.getContext(), brackets),
-				iface.getKind().getType() == DefinitionKind.LINK
-				? ClauseId.ROW : ClauseId.ARRAY);
+				ClauseId.ARGUMENT);
 	}
 
 	@Override
