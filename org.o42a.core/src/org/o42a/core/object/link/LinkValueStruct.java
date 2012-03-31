@@ -42,21 +42,10 @@ public final class LinkValueStruct
 		extends ValueStruct<LinkValueStruct, KnownLink> {
 
 	private final TypeRef typeRef;
-	private final Shared shared;
 
 	LinkValueStruct(LinkValueType valueType, TypeRef typeRef) {
 		super(valueType, KnownLink.class);
 		this.typeRef = typeRef;
-		this.shared = new Shared(this);
-	}
-
-	private LinkValueStruct(
-			LinkValueStruct prototype,
-			LinkValueType valueType,
-			TypeRef typeRef) {
-		super(valueType, KnownLink.class);
-		this.typeRef = typeRef;
-		this.shared = prototype.shared;
 	}
 
 	public final TypeRef getTypeRef() {
@@ -72,7 +61,7 @@ public final class LinkValueStruct
 		if (valueType == getValueType()) {
 			return this;
 		}
-		return new LinkValueStruct(this, valueType, getTypeRef());
+		return new LinkValueStruct(valueType, getTypeRef());
 	}
 
 	@Override
@@ -85,7 +74,6 @@ public final class LinkValueStruct
 
 	@Override
 	public TypeRelation relationTo(ValueStruct<?, ?> other) {
-		this.shared.validate();
 
 		final ValueType<?> valueType = other.getValueType();
 
@@ -95,14 +83,11 @@ public final class LinkValueStruct
 
 		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
-		otherLinkStruct.shared.validate();
-
 		return getTypeRef().relationTo(otherLinkStruct.getTypeRef(), false);
 	}
 
 	@Override
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
-		this.shared.validate();
 
 		final ValueType<?> valueType = other.getValueType();
 
@@ -112,22 +97,17 @@ public final class LinkValueStruct
 
 		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
-		otherLinkStruct.shared.validate();
-
 		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
 
 	@Override
 	public boolean convertibleFrom(ValueStruct<?, ?> other) {
-		this.shared.validate();
 
 		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
 		if (otherLinkStruct == null) {
 			return false;
 		}
-
-		otherLinkStruct.shared.validate();
 
 		return otherLinkStruct.getTypeRef().derivedFrom(getTypeRef());
 	}
@@ -161,7 +141,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
+		return new LinkValueStruct(getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -174,7 +154,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
+		return new LinkValueStruct(getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -201,12 +181,11 @@ public final class LinkValueStruct
 			return null;
 		}
 
-		return new LinkValueStruct(this, getValueType(), typeRef);
+		return new LinkValueStruct(getValueType(), typeRef);
 	}
 
 	@Override
 	public void resolveAll(Resolver resolver) {
-		this.shared.validate();
 		getTypeRef().resolveAll(resolver);
 	}
 
@@ -234,7 +213,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
+		return new LinkValueStruct(getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -287,30 +266,6 @@ public final class LinkValueStruct
 	protected ValueStructIR<LinkValueStruct, KnownLink> createIR(
 			Generator generator) {
 		return getValueType().structIR(generator, this);
-	}
-
-	private static final class Shared {
-
-		Shared(LinkValueStruct origin) {
-			this.origin = origin;
-		}
-
-		private final LinkValueStruct origin;
-		private boolean validated;
-
-		void validate() {
-			if (this.validated) {
-				return;
-			}
-			this.validated = true;
-			if (this.origin.getTypeRef().getValueType().isLink()) {
-				this.origin.getTypeRef().getLogger().error(
-						"prohibited_link_to_link",
-						this.origin.getTypeRef(),
-						"Link to link is prohibited");
-			}
-		}
-
 	}
 
 }
