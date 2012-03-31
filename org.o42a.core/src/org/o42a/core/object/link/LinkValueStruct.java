@@ -115,8 +115,11 @@ public final class LinkValueStruct
 	@Override
 	public ValueAdapter defaultAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
-		if (expectedStruct == null || expectedStruct.convertibleFrom(this)) {
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt
+				|| expectedStruct == null
+				|| expectedStruct.convertibleFrom(this)) {
 			return new LinkValueAdapter(
 					ref,
 					expectedStruct != null
@@ -128,7 +131,7 @@ public final class LinkValueStruct
 				ref,
 				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
 
-		return adapter.valueAdapter(null);
+		return adapter.valueAdapter(expectedStruct, false);
 	}
 
 	@Override

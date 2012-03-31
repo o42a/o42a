@@ -55,8 +55,10 @@ final class ArrayCopyValueDef extends ValueDef {
 				arrayObject.value().explicitUseBy(resolver).getValue();
 		final ArrayValueStruct sourceStruct =
 				(ArrayValueStruct) value.getValueStruct();
+
+		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
 		final ArrayValueStruct resultStruct =
-				sourceStruct.setConstant(toConstant);
+				sourceStruct.setConstant(toConstant).prefixWith(prefix);
 
 		if (value.getKnowledge().isFalse()) {
 			return resultStruct.falseValue();
@@ -69,7 +71,6 @@ final class ArrayCopyValueDef extends ValueDef {
 			return resultStruct.runtimeValue();
 		}
 
-		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
 		final Array array = sourceStruct.cast(value).getCompilerValue();
 		final ArrayItem[] items = array.items(arrayObject.getScope());
 		final ArrayItem[] defItems = new ArrayItem[items.length];
@@ -86,7 +87,7 @@ final class ArrayCopyValueDef extends ValueDef {
 				new Array(
 						array,
 						array.distributeIn(resolver.getContainer()),
-						resultStruct.prefixWith(prefix),
+						resultStruct,
 						defItems));
 	}
 

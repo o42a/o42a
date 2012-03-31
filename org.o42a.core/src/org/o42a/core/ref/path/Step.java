@@ -61,10 +61,12 @@ public abstract class Step {
 
 	public ValueAdapter valueAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
 		return ref.valueStruct(ref.getScope()).defaultAdapter(
 				ref,
-				expectedStruct);
+				expectedStruct,
+				adapt);
 	}
 
 	public Path toPath() {

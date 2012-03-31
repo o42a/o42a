@@ -61,8 +61,9 @@ public class ObjectConstructorStep extends Step {
 	@Override
 	public ValueAdapter valueAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
-		return this.constructor.valueAdapter(ref, expectedStruct);
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		return this.constructor.valueAdapter(ref, expectedStruct, adapt);
 	}
 
 	@Override

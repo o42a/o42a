@@ -78,10 +78,12 @@ public abstract class ObjectConstructor extends Placed {
 
 	public ValueAdapter valueAdapter(
 			Ref ref,
-			ValueStruct<?, ?> expectedStruct) {
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
 		return ref.valueStruct(ref.getScope()).defaultAdapter(
 				ref,
-				expectedStruct);
+				expectedStruct,
+				adapt);
 	}
 
 	public FieldDefinition fieldDefinition(
