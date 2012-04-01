@@ -21,22 +21,15 @@ package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.ref.Ref.errorRef;
 
-import org.o42a.ast.expression.ArgumentNode;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.core.Distributor;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.array.*;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 final class ArrayObject extends ConstructedObject {
@@ -119,69 +112,9 @@ final class ArrayObject extends ConstructedObject {
 	}
 
 	private Array createArray() {
-
-		final ArrayValueStruct valueStruct;
-		TypeRef arrayItemType;
-
-		if (!this.typeByItems) {
-			valueStruct = (ArrayValueStruct) value().getValueStruct();
-			arrayItemType = valueStruct.getItemTypeRef();
-		} else {
-			valueStruct = null;
-			arrayItemType = null;
-		}
-
-		final ArgumentNode[] argNodes =
-				this.constructor.getNode().getArguments();
-		final ArrayItem[] items = new ArrayItem[argNodes.length];
-		final Distributor enclosing = distributeIn(getEnclosingContainer());
-
-		for (int i = 0; i < argNodes.length; ++i) {
-
-			final ArgumentNode argNode = argNodes[i];
-			final ExpressionNode itemNode = argNode.getValue();
-			final Location location = new Location(getContext(), itemNode);
-
-			if (itemNode != null) {
-
-				final Ref itemRef = itemNode.accept(
-						this.constructor.ip().targetExVisitor(),
-						enclosing);
-
-				if (itemRef != null) {
-
-					final Ref rescopedItemRef = itemRef.rescope(getScope());
-					final TypeRef itemType = rescopedItemRef.ancestor(itemRef);
-
-					if (arrayItemType == null) {
-						arrayItemType = itemType;
-					} else if (!this.typeByItems) {
-						itemType.checkDerivedFrom(arrayItemType);
-					} else {
-						arrayItemType = arrayItemType.commonAscendant(itemType);
-					}
-
-					items[i] = new ArrayItem(i, rescopedItemRef);
-
-					continue;
-				}
-			}
-
-			items[i] = new ArrayItem(i, errorRef(location, distribute()));
-		}
-
-		final ArrayValueStruct finalValueStruct;
-
-		if (!this.typeByItems) {
-			finalValueStruct = valueStruct;
-		} else if (arrayItemType != null) {
-			finalValueStruct = ArrayValueType.ROW.arrayStruct(arrayItemType);
-		} else {
-			finalValueStruct = ArrayValueType.ROW.arrayStruct(
-					ValueType.VOID.typeRef(this, getScope()));
-		}
-
-		return new Array(this, distribute(), finalValueStruct, items);
+		return new Builder(this).createArray(
+				distributeIn(getEnclosingContainer()),
+				getScope());
 	}
 
 	private Array reproduceArray() {
@@ -201,6 +134,32 @@ final class ArrayObject extends ConstructedObject {
 								array.getValueStruct().getItemTypeRef(),
 								distribute()).toTypeRef()),
 				new ArrayItem[0]);
+	}
+
+	private static final class Builder extends ArrayBuilder {
+
+		private final ArrayObject object;
+
+		Builder(ArrayObject object) {
+			super(object.constructor);
+			this.object = object;
+		}
+
+		@Override
+		protected ArrayValueType arrayType() {
+			return ArrayValueType.ROW;
+		}
+
+		@Override
+		protected boolean typeByItems() {
+			return getConstructor().typeByItems();
+		}
+
+		@Override
+		protected ArrayValueStruct knownArrayStruct() {
+			return this.object.value().getValueStruct().toArrayStruct();
+		}
+
 	}
 
 }
