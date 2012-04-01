@@ -125,7 +125,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("module").key(getScope()).toPath().mayDereference();
+				fieldName("module").key(getScope()).toPath().dereference();
 
 		return this.module = path.bind(this, getScope()).target(distribute());
 	}
@@ -136,7 +136,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("object").key(getScope()).toPath().mayDereference();
+				fieldName("object").key(getScope()).toPath().dereference();
 
 		return this.object = path.bind(this, getScope()).target(distribute());
 	}
@@ -147,7 +147,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("alias").key(getScope()).toPath().mayDereference();
+				fieldName("alias").key(getScope()).toPath().dereference();
 
 		return this.alias = path.bind(this, getScope()).target(distribute());
 	}

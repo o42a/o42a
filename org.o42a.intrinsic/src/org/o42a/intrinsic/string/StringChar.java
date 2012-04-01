@@ -145,7 +145,7 @@ final class StringChar extends AnnotatedBuiltin {
 				field("index", Accessor.DECLARATION)
 				.getKey()
 				.toPath()
-				.mayDereference();
+				.dereference();
 
 		return this.index = path.bind(this, getScope()).target(distribute());
 	}

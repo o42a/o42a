@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.impl.DereferenceFragment.DEREFERENCE_FRAGMENT;
 
 import java.util.Arrays;
 
@@ -146,10 +145,6 @@ public final class Path {
 
 	public final Path dereference() {
 		return append(new DereferenceStep());
-	}
-
-	public final Path mayDereference() {
-		return append(DEREFERENCE_FRAGMENT);
 	}
 
 	public final Path newObject(ObjectConstructor constructor) {

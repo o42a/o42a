@@ -191,7 +191,7 @@ final class SubString extends AnnotatedBuiltin {
 				field("from", Accessor.DECLARATION)
 				.getKey()
 				.toPath()
-				.mayDereference();
+				.dereference();
 
 		return this.from = path.bind(this, getScope()).target(distribute());
 	}
@@ -205,7 +205,7 @@ final class SubString extends AnnotatedBuiltin {
 				field("to", Accessor.DECLARATION)
 				.getKey()
 				.toPath()
-				.mayDereference();
+				.dereference();
 
 		return this.to = path.bind(this, getScope()).target(distribute());
 	}
