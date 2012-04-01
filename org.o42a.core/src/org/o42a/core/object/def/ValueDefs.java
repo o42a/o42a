@@ -197,7 +197,7 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 
 	private void validate(ValueStruct<?, ?> valueStruct) {
 		for (ValueDef def : get()) {
-			if (!valueStruct.assertAssignableFrom(def.getValueStruct())) {
+			if (!valueStruct.assignableFrom(def.getValueStruct())) {
 				def.getContext().getLogger().incompatible(
 						def,
 						valueStruct);
