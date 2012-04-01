@@ -24,6 +24,7 @@ import org.o42a.core.Placed;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.decl.DeclaredField;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -45,8 +46,7 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	private boolean prototype;
 	private boolean isAbstract;
 	private boolean override;
-	private boolean link;
-	private boolean variable;
+	private LinkValueType linkType;
 	private StaticTypeRef declaredIn;
 	private TypeRef type;
 
@@ -73,10 +73,9 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		super(location, distributor);
 		this.memberId = memberId;
 		this.visibility = sample.visibility;
-		this.link = sample.link;
 		this.override = sample.override;
-		this.variable = sample.variable;
 		this.isAbstract = sample.isAbstract();
+		this.linkType = sample.linkType;
 		this.prototype = sample.isPrototype();
 		this.type = sample.type;
 		this.declaredIn = sample.declaredIn;
@@ -159,30 +158,15 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		return clone;
 	}
 
-	public final boolean isLink() {
-		return this.link;
+	public final LinkValueType getLinkType() {
+		return this.linkType;
 	}
 
-	public final FieldDeclaration link() {
+	public final FieldDeclaration setLinkType(LinkValueType linkType) {
 
 		final FieldDeclaration clone = clone();
 
-		clone.link = true;
-		clone.variable = false;
-
-		return clone;
-	}
-
-	public final boolean isVariable() {
-		return this.variable;
-	}
-
-	public final FieldDeclaration variable() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.link = false;
-		clone.variable = true;
+		clone.linkType = linkType;
 
 		return clone;
 	}

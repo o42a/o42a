@@ -182,7 +182,7 @@ final class FieldVariant implements PlaceInfo {
 	Ascendants buildAscendants(
 			Ascendants implicitAscendants,
 			Ascendants ascendants) {
-		if (!getDeclaration().isLink() && !getDeclaration().isVariable()) {
+		if (getDeclaration().getLinkType() == null) {
 
 			final ObjectDefinerImpl definer =
 					new ObjectDefinerImpl(this, implicitAscendants, ascendants);

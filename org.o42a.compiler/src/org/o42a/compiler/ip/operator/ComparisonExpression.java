@@ -46,6 +46,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
@@ -273,7 +274,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 			final FieldBuilder builder = memberRegistry.newField(
 					fieldDeclaration(this, distributor, COMPARISON)
 					.setVisibility(Visibility.PRIVATE)
-					.link(),
+					.setLinkType(LinkValueType.LINK),
 					phrase.toFieldDefinition());
 
 			if (builder == null) {
