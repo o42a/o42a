@@ -123,9 +123,8 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			final int c = context.next();
 			final int next;
 
-			if (c != '`') {
-				next = c;
-			} else {
+			switch (c) {
+			case '`':
 
 				final BodyRefNode bodyRef = context.parse(bodyRef(expression));
 
@@ -133,17 +132,40 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 					return expression;
 				}
 
-				expression = bodyRef;
+				final MemberRefNode bodyMemberRef =
+						context.parse(memberRef(bodyRef, false));
 
-				final MemberRefNode memberRef =
-						context.parse(memberRef(expression, false));
-
-				if (memberRef != null) {
-					expression = memberRef;
+				if (bodyMemberRef != null) {
+					expression = bodyMemberRef;
 					continue;
 				}
 
+				expression = bodyRef;
 				next = context.next();
+
+				break;
+			case '-':
+
+				final DerefNode deref = context.parse(deref(expression));
+
+				if (deref == null) {
+					return expression;
+				}
+
+				final MemberRefNode derefMemberRef =
+						context.parse(memberRef(deref, false));
+
+				if (derefMemberRef != null) {
+					expression = derefMemberRef;
+					continue;
+				}
+
+				expression = deref;
+				next = context.next();
+
+				break;
+			default:
+				next = c;
 			}
 
 			switch (next) {
