@@ -92,17 +92,12 @@ public class ArrayConstructor extends ObjectConstructor {
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct,
 			boolean adapt) {
-		if (adapt
-				&& expectedStruct != null
-				&& getNode().getArguments().length == 0) {
+		if (adapt && expectedStruct != null) {
 
 			final ArrayValueStruct arrayStruct = expectedStruct.toArrayStruct();
 
 			if (arrayStruct != null) {
-				assert this.arrayStruct != null :
-					"Array structure already determined";
-				this.valueStructFinder = this.arrayStruct =
-						arrayStruct.setConstant(true);
+				return new ArrayInitValueAdapter(ref, this, arrayStruct);
 			}
 		}
 
@@ -138,7 +133,7 @@ public class ArrayConstructor extends ObjectConstructor {
 		return new ArrayObject(this, this.reproducer, object);
 	}
 
-	private boolean typeByItems() {
+	boolean typeByItems() {
 		valueStructFinder();
 		return this.arrayStruct == null;
 	}
