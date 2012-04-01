@@ -292,7 +292,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 					.toMember()
 					.getKey()
 					.toPath()
-					.mayDereference()
+					.dereference()
 					.bind(this, getScope())
 					.target(distribute());
 

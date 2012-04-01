@@ -201,10 +201,6 @@ public class BoundPath extends Location {
 		return getRawPath().dereference().bind(this, getOrigin());
 	}
 
-	public final BoundPath mayDereference() {
-		return getRawPath().mayDereference().bind(this, getOrigin());
-	}
-
 	public final BoundPath arrayItem(Ref indexRef) {
 		return new ArrayIndex(indexRef).appendToPath(this);
 	}

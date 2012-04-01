@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path.impl;
+package org.o42a.compiler.ip.ref.owner;
 
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
@@ -28,12 +28,12 @@ import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 
 
-public final class DereferenceFragment extends PathFragment {
+final class MayDereferenceFragment extends PathFragment {
 
-	public static final DereferenceFragment DEREFERENCE_FRAGMENT =
-			new DereferenceFragment();
+	static final MayDereferenceFragment MAY_DEREFERENCE_FRAGMENT =
+			new MayDereferenceFragment();
 
-	private DereferenceFragment() {
+	private MayDereferenceFragment() {
 	}
 
 	@Override

@@ -130,7 +130,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
 		final Member member =
 				field(this.operandName, Accessor.DECLARATION);
-		final Path path = member.getKey().toPath().mayDereference();
+		final Path path = member.getKey().toPath().dereference();
 
 		return this.operand = path.bind(this, getScope()).target(distribute());
 	}

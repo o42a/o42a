@@ -117,7 +117,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 				field("text", Accessor.DECLARATION)
 				.getKey()
 				.toPath()
-				.mayDereference();
+				.dereference();
 
 		return this.text = path.bind(this, getScope()).target(distribute());
 	}
