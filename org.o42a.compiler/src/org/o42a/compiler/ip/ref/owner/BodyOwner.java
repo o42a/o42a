@@ -26,28 +26,36 @@ import org.o42a.core.source.LocationInfo;
 class BodyOwner extends Owner {
 
 	private final LocationInfo location;
+	private final LocationInfo bodyRef;
 
-	BodyOwner(LocationInfo location, Ref ownerRef) {
+	BodyOwner(LocationInfo location, LocationInfo bodyRef, Ref ownerRef) {
 		super(ownerRef);
 		this.location = location;
+		this.bodyRef = bodyRef;
 	}
 
 	@Override
 	public Ref targetRef() {
 		return this.ownerRef.getPath()
-				.append(new BodyRefFragment(this.location))
-				.target(this.ownerRef.distribute());
+				.append(new BodyRefFragment(this.bodyRef))
+				.target(this.location, this.ownerRef.distribute());
 	}
 
 	@Override
-	public Owner body(LocationInfo location) {
-		redundantBodyRef(this.ownerRef.getLogger(), location);
+	public Owner body(LocationInfo location, LocationInfo bodyRef) {
+		redundantBodyRef(this.ownerRef.getLogger(), bodyRef);
 		return this;
 	}
 
 	@Override
+	public Owner deref(LocationInfo location, LocationInfo deref) {
+		return new DerefOwner(location, deref, this.ownerRef);
+	}
+
+	@Override
 	public Ref bodyRef() {
-		return body(this.location).targetRef();
+		redundantBodyRef(this.ownerRef.getLogger(), this.location);
+		return targetRef();
 	}
 
 }

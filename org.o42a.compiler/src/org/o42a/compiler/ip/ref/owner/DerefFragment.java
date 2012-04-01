@@ -26,30 +26,12 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.source.LocationInfo;
 
 
-final class MayDereferenceFragment extends PathFragment {
+final class DerefFragment extends PathFragment {
 
-	static final MayDereferenceFragment MAY_DEREFERENCE_FRAGMENT =
-			new MayDereferenceFragment();
-
-	private MayDereferenceFragment() {
-	}
-
-	@Override
-	public Path expand(PathExpander expander, int index, Scope start) {
-		if (!canDereference(start)) {
-			return SELF_PATH;
-		}
-		return SELF_PATH.dereference();
-	}
-
-	@Override
-	public String toString() {
-		return "*";
-	}
-
-	static boolean canDereference(Scope start) {
+	private static boolean canDereference(Scope start) {
 
 		final Obj object = start.toObject();
 
@@ -58,6 +40,28 @@ final class MayDereferenceFragment extends PathFragment {
 		}
 
 		return object.value().getValueType().toLinkType() != null;
+	}
+
+	private final LocationInfo location;
+
+	DerefFragment(LocationInfo location) {
+		this.location = location;
+	}
+
+	@Override
+	public Path expand(PathExpander expander, int index, Scope start) {
+		if (!canDereference(start)) {
+			expander.getPath().getLogger().error(
+					"cant_deref",
+					this.location,
+					"Can not dereference");
+		}
+		return SELF_PATH.dereference();
+	}
+
+	@Override
+	public String toString() {
+		return "->";
 	}
 
 }

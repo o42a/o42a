@@ -78,8 +78,8 @@ public class Ref extends Statement {
 	private RefOp op;
 	private InlineValue inline;
 
-	public Ref(BoundPath path, Distributor distributor) {
-		super(path, distributor);
+	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
+		super(location, distributor);
 		this.path = path;
 	}
 

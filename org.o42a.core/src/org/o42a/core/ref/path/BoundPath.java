@@ -289,7 +289,11 @@ public class BoundPath extends Location {
 	}
 
 	public final Ref target(Distributor distributor) {
-		return new Ref(this, distributor);
+		return target(this, distributor);
+	}
+
+	public final Ref target(LocationInfo location, Distributor distributor) {
+		return new Ref(location, distributor, this);
 	}
 
 	public final TypeRef typeRef(Distributor distributor) {

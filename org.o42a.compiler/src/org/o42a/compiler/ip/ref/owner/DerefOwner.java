@@ -23,15 +23,22 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 
 
-class NonLinkOwner extends Owner {
+final class DerefOwner extends Owner {
 
-	NonLinkOwner(Ref ownerRef) {
+	private final LocationInfo location;
+	private final LocationInfo deref;
+
+	DerefOwner(LocationInfo location, LocationInfo deref, Ref ownerRef) {
 		super(ownerRef);
+		this.location = location;
+		this.deref = deref;
 	}
 
 	@Override
 	public Ref targetRef() {
-		return this.ownerRef;
+		return this.ownerRef.getPath()
+				.append(new DerefFragment(this.deref))
+				.target(this.location, this.ownerRef.distribute());
 	}
 
 	@Override
@@ -42,16 +49,12 @@ class NonLinkOwner extends Owner {
 
 	@Override
 	public Owner deref(LocationInfo location, LocationInfo deref) {
-		this.ownerRef.getLogger().error(
-				"redundant_deref",
-				deref,
-				"Redundant link dereference");
-		return this;
+		return new DerefOwner(location, deref, this.ownerRef);
 	}
 
 	@Override
 	public Ref bodyRef() {
-		return targetRef();
+		return this.ownerRef;
 	}
 
 }
