@@ -94,14 +94,8 @@ final class LinkDefinerImpl implements LinkDefiner {
 			}
 		}
 
-		final LinkValueType linkType;
-
-		if (this.variant.getDeclaration().isVariable()) {
-			linkType = LinkValueType.VARIABLE;
-		} else {
-			linkType = LinkValueType.LINK;
-		}
-
+		final LinkValueType linkType =
+				this.variant.getDeclaration().getLinkType();
 		final FieldDeclaration declaration = this.variant.getDeclaration();
 
 		return linkType.typeRef(
