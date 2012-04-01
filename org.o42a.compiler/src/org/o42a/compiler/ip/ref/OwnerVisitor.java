@@ -185,7 +185,23 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 			return null;
 		}
 
-		return result.body(location(p, ref.getSuffix()));
+		return result.body(
+				location(p, ref),
+				location(p, ref.getSuffix()));
+	}
+
+	@Override
+	public Owner visitDeref(DerefNode ref, Distributor p) {
+
+		final Owner result = ref.getOwner().accept(this, p);
+
+		if (result == null) {
+			return null;
+		}
+
+		return result.deref(
+				location(p, ref),
+				location(p, ref.getSuffix()));
 	}
 
 	@Override

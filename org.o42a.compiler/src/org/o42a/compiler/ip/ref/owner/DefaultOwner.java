@@ -39,8 +39,13 @@ final class DefaultOwner extends Owner {
 	}
 
 	@Override
-	public Owner body(LocationInfo location) {
-		return new BodyOwner(location, this.ownerRef);
+	public Owner body(LocationInfo location, LocationInfo bodyRef) {
+		return new BodyOwner(location, bodyRef, this.ownerRef);
+	}
+
+	@Override
+	public Owner deref(LocationInfo location, LocationInfo deref) {
+		return new DerefOwner(location, deref, targetRef());
 	}
 
 	@Override

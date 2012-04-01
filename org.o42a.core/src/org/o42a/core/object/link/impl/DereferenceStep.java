@@ -232,8 +232,7 @@ public class DereferenceStep extends Step {
 					start.toObject().value().getValueStruct().toLinkStruct();
 			final TypeRef typeRef = linkStruct.getTypeRef();
 
-			return start.getEnclosingScopePath()
-					.append(typeRef.getPath().getPath());
+			return typeRef.getPath().getPath();
 		}
 
 		@Override
