@@ -22,7 +22,7 @@ package org.o42a.ast.test.grammar.ref;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.o42a.ast.ref.BodyRefNode.Suffix.BACKQUOTE;
+import static org.o42a.ast.ref.DerefNode.Suffix.ARROW;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
@@ -30,96 +30,96 @@ import org.o42a.ast.ref.*;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
-public class BodyRefParserTest extends GrammarTestCase {
+public class DerefTest extends GrammarTestCase {
 
 	@Test
-	public void bodyRef() {
+	public void deref() {
 
-		final BodyRefNode bodyRef = to(
-				BodyRefNode.class,
-				parse("foo /*1*/ ` /*2*/"));
+		final DerefNode deref = to(
+				DerefNode.class,
+				parse("foo /*1*/ -> /*2*/"));
 
-		assertName("foo", bodyRef.getOwner());
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
-		assertThat(this.worker.position().offset(), is(17L));
+		assertName("foo", deref.getOwner());
+		assertThat(deref.getSuffix().getType(), is(ARROW));
+		assertThat(this.worker.position().offset(), is(18L));
 	}
 
 	@Test
-	public void bodyMember() {
+	public void derefMember() {
 
 		final MemberRefNode memberRef =
-				to(MemberRefNode.class, parse("Foo` bar"));
-		final BodyRefNode bodyRef =
-				to(BodyRefNode.class, memberRef.getOwner());
+				to(MemberRefNode.class, parse("Foo -> bar"));
+		final DerefNode deref =
+				to(DerefNode.class, memberRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertName("foo", deref.getOwner());
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertThat(memberRef.getName().getName(), is("bar"));
 		assertThat(memberRef.getDeclaredIn(), nullValue());
 	}
 
 	@Test
-	public void qualifiedBodyMember() {
+	public void qualifiedDerefMember() {
 
 		final MemberRefNode memberRef =
-				to(MemberRefNode.class, parse("Foo` bar @baz"));
-		final BodyRefNode bodyRef =
-				to(BodyRefNode.class, memberRef.getOwner());
+				to(MemberRefNode.class, parse("Foo -> bar @baz"));
+		final DerefNode deref =
+				to(DerefNode.class, memberRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertName("foo", deref.getOwner());
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertThat(memberRef.getName().getName(), is("bar"));
 		assertName("baz", memberRef.getDeclaredIn());
 	}
 
 	@Test
-	public void bodyAdapter() {
+	public void derefAdapter() {
 
 		final AdapterRefNode adapterRef =
-				to(AdapterRefNode.class, parse("Foo` @@bar"));
-		final BodyRefNode bodyRef =
-				to(BodyRefNode.class, adapterRef.getOwner());
+				to(AdapterRefNode.class, parse("Foo -> @@bar"));
+		final DerefNode deref =
+				to(DerefNode.class, adapterRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertName("foo", deref.getOwner());
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertName("bar", adapterRef.getType());
 		assertThat(adapterRef.getDeclaredIn(), nullValue());
 	}
 
 	@Test
-	public void qualifiedBodyAdapter() {
+	public void qualifiedDerefAdapter() {
 
 		final AdapterRefNode adapterRef =
-				to(AdapterRefNode.class, parse("Foo` @@bar @baz"));
-		final BodyRefNode bodyRef =
-				to(BodyRefNode.class, adapterRef.getOwner());
+				to(AdapterRefNode.class, parse("Foo -> @@bar @baz"));
+		final DerefNode deref =
+				to(DerefNode.class, adapterRef.getOwner());
 
-		assertName("foo", bodyRef.getOwner());
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertName("foo", deref.getOwner());
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		assertName("bar", adapterRef.getType());
 		assertName("baz", adapterRef.getDeclaredIn());
 	}
 
 	@Test
-	public void memberBody() {
+	public void memberDeref() {
 
 		final MemberRefNode ref =
-				to(MemberRefNode.class, parse("foo: bar` baz"));
+				to(MemberRefNode.class, parse("foo: bar -> baz"));
 
 		assertThat(ref.getName().getName(), is("baz"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 
-		final BodyRefNode bodyRef =
-				to(BodyRefNode.class, ref.getOwner());
+		final DerefNode deref =
+				to(DerefNode.class, ref.getOwner());
 
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 
 		final MemberRefNode memberRef =
-				to(MemberRefNode.class, bodyRef.getOwner());
+				to(MemberRefNode.class, deref.getOwner());
 
 		assertName("foo", memberRef.getOwner());
 		assertThat(memberRef.getName().getName(), is("bar"));
@@ -127,14 +127,14 @@ public class BodyRefParserTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void scopeBody() {
+	public void scopeDeref() {
 
-		final BodyRefNode bodyRef = to(BodyRefNode.class, parse("*`"));
+		final DerefNode deref = to(DerefNode.class, parse("*->"));
 		final ScopeRefNode scopeRef =
-				to(ScopeRefNode.class, bodyRef.getOwner());
+				to(ScopeRefNode.class, deref.getOwner());
 
 		assertThat(scopeRef.getType(), is(ScopeType.IMPLIED));
-		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
+		assertThat(deref.getSuffix().getType(), is(ARROW));
 	}
 
 	private final RefNode parse(String text) {

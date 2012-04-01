@@ -118,6 +118,10 @@ public class Grammar {
 		return new BodyRefParser(owner);
 	}
 
+	public static Parser<DerefNode> deref(ExpressionNode owner) {
+		return new DerefParser(owner);
+	}
+
 	public static Parser<AscendantRefNode> ascendantRef() {
 		return AscendantRefParser.ASCENDANT_REF;
 	}

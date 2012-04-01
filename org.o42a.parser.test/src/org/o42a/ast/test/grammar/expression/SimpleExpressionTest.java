@@ -39,6 +39,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(MemberRefNode.class, parse("(foo): bar"));
 		to(MemberRefNode.class, parse("(foo)` bar"));
 		to(MemberRefNode.class, parse("foo ()` bar"));
+		to(MemberRefNode.class, parse("(foo) -> bar"));
+		to(MemberRefNode.class, parse("foo () -> bar"));
 	}
 
 	@Test
@@ -48,6 +50,8 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(AdapterRefNode.class, parse("(foo) @@bar"));
 		to(AdapterRefNode.class, parse("foo ()` @@bar"));
 		to(AdapterRefNode.class, parse("(foo)` @@bar"));
+		to(AdapterRefNode.class, parse("foo () -> @@bar"));
+		to(AdapterRefNode.class, parse("(foo) -> @@bar"));
 		to(AdapterRefNode.class, parse("*@@bar"));
 		to(AdapterRefNode.class, parse(":@@bar"));
 		to(AdapterRefNode.class, parse("::@@bar"));
@@ -63,6 +67,17 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(BodyRefNode.class, parse("\"\"`"));
 		to(BodyRefNode.class, parse("123 456`"));
 		to(BodyRefNode.class, parse("foo_ bar`"));
+		to(BodyRefNode.class, parse("foo->`"));
+	}
+
+	@Test
+	public void deref() {
+		to(DerefNode.class, parse("(foo)->"));
+		to(DerefNode.class, parse("foo()->"));
+		to(DerefNode.class, parse("\"\"->"));
+		to(DerefNode.class, parse("123 456->"));
+		to(DerefNode.class, parse("foo_ bar->"));
+		to(DerefNode.class, parse("foo`->"));
 	}
 
 	@Test
