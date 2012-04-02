@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Abstract Syntax Tree
 Bundle-SymbolicName: org.o42a.ast;singleton:=true
-Bundle-Version: 0.1.5
+Bundle-Version: 0.1.6
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.o42a.ast,
  org.o42a.ast.atom,
@@ -15,4 +15,4 @@ Export-Package: org.o42a.ast,
  org.o42a.ast.statement,
  org.o42a.ast.type
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.o42a.util;bundle-version="0.1.5";visibility:=reexport
+Require-Bundle: org.o42a.util;bundle-version="0.1.6";visibility:=reexport
