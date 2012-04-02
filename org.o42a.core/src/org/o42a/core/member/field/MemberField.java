@@ -35,7 +35,6 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -168,11 +167,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public final Assignment toAssignment() {
-		return null;
-	}
-
-	@Override
 	public final MemberClause toClause() {
 		return null;
 	}
@@ -211,10 +205,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public abstract MemberField propagateTo(MemberOwner owner);
-
-	public final void assign(Ref value) {
-		registerReplacement(new Assignment(value));
-	}
 
 	@Override
 	public void resolveAll() {

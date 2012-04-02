@@ -24,6 +24,4 @@ public interface FieldReplacement {
 
 	MemberField toField();
 
-	Assignment toAssignment();
-
 }
