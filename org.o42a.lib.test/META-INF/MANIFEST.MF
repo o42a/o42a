@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: o42a Test Framework
 Bundle-SymbolicName: org.o42a.lib.test;singleton:=true
-Bundle-Version: 0.1.5
+Bundle-Version: 0.1.6
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.o42a.common;bundle-version="0.1.5"
+Require-Bundle: org.o42a.common;bundle-version="0.1.6"
 Export-Package: org.o42a.lib.test
 Bundle-ActivationPolicy: lazy
