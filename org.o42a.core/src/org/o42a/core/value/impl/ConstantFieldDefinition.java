@@ -22,11 +22,11 @@ package org.o42a.core.value.impl;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.common.ConstructorFieldDefinition;
+import org.o42a.core.ref.common.DefaultFieldDefinition;
 import org.o42a.core.ref.path.BoundPath;
 
 
-final class ConstantFieldDefinition extends ConstructorFieldDefinition {
+final class ConstantFieldDefinition extends DefaultFieldDefinition {
 
 	private final Constant<?> constant;
 

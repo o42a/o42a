@@ -25,7 +25,7 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
 
 
-public class ValueFieldDefinition extends ConstructorFieldDefinition {
+public class ValueFieldDefinition extends DefaultFieldDefinition {
 
 	public ValueFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);

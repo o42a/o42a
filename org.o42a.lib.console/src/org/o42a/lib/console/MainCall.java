@@ -21,9 +21,11 @@ package org.o42a.lib.console;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -46,6 +48,13 @@ final class MainCall extends ObjectConstructor {
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return this.adapterRef;
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

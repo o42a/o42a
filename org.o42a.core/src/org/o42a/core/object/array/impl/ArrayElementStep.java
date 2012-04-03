@@ -70,7 +70,7 @@ final class ArrayElementStep extends Step {
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
-		return objectFieldDefinition(path, distributor);
+		return defaultFieldDefinition(path, distributor);
 	}
 
 	@Override

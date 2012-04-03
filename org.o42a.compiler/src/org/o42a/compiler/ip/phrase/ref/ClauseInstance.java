@@ -111,7 +111,7 @@ public final class ClauseInstance {
 		}
 
 		final Path instancePath =
-				new ClauseInstantiation(this, distributor).toPath();
+				new ClauseInstanceConstructor(this, distributor).toPath();
 
 		return instancePath.bind(
 				new Location(distributor.getContext(), getLocation()),

@@ -43,7 +43,6 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.ObjectConstructorStep;
-import org.o42a.core.ref.path.impl.ObjectFieldDefinition;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -86,11 +85,9 @@ public abstract class ObjectConstructor extends Placed {
 				adapt);
 	}
 
-	public FieldDefinition fieldDefinition(
+	public abstract FieldDefinition fieldDefinition(
 			BoundPath path,
-			Distributor distributor) {
-		return new ObjectFieldDefinition(path, distributor);
-	}
+			Distributor distributor);
 
 	public final Step toStep() {
 		return new ObjectConstructorStep(this);
