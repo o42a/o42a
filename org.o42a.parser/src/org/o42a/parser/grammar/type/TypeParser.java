@@ -24,7 +24,6 @@ import static org.o42a.parser.Grammar.ref;
 import static org.o42a.parser.Grammar.samples;
 
 import org.o42a.ast.ref.RefNode;
-import org.o42a.ast.type.ArrayTypeNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.parser.Parser;
@@ -63,16 +62,6 @@ public class TypeParser implements Parser<TypeNode> {
 			ancestor = context.acceptComments(
 					true,
 					ascendants != null ? ascendants : ref);
-		}
-
-		if (context.next() == '[') {
-
-			final ArrayTypeNode itemType =
-					context.parse(new ArrayTypeParser(ancestor));
-
-			if (itemType != null) {
-				return itemType;
-			}
 		}
 
 		return ancestor;

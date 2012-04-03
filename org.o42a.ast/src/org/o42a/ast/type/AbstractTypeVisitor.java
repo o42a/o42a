@@ -39,11 +39,6 @@ public abstract class AbstractTypeVisitor<R, P>
 	}
 
 	@Override
-	public R visitArrayType(ArrayTypeNode arrayType, P p) {
-		return visitType(arrayType, p);
-	}
-
-	@Override
 	protected R visitRef(RefNode ref, P p) {
 		return visitType(ref, p);
 	}

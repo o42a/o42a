@@ -97,21 +97,6 @@ final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 	}
 
 	@Override
-	public TypeRef visitArrayType(ArrayTypeNode arrayType, Distributor p) {
-
-		final TypeNode ancestorNode = arrayType.getAncestor();
-
-		if (ancestorNode == null) {
-			return null;
-		}
-
-		final TypeVisitor typeVisitor =
-				new TypeVisitor(ip(), ip().arrayValueStruct(arrayType));
-
-		return ancestorNode.accept(typeVisitor, p);
-	}
-
-	@Override
 	protected TypeRef visitRef(RefNode node, Distributor p) {
 
 		final Ref ref = node.accept(ip().bodyRefVisitor(), p);
