@@ -28,6 +28,4 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitValueType(ValueTypeNode valueType, P p);
 
-	R visitArrayType(ArrayTypeNode arrayType, P p);
-
 }

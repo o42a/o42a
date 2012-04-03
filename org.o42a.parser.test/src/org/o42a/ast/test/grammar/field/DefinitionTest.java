@@ -19,20 +19,19 @@
 */
 package org.o42a.ast.test.grammar.field;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
-import org.o42a.ast.expression.BracketsNode;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.AscendantNode;
+import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.DefinitionKind;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 
@@ -111,40 +110,6 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DefinitionKind.VARIABLE, result.getDefinitionKind());
 		assertName("bar", result.getDefinitionType());
 		assertName("baz", result.getDefinition());
-	}
-
-	@Test
-	public void arrayLinkWithItemType() {
-
-		final DeclaratorNode result =
-				parse("foo := (`array[array 2[item]]) bar");
-
-		assertEquals(DeclarationTarget.VALUE, result.getTarget());
-		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
-		assertName("bar", result.getDefinition());
-
-		final ArrayTypeNode arrayType =
-				to(ArrayTypeNode.class, result.getInterface().getType());
-
-		assertName("array", arrayType.getAncestor());
-		assertThat(
-				arrayType.getOpening().getType(),
-				is(BracketsNode.Bracket.OPENING_BRACKET));
-		assertThat(
-				arrayType.getClosing().getType(),
-				is(BracketsNode.Bracket.CLOSING_BRACKET));
-
-		final ArrayTypeNode arrayType2 =
-				to(ArrayTypeNode.class, arrayType.getItemType());
-
-		assertName("array2", arrayType2.getAncestor());
-		assertThat(
-				arrayType2.getOpening().getType(),
-				is(BracketsNode.Bracket.OPENING_BRACKET));
-		assertThat(
-				arrayType2.getClosing().getType(),
-				is(BracketsNode.Bracket.CLOSING_BRACKET));
-		assertName("item", arrayType2.getItemType());
 	}
 
 	private DeclaratorNode parse(String text) {

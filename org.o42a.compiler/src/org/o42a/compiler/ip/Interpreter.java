@@ -36,7 +36,9 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.ast.sentence.*;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.*;
+import org.o42a.ast.type.DefinitionKind;
+import org.o42a.ast.type.InterfaceNode;
+import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
@@ -44,8 +46,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
@@ -253,30 +253,6 @@ public enum Interpreter {
 		}
 
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
-	}
-
-	public ValueStructFinder arrayValueStruct(ArrayTypeNode node) {
-		return new ArrayValueStructFinder(this, node);
-	}
-
-	public ArrayValueStruct arrayValueStruct(
-			ArrayTypeNode node,
-			Distributor p,
-			ArrayValueType arrayType) {
-
-		final TypeNode itemTypeNode = node.getItemType();
-
-		if (itemTypeNode == null) {
-			return null;
-		}
-
-		final TypeRef itemTypeRef = itemTypeNode.accept(typeVisitor(), p);
-
-		if (itemTypeRef == null) {
-			return null;
-		}
-
-		return arrayType.arrayStruct(itemTypeRef);
 	}
 
 	private static final Ref integer(Distributor p, long value, Node node) {

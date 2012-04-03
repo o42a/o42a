@@ -77,11 +77,6 @@ public abstract class NodeVisitor<R, P>
 		return visitPart(iface, p);
 	}
 
-	@Override
-	public R visitArrayType(ArrayTypeNode itemType, P p) {
-		return visitType(itemType, p);
-	}
-
 	public R visitSerial(SerialNode statement, P p) {
 		return visitPart(statement, p);
 	}
