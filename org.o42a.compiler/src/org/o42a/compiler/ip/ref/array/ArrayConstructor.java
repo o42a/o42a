@@ -24,10 +24,13 @@ import static org.o42a.core.ref.Ref.voidRef;
 import org.o42a.ast.expression.BracketsNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.ValueFieldDefinition;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -102,6 +105,13 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		return super.valueAdapter(ref, expectedStruct, adapt);
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ValueFieldDefinition(path, distributor);
 	}
 
 	@Override

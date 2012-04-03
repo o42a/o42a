@@ -23,18 +23,20 @@ import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.codegen.code.Block;
-import org.o42a.common.object.BuiltinObject;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.common.ValueFieldDefinition;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -42,15 +44,13 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
 public class LogicalExpression extends ObjectConstructor {
 
 	private final UnaryNode node;
-	private Ref operand;
+	private final Ref operand;
 
 	public LogicalExpression(
 			Interpreter ip,
@@ -72,9 +72,24 @@ public class LogicalExpression extends ObjectConstructor {
 		this.operand = prototype.operand.reproduce(reproducer);
 	}
 
+	public final UnaryNode getNode() {
+		return this.node;
+	}
+
+	public final Ref operand() {
+		return this.operand;
+	}
+
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return ValueType.VOID.typeRef(location, getScope());
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ValueFieldDefinition(path, distributor);
 	}
 
 	@Override
@@ -95,7 +110,7 @@ public class LogicalExpression extends ObjectConstructor {
 		return new LogicalResult(this);
 	}
 
-	private ValOp write(
+	ValOp write(
 			ValDirs dirs,
 			HostOp host,
 			RefOp op,
@@ -180,131 +195,6 @@ public class LogicalExpression extends ObjectConstructor {
 		} else {
 			op.writeLogicalValue(dirs);
 		}
-	}
-
-	private static final class LogicalResult extends BuiltinObject {
-
-		private final LogicalExpression ref;
-		private Ref operand;
-
-		LogicalResult(LogicalExpression ref) {
-			super(ref, ref.distributeIn(ref.getContainer()), ValueStruct.VOID);
-			this.ref = ref;
-		}
-
-		@Override
-		public Value<?> calculateBuiltin(Resolver resolver) {
-
-			final Value<?> value = operand().value(resolver);
-
-			if (!value.getKnowledge().isKnown()) {
-				return ValueType.VOID.runtimeValue();
-			}
-
-			switch (this.ref.node.getOperator()) {
-			case NOT:
-				if (value.getKnowledge().isFalse()) {
-					return Value.voidValue();
-				}
-				return Value.falseValue();
-			case IS_TRUE:
-				if (value.getKnowledge().isFalse()) {
-					return Value.falseValue();
-				}
-				return Value.voidValue();
-			case KNOWN:
-				if (value.getKnowledge().hasUnknownCondition()) {
-					return Value.falseValue();
-				}
-				return Value.voidValue();
-			case UNKNOWN:
-				if (value.getKnowledge().hasUnknownCondition()) {
-					return Value.voidValue();
-				}
-				return Value.falseValue();
-			default:
-				throw new IllegalStateException(
-						"Unsupported logical operator: "
-						+ this.ref.node.getOperator().getSign());
-			}
-		}
-
-		@Override
-		public InlineValue inlineBuiltin(
-				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
-				Scope origin) {
-
-			final InlineValue operand = operand().inline(normalizer, origin);
-
-			if (operand == null) {
-				return null;
-			}
-
-			return new Inline(valueStruct, this.ref, operand);
-		}
-
-		@Override
-		public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-			return this.ref.write(dirs, host, operand().op(host), null);
-		}
-
-		@Override
-		public void resolveBuiltin(Resolver resolver) {
-			operand().resolve(resolver).resolveValue();
-		}
-
-		@Override
-		public String toString() {
-			return this.ref != null ? this.ref.toString() : "LogicalOp";
-		}
-
-		@Override
-		protected Obj findObjectIn(Scope enclosing) {
-			return this.ref.resolve(enclosing);
-		}
-
-		final Ref operand() {
-			if (this.operand != null) {
-				return this.operand;
-			}
-			return this.operand = this.ref.operand.rescope(getScope());
-		}
-
-	}
-
-	private static final class Inline extends InlineValue {
-
-		private final LogicalExpression ref;
-		private final InlineValue operandValue;
-
-		Inline(
-				ValueStruct<?, ?> valueStruct,
-				LogicalExpression ref,
-				InlineValue operandValue) {
-			super(valueStruct);
-			this.ref = ref;
-			this.operandValue = operandValue;
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return this.ref.write(dirs, host, null, this.operandValue);
-		}
-
-		@Override
-		public void cancel() {
-			this.operandValue.cancel();
-		}
-
-		@Override
-		public String toString() {
-			if (this.ref == null) {
-				return super.toString();
-			}
-			return this.ref.toString();
-		}
-
 	}
 
 }

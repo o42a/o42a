@@ -19,19 +19,15 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
-
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.common.ConstructorFieldDefinition;
 import org.o42a.core.ref.path.BoundPath;
 
 
-final class ConstantFieldDefinition extends FieldDefinition {
+final class ConstantFieldDefinition extends ConstructorFieldDefinition {
 
-	private final BoundPath path;
 	private final Constant<?> constant;
 
 	ConstantFieldDefinition(
@@ -39,7 +35,6 @@ final class ConstantFieldDefinition extends FieldDefinition {
 			Distributor distributor,
 			Constant<?> constant) {
 		super(path, distributor);
-		this.path = path;
 		this.constant = constant;
 	}
 
@@ -55,27 +50,9 @@ final class ConstantFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 		definer.setAncestor(this.constant.getValueType().typeRef(
-				this.path,
+				path(),
 				getScope()));
-		definer.define(valueBlock(this.path.target(
-				definer.getField().distributeIn(
-						this.path.getOrigin().getContainer()))));
-	}
-
-	@Override
-	public void overrideObject(ObjectDefiner definer) {
-		if (!linkDefiner(definer)) {
-			defineObject(definer);
-			return;
-		}
-		definer.define(valueBlock(this.path.target(
-				definer.getField().distributeIn(
-						this.path.getOrigin().getContainer()))));
-	}
-
-	@Override
-	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(this.path.target(distribute()), null);
+		pathAsValue(definer);
 	}
 
 	@Override
