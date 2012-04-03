@@ -29,8 +29,10 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -85,6 +87,13 @@ public final class Constant<T> extends ObjectConstructor {
 				ref.getScope(),
 				getValueType(),
 				this.constant);
+	}
+
+	@Override
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ConstantFieldDefinition(path, distributor, this);
 	}
 
 	@Override
