@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,28 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path.impl;
+package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.ObjectDefiner;
-import org.o42a.core.ref.common.ConstructorFieldDefinition;
 import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.type.TypeRef;
 
 
-public final class ObjectFieldDefinition extends ConstructorFieldDefinition {
+public class ValueFieldDefinition extends ConstructorFieldDefinition {
 
-	public ObjectFieldDefinition(BoundPath path, Distributor distributor) {
+	public ValueFieldDefinition(BoundPath path, Distributor distributor) {
 		super(path, distributor);
 	}
 
 	@Override
 	public boolean isLink() {
-		return pathToLink(path());
+		return false;
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.addImplicitSample(path().staticTypeRef(distribute()));
+		definer.setAncestor(ancestor());
+		pathAsValue(definer);
+	}
+
+	protected TypeRef ancestor() {
+		return path().ancestor(path(), distribute());
 	}
 
 }
