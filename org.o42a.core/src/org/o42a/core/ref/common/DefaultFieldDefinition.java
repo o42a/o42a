@@ -19,43 +19,21 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathResolution;
 
 
-public abstract class ConstructorFieldDefinition extends FieldDefinition {
-
-	public static boolean pathToLink(BoundPath path) {
-
-		final PathResolution resolution = path.resolve(
-				pathResolver(path.getOrigin(), dummyUser()));
-
-		if (resolution.isError()) {
-			return false;
-		}
-
-		final Obj object = resolution.getObject().toObject();
-
-		if (object == null) {
-			return false;
-		}
-
-		return object.value().getValueType().isLink();
-	}
+public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	private final BoundPath path;
 
-	public ConstructorFieldDefinition(
+	public DefaultFieldDefinition(
 			BoundPath path,
 			Distributor distributor) {
 		super(path, distributor);

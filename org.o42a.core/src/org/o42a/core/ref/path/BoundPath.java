@@ -325,9 +325,6 @@ public class BoundPath extends Location {
 		final Step[] steps = this.rawPath.getSteps();
 
 		if (steps.length == 0) {
-			if (isAbsolute()) {
-				return new ObjectFieldDefinition(this, distributor);
-			}
 			return new PathFieldDefinition(this, distributor);
 		}
 
@@ -342,9 +339,6 @@ public class BoundPath extends Location {
 		final Step[] steps = getSteps();
 
 		if (steps.length == 0) {
-			if (isAbsolute()) {
-				return new ObjectFieldDefinition(this, distributor);
-			}
 			return new PathFieldDefinition(this, distributor);
 		}
 

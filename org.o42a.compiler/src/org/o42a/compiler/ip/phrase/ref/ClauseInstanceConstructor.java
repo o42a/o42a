@@ -20,34 +20,30 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.common.DefinedObject;
-import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
-final class ClauseInstantiation extends ObjectConstructor {
+final class ClauseInstanceConstructor extends ObjectConstructor {
 
 	private final ClauseInstance instance;
 	private AscendantsDefinition ascendants;
 
-	ClauseInstantiation(
-			ClauseInstance instance,
-			Distributor distributor) {
+	ClauseInstanceConstructor(ClauseInstance instance, Distributor distributor) {
 		super(
 				new Location(distributor.getContext(), instance.getLocation()),
 				distributor);
 		this.instance = instance;
 	}
 
-	private ClauseInstantiation(
+	private ClauseInstanceConstructor(
 			ClauseInstance instance,
 			Distributor distributor,
 			AscendantsDefinition ascendants) {
@@ -58,13 +54,24 @@ final class ClauseInstantiation extends ObjectConstructor {
 		this.ascendants = ascendants;
 	}
 
+	public final ClauseInstance instance() {
+		return this.instance;
+	}
+
 	@Override
 	public TypeRef ancestor(LocationInfo location) {
 		return getAscendants().getAncestor();
 	}
 
 	@Override
-	public ClauseInstantiation reproduce(PathReproducer reproducer) {
+	public FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+		return new ClauseInstanceFieldDefinition(path, distributor, this);
+	}
+
+	@Override
+	public ClauseInstanceConstructor reproduce(PathReproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
@@ -74,7 +81,7 @@ final class ClauseInstantiation extends ObjectConstructor {
 			return null;
 		}
 
-		return new ClauseInstantiation(
+		return new ClauseInstanceConstructor(
 				this.instance,
 				reproducer.distribute(),
 				ascendants);
@@ -87,49 +94,15 @@ final class ClauseInstantiation extends ObjectConstructor {
 
 	@Override
 	protected Obj createObject() {
-		return new InstantiationObject(this);
+		return new ClauseInstanceObject(this);
 	}
 
-	private AscendantsDefinition getAscendants() {
+	AscendantsDefinition getAscendants() {
 		if (this.ascendants != null) {
 			return this.ascendants;
 		}
 		return this.ascendants =
 				this.instance.getContext().ascendants(this, distribute());
-	}
-
-	private static final class InstantiationObject extends DefinedObject {
-
-		private final ClauseInstantiation instantiation;
-
-		InstantiationObject(ClauseInstantiation instantiation) {
-			super(
-					instantiation.instance.getLocation(),
-					instantiation.distribute());
-			this.instantiation = instantiation;
-		}
-
-		@Override
-		public String toString() {
-			return this.instantiation.toString();
-		}
-
-		@Override
-		protected Ascendants buildAscendants() {
-			return this.instantiation.getAscendants().updateAscendants(
-					new Ascendants(this));
-		}
-
-		@Override
-		protected void buildDefinition(DeclarativeBlock definition) {
-			this.instantiation.instance.getDefinition().buildBlock(definition);
-		}
-
-		@Override
-		protected Obj findObjectIn(Scope enclosing) {
-			return this.instantiation.resolve(enclosing);
-		}
-
 	}
 
 }

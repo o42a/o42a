@@ -29,6 +29,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectType;
@@ -193,6 +194,13 @@ final class TestRunner extends ConstructedObject {
 
 			return testPath.bind(location, localScope)
 					.target(localScope.distribute()).toTypeRef();
+		}
+
+		@Override
+		public FieldDefinition fieldDefinition(
+				BoundPath path,
+				Distributor distributor) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

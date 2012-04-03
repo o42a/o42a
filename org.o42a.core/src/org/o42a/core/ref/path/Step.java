@@ -31,7 +31,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.path.impl.ObjectFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -132,12 +131,6 @@ public abstract class Step {
 			BoundPath path,
 			Distributor distributor) {
 		return new PathFieldDefinition(path, distributor);
-	}
-
-	protected final FieldDefinition objectFieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new ObjectFieldDefinition(path, distributor);
 	}
 
 	protected abstract PathOp op(PathOp start);
