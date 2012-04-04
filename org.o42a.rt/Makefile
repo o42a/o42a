@@ -69,6 +69,7 @@ objects += $(srcdir)/float.o
 objects += $(srcdir)/array.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/fld/assigner.o
+objects += $(srcdir)/fld/getter.o
 objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/scope.o

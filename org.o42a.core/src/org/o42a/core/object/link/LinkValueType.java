@@ -22,8 +22,10 @@ package org.o42a.core.object.link;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.core.object.link.impl.GetterValueStructIR;
 import org.o42a.core.object.link.impl.LinkValueStructIR;
 import org.o42a.core.object.link.impl.VariableValueStructIR;
 import org.o42a.core.ref.path.Path;
@@ -58,10 +60,26 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		}
 
 		@Override
-		LinkValueStructIR structIR(
+		VariableValueStructIR structIR(
 				Generator generator,
 				LinkValueStruct linkStruct) {
 			return new VariableValueStructIR(generator, linkStruct);
+		}
+
+	};
+
+	public static final LinkValueType GETTER = new LinkValueType("getter") {
+
+		@Override
+		public Obj typeObject(Intrinsics intrinsics) {
+			return intrinsics.getVariable();
+		}
+
+		@Override
+		GetterValueStructIR structIR(
+				Generator generator,
+				LinkValueStruct linkStruct) {
+			return new GetterValueStructIR(generator, linkStruct);
 		}
 
 	};
@@ -72,6 +90,16 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 
 	@Override
 	public final boolean isVariable() {
+		return this == VARIABLE;
+	}
+
+	@Override
+	public final boolean isStateless() {
+		return this == GETTER;
+	}
+
+	@Override
+	public final boolean isRuntimeConstructed() {
 		return this != LINK;
 	}
 
@@ -97,7 +125,7 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 		return null;
 	}
 
-	abstract LinkValueStructIR structIR(
+	abstract ValueStructIR<LinkValueStruct, KnownLink> structIR(
 			Generator generator,
 			LinkValueStruct linkStruct);
 

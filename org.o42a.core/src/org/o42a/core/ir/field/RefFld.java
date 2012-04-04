@@ -66,6 +66,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		return getKind() != FldKind.OBJ;
 	}
 
+	public final boolean isStateless() {
+		return getKind() == FldKind.GETTER;
+	}
+
 	public final Obj getTarget() {
 		return this.target;
 	}
@@ -129,7 +133,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	}
 
 	protected void fill() {
-		getInstance().object().setNull();
+		if (!isStateless()) {
+			getInstance().object().setNull();
+		}
 		getInstance().constructor().setConstant(true).setValue(
 				this.constructor);
 	}
@@ -140,7 +146,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		final ObjectOp result = construct(builder, dirs);
 		final DataOp res = result.toData(code);
 
-		op(code, builder.host()).ptr().object(null, code).store(code, res);
+		if (!isStateless()) {
+			op(code, builder.host()).ptr().object(null, code).store(code, res);
+		}
 		res.returnValue(code);
 	}
 
@@ -287,8 +295,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 						linkStruct.getTypeRef().typeObject(dummyUser()));
 	}
 
-	public static abstract class Op<S extends Op<S, C>, C extends ObjectFunc<C>>
-			extends Fld.Op<S> {
+	public static abstract class Op<
+			S extends Op<S, C>,
+			C extends ObjectFunc<C>>
+					extends Fld.Op<S> {
 
 		public Op(StructWriter<S> writer) {
 			super(writer);
@@ -328,12 +338,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			return code.phi(null, object1, object2);
 		}
 
-		protected abstract DataOp construct(
-				Code code,
-				ObjOp host,
-				C constructor);
-
-		private DataOp construct(Code code, ObjOp host) {
+		protected final DataOp construct(Code code, ObjOp host) {
 
 			final C constructor = constructor(null, code).load(null, code);
 
@@ -342,6 +347,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 			return construct(code, host, constructor);
 		}
+
+		protected abstract DataOp construct(
+				Code code,
+				ObjOp host,
+				C constructor);
 
 	}
 
@@ -352,11 +362,23 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		private DataRec object;
 		private FuncRec<C> constructor;
+		private final boolean stateless;
 
 		public Type() {
+			this.stateless = false;
+		}
+
+		public Type(boolean stateless) {
+			this.stateless = stateless;
+		}
+
+		public final boolean isStateless() {
+			return this.stateless;
 		}
 
 		public final DataRec object() {
+			assert !isStateless() :
+				this + " is stateless";
 			return this.object;
 		}
 
@@ -366,7 +388,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		@Override
 		public void allocate(SubData<S> data) {
-			this.object = data.addDataPtr("object");
+			if (!isStateless()) {
+				this.object = data.addDataPtr("object");
+			}
 			this.constructor = data.addFuncPtr(
 					"constructor",
 					getSignature());

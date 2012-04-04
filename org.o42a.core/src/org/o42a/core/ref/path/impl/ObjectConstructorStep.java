@@ -106,6 +106,7 @@ public class ObjectConstructorStep extends Step {
 		if (resolver.isFullResolution()) {
 			object.resolveAll();
 			uses().useBy(resolver, path, index);
+			resolveStateless(resolver);
 		}
 		walker.object(this, object);
 
@@ -165,6 +166,23 @@ public class ObjectConstructorStep extends Step {
 			return this.uses;
 		}
 		return this.uses = new ObjectStepUses(this);
+	}
+
+	private void resolveStateless(PathResolver resolver) {
+
+		final Obj owner;
+		final Scope pathStart = resolver.getPathStart();
+		final Obj startObject = pathStart.toObject();
+
+		if (startObject != null) {
+			owner = startObject;
+		} else {
+			owner = pathStart.toLocal().getOwner();
+		}
+
+		if (owner.value().getValueType().isStateless()) {
+			this.constructor.getConstructed().type().stateless();
+		}
 	}
 
 	private void normalizeConstructor(PathNormalizer normalizer) {

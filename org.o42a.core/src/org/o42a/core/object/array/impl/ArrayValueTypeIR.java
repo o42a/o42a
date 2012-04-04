@@ -50,7 +50,7 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 
 		final String prefix;
 
-		if (getValueType().isConstant()) {
+		if (!getValueType().isVariable()) {
 			prefix = "ROW";
 		} else {
 			prefix = "ARRAY";

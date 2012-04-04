@@ -62,8 +62,8 @@ final class LinkCopyValueDef extends ValueDef {
 		if (!value.getKnowledge().isKnownToCompiler()) {
 			return resultStruct.runtimeValue();
 		}
-		if (sourceStruct.getValueType().isVariable()) {
-			// Variable can not be copied at compile time.
+		if (sourceStruct.getValueType().isRuntimeConstructed()) {
+			// Run time constructed link can not be copied at compile time.
 			return resultStruct.runtimeValue();
 		}
 
