@@ -78,7 +78,7 @@ public abstract class Value<T> {
 
 	public abstract Ptr<ValType.Op> valPtr(Generator generator);
 
-	public void resolveAll(Resolver resolver) {
+	public final void resolveAll(Resolver resolver) {
 		getValueStruct().resolveAll(this, resolver);
 	}
 

@@ -261,7 +261,7 @@ public final class LinkValueStruct
 	protected void resolveAll(Value<KnownLink> value, Resolver resolver) {
 		getTypeRef().resolveAll(resolver);
 		if (value.getKnowledge().hasCompilerValue()) {
-			value.resolveAll(resolver);
+			value.getCompilerValue().resolveAll(resolver);
 		}
 	}
 

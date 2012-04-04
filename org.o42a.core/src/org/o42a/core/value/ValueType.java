@@ -74,6 +74,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 
 	public abstract boolean isVariable();
 
+	public abstract boolean isStateless();
+
+	public abstract boolean isRuntimeConstructed();
+
 	public abstract Obj typeObject(Intrinsics intrinsics);
 
 	public abstract Path path(Intrinsics intrinsics);

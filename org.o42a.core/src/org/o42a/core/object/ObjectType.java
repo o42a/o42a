@@ -525,4 +525,8 @@ public final class ObjectType implements UserInfo {
 		}
 	}
 
+	public final void stateless() {
+		derivationUses().useBy(this, RUNTIME_DERIVATION_USAGE);
+	}
+
 }

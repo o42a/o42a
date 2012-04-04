@@ -35,6 +35,10 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		propagate: &o42a_fld_var_propagate,
 		inherit: &o42a_fld_var_inherit,
 	},
+	{// getter field
+		propagate: &o42a_fld_getter_propagate,
+		inherit: &o42a_fld_getter_inherit,
+	},
 	{// scope object pointer
 		propagate: &o42a_fld_scope_propagate,
 		inherit: &o42a_fld_scope_inherit,

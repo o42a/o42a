@@ -88,9 +88,13 @@ public abstract class ValueOp {
 	}
 
 	public final ValOp writeValue(ValDirs dirs) {
-		assert dirs.getValueType() == getValueStruct().getValueType() :
+		assert dirs.getValueType() == getValueType() :
 			"Wrong value type: " + getValueType()
 			+ ", but " + dirs.getValueType() + " expected";
+
+		if (getValueType().isStateless()) {
+			return writeValue(dirs, null);
+		}
 
 		final Block code = dirs.code();
 		final ValOp value =

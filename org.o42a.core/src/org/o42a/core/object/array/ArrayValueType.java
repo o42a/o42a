@@ -31,24 +31,30 @@ import org.o42a.core.value.ValueType;
 
 public class ArrayValueType extends ValueType<ArrayValueStruct> {
 
-	public static final ArrayValueType ROW = new ArrayValueType(true);
-	public static final ArrayValueType ARRAY = new ArrayValueType(false);
+	public static final ArrayValueType ROW = new ArrayValueType(false);
+	public static final ArrayValueType ARRAY = new ArrayValueType(true);
 
-	private final boolean constant;
+	private final boolean variable;
 	private ArrayValueTypeIR ir;
 
-	private ArrayValueType(boolean constant) {
-		super(constant ? "row" : "array");
-		this.constant = constant;
+	private ArrayValueType(boolean variable) {
+		super(variable ? "array" : "row");
+		this.variable = variable;
 	}
 
 	@Override
 	public final boolean isVariable() {
-		return !isConstant();
+		return this.variable;
 	}
 
-	public final boolean isConstant() {
-		return this.constant;
+	@Override
+	public final boolean isStateless() {
+		return false;
+	}
+
+	@Override
+	public final boolean isRuntimeConstructed() {
+		return isVariable();
 	}
 
 	public final ArrayValueStruct arrayStruct(TypeRef itemTypeRef) {
@@ -57,7 +63,7 @@ public class ArrayValueType extends ValueType<ArrayValueStruct> {
 
 	@Override
 	public Obj typeObject(Intrinsics intrinsics) {
-		if (!isConstant()) {
+		if (isVariable()) {
 			return intrinsics.getArray();
 		}
 		return intrinsics.getRow();
