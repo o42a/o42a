@@ -42,7 +42,7 @@ import org.o42a.core.value.ValueStruct;
 
 final class ArrayCopyValueDef extends ValueDef {
 
-	static Value<?> arrayValue(Ref ref, Resolver resolver, boolean toConstant) {
+	static Value<?> arrayValue(Ref ref, Resolver resolver, boolean toVariable) {
 
 		final Resolution arrayResolution = ref.resolve(resolver);
 
@@ -58,7 +58,7 @@ final class ArrayCopyValueDef extends ValueDef {
 
 		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
 		final ArrayValueStruct resultStruct =
-				sourceStruct.setConstant(toConstant).prefixWith(prefix);
+				sourceStruct.setVariable(toVariable).prefixWith(prefix);
 
 		if (value.getKnowledge().isFalse()) {
 			return resultStruct.falseValue();
@@ -66,8 +66,8 @@ final class ArrayCopyValueDef extends ValueDef {
 		if (!value.getKnowledge().isKnownToCompiler()) {
 			return resultStruct.runtimeValue();
 		}
-		if (!sourceStruct.isConstant()) {
-			// Non-constant array can not be copied at compile time.
+		if (sourceStruct.isVariable()) {
+			// Mutable array can not be copied at compile time.
 			return resultStruct.runtimeValue();
 		}
 
@@ -92,14 +92,14 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	private final Ref ref;
-	private final boolean toConstant;
+	private final boolean toVariable;
 	private ArrayValueStruct fromStruct;
 	private ArrayValueStruct toStruct;
 
-	ArrayCopyValueDef(Ref ref, boolean toConstant) {
+	ArrayCopyValueDef(Ref ref, boolean toVariable) {
 		super(sourceOf(ref), ref, ScopeUpgrade.noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
-		this.toConstant = toConstant;
+		this.toVariable = toVariable;
 	}
 
 	private ArrayCopyValueDef(
@@ -107,7 +107,7 @@ final class ArrayCopyValueDef extends ValueDef {
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
-		this.toConstant = prototype.toConstant;
+		this.toVariable = prototype.toVariable;
 	}
 
 	@Override
@@ -115,7 +115,7 @@ final class ArrayCopyValueDef extends ValueDef {
 		if (this.toStruct != null) {
 			return this.toStruct;
 		}
-		return this.toStruct = fromValueStruct().setConstant(this.toConstant);
+		return this.toStruct = fromValueStruct().setVariable(this.toVariable);
 	}
 
 	@Override
@@ -144,7 +144,7 @@ final class ArrayCopyValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		return arrayValue(this.ref, resolver, this.toConstant);
+		return arrayValue(this.ref, resolver, this.toVariable);
 	}
 
 	@Override
@@ -188,7 +188,8 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	private final boolean fromConstToConst() {
-		return fromValueStruct().isConstant() && getValueStruct().isConstant();
+		return !fromValueStruct().isVariable()
+				&& !getValueStruct().isVariable();
 	}
 
 	private final ArrayValueStruct fromValueStruct() {

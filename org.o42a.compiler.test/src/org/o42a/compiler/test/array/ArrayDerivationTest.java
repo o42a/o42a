@@ -20,8 +20,8 @@
 package org.o42a.compiler.test.array;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) b.value().getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(b.getContext().getIntrinsics().getInteger()));
@@ -79,7 +79,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) bField.value().getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(bField.getContext().getIntrinsics().getInteger()));
@@ -114,7 +114,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) bField.value().getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(bField.getContext().getIntrinsics().getInteger()));

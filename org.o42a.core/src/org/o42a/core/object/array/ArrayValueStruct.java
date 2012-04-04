@@ -54,24 +54,20 @@ public final class ArrayValueStruct
 		this.itemTypeRef = itemTypeRef;
 	}
 
-	public final boolean isConstant() {
-		return arrayValueType().isConstant();
-	}
-
 	@Override
 	public final ArrayValueType getValueType() {
 		return (ArrayValueType) super.getValueType();
 	}
 
-	public ArrayValueStruct setConstant(boolean constant) {
-		if (isConstant() == constant) {
+	public ArrayValueStruct setVariable(boolean variable) {
+		if (isVariable() == variable) {
 			return this;
 		}
 		if (this.constCounterpart != null) {
 			return this.constCounterpart;
 		}
 		return this.constCounterpart = new ArrayValueStruct(
-				constant ? ArrayValueType.ROW : ArrayValueType.ARRAY,
+				variable ? ArrayValueType.ARRAY : ArrayValueType.ROW,
 				this.itemTypeRef);
 	}
 
@@ -199,13 +195,13 @@ public final class ArrayValueStruct
 
 		final StringBuilder out = new StringBuilder();
 
-		if (isConstant()) {
-			out.append("Row[");
+		if (!isVariable()) {
+			out.append("Row (`");
 		} else {
-			out.append("Array[");
+			out.append("Array (`");
 		}
 
-		out.append(this.itemTypeRef).append(']');
+		out.append(this.itemTypeRef).append(')');
 
 		return out.toString();
 	}
@@ -288,10 +284,6 @@ public final class ArrayValueStruct
 	protected ValueStructIR<ArrayValueStruct, Array> createIR(
 			Generator generator) {
 		return new ArrayValueStructIR(generator, this);
-	}
-
-	private final ArrayValueType arrayValueType() {
-		return getValueType();
 	}
 
 }

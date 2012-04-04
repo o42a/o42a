@@ -58,12 +58,12 @@ public final class ArrayValueAdapter extends ValueAdapter {
 		final ArrayValueStruct valueStruct =
 				(ArrayValueStruct) ref().valueStruct(scope);
 
-		return valueStruct.setConstant(getExpectedStruct().isConstant());
+		return valueStruct.setVariable(getExpectedStruct().isVariable());
 	}
 
 	@Override
 	public ValueDef valueDef() {
-		return new ArrayCopyValueDef(ref(), getExpectedStruct().isConstant());
+		return new ArrayCopyValueDef(ref(), getExpectedStruct().isVariable());
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> initialValue(LocalResolver resolver) {
-		return arrayValue(ref(), resolver, getExpectedStruct().isConstant());
+		return arrayValue(ref(), resolver, getExpectedStruct().isVariable());
 	}
 
 	@Override

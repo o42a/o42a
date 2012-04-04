@@ -50,9 +50,9 @@ final class ArrayElementOp extends PathOp {
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		assert !this.arrayStruct.isConstant() :
-			value + " is a constant array of type " + this.arrayStruct
-			+ ". Can not assign a new value to it`s item";
+		assert this.arrayStruct.isVariable() :
+			value + " is immutable of type " + this.arrayStruct
+			+ ". Can not re-assign it`s element";
 
 		final ValDirs indexDirs = dirs.value(ValueStruct.INTEGER);
 		final Int64op index = loadIndex(indexDirs);

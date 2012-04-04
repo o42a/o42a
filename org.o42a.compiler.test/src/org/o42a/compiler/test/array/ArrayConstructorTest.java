@@ -45,7 +45,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) a.value().getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -74,7 +74,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) a.value().getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -103,7 +103,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) a.value().getValueStruct();
 
-		assertFalse(arraySruct.isConstant());
+		assertTrue(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -112,9 +112,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertFalse(items[0].isConstant());
-		assertFalse(items[1].isConstant());
-		assertFalse(items[2].isConstant());
+		assertTrue(items[0].isVariable());
+		assertTrue(items[1].isVariable());
+		assertTrue(items[2].isVariable());
 	}
 
 	@Test
@@ -126,7 +126,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayValueStruct arraySruct =
 				(ArrayValueStruct) a.value().getValueStruct();
 
-		assertFalse(arraySruct.isConstant());
+		assertTrue(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getVoid()));
@@ -135,9 +135,9 @@ public class ArrayConstructorTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(a.getScope());
 
 		assertThat(items.length, is(3));
-		assertFalse(items[0].isConstant());
-		assertFalse(items[1].isConstant());
-		assertFalse(items[2].isConstant());
+		assertTrue(items[0].isVariable());
+		assertTrue(items[1].isVariable());
+		assertTrue(items[2].isVariable());
 	}
 
 }

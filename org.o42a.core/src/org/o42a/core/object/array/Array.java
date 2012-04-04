@@ -97,8 +97,8 @@ public final class Array extends Placed {
 		return this.valueStruct;
 	}
 
-	public final boolean isConstant() {
-		return this.valueStruct.isConstant();
+	public final boolean isVariable() {
+		return getValueType().isVariable();
 	}
 
 	public final ValueKnowledge getValueKnowledge() {
@@ -185,15 +185,10 @@ public final class Array extends Placed {
 
 		final StringBuilder out = new StringBuilder();
 
-		if (isConstant()) {
-			out.append("[(`");
-		} else {
-			out.append("[(``");
-		}
-		out.append(getValueStruct().getItemTypeRef());
+		out.append(getValueStruct()).append('[');
 
 		if (this.items.length == 0) {
-			return out.append(")]").toString();
+			return out.append(']').toString();
 		}
 
 		out.append(") ");
@@ -240,13 +235,13 @@ public final class Array extends Placed {
 			this.hasStaticItems = true;
 		}
 		if (runtime) {
-			if (isConstant()) {
+			if (!isVariable()) {
 				this.valueKnowledge = RUNTIME_CONSTRUCTED_VALUE;
 			} else {
 				this.valueKnowledge = VARIABLE_VALUE;
 			}
 		} else {
-			if (isConstant()) {
+			if (!isVariable()) {
 				this.valueKnowledge = KNOWN_VALUE;
 			} else {
 				this.valueKnowledge = INITIALLY_KNOWN_VALUE;

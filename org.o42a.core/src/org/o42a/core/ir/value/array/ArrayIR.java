@@ -114,7 +114,7 @@ public class ArrayIR {
 		getGenerator()
 		.newGlobal()
 		.dontExport()
-		.setConstant(getArray().isConstant())
+		.setConstant(!getArray().isVariable())
 		.struct(this.items);
 
 		return this.items;
