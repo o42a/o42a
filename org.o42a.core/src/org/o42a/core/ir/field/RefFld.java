@@ -362,19 +362,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		private DataRec object;
 		private FuncRec<C> constructor;
-		private final boolean stateless;
 
-		public Type() {
-			this.stateless = false;
-		}
 
-		public Type(boolean stateless) {
-			this.stateless = stateless;
-		}
-
-		public final boolean isStateless() {
-			return this.stateless;
-		}
+		public abstract boolean isStateless();
 
 		public final DataRec object() {
 			assert !isStateless() :

@@ -69,6 +69,11 @@ public class GetterFld extends RefFld<ObjectRefFunc> {
 		return GETTER_FLD;
 	}
 
+	@Override
+	protected boolean mayOmit() {
+		return false;
+	}
+
 	public static final class Op extends RefFld.Op<Op, ObjectRefFunc> {
 
 		private Op(StructWriter<Op> writer) {
@@ -98,6 +103,11 @@ public class GetterFld extends RefFld<ObjectRefFunc> {
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
 		private Type() {
+		}
+
+		@Override
+		public boolean isStateless() {
+			return true;
 		}
 
 		@Override

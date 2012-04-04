@@ -67,6 +67,7 @@ public class Root extends Obj {
 	private Obj stringObject;
 	private Obj linkObject;
 	private Obj variableObject;
+	private Obj getterObject;
 	private Obj arrayObject;
 	private Obj rowObject;
 
@@ -134,6 +135,14 @@ public class Root extends Obj {
 		}
 		return this.variableObject =
 				field("variable").substance(dummyUser()).toObject();
+	}
+
+	public final Obj getGetter() {
+		if (this.getterObject != null) {
+			return this.getterObject;
+		}
+		return this.getterObject =
+				field("getter").substance(dummyUser()).toObject();
 	}
 
 	public final Obj getArray() {

@@ -77,6 +77,11 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	}
 
 	@Override
+	protected Type getType() {
+		return VAR_FLD;
+	}
+
+	@Override
 	protected boolean mayOmit() {
 		return false;
 	}
@@ -108,11 +113,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		getInstance().bound().setValue(
 				typeIR.getInstance().pointer(getGenerator()));
 		getInstance().assigner().setConstant(true).setValue(this.assigner);
-	}
-
-	@Override
-	protected Type getType() {
-		return VAR_FLD;
 	}
 
 	private FuncPtr<VariableAssignerFunc> reusedAssigner() {
@@ -246,6 +246,11 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		private Type() {
+		}
+
+		@Override
+		public boolean isStateless() {
+			return false;
 		}
 
 		public final StructRec<ObjectIRType.Op> bound() {

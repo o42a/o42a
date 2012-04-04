@@ -176,6 +176,11 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		private Type() {
 		}
 
+		@Override
+		public boolean isStateless() {
+			return false;
+		}
+
 		public final DataRec previous() {
 			return this.previous;
 		}
