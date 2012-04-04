@@ -68,12 +68,6 @@ public abstract class CodeBuilder {
 				hostPrecision);
 	}
 
-	public static CodeBuilder hostlessBuilder(
-			CompilerContext context,
-			Function<?> function) {
-		return new HostlessBuilder(context, function);
-	}
-
 	public static ObjectOp objectAncestor(
 			CodeDirs dirs,
 			HostOp host,

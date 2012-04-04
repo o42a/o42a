@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ir.CodeBuilder.hostlessBuilder;
 import static org.o42a.core.ir.CodeBuilder.objectAncestor;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
@@ -29,7 +28,6 @@ import java.util.IdentityHashMap;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -218,13 +216,11 @@ public abstract class ObjectConstructor extends Placed {
 		private HostOp newObject(CodeDirs dirs) {
 
 			final ObjectOp owner;
-			final CodeBuilder ancestorBuilder;
 			final HostOp ancestorHost;
 			final LocalOp local = host().toLocal();
 
 			if (local != null) {
 				owner = null;
-				ancestorBuilder = getBuilder();
 				ancestorHost = local;
 			} else {
 
@@ -233,24 +229,16 @@ public abstract class ObjectConstructor extends Placed {
 				if (ownerObject == null
 						|| ownerObject.getPrecision().isExact()) {
 					owner = null;
-					ancestorBuilder = hostlessBuilder(
-							getContext(),
-							getBuilder().getFunction());
-					ancestorHost = ancestorBuilder.host();
 				} else {
 					owner = ownerObject;
-					ancestorBuilder = getBuilder();
-					ancestorHost = ownerObject;
 				}
+				ancestorHost = ownerObject;
 			}
 
-			return ancestorBuilder.newObject(
+			return getBuilder().newObject(
 					dirs,
 					owner,
-					objectAncestor(
-							dirs,
-							ancestorHost,
-							getConstructed()),
+					objectAncestor(dirs, ancestorHost, getConstructed()),
 					getConstructed());
 		}
 
