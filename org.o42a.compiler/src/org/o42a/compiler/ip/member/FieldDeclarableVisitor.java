@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.member;
 
+import static org.o42a.compiler.ip.Interpreter.definitionLinkType;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
@@ -38,7 +39,6 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -218,27 +218,12 @@ public final class FieldDeclarableVisitor
 		final DefinitionKind definitionKind = declarator.getDefinitionKind();
 
 		if (definitionKind != null) {
-			switch (definitionKind) {
-			case VARIABLE:
-				if (result.isPrototype()) {
-					this.context.getLogger().prohibitedPrototype(
-							declarator.getDefinitionAssignment());
-					return null;
-				}
-				result = result.setLinkType(LinkValueType.VARIABLE);
-				break;
-			case LINK:
-				if (result.isPrototype()) {
-					this.context.getLogger().prohibitedPrototype(
-							declarator.getDefinitionAssignment());
-					return null;
-				}
-				result = result.setLinkType(LinkValueType.LINK);
-				break;
-			default:
-				throw new IllegalArgumentException(
-						"Unsupported definition kind: " + definitionKind);
+			if (result.isPrototype()) {
+				this.context.getLogger().prohibitedPrototype(
+						declarator.getDefinitionAssignment());
+				return null;
 			}
+			result = result.setLinkType(definitionLinkType(definitionKind));
 		}
 
 		return result;

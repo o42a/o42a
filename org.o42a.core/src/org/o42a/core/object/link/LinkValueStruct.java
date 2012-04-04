@@ -200,7 +200,7 @@ public final class LinkValueStruct
 	@Override
 	protected LinkValueStruct applyParameters(
 			TypeParameters parameters) {
-		if (parameters.isMutable()) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
 			parameters.getLogger().error(
 					"prohibited_type_mutability",
 					parameters.getMutability(),
