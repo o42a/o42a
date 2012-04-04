@@ -68,6 +68,10 @@ public final class Root__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.root.Root__floats(this))
 			.getScope().toField(),
+			new org.o42a.intrinsic.link.GetterValueTypeObject(
+					owner,
+					new org.o42a.intrinsic.link.GetterValueTypeObject__SRC(this))
+			.getScope().toField(),
 			new org.o42a.intrinsic.numeric.IntegerValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.numeric.IntegerValueTypeObject__SRC(this))

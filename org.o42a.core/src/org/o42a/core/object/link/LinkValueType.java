@@ -72,7 +72,7 @@ public abstract class LinkValueType extends ValueType<LinkValueStruct> {
 
 		@Override
 		public Obj typeObject(Intrinsics intrinsics) {
-			return intrinsics.getVariable();
+			return intrinsics.getGetter();
 		}
 
 		@Override

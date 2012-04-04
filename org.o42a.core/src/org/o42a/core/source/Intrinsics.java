@@ -50,6 +50,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getVariable();
 
+	public abstract Obj getGetter();
+
 	public abstract Obj getArray();
 
 	public abstract Obj getRow();

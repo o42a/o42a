@@ -104,7 +104,7 @@ public final class RtLinkTarget extends Obj {
 
 	@Override
 	protected ObjectIR createIR(Generator generator) {
-		return this.link.getTarget().toObject().ir(generator);
+		throw new UnsupportedOperationException();
 	}
 
 	private Obj linkObject() {

@@ -95,6 +95,11 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
+		public boolean isStateless() {
+			return false;
+		}
+
+		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
