@@ -48,7 +48,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 				.getTypeRef()
 				.getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -80,7 +80,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 				.getTypeRef()
 				.getValueStruct();
 
-		assertTrue(arraySruct.isConstant());
+		assertFalse(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -112,7 +112,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 				.getTypeRef()
 				.getValueStruct();
 
-		assertFalse(arraySruct.isConstant());
+		assertTrue(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getInteger()));
@@ -121,9 +121,9 @@ public class ArrayLinkTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
-		assertFalse(items[0].isConstant());
-		assertFalse(items[1].isConstant());
-		assertFalse(items[2].isConstant());
+		assertTrue(items[0].isVariable());
+		assertTrue(items[1].isVariable());
+		assertTrue(items[2].isVariable());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 				.getTypeRef()
 				.getValueStruct();
 
-		assertFalse(arraySruct.isConstant());
+		assertTrue(arraySruct.isVariable());
 		assertThat(
 				arraySruct.getItemTypeRef().typeObject(dummyUser()),
 				is(a.getContext().getIntrinsics().getVoid()));
@@ -147,9 +147,9 @@ public class ArrayLinkTest extends CompilerTestCase {
 		final ArrayItem[] items = array.items(array.getScope());
 
 		assertThat(items.length, is(3));
-		assertFalse(items[0].isConstant());
-		assertFalse(items[1].isConstant());
-		assertFalse(items[2].isConstant());
+		assertTrue(items[0].isVariable());
+		assertTrue(items[1].isVariable());
+		assertTrue(items[2].isVariable());
 	}
 
 }

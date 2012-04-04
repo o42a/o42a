@@ -54,11 +54,11 @@ public abstract class ArrayElement extends Link {
 
 	@Override
 	public LinkValueType getValueType() {
-		return isConstant() ? LinkValueType.LINK : LinkValueType.VARIABLE;
+		return isVariable() ? LinkValueType.VARIABLE : LinkValueType.LINK;
 	}
 
-	public final boolean isConstant() {
-		return getArrayStruct().isConstant();
+	public final boolean isVariable() {
+		return getArrayStruct().isVariable();
 	}
 
 	@Override

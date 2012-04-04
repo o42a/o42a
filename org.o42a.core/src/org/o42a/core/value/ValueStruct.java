@@ -92,6 +92,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return getValueType().isLink();
 	}
 
+	public final boolean isVariable() {
+		return getValueType().isVariable();
+	}
+
 	public final Value<T> compilerValue(T value) {
 
 		final ValueKnowledge knowledge = valueKnowledge(value);

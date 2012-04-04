@@ -89,7 +89,7 @@ public class ArrayConstantValueDef extends ValueDef {
 
 		final Array array = getArray();
 
-		return array.isConstant() && array.hasStaticItems();
+		return !array.isVariable() && array.hasStaticItems();
 	}
 
 	@Override
