@@ -930,11 +930,7 @@ public abstract class Obj
 	private void resolveAllMembers() {
 
 		final LinkUses linkUses = type().linkUses();
-		final boolean abstractAllowed =
-				isAbstract()
-				|| isPrototype()
-				|| toClause() != null
-				|| isWrapper();
+		final boolean abstractAllowed = abstractAllowed();
 
 		for (Member member : getMembers()) {
 			if (!abstractAllowed && member.isAbstract()) {
@@ -955,6 +951,16 @@ public abstract class Obj
 			}
 			member.resolveAll();
 		}
+	}
+
+	private boolean abstractAllowed() {
+		if (isAbstract() || isPrototype()) {
+			return true;
+		}
+		if (toClause() != null) {
+			return true;
+		}
+		return isWrapper() || getDereferencedLink() != null;
 	}
 
 	private void normalizeFields(Analyzer analyzer) {
