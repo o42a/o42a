@@ -112,6 +112,28 @@ public class DefinitionTest extends GrammarTestCase {
 		assertName("baz", result.getDefinition());
 	}
 
+	@Test
+	public void getter() {
+
+		final DeclaratorNode result = parse("foo := ```bar");
+
+		assertEquals(DeclarationTarget.VALUE, result.getTarget());
+		assertEquals(DefinitionKind.GETTER, result.getDefinitionKind());
+		assertNull(result.getDefinitionType());
+		assertName("bar", result.getDefinition());
+	}
+
+	@Test
+	public void getterInterface() {
+
+		final DeclaratorNode result = parse("foo := (```bar) baz");
+
+		assertEquals(DeclarationTarget.VALUE, result.getTarget());
+		assertEquals(DefinitionKind.GETTER, result.getDefinitionKind());
+		assertName("bar", result.getDefinitionType());
+		assertName("baz", result.getDefinition());
+	}
+
 	private DeclaratorNode parse(String text) {
 		this.worker = new ParserWorker(
 				new StringSource(getClass().getSimpleName(), text));

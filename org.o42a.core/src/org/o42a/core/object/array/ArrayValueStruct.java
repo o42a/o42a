@@ -31,6 +31,7 @@ import org.o42a.core.object.array.impl.ArrayValueAdapter;
 import org.o42a.core.object.array.impl.ArrayValueStructIR;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
@@ -209,7 +210,7 @@ public final class ArrayValueStruct
 	@Override
 	protected ValueStruct<ArrayValueStruct, Array> applyParameters(
 			TypeParameters parameters) {
-		if (parameters.isMutable()) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
 			parameters.getLogger().error(
 					"prohibited_type_mutability",
 					parameters.getMutability(),

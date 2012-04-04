@@ -25,7 +25,8 @@ import org.o42a.ast.atom.SignType;
 public enum DefinitionKind implements SignType {
 
 	LINK("`"),
-	VARIABLE("``");
+	VARIABLE("``"),
+	GETTER("```");
 
 	private final String sign;
 

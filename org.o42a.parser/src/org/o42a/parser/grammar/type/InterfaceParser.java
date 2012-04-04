@@ -116,8 +116,13 @@ public class InterfaceParser implements Parser<InterfaceNode> {
 			final SourcePosition start = context.current().fix();
 
 			if (context.next() == '`') {
-				targetKind = DefinitionKind.VARIABLE;
-				context.acceptAll();
+				if (context.next() == '`') {
+					targetKind = DefinitionKind.GETTER;
+					context.acceptAll();
+				} else {
+					targetKind = DefinitionKind.VARIABLE;
+					context.acceptButLast();
+				}
 			} else {
 				targetKind = DefinitionKind.LINK;
 				context.acceptButLast();

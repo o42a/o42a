@@ -20,6 +20,7 @@
 package org.o42a.core.value;
 
 import org.o42a.core.*;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -31,16 +32,11 @@ import org.o42a.util.log.Loggable;
 
 public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
-	public static Mutability mutableValueStruct(
+	public static Mutability typeMutability(
 			LocationInfo location,
-			Distributor distributor) {
-		return new Mutability(location, distributor, true);
-	}
-
-	public static Mutability immutableValueStruct(
-			LocationInfo location,
-			Distributor distributor) {
-		return new Mutability(location, distributor, false);
+			Distributor distributor,
+			LinkValueType linkType) {
+		return new Mutability(location, distributor, linkType);
 	}
 
 	private final TypeRef typeRef;
@@ -56,8 +52,8 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 		return this.typeRef;
 	}
 
-	public final boolean isMutable() {
-		return getMutability().isMutable();
+	public final LinkValueType getLinkType() {
+		return getMutability().getLinkType();
 	}
 
 	public final Mutability getMutability() {
@@ -157,18 +153,18 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	public static final class Mutability extends Placed {
 
-		private final boolean mutable;
+		private final LinkValueType linkType;
 
 		private Mutability(
 				LocationInfo location,
 				Distributor distributor,
-				boolean mutable) {
+				LinkValueType linkType) {
 			super(location, distributor);
-			this.mutable = mutable;
+			this.linkType = linkType;
 		}
 
-		public final boolean isMutable() {
-			return this.mutable;
+		public final LinkValueType getLinkType() {
+			return this.linkType;
 		}
 
 		public final TypeParameters setTypeRef(TypeRef typeRef) {
@@ -179,7 +175,16 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 		@Override
 		public String toString() {
-			return this.mutable ? "``" : "`";
+			if (this.linkType == LinkValueType.LINK) {
+				return "`";
+			}
+			if (this.linkType == LinkValueType.VARIABLE) {
+				return "``";
+			}
+			if (this.linkType == LinkValueType.GETTER) {
+				return "```";
+			}
+			return super.toString();
 		}
 
 	}

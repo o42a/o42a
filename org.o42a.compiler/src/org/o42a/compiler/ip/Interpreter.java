@@ -23,13 +23,11 @@ import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.core.value.TypeParameters.immutableValueStruct;
-import static org.o42a.core.value.TypeParameters.mutableValueStruct;
+import static org.o42a.core.value.TypeParameters.typeMutability;
 import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.atom.DecimalNode;
-import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
@@ -46,6 +44,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
@@ -154,6 +153,20 @@ public enum Interpreter {
 		return this.typeVisitor;
 	}
 
+	public static LinkValueType definitionLinkType(
+			DefinitionKind definitionKind) {
+		switch (definitionKind) {
+		case LINK:
+			return LinkValueType.LINK;
+		case VARIABLE:
+			return LinkValueType.VARIABLE;
+		case GETTER:
+			return LinkValueType.GETTER;
+		}
+		throw new IllegalArgumentException(
+				"Unknwon definition kind: " + definitionKind);
+	}
+
 	public final TypeParameters typeParameters(
 			InterfaceNode ifaceNode,
 			Distributor p) {
@@ -165,14 +178,10 @@ public enum Interpreter {
 			return null;
 		}
 
-		final TypeParameters.Mutability mutability;
-		final SignNode<DefinitionKind> mutabilityNode = ifaceNode.getKind();
-
-		if (mutabilityNode.getType() == DefinitionKind.VARIABLE) {
-			mutability = mutableValueStruct(location(p, mutabilityNode), p);
-		} else {
-			mutability = immutableValueStruct(location(p, mutabilityNode), p);
-		}
+		final TypeParameters.Mutability mutability = typeMutability(
+				location(p, ifaceNode),
+				p,
+				definitionLinkType(ifaceNode.getKind().getType()));
 
 		return mutability.setTypeRef(paramTypeRef);
 	}
