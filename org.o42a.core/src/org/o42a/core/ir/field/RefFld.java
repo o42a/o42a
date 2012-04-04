@@ -198,7 +198,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	}
 
 	private void fillTarget() {
-		if (getTarget().getConstructionMode().isRuntime()) {
+		if (isStateless() || getTarget().getConstructionMode().isRuntime()) {
 			return;
 		}
 
