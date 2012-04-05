@@ -27,7 +27,6 @@ import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import java.util.*;
 
 import org.o42a.analysis.use.UserInfo;
-import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
@@ -177,8 +176,8 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public final Container substance(UserInfo user) {
-		return field(user).getContainer();
+	public final Obj substance(UserInfo user) {
+		return field(user).toObject();
 	}
 
 	@Override
