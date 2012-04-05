@@ -99,23 +99,9 @@ public class ConsoleModule extends AnnotatedModule {
 
 		final Path adapterPath =
 				mainAdapterId.key(mainModule.getScope()).toPath();
-		final Ref adapterRef =
-				adapterPath.bind(mainAdapter, mainMember.getScope())
-				.target(mainModule.distribute());
-		final Path mainPath;
-
-		if (!main.isPrototype()) {
-			mainPath =
-					modulePath(mainModule.getModuleId())
-					.append(adapterPath);
-		} else {
-			mainPath =
-					modulePath(mainModule.getModuleId())
-					.newObject(new MainCall(
-							main,
-							mainModule.distribute(),
-							adapterRef.toStaticTypeRef()));
-		}
+		final Path mainPath =
+				modulePath(mainModule.getModuleId())
+				.append(adapterPath);
 
 		final Scope mainScope = mainModule.getScope();
 

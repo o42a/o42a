@@ -47,8 +47,8 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	private boolean isAbstract;
 	private boolean override;
 	private LinkValueType linkType;
-	private StaticTypeRef declaredIn;
 	private TypeRef type;
+	private StaticTypeRef declaredIn;
 
 	public FieldDeclaration(
 			LocationInfo location,

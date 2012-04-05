@@ -301,13 +301,6 @@ public class CompilerLogger implements Logger {
 				fieldName);
 	}
 
-	public void prohibitedPrototype(LogInfo location) {
-		error(
-				"prohibited_prototype",
-				location,
-				"Field can not be declared as prototype");
-	}
-
 	public void recursiveResolution(LogInfo location, Object resolvable) {
 		error(
 				"recursive_resolution",
