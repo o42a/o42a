@@ -25,6 +25,8 @@ import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.path.Path;
@@ -101,7 +103,35 @@ public final class Adapter extends PathFragment implements LocationInfo {
 			return null;
 		}
 
-		return adapterMember.getKey().toPath();
+		final MemberKey key = adapterMember.getKey();
+		final MemberField adapterField = adapterMember.toField();
+
+		if (adapterField == null) {
+			return key.toPath();
+		}
+
+		// Select the adapter based on it's declaration.
+		// If the adapter field was transformed to a link when overridden,
+		// this fact will be ignored.
+		final MemberField adapterDecl = adapterField.getFirstDeclaration();
+		final Obj adapterObject = adapterDecl.substance(dummyUser());
+
+		final int expectedLinkDepth =
+				this.adapterType.getValueStruct().getLinkDepth();
+		final int adapterLinkDepth =
+				adapterObject.value().getValueStruct().getLinkDepth();
+
+		if (adapterLinkDepth - expectedLinkDepth  == 1) {
+			// Adapter was declared as a link.
+			// Use the link target as adapter.
+			return key.toPath().dereference();
+		}
+
+		// Adapter was declared as a plain object or
+		// adapter to the link of the same depth.
+		// Use the field itself as adapter.
+		return key.toPath();
+
 	}
 
 	private boolean castToVoid(Scope start) {
