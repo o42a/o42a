@@ -50,7 +50,7 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		if (!linkDefiner(definer) || isLink()) {
+		if (definerLinkDepth(definer) == getLinkDepth()) {
 			defineObject(definer);
 			return;
 		}

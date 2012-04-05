@@ -35,7 +35,7 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class FieldDefinition extends Placed {
@@ -54,44 +54,39 @@ public abstract class FieldDefinition extends Placed {
 				emptyBlock(location));
 	}
 
-	public static boolean linkDefiner(ObjectDefiner definer) {
+	public static int definerLinkDepth(ObjectDefiner definer) {
 
 		final Field[] allOverridden = definer.getField().getOverridden();
-		boolean link = false;
 
 		for (Field overridden : allOverridden) {
 
-			final ValueType<?> valueType =
-					overridden.toObject().value().getValueType();
+			final ValueStruct<?, ?> valueStruct =
+					overridden.toObject().value().getValueStruct();
 
-			if (valueType.isVoid()) {
-				continue;
+			if (!valueStruct.isVoid()) {
+				return valueStruct.getLinkDepth();
 			}
-			if (!valueType.isLink()) {
-				return false;
-			}
-			link = true;
 		}
 
-		return link;
+		return 0;
 	}
 
-	public static boolean pathToLink(BoundPath path) {
+	public static int pathLinkDepth(BoundPath path) {
 
 		final PathResolution resolution = path.resolve(
 				pathResolver(path.getOrigin(), dummyUser()));
 
 		if (resolution.isError()) {
-			return false;
+			return 0;
 		}
 
 		final Obj object = resolution.getObject().toObject();
 
 		if (object == null) {
-			return false;
+			return 0;
 		}
 
-		return object.value().getValueType().isLink();
+		return object.value().getValueStruct().getLinkDepth();
 	}
 
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
@@ -104,7 +99,7 @@ public abstract class FieldDefinition extends Placed {
 		return true;
 	}
 
-	public abstract boolean isLink();
+	public abstract int getLinkDepth();
 
 	public abstract void defineObject(ObjectDefiner definer);
 

@@ -72,6 +72,11 @@ public final class ArrayValueStruct
 				this.itemTypeRef);
 	}
 
+	@Override
+	public final int getLinkDepth() {
+		return 0;
+	}
+
 	public final TypeRef getItemTypeRef() {
 		return this.itemTypeRef;
 	}

@@ -51,8 +51,8 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return this.ascendants.isLinkAscendants();
+	public int getLinkDepth() {
+		return this.ascendants.getLinkDepth();
 	}
 
 	@Override
@@ -63,7 +63,7 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		if (!linkDefiner(definer) || isLink()) {
+		if (definerLinkDepth(definer) == getLinkDepth()) {
 			defineObject(definer);
 			return;
 		}

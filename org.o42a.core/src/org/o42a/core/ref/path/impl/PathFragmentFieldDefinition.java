@@ -45,8 +45,8 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return getDefinition().isLink();
+	public int getLinkDepth() {
+		return getDefinition().getLinkDepth();
 	}
 
 	@Override

@@ -51,8 +51,8 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return this.variant.getDefinition().isLink();
+	public int getLinkDepth() {
+		return this.variant.getDefinition().getLinkDepth();
 	}
 
 	@Override

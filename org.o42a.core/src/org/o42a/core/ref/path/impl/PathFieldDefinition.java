@@ -37,8 +37,8 @@ public final class PathFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return pathToLink(path());
+	public int getLinkDepth() {
+		return pathLinkDepth(path());
 	}
 
 	@Override

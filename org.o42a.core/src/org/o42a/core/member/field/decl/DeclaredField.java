@@ -56,7 +56,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	@Override
 	public boolean isLinkAscendants() {
 		for (FieldVariant variant : getVariants()) {
-			if (variant.getDefinition().isLink()) {
+			if (variant.getDefinition().getLinkDepth() > 0) {
 				return true;
 			}
 		}

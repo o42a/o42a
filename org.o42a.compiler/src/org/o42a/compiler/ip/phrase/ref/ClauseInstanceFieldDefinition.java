@@ -38,8 +38,8 @@ final class ClauseInstanceFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return pathToLink(path());
+	public int getLinkDepth() {
+		return pathLinkDepth(path());
 	}
 
 	@Override
