@@ -34,14 +34,14 @@ public class ResolutionTest extends CompilerTestCase {
 	public void resolveBeforeUse() {
 		compile(
 				"A := void",
-				"A()");
+				"A ()");
 	}
 
 	@Test
 	public void adapterId() {
 		compile(
 				"A := void",
-				"@A := *()");
+				"@A := * ()");
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class ResolutionTest extends CompilerTestCase {
 	public void adapterIdFromNamespace() {
 		compile(
 				"Use namespace 'Console'",
-				"@Main :=> *()");
+				"@Main := * ()");
 	}
 
 	public void referIncluded() {
@@ -64,7 +64,7 @@ public class ResolutionTest extends CompilerTestCase {
 				"A := integer",
 				"============",
 				"= 24");
-		compile("B := a(= 44)");
+		compile("B := a (= 44)");
 
 		final Field a = field("a");
 		final Field b = field("b");
@@ -82,7 +82,7 @@ public class ResolutionTest extends CompilerTestCase {
 				"= 24");
 		compile(
 				"(*** Inc ***)",
-				"B := a(= 44)");
+				"B := a (= 44)");
 
 		final Field a = field("a");
 		final Field b = field("b");

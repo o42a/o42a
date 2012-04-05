@@ -211,18 +211,26 @@ public final class FieldDeclarableVisitor
 			}
 			result = result.setAbstract();
 		}
-		if (target.isPrototype()) {
-			result = result.prototype();
-		}
 
 		final DefinitionKind definitionKind = declarator.getDefinitionKind();
 
-		if (definitionKind != null) {
-			if (result.isPrototype()) {
-				this.context.getLogger().prohibitedPrototype(
-						declarator.getDefinitionAssignment());
-				return null;
+		if (target.isPrototype()) {
+			if (definitionKind != null) {
+				this.context.getLogger().error(
+						"prohibited_link_prototype",
+						declarator.getDefinitionAssignment(),
+						"Field can not be declared as prototype");
+			} else if (declaration.isAdapter()) {
+				this.context.getLogger().error(
+						"prohibited_adapter_prototype",
+						declarator.getDefinitionAssignment(),
+						"Adapter can not be declared as prototype");
+			} else {
+				result = result.prototype();
 			}
+		}
+
+		if (definitionKind != null) {
 			result = result.setLinkType(definitionLinkType(definitionKind));
 		}
 
