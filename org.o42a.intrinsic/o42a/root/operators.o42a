@@ -64,3 +64,10 @@ Equals :=> void
   ('==') and not equals ('<>') operators, unless the equals clause present.
 */
 Compare :=> void
+
+/*
+  Clause identifier of assignment statement.
+
+  Only meaningful within getter.
+*/
+Assign :=> void

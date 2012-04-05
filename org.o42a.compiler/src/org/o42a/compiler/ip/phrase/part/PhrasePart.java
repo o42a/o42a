@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase.part;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.ref.Ref;
@@ -83,6 +84,10 @@ public abstract class PhrasePart extends Location {
 
 	public final BinaryPhrasePart binary(BinaryNode node) {
 		return setFollowing(new BinaryPhrasePart(node, this));
+	}
+
+	public final PhraseAssignment assign(AssignmentNode node) {
+		return setFollowing(new PhraseAssignment(node, this));
 	}
 
 	public final OperandPhrasePart operand(Ref value) {
