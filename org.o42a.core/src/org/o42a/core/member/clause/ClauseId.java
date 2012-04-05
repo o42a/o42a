@@ -132,7 +132,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "+_";
+			if (name == null) {
+				return "+*";
+			}
+			return '+' + name;
 		}
 
 	},
@@ -146,7 +149,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "-_";
+			if (name == null) {
+				return "-*";
+			}
+			return '-' + name;
 		}
 
 	},
@@ -160,7 +166,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "_+_";
+			if (name == null) {
+				return "* + *";
+			}
+			return name + " + *";
 		}
 
 	},
@@ -174,7 +183,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "_-_";
+			if (name == null) {
+				return "* - *";
+			}
+			return name + " - *";
 		}
 
 	},
@@ -188,7 +200,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "_*_";
+			if (name == null) {
+				return "* * *";
+			}
+			return name + " * *";
 		}
 
 	},
@@ -202,7 +217,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "_/_";
+			if (name == null) {
+				return "* / *";
+			}
+			return name + " / *";
 		}
 
 	},
@@ -216,7 +234,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "==";
+			if (name == null) {
+				return "* == *";
+			}
+			return name + " == *";
 		}
 
 	},
@@ -230,7 +251,27 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "<compare>";
+			if (name == null) {
+				return "* <compare> *";
+			}
+			return name + " <compare> *";
+		}
+
+	},
+
+	ASSIGN(true) {
+
+		@Override
+		public Path adapterPath(CompilerContext context) {
+			return absolutePath(context, "operators", "assign");
+		}
+
+		@Override
+		public String toString(MemberId memberId, String name) {
+			if (name == null) {
+				return "* = *";
+			}
+			return name + " = *";
 		}
 
 	},
@@ -244,7 +285,10 @@ public enum ClauseId {
 
 		@Override
 		public String toString(MemberId memberId, String name) {
-			return "<operand>";
+			if (name == null) {
+				return "<operand>";
+			}
+			return "<operand> " + name;
 		}
 
 	};

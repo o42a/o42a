@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
@@ -138,6 +139,10 @@ public class Phrase extends Placed {
 
 	public final BinaryPhrasePart binary(BinaryNode node) {
 		return append(this.last.binary(node));
+	}
+
+	public final PhraseAssignment assign(AssignmentNode node) {
+		return append(this.last.assign(node));
 	}
 
 	public final OperandPhrasePart operand(Ref value) {
