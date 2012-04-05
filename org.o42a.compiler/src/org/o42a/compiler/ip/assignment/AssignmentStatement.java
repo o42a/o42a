@@ -17,54 +17,60 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.statement;
+package org.o42a.compiler.ip.assignment;
 
-import static org.o42a.compiler.ip.statement.AssignmentKind.ASSIGNMENT_ERROR;
-import static org.o42a.compiler.ip.statement.AssignmentKind.DEREF_ASSIGNMENT;
-import static org.o42a.compiler.ip.statement.AssignmentKind.VALUE_ASSIGNMENT;
-import static org.o42a.core.object.link.LinkValueType.VARIABLE;
+import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.assignment.CustomAssignment.customAssignment;
+import static org.o42a.compiler.ip.assignment.DerefAssignment.derefAssignment;
+import static org.o42a.compiler.ip.assignment.VariableAssignment.variableAssignment;
 
-import org.o42a.core.Distributor;
+import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.Link;
-import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
 
 
 public class AssignmentStatement extends Statement {
 
+	private final AssignmentNode node;
 	private final Ref destination;
 	private final Ref value;
 	private AssignmentKind assignmentKind;
 
 	public AssignmentStatement(
-			LocationInfo location,
+			AssignmentNode node,
 			Ref destination,
 			Ref value) {
-		super(location, destination.distribute());
+		super(
+				location(destination, node.getOperator()),
+				destination.distribute());
+		this.node = node;
 		this.destination = destination;
 		this.value = value;
 	}
 
 	private AssignmentStatement(
 			AssignmentStatement prototype,
-			Distributor distributor,
+			Reproducer reproducer,
 			Ref destination,
 			Ref value) {
-		super(prototype, distributor);
+		super(prototype, reproducer.distribute());
+		this.node = prototype.node;
 		this.destination = destination;
 		this.value = value;
-		this.assignmentKind = prototype.assignmentKind;
+		this.assignmentKind =
+				prototype.getAssignmentKind().reproduce(this, reproducer);
+	}
+
+	public final AssignmentNode getNode() {
+		return this.node;
 	}
 
 	public final Ref getDestination() {
@@ -94,11 +100,7 @@ public class AssignmentStatement extends Statement {
 			return null;
 		}
 
-		return new AssignmentStatement(
-				this,
-				reproducer.distribute(),
-				destination,
-				value);
+		return new AssignmentStatement(this, reproducer, destination, value);
 	}
 
 	@Override
@@ -106,11 +108,12 @@ public class AssignmentStatement extends Statement {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return null;
+		return getAssignmentKind().inline(normalizer, valueStruct, origin);
 	}
 
 	@Override
 	public void normalizeImperative(Normalizer normalizer) {
+		getAssignmentKind().normalize(normalizer);
 	}
 
 	@Override
@@ -123,12 +126,12 @@ public class AssignmentStatement extends Statement {
 
 	@Override
 	protected void fullyResolveImperative(LocalResolver resolver) {
-		getAssignmentKind().resolve(resolver, this.destination, this.value);
+		getAssignmentKind().resolve(resolver);
 	}
 
 	@Override
 	protected Cmd createCmd(CodeBuilder builder) {
-		return getAssignmentKind().op(builder, this);
+		return getAssignmentKind().op(builder);
 	}
 
 	private AssignmentKind getAssignmentKind() {
@@ -136,13 +139,13 @@ public class AssignmentStatement extends Statement {
 			return this.assignmentKind;
 		}
 		if (this.value.getResolution().isError()) {
-			return this.assignmentKind = ASSIGNMENT_ERROR;
+			return this.assignmentKind = new AssignmentError(this);
 		}
 
 		final Resolution destResolution = this.destination.getResolution();
 
 		if (destResolution.isError()) {
-			return this.assignmentKind = ASSIGNMENT_ERROR;
+			return this.assignmentKind = new AssignmentError(this);
 		}
 
 		final Obj object = destResolution.toObject();
@@ -153,64 +156,22 @@ public class AssignmentStatement extends Statement {
 					this.destination,
 					"Can only assign to variable");
 
-			return this.assignmentKind = ASSIGNMENT_ERROR;
+			return this.assignmentKind = new AssignmentError(this);
 		}
 
-		final Link dereferencedLink = object.getDereferencedLink();
+		final AssignmentKind deref = derefAssignment(this, object);
 
-		if (dereferencedLink != null && dereferencedLink.isSynthetic()) {
-			return this.assignmentKind = derefAssignment(dereferencedLink);
+		if (deref != null) {
+			return this.assignmentKind = deref;
 		}
 
-		return this.assignmentKind = valueAssignment(object);
-	}
+		final AssignmentKind custom = customAssignment(this, object);
 
-	private AssignmentKind derefAssignment(Link destination) {
-
-		final LinkValueStruct destStruct =
-				destination.getValueStruct().toLinkStruct();
-
-		if (destStruct == null || destStruct.getValueType() != VARIABLE) {
-			getLogger().error(
-					"not_variable_assigned",
-					this.destination,
-					"Can only assign to variable");
-			return ASSIGNMENT_ERROR;
+		if (custom != null) {
+			return this.assignmentKind = custom;
 		}
 
-		final TypeRef destTypeRef =
-				destStruct.getTypeRef().prefixWith(
-						this.destination.getPath().toPrefix(getScope()));
-
-		if (!this.value.toTypeRef().checkDerivedFrom(destTypeRef)) {
-			return ASSIGNMENT_ERROR;
-		}
-
-		return DEREF_ASSIGNMENT;
-	}
-
-	private AssignmentKind valueAssignment(Obj destination) {
-
-		final LinkValueStruct destStruct =
-				destination.value().getValueStruct().toLinkStruct();
-
-		if (destStruct == null || destStruct.getValueType() != VARIABLE) {
-			getLogger().error(
-					"not_variable_assigned",
-					this.destination,
-					"Can only assign to variable");
-			return ASSIGNMENT_ERROR;
-		}
-
-		final TypeRef destTypeRef =
-				destStruct.getTypeRef().prefixWith(
-						this.destination.getPath().toPrefix(getScope()));
-
-		if (!this.value.toTypeRef().checkDerivedFrom(destTypeRef)) {
-			return ASSIGNMENT_ERROR;
-		}
-
-		return VALUE_ASSIGNMENT;
+		return this.assignmentKind = variableAssignment(this, object);
 	}
 
 }
