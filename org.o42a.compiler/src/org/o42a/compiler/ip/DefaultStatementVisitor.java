@@ -32,6 +32,7 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
+import org.o42a.compiler.ip.statement.AssignmentStatement;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
@@ -106,10 +107,25 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			return null;
 		}
 
-		p.assign(
+		if (p.getSentence().getSentenceFactory().isDeclarative()) {
+			getLogger().error(
+					"prohibited_declarative_assignment",
+					assignment.getOperator(),
+					"Location is not allowed within declarative block");
+			return null;
+		}
+		if (p.getSentence().isIssue()) {
+			getLogger().error(
+					"prohibited_issue_assignment",
+					assignment.getOperator(),
+					"Assignment is prohibited within issue");
+			return null;
+		}
+
+		p.statement(new AssignmentStatement(
 				location(p, assignment.getOperator()),
 				destination,
-				value);
+				value));
 
 		return null;
 	}

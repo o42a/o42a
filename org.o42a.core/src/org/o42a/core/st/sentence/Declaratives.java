@@ -28,7 +28,6 @@ import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
@@ -100,14 +99,6 @@ public class Declaratives extends Statements<Declaratives> {
 			return this.env;
 		}
 		return this.env = new DeclarativesEnv();
-	}
-
-	@Override
-	public void assign(LocationInfo location, Ref destination, Ref value) {
-		getLogger().error(
-				"prohibited_declarative_assignment",
-				location,
-				"Location is not allowed within declarative block");
 	}
 
 	@Override

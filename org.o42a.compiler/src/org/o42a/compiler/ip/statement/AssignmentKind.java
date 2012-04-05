@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.compiler.ip.statement;
 
 import static org.o42a.core.ir.local.Cmd.noCmd;
 
@@ -78,7 +78,7 @@ enum AssignmentKind {
 
 		@Override
 		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
-			return new VariableAssignmentCmd(builder, assignment);
+			return new AssignmentCmd(builder, assignment);
 		}
 
 	},
@@ -112,7 +112,7 @@ enum AssignmentKind {
 
 		@Override
 		public Cmd op(CodeBuilder builder, AssignmentStatement assignment) {
-			return new VariableAssignmentCmd(builder, assignment);
+			return new AssignmentCmd(builder, assignment);
 		}
 
 	};

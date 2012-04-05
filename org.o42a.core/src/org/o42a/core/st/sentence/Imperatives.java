@@ -23,12 +23,10 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.impl.imperative.AssignmentStatement;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.core.st.impl.imperative.ImperativeStatementEnv;
 
@@ -69,24 +67,6 @@ public class Imperatives extends Statements<Imperatives> {
 		}
 
 		return this.kinds = result;
-	}
-
-	@Override
-	public void assign(LocationInfo location, Ref destination, Ref value) {
-		assert destination.getContext() == getContext() :
-			destination + " has wrong context: " + destination.getContext()
-			+ ", but " + getContext() + " expected";
-		assert value.getContext() == getContext() :
-			value + " has wrong context: " + value.getContext()
-			+ ", but " + getContext() + " expected";
-		if (getSentence().isIssue()) {
-			getLogger().error(
-					"prohibited_issue_assignment",
-					location,
-					"Assignment is prohibited within issue");
-			return;
-		}
-		statement(new AssignmentStatement(location, destination, value));
 	}
 
 	@Override
