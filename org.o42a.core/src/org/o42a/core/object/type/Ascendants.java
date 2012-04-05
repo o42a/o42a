@@ -36,6 +36,7 @@ import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.ArrayUtil;
 
@@ -156,30 +157,30 @@ public class Ascendants
 		return getSamples().length == 0;
 	}
 
-	public final boolean isLinkAscendants() {
+	public final int getLinkDepth() {
 
 		final TypeRef ancestor = getExplicitAncestor();
 
 		if (ancestor != null) {
 
-			final ValueType<?> valueType = ancestor.getValueType();
+			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
+			if (!valueStruct.isVoid()) {
+				return ancestor.getValueStruct().getLinkDepth();
 			}
 		}
 
 		for (Sample sample : getSamples()) {
 
-			final ValueType<?> valueType =
-					sample.getObject().value().getValueType();
+			final ValueStruct<?, ?> valueStruct =
+					sample.getObject().value().getValueStruct();
 
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
+			if (!valueStruct.isVoid()) {
+				return valueStruct.getLinkDepth();
 			}
 		}
 
-		return false;
+		return 0;
 	}
 
 	@Override

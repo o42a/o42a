@@ -48,6 +48,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
+	public final int getLinkDepth() {
+		return 0;
+	}
+
+	@Override
 	public final ValueDef constantDef(
 			Obj source,
 			LocationInfo location,

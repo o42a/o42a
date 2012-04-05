@@ -52,8 +52,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return this.definition.isLink();
+	public int getLinkDepth() {
+		return this.definition.getLinkDepth();
 	}
 
 	@Override

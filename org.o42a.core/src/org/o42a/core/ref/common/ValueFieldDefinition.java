@@ -32,8 +32,8 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return false;
+	public int getLinkDepth() {
+		return 0;
 	}
 
 	@Override

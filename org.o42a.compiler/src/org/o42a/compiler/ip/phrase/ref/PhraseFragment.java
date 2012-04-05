@@ -113,8 +113,8 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
-		public boolean isLink() {
-			return this.definition.isLink();
+		public int getLinkDepth() {
+			return this.definition.getLinkDepth();
 		}
 
 		@Override

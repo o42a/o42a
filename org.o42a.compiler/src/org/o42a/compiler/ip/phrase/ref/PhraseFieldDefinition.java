@@ -41,12 +41,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
+	public int getLinkDepth() {
 
-		final MainPhraseContext mainContext =
-				this.phrase.getMainContext();
+		final MainPhraseContext mainContext = this.phrase.getMainContext();
 
-		return mainContext.getAscendants().isLinkAscendants();
+		return mainContext.getAscendants().getLinkDepth();
 	}
 
 	@Override

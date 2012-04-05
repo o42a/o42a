@@ -244,20 +244,16 @@ final class MainPhraseContext extends PhraseContext {
 			// Search for clauses there.
 			return this.implicitAscendants;
 		}
-		if (getAscendants().isLinkAscendants()) {
+		if (getAscendants().getLinkDepth()
+				== this.implicitAscendants.getLinkDepth()) {
 			// Declaring link with link expression.
 			// Implicit ascendants will be searched for clauses.
 			return this.implicitAscendants;
 		}
-		if (this.implicitAscendants.isLinkAscendants()) {
-			// Declaring link by value.
-			// Clauses should be looked for in the link target,
-			// but not in the link body
-			return null;
-		}
-		// Not a link declaration.
-		// Search for clauses inside implicit clauses also.
-		return this.implicitAscendants;
+		// Declaring link by value.
+		// Clauses should be looked for in the link target,
+		// but not in the link body
+		return null;
 	}
 
 	private void build() {

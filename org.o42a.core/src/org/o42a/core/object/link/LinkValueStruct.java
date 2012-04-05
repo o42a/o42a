@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.object.link.impl.LinkConstantValueDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
 import org.o42a.core.ref.Ref;
@@ -42,10 +43,20 @@ public final class LinkValueStruct
 		extends ValueStruct<LinkValueStruct, KnownLink> {
 
 	private final TypeRef typeRef;
+	private int linkDepth;
 
 	LinkValueStruct(LinkValueType valueType, TypeRef typeRef) {
 		super(valueType, KnownLink.class);
 		this.typeRef = typeRef;
+	}
+
+	private LinkValueStruct(
+			LinkValueStruct prototype,
+			LinkValueType valueType,
+			TypeRef typeRef) {
+		super(valueType, KnownLink.class);
+		this.typeRef = typeRef;
+		this.linkDepth = prototype.linkDepth;
 	}
 
 	public final TypeRef getTypeRef() {
@@ -61,7 +72,16 @@ public final class LinkValueStruct
 		if (valueType == getValueType()) {
 			return this;
 		}
-		return new LinkValueStruct(valueType, getTypeRef());
+		return new LinkValueStruct(this, valueType, getTypeRef());
+	}
+
+	@Override
+	public final int getLinkDepth() {
+		if (this.linkDepth != 0) {
+			return this.linkDepth;
+		}
+		return this.linkDepth =
+				1 + getTypeRef().getValueStruct().getLinkDepth();
 	}
 
 	@Override
@@ -126,6 +146,15 @@ public final class LinkValueStruct
 					? expectedStruct.toLinkStruct()
 					: ref.valueStruct(ref.getScope()).toLinkStruct());
 		}
+		if (expectedStruct.getLinkDepth() - getLinkDepth() == 1) {
+
+			final LinkValueStruct expectedLinkStruct =
+					expectedStruct.toLinkStruct();
+
+			return new LinkByValueAdapter(
+					adapterRef(ref, expectedLinkStruct.getTypeRef()),
+					expectedLinkStruct);
+		}
 
 		final Ref adapter = ref.adapt(
 				ref,
@@ -144,7 +173,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(getValueType(), newTypeRef);
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -157,7 +186,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(getValueType(), newTypeRef);
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -184,7 +213,7 @@ public final class LinkValueStruct
 			return null;
 		}
 
-		return new LinkValueStruct(getValueType(), typeRef);
+		return new LinkValueStruct(this, getValueType(), typeRef);
 	}
 
 	@Override
@@ -216,7 +245,7 @@ public final class LinkValueStruct
 			return this;
 		}
 
-		return new LinkValueStruct(getValueType(), newTypeRef);
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override

@@ -32,7 +32,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 
 
@@ -64,29 +64,29 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return this.ancestor == null && this.samples.length == 0;
 	}
 
-	public final boolean isLinkAscendants() {
+	public final int getLinkDepth() {
 
 		final TypeRef ancestor = getAncestor();
 
 		if (ancestor != null) {
 
-			final ValueType<?> valueType = ancestor.getValueType();
+			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
+			if (!valueStruct.isVoid()) {
+				return valueStruct.getLinkDepth();
 			}
 		}
 
 		for (StaticTypeRef sample : getSamples()) {
 
-			final ValueType<?> valueType = sample.getValueType();
+			final ValueStruct<?, ?> valueStruct = sample.getValueStruct();
 
-			if (!valueType.isVoid()) {
-				return valueType.isLink();
+			if (!valueStruct.isVoid()) {
+				return valueStruct.getLinkDepth();
 			}
 		}
 
-		return false;
+		return 0;
 	}
 
 	public final TypeRef getAncestor() {

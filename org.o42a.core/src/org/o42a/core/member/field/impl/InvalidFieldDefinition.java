@@ -45,8 +45,8 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public boolean isLink() {
-		return false;
+	public int getLinkDepth() {
+		return 0;
 	}
 
 	@Override
