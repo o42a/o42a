@@ -109,11 +109,6 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		statement(value.rescope(getScope()));
 	}
 
-	public abstract void assign(
-			LocationInfo location,
-			Ref destination,
-			Ref value);
-
 	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {

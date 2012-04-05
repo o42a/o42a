@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.impl.imperative;
+package org.o42a.compiler.ip.statement;
 
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -26,9 +26,9 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-final class VariableAssignmentCmd extends Cmd {
+final class AssignmentCmd extends Cmd {
 
-	VariableAssignmentCmd(CodeBuilder builder, AssignmentStatement assignment) {
+	AssignmentCmd(CodeBuilder builder, AssignmentStatement assignment) {
 		super(builder, assignment);
 	}
 
