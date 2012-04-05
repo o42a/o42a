@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Compiler
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,55 +17,64 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.cond;
+package org.o42a.compiler.ip.assignment;
 
+import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+
+import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.st.*;
+import org.o42a.core.st.InlineCmd;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class RefCondition extends Statement {
+final class CustomAssignment extends AssignmentKind {
 
-	private final Ref ref;
-	private StatementEnv conditionalEnv;
+	static AssignmentKind customAssignment(
+			AssignmentStatement statement,
+			Obj destination) {
 
-	public RefCondition(Ref ref) {
-		super(ref, ref.distribute());
-		this.ref = ref;
-	}
+		final LinkValueType destType =
+				destination.value().getValueType().toLinkType();
 
-	public final Ref getRef() {
-		return this.ref;
-	}
-
-	@Override
-	public Definer define(StatementEnv env) {
-		return new RefConditionDefiner(this, env);
-	}
-
-	@Override
-	public Statement reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref ref = this.ref.reproduce(reproducer);
-
-		if (ref == null) {
+		if (destType != LinkValueType.GETTER) {
 			return null;
 		}
 
-		return new RefCondition(ref);
+		final Phrase phrase =
+				new Phrase(PLAIN_IP, statement, statement.distribute());
+
+		phrase.setAncestor(statement.getDestination().toTypeRef());
+		phrase.assign(statement.getNode());
+		phrase.operand(statement.getValue());
+
+		return new CustomAssignment(statement, phrase.toRef());
+	}
+
+	private final Ref ref;
+
+	private CustomAssignment(AssignmentStatement statement, Ref ref) {
+		super(statement);
+		this.ref = ref;
 	}
 
 	@Override
-	public InlineCmd inlineImperative(
+	public void resolve(LocalResolver resolver) {
+		this.ref.resolve(resolver).resolveLogical();
+	}
+
+	@Override
+	public InlineCmd inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -81,27 +90,27 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public void normalize(Normalizer normalizer) {
 		this.ref.normalizeImperative(normalizer);
 	}
 
 	@Override
-	public String toString() {
-		return this.ref.toString();
+	public AssignmentKind reproduce(
+			AssignmentStatement statement,
+			Reproducer reproducer) {
+
+		final Ref ref = this.ref.reproduce(reproducer);
+
+		if (ref == null) {
+			return new AssignmentError(statement);
+		}
+
+		return new CustomAssignment(statement, ref);
 	}
 
 	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		this.ref.resolve(resolver).resolveLogical();
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new CondCmd(builder, this.ref);
-	}
-
-	final StatementEnv getConditionalEnv() {
-		return this.conditionalEnv;
+	public Cmd op(CodeBuilder builder) {
+		return new AssignCmd(builder, this.ref);
 	}
 
 	private static final class Inline implements InlineCmd {
@@ -137,9 +146,9 @@ public final class RefCondition extends Statement {
 
 	}
 
-	private static final class CondCmd extends Cmd {
+	private static final class AssignCmd extends Cmd {
 
-		CondCmd(CodeBuilder builder, Ref ref) {
+		AssignCmd(CodeBuilder builder, Ref ref) {
 			super(builder, ref);
 		}
 
