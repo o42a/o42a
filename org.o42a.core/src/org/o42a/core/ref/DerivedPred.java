@@ -17,44 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.prediction;
-
-import static org.o42a.core.ref.Pred.noPred;
-
-import java.util.Iterator;
+package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Pred;
-import org.o42a.core.ref.Predicted;
-import org.o42a.core.ref.Prediction;
 
 
-public class Unpredicted extends Prediction {
+public abstract class DerivedPred extends Pred {
 
-	public Unpredicted(Scope scope) {
+	private final Pred base;
+
+	public DerivedPred(Pred base, Scope scope) {
 		super(scope);
+		this.base = base;
+	}
+
+	public final Pred getBase() {
+		return this.base;
 	}
 
 	@Override
-	public Predicted getPredicted() {
-		return Predicted.UNPREDICTED;
+	protected final Scope revert(Scope scope) {
+		return getBase().revert(baseOf(scope));
 	}
 
-	@Override
-	public Iterator<Pred> iterator() {
-		return noPred().iterator();
-	}
-
-	@Override
-	public String toString() {
-
-		final Scope scope = getScope();
-
-		if (scope == null) {
-			return super.toString();
-		}
-
-		return scope + "?";
-	}
+	protected abstract Scope baseOf(Scope derived);
 
 }

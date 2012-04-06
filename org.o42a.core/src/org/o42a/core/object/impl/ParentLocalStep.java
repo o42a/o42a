@@ -35,11 +35,12 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class ParentLocalStep extends Step {
+public final class ParentLocalStep extends Step implements ReversePath {
 
 	private final Obj object;
 
@@ -80,6 +81,11 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
+	public Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
+	}
+
+	@Override
 	public String toString() {
 		return "ParentLocal[" + this.object + ']';
 	}
@@ -100,7 +106,7 @@ public final class ParentLocalStep extends Step {
 	}
 
 	@Override
-	public void combineWithLocalOwner(
+	protected void combineWithLocalOwner(
 			PathRebuilder rebuilder,
 			Obj owner) {
 		if (rebuilder.isStatic()) {
@@ -131,14 +137,9 @@ public final class ParentLocalStep extends Step {
 		final Container result =
 				object.getScope().getEnclosingContainer();
 
-		walker.up(object, this, result);
+		walker.up(object, this, result, this);
 
 		return result;
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		return this.object.findIn(target).getScope();
 	}
 
 	@Override
@@ -151,7 +152,7 @@ public final class ParentLocalStep extends Step {
 		final Container result =
 				object.getScope().getEnclosingContainer();
 
-		normalizer.up(result.getScope(), toPath());
+		normalizer.up(result.getScope(), toPath(), this);
 	}
 
 	@Override

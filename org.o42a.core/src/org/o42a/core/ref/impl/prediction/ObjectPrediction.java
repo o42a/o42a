@@ -25,35 +25,34 @@ import java.util.NoSuchElementException;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Derivative;
-import org.o42a.core.ref.Predicted;
-import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.*;
 
 
 public class ObjectPrediction extends Prediction {
 
 	public static Prediction predictObject(
-			Prediction enclosing,
+			Prediction basePrediction,
 			Obj object) {
-		assert enclosing.assertEncloses(object.getScope());
+		assert basePrediction.assertEncloses(object.getScope());
 
-		switch (enclosing.getPredicted()) {
+		switch (basePrediction.getPredicted()) {
 		case EXACTLY_PREDICTED:
-			return exactPrediction(object.getScope());
+			return exactPrediction(basePrediction, object.getScope());
 		case UNPREDICTED:
 			return unpredicted(object.getScope());
 		case PREDICTED:
-			return new ObjectPrediction(enclosing, object);
+			return new ObjectPrediction(basePrediction, object);
 		}
 
 		throw new IllegalArgumentException(
-				"Unsupported prediction: " + enclosing.getPredicted());
+				"Unsupported prediction: " + basePrediction.getPredicted());
 	}
 
-	private final Prediction enclosing;
+	private final Prediction basePrediction;
 
-	private ObjectPrediction(Prediction enclosing, Obj object) {
+	private ObjectPrediction(Prediction basePrediction, Obj object) {
 		super(object.getScope());
-		this.enclosing = enclosing;
+		this.basePrediction = basePrediction;
 	}
 
 	@Override
@@ -62,10 +61,8 @@ public class ObjectPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Scope> iterator() {
-		return new Iter(
-				this.enclosing,
-				new DerivativesIterator(getScope().toObject()));
+	public Iterator<Pred> iterator() {
+		return new Itr(this.basePrediction, getScope().toObject());
 	}
 
 	@Override
@@ -78,6 +75,66 @@ public class ObjectPrediction extends Prediction {
 		}
 
 		return "ObjectPrediction[" + scope + ']';
+	}
+
+	private static final class Itr implements Iterator<Pred> {
+
+		private final Prediction basePrediction;
+		private final Iterator<Pred> bases;
+		private final Obj object;
+		private Iterator<Pred> overriders;
+
+		Itr(Prediction basePrediction, Obj object) {
+			this.basePrediction = basePrediction;
+			this.bases = basePrediction.iterator();
+			this.object = object;
+		}
+
+		@Override
+		public boolean hasNext() {
+			if (this.overriders == null || !this.overriders.hasNext()) {
+				return findNext();
+			}
+			return this.overriders.hasNext();
+		}
+
+		@Override
+		public Pred next() {
+			if (this.overriders == null || !this.overriders.hasNext()) {
+				if (!findNext()) {
+					throw new NoSuchElementException();
+				}
+			}
+			return this.overriders.next();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+		private boolean findNext() {
+			do {
+				if (!this.bases.hasNext()) {
+					return false;
+				}
+
+				final Pred nextBase = this.bases.next();
+
+				if (!nextBase.isPredicted()) {
+					this.overriders = nextBase.iterator();
+					return true;
+				}
+
+				this.overriders = new ObjItr(
+						this.basePrediction,
+						nextBase,
+						new DerivativesIterator(
+								this.object.findIn(nextBase.getScope())));
+			} while (this.overriders == null || !this.overriders.hasNext());
+			return true;
+		}
+
 	}
 
 	private static final class DerivativesIterator implements Iterator<Obj> {
@@ -130,14 +187,19 @@ public class ObjectPrediction extends Prediction {
 
 	}
 
-	private static final class Iter implements Iterator<Scope> {
+	private static final class ObjItr implements Iterator<Pred> {
 
-		private final Prediction enclosing;
+		private final Prediction basePrediction;
+		private final Pred base;
 		private final DerivativesIterator derivatives;
-		private Iterator<Scope> impls;
+		private Iterator<Pred> impls;
 
-		Iter(Prediction enclosing, DerivativesIterator derivatives) {
-			this.enclosing = enclosing;
+		ObjItr(
+				Prediction basePrediction,
+				Pred base,
+				DerivativesIterator derivatives) {
+			this.basePrediction = basePrediction;
+			this.base = base;
 			this.derivatives = derivatives;
 		}
 
@@ -150,7 +212,7 @@ public class ObjectPrediction extends Prediction {
 		}
 
 		@Override
-		public Scope next() {
+		public Pred next() {
 			if (this.impls == null || !this.impls.hasNext()) {
 				if (!nextImpl()) {
 					throw new NoSuchElementException();
@@ -171,8 +233,14 @@ public class ObjectPrediction extends Prediction {
 				}
 
 				final Obj object = this.derivatives.next();
+
+				object.getScope().getEnclosingScope().assertDerivedFrom(
+						this.base.getScope());
+
 				final ObjectImplementations impls =
-						new ObjectImplementations(this.enclosing, object);
+						new ObjectImplementations(
+								this.basePrediction,
+								new ObjectPred(this.base, object));
 
 				this.impls = impls.iterator();
 			} while (this.impls == null || !this.impls.hasNext());
@@ -181,4 +249,22 @@ public class ObjectPrediction extends Prediction {
 		}
 
 	}
+
+	private static final class ObjectPred extends DerivedPred {
+
+		ObjectPred(Pred base, Obj object) {
+			super(base, object.getScope());
+		}
+
+		@Override
+		protected Scope baseOf(Scope derived) {
+			if (!derived.derivedFrom(getScope())) {
+				getScope().assertDerivedFrom(derived);
+				return getScope().getEnclosingScope();
+			}
+			return derived.getEnclosingScope();
+		}
+
+	}
+
 }

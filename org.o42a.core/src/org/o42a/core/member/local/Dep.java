@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 
 
@@ -122,7 +123,13 @@ public abstract class Dep extends Step {
 
 		if (!normalizer.up(
 				enclosingLocal,
-				objectScope.getEnclosingScopePath())) {
+				objectScope.getEnclosingScopePath(),
+				new ReversePath() {
+					@Override
+					public Scope revert(Scope target) {
+						return object.findIn(target).getScope();
+					}
+				})) {
 			return;
 		}
 

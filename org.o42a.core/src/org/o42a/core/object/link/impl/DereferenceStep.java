@@ -34,9 +34,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.*;
-import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.ref.type.TypeRef;
@@ -139,11 +137,6 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-		return target.toObject().getDereferencedLink().getScope();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizeDeref(normalizer);
 	}
@@ -214,8 +207,11 @@ public class DereferenceStep extends Step {
 		final Prediction prediction = normalizer.nextPrediction();
 		final Scope stepStart = prediction.getScope();
 
-		for (Scope replacement : prediction) {
-			if (replacement != stepStart) {
+		for (Pred replacement : prediction) {
+			if (!replacement.isPredicted()) {
+				return true;
+			}
+			if (replacement.getScope() != stepStart) {
 				return true;
 			}
 		}

@@ -19,19 +19,19 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static java.util.Collections.singletonList;
-
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Predicted;
-import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.*;
 
 
 public final class ExactPrediction extends Prediction {
 
-	public ExactPrediction(Scope scope) {
+	private final Prediction basePrediction;
+
+	public ExactPrediction(Prediction basePrediction, Scope scope) {
 		super(scope);
+		this.basePrediction = basePrediction;
 	}
 
 	@Override
@@ -40,8 +40,15 @@ public final class ExactPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Scope> iterator() {
-		return singletonList(getScope()).iterator();
+	public Iterator<Pred> iterator() {
+
+		final Pred base = this.basePrediction.iterator().next();
+
+		if (!base.isPredicted()) {
+			return base.iterator();
+		}
+
+		return new ExactPred(base, getScope()).iterator();
 	}
 
 	@Override
@@ -54,6 +61,31 @@ public final class ExactPrediction extends Prediction {
 		}
 
 		return scope + "!";
+	}
+
+	private static final class ExactPred extends DerivedPred {
+
+		ExactPred(Pred base, Scope scope) {
+			super(base, scope);
+		}
+
+		@Override
+		public String toString() {
+
+			final Scope scope = getScope();
+
+			if (scope == null) {
+				return super.toString();
+			}
+
+			return scope + "!";
+		}
+
+		@Override
+		protected Scope baseOf(Scope derived) {
+			return getScope();
+		}
+
 	}
 
 }

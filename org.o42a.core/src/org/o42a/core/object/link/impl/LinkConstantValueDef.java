@@ -80,6 +80,12 @@ public final class LinkConstantValueDef extends ValueDef {
 
 	@Override
 	public Ref target() {
+		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
+			return null;
+		}
+		if (!getPrecondition().isTrue()) {
+			return null;
+		}
 		return this.value.getCompilerValue().getTargetRef().getRef();
 	}
 

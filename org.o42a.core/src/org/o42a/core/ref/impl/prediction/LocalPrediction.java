@@ -19,38 +19,39 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static java.util.Collections.singletonList;
-
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Predicted;
-import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.*;
 
 
 public class LocalPrediction extends Prediction {
 
-	public static Prediction predictLocal(
-			Prediction enclosing,
-			LocalScope local) {
-		assert enclosing.assertEncloses(local);
+	private final Prediction basePrediction;
 
-		switch (enclosing.getPredicted()) {
+	public static Prediction predictLocal(
+			Prediction basePrediction,
+			LocalScope local) {
+		assert basePrediction.assertEncloses(local);
+
+		switch (basePrediction.getPredicted()) {
 		case EXACTLY_PREDICTED:
-			return exactPrediction(local);
+			return exactPrediction(basePrediction, local);
 		case UNPREDICTED:
 			return unpredicted(local);
 		case PREDICTED:
-			return new LocalPrediction(local);
+			return new LocalPrediction(basePrediction, local);
 		}
 
 		throw new IllegalArgumentException(
-				"Unsupported prediction: " + enclosing.getPredicted());
+				"Unsupported prediction: " + basePrediction.getPredicted());
 	}
 
-	private LocalPrediction(LocalScope local) {
+	private LocalPrediction(Prediction basePrediction, LocalScope local) {
 		super(local);
+		this.basePrediction = basePrediction;
 	}
 
 	@Override
@@ -59,8 +60,8 @@ public class LocalPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Scope> iterator() {
-		return singletonList(getScope()).iterator();
+	public Iterator<Pred> iterator() {
+		return new Itr(this);
 	}
 
 	@Override
@@ -73,6 +74,60 @@ public class LocalPrediction extends Prediction {
 		}
 
 		return "LocalPrediction[" + scope + ']';
+	}
+
+	private static final class Itr implements Iterator<Pred> {
+
+		private final Iterator<Pred> bases;
+		private final MemberKey key;
+
+		public Itr(LocalPrediction prediction) {
+			this.bases = prediction.basePrediction.iterator();
+			this.key = prediction.getScope().toLocal().toMember().getKey();
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.bases.hasNext();
+		}
+
+		@Override
+		public Pred next() {
+
+			final Pred base = this.bases.next();
+
+			if (!base.isPredicted()) {
+				return base;
+			}
+
+			final LocalScope local =
+					base.getScope()
+					.toObject()
+					.member(this.key)
+					.toLocal()
+					.local();
+
+			return new LocalPred(base, local);
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
+	private static final class LocalPred extends DerivedPred {
+
+		LocalPred(Pred base, Scope scope) {
+			super(base, scope);
+		}
+
+		@Override
+		protected Scope baseOf(Scope derived) {
+			return derived.toLocal().getOwner().getScope();
+		}
+
 	}
 
 }

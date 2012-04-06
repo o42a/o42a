@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 
 
@@ -54,8 +55,12 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
-		return walk(walker().up(enclosed, step, enclosing));
+	public boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath) {
+		return walk(walker().up(enclosed, step, enclosing, reversePath));
 	}
 
 	@Override

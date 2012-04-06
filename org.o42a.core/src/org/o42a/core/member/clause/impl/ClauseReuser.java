@@ -31,6 +31,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -81,7 +82,11 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
+	public boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath) {
 		if (this.reused != null) {
 			return invalidClauseReused();
 		}
@@ -112,7 +117,7 @@ final class ClauseReuser implements PathWalker {
 			final MemberKey key = member.getKey();
 
 			if (containerKey.startsWith(key)) {
-				return up(container, step, member.substance(dummyUser()));
+				return up(container, step, member.substance(dummyUser()), null);
 			}
 
 			final Scope memberScope = member.getScope();
@@ -124,7 +129,7 @@ final class ClauseReuser implements PathWalker {
 				final MemberContainer memberContainer =
 						memberScope.getContainer();
 
-				if (!up(this.container, step, memberContainer)) {
+				if (!up(this.container, step, memberContainer, null)) {
 					return false;
 				}
 			}

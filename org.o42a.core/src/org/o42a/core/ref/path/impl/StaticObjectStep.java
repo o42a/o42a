@@ -84,11 +84,6 @@ public class StaticObjectStep extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.finish();
 	}

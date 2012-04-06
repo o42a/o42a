@@ -20,7 +20,8 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.exactPrediction;
-import static org.o42a.core.ref.Prediction.scopePrediction;
+import static org.o42a.core.ref.Prediction.startPrediction;
+import static org.o42a.core.ref.impl.prediction.EnclosingPrediction.enclosingPrediction;
 import static org.o42a.util.func.Cancellation.NOT_CANCELABLE;
 import static org.o42a.util.func.Cancellation.appendCancelable;
 import static org.o42a.util.func.Cancellation.cancelAll;
@@ -31,7 +32,9 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.*;
+import org.o42a.core.ref.impl.prediction.InitialPrediction;
 import org.o42a.util.func.Cancelable;
 
 
@@ -43,7 +46,7 @@ public final class PathNormalizer {
 			BoundPath path) {
 
 		final PathNormalizer pathNormalizer =
-				new PathNormalizer(normalizer, scopePrediction(origin), path);
+				new PathNormalizer(normalizer, startPrediction(origin), path);
 
 		if (!pathNormalizer.init()) {
 			return null;
@@ -194,7 +197,10 @@ public final class PathNormalizer {
 		this.stepNormalized = true;
 	}
 
-	public final boolean up(Scope enclosing, Path enclosingPath) {
+	public final boolean up(
+			Scope enclosing,
+			Path enclosingPath,
+			ReversePath revertPath) {
 		if (isNormalizationStarted()) {
 
 			final Prediction lastPrediction = lastPrediction();
@@ -202,10 +208,11 @@ public final class PathNormalizer {
 			this.normalSteps.add(new NormalPathStep(enclosingPath));
 			overrideNonIgnored();
 
-			this.stepPrediction =
-					lastPrediction.isExact()
-					? exactPrediction(enclosing)
-					: scopePrediction(enclosing);
+			this.stepPrediction = enclosingPrediction(
+					lastPrediction,
+					enclosing,
+					enclosingPath,
+					revertPath);
 			this.nextPrediction = null;
 
 			final Step step = getPath().getSteps()[getStepIndex()];
@@ -233,10 +240,11 @@ public final class PathNormalizer {
 		final Prediction lastPrediction = lastPrediction();
 
 		this.stepNormalized = true;
-		this.stepPrediction =
-				lastPrediction.isExact()
-				? exactPrediction(enclosing)
-				: scopePrediction(enclosing);
+		this.stepPrediction = enclosingPrediction(
+				lastPrediction,
+				enclosing,
+				enclosingPath,
+				revertPath);
 		this.nextPrediction = null;
 
 		return true;
@@ -390,7 +398,12 @@ public final class PathNormalizer {
 		final Data stored = this.data.clone();
 
 		this.stepIndex = path.startIndex() - 1;
-		this.stepStart = exactPrediction(path.startObjectScope());
+
+		final Scope startObjectScope = path.startObjectScope();
+
+		this.stepStart = exactPrediction(
+				new InitialPrediction(startObjectScope),
+				startObjectScope);
 
 		while (this.stepIndex < steps.length) {
 			this.stepPrediction = null;

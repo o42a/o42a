@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.object.Obj;
@@ -130,15 +129,6 @@ public final class RefDep extends Dep {
 		walker.refDep(object, this, this.depRef);
 
 		return resolution.toObject();
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-
-		final LocalScope revertedLocal =
-				getDepRef().getPath().revert(target).toLocal();
-
-		return getObject().findIn(revertedLocal).getScope();
 	}
 
 	@Override

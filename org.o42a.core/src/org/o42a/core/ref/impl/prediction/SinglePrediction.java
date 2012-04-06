@@ -19,42 +19,41 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static org.o42a.core.ref.Pred.noPred;
-
 import java.util.Iterator;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 
 
-public class Unpredicted extends Prediction {
+public final class SinglePrediction extends Prediction {
 
-	public Unpredicted(Scope scope) {
-		super(scope);
+	private final Prediction prediction;
+	private final Pred pred;
+
+	public SinglePrediction(Prediction prediction, Pred pred) {
+		super(pred.getScope());
+		pred.getScope().assertDerivedFrom(prediction.getScope());
+		this.prediction = prediction;
+		this.pred = pred;
 	}
 
 	@Override
-	public Predicted getPredicted() {
-		return Predicted.UNPREDICTED;
+	public final Predicted getPredicted() {
+		return this.prediction.getPredicted();
 	}
 
 	@Override
-	public Iterator<Pred> iterator() {
-		return noPred().iterator();
+	public final Iterator<Pred> iterator() {
+		return this.pred.iterator();
 	}
 
 	@Override
 	public String toString() {
-
-		final Scope scope = getScope();
-
-		if (scope == null) {
+		if (this.pred == null) {
 			return super.toString();
 		}
-
-		return scope + "?";
+		return this.pred.toString();
 	}
 
 }

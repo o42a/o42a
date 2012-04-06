@@ -96,13 +96,10 @@ public class FalseStep extends Step {
 				normalizer.stepStart().getScope().getContext().getFalse();
 
 		normalizer.inline(
-				exactPrediction(falseObject.getScope()),
+				exactPrediction(
+						normalizer.lastPrediction(),
+						falseObject.getScope()),
 				INLINE_FALSE);
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		return target.getContext().getRoot().getScope();
 	}
 
 	@Override

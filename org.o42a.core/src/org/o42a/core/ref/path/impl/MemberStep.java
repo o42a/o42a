@@ -78,18 +78,6 @@ public class MemberStep extends AbstractMemberStep {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-
-		final Field field = target.toField();
-
-		if (field != null && field.getKey().equals(getMemberKey())) {
-			return target.getEnclosingScope();
-		}
-
-		return getMemberKey().getOrigin();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizeMember(normalizer);
 	}

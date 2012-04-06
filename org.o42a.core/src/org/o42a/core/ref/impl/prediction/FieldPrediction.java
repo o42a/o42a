@@ -28,36 +28,35 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldReplacement;
-import org.o42a.core.ref.Predicted;
-import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.*;
 
 
 public class FieldPrediction extends Prediction {
 
-	private final Prediction enclosing;
-
 	public static Prediction predictField(
-			Prediction enclosing,
+			Prediction basePrediction,
 			Field field) {
-		assert enclosing.assertEncloses(field);
+		assert basePrediction.assertEncloses(field);
 
-		switch (enclosing.getPredicted()) {
+		switch (basePrediction.getPredicted()) {
 		case EXACTLY_PREDICTED:
-			return exactPrediction(field);
+			return exactPrediction(basePrediction, field);
 		case UNPREDICTED:
 			return unpredicted(field);
 		case PREDICTED:
-			return new FieldPrediction(enclosing, field);
+			return new FieldPrediction(basePrediction, field);
 		}
 
 		throw new IllegalArgumentException(
-				"Unsupported prediction: " + enclosing.getPredicted());
+				"Unsupported prediction: " + basePrediction.getPredicted());
 	}
 
-	private FieldPrediction(Prediction enclosing, Field field) {
+	private final Prediction basePrediction;
+
+	private FieldPrediction(Prediction basePrediction, Field field) {
 		super(field);
-		this.enclosing = enclosing;
-		field.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
+		this.basePrediction = basePrediction;
+		field.getEnclosingScope().assertDerivedFrom(basePrediction.getScope());
 	}
 
 	@Override
@@ -66,8 +65,8 @@ public class FieldPrediction extends Prediction {
 	}
 
 	@Override
-	public Iterator<Scope> iterator() {
-		return new Itr(this.enclosing, getScope().toField());
+	public Iterator<Pred> iterator() {
+		return new Itr(this.basePrediction, getScope().toField());
 	}
 
 	@Override
@@ -82,17 +81,17 @@ public class FieldPrediction extends Prediction {
 		return "FieldPrediction[" + scope + ']';
 	}
 
-	private static final class Itr implements Iterator<Scope> {
+	private static final class Itr implements Iterator<Pred> {
 
-		private final Prediction enclosing;
-		private final Iterator<Scope> enclosings;
+		private final Prediction basePrediction;
+		private final Iterator<Pred> bases;
 		private final MemberKey fieldKey;
-		private OverridersItr overriders;
+		private Iterator<Pred> overriders;
 
-		Itr(Prediction enclosing, Field field) {
-			this.enclosing = enclosing;
+		Itr(Prediction basePrediction, Field field) {
+			this.basePrediction = basePrediction;
 			this.fieldKey = field.getKey();
-			this.enclosings = enclosing.iterator();
+			this.bases = basePrediction.iterator();
 		}
 
 		@Override
@@ -104,7 +103,7 @@ public class FieldPrediction extends Prediction {
 		}
 
 		@Override
-		public Scope next() {
+		public Pred next() {
 			if (this.overriders == null || !this.overriders.hasNext()) {
 				if (!findNext()) {
 					throw new NoSuchElementException();
@@ -128,13 +127,21 @@ public class FieldPrediction extends Prediction {
 
 		private boolean findNext() {
 			do {
-				if (!this.enclosings.hasNext()) {
+				if (!this.bases.hasNext()) {
 					return false;
 				}
+
+				final Pred nextBase = this.bases.next();
+
+				if (!nextBase.isPredicted()) {
+					this.overriders = nextBase.iterator();
+					return true;
+				}
+
 				this.overriders = new OverridersItr(
-						this.enclosing,
-						this.enclosings.next()
-						.getScope()
+						this.basePrediction,
+						nextBase,
+						nextBase.getScope()
 						.getContainer()
 						.member(this.fieldKey)
 						.toField()
@@ -145,16 +152,19 @@ public class FieldPrediction extends Prediction {
 
 	}
 
-	private static final class OverridersItr implements Iterator<Scope> {
+	private static final class OverridersItr implements Iterator<Pred> {
 
-		private final Prediction enclosing;
+		private final Prediction basePrediction;
+		private final Pred base;
 		private final ReplacementsItr replacements;
-		private Iterator<Scope> impls;
+		private Iterator<Pred> impls;
 
-		OverridersItr(Prediction enclosing, Field start) {
-			this.enclosing = enclosing;
+		OverridersItr(Prediction basePrediction, Pred base, Field start) {
+			this.basePrediction = basePrediction;
+			this.base = base;
 			this.replacements = new ReplacementsItr(start);
-			start.getEnclosingScope().assertDerivedFrom(enclosing.getScope());
+			start.getEnclosingScope().assertDerivedFrom(
+					basePrediction.getScope());
 		}
 
 		@Override
@@ -166,7 +176,7 @@ public class FieldPrediction extends Prediction {
 		}
 
 		@Override
-		public Scope next() {
+		public Pred next() {
 			if (this.impls == null || !this.impls.hasNext()) {
 				if (!findNext()) {
 					throw new NoSuchElementException();
@@ -195,16 +205,13 @@ public class FieldPrediction extends Prediction {
 				}
 
 				final Field field = this.replacements.next();
-				final Prediction enclosing;
-
-				if (this.enclosing.isExact()) {
-					enclosing = exactPrediction(field.getEnclosingScope());
-				} else {
-					enclosing = new SimplePrediction(field.getEnclosingScope());
-				}
-
+				final Prediction basePrediction = new SinglePrediction(
+						this.basePrediction,
+						this.base.setScope(field.getEnclosingScope()));
 				final ObjectImplementations impls =
-						new ObjectImplementations(enclosing, field.toObject());
+						new ObjectImplementations(
+								basePrediction,
+								new FieldPred(this.base, field));
 
 				this.impls = impls.iterator();
 			} while (this.impls == null || !this.impls.hasNext());
@@ -264,6 +271,28 @@ public class FieldPrediction extends Prediction {
 				return super.toString();
 			}
 			return "ReplacementsIterator[" + this.start + ']';
+		}
+
+	}
+
+	private static final class FieldPred extends DerivedPred {
+
+		FieldPred(Pred base, Field field) {
+			super(base, field);
+		}
+
+		@Override
+		protected Scope baseOf(Scope derived) {
+
+			final MemberKey expectedKey = getScope().toField().getKey();
+			final Field derivedField = derived.toField();
+
+			if (derivedField != null
+					&& derivedField.getKey().equals(expectedKey)) {
+				return derivedField.getEnclosingScope();
+			}
+
+			return expectedKey.getOrigin();
 		}
 
 	}

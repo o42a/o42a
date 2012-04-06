@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.impl.normalizer.SameNormalStep;
 import org.o42a.core.source.LocationInfo;
@@ -98,19 +99,17 @@ final class StaticStep extends Step {
 
 	@Override
 	protected void normalize(PathNormalizer normalizer) {
+
+		final Prediction lastPrediction = normalizer.lastPrediction();
+
 		normalizer.skip(
-				exactPrediction(normalizer.lastPrediction().getScope()),
+				exactPrediction(lastPrediction, lastPrediction.getScope()),
 				new SameNormalStep(this));
 	}
 
 	@Override
 	protected void normalizeStatic(PathNormalizer normalizer) {
 		normalizer.finish();
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
