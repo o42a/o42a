@@ -132,11 +132,6 @@ public final class ModuleStep extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-		return target.getContext().getRoot().getScope();
-	}
-
-	@Override
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {

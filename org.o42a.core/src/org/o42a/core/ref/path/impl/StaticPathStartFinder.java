@@ -29,6 +29,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -83,7 +84,11 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
+	public boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath) {
 		return set(enclosed.getScope(), enclosing.toObject());
 	}
 

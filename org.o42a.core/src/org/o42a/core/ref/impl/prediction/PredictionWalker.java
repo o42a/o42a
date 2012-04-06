@@ -21,8 +21,10 @@ package org.o42a.core.ref.impl.prediction;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Prediction.exactPrediction;
-import static org.o42a.core.ref.Prediction.scopePrediction;
+import static org.o42a.core.ref.Prediction.startPrediction;
 import static org.o42a.core.ref.Prediction.unpredicted;
+import static org.o42a.core.ref.impl.prediction.DerefPrediction.derefPrediction;
+import static org.o42a.core.ref.impl.prediction.EnclosingPrediction.enclosingPrediction;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -31,9 +33,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
-import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -41,20 +41,7 @@ import org.o42a.core.ref.path.Step;
 
 public class PredictionWalker implements PathWalker {
 
-	public static Prediction predictRef(Ref ref, Scope start) {
-
-		final PredictionWalker walker = new PredictionWalker();
-		final Resolution resolution =
-				ref.resolve(start.walkingResolver(dummyUser(), walker));
-
-		if (resolution.isError()) {
-			return unpredicted(resolution.getScope());
-		}
-
-		return walker.getPrediction();
-	}
-
-	public static Prediction predictRef(Ref ref, Prediction start) {
+	public static Prediction predictRef(Prediction start, Ref ref) {
 		if (start.isExact()) {
 
 			final Resolution resolution =
@@ -64,7 +51,7 @@ public class PredictionWalker implements PathWalker {
 				return unpredicted(resolution.getScope());
 			}
 
-			return exactPrediction(resolution.getScope());
+			return exactPrediction(start, resolution.getScope());
 		}
 
 		final PredictionWalker walker = new PredictionWalker(start);
@@ -93,7 +80,16 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean root(BoundPath path, Scope root) {
-		return set(exactPrediction(root));
+
+		final Prediction basePrediction;
+
+		if (this.prediction == null) {
+			basePrediction = new InitialPrediction(root);
+		} else {
+			basePrediction = this.prediction;
+		}
+
+		return set(exactPrediction(basePrediction, root));
 	}
 
 	@Override
@@ -101,17 +97,15 @@ public class PredictionWalker implements PathWalker {
 		assert this.prediction == null || this.prediction.getScope() == start :
 			"Wrong start of the path: " + start + ", but "
 			+ this.prediction.getScope() + " expected";
-
 		if (this.prediction == null) {
-			this.prediction = scopePrediction(start);
+			this.prediction = startPrediction(start);
 		}
-
 		return this.prediction.isPredicted();
 	}
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return set(exactPrediction(module.getScope()));
+		return set(exactPrediction(getPrediction(), module.getScope()));
 	}
 
 	@Override
@@ -121,15 +115,20 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return set(exactPrediction(scope));
+		return set(exactPrediction(getPrediction(), scope));
 	}
 
 	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
-		if (getPrediction().isExact()) {
-			return set(exactPrediction(enclosing.getScope()));
-		}
-		return set(scopePrediction(enclosing.getScope()));
+	public boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath) {
+		return set(enclosingPrediction(
+				getPrediction(),
+				enclosing.getScope(),
+				step.toPath(),
+				reversePath));
 	}
 
 	@Override
@@ -140,8 +139,7 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		// TODO Implement link prediction.
-		return set(unpredicted(link.getTarget().getScope()));
+		return set(derefPrediction(getPrediction(), link));
 	}
 
 	@Override
@@ -165,10 +163,10 @@ public class PredictionWalker implements PathWalker {
 				set(unpredicted(resolution.getScope()));
 			}
 
-			return set(exactPrediction(resolution.getScope()));
+			return set(exactPrediction(getPrediction(), resolution.getScope()));
 		}
 
-		return set(predictRef(dependency, local));
+		return set(predictRef(getPrediction(), dependency));
 	}
 
 	@Override

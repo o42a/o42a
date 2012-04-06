@@ -270,20 +270,6 @@ public class BoundPath extends Location {
 		return walk(resolver, DUMMY_PATH_WALKER);
 	}
 
-	public final Scope revert(Scope target) {
-		assert !isStatic() :
-			"Can not revert the static scope";
-
-		Scope result = target;
-		final Step[] steps = getSteps();
-
-		for (int i = steps.length - 1; i >= 0; --i) {
-			result = steps[i].revert(result);
-		}
-
-		return result;
-	}
-
 	public PathResolution walk(PathResolver resolver, PathWalker walker) {
 		return walkPath(getPath(), resolver, walker, false);
 	}

@@ -107,6 +107,12 @@ final class LinkCopyValueDef extends ValueDef {
 
 	@Override
 	public Ref target() {
+		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
+			return null;
+		}
+		if (!getPrecondition().isTrue()) {
+			return null;
+		}
 		return this.ref.getPath().dereference().target(this.ref.distribute());
 	}
 

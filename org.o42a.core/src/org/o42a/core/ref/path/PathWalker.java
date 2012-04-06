@@ -26,6 +26,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.impl.DummyPathWalker;
 
 
@@ -43,7 +44,11 @@ public interface PathWalker {
 
 	boolean staticScope(Step step, Scope scope);
 
-	boolean up(Container enclosed, Step step, Container enclosing);
+	boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath);
 
 	boolean member(Container container, Step step, Member member);
 

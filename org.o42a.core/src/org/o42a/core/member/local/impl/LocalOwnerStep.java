@@ -33,11 +33,12 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class LocalOwnerStep extends Step {
+public final class LocalOwnerStep extends Step implements ReversePath {
 
 	private final LocalScope local;
 
@@ -53,6 +54,12 @@ public final class LocalOwnerStep extends Step {
 	@Override
 	public RefUsage getObjectUsage() {
 		return null;
+	}
+
+	@Override
+	public Scope revert(Scope target) {
+		return target.toObject().member(
+				this.local.toMember().getKey()).toLocal().local();
 	}
 
 	@Override
@@ -86,15 +93,9 @@ public final class LocalOwnerStep extends Step {
 
 		final Obj owner = local.getOwner();
 
-		walker.up(local, this, owner);
+		walker.up(local, this, owner, this);
 
 		return owner;
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		return target.toObject().member(
-				this.local.toMember().getKey()).toLocal().local();
 	}
 
 	@Override
@@ -110,7 +111,8 @@ public final class LocalOwnerStep extends Step {
 		normalizer.up(
 				normalizer.lastPrediction().getScope()
 				.toLocal().getOwner().getScope(),
-				toPath());
+				toPath(),
+				this);
 	}
 
 	@Override

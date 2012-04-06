@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static org.o42a.core.ref.Pred.noPred;
-
 import java.util.Iterator;
 
 import org.o42a.core.Scope;
@@ -29,20 +27,20 @@ import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
 
 
-public class Unpredicted extends Prediction {
+public final class InitialPrediction extends Prediction {
 
-	public Unpredicted(Scope scope) {
+	public InitialPrediction(Scope scope) {
 		super(scope);
 	}
 
 	@Override
 	public Predicted getPredicted() {
-		return Predicted.UNPREDICTED;
+		return Predicted.PREDICTED;
 	}
 
 	@Override
 	public Iterator<Pred> iterator() {
-		return noPred().iterator();
+		return new SimplePred(getScope()).iterator();
 	}
 
 	@Override
@@ -54,7 +52,20 @@ public class Unpredicted extends Prediction {
 			return super.toString();
 		}
 
-		return scope + "?";
+		return scope.toString();
+	}
+
+	private static final class SimplePred extends Pred {
+
+		SimplePred(Scope scope) {
+			super(scope);
+		}
+
+		@Override
+		protected Scope revert(Scope scope) {
+			return scope;
+		}
+
 	}
 
 }

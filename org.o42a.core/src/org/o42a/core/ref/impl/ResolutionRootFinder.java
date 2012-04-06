@@ -29,9 +29,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
@@ -95,7 +93,11 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean up(Container enclosed, Step step, Container enclosing) {
+	public boolean up(
+			Container enclosed,
+			Step step,
+			Container enclosing,
+			ReversePath reversePath) {
 		this.root = enclosing;
 		return true;
 	}
@@ -116,10 +118,9 @@ public final class ResolutionRootFinder implements PathWalker {
 			// Member access - root already reached.
 			return false;
 		}
-
 		if (oldMember.getKey().startsWith(member.getKey())) {
 			// Enclosing member access - go up.
-			return up(container, step, substance);
+			return up(container, step, substance, null);
 		}
 
 		return false;

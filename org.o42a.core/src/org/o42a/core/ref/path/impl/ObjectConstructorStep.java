@@ -114,18 +114,6 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-
-		final Scope constructed = this.constructor.getConstructed().getScope();
-
-		if (target.derivedFrom(constructed)) {
-			return target.getEnclosingScope();
-		}
-
-		return constructed.getEnclosingScope();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizeConstructor(normalizer);
 	}

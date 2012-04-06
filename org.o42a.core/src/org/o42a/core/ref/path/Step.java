@@ -110,8 +110,6 @@ public abstract class Step {
 			Scope start,
 			PathWalker walker);
 
-	protected abstract Scope revert(Scope target);
-
 	protected abstract void normalize(PathNormalizer normalizer);
 
 	protected abstract void normalizeStatic(PathNormalizer normalizer);

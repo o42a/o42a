@@ -181,11 +181,6 @@ final class ArrayElementStep extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-		return target.getEnclosingScope();
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		// Array element normalization not supported yet.
 		normalizer.cancel();

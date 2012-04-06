@@ -33,6 +33,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Prediction;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.AbstractMemberStep;
@@ -40,7 +41,9 @@ import org.o42a.core.ref.path.impl.ObjectStepUses;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class ParentObjectStep extends AbstractMemberStep {
+public final class ParentObjectStep
+		extends AbstractMemberStep
+		implements ReversePath {
 
 	private final Obj object;
 	private ObjectStepUses uses;
@@ -48,6 +51,11 @@ public final class ParentObjectStep extends AbstractMemberStep {
 	public ParentObjectStep(Obj object, MemberKey memberKey) {
 		super(memberKey);
 		this.object = object;
+	}
+
+	@Override
+	public Scope revert(Scope target) {
+		return this.object.findIn(target).getScope();
 	}
 
 	@Override
@@ -70,7 +78,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 				final Container result = self.getEnclosingContainer();
 
-				walker.up(object, this, result);
+				walker.up(object, this, result, this);
 
 				return result;
 			}
@@ -84,7 +92,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 
 		final Container result = member.substance(resolver);
 
-		walker.up(object, this, result);
+		walker.up(object, this, result, this);
 
 		return result;
 	}
@@ -132,11 +140,6 @@ public final class ParentObjectStep extends AbstractMemberStep {
 		return reproducedPath(scope.getEnclosingScopePath());
 	}
 
-	@Override
-	protected Scope revert(Scope target) {
-		return this.object.findIn(target).getScope();
-	}
-
 	private final ObjectStepUses uses() {
 		if (this.uses != null) {
 			return this.uses;
@@ -152,7 +155,7 @@ public final class ParentObjectStep extends AbstractMemberStep {
 				normalizer.lastPrediction().getScope());
 		final Container enclosing = member.substance(dummyUser());
 
-		if (!normalizer.up(enclosing.getScope(), toPath())) {
+		if (!normalizer.up(enclosing.getScope(), toPath(), this)) {
 			return;
 		}
 

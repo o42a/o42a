@@ -21,22 +21,32 @@ package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.impl.prediction.ExactPrediction;
-import org.o42a.core.ref.impl.prediction.SimplePrediction;
+import org.o42a.core.ref.impl.prediction.InitialPrediction;
 import org.o42a.core.ref.impl.prediction.Unpredicted;
 
 
-public abstract class Prediction implements Iterable<Scope> {
+public abstract class Prediction implements Iterable<Pred> {
 
-	public static Prediction exactPrediction(Scope scope) {
-		return new ExactPrediction(scope);
+	public static Prediction exactPrediction(
+			Prediction basePrediction,
+			Scope scope) {
+		switch (basePrediction.getPredicted()) {
+		case EXACTLY_PREDICTED:
+		case PREDICTED:
+			return new ExactPrediction(basePrediction, scope);
+		case UNPREDICTED:
+			return unpredicted(scope);
+		}
+		throw new IllegalArgumentException(
+				"Unsupported prediction: " + basePrediction.getPredicted());
 	}
 
 	public static Prediction unpredicted(Scope scope) {
 		return new Unpredicted(scope);
 	}
 
-	public static Prediction scopePrediction(Scope scope) {
-		return scope.predict(new SimplePrediction(scope.getEnclosingScope()));
+	public static Prediction startPrediction(Scope scope) {
+		return scope.predict(new InitialPrediction(scope.getEnclosingScope()));
 	}
 
 	private final Scope scope;

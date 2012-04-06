@@ -76,11 +76,6 @@ final class CastToVoid extends Step {
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-		return target;
-	}
-
-	@Override
 	protected void normalize(PathNormalizer normalizer) {
 		normalizer.inline(normalizer.lastPrediction(), new Inline());
 	}

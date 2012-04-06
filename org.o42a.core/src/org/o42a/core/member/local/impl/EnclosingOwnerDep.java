@@ -30,11 +30,12 @@ import org.o42a.core.member.local.DepKind;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
 
 
-public final class EnclosingOwnerDep extends Dep {
+public final class EnclosingOwnerDep extends Dep implements ReversePath {
 
 	private Obj target;
 
@@ -65,6 +66,23 @@ public final class EnclosingOwnerDep extends Dep {
 	@Override
 	public final Ref getDepRef() {
 		return null;
+	}
+
+	@Override
+	public Scope revert(Scope target) {
+
+		final LocalScope originalLocal =
+				getObject().getScope().getEnclosingScope().toLocal();
+
+		target.assertDerivedFrom(originalLocal.getOwner().getScope());
+
+		final LocalScope revertedLocal =
+				target.toObject()
+				.member(originalLocal.toMember().getKey())
+				.toLocal()
+				.local();
+
+		return getObject().findIn(revertedLocal).getScope();
 	}
 
 	@Override
@@ -115,35 +133,27 @@ public final class EnclosingOwnerDep extends Dep {
 
 		final Obj owner = enclosingLocal.getOwner();
 
-		walker.up(object, this, owner);
+		walker.up(object, this, owner, this);
 
 		return owner;
 	}
 
 	@Override
-	protected Scope revert(Scope target) {
-
-		final LocalScope originalLocal =
-				getObject().getScope().getEnclosingScope().toLocal();
-
-		target.assertDerivedFrom(originalLocal.getOwner().getScope());
-
-		final LocalScope revertedLocal =
-				target.toObject()
-				.member(originalLocal.toMember().getKey())
-				.toLocal()
-				.local();
-
-		return getObject().findIn(revertedLocal).getScope();
-	}
-
-	@Override
 	protected void normalizeDep(
-			PathNormalizer normalizer,
-			LocalScope local) {
+			final PathNormalizer normalizer,
+			final LocalScope local) {
 		normalizer.up(
 				local.getOwner().getScope(),
-				local.getEnclosingScopePath());
+				local.getEnclosingScopePath(),
+				new ReversePath() {
+					@Override
+					public Scope revert(Scope target) {
+						return target.toObject()
+								.member(local.toMember().getKey())
+								.toLocal()
+								.local();
+					}
+				});
 	}
 
 	@Override

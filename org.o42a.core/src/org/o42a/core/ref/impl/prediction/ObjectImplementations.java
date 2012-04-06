@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.impl.prediction;
 
-import static java.util.Collections.singletonList;
 import static org.o42a.core.ref.impl.prediction.PredictionWalker.predictRef;
 
 import java.util.Collections;
@@ -28,22 +27,24 @@ import java.util.NoSuchElementException;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Pred;
 import org.o42a.core.ref.Predicted;
 import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
 
 
 final class ObjectImplementations extends Prediction {
 
-	private final Prediction enclosing;
+	private final Prediction basePrediction;
+	private final Pred object;
 	private Prediction ancestorPrediction;
 
-	ObjectImplementations(Prediction enclosing, Obj object) {
+	ObjectImplementations(Prediction basePrediction, Pred object) {
 		super(object.getScope());
-		this.enclosing = enclosing;
+		this.basePrediction = basePrediction;
+		this.object = object;
 		object.getScope().getEnclosingScope().assertDerivedFrom(
-				enclosing.getScope());
+				basePrediction.getScope());
 	}
 
 	@Override
@@ -52,18 +53,18 @@ final class ObjectImplementations extends Prediction {
 	}
 
 	@Override
-	public Iterator<Scope> iterator() {
+	public Iterator<Pred> iterator() {
 
 		final Prediction ancestorPrediction = getAncestorPrediction();
 
 		if (!ancestorPrediction.isPredicted()) {
-			return Collections.<Scope>emptyList().iterator();
+			return Collections.<Pred>emptyList().iterator();
 		}
 		if (ancestorPrediction.isExact()) {
-			return singletonList(getScope()).iterator();
+			return this.object.iterator();
 		}
 
-		return new Iter(getScope().toObject(), ancestorPrediction);
+		return new Itr(this.object, ancestorPrediction);
 	}
 
 	@Override
@@ -86,24 +87,23 @@ final class ObjectImplementations extends Prediction {
 		final TypeRef ancestor = getScope().toObject().type().getAncestor();
 
 		if (ancestor == null || ancestor.isStatic()) {
-			return this.ancestorPrediction = exactPrediction(getScope());
+			return this.ancestorPrediction =
+					exactPrediction(this.basePrediction, getScope());
 		}
 
 		return this.ancestorPrediction =
-				predictRef(ancestor.getRef(), this.enclosing);
+				predictRef(this.basePrediction, ancestor.getRef());
 	}
 
-	private static final class Iter implements Iterator<Scope> {
+	private static final class Itr implements Iterator<Pred> {
 
-		private final Obj object;
-		private final BoundPath ancestorPath;
-		private final Iterator<Scope> ancestors;
-		private Obj next;
+		private final Pred object;
+		private final Iterator<Pred> ancestors;
+		private Pred next;
 		private boolean objectReported;
 
-		Iter(Obj object, Prediction ancestorPrediction) {
+		Itr(Pred object, Prediction ancestorPrediction) {
 			this.object = object;
-			this.ancestorPath = object.type().getAncestor().getPath();
 			this.ancestors = ancestorPrediction.iterator();
 		}
 
@@ -113,23 +113,27 @@ final class ObjectImplementations extends Prediction {
 		}
 
 		@Override
-		public Scope next() {
+		public Pred next() {
 			if (this.next == null) {
 				if (!findNext()) {
 					throw new NoSuchElementException();
 				}
 			}
 
-			final Obj next = this.next;
+			final Pred next = this.next;
 
 			this.next = null;
 
-			return next.getScope();
+			return next;
 		}
 
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}
+
+		private final Obj object() {
+			return this.object.getScope().toObject();
 		}
 
 		private boolean findNext() {
@@ -139,11 +143,18 @@ final class ObjectImplementations extends Prediction {
 
 			while (this.ancestors.hasNext()) {
 
-				final Scope ancestor = this.ancestors.next();
-				final Scope enclosing = this.ancestorPath.revert(ancestor);
+				final Pred ancestor = this.ancestors.next();
 
-				if (!enclosing.derivedFrom(objectEnclosing)) {
-					objectEnclosing.assertDerivedFrom(enclosing);
+				if (!ancestor.isPredicted()) {
+					this.next = ancestor;
+					return true;
+				}
+
+				final Scope base = ancestor.revert();
+
+				if (!base.derivedFrom(objectEnclosing)) {
+					// The inherited ancestor may resolve to incompatible scope.
+					// Report the object itself, if not reported already.
 					if (this.objectReported) {
 						continue;
 					}
@@ -152,14 +163,18 @@ final class ObjectImplementations extends Prediction {
 					return true;
 				}
 
-				this.next = this.object.findIn(enclosing);
-				this.objectReported |= this.next == this.object;
+				final Obj object = object();
+				final Obj nextObject = object.findIn(base);
+
+				this.next = this.object.setScope(nextObject.getScope());
+				this.objectReported |= nextObject == object;
 
 				return true;
 			}
 
 			return false;
 		}
+
 	}
 
 }

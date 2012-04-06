@@ -89,13 +89,10 @@ public class VoidStep extends Step {
 				normalizer.stepStart().getScope().getContext().getVoid();
 
 		normalizer.inline(
-				exactPrediction(voidObject.getScope()),
+				exactPrediction(
+						normalizer.lastPrediction(),
+						voidObject.getScope()),
 				INLINE_VOID);
-	}
-
-	@Override
-	protected Scope revert(Scope target) {
-		return target.getContext().getRoot().getScope();
 	}
 
 	@Override
