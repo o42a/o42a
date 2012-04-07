@@ -39,10 +39,17 @@ import org.o42a.core.value.ValueStruct;
 public class LinkByValueDef extends ValueDef {
 
 	static Value<?> linkByValue(Ref ref, LinkValueStruct linkStruct) {
-		return linkStruct.compilerValue(new TargetLink(
+
+		final TargetLink link = new TargetLink(
 				ref.toTargetRef(linkStruct.getTypeRef()),
 				ref.distribute(),
-				linkStruct.getValueType()));
+				linkStruct.getValueType());
+
+		if (!link.getKnowledge().hasCompilerValue()) {
+			return linkStruct.runtimeValue();
+		}
+
+		return linkStruct.compilerValue(link);
 	}
 
 	private final Ref ref;
