@@ -81,7 +81,7 @@ public class ArrayConstantValueDef extends ValueDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override

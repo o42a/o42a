@@ -30,9 +30,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
 
@@ -112,7 +110,7 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public void normalizeImperative(RootNormalizer normalizer) {
 		getAssignmentKind().normalize(normalizer);
 	}
 

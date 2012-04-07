@@ -32,8 +32,8 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueParts;
 import org.o42a.core.object.value.ValueUsage;
-import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.FullResolution;
 import org.o42a.core.value.Value;
@@ -270,8 +270,8 @@ public final class ObjectValue extends ObjectValueParts {
 		}
 		this.fullResolution = NORMALIZED;
 
-		final Normalizer normalizer =
-				new Normalizer(analyzer, getObject().getScope());
+		final RootNormalizer normalizer =
+				new RootNormalizer(analyzer, getObject().getScope());
 
 		getDefinitions().normalize(normalizer);
 	}

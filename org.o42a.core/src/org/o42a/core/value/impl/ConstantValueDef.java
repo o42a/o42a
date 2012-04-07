@@ -61,7 +61,7 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 		// No need to normalize the scalar constant.
 	}
 

@@ -155,8 +155,13 @@ public class ConsoleModule extends AnnotatedModule {
 	protected void normalizeObject(Analyzer analyzer) {
 		super.normalizeObject(analyzer);
 		if (this.main != null) {
+
+			final Normalizer normalizer = new RootNormalizer(
+					analyzer,
+					this.main.getScope()).newNormalizer();
+
 			this.inlineMain = this.main.inline(
-					new Normalizer(analyzer, this.main.getScope()),
+					normalizer,
 					this.main.getScope());
 		}
 	}

@@ -44,9 +44,9 @@ public final class RefCondDef extends CondDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 		this.ref.normalize(normalizer.getAnalyzer());
-		this.inline = inline(normalizer);
+		this.inline = inline(normalizer.newNormalizer());
 	}
 
 	@Override

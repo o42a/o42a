@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,33 +23,35 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
 
 
-public final class Normalizer {
+public final class RootNormalizer {
 
-	private final RootNormalizer root;
+	private final Analyzer analyzer;
+	private final Scope normalizedScope;
 
-	Normalizer(RootNormalizer root) {
-		this.root = root;
-	}
-
-	public final RootNormalizer getRoot() {
-		return this.root;
+	public RootNormalizer(Analyzer analyzer, Scope normalizedScope) {
+		this.analyzer = analyzer;
+		this.normalizedScope = normalizedScope;
 	}
 
 	public final Analyzer getAnalyzer() {
-		return getRoot().getAnalyzer();
+		return this.analyzer;
 	}
 
 	public final Scope getNormalizedScope() {
-		return getRoot().getNormalizedScope();
+		return this.normalizedScope;
+	}
+
+	public final Normalizer newNormalizer() {
+		return new Normalizer(this);
 	}
 
 	@Override
 	public String toString() {
-		if (this.root == null) {
+		if (this.normalizedScope == null) {
 			return super.toString();
 		}
-		return "Normalizer[to " + getNormalizedScope()
-				+ " by " + getAnalyzer() + ']';
+		return "RootNormalizer[to " + this.normalizedScope
+				+ " by " + this.analyzer + ']';
 	}
 
 }

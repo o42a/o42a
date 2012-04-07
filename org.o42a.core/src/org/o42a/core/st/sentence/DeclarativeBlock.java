@@ -32,6 +32,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
@@ -174,7 +175,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public void normalizeImperative(RootNormalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
 

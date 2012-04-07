@@ -50,7 +50,7 @@ public final class RuntimeCondDef extends CondDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override

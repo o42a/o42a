@@ -80,7 +80,7 @@ public class LinkByValueDef extends ValueDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override

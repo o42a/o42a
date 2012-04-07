@@ -218,7 +218,7 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		}
 	}
 
-	public abstract void normalize(Normalizer normalizer);
+	public abstract void normalize(RootNormalizer normalizer);
 
 	@Override
 	public final void assertScopeIs(Scope scope) {

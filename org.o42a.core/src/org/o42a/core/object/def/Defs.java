@@ -30,8 +30,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.util.ArrayUtil;
 
@@ -334,7 +334,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		}
 	}
 
-	final void normalize(Normalizer normalizer) {
+	final void normalize(RootNormalizer normalizer) {
 		for (Def<?> def : get()) {
 			def.normalize(normalizer);
 		}

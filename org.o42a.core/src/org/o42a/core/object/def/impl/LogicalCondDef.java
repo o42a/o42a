@@ -49,8 +49,8 @@ public final class LogicalCondDef extends CondDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
-		this.inline = inline(normalizer);
+	public void normalize(RootNormalizer normalizer) {
+		this.inline = inline(normalizer.newNormalizer());
 	}
 
 	@Override

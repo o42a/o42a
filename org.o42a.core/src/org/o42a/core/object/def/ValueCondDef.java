@@ -40,7 +40,7 @@ final class ValueCondDef extends CondDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 		this.def.normalize(normalizer);
 	}
 

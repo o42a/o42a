@@ -30,9 +30,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.InlineValue;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
@@ -90,7 +88,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 		this.ref.normalizeImperative(normalizer);
 	}
 

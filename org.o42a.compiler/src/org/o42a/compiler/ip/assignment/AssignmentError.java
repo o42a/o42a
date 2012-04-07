@@ -26,6 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
@@ -55,7 +56,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override

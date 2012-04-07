@@ -33,6 +33,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -237,7 +238,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public void normalizeImperative(RootNormalizer normalizer) {
 		for (ImperativeSentence sentence : getSentences()) {
 			sentence.normalizeImperatives(normalizer);
 		}

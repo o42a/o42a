@@ -23,6 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Statement;
@@ -52,7 +53,7 @@ public abstract class DeclarationStatement extends Statement {
 	}
 
 	@Override
-	public final void normalizeImperative(Normalizer normalizer) {
+	public final void normalizeImperative(RootNormalizer normalizer) {
 	}
 
 	@Override

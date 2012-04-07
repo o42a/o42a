@@ -22,7 +22,7 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
-import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinitionTargets;
@@ -122,7 +122,7 @@ public class Imperatives extends Statements<Imperatives> {
 		return statement.define(env);
 	}
 
-	final void normalizeImperatives(Normalizer normalizer) {
+	final void normalizeImperatives(RootNormalizer normalizer) {
 		for (Definer definer : getDefiners()) {
 			definer.getStatement().normalizeImperative(normalizer);
 		}
