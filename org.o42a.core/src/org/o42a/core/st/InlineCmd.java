@@ -20,11 +20,16 @@
 package org.o42a.core.st;
 
 import org.o42a.core.ir.local.Control;
-import org.o42a.util.func.Cancelable;
+import org.o42a.core.ref.Normal;
+import org.o42a.core.ref.Normalizer;
 
 
-public interface InlineCmd extends Cancelable {
+public abstract class InlineCmd extends Normal {
 
-	void write(Control control);
+	public InlineCmd(Normalizer normalizer) {
+		super(normalizer);
+	}
+
+	public abstract void write(Control control);
 
 }

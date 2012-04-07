@@ -28,7 +28,7 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.sentence.Group;
-import org.o42a.util.func.Lambda;
+import org.o42a.util.fn.Lambda;
 
 
 final class ImperativeGroupRegistry extends LocalRegistry {

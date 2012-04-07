@@ -23,7 +23,6 @@ import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
-import static org.o42a.util.func.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,13 +35,11 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.FullResolution;
-import org.o42a.util.func.Cancelable;
 
 
 final class NormalizedPath implements NormalPath {
 
 	private final Scope origin;
-	private final Cancelable cancelable;
 	private final ArrayList<NormalStep> normalSteps;
 	private final int firstNonIgnored;
 	private final boolean isAbsolute;
@@ -54,14 +51,12 @@ final class NormalizedPath implements NormalPath {
 	NormalizedPath(
 			Scope origin,
 			BoundPath path,
-			Cancelable cancelable,
 			ArrayList<NormalStep> normalSteps,
 			int firstNonIgnored,
 			boolean isAbsolute,
 			boolean isStatic) {
 		this.origin = origin;
 		this.path = path;
-		this.cancelable = cancelable;
 		this.normalSteps = normalSteps;
 		this.firstNonIgnored = firstNonIgnored < 0 ? 0 : firstNonIgnored;
 		this.isAbsolute = isAbsolute;
@@ -76,13 +71,6 @@ final class NormalizedPath implements NormalPath {
 	@Override
 	public final Scope getOrigin() {
 		return this.origin;
-	}
-
-	@Override
-	public void cancel() {
-		this.path.cancelNormalization();
-		this.cancelable.cancel();
-		cancelAll(this.normalSteps);
 	}
 
 	@Override

@@ -54,10 +54,6 @@ public class UnchangedNormalPath implements NormalPath {
 	}
 
 	@Override
-	public void cancel() {
-	}
-
-	@Override
 	public void appendTo(List<NormalStep> normalSteps) {
 		normalSteps.add(new NormalPathStep(this.path.getPath()));
 	}

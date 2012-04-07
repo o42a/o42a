@@ -26,6 +26,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class NegatedLogical extends Logical {
@@ -104,6 +105,7 @@ public final class NegatedLogical extends Logical {
 		private final InlineCond negated;
 
 		Inline(InlineCond negated) {
+			super(null);
 			this.negated = negated;
 		}
 
@@ -126,13 +128,13 @@ public final class NegatedLogical extends Logical {
 		}
 
 		@Override
-		public void cancel() {
-			this.negated.cancel();
+		public String toString() {
+			return "--" + this.negated;
 		}
 
 		@Override
-		public String toString() {
-			return "--" + this.negated;
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

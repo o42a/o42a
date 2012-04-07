@@ -28,7 +28,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.imperative.ImperativeClaim;
 import org.o42a.core.st.impl.imperative.ImperativeIssue;
 import org.o42a.core.st.impl.imperative.ImperativeProposition;
-import org.o42a.util.func.Lambda;
+import org.o42a.util.fn.Lambda;
 
 
 public class ImperativeFactory implements SentenceFactory<

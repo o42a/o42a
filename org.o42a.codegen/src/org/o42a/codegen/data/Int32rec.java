@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.util.func.Holder.holder;
+import static org.o42a.util.fn.Holder.holder;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;

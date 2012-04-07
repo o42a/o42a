@@ -29,6 +29,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.InlineCond;
 import org.o42a.core.ref.InlineValue;
+import org.o42a.util.fn.Cancelable;
 
 
 public class InlineDefinitions extends InlineValue {
@@ -43,7 +44,7 @@ public class InlineDefinitions extends InlineValue {
 			InlineCond condition,
 			InlineValue claim,
 			InlineValue proposition) {
-		super(proposition.getValueStruct());
+		super(null, proposition.getValueStruct());
 		this.requirement = requirement;
 		this.condition = condition;
 		this.claim = claim;
@@ -96,14 +97,6 @@ public class InlineDefinitions extends InlineValue {
 	}
 
 	@Override
-	public void cancel() {
-		this.requirement.cancel();
-		this.condition.cancel();
-		this.claim.cancel();
-		this.proposition.cancel();
-	}
-
-	@Override
 	public String toString() {
 		if (this.proposition == null) {
 			return super.toString();
@@ -119,6 +112,11 @@ public class InlineDefinitions extends InlineValue {
 		out.append(')');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 	private void writeRequirement(CodeDirs dirs, HostOp host) {

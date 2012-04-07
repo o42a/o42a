@@ -35,6 +35,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "length.o42a")
@@ -132,7 +133,7 @@ final class StringLength extends AnnotatedBuiltin {
 		private final InlineValue stringValue;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue stringValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.stringValue = stringValue;
 		}
 
@@ -142,16 +143,16 @@ final class StringLength extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.stringValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.stringValue == null) {
 				return super.toString();
 			}
 			return this.stringValue + ":length";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

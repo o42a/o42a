@@ -26,10 +26,9 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.util.func.Cancelable;
 
 
-public interface NormalPath extends Cancelable {
+public interface NormalPath {
 
 	boolean isNormalized();
 

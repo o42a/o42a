@@ -22,6 +22,7 @@ package org.o42a.core.ref.impl.normalizer;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.InlineCond;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class InlineTrue extends InlineCond {
@@ -29,6 +30,7 @@ public final class InlineTrue extends InlineCond {
 	public static final InlineTrue INSTANCE = new InlineTrue();
 
 	private InlineTrue() {
+		super(null);
 	}
 
 	@Override
@@ -36,12 +38,13 @@ public final class InlineTrue extends InlineCond {
 	}
 
 	@Override
-	public void cancel() {
+	public String toString() {
+		return "TRUE";
 	}
 
 	@Override
-	public String toString() {
-		return "TRUE";
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

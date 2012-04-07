@@ -34,7 +34,7 @@ import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public abstract class RecCOp<

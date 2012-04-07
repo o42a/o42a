@@ -21,8 +21,6 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 import static org.o42a.core.st.impl.imperative.InlineSentence.inlineSentence;
-import static org.o42a.util.func.Cancellation.cancelAll;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
@@ -33,9 +31,10 @@ import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
-public class InlineBlock implements InlineCmd {
+public class InlineBlock extends InlineCmd {
 
 	public static InlineBlock inlineBlock(
 			Normalizer normalizer,
@@ -48,19 +47,12 @@ public class InlineBlock implements InlineCmd {
 		int i = 0;
 
 		for (ImperativeSentence sentence : sentences) {
-
-			final InlineSentence inline =
+			inlines[i++] =
 					inlineSentence(normalizer, valueStruct, origin, sentence);
-
-			if (inline == null) {
-				cancelUpToNull(inlines);
-				return null;
-			}
-
-			inlines[i++] = inline;
 		}
 
-		return new InlineBlock(block, inlines);
+		return normalizer.isCancelled()
+				? null : new InlineBlock(block, inlines);
 	}
 
 	private final ImperativeBlock block;
@@ -69,6 +61,7 @@ public class InlineBlock implements InlineCmd {
 	private InlineBlock(
 			ImperativeBlock block,
 			InlineSentence[] sentences) {
+		super(null);
 		this.block = block;
 		this.sentences = sentences;
 	}
@@ -80,11 +73,6 @@ public class InlineBlock implements InlineCmd {
 	@Override
 	public void write(Control control) {
 		writeSentences(control, this.block, this);
-	}
-
-	@Override
-	public void cancel() {
-		cancelAll(this.sentences);
 	}
 
 	@Override
@@ -106,4 +94,10 @@ public class InlineBlock implements InlineCmd {
 
 		return out.toString();
 	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
+	}
+
 }

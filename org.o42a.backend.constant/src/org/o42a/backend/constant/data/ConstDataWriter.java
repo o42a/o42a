@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public final class ConstDataWriter implements DataWriter {

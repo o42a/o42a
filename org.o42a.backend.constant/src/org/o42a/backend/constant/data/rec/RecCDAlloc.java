@@ -31,7 +31,7 @@ import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Rec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public abstract class RecCDAlloc<

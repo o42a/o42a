@@ -106,10 +106,6 @@ final class CastToVoid extends Step {
 		}
 
 		@Override
-		public void cancel() {
-		}
-
-		@Override
 		public void after(InlineStep preceding) {
 			this.preceding = preceding;
 		}
@@ -126,6 +122,10 @@ final class CastToVoid extends Step {
 			writeLogicalValue(dirs.dirs(), host);
 
 			return voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public void cancel() {
 		}
 
 		@Override

@@ -20,7 +20,6 @@
 package org.o42a.core.object.def;
 
 import static org.o42a.core.ref.InlineValue.inlineUnknown;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import org.o42a.core.object.def.impl.InlineValueDefs;
 import org.o42a.core.object.link.TargetResolver;
@@ -138,17 +137,10 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		final InlineValue[] inlines = new InlineValue[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
-
-			final InlineValue inline = defs[i].inline(normalizer, valueStruct);
-
-			if (inline == null) {
-				cancelUpToNull(inlines);
-				return null;
-			}
-			inlines[i] = inline;
+			inlines[i] = defs[i].inline(normalizer, valueStruct);
 		}
 
-		return new InlineValueDefs(inlines);
+		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
 	}
 
 	boolean upgradeValueStruct(

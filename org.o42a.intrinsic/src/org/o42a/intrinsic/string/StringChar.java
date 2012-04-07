@@ -42,6 +42,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "char.o42a")
@@ -100,15 +101,9 @@ final class StringChar extends AnnotatedBuiltin {
 			Scope origin) {
 
 		final InlineValue stringValue = string().inline(normalizer, origin);
-
-		if (stringValue == null) {
-			return null;
-		}
-
 		final InlineValue indexValue = index().inline(normalizer, origin);
 
-		if (indexValue == null) {
-			stringValue.cancel();
+		if (stringValue == null || indexValue == null) {
 			return null;
 		}
 
@@ -237,7 +232,7 @@ final class StringChar extends AnnotatedBuiltin {
 				ValueStruct<?, ?> valueStruct,
 				InlineValue stringValue,
 				InlineValue indexValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.stringValue = stringValue;
 			this.indexValue = indexValue;
 		}
@@ -254,17 +249,16 @@ final class StringChar extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.stringValue.cancel();
-			this.indexValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.indexValue == null) {
 				return super.toString();
 			}
 			return "(" + this.stringValue + "):char[" + this.indexValue + ']';
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

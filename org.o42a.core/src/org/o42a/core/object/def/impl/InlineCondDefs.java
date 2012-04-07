@@ -19,14 +19,13 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.util.func.Cancellation.cancelAll;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.CondDefs;
 import org.o42a.core.ref.InlineCond;
+import org.o42a.util.fn.Cancelable;
 
 
 public class InlineCondDefs extends InlineCond {
@@ -35,6 +34,7 @@ public class InlineCondDefs extends InlineCond {
 	private final InlineCond[] inlines;
 
 	public InlineCondDefs(CondDefs defs, InlineCond[] inlines) {
+		super(null);
 		this.defs = defs;
 		this.inlines = inlines;
 	}
@@ -81,11 +81,6 @@ public class InlineCondDefs extends InlineCond {
 	}
 
 	@Override
-	public void cancel() {
-		cancelAll(this.inlines);
-	}
-
-	@Override
 	public String toString() {
 		if (this.inlines == null) {
 			return super.toString();
@@ -101,6 +96,11 @@ public class InlineCondDefs extends InlineCond {
 		out.append(')');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 	private final int nextRequired(CondDef[] defs, int index) {

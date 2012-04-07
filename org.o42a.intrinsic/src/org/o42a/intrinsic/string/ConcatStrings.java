@@ -38,6 +38,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = Strings.class, value = "concat.o42a")
@@ -86,15 +87,9 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			Scope origin) {
 
 		final InlineValue whatValue = what().inline(normalizer, origin);
-
-		if (whatValue == null) {
-			return null;
-		}
-
 		final InlineValue withValue = with().inline(normalizer, origin);
 
-		if (withValue == null) {
-			whatValue.cancel();
+		if (whatValue == null || withValue == null) {
 			return null;
 		}
 
@@ -185,7 +180,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 				ValueStruct<?, ?> valueStruct,
 				InlineValue whatValue,
 				InlineValue withValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.whatValue = whatValue;
 			this.withValue = withValue;
 		}
@@ -196,12 +191,6 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.whatValue.cancel();
-			this.withValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.withValue == null) {
 				return super.toString();
@@ -209,5 +198,11 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			return "(" + this.whatValue + "+" + this.withValue + ")";
 		}
 
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
+
 }

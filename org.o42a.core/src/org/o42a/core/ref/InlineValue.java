@@ -47,7 +47,8 @@ public abstract class InlineValue extends InlineCond {
 
 	private final ValueStruct<?, ?> valueStruct;
 
-	public InlineValue(ValueStruct<?, ?> valueStruct) {
+	public InlineValue(Normalizer normalizer, ValueStruct<?, ?> valueStruct) {
+		super(normalizer);
 		this.valueStruct = valueStruct;
 	}
 

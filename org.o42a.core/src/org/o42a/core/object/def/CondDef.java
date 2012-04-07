@@ -170,32 +170,19 @@ public abstract class CondDef extends Def<CondDef> {
 			prerequisite = null;
 		} else {
 			prerequisite = getPrerequisite().inline(normalizer, getScope());
-			if (prerequisite == null) {
-				return null;
-			}
 		}
 
 		final InlineCond precondition =
 				getPrecondition().inline(normalizer, getScope());
-
-		if (precondition == null) {
-			if (prerequisite != null) {
-				prerequisite.cancel();
-			}
-			return null;
-		}
-
 		final InlineCond def = inlineDef(normalizer);
 
 		if (def == null) {
-			if (prerequisite != null) {
-				prerequisite.cancel();
-			}
-			precondition.cancel();
+			normalizer.cancelAll();
 			return null;
 		}
 
-		return new InlineCondDef(prerequisite, precondition, def);
+		return normalizer.isCancelled()
+				? null : new InlineCondDef(prerequisite, precondition, def);
 	}
 
 	protected abstract InlineCond inlineDef(Normalizer normalizer);

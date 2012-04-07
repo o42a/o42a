@@ -33,6 +33,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public abstract class ByString<T> extends AnnotatedBuiltin {
@@ -129,7 +130,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		private InlineValue inputValue;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue inputValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.inputValue = inputValue;
 		}
 
@@ -151,13 +152,13 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.inputValue.cancel();
+		public String toString() {
+			return "In-line[" + ByString.this + ']';
 		}
 
 		@Override
-		public String toString() {
-			return "In-line[" + ByString.this + ']';
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

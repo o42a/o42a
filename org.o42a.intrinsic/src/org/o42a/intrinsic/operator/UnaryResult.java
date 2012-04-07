@@ -32,6 +32,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
@@ -96,7 +97,6 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		final InlineValue operandValue = operand().inline(normalizer, origin);
 
 		if (operandValue == null) {
-			operand().inline(normalizer, origin);
 			return null;
 		}
 
@@ -140,7 +140,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		private final InlineValue operandValue;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue operandValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.operandValue = operandValue;
 		}
 
@@ -162,13 +162,13 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.operandValue.cancel();
+		public String toString() {
+			return UnaryResult.this.toString();
 		}
 
 		@Override
-		public String toString() {
-			return UnaryResult.this.toString();
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

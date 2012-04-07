@@ -26,7 +26,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
 import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
 import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
-import org.o42a.util.func.Lambda;
+import org.o42a.util.fn.Lambda;
 
 
 public interface SentenceFactory<

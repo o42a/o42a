@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.util.func.Cancellation.cancelAll;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
-
 import java.util.List;
 
 import org.o42a.core.Scope;
@@ -30,10 +27,9 @@ import org.o42a.core.st.Definer;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.func.Cancelable;
 
 
-final class InlineCommands implements Cancelable {
+final class InlineCommands {
 
 	static InlineCommands inlineCommands(
 			Normalizer normalizer,
@@ -47,20 +43,19 @@ final class InlineCommands implements Cancelable {
 
 		for (Definer definer : definers) {
 
-			final InlineCmd inline =
-					definer.getStatement().inlineImperative(
-							normalizer,
-							valueStruct,
-							origin);
+			final InlineCmd inline = definer.getStatement().inlineImperative(
+					normalizer,
+					valueStruct,
+					origin);
+
 			if (inline == null) {
-				cancelUpToNull(inlines);
-				return null;
+				normalizer.cancelAll();
 			}
 
 			inlines[i++] = inline;
 		}
 
-		return new InlineCommands(inlines);
+		return normalizer.isCancelled() ? null : new InlineCommands(inlines);
 	}
 
 	private final InlineCmd[] commands;
@@ -71,11 +66,6 @@ final class InlineCommands implements Cancelable {
 
 	public final InlineCmd get(int index) {
 		return this.commands[index];
-	}
-
-	@Override
-	public void cancel() {
-		cancelAll(this.commands);
 	}
 
 	@Override

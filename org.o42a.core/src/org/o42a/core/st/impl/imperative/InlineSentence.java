@@ -20,8 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.InlineCommands.inlineCommands;
-import static org.o42a.util.func.Cancellation.cancelAll;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import java.util.List;
 
@@ -30,10 +28,9 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.func.Cancelable;
 
 
-final class InlineSentence implements Cancelable {
+final class InlineSentence {
 
 	static InlineSentence inlineSentence(
 			Normalizer normalizer,
@@ -49,9 +46,6 @@ final class InlineSentence implements Cancelable {
 		} else {
 			inlinePrereq =
 					inlineSentence(normalizer, valueStruct, origin, prereq);
-			if (inlinePrereq == null) {
-				return null;
-			}
 		}
 
 		final List<Imperatives> alts = sentence.getAlternatives();
@@ -59,22 +53,12 @@ final class InlineSentence implements Cancelable {
 		int i = 0;
 
 		for (Imperatives alt : alts) {
-
-			final InlineCommands inlineAlt =
+			inlineAlts[i++] =
 					inlineCommands(normalizer, valueStruct, origin, alt);
-
-			if (inlineAlt == null) {
-				if (inlinePrereq != null) {
-					inlinePrereq.cancel();
-				}
-				cancelUpToNull(inlineAlts);
-				return null;
-			}
-
-			inlineAlts[i++] = inlineAlt;
 		}
 
-		return new InlineSentence(sentence, inlinePrereq, inlineAlts);
+		return normalizer.isCancelled()
+				? null : new InlineSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
 	private final ImperativeSentence sentence;
@@ -96,14 +80,6 @@ final class InlineSentence implements Cancelable {
 
 	public final InlineCommands get(int index) {
 		return this.alts[index];
-	}
-
-	@Override
-	public void cancel() {
-		if (this.prerequisite != null) {
-			this.prerequisite.cancel();
-		}
-		cancelAll(this.alts);
 	}
 
 	@Override

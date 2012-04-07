@@ -25,12 +25,13 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public class FalseInlineValue extends InlineValue {
 
 	public FalseInlineValue(ValueStruct<?, ?> valueStruct) {
-		super(valueStruct);
+		super(null, valueStruct);
 	}
 
 	@Override
@@ -47,10 +48,6 @@ public class FalseInlineValue extends InlineValue {
 	}
 
 	@Override
-	public void cancel() {
-	}
-
-	@Override
 	public String toString() {
 
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
@@ -60,6 +57,11 @@ public class FalseInlineValue extends InlineValue {
 		}
 
 		return valueStruct.falseValue().toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }
