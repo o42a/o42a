@@ -22,20 +22,15 @@ package org.o42a.core.ref.path;
 import static org.o42a.core.ref.Prediction.exactPrediction;
 import static org.o42a.core.ref.Prediction.startPrediction;
 import static org.o42a.core.ref.impl.prediction.EnclosingPrediction.enclosingPrediction;
-import static org.o42a.util.func.Cancellation.NOT_CANCELABLE;
-import static org.o42a.util.func.Cancellation.appendCancelable;
-import static org.o42a.util.func.Cancellation.cancelAll;
 
 import java.util.ArrayList;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Scope;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Prediction;
-import org.o42a.core.ref.ReversePath;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.normalizer.*;
 import org.o42a.core.ref.impl.prediction.InitialPrediction;
-import org.o42a.util.func.Cancelable;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class PathNormalizer {
@@ -55,6 +50,8 @@ public final class PathNormalizer {
 		return pathNormalizer;
 	}
 
+	private final Normalizer parentNormalizer;
+	private final Normalizer normalizer;
 	private final PathNormalizer parent;
 	private final BoundPath path;
 	private final NestedNormalizer nested;
@@ -72,16 +69,16 @@ public final class PathNormalizer {
 	private int stepIndex;
 	private boolean stepNormalized;
 
-	private Cancelable cancelable = NOT_CANCELABLE;
-
 	private PathNormalizer(
-			Normalizer normalizer,
+			Normalizer parentNormalizer,
 			Prediction origin,
 			BoundPath path) {
+		this.parentNormalizer = parentNormalizer;
+		this.normalizer = parentNormalizer.createNested();
 		this.parent = null;
 		this.path = path;
 		this.nested = null;
-		this.data = new Data(normalizer, path);
+		this.data = new Data(path);
 		this.origin = origin;
 		this.normalSteps = new ArrayList<NormalStep>(path.length());
 	}
@@ -90,6 +87,8 @@ public final class PathNormalizer {
 			PathNormalizer parent,
 			BoundPath path,
 			NestedNormalizer nested) {
+		this.parentNormalizer = parent.normalizer;
+		this.normalizer = this.parentNormalizer.createNested();
 		this.parent = parent;
 		this.path = path;
 		this.nested = nested;
@@ -104,7 +103,7 @@ public final class PathNormalizer {
 	}
 
 	public final Normalizer getNormalizer() {
-		return this.data.normalizer;
+		return this.normalizer;
 	}
 
 	public final boolean isNested() {
@@ -120,7 +119,7 @@ public final class PathNormalizer {
 	}
 
 	public final Scope getNormalizedStart() {
-		return this.data.normalizer.getNormalizedScope();
+		return getNormalizer().getNormalizedScope();
 	}
 
 	public final BoundPath getPath() {
@@ -261,7 +260,6 @@ public final class PathNormalizer {
 			return;
 		}
 
-		this.cancelable = appendCancelable(this.cancelable, normalPath);
 		if (normalizer.firstNonIgnored >= 0) {
 
 			final int index =
@@ -319,9 +317,9 @@ public final class PathNormalizer {
 
 	NormalPath normalize() {
 		if (!getPath().getBindings().isEmpty()) {
-			cancelNormalization();
-			return new UnNormalizedPath(getPath());
+			return unnormalized();
 		}
+		new Cancel(getNormalizer());
 		if (isStatic()) {
 			return normalizeStatic();
 		}
@@ -341,6 +339,11 @@ public final class PathNormalizer {
 		return true;
 	}
 
+	private NormalPath unnormalized() {
+		this.parentNormalizer.cancelAll();
+		return new UnNormalizedPath(getPath());
+	}
+
 	private NormalPath normalizeRelative() {
 		this.staticNormalization = false;
 
@@ -358,7 +361,6 @@ public final class PathNormalizer {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.cancelable,
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
@@ -367,8 +369,7 @@ public final class PathNormalizer {
 			if (!isStepNormalized()) {
 				// Normalization failed.
 				// Leave the path as is.
-				cancelNormalization();
-				return new UnNormalizedPath(path);
+				return unnormalized();
 			}
 
 			this.stepStart = this.stepPrediction;
@@ -376,14 +377,12 @@ public final class PathNormalizer {
 		}
 
 		if (!isNormalizationStarted() && !isNested()) {
-			cancelNormalization();
-			return new UnNormalizedPath(path);
+			return unnormalized();
 		}
 
 		return new NormalizedPath(
 				getNormalizedStart(),
 				this.path,
-				this.cancelable,
 				this.normalSteps,
 				this.firstNonIgnored,
 				isAbsolute(),
@@ -414,7 +413,6 @@ public final class PathNormalizer {
 				return new NormalizedPath(
 						getNormalizedStart(),
 						this.path,
-						this.cancelable,
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
@@ -428,12 +426,11 @@ public final class PathNormalizer {
 			++this.stepIndex;
 		}
 
-		cancelNormalization();
+		getNormalizer().cancelAll();
 
 		if (path.isAbsolute()) {
 			this.data.restore(stored);
 			this.firstNonIgnored = 0;
-			this.cancelable = null;
 			this.data.normalizationFinished = true;
 			return new UnchangedNormalPath(
 					path.getPath().bind(path, getNormalizedStart()));
@@ -494,22 +491,14 @@ public final class PathNormalizer {
 		}
 	}
 
-	private void cancelNormalization() {
-		cancelAll(this.normalSteps);
-		getPath().cancelNormalization();
-		this.cancelable.cancel();
-	}
-
 	private static final class Data implements Cloneable {
 
-		private final Normalizer normalizer;
 		private boolean normalizationStarted;
 		private boolean normalizationFinished;
 		private boolean isAbsolute;
 		private boolean isStatic;
 
-		Data(Normalizer normalizer, BoundPath path) {
-			this.normalizer = normalizer;
+		Data(BoundPath path) {
 			this.isAbsolute = path.isAbsolute();
 			this.isStatic = path.isStatic();
 		}
@@ -533,6 +522,27 @@ public final class PathNormalizer {
 			this.normalizationFinished = stored.normalizationFinished;
 			this.isAbsolute = stored.normalizationFinished;
 			this.isStatic = stored.normalizationFinished;
+		}
+
+	}
+
+	private final class Cancel extends Normal implements Cancelable {
+
+		Cancel(Normalizer normalizer) {
+			super(normalizer);
+		}
+
+		@Override
+		public void cancel() {
+			getPath().cancelNormalization();
+			for (NormalStep step : PathNormalizer.this.normalSteps) {
+				step.cancel();
+			}
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return this;
 		}
 
 	}

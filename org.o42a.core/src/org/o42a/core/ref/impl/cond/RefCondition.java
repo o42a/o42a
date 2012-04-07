@@ -28,6 +28,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class RefCondition extends Statement {
@@ -70,12 +71,13 @@ public final class RefCondition extends Statement {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 
-		if (value == null) {
-			this.ref.normalize(normalizer.getAnalyzer());
-			return null;
+		if (value != null) {
+			return new Inline(valueStruct, value);
 		}
 
-		return new Inline(valueStruct, value);
+		this.ref.normalize(normalizer.getAnalyzer());
+
+		return null;
 	}
 
 	@Override
@@ -102,11 +104,12 @@ public final class RefCondition extends Statement {
 		return this.conditionalEnv;
 	}
 
-	private static final class Inline implements InlineCmd {
+	private static final class Inline extends InlineCmd {
 
 		private final InlineValue value;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
+			super(null);
 			this.value = value;
 		}
 
@@ -121,16 +124,16 @@ public final class RefCondition extends Statement {
 		}
 
 		@Override
-		public void cancel() {
-			this.value.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.value == null) {
 				return super.toString();
 			}
 			return "(++" + this.value + ")";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

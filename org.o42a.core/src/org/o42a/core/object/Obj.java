@@ -61,7 +61,7 @@ import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.func.Holder;
+import org.o42a.util.fn.Holder;
 import org.o42a.util.log.Loggable;
 
 

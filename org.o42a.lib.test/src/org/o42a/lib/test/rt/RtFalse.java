@@ -37,6 +37,7 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "rt-false.o42a")
@@ -77,7 +78,7 @@ public class RtFalse extends AnnotatedBuiltin {
 	private static final class Inline extends InlineValue {
 
 		Inline(ValueStruct<?, ?> valueStruct) {
-			super(valueStruct);
+			super(null, valueStruct);
 		}
 
 		@Override
@@ -101,12 +102,13 @@ public class RtFalse extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
+		public String toString() {
+			return "RT-FALSE";
 		}
 
 		@Override
-		public String toString() {
-			return "RT-FALSE";
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

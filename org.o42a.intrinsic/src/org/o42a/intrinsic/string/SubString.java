@@ -38,6 +38,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "substring.o42a")
@@ -136,23 +137,10 @@ final class SubString extends AnnotatedBuiltin {
 			Scope origin) {
 
 		final InlineValue stringValue = string().inline(normalizer, origin);
-
-		if (stringValue == null) {
-			return null;
-		}
-
 		final InlineValue fromValue = from().inline(normalizer, origin);
-
-		if (fromValue == null) {
-			stringValue.cancel();
-			return null;
-		}
-
 		final InlineValue toValue = to().inline(normalizer, origin);
 
-		if (toValue == null) {
-			stringValue.cancel();
-			fromValue.cancel();
+		if (stringValue == null || fromValue == null || toValue == null) {
 			return null;
 		}
 
@@ -284,7 +272,7 @@ final class SubString extends AnnotatedBuiltin {
 				InlineValue stringValue,
 				InlineValue fromValue,
 				InlineValue toValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.stringValue = stringValue;
 			this.fromValue = fromValue;
 			this.toValue = toValue;
@@ -304,13 +292,6 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.stringValue.cancel();
-			this.fromValue.cancel();
-			this.toValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.toValue == null) {
 				return super.toString();
@@ -318,6 +299,12 @@ final class SubString extends AnnotatedBuiltin {
 			return (this.stringValue + ":substring["
 					+ this.fromValue + ", " + this.toValue + ']');
 		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
 
 }

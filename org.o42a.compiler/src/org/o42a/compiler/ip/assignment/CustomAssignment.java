@@ -34,6 +34,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 final class CustomAssignment extends AssignmentKind {
@@ -84,7 +85,7 @@ final class CustomAssignment extends AssignmentKind {
 			return null;
 		}
 
-		return new Inline(valueStruct, value);
+		return new Inline(value);
 	}
 
 	@Override
@@ -111,11 +112,12 @@ final class CustomAssignment extends AssignmentKind {
 		return new AssignCmd(builder, this.ref);
 	}
 
-	private static final class Inline implements InlineCmd {
+	private static final class Inline extends InlineCmd {
 
 		private final InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
+		Inline(InlineValue value) {
+			super(null);
 			this.value = value;
 		}
 
@@ -130,16 +132,16 @@ final class CustomAssignment extends AssignmentKind {
 		}
 
 		@Override
-		public void cancel() {
-			this.value.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.value == null) {
 				return super.toString();
 			}
 			return "(++" + this.value + ")";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

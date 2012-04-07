@@ -52,6 +52,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.*;
+import org.o42a.util.fn.Cancelable;
 
 
 public class Ref extends Statement {
@@ -245,7 +246,7 @@ public class Ref extends Statement {
 			return null;
 		}
 
-		return new Inline(valueStruct(origin), normalPath);
+		return new InlineRef(valueStruct(origin), normalPath);
 	}
 
 	@Override
@@ -260,7 +261,7 @@ public class Ref extends Statement {
 			return null;
 		}
 
-		return new InlineRef(inline);
+		return new InlineRefCmd(inline);
 	}
 
 	public final void normalize(Analyzer analyzer) {
@@ -408,12 +409,12 @@ public class Ref extends Statement {
 				.target(reproducer.distribute());
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class InlineRef extends InlineValue {
 
 		private final NormalPath normalPath;
 
-		Inline(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
-			super(valueStruct);
+		InlineRef(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
+			super(null, valueStruct);
 			this.normalPath = normalPath;
 		}
 
@@ -428,16 +429,16 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void cancel() {
-			this.normalPath.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.normalPath == null) {
 				return super.toString();
 			}
 			return this.normalPath.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}
@@ -523,11 +524,12 @@ public class Ref extends Statement {
 
 	}
 
-	private static final class InlineRef implements InlineCmd {
+	private static final class InlineRefCmd extends InlineCmd {
 
 		private final InlineValue inline;
 
-		InlineRef(InlineValue inline) {
+		InlineRefCmd(InlineValue inline) {
+			super(null);
 			this.inline = inline;
 		}
 
@@ -548,16 +550,16 @@ public class Ref extends Statement {
 		}
 
 		@Override
-		public void cancel() {
-			this.inline.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.inline == null) {
 				return super.toString();
 			}
 			return this.inline.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

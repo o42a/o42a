@@ -35,6 +35,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 abstract class AbstractArrayLength extends AnnotatedBuiltin {
@@ -133,7 +134,7 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 		private final InlineValue arrayValue;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue arrayValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.arrayValue = arrayValue;
 		}
 
@@ -143,16 +144,16 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.arrayValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.arrayValue == null) {
 				return super.toString();
 			}
 			return this.arrayValue + ":length";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

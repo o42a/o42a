@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.util.func.Holder.holder;
+import static org.o42a.util.fn.Holder.holder;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public final class Int64rec extends Rec<Int64recOp, Long> {

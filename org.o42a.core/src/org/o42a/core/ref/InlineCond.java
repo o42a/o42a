@@ -24,14 +24,17 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.impl.normalizer.InlineFalse;
 import org.o42a.core.ref.impl.normalizer.InlineTrue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
-import org.o42a.util.func.Cancelable;
 
 
-public abstract class InlineCond implements Cancelable {
+public abstract class InlineCond extends Normal {
 
 	public static final InlineCond INLINE_TRUE = InlineTrue.INSTANCE;
 	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
 	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
+
+	public InlineCond(Normalizer normalizer) {
+		super(normalizer);
+	}
 
 	public abstract void writeCond(CodeDirs dirs, HostOp host);
 

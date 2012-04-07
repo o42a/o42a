@@ -233,32 +233,19 @@ public abstract class ValueDef extends Def<ValueDef> {
 			prerequisite = null;
 		} else {
 			prerequisite = getPrerequisite().inline(normalizer, getScope());
-			if (prerequisite == null) {
-				return null;
-			}
 		}
 
 		final InlineCond precondition =
 				getPrecondition().inline(normalizer, getScope());
-
-		if (precondition == null) {
-			if (prerequisite != null) {
-				prerequisite.cancel();
-			}
-			return null;
-		}
-
 		final InlineValue def = inlineDef(normalizer, valueStruct);
 
 		if (def == null) {
-			if (prerequisite != null) {
-				prerequisite.cancel();
-			}
-			precondition.cancel();
+			normalizer.cancelAll();
 			return null;
 		}
 
-		return new InlineValueDef(prerequisite, precondition, def);
+		return normalizer.isCancelled()
+				? null : new InlineValueDef(prerequisite, precondition, def);
 	}
 
 	protected abstract InlineValue inlineDef(

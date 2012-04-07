@@ -32,6 +32,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class ConstantValueDef<T> extends ValueDef {
@@ -124,7 +125,7 @@ public final class ConstantValueDef<T> extends ValueDef {
 		private final Value<?> value;
 
 		public Inline(Value<?> value) {
-			super(value.getValueStruct());
+			super(null, value.getValueStruct());
 			this.value = value;
 		}
 
@@ -138,15 +139,16 @@ public final class ConstantValueDef<T> extends ValueDef {
 		}
 
 		@Override
-		public void cancel() {
-		}
-
-		@Override
 		public String toString() {
 			if (this.value == null) {
 				return super.toString();
 			}
 			return this.value.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

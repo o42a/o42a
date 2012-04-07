@@ -43,6 +43,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 final class ComparisonResult extends BuiltinObject {
@@ -169,7 +170,7 @@ final class ComparisonResult extends BuiltinObject {
 				ValueStruct<?, ?> valueStruct,
 				ComparisonExpression ref,
 				InlineValue cmpValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.ref = ref;
 			this.cmpValue = cmpValue;
 		}
@@ -180,16 +181,16 @@ final class ComparisonResult extends BuiltinObject {
 		}
 
 		@Override
-		public void cancel() {
-			this.cmpValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.ref == null) {
 				return super.toString();
 			}
 			return this.ref.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

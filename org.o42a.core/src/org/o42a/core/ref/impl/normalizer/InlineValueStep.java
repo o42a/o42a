@@ -31,8 +31,8 @@ public final class InlineValueStep extends InlineStep {
 
 	private final InlineValue value;
 
-	public InlineValueStep(InlineValue def) {
-		this.value = def;
+	public InlineValueStep(InlineValue value) {
+		this.value = value;
 	}
 
 	@Override
@@ -58,7 +58,6 @@ public final class InlineValueStep extends InlineStep {
 
 	@Override
 	public void cancel() {
-		this.value.cancel();
 	}
 
 	@Override

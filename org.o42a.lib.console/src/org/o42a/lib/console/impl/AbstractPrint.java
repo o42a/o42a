@@ -39,6 +39,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public abstract class AbstractPrint extends AnnotatedBuiltin {
@@ -131,7 +132,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		private final InlineValue inlineText;
 
 		Inline(ValueStruct<?, ?> valueStruct, InlineValue text) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.inlineText = text;
 		}
 
@@ -154,8 +155,8 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.inlineText.cancel();
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

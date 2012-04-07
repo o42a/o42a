@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 final class CondValueDef extends ValueDef {
@@ -117,8 +118,8 @@ final class CondValueDef extends ValueDef {
 
 		private final InlineCond inline;
 
-		public Inline(ValueStruct<?, ?> valueStruct, InlineCond inline) {
-			super(valueStruct);
+		Inline(ValueStruct<?, ?> valueStruct, InlineCond inline) {
+			super(null, valueStruct);
 			this.inline = inline;
 		}
 
@@ -134,16 +135,16 @@ final class CondValueDef extends ValueDef {
 		}
 
 		@Override
-		public void cancel() {
-			this.inline.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.inline == null) {
 				return super.toString();
 			}
 			return this.inline.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

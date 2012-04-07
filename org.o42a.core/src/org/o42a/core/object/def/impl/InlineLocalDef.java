@@ -27,6 +27,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 final class InlineLocalDef extends InlineValue {
@@ -34,7 +35,7 @@ final class InlineLocalDef extends InlineValue {
 	private final InlineCmd command;
 
 	InlineLocalDef(ValueStruct<?, ?> valueStruct, InlineCmd command) {
-		super(valueStruct);
+		super(null, valueStruct);
 		this.command = command;
 	}
 
@@ -56,16 +57,16 @@ final class InlineLocalDef extends InlineValue {
 	}
 
 	@Override
-	public void cancel() {
-		this.command.cancel();
-	}
-
-	@Override
 	public String toString() {
 		if (this.command == null) {
 			return super.toString();
 		}
 		return this.command.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

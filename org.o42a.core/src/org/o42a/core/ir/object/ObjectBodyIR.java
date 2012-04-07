@@ -48,7 +48,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {

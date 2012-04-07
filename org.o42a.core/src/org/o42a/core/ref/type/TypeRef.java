@@ -45,7 +45,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
-import org.o42a.util.func.Holder;
+import org.o42a.util.fn.Holder;
 import org.o42a.util.log.Loggable;
 
 

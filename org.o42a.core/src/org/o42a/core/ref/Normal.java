@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Compiler Core
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,11 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.func;
+package org.o42a.core.ref;
+
+import org.o42a.util.fn.Cancelable;
 
 
-public interface Getter<T> {
+public abstract class Normal {
 
-	T get();
+	private Normal next;
+
+	public Normal(Normalizer normalizer) {
+		if (isCancelable()) {
+			normalizer.addNormal(this);
+		}
+	}
+
+	public final boolean isCancelable() {
+		return cancelable() != null;
+	}
+
+	protected abstract Cancelable cancelable();
+
+	final Normal getNext() {
+		return this.next;
+	}
+
+	final void setNext(Normal next) {
+		this.next = next;
+	}
 
 }

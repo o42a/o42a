@@ -21,7 +21,6 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.DefKind.PROPOSITION;
 import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
 
 import org.o42a.core.object.def.impl.InlineCondDefs;
 import org.o42a.core.object.def.impl.RuntimeCondDef;
@@ -229,17 +228,11 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		final InlineCond[] inlines = new InlineCond[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
-
-			final InlineCond inline = defs[i].inline(normalizer);
-
-			if (inline == null) {
-				cancelUpToNull(inlines);
-				return null;
-			}
-			inlines[i] = inline;
+			inlines[i] = defs[i].inline(normalizer);
 		}
 
-		return new InlineCondDefs(this, inlines);
+		return normalizer.isCancelled()
+				? null : new InlineCondDefs(this, inlines);
 	}
 
 	private static int nextNonPrereq(CondDef[] defs, int start) {

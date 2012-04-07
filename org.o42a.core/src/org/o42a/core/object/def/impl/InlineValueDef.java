@@ -24,6 +24,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineCond;
 import org.o42a.core.ref.InlineValue;
+import org.o42a.util.fn.Cancelable;
 
 
 public class InlineValueDef extends InlineValue {
@@ -36,7 +37,7 @@ public class InlineValueDef extends InlineValue {
 			InlineCond prerequisite,
 			InlineCond precondition,
 			InlineValue def) {
-		super(def.getValueStruct());
+		super(null, def.getValueStruct());
 		this.prerequisite = prerequisite;
 		this.precondition = precondition;
 		this.def = def;
@@ -49,15 +50,6 @@ public class InlineValueDef extends InlineValue {
 		}
 		this.precondition.writeCond(dirs.dirs(), host);
 		return this.def.writeValue(dirs, host);
-	}
-
-	@Override
-	public void cancel() {
-		if (this.prerequisite != null) {
-			this.prerequisite.cancel();
-		}
-		this.precondition.cancel();
-		this.def.cancel();
 	}
 
 	@Override
@@ -78,6 +70,11 @@ public class InlineValueDef extends InlineValue {
 		out.append(')');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

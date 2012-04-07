@@ -23,7 +23,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public interface DataWriter {

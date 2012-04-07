@@ -474,36 +474,11 @@ public class Definitions extends Scoped {
 	public final InlineValue inline(Normalizer normalizer) {
 
 		final InlineCond requirement = requirements().inline(normalizer);
-
-		if (requirement == null) {
-			return null;
-		}
-
 		final InlineCond condition = conditions().inline(normalizer);
-
-		if (condition == null) {
-			requirement.cancel();
-			return null;
-		}
-
 		final InlineValue claim = claims().inline(normalizer, this);
-
-		if (claim == null) {
-			requirement.cancel();
-			condition.cancel();
-			return null;
-		}
-
 		final InlineValue proposition = propositions().inline(normalizer, this);
 
-		if (proposition == null) {
-			requirement.cancel();
-			condition.cancel();
-			claim.cancel();
-			return null;
-		}
-
-		return new InlineDefinitions(
+		return normalizer.isCancelled() ? null : new InlineDefinitions(
 				requirement,
 				condition,
 				claim,

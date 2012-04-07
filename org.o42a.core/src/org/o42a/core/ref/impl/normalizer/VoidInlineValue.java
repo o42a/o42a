@@ -27,12 +27,13 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public class VoidInlineValue extends InlineValue {
 
 	public VoidInlineValue() {
-		super(ValueStruct.VOID);
+		super(null, ValueStruct.VOID);
 	}
 
 	@Override
@@ -45,12 +46,13 @@ public class VoidInlineValue extends InlineValue {
 	}
 
 	@Override
-	public void cancel() {
+	public String toString() {
+		return "VOID";
 	}
 
 	@Override
-	public String toString() {
-		return "VOID";
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

@@ -29,6 +29,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 final class LogicalResult extends BuiltinObject {
@@ -129,7 +130,7 @@ final class LogicalResult extends BuiltinObject {
 				ValueStruct<?, ?> valueStruct,
 				LogicalExpression ref,
 				InlineValue operandValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.ref = ref;
 			this.operandValue = operandValue;
 		}
@@ -140,16 +141,16 @@ final class LogicalResult extends BuiltinObject {
 		}
 
 		@Override
-		public void cancel() {
-			this.operandValue.cancel();
-		}
-
-		@Override
 		public String toString() {
 			if (this.ref == null) {
 				return super.toString();
 			}
 			return this.ref.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

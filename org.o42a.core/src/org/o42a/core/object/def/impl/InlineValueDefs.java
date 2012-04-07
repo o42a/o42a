@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.util.func.Cancellation.cancelAll;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
@@ -28,6 +26,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.InlineValue;
+import org.o42a.util.fn.Cancelable;
 
 
 public class InlineValueDefs extends InlineValue {
@@ -35,7 +34,7 @@ public class InlineValueDefs extends InlineValue {
 	private final InlineValue[] inlines;
 
 	public InlineValueDefs(InlineValue[] inlines) {
-		super(inlines[0].getValueStruct());
+		super(null, inlines[0].getValueStruct());
 		this.inlines = inlines;
 	}
 
@@ -97,11 +96,6 @@ public class InlineValueDefs extends InlineValue {
 	}
 
 	@Override
-	public void cancel() {
-		cancelAll(this.inlines);
-	}
-
-	@Override
 	public String toString() {
 		if (this.inlines == null) {
 			return super.toString();
@@ -117,6 +111,11 @@ public class InlineValueDefs extends InlineValue {
 		out.append(')');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

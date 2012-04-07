@@ -32,6 +32,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
@@ -112,16 +113,10 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 			Scope origin) {
 
 		final InlineValue leftValue = leftOperand().inline(normalizer, origin);
-
-		if (leftValue == null) {
-			return null;
-		}
-
 		final InlineValue rightValue =
 				rightOperand().inline(normalizer, origin);
 
-		if (rightValue == null) {
-			leftValue.cancel();
+		if (leftValue == null || rightValue == null) {
 			return null;
 		}
 
@@ -191,7 +186,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 				ValueStruct<?, ?> valueStruct,
 				InlineValue leftValue,
 				InlineValue rightValue) {
-			super(valueStruct);
+			super(null, valueStruct);
 			this.leftValue = leftValue;
 			this.rightValue = rightValue;
 		}
@@ -218,14 +213,13 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		}
 
 		@Override
-		public void cancel() {
-			this.leftValue.cancel();
-			this.rightValue.cancel();
+		public String toString() {
+			return BinaryResult.this.toString();
 		}
 
 		@Override
-		public String toString() {
-			return BinaryResult.this.toString();
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

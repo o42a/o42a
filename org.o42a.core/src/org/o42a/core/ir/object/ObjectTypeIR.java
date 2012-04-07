@@ -35,7 +35,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public final class ObjectTypeIR implements Content<ObjectIRType> {

@@ -22,6 +22,7 @@ package org.o42a.core.object.def.impl;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.InlineCond;
+import org.o42a.util.fn.Cancelable;
 
 
 public class InlineCondDef extends InlineCond {
@@ -34,6 +35,7 @@ public class InlineCondDef extends InlineCond {
 			InlineCond prerequisite,
 			InlineCond precondition,
 			InlineCond def) {
+		super(null);
 		this.prerequisite = prerequisite;
 		this.precondition = precondition;
 		this.def = def;
@@ -46,15 +48,6 @@ public class InlineCondDef extends InlineCond {
 		}
 		this.precondition.writeCond(dirs, host);
 		this.def.writeCond(dirs, host);
-	}
-
-	@Override
-	public void cancel() {
-		if (this.prerequisite != null) {
-			this.prerequisite.cancel();
-		}
-		this.precondition.cancel();
-		this.def.cancel();
 	}
 
 	@Override
@@ -75,6 +68,11 @@ public class InlineCondDef extends InlineCond {
 		out.append(')');
 
 		return out.toString();
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

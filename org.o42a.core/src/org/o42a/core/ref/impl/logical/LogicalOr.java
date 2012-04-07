@@ -19,9 +19,6 @@
 */
 package org.o42a.core.ref.impl.logical;
 
-import static org.o42a.util.func.Cancellation.cancelAll;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -30,6 +27,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class LogicalOr extends Logical {
@@ -107,19 +105,10 @@ public final class LogicalOr extends Logical {
 		final InlineCond[] inlines = new InlineCond[this.options.length];
 
 		for (int i = 0; i < inlines.length; ++i) {
-
-			final InlineCond inline =
-					this.options[i].inline(normalizer, origin);
-
-			if (inline == null) {
-				cancelUpToNull(inlines);
-				return null;
-			}
-
-			inlines[i] = inline;
+			inlines[i] = this.options[i].inline(normalizer, origin);
 		}
 
-		return new Inline(inlines);
+		return normalizer.isCancelled() ? null : new Inline(inlines);
 	}
 
 	@Override
@@ -188,6 +177,7 @@ public final class LogicalOr extends Logical {
 		private final InlineCond[] options;
 
 		Inline(InlineCond[] options) {
+			super(null);
 			this.options = options;
 		}
 
@@ -228,11 +218,6 @@ public final class LogicalOr extends Logical {
 		}
 
 		@Override
-		public void cancel() {
-			cancelAll(this.options);
-		}
-
-		@Override
 		public String toString() {
 
 			final StringBuilder out = new StringBuilder();
@@ -244,6 +229,11 @@ public final class LogicalOr extends Logical {
 			out.append(')');
 
 			return out.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

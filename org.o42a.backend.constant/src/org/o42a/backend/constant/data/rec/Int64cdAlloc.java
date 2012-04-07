@@ -28,7 +28,7 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.codegen.data.*;
-import org.o42a.util.func.Getter;
+import org.o42a.util.fn.Getter;
 
 
 public final class Int64cdAlloc extends RecCDAlloc<Int64rec, Int64recOp, Long> {

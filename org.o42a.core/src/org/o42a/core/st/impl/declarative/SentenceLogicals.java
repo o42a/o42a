@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.util.func.Cancellation.cancelAll;
-import static org.o42a.util.func.Cancellation.cancelUpToNull;
-
 import java.util.ArrayList;
 
 import org.o42a.codegen.code.Block;
@@ -35,6 +32,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
+import org.o42a.util.fn.Cancelable;
 
 
 final class SentenceLogicals {
@@ -198,9 +196,6 @@ final class SentenceLogicals {
 				otherwise = null;
 			} else {
 				otherwise = this.otherwise.inline(normalizer, origin);
-				if (otherwise == null) {
-					return null;
-				}
 			}
 
 			final InlineCond[] prereqs = new InlineCond[this.variants.size()];
@@ -219,18 +214,10 @@ final class SentenceLogicals {
 				prereqs[i] = prereq;
 				preconds[i] = precond;
 				++i;
-
-				if (prereq == null || precond == null) {
-					if (otherwise != null) {
-						otherwise.cancel();
-					}
-					cancelUpToNull(prereqs);
-					cancelUpToNull(preconds);
-					return null;
-				}
 			}
 
-			return new Inline(prereqs, preconds, otherwise);
+			return normalizer.isCancelled()
+					? null : new Inline(prereqs, preconds, otherwise);
 		}
 
 		@Override
@@ -367,6 +354,7 @@ final class SentenceLogicals {
 				InlineCond[] prereqs,
 				InlineCond[] preconds,
 				InlineCond otherwise) {
+			super(null);
 			this.prereqs = prereqs;
 			this.preconds = preconds;
 			this.otherwise = otherwise;
@@ -428,15 +416,6 @@ final class SentenceLogicals {
 		}
 
 		@Override
-		public void cancel() {
-			cancelAll(this.prereqs);
-			cancelAll(this.preconds);
-			if (this.otherwise != null) {
-				this.otherwise.cancel();
-			}
-		}
-
-		@Override
 		public String toString() {
 			if (this.preconds == null) {
 				return super.toString();
@@ -454,6 +433,11 @@ final class SentenceLogicals {
 			}
 
 			return out.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}
