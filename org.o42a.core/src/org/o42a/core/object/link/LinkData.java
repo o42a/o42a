@@ -224,7 +224,8 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 				typeRef.getScope());
 
 		final TypeRelation relation =
-				typeRef.relationTo(this.targetRef.toTypeRef());
+				typeRef.relationTo(this.targetRef.toTypeRef())
+				.check(this.link.getLogger());
 
 		if (!relation.isAscendant()) {
 			if (!relation.isError()) {

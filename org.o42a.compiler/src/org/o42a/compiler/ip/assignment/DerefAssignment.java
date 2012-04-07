@@ -63,7 +63,10 @@ final class DerefAssignment extends AssignmentKind {
 						statement.getDestination().getPath().toPrefix(
 								statement.getScope()));
 
-		if (!statement.getValue().toTypeRef().checkDerivedFrom(destTypeRef)) {
+		if (!statement.getValue()
+				.toTypeRef()
+				.relationTo(destTypeRef)
+				.checkDerived(statement.getLogger())) {
 			return new AssignmentError(statement);
 		}
 

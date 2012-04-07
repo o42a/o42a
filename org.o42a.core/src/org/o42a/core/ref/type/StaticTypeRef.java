@@ -19,10 +19,7 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.core.Scope;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
@@ -87,39 +84,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	public final TypeRelation relationTo(StaticTypeRef other) {
-		return relationTo(other, true);
-	}
-
-	public TypeRelation relationTo(
-			StaticTypeRef other,
-			boolean reportIncompatibility) {
-		assertSameScope(other);
-		if (!other.validate()) {
-			return TypeRelation.PREFERRED;
-		}
-		if (!validate()) {
-			return TypeRelation.INVALID;
-		}
-
-		final ObjectType type1 =
-				type(dummyUser()).getLastDefinition().type();
-		final ObjectType type2 =
-				other.type(dummyUser()).getLastDefinition().type();
-
-		if (type1.getObject().getScope() == type2.getObject().getScope()) {
-			return TypeRelation.SAME;
-		}
-		if (type2.derivedFrom(type1)) {
-			return TypeRelation.ASCENDANT;
-		}
-		if (type1.derivedFrom(type2)) {
-			return TypeRelation.DERIVATIVE;
-		}
-		if (reportIncompatibility) {
-			getLogger().incompatible(other, this);
-		}
-
-		return TypeRelation.INCOMPATIBLE;
+		return new StaticTypeRelation(this, other);
 	}
 
 	@Override

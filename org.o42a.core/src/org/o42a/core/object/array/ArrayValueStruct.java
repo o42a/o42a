@@ -104,19 +104,19 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public TypeRelation relationTo(ValueStruct<?, ?> other) {
+	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 
 		final ValueType<?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
-			return TypeRelation.INCOMPATIBLE;
+			return TypeRelation.Kind.INCOMPATIBLE;
 		}
 
 		final ArrayValueStruct otherArrayStruct = (ArrayValueStruct) other;
 
-		return getItemTypeRef().relationTo(
-				otherArrayStruct.getItemTypeRef(),
-				false);
+		return getItemTypeRef()
+				.relationTo(otherArrayStruct.getItemTypeRef())
+				.getKind();
 	}
 
 	@Override
@@ -227,7 +227,8 @@ public final class ArrayValueStruct
 		final TypeRef newItemTypeRef = parameters.getTypeRef();
 		final TypeRef oldItemTypeRef = getItemTypeRef();
 
-		if (!newItemTypeRef.checkDerivedFrom(oldItemTypeRef)) {
+		if (!newItemTypeRef.relationTo(oldItemTypeRef)
+				.checkDerived(parameters.getLogger())) {
 			return this;
 		}
 

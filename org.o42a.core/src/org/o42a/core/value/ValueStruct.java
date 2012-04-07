@@ -132,7 +132,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return Definitions.noValueDefinitions(location, scope, this);
 	}
 
-	public abstract TypeRelation relationTo(ValueStruct<?, ?> other);
+	public abstract TypeRelation.Kind relationTo(ValueStruct<?, ?> other);
 
 	public boolean assignableFrom(ValueStruct<?, ?> other) {
 		return relationTo(other).isAscendant();
@@ -183,7 +183,9 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 		final Ref adapter = ref.adapt(ref, expectedTypeRef.toStatic());
 
-		adapter.toTypeRef().checkDerivedFrom(expectedTypeRef);
+		adapter.toTypeRef()
+		.relationTo(expectedTypeRef)
+		.checkDerived(ref.getLogger());
 
 		return adapter;
 	}

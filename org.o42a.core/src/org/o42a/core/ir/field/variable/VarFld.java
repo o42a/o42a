@@ -121,9 +121,9 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			final TypeRelation relation =
 					typeRef(overridden)
 					.upgradeScope(getField())
-					.relationTo(getTypeRef(), false);
+					.relationTo(getTypeRef());
 
-			if (relation == TypeRelation.SAME) {
+			if (relation.isSame()) {
 				// Variable has the same interface type as one
 				// of the overridden fields. Reuse assigner.
 				final Obj overriddenOwner =

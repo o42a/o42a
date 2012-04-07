@@ -19,66 +19,153 @@
 */
 package org.o42a.core.ref.type;
 
+import org.o42a.core.source.CompilerLogger;
 
-public enum TypeRelation {
 
-	SAME(),
-	ASCENDANT(),
-	DERIVATIVE(),
-	INCOMPATIBLE(),
-	PREFERRED(),
-	INVALID();
+public abstract class TypeRelation {
+
+	private final TypeRef of;
+	private final TypeRef to;
+	private Kind kind;
+
+	public TypeRelation(TypeRef of, TypeRef to) {
+		this.of = of;
+		this.to = to;
+		of.assertSameScope(to);
+	}
+
+	public TypeRef of() {
+		return this.of;
+	}
+
+	public TypeRef to() {
+		return this.to;
+	}
+
+	public Kind getKind() {
+		if (this.kind != null) {
+			return this.kind;
+		}
+		return this.kind = relationKind(null, false);
+	}
 
 	public final boolean isPreferredDerivative() {
-		if (isError()) {
-			return this != INVALID;
-		}
-		return isDerivative();
+		return getKind().isPreferredDerivative();
 	}
 
 	public final boolean isPreferredAscendant() {
-		if (isError()) {
-			return this != INVALID;
-		}
-		return isAscendant();
+		return getKind().isPreferredAscendant();
 	}
 
 	public final boolean isError() {
-		return ordinal() >= INCOMPATIBLE.ordinal();
+		return getKind().isError();
 	}
 
 	public final boolean isAscendant() {
-		return this == SAME || this == ASCENDANT;
+		return getKind().isAscendant();
 	}
 
 	public final boolean isDerivative() {
-		return this == SAME || this == DERIVATIVE;
+		return relationKind(null, true).isDerivative();
 	}
 
 	public final boolean isSame() {
-		return this == SAME;
+		return getKind().isSame();
 	}
 
-	public TypeRelation revert(boolean revert) {
+	public final TypeRelation revert(boolean revert) {
 		return revert ? revert() : this;
 	}
 
-	public TypeRelation revert() {
-		switch (this) {
-		case SAME:
-		case INCOMPATIBLE:
-			return this;
-		case ASCENDANT:
-			return DERIVATIVE;
-		case DERIVATIVE:
-			return ASCENDANT;
-		case PREFERRED:
-			return INVALID;
-		case INVALID:
-			return PREFERRED;
+	public abstract TypeRelation revert();
+
+	public final TypeRelation check(CompilerLogger logger) {
+		this.kind = relationKind(logger, false);
+		return this;
+	}
+
+	public final boolean checkDerived(CompilerLogger logger) {
+		return relationKind(logger, true).isDerivative();
+	}
+
+	public final TypeRef commonDerivative() {
+		return getKind().isPreferredDerivative() ? of() : to();
+	}
+
+	public final TypeRef commonAscendant() {
+		return getKind().isPreferredAscendant() ? of() : to();
+	}
+
+	@Override
+	public String toString() {
+		return "TypeRelation[of " + this.of + " to " + this.to + ']';
+	}
+
+	protected abstract Kind relationKind(
+			CompilerLogger logger,
+			boolean checkDerivationOnly);
+
+	public enum Kind {
+
+		SAME(),
+		ASCENDANT(),
+		DERIVATIVE(),
+		INCOMPATIBLE(),
+		PREFERRED(),
+		INVALID();
+
+		public final boolean isPreferredDerivative() {
+			if (isError()) {
+				return this != INVALID;
+			}
+			return isDerivative();
 		}
-		throw new IllegalStateException(
-				"Can not revert type relation: " + this);
+
+		public final boolean isPreferredAscendant() {
+			if (isError()) {
+				return this != INVALID;
+			}
+			return isAscendant();
+		}
+
+		public final boolean isError() {
+			return ordinal() >= INCOMPATIBLE.ordinal();
+		}
+
+		public final boolean isAscendant() {
+			return this == SAME || this == ASCENDANT;
+		}
+
+		public final boolean isDerivative() {
+			return this == SAME || this == DERIVATIVE;
+		}
+
+		public final boolean isSame() {
+			return this == SAME;
+		}
+
+		public Kind revert(boolean revert) {
+			return revert ? revert() : this;
+		}
+
+		public Kind revert() {
+			switch (this) {
+			case SAME:
+			case INCOMPATIBLE:
+				return this;
+			case ASCENDANT:
+				return DERIVATIVE;
+			case DERIVATIVE:
+				return ASCENDANT;
+			case PREFERRED:
+				return INVALID;
+			case INVALID:
+				return PREFERRED;
+			}
+			throw new IllegalStateException(
+					"Can not revert type relation: " + this);
+		}
+
 	}
 
 }

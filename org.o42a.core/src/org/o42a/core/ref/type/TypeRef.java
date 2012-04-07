@@ -21,7 +21,6 @@ package org.o42a.core.ref.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
-import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
@@ -280,21 +279,11 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
-		return relationTo(other, true, false);
-	}
-
-	public final TypeRelation relationTo(
-			TypeRef other,
-			boolean reportIncompatibility) {
-		return relationTo(other, reportIncompatibility, false);
-	}
-
-	public final boolean checkDerivedFrom(TypeRef other) {
-		return relationTo(other, true, true).isDerivative();
+		return new DefaultTypeRelation(this, other);
 	}
 
 	public final boolean derivedFrom(TypeRef other) {
-		return relationTo(other, false, true).isDerivative();
+		return relationTo(other).isDerivative();
 	}
 
 	public StaticTypeRef toStatic() {
@@ -304,14 +293,6 @@ public abstract class TypeRef implements ScopeInfo {
 				getPrefix(),
 				this.valueStructFinder,
 				this.valueStruct);
-	}
-
-	public final TypeRef commonDerivative(TypeRef other) {
-		return relationTo(other).isPreferredDerivative() ? this : other;
-	}
-
-	public final TypeRef commonAscendant(TypeRef other) {
-		return relationTo(other).isPreferredAscendant() ? this : other;
 	}
 
 	public TypeRef prefixWith(PrefixPath prefix) {
@@ -465,123 +446,5 @@ public abstract class TypeRef implements ScopeInfo {
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct);
-
-	private TypeRelation relationTo(
-			TypeRef other,
-			boolean reportIncompatibility,
-			boolean checkDerivationOnly) {
-		assertSameScope(other);
-		if (!other.validate()) {
-			return TypeRelation.PREFERRED;
-		}
-		if (!validate()) {
-			return TypeRelation.INVALID;
-		}
-
-		final Scope root1 = resolutionRoot(this);
-		final Scope root2 = resolutionRoot(other);
-
-		final ObjectType type1 = type(dummyUser());
-		final ObjectType type2 = other.type(dummyUser());
-
-		if (root1 == root2) {
-			if (type1.getObject().getScope() == type2.getObject().getScope()) {
-
-				final TypeRelation structRelation =
-						getValueStruct().relationTo(other.getValueStruct());
-
-				if (reportIncompatibility
-						&& structRelation == TypeRelation.INCOMPATIBLE) {
-					getLogger().incompatible(other, getValueStruct());
-				}
-
-				return structRelation;
-			}
-			if (type1.derivedFrom(type2)) {
-				return checkDerivative(other, reportIncompatibility);
-			}
-			if (checkDerivationOnly) {
-				if (reportIncompatibility) {
-					getLogger().notDerivedFrom(this, other);
-				}
-				return TypeRelation.INCOMPATIBLE;
-			}
-			if (type2.derivedFrom(type1)) {
-				return checkAscendant(other, reportIncompatibility);
-			}
-			if (reportIncompatibility) {
-				getLogger().incompatible(other, this);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		if (root2.contains(root1)) {
-			if (type1.derivedFrom(type2)) {
-				return checkDerivative(other, reportIncompatibility);
-			}
-			if (reportIncompatibility) {
-				getLogger().notDerivedFrom(this, other);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-		if (checkDerivationOnly) {
-			if (reportIncompatibility) {
-				getLogger().notDerivedFrom(this, other);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		if (root1.contains(root2)) {
-			if (type2.derivedFrom(type1)) {
-				return checkAscendant(other, reportIncompatibility);
-			}
-			if (reportIncompatibility) {
-				getLogger().notDerivedFrom(other, this);
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-
-		getLogger().incompatible(other, this);
-
-		return TypeRelation.INCOMPATIBLE;
-	}
-
-	private TypeRelation checkAscendant(
-			TypeRef other,
-			boolean reportIncompatibility) {
-		if (!assignable(this, other)) {
-			if (reportIncompatibility) {
-				getLogger().incompatible(other, getValueStruct());
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-		return TypeRelation.ASCENDANT;
-	}
-
-	private TypeRelation checkDerivative(
-			TypeRef other,
-			boolean reportIncompatibility) {
-		if (!assignable(other, this)) {
-			if (reportIncompatibility) {
-				getLogger().incompatible(this, other.getValueStruct());
-			}
-			return TypeRelation.INCOMPATIBLE;
-		}
-		return TypeRelation.DERIVATIVE;
-	}
-
-	private boolean assignable(TypeRef dest, TypeRef value) {
-
-		final ValueStruct<?, ?> destValueStruct = dest.getValueStruct();
-
-		if (destValueStruct.assignableFrom(value.getValueStruct())) {
-			return true;
-		}
-		if (destValueStruct.getValueType() == ValueType.VOID) {
-			return true;
-		}
-
-		return false;
-	}
 
 }

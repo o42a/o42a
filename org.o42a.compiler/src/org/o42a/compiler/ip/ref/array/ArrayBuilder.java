@@ -84,9 +84,13 @@ abstract class ArrayBuilder {
 					if (arrayItemType == null) {
 						arrayItemType = itemType;
 					} else if (!typeByItems) {
-						itemType.checkDerivedFrom(arrayItemType);
+						itemType.relationTo(arrayItemType)
+						.checkDerived(this.constructor.getLogger());
 					} else {
-						arrayItemType = arrayItemType.commonAscendant(itemType);
+						arrayItemType =
+								arrayItemType.relationTo(itemType)
+								.check(this.constructor.getLogger())
+								.commonAscendant();
 					}
 
 					items[i] = new ArrayItem(i, rescopedItemRef);

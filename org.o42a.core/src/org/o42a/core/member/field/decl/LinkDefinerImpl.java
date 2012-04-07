@@ -86,7 +86,8 @@ final class LinkDefinerImpl implements LinkDefiner {
 				final TypeRef newAncestor = ancestor.setValueStruct(
 						linkType.linkStruct(targetType));
 
-				if (!newAncestor.checkDerivedFrom(ancestor)) {
+				if (!newAncestor.relationTo(ancestor).checkDerived(
+						this.variant.getLogger())) {
 					getField().invalid();
 				}
 
