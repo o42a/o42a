@@ -268,8 +268,8 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
-		this.inline = inline(normalizer, getScope());
+	public void normalizeImperative(RootNormalizer normalizer) {
+		this.inline = inline(normalizer.newNormalizer(), getScope());
 		if (this.inline == null) {
 			normalize(normalizer.getAnalyzer());
 		}

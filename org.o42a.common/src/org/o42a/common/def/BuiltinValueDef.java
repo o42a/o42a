@@ -59,8 +59,8 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
-		this.inline = inline(normalizer, getValueStruct());
+	public void normalize(RootNormalizer normalizer) {
+		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
 	}
 
 	@Override

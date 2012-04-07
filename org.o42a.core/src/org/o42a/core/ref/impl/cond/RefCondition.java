@@ -25,9 +25,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.InlineValue;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
 
@@ -81,7 +79,7 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public void normalizeImperative(Normalizer normalizer) {
+	public void normalizeImperative(RootNormalizer normalizer) {
 		this.ref.normalizeImperative(normalizer);
 	}
 

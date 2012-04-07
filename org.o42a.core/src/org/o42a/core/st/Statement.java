@@ -26,6 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
@@ -68,7 +69,7 @@ public abstract class Statement extends Placed {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
 
-	public abstract void normalizeImperative(Normalizer normalizer);
+	public abstract void normalizeImperative(RootNormalizer normalizer);
 
 	public Cmd cmd(CodeBuilder builder) {
 

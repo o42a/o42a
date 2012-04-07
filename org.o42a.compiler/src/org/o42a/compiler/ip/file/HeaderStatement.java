@@ -27,9 +27,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -84,7 +82,7 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public final void normalizeImperative(Normalizer normalizer) {
+	public final void normalizeImperative(RootNormalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
 

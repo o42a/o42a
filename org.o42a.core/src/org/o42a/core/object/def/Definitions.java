@@ -530,7 +530,7 @@ public class Definitions extends Scoped {
 		}
 	}
 
-	public final void normalize(Normalizer normalizer) {
+	public final void normalize(RootNormalizer normalizer) {
 		requirements().normalize(normalizer);
 		conditions().normalize(normalizer);
 		claims().normalize(normalizer);

@@ -57,9 +57,9 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	public void normalize(Normalizer normalizer) {
+	public void normalize(RootNormalizer normalizer) {
 		this.ref.normalize(normalizer.getAnalyzer());
-		this.inline = inline(normalizer, getValueStruct());
+		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
 	}
 
 	@Override
