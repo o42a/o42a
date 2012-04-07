@@ -19,33 +19,36 @@
 */
 Use namespace 'Test'
 
-Getters := test
-===============
+Setter := test
+==============
 
-Run tests
-
-Reference := test (
-
-  Value := ``1
-  Proxy := ```value
-
+Assign :=> void (
+  Target :=< link (`property)
+  Value :=< `string
   {
-    Assert [proxy == 1] "Wrong initial getter reference value"
-    Value = 2
-    Assert [proxy == 2] "Getter reference value did not update properly"
+    Target: value = value
   }
   = Void
 )
-
-Expression := test (
-
-  Value := ``1
-  Proxy := ```value * 10
-
-  {
-    Assert [proxy == 10] "Wrong initial getter expression value"
-    Value = 2
-    Assert [proxy == 20] "Getter expression value did not update properly"
-  }
-  = Void
+  
+Property :=> getter (`string) (
+  Value :=< ``string
+  = Value
+  <*> Assign (
+    <@Operators: assign | new value*> Target = ()
+    <New value> (
+      <@Operators: operand> Value = ()
+    )
+  )
 )
+
+
+Prop := property` (value = "old")
+
+{
+  Assert [prop == "old"] "Wrong initial property value"
+  Prop = "new"
+  Assert [prop == "new"] "Wrong value assigned to property"
+}
+
+= Void

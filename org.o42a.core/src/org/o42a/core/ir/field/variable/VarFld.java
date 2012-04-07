@@ -119,7 +119,9 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		for (Field overridden : getField().getOverridden()) {
 
 			final TypeRelation relation =
-					typeRef(overridden).relationTo(getTypeRef(), false);
+					typeRef(overridden)
+					.upgradeScope(getField())
+					.relationTo(getTypeRef(), false);
 
 			if (relation == TypeRelation.SAME) {
 				// Variable has the same interface type as one

@@ -214,6 +214,10 @@ final class AccessorResolver implements PathWalker {
 
 		final Obj oldObject = current.toObject();
 
+		if (oldObject == null) {
+			return this.inheritant = false;
+		}
+
 		return this.inheritant =
 				oldObject.type().derivedFrom(newObject.type());
 	}
