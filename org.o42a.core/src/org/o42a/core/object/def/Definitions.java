@@ -35,7 +35,6 @@ import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
@@ -368,8 +367,7 @@ public class Definitions extends Scoped {
 		final ValueStruct<?, ?> objectValueStruct = getValueStruct();
 
 		if (objectValueStruct != null
-				&& valueStruct.relationTo(objectValueStruct)
-				== TypeRelation.SAME) {
+				&& valueStruct.relationTo(objectValueStruct).isSame()) {
 			return this;
 		}
 

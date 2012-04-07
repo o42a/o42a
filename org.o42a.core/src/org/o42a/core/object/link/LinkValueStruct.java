@@ -93,17 +93,17 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public TypeRelation relationTo(ValueStruct<?, ?> other) {
+	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 
 		final ValueType<?> valueType = other.getValueType();
 
 		if (valueType != getValueType()) {
-			return TypeRelation.INCOMPATIBLE;
+			return TypeRelation.Kind.INCOMPATIBLE;
 		}
 
 		final LinkValueStruct otherLinkStruct = other.toLinkStruct();
 
-		return getTypeRef().relationTo(otherLinkStruct.getTypeRef(), false);
+		return getTypeRef().relationTo(otherLinkStruct.getTypeRef()).getKind();
 	}
 
 	@Override
@@ -241,7 +241,8 @@ public final class LinkValueStruct
 		final TypeRef newTypeRef = parameters.getTypeRef();
 		final TypeRef oldTypeRef = getTypeRef();
 
-		if (!newTypeRef.checkDerivedFrom(oldTypeRef)) {
+		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
+				parameters.getLogger())) {
 			return this;
 		}
 

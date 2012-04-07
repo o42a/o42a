@@ -411,7 +411,9 @@ public class Ascendants
 				result = ancestor;
 				continue;
 			}
-			result = result.commonDerivative(ancestor);
+			result = result.relationTo(ancestor)
+					.check(getScope().getLogger())
+					.commonDerivative();
 		}
 
 		return result;
@@ -474,11 +476,14 @@ public class Ascendants
 			}
 
 			final TypeRelation relation =
-					first.relationTo(second).revert(!explicit);
+					first.relationTo(second)
+					.revert(!explicit)
+					.check(getScope().getLogger());
 
 			if (!relation.isDerivative()) {
 				if (!relation.isError()) {
-					ancestor.relationTo(sampleAncestor);
+					ancestor.relationTo(sampleAncestor)
+					.check(getScope().getLogger());
 					getScope().getLogger().error(
 							"unexpected_ancestor",
 							sample,
@@ -501,7 +506,7 @@ public class Ascendants
 			if (!explicit) {
 
 				final TypeRelation relation =
-						sample.getTypeRef().relationTo(s.getTypeRef(), false);
+						sample.getTypeRef().relationTo(s.getTypeRef());
 
 				if (relation.isAscendant()) {
 					return discardSample(sample);
@@ -514,7 +519,7 @@ public class Ascendants
 			}
 
 			final TypeRelation relation =
-					s.getTypeRef().relationTo(sample.getTypeRef(), false);
+					s.getTypeRef().relationTo(sample.getTypeRef());
 
 			if (relation.isDerivative()) {
 				return discardSample(sample);

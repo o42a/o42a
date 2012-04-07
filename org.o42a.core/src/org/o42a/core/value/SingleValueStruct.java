@@ -61,11 +61,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public TypeRelation relationTo(ValueStruct<?, ?> other) {
+	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 		if (getValueType() == other.getValueType()) {
-			return TypeRelation.SAME;
+			return TypeRelation.Kind.SAME;
 		}
-		return TypeRelation.INCOMPATIBLE;
+		return TypeRelation.Kind.INCOMPATIBLE;
 	}
 
 	@Override
