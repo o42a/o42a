@@ -75,11 +75,15 @@ final class FileSourceReader extends SourceReader {
 			if (this.bytes.remaining() == 0) {
 				// Read more bytes from file.
 				this.bytes.clear();
-				if (this.channel.read(this.bytes) < 0) {
-					return -1;
-				}
+
+				final boolean eof = this.channel.read(this.bytes) < 0;
+
 				this.bytes.flip();
 				this.eof = this.channel.position() >= this.channel.size();
+
+				if (eof) {
+					return -1;
+				}
 			}
 
 			// Decode single char.
