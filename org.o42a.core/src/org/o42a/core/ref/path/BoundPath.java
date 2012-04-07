@@ -410,17 +410,25 @@ public class BoundPath extends Location {
 	}
 
 	final User<?> pathNormalized() {
+		// The path is successfully normalized.
+		// Replace the user a path resolved against with a dummy one,
+		// unless this path's normalization ever cancelled.
+		// This marks the original path steps unused.
 		if (this.originalUser == null) {
 			this.originalUser = this.user.getProxied();
-			// TODO Find the right moment to disable the path uses.
-			// As cancellation may not happen even if the path normalized.
-			// In this case the disablement will lead to IR breakage.
-			//this.user.setProxied(dummyUser());
+			this.user.setProxied(dummyUser());
 		}
+		// Return the original user.
+		// It will be used to fully resolve the normalized path.
 		return this.originalUser;
 	}
 
 	final void cancelNormalization() {
+		// If the path normalization cancelled at least once,
+		// the original user gets restored,
+		// thus marking the original paths steps used again.
+		// Note, that the same path's normalization can happen multiple times,
+		// but it is enough to fail once.
 		if (this.originalUser != null) {
 			this.user.setProxied(this.originalUser);
 		} else {

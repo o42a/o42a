@@ -35,6 +35,15 @@ public final class Normalizer {
 		this.root = root;
 	}
 
+	private Normalizer(Normalizer parent) {
+		this.root = parent.getRoot();
+		if (parent.isCancelled()) {
+			this.cancelled = true;
+		} else {
+			new NestedNormalizer(parent, this);
+		}
+	}
+
 	public final RootNormalizer getRoot() {
 		return this.root;
 	}
@@ -52,14 +61,7 @@ public final class Normalizer {
 	}
 
 	public final Normalizer createNested() {
-
-		final Normalizer nested = new Normalizer(getRoot());
-
-		if (!isCancelled()) {
-			new NestedNormalizer(this, nested);
-		}
-
-		return nested;
+		return new Normalizer(this);
 	}
 
 	public final void cancelAll() {
