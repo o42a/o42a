@@ -91,13 +91,13 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	public boolean isAssignment() {
+	public final boolean isAssignment() {
 		return getBuilder().isAssignment();
 	}
 
 	@Override
-	public boolean isSubstitution() {
-		return getBuilder().isSubstitution();
+	public final ClauseSubstitution getSubstitution() {
+		return getBuilder().getSubstitution();
 	}
 
 	@Override

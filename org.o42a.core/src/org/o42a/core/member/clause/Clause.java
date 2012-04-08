@@ -199,6 +199,8 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.getDisplayName();
 	}
 
+	public abstract ClauseSubstitution getSubstitution();
+
 	public final MemberClause toMember() {
 		return this.member;
 	}

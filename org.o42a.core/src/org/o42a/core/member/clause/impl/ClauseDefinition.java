@@ -101,7 +101,7 @@ final class ClauseDefinition extends Obj {
 
 		final Ascendants ascendants = new Ascendants(this);
 
-		if (!toClause().isSubstitution()) {
+		if (!toClause().getSubstitution().substitutes()) {
 			return toClause().getAscendants().updateAscendants(ascendants);
 		}
 
@@ -175,7 +175,7 @@ final class ClauseDefinition extends Obj {
 		final Obj object = substance.toObject();
 
 		ascendants = ascendants.addMemberOverride(overridden);
-		if (toClause().isSubstitution()) {
+		if (toClause().getSubstitution().substitutes()) {
 			return ascendants;
 		}
 		if (!object.value().getValueType().isLink()) {

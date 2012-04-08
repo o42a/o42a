@@ -26,7 +26,7 @@ import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.PlainClause;
+import org.o42a.core.member.clause.ClauseSubstitution;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Location;
@@ -76,7 +76,7 @@ public final class ClauseInstance {
 		this.content = ArrayUtil.append(this.content, part);
 	}
 
-	public final Ref substitute(Distributor distributor) {
+	public final Ref substituteValue(Distributor distributor) {
 
 		final PhraseContinuation[] content = getContent();
 
@@ -103,11 +103,16 @@ public final class ClauseInstance {
 
 	public Ref instantiateObject(Distributor distributor) {
 
-		final PlainClause plainClause =
-				getContext().getClause().toPlainClause();
+		final ClauseSubstitution substitution =
+				getContext().getClause().getSubstitution();
 
-		if (plainClause != null && plainClause.isSubstitution()) {
-			return substitute(distributor);
+		switch (substitution) {
+		case NO_SUBSTITUTION:
+			break;
+		case VALUE_SUBSTITUTION:
+			return substituteValue(distributor);
+		case PREFIX_SUBSITUTION:
+			return getContext().getPhrase().substitutePrefix(distributor);
 		}
 
 		final Path instancePath =

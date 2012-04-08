@@ -163,6 +163,21 @@ public class Phrase extends Placed {
 		return getMainContext().createsObject();
 	}
 
+	public final Ref substitutePrefix(Distributor distributor) {
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor == null) {
+			getLogger().error(
+					"missing_phrase_prefix",
+					this,
+					"Phrase requires prefix");
+			return null;
+		}
+
+		return ancestor.getRef().rescope(distributor.getScope());
+	}
+
 	public Phrase asPrefix(Ref prefix, PhraseContinuation nextPart) {
 
 		final Phrase newPhrase = new Phrase(this.ip, this, distribute());

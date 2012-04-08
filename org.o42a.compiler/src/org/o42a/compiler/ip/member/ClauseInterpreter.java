@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
+import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.clause.OutcomeNode;
@@ -84,7 +85,9 @@ public class ClauseInterpreter {
 				return;
 			}
 
-			result = declare(builder.substitution(), declarator).build();
+			result = declare(
+					builder.setSubstitution(VALUE_SUBSTITUTION),
+					declarator).build();
 		}
 
 		if (result != null) {

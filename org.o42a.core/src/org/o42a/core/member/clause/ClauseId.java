@@ -354,17 +354,12 @@ public enum ClauseId {
 	public abstract Path adapterPath(CompilerContext context);
 
 	public void validateClause(Clause clause) {
-
-		final PlainClause plainClause = clause.toPlainClause();
-
-		if (plainClause != null && plainClause.isSubstitution()) {
-			if (!hasValue()) {
-				clause.getLogger().error(
-						"prohibited_clause_substitution",
-						clause,
-						"Clause substitution is not allowed in %s clause",
-						getDisplayName());
-			}
+		if (clause.getSubstitution().requiresValue() && !hasValue()) {
+			clause.getLogger().error(
+					"prohibited_value_substitution_clause",
+					clause,
+					"Value substitution is not allowed in %s clause",
+					getDisplayName());
 		}
 	}
 
