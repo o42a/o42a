@@ -38,7 +38,7 @@ import org.o42a.core.source.LocationInfo;
 
 public enum ClauseId {
 
-	NAME(false) {
+	NAME("named", false) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -55,7 +55,7 @@ public enum ClauseId {
 
 	},
 
-	ARGUMENT(true) {
+	ARGUMENT("argument", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -72,7 +72,7 @@ public enum ClauseId {
 
 	},
 
-	ROW(true) {
+	ROW("row", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -89,7 +89,7 @@ public enum ClauseId {
 
 	},
 
-	IMPERATIVE(false) {
+	IMPERATIVE("imperative", false) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -106,7 +106,7 @@ public enum ClauseId {
 
 	},
 
-	STRING(true) {
+	STRING("string", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -123,7 +123,7 @@ public enum ClauseId {
 
 	},
 
-	PLUS(true) {
+	PLUS("unary plus operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -140,7 +140,7 @@ public enum ClauseId {
 
 	},
 
-	MINUS(true) {
+	MINUS("unary minus operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -157,7 +157,7 @@ public enum ClauseId {
 
 	},
 
-	ADD(true) {
+	ADD("addition operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -174,7 +174,7 @@ public enum ClauseId {
 
 	},
 
-	SUBTRACT(true) {
+	SUBTRACT("subtraction operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -191,7 +191,7 @@ public enum ClauseId {
 
 	},
 
-	MULTIPLY(true) {
+	MULTIPLY("multiplication operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -208,7 +208,7 @@ public enum ClauseId {
 
 	},
 
-	DIVIDE(true) {
+	DIVIDE("division operator", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -225,7 +225,7 @@ public enum ClauseId {
 
 	},
 
-	EQUALS(true) {
+	EQUALS("equality check", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -242,7 +242,7 @@ public enum ClauseId {
 
 	},
 
-	COMPARE(true) {
+	COMPARE("comparison", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -259,7 +259,7 @@ public enum ClauseId {
 
 	},
 
-	ASSIGN(true) {
+	ASSIGN("value assignment", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -276,7 +276,7 @@ public enum ClauseId {
 
 	},
 
-	OPERAND(true) {
+	OPERAND("right operand", true) {
 
 		@Override
 		public Path adapterPath(CompilerContext context) {
@@ -288,41 +288,14 @@ public enum ClauseId {
 			if (name == null) {
 				return "<operand>";
 			}
-			return "<operand> " + name;
+			return "<operand>(" + name + ')';
 		}
 
 	};
 
-	private final boolean hasValue;
-
-	ClauseId(boolean hasValue) {
-		this.hasValue = hasValue;
-	}
-
-	public final boolean hasValue() {
-		return this.hasValue;
-	}
-
-	public final boolean hasAdapterType() {
-		return this != NAME;
-	}
-
-	public final StaticTypeRef adapterType(
-			LocationInfo location,
-			Distributor distributor) {
-		if (!hasAdapterType()) {
-			return null;
-		}
-		return adapterPath(location.getContext())
-				.bind(location, distributor.getScope())
-				.staticTypeRef(distributor);
-	}
-
-	public abstract Path adapterPath(CompilerContext context);
-
-	public abstract String toString(MemberId memberId, String name);
-
 	public static ClauseId byAdapterType(StaticTypeRef adapterType) {
+		assert adapterType != null :
+			"Clause adapter type not specified";
 
 		final Obj type = adapterTypeScope(
 				adapterType.typeObject(dummyUser())).toObject();
@@ -346,5 +319,55 @@ public enum ClauseId {
 
 		return NAME;
 	}
+
+	private final String displayName;
+	private final boolean hasValue;
+
+	ClauseId(String displayName, boolean hasValue) {
+		this.displayName = displayName;
+		this.hasValue = hasValue;
+	}
+
+	public final String getDisplayName() {
+		return this.displayName;
+	}
+
+	public final boolean hasValue() {
+		return this.hasValue;
+	}
+
+	public final boolean hasAdapterType() {
+		return this != NAME;
+	}
+
+	public final StaticTypeRef adapterType(
+			LocationInfo location,
+			Distributor distributor) {
+		if (!hasAdapterType()) {
+			return null;
+		}
+		return adapterPath(location.getContext())
+				.bind(location, distributor.getScope())
+				.staticTypeRef(distributor);
+	}
+
+	public abstract Path adapterPath(CompilerContext context);
+
+	public void validateClause(Clause clause) {
+
+		final PlainClause plainClause = clause.toPlainClause();
+
+		if (plainClause != null && plainClause.isSubstitution()) {
+			if (!hasValue()) {
+				clause.getLogger().error(
+						"prohibited_clause_substitution",
+						clause,
+						"Clause substitution is not allowed in %s clause",
+						getDisplayName());
+			}
+		}
+	}
+
+	public abstract String toString(MemberId memberId, String name);
 
 }

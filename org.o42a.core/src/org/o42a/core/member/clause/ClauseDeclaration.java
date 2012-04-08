@@ -157,6 +157,16 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		if (this.clauseId != null) {
 			return this.clauseId;
 		}
+
+		if (this.memberId != null) {
+
+			final String name = this.memberId.getName();
+
+			if (name != null) {
+				return this.clauseId = ClauseId.NAME;
+			}
+		}
+
 		return this.clauseId = byAdapterType(getAdapterType());
 	}
 

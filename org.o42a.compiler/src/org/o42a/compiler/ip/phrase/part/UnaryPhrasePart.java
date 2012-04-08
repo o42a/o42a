@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
 
 import org.o42a.ast.expression.UnaryNode;
@@ -35,7 +36,7 @@ public class UnaryPhrasePart extends PhraseContinuation {
 	private final UnaryNode node;
 
 	public UnaryPhrasePart(UnaryNode node, PhrasePart preceding) {
-		super(preceding, preceding);
+		super(location(preceding.getPhrase(), node.getSign()), preceding);
 		this.node = node;
 	}
 

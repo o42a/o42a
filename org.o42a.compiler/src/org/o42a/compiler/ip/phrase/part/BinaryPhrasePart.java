@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.operator.ComparisonOperator.comparisonOperator;
 import static org.o42a.compiler.ip.operator.ComparisonOperator.equalityOperator;
 import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
@@ -40,7 +41,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	private ComparisonOperator comparisonOperator;
 
 	public BinaryPhrasePart(BinaryNode node, PhrasePart preceding) {
-		super(preceding, preceding);
+		super(location(preceding.getPhrase(), node.getSign()), preceding);
 		this.node = node;
 	}
 

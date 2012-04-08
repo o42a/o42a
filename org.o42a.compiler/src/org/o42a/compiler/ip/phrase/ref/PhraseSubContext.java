@@ -170,6 +170,7 @@ class PhraseSubContext extends PhraseContext {
 		final Ref substitution = instance.substitute(distributor);
 
 		if (substitution == null) {
+			instance.substitute(distributor);
 			getLogger().error(
 					"missing_clause_substitution",
 					instance.getLocation(),
