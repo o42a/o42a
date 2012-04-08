@@ -19,13 +19,15 @@
 */
 #include "o42a/float.h"
 
+#include <fenv.h>
+#include <math.h>
+#include <stdio.h>
+
 #include "o42a/error.h"
+#include "o42a/memory.h"
 #include "o42a/string.h"
 
 #include "unicode/uchar.h"
-
-#include <fenv.h>
-#include <math.h>
 
 
 enum float_signs {
@@ -296,4 +298,59 @@ inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
 	value->flags = O42A_FALSE;
 
 	O42A_RETURN error;
+}
+
+union str_and_int_ptr {
+	const int64_t *p_integer;
+	const char *p_char;
+};
+
+static const char *const O42A_NAN = "NaN";
+static const char *const O42A_POSINF = "Infinity";
+static const char *const O42A_NEGINF = "-Infinity";
+
+void o42a_float_to_str(O42A_PARAMS o42a_val_t *const string, double value) {
+	O42A_ENTER(return);
+
+	if (isinf(value)) {
+		if (!signbit(value)) {
+			union str_and_int_ptr ptr = {p_char: O42A_POSINF};
+			string->flags = O42A_TRUE;
+			string->length = 8;
+			string->value.v_integer = *ptr.p_integer;
+		} else {
+			string->flags = O42A_TRUE | O42A_VAL_EXTERNAL | O42A_VAL_STATIC;
+			string->length = 9;
+			string->value.v_ptr = (void *) O42A_NEGINF;
+		}
+		O42A_RETURN;
+	}
+
+	if (isnan(value)) {
+		union str_and_int_ptr ptr = {p_char: O42A_NAN};
+		string->flags = O42A_TRUE;
+		string->length = 3;
+		string->value.v_integer = *ptr.p_integer;
+		O42A_RETURN;
+	}
+
+	char buf[8];
+	size_t len = O42A(snprintf(buf, 1, "%g", value));
+
+	if (len <= 8) {
+		union str_and_int_ptr ptr = {p_char: buf};
+		string->flags = O42A_TRUE;
+		string->length = len;
+		string->value.v_integer = *ptr.p_integer;
+		O42A_RETURN;
+	}
+
+	char *lbuf = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
+
+	O42A(snprintf(lbuf, len, "%g", value));
+	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL | O42A_VAL_STATIC;
+	string->length = len;
+	string->value.v_ptr = lbuf;
+
+	O42A_RETURN;
 }

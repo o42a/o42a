@@ -19,12 +19,12 @@
 */
 #include "o42a/object.h"
 
+#include <assert.h>
+#include <stdlib.h>
+
 #include "o42a/error.h"
 #include "o42a/field.h"
 #include "o42a/memory.h"
-
-#include <assert.h>
-#include <stdlib.h>
 
 
 inline o42a_obj_type_t *o42a_obj_type(

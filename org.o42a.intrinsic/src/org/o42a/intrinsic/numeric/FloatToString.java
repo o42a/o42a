@@ -52,7 +52,7 @@ public class FloatToString extends ToString<Double> {
 		final Block code = stringDirs.code();
 		final FuncPtr<Fp64ToStringFunc> fn =
 				code.getGenerator().externalFunction().sideEffects(true).link(
-						"o42a_float_to_string",
+						"o42a_float_to_str",
 						Fp64ToStringFunc.FP64_TO_STRING);
 
 		return fn.op(null, code).convert(

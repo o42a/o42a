@@ -49,8 +49,6 @@ public class Fp64ToStringFunc extends Func<Fp64ToStringFunc> {
 				string.ptr(),
 				value);
 
-		string.go(code, stringDirs);
-
 		return string;
 	}
 

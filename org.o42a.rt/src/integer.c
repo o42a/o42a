@@ -19,7 +19,10 @@
 */
 #include "o42a/integer.h"
 
+#include <stdio.h>
+
 #include "o42a/error.h"
+#include "o42a/memory.h"
 #include "o42a/string.h"
 
 #include "unicode/uchar.h"
@@ -138,6 +141,35 @@ void o42a_int_by_str(
 
 	result->value.v_integer = value;
 	result->flags = O42A_TRUE;
+
+	O42A_RETURN;
+}
+
+union str_and_int_ptr {
+	const int64_t *p_integer;
+	const char *p_char;
+};
+
+void o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
+	O42A_ENTER(return);
+
+	char buf[8];
+	size_t len = O42A(snprintf(buf, 1, "%lld", (long long) value));
+
+	if (len <= 8) {
+		union str_and_int_ptr ptr = {p_char: buf};
+		string->flags = O42A_TRUE;
+		string->length = len;
+		string->value.v_integer = *ptr.p_integer;
+		O42A_RETURN;
+	}
+
+	char *lbuf = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
+
+	O42A(snprintf(lbuf, len, "%lld", (long long) value));
+	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL | O42A_VAL_STATIC;
+	string->length = len;
+	string->value.v_ptr = lbuf;
 
 	O42A_RETURN;
 }
