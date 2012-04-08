@@ -49,8 +49,6 @@ public class Int64ToStringFunc extends Func<Int64ToStringFunc> {
 				string.ptr(),
 				value);
 
-		string.go(code, stringDirs);
-
 		return string;
 	}
 

@@ -17,10 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "o42a/memory.h"
+
 #include <stdlib.h>
 
 #include "o42a/error.h"
-#include "o42a/memory.h"
 
 
 o42a_mem_block_t *o42a_mem_alloc_rc_block(O42A_PARAMS const size_t size) {

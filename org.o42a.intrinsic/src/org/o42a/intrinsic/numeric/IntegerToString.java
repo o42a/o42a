@@ -52,7 +52,7 @@ public class IntegerToString extends ToString<Long> {
 		final Block code = stringDirs.code();
 		final FuncPtr<Int64ToStringFunc> fn =
 				code.getGenerator().externalFunction().sideEffects(true).link(
-						"o42a_int_to_string",
+						"o42a_int_to_str",
 						Int64ToStringFunc.INT64_TO_STRING);
 
 		return fn.op(null, code).convert(

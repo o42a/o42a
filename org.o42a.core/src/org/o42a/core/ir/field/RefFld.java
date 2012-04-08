@@ -417,9 +417,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 			final boolean fillTarget;
 
-			if (!fld().targetIRAllocated
-					&& fld().getField().isClone()
-					&& fld().getField().isPrototype()) {
+			if (!fld().targetIRAllocated && fld().getField().isClone()) {
 				// field is a clone - do not fill the target
 				fillTarget = false;
 			} else {

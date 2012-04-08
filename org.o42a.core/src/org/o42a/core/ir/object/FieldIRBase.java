@@ -38,7 +38,7 @@ import org.o42a.core.object.Obj;
 public abstract class FieldIRBase extends LocalFieldIRBase {
 
 	private final CodeId id;
-	private Fld lastFld;
+	private Fld fld;
 	private boolean targetAllocated;
 
 	public FieldIRBase(Generator generator, Field field) {
@@ -55,7 +55,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 
 	public FldOp field(Code code, ObjOp host) {
 		assertNotLocal();
-		return this.lastFld.op(code, host);
+		return this.fld.op(code, host);
 	}
 
 	@Override
@@ -73,8 +73,8 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		}
 
 		enclosingContainer.getScope().ir(getGenerator()).allocate();
-		if (this.lastFld != null) {
-			this.lastFld.targetAllocated();
+		if (this.fld != null) {
+			this.fld.targetAllocated();
 		} else {
 			this.targetAllocated = true;
 		}
@@ -89,7 +89,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		final Obj owner = getField().getEnclosingContainer().toObject();
 		final ObjOp host = owner.ir(getGenerator()).op(builder, code);
 
-		return this.lastFld.op(code, host);
+		return this.fld.op(code, host);
 	}
 
 	Fld allocate(SubData<?> data, ObjectBodyIR bodyIR) {
@@ -101,7 +101,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 			return null;
 		}
 
-		this.lastFld = fld;
+		this.fld = fld;
 		if (this.targetAllocated) {
 			this.targetAllocated = false;
 			fld.targetAllocated();
