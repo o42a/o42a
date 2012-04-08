@@ -85,14 +85,8 @@ public final class PhraseInterpreter {
 			prefixed =
 					phrase.setImpliedAncestor(location(distributor, node))
 					.setTypeParameters(typeParams);
-		} else if (!(ascendantNode instanceof ExpressionNode)) {
-			return null;
 		} else {
-
-			final ExpressionNode ascendantExNode =
-					(ExpressionNode) ascendantNode;
-
-			prefixed = ascendantExNode.accept(
+			prefixed = ascendantNode.accept(
 					new PhrasePrefixVisitor(typeParams),
 					phrase);
 		}

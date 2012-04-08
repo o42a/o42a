@@ -24,14 +24,16 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.Step;
 
 
-public class PathRemainderNormalStep extends NormalAppender {
+public class SubPathNormalStep extends NormalAppender {
 
 	private final Path path;
 	private final int start;
+	private final int end;
 
-	public PathRemainderNormalStep(Path path, int start) {
+	public SubPathNormalStep(Path path, int start, int end) {
 		this.path = path;
 		this.start = start;
+		this.end = end;
 	}
 
 	@Override
@@ -40,7 +42,7 @@ public class PathRemainderNormalStep extends NormalAppender {
 		Path result = path;
 		final Step[] steps = this.path.getSteps();
 
-		for (int i = this.start; i < steps.length; ++i) {
+		for (int i = this.start; i < this.end; ++i) {
 			result = result.append(steps[i]);
 		}
 

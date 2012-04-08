@@ -404,6 +404,8 @@ public final class PathNormalizer {
 				new InitialPrediction(startObjectScope),
 				startObjectScope);
 
+		this.normalSteps.add(new SameNormalStep(
+				new StaticStep(getNormalizedStart(), startObjectScope)));
 		while (this.stepIndex < steps.length) {
 			this.stepPrediction = null;
 			this.stepNormalized = false;
@@ -485,9 +487,10 @@ public final class PathNormalizer {
 
 	private void addRest(int nextStep) {
 		if (nextStep < getPath().length()) {
-			this.normalSteps.add(new PathRemainderNormalStep(
+			this.normalSteps.add(new SubPathNormalStep(
 					getPath().getPath(),
-					nextStep));
+					nextStep,
+					getPath().length()));
 		}
 	}
 

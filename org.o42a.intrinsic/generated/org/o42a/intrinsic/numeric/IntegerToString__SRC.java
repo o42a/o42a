@@ -8,16 +8,16 @@ import org.o42a.core.member.field.Field;
 
 
 /**
- * o42a sources for {@link FloatValueTypeObject}.
+ * o42a sources for {@link IntegerToString}.
  * 
- * File: root/float__.o42a
+ * File: root/integer/@string.o42a
  */
-public final class FloatValueTypeObject__SRC implements AnnotatedSources {
+public final class IntegerToString__SRC implements AnnotatedSources {
 
 	private final AnnotatedSources parent;
 	private SingleURLSource sourceTree;
 
-	public FloatValueTypeObject__SRC(AnnotatedSources parent) {
+	public IntegerToString__SRC(AnnotatedSources parent) {
 		this.parent = parent;
 	}
 
@@ -28,17 +28,12 @@ public final class FloatValueTypeObject__SRC implements AnnotatedSources {
 		}
 		return this.sourceTree = new SingleURLSource(
 				this.parent.getSourceTree(),
-				"float__.o42a");
+				"@string.o42a");
 	}
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[] {
-			new org.o42a.intrinsic.numeric.FloatToString(
-					owner,
-					new org.o42a.intrinsic.numeric.FloatToString__SRC(this))
-			.getScope().toField(),
-		};
+		return new Field[0];
 	}
 
 }

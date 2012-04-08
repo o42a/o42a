@@ -29,9 +29,12 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.type.AscendantsNode;
+import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.ValueTypeNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.value.TypeParameters;
 
 
 final class SectionAscendantsVisitor
@@ -55,6 +58,32 @@ final class SectionAscendantsVisitor
 			AscendantsNode ascendants,
 			Distributor p) {
 		return parseAscendants(PLAIN_IP, ascendants, p);
+	}
+
+	@Override
+	public AscendantsDefinition visitValueType(
+			ValueTypeNode valueType,
+			Distributor p) {
+
+		AscendantsDefinition ascendants =
+				new AscendantsDefinition(location(p, valueType), p);
+		final TypeParameters typeParams =
+				PLAIN_IP.typeParameters(valueType.getValueType(), p);
+		final TypeNode ascendantNode = valueType.getAscendant();
+
+		if (ascendantNode != null) {
+
+			final Ref ascendantRef = ascendantNode.accept(
+					PLAIN_IP.targetExVisitor(),
+					p);
+
+			if (ascendantRef != null) {
+				ascendants = ascendants.setAncestor(
+						ascendantRef.toTypeRef(typeParams));
+			}
+		}
+
+		return ascendants;
 	}
 
 	@Override
