@@ -19,9 +19,7 @@
 */
 package org.o42a.ast.test.grammar.type;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
@@ -38,32 +36,28 @@ public class AscendantsTest extends GrammarTestCase {
 		final AscendantsNode result = parse("&foo");
 
 		assertRange(0, 4, result);
-
-		final AscendantNode[] ascendants = result.getAscendants();
-
-		assertEquals(1, ascendants.length);
-
-		assertNotNull(ascendants[0].getSeparator());
-		assertRange(0, 4, ascendants[0]);
-		assertName("foo", ascendants[0].getSpec());
+		assertFalse(result.hasSamples());
+		assertNotNull(result.getAncestor().getSeparator());
+		assertRange(0, 4, result.getAncestor());
+		assertName("foo", result.getAncestor().getSpec());
 	}
 
 	@Test
 	public void samples() {
 
 		final AscendantsNode result = parse("&foo & bar & baz");
-		final AscendantNode[] ascendants = result.getAscendants();
+		final AscendantNode[] samples = result.getSamples();
 
-		assertEquals(3, ascendants.length);
+		assertEquals(2, samples.length);
 
-		assertNotNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getSpec());
+		assertNotNull(result.getAncestor().getSeparator());
+		assertName("foo", result.getAncestor().getSpec());
 
-		assertNotNull(ascendants[1].getSeparator());
-		assertName("bar", ascendants[1].getSpec());
+		assertNotNull(samples[0].getSeparator());
+		assertName("bar", samples[0].getSpec());
 
-		assertNotNull(ascendants[2].getSeparator());
-		assertName("baz", ascendants[2].getSpec());
+		assertNotNull(samples[1].getSeparator());
+		assertName("baz", samples[1].getSpec());
 	}
 
 	@Test
@@ -73,37 +67,37 @@ public class AscendantsTest extends GrammarTestCase {
 
 		assertRange(0, 9, result);
 
-		final AscendantNode[] ascendants = result.getAscendants();
+		final AscendantNode[] samples = result.getSamples();
 
-		assertEquals(2, ascendants.length);
-		assertRange(0, 3, ascendants[0]);
-		assertNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getSpec());
+		assertEquals(1, samples.length);
+		assertRange(0, 3, result.getAncestor());
+		assertNull(result.getAncestor().getSeparator());
+		assertName("foo", result.getAncestor().getSpec());
 
-		assertRange(4, 9, ascendants[1]);
-		assertNotNull(ascendants[1].getSeparator());
-		assertName("bar", ascendants[1].getSpec());
+		assertRange(4, 9, samples[0]);
+		assertNotNull(samples[0].getSeparator());
+		assertName("bar", samples[0].getSpec());
 	}
 
 	@Test
 	public void ancestorAndSamples() {
 
 		final AscendantsNode result = parse("foo & s1 & s2 & s3");
-		final AscendantNode[] ascendants = result.getAscendants();
+		final AscendantNode[] samples = result.getSamples();
 
-		assertEquals(4, ascendants.length);
+		assertEquals(3, samples.length);
 
-		assertNull(ascendants[0].getSeparator());
-		assertName("foo", ascendants[0].getSpec());
+		assertNull(result.getAncestor().getSeparator());
+		assertName("foo", result.getAncestor().getSpec());
 
-		assertNotNull(ascendants[1].getSeparator());
-		assertName("s1", ascendants[1].getSpec());
+		assertNotNull(samples[0].getSeparator());
+		assertName("s1", samples[0].getSpec());
 
-		assertNotNull(ascendants[2].getSeparator());
-		assertName("s2", ascendants[2].getSpec());
+		assertNotNull(samples[1].getSeparator());
+		assertName("s2", samples[1].getSpec());
 
-		assertNotNull(ascendants[3].getSeparator());
-		assertName("s3", ascendants[3].getSpec());
+		assertNotNull(samples[2].getSeparator());
+		assertName("s3", samples[2].getSpec());
 	}
 
 	private AscendantsNode parse(String text) {

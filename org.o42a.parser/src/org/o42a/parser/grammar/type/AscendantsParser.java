@@ -48,11 +48,11 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 	@Override
 	public AscendantsNode parse(ParserContext context) {
 
-		ArrayList<AscendantNode> ascendants = null;
+		AscendantNode ancestor = null;
+		ArrayList<AscendantNode> samples = null;
 
 		if (this.first != null) {
-			ascendants = new ArrayList<AscendantNode>();
-			ascendants.add(new AscendantNode(null, this.first));
+			ancestor = new AscendantNode(null, this.first);
 		}
 
 		for (;;) {
@@ -62,26 +62,34 @@ public class AscendantsParser implements Parser<AscendantsNode> {
 			if (ascendant == null) {
 				break;
 			}
-			if (ascendants == null) {
-				ascendants = new ArrayList<AscendantNode>();
+			if (ancestor == null) {
+				ancestor = ascendant;
+			} else {
+				if (samples == null) {
+					samples = new ArrayList<AscendantNode>();
+				}
+				samples.add(ascendant);
 			}
-			ascendants.add(ascendant);
 			if (ascendant.getSpec() == null) {
 				break;
 			}
 		}
 
-		if (ascendants == null) {
+		if (ancestor == null) {
+			return null;
+		} else if (samples == null && this.first != null) {
 			return null;
 		}
 
-		final int size = ascendants.size();
+		final AscendantNode[] arrayOfSamples;
 
-		if (this.first != null && size == 1) {
-			return null;
+		if (samples == null) {
+			arrayOfSamples = new AscendantNode[0];
+		} else {
+			arrayOfSamples = samples.toArray(new AscendantNode[samples.size()]);
 		}
 
-		return new AscendantsNode(ascendants.toArray(new AscendantNode[size]));
+		return new AscendantsNode(ancestor, arrayOfSamples);
 	}
 
 	private static final class AscendantParser

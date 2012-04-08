@@ -21,6 +21,7 @@ package org.o42a.ast.test.grammar.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.simpleExpression;
 
@@ -76,11 +77,11 @@ public class ValueTypeTest extends GrammarTestCase {
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, result.getAscendant());
 
-		assertThat(ascendants.getAscendants().length, is(1));
+		assertFalse(ascendants.hasSamples());
 		assertThat(
-				ascendants.getAscendants()[0].getSeparator().getType(),
+				ascendants.getAncestor().getSeparator().getType(),
 				is(Separator.SAMPLE));
-		assertName("foo", ascendants.getAscendants()[0].getSpec());
+		assertName("foo", ascendants.getAncestor().getSpec());
 
 		assertName("bar", result.getValueType().getType());
 		assertThat(
@@ -101,15 +102,15 @@ public class ValueTypeTest extends GrammarTestCase {
 		final AscendantsNode ascendants =
 				to(AscendantsNode.class, result.getAscendant());
 
-		assertThat(ascendants.getAscendants().length, is(2));
+		assertThat(ascendants.getSamples().length, is(1));
 		assertThat(
-				ascendants.getAscendants()[0].getSeparator(),
+				ascendants.getAncestor().getSeparator(),
 				nullValue());
-		assertName("foo", ascendants.getAscendants()[0].getSpec());
+		assertName("foo", ascendants.getAncestor().getSpec());
 		assertThat(
-				ascendants.getAscendants()[1].getSeparator().getType(),
+				ascendants.getSamples()[0].getSeparator().getType(),
 				is(Separator.SAMPLE));
-		assertName("bar", ascendants.getAscendants()[1].getSpec());
+		assertName("bar", ascendants.getSamples()[0].getSpec());
 
 		assertName("baz", result.getValueType().getType());
 		assertThat(

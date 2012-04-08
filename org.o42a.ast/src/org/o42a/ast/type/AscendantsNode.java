@@ -25,15 +25,25 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 
 public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 
-	private final AscendantNode[] ascendants;
+	private final AscendantNode ancestor;
+	private final AscendantNode[] samples;
 
-	public AscendantsNode(AscendantNode[] ascendants) {
-		super(ascendants);
-		this.ascendants = ascendants;
+	public AscendantsNode(AscendantNode ancestor, AscendantNode[] samples) {
+		super(ancestor.getStart(), end(ancestor, lastNode(samples)));
+		this.ancestor = ancestor;
+		this.samples = samples;
 	}
 
-	public AscendantNode[] getAscendants() {
-		return this.ascendants;
+	public final AscendantNode getAncestor() {
+		return this.ancestor;
+	}
+
+	public final boolean hasSamples() {
+		return getSamples().length != 0;
+	}
+
+	public final AscendantNode[] getSamples() {
+		return this.samples;
 	}
 
 	@Override
@@ -48,7 +58,8 @@ public class AscendantsNode extends AbstractExpressionNode implements TypeNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		for (AscendantNode ascendant : this.ascendants) {
+		this.ancestor.printContent(out);
+		for (AscendantNode ascendant : this.samples) {
 			ascendant.printContent(out);
 		}
 	}

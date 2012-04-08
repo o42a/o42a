@@ -127,7 +127,7 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitAscendants(AscendantsNode ascendants, Distributor p) {
-		if (ascendants.getAscendants().length <= 1) {
+		if (!ascendants.hasSamples()) {
 
 			final AncestorTypeRef ancestor =
 					parseAncestor(ip(), ascendants, p);

@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip;
 
-import static org.o42a.compiler.ip.AncestorTypeRef.impliedAncestorTypeRef;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 
@@ -41,18 +40,14 @@ public final class AncestorSpecVisitor
 			AscendantsNode ascendantsNode,
 			Distributor distributor) {
 
-		final AscendantNode[] ascendantNodes = ascendantsNode.getAscendants();
-
-		if (ascendantNodes.length == 0) {
-			return impliedAncestorTypeRef();
-		}
+		final AscendantNode ancestorNode = ascendantsNode.getAncestor();
 
 		return parseAncestor(
 				ip,
 				distributor,
-				ascendantNodes[0],
+				ancestorNode,
 				null,
-				ascendantNodes.length == 1 ? TARGET_REFERRAL : BODY_REFERRAL);
+				ascendantsNode.hasSamples() ? BODY_REFERRAL : TARGET_REFERRAL);
 	}
 
 	public static AncestorTypeRef parseAncestor(
