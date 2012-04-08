@@ -33,7 +33,12 @@ public final class IntegerValueTypeObject__SRC implements AnnotatedSources {
 
 	@Override
 	public Field[] fields(MemberOwner owner) {
-		return new Field[0];
+		return new Field[] {
+			new org.o42a.intrinsic.numeric.IntegerToString(
+					owner,
+					new org.o42a.intrinsic.numeric.IntegerToString__SRC(this))
+			.getScope().toField(),
+		};
 	}
 
 }

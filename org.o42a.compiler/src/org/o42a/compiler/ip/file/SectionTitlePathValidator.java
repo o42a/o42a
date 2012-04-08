@@ -62,6 +62,9 @@ final class SectionTitlePathValidator
 		if (!this.path[p].equals(ref.getName().getName())) {
 			return null;
 		}
+		if (p == 0) {
+			return Boolean.TRUE;
+		}
 		return ref.getOwner().accept(this, p - 1);
 	}
 

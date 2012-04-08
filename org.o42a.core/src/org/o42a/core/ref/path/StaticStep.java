@@ -40,14 +40,24 @@ import org.o42a.core.source.LocationInfo;
 
 final class StaticStep extends Step {
 
-	private final Scope scope;
+	private final Scope expectedScope;
+	private final Scope finalScope;
 
 	StaticStep(Scope scope) {
-		this.scope = scope;
+		this.expectedScope = this.finalScope = scope;
 	}
 
-	public final Scope getScope() {
-		return this.scope;
+	StaticStep(Scope expectedScope, Scope finalScope) {
+		this.expectedScope = expectedScope;
+		this.finalScope = finalScope;
+	}
+
+	public final Scope getExpectedScope() {
+		return this.expectedScope;
+	}
+
+	public final Scope getFinalScope() {
+		return this.finalScope;
 	}
 
 	@Override
@@ -67,10 +77,14 @@ final class StaticStep extends Step {
 
 	@Override
 	public String toString() {
-		if (this.scope == null) {
+		if (this.finalScope == null) {
 			return super.toString();
 		}
-		return '<' + this.scope.toString() + '>';
+		if (this.expectedScope == this.finalScope) {
+			return '<' + this.finalScope.toString() + '>';
+		}
+		return ('<' + this.expectedScope.toString() + "--"
+				+ this.finalScope + '>');
 	}
 
 	@Override
@@ -88,13 +102,11 @@ final class StaticStep extends Step {
 			Scope start,
 			PathWalker walker) {
 
-		final Scope scope = getScope();
+		getExpectedScope().assertCompatible(start);
 
-		scope.assertCompatible(start);
+		walker.staticScope(this, getFinalScope());
 
-		walker.staticScope(this, this.scope);
-
-		return scope.getContainer();
+		return getFinalScope().getContainer();
 	}
 
 	@Override
@@ -116,8 +128,13 @@ final class StaticStep extends Step {
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer) {
-		getScope().assertCompatible(reproducer.getReproducingScope());
-		return reproducedPath(new StaticStep(reproducer.getScope()).toPath());
+		getExpectedScope().assertCompatible(reproducer.getReproducingScope());
+		return reproducedPath(
+				new StaticStep(
+						reproducer.getScope(),
+						reproducer.getReproducer().reproducerOf(
+								getFinalScope()).getScope())
+				.toPath());
 	}
 
 	@Override
@@ -136,7 +153,7 @@ final class StaticStep extends Step {
 			// This should only be called for object scope.
 
 			final ObjectIR ir =
-					getStep().getScope().toObject().ir(getGenerator());
+					getStep().getFinalScope().toObject().ir(getGenerator());
 
 			return ir.op(getBuilder(), dirs.code());
 		}

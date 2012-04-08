@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -25,9 +25,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
@@ -36,44 +34,43 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public abstract class ByString<T> extends AnnotatedBuiltin {
+public abstract class ToString<T> extends AnnotatedBuiltin {
 
-	private Ref input;
+	private Ref object;
 
-	public ByString(MemberOwner owner, AnnotatedSources sources) {
+	public ToString(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
+		setValueStruct(ValueStruct.STRING);
 	}
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 
-		final Value<?> inputValue = input().value(resolver);
+		final Value<?> objectValue = object().value(resolver);
 
-		if (inputValue.getKnowledge().isFalse()) {
+		if (objectValue.getKnowledge().isFalse()) {
 			return value().getValueStruct().falseValue();
 		}
-		if (!inputValue.getKnowledge().isKnown()) {
+		if (!objectValue.getKnowledge().isKnown()) {
 			return value().getValueStruct().runtimeValue();
 		}
 
-		final String input =
-				ValueStruct.STRING.cast(inputValue).getCompilerValue();
-		final T result = byString(resolver, resolver, input);
+		@SuppressWarnings("unchecked")
+		final ValueStruct<?, T> valueStruct =
+				(ValueStruct<?, T>) objectValue.getValueStruct();
+		final T value = valueStruct.cast(objectValue).getCompilerValue();
+		final String string = toString(resolver, resolver, value);
 
-		if (result == null) {
-			return value().getValueStruct().falseValue();
+		if (string == null) {
+			return ValueStruct.STRING.falseValue();
 		}
 
-		@SuppressWarnings("unchecked")
-		final ValueStruct<?, T> valueType =
-				(ValueStruct<?, T>) value().getValueStruct();
-
-		return valueType.compilerValue(result);
+		return ValueStruct.STRING.compilerValue(string);
 	}
 
 	@Override
 	public void resolveBuiltin(Resolver resolver) {
-		input().resolve(resolver).resolveValue();
+		object().resolve(resolver).resolveValue();
 	}
 
 	@Override
@@ -82,78 +79,80 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
-		final InlineValue input = input().inline(normalizer, origin);
+		final InlineValue object = object().inline(normalizer, origin);
 
-		if (input == null) {
+		if (object == null) {
 			return null;
 		}
 
-		return new Inline(valueStruct, input);
+		return new Inline(valueStruct, object);
 	}
 
 	@Override
 	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
 
-		final ValDirs inputDirs =
-				dirs.dirs().value(ValueStruct.STRING, "input");
-		final ValOp inputValue = input().op(host).writeValue(inputDirs);
+		final Ref object = object();
+		final ValDirs valueDirs = dirs.dirs().value(
+				object.valueStruct(object.getScope()),
+				"value");
+		final ValOp value = object().op(host).writeValue(valueDirs);
 
-		final ValDirs parseDirs = inputDirs.dirs().value(dirs);
-		final ValOp result = parse(parseDirs, inputValue);
+		final ValDirs parseDirs = valueDirs.dirs().value(dirs);
+		final ValOp result = print(parseDirs, value);
 
 		parseDirs.done();
-		inputDirs.done();
+		valueDirs.done();
 
 		return result;
 	}
 
-	protected abstract T byString(
+	protected abstract String toString(
 			LocationInfo location,
 			Resolver resolver,
-			String input);
+			T value);
 
-	protected abstract ValOp parse(ValDirs dirs, ValOp inputVal);
+	protected abstract ValOp print(ValDirs stringDirs, ValOp value);
 
-	protected final Ref input() {
-		if (this.input != null) {
-			return this.input;
+	protected final Ref object() {
+		if (this.object != null) {
+			return this.object;
 		}
 
-		final Member member = field("input", Accessor.DECLARATION);
-		final Path path = member.getKey().toPath().dereference();
+		final Path path = getScope().getEnclosingScopePath();
 
-		return this.input = path.bind(this, getScope()).target(distribute());
+		return this.object = path.bind(this, getScope()).target(distribute());
 	}
 
 	private final class Inline extends InlineValue {
 
-		private InlineValue inputValue;
+		private InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue inputValue) {
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
 			super(null, valueStruct);
-			this.inputValue = inputValue;
+			this.value = value;
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-			final ValDirs inputDirs =
-					dirs.dirs().value(ValueStruct.STRING, "input");
-			final ValOp inputValue =
-					this.inputValue.writeValue(inputDirs, host);
+			final Ref object = object();
+			final ValDirs valueDirs = dirs.dirs().value(
+					object.valueStruct(object.getScope()),
+					"value");
+			final ValOp value = this.value.writeValue(valueDirs, host);
 
-			final ValDirs parseDirs = inputDirs.dirs().value(dirs);
-			final ValOp result = parse(parseDirs, inputValue);
+			final ValDirs parseDirs = valueDirs.dirs().value(dirs);
+			final ValOp result = print(parseDirs, value);
 
 			parseDirs.done();
-			inputDirs.done();
+			valueDirs.done();
 
 			return result;
 		}
 
 		@Override
 		public String toString() {
-			return "In-line[" + ByString.this + ']';
+			return "In-line[" + ToString.this + ']';
 		}
 
 		@Override

@@ -27,7 +27,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.intrinsic.root.Root;
 
 
-@SourcePath(relativeTo = Root.class, value = "float.o42a")
+@SourcePath(relativeTo = Root.class, value = "float__.o42a")
 public class FloatValueTypeObject extends ValueTypeObject {
 
 	public FloatValueTypeObject(MemberOwner owner, AnnotatedSources sources) {
