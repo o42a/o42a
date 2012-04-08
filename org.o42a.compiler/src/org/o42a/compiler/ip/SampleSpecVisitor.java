@@ -46,20 +46,15 @@ public class SampleSpecVisitor
 		AscendantsDefinition ascendants = new AscendantsDefinition(
 				location(distributor, node),
 				distributor);
-		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final AncestorTypeRef ancestor = parseAncestor(ip, node, distributor);
 
 		if (!ancestor.isImplied()) {
 			ascendants = ascendants.setAncestor(ancestor.getAncestor());
 		}
 
-		if (ascendantNodes.length <= 1) {
-			return ascendants;
-		}
+		for (AscendantNode sampleNode : node.getSamples()) {
 
-		for (int i = 1; i < ascendantNodes.length; ++i) {
-
-			final RefNode specNode = ascendantNodes[i].getSpec();
+			final RefNode specNode = sampleNode.getSpec();
 
 			if (specNode != null) {
 

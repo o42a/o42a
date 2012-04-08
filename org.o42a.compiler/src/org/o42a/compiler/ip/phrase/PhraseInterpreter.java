@@ -167,28 +167,27 @@ public final class PhraseInterpreter {
 	static Phrase prefix(Phrase phrase, AscendantsNode node) {
 
 		final Distributor distributor = phrase.distribute();
-		final AscendantNode[] ascendantNodes = node.getAscendants();
 		final AncestorTypeRef ancestor =
 				parseAncestor(phrase.ip(), node, distributor);
 		Phrase result;
 
 		if (ancestor.isImplied()) {
 			result = phrase.setImpliedAncestor(
-					location(phrase, ascendantNodes[0]));
+					location(phrase, node.getAncestor()));
 		} else {
 			result = phrase.setAncestor(ancestor.getAncestor());
 		}
 
-		if (ascendantNodes.length <= 1) {
+		if (!node.hasSamples()) {
 			return result;
 		}
 
 		final SampleSpecVisitor sampleSpecVisitor =
 				new SampleSpecVisitor(phrase.ip());
 
-		for (int i = 1; i < ascendantNodes.length; ++i) {
+		for (AscendantNode sampleNode : node.getSamples()) {
 
-			final RefNode specNode = ascendantNodes[i].getSpec();
+			final RefNode specNode = sampleNode.getSpec();
 
 			if (specNode != null) {
 

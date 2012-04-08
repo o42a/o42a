@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.field;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.o42a.parser.Grammar.declarator;
 import static org.o42a.parser.Grammar.ref;
@@ -29,7 +30,6 @@ import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
-import org.o42a.ast.type.AscendantNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.DefinitionKind;
 import org.o42a.parser.ParserWorker;
@@ -58,10 +58,11 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
 		assertNull(result.getDefinitionType());
 
-		final AscendantNode[] ascendants =
-				to(AscendantsNode.class, result.getDefinition()).getAscendants();
+		final AscendantsNode ascendants =
+				to(AscendantsNode.class, result.getDefinition());
 
-		assertName("bar", ascendants[0].getSpec());
+		assertFalse(ascendants.hasSamples());
+		assertName("bar", ascendants.getAncestor().getSpec());
 	}
 
 	@Test
@@ -83,10 +84,10 @@ public class DefinitionTest extends GrammarTestCase {
 		assertEquals(DeclarationTarget.VALUE, result.getTarget());
 		assertEquals(DefinitionKind.LINK, result.getDefinitionKind());
 
-		final AscendantNode[] ascendants =
-				to(AscendantsNode.class, result.getDefinitionType()).getAscendants();
+		final AscendantsNode ascendants =
+				to(AscendantsNode.class, result.getDefinitionType());
 
-		assertName("bar", ascendants[0].getSpec());
+		assertName("bar", ascendants.getAncestor().getSpec());
 		assertName("baz", result.getDefinition());
 	}
 

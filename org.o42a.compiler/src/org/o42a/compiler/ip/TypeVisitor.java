@@ -47,17 +47,14 @@ final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	@Override
 	public TypeRef visitAscendants(AscendantsNode ascendants, Distributor p) {
-
-		final AscendantNode[] ascendantNodes = ascendants.getAscendants();
-
-		if (ascendantNodes.length != 1) {
+		if (ascendants.hasSamples()) {
 			return super.visitAscendants(ascendants, p);
 		}
 
 		final AncestorTypeRef ancestor = parseAncestor(
 				ip(),
 				p,
-				ascendantNodes[0],
+				ascendants.getAncestor(),
 				this.valueStructFinder,
 				BODY_REFERRAL);
 
