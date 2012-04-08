@@ -20,6 +20,6 @@
 Clauses := void (
   Argument :=> void
   Imperative :=> void
-  String :=> $$string
-  Row :=> $$row
+  String :=> void
+  Row :=> void
 )

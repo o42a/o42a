@@ -157,23 +157,6 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	protected void validate() {
-		super.validate();
-		if (isSubstitution()) {
-
-			final ClauseId clauseId = getDeclaration().getClauseId();
-
-			if (!clauseId.hasValue()) {
-				getLogger().error(
-						"incompatible_clause_substitution",
-						this,
-						"Clause substitution is not allowed in %s clause",
-						clauseId);
-			}
-		}
-	}
-
-	@Override
 	protected Obj propagateClauseObject(PlainClause overridden) {
 		return new PropagatedClauseDefinition(this, overridden);
 	}

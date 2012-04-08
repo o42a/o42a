@@ -361,8 +361,8 @@ final class MainPhraseContext extends PhraseContext {
 					getLogger().error(
 							"prohibited_phrase_samples",
 							samples[0],
-							"The samples are prohibited when the top-level "
-							+ "clause of phrase is an expression");
+							"The samples are prohibited when the top-level"
+							+ " clause of phrase is an expression");
 				}
 
 				final TypeParameters typeParameters =
@@ -372,7 +372,7 @@ final class MainPhraseContext extends PhraseContext {
 					getLogger().error(
 							"prohibited_phrase_type_parameters",
 							typeParameters,
-							"The value type is prohibited when the top-level "
+							"The value type is prohibited when the top-level"
 							+ " clause of phrase is an expression");
 				}
 			}

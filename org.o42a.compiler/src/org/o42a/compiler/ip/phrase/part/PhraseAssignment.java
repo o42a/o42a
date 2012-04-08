@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.phrase.part;
 
+import static org.o42a.compiler.ip.Interpreter.location;
+
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
 import org.o42a.core.Distributor;
@@ -33,7 +35,7 @@ public class PhraseAssignment extends PhraseContinuation {
 	private final AssignmentNode node;
 
 	public PhraseAssignment(AssignmentNode node, PhrasePart preceding) {
-		super(preceding, preceding);
+		super(location(preceding.getPhrase(), node.getOperator()), preceding);
 		this.node = node;
 	}
 

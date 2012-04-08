@@ -93,7 +93,7 @@ public abstract class Clause implements PlaceInfo {
 
 	private final MemberClause member;
 	private Clause enclosingClause;
-	private Obj enclosingObject;
+	private Clause topClause;
 	private Path pathInObject;
 	private MemberClause[] implicitClauses;
 	private boolean allResolved;
@@ -230,23 +230,21 @@ public abstract class Clause implements PlaceInfo {
 	public abstract ReusedClause[] getReusedClauses();
 
 	public final Obj getEnclosingObject() {
-		if (this.enclosingObject != null) {
-			return this.enclosingObject;
+		return getTopClause().getEnclosingScope().toObject();
+	}
+
+	public final Clause getTopClause() {
+		if (this.topClause != null) {
+			return this.topClause;
 		}
 
-		final Scope enclosingScope = getEnclosingScope();
-		final Clause clause = enclosingScope.getContainer().toClause();
+		final Clause enclosingClause = getEnclosingClause();
 
-		if (clause != null) {
-			return this.enclosingObject = clause.getEnclosingObject();
+		if (enclosingClause != null) {
+			return this.topClause = enclosingClause.getTopClause();
 		}
 
-		this.enclosingObject = enclosingScope.toObject();
-
-		assert this.enclosingObject != null :
-			"Enclosing object not found: " + this;
-
-		return this.enclosingObject;
+		return this.topClause = this;
 	}
 
 	public final Path pathInObject() {
@@ -319,6 +317,7 @@ public abstract class Clause implements PlaceInfo {
 					this,
 					"Required clause continuation is missing");
 		}
+		getDeclaration().getClauseId().validateClause(this);
 	}
 
 	protected Path buildPathInObject() {
