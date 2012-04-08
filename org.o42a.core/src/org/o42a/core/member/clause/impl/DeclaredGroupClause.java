@@ -71,8 +71,13 @@ public final class DeclaredGroupClause
 	}
 
 	@Override
-	public boolean isMandatory() {
-		return this.builder.isMandatory();
+	public final boolean isMandatory() {
+		return getBuilder().isMandatory();
+	}
+
+	@Override
+	public final ClauseSubstitution getSubstitution() {
+		return getBuilder().getSubstitution();
 	}
 
 	@Override

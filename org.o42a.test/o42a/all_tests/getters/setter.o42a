@@ -35,7 +35,7 @@ Property :=> getter (`string) (
   Value :=< ``string
   = Value
   <*> Assign (
-    <@Operators: assign | new value*> Target = ()
+    <@Operators: assign | new value*> Target = $prefix$
     <New value> (
       <@Operators: operand> Value = ()
     )

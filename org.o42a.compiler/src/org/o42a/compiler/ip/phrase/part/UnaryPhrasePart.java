@@ -28,7 +28,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Statements;
 
 
 public class UnaryPhrasePart extends PhraseContinuation {
@@ -60,15 +59,6 @@ public class UnaryPhrasePart extends PhraseContinuation {
 
 	@Override
 	public void define(Block<?> definition) {
-		if (getPhrase().createsObject()) {
-			// Phrase constructs object. No need to put an argument.
-			return;
-		}
-
-		final Statements<?> statements =
-				definition.propose(this).alternative(this);
-
-		statements.selfAssign(getPhrase().getAncestor().getRef());
 	}
 
 	@Override

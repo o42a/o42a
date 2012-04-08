@@ -55,7 +55,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private boolean mandatory;
 	private boolean prototype;
 	private boolean assignment;
-	private boolean substitution;
+	private ClauseSubstitution substitution =
+			ClauseSubstitution.NO_SUBSTITUTION;
 
 	ClauseBuilder(
 			MemberRegistry memberRegistry,
@@ -163,17 +164,14 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public final boolean isSubstitution() {
+	public final ClauseSubstitution getSubstitution() {
 		return this.substitution;
 	}
 
-	public final ClauseBuilder substitution() {
-		assert getDeclaration().getKind() == ClauseKind.EXPRESSION
-				|| getDeclaration().getKind() == ClauseKind.OVERRIDER:
-			"Can only substitute to assignment or overrider";
-		assert getDeclarations() == null :
-			"Can not provide declarations for substitution";
-		this.substitution = true;
+	public final ClauseBuilder setSubstitution(
+			ClauseSubstitution substitution) {
+		assert validSubstitution(substitution);
+		this.substitution = substitution;
 		return this;
 	}
 
@@ -193,7 +191,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	public final ClauseBuilder setDeclarations(BlockBuilder declarations) {
 		assert getDeclaration().getKind().isPlain() :
 			"Declarations block is only allowed for plain clause";
-		assert !isSubstitution() :
+		assert !getSubstitution().substitutes() :
 			"Can not provide declarations for substitution";
 		this.declarations = declarations;
 		return this;
@@ -348,6 +346,17 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	final MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
+	}
+
+	private boolean validSubstitution(ClauseSubstitution substitution) {
+		if (substitution.substitutes()) {
+			assert getDeclaration().getKind() == ClauseKind.EXPRESSION
+					|| getDeclaration().getKind() == ClauseKind.OVERRIDER:
+				"Can only substitute the value to assignment or overrider";
+			assert getDeclarations() == null :
+				"Can not provide the declarations for a value substitution";
+		}
+		return true;
 	}
 
 }

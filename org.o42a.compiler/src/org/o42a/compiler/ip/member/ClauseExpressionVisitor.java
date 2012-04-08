@@ -23,10 +23,12 @@ import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
+import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 
 import org.o42a.ast.clause.AbstractClauseVisitor;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
@@ -46,6 +48,16 @@ class ClauseExpressionVisitor
 			new PhrasePrefixVisitor();
 	static final PhraseDeclarationsVisitor PHRASE_DECLARATIONS_VISITOR =
 			new PhraseDeclarationsVisitor();
+
+	@Override
+	public ClauseBuilder visitIntrinsicRef(
+			IntrinsicRefNode ref,
+			ClauseBuilder p) {
+		if ("prefix".equals(ref.getName().getName())) {
+			return p.setSubstitution(PREFIX_SUBSITUTION);
+		}
+		return super.visitIntrinsicRef(ref, p);
+	}
 
 	@Override
 	public ClauseBuilder visitAscendants(

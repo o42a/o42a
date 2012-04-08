@@ -24,9 +24,12 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_DECLARATIONS_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_PREFIX_VISITOR;
+import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
+import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
+import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
@@ -54,6 +57,16 @@ final class OverriderDefinitionVisitor
 		return p.setAscendants(new AscendantsDefinition(
 				location(p, ref),
 				p.distribute()));
+	}
+
+	@Override
+	public ClauseBuilder visitIntrinsicRef(
+			IntrinsicRefNode ref,
+			ClauseBuilder p) {
+		if ("prefix".equals(ref.getName().getName())) {
+			return p.setSubstitution(PREFIX_SUBSITUTION);
+		}
+		return super.visitIntrinsicRef(ref, p);
 	}
 
 	@Override
@@ -96,7 +109,7 @@ final class OverriderDefinitionVisitor
 			ParenthesesNode parentheses,
 			ClauseBuilder p) {
 		if (parentheses.getContent().length == 0) {
-			return p.substitution();
+			return p.setSubstitution(VALUE_SUBSTITUTION);
 		}
 		return super.visitParentheses(parentheses, p);
 	}

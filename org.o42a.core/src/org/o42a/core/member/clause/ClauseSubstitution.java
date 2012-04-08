@@ -1,6 +1,6 @@
 /*
-    Intrinsics
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-String :=> void
-===============
+package org.o42a.core.member.clause;
 
-<*Char> Char (
-  <*[]> Index = ()
-)
 
-<*Addition> Strings: concat (
-  <@Operators: add | concat with*> What = $prefix$
-  <Concat with> (
-    <@Operators: operand> With = ()
-  )
-)
+public enum ClauseSubstitution {
 
-<*Comparison> Strings: compare (
-  <@Operators: compare | compare with*> What = $prefix$
-  <Compare with> (
-    <@Operators: operand> With = ()
-  )
-)
+	NO_SUBSTITUTION,
+	VALUE_SUBSTITUTION,
+	PREFIX_SUBSITUTION;
+
+	public final boolean substitutes() {
+		return this != NO_SUBSTITUTION;
+	}
+
+	public final boolean requiresValue() {
+		return this == VALUE_SUBSTITUTION;
+	}
+
+}

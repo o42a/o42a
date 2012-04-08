@@ -33,6 +33,7 @@ import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -44,8 +45,15 @@ public class LinkByValueDef extends ValueDef {
 				ref.toTargetRef(linkStruct.getTypeRef()),
 				ref.distribute(),
 				linkStruct.getValueType());
+		final ValueKnowledge knowledge = link.getKnowledge();
 
-		if (!link.getKnowledge().hasCompilerValue()) {
+		if (!knowledge.hasCompilerValue()) {
+			if (knowledge.isKnownToCompiler()) {
+				if (knowledge.hasUnknownCondition()) {
+					return linkStruct.unknownValue();
+				}
+				return linkStruct.falseValue();
+			}
 			return linkStruct.runtimeValue();
 		}
 

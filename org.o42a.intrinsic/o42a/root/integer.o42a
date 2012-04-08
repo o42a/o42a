@@ -20,48 +20,48 @@
 Integer :=> $$number
 ====================
 
-<*Minus> Integers: minus(<@Operators: minus> Operand = ())
+<*Minus> Integers: minus (<@Operators: minus> Operand = $prefix$)
 
-<*Addition> Integers: add(
-  <@Operators: add | summand*> Left operand = ()
+<*Addition> Integers: add (
+  <@Operators: add | summand*> Left operand = $prefix$
   <Summand> (
     <@Operators: operand> Right operand = ()
   )
 )
 
-<*Subtraction> Integers: subtract(
-  <@Operators: subtract | subtrahend*> Left operand = ()
+<*Subtraction> Integers: subtract (
+  <@Operators: subtract | subtrahend*> Left operand = $prefix$
   <Subtrahend> (
     <@Operators: operand> Right operand = ()
   )
 )
 
-<*Multiplication> Integers: multiply(
-  <@Operators: multiply | multiplier*> Left operand = ()
+<*Multiplication> Integers: multiply (
+  <@Operators: multiply | multiplier*> Left operand = $prefix$
   <Multiplier> (
     <@Operators: operand> Right operand = ()
   )
 )
 
-<*Division> Integers: divide(
-  <@Operators: divide | divisor*> Left operand = ()
+<*Division> Integers: divide (
+  <@Operators: divide | divisor*> Left operand = $prefix$
   <Divisor> (
     <@Operators: operand> Right operand = ()
   )
 )
 
-<*Equality> Integers: equals(
-  <@Operators: equals | equals to*> What = ()
+<*Equality> Integers: equals (
+  <@Operators: equals | equals to*> What = $prefix$
   <Equals to> (
     <@Operators: operand> To = ()
   )
 )
 
-<*Comparison> Integers: compare(
-  <@Operators: compare | compare with*> What = ()
+<*Comparison> Integers: compare (
+  <@Operators: compare | compare with*> What = $prefix$
   <Compare with> (
     <@Operators: operand> With = ()
   )
 )
 
-<*By string> Integers: by string(<*''!> Input = ())
+<*By string> Integers: by string (<*''!> Input = ())

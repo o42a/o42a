@@ -28,9 +28,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.ClauseId;
-import org.o42a.core.member.clause.PlainClause;
+import org.o42a.core.member.clause.*;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -137,25 +135,15 @@ class PhraseSubContext extends PhraseContext {
 		final LocationInfo location = instance.getLocation();
 		final FieldDeclaration declaration =
 				createDeclaration(location, distributor);
-		final FieldDefinition definition;
-		final PlainClause plainClause = getClause().toPlainClause();
+		final FieldDefinition definition =
+				fieldDefinition(location, distributor);
 
-		if (plainClause != null && plainClause.isSubstitution()) {
-
-			final Ref substitutution = substitute(distributor);
-
-			if (substitutution == null) {
-				return;
-			}
-
-			definition = substitutution.toFieldDefinition();
-		} else {
-			definition = ascendants(location, distributor).fieldDefinition(
-					location,
-					instance.getDefinition());
+		if (definition == null) {
+			return;
 		}
 
-		final FieldBuilder builder = statements.field(declaration, definition);
+		final FieldBuilder builder =
+				statements.field(declaration, definition);
 
 		if (builder == null) {
 			return;
@@ -164,15 +152,49 @@ class PhraseSubContext extends PhraseContext {
 		statements.statement(builder.build());
 	}
 
-	private Ref substitute(Distributor distributor) {
+	private FieldDefinition fieldDefinition(
+			LocationInfo location,
+			Distributor distributor) {
+
+		final ClauseSubstitution substitution = getClause().getSubstitution();
+
+		switch (substitution) {
+		case VALUE_SUBSTITUTION:
+
+			final Ref valueSubstitutution = substituteValue(distributor);
+
+			if (valueSubstitutution == null) {
+				return null;
+			}
+
+			return valueSubstitutution.toFieldDefinition();
+		case PREFIX_SUBSITUTION:
+
+			final Ref prefix = getPhrase().substitutePrefix(distributor);
+
+			if (prefix == null) {
+				return null;
+			}
+
+			return prefix.toFieldDefinition();
+		case NO_SUBSTITUTION:
+			return ascendants(location, distributor).fieldDefinition(
+					location,
+					getInstances()[0].getDefinition());
+		}
+
+		throw new IllegalStateException(
+				"Unsupported clause substitution: " + substitution);
+	}
+
+	private Ref substituteValue(Distributor distributor) {
 
 		final ClauseInstance instance = getInstances()[0];
-		final Ref substitution = instance.substitute(distributor);
+		final Ref substitution = instance.substituteValue(distributor);
 
 		if (substitution == null) {
-			instance.substitute(distributor);
 			getLogger().error(
-					"missing_clause_substitution",
+					"missing_clause_value",
 					instance.getLocation(),
 					"Value required here");
 		}
