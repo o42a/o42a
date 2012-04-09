@@ -160,11 +160,9 @@ public class FieldAnalysis {
 
 		final Obj target = member.substance(dummyUser()).toObject();
 
-		if (target.getConstructionMode().isRuntime()) {
-			this.derivationUses.useBy(
-					target.content(),
-					RUNTIME_DERIVATION_USAGE);
-		}
+		this.derivationUses.useBy(
+				target.type().rtDerivation(),
+				RUNTIME_DERIVATION_USAGE);
 
 		final MemberField lastDefinition = member.getLastDefinition();
 

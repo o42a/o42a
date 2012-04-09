@@ -19,10 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -185,8 +183,9 @@ final class NormalizedPath implements NormalPath {
 
 		fullResolution.start();
 		try {
-			this.path.resolve(
-					fullPathResolver(getOrigin(), user, VALUE_REF_USAGE));
+			this.path.target(getOrigin().distribute())
+			.resolve(getOrigin().newResolver(user))
+			.resolveValue();
 		} finally {
 			fullResolution.end();
 		}

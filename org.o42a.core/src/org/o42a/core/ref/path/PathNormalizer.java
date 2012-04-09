@@ -404,8 +404,10 @@ public final class PathNormalizer {
 				new InitialPrediction(startObjectScope),
 				startObjectScope);
 
-		this.normalSteps.add(new SameNormalStep(
-				new StaticStep(getNormalizedStart(), startObjectScope)));
+		if (!isAbsolute()) {
+			this.normalSteps.add(new SameNormalStep(
+					new StaticStep(getNormalizedStart(), startObjectScope)));
+		}
 		while (this.stepIndex < steps.length) {
 			this.stepPrediction = null;
 			this.stepNormalized = false;
