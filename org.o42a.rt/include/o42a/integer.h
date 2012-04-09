@@ -30,7 +30,7 @@ extern "C" {
 
 void o42a_int_by_str(O42A_DECLS o42a_val_t *, const o42a_val_t *, uint32_t);
 
-void o42a_int_to_str(O42A_DECLS o42a_val_t *, int64_t);
+o42a_bool_t o42a_int_to_str(O42A_DECLS o42a_val_t *, int64_t);
 
 
 #ifdef __cplusplus

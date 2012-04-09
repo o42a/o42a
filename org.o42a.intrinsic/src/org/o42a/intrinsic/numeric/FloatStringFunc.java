@@ -23,17 +23,18 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public class Fp64ToStringFunc extends Func<Fp64ToStringFunc> {
+public class FloatStringFunc extends Func<FloatStringFunc> {
 
-	public static final Fp64ToString FP64_TO_STRING = new Fp64ToString();
+	public static final FloatString FLOAT_TO_STRING = new FloatString();
 
-	private Fp64ToStringFunc(FuncCaller<Fp64ToStringFunc> caller) {
+	private FloatStringFunc(FuncCaller<FloatStringFunc> caller) {
 		super(caller);
 	}
 
@@ -41,28 +42,28 @@ public class Fp64ToStringFunc extends Func<Fp64ToStringFunc> {
 
 		final Block code = stringDirs.code();
 		final ValOp string = stringDirs.value();
-
-		invoke(
+		final BoolOp result = invoke(
 				null,
 				code,
-				FP64_TO_STRING.result(),
+				FLOAT_TO_STRING.result(),
 				string.ptr(),
 				value);
+
+		result.goUnless(code, stringDirs.falseDir());
 
 		return string;
 	}
 
-	public static final class Fp64ToString
-			extends Signature<Fp64ToStringFunc> {
+	public static final class FloatString extends Signature<FloatStringFunc> {
 
-		private Return<Void> result;
+		private Return<BoolOp> result;
 		private Arg<ValType.Op> string;
 		private Arg<Fp64op> value;
 
-		private Fp64ToString() {
+		private FloatString() {
 		}
 
-		public final Return<Void> result() {
+		public final Return<BoolOp> result() {
 			return this.result;
 		}
 
@@ -75,18 +76,18 @@ public class Fp64ToStringFunc extends Func<Fp64ToStringFunc> {
 		}
 
 		@Override
-		public Fp64ToStringFunc op(FuncCaller<Fp64ToStringFunc> caller) {
-			return new Fp64ToStringFunc(caller);
+		public FloatStringFunc op(FuncCaller<FloatStringFunc> caller) {
+			return new FloatStringFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("Fp64toStringF");
+			return factory.id("FloatStringF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
+			this.result = builder.returnBool();
 			this.string = builder.addPtr("string", ValType.VAL_TYPE);
 			this.value = builder.addFp64("value");
 		}

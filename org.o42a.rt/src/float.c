@@ -22,6 +22,7 @@
 #include <fenv.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "o42a/error.h"
 #include "o42a/memory.h"
@@ -306,11 +307,14 @@ union str_and_int_ptr {
 };
 
 static const char *const O42A_NAN = "NaN";
+static const char *const O42A_ZERO = "0.0";
 static const char *const O42A_POSINF = "Infinity";
 static const char *const O42A_NEGINF = "-Infinity";
 
-void o42a_float_to_str(O42A_PARAMS o42a_val_t *const string, double value) {
-	O42A_ENTER(return);
+o42a_bool_t o42a_float_to_str(
+		O42A_PARAMS o42a_val_t *const string,
+		double value) {
+	O42A_ENTER(return O42A_TRUE);
 
 	if (isinf(value)) {
 		if (!signbit(value)) {
@@ -323,7 +327,7 @@ void o42a_float_to_str(O42A_PARAMS o42a_val_t *const string, double value) {
 			string->length = 9;
 			string->value.v_ptr = (void *) O42A_NEGINF;
 		}
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	}
 
 	if (isnan(value)) {
@@ -331,26 +335,67 @@ void o42a_float_to_str(O42A_PARAMS o42a_val_t *const string, double value) {
 		string->flags = O42A_TRUE;
 		string->length = 3;
 		string->value.v_integer = *ptr.p_integer;
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	}
 
-	char buf[8];
-	size_t len = O42A(snprintf(buf, 1, "%g", value));
+	double absval = fabs(value);
+
+	if (absval == 0.0) {
+		union str_and_int_ptr ptr = {p_char: O42A_ZERO};
+		string->flags = O42A_TRUE;
+		string->length = 3;
+		string->value.v_integer = *ptr.p_integer;
+		O42A_RETURN O42A_TRUE;
+	}
+
+	char buf[32];
+	const char *format;
+	int rmzeros;
+
+	if (absval >= 0.001 && absval < 1000000) {
+		format = "%#.3f";
+		rmzeros = 1;
+	} else {
+		format = "%#.6e";
+		rmzeros = 0;
+	}
+
+	size_t len = O42A(snprintf(buf, 32, format, value));
+
+	if (rmzeros) {
+		size_t i = len;
+		while (i) {
+			char c = buf[--i];
+			if (c != '0') {
+				if (c == '.' && i < len - 1) {
+					len = i + 2;
+				} else {
+					len = i + 1;
+				}
+				break;
+			}
+		}
+	}
 
 	if (len <= 8) {
 		union str_and_int_ptr ptr = {p_char: buf};
 		string->flags = O42A_TRUE;
 		string->length = len;
 		string->value.v_integer = *ptr.p_integer;
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	}
 
 	char *lbuf = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
 
-	O42A(snprintf(lbuf, len, "%g", value));
-	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL | O42A_VAL_STATIC;
+	if (!lbuf) {
+		string->flags = O42A_FALSE;
+		O42A_RETURN O42A_FALSE;
+	}
+
+	O42A(memcpy(lbuf, buf, len));
+	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL;
 	string->length = len;
 	string->value.v_ptr = lbuf;
 
-	O42A_RETURN;
+	O42A_RETURN O42A_TRUE;
 }
