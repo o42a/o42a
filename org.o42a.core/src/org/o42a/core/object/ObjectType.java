@@ -221,7 +221,7 @@ public final class ObjectType implements UserInfo {
 	protected void useAsAncestor(Obj derived) {
 		derivationUses().useBy(
 				derived.content(),
-				getObject().isClone()
+				derived.isClone()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
@@ -248,7 +248,7 @@ public final class ObjectType implements UserInfo {
 
 		derivationUses().useBy(
 				derived.content(),
-				getObject().isClone()
+				derived.isClone()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),

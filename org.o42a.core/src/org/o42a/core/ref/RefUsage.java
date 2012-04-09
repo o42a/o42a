@@ -72,13 +72,13 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		super(ALL_REF_USAGES, name);
 	}
 
-	public abstract void fullyResolve(Obj object, UserInfo user);
-
-	protected void fullyResolve(
+	public void fullyResolve(
 			Resolution resolution,
 			Container resolved) {
-		fullyResolve(resolved.toObject(), resolution.getResolver());
+		resolveObject(resolved.toObject(), resolution.getResolver());
 	}
+
+	protected abstract void resolveObject(Obj object, UserInfo user);
 
 	private static final class ValueUsage extends RefUsage {
 
@@ -87,7 +87,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Obj object, UserInfo user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.value().resolveAll(user);
 		}
 
@@ -100,7 +100,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Obj object, UserInfo user) {
+		protected void resolveObject(Obj object, UserInfo user) {
 			object.type().useBy(user);
 		}
 
@@ -113,20 +113,20 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Obj object, UserInfo user) {
-			object.resolveAll();
-		}
-
-		@Override
-		protected void fullyResolve(Resolution resolution, Container resolved) {
+		public void fullyResolve(Resolution resolution, Container resolved) {
 
 			final Clause clause = resolved.toClause();
 
 			if (clause != null) {
 				clause.resolveAll();
 			} else {
-				fullyResolve(resolved.toObject(), resolution.getResolver());
+				resolveObject(resolved.toObject(), resolution.getResolver());
 			}
+		}
+
+		@Override
+		protected void resolveObject(Obj object, UserInfo user) {
+			object.resolveAll();
 		}
 
 	}
