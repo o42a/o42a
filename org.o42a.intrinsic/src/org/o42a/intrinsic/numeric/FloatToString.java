@@ -50,10 +50,10 @@ public class FloatToString extends ToString<Double> {
 	protected ValOp print(ValDirs stringDirs, ValOp value) {
 
 		final Block code = stringDirs.code();
-		final FuncPtr<Fp64ToStringFunc> fn =
+		final FuncPtr<FloatStringFunc> fn =
 				code.getGenerator().externalFunction().sideEffects(true).link(
 						"o42a_float_to_str",
-						Fp64ToStringFunc.FP64_TO_STRING);
+						FloatStringFunc.FLOAT_TO_STRING);
 
 		return fn.op(null, code).convert(
 				stringDirs,

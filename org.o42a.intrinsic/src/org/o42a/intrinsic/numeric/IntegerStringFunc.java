@@ -23,17 +23,18 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 
 
-public class Int64ToStringFunc extends Func<Int64ToStringFunc> {
+public class IntegerStringFunc extends Func<IntegerStringFunc> {
 
-	public static final Int64ToString INT64_TO_STRING = new Int64ToString();
+	public static final IntegerString INTEGER_STRING = new IntegerString();
 
-	private Int64ToStringFunc(FuncCaller<Int64ToStringFunc> caller) {
+	private IntegerStringFunc(FuncCaller<IntegerStringFunc> caller) {
 		super(caller);
 	}
 
@@ -41,28 +42,29 @@ public class Int64ToStringFunc extends Func<Int64ToStringFunc> {
 
 		final Block code = stringDirs.code();
 		final ValOp string = stringDirs.value();
-
-		invoke(
+		final BoolOp result = invoke(
 				null,
 				code,
-				INT64_TO_STRING.result(),
+				INTEGER_STRING.result(),
 				string.ptr(),
 				value);
+
+		result.goUnless(code, stringDirs.falseDir());
 
 		return string;
 	}
 
-	public static final class Int64ToString
-			extends Signature<Int64ToStringFunc> {
+	public static final class IntegerString
+			extends Signature<IntegerStringFunc> {
 
-		private Return<Void> result;
+		private Return<BoolOp> result;
 		private Arg<ValType.Op> string;
 		private Arg<Int64op> value;
 
-		private Int64ToString() {
+		private IntegerString() {
 		}
 
-		public final Return<Void> result() {
+		public final Return<BoolOp> result() {
 			return this.result;
 		}
 
@@ -75,18 +77,18 @@ public class Int64ToStringFunc extends Func<Int64ToStringFunc> {
 		}
 
 		@Override
-		public Int64ToStringFunc op(FuncCaller<Int64ToStringFunc> caller) {
-			return new Int64ToStringFunc(caller);
+		public IntegerStringFunc op(FuncCaller<IntegerStringFunc> caller) {
+			return new IntegerStringFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("Int64toStringF");
+			return factory.id("IntegerStringF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
+			this.result = builder.returnBool();
 			this.string = builder.addPtr("string", ValType.VAL_TYPE);
 			this.value = builder.addInt64("value");
 		}

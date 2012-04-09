@@ -20,6 +20,7 @@
 #include "o42a/integer.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include "o42a/error.h"
 #include "o42a/memory.h"
@@ -150,26 +151,31 @@ union str_and_int_ptr {
 	const char *p_char;
 };
 
-void o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
-	O42A_ENTER(return);
+o42a_bool_t o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
+	O42A_ENTER(return O42A_TRUE);
 
-	char buf[8];
-	size_t len = O42A(snprintf(buf, 1, "%lld", (long long) value));
+	char buf[32];
+	size_t len = O42A(snprintf(buf, 32, "%lld", (long long) value));
 
 	if (len <= 8) {
 		union str_and_int_ptr ptr = {p_char: buf};
 		string->flags = O42A_TRUE;
 		string->length = len;
 		string->value.v_integer = *ptr.p_integer;
-		O42A_RETURN;
+		O42A_RETURN O42A_TRUE;
 	}
 
 	char *lbuf = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
 
-	O42A(snprintf(lbuf, len, "%lld", (long long) value));
-	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL | O42A_VAL_STATIC;
+	if (!lbuf) {
+		string->flags = O42A_FALSE;
+		O42A_RETURN O42A_FALSE;
+	}
+
+	O42A(memcpy(lbuf, buf, len));
+	string->flags = O42A_TRUE | O42A_VAL_EXTERNAL;
 	string->length = len;
 	string->value.v_ptr = lbuf;
 
-	O42A_RETURN;
+	O42A_RETURN O42A_TRUE;
 }
