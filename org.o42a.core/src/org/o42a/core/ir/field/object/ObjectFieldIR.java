@@ -96,8 +96,7 @@ public final class ObjectFieldIR extends FieldIR {
 				.getTypeRef()
 				.typeObject(dummyUser());
 		final Obj target;
-		final DefTarget defTarget =
-				object.value().getDefinitions().target();
+		final DefTarget defTarget = object.value().getDefinitions().target();
 
 		assert defTarget.exists() :
 			"Link target does not exist: " + object;

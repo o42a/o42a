@@ -123,14 +123,6 @@ public class MemberStep extends AbstractMemberStep {
 				normalizer.getPath(),
 				normalizer.getStepIndex(),
 				lastPrediction.getScope());
-
-		if (lastPrediction.getScope().getLastDefinition()
-				!= member.getDefinedIn()) {
-			// Require explicitly declared member.
-			normalizer.finish();
-			return;
-		}
-
 		final MemberField memberField = member.toField();
 
 		if (memberField == null) {
