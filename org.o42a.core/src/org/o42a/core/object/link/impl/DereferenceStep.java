@@ -246,7 +246,7 @@ public class DereferenceStep extends Step {
 
 		@Override
 		public ObjectOp dereference(CodeDirs dirs) {
-			throw new UnsupportedOperationException();
+			return target(dirs).dereference(dirs);
 		}
 
 		@Override

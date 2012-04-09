@@ -72,6 +72,10 @@ public abstract class SingleValueType<T>
 		return struct().unknownValue();
 	}
 
+	public final Value<T> compilerValue(T value) {
+		return struct().compilerValue(value);
+	}
+
 	public final Ref constantRef(
 			LocationInfo location,
 			Distributor distributor,

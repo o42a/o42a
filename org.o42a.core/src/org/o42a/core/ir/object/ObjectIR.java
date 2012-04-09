@@ -138,11 +138,8 @@ public class ObjectIR  {
 		return this;
 	}
 
-	public ObjOp op(CodeBuilder builder, Code code) {
-
-		final ObjectBodyIR bodyType = getBodyType();
-
-		return bodyType.data(getGenerator())
+	public final ObjOp op(CodeBuilder builder, Code code) {
+		return getMainBodyIR().data(getGenerator())
 				.getPointer().op(null, code).op(builder, this);
 	}
 
