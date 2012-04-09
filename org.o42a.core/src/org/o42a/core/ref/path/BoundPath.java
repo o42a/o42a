@@ -416,7 +416,7 @@ public class BoundPath extends Location {
 		// This marks the original path steps unused.
 		if (this.originalUser == null) {
 			this.originalUser = this.user.getProxied();
-			//this.user.setProxied(dummyUser());
+			this.user.setProxied(dummyUser());
 		}
 		// Return the original user.
 		// It will be used to fully resolve the normalized path.
