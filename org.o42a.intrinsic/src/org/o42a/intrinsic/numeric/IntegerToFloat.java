@@ -20,8 +20,8 @@
 package org.o42a.intrinsic.numeric;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.common.adapter.ToString;
+import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.common.adapter.BuiltinConverter;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
@@ -29,35 +29,41 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.ValueType;
 
 
-@SourcePath(relativeTo = IntegerValueTypeObject.class, value = "@string.o42a")
-public class IntegerToString extends ToString<Long> {
+@SourcePath(relativeTo = IntegerValueTypeObject.class, value = "@float.o42a")
+public class IntegerToFloat extends BuiltinConverter<Long, Double> {
 
-	public IntegerToString(MemberOwner owner, AnnotatedSources sources) {
+	public IntegerToFloat(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
 	}
 
 	@Override
-	protected String convert(
-			LocationInfo location,
-			Resolver resolver,
-			Long value) {
-		return value.toString();
+	public SingleValueType<Double> toValueType() {
+		return ValueType.FLOAT;
 	}
 
 	@Override
-	protected ValOp convert(ValDirs stringDirs, ValOp value) {
+	protected Double convert(
+			LocationInfo location,
+			Resolver resolver,
+			Long value) {
+		return value.doubleValue();
+	}
 
-		final Block code = stringDirs.code();
-		final FuncPtr<IntegerStringFunc> fn =
-				code.getGenerator().externalFunction().sideEffects(true).link(
-						"o42a_int_to_str",
-						IntegerStringFunc.INTEGER_STRING);
+	@Override
+	protected ValOp convert(ValDirs targetDirs, ValOp value) {
 
-		return fn.op(null, code).convert(
-				stringDirs,
-				value.rawValue(null, code).load(null, code));
+		final Block code = targetDirs.code();
+		final Fp64op floatValue =
+				value.rawValue(code.id("pint"), code)
+				.load(code.id("int"), code)
+				.toFp64(null, code);
+		final ValOp targetValue = targetDirs.value();
+
+		return targetValue.store(code, floatValue);
 	}
 
 }
