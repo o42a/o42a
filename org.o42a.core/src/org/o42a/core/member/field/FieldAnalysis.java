@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.field;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 import static org.o42a.core.member.field.FieldUsage.NESTED_USAGE;
 import static org.o42a.core.member.field.FieldUsage.SUBSTANCE_USAGE;
@@ -100,6 +99,12 @@ public class FieldAnalysis {
 
 		uses.useBy(object.content().toUser(), SUBSTANCE_USAGE);
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
+
+		if (object.getConstructionMode().isRuntime() || object.isClone()) {
+			derivationUses().useBy(
+					object.content(),
+					RUNTIME_DERIVATION_USAGE);
+		}
 	}
 
 	final MemberFieldUses uses() {
@@ -156,12 +161,6 @@ public class FieldAnalysis {
 		// Run time construction status derived from owner.
 		this.derivationUses.useBy(
 				owner.type().rtDerivation(),
-				RUNTIME_DERIVATION_USAGE);
-
-		final Obj target = member.substance(dummyUser()).toObject();
-
-		this.derivationUses.useBy(
-				target.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
 
 		final MemberField lastDefinition = member.getLastDefinition();
