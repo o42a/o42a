@@ -34,11 +34,13 @@ Unary conditions := test(
 
 Equal := test(
   Assert [rt-float '7.25' == float '7.25'] 'Floats not equal'
+  Assert [rt-float '7' == 7] 'Float and integer not equal'
 )
 
 Not equal := test(
   Assert [rt-float '5.1' <> rt-float '5.2'] 'Floats equal'
   Assert [--(rt-float '9.2' == rt-float '7.1')] 'Floats equal' 
+  Assert [rt-float '7.4' <> 7] 'Float and integer equal'
 )
 
 Plus := test(
@@ -50,8 +52,23 @@ Minus := test(
 )
 
 Arithmetics := test(
-  Assert [rt-float '5.5' + float '6.25' == float '11.75'] 'Addition failed'
-  Assert [rt-float '6.5' - float '5' == float '1.5'] 'Subtraction failed'
-  Assert [rt-float '5.25' * float '6' == float '31.5' ] 'Multiplication failed'
-  Assert [rt-float '7.5' / float '2.5' == float '3'] 'Division failed'
+  Assert [rt-float '5.5' + float '6.25' == float '11.75']
+  _ 'Float addition failed'
+  Assert [rt-float '6.5' - float '5' == float '1.5']
+  _ 'Float subtraction failed'
+  Assert [rt-float '5.25' * float '6' == float '31.5' ]
+  _ 'Float multiplication failed'
+  Assert [rt-float '7.5' / float '2.5' == float '3']
+  _ 'Float division failed'
+)
+
+Mixed arithmetics := test(
+  Assert [rt-float '5.5' + 6 == float '11.5']
+  _ 'Float and integer addition failed'
+  Assert [rt-float '6.5' - 5 == float '1.5']
+  _ 'Float and integer subtraction failed'
+  Assert [rt-float '5.25' * 6 == float '31.5' ]
+  _ 'Float and integer multiplication failed'
+  Assert [rt-float '9.4' / 2 == float '4.7']
+  _ 'Float and integer division failed'
 )

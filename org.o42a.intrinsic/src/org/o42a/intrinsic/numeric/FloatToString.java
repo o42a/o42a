@@ -39,7 +39,7 @@ public class FloatToString extends ToString<Double> {
 	}
 
 	@Override
-	protected String toString(
+	protected String convert(
 			LocationInfo location,
 			Resolver resolver,
 			Double value) {
@@ -47,7 +47,7 @@ public class FloatToString extends ToString<Double> {
 	}
 
 	@Override
-	protected ValOp print(ValDirs stringDirs, ValOp value) {
+	protected ValOp convert(ValDirs stringDirs, ValOp value) {
 
 		final Block code = stringDirs.code();
 		final FuncPtr<FloatStringFunc> fn =
