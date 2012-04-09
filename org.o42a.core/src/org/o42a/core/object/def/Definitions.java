@@ -507,6 +507,15 @@ public class Definitions extends Scoped {
 		conditions().normalize(normalizer);
 		claims().normalize(normalizer);
 		propositions().normalize(normalizer);
+
+		final Ref targetRef = target().getRef();
+
+		if (targetRef != null) {
+			// It is necessary to attempt to normalize the target,
+			// especially when normalization fails.
+			// This properly updates the use graph.
+			targetRef.normalize(normalizer.getAnalyzer());
+		}
 	}
 
 	public DefTarget target() {
