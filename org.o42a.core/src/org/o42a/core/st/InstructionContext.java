@@ -28,7 +28,7 @@ public interface InstructionContext extends UserInfo {
 
 	Resolver getResolver();
 
-	Block<?> getBlock();
+	Block<?, ?> getBlock();
 
 	void doNotRemove();
 

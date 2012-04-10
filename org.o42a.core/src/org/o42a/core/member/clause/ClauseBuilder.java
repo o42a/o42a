@@ -305,12 +305,12 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	protected Block<?> parentheses(Group group) {
+	protected Block<?, ?> parentheses(Group group) {
 		assert getDeclaration().getKind() == ClauseKind.GROUP :
 			"Group declaration expected: " + getDeclaration();
 
 		final DeclaredGroupClause clause = declaredGroupClause(this);
-		final Block<?> definition = clause.parentheses(group);
+		final Block<?, ?> definition = clause.parentheses(group);
 
 		if (definition == null) {
 			return null;

@@ -22,16 +22,13 @@ package org.o42a.core.st.sentence;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Container;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.DefinitionTargets;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.*;
+import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
-import org.o42a.core.st.impl.imperative.ImperativeStatementEnv;
 
 
-public class Imperatives extends Statements<Imperatives> {
+public class Imperatives extends Statements<Imperatives, Command> {
 
 	private DefinitionTargets kinds;
 
@@ -62,8 +59,8 @@ public class Imperatives extends Statements<Imperatives> {
 
 		DefinitionTargets result = noDefinitions();
 
-		for (Definer definer : getDefiners()) {
-			result = result.add(definer.getDefinitionTargets());
+		for (Command command : getImplications()) {
+			result = result.add(command.getDefinitionTargets());
 		}
 
 		return this.kinds = result;
@@ -91,7 +88,7 @@ public class Imperatives extends Statements<Imperatives> {
 			return;
 		}
 
-		final Block<?> block = blockByName(location, name);
+		final Block<?, ?> block = blockByName(location, name);
 
 		if (block == null) {
 			return;
@@ -113,34 +110,25 @@ public class Imperatives extends Statements<Imperatives> {
 	}
 
 	@Override
-	protected Definer define(Statement statement) {
-
-		final ImperativeStatementEnv env = new ImperativeStatementEnv(
-				this,
-				getSentence().getBlock().getInitialEnv());
-
-		return statement.define(env);
+	protected Command define(Statement statement) {
+		final ImplicationEnv initialEnv =
+				getSentence().getBlock().getInitialEnv();
+		return statement.command(new BlockCommandEnv(this, initialEnv));
 	}
 
-	final void normalizeImperatives(RootNormalizer normalizer) {
-		for (Definer definer : getDefiners()) {
-			definer.getStatement().normalizeImperative(normalizer);
-		}
-	}
-
-	private Block<?> blockByName(LocationInfo location, String name) {
+	private Block<?, ?> blockByName(LocationInfo location, String name) {
 		if (name == null) {
 			return getSentence().getBlock();
 		}
 
-		Block<?> block = getSentence().getBlock();
+		Block<?, ?> block = getSentence().getBlock();
 
 		for (;;) {
 			if (name.equals(block.getName())) {
 				return block;
 			}
 
-			final Statements<?> enclosing = block.getEnclosing();
+			final Statements<?, ?> enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
 				getLogger().unresolved(location, name);

@@ -26,6 +26,7 @@ import org.o42a.core.ir.object.impl.LocalIRFunc;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.Command;
 
 
 public abstract class ObjectLocalIR extends ScopeIR {
@@ -36,13 +37,18 @@ public abstract class ObjectLocalIR extends ScopeIR {
 		super(generator, scope);
 
 		final LocalIR localIR = (LocalIR) this;
-		final ObjectValueIR ownerValueIR = localIR.getOwnerIR().getObjectValueIR();
+		final ObjectValueIR ownerValueIR =
+				localIR.getOwnerIR().getObjectValueIR();
 
 		this.function = new LocalIRFunc(localIR, ownerValueIR.getLocals());
 	}
 
-	public ValOp writeValue(ValDirs dirs, ObjOp owner, ObjOp ownerBody) {
-		return this.function.call(dirs, owner, ownerBody);
+	public ValOp writeValue(
+			ValDirs dirs,
+			ObjOp owner,
+			ObjOp ownerBody,
+			Command command) {
+		return this.function.call(dirs, owner, ownerBody, command);
 	}
 
 }

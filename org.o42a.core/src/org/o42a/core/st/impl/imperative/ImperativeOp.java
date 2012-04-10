@@ -26,8 +26,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.Statement;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
@@ -185,7 +184,7 @@ final class ImperativeOp {
 			}
 			if (altControl.isDone()) {
 				altControl.end();
-				if (alt.getDefiners().size() == 1) {
+				if (alt.getImplications().size() == 1) {
 					// the only statement is exit
 					if (sentence.hasOpposite(i)) {// one of the opposites
 						nextOppUnreachability = altControl;
@@ -229,19 +228,19 @@ final class ImperativeOp {
 			Imperatives statements,
 			InlineCommands inlines) {
 
-		final List<Definer> definers = statements.getDefiners();
-		final int size = definers.size();
+		final List<Command> commands = statements.getImplications();
+		final int size = commands.size();
 
 		for (int i = 0; i < size; ++i) {
 
-			final Statement statement = definers.get(i).getStatement();
+			final Command command = commands.get(i);
 
-			if (!control.reach(statement)) {
+			if (!control.reach(command)) {
 				return;
 			}
 			if (inlines == null) {
 
-				final Cmd cmd = statement.cmd(control.getBuilder());
+				final Cmd cmd = command.cmd(control.getBuilder());
 
 				cmd.write(control);
 			} else {

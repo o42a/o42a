@@ -194,22 +194,22 @@ public enum Interpreter {
 
 	public static void addContent(
 			StatementVisitor statementVisitor,
-			Block<?> block,
+			Block<?, ?> block,
 			BlockNode<?> blockNode) {
 		for (SentenceNode sentence : blockNode.getContent()) {
 			addSentence(statementVisitor, block, sentence, sentence.getType());
 		}
 	}
 
-	public static Sentence<?> addSentence(
+	public static Sentence<?, ?> addSentence(
 			StatementVisitor statementVisitor,
-			Block<?> block,
+			Block<?, ?> block,
 			SentenceNode node,
 			SentenceType type) {
 
 		final Location location =
 				new Location(statementVisitor.getContext(), node);
-		final Sentence<?> sentence;
+		final Sentence<?, ?> sentence;
 
 		switch (type) {
 		case PROPOSITION:
@@ -273,11 +273,11 @@ public enum Interpreter {
 
 	private static void fillSentence(
 			final StatementVisitor statementVisitor,
-			final Sentence<?> sentence,
+			final Sentence<?, ?> sentence,
 			final SentenceNode node) {
 		for (AlternativeNode alt : node.getDisjunction()) {
 
-			final Statements<?> alternative = sentence.alternative(
+			final Statements<?, ?> alternative = sentence.alternative(
 					new Location(statementVisitor.getContext(), alt),
 					alt.isOpposite());
 

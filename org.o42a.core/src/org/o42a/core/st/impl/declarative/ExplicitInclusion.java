@@ -21,7 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.SectionTag;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
 
@@ -43,7 +43,7 @@ public class ExplicitInclusion extends Inclusion {
 	}
 
 	@Override
-	protected ExplicitInclusionDefiner createDefiner(StatementEnv env) {
+	protected ExplicitInclusionDefiner createDefiner(DefinerEnv env) {
 		return new ExplicitInclusionDefiner(this, env);
 	}
 
@@ -60,7 +60,7 @@ public class ExplicitInclusion extends Inclusion {
 
 		ExplicitInclusionDefiner(
 				ExplicitInclusion inclusion,
-				StatementEnv env) {
+				DefinerEnv env) {
 			super(inclusion, env);
 		}
 

@@ -50,7 +50,7 @@ public class ClauseInterpreter {
 	public static void clause(
 			CompilerContext context,
 			ClauseDeclaratorNode declarator,
-			Statements<?> statements) {
+			Statements<?, ?> statements) {
 
 		final Distributor distributor =
 				new Placed(context, declarator, statements.nextDistributor())
@@ -98,7 +98,7 @@ public class ClauseInterpreter {
 	static ClauseBuilder buildOverrider(
 			ClauseDeclaration declaration,
 			DeclaratorNode declarator,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final DeclarationTarget target = declarator.getTarget();
 

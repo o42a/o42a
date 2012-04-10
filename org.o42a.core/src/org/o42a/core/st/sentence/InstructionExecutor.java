@@ -23,21 +23,21 @@ import java.util.List;
 
 import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.Definer;
+import org.o42a.core.st.Implication;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
 
 
 final class InstructionExecutor implements InstructionContext {
 
-	private final Statements<?> statements;
+	private final Statements<?, ?> statements;
 	private final Resolver resolver;
 	private int index;
-	private Definer definer;
-	private Block<?> block;
+	private Implication<?> implication;
+	private Block<?, ?> block;
 	private boolean doNotRemove;
 
-	InstructionExecutor(Statements<?> statements) {
+	InstructionExecutor(Statements<?, ?> statements) {
 		this.statements = statements;
 		this.resolver = statements.getScope().dummyResolver();
 	}
@@ -53,7 +53,7 @@ final class InstructionExecutor implements InstructionContext {
 	}
 
 	@Override
-	public Block<?> getBlock() {
+	public Block<?, ?> getBlock() {
 		if (this.block != null) {
 			return this.block;
 		}
@@ -62,8 +62,8 @@ final class InstructionExecutor implements InstructionContext {
 
 		return this.block = this.statements.parentheses(
 				this.index,
-				this.definer,
-				this.definer.distribute());
+				this.implication,
+				this.implication.distribute());
 	}
 
 	@Override
@@ -73,29 +73,30 @@ final class InstructionExecutor implements InstructionContext {
 
 	@Override
 	public String toString() {
-		return "InstructionContext[" + this.definer + ']';
+		return "InstructionContext[" + this.implication + ']';
 	}
 
 	final void executeAll() {
 
-		final List<Definer> definers = this.statements.getDefiners();
+		final List<? extends Implication<?>> implications =
+				this.statements.getImplications();
 
-		while (this.index < definers.size()) {
-			execute(definers.get(this.index));
+		while (this.index < implications.size()) {
+			execute(implications.get(this.index));
 		}
 	}
 
-	private final void execute(Definer definer) {
+	private final void execute(Implication<?> implication) {
 
 		final Instruction instruction =
-				definer.toInstruction(getResolver());
+				implication.toInstruction(getResolver());
 
 		if (instruction == null) {
 			++this.index;
 			return;
 		}
 
-		this.definer = definer;
+		this.implication = implication;
 		try {
 			instruction.execute(this);
 			if (!this.doNotRemove) {

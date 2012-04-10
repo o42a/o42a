@@ -26,9 +26,7 @@ import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.LocalFieldCmd;
-import org.o42a.core.member.DeclarationDefiner;
-import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.Member;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -59,13 +57,18 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		return this.member;
 	}
 
-	public final StatementEnv getInitialEnv() {
+	public final DefinerEnv getInitialEnv() {
 		return this.definer.env();
 	}
 
 	@Override
-	public DeclarationDefiner define(StatementEnv env) {
+	public DeclarationDefiner define(DefinerEnv env) {
 		return this.definer = new Definer(this, env);
+	}
+
+	@Override
+	public DeclarationCommand command(CommandEnv env) {
+		return new Command(this, env);
 	}
 
 	@Override
@@ -102,14 +105,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 				+ this.builder.getDefinition());
 	}
 
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new LocalFieldCmd(
-				builder,
-				this,
-				this.member.toField().field(dummyUser()));
-	}
-
 	private FieldDefinition reproduceDefinition(Reproducer reproducer) {
 		if (!this.builder.getDefinition().isValid()) {
 			return invalidDefinition(
@@ -125,7 +120,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 	private static final class Definer extends DeclarationDefiner {
 
-		Definer(FieldDeclarationStatement statement, StatementEnv env) {
+		Definer(FieldDeclarationStatement statement, DefinerEnv env) {
 			super(statement, env);
 		}
 
@@ -135,8 +130,21 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		public StatementEnv nextEnv() {
+		public DefinerEnv nextEnv() {
 			return env().notCondition(this);
+		}
+
+	}
+
+	private static final class Command extends DeclarationCommand {
+
+		Command(DeclarationStatement statement, CommandEnv env) {
+			super(statement, env);
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return fieldDeclaration(getDeclarationStatement());
 		}
 
 		@Override
@@ -154,6 +162,18 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 					.toLogicalValue();
 
 			return new ExecuteCommand(this, logicalValue);
+		}
+
+		@Override
+		protected Cmd createCmd(CodeBuilder builder) {
+
+			final FieldDeclarationStatement statement =
+					(FieldDeclarationStatement) getStatement();
+
+			return new LocalFieldCmd(
+					builder,
+					statement,
+					statement.member.toField().field(dummyUser()));
 		}
 
 	}

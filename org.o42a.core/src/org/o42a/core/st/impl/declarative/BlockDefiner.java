@@ -20,24 +20,33 @@
 package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.impl.BlockDefiner;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.impl.BlockImplication;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.ValueStruct;
 
 
-public class DeclarativeBlockDefiner extends BlockDefiner<DeclarativeBlock> {
+public final class BlockDefiner
+		extends BlockImplication<DeclarativeBlock, Definer>
+		implements Definer {
 
-	public DeclarativeBlockDefiner(DeclarativeBlock block, StatementEnv env) {
-		super(block, env);
+	private final DefinerEnv env;
+
+	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
+		super(block);
+		this.env = env;
 	}
 
 	@Override
-	public StatementEnv nextEnv() {
+	public final DefinerEnv env() {
+		return this.env;
+	}
+
+	@Override
+	public DefinerEnv nextEnv() {
 		return new DeclarativeBlockEnv(this);
 	}
 
@@ -72,16 +81,6 @@ public class DeclarativeBlockDefiner extends BlockDefiner<DeclarativeBlock> {
 			"Missing definitions: " + this;
 
 		return result;
-	}
-
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
 	}
 
 }

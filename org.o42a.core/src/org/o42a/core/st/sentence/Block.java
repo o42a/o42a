@@ -24,30 +24,32 @@ import java.util.List;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
-import org.o42a.core.st.impl.BlockDefiner;
+import org.o42a.core.st.Implication;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
 
 
-public abstract class Block<S extends Statements<S>> extends Statement {
+public abstract class Block<
+		S extends Statements<S, L>,
+		L extends Implication<L>>
+				extends Statement {
 
-	private final Statements<?> enclosing;
-	private Sentence<S> lastIssue;
-	private final ArrayList<Sentence<S>> sentences =
-			new ArrayList<Sentence<S>>();
+	private final Statements<?, ?> enclosing;
+	private Sentence<S, L> lastIssue;
+	private final ArrayList<Sentence<S, L>> sentences =
+			new ArrayList<Sentence<S, L>>();
 	private final MemberRegistry memberRegistry;
-	private final SentenceFactory<S, ?, ?> sentenceFactory;
+	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private boolean instructionsExecuted;
-	private BlockDefiner<?> definer;
 
 	protected Block(
 			LocationInfo location,
 			Distributor distributor,
 			MemberRegistry memberRegistry,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			SentenceFactory<L, S, ?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = null;
 		this.memberRegistry = memberRegistry;
@@ -57,20 +59,20 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 	Block(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			MemberRegistry memberRegistry,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			SentenceFactory<L, S, ?, ?> sentenceFactory) {
 		super(location, distributor);
 		this.enclosing = enclosing;
 		this.memberRegistry = memberRegistry;
 		this.sentenceFactory = sentenceFactory;
 	}
 
-	public final Statements<?> getEnclosing() {
+	public final Statements<?, ?> getEnclosing() {
 		return this.enclosing;
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -84,41 +86,41 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public final boolean isConditional() {
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements<?, ?> enclosing = getEnclosing();
 
 		return enclosing != null && enclosing.getSentence().isConditional();
 	}
 
-	public List<? extends Sentence<S>> getSentences() {
+	public List<? extends Sentence<S, L>> getSentences() {
 		return this.sentences;
 	}
 
-	public Sentence<S> propose(LocationInfo location) {
+	public Sentence<S, L> propose(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> proposition = sentenceFactory.propose(location, this);
+		final Sentence<S, L> proposition = sentenceFactory.propose(location, this);
 
 		return addStatementSentence(proposition);
 	}
 
-	public Sentence<S> claim(LocationInfo location) {
+	public Sentence<S, L> claim(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> claim = sentenceFactory.claim(location, this);
+		final Sentence<S, L> claim = sentenceFactory.claim(location, this);
 
 		return addStatementSentence(claim);
 	}
 
-	public Sentence<S> issue(LocationInfo location) {
+	public Sentence<S, L> issue(LocationInfo location) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S> issue = sentenceFactory.issue(location, this);
+		final Sentence<S, L> issue = sentenceFactory.issue(location, this);
 
 		this.sentences.add(issue);
 		this.lastIssue = issue;
@@ -131,36 +133,27 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			return;
 		}
 		this.instructionsExecuted = true;
-		for (Sentence<S> sentence : getSentences()) {
+		for (Sentence<S, L> sentence : getSentences()) {
 			sentence.executeInstructions();
 		}
 	}
 
-	public boolean contains(Block<?> block) {
+	public boolean contains(Block<?, ?> block) {
 		if (block == this) {
 			return true;
 		}
 
-		final Statements<?> enclosing = block.getEnclosing();
+		final Statements<?, ?> enclosing = block.getEnclosing();
 
 		return enclosing != null && contains(enclosing);
 	}
 
-	public boolean contains(Statements<?> statements) {
+	public boolean contains(Statements<?, ?> statements) {
 		return contains(statements.getSentence());
 	}
 
-	public boolean contains(Sentence<?> sentence) {
+	public boolean contains(Sentence<?, ?> sentence) {
 		return contains(sentence.getBlock());
-	}
-
-	public final StatementEnv getInitialEnv() {
-		return getDefiner().env();
-	}
-
-	@Override
-	public final Definer define(StatementEnv env) {
-		return this.definer = createDefiner(env);
 	}
 
 	@Override
@@ -168,8 +161,8 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 
 	public void reproduceSentences(
 			Reproducer reproducer,
-			Block<S> reproduction) {
-		for (Sentence<S> sentence : getSentences()) {
+			Block<S, L> reproduction) {
+		for (Sentence<S, L> sentence : getSentences()) {
 			sentence.reproduce(reproduction, reproducer);
 		}
 	}
@@ -182,7 +175,7 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		boolean space = false;
 
 		out.append(parentheses ? '(' : '{');
-		for (Sentence<?> sentence : getSentences()) {
+		for (Sentence<S, L> sentence : getSentences()) {
 			if (space) {
 				out.append(' ');
 			} else {
@@ -195,21 +188,11 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 		return out.toString();
 	}
 
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		getDefiner().getDefinitionTargets();
-		for (Sentence<S> sentence : getSentences()) {
-			sentence.resolveImperatives(resolver);
-		}
-	}
-
 	abstract Trace getTrace();
 
 	abstract Locals getLocals();
 
-	abstract BlockDefiner<?> createDefiner(StatementEnv env);
-
-	Sentence<S> addStatementSentence(Sentence<S> sentence) {
+	Sentence<S, L> addStatementSentence(Sentence<S, L> sentence) {
 		if (this.lastIssue != null) {
 			this.sentences.set(this.sentences.size() - 1, sentence);
 			sentence.setPrerequisite(this.lastIssue);
@@ -218,10 +201,6 @@ public abstract class Block<S extends Statements<S>> extends Statement {
 			this.sentences.add(sentence);
 		}
 		return sentence;
-	}
-
-	final BlockDefiner<?> getDefiner() {
-		return this.definer;
 	}
 
 }

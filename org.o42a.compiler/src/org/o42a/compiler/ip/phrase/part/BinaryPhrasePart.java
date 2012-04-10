@@ -79,7 +79,7 @@ public class BinaryPhrasePart extends PhraseContinuation {
 	}
 
 	@Override
-	public void define(Block<?> definition) {
+	public void define(Block<?, ?> definition) {
 	}
 
 	@Override

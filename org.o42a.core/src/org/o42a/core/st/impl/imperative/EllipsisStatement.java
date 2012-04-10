@@ -20,17 +20,9 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class EllipsisStatement extends Statement {
@@ -60,7 +52,12 @@ public final class EllipsisStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public Definer define(DefinerEnv env) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
 		if (this.exit) {
 			return new EllipsisDefiner.ExitDefiner(this, env);
 		}
@@ -71,18 +68,6 @@ public final class EllipsisStatement extends Statement {
 	public Statement reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 		return new EllipsisStatement(this, reproducer.distribute());
-	}
-
-	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return null;
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
 	}
 
 	@Override
@@ -97,50 +82,6 @@ public final class EllipsisStatement extends Statement {
 			return "(...!)";
 		}
 		return "(... " + this.name + "!)";
-	}
-
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		if (this.exit) {
-			return new ExitCmd(builder, this);
-		}
-		return new RepeatCmd(builder, this);
-	}
-
-	private static final class ExitCmd extends Cmd {
-
-		ExitCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.exitBraces(st, st.name);
-		}
-
-	}
-
-	private static final class RepeatCmd extends Cmd {
-
-		RepeatCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.repeat(st, st.name);
-		}
-
 	}
 
 }

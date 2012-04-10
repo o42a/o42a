@@ -31,6 +31,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
@@ -61,15 +62,30 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	private final Ref ref;
+	private RefCommand refCommand;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
 		super(statement);
 		this.ref = ref;
 	}
 
+	public final Ref getRef() {
+		return this.ref;
+	}
+
+	public final RefCommand getRefCommand() {
+		return this.refCommand;
+	}
+
+	@Override
+	public void init(AssignmentCommand command) {
+		super.init(command);
+		this.refCommand = this.ref.command(new Env(command.env()));
+	}
+
 	@Override
 	public void resolve(LocalResolver resolver) {
-		this.ref.resolve(resolver).resolveLogical();
+		getRefCommand().resolveAll(resolver);
 	}
 
 	@Override
@@ -90,7 +106,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.ref.normalizeImperative(normalizer);
+		getRefCommand().normalize(normalizer);
 	}
 
 	@Override
@@ -109,7 +125,20 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public Cmd op(CodeBuilder builder) {
-		return new AssignCmd(builder, this.ref);
+		return new AssignCmd(builder, this.ref, this.refCommand);
+	}
+
+	private final static class Env extends CommandEnv {
+
+		Env(CommandEnv initialEnv) {
+			super(initialEnv.getStatements());
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return null;// To prevent Ref adaption.
+		}
+
 	}
 
 	private static final class Inline extends InlineCmd {
@@ -148,16 +177,16 @@ final class CustomAssignment extends AssignmentKind {
 
 	private static final class AssignCmd extends Cmd {
 
-		AssignCmd(CodeBuilder builder, Ref ref) {
+		private final RefCommand refCommand;
+
+		AssignCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
 			super(builder, ref);
+			this.refCommand = refCommand;
 		}
 
 		@Override
 		public void write(Control control) {
-
-			final Ref ref = (Ref) getStatement();
-
-			ref.cmd(getBuilder()).writeCond(control);
+			this.refCommand.cmd(getBuilder()).writeCond(control);
 		}
 
 	}

@@ -25,13 +25,13 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class SentenceEnv extends StatementEnv {
+public final class SentenceEnv extends DefinerEnv {
 
 	private final DeclarativeSentence sentence;
 

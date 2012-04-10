@@ -37,7 +37,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -48,9 +48,11 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitParentheses(ParenthesesNode parentheses, Statements<?> p) {
+	public Void visitParentheses(
+			ParenthesesNode parentheses,
+			Statements<?, ?> p) {
 
-		final Block<?> block = p.parentheses(location(p, parentheses));
+		final Block<?, ?> block = p.parentheses(location(p, parentheses));
 
 		addContent(this, block, parentheses);
 
@@ -58,9 +60,9 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitBraces(BracesNode braces, Statements<?> p) {
+	public Void visitBraces(BracesNode braces, Statements<?, ?> p) {
 
-		final Block<Imperatives> block = p.braces(location(p, braces));
+		final ImperativeBlock block = p.braces(location(p, braces));
 
 		if (block == null) {
 			return null;
@@ -72,9 +74,9 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitNamedBlock(NamedBlockNode namedBlock, Statements<?> p) {
+	public Void visitNamedBlock(NamedBlockNode namedBlock, Statements<?, ?> p) {
 
-		final Block<Imperatives> block = p.braces(
+		final ImperativeBlock block = p.braces(
 				location(p, namedBlock.getName()),
 				namedBlock.getName().getName());
 
@@ -88,7 +90,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitAssignment(AssignmentNode assignment, Statements<?> p) {
+	public Void visitAssignment(AssignmentNode assignment, Statements<?, ?> p) {
 
 		final ExpressionNode destinationNode = assignment.getDestination();
 		final ExpressionNode valueNode = assignment.getValue();
@@ -130,7 +132,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitSelfAssignment(
 			SelfAssignmentNode assignment,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final ExpressionNode valueNode = assignment.getValue();
 
@@ -151,7 +153,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
 		field(ip(), getContext(), declarator, p);
 		return null;
 	}
@@ -159,13 +161,13 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	@Override
 	public Void visitClauseDeclarator(
 			ClauseDeclaratorNode declarator,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 		clause(getContext(), declarator, p);
 		return null;
 	}
 
 	@Override
-	public Void visitEllipsis(EllipsisNode ellipsis, Statements<?> p) {
+	public Void visitEllipsis(EllipsisNode ellipsis, Statements<?, ?> p) {
 
 		final NameNode target = ellipsis.getTarget();
 
@@ -177,7 +179,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	public Void visitInclusion(InclusionNode inclusion, Statements<?> p) {
+	public Void visitInclusion(InclusionNode inclusion, Statements<?, ?> p) {
 
 		final NameNode tag = inclusion.getTag();
 
@@ -189,7 +191,9 @@ public class DefaultStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitExpression(ExpressionNode expression, Statements<?> p) {
+	protected Void visitExpression(
+			ExpressionNode expression,
+			Statements<?, ?> p) {
 
 		final Distributor distributor = p.nextDistributor();
 		final Ref ref = expression.accept(expressionVisitor(), distributor);

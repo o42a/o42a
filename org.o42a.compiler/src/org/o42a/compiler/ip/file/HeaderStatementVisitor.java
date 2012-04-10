@@ -38,7 +38,9 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitExpression(ExpressionNode expression, Statements<?> p) {
+	protected Void visitExpression(
+			ExpressionNode expression,
+			Statements<?, ?> p) {
 
 		final Distributor distributor = p.nextDistributor();
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
@@ -51,7 +53,9 @@ final class HeaderStatementVisitor extends StatementVisitor {
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, Statements<?> p) {
+	protected Void visitStatement(
+			StatementNode statement,
+			Statements<?, ?> p) {
 		notDirective(getLogger(), statement);
 		return null;
 	}

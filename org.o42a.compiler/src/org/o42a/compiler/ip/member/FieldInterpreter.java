@@ -36,7 +36,7 @@ public class FieldInterpreter {
 			Interpreter ip,
 			CompilerContext context,
 			DeclaratorNode declarator,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final Distributor distributor = p.nextDistributor();
 		final FieldDeclaration declaration = declarator.getDeclarable().accept(
@@ -52,7 +52,7 @@ public class FieldInterpreter {
 
 	private static void setDefinition(
 			Interpreter ip,
-			Statements<?> p,
+			Statements<?, ?> p,
 			DeclaratorNode node,
 			FieldDeclaration declaration) {
 		if (declaration == null) {

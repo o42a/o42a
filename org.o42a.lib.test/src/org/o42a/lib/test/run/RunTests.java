@@ -61,11 +61,11 @@ public class RunTests extends DirectiveObject {
 		runTests(context.getBlock().toDeclarativeBlock(), object);
 	}
 
-	private void runTests(Block<?> definition, Obj object) {
+	private void runTests(Block<?, ?> definition, Obj object) {
 
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
-		final Statements<?> statements =
+		final Statements<?, ?> statements =
 				definition.propose(definition).alternative(definition);
 		final ImperativeSentence sentence =
 				statements.braces(definition, "_tests_").propose(definition);
@@ -83,10 +83,11 @@ public class RunTests extends DirectiveObject {
 			runTest(module, user, sentence, field.toField().field(user));
 		}
 
-		final Statements<?> terminator =
+		final Statements<?, ?> terminator =
 				definition.propose(definition).alternative(definition);
 
-		terminator.selfAssign(voidRef(definition, terminator.nextDistributor()));
+		terminator.selfAssign(
+				voidRef(definition, terminator.nextDistributor()));
 	}
 
 }

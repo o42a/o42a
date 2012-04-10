@@ -24,7 +24,7 @@ import org.o42a.core.PlaceInfo;
 
 public abstract class ClauseBuilderBase implements PlaceInfo {
 
-	protected abstract Block<?> parentheses(Group group);
+	protected abstract Block<?, ?> parentheses(Group group);
 
 	protected abstract ImperativeBlock braces(Group group, String name);
 

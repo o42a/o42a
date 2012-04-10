@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,50 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.cond;
+package org.o42a.core.st.impl.imperative;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.ImplicationEnv;
+import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 
 
-final class ConditionalEnv extends StatementEnv {
+public class BlockCommandEnv extends CommandEnv {
 
-	private final StatementEnv initialEnv;
+	private final ImplicationEnv initialEnv;
 
-	ConditionalEnv(StatementEnv initialEnv) {
+	public BlockCommandEnv(Imperatives imperatives, ImplicationEnv initialEnv) {
+		super(imperatives);
 		this.initialEnv = initialEnv;
 	}
 
 	@Override
-	public boolean hasPrerequisite() {
-		return this.initialEnv.hasPrerequisite();
-	}
-
-	@Override
-	public Logical prerequisite(Scope scope) {
-		return this.initialEnv.prerequisite(scope);
-	}
-
-	@Override
-	public boolean hasPrecondition() {
-		return this.initialEnv.hasPrecondition();
-	}
-
-	@Override
-	public Logical precondition(Scope scope) {
-		return this.initialEnv.precondition(scope);
-	}
-
-	@Override
-	public String toString() {
-		return this.initialEnv.toString();
-	}
-
-	@Override
 	protected ValueStruct<?, ?> expectedValueStruct() {
-		return null;// To prevent Ref adaption.
+		return this.initialEnv.getExpectedValueStruct();
 	}
 
 }

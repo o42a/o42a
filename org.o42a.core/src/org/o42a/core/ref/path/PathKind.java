@@ -237,7 +237,7 @@ public enum PathKind {
 		}
 
 		@Override
-		public Statements<?> getStatements() {
+		public Statements<?, ?> getStatements() {
 			return null;
 		}
 
@@ -252,7 +252,7 @@ public enum PathKind {
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?> statements,
+				Statements<?, ?> statements,
 				Clause clause) {
 			throw new UnsupportedOperationException();
 		}

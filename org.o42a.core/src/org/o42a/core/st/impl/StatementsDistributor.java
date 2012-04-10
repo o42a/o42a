@@ -33,12 +33,12 @@ import org.o42a.util.log.Loggable;
 public final class StatementsDistributor extends Distributor {
 
 	private final LocationInfo location;
-	private final Sentence<?> sentence;
+	private final Sentence<?, ?> sentence;
 	private final ScopePlace place;
 
 	public StatementsDistributor(
 			LocationInfo location,
-			Sentence<?> sentence,
+			Sentence<?, ?> sentence,
 			Trace trace) {
 		this.location = location;
 		this.sentence = sentence;

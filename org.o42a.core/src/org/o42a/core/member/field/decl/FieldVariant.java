@@ -29,8 +29,8 @@ import org.o42a.core.ref.Logical;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Definer;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.Loggable;
@@ -128,7 +128,7 @@ final class FieldVariant implements PlaceInfo {
 		return this.definition;
 	}
 
-	public final StatementEnv getInitialEnv() {
+	public final DefinerEnv getInitialEnv() {
 		return this.statement.getInitialEnv();
 	}
 
@@ -231,7 +231,7 @@ final class FieldVariant implements PlaceInfo {
 		return this.definer;
 	}
 
-	private static final class VariantEnv extends StatementEnv {
+	private static final class VariantEnv extends DefinerEnv {
 
 		private final FieldVariant variant;
 		private ValueStruct<?, ?> expectedValueStruct;

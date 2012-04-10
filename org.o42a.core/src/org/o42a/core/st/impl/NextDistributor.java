@@ -30,12 +30,12 @@ import org.o42a.util.log.Loggable;
 
 public final class NextDistributor extends Distributor {
 
-	private final Statements<?> statements;
+	private final Statements<?, ?> statements;
 	private final Container container;
 	private final LocalPlace place;
 
 	public NextDistributor(
-			Statements<?> statements,
+			Statements<?, ?> statements,
 			Container container,
 			Place place) {
 		this.statements = statements;

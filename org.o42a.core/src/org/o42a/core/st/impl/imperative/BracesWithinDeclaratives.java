@@ -21,19 +21,16 @@ package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueStruct;
@@ -56,9 +53,13 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
-		this.block.define(env);
+	public Definer define(DefinerEnv env) {
 		return new BracesWithinDeclarativesDefiner(this, env);
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -94,46 +95,24 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String toString() {
 		return this.block.toString();
 	}
 
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		throw new UnsupportedOperationException();
-	}
-
-	private static final class BracesWithinDeclarativesDefiner extends Definer {
+	private static final class BracesWithinDeclarativesDefiner
+			extends AbstractDefiner {
 
 		private final Definer blockDefiner;
 
 		BracesWithinDeclarativesDefiner(
 				BracesWithinDeclaratives statement,
-				StatementEnv env) {
+				DefinerEnv env) {
 			super(statement, env);
 			this.blockDefiner = statement.getBlock().define(env);
 		}
 
 		@Override
-		public StatementEnv nextEnv() {
+		public DefinerEnv nextEnv() {
 			return this.blockDefiner.nextEnv();
 		}
 
@@ -155,16 +134,6 @@ public final class BracesWithinDeclaratives extends Statement {
 		@Override
 		public Definitions define(Scope scope) {
 			return this.blockDefiner.define(scope);
-		}
-
-		@Override
-		public Action initialValue(LocalResolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Action initialLogicalValue(LocalResolver resolver) {
-			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -207,7 +176,7 @@ public final class BracesWithinDeclaratives extends Statement {
 		}
 
 		@Override
-		public Statements<?> getStatements() {
+		public Statements<?, ?> getStatements() {
 			return null;
 		}
 
@@ -227,7 +196,7 @@ public final class BracesWithinDeclaratives extends Statement {
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?> statements,
+				Statements<?, ?> statements,
 				Clause clause) {
 			throw new UnsupportedOperationException();
 		}

@@ -100,7 +100,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public void buildBlock(Block<?> block) {
+		public void buildBlock(Block<?, ?> block) {
 
 			final ContentReproducer reproducer = new ContentReproducer(
 					this.content.getScope(),
@@ -150,7 +150,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public Statements<?> getStatements() {
+		public Statements<?, ?> getStatements() {
 			return null;
 		}
 
@@ -165,7 +165,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		@Override
 		public void applyClause(
 				LocationInfo location,
-				Statements<?> statements,
+				Statements<?, ?> statements,
 				Clause clause) {
 			throw new UnsupportedOperationException();
 		}

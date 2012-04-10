@@ -20,37 +20,28 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.Distributor.declarativeDistributor;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_FACTORY;
 
 import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.InlineCmd;
-import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.impl.BlockDefiner;
-import org.o42a.core.st.impl.declarative.DeclarativeBlockDefiner;
+import org.o42a.core.st.*;
+import org.o42a.core.st.impl.declarative.BlockDefiner;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.Locals;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
-public final class DeclarativeBlock extends Block<Declaratives> {
+public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			DeclarativeFactory sentenceFactory) {
 		return new DeclarativeBlock(
 				location,
@@ -62,6 +53,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	private Locals locals;
+	private BlockDefiner definer;
 
 	public DeclarativeBlock(
 			LocationInfo location,
@@ -89,7 +81,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			MemberRegistry memberRegistry,
 			DeclarativeFactory sentenceFactory,
 			boolean reproduced) {
@@ -144,7 +136,7 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	public DeclarativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?> enclosing = reproducer.getStatements();
+		final Statements<?, ?> enclosing = reproducer.getStatements();
 		final DeclarativeBlock reproduction;
 
 		if (enclosing == null) {
@@ -167,21 +159,17 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 	}
 
 	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		throw new UnsupportedOperationException();
+	public final Definer define(DefinerEnv env) {
+		return this.definer = new BlockDefiner(this, env);
 	}
 
 	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
+	public Command command(CommandEnv env) {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		throw new UnsupportedOperationException();
+	public final DefinerEnv getInitialEnv() {
+		return this.definer.env();
 	}
 
 	@Override
@@ -195,18 +183,13 @@ public final class DeclarativeBlock extends Block<Declaratives> {
 			return this.locals;
 		}
 
-		final Statements<?> enclosing = getEnclosing();
+		final Statements<?, ?> enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.locals = new Locals(this);
 		}
 
 		return this.locals = enclosing.getSentence().getBlock().getLocals();
-	}
-
-	@Override
-	BlockDefiner<?> createDefiner(StatementEnv env) {
-		return new DeclarativeBlockDefiner(this, env);
 	}
 
 	private void addImplicitInclusions() {

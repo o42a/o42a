@@ -22,23 +22,19 @@ package org.o42a.core.ref;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.impl.RefEnv;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.st.action.ReturnValue;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
 
-public class RefDefiner extends Definer {
+public class RefDefiner extends AbstractDefiner {
 
 	private ValueAdapter valueAdapter;
 
-	public RefDefiner(Ref ref, StatementEnv env) {
+	RefDefiner(Ref ref, DefinerEnv env) {
 		super(ref, env);
 	}
 
@@ -47,18 +43,23 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
-	public StatementEnv nextEnv() {
+	public DefinerEnv nextEnv() {
 		return new RefEnv(this);
-	}
-
-	@Override
-	public final Instruction toInstruction(Resolver resolver) {
-		return null;
 	}
 
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(getRef());
+	}
+
+	public ValueAdapter getValueAdapter() {
+		if (this.valueAdapter != null) {
+			return this.valueAdapter;
+		}
+
+		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
+
+		return this.valueAdapter = getRef().valueAdapter(expectedStruct, true);
 	}
 
 	@Override
@@ -78,28 +79,8 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return new ReturnValue(
-				this,
-				resolver,
-				getValueAdapter().initialValue(resolver));
-	}
-
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		return new ExecuteCommand(
-				this,
-				getValueAdapter().initialLogicalValue(resolver));
-	}
-
-	public ValueAdapter getValueAdapter() {
-		if (this.valueAdapter != null) {
-			return this.valueAdapter;
-		}
-
-		final ValueStruct<?, ?> expectedStruct = env().getExpectedValueStruct();
-
-		return this.valueAdapter = getRef().valueAdapter(expectedStruct, true);
+	public final Instruction toInstruction(Resolver resolver) {
+		return null;
 	}
 
 	@Override

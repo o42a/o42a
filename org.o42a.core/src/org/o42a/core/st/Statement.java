@@ -21,21 +21,13 @@ package org.o42a.core.st;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Statement extends Placed {
 
-	private Cmd cmd;
 	private boolean fullyResolved;
 
 	public Statement(LocationInfo location, Distributor distributor) {
@@ -50,39 +42,11 @@ public abstract class Statement extends Placed {
 		return null;
 	}
 
-	public abstract Definer define(StatementEnv env);
+	public abstract Definer define(DefinerEnv env);
+
+	public abstract Command command(CommandEnv env);
 
 	public abstract Statement reproduce(Reproducer reproducer);
-
-	public final void resolveImperative(LocalResolver resolver) {
-		fullyResolved();
-		getContext().fullResolution().start();
-		try {
-			fullyResolveImperative(resolver);
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
-
-	public abstract InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin);
-
-	public abstract void normalizeImperative(RootNormalizer normalizer);
-
-	public Cmd cmd(CodeBuilder builder) {
-
-		final Cmd cmd = this.cmd;
-
-		if (cmd != null && cmd.getBuilder() == builder) {
-			return cmd;
-		}
-
-		assert assertFullyResolved();
-
-		return this.cmd = createCmd(builder);
-	}
 
 	public final boolean assertFullyResolved() {
 		assert this.fullyResolved :
@@ -90,13 +54,8 @@ public abstract class Statement extends Placed {
 		return true;
 	}
 
-	protected abstract void fullyResolveImperative(LocalResolver resolver);
-
-	protected abstract Cmd createCmd(CodeBuilder builder);
-
 	protected final void fullyResolved() {
 		this.fullyResolved = true;
 	}
-
 
 }

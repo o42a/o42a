@@ -32,7 +32,6 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -42,16 +41,19 @@ import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
 
 
-public abstract class Statements<S extends Statements<S>> extends Placed {
+public abstract class Statements<
+		S extends Statements<S, L>,
+		L extends Implication<L>>
+				extends Placed {
 
-	private final Sentence<S> sentence;
+	private final Sentence<S, L> sentence;
 	private final boolean opposite;
-	private final ArrayList<Definer> definers = new ArrayList<Definer>(1);
+	private final ArrayList<L> implications = new ArrayList<L>(1);
 	private boolean instructionsExecuted;
 
 	Statements(
 			LocationInfo location,
-			Sentence<S> sentence,
+			Sentence<S, L> sentence,
 			boolean opposite) {
 		super(
 				location,
@@ -63,7 +65,7 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		this.opposite = opposite;
 	}
 
-	public Sentence<S> getSentence() {
+	public Sentence<S, L> getSentence() {
 		return this.sentence;
 	}
 
@@ -71,11 +73,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return this.opposite;
 	}
 
-	public final List<Definer> getDefiners() {
-		return this.definers;
+	public final List<L> getImplications() {
+		return this.implications;
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
 		return getSentence().getSentenceFactory();
 	}
 
@@ -143,11 +145,11 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		return new Group(location, this, builder);
 	}
 
-	public Block<S> parentheses(LocationInfo location) {
+	public Block<S, L> parentheses(LocationInfo location) {
 		return parentheses(location, getContainer());
 	}
 
-	public Block<S> parentheses(LocationInfo location, Container container) {
+	public Block<S, L> parentheses(LocationInfo location, Container container) {
 		return parentheses(
 				-1,
 				location,
@@ -221,25 +223,31 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		addStatement(statement);
 	}
 
+	public final boolean assertInstructionsExecuted() {
+		assert this.instructionsExecuted :
+			"Instructions not executed yet";
+		return true;
+	}
+
 	@Override
 	public String toString() {
 
-		final List<Definer> definers = getDefiners();
+		final List<L> implications = getImplications();
 
-		if (definers.isEmpty()) {
+		if (implications.isEmpty()) {
 			return "<no statements>";
 		}
 
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		for (Definer definer : definers) {
+		for (L implication : implications) {
 			if (!comma) {
 				comma = true;
 			} else {
 				out.append(", ");
 			}
-			out.append(definer);
+			out.append(implication);
 		}
 
 		return out.toString();
@@ -250,36 +258,36 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 	protected final void addStatement(Statement statement) {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
-		this.definers.add(define(statement));
+		this.implications.add(define(statement));
 	}
 
 	protected final void replaceStatement(int index, Statement statement) {
 
-		final Definer old = this.definers.get(index);
+		final L old = this.implications.get(index);
 
-		this.definers.set(index, old.replaceWith(statement));
+		this.implications.set(index, old.replaceWith(statement));
 	}
 
 	protected final void removeStatement(int index) {
-		this.definers.remove(index);
+		this.implications.remove(index);
 	}
 
-	protected abstract Definer define(Statement statement);
+	protected abstract L define(Statement statement);
 
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
 	}
 
-	void reproduce(Sentence<S> sentence, Reproducer reproducer) {
+	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
 
 		final S reproduction = sentence.alternative(this, isOpposite());
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
-		for (Definer definer : getDefiners()) {
+		for (L implication : getImplications()) {
 
 			final Statement statementReproduction =
-					definer.getStatement().reproduce(
+					implication.getStatement().reproduce(
 							statementsReproducer.distributeBy(
 									reproduction.nextDistributor()));
 
@@ -289,25 +297,16 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveImperatives(LocalResolver resolver) {
-		assert this.instructionsExecuted :
-			"Instructions not executed yet";
-		for (Definer definer : getDefiners()) {
-			definer.getStatement().resolveImperative(resolver);
-		}
-	}
-
-	Block<S> parentheses(
+	Block<S, L> parentheses(
 			int index,
 			LocationInfo location,
 			Distributor distributor) {
 
-		@SuppressWarnings("unchecked")
-		final Block<S> parentheses =
+		final Block<S, L> parentheses =
 				getSentence().getSentenceFactory().createParentheses(
 						location,
 						distributor,
-						(S) this);
+						self());
 
 		if (index < 0) {
 			addStatement(parentheses);
@@ -326,4 +325,8 @@ public abstract class Statements<S extends Statements<S>> extends Placed {
 		new InstructionExecutor(this).executeAll();
 	}
 
+	@SuppressWarnings("unchecked")
+	private final S self() {
+		return (S) this;
+	}
 }
