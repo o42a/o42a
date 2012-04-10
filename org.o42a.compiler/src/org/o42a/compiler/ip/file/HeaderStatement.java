@@ -23,14 +23,11 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.LogInfo;
@@ -57,8 +54,13 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public Definer define(DefinerEnv env) {
 		return new HeaderDefiner(this, env);
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -74,19 +76,6 @@ class HeaderStatement extends Statement {
 	}
 
 	@Override
-	public final InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void normalizeImperative(RootNormalizer normalizer) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public String toString() {
 		if (this.ref == null) {
 			return super.toString();
@@ -94,21 +83,11 @@ class HeaderStatement extends Statement {
 		return this.ref.toString();
 	}
 
-	@Override
-	protected final void fullyResolveImperative(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected final Cmd createCmd(CodeBuilder builder) {
-		throw new UnsupportedOperationException();
-	}
-
-	private static final class HeaderDefiner extends Definer {
+	private static final class HeaderDefiner extends AbstractDefiner {
 
 		private Definer refDefiner;
 
-		HeaderDefiner(HeaderStatement header, StatementEnv env) {
+		HeaderDefiner(HeaderStatement header, DefinerEnv env) {
 			super(header, env);
 			this.refDefiner = header.getRef().define(env);
 		}
@@ -118,7 +97,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public StatementEnv nextEnv() {
+		public DefinerEnv nextEnv() {
 			return this.refDefiner.nextEnv();
 		}
 
@@ -148,16 +127,6 @@ class HeaderStatement extends Statement {
 
 		@Override
 		public Definitions define(Scope scope) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Action initialValue(LocalResolver resolver) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public Action initialLogicalValue(LocalResolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

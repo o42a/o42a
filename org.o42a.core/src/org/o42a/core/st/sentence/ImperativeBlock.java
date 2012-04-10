@@ -20,37 +20,32 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ScopePlace.localPlace;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
-import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
+import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.*;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.Container;
+import org.o42a.core.Distributor;
+import org.o42a.core.ScopePlace;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.impl.BlockDefiner;
 import org.o42a.core.st.impl.imperative.*;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.fn.Lambda;
 import org.o42a.util.log.Loggable;
 
 
-public final class ImperativeBlock extends Block<Imperatives> {
+public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			String name,
 			ImperativeFactory sentenceFactory,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
@@ -82,7 +77,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	public static ImperativeBlock nestedImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			boolean parentheses,
 			String name,
 			MemberRegistry memberRegistry,
@@ -102,6 +97,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private final boolean topLevel;
 	private final Trace trace;
 	private Locals locals;
+	private ImplicationEnv initialEnv;
 
 	public ImperativeBlock(
 			LocationInfo location,
@@ -134,7 +130,7 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	private ImperativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?> enclosing,
+			Statements<?, ?> enclosing,
 			boolean parentheses,
 			String name,
 			MemberRegistry memberRegistry,
@@ -202,10 +198,23 @@ public final class ImperativeBlock extends Block<Imperatives> {
 	}
 
 	@Override
+	public final Definer define(DefinerEnv env) {
+		assert isTopLevel() :
+			"Not a top-level imperative block";
+		return new ImperativeDefiner(this, env);
+	}
+
+	@Override
+	public final Command command(CommandEnv env) {
+		this.initialEnv = env;
+		return new BlockCommand(this, env);
+	}
+
+	@Override
 	public ImperativeBlock reproduce(Reproducer reproducer) {
 		assertCompatible(reproducer.getReproducingScope());
 
-		final Statements<?> enclosing = reproducer.getStatements();
+		final Statements<?, ?> enclosing = reproducer.getStatements();
 
 		if (enclosing != null) {
 
@@ -229,21 +238,6 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		return reproduction;
 	}
 
-	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return inlineBlock(normalizer, valueStruct, origin, this);
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
-		for (ImperativeSentence sentence : getSentences()) {
-			sentence.normalizeImperatives(normalizer);
-		}
-	}
-
 	public Statement wrap(Distributor distributor) {
 		if (!isTopLevel()) {
 			return this;
@@ -251,9 +245,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 		return new BracesWithinDeclaratives(this, distributor, this);
 	}
 
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new ImperativeBlockCmd(builder, this);
+	public final void blockFullyResolved() {
+		fullyResolved();
 	}
 
 	@Override
@@ -270,9 +263,8 @@ public final class ImperativeBlock extends Block<Imperatives> {
 				getEnclosing().getSentence().getBlock().getLocals();
 	}
 
-	@Override
-	BlockDefiner<?> createDefiner(StatementEnv env) {
-		return new ImperativeBlockDefiner(this, env);
+	final ImplicationEnv getInitialEnv() {
+		return this.initialEnv;
 	}
 
 	public static final class BlockDistributor extends Distributor {

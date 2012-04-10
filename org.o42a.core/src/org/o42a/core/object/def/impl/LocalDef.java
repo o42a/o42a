@@ -34,7 +34,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.st.Definer;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
@@ -46,7 +46,7 @@ public class LocalDef extends ValueDef {
 	public static ValueDef localDef(
 			ImperativeBlock block,
 			Scope scope,
-			Definer definer) {
+			Command command) {
 
 		final Obj actualOwner = scope.toObject();
 		final Obj explicitOwner = block.getScope().getOwner();
@@ -54,22 +54,22 @@ public class LocalDef extends ValueDef {
 		assert actualOwner == explicitOwner :
 			"LocalDef can only be constructed for explicit local scope";
 
-		return new LocalDef(scope, block, definer);
+		return new LocalDef(scope, block, command);
 	}
 
 	private final Scope ownerScope;
 	private final ImperativeBlock block;
-	final Definer definer;
-	final PrefixPath localPrefix;
+	private final Command command;
+	private final PrefixPath localPrefix;
 
 	private LocalDef(
 			Scope ownerScope,
 			ImperativeBlock block,
-			Definer definer) {
+			Command command) {
 		super(sourceOf(block), block, noScopeUpgrade(ownerScope));
 		this.ownerScope = ownerScope;
 		this.block = block;
-		this.definer = definer;
+		this.command = command;
 		this.localPrefix = getOwnerScope().pathTo(block.getScope());
 	}
 
@@ -77,7 +77,7 @@ public class LocalDef extends ValueDef {
 		super(prototype, scopeUpgrade);
 		this.ownerScope = prototype.ownerScope;
 		this.block = prototype.block;
-		this.definer = prototype.definer;
+		this.command = prototype.command;
 		this.localPrefix = prototype.localPrefix;
 	}
 
@@ -94,19 +94,19 @@ public class LocalDef extends ValueDef {
 	public ValueStruct<?, ?> getValueStruct() {
 
 		final Scope scope =
-				this.localPrefix.rescope(getScopeUpgrade().rescope(getScope()));
+				getLocalPrefix().rescope(getScopeUpgrade().rescope(getScope()));
 
 		assert scope.toLocal() != null :
 			"Not a local scope: " + scope;
 
-		final ValueStruct<?, ?> valueStruct = this.definer.valueStruct(scope);
+		final ValueStruct<?, ?> valueStruct = getCommand().valueStruct(scope);
 
 		if (valueStruct == null) {
 			return null;
 		}
 
 		return valueStruct
-				.prefixWith(this.localPrefix)
+				.prefixWith(getLocalPrefix())
 				.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
@@ -117,11 +117,11 @@ public class LocalDef extends ValueDef {
 		}
 
 		final Scope localScope =
-				this.localPrefix.rescope(getScopeUpgrade().rescope(getScope()));
+				getLocalPrefix().rescope(getScopeUpgrade().rescope(getScope()));
 		final RootNormalizer imperativeNormalizer =
 				new RootNormalizer(normalizer.getAnalyzer(), localScope);
 
-		getBlock().normalizeImperative(imperativeNormalizer);
+		getCommand().normalize(imperativeNormalizer);
 	}
 
 	@Override
@@ -163,13 +163,15 @@ public class LocalDef extends ValueDef {
 	protected Value<?> calculateValue(Resolver resolver) {
 
 		final LocalScope local =
-				this.localPrefix.rescope(resolver.getScope()).toLocal();
+				getLocalPrefix().rescope(resolver.getScope()).toLocal();
 
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		return this.definer.initialValue(
-				local.walkingResolver(resolver)).getValue();
+		return getCommand()
+				.initialValue(local.walkingResolver(resolver))
+				.getValue()
+				.prefixWith(getLocalPrefix());
 	}
 
 	@Override
@@ -193,9 +195,9 @@ public class LocalDef extends ValueDef {
 	protected void fullyResolveDef(Resolver resolver) {
 
 		final LocalScope local =
-				this.localPrefix.rescope(resolver.getScope()).toLocal();
+				getLocalPrefix().rescope(resolver.getScope()).toLocal();
 
-		getBlock().resolveImperative(local.walkingResolver(resolver));
+		getCommand().resolveAll(local.walkingResolver(resolver));
 	}
 
 	@Override
@@ -203,10 +205,10 @@ public class LocalDef extends ValueDef {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
-		final InlineCmd inline = getBlock().inlineImperative(
+		final InlineCmd inline = getCommand().inline(
 				normalizer,
 				valueStruct,
-				this.localPrefix.rescope(getScope()));
+				getLocalPrefix().rescope(getScope()));
 
 		if (inline == null) {
 			return null;
@@ -232,7 +234,15 @@ public class LocalDef extends ValueDef {
 				ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
 		final LocalIR ir = scope.ir(host.getGenerator());
 
-		return ir.writeValue(dirs, ownerBody, null);
+		return ir.writeValue(dirs, ownerBody, null, getCommand());
+	}
+
+	final Command getCommand() {
+		return this.command;
+	}
+
+	final PrefixPath getLocalPrefix() {
+		return this.localPrefix;
 	}
 
 	Scope getOwnerScope() {

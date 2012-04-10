@@ -23,15 +23,15 @@ import static org.o42a.core.object.def.impl.LocalDef.localDef;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class ImperativeBlockEnv extends StatementEnv {
+final class ImperativeDefinerEnv extends DefinerEnv {
 
-	private final ImperativeBlockDefiner definer;
+	private final ImperativeDefiner definer;
 
-	ImperativeBlockEnv(ImperativeBlockDefiner definer) {
+	ImperativeDefinerEnv(ImperativeDefiner definer) {
 		this.definer = definer;
 	}
 
@@ -53,7 +53,10 @@ final class ImperativeBlockEnv extends StatementEnv {
 	@Override
 	public Logical precondition(Scope scope) {
 		return this.definer.env().precondition(scope).and(
-				localDef(this.definer.getBlock(), scope, this.definer)
+				localDef(
+						this.definer.getBlock(),
+						scope,
+						this.definer.getCommand())
 				.fullLogical());
 	}
 

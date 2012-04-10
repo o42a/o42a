@@ -24,11 +24,11 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class ObjectEnv extends StatementEnv {
+public final class ObjectEnv extends DefinerEnv {
 
 	private final Obj object;
 

@@ -27,19 +27,14 @@ import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.RefCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
@@ -77,7 +72,6 @@ public class Ref extends Statement {
 	private final BoundPath path;
 	private Logical logical;
 	private RefOp op;
-	private InlineValue inline;
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
 		super(location, distributor);
@@ -135,8 +129,13 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public RefDefiner define(StatementEnv env) {
+	public RefDefiner define(DefinerEnv env) {
 		return new RefDefiner(this, env);
+	}
+
+	@Override
+	public RefCommand command(CommandEnv env) {
+		return new RefCommand(this, env);
 	}
 
 	public final Resolution resolve(Resolver resolver) {
@@ -249,31 +248,8 @@ public class Ref extends Statement {
 		return new InlineRef(valueStruct(origin), normalPath);
 	}
 
-	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-
-		final InlineValue inline = inline(normalizer, origin);
-
-		if (inline == null) {
-			return null;
-		}
-
-		return new InlineRefCmd(inline);
-	}
-
 	public final void normalize(Analyzer analyzer) {
 		getPath().normalizePath(analyzer);
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
-		this.inline = inline(normalizer.newNormalizer(), getScope());
-		if (this.inline == null) {
-			normalize(normalizer.getAnalyzer());
-		}
 	}
 
 	public final Ref toStatic() {
@@ -346,11 +322,6 @@ public class Ref extends Statement {
 		return getPath().fieldDefinition(distribute());
 	}
 
-	@Override
-	public final RefCmd cmd(CodeBuilder builder) {
-		return (RefCmd) super.cmd(builder);
-	}
-
 	public final RefOp op(HostOp host) {
 
 		final RefOp op = this.op;
@@ -370,19 +341,6 @@ public class Ref extends Statement {
 			return super.toString();
 		}
 		return this.path.toString();
-	}
-
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		resolve(resolver).resolveValue();
-	}
-
-	@Override
-	protected final RefCmd createCmd(CodeBuilder builder) {
-		if (this.inline != null) {
-			return new InlineRefCmdImpl(builder, this);
-		}
-		return new RefCmdImpl(builder, this);
 	}
 
 	final void refFullyResolved() {
@@ -434,127 +392,6 @@ public class Ref extends Statement {
 				return super.toString();
 			}
 			return this.normalPath.toString();
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
-
-	private static final class RefCmdImpl extends RefCmd {
-
-		RefCmdImpl(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
-		}
-
-		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			getRef().op(control.host()).writeLogicalValue(dirs);
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final Block code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(control.result());
-			final ValOp value = getRef().op(control.host()).writeValue(dirs);
-
-			dirs.done();
-
-			control.returnValue(value);
-		}
-
-	}
-
-	private static final class InlineRefCmdImpl extends RefCmd {
-
-		InlineRefCmdImpl(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
-		}
-
-		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			getRef().inline.writeCond(dirs, getBuilder().host());
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final Block code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(control.result());
-			final ValOp value =
-					getRef().inline.writeValue(dirs, getBuilder().host());
-
-			dirs.done();
-
-			control.returnValue(value);
-		}
-
-		@Override
-		public String toString() {
-
-			final Ref ref = getRef();
-
-			if (ref == null) {
-				return super.toString();
-			}
-
-			return ref.inline.toString();
-		}
-
-	}
-
-	private static final class InlineRefCmd extends InlineCmd {
-
-		private final InlineValue inline;
-
-		InlineRefCmd(InlineValue inline) {
-			super(null);
-			this.inline = inline;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final Block code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(control.result());
-			final ValOp value = this.inline.writeValue(dirs, control.host());
-
-			dirs.done();
-
-			control.returnValue(value);
-		}
-
-		@Override
-		public String toString() {
-			if (this.inline == null) {
-				return super.toString();
-			}
-			return this.inline.toString();
 		}
 
 		@Override

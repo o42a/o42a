@@ -20,21 +20,19 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.Definer;
+import org.o42a.core.st.AbstractDefiner;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Instruction;
-import org.o42a.core.st.StatementEnv;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class DeclarationDefiner extends Definer {
+public abstract class DeclarationDefiner extends AbstractDefiner {
 
 	public DeclarationDefiner(
 			DeclarationStatement statement,
-			StatementEnv env) {
+			DefinerEnv env) {
 		super(statement, env);
 	}
 
@@ -43,12 +41,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return null;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
+	public final ValueStruct<?, ?> valueStruct(Scope scope) {
 		return null;
 	}
 
@@ -58,8 +51,8 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public final Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+	public Instruction toInstruction(Resolver resolver) {
+		return null;
 	}
 
 }

@@ -27,33 +27,36 @@ import java.util.List;
 
 import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Sentence<S extends Statements<S>> extends Placed {
+public abstract class Sentence<
+		S extends Statements<S, L>,
+		L extends Implication<L>>
+				extends Placed {
 
-	private final Block<S> block;
-	private final SentenceFactory<S, ?, ?> sentenceFactory;
+	private final Block<S, L> block;
+	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private final ArrayList<S> alternatives = new ArrayList<S>();
-	private Sentence<S> prerequisite;
+	private Sentence<S, L> prerequisite;
 	private boolean instructionsExecuted;
 
 	Sentence(
 			LocationInfo location,
-			Block<S> block,
-			SentenceFactory<S, ?, ?> sentenceFactory) {
+			Block<S, L> block,
+			SentenceFactory<L, S, ?, ?> sentenceFactory) {
 		super(location, new SentenceDistributor(location, block));
 		this.block = block;
 		this.sentenceFactory = sentenceFactory;
 	}
 
-	public Block<S> getBlock() {
+	public Block<S, L> getBlock() {
 		return this.block;
 	}
 
@@ -61,7 +64,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		return getBlock().getMemberRegistry();
 	}
 
-	public SentenceFactory<S, ?, ?> getSentenceFactory() {
+	public SentenceFactory<L, S, ?, ?> getSentenceFactory() {
 		return this.sentenceFactory;
 	}
 
@@ -79,7 +82,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		return getAlternatives().isEmpty();
 	}
 
-	public Sentence<S> getPrerequisite() {
+	public Sentence<S, L> getPrerequisite() {
 		return this.prerequisite;
 	}
 
@@ -117,12 +120,12 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		final StringBuilder out = new StringBuilder();
 		boolean separator = false;
 
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence<S, L> prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			out.append(prerequisite).append(' ');
 		}
-		for (Statements<?> alt : getAlternatives()) {
+		for (S alt : getAlternatives()) {
 			if (!separator) {
 				separator = true;
 			} else if (alt.isOpposite()) {
@@ -149,7 +152,7 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 		this.instructionsExecuted = true;
 
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence<S, L> prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			prerequisite.executeInstructions();
@@ -159,19 +162,19 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void setPrerequisite(Sentence<S> prerequisite) {
+	final void setPrerequisite(Sentence<S, L> prerequisite) {
 		this.prerequisite = prerequisite;
 	}
 
-	void reproduce(Block<S> block, Reproducer reproducer) {
+	void reproduce(Block<S, L> block, Reproducer reproducer) {
 
-		final Sentence<S> prerequisite = getPrerequisite();
+		final Sentence<S, L> prerequisite = getPrerequisite();
 
 		if (prerequisite != null) {
 			prerequisite.reproduce(block, reproducer);
 		}
 
-		final Sentence<S> reproduction;
+		final Sentence<S, L> reproduction;
 
 		if (isIssue()) {
 			reproduction = block.issue(this);
@@ -186,25 +189,13 @@ public abstract class Sentence<S extends Statements<S>> extends Placed {
 		}
 	}
 
-	final void resolveImperatives(LocalResolver resolver) {
-
-		final Sentence<S> prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-			prerequisite.resolveImperatives(resolver);
-		}
-		for (S alt : getAlternatives()) {
-			alt.resolveImperatives(resolver);
-		}
-	}
-
 	private static final class SentenceDistributor extends Distributor {
 
 		private final LocationInfo location;
-		private final Block<?> block;
+		private final Block<?, ?> block;
 		private final ScopePlace place;
 
-		SentenceDistributor(LocationInfo location, Block<?> block) {
+		SentenceDistributor(LocationInfo location, Block<?, ?> block) {
 			this.location = location;
 			this.block = block;
 

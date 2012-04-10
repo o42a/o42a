@@ -43,7 +43,7 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 	}
 
 	@Override
-	public Void visitDeclarator(DeclaratorNode declarator, Statements<?> p) {
+	public Void visitDeclarator(DeclaratorNode declarator, Statements<?, ?> p) {
 		if (!declarator.getTarget().isOverride()) {
 			return super.visitDeclarator(declarator, p);
 		}

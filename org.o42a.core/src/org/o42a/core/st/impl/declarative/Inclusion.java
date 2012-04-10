@@ -19,16 +19,9 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Inclusion extends Statement {
@@ -39,25 +32,17 @@ public abstract class Inclusion extends Statement {
 		super(location, statements.nextDistributor());
 	}
 
-	public final StatementEnv getInitialEnv() {
+	public final DefinerEnv getInitialEnv() {
 		return this.definer.env();
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public Definer define(DefinerEnv env) {
 		return this.definer = createDefiner(env);
 	}
 
 	@Override
-	public final InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return null;
-	}
-
-	@Override
-	public final void normalizeImperative(RootNormalizer normalizer) {
+	public Command command(CommandEnv env) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -66,16 +51,6 @@ public abstract class Inclusion extends Statement {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	protected final void fullyResolveImperative(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected final Cmd createCmd(CodeBuilder builder) {
-		throw new UnsupportedOperationException();
-	}
-
-	protected abstract InclusionDefiner<?> createDefiner(StatementEnv env);
+	protected abstract InclusionDefiner<?> createDefiner(DefinerEnv env);
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,20 +19,20 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.object.def.impl.LocalDef.localDef;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
+import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
 import java.util.List;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.DefinitionTargets;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
-import org.o42a.core.st.impl.BlockDefiner;
+import org.o42a.core.st.impl.BlockImplication;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
@@ -40,15 +40,20 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
+public final class BlockCommand
+		extends BlockImplication<ImperativeBlock, Command>
+		implements Command {
 
-	public ImperativeBlockDefiner(ImperativeBlock block, StatementEnv env) {
-		super(block, env);
+	private final CommandEnv env;
+
+	public BlockCommand(ImperativeBlock block, CommandEnv env) {
+		super(block);
+		this.env = env;
 	}
 
 	@Override
-	public StatementEnv nextEnv() {
-		return new ImperativeBlockEnv(this);
+	public final CommandEnv env() {
+		return this.env;
 	}
 
 	@Override
@@ -73,15 +78,6 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 		}
 
 		return env().getExpectedValueStruct();
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-
-		final ValueDef localDef = localDef(getBlock(), scope, this);
-
-		return env().apply(localDef).toDefinitions(
-				env().getExpectedValueStruct());
 	}
 
 	@Override
@@ -112,6 +108,40 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 	@Override
 	public Action initialLogicalValue(LocalResolver resolver) {
 		return initialValue(resolver).toInitialLogicalValue();
+	}
+
+	@Override
+	public void resolveAll(LocalResolver resolver) {
+		getBlock().blockFullyResolved();
+		getContext().fullResolution().start();
+		try {
+			getDefinitionTargets();
+			for (ImperativeSentence sentence : getBlock().getSentences()) {
+				resolveSentence(resolver, sentence);
+			}
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	@Override
+	public InlineCmd inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return inlineBlock(normalizer, valueStruct, origin, getBlock());
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+			normalizeSentence(normalizer, sentence);
+		}
+	}
+
+	@Override
+	public Cmd cmd(CodeBuilder builder) {
+		return new ImperativeBlockCmd(builder, getBlock());
 	}
 
 	private Action initialValue(
@@ -185,9 +215,9 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 
 		Action result = null;
 
-		for (Definer definer : alt.getDefiners()) {
+		for (Command command : alt.getImplications()) {
 
-			final Action action = definer.initialValue(resolver);
+			final Action action = command.initialValue(resolver);
 
 			if (action.isAbort()) {
 				return action;
@@ -204,6 +234,51 @@ public class ImperativeBlockDefiner extends BlockDefiner<ImperativeBlock> {
 		}
 
 		return new ExecuteCommand(alt, LogicalValue.TRUE);
+	}
+
+	private final void resolveSentence(
+			LocalResolver resolver,
+			ImperativeSentence sentence) {
+
+		final ImperativeSentence prerequisite = sentence.getPrerequisite();
+
+		if (prerequisite != null) {
+			resolveSentence(resolver, prerequisite);
+		}
+		for (Imperatives alt : sentence.getAlternatives()) {
+			resolveCommands(resolver, alt);
+		}
+	}
+
+	private void resolveCommands(
+			LocalResolver resolver,
+			Imperatives imperatives) {
+		assert imperatives.assertInstructionsExecuted();
+		for (Command command : imperatives.getImplications()) {
+			command.resolveAll(resolver);
+		}
+	}
+
+	final void normalizeSentence(
+			RootNormalizer normalizer,
+			ImperativeSentence sentence) {
+
+		final ImperativeSentence prerequisite = sentence.getPrerequisite();
+
+		if (prerequisite != null) {
+			normalizeSentence(normalizer, prerequisite);
+		}
+		for (Imperatives alt : sentence.getAlternatives()) {
+			normalizeCommands(normalizer, alt);
+		}
+	}
+
+	final void normalizeCommands(
+			RootNormalizer normalizer,
+			Imperatives imperatives) {
+		for (Command command : imperatives.getImplications()) {
+			command.normalize(normalizer);
+		}
 	}
 
 }

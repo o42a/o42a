@@ -36,7 +36,7 @@ final class ContentBuilder extends BlockBuilder {
 	}
 
 	@Override
-	public void buildBlock(Block<?> block) {
+	public void buildBlock(Block<?,?> block) {
 		Interpreter.addContent(this.statementVisitor, block, this.block);
 	}
 

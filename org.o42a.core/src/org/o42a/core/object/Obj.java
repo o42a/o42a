@@ -57,7 +57,7 @@ import org.o42a.core.ref.path.impl.StaticObjectStep;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.impl.ObjectEnv;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
@@ -603,7 +603,7 @@ public abstract class Obj
 		return this.clonesContent = new ObjectContent(this, true);
 	}
 
-	public StatementEnv definitionEnv() {
+	public DefinerEnv definitionEnv() {
 		return new ObjectEnv(this);
 	}
 

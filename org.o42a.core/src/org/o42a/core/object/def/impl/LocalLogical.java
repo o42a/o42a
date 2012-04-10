@@ -51,13 +51,13 @@ final class LocalLogical extends Logical {
 		assertCompatible(resolver.getScope());
 
 		final Resolver localResolver =
-				this.def.localPrefix.rescope(resolver);
+				this.def.getLocalPrefix().rescope(resolver);
 		final LocalScope local = localResolver.getScope().toLocal();
 
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		final Action action = this.def.definer.initialLogicalValue(
+		final Action action = this.def.getCommand().initialLogicalValue(
 				local.walkingResolver(resolver));
 
 		return action.getLogicalValue();
@@ -101,5 +101,6 @@ final class LocalLogical extends Logical {
 	protected void fullyResolve(Resolver resolver) {
 		this.def.resolveAll(resolver);
 	}
+
 
 }

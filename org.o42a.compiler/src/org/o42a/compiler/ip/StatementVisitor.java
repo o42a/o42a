@@ -30,7 +30,7 @@ import org.o42a.core.st.sentence.Statements;
 
 
 public abstract class StatementVisitor
-		extends AbstractStatementVisitor<Void, Statements<?>> {
+		extends AbstractStatementVisitor<Void, Statements<?, ?>> {
 
 	private final Interpreter ip;
 	private final CompilerContext context;
@@ -57,7 +57,7 @@ public abstract class StatementVisitor
 	}
 
 	@Override
-	protected Void visitStatement(StatementNode statement, Statements<?> p) {
+	protected Void visitStatement(StatementNode statement, Statements<?, ?> p) {
 		getLogger().invalidStatement(statement);
 		return null;
 	}

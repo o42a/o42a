@@ -21,14 +21,14 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class InclusionEnv extends StatementEnv {
+final class InclusionEnv extends DefinerEnv {
 
 	private final InclusionDefiner<?> definer;
-	private StatementEnv wrapped;
+	private DefinerEnv wrapped;
 
 	InclusionEnv(InclusionDefiner<?> definer) {
 		this.definer = definer;
@@ -59,7 +59,7 @@ final class InclusionEnv extends StatementEnv {
 		return getWrapped().getExpectedValueStruct();
 	}
 
-	private final StatementEnv getWrapped() {
+	private final DefinerEnv getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}

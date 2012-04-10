@@ -25,14 +25,10 @@ import static org.o42a.compiler.ip.assignment.DerefAssignment.derefAssignment;
 import static org.o42a.compiler.ip.assignment.VariableAssignment.variableAssignment;
 
 import org.o42a.ast.statement.AssignmentNode;
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
 
 
 public class AssignmentStatement extends Statement {
@@ -80,8 +76,13 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
-		return new AssignmentDefiner(this, env);
+	public Definer define(DefinerEnv env) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		return new AssignmentCommand(this, env);
 	}
 
 	@Override
@@ -102,19 +103,6 @@ public class AssignmentStatement extends Statement {
 	}
 
 	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return getAssignmentKind().inline(normalizer, valueStruct, origin);
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
-		getAssignmentKind().normalize(normalizer);
-	}
-
-	@Override
 	public String toString() {
 		if (this.value == null) {
 			return super.toString();
@@ -122,17 +110,7 @@ public class AssignmentStatement extends Statement {
 		return this.destination + " = " + this.value;
 	}
 
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		getAssignmentKind().resolve(resolver);
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return getAssignmentKind().op(builder);
-	}
-
-	private AssignmentKind getAssignmentKind() {
+	public AssignmentKind getAssignmentKind() {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind;
 		}

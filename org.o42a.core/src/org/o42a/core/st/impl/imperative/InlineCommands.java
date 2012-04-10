@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.st.Definer;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
@@ -37,13 +37,13 @@ final class InlineCommands {
 			Scope origin,
 			Imperatives imperatives) {
 
-		final List<Definer> definers = imperatives.getDefiners();
-		final InlineCmd[] inlines = new InlineCmd[definers.size()];
+		final List<Command> commands = imperatives.getImplications();
+		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
 
-		for (Definer definer : definers) {
+		for (Command command : commands) {
 
-			final InlineCmd inline = definer.getStatement().inlineImperative(
+			final InlineCmd inline = command.inline(
 					normalizer,
 					valueStruct,
 					origin);

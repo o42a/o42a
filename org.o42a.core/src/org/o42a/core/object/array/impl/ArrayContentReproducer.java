@@ -58,7 +58,7 @@ public final class ArrayContentReproducer extends Reproducer {
 	}
 
 	@Override
-	public Statements<?> getStatements() {
+	public Statements<?, ?> getStatements() {
 		return null;
 	}
 
@@ -73,7 +73,7 @@ public final class ArrayContentReproducer extends Reproducer {
 	@Override
 	public void applyClause(
 			LocationInfo location,
-			Statements<?> statements,
+			Statements<?, ?> statements,
 			Clause clause) {
 		throw new UnsupportedOperationException();
 	}

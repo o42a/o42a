@@ -30,12 +30,15 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class BlockDefiner<B extends Block<?>> extends Definer {
+public abstract class BlockImplication<
+		B extends Block<?, ?>,
+		L extends Implication<L>>
+				extends AbstractImplication<L> {
 
 	private DefinitionTargets definitionTargets;
 
-	public BlockDefiner(B block, StatementEnv env) {
-		super(block, env);
+	public BlockImplication(B block) {
+		super(block);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -57,7 +60,7 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 
 		DefinitionTargets result = noDefinitions();
 
-		for (Sentence<?> sentence : getBlock().getSentences()) {
+		for (Sentence<?, ?> sentence : getBlock().getSentences()) {
 			result = result.add(sentence.getDefinitionTargets());
 		}
 
@@ -71,7 +74,7 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 
 		ValueStruct<?, ?> result = null;
 
-		for (Sentence<?> sentence : getBlock().getSentences()) {
+		for (Sentence<?, ?> sentence : getBlock().getSentences()) {
 
 			final ValueStruct<?, ?> struct = valueStruct(sentence, scope);
 
@@ -96,11 +99,13 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 		return result;
 	}
 
-	private ValueStruct<?, ?> valueStruct(Sentence<?> sentence, Scope scope) {
+	private ValueStruct<?, ?> valueStruct(
+			Sentence<?, ?> sentence,
+			Scope scope) {
 
 		ValueStruct<?, ?> result = null;
 
-		for (Statements<?> alt : sentence.getAlternatives()) {
+		for (Statements<?, ?> alt : sentence.getAlternatives()) {
 
 			final ValueStruct<?, ?> struct = valueStruct(alt, scope);
 
@@ -125,16 +130,16 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 		return result;
 	}
 
-	ValueStruct<?, ?> valueStruct(Statements<?> alt, Scope scope) {
+	ValueStruct<?, ?> valueStruct(Statements<?, ?> alt, Scope scope) {
 
 		ValueStruct<?, ?> result = null;
 
-		for (Definer definer : alt.getDefiners()) {
-			if (!definer.getDefinitionTargets().haveValue()) {
+		for (Implication<?> implication : alt.getImplications()) {
+			if (!implication.getDefinitionTargets().haveValue()) {
 				continue;
 			}
 
-			final ValueStruct<?, ?> struct = definer.valueStruct(scope);
+			final ValueStruct<?, ?> struct = implication.valueStruct(scope);
 
 			if (struct == null) {
 				continue;
@@ -151,7 +156,7 @@ public abstract class BlockDefiner<B extends Block<?>> extends Definer {
 				continue;
 			}
 
-			getLogger().incompatible(definer, result);
+			getLogger().incompatible(implication, result);
 		}
 
 		return result;

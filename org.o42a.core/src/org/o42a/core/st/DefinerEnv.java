@@ -28,31 +28,10 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class StatementEnv {
+public abstract class DefinerEnv extends ImplicationEnv {
 
-	public static StatementEnv defaultEnv(LocationInfo location) {
+	public static DefinerEnv defaultEnv(LocationInfo location) {
 		return new DefaultEnv(location);
-	}
-
-	private ValueStruct<?, ?> expectedStruct;
-
-	public final ValueStruct<?, ?> getExpectedValueStruct() {
-		if (this.expectedStruct != null) {
-			if (this.expectedStruct == ValueStruct.NONE) {
-				return null;
-			}
-			return this.expectedStruct;
-		}
-
-		final ValueStruct<?, ?> expectedType = expectedValueStruct();
-
-		if (expectedType == null) {
-			this.expectedStruct = ValueStruct.NONE;
-		} else {
-			this.expectedStruct = expectedType;
-		}
-
-		return expectedType;
 	}
 
 	public final boolean isConditional() {
@@ -71,7 +50,7 @@ public abstract class StatementEnv {
 		return prerequisite(scope).and(precondition(scope));
 	}
 
-	public StatementEnv notCondition(LocationInfo location) {
+	public DefinerEnv notCondition(LocationInfo location) {
 		return new NotCondition(location, this);
 	}
 
@@ -88,9 +67,7 @@ public abstract class StatementEnv {
 		return prereqDef.addPrecondition(precondition(def.getScope()));
 	}
 
-	protected abstract ValueStruct<?, ?> expectedValueStruct();
-
-	private static final class DefaultEnv extends StatementEnv {
+	private static final class DefaultEnv extends DefinerEnv {
 
 		private final LocationInfo location;
 
@@ -135,13 +112,13 @@ public abstract class StatementEnv {
 
 	}
 
-	private static final class NotCondition extends StatementEnv {
+	private static final class NotCondition extends DefinerEnv {
 
 		private final LocationInfo location;
-		private final StatementEnv env;
+		private final DefinerEnv env;
 		private boolean errorReported;
 
-		NotCondition(LocationInfo location, StatementEnv env) {
+		NotCondition(LocationInfo location, DefinerEnv env) {
 			this.location = location;
 			this.env = env;
 		}
@@ -169,7 +146,7 @@ public abstract class StatementEnv {
 		}
 
 		@Override
-		public StatementEnv notCondition(LocationInfo location) {
+		public DefinerEnv notCondition(LocationInfo location) {
 			return new NotCondition(location, this.env);
 		}
 

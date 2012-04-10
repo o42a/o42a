@@ -23,25 +23,21 @@ import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefDefiner;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueStruct;
 
 
-final class RefConditionDefiner extends Definer {
+final class RefConditionDefiner extends AbstractDefiner {
 
 	private RefDefiner refDefiner;
 	private Definer replacement;
 
-	RefConditionDefiner(RefCondition statement, StatementEnv env) {
+	RefConditionDefiner(RefCondition statement, DefinerEnv env) {
 		super(statement, env);
-		this.refDefiner = statement.getRef().define(new ConditionalEnv(env));
+		this.refDefiner = statement.getRef().define(new Env(env));
 	}
 
 	public final Ref getRef() {
@@ -57,27 +53,15 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public StatementEnv nextEnv() {
+	public DefinerEnv nextEnv() {
 		return new RefEnvWrap(this);
-	}
-
-	@Override
-	public Instruction toInstruction(Resolver resolver) {
-
-		final Directive directive = getRef().resolve(resolver).toDirective();
-
-		if (directive == null) {
-			return null;
-		}
-
-		return new ApplyDirective(this, resolver, directive);
 	}
 
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 
 		final DefinitionTargets targets =
-				this.refDefiner.getDefinitionTargets();
+				getRefDefiner().getDefinitionTargets();
 
 		if (targets.haveDefinition()) {
 			return conditionDefinition(getRef());
@@ -92,24 +76,66 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
+	public Definer replaceWith(Statement statement) {
+		return this.replacement = statement.define(env());
+	}
+
+	@Override
+	public Instruction toInstruction(Resolver resolver) {
+
+		final Directive directive = getRef().resolve(resolver).toDirective();
+
+		if (directive == null) {
+			return null;
+		}
+
+		return new ApplyDirective(getRef(), resolver, directive);
+	}
+
+	@Override
 	public Definitions define(Scope scope) {
-		return this.refDefiner.getValueAdapter().condDef().toDefinitions(
+		return getRefDefiner().getValueAdapter().condDef().toDefinitions(
 				env().getExpectedValueStruct());
 	}
 
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return this.refDefiner.initialLogicalValue(resolver);
-	}
+	private static final class Env extends DefinerEnv {
 
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
-	}
+		private final DefinerEnv initialEnv;
 
-	@Override
-	public Definer replaceWith(Statement statement) {
-		return this.replacement = statement.define(env());
+		Env(DefinerEnv initialEnv) {
+			this.initialEnv = initialEnv;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return this.initialEnv.hasPrerequisite();
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			return this.initialEnv.prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return this.initialEnv.hasPrecondition();
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			return this.initialEnv.precondition(scope);
+		}
+
+		@Override
+		public String toString() {
+			return this.initialEnv.toString();
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return null;// To prevent Ref adaption.
+		}
+
 	}
 
 }

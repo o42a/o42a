@@ -19,127 +19,16 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.*;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.log.Loggable;
 
 
-public abstract class Definer implements PlaceInfo {
+public interface Definer extends Implication<Definer> {
 
-	private final Statement statement;
-	private final StatementEnv env;
+	DefinerEnv env();
 
-	public Definer(Statement statement, StatementEnv env) {
-		this.statement = statement;
-		this.env = env;
-	}
+	DefinerEnv nextEnv();
 
-	@Override
-	public final CompilerContext getContext() {
-		return getStatement().getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return getStatement().getLoggable();
-	}
-
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
-	@Override
-	public final Scope getScope() {
-		return getStatement().getScope();
-	}
-
-	@Override
-	public final ScopePlace getPlace() {
-		return getStatement().getPlace();
-	}
-
-	@Override
-	public final Container getContainer() {
-		return getStatement().getContainer();
-	}
-
-	@Override
-	public final Distributor distribute() {
-		return Placed.distribute(this);
-	}
-
-	@Override
-	public final Distributor distributeIn(Container container) {
-		return Placed.distributeIn(this, container);
-	}
-
-	public final Statement getStatement() {
-		return this.statement;
-	}
-
-	public final StatementEnv env() {
-		return this.env;
-	}
-
-	public abstract StatementEnv nextEnv();
-
-	public abstract Instruction toInstruction(Resolver resolver);
-
-	public abstract DefinitionTargets getDefinitionTargets();
-
-	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
-
-	public abstract Definitions define(Scope scope);
-
-	public abstract Action initialValue(LocalResolver resolver);
-
-	public abstract Action initialLogicalValue(LocalResolver resolver);
-
-	/**
-	 * Called to replace the statement with another one.
-	 *
-	 * <p>Supported only for inclusion statement.<p>
-	 *
-	 * @param statement replacement statement.
-	 *
-	 * @return replacement definer.
-	 */
-	public Definer replaceWith(Statement statement) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public final void assertScopeIs(Scope scope) {
-		Scoped.assertScopeIs(this, scope);
-	}
-
-	@Override
-	public final void assertCompatible(Scope scope) {
-		Scoped.assertCompatible(this, scope);
-	}
-
-	@Override
-	public final void assertSameScope(ScopeInfo other) {
-		Scoped.assertSameScope(this, other);
-	}
-
-	@Override
-	public final void assertCompatibleScope(ScopeInfo other) {
-		Scoped.assertCompatibleScope(this, other);
-	}
-
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+	Definitions define(Scope scope);
 
 }

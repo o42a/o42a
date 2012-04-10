@@ -31,6 +31,7 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.core.st.Command;
 
 
 public final class LocalIRFunc
@@ -41,6 +42,7 @@ public final class LocalIRFunc
 	private final CodeId id;
 	private Function<ObjectValFunc> function;
 	private final ObjectIRLocals locals;
+	private Command command;
 
 	public LocalIRFunc(LocalIR localIR, ObjectIRLocals locals) {
 		super(localIR.getOwnerIR());
@@ -49,7 +51,8 @@ public final class LocalIRFunc
 		this.id = localIR.getId().detail("value");
 	}
 
-	public ValOp call(ValDirs dirs, ObjOp owner, ObjOp body) {
+	public ValOp call(ValDirs dirs, ObjOp owner, ObjOp body, Command command) {
+		this.command = command;
 
 		final ValDirs subDirs =
 				dirs.begin(body != null ? "Value for " + body : "Value");
@@ -121,7 +124,7 @@ public final class LocalIRFunc
 
 	private void build(LocalBuilder builder, Block code, ValOp result) {
 
-		final Cmd cmd = getScope().getBlock().cmd(builder);
+		final Cmd cmd = this.command.cmd(builder);
 		final Block exit = code.addBlock("exit");
 		final Block failure = code.addBlock("failure");
 		final Control control = builder.createControl(

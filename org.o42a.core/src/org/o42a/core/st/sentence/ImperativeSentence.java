@@ -23,12 +23,13 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
 
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Command;
 import org.o42a.core.st.DefinitionTargets;
 
 
-public abstract class ImperativeSentence extends Sentence<Imperatives> {
+public abstract class ImperativeSentence
+		extends Sentence<Imperatives, Command> {
 
 	private DefinitionTargets statementKinds;
 
@@ -85,18 +86,6 @@ public abstract class ImperativeSentence extends Sentence<Imperatives> {
 		}
 
 		return alternatives.get(nextIdx + 1).isOpposite();
-	}
-
-	final void normalizeImperatives(RootNormalizer normalizer) {
-
-		final ImperativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite != null) {
-			prerequisite.normalizeImperatives(normalizer);
-		}
-		for (Imperatives alt : getAlternatives()) {
-			alt.normalizeImperatives(normalizer);
-		}
 	}
 
 }

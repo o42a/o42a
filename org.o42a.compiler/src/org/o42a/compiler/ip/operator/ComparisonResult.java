@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.ref.InlineValue.inlineFalse;
-import static org.o42a.core.st.StatementEnv.defaultEnv;
+import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
 

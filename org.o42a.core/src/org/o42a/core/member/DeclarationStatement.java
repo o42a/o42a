@@ -20,15 +20,10 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.InlineCmd;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Statement;
-import org.o42a.core.st.StatementEnv;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationStatement extends Statement {
@@ -42,22 +37,9 @@ public abstract class DeclarationStatement extends Statement {
 	public abstract Member toMember();
 
 	@Override
-	public abstract DeclarationDefiner define(StatementEnv env);
+	public abstract DeclarationDefiner define(DefinerEnv env);
 
 	@Override
-	public final InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return null;
-	}
-
-	@Override
-	public final void normalizeImperative(RootNormalizer normalizer) {
-	}
-
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-	}
+	public abstract DeclarationCommand command(CommandEnv env);
 
 }

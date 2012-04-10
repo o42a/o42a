@@ -27,18 +27,18 @@ import org.o42a.core.source.LocationInfo;
 public final class Group extends Placed {
 
 	private final ClauseBuilder builder;
-	private final Statements<?> statements;
+	private final Statements<?, ?> statements;
 
 	Group(
 			LocationInfo location,
-			Statements<?> statements,
+			Statements<?, ?> statements,
 			ClauseBuilder builder) {
 		super(location, statements.nextDistributor());
 		this.statements = statements;
 		this.builder = builder;
 	}
 
-	public final Statements<?> getStatements() {
+	public final Statements<?, ?> getStatements() {
 		return this.statements;
 	}
 
@@ -46,7 +46,7 @@ public final class Group extends Placed {
 		return this.builder;
 	}
 
-	public final Block<?> parentheses() {
+	public final Block<?, ?> parentheses() {
 
 		final ClauseBuilderBase builder = this.builder;
 

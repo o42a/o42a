@@ -19,22 +19,14 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.util.fn.Cancelable;
 
 
 public final class RefCondition extends Statement {
 
 	private final Ref ref;
-	private StatementEnv conditionalEnv;
+	private DefinerEnv conditionalEnv;
 
 	public RefCondition(Ref ref) {
 		super(ref, ref.distribute());
@@ -46,8 +38,13 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public Definer define(StatementEnv env) {
+	public Definer define(DefinerEnv env) {
 		return new RefConditionDefiner(this, env);
+	}
+
+	@Override
+	public Command command(CommandEnv env) {
+		return new RefConditionCommand(this, env);
 	}
 
 	@Override
@@ -64,94 +61,12 @@ public final class RefCondition extends Statement {
 	}
 
 	@Override
-	public InlineCmd inlineImperative(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-
-		final InlineValue value = this.ref.inline(normalizer, origin);
-
-		if (value != null) {
-			return new Inline(valueStruct, value);
-		}
-
-		this.ref.normalize(normalizer.getAnalyzer());
-
-		return null;
-	}
-
-	@Override
-	public void normalizeImperative(RootNormalizer normalizer) {
-		this.ref.normalizeImperative(normalizer);
-	}
-
-	@Override
 	public String toString() {
 		return this.ref.toString();
 	}
 
-	@Override
-	protected void fullyResolveImperative(LocalResolver resolver) {
-		this.ref.resolve(resolver).resolveLogical();
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new CondCmd(builder, this.ref);
-	}
-
-	final StatementEnv getConditionalEnv() {
+	final DefinerEnv getConditionalEnv() {
 		return this.conditionalEnv;
-	}
-
-	private static final class Inline extends InlineCmd {
-
-		private final InlineValue value;
-
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			this.value.writeCond(dirs, control.host());
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return "(++" + this.value + ")";
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
-
-	private static final class CondCmd extends Cmd {
-
-		CondCmd(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final Ref ref = (Ref) getStatement();
-
-			ref.cmd(getBuilder()).writeCond(control);
-		}
-
 	}
 
 }

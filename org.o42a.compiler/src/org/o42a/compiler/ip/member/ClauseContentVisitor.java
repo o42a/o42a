@@ -40,7 +40,7 @@ import org.o42a.core.st.sentence.Statements;
 
 
 final class ClauseContentVisitor
-		extends AbstractStatementVisitor<Statement, Statements<?>> {
+		extends AbstractStatementVisitor<Statement, Statements<?, ?>> {
 
 	private final ClauseDeclaration declaration;
 	private final ClauseDeclaratorNode node;
@@ -55,7 +55,7 @@ final class ClauseContentVisitor
 	@Override
 	public Statement visitParentheses(
 			ParenthesesNode parentheses,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final Group group = p.group(
 				location(this.declaration, parentheses),
@@ -75,7 +75,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Statement visitBraces(BracesNode braces, Statements<?> p) {
+	public Statement visitBraces(BracesNode braces, Statements<?, ?> p) {
 
 		final Group group = p.group(
 				location(this.declaration, braces),
@@ -95,7 +95,7 @@ final class ClauseContentVisitor
 	}
 
 	@Override
-	public Statement visitNamedBlock(NamedBlockNode block, Statements<?> p) {
+	public Statement visitNamedBlock(NamedBlockNode block, Statements<?, ?> p) {
 
 		final BracesNode braces = block.getBlock();
 		final Group group = p.group(
@@ -118,7 +118,7 @@ final class ClauseContentVisitor
 	@Override
 	public Statement visitDeclarator(
 			DeclaratorNode declarator,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final ClauseBuilder builder =
 				buildOverrider(this.declaration, declarator, p);
@@ -133,7 +133,7 @@ final class ClauseContentVisitor
 	@Override
 	public Statement visitSelfAssignment(
 			SelfAssignmentNode assignment,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 
 		final ExpressionNode value = assignment.getValue();
 
@@ -156,14 +156,14 @@ final class ClauseContentVisitor
 	@Override
 	protected Statement visitExpression(
 			ExpressionNode expression,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 		return expression(expression, p, this.declaration);
 	}
 
 	@Override
 	protected Statement visitStatement(
 			StatementNode statement,
-			Statements<?> p) {
+			Statements<?, ?> p) {
 		getLogger().invalidClauseContent(statement);
 		return null;
 	}
@@ -178,7 +178,7 @@ final class ClauseContentVisitor
 
 	private Statement expression(
 			ExpressionNode expression,
-			Statements<?> p,
+			Statements<?, ?> p,
 			ClauseDeclaration declaration) {
 
 		final ClauseBuilder builder = builder(p, declaration);
@@ -191,7 +191,7 @@ final class ClauseContentVisitor
 	}
 
 	private ClauseBuilder builder(
-			Statements<?> p,
+			Statements<?, ?> p,
 			ClauseDeclaration declaration) {
 
 		final ClauseBuilder builder = p.clause(declaration);

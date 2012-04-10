@@ -21,15 +21,15 @@ package org.o42a.core.st.impl.declarative;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class DeclarativeBlockEnv extends StatementEnv {
+final class DeclarativeBlockEnv extends DefinerEnv {
 
-	private final DeclarativeBlockDefiner definer;
+	private final BlockDefiner definer;
 
-	DeclarativeBlockEnv(DeclarativeBlockDefiner definer) {
+	DeclarativeBlockEnv(BlockDefiner definer) {
 		this.definer = definer;
 	}
 

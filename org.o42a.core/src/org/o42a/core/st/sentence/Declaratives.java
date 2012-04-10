@@ -35,11 +35,11 @@ import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueStruct;
 
 
-public class Declaratives extends Statements<Declaratives> {
+public class Declaratives extends Statements<Declaratives, Definer> {
 
 	private DeclarativesEnv env;
 	private Definer prevDefiner;
-	private StatementEnv lastDefinitionEnv;
+	private DefinerEnv lastDefinitionEnv;
 	private DefinitionTargets definitionTargets;
 
 	Declaratives(
@@ -67,7 +67,7 @@ public class Declaratives extends Statements<Declaratives> {
 
 		executeInstructions();
 
-		final List<Definer> definers = getDefiners();
+		final List<Definer> definers = getImplications();
 		DefinitionTargets result = noDefinitions();
 		final int size = definers.size();
 
@@ -94,7 +94,7 @@ public class Declaratives extends Statements<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	public final StatementEnv getEnv() {
+	public final DefinerEnv getEnv() {
 		if (this.env != null) {
 			return this.env;
 		}
@@ -137,7 +137,7 @@ public class Declaratives extends Statements<Declaratives> {
 	@Override
 	protected Definer define(Statement statement) {
 
-		final StatementEnv env;
+		final DefinerEnv env;
 		if (this.prevDefiner != null) {
 			env = this.prevDefiner.nextEnv();
 		} else {
@@ -155,7 +155,7 @@ public class Declaratives extends Statements<Declaratives> {
 			return null;
 		}
 
-		final List<Definer> definers = getDefiners();
+		final List<Definer> definers = getImplications();
 
 		for (int i = definers.size() - 1; i >= 0; --i) {
 
@@ -170,12 +170,12 @@ public class Declaratives extends Statements<Declaratives> {
 		throw new IllegalStateException("Missing definition: "+ this);
 	}
 
-	private StatementEnv lastDefinitionEnv() {
+	private DefinerEnv lastDefinitionEnv() {
 		if (this.lastDefinitionEnv != null) {
 			return this.lastDefinitionEnv;
 		}
 
-		final List<Definer> definers = getDefiners();
+		final List<Definer> definers = getImplications();
 		final int last = definers.size() - 1;
 
 		for (int i = last; i >= 0; --i) {
@@ -241,7 +241,7 @@ public class Declaratives extends Statements<Declaratives> {
 		}
 	}
 
-	private final class DeclarativesEnv extends StatementEnv {
+	private final class DeclarativesEnv extends DefinerEnv {
 
 		@Override
 		public boolean hasPrerequisite() {

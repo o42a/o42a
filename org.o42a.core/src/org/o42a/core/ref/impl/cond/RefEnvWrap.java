@@ -22,14 +22,14 @@ package org.o42a.core.ref.impl.cond;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.st.Definer;
-import org.o42a.core.st.StatementEnv;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-final class RefEnvWrap extends StatementEnv {
+final class RefEnvWrap extends DefinerEnv {
 
 	private final RefConditionDefiner definer;
-	private StatementEnv wrapped;
+	private DefinerEnv wrapped;
 
 	RefEnvWrap(RefConditionDefiner definer) {
 		this.definer = definer;
@@ -68,11 +68,11 @@ final class RefEnvWrap extends StatementEnv {
 		return getInitialEnv().getExpectedValueStruct();
 	}
 
-	final StatementEnv getInitialEnv() {
+	final DefinerEnv getInitialEnv() {
 		return this.definer.env();
 	}
 
-	private StatementEnv getWrapped() {
+	private DefinerEnv getWrapped() {
 		if (this.wrapped != null) {
 			return this.wrapped;
 		}

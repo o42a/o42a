@@ -28,8 +28,8 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.StatementEnv;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.util.fn.Cancelable;
@@ -96,8 +96,8 @@ final class SentenceLogicals {
 
 	private static final class Result extends Logical {
 
-		private final ArrayList<StatementEnv> variants =
-				new ArrayList<StatementEnv>();
+		private final ArrayList<DefinerEnv> variants =
+				new ArrayList<DefinerEnv>();
 		private Logical otherwise;
 
 		private LogicalValue constantValue;
@@ -119,7 +119,7 @@ final class SentenceLogicals {
 				return this.constantValue = this.otherwise.getConstantValue();
 			}
 
-			for (StatementEnv conditions : this.variants) {
+			for (DefinerEnv conditions : this.variants) {
 
 				final Logical prerequisite =
 						conditions.prerequisite(getScope());
@@ -154,7 +154,7 @@ final class SentenceLogicals {
 				return this.otherwise.logicalValue(resolver);
 			}
 
-			for (StatementEnv env : this.variants) {
+			for (DefinerEnv env : this.variants) {
 
 				final LogicalValue prerequisite =
 						env.prerequisite(getScope()).logicalValue(resolver);
@@ -202,7 +202,7 @@ final class SentenceLogicals {
 			final InlineCond[] preconds = new InlineCond[prereqs.length];
 			int i = 0;
 
-			for (StatementEnv variant : this.variants) {
+			for (DefinerEnv variant : this.variants) {
 
 				final InlineCond prereq =
 						variant.prerequisite(getScope())
@@ -257,7 +257,7 @@ final class SentenceLogicals {
 
 			for (;;) {
 
-				final StatementEnv conditions = this.variants.get(idx);
+				final DefinerEnv conditions = this.variants.get(idx);
 				final Logical prerequisite =
 						conditions.prerequisite(getScope());
 				final Logical precondition =
@@ -301,7 +301,7 @@ final class SentenceLogicals {
 
 			final StringBuilder out = new StringBuilder();
 
-			for (StatementEnv conditions : this.variants) {
+			for (DefinerEnv conditions : this.variants) {
 				out.append('(').append(conditions.prerequisite(getScope()));
 				out.append(")? (");
 				out.append(conditions.precondition(getScope())).append(").");
@@ -316,7 +316,7 @@ final class SentenceLogicals {
 
 		@Override
 		protected void fullyResolve(Resolver resolver) {
-			for (StatementEnv env : this.variants) {
+			for (DefinerEnv env : this.variants) {
 				env.prerequisite(getScope()).resolveAll(resolver);
 				env.precondition(getScope()).resolveAll(resolver);
 			}

@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Compiler Core
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,60 +17,63 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.assignment;
+package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
+import static org.o42a.core.object.def.impl.LocalDef.localDef;
 
 import org.o42a.core.Scope;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
-import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.st.impl.BlockImplication;
+import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.ValueStruct;
 
 
-final class AssignmentDefiner extends Definer {
+public final class ImperativeDefiner
+		extends BlockImplication<ImperativeBlock, Definer>
+		implements Definer {
 
-	AssignmentDefiner(AssignmentStatement assignment, StatementEnv env) {
-		super(assignment, env);
+	private final DefinerEnv env;
+	private final Command command;
+
+	public ImperativeDefiner(ImperativeBlock block, DefinerEnv env) {
+		super(block);
+		this.env = env;
+		this.command = block.command(new BlockCommandEnv(null, env));
+	}
+
+	public final Command getCommand() {
+		return this.command;
 	}
 
 	@Override
-	public StatementEnv nextEnv() {
-		throw new UnsupportedOperationException();
+	public final DefinerEnv env() {
+		return this.env;
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return null;
+	public DefinerEnv nextEnv() {
+		return new ImperativeDefinerEnv(this);
 	}
 
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
-		return conditionDefinition(getStatement());
+		return this.command.getDefinitionTargets();
 	}
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
+		return this.command.valueStruct(scope);
 	}
 
 	@Override
 	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
-	}
 
-	@Override
-	public Action initialValue(LocalResolver resolver) {
-		return new ExecuteCommand(this, LogicalValue.RUNTIME);
-	}
+		final ValueDef localDef = localDef(getBlock(), scope, this.command);
 
-	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
-		throw new UnsupportedOperationException();
+		return env().apply(localDef).toDefinitions(
+				env().getExpectedValueStruct());
 	}
 
 }

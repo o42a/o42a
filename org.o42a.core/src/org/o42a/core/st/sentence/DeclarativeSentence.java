@@ -32,7 +32,8 @@ import org.o42a.core.st.impl.declarative.SentenceEnv;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class DeclarativeSentence extends Sentence<Declaratives> {
+public abstract class DeclarativeSentence
+		extends Sentence<Declaratives, Definer> {
 
 	private AltEnv altEnv;
 	private SentenceEnv env;
@@ -133,14 +134,14 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		return this.definitionTargets = result;
 	}
 
-	public final StatementEnv getFinalEnv() {
+	public final DefinerEnv getFinalEnv() {
 		if (this.env != null) {
 			return this.env;
 		}
 		return this.env = new SentenceEnv(this);
 	}
 
-	public final StatementEnv getAltEnv() {
+	public final DefinerEnv getAltEnv() {
 		if (this.altEnv != null) {
 			return this.altEnv;
 		}
@@ -222,7 +223,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		}
 	}
 
-	private static final class AltEnv extends StatementEnv {
+	private static final class AltEnv extends DefinerEnv {
 
 		private final DeclarativeSentence sentence;
 
@@ -236,7 +237,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				return true;
 			}
 
-			final StatementEnv initial =
+			final DefinerEnv initial =
 					this.sentence.getBlock().getInitialEnv();
 
 			return initial.hasPrerequisite();
@@ -252,7 +253,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 				return prerequisite.getFinalEnv().fullLogical(scope);
 			}
 
-			final StatementEnv initial =
+			final DefinerEnv initial =
 					this.sentence.getBlock().getInitialEnv();
 
 			return initial.prerequisite(scope);
@@ -261,7 +262,7 @@ public abstract class DeclarativeSentence extends Sentence<Declaratives> {
 		@Override
 		public boolean hasPrecondition() {
 
-			final StatementEnv initial =
+			final DefinerEnv initial =
 					this.sentence.getBlock().getInitialEnv();
 
 			return initial.hasPrecondition();
