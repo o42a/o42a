@@ -25,7 +25,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.AbstractDefiner;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Instruction;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationDefiner extends AbstractDefiner {
@@ -38,11 +37,6 @@ public abstract class DeclarationDefiner extends AbstractDefiner {
 
 	public final DeclarationStatement getDeclarationStatement() {
 		return (DeclarationStatement) getStatement();
-	}
-
-	@Override
-	public final ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
 	}
 
 	@Override

@@ -58,11 +58,6 @@ final class RefConditionCommand extends AbstractCommand {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public Instruction toInstruction(Resolver resolver) {
 
 		final Directive directive = getRef().resolve(resolver).toDirective();

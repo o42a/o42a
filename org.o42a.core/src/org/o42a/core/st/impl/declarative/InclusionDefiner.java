@@ -26,7 +26,6 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueStruct;
 
 
 abstract class InclusionDefiner<I extends Inclusion>
@@ -69,11 +68,6 @@ abstract class InclusionDefiner<I extends Inclusion>
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return noDefinitions();
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -79,18 +79,6 @@ public final class BlockCommand
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		final ValueStruct<?, ?> valueStruct = sentencesValueStruct(scope);
-
-		if (valueStruct != null) {
-			return valueStruct;
-		}
-
-		return env().getExpectedValueStruct();
-	}
-
-	@Override
 	public Action initialValue(LocalResolver resolver) {
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 

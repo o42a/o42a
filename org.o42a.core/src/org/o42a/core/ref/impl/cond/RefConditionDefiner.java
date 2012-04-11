@@ -71,11 +71,6 @@ final class RefConditionDefiner extends AbstractDefiner {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public Definer replaceWith(Statement statement) {
 		return this.replacement = statement.define(env());
 	}

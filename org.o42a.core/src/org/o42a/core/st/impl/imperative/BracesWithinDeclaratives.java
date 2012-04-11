@@ -33,7 +33,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class BracesWithinDeclaratives extends Statement {
@@ -124,11 +123,6 @@ public final class BracesWithinDeclaratives extends Statement {
 		@Override
 		public DefinitionTargets getDefinitionTargets() {
 			return this.blockDefiner.getDefinitionTargets();
-		}
-
-		@Override
-		public ValueStruct<?, ?> valueStruct(Scope scope) {
-			return this.blockDefiner.valueStruct(scope);
 		}
 
 		@Override

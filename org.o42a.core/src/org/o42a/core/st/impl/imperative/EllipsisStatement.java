@@ -59,9 +59,9 @@ public final class EllipsisStatement extends Statement {
 	@Override
 	public Command command(CommandEnv env) {
 		if (this.exit) {
-			return new EllipsisDefiner.ExitDefiner(this, env);
+			return new EllipsisCommand.ExitCommand(this, env);
 		}
-		return new EllipsisDefiner.RepeatDefiner(this, env);
+		return new EllipsisCommand.RepeatCommand(this, env);
 	}
 
 	@Override
