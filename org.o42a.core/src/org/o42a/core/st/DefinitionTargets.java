@@ -25,9 +25,7 @@ import static org.o42a.core.st.DefinitionKey.VALUE_DEFINITION_KEY;
 import java.util.Map;
 
 
-public abstract class DefinitionTargets
-		extends ImplicationTarget
-		implements Iterable<DefinitionKey> {
+public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 
 	private static final EmptyDefinitionTargets EMPTY_DEFINITION_TARGETS =
 			new EmptyDefinitionTargets();
@@ -57,7 +55,6 @@ public abstract class DefinitionTargets
 		return (this.mask & CONDITION_MASK) != 0;
 	}
 
-	@Override
 	public final boolean haveValue() {
 		return (this.mask & VALUE_MASK) != 0;
 	}

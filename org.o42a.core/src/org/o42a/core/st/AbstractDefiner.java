@@ -32,11 +32,6 @@ public abstract class AbstractDefiner
 	}
 
 	@Override
-	public final ImplicationTarget getImplicationTarget() {
-		return getDefinitionTargets();
-	}
-
-	@Override
 	public final DefinerEnv env() {
 		return this.env;
 	}

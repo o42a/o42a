@@ -58,11 +58,6 @@ public final class BlockCommand
 	}
 
 	@Override
-	public final ImplicationTarget getImplicationTarget() {
-		return getCommandTarget();
-	}
-
-	@Override
 	public CommandTarget getCommandTarget() {
 		if (this.commandTarget != null) {
 			return this.commandTarget;

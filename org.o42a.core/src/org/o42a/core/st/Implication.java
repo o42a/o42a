@@ -27,8 +27,6 @@ public interface Implication<L extends Implication<L>> extends PlaceInfo {
 
 	Statement getStatement();
 
-	ImplicationTarget getImplicationTarget();
-
 	/**
 	 * Called to replace the statement with another one.
 	 *
