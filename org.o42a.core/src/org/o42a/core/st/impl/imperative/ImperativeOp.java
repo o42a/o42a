@@ -227,6 +227,10 @@ final class ImperativeOp {
 			Control control,
 			Imperatives statements,
 			InlineCommands inlines) {
+		if (statements.isOpposite()) {
+			// FIXME Implement the opposites code generation
+			throw new UnsupportedOperationException();
+		}
 
 		final List<Command> commands = statements.getImplications();
 		final int size = commands.size();

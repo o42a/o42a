@@ -91,24 +91,33 @@ public abstract class Sentence<
 	}
 
 	public final S alternative(LocationInfo location) {
-		return alternative(location, false);
-	}
 
-	public final S opposite(LocationInfo location) {
-		return alternative(location, true);
-	}
-
-	public S alternative(LocationInfo location, boolean opposite) {
-
-		@SuppressWarnings("rawtypes")
-		final SentenceFactory sentenceFactory = getSentenceFactory();
-		@SuppressWarnings("unchecked")
-		final S alternative =
-				(S) sentenceFactory.createAlternative(location, this, opposite);
+		final S alternative = createAlt(location, null);
 
 		this.alternatives.add(alternative);
 
 		return alternative;
+	}
+
+	public final S opposite(LocationInfo location) {
+
+		final S oppositeOf;
+		final int size = this.alternatives.size();
+		final int lastIdx;
+
+		if (size == 0) {
+			lastIdx = 0;
+			oppositeOf = alternative(location);
+		} else {
+			lastIdx = size - 1;
+			oppositeOf = this.alternatives.get(lastIdx);
+		}
+
+		final S opposite = createAlt(location, oppositeOf);
+
+		this.alternatives.set(lastIdx, opposite);
+
+		return opposite;
 	}
 
 	@Override
@@ -184,6 +193,19 @@ public abstract class Sentence<
 		for (S alt : getAlternatives()) {
 			alt.reproduce(reproduction, reproducer);
 		}
+	}
+
+	private S createAlt(LocationInfo location, S oppositeOf) {
+
+		@SuppressWarnings("rawtypes")
+		final SentenceFactory sentenceFactory = getSentenceFactory();
+		@SuppressWarnings("unchecked")
+		final S alt = (S) sentenceFactory.createAlternative(
+				location,
+				this,
+				oppositeOf);
+
+		return alt;
 	}
 
 	private static final class SentenceDistributor extends Distributor {

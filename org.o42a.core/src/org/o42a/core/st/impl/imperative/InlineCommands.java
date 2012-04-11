@@ -37,6 +37,16 @@ final class InlineCommands {
 			Scope origin,
 			Imperatives imperatives) {
 
+		final InlineCommands inlineOppositeOf;
+		final Imperatives oppositeOf = imperatives.getOppositeOf();
+
+		if (oppositeOf != null) {
+			inlineOppositeOf =
+					inlineCommands(normalizer, valueStruct, origin, oppositeOf);
+		} else {
+			inlineOppositeOf = null;
+		}
+
 		final List<Command> commands = imperatives.getImplications();
 		final InlineCmd[] inlines = new InlineCmd[commands.size()];
 		int i = 0;
@@ -55,13 +65,23 @@ final class InlineCommands {
 			inlines[i++] = inline;
 		}
 
-		return normalizer.isCancelled() ? null : new InlineCommands(inlines);
+		if (normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineCommands(inlineOppositeOf, inlines);
 	}
 
 	private final InlineCmd[] commands;
+	private final InlineCommands oppositeOf;
 
-	private InlineCommands(InlineCmd[] statements) {
+	private InlineCommands(InlineCommands oppositeOf, InlineCmd[] statements) {
+		this.oppositeOf = oppositeOf;
 		this.commands = statements;
+	}
+
+	public final InlineCommands getOppositeOf() {
+		return this.oppositeOf;
 	}
 
 	public final InlineCmd get(int index) {

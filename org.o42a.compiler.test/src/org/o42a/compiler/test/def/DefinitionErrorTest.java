@@ -27,58 +27,58 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterField() {
-		expectError("compiler.redundant_condition_after_field");
+		expectError("compiler.redundant_statement_after_field");
 		compile(
 				"A := 1,",
-				"false.");
+				"false");
 	}
 
 	@Test
 	public void conditionAfterValue() {
-		expectError("compiler.redundant_condition_after_field");
+		expectError("compiler.redundant_statement_after_value");
 		compile(
-				"A := void(",
-				"  Foo := 1,",
-				"  false.",
-				").");
+				"A := integer (",
+				"  = 1,",
+				"  false",
+				")");
 	}
 
 	@Test
 	public void conditionAfterBlockWithField() {
-		expectError("compiler.redundant_condition_after_field");
+		expectError("compiler.redundant_statement_after_field");
 		compile(
-				"(A := 1.),",
-				"false.");
+				"(A := 1),",
+				"false");
 	}
 
 	@Test
 	public void conditionAfterBlockWithValue() {
-		expectError("compiler.redundant_condition_after_value");
+		expectError("compiler.redundant_statement_after_value");
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  (= 2),",
-				"  false.",
-				").");
+				"  false",
+				")");
 	}
 
 	@Test
 	public void ambiguousSequentialValue() {
-		expectError("compiler.ambiguous_value");
+		expectError("compiler.redundant_statement_after_value");
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  = 1,",
-				"  = 2.",
-				").");
+				"  = 2",
+				")");
 	}
 
 	@Test
 	public void ambiguousAlternativeValue() {
 		expectError("compiler.ambiguous_value");
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  = 1;",
 				"  = 2.",
-				").");
+				")");
 	}
 
 }
