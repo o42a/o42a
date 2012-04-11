@@ -35,8 +35,8 @@ public class Imperatives extends Statements<Imperatives, Command> {
 	Imperatives(
 			LocationInfo location,
 			ImperativeSentence sentence,
-			boolean opposite) {
-		super(location, sentence, opposite);
+			Imperatives oppositeOf) {
+		super(location, sentence, oppositeOf);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 	}
 
 	@Override
-	protected Command define(Statement statement) {
+	protected Command implicate(Statement statement) {
 		final ImplicationEnv initialEnv =
 				getSentence().getBlock().getInitialEnv();
 		return statement.command(new BlockCommandEnv(this, initialEnv));

@@ -201,6 +201,23 @@ public final class BlockCommand extends Command {
 
 	private Action initialValue(Imperatives alt, LocalResolver resolver) {
 
+		final Imperatives oppositeOf = alt.getOppositeOf();
+
+		if (oppositeOf != null) {
+
+			final Action action = initialValue(oppositeOf, resolver);
+
+			if (action.isAbort()) {
+				return action;
+			}
+			if (!action.getLogicalValue().isFalse()) {
+				if (action.getLogicalValue().isTrue()) {
+					return new ExecuteCommand(oppositeOf, LogicalValue.FALSE);
+				}
+				return new ExecuteCommand(oppositeOf, LogicalValue.RUNTIME);
+			}
+		}
+
 		Action result = null;
 
 		for (Command command : alt.getImplications()) {
@@ -242,6 +259,12 @@ public final class BlockCommand extends Command {
 			LocalResolver resolver,
 			Imperatives imperatives) {
 		assert imperatives.assertInstructionsExecuted();
+
+		final Imperatives oppositeOf = imperatives.getOppositeOf();
+
+		if (oppositeOf != null) {
+			resolveCommands(resolver, oppositeOf);
+		}
 		for (Command command : imperatives.getImplications()) {
 			command.resolveAll(resolver);
 		}
@@ -264,6 +287,12 @@ public final class BlockCommand extends Command {
 	private void normalizeCommands(
 			RootNormalizer normalizer,
 			Imperatives imperatives) {
+
+		final Imperatives oppositeOf = imperatives.getOppositeOf();
+
+		if (oppositeOf != null) {
+			normalizeCommands(normalizer, oppositeOf);
+		}
 		for (Command command : imperatives.getImplications()) {
 			command.normalize(normalizer);
 		}

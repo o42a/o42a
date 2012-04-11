@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.source.CompilerLogger.logAnother;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
@@ -38,15 +39,22 @@ import org.o42a.core.value.ValueStruct;
 public class Declaratives extends Statements<Declaratives, Definer> {
 
 	private DeclarativesEnv env;
-	private Definer prevDefiner;
-	private DefinerEnv lastDefinitionEnv;
+	private DefinerEnv lastEnv;
 	private DefinitionTargets definitionTargets;
+	private DefinerEnv effectiveEnv = null;
 
 	Declaratives(
 			LocationInfo location,
 			DeclarativeSentence sentence,
-			boolean opposite) {
-		super(location, sentence, opposite);
+			Declaratives oppositeOf) {
+		super(location, sentence, oppositeOf);
+		if (oppositeOf != null) {
+			this.lastEnv = new OppositeStartEnv(
+					getSentence().getAltEnv(),
+					oppositeOf.getEnv());
+ 		} else {
+ 			this.lastEnv = new AltStartEnv(getSentence().getAltEnv());
+ 		}
 	}
 
 	@Override
@@ -69,8 +77,9 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 		final List<Definer> definers = getImplications();
 		DefinitionTargets result = noDefinitions();
 		final int size = definers.size();
+		final boolean inhibit = isInhibit();
 
-		for (int i = size - 1; i >= 0; --i) {
+		for (int i = 0; i < size; ++i) {
 
 			final Definer definer = definers.get(i);
 			final DefinitionTargets targets = definer.getDefinitionTargets();
@@ -78,15 +87,52 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 			if (targets.isEmpty()) {
 				continue;
 			}
-			if (targets.haveDeclaration()) {
-				for (int j = i + 1; j < size; ++j) {
-					redundantDefinitions(
-							targets.lastDeclaration(),
-							definers.get(j));
+			if (inhibit && targets.haveDeclaration()) {
+				if (targets.haveField()) {
+					getLogger().error(
+							"prohibited_inhibit_field",
+							definer,
+							"Field declaration can not be used as inhibit");
+				} else {
+					getLogger().error(
+							"prohibited_inhibit_value",
+							definer,
+							"Self-assignment can not be used as inhibit");
 				}
-				result = targets;
 				continue;
 			}
+			if (result.haveDeclaration()) {
+				if (result.haveField()) {
+					getLogger().error(
+							"redundant_statement_after_field",
+							definer.getLoggable().setReason(
+									logAnother(result.lastDeclaration())),
+									"Redundant statement after"
+									+ " the field declaration");
+				} else {
+					getLogger().error(
+							"redundant_statement_after_value",
+							definer.getLoggable().setReason(
+									logAnother(result.lastDeclaration())),
+									"Redundant statement after"
+									+ " the self-assignment");
+				}
+				if (this.effectiveEnv == null) {
+
+					final int nextIdx = i + 1;
+
+					if (nextIdx < size) {
+						this.effectiveEnv = definers.get(nextIdx).env();
+					} else {
+						this.effectiveEnv = lastEnv();
+					}
+				}
+
+				result = targets;
+
+				continue;
+			}
+
 			result = targets.add(result);
 		}
 
@@ -134,16 +180,13 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 	}
 
 	@Override
-	protected Definer define(Statement statement) {
+	protected Definer implicate(Statement statement) {
 
-		final DefinerEnv env;
-		if (this.prevDefiner != null) {
-			env = this.prevDefiner.nextEnv();
-		} else {
-			env = getSentence().getAltEnv();
-		}
+		final Definer definer = statement.define(lastEnv());
 
-		return this.prevDefiner = statement.define(env);
+		this.lastEnv = definer.nextEnv();
+
+		return definer;
 	}
 
 	protected Definitions define(Scope scope) {
@@ -169,104 +212,144 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 		throw new IllegalStateException("Missing definition: "+ this);
 	}
 
-	private DefinerEnv lastDefinitionEnv() {
-		if (this.lastDefinitionEnv != null) {
-			return this.lastDefinitionEnv;
-		}
-
-		final List<Definer> definers = getImplications();
-		final int last = definers.size() - 1;
-
-		for (int i = last; i >= 0; --i) {
-
-			final Definer definer = definers.get(i);
-
-			if (!definer.getDefinitionTargets().haveDefinition()) {
-				continue;
-			}
-
-			if (i == last) {
-				return this.lastDefinitionEnv = definer.nextEnv();
-			}
-
-			return this.lastDefinitionEnv = definers.get(i + 1).env();
-		}
-
-		return this.lastDefinitionEnv = getSentence().getAltEnv();
+	private final DefinerEnv lastEnv() {
+		return this.lastEnv;
 	}
 
-	private void redundantDefinitions(
-			DefinitionTarget declaration,
-			Definer definer) {
+	private final DefinerEnv effectiveEnv() {
+		getDefinitionTargets();
+		if (this.effectiveEnv != null) {
+			return this.effectiveEnv;
+		}
+		return this.effectiveEnv = lastEnv();
+	}
 
-		final DefinitionTargets targets = definer.getDefinitionTargets();
+	private final class AltStartEnv extends DefinerEnv {
 
-		if (targets.haveCondition()) {
-			if (declaration.isValue()) {
-				getLogger().error(
-						"redundant_condition_after_value",
-						targets.firstCondition().getLoggable().setReason(
-								logAnother(declaration)),
-						"Condition is redunant, as it follows the "
-						+ " value assignment statement");
-			} else {
-				getLogger().error(
-						"redundant_condition_after_field",
-						targets.firstCondition().getLoggable().setReason(
-								logAnother(declaration)),
-						"Condition is redunant, as it follows the "
-						+ " field declaration");
-			}
+		private final DefinerEnv initialEnv;
+
+		AltStartEnv(DefinerEnv initialEnv) {
+			this.initialEnv = initialEnv;
 		}
 
-		final DefinitionTarget ambiguity =
-				targets.first(declaration.getDefinitionKey());
-
-		if (ambiguity != null) {
-			if (declaration.isValue()) {
-				getLogger().error(
-						"ambiguous_value",
-						ambiguity.getLoggable().setReason(
-								logAnother(declaration)),
-						"Ambiguous value declaration");
-			} else {
-				getLogger().error(
-						"ambiguous_field",
-						ambiguity.getLoggable().setReason(
-								logAnother(declaration)),
-						"Ambiguous declaration of field '%s'",
-						declaration.getFieldKey().getMemberId());
-			}
+		@Override
+		public boolean hasPrerequisite() {
+			return !isInhibit() && this.initialEnv.hasPrerequisite();
 		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			if (isInhibit()) {
+				return logicalTrue(Declaratives.this, scope);
+			}
+			return this.initialEnv.prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return !isInhibit() && this.initialEnv.hasPrecondition();
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			if (isInhibit()) {
+				return logicalTrue(Declaratives.this, scope);
+			}
+			return this.initialEnv.precondition(scope);
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			if (isInhibit()) {
+				return null;
+			}
+			return this.initialEnv.getExpectedValueStruct();
+		}
+
+	}
+
+	private final class OppositeStartEnv extends DefinerEnv {
+
+		private final DefinerEnv initialEnv;
+		private final DefinerEnv inhibitEnv;
+
+		OppositeStartEnv(DefinerEnv initialEnv, DefinerEnv inhibitEnv) {
+			this.initialEnv = initialEnv;
+			this.inhibitEnv = inhibitEnv;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return !isInhibit() && this.initialEnv.hasPrerequisite();
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			if (isInhibit()) {
+				return logicalTrue(Declaratives.this, scope);
+			}
+			return this.initialEnv.prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return true;
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+
+			final Logical permission =
+					this.inhibitEnv.precondition(scope).negate();
+
+			if (isInhibit()) {
+				return permission;
+			}
+
+			return this.initialEnv.precondition(scope).and(permission);
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			if (isInhibit()) {
+				return null;
+			}
+			return this.initialEnv.getExpectedValueStruct();
+		}
+
 	}
 
 	private final class DeclarativesEnv extends DefinerEnv {
 
 		@Override
 		public boolean hasPrerequisite() {
-			return lastDefinitionEnv().hasPrerequisite();
+			return effectiveEnv().hasPrerequisite();
 		}
 
 		@Override
 		public Logical prerequisite(Scope scope) {
-			return lastDefinitionEnv().prerequisite(scope);
+			return effectiveEnv().prerequisite(scope);
 		}
 
 		@Override
 		public boolean hasPrecondition() {
-			return lastDefinitionEnv().hasPrecondition();
+			return effectiveEnv().hasPrecondition();
 		}
 
 		@Override
 		public Logical precondition(Scope scope) {
-			return lastDefinitionEnv().precondition(scope);
+			return effectiveEnv().precondition(scope);
 		}
 
 		@Override
 		public String toString() {
-			if (Declaratives.this.prevDefiner != null) {
-				return Declaratives.this.prevDefiner.env().toString();
+
+			final DefinerEnv effectiveEnv = Declaratives.this.effectiveEnv;
+
+			if (effectiveEnv != null) {
+				return effectiveEnv.toString();
 			}
+
 			return Declaratives.this + "?";
 		}
 

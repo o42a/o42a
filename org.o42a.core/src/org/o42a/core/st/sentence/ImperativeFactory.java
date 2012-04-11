@@ -110,8 +110,8 @@ public class ImperativeFactory implements SentenceFactory<
 	public Imperatives createAlternative(
 			LocationInfo location,
 			ImperativeSentence sentence,
-			boolean opposite) {
-		return new Imperatives(location, sentence, opposite);
+			Imperatives oppositeOf) {
+		return new Imperatives(location, sentence, oppositeOf);
 	}
 
 	@Override
