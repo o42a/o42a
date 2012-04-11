@@ -19,43 +19,28 @@
 */
 package org.o42a.core.st.impl;
 
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Instruction;
+import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
 
 
-public abstract class BlockImplication<
-		B extends Block<?, ?>,
-		L extends Implication<L>>
-				extends AbstractImplication<L> {
+public final class ExecuteInstructions implements Instruction {
 
-	public BlockImplication(B block) {
-		super(block);
-	}
+	private final Block<?, ?> block;
 
-	@SuppressWarnings("unchecked")
-	public final B getBlock() {
-		return (B) getStatement();
+	public ExecuteInstructions(Block<?, ?> block) {
+		this.block = block;
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return new ExecuteInstructions();
+	public void execute(InstructionContext context) {
+		context.doNotRemove();
+		this.block.executeInstructions();
 	}
 
-	private final class ExecuteInstructions implements Instruction {
-
-		@Override
-		public void execute(InstructionContext context) {
-			context.doNotRemove();
-			getBlock().executeInstructions();
-		}
-
-		@Override
-		public String toString() {
-			return "ExecuteInstructions[" + getBlock() + ']';
-		}
-
+	@Override
+	public String toString() {
+		return "ExecuteInstructions[" + this.block + ']';
 	}
 
 }
