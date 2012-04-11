@@ -87,7 +87,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 			return;
 		}
 
-		final Block<?, ?> block = blockByName(location, name);
+		final ImperativeBlock block = blockByName(location, name);
 
 		if (block == null) {
 			return;
@@ -115,12 +115,12 @@ public class Imperatives extends Statements<Imperatives, Command> {
 		return statement.command(new BlockCommandEnv(this, initialEnv));
 	}
 
-	private Block<?, ?> blockByName(LocationInfo location, String name) {
+	private ImperativeBlock blockByName(LocationInfo location, String name) {
 		if (name == null) {
 			return getSentence().getBlock();
 		}
 
-		Block<?, ?> block = getSentence().getBlock();
+		ImperativeBlock block = getSentence().getBlock();
 
 		for (;;) {
 			if (name.equals(block.getName())) {
@@ -130,10 +130,21 @@ public class Imperatives extends Statements<Imperatives, Command> {
 			final Statements<?, ?> enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
-				getLogger().unresolved(location, name);
-				return null;
+				break;
+			}
+			block = enclosing.getSentence().getBlock().toImperativeBlock();
+			if (block == null) {
+				break;
 			}
 		}
+
+		getLogger().error(
+				"unresolved_block",
+				location,
+				"Imperative block with name '%' does not exist",
+				name);
+
+		return null;
 	}
 
 }

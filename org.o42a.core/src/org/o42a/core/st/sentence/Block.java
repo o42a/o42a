@@ -78,8 +78,6 @@ public abstract class Block<
 
 	public abstract boolean isParentheses();
 
-	public abstract String getName();
-
 	public MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
 	}
