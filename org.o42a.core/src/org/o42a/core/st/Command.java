@@ -29,25 +29,58 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueStruct;
 
 
-public interface Command extends Implication<Command> {
+public abstract class Command extends Implication<Command> {
 
-	CommandTarget getCommandTarget();
+	private final CommandEnv env;
+	private Cmd cmd;
 
-	CommandEnv env();
+	public Command(Statement statement, CommandEnv env) {
+		super(statement);
+		this.env = env;
+	}
 
-	Action initialValue(LocalResolver resolver);
+	public abstract CommandTarget getCommandTarget();
 
-	Action initialLogicalValue(LocalResolver resolver);
+	public final CommandEnv env() {
+		return this.env;
+	}
 
-	void resolveAll(LocalResolver resolver);
+	public abstract Action initialValue(LocalResolver resolver);
+
+	public abstract Action initialLogicalValue(LocalResolver resolver);
+
+	public final void resolveAll(LocalResolver resolver) {
+		getStatement().fullyResolved();
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
 
 	public abstract InlineCmd inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
 
-	void normalize(RootNormalizer normalizer);
+	public abstract void normalize(RootNormalizer normalizer);
 
-	Cmd cmd(CodeBuilder builder);
+	public Cmd cmd(CodeBuilder builder) {
+
+		final Cmd cmd = this.cmd;
+
+		if (cmd != null && cmd.getBuilder() == builder) {
+			return cmd;
+		}
+
+		assert getStatement().assertFullyResolved();
+
+		return this.cmd = createCmd(builder);
+	}
+
+	protected abstract void fullyResolve(LocalResolver resolver);
+
+	protected abstract Cmd createCmd(CodeBuilder builder);
 
 }

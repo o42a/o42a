@@ -29,7 +29,7 @@ import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class DeclarationCommand extends AbstractCommand {
+public abstract class DeclarationCommand extends Command {
 
 	public DeclarationCommand(DeclarationStatement statement, CommandEnv env) {
 		super(statement, env);

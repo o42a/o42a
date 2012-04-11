@@ -82,7 +82,7 @@ class HeaderStatement extends Statement {
 		return this.ref.toString();
 	}
 
-	private static final class HeaderDefiner extends AbstractDefiner {
+	private static final class HeaderDefiner extends Definer {
 
 		private Definer refDefiner;
 

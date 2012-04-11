@@ -30,7 +30,7 @@ import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
 
-public class RefDefiner extends AbstractDefiner {
+public class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
 

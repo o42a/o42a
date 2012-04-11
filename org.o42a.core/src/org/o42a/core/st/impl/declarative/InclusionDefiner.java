@@ -29,7 +29,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 
 
 abstract class InclusionDefiner<I extends Inclusion>
-		extends AbstractDefiner
+		extends Definer
 		implements Instruction {
 
 	private Definer replacement;

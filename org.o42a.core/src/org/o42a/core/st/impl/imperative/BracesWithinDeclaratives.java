@@ -99,7 +99,7 @@ public final class BracesWithinDeclaratives extends Statement {
 	}
 
 	private static final class BracesWithinDeclarativesDefiner
-			extends AbstractDefiner {
+			extends Definer {
 
 		private final Definer blockDefiner;
 
