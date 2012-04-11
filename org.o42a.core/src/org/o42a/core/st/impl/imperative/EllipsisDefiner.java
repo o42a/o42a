@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.CommandTarget.actionCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -47,17 +47,17 @@ abstract class EllipsisDefiner extends AbstractCommand {
 	}
 
 	@Override
-	public Instruction toInstruction(Resolver resolver) {
-		return null;
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
+	public final CommandTarget getCommandTarget() {
+		return actionCommand(getStatement());
 	}
 
 	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
+		return null;
+	}
+
+	@Override
+	public final Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
 

@@ -19,10 +19,11 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockImplication;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
@@ -34,10 +35,32 @@ public final class BlockDefiner
 		implements Definer {
 
 	private final DefinerEnv env;
+	private DefinitionTargets definitionTargets;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
 		super(block);
 		this.env = env;
+	}
+
+	@Override
+	public final ImplicationTarget getImplicationTarget() {
+		return getDefinitionTargets();
+	}
+
+	@Override
+	public DefinitionTargets getDefinitionTargets() {
+		if (this.definitionTargets != null) {
+			return this.definitionTargets;
+		}
+		getBlock().executeInstructions();
+
+		DefinitionTargets result = noDefinitions();
+
+		for (DeclarativeSentence sentence : getBlock().getSentences()) {
+			result = result.add(sentence.getDefinitionTargets());
+		}
+
+		return this.definitionTargets = result;
 	}
 
 	@Override

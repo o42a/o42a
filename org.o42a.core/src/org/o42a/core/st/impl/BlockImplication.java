@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.impl;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
@@ -34,8 +32,6 @@ public abstract class BlockImplication<
 		B extends Block<?, ?>,
 		L extends Implication<L>>
 				extends AbstractImplication<L> {
-
-	private DefinitionTargets definitionTargets;
 
 	public BlockImplication(B block) {
 		super(block);
@@ -51,24 +47,8 @@ public abstract class BlockImplication<
 		return new ExecuteInstructions();
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.definitionTargets != null) {
-			return this.definitionTargets;
-		}
-		getBlock().executeInstructions();
-
-		DefinitionTargets result = noDefinitions();
-
-		for (Sentence<?, ?> sentence : getBlock().getSentences()) {
-			result = result.add(sentence.getDefinitionTargets());
-		}
-
-		return this.definitionTargets = result;
-	}
-
 	protected ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
-		if (!getDefinitionTargets().haveValue()) {
+		if (!getImplicationTarget().haveValue()) {
 			return null;
 		}
 
@@ -130,12 +110,12 @@ public abstract class BlockImplication<
 		return result;
 	}
 
-	ValueStruct<?, ?> valueStruct(Statements<?, ?> alt, Scope scope) {
+	private ValueStruct<?, ?> valueStruct(Statements<?, ?> alt, Scope scope) {
 
 		ValueStruct<?, ?> result = null;
 
 		for (Implication<?> implication : alt.getImplications()) {
-			if (!implication.getDefinitionTargets().haveValue()) {
+			if (!implication.getImplicationTarget().haveValue()) {
 				continue;
 			}
 

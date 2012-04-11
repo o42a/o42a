@@ -59,7 +59,6 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 		return getSentence().getSentenceFactory();
 	}
 
-	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		if (this.definitionTargets != null) {
 			return this.definitionTargets;

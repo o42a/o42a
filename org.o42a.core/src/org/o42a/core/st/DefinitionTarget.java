@@ -30,8 +30,6 @@ import java.util.Map;
 
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.MemberKey;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
@@ -47,12 +45,8 @@ public final class DefinitionTarget
 				CONDITION_DEFINITION_KEY);
 	}
 
-	public static DefinitionTarget valueDefinition(Ref ref) {
-		return new DefinitionTarget(VALUE_MASK, ref, VALUE_DEFINITION_KEY);
-	}
-
-	public static DefinitionTarget valueDefinition(ImperativeBlock block) {
-		return new DefinitionTarget(VALUE_MASK, block, VALUE_DEFINITION_KEY);
+	public static DefinitionTarget valueDefinition(Statement statement) {
+		return new DefinitionTarget(VALUE_MASK, statement, VALUE_DEFINITION_KEY);
 	}
 
 	public static DefinitionTarget fieldDeclaration(

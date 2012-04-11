@@ -34,7 +34,9 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Implication;
+import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
@@ -84,8 +86,6 @@ public abstract class Statements<
 	public final MemberRegistry getMemberRegistry() {
 		return getSentence().getMemberRegistry();
 	}
-
-	public abstract DefinitionTargets getDefinitionTargets();
 
 	public final void expression(Ref expression) {
 		assert expression.getContext() == getContext() :

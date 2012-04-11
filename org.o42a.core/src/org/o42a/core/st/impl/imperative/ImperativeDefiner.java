@@ -20,6 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.object.def.impl.LocalDef.localDef;
+import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
@@ -48,6 +49,16 @@ public final class ImperativeDefiner
 	}
 
 	@Override
+	public final ImplicationTarget getImplicationTarget() {
+		return getDefinitionTargets();
+	}
+
+	@Override
+	public DefinitionTargets getDefinitionTargets() {
+		return valueDefinition(getStatement());
+	}
+
+	@Override
 	public final DefinerEnv env() {
 		return this.env;
 	}
@@ -58,13 +69,8 @@ public final class ImperativeDefiner
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return this.command.getDefinitionTargets();
-	}
-
-	@Override
 	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.command.valueStruct(scope);
+		return getCommand().valueStruct(scope);
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.core.st.CommandTarget.noCommand;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.ir.CodeBuilder;
@@ -107,8 +108,8 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
+		public CommandTarget getCommandTarget() {
+			return noCommand();
 		}
 
 		@Override

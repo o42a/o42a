@@ -31,6 +31,8 @@ import org.o42a.core.value.ValueStruct;
 
 public interface Command extends Implication<Command> {
 
+	CommandTarget getCommandTarget();
+
 	CommandEnv env();
 
 	Action initialValue(LocalResolver resolver);

@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.assignment;
 
-import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
+import static org.o42a.core.st.CommandTarget.actionCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -59,8 +59,8 @@ final class AssignmentCommand extends AbstractCommand {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return conditionDefinition(getStatement());
+	public CommandTarget getCommandTarget() {
+		return actionCommand(getStatement());
 	}
 
 	@Override

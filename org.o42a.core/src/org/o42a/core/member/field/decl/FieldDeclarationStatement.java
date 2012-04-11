@@ -21,6 +21,7 @@ package org.o42a.core.member.field.decl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
+import static org.o42a.core.st.CommandTarget.actionCommand;
 import static org.o42a.core.st.DefinitionTarget.fieldDeclaration;
 
 import org.o42a.core.ir.CodeBuilder;
@@ -143,8 +144,8 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return fieldDeclaration(getDeclarationStatement());
+		public CommandTarget getCommandTarget() {
+			return actionCommand(getStatement());
 		}
 
 		@Override

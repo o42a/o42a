@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
+import static org.o42a.core.st.CommandTarget.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
 import java.util.List;
@@ -45,6 +45,7 @@ public final class BlockCommand
 		implements Command {
 
 	private final CommandEnv env;
+	private CommandTarget commandTarget;
 
 	public BlockCommand(ImperativeBlock block, CommandEnv env) {
 		super(block);
@@ -57,15 +58,24 @@ public final class BlockCommand
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
+	public final ImplicationTarget getImplicationTarget() {
+		return getCommandTarget();
+	}
 
-		final DefinitionTargets targets = super.getDefinitionTargets();
+	@Override
+	public CommandTarget getCommandTarget() {
+		if (this.commandTarget != null) {
+			return this.commandTarget;
+		}
+		getBlock().executeInstructions();
 
-		if (targets.haveValue()) {
-			return targets;
+		CommandTarget result = noCommand();
+
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+			result = result.combine(sentence.getCommandTarget());
 		}
 
-		return targets.add(valueDefinition(getBlock()));
+		return this.commandTarget = result;
 	}
 
 	@Override
@@ -115,7 +125,7 @@ public final class BlockCommand
 		getBlock().blockFullyResolved();
 		getContext().fullResolution().start();
 		try {
-			getDefinitionTargets();
+			getCommandTarget();
 			for (ImperativeSentence sentence : getBlock().getSentences()) {
 				resolveSentence(resolver, sentence);
 			}
@@ -259,7 +269,7 @@ public final class BlockCommand
 		}
 	}
 
-	final void normalizeSentence(
+	private void normalizeSentence(
 			RootNormalizer normalizer,
 			ImperativeSentence sentence) {
 
@@ -273,7 +283,7 @@ public final class BlockCommand
 		}
 	}
 
-	final void normalizeCommands(
+	private void normalizeCommands(
 			RootNormalizer normalizer,
 			Imperatives imperatives) {
 		for (Command command : imperatives.getImplications()) {

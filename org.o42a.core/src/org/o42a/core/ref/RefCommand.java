@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
+import static org.o42a.core.st.CommandTarget.returnCommand;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
@@ -53,8 +53,8 @@ public final class RefCommand extends AbstractCommand {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return valueDefinition(getRef());
+	public final CommandTarget getCommandTarget() {
+		return returnCommand(getStatement());
 	}
 
 	public ValueAdapter getValueAdapter() {

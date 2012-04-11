@@ -19,8 +19,7 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.CommandTarget.actionCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -54,16 +53,8 @@ final class RefConditionCommand extends AbstractCommand {
 	}
 
 	@Override
-	public DefinitionTargets getDefinitionTargets() {
-
-		final DefinitionTargets targets =
-				getRefCommand().getDefinitionTargets();
-
-		if (targets.haveDefinition()) {
-			return conditionDefinition(getRef());
-		}
-
-		return noDefinitions();
+	public CommandTarget getCommandTarget() {
+		return actionCommand(getStatement());
 	}
 
 	@Override
