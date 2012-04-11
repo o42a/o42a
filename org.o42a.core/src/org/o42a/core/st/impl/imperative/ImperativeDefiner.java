@@ -48,11 +48,6 @@ public final class ImperativeDefiner
 	}
 
 	@Override
-	public final ImplicationTarget getImplicationTarget() {
-		return getDefinitionTargets();
-	}
-
-	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(getStatement());
 	}

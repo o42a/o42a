@@ -23,7 +23,7 @@ import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 
-public final class CommandTarget extends ImplicationTarget {
+public final class CommandTarget {
 
 	public static CommandTarget noCommand() {
 		return new CommandTarget(null, (byte) 0);
@@ -55,11 +55,6 @@ public final class CommandTarget extends ImplicationTarget {
 
 	public final Statement getStatement() {
 		return this.statement;
-	}
-
-	@Override
-	public final boolean haveValue() {
-		return isReturn();
 	}
 
 	public final DefinitionTargets toDefinitionTargets() {
