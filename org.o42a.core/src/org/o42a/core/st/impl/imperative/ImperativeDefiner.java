@@ -25,22 +25,23 @@ import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
-import org.o42a.core.st.impl.BlockImplication;
+import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public final class ImperativeDefiner
-		extends BlockImplication<ImperativeBlock, Definer>
-		implements Definer {
+public final class ImperativeDefiner extends AbstractDefiner {
 
-	private final DefinerEnv env;
 	private final Command command;
 
 	public ImperativeDefiner(ImperativeBlock block, DefinerEnv env) {
-		super(block);
-		this.env = env;
+		super(block, env);
 		this.command = block.command(new BlockCommandEnv(null, env));
+	}
+
+	public final ImperativeBlock getBlock() {
+		return (ImperativeBlock) getStatement();
 	}
 
 	public final Command getCommand() {
@@ -50,11 +51,6 @@ public final class ImperativeDefiner
 	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(getStatement());
-	}
-
-	@Override
-	public final DefinerEnv env() {
-		return this.env;
 	}
 
 	@Override
@@ -69,6 +65,11 @@ public final class ImperativeDefiner
 
 		return env().apply(localDef).toDefinitions(
 				env().getExpectedValueStruct());
+	}
+
+	@Override
+	public Instruction toInstruction(Resolver resolver) {
+		return new ExecuteInstructions(getBlock());
 	}
 
 }

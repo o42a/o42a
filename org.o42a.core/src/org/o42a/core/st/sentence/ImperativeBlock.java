@@ -245,10 +245,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return new BracesWithinDeclaratives(this, distributor, this);
 	}
 
-	public final void blockFullyResolved() {
-		fullyResolved();
-	}
-
 	@Override
 	Trace getTrace() {
 		return this.trace;

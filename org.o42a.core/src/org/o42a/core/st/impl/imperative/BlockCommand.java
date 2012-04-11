@@ -29,10 +29,11 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
-import org.o42a.core.st.impl.BlockImplication;
+import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
@@ -40,21 +41,16 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class BlockCommand
-		extends BlockImplication<ImperativeBlock, Command>
-		implements Command {
+public final class BlockCommand extends AbstractCommand {
 
-	private final CommandEnv env;
 	private CommandTarget commandTarget;
 
 	public BlockCommand(ImperativeBlock block, CommandEnv env) {
-		super(block);
-		this.env = env;
+		super(block, env);
 	}
 
-	@Override
-	public final CommandEnv env() {
-		return this.env;
+	public final ImperativeBlock getBlock() {
+		return (ImperativeBlock) getStatement();
 	}
 
 	@Override
@@ -104,20 +100,6 @@ public final class BlockCommand
 	}
 
 	@Override
-	public void resolveAll(LocalResolver resolver) {
-		getBlock().blockFullyResolved();
-		getContext().fullResolution().start();
-		try {
-			getCommandTarget();
-			for (ImperativeSentence sentence : getBlock().getSentences()) {
-				resolveSentence(resolver, sentence);
-			}
-		} finally {
-			getContext().fullResolution().end();
-		}
-	}
-
-	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
@@ -133,7 +115,20 @@ public final class BlockCommand
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Instruction toInstruction(Resolver resolver) {
+		return new ExecuteInstructions(getBlock());
+	}
+
+	@Override
+	protected void fullyResolve(LocalResolver resolver) {
+		getCommandTarget();
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+			resolveSentence(resolver, sentence);
+		}
+	}
+
+	@Override
+	protected Cmd createCmd(CodeBuilder builder) {
 		return new ImperativeBlockCmd(builder, getBlock());
 	}
 
