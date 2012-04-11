@@ -68,11 +68,6 @@ public final class RefCommand extends AbstractCommand {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return getValueAdapter().valueStruct(scope);
-	}
-
-	@Override
 	public Action initialValue(LocalResolver resolver) {
 		return new ReturnValue(
 				this,

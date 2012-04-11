@@ -64,11 +64,6 @@ final class AssignmentCommand extends AbstractCommand {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public Action initialValue(LocalResolver resolver) {
 		return new ExecuteCommand(this, LogicalValue.RUNTIME);
 	}

@@ -20,9 +20,7 @@
 package org.o42a.core.st;
 
 import org.o42a.core.PlaceInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.ValueStruct;
 
 
 public interface Implication<L extends Implication<L>> extends PlaceInfo {
@@ -30,8 +28,6 @@ public interface Implication<L extends Implication<L>> extends PlaceInfo {
 	Statement getStatement();
 
 	ImplicationTarget getImplicationTarget();
-
-	ValueStruct<?, ?> valueStruct(Scope scope);
 
 	/**
 	 * Called to replace the statement with another one.

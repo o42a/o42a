@@ -63,11 +63,6 @@ public class RefDefiner extends AbstractDefiner {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return getValueAdapter().valueStruct(scope);
-	}
-
-	@Override
 	public Definitions define(Scope scope) {
 		if (getDefinitionTargets().isEmpty()) {
 			return null;

@@ -99,7 +99,8 @@ public class LocalDef extends ValueDef {
 		assert scope.toLocal() != null :
 			"Not a local scope: " + scope;
 
-		final ValueStruct<?, ?> valueStruct = getCommand().valueStruct(scope);
+		final ValueStruct<?, ?> valueStruct =
+				getCommand().env().getExpectedValueStruct();
 
 		if (valueStruct == null) {
 			return null;

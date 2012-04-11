@@ -36,9 +36,9 @@ import org.o42a.core.st.action.RepeatLoop;
 import org.o42a.core.value.ValueStruct;
 
 
-abstract class EllipsisDefiner extends AbstractCommand {
+abstract class EllipsisCommand extends AbstractCommand {
 
-	EllipsisDefiner(EllipsisStatement ellipsis, CommandEnv env) {
+	EllipsisCommand(EllipsisStatement ellipsis, CommandEnv env) {
 		super(ellipsis, env);
 	}
 
@@ -49,11 +49,6 @@ abstract class EllipsisDefiner extends AbstractCommand {
 	@Override
 	public final CommandTarget getCommandTarget() {
 		return actionCommand(getStatement());
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
 	}
 
 	@Override
@@ -82,9 +77,9 @@ abstract class EllipsisDefiner extends AbstractCommand {
 	protected void fullyResolve(LocalResolver resolver) {
 	}
 
-	static class ExitDefiner extends EllipsisDefiner {
+	static class ExitCommand extends EllipsisCommand {
 
-		ExitDefiner(EllipsisStatement ellipsis, CommandEnv env) {
+		ExitCommand(EllipsisStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
 		}
 
@@ -100,9 +95,9 @@ abstract class EllipsisDefiner extends AbstractCommand {
 
 	}
 
-	static class RepeatDefiner extends EllipsisDefiner {
+	static class RepeatCommand extends EllipsisCommand {
 
-		RepeatDefiner(EllipsisStatement ellipsis, CommandEnv env) {
+		RepeatCommand(EllipsisStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
 		}
 

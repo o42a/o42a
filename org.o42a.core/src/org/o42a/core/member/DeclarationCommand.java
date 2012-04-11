@@ -40,11 +40,6 @@ public abstract class DeclarationCommand extends AbstractCommand {
 	}
 
 	@Override
-	public final ValueStruct<?, ?> valueStruct(Scope scope) {
-		return null;
-	}
-
-	@Override
 	public final Action initialLogicalValue(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}

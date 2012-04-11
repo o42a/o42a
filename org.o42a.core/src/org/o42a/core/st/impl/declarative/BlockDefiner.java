@@ -27,7 +27,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockImplication;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class BlockDefiner
@@ -71,11 +70,6 @@ public final class BlockDefiner
 	@Override
 	public DefinerEnv nextEnv() {
 		return new DeclarativeBlockEnv(this);
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return sentencesValueStruct(scope);
 	}
 
 	@Override

@@ -28,7 +28,6 @@ import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.BlockImplication;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class ImperativeDefiner
@@ -66,11 +65,6 @@ public final class ImperativeDefiner
 	@Override
 	public DefinerEnv nextEnv() {
 		return new ImperativeDefinerEnv(this);
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return getCommand().valueStruct(scope);
 	}
 
 	@Override

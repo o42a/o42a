@@ -19,13 +19,9 @@
 */
 package org.o42a.core.st.impl;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.Sentence;
-import org.o42a.core.st.sentence.Statements;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class BlockImplication<
@@ -45,101 +41,6 @@ public abstract class BlockImplication<
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return new ExecuteInstructions();
-	}
-
-	protected ValueStruct<?, ?> sentencesValueStruct(Scope scope) {
-		if (!getImplicationTarget().haveValue()) {
-			return null;
-		}
-
-		ValueStruct<?, ?> result = null;
-
-		for (Sentence<?, ?> sentence : getBlock().getSentences()) {
-
-			final ValueStruct<?, ?> struct = valueStruct(sentence, scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assertAssignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(sentence, result);
-		}
-
-		return result;
-	}
-
-	private ValueStruct<?, ?> valueStruct(
-			Sentence<?, ?> sentence,
-			Scope scope) {
-
-		ValueStruct<?, ?> result = null;
-
-		for (Statements<?, ?> alt : sentence.getAlternatives()) {
-
-			final ValueStruct<?, ?> struct = valueStruct(alt, scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(alt, result);
-		}
-
-		return result;
-	}
-
-	private ValueStruct<?, ?> valueStruct(Statements<?, ?> alt, Scope scope) {
-
-		ValueStruct<?, ?> result = null;
-
-		for (Implication<?> implication : alt.getImplications()) {
-			if (!implication.getImplicationTarget().haveValue()) {
-				continue;
-			}
-
-			final ValueStruct<?, ?> struct = implication.valueStruct(scope);
-
-			if (struct == null) {
-				continue;
-			}
-			if (result == null) {
-				result = struct;
-				continue;
-			}
-			if (result.assignableFrom(struct)) {
-				continue;
-			}
-			if (struct.assignableFrom(result)) {
-				result = struct;
-				continue;
-			}
-
-			getLogger().incompatible(implication, result);
-		}
-
-		return result;
 	}
 
 	private final class ExecuteInstructions implements Instruction {
