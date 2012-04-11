@@ -35,7 +35,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-final class RefConditionCommand extends AbstractCommand {
+final class RefConditionCommand extends Command {
 
 	private final RefCommand refCommand;
 

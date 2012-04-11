@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,14 +23,23 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 
 
-public interface Definer extends Implication<Definer> {
+public abstract class Definer extends Implication<Definer> {
 
-	DefinitionTargets getDefinitionTargets();
+	private final DefinerEnv env;
 
-	DefinerEnv env();
+	public Definer(Statement statement, DefinerEnv env) {
+		super(statement);
+		this.env = env;
+	}
 
-	DefinerEnv nextEnv();
+	public abstract DefinitionTargets getDefinitionTargets();
 
-	Definitions define(Scope scope);
+	public final DefinerEnv env() {
+		return this.env;
+	}
+
+	public abstract DefinerEnv nextEnv();
+
+	public abstract Definitions define(Scope scope);
 
 }

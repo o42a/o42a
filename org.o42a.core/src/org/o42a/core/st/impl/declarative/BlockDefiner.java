@@ -30,7 +30,7 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-public final class BlockDefiner extends AbstractDefiner {
+public final class BlockDefiner extends Definer {
 
 	private DefinitionTargets definitionTargets;
 

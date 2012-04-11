@@ -36,7 +36,7 @@ import org.o42a.core.st.action.RepeatLoop;
 import org.o42a.core.value.ValueStruct;
 
 
-abstract class EllipsisCommand extends AbstractCommand {
+abstract class EllipsisCommand extends Command {
 
 	EllipsisCommand(EllipsisStatement ellipsis, CommandEnv env) {
 		super(ellipsis, env);

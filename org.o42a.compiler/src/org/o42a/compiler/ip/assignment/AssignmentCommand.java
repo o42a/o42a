@@ -35,7 +35,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
 
-final class AssignmentCommand extends AbstractCommand {
+final class AssignmentCommand extends Command {
 
 	private AssignmentKind assignmentKind;
 

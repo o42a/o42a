@@ -30,7 +30,7 @@ import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueStruct;
 
 
-final class RefConditionDefiner extends AbstractDefiner {
+final class RefConditionDefiner extends Definer {
 
 	private RefDefiner refDefiner;
 	private Definer replacement;

@@ -22,12 +22,12 @@ package org.o42a.core.member;
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.AbstractDefiner;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Instruction;
 
 
-public abstract class DeclarationDefiner extends AbstractDefiner {
+public abstract class DeclarationDefiner extends Definer {
 
 	public DeclarationDefiner(
 			DeclarationStatement statement,

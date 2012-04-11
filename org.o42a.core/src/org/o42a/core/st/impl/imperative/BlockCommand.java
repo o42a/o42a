@@ -41,7 +41,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class BlockCommand extends AbstractCommand {
+public final class BlockCommand extends Command {
 
 	private CommandTarget commandTarget;
 

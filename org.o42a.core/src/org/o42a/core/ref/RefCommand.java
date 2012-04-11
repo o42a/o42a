@@ -39,7 +39,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public final class RefCommand extends AbstractCommand {
+public final class RefCommand extends Command {
 
 	private ValueAdapter valueAdapter;
 	private InlineValue inline;

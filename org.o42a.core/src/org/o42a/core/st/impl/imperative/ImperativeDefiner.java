@@ -31,7 +31,7 @@ import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public final class ImperativeDefiner extends AbstractDefiner {
+public final class ImperativeDefiner extends Definer {
 
 	private final Command command;
 

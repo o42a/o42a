@@ -19,13 +19,54 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.PlaceInfo;
+import org.o42a.core.*;
 import org.o42a.core.ref.Resolver;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.log.Loggable;
 
 
-public interface Implication<L extends Implication<L>> extends PlaceInfo {
+public abstract class Implication<L extends Implication<L>>
+		implements PlaceInfo {
 
-	Statement getStatement();
+	private final Statement statement;
+
+	public Implication(Statement statement) {
+		this.statement = statement;
+	}
+
+	public final Statement getStatement() {
+		return this.statement;
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return getStatement().getContext();
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return getStatement().getLoggable();
+	}
+
+	public final CompilerLogger getLogger() {
+		return getContext().getLogger();
+	}
+
+	@Override
+	public final Scope getScope() {
+		return getStatement().getScope();
+	}
+
+	@Override
+	public final ScopePlace getPlace() {
+		return getStatement().getPlace();
+	}
+
+	@Override
+	public final Container getContainer() {
+		return getStatement().getContainer();
+	}
 
 	/**
 	 * Called to replace the statement with another one.
@@ -36,8 +77,48 @@ public interface Implication<L extends Implication<L>> extends PlaceInfo {
 	 *
 	 * @return replacement definer.
 	 */
-	L replaceWith(Statement statement);
+	public L replaceWith(Statement statement) {
+		throw new UnsupportedOperationException();
+	}
 
-	Instruction toInstruction(Resolver resolver);
+	public abstract Instruction toInstruction(Resolver resolver);
+
+	@Override
+	public final Distributor distribute() {
+		return Placed.distribute(this);
+	}
+
+	@Override
+	public final Distributor distributeIn(Container container) {
+		return Placed.distributeIn(this, container);
+	}
+
+	@Override
+	public final void assertScopeIs(Scope scope) {
+		Scoped.assertScopeIs(this, scope);
+	}
+
+	@Override
+	public final void assertCompatible(Scope scope) {
+		Scoped.assertCompatible(this, scope);
+	}
+
+	@Override
+	public final void assertSameScope(ScopeInfo other) {
+		Scoped.assertSameScope(this, other);
+	}
+
+	@Override
+	public final void assertCompatibleScope(ScopeInfo other) {
+		Scoped.assertCompatibleScope(this, other);
+	}
+
+	@Override
+	public String toString() {
+		if (this.statement == null) {
+			return super.toString();
+		}
+		return this.statement.toString();
+	}
 
 }
