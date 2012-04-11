@@ -29,7 +29,6 @@ import org.o42a.core.*;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.DefinitionTargets;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.Place.Trace;
@@ -71,8 +70,6 @@ public abstract class Sentence<
 	public abstract boolean isClaim();
 
 	public abstract boolean isIssue();
-
-	public abstract DefinitionTargets getDefinitionTargets();
 
 	public final List<S> getAlternatives() {
 		return this.alternatives;

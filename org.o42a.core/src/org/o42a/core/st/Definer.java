@@ -25,6 +25,8 @@ import org.o42a.core.object.def.Definitions;
 
 public interface Definer extends Implication<Definer> {
 
+	DefinitionTargets getDefinitionTargets();
+
 	DefinerEnv env();
 
 	DefinerEnv nextEnv();

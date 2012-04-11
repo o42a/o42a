@@ -19,19 +19,19 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.CommandTarget.noCommand;
 
 import java.util.List;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
-import org.o42a.core.st.DefinitionTargets;
+import org.o42a.core.st.CommandTarget;
 
 
 public abstract class ImperativeSentence
 		extends Sentence<Imperatives, Command> {
 
-	private DefinitionTargets statementKinds;
+	private CommandTarget commandTarget;
 
 	protected ImperativeSentence(
 			LocationInfo location,
@@ -41,33 +41,38 @@ public abstract class ImperativeSentence
 	}
 
 	@Override
-	public ImperativeBlock getBlock() {
+	public final ImperativeBlock getBlock() {
 		return (ImperativeBlock) super.getBlock();
 	}
 
 	@Override
-	public ImperativeFactory getSentenceFactory() {
+	public final ImperativeFactory getSentenceFactory() {
 		return (ImperativeFactory) super.getSentenceFactory();
 	}
 
 	@Override
-	public ImperativeSentence getPrerequisite() {
+	public final ImperativeSentence getPrerequisite() {
 		return (ImperativeSentence) super.getPrerequisite();
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.statementKinds != null) {
-			return this.statementKinds;
+	public CommandTarget getCommandTarget() {
+		if (this.commandTarget != null) {
+			return this.commandTarget;
 		}
 
-		DefinitionTargets result = noDefinitions();
+		CommandTarget result;
+
+		if (getPrerequisite() != null) {
+			result = getPrerequisite().getCommandTarget();
+		} else {
+			result = noCommand();
+		}
 
 		for (Imperatives alt : getAlternatives()) {
-			result = result.add(alt.getDefinitionTargets());
+			result = result.combine(alt.getCommandTarget());
 		}
 
-		return this.statementKinds = result;
+		return this.commandTarget = result;
 	}
 
 	public boolean hasOpposite(int altIdx) {

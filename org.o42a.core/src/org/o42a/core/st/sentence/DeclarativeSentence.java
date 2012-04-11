@@ -62,7 +62,6 @@ public abstract class DeclarativeSentence
 		return (DeclarativeSentence) super.getPrerequisite();
 	}
 
-	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		if (this.definitionTargets != null) {
 			return this.definitionTargets;

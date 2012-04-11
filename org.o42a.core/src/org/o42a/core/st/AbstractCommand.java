@@ -41,6 +41,11 @@ public abstract class AbstractCommand
 	}
 
 	@Override
+	public final ImplicationTarget getImplicationTarget() {
+		return getCommandTarget();
+	}
+
+	@Override
 	public final CommandEnv env() {
 		return this.env;
 	}

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.CommandTarget.noCommand;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
@@ -30,7 +30,7 @@ import org.o42a.core.st.impl.imperative.EllipsisStatement;
 
 public class Imperatives extends Statements<Imperatives, Command> {
 
-	private DefinitionTargets kinds;
+	private CommandTarget commandTarget;
 
 	Imperatives(
 			LocationInfo location,
@@ -49,21 +49,20 @@ public class Imperatives extends Statements<Imperatives, Command> {
 		return getSentence().getSentenceFactory();
 	}
 
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.kinds != null) {
-			return this.kinds;
+	public CommandTarget getCommandTarget() {
+		if (this.commandTarget != null) {
+			return this.commandTarget;
 		}
 
 		executeInstructions();
 
-		DefinitionTargets result = noDefinitions();
+		CommandTarget result = noCommand();
 
 		for (Command command : getImplications()) {
-			result = result.add(command.getDefinitionTargets());
+			result = result.combine(command.getCommandTarget());
 		}
 
-		return this.kinds = result;
+		return this.commandTarget = result;
 	}
 
 	@Override
