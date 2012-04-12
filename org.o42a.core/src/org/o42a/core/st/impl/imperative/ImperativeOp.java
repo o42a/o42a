@@ -24,6 +24,7 @@ import java.util.List;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.st.Command;
@@ -63,11 +64,6 @@ final class ImperativeOp {
 					sentence,
 					inline != null ? inline.get(i) : null,
 					Integer.toString(i));
-			if (!blockControl.mayContinue()) {
-				blockControl.end();
-				control.reachability(blockControl);
-				return;
-			}
 		}
 
 		blockControl.end();
@@ -81,8 +77,6 @@ final class ImperativeOp {
 				code.go(control.code().tail());
 			}
 		}
-
-		control.reachability(blockControl);
 	}
 
 	private static void writeSentence(
@@ -109,11 +103,6 @@ final class ImperativeOp {
 					index + "_prereq");
 
 			prereqControl.end();
-
-			control.reachability(prereqControl);
-			if (!prereqControl.mayContinue()) {
-				return;
-			}
 		}
 
 		final List<Imperatives> alternatives = sentence.getAlternatives();
@@ -123,6 +112,7 @@ final class ImperativeOp {
 			if (len != 0) {
 				writeStatements(
 						control,
+						control.falseDir(),
 						alternatives.get(0),
 						inline != null ? inline.get(0) : null);
 			}
@@ -141,9 +131,6 @@ final class ImperativeOp {
 		}
 		control.code().go(blocks[0].head());
 
-		Control nextAltReachability = control;
-		Control nextOppUnreachability = control;
-
 		// fill code blocks
 		for (int i = 0; i < len; ++i) {
 
@@ -159,74 +146,51 @@ final class ImperativeOp {
 				altControl = control.alt(altCode, blocks[nextIdx].head());
 			}
 
-			if (alt.isOpposite()) {
-				altControl.reachability(nextOppUnreachability);
-			} else {
-				nextOppUnreachability = control;
-				// all preceding opposites are exited unconditionally
-				control.reachability(nextAltReachability);
-				altControl.reachability(nextAltReachability);
-			}
-
 			writeStatements(
 					altControl,
+					altControl.falseDir(),
 					alt,
 					inline != null ? inline.get(i) : null);
 
-			if (!altControl.mayContinue()) {
-				altControl.end();
-				control.reachability(altControl);
-				break;
-			}
-			if (control.isDone()) {
-				altControl.end();
-				continue;
-			}
-			if (altControl.isDone()) {
-				altControl.end();
-				if (alt.getImplications().size() == 1) {
-					// the only statement is exit
-					if (sentence.hasOpposite(i)) {// one of the opposites
-						nextOppUnreachability = altControl;
-						if (!alt.isOpposite()) {// first opposite
-							nextAltReachability = altControl;
-						}
-					} else {
-						// non-opposing alternative is done
-						// subsequent statements not reachable
-						control.reachability(altControl);
-					}
-				}
-				continue;
-			}
+			altControl.end();
 
-			nextAltReachability = control;
-
-			// skip ascending opposites
-			final int nextNonOppositeIdx =
-					nextNonOppositeIdx(sentence, nextIdx);
-
-			if (nextNonOppositeIdx >= 0) {
-				// execute next non-opposing alternative,
-				// as all such alternatives expected to be executed
-				altCode.go(blocks[nextNonOppositeIdx].head());
+			if (nextIdx < len) {
+				altCode.go(blocks[nextIdx].head());
 			} else {
-				// everything is successfully done
 				endPrereq(control, prereqFailed);
 				end(sentence, control, altControl);
 			}
-			altControl.end();
 		}
 
-		if (prerequisite == null) {
-			control.reachability(nextAltReachability);
-		}
 	}
 
 	private static void writeStatements(
 			Control control,
+			CodePos nextDir,
 			Imperatives statements,
 			InlineCommands inlines) {
+
+		final Imperatives oppositeOf = statements.getOppositeOf();
+
+		if (oppositeOf != null) {
+
+			final Block inhibitFailed = control.addBlock("inhibit_failed");
+			final Block code = control.code();
+			final Control inhibitControl =
+					control.alt(code, inhibitFailed.head());
+
+			writeStatements(
+					inhibitControl,
+					nextDir,
+					oppositeOf,
+					inlines != null ? inlines.getOppositeOf() : null);
+
+			inhibitControl.end();
+			code.go(nextDir);
+			if (inhibitFailed.exists()) {
+				inhibitFailed.go(code.tail());
+			}
+		}
 
 		final List<Command> commands = statements.getImplications();
 		final int size = commands.size();
@@ -235,9 +199,6 @@ final class ImperativeOp {
 
 			final Command command = commands.get(i);
 
-			if (!control.reach(command)) {
-				return;
-			}
 			if (inlines == null) {
 
 				final Cmd cmd = command.cmd(control.getBuilder());
@@ -247,22 +208,6 @@ final class ImperativeOp {
 				inlines.get(i).write(control);
 			}
 		}
-	}
-
-	private static int nextNonOppositeIdx(
-			ImperativeSentence sentence,
-			int start) {
-
-		final List<Imperatives> alternatives = sentence.getAlternatives();
-		final int len = alternatives.size();
-
-		for (int i = start; i < len; ++i) {
-			if (!alternatives.get(i).isOpposite()) {
-				return i;
-			}
-		}
-
-		return -1;
 	}
 
 	private static void endPrereq(Control control, Block prereqFailed) {
@@ -276,9 +221,6 @@ final class ImperativeOp {
 			ImperativeSentence sentence,
 			Control mainControl,
 			Control control) {
-		if (control.isDone()) {
-			return;
-		}
 		if (sentence.isClaim()) {
 			// claim - exit block
 			control.exitBraces();

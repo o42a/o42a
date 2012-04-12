@@ -101,11 +101,6 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 		return true;
 	}
 
-	@Override
-	public String getName() {
-		return null;
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<DeclarativeSentence> getSentences() {

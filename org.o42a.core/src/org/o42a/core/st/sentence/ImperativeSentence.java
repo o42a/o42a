@@ -19,19 +19,19 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.CommandTarget.noCommand;
-
-import java.util.List;
+import static org.o42a.core.st.CommandTargets.loopBreakCommand;
+import static org.o42a.core.st.CommandTargets.noCommand;
+import static org.o42a.core.st.impl.imperative.BlockCommand.reportUnreachable;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
-import org.o42a.core.st.CommandTarget;
+import org.o42a.core.st.CommandTargets;
 
 
 public abstract class ImperativeSentence
 		extends Sentence<Imperatives, Command> {
 
-	private CommandTarget commandTarget;
+	private CommandTargets commandTargets;
 
 	protected ImperativeSentence(
 			LocationInfo location,
@@ -55,42 +55,67 @@ public abstract class ImperativeSentence
 		return (ImperativeSentence) super.getPrerequisite();
 	}
 
-	public CommandTarget getCommandTarget() {
-		if (this.commandTarget != null) {
-			return this.commandTarget;
+	public CommandTargets getCommandTargets() {
+		if (this.commandTargets != null) {
+			return this.commandTargets;
 		}
 
-		CommandTarget result;
+		final CommandTargets prerequisiteTarget;
+		final ImperativeSentence prerequisite = getPrerequisite();
 
-		if (getPrerequisite() != null) {
-			result = getPrerequisite().getCommandTarget();
+		if (prerequisite == null) {
+			prerequisiteTarget = noCommand();
 		} else {
-			result = noCommand();
+			prerequisiteTarget = prerequisite.getCommandTargets();
+			if (prerequisiteTarget.isEmpty()) {
+				return this.commandTargets = prerequisiteTarget;
+			}
 		}
 
-		for (Imperatives alt : getAlternatives()) {
-			result = result.combine(alt.getCommandTarget());
-		}
-
-		return this.commandTarget = result;
+		return this.commandTargets = applyClaimTargets(
+				prerequisiteTarget.add(altTargets()));
 	}
 
-	public boolean hasOpposite(int altIdx) {
+	private CommandTargets altTargets() {
 
-		final List<Imperatives> alternatives = getAlternatives();
-		final Imperatives alt = alternatives.get(altIdx);
+		CommandTargets result = noCommand();
 
-		if (alt.isOpposite()) {
-			return true;
+		for (Imperatives alt : getAlternatives()) {
+
+			final CommandTargets targets = alt.getCommandTargets();
+
+			if (targets.isEmpty()) {
+				continue;
+			}
+			if (result.haveBlockExit() && !result.haveMany()) {
+				if (!result.haveError()) {
+					reportUnreachable(getLogger(), result, targets);
+					result = result.addError();
+				}
+			} else {
+				result = result.set(targets);
+			}
+		}
+		if (isIssue() && result.isEmpty() && !result.haveError()) {
+			reportEmptyIssue();
+			return result.addError();
 		}
 
-		final int nextIdx = altIdx + 1;
+		return result;
+	}
 
-		if (nextIdx >= alternatives.size()) {
-			return false;
+	private CommandTargets applyClaimTargets(CommandTargets targets) {
+		if (!isClaim()) {
+			return targets;
 		}
 
-		return alternatives.get(nextIdx + 1).isOpposite();
+		final CommandTargets breakCommand = loopBreakCommand(this);
+
+		if (getPrerequisite() != null) {
+			return targets.add(breakCommand);
+		}
+
+		return targets.set(breakCommand);
 	}
 
 }

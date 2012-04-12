@@ -172,7 +172,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return this.parentheses;
 	}
 
-	@Override
 	public final String getName() {
 		return this.name;
 	}

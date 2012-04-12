@@ -25,7 +25,8 @@ import static org.o42a.core.st.DefinitionKey.VALUE_DEFINITION_KEY;
 import java.util.Map;
 
 
-public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
+public abstract class DefinitionTargets
+		implements Cloneable, Iterable<DefinitionKey> {
 
 	private static final EmptyDefinitionTargets EMPTY_DEFINITION_TARGETS =
 			new EmptyDefinitionTargets();
@@ -42,6 +43,7 @@ public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 	static final byte DECLARATION_MASK = VALUE_MASK | FIELD_MASK;
 
 	private final byte mask;
+	private boolean error;
 
 	DefinitionTargets(byte mask) {
 		this.mask = mask;
@@ -69,6 +71,22 @@ public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 
 	public final boolean haveDeclaration() {
 		return (this.mask & DECLARATION_MASK) != 0;
+	}
+
+	public final boolean haveError() {
+		return this.error;
+	}
+
+	public DefinitionTargets addError() {
+		if (haveError()) {
+			return this;
+		}
+
+		final DefinitionTargets clone = clone();
+
+		clone.error = true;
+
+		return clone;
 	}
 
 	public final DefinitionTarget firstCondition() {
@@ -103,6 +121,15 @@ public abstract class DefinitionTargets implements Iterable<DefinitionKey> {
 			return other;
 		}
 		return new MultiDefinitionTargets(this, other);
+	}
+
+	@Override
+	protected DefinitionTargets clone() {
+		try {
+			return (DefinitionTargets) super.clone();
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
 	}
 
 	final byte mask() {

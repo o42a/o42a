@@ -19,24 +19,27 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.CommandTarget.noCommand;
+import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.st.CommandTargets.noCommand;
+import static org.o42a.core.st.impl.imperative.BlockCommand.reportUnreachable;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
+import org.o42a.util.log.Loggable;
 
 
 public class Imperatives extends Statements<Imperatives, Command> {
 
-	private CommandTarget commandTarget;
+	private CommandTargets commandTargets;
 
 	Imperatives(
 			LocationInfo location,
 			ImperativeSentence sentence,
-			boolean opposite) {
-		super(location, sentence, opposite);
+			Imperatives oppositeOf) {
+		super(location, sentence, oppositeOf);
 	}
 
 	@Override
@@ -49,20 +52,50 @@ public class Imperatives extends Statements<Imperatives, Command> {
 		return getSentence().getSentenceFactory();
 	}
 
-	public CommandTarget getCommandTarget() {
-		if (this.commandTarget != null) {
-			return this.commandTarget;
+	public CommandTargets getCommandTargets() {
+		if (this.commandTargets != null) {
+			return this.commandTargets;
 		}
 
 		executeInstructions();
 
-		CommandTarget result = noCommand();
+		final Imperatives oppositeOf = getOppositeOf();
+		final CommandTargets inhibitTarget;
 
-		for (Command command : getImplications()) {
-			result = result.combine(command.getCommandTarget());
+		if (oppositeOf == null) {
+			inhibitTarget = noCommand();
+		} else {
+			inhibitTarget = oppositeOf.getCommandTargets();
+			if (inhibitTarget.isEmpty()) {
+				return this.commandTargets = inhibitTarget;
+			}
+			if (inhibitTarget.haveBlockExit() && !inhibitTarget.haveMany()) {
+				if (inhibitTarget.haveError()) {
+					return this.commandTargets = inhibitTarget;
+				}
+
+				final Loggable location = getLoggable().setReason(
+						logAnother(inhibitTarget.getLoggable()));
+
+				if (inhibitTarget.haveReturn()) {
+					getLogger().error(
+							"unreachable_opposite_after_return",
+							location,
+							"Opposite is unreachable, because it follows"
+							+ " the unconditional return");
+				} else {
+					getLogger().error(
+							"unreachable_opposite_after_break",
+							location,
+							"Opposite is unreachable, because it follows"
+							+ " the unconditional loop break");
+				}
+
+				return this.commandTargets = inhibitTarget.addError();
+			}
 		}
 
-		return this.commandTarget = result;
+		return this.commandTargets = inhibitTarget.add(commandTargets());
 	}
 
 	@Override
@@ -79,7 +112,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	public void ellipsis(LocationInfo location, String name) {
-		if (getSentence().isIssue()) {
+		if (isInsideIssue()) {
 			getLogger().error(
 					"prohibited_issue_ellipsis",
 					location,
@@ -87,7 +120,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 			return;
 		}
 
-		final Block<?, ?> block = blockByName(location, name);
+		final ImperativeBlock block = blockByName(location, name);
 
 		if (block == null) {
 			return;
@@ -109,18 +142,18 @@ public class Imperatives extends Statements<Imperatives, Command> {
 	}
 
 	@Override
-	protected Command define(Statement statement) {
+	protected Command implicate(Statement statement) {
 		final ImplicationEnv initialEnv =
 				getSentence().getBlock().getInitialEnv();
 		return statement.command(new BlockCommandEnv(this, initialEnv));
 	}
 
-	private Block<?, ?> blockByName(LocationInfo location, String name) {
+	private ImperativeBlock blockByName(LocationInfo location, String name) {
 		if (name == null) {
 			return getSentence().getBlock();
 		}
 
-		Block<?, ?> block = getSentence().getBlock();
+		ImperativeBlock block = getSentence().getBlock();
 
 		for (;;) {
 			if (name.equals(block.getName())) {
@@ -130,10 +163,53 @@ public class Imperatives extends Statements<Imperatives, Command> {
 			final Statements<?, ?> enclosing = block.getEnclosing();
 
 			if (enclosing == null) {
-				getLogger().unresolved(location, name);
-				return null;
+				break;
+			}
+			block = enclosing.getSentence().getBlock().toImperativeBlock();
+			if (block == null) {
+				break;
 			}
 		}
+
+		getLogger().error(
+				"unresolved_block",
+				location,
+				"Imperative block with name '%' does not exist",
+				name);
+
+		return null;
+	}
+
+	private CommandTargets commandTargets() {
+
+		CommandTargets result = noCommand();
+
+		for (Command command : getImplications()) {
+
+			final CommandTargets targets = command.getCommandTargets();
+
+			if (targets.isEmpty()) {
+				continue;
+			}
+			if (result.haveBlockExit()) {
+				if (!result.haveError()) {
+					reportUnreachable(getLogger(), result, targets);
+					result = result.addError();
+				}
+			} else {
+				result = result.add(targets);
+			}
+		}
+
+		if (isInhibit() && result.isEmpty() && !result.haveError()) {
+			getLogger().error(
+					"prohibited_empty_inhibit",
+					this,
+					"Empty enhibit");
+			return result.addError();
+		}
+
+		return result;
 	}
 
 }

@@ -51,7 +51,7 @@ public abstract class DefinerEnv extends ImplicationEnv {
 	}
 
 	public DefinerEnv notCondition(LocationInfo location) {
-		return new NotCondition(location, this);
+		return new DefaultEnv(location);
 	}
 
 	public <D extends Def<D>> D apply(D def) {
@@ -108,69 +108,6 @@ public abstract class DefinerEnv extends ImplicationEnv {
 		@Override
 		protected ValueStruct<?, ?> expectedValueStruct() {
 			return null;
-		}
-
-	}
-
-	private static final class NotCondition extends DefinerEnv {
-
-		private final LocationInfo location;
-		private final DefinerEnv env;
-		private boolean errorReported;
-
-		NotCondition(LocationInfo location, DefinerEnv env) {
-			this.location = location;
-			this.env = env;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return false;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			reportError();
-			return this.env.prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return false;
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			reportError();
-			return this.env.precondition(scope);
-		}
-
-		@Override
-		public DefinerEnv notCondition(LocationInfo location) {
-			return new NotCondition(location, this.env);
-		}
-
-		@Override
-		public <D extends Def<D>> D apply(D def) {
-			reportError();
-			return def;
-		}
-
-		@Override
-		public String toString() {
-			return this.location.toString();
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.env.getExpectedValueStruct();
-		}
-
-		private void reportError() {
-			if (this.errorReported) {
-				return;
-			}
-			this.location.getContext().getLogger().notCondition(this.location);
 		}
 
 	}
