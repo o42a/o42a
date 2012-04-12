@@ -20,8 +20,7 @@
 package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.DECLARATION_SECTION_ASCENDANTS_VISITOR;
-import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.OVERRIDER_SECTION_ASCENDANTS_VISITOR;
+import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.SECTION_ASCENDANTS_VISITOR;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.expression.ExpressionNode;
@@ -122,15 +121,7 @@ final class SectionTitle implements LogInfo {
 					distributor);
 		}
 
-		if (this.declaratorNode.getTarget().isOverride()) {
-			return definition.accept(
-					OVERRIDER_SECTION_ASCENDANTS_VISITOR,
-					distributor);
-		}
-
-		return definition.accept(
-				DECLARATION_SECTION_ASCENDANTS_VISITOR,
-				distributor);
+		return definition.accept(SECTION_ASCENDANTS_VISITOR, distributor);
 	}
 
 	@Override

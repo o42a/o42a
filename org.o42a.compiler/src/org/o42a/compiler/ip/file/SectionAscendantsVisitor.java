@@ -28,6 +28,7 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.ValueTypeNode;
@@ -40,17 +41,10 @@ import org.o42a.core.value.TypeParameters;
 final class SectionAscendantsVisitor
 		extends AbstractExpressionVisitor<AscendantsDefinition, Distributor> {
 
-	public static final
-	SectionAscendantsVisitor DECLARATION_SECTION_ASCENDANTS_VISITOR =
-			new SectionAscendantsVisitor(false);
-	public static final
-	SectionAscendantsVisitor OVERRIDER_SECTION_ASCENDANTS_VISITOR =
-			new SectionAscendantsVisitor(true);
+	public static final SectionAscendantsVisitor SECTION_ASCENDANTS_VISITOR =
+			new SectionAscendantsVisitor();
 
-	private final boolean overrider;
-
-	private SectionAscendantsVisitor(boolean overrider) {
-		this.overrider = overrider;
+	private SectionAscendantsVisitor() {
 	}
 
 	@Override
@@ -88,7 +82,7 @@ final class SectionAscendantsVisitor
 
 	@Override
 	public AscendantsDefinition visitScopeRef(ScopeRefNode ref, Distributor p) {
-		if (this.overrider) {
+		if (ref.getType() == ScopeType.IMPLIED) {
 			return new AscendantsDefinition(location(p, ref), p);
 		}
 		return super.visitScopeRef(ref, p);
