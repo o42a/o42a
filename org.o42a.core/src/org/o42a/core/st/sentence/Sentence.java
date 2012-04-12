@@ -71,6 +71,10 @@ public abstract class Sentence<
 
 	public abstract boolean isIssue();
 
+	public final boolean isInsideIssue() {
+		return isIssue() || getBlock().isInsideIssue();
+	}
+
 	public final List<S> getAlternatives() {
 		return this.alternatives;
 	}
@@ -170,6 +174,10 @@ public abstract class Sentence<
 
 	final void setPrerequisite(Sentence<S, L> prerequisite) {
 		this.prerequisite = prerequisite;
+	}
+
+	final void reportEmptyIssue() {
+		getLogger().error("prohibited_empty_issue", this, "Impty issue");
 	}
 
 	void reproduce(Block<S, L> block, Reproducer reproducer) {

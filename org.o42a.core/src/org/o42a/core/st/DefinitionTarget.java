@@ -107,6 +107,11 @@ public final class DefinitionTarget
 	}
 
 	@Override
+	public DefinitionTarget addError() {
+		return (DefinitionTarget) super.addError();
+	}
+
+	@Override
 	public final DefinitionTarget firstDeclaration() {
 		if (!isDeclaration()) {
 			return null;
@@ -162,6 +167,11 @@ public final class DefinitionTarget
 		out.append(']');
 
 		return out.toString();
+	}
+
+	@Override
+	protected DefinitionTarget clone() {
+		return (DefinitionTarget) super.clone();
 	}
 
 	@Override

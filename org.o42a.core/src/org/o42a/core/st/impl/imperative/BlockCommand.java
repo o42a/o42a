@@ -19,7 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.CommandTarget.noCommand;
+import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.st.CommandTargets.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
@@ -39,11 +41,35 @@ import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.log.Loggable;
 
 
 public final class BlockCommand extends Command {
 
-	private CommandTarget commandTarget;
+	public static void reportUnreachable(
+			CompilerLogger logger,
+			CommandTargets reason,
+			CommandTargets targets) {
+
+		final Loggable location =
+				targets.getLoggable().setReason(
+						logAnother(reason.getLoggable()));
+
+		if (reason.haveReturn()) {
+			logger.error(
+					"unreachable_after_uncond_return",
+					location,
+					"Command is unreachable, because it follows the return");
+		} else {
+			logger.error(
+					"unreachable_after_break",
+					location,
+					"Command is unreachable, because it follows"
+					+ " the loop break");
+		}
+	}
+
+	private CommandTargets commandTargets;
 
 	public BlockCommand(ImperativeBlock block, CommandEnv env) {
 		super(block, env);
@@ -54,23 +80,22 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public CommandTarget getCommandTarget() {
-		if (this.commandTarget != null) {
-			return this.commandTarget;
+	public CommandTargets getCommandTargets() {
+		if (this.commandTargets != null) {
+			return this.commandTargets;
 		}
+
 		getBlock().executeInstructions();
 
-		CommandTarget result = noCommand();
-
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
-			result = result.combine(sentence.getCommandTarget());
-		}
-
-		return this.commandTarget = result;
+		return this.commandTargets = applyBraceTargets(sentenceTargets());
 	}
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
+		if (getCommandTargets().isEmpty()) {
+			return new ExecuteCommand(this, LogicalValue.TRUE);
+		}
+
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
 			final Action action = initialValue(sentence, resolver);
@@ -121,7 +146,7 @@ public final class BlockCommand extends Command {
 
 	@Override
 	protected void fullyResolve(LocalResolver resolver) {
-		getCommandTarget();
+		getCommandTargets();
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 			resolveSentence(resolver, sentence);
 		}
@@ -132,9 +157,42 @@ public final class BlockCommand extends Command {
 		return new ImperativeBlockCmd(builder, getBlock());
 	}
 
+	private CommandTargets sentenceTargets() {
+
+		CommandTargets result = noCommand();
+
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+
+			final CommandTargets targets = sentence.getCommandTargets();
+
+			if (result.haveBlockExit() && !result.haveMany()) {
+				if (!result.haveError()) {
+					reportUnreachable(getLogger(), result, targets);
+				}
+				result.addError();
+			} else if (targets.haveBlockExit() && !targets.haveMany()) {
+				result = result.set(targets);
+			} else {
+				result = result.add(targets);
+			}
+		}
+
+		return result;
+	}
+
+	private CommandTargets applyBraceTargets(CommandTargets targets) {
+		if (getBlock().isParentheses()) {
+			return targets;
+		}
+		return targets.removeLoopBreaks();
+	}
+
 	private Action initialValue(
 			ImperativeSentence sentence,
 			LocalResolver resolver) {
+		if (sentence.getCommandTargets().isEmpty()) {
+			return new ExecuteCommand(this, LogicalValue.TRUE);
+		}
 
 		final ImperativeSentence prerequisite = sentence.getPrerequisite();
 
@@ -176,14 +234,8 @@ public final class BlockCommand extends Command {
 				// can not go on
 				return action;
 			}
-			if (!alt.isOpposite()) {
-				if (result != null && !result.getLogicalValue().isTrue()) {
-					return result;
-				}
-			} else if (!sentence.hasOpposite(i)) {
-				if (!action.getLogicalValue().isTrue()) {
-					return action;
-				}
+			if (result != null && !result.getLogicalValue().isTrue()) {
+				return result;
 			}
 
 			result = action;
@@ -211,10 +263,7 @@ public final class BlockCommand extends Command {
 				return action;
 			}
 			if (!action.getLogicalValue().isFalse()) {
-				if (action.getLogicalValue().isTrue()) {
-					return new ExecuteCommand(oppositeOf, LogicalValue.FALSE);
-				}
-				return new ExecuteCommand(oppositeOf, LogicalValue.RUNTIME);
+				return action;
 			}
 		}
 

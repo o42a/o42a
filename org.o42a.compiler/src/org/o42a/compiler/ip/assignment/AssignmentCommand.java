@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.assignment;
 
-import static org.o42a.core.st.CommandTarget.actionCommand;
+import static org.o42a.core.st.CommandTargets.actionCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -59,7 +59,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public CommandTarget getCommandTarget() {
+	public CommandTargets getCommandTargets() {
 		return actionCommand(getStatement());
 	}
 

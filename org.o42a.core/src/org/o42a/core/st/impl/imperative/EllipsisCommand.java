@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.CommandTarget.actionCommand;
+import static org.o42a.core.st.CommandTargets.loopBreakCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -47,8 +47,8 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
-	public final CommandTarget getCommandTarget() {
-		return actionCommand(getStatement());
+	public final CommandTargets getCommandTargets() {
+		return loopBreakCommand(getStatement());
 	}
 
 	@Override

@@ -67,70 +67,16 @@ public abstract class DeclarativeSentence
 			return this.definitionTargets;
 		}
 
-		DefinitionTargets result = noDefinitions();
+		final DefinitionTargets prerequisiteTargets;
+		final DeclarativeSentence prerequisite = getPrerequisite();
 
-		for (Declaratives alt : getAlternatives()) {
-
-			final DefinitionTargets targets = alt.getDefinitionTargets();
-
-			if (targets.isEmpty()) {
-				continue;
-			}
-			if (result.isEmpty()) {
-				result = targets;
-				continue;
-			}
-			if (targets.haveDeclaration()) {
-				if (result.haveDeclaration()) {
-					reportAmbiguity(result, targets);
-					result = result.add(targets);
-					continue;
-				}
-
-				final DefinitionTarget declaration = targets.firstDeclaration();
-
-				if (declaration.isValue()) {
-					getLogger().error(
-							"unexpected_value_alt",
-							declaration.getLoggable().setReason(
-									logAnother(result.lastCondition())),
-							"Alternative should not contain value assignment, "
-							+ " because previous one contains only condition");
-					continue;
-				}
-
-				getLogger().error(
-						"unexpected_field_alt",
-						declaration.getLoggable().setReason(
-								logAnother(result.lastCondition())),
-						"Alternative should not contain field declaration, "
-						+ " because previous one contains only condition");
-				continue;
-			}
-			if (!result.haveDeclaration()) {
-				result = result.add(targets);
-				continue;
-			}
-
-			final DefinitionTarget declaration = result.lastDeclaration();
-
-			if (declaration.isValue()) {
-				getLogger().error(
-						"unexpected_condition_alt_after_value",
-						targets.firstCondition().getLoggable().setReason(
-								logAnother(declaration)),
-						"Alternative should contain condition, "
-						+ " because previous one contains value assignment");
-			}
-			getLogger().error(
-					"unexpected_condition_alt_after_field",
-					targets.firstCondition().getLoggable().setReason(
-							logAnother(declaration)),
-					"Alternative should contain condition, "
-					+ " because previous one contains field declaration");
+		if (prerequisite == null) {
+			prerequisiteTargets = noDefinitions();
+		} else {
+			prerequisiteTargets = prerequisite.getDefinitionTargets();
 		}
 
-		return this.definitionTargets = result;
+		return this.definitionTargets = prerequisiteTargets.add(altsTargets());
 	}
 
 	public final DefinerEnv getFinalEnv() {
@@ -179,7 +125,6 @@ public abstract class DeclarativeSentence
 			return withPrereq.toDefinitions(
 					getBlock().getInitialEnv().getExpectedValueStruct());
 		}
-
 		for (Declaratives alt : getAlternatives()) {
 
 			final Definitions definitions = alt.define(scope);
@@ -192,9 +137,85 @@ public abstract class DeclarativeSentence
 		throw new IllegalStateException("Value expected");
 	}
 
-	private void reportAmbiguity(
+	private DefinitionTargets altsTargets() {
+
+		DefinitionTargets result = noDefinitions();
+
+		for (Declaratives alt : getAlternatives()) {
+
+			final DefinitionTargets targets = alt.getDefinitionTargets();
+
+			if (targets.isEmpty()) {
+				continue;
+			}
+			if (result.isEmpty()) {
+				result = targets;
+				continue;
+			}
+			if (targets.haveDeclaration()) {
+				if (result.haveDeclaration()) {
+					result = reportAmbiguity(result, targets);
+					continue;
+				}
+
+				final DefinitionTarget declaration = targets.firstDeclaration();
+
+				if (declaration.isValue()) {
+					result = result.addError();
+					getLogger().error(
+							"unexpected_value_alt",
+							declaration.getLoggable().setReason(
+									logAnother(result.lastCondition())),
+							"Alternative should not contain value assignment, "
+							+ " because previous one contains only condition");
+					continue;
+				}
+
+				getLogger().error(
+						"unexpected_field_alt",
+						declaration.getLoggable().setReason(
+								logAnother(result.lastCondition())),
+						"Alternative should not contain field declaration, "
+						+ " because previous one contains only condition");
+				continue;
+			}
+			if (!result.haveDeclaration()) {
+				result = result.add(targets);
+				continue;
+			}
+
+			final DefinitionTarget declaration = result.lastDeclaration();
+
+			if (declaration.isValue()) {
+				getLogger().error(
+						"unexpected_condition_alt_after_value",
+						targets.firstCondition().getLoggable().setReason(
+								logAnother(declaration)),
+						"Alternative should contain condition, "
+						+ " because previous one contains value assignment");
+			}
+			getLogger().error(
+					"unexpected_condition_alt_after_field",
+					targets.firstCondition().getLoggable().setReason(
+							logAnother(declaration)),
+					"Alternative should contain condition, "
+					+ " because previous one contains field declaration");
+		}
+
+		if (isIssue() && result.isEmpty() && !result.haveError()) {
+			reportEmptyIssue();
+			return result.addError();
+		}
+
+		return result;
+	}
+
+	private DefinitionTargets reportAmbiguity(
 			DefinitionTargets result,
 			DefinitionTargets targets) {
+
+		DefinitionTargets res = targets;
+
 		for (DefinitionKey key : targets) {
 			if (!key.isDeclaration()) {
 				continue;
@@ -206,6 +227,7 @@ public abstract class DeclarativeSentence
 				continue;
 			}
 			if (key.isValue()) {
+				res = res.addError();
 				getLogger().error(
 						"ambiguous_value",
 						targets.first(key).getLoggable().setReason(
@@ -213,6 +235,7 @@ public abstract class DeclarativeSentence
 						"Ambiguous value");
 				continue;
 			}
+			res = res.addError();
 			getLogger().error(
 					"ambiguous_field",
 					targets.first(key).getLoggable().setReason(
@@ -220,6 +243,8 @@ public abstract class DeclarativeSentence
 					"Ambiguous declaration of field '%s'",
 					previousDeclaration.getFieldKey().getMemberId());
 		}
+
+		return result.add(res);
 	}
 
 	private static final class AltEnv extends DefinerEnv {
