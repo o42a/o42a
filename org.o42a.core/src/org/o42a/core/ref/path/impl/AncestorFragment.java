@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.ref.path.Path.SELF_PATH;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.Link;
@@ -26,6 +28,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.source.Intrinsics;
 import org.o42a.core.value.ValueType;
 
 
@@ -48,24 +51,32 @@ public class AncestorFragment extends PathFragment {
 		final Link dereferencedLink = object.getDereferencedLink();
 
 		if (dereferencedLink != null) {
-			return ancestor(start, dereferencedLink.getTypeRef());
+			return start.getEnclosingScopePath().append(
+					dereferencedLink.getTypeRef().getPath().getPath());
 		}
 
-		return ancestor(start, object.type().getAncestor());
+		final Intrinsics intrinsics = start.getContext().getIntrinsics();
+		final TypeRef ancestor = object.type().getAncestor();
+
+		if (ancestor == null) {
+			return ValueType.VOID.path(intrinsics);
+		}
+
+		final Obj valueTypeObject =
+				object.value().getValueType().typeObject(intrinsics);
+
+		if (valueTypeObject.getScope() == start) {
+			// Ancestor of value type object is a reference to this object.
+			return SELF_PATH;
+		}
+
+		return start.getEnclosingScopePath()
+				.append(ancestor.getPath().getPath());
 	}
 
 	@Override
 	public String toString() {
 		return "^^";
-	}
-
-	private Path ancestor(Scope objectScope, TypeRef ancestor) {
-		if (ancestor == null) {
-			return ValueType.VOID.path(
-					objectScope.getContext().getIntrinsics());
-		}
-		return objectScope.getEnclosingScopePath()
-				.append(ancestor.getPath().getPath());
 	}
 
 }
