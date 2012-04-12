@@ -83,6 +83,10 @@ public abstract class Statements<
 		return getOppositeOf() != null;
 	}
 
+	public final boolean isInsideIssue() {
+		return getSentence().isInsideIssue();
+	}
+
 	public final S getOppositeOf() {
 		return this.oppositeOf;
 	}
@@ -114,11 +118,12 @@ public abstract class Statements<
 		assert value.getContext() == getContext() :
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
-		if (getSentence().isIssue()) {
+		if (isInsideIssue()) {
 			getLogger().error(
 					"porhibited_issue_assignment",
 					location,
 					"Assignment is prohibited within issue");
+			return;
 		}
 		statement(value.rescope(getScope()));
 	}

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.st.CommandTarget.returnCommand;
+import static org.o42a.core.st.CommandTargets.returnCommand;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
@@ -53,7 +53,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final CommandTarget getCommandTarget() {
+	public final CommandTargets getCommandTargets() {
 		return returnCommand(getStatement());
 	}
 

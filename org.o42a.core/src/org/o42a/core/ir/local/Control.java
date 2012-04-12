@@ -33,19 +33,10 @@ import org.o42a.core.source.LocationInfo;
 
 public abstract class Control {
 
-	private static final byte REACHABLE = 0;
-	private static final byte REPEAT = 1;
-	private static final byte DONE = 2;
-	private static final byte VALUE_RETURNED = 3;
-	private static final byte UNREACHABLE = 4;
-
-	private byte reachability;
-
 	Control() {
 	}
 
 	Control(Control parent) {
-		this.reachability = parent.reachability;
 	}
 
 	public final Generator getGenerator() {
@@ -70,14 +61,6 @@ public abstract class Control {
 
 	public abstract AllocationCode allocation();
 
-	public final boolean isDone() {
-		return this.reachability != REACHABLE;
-	}
-
-	public final boolean mayContinue() {
-		return this.reachability != UNREACHABLE;
-	}
-
 	public abstract Block code();
 
 	public abstract CodePos exit();
@@ -87,9 +70,6 @@ public abstract class Control {
 	public final void returnValue(ValOp value) {
 		main().storeResult(code(), value);
 		code().go(returnDir());
-		if (!isDone()) {
-			this.reachability = VALUE_RETURNED;
-		}
 	}
 
 	public final void exitBraces() {
@@ -97,9 +77,6 @@ public abstract class Control {
 	}
 
 	public final void exitBraces(LocationInfo location, String name) {
-		if (isDone()) {
-			return;
-		}
 
 		final BracesControl braces = enclosingBraces(name);
 
@@ -108,16 +85,9 @@ public abstract class Control {
 		} else {
 			unresolvedBlock(location, name);
 		}
-
-		if (!isDone()) {
-			this.reachability = DONE;
-		}
 	}
 
 	public final void repeat(LocationInfo location, String name) {
-		if (isDone()) {
-			return;
-		}
 
 		final BracesControl braces = enclosingBraces(name);
 
@@ -125,27 +95,6 @@ public abstract class Control {
 			code().go(repeatDir(braces));
 		} else {
 			unresolvedBlock(location, name);
-		}
-
-		if (!isDone()) {
-			this.reachability = REPEAT;
-		}
-	}
-
-	public final boolean reach(LocationInfo location) {
-		if (!isDone()) {
-			return true;
-		}
-		if (this.reachability < UNREACHABLE) {
-			location.getContext().getLogger().ignored(location);
-			this.reachability = UNREACHABLE;
-		}
-		return false;
-	}
-
-	public final void reachability(Control reason) {
-		if (reason.reachability > this.reachability) {
-			this.reachability = reason.reachability;
 		}
 	}
 
