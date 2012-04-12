@@ -39,7 +39,7 @@ public abstract class Command extends Implication<Command> {
 		this.env = env;
 	}
 
-	public abstract CommandTarget getCommandTarget();
+	public abstract CommandTargets getCommandTargets();
 
 	public final CommandEnv env() {
 		return this.env;

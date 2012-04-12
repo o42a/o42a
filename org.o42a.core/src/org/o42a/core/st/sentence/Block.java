@@ -78,7 +78,12 @@ public abstract class Block<
 
 	public abstract boolean isParentheses();
 
-	public abstract String getName();
+	public final boolean isInsideIssue() {
+
+		final Statements<?, ?> enclosing = getEnclosing();
+
+		return enclosing != null && enclosing.isInsideIssue();
+	}
 
 	public MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;

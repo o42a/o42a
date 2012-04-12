@@ -49,14 +49,15 @@ public abstract class Statements<
 				extends Placed {
 
 	private final Sentence<S, L> sentence;
-	private final boolean opposite;
 	private final ArrayList<L> implications = new ArrayList<L>(1);
+	private final S oppositeOf;
+	private boolean inhibit;
 	private boolean instructionsExecuted;
 
 	Statements(
 			LocationInfo location,
 			Sentence<S, L> sentence,
-			boolean opposite) {
+			S oppositeOf) {
 		super(
 				location,
 				new StatementsDistributor(
@@ -64,15 +65,30 @@ public abstract class Statements<
 						sentence,
 						sentence.getBlock().getTrace()));
 		this.sentence = sentence;
-		this.opposite = opposite;
+		this.oppositeOf = oppositeOf;
+		if (oppositeOf != null) {
+			oppositeOf.inhibit = true;
+		}
 	}
 
 	public Sentence<S, L> getSentence() {
 		return this.sentence;
 	}
 
+	public final boolean isInhibit() {
+		return this.inhibit;
+	}
+
 	public final boolean isOpposite() {
-		return this.opposite;
+		return getOppositeOf() != null;
+	}
+
+	public final boolean isInsideIssue() {
+		return getSentence().isInsideIssue();
+	}
+
+	public final S getOppositeOf() {
+		return this.oppositeOf;
 	}
 
 	public final List<L> getImplications() {
@@ -102,11 +118,12 @@ public abstract class Statements<
 		assert value.getContext() == getContext() :
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
-		if (getSentence().isIssue()) {
+		if (isInsideIssue()) {
 			getLogger().error(
 					"porhibited_issue_assignment",
 					location,
 					"Assignment is prohibited within issue");
+			return;
 		}
 		statement(value.rescope(getScope()));
 	}
@@ -258,7 +275,7 @@ public abstract class Statements<
 	protected final void addStatement(Statement statement) {
 		assert !this.instructionsExecuted :
 			"Instructions already executed. Can not add statement " + statement;
-		this.implications.add(define(statement));
+		this.implications.add(implicate(statement));
 	}
 
 	protected final void replaceStatement(int index, Statement statement) {
@@ -272,7 +289,7 @@ public abstract class Statements<
 		this.implications.remove(index);
 	}
 
-	protected abstract L define(Statement statement);
+	protected abstract L implicate(Statement statement);
 
 	final Trace getTrace() {
 		return getSentence().getBlock().getTrace();
@@ -280,7 +297,16 @@ public abstract class Statements<
 
 	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
 
-		final S reproduction = sentence.alternative(this, isOpposite());
+		final S oppositeOf = getOppositeOf();
+		final S reproduction;
+
+		if (oppositeOf != null) {
+			oppositeOf.reproduce(sentence, reproducer);
+			reproduction = sentence.opposite(this);
+		} else {
+			reproduction = sentence.alternative(this);
+		}
+
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
@@ -322,6 +348,13 @@ public abstract class Statements<
 			return;
 		}
 		this.instructionsExecuted = true;
+
+		final S oppositeOf = getOppositeOf();
+
+		if (oppositeOf != null) {
+			oppositeOf.executeInstructions();
+		}
+
 		new InstructionExecutor(this).executeAll();
 	}
 
