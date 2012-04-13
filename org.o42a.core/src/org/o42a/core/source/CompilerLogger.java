@@ -32,11 +32,13 @@ public class CompilerLogger implements Logger {
 				location);
 	}
 
-	public static LogReason logAnother(LogInfo location) {
-		return new LogReason(
+	public static Loggable addAnotherLocation(
+			LogInfo location,
+			LogInfo reason) {
+		return location.getLoggable().setReason(new LogReason(
 				"compiler.another",
 				"Another declaration",
-				location);
+				reason));
 	}
 
 	private final Logger logger;

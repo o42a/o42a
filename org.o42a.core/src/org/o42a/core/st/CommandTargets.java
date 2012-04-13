@@ -25,10 +25,17 @@ import org.o42a.util.log.Loggable;
 
 public final class CommandTargets implements LogInfo {
 
-	private static final byte EMPTY_CODE = 0;
-	private static final byte ACTION_CODE = 1;
-	private static final byte LOOP_BREAK_CODE = 2;
-	private static final byte RETURN_CODE = 3;
+	private static final int PREREQUISITE_MASK = 0x01;
+	private static final int PRECONDITION_MASK = 0x02;
+	private static final int VALUE_MASK = 0x10;
+	private static final int EXIT_MASK = 0x20;
+	private static final int REPEAT_MASK = 0x40;
+	private static final int ERROR_MASK = 0x100;
+
+	private static final int CONDITIONAL_MASK =
+			PREREQUISITE_MASK | PRECONDITION_MASK;
+	private static final int LOOPING_MASK = EXIT_MASK | REPEAT_MASK;
+	private static final int BREAKING_MASK = VALUE_MASK | LOOPING_MASK;
 
 	private static final CommandTargets NO_COMMAND = new CommandTargets();
 
@@ -37,59 +44,41 @@ public final class CommandTargets implements LogInfo {
 	}
 
 	public static CommandTargets actionCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, ACTION_CODE);
+		return new CommandTargets(loggable, PRECONDITION_MASK);
 	}
 
-	public static CommandTargets loopBreakCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, LOOP_BREAK_CODE);
+	public static CommandTargets exitCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, EXIT_MASK);
+	}
+
+	public static CommandTargets repeatCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, REPEAT_MASK);
 	}
 
 	public static CommandTargets returnCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, RETURN_CODE);
+		return new CommandTargets(loggable, PRECONDITION_MASK | VALUE_MASK);
 	}
 
 	private final Loggable loggable;
-	private final byte code;
-	private final byte howMany;
-	private final boolean error;
+	private final int mask;
 
 	private CommandTargets() {
 		this.loggable = null;
-		this.code = EMPTY_CODE;
-		this.error = false;
-		this.howMany = 0;
+		this.mask = 0;
 	}
 
-	private CommandTargets(LogInfo loggable, byte code) {
+	private CommandTargets(LogInfo loggable, int mask) {
 		this.loggable = loggable.getLoggable();
-		this.code = code;
-		this.error = false;
-		this.howMany = 1;
+		this.mask = mask;
 	}
 
-	private CommandTargets(
-			CommandTargets prototype,
-			byte howMany,
-			boolean error) {
+	private CommandTargets(CommandTargets prototype, int mask) {
 		this.loggable = prototype.loggable;
-		this.code = prototype.code;
-		this.error = error;
-		this.howMany = howMany;
-	}
-
-	private CommandTargets(
-			CommandTargets prototype,
-			byte code,
-			byte howMany,
-			boolean error) {
-		this.loggable = prototype.loggable;
-		this.code = code;
-		this.howMany = howMany;
-		this.error = error;
+		this.mask = mask;
 	}
 
 	public final boolean isEmpty() {
-		return this.code == EMPTY_CODE;
+		return (this.mask & (~ERROR_MASK)) == 0;
 	}
 
 	@Override
@@ -97,120 +86,155 @@ public final class CommandTargets implements LogInfo {
 		return this.loggable;
 	}
 
-	public final boolean haveMany() {
-		return this.howMany > 1;
+	public final boolean havePrerequisite() {
+		return (this.mask & PREREQUISITE_MASK) != 0;
 	}
 
-	public final boolean haveBlockExit() {
-		return this.code >= LOOP_BREAK_CODE;
+	public final boolean havePrecondition() {
+		return (this.mask & PRECONDITION_MASK) != 0;
 	}
 
-	public final boolean haveReturn() {
-		return this.code == RETURN_CODE;
+	public final boolean haveValue() {
+		return (this.mask & VALUE_MASK) != 0;
+	}
+
+	public final boolean haveExit() {
+		return (this.mask & EXIT_MASK) != 0;
+	}
+
+	public final boolean haveRepeat() {
+		return (this.mask & REPEAT_MASK) != 0;
 	}
 
 	public final boolean haveError() {
-		return this.error;
+		return (this.mask & ERROR_MASK) != 0;
+	}
+
+	public final boolean conditional() {
+		return (this.mask & CONDITIONAL_MASK) != 0;
+	}
+
+	public final boolean looping() {
+		return (this.mask & LOOPING_MASK) != 0;
+	}
+
+	public final boolean breaking() {
+		return (this.mask & BREAKING_MASK) != 0;
+	}
+
+	public final CommandTargets addPrerequisite() {
+		return addMask(PREREQUISITE_MASK);
 	}
 
 	public final CommandTargets addError() {
-		if (haveError()) {
-			return this;
-		}
-		return new CommandTargets(this, this.howMany, true);
+		return addMask(ERROR_MASK);
 	}
 
 	public final CommandTargets add(CommandTargets other) {
-
-		final CommandTargets selected;
-
-		if (other.code > this.code) {
-			selected = other;
-		} else {
-			selected = this;
+		if (getLoggable() != null || other.getLoggable() == null) {
+			return addMask(other.mask);
 		}
-
-		final CommandTargets result =
-				selected.setAmount(this.howMany + other.howMany);
-
-		if (!haveError() && !other.haveError()) {
-			return result;
-		}
-
-		return result.addError();
+		return other.addMask(this.mask);
 	}
 
-	public final CommandTargets set(CommandTargets other) {
-
-		final CommandTargets result;
-
-		if (other.code >= this.code) {
-			result = other;
-		} else {
-			result = setHowMany(other.howMany);
+	public final CommandTargets override(CommandTargets other) {
+		if (getLoggable() != null || other.getLoggable() == null) {
+			return setMask(other.mask);
 		}
-
-		if (!haveError() && !other.haveError()) {
-			return result;
-		}
-
-		return result.addError();
+		return other;
 	}
 
-	public final CommandTargets removeLoopBreaks() {
-		if (this.code != LOOP_BREAK_CODE) {
+	public final CommandTargets removeLooping() {
+		return removeMask(LOOPING_MASK);
+	}
+
+	public final CommandTargets toPrerequisites() {
+		assert !breaking() :
+			"Prerequisite should not contain breaking statements";
+		if (!havePrecondition()) {
 			return this;
 		}
-		return new CommandTargets(this, ACTION_CODE, this.howMany, haveError());
+		return setMask((this.mask & ~PRECONDITION_MASK) | PREREQUISITE_MASK);
+	}
+
+	public final CommandTargets toPreconditions() {
+		assert !breaking() :
+			"Preconditions should not contain breaking statements";
+		if (!havePrerequisite()) {
+			return this;
+		}
+		return setMask((this.mask & ~PREREQUISITE_MASK) | PRECONDITION_MASK);
 	}
 
 	@Override
 	public String toString() {
-		if (isEmpty()) {
-			return "NoCommands";
+
+		final StringBuilder out = new StringBuilder();
+		boolean comma = false;
+
+		out.append("CommandTargets[");
+		if (havePrerequisite()) {
+			out.append("Prerequisite");
+			comma = true;
+		}
+		if (havePrecondition()) {
+			if (comma) {
+				out.append(", precondition");
+			} else {
+				out.append("Precondition");
+				comma = true;
+			}
+		}
+		if (haveValue()) {
+			if (comma) {
+				out.append(", value");
+			} else {
+				out.append("Value");
+				comma = true;
+			}
+		}
+		if (haveRepeat()) {
+			if (comma) {
+				out.append(", repeat");
+			} else {
+				out.append("Repeat");
+				comma = true;
+			}
+		}
+		if (haveExit()) {
+			if (comma) {
+				out.append(", exit");
+			} else {
+				out.append("Exit");
+				comma = true;
+			}
+		}
+		if (haveError()) {
+			if (comma) {
+				out.append(", error");
+			} else {
+				out.append("Error");
+			}
 		}
 
-		final String prefix;
+		out.append(']');
 
-		switch (this.code) {
-		case ACTION_CODE:
-			prefix = "Action";
-			break;
-		case LOOP_BREAK_CODE:
-			prefix = "Break";
-			break;
-		case RETURN_CODE:
-			prefix = "Return";
-			break;
-		default:
-			prefix = "Unknown";
-		}
-
-		return (prefix
-				+ (haveMany() ? "Commands[" : "Command[")
-				+ this.loggable + ']');
+		return out.toString();
 	}
 
-	private final CommandTargets setAmount(int amount) {
-
-		final byte howMany;
-
-		if (amount == 0) {
-			howMany = 0;
-		} else if (amount == 1) {
-			howMany = 1;
-		} else {
-			howMany = 2;
-		}
-
-		return setHowMany(howMany);
+	private final CommandTargets addMask(int mask) {
+		return setMask(this.mask | mask);
 	}
 
-	private final CommandTargets setHowMany(byte howMany) {
-		if (this.howMany == howMany) {
+	private final CommandTargets removeMask(int mask) {
+		return setMask(this.mask & (~mask));
+	}
+
+	private final CommandTargets setMask(int mask) {
+		if (mask == this.mask) {
 			return this;
 		}
-		return new CommandTargets(this, howMany, haveError());
+		return new CommandTargets(this, mask);
 	}
 
 }

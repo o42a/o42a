@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
@@ -32,7 +32,6 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
@@ -45,29 +44,6 @@ import org.o42a.util.log.Loggable;
 
 
 public final class BlockCommand extends Command {
-
-	public static void reportUnreachable(
-			CompilerLogger logger,
-			CommandTargets reason,
-			CommandTargets targets) {
-
-		final Loggable location =
-				targets.getLoggable().setReason(
-						logAnother(reason.getLoggable()));
-
-		if (reason.haveReturn()) {
-			logger.error(
-					"unreachable_after_uncond_return",
-					location,
-					"Command is unreachable, because it follows the return");
-		} else {
-			logger.error(
-					"unreachable_after_break",
-					location,
-					"Command is unreachable, because it follows"
-					+ " the loop break");
-		}
-	}
 
 	private CommandTargets commandTargets;
 
@@ -160,20 +136,46 @@ public final class BlockCommand extends Command {
 	private CommandTargets sentenceTargets() {
 
 		CommandTargets result = noCommand();
+		CommandTargets prev = noCommand();
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
 			final CommandTargets targets = sentence.getCommandTargets();
 
-			if (result.haveBlockExit() && !result.haveMany()) {
-				if (!result.haveError()) {
-					reportUnreachable(getLogger(), result, targets);
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
 				}
-				result.addError();
-			} else if (targets.haveBlockExit() && !targets.haveMany()) {
-				result = result.set(targets);
+				result = result.add(prev);
+				continue;
+			}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+
+			final Loggable location = addAnotherLocation(targets, prev);
+
+			if (prev.haveExit()) {
+				getLogger().error(
+						"unreachable_sentence_after_exit",
+						location,
+						"Sentence is unreachable,"
+						+ " because it follows the unconditional loop exit");
+			} else if (prev.haveRepeat()) {
+				getLogger().error(
+						"unreachable_sentence_after_repeat",
+						location,
+						"Sentence is unreachable,"
+						+ " because it follows the unconditional loop repeat");
 			} else {
-				result = result.add(targets);
+				getLogger().error(
+						"unreachable_sentence_after_return",
+						location,
+						"Sentence is unreachable,"
+						+ " because it follows the unconditional return");
 			}
 		}
 
@@ -184,7 +186,7 @@ public final class BlockCommand extends Command {
 		if (getBlock().isParentheses()) {
 			return targets;
 		}
-		return targets.removeLoopBreaks();
+		return targets.removeLooping();
 	}
 
 	private Action initialValue(

@@ -19,7 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.CommandTargets.loopBreakCommand;
+import static org.o42a.core.st.CommandTargets.exitCommand;
+import static org.o42a.core.st.CommandTargets.repeatCommand;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -44,11 +45,6 @@ abstract class EllipsisCommand extends Command {
 
 	public final EllipsisStatement getEllipsis() {
 		return (EllipsisStatement) getStatement();
-	}
-
-	@Override
-	public final CommandTargets getCommandTargets() {
-		return loopBreakCommand(getStatement());
 	}
 
 	@Override
@@ -84,6 +80,11 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
+		public CommandTargets getCommandTargets() {
+			return exitCommand(this);
+		}
+
+		@Override
 		public Action initialValue(LocalResolver resolver) {
 			return new ExitLoop(this, getEllipsis().getName());
 		}
@@ -99,6 +100,11 @@ abstract class EllipsisCommand extends Command {
 
 		RepeatCommand(EllipsisStatement ellipsis, CommandEnv env) {
 			super(ellipsis, env);
+		}
+
+		@Override
+		public CommandTargets getCommandTargets() {
+			return repeatCommand(this);
 		}
 
 		@Override

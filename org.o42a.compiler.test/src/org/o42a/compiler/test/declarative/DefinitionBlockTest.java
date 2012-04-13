@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.def;
+package org.o42a.compiler.test.declarative;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,13 +27,15 @@ import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.value.ValueType;
 
 
-public class DefinitionSentenceTest extends CompilerTestCase {
+public class DefinitionBlockTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterField() {
 		compile(
-				"A := 42.",
-				"False.");
+				"(",
+				"  A := 42.",
+				"  False.",
+				").");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);
@@ -43,8 +45,10 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	public void valueAfterField() {
 		compile(
 				"A := string(",
-				"  Foo := 42.",
-				"  = \"value\".",
+				"  (",
+				"    Foo := 42.",
+				"    = \"value\".",
+				"  ).",
 				").");
 
 		assertThat(
@@ -59,9 +63,11 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	public void fieldValueAndCondition() {
 		compile(
 				"A := string(",
-				"  Foo := 42.",
-				"  = \"value\".",
-				"  False.",
+				"  (",
+				"    Foo := 42.",
+				"    = \"value\".",
+				"    False.",
+				"  ).",
 				").");
 
 		assertThat(
@@ -73,13 +79,14 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	@Test
 	public void fieldConditionField() {
 		compile(
-				"A := 42.",
-				"False.",
-				"B := 34.");
+				"(",
+				"  A := 42.",
+				"  False.",
+				"  B := 34.",
+				").");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(34L));
 	}
-
 }

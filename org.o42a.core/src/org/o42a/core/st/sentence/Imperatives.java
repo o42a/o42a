@@ -19,9 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
-import static org.o42a.core.st.impl.imperative.BlockCommand.reportUnreachable;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
@@ -59,43 +58,44 @@ public class Imperatives extends Statements<Imperatives, Command> {
 
 		executeInstructions();
 
-		final Imperatives oppositeOf = getOppositeOf();
-		final CommandTargets inhibitTarget;
+		final Imperatives inhibit = getOppositeOf();
+		final CommandTargets inhibitTargets;
 
-		if (oppositeOf == null) {
-			inhibitTarget = noCommand();
+		if (inhibit == null) {
+			inhibitTargets = noCommand();
 		} else {
-			inhibitTarget = oppositeOf.getCommandTargets();
-			if (inhibitTarget.isEmpty()) {
-				return this.commandTargets = inhibitTarget;
+			inhibitTargets = inhibit.getCommandTargets();
+			if (inhibitTargets.isEmpty()) {
+				return this.commandTargets = inhibitTargets;
 			}
-			if (inhibitTarget.haveBlockExit() && !inhibitTarget.haveMany()) {
-				if (inhibitTarget.haveError()) {
-					return this.commandTargets = inhibitTarget;
+			if (inhibitTargets.looping() && !inhibitTargets.conditional()) {
+				if (inhibitTargets.haveError()) {
+					return this.commandTargets = inhibitTargets;
 				}
 
-				final Loggable location = getLoggable().setReason(
-						logAnother(inhibitTarget.getLoggable()));
+				final Loggable location =
+						addAnotherLocation(getLoggable(), inhibitTargets);
 
-				if (inhibitTarget.haveReturn()) {
+				if (inhibitTargets.haveExit()) {
 					getLogger().error(
-							"unreachable_opposite_after_return",
+							"unreachable_opposite_after_exit",
 							location,
 							"Opposite is unreachable, because it follows"
-							+ " the unconditional return");
+							+ " the unconditional loop exit");
 				} else {
 					getLogger().error(
-							"unreachable_opposite_after_break",
+							"unreachable_opposite_after_repeat",
 							location,
 							"Opposite is unreachable, because it follows"
-							+ " the unconditional loop break");
+							+ " the unconditional loop repeat");
 				}
 
-				return this.commandTargets = inhibitTarget.addError();
+				return this.commandTargets = inhibitTargets.addError();
 			}
 		}
 
-		return this.commandTargets = inhibitTarget.add(commandTargets());
+		return this.commandTargets =
+				applyInhibitTargets(inhibitTargets, commandTargets());
 	}
 
 	@Override
@@ -183,21 +183,46 @@ public class Imperatives extends Statements<Imperatives, Command> {
 	private CommandTargets commandTargets() {
 
 		CommandTargets result = noCommand();
+		CommandTargets prev = noCommand();
 
 		for (Command command : getImplications()) {
 
 			final CommandTargets targets = command.getCommandTargets();
 
-			if (targets.isEmpty()) {
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
+				}
+				result = result.add(prev);
 				continue;
 			}
-			if (result.haveBlockExit()) {
-				if (!result.haveError()) {
-					reportUnreachable(getLogger(), result, targets);
-					result = result.addError();
-				}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+
+			final Loggable location = addAnotherLocation(targets, prev);
+
+			if (prev.haveExit()) {
+				getLogger().error(
+						"unreachable_command_after_exit",
+						location,
+						"Command is unreachable,"
+						+ " because it follows the uncondition loop exit");
+			} else if (prev.haveRepeat()) {
+				getLogger().error(
+						"unreachable_command_after_repeat",
+						location,
+						"Command is unreachable,"
+						+ " because it follows the unconditional loop repeat");
 			} else {
-				result = result.add(targets);
+				getLogger().error(
+						"unreachable_command_after_return",
+						location,
+						"Command is unreachable,"
+						+ " because it follows the unconditional return");
 			}
 		}
 
@@ -207,6 +232,25 @@ public class Imperatives extends Statements<Imperatives, Command> {
 					this,
 					"Empty enhibit");
 			return result.addError();
+		}
+
+		return result;
+	}
+
+	private CommandTargets applyInhibitTargets(
+			CommandTargets inhibitTargets,
+			CommandTargets commandTargets) {
+		if (getOppositeOf() == null) {
+			return commandTargets;
+		}
+
+		final boolean mayBeNonBreaking =
+				(inhibitTargets.breaking() || commandTargets.breaking())
+				&& inhibitTargets.breaking() != commandTargets.breaking();
+		final CommandTargets result = inhibitTargets.add(commandTargets);
+
+		if (mayBeNonBreaking) {
+			return result.addPrerequisite();
 		}
 
 		return result;

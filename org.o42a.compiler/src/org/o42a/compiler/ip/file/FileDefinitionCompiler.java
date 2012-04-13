@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
 
 import java.util.HashMap;
 
@@ -28,6 +28,7 @@ import org.o42a.ast.file.SectionNode;
 import org.o42a.core.source.DefinitionSource;
 import org.o42a.core.source.SectionTag;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.log.Loggable;
 
 
 public class FileDefinitionCompiler
@@ -98,17 +99,18 @@ public class FileDefinitionCompiler
 			}
 
 			sections.put(tag, existing);
+
+			final Loggable location = addAnotherLocation(section, existing);
+
 			if (tag.isImplicit()) {
 				getLogger().error(
 						"duplicate_implicit_section",
-						section.getLoggable().getLoggable().setReason(
-								logAnother(existing.getLoggable())),
+						location,
 						"Section without tag already present in this file");
 			} else {
 				getLogger().error(
 						"duplicate_section",
-						section.getLoggable().getLoggable().setReason(
-								logAnother(existing.getLoggable())),
+						location,
 						"Section '%s' already present in this file",
 						tag);
 			}
