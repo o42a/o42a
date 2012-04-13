@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 
 import java.util.HashMap;
 
@@ -167,7 +167,7 @@ public final class SentencePrecondition {
 			}
 			getLogger().error(
 					"ambiguous_value",
-					addAnotherLocation(
+					logAnotherLocation(
 							targets.firstValue(),
 							unconditionalValue),
 					"Ambigous value");
@@ -180,7 +180,7 @@ public final class SentencePrecondition {
 
 		getLogger().error(
 				"ignored_value",
-				addAnotherLocation(targets.firstValue(), unconditionalValue),
+				logAnotherLocation(targets.firstValue(), unconditionalValue),
 				"Ignored value");
 		sentence.ignore();
 

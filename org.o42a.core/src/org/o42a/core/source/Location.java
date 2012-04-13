@@ -19,11 +19,30 @@
 */
 package org.o42a.core.source;
 
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logDeclaration;
+
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
 
 
 public class Location implements LocationInfo {
+
+	public static Location addAnotherLocation(
+			LocationInfo location,
+			LogInfo declaration) {
+		return new Location(
+				location.getContext(),
+				logAnotherLocation(location, declaration));
+	}
+
+	public static Location addDeclaration(
+			LocationInfo location,
+			LogInfo declaration) {
+		return new Location(
+				location.getContext(),
+				logDeclaration(location, declaration));
+	}
 
 	private final CompilerContext context;
 	private final Loggable loggable;

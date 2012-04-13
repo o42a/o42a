@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
@@ -156,7 +156,7 @@ public final class BlockCommand extends Command {
 			}
 			result = result.addError();
 
-			final Loggable location = addAnotherLocation(targets, prev);
+			final Loggable location = logAnotherLocation(targets, prev);
 
 			if (prev.haveExit()) {
 				getLogger().error(

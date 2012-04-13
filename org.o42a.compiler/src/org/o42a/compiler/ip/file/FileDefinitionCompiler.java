@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 
 import java.util.HashMap;
 
@@ -100,7 +100,7 @@ public class FileDefinitionCompiler
 
 			sections.put(tag, existing);
 
-			final Loggable location = addAnotherLocation(section, existing);
+			final Loggable location = logAnotherLocation(section, existing);
 
 			if (tag.isImplicit()) {
 				getLogger().error(

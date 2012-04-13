@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
 
 import org.o42a.core.Container;
@@ -74,7 +74,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 				}
 
 				final Loggable location =
-						addAnotherLocation(getLoggable(), inhibitTargets);
+						logAnotherLocation(getLoggable(), inhibitTargets);
 
 				if (inhibitTargets.haveExit()) {
 					getLogger().error(
@@ -203,7 +203,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 			}
 			result = result.addError();
 
-			final Loggable location = addAnotherLocation(targets, prev);
+			final Loggable location = logAnotherLocation(targets, prev);
 
 			if (prev.haveExit()) {
 				getLogger().error(
