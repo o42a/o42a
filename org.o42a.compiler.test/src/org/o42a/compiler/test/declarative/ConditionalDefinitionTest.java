@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.def;
+package org.o42a.compiler.test.declarative;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
@@ -164,8 +164,9 @@ public abstract class DeclarativeSentence
 					result = result.addError();
 					getLogger().error(
 							"unexpected_value_alt",
-							declaration.getLoggable().setReason(
-									logAnother(result.lastCondition())),
+							addAnotherLocation(
+									declaration,
+									result.lastCondition()),
 							"Alternative should not contain value assignment, "
 							+ " because previous one contains only condition");
 					continue;
@@ -173,8 +174,9 @@ public abstract class DeclarativeSentence
 
 				getLogger().error(
 						"unexpected_field_alt",
-						declaration.getLoggable().setReason(
-								logAnother(result.lastCondition())),
+						addAnotherLocation(
+								declaration,
+								result.lastCondition()),
 						"Alternative should not contain field declaration, "
 						+ " because previous one contains only condition");
 				continue;
@@ -189,15 +191,16 @@ public abstract class DeclarativeSentence
 			if (declaration.isValue()) {
 				getLogger().error(
 						"unexpected_condition_alt_after_value",
-						targets.firstCondition().getLoggable().setReason(
-								logAnother(declaration)),
+						addAnotherLocation(
+								targets.firstCondition(),
+								declaration),
 						"Alternative should contain condition, "
 						+ " because previous one contains value assignment");
+				continue;
 			}
 			getLogger().error(
 					"unexpected_condition_alt_after_field",
-					targets.firstCondition().getLoggable().setReason(
-							logAnother(declaration)),
+					addAnotherLocation(targets.firstCondition(), declaration),
 					"Alternative should contain condition, "
 					+ " because previous one contains field declaration");
 		}
@@ -230,16 +233,18 @@ public abstract class DeclarativeSentence
 				res = res.addError();
 				getLogger().error(
 						"ambiguous_value",
-						targets.first(key).getLoggable().setReason(
-								logAnother(previousDeclaration)),
+						addAnotherLocation(
+								targets.first(key),
+								previousDeclaration),
 						"Ambiguous value");
 				continue;
 			}
 			res = res.addError();
 			getLogger().error(
 					"ambiguous_field",
-					targets.first(key).getLoggable().setReason(
-							logAnother(previousDeclaration)),
+					addAnotherLocation(
+							targets.first(key),
+							previousDeclaration),
 					"Ambiguous declaration of field '%s'",
 					previousDeclaration.getFieldKey().getMemberId());
 		}

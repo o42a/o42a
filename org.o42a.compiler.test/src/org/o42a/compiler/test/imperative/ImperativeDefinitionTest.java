@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.test.def;
+package org.o42a.compiler.test.imperative;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,7 +32,7 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 	@Test
 	public void conditionalValue() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  Condition := `void",
 				"  {Condition? = 1. = 0}",
 				")",
@@ -47,7 +47,7 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 	@Test
 	public void sign() {
 		compile(
-				"Sign :=> integer(",
+				"Sign :=> integer (",
 				"  Arg :=< integer.",
 				"  {",
 				"    Arg > 0? = 1",
@@ -71,7 +71,7 @@ public class ImperativeDefinitionTest extends CompilerTestCase {
 	@Test
 	public void defaultValue() {
 		compile(
-				"A := integer(",
+				"A := integer (",
 				"  Condition := `void",
 				"  {Condition? = 1}",
 				"  = 0",

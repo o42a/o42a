@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.source.CompilerLogger.logAnother;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
@@ -34,6 +34,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.log.Loggable;
 
 
 public class Declaratives extends Statements<Declaratives, Definer> {
@@ -102,20 +103,21 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 				continue;
 			}
 			if (result.haveDeclaration()) {
+
+				final Loggable location =
+						addAnotherLocation(definer, result.lastDeclaration());
+
 				if (result.haveField()) {
 					getLogger().error(
 							"redundant_statement_after_field",
-							definer.getLoggable().setReason(
-									logAnother(result.lastDeclaration())),
+									location,
 									"Redundant statement after"
 									+ " the field declaration");
 				} else {
 					getLogger().error(
 							"redundant_statement_after_value",
-							definer.getLoggable().setReason(
-									logAnother(result.lastDeclaration())),
-									"Redundant statement after"
-									+ " the self-assignment");
+							location,
+							"Redundant statement after the self-assignment");
 				}
 				if (this.effectiveEnv == null) {
 

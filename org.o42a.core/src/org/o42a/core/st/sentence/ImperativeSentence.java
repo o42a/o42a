@@ -19,13 +19,14 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.CommandTargets.loopBreakCommand;
+import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.st.CommandTargets.exitCommand;
 import static org.o42a.core.st.CommandTargets.noCommand;
-import static org.o42a.core.st.impl.imperative.BlockCommand.reportUnreachable;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
+import org.o42a.util.log.Loggable;
 
 
 public abstract class ImperativeSentence
@@ -72,8 +73,8 @@ public abstract class ImperativeSentence
 			}
 		}
 
-		return this.commandTargets = applyClaimTargets(
-				prerequisiteTarget.add(altTargets()));
+		return this.commandTargets = applyExitTargets(
+				prerequisiteTarget.toPrerequisites().add(altTargets()));
 	}
 
 	private CommandTargets altTargets() {
@@ -84,16 +85,44 @@ public abstract class ImperativeSentence
 
 			final CommandTargets targets = alt.getCommandTargets();
 
-			if (targets.isEmpty()) {
+			if (result.conditional() || !result.looping()) {
+				if (result.isEmpty()) {
+					result = targets;
+					continue;
+				}
+				if (targets.isEmpty()) {
+					continue;
+				}
+
+				final boolean mayBeNonBreaking =
+						(result.breaking() || targets.breaking())
+						&& result.breaking() != targets.breaking();
+
+				result = result.add(targets);
+				if (mayBeNonBreaking) {
+					result = result.addPrerequisite();
+				}
 				continue;
 			}
-			if (result.haveBlockExit() && !result.haveMany()) {
-				if (!result.haveError()) {
-					reportUnreachable(getLogger(), result, targets);
-					result = result.addError();
-				}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+
+			final Loggable location = addAnotherLocation(targets, result);
+
+			if (result.haveRepeat()) {
+				getLogger().error(
+						"unreachable_alt_after_repeat",
+						location,
+						"Alternative is unreachable, because is follows"
+						+" the inconditional loop repeat");
 			} else {
-				result = result.set(targets);
+				getLogger().error(
+						"unreachable_alt_after_exit",
+						location,
+						"Alternative is unreachable, because is follows"
+						+" the inconditional loop exit");
 			}
 		}
 		if (isIssue() && result.isEmpty() && !result.haveError()) {
@@ -104,18 +133,18 @@ public abstract class ImperativeSentence
 		return result;
 	}
 
-	private CommandTargets applyClaimTargets(CommandTargets targets) {
+	private CommandTargets applyExitTargets(CommandTargets targets) {
 		if (!isClaim()) {
 			return targets;
 		}
 
-		final CommandTargets breakCommand = loopBreakCommand(this);
+		final CommandTargets exit = exitCommand(this);
 
 		if (getPrerequisite() != null) {
-			return targets.add(breakCommand);
+			return targets.add(exit);
 		}
 
-		return targets.set(breakCommand);
+		return targets.override(exit);
 	}
 
 }
