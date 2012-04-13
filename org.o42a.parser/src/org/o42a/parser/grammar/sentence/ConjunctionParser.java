@@ -61,9 +61,9 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 
 			final SeparatorNodes separators = context.skipComments(true);
 			final SourcePosition statementStart = context.current().fix();
-			final StatementNode stat =
+			StatementNode stat =
 					expectations.parse(this.grammar.statement());
-			final SerialNode statement;
+			SerialNode statement;
 
 			if (stat != null || separator != null) {
 				statement = new SerialNode(separator, stat);
@@ -71,8 +71,24 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 				statement = new SerialNode(statementStart);
 			}
 
-			final int c = context.next();
+			int c = context.next();
 
+			if (this.grammar.isImperative()
+					&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
+
+				final EllipsisNode ellipsis = context.push(ellipsis());
+
+				if (ellipsis != null) {
+					if (stat != null) {
+						statements.add(statement);
+					}
+					stat = ellipsis;
+					statement = new SerialNode(separator, ellipsis);
+					ellipsis.addComments(separators);
+					context.acceptAll();
+					c = context.next();
+				}
+			}
 			if (c == ',') {
 				if (stat == null) {
 					context.getLogger().emptyStatement(statementStart);
@@ -92,23 +108,9 @@ public class ConjunctionParser implements Parser<SerialNode[]> {
 
 				continue;
 			}
-			if (this.grammar.isImperative()
-					&& (c == '.' || c == HORIZONTAL_ELLIPSIS)) {
-
-				final EllipsisNode ellipsis = context.push(ellipsis());
-
-				if (ellipsis != null) {
-					if (stat != null) {
-						statements.add(statement);
-					}
-					ellipsis.addComments(separators);
-					statements.add(new SerialNode(null, ellipsis));
-					context.acceptAll();
-					break;
-				}
-			}
 			if (stat != null) {
 				statements.add(statement);
+				statement.addComments(separators);
 			}
 			break;
 		}

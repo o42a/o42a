@@ -19,6 +19,7 @@
 */
 package org.o42a.parser.grammar.sentence;
 
+import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
@@ -46,7 +47,20 @@ public class SentenceParser implements Parser<SentenceNode> {
 				context.expect(MARK).parse(this.grammar.disjunction());
 
 		if (disjunction == null) {
-			return null;
+
+			final SeparatorNodes comments = context.skipComments(true);
+			final SignNode<SentenceType> mark = context.parse(MARK);
+
+			if (mark == null) {
+				return null;
+			}
+
+			final SentenceNode sentenceNode =
+					new SentenceNode(new AlternativeNode[0], mark);
+
+			sentenceNode.addComments(comments);
+
+			return sentenceNode;
 		}
 
 		final SignNode<SentenceType> mark = context.parse(MARK);
