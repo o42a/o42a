@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.local;
 
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
-
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Member;
@@ -31,7 +29,6 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.impl.PropagatedMemberLocal;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.OwningObject;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -46,10 +43,7 @@ public abstract class MemberLocal extends Member {
 
 	protected MemberLocal(MemberOwner owner, MemberLocal propagatedFrom) {
 		super(
-				new Location(
-						owner.getContext(),
-						owner.getLoggable().setReason(logDeclaration(
-								propagatedFrom.getLastDefinition()))),
+				addDeclaration(owner, propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
 	}

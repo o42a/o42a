@@ -19,14 +19,11 @@
 */
 package org.o42a.core.object.link;
 
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueKnowledge;
@@ -51,10 +48,7 @@ public abstract class KnownLink extends Link {
 
 	protected KnownLink(Link prototype, TargetRef targetRef) {
 		this(
-				new Location(
-						targetRef.getContext(),
-						targetRef.getScope().getLoggable().setReason(
-								logDeclaration(prototype))),
+				addDeclaration(targetRef.getScope(), prototype),
 				prototype.distributeIn(targetRef.getScope().getContainer()),
 				targetRef);
 	}

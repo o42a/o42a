@@ -20,12 +20,10 @@
 package org.o42a.core.member.field.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.source.Location;
 
 
 public abstract class OverriddenMemberField<F extends Field>
@@ -37,11 +35,7 @@ public abstract class OverriddenMemberField<F extends Field>
 			MemberOwner owner,
 			MemberField propagatedFrom) {
 		super(
-				new Location(
-						owner.getContext(),
-						owner.getLoggable().setReason(
-								logDeclaration(
-										propagatedFrom.getLastDefinition()))),
+				addDeclaration(owner, propagatedFrom.getLastDefinition()),
 				owner,
 				propagatedFrom);
 		this.propagatedFrom = propagatedFrom;

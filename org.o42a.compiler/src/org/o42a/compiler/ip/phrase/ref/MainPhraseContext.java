@@ -283,8 +283,7 @@ final class MainPhraseContext extends PhraseContext {
 				if (clause != null && clause.requiresContinuation()) {
 					getLogger().error(
 							"incomplete_phrase",
-							continuation.getLoggable().setReason(
-									logDeclaration(clause)),
+							logDeclaration(continuation, clause),
 							"Incomplete phrase");
 					break;
 				}

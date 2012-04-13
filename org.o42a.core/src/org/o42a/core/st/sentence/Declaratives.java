@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
@@ -105,7 +105,7 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 			if (result.haveDeclaration()) {
 
 				final Loggable location =
-						addAnotherLocation(definer, result.lastDeclaration());
+						logAnotherLocation(definer, result.lastDeclaration());
 
 				if (result.haveField()) {
 					getLogger().error(

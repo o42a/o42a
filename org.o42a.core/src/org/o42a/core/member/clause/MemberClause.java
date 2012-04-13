@@ -20,14 +20,12 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.MemberId.clauseName;
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.core.source.Location;
 
 
 public abstract class MemberClause extends Member {
@@ -44,10 +42,7 @@ public abstract class MemberClause extends Member {
 
 	protected MemberClause(MemberOwner owner, MemberClause propagatedFrom) {
 		super(
-				new Location(
-						owner.getContext(),
-						owner.getLoggable().setReason(logDeclaration(
-								propagatedFrom.getLastDefinition()))),
+				addDeclaration(owner, propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
 		this.key = propagatedFrom.getKey();

@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.addAnotherLocation;
+import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.exitCommand;
 import static org.o42a.core.st.CommandTargets.noCommand;
 
@@ -109,7 +109,7 @@ public abstract class ImperativeSentence
 			}
 			result = result.addError();
 
-			final Loggable location = addAnotherLocation(targets, result);
+			final Loggable location = logAnotherLocation(targets, result);
 
 			if (result.haveRepeat()) {
 				getLogger().error(

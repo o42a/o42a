@@ -25,20 +25,22 @@ import org.o42a.util.log.*;
 
 public class CompilerLogger implements Logger {
 
-	public static LogReason logDeclaration(LogInfo location) {
-		return new LogReason(
-				"compiler.declaration",
-				"Declaration",
-				location);
-	}
-
-	public static Loggable addAnotherLocation(
+	public static Loggable logAnotherLocation(
 			LogInfo location,
-			LogInfo reason) {
+			LogInfo another) {
 		return location.getLoggable().setReason(new LogReason(
 				"compiler.another",
 				"Another declaration",
-				reason));
+				another));
+	}
+
+	public static Loggable logDeclaration(
+			LogInfo location,
+			LogInfo declaration) {
+		return location.getLoggable().setReason(new LogReason(
+				"compiler.declaration",
+				"Declaration",
+				declaration));
 	}
 
 	private final Logger logger;
