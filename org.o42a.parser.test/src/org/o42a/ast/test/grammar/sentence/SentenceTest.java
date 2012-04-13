@@ -20,6 +20,7 @@
 package org.o42a.ast.test.grammar.sentence;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.*;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
@@ -131,6 +132,39 @@ public class SentenceTest extends GrammarTestCase {
 				"c");
 
 		assertThat(result.getDisjunction().length, is(3));
+	}
+
+	@Test
+	public void emptySentence() {
+
+		final SentenceNode result = parse(" ");
+
+		assertThat(result, nullValue());
+	}
+
+	@Test
+	public void commentSentence() {
+
+		final SentenceNode result = parse("/* hello */");
+
+		assertThat(result, nullValue());
+	}
+
+	@Test
+	public void emptyProposition() {
+
+		final SentenceNode result = parse(".");
+
+		assertThat(result.getDisjunction().length, is(0));
+	}
+
+	@Test
+	public void commentProposition() {
+
+		final SentenceNode result = parse("/* comment */.");
+
+		assertThat(result.getDisjunction().length, is(0));
+		assertThat(result.getComments().length, is(1));
 	}
 
 	private SentenceNode assertType(SentenceType type, String text) {

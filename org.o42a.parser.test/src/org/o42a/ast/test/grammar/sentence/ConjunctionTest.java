@@ -19,8 +19,10 @@
 */
 package org.o42a.ast.test.grammar.sentence;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 
 import org.junit.Test;
@@ -61,6 +63,22 @@ public class ConjunctionTest extends GrammarTestCase {
 		assertName("foo", result[0].getStatement());
 		assertName("bar", result[1].getStatement());
 		assertName("bas", result[2].getStatement());
+	}
+
+	@Test
+	public void emptyConjunction() {
+
+		final SerialNode[] result = parse(" ");
+
+		assertThat(result, nullValue());
+	}
+
+	@Test
+	public void onlyComment() {
+
+		final SerialNode[] result = parse("/* comment */");
+
+		assertThat(result, nullValue());
 	}
 
 	private SerialNode[] parse(String text) {

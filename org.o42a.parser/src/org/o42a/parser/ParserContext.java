@@ -327,6 +327,11 @@ public final class ParserContext {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "ParserContext[first unaccepted(" + this.firstUnaccepted
+				+ "), current(" + this.current + ")]";
+	}
 	protected <T> T parse(Parser<T> parser, Expectations expectations) {
 		return parse(parser, expectations, this.firstUnaccepted);
 	}
