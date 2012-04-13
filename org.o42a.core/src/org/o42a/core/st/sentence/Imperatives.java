@@ -117,6 +117,7 @@ public class Imperatives extends Statements<Imperatives, Command> {
 					"prohibited_issue_ellipsis",
 					location,
 					"Ellipsis is prohibited within issue");
+			dropStatement();
 			return;
 		}
 

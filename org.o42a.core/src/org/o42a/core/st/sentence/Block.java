@@ -105,7 +105,8 @@ public abstract class Block<
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
 		@SuppressWarnings("unchecked")
-		final Sentence<S, L> proposition = sentenceFactory.propose(location, this);
+		final Sentence<S, L> proposition =
+				sentenceFactory.propose(location, this);
 
 		return addStatementSentence(proposition);
 	}
@@ -197,7 +198,17 @@ public abstract class Block<
 
 	abstract Locals getLocals();
 
-	Sentence<S, L> addStatementSentence(Sentence<S, L> sentence) {
+	private Sentence<S, L> addStatementSentence(Sentence<S, L> sentence) {
+		if (sentence == null) {
+
+			final Statements<?, ?> enclosing = getEnclosing();
+
+			if (enclosing != null) {
+				enclosing.dropStatement();
+			}
+
+			return null;
+		}
 		if (this.lastIssue != null) {
 			this.sentences.set(this.sentences.size() - 1, sentence);
 			sentence.setPrerequisite(this.lastIssue);

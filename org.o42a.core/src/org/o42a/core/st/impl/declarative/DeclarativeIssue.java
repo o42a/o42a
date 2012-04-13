@@ -19,24 +19,22 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.Scope;
+import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_ISSUE_FACTORY;
+
 import org.o42a.core.member.MemberRegistry;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeFactory;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-public abstract class DeclarativeIssue extends DeclarativeSentence {
+public final class DeclarativeIssue extends DeclarativeSentence {
 
 	private final MemberRegistry memberRegistry;
 
 	public DeclarativeIssue(
 			LocationInfo location,
-			DeclarativeBlock block,
-			DeclarativeFactory sentenceFactory) {
-		super(location, block, sentenceFactory);
+			DeclarativeBlock block) {
+		super(location, block, DECLARATIVE_ISSUE_FACTORY);
 		this.memberRegistry =
 				block.getMemberRegistry().prohibitDeclarations();
 	}
@@ -54,40 +52,6 @@ public abstract class DeclarativeIssue extends DeclarativeSentence {
 	@Override
 	public MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
-	}
-
-	public static final class Claiming extends DeclarativeIssue {
-
-		public Claiming(
-				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-
-			final Definitions definitions = super.define(scope);
-
-			if (definitions == null) {
-				return null;
-			}
-
-			return definitions.claim();
-		}
-
-	}
-
-	public static final class Proposing extends DeclarativeIssue {
-
-		public Proposing(
-				LocationInfo location,
-				DeclarativeBlock block,
-				DeclarativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
 	}
 
 }

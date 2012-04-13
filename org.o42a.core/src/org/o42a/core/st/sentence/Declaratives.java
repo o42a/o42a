@@ -162,6 +162,7 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	public void ellipsis(LocationInfo location, String name) {
+		dropStatement();
 		getLogger().prohibitedDeclarativeEllipsis(location);
 	}
 

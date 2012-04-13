@@ -100,10 +100,7 @@ public class ImperativeFactory implements SentenceFactory<
 	public ImperativeSentence issue(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeIssue.Proposing(
-				location,
-				block,
-				IMPERATIVE_ISSUE_FACTORY);
+		return new ImperativeIssue(location, block);
 	}
 
 	@Override
