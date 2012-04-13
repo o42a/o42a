@@ -97,10 +97,7 @@ public class DeclarativeFactory implements SentenceFactory<
 	public DeclarativeSentence issue(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeIssue.Proposing(
-				location,
-				block,
-				DECLARATIVE_ISSUE_FACTORY);
+		return new DeclarativeIssue(location, block);
 	}
 
 	@Override

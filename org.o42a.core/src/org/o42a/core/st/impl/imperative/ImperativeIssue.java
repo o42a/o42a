@@ -19,22 +19,20 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_ISSUE_FACTORY;
+
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeFactory;
 import org.o42a.core.st.sentence.ImperativeSentence;
 
 
-public abstract class ImperativeIssue extends ImperativeSentence {
+public class ImperativeIssue extends ImperativeSentence {
 
 	private final MemberRegistry memberRegistry;
 
-	ImperativeIssue(
-			LocationInfo location,
-			ImperativeBlock block,
-			ImperativeFactory sentenceFactory) {
-		super(location, block, sentenceFactory);
+	public ImperativeIssue(LocationInfo location, ImperativeBlock block) {
+		super(location, block, IMPERATIVE_ISSUE_FACTORY);
 		this.memberRegistry =
 				block.getMemberRegistry().prohibitDeclarations();
 	}
@@ -52,28 +50,6 @@ public abstract class ImperativeIssue extends ImperativeSentence {
 	@Override
 	public MemberRegistry getMemberRegistry() {
 		return this.memberRegistry;
-	}
-
-	public static final class Claiming extends ImperativeIssue {
-
-		public Claiming(
-				LocationInfo location,
-				ImperativeBlock block,
-				ImperativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
-	}
-
-	public static final class Proposing extends ImperativeIssue {
-
-		public Proposing(
-				LocationInfo location,
-				ImperativeBlock block,
-				ImperativeFactory sentenceFactory) {
-			super(location, block, sentenceFactory);
-		}
-
 	}
 
 }

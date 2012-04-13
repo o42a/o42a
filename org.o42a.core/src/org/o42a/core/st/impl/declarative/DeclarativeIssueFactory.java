@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.sentence.ImperativeBlock.topLevelImperativeBlock;
-
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -30,6 +28,24 @@ import org.o42a.util.fn.Lambda;
 
 
 public class DeclarativeIssueFactory extends DeclarativeFactory {
+
+	public static void prohibitedIssueBraces(
+			LocationInfo location,
+			Statements<?, ?> enclosing) {
+		enclosing.getLogger().error(
+				"prohibited_issue_braces",
+				location,
+				"Issue can not contain braces");
+	}
+
+	public static void prohibitedIssueAlt(
+			LocationInfo location,
+			Sentence<?, ?> sentence) {
+		sentence.getLogger().error(
+				"prohibited_issue_alt",
+				location,
+				"Issue can only contain opposites. Use '|' instead of ';'");
+	}
 
 	@Override
 	public DeclarativeBlock groupParentheses(
@@ -46,13 +62,8 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 			Distributor distributor,
 			Declaratives enclosing,
 			String name) {
-		return topLevelImperativeBlock(
-				location,
-				distributor,
-				enclosing,
-				name,
-				IMPERATIVE_ISSUE_FACTORY,
-				null);
+		prohibitedIssueBraces(location, enclosing);
+		return null;
 	}
 
 	@Override
@@ -69,14 +80,30 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 	public DeclarativeSentence propose(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeIssue.Proposing(location, block, this);
+		return new DeclarativeIssue(location, block);
+	}
+
+	@Override
+	public Declaratives createAlternative(
+			LocationInfo location,
+			DeclarativeSentence sentence,
+			Declaratives oppositeOf) {
+		if (oppositeOf == null && !sentence.getAlternatives().isEmpty()) {
+			prohibitedIssueAlt(location, sentence);
+			return null;
+		}
+		return super.createAlternative(location, sentence, oppositeOf);
 	}
 
 	@Override
 	public DeclarativeSentence claim(
 			LocationInfo location,
 			DeclarativeBlock block) {
-		return new DeclarativeIssue.Claiming(location, block, this);
+		block.getLogger().error(
+				"prohibited_issue_claim",
+				location,
+				"A claim can not be placed inside an issue");
+		return null;
 	}
 
 }

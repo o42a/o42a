@@ -114,13 +114,14 @@ public abstract class Statements<
 		selfAssign(value, value);
 	}
 
-	public final void selfAssign(LocationInfo location, Ref value) {
+	public void selfAssign(LocationInfo location, Ref value) {
 		assert value.getContext() == getContext() :
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
 		if (isInsideIssue()) {
+			dropStatement();
 			getLogger().error(
-					"porhibited_issue_assignment",
+					"prohibited_issue_assignment",
 					location,
 					"Assignment is prohibited within issue");
 			return;
@@ -136,6 +137,7 @@ public abstract class Statements<
 				getMemberRegistry().newField(declaration, definition);
 
 		if (builder == null) {
+			dropStatement();
 			return null;
 		}
 
@@ -145,7 +147,15 @@ public abstract class Statements<
 	public final ClauseBuilder clause(ClauseDeclaration declaration) {
 		assert declaration.getKind().isPlain() :
 			"Plain clause declaration expected: " + declaration;
-		return getMemberRegistry().newClause(declaration);
+
+		final ClauseBuilder clause =
+				getMemberRegistry().newClause(declaration);
+
+		if (clause == null) {
+			dropStatement();
+		}
+
+		return clause;
 	}
 
 	public Group group(LocationInfo location, ClauseDeclaration declaration) {
@@ -156,6 +166,7 @@ public abstract class Statements<
 				getMemberRegistry().newClause(declaration);
 
 		if (builder == null) {
+			dropStatement();
 			return null;
 		}
 
@@ -202,7 +213,11 @@ public abstract class Statements<
 				self,
 				name);
 
-		braces(braces);
+		if (braces != null) {
+			braces(braces);
+		} else {
+			dropStatement();
+		}
 
 		return braces;
 	}
@@ -235,6 +250,7 @@ public abstract class Statements<
 
 	public final void statement(Statement statement) {
 		if (statement == null) {
+			dropStatement();
 			return;
 		}
 		addStatement(statement);
@@ -268,6 +284,10 @@ public abstract class Statements<
 		}
 
 		return out.toString();
+	}
+
+	protected final void dropStatement() {
+		getSentence().dropStatement();
 	}
 
 	protected abstract void braces(ImperativeBlock braces);

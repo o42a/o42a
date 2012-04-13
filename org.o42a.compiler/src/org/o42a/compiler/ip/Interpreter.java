@@ -226,7 +226,9 @@ public enum Interpreter {
 			return null;
 		}
 
-		fillSentence(statementVisitor, sentence, node);
+		if (sentence != null) {
+			fillSentence(statementVisitor, sentence, node);
+		}
 
 		return sentence;
 	}
@@ -285,6 +287,9 @@ public enum Interpreter {
 				alt = sentence.opposite(location);
 			} else {
 				alt = sentence.alternative(location);
+			}
+			if (alt == null) {
+				continue;
 			}
 
 			for (SerialNode stat : altNode.getConjunction()) {

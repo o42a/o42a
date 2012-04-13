@@ -44,6 +44,7 @@ public abstract class Sentence<
 	private final SentenceFactory<L, S, ?, ?> sentenceFactory;
 	private final ArrayList<S> alternatives = new ArrayList<S>();
 	private Sentence<S, L> prerequisite;
+	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
 	Sentence(
@@ -98,7 +99,11 @@ public abstract class Sentence<
 
 		final S alternative = createAlt(location, null);
 
-		this.alternatives.add(alternative);
+		if (alternative != null) {
+			this.alternatives.add(alternative);
+		} else {
+			dropStatement();
+		}
 
 		return alternative;
 	}
@@ -119,7 +124,11 @@ public abstract class Sentence<
 
 		final S opposite = createAlt(location, oppositeOf);
 
-		this.alternatives.set(lastIdx, opposite);
+		if (opposite != null) {
+			this.alternatives.set(lastIdx, opposite);
+		} else {
+			dropStatement();
+		}
 
 		return opposite;
 	}
@@ -176,8 +185,14 @@ public abstract class Sentence<
 		this.prerequisite = prerequisite;
 	}
 
+	final void dropStatement() {
+		this.statementDropped = true;
+	}
+
 	final void reportEmptyIssue() {
-		getLogger().error("prohibited_empty_issue", this, "Impty issue");
+		if (!this.statementDropped) {
+			getLogger().error("prohibited_empty_issue", this, "Impty issue");
+		}
 	}
 
 	void reproduce(Block<S, L> block, Reproducer reproducer) {

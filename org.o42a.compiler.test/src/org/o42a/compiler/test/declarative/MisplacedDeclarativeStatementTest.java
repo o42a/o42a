@@ -1,0 +1,109 @@
+/*
+    Compiler Tests
+    Copyright (C) 2012 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.compiler.test.declarative;
+
+import org.junit.Test;
+import org.o42a.compiler.test.CompilerTestCase;
+
+
+public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
+
+	@Test
+	public void emptyIssue() {
+		expectError("compiler.prohibited_empty_issue");
+		compile(
+				"A := integer (",
+				"  ? = 2",
+				")");
+	}
+
+	@Test
+	public void selfAssignInsideIssue() {
+		expectError("compiler.prohibited_issue_assignment");
+		compile(
+				"A := integer (",
+				"  = 2?",
+				")");
+	}
+
+	@Test
+	public void selfAssignDeepInsideIssue() {
+		expectError("compiler.prohibited_issue_assignment");
+		compile(
+				"A := integer (",
+				"  (False, (Void, = 2))?",
+				")");
+	}
+
+	@Test
+	public void fieldInsideIssue() {
+		expectError("compiler.prohibited_declaration");
+		compile(
+				"A := integer (",
+				"  Foo := 2?",
+				")");
+	}
+
+	@Test
+	public void fieldDeepInsideIssue() {
+		expectError("compiler.prohibited_declaration");
+		compile(
+				"A := integer (",
+				"  (False, (Void, Bar := 2))?",
+				")");
+	}
+
+	@Test
+	public void emptyClaimInsideIssue() {
+		expectError("compiler.prohibited_issue_claim");
+		compile(
+				"A := integer (",
+				"  (!)?",
+				")");
+	}
+
+	@Test
+	public void claimInsideIssue() {
+		expectError("compiler.prohibited_issue_claim");
+		compile(
+				"A := integer (",
+				"  (False!)?",
+				")");
+	}
+
+	@Test
+	public void altInsideIssue() {
+		expectError("compiler.prohibited_issue_alt");
+		compile(
+				"A := integer (",
+				"  False; void?",
+				")");
+	}
+
+	@Test
+	public void braceInsideIssue() {
+		expectError("compiler.prohibited_issue_braces");
+		compile(
+				"A := integer (",
+				"  {}?",
+				")");
+	}
+
+}

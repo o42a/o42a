@@ -19,10 +19,12 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.st.impl.declarative.DeclarativeIssueFactory.prohibitedIssueAlt;
+import static org.o42a.core.st.impl.declarative.DeclarativeIssueFactory.prohibitedIssueBraces;
+
+import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.st.sentence.ImperativeFactory;
-import org.o42a.core.st.sentence.ImperativeSentence;
+import org.o42a.core.st.sentence.*;
 
 
 public class ImperativeIssueFactory extends ImperativeFactory {
@@ -31,17 +33,43 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 	}
 
 	@Override
+	public ImperativeBlock createBraces(
+			LocationInfo location,
+			Distributor distributor,
+			Imperatives enclosing,
+			String name) {
+		prohibitedIssueBraces(location, enclosing);
+		return null;
+	}
+
+	@Override
 	public ImperativeSentence propose(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeIssue.Proposing(location, block, this);
+		return new ImperativeIssue(location, block);
 	}
 
 	@Override
 	public ImperativeSentence claim(
 			LocationInfo location,
 			ImperativeBlock block) {
-		return new ImperativeIssue.Claiming(location, block, this);
+		block.getLogger().error(
+				"prohibited_issue_exit",
+				location,
+				"Can not exit the loop from inside an issue");
+		return null;
+	}
+
+	@Override
+	public Imperatives createAlternative(
+			LocationInfo location,
+			ImperativeSentence sentence,
+			Imperatives oppositeOf) {
+		if (oppositeOf == null && !sentence.getAlternatives().isEmpty()) {
+			prohibitedIssueAlt(location, sentence);
+			return null;
+		}
+		return super.createAlternative(location, sentence, oppositeOf);
 	}
 
 }
