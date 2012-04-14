@@ -38,7 +38,6 @@ public abstract class Block<
 				extends Statement {
 
 	private final Statements<?, ?> enclosing;
-	private Sentence<S, L> lastIssue;
 	private final ArrayList<Sentence<S, L>> sentences =
 			new ArrayList<Sentence<S, L>>();
 	private final MemberRegistry memberRegistry;
@@ -108,7 +107,7 @@ public abstract class Block<
 		final Sentence<S, L> proposition =
 				sentenceFactory.propose(location, this);
 
-		return addStatementSentence(proposition);
+		return addSentence(proposition);
 	}
 
 	public Sentence<S, L> claim(LocationInfo location) {
@@ -118,7 +117,7 @@ public abstract class Block<
 		@SuppressWarnings("unchecked")
 		final Sentence<S, L> claim = sentenceFactory.claim(location, this);
 
-		return addStatementSentence(claim);
+		return addSentence(claim);
 	}
 
 	public Sentence<S, L> issue(LocationInfo location) {
@@ -128,8 +127,7 @@ public abstract class Block<
 		@SuppressWarnings("unchecked")
 		final Sentence<S, L> issue = sentenceFactory.issue(location, this);
 
-		this.sentences.add(issue);
-		this.lastIssue = issue;
+		addSentence(issue);
 
 		return issue;
 	}
@@ -198,7 +196,7 @@ public abstract class Block<
 
 	abstract Locals getLocals();
 
-	private Sentence<S, L> addStatementSentence(Sentence<S, L> sentence) {
+	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
 		if (sentence == null) {
 
 			final Statements<?, ?> enclosing = getEnclosing();
@@ -209,13 +207,23 @@ public abstract class Block<
 
 			return null;
 		}
-		if (this.lastIssue != null) {
-			this.sentences.set(this.sentences.size() - 1, sentence);
-			sentence.setPrerequisite(this.lastIssue);
-			this.lastIssue = null;
-		} else {
-			this.sentences.add(sentence);
+
+		final int size = this.sentences.size();
+
+		if (size != 0) {
+
+			final int lastIdx = size - 1;
+			final Sentence<S, L> last = this.sentences.get(lastIdx);
+
+			if (last.isIssue()) {
+				sentence.setPrerequisite(last);
+				this.sentences.set(lastIdx, sentence);
+				return sentence;
+			}
 		}
+
+		this.sentences.add(sentence);
+
 		return sentence;
 	}
 

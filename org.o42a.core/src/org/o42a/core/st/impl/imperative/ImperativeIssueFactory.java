@@ -64,12 +64,13 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 	public Imperatives createAlternative(
 			LocationInfo location,
 			ImperativeSentence sentence,
-			Imperatives oppositeOf) {
+			Imperatives oppositeOf,
+			boolean inhibit) {
 		if (oppositeOf == null && !sentence.getAlternatives().isEmpty()) {
 			prohibitedIssueAlt(location, sentence);
 			return null;
 		}
-		return super.createAlternative(location, sentence, oppositeOf);
+		return super.createAlternative(location, sentence, oppositeOf, inhibit);
 	}
 
 }

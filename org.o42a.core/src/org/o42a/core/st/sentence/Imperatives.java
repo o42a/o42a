@@ -30,15 +30,16 @@ import org.o42a.core.st.impl.imperative.EllipsisStatement;
 import org.o42a.util.log.Loggable;
 
 
-public class Imperatives extends Statements<Imperatives, Command> {
+public final class Imperatives extends Statements<Imperatives, Command> {
 
 	private CommandTargets commandTargets;
 
 	Imperatives(
 			LocationInfo location,
 			ImperativeSentence sentence,
-			Imperatives oppositeOf) {
-		super(location, sentence, oppositeOf);
+			Imperatives oppositeOf,
+			boolean inhibit) {
+		super(location, sentence, oppositeOf, inhibit);
 	}
 
 	@Override
