@@ -27,67 +27,67 @@ public class ImperativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterReturn() {
-		expectError("compiler.unreachable_command_after_return");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({= 1, void})");
 	}
 
 	@Test
 	public void unreachableAfterUnconditionalRepeat() {
-		expectError("compiler.unreachable_command_after_repeat");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({..., void})");
 	}
 
 	@Test
 	public void unreachableAfterUnconditionalNamedRepeat() {
-		expectError("compiler.unreachable_command_after_repeat");
+		expectError("compiler.unreachable_command");
 		compile("A := integer (Foo: {(... foo), void})");
 	}
 
 	@Test
 	public void unreachableAfterUnconditionalExit() {
-		expectError("compiler.unreachable_command_after_exit");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(!), void})");
 	}
 
 	@Test
 	public void unreachableAfterUnconditionalNamedExit() {
-		expectError("compiler.unreachable_command_after_exit");
+		expectError("compiler.unreachable_command");
 		compile("A := integer (Foo: {(... foo!), void})");
 	}
 
 	@Test
 	public void unreachableAfterReturnOpposites() {
-		expectError("compiler.unreachable_command_after_return");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(= 1 | = 2), void})");
 	}
 
 	@Test
 	public void unreachableAfterReturnAndRepeatOpposites() {
-		expectError("compiler.unreachable_command_after_repeat");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(False, = 1 | void, ...), void})");
 	}
 
 	@Test
 	public void unreachableAfterExitAndRepeatOpposites() {
-		expectError("compiler.unreachable_command_after_exit");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(False, (!) | void, ...), void})");
 	}
 
 	@Test
 	public void unreachableAfterReturnAlts() {
-		expectError("compiler.unreachable_command_after_return");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(= 1; = 2), void})");
 	}
 
 	@Test
 	public void unreachableAfterReturnAndRepeatAlts() {
-		expectError("compiler.unreachable_command_after_repeat");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(False, = 1; void, ...), void})");
 	}
 
 	@Test
 	public void unreachableAfterExitAndRepeatAlts() {
-		expectError("compiler.unreachable_command_after_exit");
+		expectError("compiler.unreachable_command");
 		compile("A := integer ({(False, (!); void, ...), void})");
 	}
 

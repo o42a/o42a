@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
 
 import org.o42a.core.Container;
@@ -27,7 +26,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
-import org.o42a.util.log.Loggable;
 
 
 public final class Imperatives extends Statements<Imperatives, Command> {
@@ -74,22 +72,10 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 					return this.commandTargets = inhibitTargets;
 				}
 
-				final Loggable location =
-						logAnotherLocation(getLoggable(), inhibitTargets);
-
-				if (inhibitTargets.haveExit()) {
-					getLogger().error(
-							"unreachable_opposite_after_exit",
-							location,
-							"Opposite is unreachable, because it follows"
-							+ " the unconditional loop exit");
-				} else {
-					getLogger().error(
-							"unreachable_opposite_after_repeat",
-							location,
-							"Opposite is unreachable, because it follows"
-							+ " the unconditional loop repeat");
-				}
+				getLogger().error(
+						"unreachable_opposite",
+						this,
+						"Unreachable opposite");
 
 				return this.commandTargets = inhibitTargets.addError();
 			}
@@ -204,28 +190,10 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 				continue;
 			}
 			result = result.addError();
-
-			final Loggable location = logAnotherLocation(targets, prev);
-
-			if (prev.haveExit()) {
-				getLogger().error(
-						"unreachable_command_after_exit",
-						location,
-						"Command is unreachable,"
-						+ " because it follows the uncondition loop exit");
-			} else if (prev.haveRepeat()) {
-				getLogger().error(
-						"unreachable_command_after_repeat",
-						location,
-						"Command is unreachable,"
-						+ " because it follows the unconditional loop repeat");
-			} else {
-				getLogger().error(
-						"unreachable_command_after_return",
-						location,
-						"Command is unreachable,"
-						+ " because it follows the unconditional return");
-			}
+			getLogger().error(
+					"unreachable_command",
+					targets,
+					"Unreachable command");
 		}
 
 		if (isInhibit() && result.isEmpty() && !result.haveError()) {

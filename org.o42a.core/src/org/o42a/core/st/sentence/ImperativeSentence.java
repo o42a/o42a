@@ -19,14 +19,12 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.exitCommand;
 import static org.o42a.core.st.CommandTargets.noCommand;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandTargets;
-import org.o42a.util.log.Loggable;
 
 
 public abstract class ImperativeSentence
@@ -108,22 +106,10 @@ public abstract class ImperativeSentence
 				continue;
 			}
 			result = result.addError();
-
-			final Loggable location = logAnotherLocation(targets, result);
-
-			if (result.haveRepeat()) {
-				getLogger().error(
-						"unreachable_alt_after_repeat",
-						location,
-						"Alternative is unreachable, because is follows"
-						+" the inconditional loop repeat");
-			} else {
-				getLogger().error(
-						"unreachable_alt_after_exit",
-						location,
-						"Alternative is unreachable, because is follows"
-						+" the inconditional loop exit");
-			}
+			getLogger().error(
+					"unreachable_alternative",
+					targets,
+					"Unreachable alternative");
 		}
 		if (isIssue() && result.isEmpty() && !result.haveError()) {
 			reportEmptyIssue();
