@@ -277,28 +277,47 @@ public enum Interpreter {
 			final StatementVisitor statementVisitor,
 			final Sentence<?, ?> sentence,
 			final SentenceNode node) {
-		for (AlternativeNode altNode : node.getDisjunction()) {
 
+		int i = 0;
+		final AlternativeNode[] disjunction = node.getDisjunction();
+
+		while (i < disjunction.length) {
+
+			final int next = i + 1;
+			final AlternativeNode altNode = disjunction[i];
 			final Location location =
 					new Location(statementVisitor.getContext(), altNode);
 			final Statements<?, ?> alt;
 
-			if (altNode.isOpposite()) {
-				alt = sentence.opposite(location);
+			if (next < disjunction.length) {
+
+				final AlternativeNode nextAltNode = disjunction[next];
+
+				if (nextAltNode.isOpposite()) {
+					alt = sentence.inhibit(location);
+				} else {
+					alt = sentence.alternative(location);
+				}
 			} else {
 				alt = sentence.alternative(location);
 			}
-			if (alt == null) {
-				continue;
+			if (alt != null) {
+				fillStatements(statementVisitor, altNode, alt);
 			}
+			i = next;
+		}
+	}
 
-			for (SerialNode stat : altNode.getConjunction()) {
+	private static void fillStatements(
+			final StatementVisitor statementVisitor,
+			final AlternativeNode altNode,
+			final Statements<?, ?> alt) {
+		for (SerialNode stat : altNode.getConjunction()) {
 
-				final StatementNode st = stat.getStatement();
+			final StatementNode st = stat.getStatement();
 
-				if (st != null) {
-					st.accept(statementVisitor, alt);
-				}
+			if (st != null) {
+				st.accept(statementVisitor, alt);
 			}
 		}
 	}

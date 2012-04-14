@@ -104,8 +104,9 @@ public class DeclarativeFactory implements SentenceFactory<
 	public Declaratives createAlternative(
 			LocationInfo location,
 			DeclarativeSentence sentence,
-			Declaratives oppositeOf) {
-		return new Declaratives(location, sentence, oppositeOf);
+			Declaratives oppositeOf,
+			boolean inhibit) {
+		return new Declaratives(location, sentence, oppositeOf, inhibit);
 	}
 
 	@Override

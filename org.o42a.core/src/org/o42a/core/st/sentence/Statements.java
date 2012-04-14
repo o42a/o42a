@@ -51,13 +51,14 @@ public abstract class Statements<
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<L>(1);
 	private final S oppositeOf;
-	private boolean inhibit;
+	private final boolean inhibit;
 	private boolean instructionsExecuted;
 
 	Statements(
 			LocationInfo location,
 			Sentence<S, L> sentence,
-			S oppositeOf) {
+			S oppositeOf,
+			boolean inhibit) {
 		super(
 				location,
 				new StatementsDistributor(
@@ -66,9 +67,7 @@ public abstract class Statements<
 						sentence.getBlock().getTrace()));
 		this.sentence = sentence;
 		this.oppositeOf = oppositeOf;
-		if (oppositeOf != null) {
-			oppositeOf.inhibit = true;
-		}
+		this.inhibit = inhibit;
 	}
 
 	public Sentence<S, L> getSentence() {
@@ -322,7 +321,9 @@ public abstract class Statements<
 
 		if (oppositeOf != null) {
 			oppositeOf.reproduce(sentence, reproducer);
-			reproduction = sentence.opposite(this);
+		}
+		if (isInhibit()) {
+			reproduction = sentence.inhibit(this);
 		} else {
 			reproduction = sentence.alternative(this);
 		}

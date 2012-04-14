@@ -80,6 +80,7 @@ public interface SentenceFactory<
 	S createAlternative(
 			LocationInfo location,
 			T sentence,
-			S oppositeOf);
+			S oppositeOf,
+			boolean inhibit);
 
 }

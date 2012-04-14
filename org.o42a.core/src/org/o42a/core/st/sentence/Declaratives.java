@@ -37,7 +37,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.Loggable;
 
 
-public class Declaratives extends Statements<Declaratives, Definer> {
+public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	private DeclarativesEnv env;
 	private DefinerEnv lastEnv;
@@ -47,8 +47,9 @@ public class Declaratives extends Statements<Declaratives, Definer> {
 	Declaratives(
 			LocationInfo location,
 			DeclarativeSentence sentence,
-			Declaratives oppositeOf) {
-		super(location, sentence, oppositeOf);
+			Declaratives oppositeOf,
+			boolean inhibit) {
+		super(location, sentence, oppositeOf, inhibit);
 		if (oppositeOf != null) {
 			this.lastEnv = new OppositeStartEnv(
 					getSentence().getAltEnv(),

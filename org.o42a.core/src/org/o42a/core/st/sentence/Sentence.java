@@ -96,41 +96,11 @@ public abstract class Sentence<
 	}
 
 	public final S alternative(LocationInfo location) {
-
-		final S alternative = createAlt(location, null);
-
-		if (alternative != null) {
-			this.alternatives.add(alternative);
-		} else {
-			dropStatement();
-		}
-
-		return alternative;
+		return alt(location, false);
 	}
 
-	public final S opposite(LocationInfo location) {
-
-		final S oppositeOf;
-		final int size = this.alternatives.size();
-		final int lastIdx;
-
-		if (size == 0) {
-			lastIdx = 0;
-			oppositeOf = alternative(location);
-		} else {
-			lastIdx = size - 1;
-			oppositeOf = this.alternatives.get(lastIdx);
-		}
-
-		final S opposite = createAlt(location, oppositeOf);
-
-		if (opposite != null) {
-			this.alternatives.set(lastIdx, opposite);
-		} else {
-			dropStatement();
-		}
-
-		return opposite;
+	public final S inhibit(LocationInfo location) {
+		return alt(location, true);
 	}
 
 	@Override
@@ -218,7 +188,37 @@ public abstract class Sentence<
 		}
 	}
 
-	private S createAlt(LocationInfo location, S oppositeOf) {
+	private S alt(LocationInfo location, boolean inhibit) {
+
+		final int size = this.alternatives.size();
+
+		if (size != 0) {
+
+			final int lastIdx = size - 1;
+			final S last = this.alternatives.get(lastIdx);
+
+			if (last.isInhibit()) {
+
+				final S opposite = createAlt(location, last, inhibit);
+
+				this.alternatives.set(lastIdx, opposite);
+
+				return opposite;
+			}
+		}
+
+		final S alt = createAlt(location, null, inhibit);
+
+		if (alt != null) {
+			this.alternatives.add(alt);
+		} else {
+			dropStatement();
+		}
+
+		return alt;
+	}
+
+	private S createAlt(LocationInfo location, S oppositeOf, boolean inhibit) {
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -226,7 +226,8 @@ public abstract class Sentence<
 		final S alt = (S) sentenceFactory.createAlternative(
 				location,
 				this,
-				oppositeOf);
+				oppositeOf,
+				inhibit);
 
 		return alt;
 	}
