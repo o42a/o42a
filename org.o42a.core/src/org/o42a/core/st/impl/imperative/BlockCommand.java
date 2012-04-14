@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.CommandTargets.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
@@ -40,7 +39,6 @@ import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.log.Loggable;
 
 
 public final class BlockCommand extends Command {
@@ -155,28 +153,10 @@ public final class BlockCommand extends Command {
 				continue;
 			}
 			result = result.addError();
-
-			final Loggable location = logAnotherLocation(targets, prev);
-
-			if (prev.haveExit()) {
-				getLogger().error(
-						"unreachable_sentence_after_exit",
-						location,
-						"Sentence is unreachable,"
-						+ " because it follows the unconditional loop exit");
-			} else if (prev.haveRepeat()) {
-				getLogger().error(
-						"unreachable_sentence_after_repeat",
-						location,
-						"Sentence is unreachable,"
-						+ " because it follows the unconditional loop repeat");
-			} else {
-				getLogger().error(
-						"unreachable_sentence_after_return",
-						location,
-						"Sentence is unreachable,"
-						+ " because it follows the unconditional return");
-			}
+			getLogger().error(
+					"unreachable_sentence",
+					targets,
+					"Unreachable sentence");
 		}
 
 		return result;

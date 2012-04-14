@@ -27,7 +27,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterUnconditionalReturn() {
-		expectError("compiler.unreachable_sentence_after_return");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  = 2",
@@ -37,7 +37,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterConditionalReturn() {
-		expectError("compiler.unreachable_sentence_after_return");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False, = 2",
@@ -47,7 +47,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterCompoundReturn() {
-		expectError("compiler.unreachable_sentence_after_return");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False? Void",
@@ -58,7 +58,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterUnconditionalRepeat() {
-		expectError("compiler.unreachable_sentence_after_repeat");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  ...",
@@ -68,7 +68,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterConditionalRepeat() {
-		expectError("compiler.unreachable_sentence_after_repeat");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False ...",
@@ -78,7 +78,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterCompoundRepeat() {
-		expectError("compiler.unreachable_sentence_after_repeat");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False? Void",
@@ -89,7 +89,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterUnconditionalExit() {
-		expectError("compiler.unreachable_sentence_after_exit");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  !",
@@ -99,7 +99,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterConditionalExit() {
-		expectError("compiler.unreachable_sentence_after_exit");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False!",
@@ -109,7 +109,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterCompoundExit() {
-		expectError("compiler.unreachable_sentence_after_exit");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False? Void. False",
@@ -120,7 +120,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterReturnOpposites() {
-		expectError("compiler.unreachable_sentence_after_return");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  = 2 | = 3",
@@ -130,7 +130,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterRepeatAndReturnOpposites() {
-		expectError("compiler.unreachable_sentence_after_repeat");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False ... | = 3",
@@ -140,7 +140,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterLoopAndRepeatOpposites() {
-		expectError("compiler.unreachable_sentence_after_exit");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False ... | !",
@@ -150,7 +150,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterReturnAlts() {
-		expectError("compiler.unreachable_sentence_after_return");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  = 2 ; = 3",
@@ -160,7 +160,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterRepeatAndReturnAlts() {
-		expectError("compiler.unreachable_sentence_after_repeat");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False ... ; = 3",
@@ -170,7 +170,7 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterLoopAndRepeatAlts() {
-		expectError("compiler.unreachable_sentence_after_exit");
+		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
 				"  False ... ; !",

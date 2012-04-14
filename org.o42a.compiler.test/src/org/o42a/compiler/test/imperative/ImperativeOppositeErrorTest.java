@@ -27,28 +27,28 @@ public class ImperativeOppositeErrorTest extends CompilerTestCase {
 
 	@Test
 	public void unreachableAfterUnconditionalExit() {
-		expectError("compiler.unreachable_opposite_after_exit");
+		expectError("compiler.unreachable_opposite");
 
 		compile("A := integer({(!) | = 2})");
 	}
 
 	@Test
 	public void unreachableAfterConditionalExit() {
-		expectError("compiler.unreachable_opposite_after_exit");
+		expectError("compiler.unreachable_opposite");
 
 		compile("A := integer({(Void!) | = 2})");
 	}
 
 	@Test
 	public void unreachableAfterRepeat() {
-		expectError("compiler.unreachable_opposite_after_repeat");
+		expectError("compiler.unreachable_opposite");
 
 		compile("A := integer({... | = 2})");
 	}
 
 	@Test
 	public void unreachableAfterNamedRepeat() {
-		expectError("compiler.unreachable_opposite_after_repeat");
+		expectError("compiler.unreachable_opposite");
 
 		compile("A := integer(Foo: {(... foo) | = 2})");
 	}
