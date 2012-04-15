@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,49 +19,28 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.field.impl.OverriddenMemberField;
 
 
-public final class DeclaredMemberField extends MemberField {
+final class OverriddenDeclaredMemberField extends OverriddenMemberField<Field> {
 
-	private final FieldBuilder builder;
-	private FieldDeclarationStatement statement;
-
-	public DeclaredMemberField(FieldBuilder builder) {
-		super(builder.getMemberOwner(), builder.getDeclaration());
-		this.builder = builder;
+	OverriddenDeclaredMemberField(
+			MemberOwner owner,
+			MemberField propagatedFrom) {
+		super(owner, propagatedFrom);
 	}
 
 	@Override
-	public final MemberField getPropagatedFrom() {
-		return null;
-	}
-
-	@Override
-	public MemberField propagateTo(MemberOwner owner) {
+	public OverriddenDeclaredMemberField propagateTo(MemberOwner owner) {
 		return new OverriddenDeclaredMemberField(owner, this);
 	}
 
-	public final FieldDeclarationStatement getStatement() {
-		return this.statement;
-	}
-
-	public final void setStatement(FieldDeclarationStatement statement) {
-		this.statement = statement;
-	}
-
 	@Override
-	protected Field createField() {
-		return new DeclaredField(this, this.builder.getDefinition());
-	}
-
-	final DeclaredField toDeclaredField() {
-		return (DeclaredField) toField().field(dummyUser());
+	protected Field propagateField(Field propagatedFrom) {
+		return new OverriddenField(this, propagatedFrom);
 	}
 
 }

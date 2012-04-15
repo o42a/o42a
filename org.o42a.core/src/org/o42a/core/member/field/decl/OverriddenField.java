@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,29 +19,21 @@
 */
 package org.o42a.core.member.field.decl;
 
-import org.o42a.core.member.MemberOwner;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.field.impl.OverriddenMemberField;
+import org.o42a.core.object.Obj;
 
 
-final class OverriddenMemberObjectField
-		extends OverriddenMemberField<DeclaredField> {
+final class OverriddenField extends Field {
 
-	OverriddenMemberObjectField(
-			MemberOwner owner,
-			MemberField propagatedFrom) {
-		super(owner, propagatedFrom);
+	OverriddenField(MemberField member, Field propagatedFrom) {
+		super(member);
+		setScopeObject(new PropagatedObject(this));
 	}
 
 	@Override
-	public OverriddenMemberObjectField propagateTo(MemberOwner owner) {
-		return new OverriddenMemberObjectField(owner, this);
-	}
-
-	@Override
-	protected DeclaredField propagateField(
-			DeclaredField propagatedFrom) {
-		return new DeclaredField(this, propagatedFrom);
+	public Obj toObject() {
+		return getScopeObject();
 	}
 
 }

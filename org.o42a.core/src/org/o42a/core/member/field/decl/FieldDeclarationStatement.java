@@ -113,10 +113,9 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 					reproducer.distribute());
 		}
 
-		final FieldVariant variant =
-				this.member.toDeclaredField().getVariants().get(0);
+		final DeclaredField field = this.member.toDeclaredField();
 
-		return variant.reproduceDefinition(reproducer);
+		return new ReproducedObjectDefinition(field, reproducer);
 	}
 
 	private static final class Definer extends DeclarationDefiner {

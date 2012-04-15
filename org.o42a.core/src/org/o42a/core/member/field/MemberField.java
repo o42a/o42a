@@ -24,7 +24,8 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.*;
@@ -36,21 +37,15 @@ import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.ArrayUtil;
 
 
 public abstract class MemberField extends Member implements FieldReplacement {
-
-	private static final MemberField[] NO_MERGED = new MemberField[0];
 
 	private final FieldDeclaration declaration;
 	private Field field;
 	private MemberKey key;
 	private Visibility visibility;
-	private MemberField[] mergedWith = NO_MERGED;
-	private HashSet<CompilerContext> allContexts;
 
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
@@ -183,18 +178,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public abstract MemberField getPropagatedFrom();
 
-	@Override
-	public final Set<CompilerContext> allContexts() {
-		if (this.allContexts != null) {
-			return this.allContexts;
-		}
-
-		this.allContexts = new HashSet<CompilerContext>(1);
-		this.allContexts.add(getContext());
-
-		return this.allContexts;
-	}
-
 	public final List<FieldReplacement> allReplacements() {
 		if (this.allReplacements == null) {
 			return emptyList();
@@ -260,50 +243,12 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return out.toString();
 	}
 
-	@Override
-	protected void merge(Member member) {
-
-		final MemberField memberField = member.toField();
-
-		if (memberField == null) {
-			getLogger().error(
-					"not_field",
-					member,
-					"'%s' is not a field",
-					member.getDisplayName());
-			return;
-		}
-
-		final CompilerContext memberContext = member.getContext();
-
-		if (getContext() != memberContext) {
-			if (this.allContexts == null) {
-				this.allContexts = new HashSet<CompilerContext>(2);
-				this.allContexts.add(getContext());
-			}
-			this.allContexts.add(memberContext);
-		}
-
-		if (this.field != null) {
-			mergeField(memberField);
-		} else {
-			this.mergedWith = ArrayUtil.append(this.mergedWith, memberField);
-		}
-	}
-
 	protected final void setField(UserInfo user, Field field) {
 		this.field = field;
 		useBy(user);
-		for (MemberField merged : getMergedWith()) {
-			mergeField(merged);
-		}
 	}
 
 	protected abstract Field createField();
-
-	protected final MemberField[] getMergedWith() {
-		return this.mergedWith;
-	}
 
 	private MemberKey overrideField() {
 
@@ -384,10 +329,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	private MemberKey declareNewField() {
 		this.visibility = getDeclaration().getVisibility();
 		return getId().key(getScope());
-	}
-
-	private void mergeField(MemberField member) {
-		this.field.merge(member.field(dummyUser()));
 	}
 
 	private void useBy(UserInfo user) {

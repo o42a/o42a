@@ -112,9 +112,4 @@ public abstract class MemberLocal extends Member {
 		local().resolveAll();
 	}
 
-	@Override
-	protected void merge(Member member) {
-		throw new UnsupportedOperationException();
-	}
-
 }

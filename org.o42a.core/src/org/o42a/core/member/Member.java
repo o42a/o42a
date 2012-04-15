@@ -21,7 +21,8 @@ package org.o42a.core.member;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
@@ -31,7 +32,6 @@ import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -168,10 +168,6 @@ public abstract class Member extends Placed {
 		return getLastDefinition() != this;
 	}
 
-	public Set<CompilerContext> allContexts() {
-		return Collections.singleton(getContext());
-	}
-
 	public Member[] getOverridden() {
 		if (this.overridden != null) {
 			return this.overridden;
@@ -215,8 +211,6 @@ public abstract class Member extends Placed {
 
 		return out.toString();
 	}
-
-	protected abstract void merge(Member member);
 
 	private Member[] overriddenMembers() {
 		if (!isOverride()) {
