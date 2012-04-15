@@ -131,6 +131,14 @@ public abstract class Statements<
 	public FieldBuilder field(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
+		if (isInsideIssue()) {
+			getLogger().error(
+					"prohibited_issue_field",
+					declaration,
+					"Field can not be declared inside issue");
+			dropStatement();
+			return null;
+		}
 
 		final FieldBuilder builder =
 				getMemberRegistry().newField(declaration, definition);

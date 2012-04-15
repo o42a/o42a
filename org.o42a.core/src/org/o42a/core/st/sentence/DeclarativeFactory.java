@@ -33,18 +33,13 @@ import org.o42a.core.st.impl.declarative.DeclarativeProposition;
 import org.o42a.util.fn.Lambda;
 
 
-public class DeclarativeFactory implements SentenceFactory<
+public class DeclarativeFactory extends SentenceFactory<
 		Definer,
 		Declaratives,
 		DeclarativeSentence,
 		DeclarativeBlock> {
 
 	protected DeclarativeFactory() {
-	}
-
-	@Override
-	public boolean isDeclarative() {
-		return true;
 	}
 
 	@Override
@@ -121,6 +116,16 @@ public class DeclarativeFactory implements SentenceFactory<
 			LocationInfo location,
 			DeclarativeBlock block) {
 		return new DeclarativeClaim(location, block, this);
+	}
+
+	@Override
+	public final DeclarativeFactory toDeclarativeFactory() {
+		return this;
+	}
+
+	@Override
+	public final ImperativeFactory toImperativeFactory() {
+		return null;
 	}
 
 }

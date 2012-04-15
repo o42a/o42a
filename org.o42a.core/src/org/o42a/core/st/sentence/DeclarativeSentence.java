@@ -62,6 +62,13 @@ public abstract class DeclarativeSentence
 		return (DeclarativeSentence) super.getPrerequisite();
 	}
 
+	public final boolean isInsideClaim() {
+		if (isClaim()) {
+			return true;
+		}
+		return getBlock().isInsideClaim();
+	}
+
 	public DefinitionTargets getDefinitionTargets() {
 		if (this.definitionTargets != null) {
 			return this.definitionTargets;

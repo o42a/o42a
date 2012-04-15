@@ -53,24 +53,6 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void fieldInsideIssue() {
-		expectError("compiler.prohibited_declaration");
-		compile(
-				"A := integer (",
-				"  Foo := 2?",
-				")");
-	}
-
-	@Test
-	public void fieldDeepInsideIssue() {
-		expectError("compiler.prohibited_declaration");
-		compile(
-				"A := integer (",
-				"  (False, (Void, Bar := 2))?",
-				")");
-	}
-
-	@Test
 	public void emptyClaimInsideIssue() {
 		expectError("compiler.prohibited_issue_claim");
 		compile(

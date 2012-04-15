@@ -67,7 +67,7 @@ public abstract class Block<
 		this.sentenceFactory = sentenceFactory;
 	}
 
-	public final Statements<?, ?> getEnclosing() {
+	public Statements<?, ?> getEnclosing() {
 		return this.enclosing;
 	}
 

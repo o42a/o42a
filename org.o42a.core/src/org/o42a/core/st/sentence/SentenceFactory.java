@@ -30,7 +30,7 @@ import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
 import org.o42a.util.fn.Lambda;
 
 
-public interface SentenceFactory<
+public abstract class SentenceFactory<
 		L extends Implication<L>,
 		S extends Statements<S, L>,
 		T extends Sentence<S, L>,
@@ -47,40 +47,49 @@ public interface SentenceFactory<
 	public static final ImperativeFactory IMPERATIVE_GROUP_FACTORY =
 			new ImperativeGroupFactory();
 
-	boolean isDeclarative();
+	SentenceFactory() {
+	}
 
-	B createParentheses(
+	public final boolean isDeclarative() {
+		return toDeclarativeFactory() != null;
+	}
+
+	public abstract B createParentheses(
 			LocationInfo location,
 			Distributor distributor,
 			S enclosing);
 
-	B groupParentheses(
+	public abstract B groupParentheses(
 			Group group,
 			Distributor distributor,
 			MemberRegistry memberRegistry);
 
-	ImperativeBlock createBraces(
+	public abstract ImperativeBlock createBraces(
 			LocationInfo location,
 			Distributor distributor,
 			S enclosing,
 			String name);
 
-	ImperativeBlock groupBraces(
+	public abstract ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
 			String name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry);
 
-	T propose(LocationInfo location, B block);
+	public abstract T propose(LocationInfo location, B block);
 
-	T claim(LocationInfo location, B block);
+	public abstract T claim(LocationInfo location, B block);
 
-	T issue(LocationInfo location, B block);
+	public abstract T issue(LocationInfo location, B block);
 
-	S createAlternative(
+	public abstract S createAlternative(
 			LocationInfo location,
 			T sentence,
 			S oppositeOf,
 			boolean inhibit);
+
+	public abstract DeclarativeFactory toDeclarativeFactory();
+
+	public abstract ImperativeFactory toImperativeFactory();
 
 }

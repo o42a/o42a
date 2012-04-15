@@ -27,6 +27,9 @@ import java.util.List;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.member.field.FieldBuilder;
+import org.o42a.core.member.field.FieldDeclaration;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
@@ -59,6 +62,10 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
  		}
 	}
 
+	public final boolean isInsideClaim() {
+		return getSentence().isInsideClaim();
+	}
+
 	@Override
 	public final DeclarativeSentence getSentence() {
 		return (DeclarativeSentence) super.getSentence();
@@ -66,7 +73,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
-		return getSentence().getSentenceFactory();
+		return super.getSentenceFactory().toDeclarativeFactory();
 	}
 
 	public DefinitionTargets getDefinitionTargets() {
@@ -147,6 +154,29 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			return this.env;
 		}
 		return this.env = new DeclarativesEnv();
+	}
+
+	@Override
+	public FieldBuilder field(
+			FieldDeclaration declaration,
+			FieldDefinition definition) {
+		if (getSentence().isInsideClaim()) {
+			getLogger().error(
+					"prohibited_claim_field",
+					declaration,
+					"Field can not be declared inside the claim");
+			dropStatement();
+			return null;
+		}
+		if (getSentence().isConditional()) {
+			getLogger().error(
+					"prohibited_conditional_field",
+					declaration,
+					"Field declaration can not be conditional");
+			dropStatement();
+			return null;
+		}
+		return super.field(declaration, definition);
 	}
 
 	@Override
