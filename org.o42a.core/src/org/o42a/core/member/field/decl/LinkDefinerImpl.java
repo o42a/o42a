@@ -30,23 +30,23 @@ import org.o42a.core.ref.type.TypeRef;
 
 final class LinkDefinerImpl implements LinkDefiner {
 
-	private final FieldVariant variant;
+	private final DeclaredField field;
 	private TargetRef targetRef;
 	private Ascendants ascendants;
 
-	LinkDefinerImpl(FieldVariant variant, Ascendants ascendants) {
-		this.variant = variant;
-		this.ascendants = ascendants;
+	LinkDefinerImpl(DeclaredField field, Ascendants implicitAscendants) {
+		this.field = field;
+		this.ascendants = implicitAscendants;
 	}
 
 	@Override
 	public DeclaredField getField() {
-		return this.variant.getField();
+		return this.field;
 	}
 
 	@Override
 	public TypeRef getTypeRef() {
-		return this.variant.getField().getDeclaration().getType();
+		return this.field.getDeclaration().getType();
 	}
 
 	@Override
@@ -61,7 +61,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 		this.targetRef = ref.toTargetRef(
 				explicitTypeRef != null ? explicitTypeRef : defaultType);
-		this.variant.getContent().propose(ref).alternative(ref).selfAssign(ref);
+		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
 	}
 
 	final Ascendants getAscendants() {
@@ -70,7 +70,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	private TypeRef explicitTypeRef() {
-		return this.variant.getDeclaration().getType();
+		return this.field.getDeclaration().getType();
 	}
 
 	private TypeRef ancestor(TypeRef targetType) {
@@ -87,7 +87,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 						linkType.linkStruct(targetType));
 
 				if (!newAncestor.relationTo(ancestor).checkDerived(
-						this.variant.getLogger())) {
+						this.field.getLogger())) {
 					getField().invalid();
 				}
 
@@ -96,8 +96,8 @@ final class LinkDefinerImpl implements LinkDefiner {
 		}
 
 		final LinkValueType linkType =
-				this.variant.getDeclaration().getLinkType();
-		final FieldDeclaration declaration = this.variant.getDeclaration();
+				this.field.getDeclaration().getLinkType();
+		final FieldDeclaration declaration = this.field.getDeclaration();
 
 		return linkType.typeRef(
 				declaration,

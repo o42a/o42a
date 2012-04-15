@@ -182,9 +182,4 @@ public abstract class MemberClause extends Member {
 		clause().resolveAll();
 	}
 
-	@Override
-	protected void merge(Member member) {
-		throw new IllegalStateException();
-	}
-
 }

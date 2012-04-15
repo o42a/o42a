@@ -37,12 +37,12 @@ import org.o42a.core.st.sentence.*;
 
 final class ReproducedObjectDefinition extends FieldDefinition {
 
-	private final FieldVariant variant;
+	private final DeclaredField field;
 	private final Reproducer reproducer;
 
-	ReproducedObjectDefinition(FieldVariant variant, Reproducer reproducer) {
-		super(variant, reproducer.distribute());
-		this.variant = variant;
+	ReproducedObjectDefinition(DeclaredField field, Reproducer reproducer) {
+		super(field, reproducer.distribute());
+		this.field = field;
 		this.reproducer = reproducer;
 	}
 
@@ -52,13 +52,13 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 
 	@Override
 	public int getLinkDepth() {
-		return this.variant.getDefinition().getLinkDepth();
+		return this.field.getDefinition().getLinkDepth();
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
 
-		final Ascendants oldAscendants = this.variant.getAscendants();
+		final Ascendants oldAscendants = this.field.getAscendants();
 		final TypeRef oldAncestor = oldAscendants.getExplicitAncestor();
 
 		if (oldAncestor != null) {
@@ -74,7 +74,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 		}
 
 		definer.define(new ReproducedContent(
-				this.variant.getContent(),
+				this.field.getContent(),
 				this.reproducer));
 	}
 

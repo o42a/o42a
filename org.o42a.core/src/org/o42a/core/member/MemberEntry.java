@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 
+
 final class MemberEntry {
 
 	private final Member member;
@@ -119,31 +120,26 @@ final class MemberEntry {
 			return member;
 		}
 		if (!isOverride()) {
-			return mergeNew(members, key, existing);
+			reportAmbiguity();
+			return null;
 		}
 
 		return mergeOverridden(members, key, existing);
 	}
 
-	private Member mergeNew(
-			ContainerMembers members,
-			MemberKey key,
-			Member existing) {
+	private void reportAmbiguity() {
 
-		final Member member = createMember(members.getOwner());
+		final Member member = getMember();
 
-		if (!existing.getKey().equals(key)) {
-			// Conflict with an alias.
+		if (member.toClause() != null) {
+			member.getLogger().ambiguousClause(
+					member,
+					member.getDisplayName());
+		} else {
 			member.getLogger().ambiguousMember(
 					member,
 					member.getDisplayName());
-			return null;
 		}
-
-		// Merge with existing member.
-		existing.merge(member);
-
-		return null;
 	}
 
 	private Member mergeOverridden(
@@ -151,9 +147,7 @@ final class MemberEntry {
 			MemberKey key,
 			Member existing) {
 		if (!existing.getKey().equals(key)) {
-			existing.getLogger().ambiguousMember(
-					existing,
-					existing.getDisplayName());
+			reportAmbiguity();
 			return null;
 		}
 		if (!existing.isPropagated()) {
@@ -162,12 +156,7 @@ final class MemberEntry {
 				// Explicit member takes precedence over propagated one.
 				return null;
 			}
-
-			// Merge explicit member definitions.
-			final Member member = createMember(members.getOwner());
-
-			existing.merge(member);
-
+			reportAmbiguity();
 			return null;
 		}
 
@@ -202,7 +191,7 @@ final class MemberEntry {
 		}
 
 		// Otherwise, leave it as is.
-		// The member should take care of issuing an error.
+		// The member should take care of merging the definitions.
 		return null;
 	}
 

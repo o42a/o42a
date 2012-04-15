@@ -33,7 +33,7 @@ public final class FieldInclusions extends AbstractInclusions {
 
 	@Override
 	public boolean implicitInclusionsSupported() {
-		return this.field.getVariants().size() <= 1;
+		return true;
 	}
 
 	@Override

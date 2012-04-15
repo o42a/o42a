@@ -30,22 +30,18 @@ import org.o42a.core.value.TypeParameters;
 
 final class ObjectDefinerImpl implements ObjectDefiner {
 
-	private final FieldVariant variant;
+	private final DeclaredField field;
 	private final Ascendants implicitAscendants;
 	private Ascendants ascendants;
 
-	ObjectDefinerImpl(
-			FieldVariant variant,
-			Ascendants implicitAscendants,
-			Ascendants ascendants) {
-		this.variant = variant;
-		this.implicitAscendants = implicitAscendants;
-		this.ascendants = ascendants;
+	ObjectDefinerImpl(DeclaredField field, Ascendants implicitAscendants) {
+		this.field = field;
+		this.implicitAscendants = this.ascendants = implicitAscendants;
 	}
 
 	@Override
 	public final DeclaredField getField() {
-		return this.variant.getField();
+		return this.field;
 	}
 
 	@Override
@@ -89,7 +85,7 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 
 	@Override
 	public void define(BlockBuilder definitions) {
-		definitions.buildBlock(this.variant.getContent());
+		definitions.buildBlock(this.field.getContent());
 	}
 
 }

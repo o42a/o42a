@@ -21,63 +21,57 @@ package org.o42a.core.member.field.decl;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.o42a.core.Container;
+import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Inclusions;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.field.*;
+import org.o42a.core.member.field.Field;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.field.impl.FieldInclusions;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
+import org.o42a.core.ref.Logical;
+import org.o42a.core.st.Definer;
+import org.o42a.core.st.DefinerEnv;
+import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class DeclaredField extends Field implements FieldAscendants {
 
-	private final ArrayList<FieldVariant> variants =
-			new ArrayList<FieldVariant>(1);
+	private final FieldDefinition definition;
 	private Ascendants ascendants;
 	private Registry memberRegistry;
+	private DeclarativeBlock content;
+	private Definer definer;
 	private boolean invalid;
 
-	public DeclaredField(MemberField member) {
+	DeclaredField(DeclaredMemberField member, FieldDefinition definition) {
 		super(member);
+		this.definition = definition;
 	}
 
-	protected DeclaredField(MemberField member, Field propagatedFrom) {
-		super(member);
-		setScopeObject(new PropagatedObject(this));
+	public final FieldDefinition getDefinition() {
+		return this.definition;
+	}
+
+	public final Ascendants getAscendants() {
+		return this.ascendants;
 	}
 
 	@Override
 	public boolean isLinkAscendants() {
-		for (FieldVariant variant : getVariants()) {
-			if (variant.getDefinition().getLinkDepth() > 0) {
-				return true;
-			}
-		}
-		return false;
+		return getDefinition().getLinkDepth() > 0;
 	}
 
 	@Override
 	public Ascendants updateAscendants(Ascendants ascendants) {
 		this.ascendants = ascendants;
-
-		for (FieldVariant variant : getVariants()) {
-			this.ascendants = variant.buildAscendants(
-					ascendants,
-					this.ascendants);
-		}
-
-		return this.ascendants;
-	}
-
-	public final List<FieldVariant> getVariants() {
-		return this.variants;
+		return this.ascendants = buildAscendants(ascendants);
 	}
 
 	@Override
@@ -105,7 +99,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 			return enclosingScope.getContext() != getContext();
 		}
 
-		return !enclosingMember.allContexts().contains(getContext());
+		return enclosingMember.getContext() != getContext();
 	}
 
 	public final Inclusions newInclusions() {
@@ -115,41 +109,26 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return new FieldInclusions(this);
 	}
 
-	protected void mergeVariant(FieldVariant variant) {
-
-		final FieldVariant newVariant =
-				variant(variant.getDeclaration(), variant.getDefinition());
-
-		newVariant.setStatement(variant.getStatement());
-	}
-
-	@Override
-	protected final void merge(Field field) {
-		if (!(field instanceof DeclaredField)) {
-			getLogger().ambiguousMember(field, getDisplayName());
-			return;
+	public DeclarativeBlock getContent() {
+		if (this.content != null) {
+			return this.content;
 		}
 
-		final DeclaredField declaredField = (DeclaredField) field;
+		final Container container;
 
-		for (FieldVariant variant : declaredField.getVariants()) {
-			mergeVariant(variant);
-		}
-	}
-
-	FieldVariant variant(
-			FieldDeclaration declaration,
-			FieldDefinition definition) {
-		if (!declaration.validateVariantDeclaration(this)) {
-			return null;
+		if (ownsCompilerContext()) {
+			container = new Namespace(getDefinition(), getContainer());
+		} else {
+			container = getContainer();
 		}
 
-		final FieldVariant variant =
-				new FieldVariant(this, declaration, definition);
+		this.content = new DeclarativeBlock(
+				container,
+				container,
+				getMemberRegistry());
+		this.definer = this.content.define(new DeclarationEnv(this));
 
-		this.variants.add(variant);
-
-		return variant;
+		return this.content;
 	}
 
 	void initDefinitions(Obj object) {
@@ -157,9 +136,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		final Ascendants ascendants =
 				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
 
-		for (FieldVariant variant : getVariants()) {
-			variant.getDefinition().setImplicitAscendants(ascendants);
-		}
+		getDefinition().setImplicitAscendants(ascendants);
 	}
 
 	ObjectMemberRegistry getMemberRegistry() {
@@ -170,20 +147,11 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	}
 
 	Definitions define(Scope scope) {
-
-		Definitions result = null;
-
-		for (FieldVariant variant : getVariants()) {
-			result = variant.define(result, scope);
-		}
-
-		return result;
+		return getContentDefiner().define(scope);
 	}
 
 	void updateMembers() {
-		for (FieldVariant variant : getVariants()) {
-			variant.declareMembers();
-		}
+		getContent().executeInstructions();
 	}
 
 	final void invalid() {
@@ -191,12 +159,49 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	}
 
 	final boolean validate() {
-		for (FieldVariant variant : getVariants()) {
-			if (!variant.getDefinition().isValid()) {
-				return false;
-			}
+		if (!getDefinition().isValid()) {
+			return false;
 		}
 		return !this.invalid;
+	}
+
+	private final DeclaredMemberField member() {
+		return (DeclaredMemberField) toMember();
+	}
+
+	private Definer getContentDefiner() {
+		if (this.definer == null) {
+			getContent();
+		}
+		return this.definer;
+	}
+
+	private final DefinerEnv getInitialEnv() {
+		return member().getStatement().getInitialEnv();
+	}
+
+	private Ascendants buildAscendants(Ascendants implicitAscendants) {
+		if (getDeclaration().getLinkType() == null) {
+
+			final ObjectDefinerImpl definer =
+					new ObjectDefinerImpl(this, implicitAscendants);
+
+			getDefinition().setImplicitAscendants(implicitAscendants);
+			if (isOverride()) {
+				getDefinition().overrideObject(definer);
+			} else {
+				getDefinition().defineObject(definer);
+			}
+
+			return this.ascendants = definer.getAscendants();
+		}
+
+		final LinkDefinerImpl definer =
+				new LinkDefinerImpl(this, implicitAscendants);
+
+		getDefinition().defineLink(definer);
+
+		return this.ascendants = definer.getAscendants();
 	}
 
 	private final class Registry extends ObjectMemberRegistry {
@@ -214,6 +219,49 @@ public final class DeclaredField extends Field implements FieldAscendants {
 				return owner;
 			}
 			return setOwner(toObject());
+		}
+
+	}
+
+	private static final class DeclarationEnv extends DefinerEnv {
+
+		private final DeclaredField field;
+		private ValueStruct<?, ?> expectedValueStruct;
+
+		DeclarationEnv(DeclaredField field) {
+			this.field = field;
+		}
+
+		@Override
+		public boolean hasPrerequisite() {
+			return this.field.getInitialEnv().hasPrerequisite();
+		}
+
+		@Override
+		public Logical prerequisite(Scope scope) {
+			return this.field.getInitialEnv().prerequisite(scope);
+		}
+
+		@Override
+		public boolean hasPrecondition() {
+			return this.field.getInitialEnv().hasPrecondition();
+		}
+
+		@Override
+		public Logical precondition(Scope scope) {
+			return this.field.getInitialEnv().precondition(scope);
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			if (this.expectedValueStruct != null) {
+				return this.expectedValueStruct;
+			}
+
+			final ValueStruct<?, ?> ancestorValueStruct =
+					this.field.toObject().value().getValueStruct();
+
+			return this.expectedValueStruct = ancestorValueStruct;
 		}
 
 	}
