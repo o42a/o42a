@@ -46,7 +46,7 @@ public abstract class ImperativeSentence
 
 	@Override
 	public final ImperativeFactory getSentenceFactory() {
-		return (ImperativeFactory) super.getSentenceFactory();
+		return super.getSentenceFactory().toImperativeFactory();
 	}
 
 	@Override

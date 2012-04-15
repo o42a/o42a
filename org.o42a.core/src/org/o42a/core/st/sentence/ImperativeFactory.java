@@ -32,18 +32,13 @@ import org.o42a.core.st.impl.imperative.ImperativeProposition;
 import org.o42a.util.fn.Lambda;
 
 
-public class ImperativeFactory implements SentenceFactory<
+public class ImperativeFactory extends SentenceFactory<
 		Command,
 		Imperatives,
 		ImperativeSentence,
 		ImperativeBlock> {
 
 	protected ImperativeFactory() {
-	}
-
-	@Override
-	public boolean isDeclarative() {
-		return false;
 	}
 
 	@Override
@@ -124,6 +119,16 @@ public class ImperativeFactory implements SentenceFactory<
 			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeClaim(location, block, this);
+	}
+
+	@Override
+	public final DeclarativeFactory toDeclarativeFactory() {
+		return null;
+	}
+
+	@Override
+	public final ImperativeFactory toImperativeFactory() {
+		return this;
 	}
 
 }

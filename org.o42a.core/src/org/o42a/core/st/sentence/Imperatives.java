@@ -47,7 +47,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	public final ImperativeFactory getSentenceFactory() {
-		return getSentence().getSentenceFactory();
+		return super.getSentenceFactory().toImperativeFactory();
 	}
 
 	public CommandTargets getCommandTargets() {

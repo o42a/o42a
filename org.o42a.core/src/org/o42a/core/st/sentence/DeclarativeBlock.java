@@ -41,7 +41,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	static DeclarativeBlock nestedBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Declaratives enclosing,
 			DeclarativeFactory sentenceFactory) {
 		return new DeclarativeBlock(
 				location,
@@ -81,7 +81,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,
-			Statements<?, ?> enclosing,
+			Declaratives enclosing,
 			MemberRegistry memberRegistry,
 			DeclarativeFactory sentenceFactory,
 			boolean reproduced) {
@@ -97,8 +97,20 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	}
 
 	@Override
+	public Declaratives getEnclosing() {
+		return (Declaratives) super.getEnclosing();
+	}
+
+	@Override
 	public boolean isParentheses() {
 		return true;
+	}
+
+	public final boolean isInsideClaim() {
+
+		final Declaratives enclosing = getEnclosing();
+
+		return enclosing != null && enclosing.isInsideClaim();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,7 +159,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 			return null;
 		}
 
-		reproduction = (DeclarativeBlock) enclosing.parentheses(this);
+		reproduction = enclosing.parentheses(this).toDeclarativeBlock();
 		reproduceSentences(reproducer, reproduction);
 
 		return null;
@@ -178,7 +190,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 			return this.locals;
 		}
 
-		final Statements<?, ?> enclosing = getEnclosing();
+		final Declaratives enclosing = getEnclosing();
 
 		if (enclosing == null) {
 			return this.locals = new Locals(this);
