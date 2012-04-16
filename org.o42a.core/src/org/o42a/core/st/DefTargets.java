@@ -22,35 +22,39 @@ package org.o42a.core.st;
 import org.o42a.util.log.LogInfo;
 
 
-public final class CommandTargets extends ImplicationTargets<CommandTargets> {
+public final class DefTargets extends ImplicationTargets<DefTargets> {
 
-	static final CommandTargets NO_COMMAND = new CommandTargets();
+	static final DefTargets NO_DEFS = new DefTargets();
 
-	private CommandTargets() {
+	private DefTargets() {
 	}
 
-	CommandTargets(LogInfo loggable, int mask) {
+	DefTargets(LogInfo loggable, int mask) {
 		super(loggable, mask);
 	}
 
-	public final boolean haveExit() {
-		return (mask() & EXIT_MASK) != 0;
+	public final boolean isClaim() {
+		return (mask() & CLAIM_MASK) != 0;
 	}
 
-	public final boolean haveRepeat() {
-		return (mask() & REPEAT_MASK) != 0;
+	public final boolean haveField() {
+		return (mask() & FIELD_MASK) != 0;
 	}
 
-	public final boolean looping() {
-		return (mask() & LOOPING_MASK) != 0;
+	public final boolean haveClause() {
+		return (mask() & CLAUSE_MASK) != 0;
 	}
 
-	public final CommandTargets removeLooping() {
-		return removeMask(LOOPING_MASK);
+	public final boolean declaring() {
+		return (mask() & DECLARING_MASK) != 0;
 	}
 
-	public final DefTargets toDefTargets() {
-		return new DefTargets(this, mask() & ~LOOPING_MASK);
+	public final boolean defining() {
+		return (mask() & ~DECLARING_MASK) != 0;
+	}
+
+	public final DefTargets claim() {
+		return setMask(CLAIM_MASK);
 	}
 
 	@Override
@@ -59,7 +63,7 @@ public final class CommandTargets extends ImplicationTargets<CommandTargets> {
 		final StringBuilder out = new StringBuilder();
 		boolean comma = false;
 
-		out.append("CommandTargets[");
+		out.append("DefTargets[");
 		if (havePrerequisite()) {
 			out.append("Prerequisite");
 			comma = true;
@@ -80,19 +84,19 @@ public final class CommandTargets extends ImplicationTargets<CommandTargets> {
 				comma = true;
 			}
 		}
-		if (haveRepeat()) {
+		if (haveField()) {
 			if (comma) {
-				out.append(", repeat");
+				out.append(", field");
 			} else {
-				out.append("Repeat");
+				out.append("Field");
 				comma = true;
 			}
 		}
-		if (haveExit()) {
+		if (haveClause()) {
 			if (comma) {
-				out.append(", exit");
+				out.append(", clause");
 			} else {
-				out.append("Exit");
+				out.append("Clause");
 				comma = true;
 			}
 		}
@@ -110,8 +114,8 @@ public final class CommandTargets extends ImplicationTargets<CommandTargets> {
 	}
 
 	@Override
-	protected CommandTargets create(int mask) {
-		return new CommandTargets(this, mask);
+	protected DefTargets create(int mask) {
+		return new DefTargets(this, mask);
 	}
 
 }

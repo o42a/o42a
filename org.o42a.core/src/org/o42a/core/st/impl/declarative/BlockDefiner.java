@@ -32,6 +32,7 @@ import org.o42a.core.st.sentence.DeclarativeSentence;
 
 public final class BlockDefiner extends Definer {
 
+	private DefTargets targets;
 	private DefinitionTargets definitionTargets;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
@@ -40,6 +41,15 @@ public final class BlockDefiner extends Definer {
 
 	public final DeclarativeBlock getBlock() {
 		return (DeclarativeBlock) getStatement();
+	}
+
+	@Override
+	public DefTargets getDefTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		getBlock().executeInstructions();
+		return this.targets = sentenceTargets();
 	}
 
 	@Override
@@ -94,6 +104,49 @@ public final class BlockDefiner extends Definer {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return new ExecuteInstructions(getBlock());
+	}
+
+	private DefTargets sentenceTargets() {
+
+		DefTargets result = noDefs();
+		DefTargets prev = noDefs();
+
+		for (DeclarativeSentence sentence : getBlock().getSentences()) {
+
+			final DefTargets targets = sentence.getDefTargets();
+
+			if (!targets.defining()) {
+				continue;
+			}
+			if (targets.isClaim() && result.defining() && !result.isClaim()) {
+				if (!result.haveError()) {
+					getLogger().error(
+							"prohibited_claim_after_proposition",
+							sentence,
+							"Claims should never follow propositions");
+					result = result.addError();
+				}
+			}
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
+				}
+				result = result.add(prev);
+				continue;
+			}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+			getLogger().error(
+					"redundant_sentence",
+					targets,
+					"Redundant sentence");
+		}
+
+		return result;
 	}
 
 }

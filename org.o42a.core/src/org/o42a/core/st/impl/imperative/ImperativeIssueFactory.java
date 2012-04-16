@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.impl.declarative.DeclarativeIssueFactory.prohibitedIssueBraces;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
@@ -37,7 +37,7 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 			Distributor distributor,
 			Imperatives enclosing,
 			String name) {
-		prohibitedIssueBraces(location, enclosing);
+		prohibitedIssueBraces(enclosing.getLogger(), location);
 		return null;
 	}
 

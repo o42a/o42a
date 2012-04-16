@@ -20,7 +20,9 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
+import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.CondDef;
@@ -37,6 +39,7 @@ public abstract class DeclarativeSentence
 
 	private AltEnv altEnv;
 	private SentenceEnv env;
+	private DefTargets targets;
 	private DefinitionTargets definitionTargets;
 	private boolean ignored;
 
@@ -69,6 +72,13 @@ public abstract class DeclarativeSentence
 		return getBlock().isInsideClaim();
 	}
 
+	public DefTargets getDefTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		return this.targets = addSentenceTargets(altTargets());
+	}
+
 	public DefinitionTargets getDefinitionTargets() {
 		if (this.definitionTargets != null) {
 			return this.definitionTargets;
@@ -83,7 +93,8 @@ public abstract class DeclarativeSentence
 			prerequisiteTargets = prerequisite.getDefinitionTargets();
 		}
 
-		return this.definitionTargets = prerequisiteTargets.add(altsTargets());
+		return this.definitionTargets =
+				prerequisiteTargets.add(altDefinitionTargets());
 	}
 
 	public final DefinerEnv getFinalEnv() {
@@ -144,7 +155,66 @@ public abstract class DeclarativeSentence
 		throw new IllegalStateException("Value expected");
 	}
 
-	private DefinitionTargets altsTargets() {
+	private DefTargets altTargets() {
+
+		DefTargets result = noDefs();
+		Declaratives first = null;
+
+		for (Declaratives alt : getAlternatives()) {
+
+			final DefTargets targets = alt.getDefTargets();
+
+			if (first == null) {
+				first = alt;
+			} else if (result.isEmpty()) {
+				if (!result.haveError()) {
+					first.reportEmptyAlternative();
+				}
+				result = result.addError();
+				continue;
+			} else if (!result.defining()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), result);
+				}
+				result = result.addError();
+				continue;
+			} else if (!targets.defining()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), targets);
+				}
+				result = result.addError();
+				continue;
+			}
+			if (result.isEmpty()) {
+				result = targets;
+				continue;
+			}
+			result = result.add(targets);
+
+			final boolean mayBeNonBreaking =
+					(result.breaking() || targets.breaking())
+					&& result.breaking() != targets.breaking();
+
+			if (mayBeNonBreaking) {
+				result = result.addPrerequisite();
+			}
+		}
+
+		return result;
+	}
+
+	private DefTargets addSentenceTargets(DefTargets targets) {
+		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
+			reportEmptyIssue();
+			return targets.addError();
+		}
+		if (!isInsideClaim()) {
+			return targets;
+		}
+		return targets.claim();
+	}
+
+	private DefinitionTargets altDefinitionTargets() {
 
 		DefinitionTargets result = noDefinitions();
 

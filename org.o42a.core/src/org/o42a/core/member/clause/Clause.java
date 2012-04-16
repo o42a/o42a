@@ -263,6 +263,9 @@ public abstract class Clause implements PlaceInfo {
 			return;
 		}
 		this.allResolved = true;
+		if (toMember().isPropagated()) {
+			return;
+		}
 		getContext().fullResolution().start();
 		try {
 			fullyResolve();

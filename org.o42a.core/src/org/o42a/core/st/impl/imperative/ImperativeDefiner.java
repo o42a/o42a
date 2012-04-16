@@ -49,6 +49,11 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
+	public DefTargets getDefTargets() {
+		return this.command.getCommandTargets().toDefTargets();
+	}
+
+	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(getStatement());
 	}

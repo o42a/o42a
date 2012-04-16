@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import static org.o42a.core.st.CommandTargets.actionCommand;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
@@ -71,11 +69,11 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return getRefCommand().initialLogicalValue(resolver);
+		return getRefCommand().initialCond(resolver);
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
+	public Action initialCond(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

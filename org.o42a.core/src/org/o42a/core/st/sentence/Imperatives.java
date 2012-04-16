@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.CommandTargets.noCommand;
+import static org.o42a.core.st.Command.noCommand;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;

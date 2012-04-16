@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
+import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	private DeclarativesEnv env;
 	private DefinerEnv lastEnv;
+	private DefTargets targets;
 	private DefinitionTargets definitionTargets;
 	private DefinerEnv effectiveEnv = null;
 	private int index;
@@ -80,6 +82,14 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
 		return super.getSentenceFactory().toDeclarativeFactory();
+	}
+
+	public DefTargets getDefTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		executeInstructions();
+		return this.targets = definerTargets();
 	}
 
 	public DefinitionTargets getDefinitionTargets() {
@@ -264,6 +274,37 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			return this.effectiveEnv;
 		}
 		return this.effectiveEnv = lastEnv();
+	}
+
+	private DefTargets definerTargets() {
+
+		DefTargets result = noDefs();
+		DefTargets prev = noDefs();
+
+		for (Definer definer : getImplications()) {
+
+			final DefTargets targets = definer.getDefTargets();
+
+			if (!prev.breaking() || prev.havePrerequisite()) {
+				if (targets.breaking()) {
+					prev = targets;
+				} else {
+					prev = targets.toPreconditions();
+				}
+				result = result.add(prev);
+				continue;
+			}
+			if (result.haveError()) {
+				continue;
+			}
+			result = result.addError();
+			getLogger().error(
+					"redundant_statement",
+					targets,
+					"Redundant statement");
+		}
+
+		return result;
 	}
 
 	private final class AltStartEnv extends DefinerEnv {

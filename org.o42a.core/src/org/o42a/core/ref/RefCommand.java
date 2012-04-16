@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.st.CommandTargets.returnCommand;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -76,7 +74,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
+	public Action initialCond(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
 				getValueAdapter().initialLogicalValue(resolver));

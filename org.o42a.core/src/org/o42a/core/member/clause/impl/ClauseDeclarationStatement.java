@@ -19,17 +19,12 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.core.st.CommandTargets.noCommand;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.member.*;
+import org.o42a.core.member.DeclarationStatement;
+import org.o42a.core.member.Member;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseBuilder;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.*;
-import org.o42a.core.st.action.Action;
 import org.o42a.core.st.sentence.Block;
 
 
@@ -37,7 +32,6 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 
 	private final Clause clause;
 	private final Block<?, ?> definition;
-	private boolean defined;
 
 	public ClauseDeclarationStatement(
 			ClauseBuilder builder,
@@ -46,7 +40,6 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 		super(builder, builder.distribute());
 		this.clause = clause;
 		this.definition = definition;
-		this.defined = definition == null;
 	}
 
 	@Override
@@ -59,21 +52,13 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 	}
 
 	@Override
-	public DeclarationDefiner define(DefinerEnv env) {
-		if (!this.defined) {
-			this.defined = true;
-			this.definition.define(env);
-		}
-		return new Definer(this, env);
+	public Definer define(DefinerEnv env) {
+		return new ClauseDefiner(this, env);
 	}
 
 	@Override
-	public DeclarationCommand command(CommandEnv env) {
-		if (!this.defined) {
-			this.defined = true;
-			this.definition.command(env);
-		}
-		return new Command(this, env);
+	public Command command(CommandEnv env) {
+		return new ClauseCommand(this, env);
 	}
 
 	@Override
@@ -83,45 +68,8 @@ public final class ClauseDeclarationStatement extends DeclarationStatement {
 		return null;
 	}
 
-	private static final class Definer extends DeclarationDefiner {
-
-		Definer(ClauseDeclarationStatement statement, DefinerEnv env) {
-			super(statement, env);
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return env().notCondition(this);
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
-	}
-
-	private static final class Command extends DeclarationCommand {
-
-		Command(ClauseDeclarationStatement statement, CommandEnv env) {
-			super(statement, env);
-		}
-
-		@Override
-		public CommandTargets getCommandTargets() {
-			return noCommand();
-		}
-
-		@Override
-		public Action initialValue(LocalResolver resolver) {
-			return null;
-		}
-
-		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
-			return null;
-		}
-
+	final Block<?, ?> getDefinition() {
+		return this.definition;
 	}
 
 }

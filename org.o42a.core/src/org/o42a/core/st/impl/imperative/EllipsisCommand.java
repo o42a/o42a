@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.CommandTargets.exitCommand;
-import static org.o42a.core.st.CommandTargets.repeatCommand;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
@@ -53,7 +50,7 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
+	public Action initialCond(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

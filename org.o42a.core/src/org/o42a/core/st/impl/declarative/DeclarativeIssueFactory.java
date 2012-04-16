@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -28,24 +30,6 @@ import org.o42a.util.fn.Lambda;
 
 
 public class DeclarativeIssueFactory extends DeclarativeFactory {
-
-	public static void prohibitedIssueBraces(
-			LocationInfo location,
-			Statements<?, ?> enclosing) {
-		enclosing.getLogger().error(
-				"prohibited_issue_braces",
-				location,
-				"Issue can not contain braces");
-	}
-
-	public static void prohibitedIssueAlt(
-			LocationInfo location,
-			Sentence<?, ?> sentence) {
-		sentence.getLogger().error(
-				"prohibited_issue_alt",
-				location,
-				"Issue can only contain opposites. Use '|' instead of ';'");
-	}
 
 	@Override
 	public DeclarativeBlock groupParentheses(
@@ -62,7 +46,7 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 			Distributor distributor,
 			Declaratives enclosing,
 			String name) {
-		prohibitedIssueBraces(location, enclosing);
+		prohibitedIssueBraces(enclosing.getLogger(), location);
 		return null;
 	}
 

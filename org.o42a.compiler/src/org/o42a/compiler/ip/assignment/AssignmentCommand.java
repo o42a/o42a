@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.assignment;
 
-import static org.o42a.core.st.CommandTargets.actionCommand;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
@@ -69,7 +67,7 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
+	public Action initialCond(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
