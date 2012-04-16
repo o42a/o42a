@@ -24,7 +24,6 @@ import java.util.List;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.st.Command;
@@ -112,12 +111,11 @@ final class ImperativeOp {
 			if (len != 0) {
 				writeStatements(
 						control,
-						control.falseDir(),
 						alternatives.get(0),
 						inline != null ? inline.get(0) : null);
 			}
 			endPrereq(control, prereqFailed);
-			end(sentence, control, control);
+			endAlt(sentence, control, control);
 			return;
 		}
 
@@ -130,6 +128,7 @@ final class ImperativeOp {
 			blocks[i] = control.addBlock(sentId.sub(i + "_alt"));
 		}
 		control.code().go(blocks[0].head());
+		endPrereq(control, prereqFailed);
 
 		// fill code blocks
 		for (int i = 0; i < len; ++i) {
@@ -148,49 +147,19 @@ final class ImperativeOp {
 
 			writeStatements(
 					altControl,
-					altControl.falseDir(),
 					alt,
 					inline != null ? inline.get(i) : null);
 
 			altControl.end();
 
-			if (nextIdx < len) {
-				altCode.go(blocks[nextIdx].head());
-			} else {
-				endPrereq(control, prereqFailed);
-				end(sentence, control, altControl);
-			}
+			endAlt(sentence, control, altControl);
 		}
-
 	}
 
 	private static void writeStatements(
 			Control control,
-			CodePos nextDir,
 			Imperatives statements,
 			InlineCommands inlines) {
-
-		final Imperatives oppositeOf = statements.getOppositeOf();
-
-		if (oppositeOf != null) {
-
-			final Block inhibitFailed = control.addBlock("inhibit_failed");
-			final Block code = control.code();
-			final Control inhibitControl =
-					control.alt(code, inhibitFailed.head());
-
-			writeStatements(
-					inhibitControl,
-					nextDir,
-					oppositeOf,
-					inlines != null ? inlines.getOppositeOf() : null);
-
-			inhibitControl.end();
-			code.go(nextDir);
-			if (inhibitFailed.exists()) {
-				inhibitFailed.go(code.tail());
-			}
-		}
 
 		final List<Command> commands = statements.getImplications();
 		final int size = commands.size();
@@ -217,7 +186,7 @@ final class ImperativeOp {
 		}
 	}
 
-	private static void end(
+	private static void endAlt(
 			ImperativeSentence sentence,
 			Control mainControl,
 			Control control) {

@@ -32,12 +32,8 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	private CommandTargets commandTargets;
 
-	Imperatives(
-			LocationInfo location,
-			ImperativeSentence sentence,
-			Imperatives oppositeOf,
-			boolean inhibit) {
-		super(location, sentence, oppositeOf, inhibit);
+	Imperatives(LocationInfo location, ImperativeSentence sentence) {
+		super(location, sentence);
 	}
 
 	@Override
@@ -54,35 +50,8 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		if (this.commandTargets != null) {
 			return this.commandTargets;
 		}
-
 		executeInstructions();
-
-		final Imperatives inhibit = getOppositeOf();
-		final CommandTargets inhibitTargets;
-
-		if (inhibit == null) {
-			inhibitTargets = noCommand();
-		} else {
-			inhibitTargets = inhibit.getCommandTargets();
-			if (inhibitTargets.isEmpty()) {
-				return this.commandTargets = inhibitTargets;
-			}
-			if (inhibitTargets.looping() && !inhibitTargets.conditional()) {
-				if (inhibitTargets.haveError()) {
-					return this.commandTargets = inhibitTargets;
-				}
-
-				getLogger().error(
-						"unreachable_opposite",
-						this,
-						"Unreachable opposite");
-
-				return this.commandTargets = inhibitTargets.addError();
-			}
-		}
-
-		return this.commandTargets =
-				applyInhibitTargets(inhibitTargets, commandTargets());
+		return this.commandTargets = commandTargets();
 	}
 
 	@Override
@@ -194,33 +163,6 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 					"unreachable_command",
 					targets,
 					"Unreachable command");
-		}
-
-		if (isInhibit() && result.isEmpty() && !result.haveError()) {
-			getLogger().error(
-					"prohibited_empty_inhibit",
-					this,
-					"Empty enhibit");
-			return result.addError();
-		}
-
-		return result;
-	}
-
-	private CommandTargets applyInhibitTargets(
-			CommandTargets inhibitTargets,
-			CommandTargets commandTargets) {
-		if (getOppositeOf() == null) {
-			return commandTargets;
-		}
-
-		final boolean mayBeNonBreaking =
-				(inhibitTargets.breaking() || commandTargets.breaking())
-				&& inhibitTargets.breaking() != commandTargets.breaking();
-		final CommandTargets result = inhibitTargets.add(commandTargets);
-
-		if (mayBeNonBreaking) {
-			return result.addPrerequisite();
 		}
 
 		return result;
