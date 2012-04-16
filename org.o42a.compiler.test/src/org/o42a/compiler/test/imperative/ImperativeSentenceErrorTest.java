@@ -119,41 +119,11 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unreachableAfterReturnOpposites() {
-		expectError("compiler.unreachable_sentence");
-		compile(
-				"A := integer ({",
-				"  = 2 | = 3",
-				"  Void",
-				"})");
-	}
-
-	@Test
-	public void unreachableAfterRepeatAndReturnOpposites() {
-		expectError("compiler.unreachable_sentence");
-		compile(
-				"A := integer ({",
-				"  False ... | = 3",
-				"  Void",
-				"})");
-	}
-
-	@Test
-	public void unreachableAfterLoopAndRepeatOpposites() {
-		expectError("compiler.unreachable_sentence");
-		compile(
-				"A := integer ({",
-				"  False ... | !",
-				"  Void",
-				"})");
-	}
-
-	@Test
 	public void unreachableAfterReturnAlts() {
 		expectError("compiler.unreachable_sentence");
 		compile(
 				"A := integer ({",
-				"  = 2 ; = 3",
+				"  = 2; = 3",
 				"  Void",
 				"})");
 	}

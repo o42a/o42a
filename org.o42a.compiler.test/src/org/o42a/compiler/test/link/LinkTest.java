@@ -37,8 +37,8 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void linkToField() {
 		compile(
-				"A := 1;",
-				"b := `a");
+				"A := 1",
+				"B := `a");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
@@ -51,8 +51,8 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void typedLink() {
 		compile(
-				"A := 1;",
-				"b := (`integer) a");
+				"A := 1",
+				"B := (`integer) a");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
@@ -65,8 +65,8 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void linkToRef() {
 		compile(
-				"A := void (Foo := 1; bar := `foo);",
-				"b := a (Foo = 2)");
+				"A := void (Foo := 1. Bar := `foo)",
+				"B := a (Foo = 2)");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();
@@ -87,8 +87,8 @@ public class LinkTest extends CompilerTestCase {
 	@Test
 	public void staticLink() {
 		compile(
-				"A := void (Foo := 1; bar := `&foo);",
-				"b := a (Foo = 2)");
+				"A := void (Foo := 1. Bar := `&foo)",
+				"B := a (Foo = 2)");
 
 		final Obj a = field("a").toObject();
 		final Obj b = field("b").toObject();

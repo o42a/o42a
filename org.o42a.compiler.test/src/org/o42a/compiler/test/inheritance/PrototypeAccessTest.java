@@ -30,8 +30,8 @@ public class PrototypeAccessTest extends CompilerTestCase {
 		expectError("compiler.cant_inherit");
 
 		compile(
-				"A :=> void(foo := 1);",
-				"b := a: foo");
+				"A :=> void (Foo := 1)",
+				"B := a: foo");
 	}
 
 }

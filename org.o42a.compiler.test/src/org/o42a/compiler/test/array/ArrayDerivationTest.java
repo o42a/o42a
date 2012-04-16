@@ -107,7 +107,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 				"  G := `2",
 				"  Field := row (`integer) [[f + g]]",
 				")",
-				"B := a(f = 2; g = 4)");
+				"B := a(F = 2. G = 4)");
 
 		final Obj bField = field("b", "field").toObject();
 

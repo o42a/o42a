@@ -45,11 +45,6 @@ public class AlternativeNode extends AbstractNode {
 		this.conjunction = new SerialNode[0];
 	}
 
-	public boolean isOpposite() {
-		return this.separator != null
-				&& this.separator.getType() == Separator.OPPOSITE;
-	}
-
 	public SignNode<Separator> getSeparator() {
 		return this.separator;
 	}
@@ -82,16 +77,7 @@ public class AlternativeNode extends AbstractNode {
 				return ";";
 			}
 
-		},
-
-		OPPOSITE() {
-
-			@Override
-			public String getSign() {
-				return "|";
-			}
-
-		};
+		}
 
 	}
 

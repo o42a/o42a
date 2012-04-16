@@ -98,10 +98,8 @@ public class DeclarativeFactory extends SentenceFactory<
 	@Override
 	public Declaratives createAlternative(
 			LocationInfo location,
-			DeclarativeSentence sentence,
-			Declaratives oppositeOf,
-			boolean inhibit) {
-		return new Declaratives(location, sentence, oppositeOf, inhibit);
+			DeclarativeSentence sentence) {
+		return new Declaratives(location, sentence);
 	}
 
 	@Override

@@ -32,9 +32,7 @@ import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.st.sentence.Block;
-import org.o42a.core.st.sentence.ImperativeSentence;
-import org.o42a.core.st.sentence.Statements;
+import org.o42a.core.st.sentence.*;
 import org.o42a.lib.test.TestModule;
 
 
@@ -65,10 +63,12 @@ public class RunTests extends DirectiveObject {
 
 		final TestModule module =
 				(TestModule) getField().getEnclosingScope().toObject();
-		final Statements<?, ?> statements =
-				definition.propose(definition).alternative(definition);
-		final ImperativeSentence sentence =
-				statements.braces(definition, "_tests_").propose(definition);
+		final ImperativeBlock braces =
+				definition.propose(definition)
+				.alternative(definition)
+				.braces(definition, "_tests_");
+		final Imperatives statements =
+				braces.propose(definition).alternative(definition);
 		final UserInfo user =
 				definition.getScope().toObject().value().proposition();
 
@@ -80,7 +80,7 @@ public class RunTests extends DirectiveObject {
 				continue;
 			}
 
-			runTest(module, user, sentence, field.toField().field(user));
+			runTest(module, user, statements, field.toField().field(user));
 		}
 
 		final Statements<?, ?> terminator =

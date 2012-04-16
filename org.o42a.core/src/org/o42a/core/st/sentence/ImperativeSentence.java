@@ -78,11 +78,22 @@ public abstract class ImperativeSentence
 	private CommandTargets altTargets() {
 
 		CommandTargets result = noCommand();
+		boolean notFirst = false;
 
 		for (Imperatives alt : getAlternatives()) {
 
 			final CommandTargets targets = alt.getCommandTargets();
 
+			if (notFirst && result.isEmpty()) {
+				if (!result.haveError()) {
+					getLogger().error(
+							"prohibited_empty_alternative",
+							this,
+							"Empty alternative");
+				}
+				return result.addError();
+			}
+			notFirst = true;
 			if (result.conditional() || !result.looping()) {
 				if (result.isEmpty()) {
 					result = targets;

@@ -48,7 +48,6 @@ public class SentenceTest extends GrammarTestCase {
 		final AlternativeNode alt1 = disjunction[0];
 
 		assertNull(alt1.getSeparator());
-		assertFalse(alt1.isOpposite());
 		assertEquals(2, alt1.getConjunction().length);
 		assertName("foo1", alt1.getConjunction()[0].getStatement());
 		assertName("bar1", alt1.getConjunction()[1].getStatement());
@@ -56,37 +55,6 @@ public class SentenceTest extends GrammarTestCase {
 		final AlternativeNode alt2 = disjunction[1];
 
 		assertEquals(Separator.ALTERNATIVE, alt2.getSeparator().getType());
-		assertFalse(alt2.isOpposite());
-		assertEquals(2, alt2.getConjunction().length);
-		assertName("foo2", alt2.getConjunction()[0].getStatement());
-		assertName("bar2", alt2.getConjunction()[1].getStatement());
-	}
-
-	@Test
-	public void opposite() {
-
-		final SentenceNode sentence = parse("foo1, bar1 | foo2, bar2");
-
-		assertNotNull(sentence);
-		assertEquals(SentenceType.PROPOSITION, sentence.getType());
-		assertNull(sentence.getMark());
-
-		final AlternativeNode[] disjunction = sentence.getDisjunction();
-
-		assertEquals(2, disjunction.length);
-
-		final AlternativeNode alt1 = disjunction[0];
-
-		assertNull(alt1.getSeparator());
-		assertFalse(alt1.isOpposite());
-		assertEquals(2, alt1.getConjunction().length);
-		assertName("foo1", alt1.getConjunction()[0].getStatement());
-		assertName("bar1", alt1.getConjunction()[1].getStatement());
-
-		final AlternativeNode alt2 = disjunction[1];
-
-		assertEquals(Separator.OPPOSITE, alt2.getSeparator().getType());
-		assertTrue(alt2.isOpposite());
 		assertEquals(2, alt2.getConjunction().length);
 		assertName("foo2", alt2.getConjunction()[0].getStatement());
 		assertName("bar2", alt2.getConjunction()[1].getStatement());

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.impl.declarative.DeclarativeIssueFactory.prohibitedIssueAlt;
 import static org.o42a.core.st.impl.declarative.DeclarativeIssueFactory.prohibitedIssueBraces;
 
 import org.o42a.core.Distributor;
@@ -63,14 +62,8 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 	@Override
 	public Imperatives createAlternative(
 			LocationInfo location,
-			ImperativeSentence sentence,
-			Imperatives oppositeOf,
-			boolean inhibit) {
-		if (oppositeOf == null && !sentence.getAlternatives().isEmpty()) {
-			prohibitedIssueAlt(location, sentence);
-			return null;
-		}
-		return super.createAlternative(location, sentence, oppositeOf, inhibit);
+			ImperativeSentence sentence) {
+		return super.createAlternative(location, sentence);
 	}
 
 }

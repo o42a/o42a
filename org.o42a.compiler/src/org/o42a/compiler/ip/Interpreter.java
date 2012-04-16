@@ -287,20 +287,9 @@ public enum Interpreter {
 			final AlternativeNode altNode = disjunction[i];
 			final Location location =
 					new Location(statementVisitor.getContext(), altNode);
-			final Statements<?, ?> alt;
+			final Statements<?, ?> alt =
+					sentence.alternative(location);
 
-			if (next < disjunction.length) {
-
-				final AlternativeNode nextAltNode = disjunction[next];
-
-				if (nextAltNode.isOpposite()) {
-					alt = sentence.inhibit(location);
-				} else {
-					alt = sentence.alternative(location);
-				}
-			} else {
-				alt = sentence.alternative(location);
-			}
 			if (alt != null) {
 				fillStatements(statementVisitor, altNode, alt);
 			}
