@@ -30,6 +30,7 @@ import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -215,6 +216,25 @@ public class FileTest extends GrammarTestCase {
 
 		assertThat(subTitle.getPrefix().getType().getLength(), is(3));
 		assertThat(subTitle.getSuffix().getType().getLength(), is(2));
+	}
+
+	@Test
+	public void eof() {
+
+		final FileNode file = parse(file(), "void");
+		final SectionNode[] sections = file.getSections();
+
+		assertNull(file.getHeader());
+		assertThat(sections.length, is(1));
+
+		final SentenceNode[] content = sections[0].getContent();
+
+		assertThat(content.length, is(1));
+
+		final MemberRefNode ref =
+				singleStatement(MemberRefNode.class, content[0]);
+
+		assertName("void", ref);
 	}
 
 	private FileNode parse(String... lines) {

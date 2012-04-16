@@ -96,7 +96,9 @@ final class FileSourceReader extends SourceReader {
 				continue;
 			}
 			if (result.isUnderflow()) {
-				continue;
+				if (!this.eof ||  this.chars.position() == 0) {
+					continue;
+				}
 			}
 
 			final char c = this.chars.get(0);
