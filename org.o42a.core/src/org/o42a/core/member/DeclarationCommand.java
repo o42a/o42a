@@ -40,7 +40,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final Action initialLogicalValue(LocalResolver resolver) {
+	public final Action initialCond(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

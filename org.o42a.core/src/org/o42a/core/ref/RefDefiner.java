@@ -48,6 +48,11 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
+	public DefTargets getDefTargets() {
+		return valueDef(this);
+	}
+
+	@Override
 	public DefinitionTargets getDefinitionTargets() {
 		return valueDefinition(getRef());
 	}

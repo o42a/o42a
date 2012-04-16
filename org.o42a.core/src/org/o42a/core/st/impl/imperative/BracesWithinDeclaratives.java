@@ -25,9 +25,7 @@ import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -53,7 +51,7 @@ public final class BracesWithinDeclaratives extends Statement {
 
 	@Override
 	public Definer define(DefinerEnv env) {
-		return new BracesWithinDeclarativesDefiner(this, env);
+		return getBlock().define(env);
 	}
 
 	@Override
@@ -96,40 +94,6 @@ public final class BracesWithinDeclaratives extends Statement {
 	@Override
 	public String toString() {
 		return this.block.toString();
-	}
-
-	private static final class BracesWithinDeclarativesDefiner
-			extends Definer {
-
-		private final Definer blockDefiner;
-
-		BracesWithinDeclarativesDefiner(
-				BracesWithinDeclaratives statement,
-				DefinerEnv env) {
-			super(statement, env);
-			this.blockDefiner = statement.getBlock().define(env);
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return this.blockDefiner.nextEnv();
-		}
-
-		@Override
-		public Instruction toInstruction(Resolver resolver) {
-			return null;
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return this.blockDefiner.getDefinitionTargets();
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-			return this.blockDefiner.define(scope);
-		}
-
 	}
 
 	private static final class ImperativeReproducer extends Reproducer {

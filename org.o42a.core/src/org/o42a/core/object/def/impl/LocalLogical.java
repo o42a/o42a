@@ -57,7 +57,7 @@ final class LocalLogical extends Logical {
 		assert local != null :
 			"Not a local scope: " + resolver;
 
-		final Action action = this.def.getCommand().initialLogicalValue(
+		final Action action = this.def.getCommand().initialCond(
 				local.walkingResolver(resolver));
 
 		return action.getLogicalValue();

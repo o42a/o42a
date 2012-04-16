@@ -21,8 +21,6 @@ package org.o42a.core.member;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.CommandEnv;
-import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.Statement;
 
 
@@ -35,11 +33,5 @@ public abstract class DeclarationStatement extends Statement {
 	}
 
 	public abstract Member toMember();
-
-	@Override
-	public abstract DeclarationDefiner define(DefinerEnv env);
-
-	@Override
-	public abstract DeclarationCommand command(CommandEnv env);
 
 }

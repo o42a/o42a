@@ -19,11 +19,35 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.st.DefTargets.NO_DEFS;
+import static org.o42a.core.st.ImplicationTargets.*;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.util.log.LogInfo;
 
 
 public abstract class Definer extends Implication<Definer> {
+
+	public static DefTargets noDefs() {
+		return NO_DEFS;
+	}
+
+	public static DefTargets expressionDef(LogInfo location) {
+		return new DefTargets(location, PRECONDITION_MASK);
+	}
+
+	public static DefTargets valueDef(LogInfo location) {
+		return new DefTargets(location, PRECONDITION_MASK | VALUE_MASK);
+	}
+
+	public static DefTargets fieldDef(LogInfo location) {
+		return new DefTargets(location, FIELD_MASK);
+	}
+
+	public static DefTargets clauseDef(LogInfo location) {
+		return new DefTargets(location, CLAUSE_MASK);
+	}
 
 	private final DefinerEnv env;
 
@@ -31,6 +55,8 @@ public abstract class Definer extends Implication<Definer> {
 		super(statement);
 		this.env = env;
 	}
+
+	public abstract DefTargets getDefTargets();
 
 	public abstract DefinitionTargets getDefinitionTargets();
 

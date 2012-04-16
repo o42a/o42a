@@ -96,6 +96,16 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
+		public DefTargets getDefTargets() {
+			return noDefs();
+		}
+
+		@Override
+		public DefinitionTargets getDefinitionTargets() {
+			return noDefinitions();
+		}
+
+		@Override
 		public DefinerEnv nextEnv() {
 			return this.refDefiner.nextEnv();
 		}
@@ -112,11 +122,6 @@ class HeaderStatement extends Statement {
 			}
 
 			return new HeaderInstruction(ref, directive);
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
 		}
 
 		@Override

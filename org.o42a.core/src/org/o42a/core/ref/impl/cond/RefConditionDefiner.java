@@ -58,6 +58,11 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
+	public DefTargets getDefTargets() {
+		return expressionDef(this);
+	}
+
+	@Override
 	public DefinitionTargets getDefinitionTargets() {
 
 		final DefinitionTargets targets =

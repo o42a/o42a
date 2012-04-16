@@ -50,6 +50,7 @@ public abstract class Statements<
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<L>(1);
+	private boolean statementDropped;
 	private boolean instructionsExecuted;
 
 	Statements(LocationInfo location, Sentence<S, L> sentence) {
@@ -274,6 +275,7 @@ public abstract class Statements<
 	}
 
 	protected final void dropStatement() {
+		this.statementDropped = true;
 		getSentence().dropStatement();
 	}
 
@@ -349,8 +351,18 @@ public abstract class Statements<
 		new InstructionExecutor(this).executeAll();
 	}
 
+	void reportEmptyAlternative() {
+		if (!this.statementDropped) {
+			getLogger().error(
+					"prohibited_empty_alternative",
+					this,
+					"Empty alternative");
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	private final S self() {
 		return (S) this;
 	}
+
 }

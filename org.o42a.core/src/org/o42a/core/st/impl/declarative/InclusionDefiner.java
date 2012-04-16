@@ -48,6 +48,16 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
+	public final DefTargets getDefTargets() {
+		return noDefs();
+	}
+
+	@Override
+	public final DefinitionTargets getDefinitionTargets() {
+		return noDefinitions();
+	}
+
+	@Override
 	public DefinerEnv nextEnv() {
 		return new InclusionEnv(this);
 	}
@@ -63,11 +73,6 @@ abstract class InclusionDefiner<I extends Inclusion>
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return this;
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
 	}
 
 	@Override

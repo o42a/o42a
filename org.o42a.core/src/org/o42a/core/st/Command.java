@@ -19,6 +19,9 @@
 */
 package org.o42a.core.st;
 
+import static org.o42a.core.st.CommandTargets.NO_COMMAND;
+import static org.o42a.core.st.ImplicationTargets.*;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
@@ -27,9 +30,30 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.log.LogInfo;
 
 
 public abstract class Command extends Implication<Command> {
+
+	public static CommandTargets noCommand() {
+		return NO_COMMAND;
+	}
+
+	public static CommandTargets actionCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, PRECONDITION_MASK);
+	}
+
+	public static CommandTargets exitCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, EXIT_MASK);
+	}
+
+	public static CommandTargets repeatCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, REPEAT_MASK);
+	}
+
+	public static CommandTargets returnCommand(LogInfo loggable) {
+		return new CommandTargets(loggable, PRECONDITION_MASK | VALUE_MASK);
+	}
 
 	private final CommandEnv env;
 	private Cmd cmd;
@@ -47,7 +71,7 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract Action initialValue(LocalResolver resolver);
 
-	public abstract Action initialLogicalValue(LocalResolver resolver);
+	public abstract Action initialCond(LocalResolver resolver);
 
 	public final void resolveAll(LocalResolver resolver) {
 		getStatement().fullyResolved();

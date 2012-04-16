@@ -19,8 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.CommandTargets.exitCommand;
-import static org.o42a.core.st.CommandTargets.noCommand;
+import static org.o42a.core.st.Command.exitCommand;
+import static org.o42a.core.st.Command.noCommand;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
@@ -78,49 +78,47 @@ public abstract class ImperativeSentence
 	private CommandTargets altTargets() {
 
 		CommandTargets result = noCommand();
-		boolean notFirst = false;
+		Imperatives first = null;
 
 		for (Imperatives alt : getAlternatives()) {
 
 			final CommandTargets targets = alt.getCommandTargets();
 
-			if (notFirst && result.isEmpty()) {
+			if (first == null) {
+				first = alt;
+			} else if (result.isEmpty()) {
 				if (!result.haveError()) {
-					getLogger().error(
-							"prohibited_empty_alternative",
-							this,
-							"Empty alternative");
+					first.reportEmptyAlternative();
 				}
 				return result.addError();
 			}
-			notFirst = true;
-			if (result.conditional() || !result.looping()) {
-				if (result.isEmpty()) {
-					result = targets;
-					continue;
-				}
-				if (targets.isEmpty()) {
-					continue;
-				}
-
-				final boolean mayBeNonBreaking =
-						(result.breaking() || targets.breaking())
-						&& result.breaking() != targets.breaking();
-
-				result = result.add(targets);
-				if (mayBeNonBreaking) {
-					result = result.addPrerequisite();
+			if (!result.conditional() && result.looping()) {
+				if (!result.haveError()) {
+					result = result.addError();
+					getLogger().error(
+							"unreachable_alternative",
+							targets,
+							"Unreachable alternative");
 				}
 				continue;
 			}
-			if (result.haveError()) {
+			if (result.isEmpty()) {
+				result = targets;
 				continue;
 			}
-			result = result.addError();
-			getLogger().error(
-					"unreachable_alternative",
-					targets,
-					"Unreachable alternative");
+			if (targets.isEmpty()) {
+				continue;
+			}
+			result = result.add(targets);
+
+			final boolean mayBeNonBreaking =
+					(result.breaking() || targets.breaking())
+					&& result.breaking() != targets.breaking();
+
+			if (mayBeNonBreaking) {
+				result = result.addPrerequisite();
+			}
+			continue;
 		}
 		if (isIssue() && result.isEmpty() && !result.haveError()) {
 			reportEmptyIssue();

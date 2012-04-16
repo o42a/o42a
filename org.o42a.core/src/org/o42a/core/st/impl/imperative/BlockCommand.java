@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.CommandTargets.noCommand;
 import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
 
 import java.util.List;
@@ -94,7 +93,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Action initialLogicalValue(LocalResolver resolver) {
+	public Action initialCond(LocalResolver resolver) {
 		return initialValue(resolver).toInitialLogicalValue();
 	}
 
