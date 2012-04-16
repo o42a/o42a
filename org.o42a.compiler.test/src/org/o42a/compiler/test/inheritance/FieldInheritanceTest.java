@@ -39,9 +39,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	@Test
 	public void inheritField() {
 		compile(
-				"A := void(Foo := 123).",
-				"B := a.",
-				"C := b.");
+				"A := void (Foo := 123)",
+				"B := a",
+				"C := b");
 
 		final Field aFoo = field(this.a, "foo");
 		final Field bFoo = field(this.b, "foo");
@@ -59,9 +59,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	@Test
 	public void overrideField() {
 		compile(
-				"A := void(Foo := 123).",
-				"B := a(Foo = 12).",
-				"C := b.");
+				"A := void (Foo := 123)",
+				"B := a (Foo = 12)",
+				"C := b");
 
 		final Field aFoo = field(this.a, "foo");
 		final Field bFoo = field(this.b, "foo");
@@ -79,9 +79,9 @@ public class FieldInheritanceTest extends CompilerTestCase {
 	@Test
 	public void scopedOverride() {
 		compile(
-				"A := void(Foo := 123).",
-				"B := a(Foo @a = 12).",
-				"C := b.");
+				"A := void (Foo := 123)",
+				"B := a (Foo @a = 12)",
+				"C := b");
 
 		final Field aFoo = field(this.a, "foo");
 		final Field bFoo = field(this.b, "foo");

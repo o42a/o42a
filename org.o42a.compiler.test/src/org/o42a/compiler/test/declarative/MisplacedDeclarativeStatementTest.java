@@ -71,15 +71,6 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void altInsideIssue() {
-		expectError("compiler.prohibited_issue_alt");
-		compile(
-				"A := integer (",
-				"  False; void?",
-				")");
-	}
-
-	@Test
 	public void braceInsideIssue() {
 		expectError("compiler.prohibited_issue_braces");
 		compile(

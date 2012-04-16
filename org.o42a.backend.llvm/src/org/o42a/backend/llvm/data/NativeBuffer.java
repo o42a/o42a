@@ -53,7 +53,7 @@ public final class NativeBuffer {
 
 	private final ByteBuffer reset(int capacity) {
 		if (this.buffer.capacity() < capacity) {
-			allocate((capacity >> 8) << 8);
+			allocate(((capacity + 255) >> 8) << 8);
 			return this.buffer;
 		}
 		this.buffer.clear();

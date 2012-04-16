@@ -120,21 +120,6 @@ public class ContentTest extends GrammarTestCase {
 		assertNull(result[1].getMark());
 	}
 
-	@Test
-	public void sentenceBreakByEmptyAlternativeWithOpposite() {
-		expectError("empty_alternative");
-
-		final SentenceNode[] result = parse(
-				"a",
-				"| b");
-
-		assertThat(result.length, is(2));
-		assertThat(result[0].getType(), is(SentenceType.PROPOSITION));
-		assertNull(result[0].getMark());
-		assertThat(result[1].getType(), is(SentenceType.PROPOSITION));
-		assertNull(result[1].getMark());
-	}
-
 	public void sentenceBreakByNames() {
 
 		final SentenceNode[] result = parse(

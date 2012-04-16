@@ -35,14 +35,14 @@ public class ValueInheritanceTest extends CompilerTestCase {
 
 	@Test
 	public void inheritValue() {
-		compile("A := 1; b := a");
+		compile("A := 1. B := a");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
 
 	@Test
 	public void propagateValue() {
-		compile("A := 1; b := a");
+		compile("A := 1. B := a");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
 	}
@@ -51,7 +51,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	public void overrideValue() {
 		compile(
 				"A := 1",
-				"B := a(=2)");
+				"B := a (= 2)");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
 	}
@@ -59,8 +59,8 @@ public class ValueInheritanceTest extends CompilerTestCase {
 	@Test
 	public void overridePropagatedValue() {
 		compile(
-				"A := 1;",
-				"b := &a(=2)");
+				"A := 1",
+				"B := &a (= 2)");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
 	}

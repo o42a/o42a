@@ -84,9 +84,7 @@ public abstract class SentenceFactory<
 
 	public abstract S createAlternative(
 			LocationInfo location,
-			T sentence,
-			S oppositeOf,
-			boolean inhibit);
+			T sentence);
 
 	public abstract DeclarativeFactory toDeclarativeFactory();
 

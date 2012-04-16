@@ -101,10 +101,8 @@ public class ImperativeFactory extends SentenceFactory<
 	@Override
 	public Imperatives createAlternative(
 			LocationInfo location,
-			ImperativeSentence sentence,
-			Imperatives oppositeOf,
-			boolean inhibit) {
-		return new Imperatives(location, sentence, oppositeOf, inhibit);
+			ImperativeSentence sentence) {
+		return new Imperatives(location, sentence);
 	}
 
 	@Override

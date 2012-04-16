@@ -71,14 +71,4 @@ public class DefinitionErrorTest extends CompilerTestCase {
 				")");
 	}
 
-	@Test
-	public void ambiguousAlternativeValue() {
-		expectError("compiler.ambiguous_value");
-		compile(
-				"A := integer (",
-				"  = 1;",
-				"  = 2.",
-				")");
-	}
-
 }
