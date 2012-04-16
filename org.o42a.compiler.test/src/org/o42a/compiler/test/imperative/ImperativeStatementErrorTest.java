@@ -56,24 +56,6 @@ public class ImperativeStatementErrorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void unreachableAfterReturnOpposites() {
-		expectError("compiler.unreachable_command");
-		compile("A := integer ({(= 1 | = 2), void})");
-	}
-
-	@Test
-	public void unreachableAfterReturnAndRepeatOpposites() {
-		expectError("compiler.unreachable_command");
-		compile("A := integer ({(False, = 1 | void, ...), void})");
-	}
-
-	@Test
-	public void unreachableAfterExitAndRepeatOpposites() {
-		expectError("compiler.unreachable_command");
-		compile("A := integer ({(False, (!) | void, ...), void})");
-	}
-
-	@Test
 	public void unreachableAfterReturnAlts() {
 		expectError("compiler.unreachable_command");
 		compile("A := integer ({(= 1; = 2), void})");

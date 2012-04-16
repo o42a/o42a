@@ -84,19 +84,6 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 	}
 
 	@Override
-	public Declaratives createAlternative(
-			LocationInfo location,
-			DeclarativeSentence sentence,
-			Declaratives oppositeOf,
-			boolean inhibit) {
-		if (oppositeOf == null && !sentence.getAlternatives().isEmpty()) {
-			prohibitedIssueAlt(location, sentence);
-			return null;
-		}
-		return super.createAlternative(location, sentence, oppositeOf, inhibit);
-	}
-
-	@Override
 	public DeclarativeSentence claim(
 			LocationInfo location,
 			DeclarativeBlock block) {

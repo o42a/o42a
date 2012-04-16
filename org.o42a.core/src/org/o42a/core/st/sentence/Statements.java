@@ -50,15 +50,9 @@ public abstract class Statements<
 
 	private final Sentence<S, L> sentence;
 	private final ArrayList<L> implications = new ArrayList<L>(1);
-	private final S oppositeOf;
-	private final boolean inhibit;
 	private boolean instructionsExecuted;
 
-	Statements(
-			LocationInfo location,
-			Sentence<S, L> sentence,
-			S oppositeOf,
-			boolean inhibit) {
+	Statements(LocationInfo location, Sentence<S, L> sentence) {
 		super(
 				location,
 				new StatementsDistributor(
@@ -66,28 +60,14 @@ public abstract class Statements<
 						sentence,
 						sentence.getBlock().getTrace()));
 		this.sentence = sentence;
-		this.oppositeOf = oppositeOf;
-		this.inhibit = inhibit;
 	}
 
 	public Sentence<S, L> getSentence() {
 		return this.sentence;
 	}
 
-	public final boolean isInhibit() {
-		return this.inhibit;
-	}
-
-	public final boolean isOpposite() {
-		return getOppositeOf() != null;
-	}
-
 	public final boolean isInsideIssue() {
 		return getSentence().isInsideIssue();
-	}
-
-	public final S getOppositeOf() {
-		return this.oppositeOf;
 	}
 
 	public final List<L> getImplications() {
@@ -324,18 +304,7 @@ public abstract class Statements<
 
 	void reproduce(Sentence<S, L> sentence, Reproducer reproducer) {
 
-		final S oppositeOf = getOppositeOf();
-		final S reproduction;
-
-		if (oppositeOf != null) {
-			oppositeOf.reproduce(sentence, reproducer);
-		}
-		if (isInhibit()) {
-			reproduction = sentence.inhibit(this);
-		} else {
-			reproduction = sentence.alternative(this);
-		}
-
+		final S reproduction = sentence.alternative(this);
 		final Reproducer statementsReproducer =
 				reproducer.reproduceIn(reproduction);
 
@@ -377,13 +346,6 @@ public abstract class Statements<
 			return;
 		}
 		this.instructionsExecuted = true;
-
-		final S oppositeOf = getOppositeOf();
-
-		if (oppositeOf != null) {
-			oppositeOf.executeInstructions();
-		}
-
 		new InstructionExecutor(this).executeAll();
 	}
 

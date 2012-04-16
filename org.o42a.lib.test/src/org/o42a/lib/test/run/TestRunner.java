@@ -38,7 +38,6 @@ import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -50,7 +49,7 @@ final class TestRunner extends ConstructedObject {
 	public static void runTest(
 			TestModule module,
 			UserInfo user,
-			ImperativeSentence sentence,
+			Imperatives statements,
 			Field field) {
 		if (field.getVisibility() != Visibility.PUBLIC) {
 			return; // Only public fields recognized as tests.
@@ -65,7 +64,7 @@ final class TestRunner extends ConstructedObject {
 		final ObjectType testType = module.test(user);
 
 		if (test.type().useBy(user).derivedFrom(testType)) {
-			run(sentence, testName(sentence, field, test), field);
+			run(statements, testName(statements, field, test), field);
 			return;
 		}
 
@@ -83,20 +82,13 @@ final class TestRunner extends ConstructedObject {
 			return;
 		}
 
-		run(sentence, testName(sentence, field, adapter), field);
+		run(statements, testName(statements, field, adapter), field);
 	}
 
-	private static void run(
-			ImperativeSentence sentence,
-			String name,
-			Field field) {
-
-		final Imperatives statements =
-				sentence.alternative(sentence.getBlock());
-
+	private static void run(Imperatives statements, String name, Field field) {
 		if (field.isPrototype()) {
 			statements.expression(new RunTest(
-					sentence,
+					statements,
 					statements.nextDistributor(),
 					name,
 					field.getKey()).toRef());
@@ -109,12 +101,12 @@ final class TestRunner extends ConstructedObject {
 				localScope.getEnclosingScopePath().append(testPath);
 
 		statements.expression(
-				pathFromLocal.bind(sentence, statements.getScope())
+				pathFromLocal.bind(statements, statements.getScope())
 				.target(statements.nextDistributor()));
 	}
 
 	private static String testName(
-			ImperativeSentence sentence,
+			Imperatives statements,
 			Field field,
 			Obj test) {
 
@@ -123,7 +115,7 @@ final class TestRunner extends ConstructedObject {
 		final Value<?> nameValue = nameObject.value().getValue();
 
 		if (!nameValue.getKnowledge().isKnown()) {
-			sentence.getLogger().indefiniteValue(nameObject);
+			statements.getLogger().indefiniteValue(nameObject);
 		} else {
 			if (!nameValue.getKnowledge().isFalse()) {
 

@@ -66,7 +66,7 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 		expectError("compiler.prohibited_issue_ellipsis");
 		compile(
 				"A := integer ({",
-				"  (False | (Void...))?",
+				"  (False; (Void...))?",
 				"})");
 	}
 
@@ -85,15 +85,6 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 		compile(
 				"A := integer ({",
 				"  (False!)?",
-				"})");
-	}
-
-	@Test
-	public void altInsideIssue() {
-		expectError("compiler.prohibited_issue_alt");
-		compile(
-				"A := integer ({",
-				"  False; void?",
 				"})");
 	}
 

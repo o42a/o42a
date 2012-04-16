@@ -169,7 +169,14 @@ public class CompilerIntrinsics extends Intrinsics {
 		registerModule(module.getModuleId(), module);
 	}
 
+	public void removeModule(Module module) {
+		this.modules.remove(module.getModuleId());
+	}
+
 	public void setMainModule(Module module) {
+		if (this.mainModule != null) {
+			removeModule(this.mainModule.module);
+		}
 		this.mainModule = registerModule(module.getModuleId(), module);
 		this.consoleModule.createMain(this.user);
 	}

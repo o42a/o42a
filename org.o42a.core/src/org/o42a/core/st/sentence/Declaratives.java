@@ -46,20 +46,26 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	private DefinerEnv lastEnv;
 	private DefinitionTargets definitionTargets;
 	private DefinerEnv effectiveEnv = null;
+	private int index;
 
-	Declaratives(
-			LocationInfo location,
-			DeclarativeSentence sentence,
-			Declaratives oppositeOf,
-			boolean inhibit) {
-		super(location, sentence, oppositeOf, inhibit);
-		if (oppositeOf != null) {
+	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
+		super(location, sentence);
+
+		final List<Declaratives> alternatives = sentence.getAlternatives();
+		final int index = alternatives.size();
+
+		this.index = index;
+		if (index != 0) {
 			this.lastEnv = new OppositeStartEnv(
 					getSentence().getAltEnv(),
-					oppositeOf.getEnv());
+					alternatives.get(index - 1).getEnv());
  		} else {
  			this.lastEnv = new AltStartEnv(getSentence().getAltEnv());
  		}
+	}
+
+	public final boolean isInhibit() {
+		return this.index + 1 < getSentence().getAlternatives().size();
 	}
 
 	public final boolean isInsideClaim() {
@@ -99,14 +105,16 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			if (inhibit && targets.haveDeclaration()) {
 				if (targets.haveField()) {
 					getLogger().error(
-							"prohibited_inhibit_field",
+							"prohibited_alt_field",
 							definer,
-							"Field declaration can not be used as inhibit");
+							"Field declaration can not be used"
+							+ " as one of alternatives");
 				} else {
 					getLogger().error(
-							"prohibited_inhibit_value",
+							"prohibited_alt_value",
 							definer,
-							"Self-assignment can not be used as inhibit");
+							"Self-assignment can not be used"
+							+ " as one of alternatives");
 				}
 				continue;
 			}

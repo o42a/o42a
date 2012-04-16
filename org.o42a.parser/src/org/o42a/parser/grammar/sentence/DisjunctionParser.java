@@ -41,7 +41,7 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 	@Override
 	public AlternativeNode[] parse(ParserContext context) {
 
-		final Expectations expectations = context.expect(';').expect('|');
+		final Expectations expectations = context.expect(';');
 		final ArrayList<AlternativeNode> alternatives =
 				new ArrayList<AlternativeNode>();
 		SignNode<Separator> separatorSign = null;
@@ -70,8 +70,6 @@ public class DisjunctionParser implements Parser<AlternativeNode[]> {
 
 			if (c == ';') {
 				separator = Separator.ALTERNATIVE;
-			} else if (c == '|') {
-				separator = Separator.OPPOSITE;
 			} else {
 				if (alt != null) {
 					alternatives.add(alternative);
