@@ -120,7 +120,7 @@ public final class DeclarativePart
 
 	@Override
 	protected boolean hasConstantValue() {
-		return false;
+		return this.definer.getDefTargets().isConstant();
 	}
 
 	@Override
@@ -158,6 +158,12 @@ public final class DeclarativePart
 				getValueStruct(),
 				getScope(),
 				this);
+	}
+
+	@Override
+	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
+		// Declarative block`s value CAN be UNKNOWN.
+		return writeValue(dirs, host);
 	}
 
 	@Override

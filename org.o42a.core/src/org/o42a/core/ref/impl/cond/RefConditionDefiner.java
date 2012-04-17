@@ -68,14 +68,10 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public DefTargets getDefTargets() {
-
-		final DefTargets targets = getRefDefiner().getDefTargets();
-
-		if (!targets.defining()) {
-			return noDefs();
+		if (!getRef().isConstant()) {
+			return expressionDef();
 		}
-
-		return expressionDef();
+		return expressionDef().setConstant();
 	}
 
 	@Override

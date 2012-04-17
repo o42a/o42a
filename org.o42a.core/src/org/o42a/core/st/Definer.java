@@ -89,11 +89,13 @@ public abstract class Definer extends Implication<Definer> {
 	}
 
 	protected final DefTargets expressionDef() {
-		return new DefTargets(this, PRECONDITION_MASK);
+		return new DefTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);
 	}
 
 	protected final DefTargets valueDef() {
-		return new DefTargets(this, PRECONDITION_MASK | VALUE_MASK);
+		return new DefTargets(
+				this,
+				PRECONDITION_MASK | VALUE_MASK | NON_CONSTANT_MASK);
 	}
 
 	protected final DefTargets fieldDef() {

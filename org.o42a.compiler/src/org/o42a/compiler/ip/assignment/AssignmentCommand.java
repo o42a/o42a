@@ -58,7 +58,7 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	public CommandTargets getCommandTargets() {
-		return actionCommand(getStatement());
+		return actionCommand();
 	}
 
 	@Override

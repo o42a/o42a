@@ -101,7 +101,7 @@ abstract class EllipsisCommand extends Command {
 
 		@Override
 		public CommandTargets getCommandTargets() {
-			return repeatCommand(this);
+			return repeatCommand();
 		}
 
 		@Override

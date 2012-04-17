@@ -39,20 +39,8 @@ public abstract class Command extends Implication<Command> {
 		return NO_COMMAND;
 	}
 
-	public static CommandTargets actionCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, PRECONDITION_MASK);
-	}
-
 	public static CommandTargets exitCommand(LogInfo loggable) {
 		return new CommandTargets(loggable, EXIT_MASK);
-	}
-
-	public static CommandTargets repeatCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, REPEAT_MASK);
-	}
-
-	public static CommandTargets returnCommand(LogInfo loggable) {
-		return new CommandTargets(loggable, PRECONDITION_MASK | VALUE_MASK);
 	}
 
 	private final CommandEnv env;
@@ -106,5 +94,25 @@ public abstract class Command extends Implication<Command> {
 	protected abstract void fullyResolve(LocalResolver resolver);
 
 	protected abstract Cmd createCmd(CodeBuilder builder);
+
+	protected final CommandTargets actionCommand() {
+		return new CommandTargets(
+				this,
+				PRECONDITION_MASK | NON_CONSTANT_MASK);
+	}
+
+	protected final CommandTargets exitCommand() {
+		return new CommandTargets(this, EXIT_MASK);
+	}
+
+	protected final CommandTargets repeatCommand() {
+		return new CommandTargets(this, REPEAT_MASK);
+	}
+
+	protected final CommandTargets returnCommand() {
+		return new CommandTargets(
+				this,
+				PRECONDITION_MASK | VALUE_MASK | NON_CONSTANT_MASK);
+	}
 
 }

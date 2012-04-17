@@ -53,7 +53,10 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public CommandTargets getCommandTargets() {
-		return actionCommand(getStatement());
+		if (!getRef().isConstant()) {
+			return actionCommand();
+		}
+		return actionCommand().setConstant();
 	}
 
 	@Override
