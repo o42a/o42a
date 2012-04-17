@@ -157,7 +157,7 @@ public class LocalDef extends ValueDef {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return false;
+		return getCommand().getCommandTargets().isConstant();
 	}
 
 	@Override

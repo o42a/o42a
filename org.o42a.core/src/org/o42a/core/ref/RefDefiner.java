@@ -57,7 +57,10 @@ public class RefDefiner extends Definer {
 
 	@Override
 	public DefTargets getDefTargets() {
-		return valueDef();
+		if (!getRef().isConstant()) {
+			return valueDef();
+		}
+		return valueDef().setConstant();
 	}
 
 	@Override

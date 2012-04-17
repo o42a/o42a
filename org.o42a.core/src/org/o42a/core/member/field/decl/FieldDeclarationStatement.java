@@ -148,7 +148,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 		@Override
 		public CommandTargets getCommandTargets() {
-			return actionCommand(getStatement());
+			return actionCommand();
 		}
 
 		@Override

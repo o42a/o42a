@@ -125,7 +125,7 @@ final class ClauseCommand extends Command {
 
 		@Override
 		public CommandTargets getCommandTargets() {
-			return actionCommand(this);
+			return actionCommand();
 		}
 
 		@Override

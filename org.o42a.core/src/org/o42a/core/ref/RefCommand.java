@@ -52,7 +52,10 @@ public final class RefCommand extends Command {
 
 	@Override
 	public final CommandTargets getCommandTargets() {
-		return returnCommand(getStatement());
+		if (!getRef().isConstant()) {
+			return returnCommand();
+		}
+		return returnCommand().setConstant();
 	}
 
 	public ValueAdapter getValueAdapter() {

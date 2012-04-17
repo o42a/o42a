@@ -26,9 +26,10 @@ import org.o42a.util.log.Loggable;
 public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 		implements LogInfo {
 
-	static final int PREREQUISITE_MASK = 0x01;
-	static final int PRECONDITION_MASK = 0x02;
-	static final int VALUE_MASK = 0x04;
+	static final int NON_CONSTANT_MASK = 0x01;
+	static final int PREREQUISITE_MASK = 0x02;
+	static final int PRECONDITION_MASK = 0x04;
+	static final int VALUE_MASK = 0x08;
 	static final int CLAIM_MASK = 0x10;
 	static final int FIELD_MASK = 0x20;
 	static final int CLAUSE_MASK = 0x40;
@@ -61,7 +62,11 @@ public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 	}
 
 	public final boolean isEmpty() {
-		return (mask() & (~ERROR_MASK)) == 0;
+		return (mask() & ~ERROR_MASK) == 0;
+	}
+
+	public final boolean isConstant() {
+		return (mask() & NON_CONSTANT_MASK) == 0;
 	}
 
 	public final boolean havePrerequisite() {
@@ -94,6 +99,10 @@ public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 
 	public final T addError() {
 		return addMask(ERROR_MASK);
+	}
+
+	public final T setConstant() {
+		return removeMask(NON_CONSTANT_MASK);
 	}
 
 	public final T add(T other) {
