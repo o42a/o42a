@@ -193,7 +193,7 @@ public class LogicalExpression extends ObjectConstructor {
 		if (inlineOp != null) {
 			inlineOp.writeCond(dirs, host);
 		} else {
-			op.writeLogicalValue(dirs);
+			op.writeCond(dirs);
 		}
 	}
 

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ir.def;
 
-import java.util.List;
-
-import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Ref;
 
 
-public interface NormalPath {
+public abstract class RefEval extends Eval {
 
-	boolean isNormalized();
+	public RefEval(CodeBuilder builder, Ref ref) {
+		super(builder, ref);
+	}
 
-	Scope getOrigin();
+	public final Ref getRef() {
+		return (Ref) getStatement();
+	}
 
-	void appendTo(List<NormalStep> normalSteps);
-
-	void writeCond(CodeDirs dirs, HostOp host);
-
-	ValOp writeValue(ValDirs dirs, HostOp host);
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 }

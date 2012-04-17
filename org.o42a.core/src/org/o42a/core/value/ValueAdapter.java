@@ -25,6 +25,7 @@ import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.impl.RawValueAdapter;
 
 
@@ -42,8 +43,12 @@ public abstract class ValueAdapter {
 
 	public abstract Logical logical(Scope scope);
 
-	public abstract Value<?> initialValue(LocalResolver resolver);
+	public abstract Value<?> value(Resolver resolver);
 
-	public abstract LogicalValue initialLogicalValue(LocalResolver resolver);
+	public Value<?> initialValue(LocalResolver resolver) {
+		return value(resolver);
+	}
+
+	public abstract LogicalValue initialCond(LocalResolver resolver);
 
 }

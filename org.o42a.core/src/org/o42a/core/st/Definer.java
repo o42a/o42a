@@ -23,8 +23,11 @@ import static org.o42a.core.st.DefTargets.NO_DEFS;
 import static org.o42a.core.st.ImplicationTargets.*;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.util.log.LogInfo;
+import org.o42a.core.ref.*;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Definer extends Implication<Definer> {
@@ -33,23 +36,8 @@ public abstract class Definer extends Implication<Definer> {
 		return NO_DEFS;
 	}
 
-	public static DefTargets expressionDef(LogInfo location) {
-		return new DefTargets(location, PRECONDITION_MASK);
-	}
-
-	public static DefTargets valueDef(LogInfo location) {
-		return new DefTargets(location, PRECONDITION_MASK | VALUE_MASK);
-	}
-
-	public static DefTargets fieldDef(LogInfo location) {
-		return new DefTargets(location, FIELD_MASK);
-	}
-
-	public static DefTargets clauseDef(LogInfo location) {
-		return new DefTargets(location, CLAUSE_MASK);
-	}
-
 	private final DefinerEnv env;
+	private Eval eval;
 
 	public Definer(Statement statement, DefinerEnv env) {
 		super(statement);
@@ -67,5 +55,57 @@ public abstract class Definer extends Implication<Definer> {
 	public abstract DefinerEnv nextEnv();
 
 	public abstract Definitions define(Scope scope);
+
+	public abstract DefValue value(Resolver resolver);
+
+	public final void resolveAll(Resolver resolver) {
+		getStatement().fullyResolved();
+		getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			getContext().fullResolution().end();
+		}
+	}
+
+	public abstract InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin);
+
+	public abstract void normalize(RootNormalizer normalizer);
+
+	public Eval eval(CodeBuilder builder) {
+
+		final Eval eval = this.eval;
+
+		if (eval != null && eval.getBuilder() == builder) {
+			return eval;
+		}
+
+		assert getStatement().assertFullyResolved();
+
+		return this.eval = createEval(builder);
+	}
+
+	protected final DefTargets expressionDef() {
+		return new DefTargets(this, PRECONDITION_MASK);
+	}
+
+	protected final DefTargets valueDef() {
+		return new DefTargets(this, PRECONDITION_MASK | VALUE_MASK);
+	}
+
+	protected final DefTargets fieldDef() {
+		return new DefTargets(this, FIELD_MASK);
+	}
+
+	protected final DefTargets clauseDef() {
+		return new DefTargets(this, CLAUSE_MASK);
+	}
+
+	protected abstract void fullyResolve(Resolver resolver);
+
+	protected abstract Eval createEval(CodeBuilder builder);
 
 }

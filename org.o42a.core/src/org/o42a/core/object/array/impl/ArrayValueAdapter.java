@@ -29,6 +29,7 @@ import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.def.impl.RefCondDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -77,12 +78,12 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Value<?> initialValue(LocalResolver resolver) {
+	public Value<?> value(Resolver resolver) {
 		return arrayValue(ref(), resolver, getExpectedStruct().isVariable());
 	}
 
 	@Override
-	public LogicalValue initialLogicalValue(LocalResolver resolver) {
+	public LogicalValue initialCond(LocalResolver resolver) {
 		return ref().value(resolver).getKnowledge().toLogicalValue();
 	}
 

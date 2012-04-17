@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.RefCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
@@ -158,16 +159,16 @@ final class RefConditionCommand extends Command {
 
 	private static final class CondCmd extends Cmd {
 
-		private final RefCommand refCommand;
+		private final RefCmd refCmd;
 
 		CondCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
 			super(builder, ref);
-			this.refCommand = refCommand;
+			this.refCmd = refCommand.cmd(builder);
 		}
 
 		@Override
 		public void write(Control control) {
-			this.refCommand.cmd(getBuilder()).writeCond(control);
+			this.refCmd.writeCond(control);
 		}
 
 	}

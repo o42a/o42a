@@ -30,16 +30,16 @@ import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 
 
-final class InlineSentence {
+final class InlineImperativeSentence {
 
-	static InlineSentence inlineSentence(
+	static InlineImperativeSentence inlineSentence(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			ImperativeSentence sentence) {
 
 		final ImperativeSentence prereq = sentence.getPrerequisite();
-		final InlineSentence inlinePrereq;
+		final InlineImperativeSentence inlinePrereq;
 
 		if (prereq == null) {
 			inlinePrereq = null;
@@ -57,24 +57,24 @@ final class InlineSentence {
 					inlineCommands(normalizer, valueStruct, origin, alt);
 		}
 
-		return normalizer.isCancelled()
-				? null : new InlineSentence(sentence, inlinePrereq, inlineAlts);
+		return normalizer.isCancelled() ? null
+			: new InlineImperativeSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
 	private final ImperativeSentence sentence;
-	private final InlineSentence prerequisite;
+	private final InlineImperativeSentence prerequisite;
 	private final InlineCommands[] alts;
 
-	private InlineSentence(
+	private InlineImperativeSentence(
 			ImperativeSentence sentence,
-			InlineSentence prerequisite,
+			InlineImperativeSentence prerequisite,
 			InlineCommands[] alts) {
 		this.sentence = sentence;
 		this.prerequisite = prerequisite;
 		this.alts = alts;
 	}
 
-	public final InlineSentence getPrerequisite() {
+	public final InlineImperativeSentence getPrerequisite() {
 		return this.prerequisite;
 	}
 

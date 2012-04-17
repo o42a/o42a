@@ -20,6 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
@@ -28,9 +29,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.SentenceEnv;
+import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -153,6 +156,48 @@ public abstract class DeclarativeSentence
 		}
 
 		throw new IllegalStateException("Value expected");
+	}
+
+	public DefValue value(Resolver resolver) {
+
+		final DeclarativeSentence prerequisite = getPrerequisite();
+
+		if (prerequisite != null) {
+
+			final DefValue prereqValue = prerequisite.value(resolver);
+
+			assert !prereqValue.hasValue() :
+				"Prerequisite can not have a value";
+
+			final LogicalValue logicalValue = prereqValue.getLogicalValue();
+
+			if (!logicalValue.isTrue()) {
+				return logicalValue.negate().toDefValue();
+			}
+		}
+
+		DefValue result = TRUE_DEF_VALUE;
+
+		for (Declaratives alt : getAlternatives()) {
+
+			final DefValue value = alt.value(resolver);
+
+			if (value.hasValue()) {
+				return value;
+			}
+
+			final LogicalValue logicalValue = value.getLogicalValue();
+
+			if (!logicalValue.isTrue()) {
+				if (logicalValue.isFalse()) {
+					result = value;
+					continue;
+				}
+				return value;
+			}
+		}
+
+		return result;
 	}
 
 	private DefTargets altTargets() {

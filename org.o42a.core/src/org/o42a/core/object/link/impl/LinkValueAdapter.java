@@ -30,6 +30,7 @@ import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.*;
 
 
@@ -79,7 +80,7 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Value<?> initialValue(LocalResolver resolver) {
+	public Value<?> value(Resolver resolver) {
 		return linkValue(
 				ref(),
 				resolver,
@@ -87,7 +88,7 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public LogicalValue initialLogicalValue(LocalResolver resolver) {
+	public LogicalValue initialCond(LocalResolver resolver) {
 		return ref().value(resolver).getKnowledge().toLogicalValue();
 	}
 

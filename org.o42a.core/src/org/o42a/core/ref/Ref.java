@@ -378,7 +378,7 @@ public class Ref extends Statement {
 
 		@Override
 		public void writeCond(CodeDirs dirs, HostOp host) {
-			this.normalPath.writeLogicalValue(dirs, host);
+			this.normalPath.writeCond(dirs, host);
 		}
 
 		@Override

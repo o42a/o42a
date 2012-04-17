@@ -77,7 +77,7 @@ public final class RefCommand extends Command {
 	public Action initialCond(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
-				getValueAdapter().initialLogicalValue(resolver));
+				getValueAdapter().initialCond(resolver));
 	}
 
 	@Override
@@ -120,10 +120,10 @@ public final class RefCommand extends Command {
 
 	@Override
 	protected final RefCmd createCmd(CodeBuilder builder) {
-		if (this.inline != null) {
-			return new InlineRefCmdImpl(builder, getRef(), this.inline);
+		if (this.inline == null) {
+			return new RefCmdImpl(builder, getRef());
 		}
-		return new RefCmdImpl(builder, getRef());
+		return new InlineRefCmdImpl(builder, getRef(), this.inline);
 	}
 
 	private static final class RefCmdImpl extends RefCmd {
@@ -139,7 +139,9 @@ public final class RefCommand extends Command {
 					control.code(),
 					control.falseDir());
 
-			getRef().op(control.host()).writeLogicalValue(dirs);
+			getRef().op(control.host()).writeCond(dirs);
+
+			dirs.end();
 		}
 
 		@Override

@@ -125,7 +125,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 
 		@Override
 		public DefTargets getDefTargets() {
-			return clauseDef(this);
+			return fieldDef();
 		}
 
 		@Override

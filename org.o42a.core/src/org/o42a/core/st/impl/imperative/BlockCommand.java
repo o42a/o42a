@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.impl.imperative.InlineBlock.inlineBlock;
+import static org.o42a.core.st.impl.imperative.InlineImperativeBlock.inlineBlock;
 
 import java.util.List;
 
@@ -102,7 +102,11 @@ public final class BlockCommand extends Command {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return inlineBlock(normalizer, valueStruct, origin, getBlock());
+		return inlineBlock(
+				normalizer,
+				valueStruct,
+				origin,
+				getBlock());
 	}
 
 	@Override
