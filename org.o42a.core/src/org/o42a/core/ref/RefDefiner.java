@@ -22,6 +22,13 @@ package org.o42a.core.ref;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.impl.RefEnv;
@@ -33,6 +40,7 @@ import org.o42a.core.value.ValueStruct;
 public class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
+	private InlineValue inline;
 
 	RefDefiner(Ref ref, DefinerEnv env) {
 		super(ref, env);
@@ -49,7 +57,7 @@ public class RefDefiner extends Definer {
 
 	@Override
 	public DefTargets getDefTargets() {
-		return valueDef(this);
+		return valueDef();
 	}
 
 	@Override
@@ -79,13 +87,119 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
+	public DefValue value(Resolver resolver) {
+		return getValueAdapter().value(resolver).toDefValue();
+	}
+
+	@Override
 	public final Instruction toInstruction(Resolver resolver) {
 		return null;
 	}
 
 	@Override
+	public InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return getRef().inline(normalizer, origin);
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		this.inline = getRef().inline(normalizer.newNormalizer(), getScope());
+		if (this.inline == null) {
+			getRef().normalize(normalizer.getAnalyzer());
+		}
+	}
+
+	@Override
+	public final RefEval eval(CodeBuilder builder) {
+		return (RefEval) super.eval(builder);
+	}
+
+	@Override
 	public String toString() {
 		return '=' + super.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getRef().resolve(resolver).resolveValue();
+	}
+
+	@Override
+	protected Eval createEval(CodeBuilder builder) {
+		if (this.inline == null) {
+			return new RefEvalImpl(builder, getRef());
+		}
+		return new InlineRefEvalImpl(builder, getRef(), this.inline);
+	}
+
+	private static final class RefEvalImpl extends RefEval {
+
+		RefEvalImpl(CodeBuilder builder, Ref ref) {
+			super(builder, ref);
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+
+			final CodeDirs condDirs = dirs.falseWhenUnknown();
+
+			getRef().op(host).writeCond(condDirs);
+			condDirs.end();
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs valDirs = dirs.falseWhenUnknown();
+			final ValOp value = getRef().op(host).writeValue(valDirs);
+
+			valDirs.done();
+
+			return value;
+		}
+
+	}
+
+	private static final class InlineRefEvalImpl extends RefEval {
+
+		private final InlineValue inline;
+
+		InlineRefEvalImpl(CodeBuilder builder, Ref ref, InlineValue inline) {
+			super(builder, ref);
+			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+
+			final CodeDirs condDirs = dirs.falseWhenUnknown();
+
+			this.inline.writeCond(condDirs, host);
+			condDirs.end();
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValDirs valDirs = dirs.falseWhenUnknown();
+			final ValOp value = this.inline.writeValue(valDirs, host);
+
+			valDirs.done();
+
+			return value;
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return this.inline.toString();
+		}
+
 	}
 
 }

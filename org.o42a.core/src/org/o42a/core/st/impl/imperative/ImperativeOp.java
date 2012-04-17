@@ -37,7 +37,7 @@ final class ImperativeOp {
 	public static void writeSentences(
 			Control control,
 			ImperativeBlock block,
-			InlineBlock inline) {
+			InlineImperativeBlock inline) {
 
 		final String name = control.name(block.getName()) + "_blk";
 
@@ -81,7 +81,7 @@ final class ImperativeOp {
 	private static void writeSentence(
 			Control control,
 			ImperativeSentence sentence,
-			InlineSentence inline,
+			InlineImperativeSentence inline,
 			String index) {
 
 		final ImperativeSentence prerequisite = sentence.getPrerequisite();

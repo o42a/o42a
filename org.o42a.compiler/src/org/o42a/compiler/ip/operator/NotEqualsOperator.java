@@ -54,7 +54,7 @@ final class NotEqualsOperator extends ComparisonOperator {
 		final Block code = dirs.code();
 		final Block notEqual = code.addBlock("not_equal");
 
-		cmp.writeLogicalValue(
+		cmp.writeCond(
 				dirs.getBuilder().falseWhenUnknown(code, notEqual.head()));
 
 		code.go(dirs.falseDir());

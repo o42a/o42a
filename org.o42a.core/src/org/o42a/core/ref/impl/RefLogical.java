@@ -81,7 +81,7 @@ public final class RefLogical extends Logical {
 		final CodeDirs subDirs =
 				dirs.begin("ref_logical", "Logical of ref " + this);
 
-		this.ref.op(host).writeLogicalValue(subDirs);
+		this.ref.op(host).writeCond(subDirs);
 
 		subDirs.end();
 	}

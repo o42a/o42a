@@ -77,7 +77,7 @@ final class NormalizedPath implements NormalPath {
 	}
 
 	@Override
-	public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+	public void writeCond(CodeDirs dirs, HostOp host) {
 		if (this.inline != null) {
 			this.inline.writeLogicalValue(dirs, host);
 		} else {

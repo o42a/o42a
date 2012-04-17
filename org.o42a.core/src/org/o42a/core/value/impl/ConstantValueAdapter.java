@@ -27,6 +27,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
@@ -73,12 +74,12 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public Value<?> initialValue(LocalResolver resolver) {
+	public Value<?> value(Resolver resolver) {
 		return this.valueType.constantValue(this.constant);
 	}
 
 	@Override
-	public LogicalValue initialLogicalValue(LocalResolver resolver) {
+	public LogicalValue initialCond(LocalResolver resolver) {
 		return LogicalValue.TRUE;
 	}
 

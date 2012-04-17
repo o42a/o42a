@@ -23,11 +23,20 @@ import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
+import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionDefiner extends Definer {
@@ -59,7 +68,14 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public DefTargets getDefTargets() {
-		return expressionDef(this);
+
+		final DefTargets targets = getRefDefiner().getDefTargets();
+
+		if (!targets.defining()) {
+			return noDefs();
+		}
+
+		return expressionDef();
 	}
 
 	@Override
@@ -98,6 +114,46 @@ final class RefConditionDefiner extends Definer {
 				env().getExpectedValueStruct());
 	}
 
+	@Override
+	public DefValue value(Resolver resolver) {
+
+		final Value<?> value = getRef().value(resolver);
+
+		return value.getKnowledge().toLogicalValue().toDefValue();
+	}
+
+	@Override
+	public InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+
+		final InlineValue value = getRef().inline(normalizer, origin);
+
+		if (value != null) {
+			return new Inline(valueStruct, value);
+		}
+
+		getRef().normalize(normalizer.getAnalyzer());
+
+		return null;
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		getRefDefiner().normalize(normalizer);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getRef().resolve(resolver).resolveLogical();
+	}
+
+	@Override
+	protected Eval createEval(CodeBuilder builder) {
+		return new CondEval(builder, getRef(), getRefDefiner());
+	}
+
 	private static final class Env extends DefinerEnv {
 
 		private final DefinerEnv initialEnv;
@@ -134,6 +190,50 @@ final class RefConditionDefiner extends Definer {
 		@Override
 		protected ValueStruct<?, ?> expectedValueStruct() {
 			return null;// To prevent Ref adaption.
+		}
+
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue value;
+
+		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
+			super(null, valueStruct);
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.value.writeCond(dirs, host);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			writeCond(dirs.dirs(), host);
+			return dirs.value();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
+	}
+
+	private static final class CondEval extends Eval {
+
+		private final RefEval refEval;
+
+		CondEval(CodeBuilder builder, Ref ref, RefDefiner refDefiner) {
+			super(builder, ref);
+			this.refEval = refDefiner.eval(builder);
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			this.refEval.writeCond(dirs.dirs(), host);
+			return dirs.value();
 		}
 
 	}

@@ -31,6 +31,7 @@ import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.*;
 
 
@@ -77,7 +78,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Value<?> initialValue(LocalResolver resolver) {
+	public Value<?> value(Resolver resolver) {
 
 		final Array array = createArray(resolver.getScope());
 
@@ -85,7 +86,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public LogicalValue initialLogicalValue(LocalResolver resolver) {
+	public LogicalValue initialCond(LocalResolver resolver) {
 		return LogicalValue.TRUE;
 	}
 

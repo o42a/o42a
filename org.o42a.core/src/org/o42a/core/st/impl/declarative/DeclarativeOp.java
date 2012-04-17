@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,27 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.st.impl.declarative;
 
 import java.util.List;
 
-import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.st.sentence.DeclarativeSentence;
 
 
-public interface NormalPath {
+final class DeclarativeOp {
 
-	boolean isNormalized();
+	public static ValOp writeSentences(
+			ValDirs dirs,
+			HostOp host,
+			DeclarativeSentences block,
+			InlineDeclarativeSentences inline) {
 
-	Scope getOrigin();
+		final List<DeclarativeSentence> sentences = block.getSentences();
+		final int len = sentences.size();
 
-	void appendTo(List<NormalStep> normalSteps);
+		for (int i = 0; i < len; ++i) {
 
-	void writeCond(CodeDirs dirs, HostOp host);
-
-	ValOp writeValue(ValDirs dirs, HostOp host);
+		}
+		// TODO Implement IR of declarative sentences.
+		return null;
+	}
 
 }

@@ -21,6 +21,7 @@ package org.o42a.core.st.sentence;
 
 import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
@@ -33,6 +34,7 @@ import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
@@ -82,14 +84,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	public final DeclarativeFactory getSentenceFactory() {
 		return super.getSentenceFactory().toDeclarativeFactory();
-	}
-
-	public DefTargets getDefTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		executeInstructions();
-		return this.targets = definerTargets();
 	}
 
 	public DefinitionTargets getDefinitionTargets() {
@@ -241,7 +235,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		return definer;
 	}
 
-	protected Definitions define(Scope scope) {
+	Definitions define(Scope scope) {
 
 		final DefinitionTargets kinds = getDefinitionTargets();
 
@@ -262,6 +256,29 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		}
 
 		throw new IllegalStateException("Missing definition: "+ this);
+	}
+
+	DefTargets getDefTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		executeInstructions();
+		return this.targets = definerTargets();
+	}
+
+	DefValue value(Resolver resolver) {
+		for (Definer definer : getImplications()) {
+
+			final DefValue value = definer.value(resolver);
+
+			if (value.hasValue()) {
+				return value;
+			}
+			if (!value.getLogicalValue().isTrue()) {
+				return value;
+			}
+		}
+		return TRUE_DEF_VALUE;
 	}
 
 	private final DefinerEnv lastEnv() {

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,65 +17,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.def;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.st.Statement;
 
 
-public class RefOp {
+public abstract class Eval {
 
-	private final HostOp host;
-	private final Ref ref;
+	private final CodeBuilder builder;
+	private final Statement statement;
 
-	public RefOp(HostOp host, Ref ref) {
-		this.host = host;
-		this.ref = ref;
+	public Eval(CodeBuilder builder, Statement statement) {
+		this.builder = builder;
+		this.statement = statement;
 	}
 
 	public final Generator getGenerator() {
-		return host().getGenerator();
+		return getBuilder().getGenerator();
 	}
 
 	public final CodeBuilder getBuilder() {
-		return host().getBuilder();
+		return this.builder;
 	}
 
-	public final HostOp host() {
-		return this.host;
+	public final Statement getStatement() {
+		return this.statement;
 	}
 
-	public final Ref getRef() {
-		return this.ref;
-	}
-
-	public ValOp writeValue(ValDirs dirs) {
-		return target(dirs.dirs())
-				.materialize(dirs.dirs())
-				.value()
-				.writeValue(dirs);
-	}
-
-	public void writeCond(CodeDirs dirs) {
-
-		final HostOp target = target(dirs);
-
-		target.materialize(dirs).value().writeCond(dirs);
-	}
-
-	public HostOp target(CodeDirs dirs) {
-		return getRef().getPath().op(dirs, host());
-	}
+	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.statement == null) {
 			return super.toString();
 		}
-		return this.ref.toString();
+		return this.statement.toString();
 	}
 
 }

@@ -22,11 +22,14 @@ package org.o42a.core.member.clause.impl;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 
 
 final class ClauseDefiner extends Definer {
@@ -60,8 +63,36 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
+	public DefValue value(Resolver resolver) {
+		return definer().value(resolver);
+	}
+
+	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return definer().toInstruction(resolver);
+	}
+
+	@Override
+	public InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return definer().inline(normalizer, valueStruct, origin);
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		definer().normalize(normalizer);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		definer().resolveAll(resolver);
+	}
+
+	@Override
+	protected Eval createEval(CodeBuilder builder) {
+		return definer().eval(builder);
 	}
 
 	private final Definer definer() {
@@ -105,7 +136,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTargets getDefTargets() {
-			return clauseDef(this);
+			return clauseDef();
 		}
 
 		@Override
@@ -130,7 +161,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTargets getDefTargets() {
-			return expressionDef(this);
+			return expressionDef();
 		}
 
 		@Override
@@ -149,8 +180,35 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public DefValue value(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public InlineValue inline(
+				Normalizer normalizer,
+				ValueStruct<?, ?> valueStruct,
+				Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void normalize(RootNormalizer normalizer) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+		}
+
+		@Override
+		protected Eval createEval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -165,7 +223,7 @@ final class ClauseDefiner extends Definer {
 
 		@Override
 		public DefTargets getDefTargets() {
-			return fieldDef(this);
+			return fieldDef();
 		}
 
 		@Override
@@ -184,8 +242,35 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public DefValue value(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public InlineValue inline(
+				Normalizer normalizer,
+				ValueStruct<?, ?> valueStruct,
+				Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void normalize(RootNormalizer normalizer) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+		}
+
+		@Override
+		protected Eval createEval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -222,8 +307,35 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public DefValue value(Resolver resolver) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public InlineValue inline(
+				Normalizer normalizer,
+				ValueStruct<?, ?> valueStruct,
+				Scope origin) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void normalize(RootNormalizer normalizer) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		protected void fullyResolve(Resolver resolver) {
+		}
+
+		@Override
+		protected Eval createEval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		private final ClauseDeclarationStatement declaration() {

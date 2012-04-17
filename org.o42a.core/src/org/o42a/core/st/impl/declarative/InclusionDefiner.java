@@ -22,10 +22,13 @@ package org.o42a.core.st.impl.declarative;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.value.ValueStruct;
 
 
 abstract class InclusionDefiner<I extends Inclusion>
@@ -81,10 +84,38 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
+	public DefValue value(Resolver resolver) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Definer replaceWith(Statement statement) {
 		return this.replacement = statement.define(env());
 	}
 
 	protected abstract void includeInto(DeclarativeBlock block);
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected Eval createEval(CodeBuilder builder) {
+		throw new UnsupportedOperationException();
+	}
 
 }

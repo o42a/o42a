@@ -19,12 +19,16 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.ref.InlineValue.inlineUnknown;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
+
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.st.Definer;
-import org.o42a.core.st.DefinerEnv;
-import org.o42a.core.st.Instruction;
+import org.o42a.core.ref.*;
+import org.o42a.core.st.*;
+import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationDefiner extends Definer {
@@ -46,6 +50,32 @@ public abstract class DeclarationDefiner extends Definer {
 
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
+		return null;
+	}
+
+	@Override
+	public DefValue value(Resolver resolver) {
+		return TRUE_DEF_VALUE;
+	}
+
+	@Override
+	public InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Scope origin) {
+		return inlineUnknown(valueStruct);
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+	}
+
+	@Override
+	protected Eval createEval(CodeBuilder builder) {
 		return null;
 	}
 

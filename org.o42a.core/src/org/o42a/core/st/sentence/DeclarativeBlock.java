@@ -28,11 +28,14 @@ import java.util.List;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.BlockDefiner;
+import org.o42a.core.st.impl.declarative.DeclarativePart;
 import org.o42a.core.st.impl.declarative.ImplicitInclusion;
 import org.o42a.core.st.impl.imperative.Locals;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 
 
@@ -117,6 +120,20 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 	@Override
 	public List<DeclarativeSentence> getSentences() {
 		return (List<DeclarativeSentence>) super.getSentences();
+	}
+
+	public final Definitions createDefinitions(DefinerEnv env) {
+
+		this.definer = new BlockDefiner(this, env);
+
+		final DeclarativePart claim =
+				new DeclarativePart(this.definer, true);
+		final DeclarativePart proposition =
+				new DeclarativePart(this.definer, false);
+		final ValueStruct<?, ?> valueStruct = env.getExpectedValueStruct();
+
+		return claim.toDefinitions(valueStruct).refine(
+				proposition.toDefinitions(valueStruct));
 	}
 
 	@Override

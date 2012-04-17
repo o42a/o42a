@@ -47,6 +47,18 @@ public abstract class ValueDef extends Def<ValueDef> {
 		super(source, location, DefKind.PROPOSITION, scopeUpgrade);
 	}
 
+	public ValueDef(
+			Obj source,
+			LocationInfo location,
+			ScopeUpgrade scopeUpgrade,
+			boolean claim) {
+		super(
+				source,
+				location,
+				claim ? DefKind.CLAIM : DefKind.PROPOSITION,
+				scopeUpgrade);
+	}
+
 	protected ValueDef(ValueDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 	}

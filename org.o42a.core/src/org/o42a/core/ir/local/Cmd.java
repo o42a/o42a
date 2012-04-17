@@ -52,4 +52,12 @@ public abstract class Cmd {
 
 	public abstract void write(Control control);
 
+	@Override
+	public String toString() {
+		if (this.statement == null) {
+			return super.toString();
+		}
+		return this.statement.toString();
+	}
+
 }

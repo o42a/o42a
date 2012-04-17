@@ -28,6 +28,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.st.DefValue;
 
 
 public abstract class Value<T> {
@@ -101,6 +102,10 @@ public abstract class Value<T> {
 		}
 
 		return getValueStruct().valueString(getCompilerValue());
+	}
+
+	public final DefValue toDefValue() {
+		return DefValue.defValue(this);
 	}
 
 	@Override
