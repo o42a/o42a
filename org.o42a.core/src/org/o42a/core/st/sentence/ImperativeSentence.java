@@ -132,14 +132,7 @@ public abstract class ImperativeSentence
 		if (!isClaim()) {
 			return targets;
 		}
-
-		final CommandTargets exit = exitCommand(this);
-
-		if (getPrerequisite() != null) {
-			return targets.add(exit);
-		}
-
-		return targets.override(exit);
+		return targets.add(exitCommand(this));
 	}
 
 }
