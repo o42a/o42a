@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,35 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineCond;
-import org.o42a.util.fn.Cancelable;
+import org.o42a.core.ref.Normal;
+import org.o42a.core.ref.Normalizer;
 
 
-public class UnknownInlineCond extends InlineCond {
+public abstract class InlineCmd extends Normal {
 
-	public static final InlineCond INSTANCE = new UnknownInlineCond();
-
-	private UnknownInlineCond() {
-		super(null);
+	public InlineCmd(Normalizer normalizer) {
+		super(normalizer);
 	}
 
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
-	}
-
-	@Override
-	public String toString() {
-		return "UNKNOWN";
-	}
-
-	@Override
-	protected Cancelable cancelable() {
-		return null;
-	}
+	public abstract void write(Control control);
 
 }

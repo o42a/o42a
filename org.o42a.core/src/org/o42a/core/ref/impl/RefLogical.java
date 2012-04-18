@@ -22,6 +22,8 @@ package org.o42a.core.ref.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineCond;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.LogicalValue;

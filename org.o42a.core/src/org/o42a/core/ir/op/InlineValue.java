@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ir.op;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
 import org.o42a.core.ref.impl.normalizer.VoidInlineValue;

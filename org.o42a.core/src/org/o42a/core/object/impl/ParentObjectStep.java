@@ -27,11 +27,11 @@ import static org.o42a.core.ref.path.impl.ObjectStepUses.definitionsChange;
 
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.impl.normalizer.InlineValueStep;

@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.core.ir.op.InlineValue.inlineFalse;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
-import static org.o42a.core.ref.InlineValue.inlineFalse;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 import static org.o42a.core.value.Value.falseValue;
 import static org.o42a.core.value.Value.voidValue;
@@ -30,6 +30,7 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.DeclarationStatement;

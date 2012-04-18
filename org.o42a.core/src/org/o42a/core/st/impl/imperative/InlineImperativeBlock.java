@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueStruct;

@@ -22,9 +22,9 @@ package org.o42a.core.st.impl.imperative;
 import java.util.List;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Command;
-import org.o42a.core.st.InlineCmd;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
 

@@ -24,6 +24,7 @@ import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.ref.*;
 

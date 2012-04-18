@@ -22,21 +22,26 @@ package org.o42a.core.st.impl.imperative;
 import static org.o42a.core.object.def.impl.LocalDef.localDef;
 import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.local.InlineControl;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -124,7 +129,7 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -138,7 +143,7 @@ public final class ImperativeDefiner extends Definer {
 			return null;
 		}
 
-		return new InlineLocal(valueStruct, inline);
+		return new InlineLocal(inline);
 	}
 
 	@Override
@@ -166,25 +171,25 @@ public final class ImperativeDefiner extends Definer {
 		return new LocalEval(builder, getBlock(), getCommand());
 	}
 
-	private static final class InlineLocal extends InlineValue {
+	private static final class InlineLocal extends InlineEval {
 
 		private final InlineCmd cmd;
 
-		InlineLocal(ValueStruct<?, ?> valueStruct, InlineCmd cmd) {
-			super(null, valueStruct);
+		InlineLocal(InlineCmd cmd) {
+			super(null);
 			this.cmd = cmd;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final InlineControl control = new InlineControl(dirs);
+			final DefDirs localDirs = dirs.falseWhenUnknown();
+			final InlineControl control = new InlineControl(localDirs);
 
 			this.cmd.write(control);
 
 			control.end();
-
-			return control.finalResult();
+			localDirs.done();
 		}
 
 		@Override
@@ -207,7 +212,7 @@ public final class ImperativeDefiner extends Definer {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
 			final ObjectOp ownerObject = host.materialize(dirs.dirs());
 			final LocalScope scope = getBlock().getScope().toLocal();
@@ -215,8 +220,19 @@ public final class ImperativeDefiner extends Definer {
 			final ObjOp ownerBody =
 					ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
 			final LocalIR ir = scope.ir(host.getGenerator());
+			final ValOp value = ir.writeValue(
+					dirs.valDirs(),
+					ownerBody,
+					null,
+					this.command);
 
-			return ir.writeValue(dirs, ownerBody, null, this.command);
+			final Block code = dirs.code();
+			final Block hasLocal = code.addBlock("has_local");
+
+			value.loadIndefinite(null, code).goUnless(code, hasLocal.head());
+			if (hasLocal.exists()) {
+				dirs.returnValue(hasLocal, value);
+			}
 		}
 
 		private final ImperativeBlock getBlock() {

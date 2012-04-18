@@ -22,8 +22,6 @@ package org.o42a.core.ir.def;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Statement;
 
 
@@ -49,7 +47,7 @@ public abstract class Eval {
 		return this.statement;
 	}
 
-	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
+	public abstract void write(DefDirs dirs, HostOp host);
 
 	@Override
 	public String toString() {

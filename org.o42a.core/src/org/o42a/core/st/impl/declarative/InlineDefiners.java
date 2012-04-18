@@ -22,7 +22,7 @@ package org.o42a.core.st.impl.declarative;
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ref.InlineValue;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.Declaratives;
@@ -38,12 +38,12 @@ final class InlineDefiners {
 			Declaratives declaratives) {
 
 		final List<Definer> definers = declaratives.getImplications();
-		final InlineValue[] inlines = new InlineValue[definers.size()];
+		final InlineEval[] inlines = new InlineEval[definers.size()];
 		int i = 0;
 
 		for (Definer definer : definers) {
 
-			final InlineValue inline = definer.inline(
+			final InlineEval inline = definer.inline(
 					normalizer,
 					valueStruct,
 					origin);
@@ -62,13 +62,13 @@ final class InlineDefiners {
 		return new InlineDefiners(inlines);
 	}
 
-	private final InlineValue[] definers;
+	private final InlineEval[] definers;
 
-	private InlineDefiners(InlineValue[] definers) {
+	private InlineDefiners(InlineEval[] definers) {
 		this.definers = definers;
 	}
 
-	public final InlineValue get(int index) {
+	public final InlineEval get(int index) {
 		return this.definers[index];
 	}
 

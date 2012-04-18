@@ -25,11 +25,8 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.RefEval;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.*;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -119,7 +116,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -127,7 +124,7 @@ final class RefConditionDefiner extends Definer {
 		final InlineValue value = getRef().inline(normalizer, origin);
 
 		if (value != null) {
-			return new Inline(valueStruct, value);
+			return new Inline(value);
 		}
 
 		getRef().normalize(normalizer.getAnalyzer());
@@ -190,24 +187,18 @@ final class RefConditionDefiner extends Definer {
 
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class Inline extends InlineEval {
 
 		private final InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
-			super(null, valueStruct);
+		Inline(InlineValue value) {
+			super(null);
 			this.value = value;
 		}
 
 		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			this.value.writeCond(dirs, host);
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			writeCond(dirs.dirs(), host);
-			return dirs.value();
+		public void write(DefDirs dirs, HostOp host) {
+			this.value.writeCond(dirs.dirs(), host);
 		}
 
 		@Override
@@ -227,9 +218,8 @@ final class RefConditionDefiner extends Definer {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 			this.refEval.writeCond(dirs.dirs(), host);
-			return dirs.value();
 		}
 
 	}

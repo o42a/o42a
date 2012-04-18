@@ -24,6 +24,7 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.Definitions;
@@ -73,7 +74,7 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
@@ -190,7 +191,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineValue inline(
+		public InlineEval inline(
 				Normalizer normalizer,
 				ValueStruct<?, ?> valueStruct,
 				Scope origin) {
@@ -252,7 +253,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineValue inline(
+		public InlineEval inline(
 				Normalizer normalizer,
 				ValueStruct<?, ?> valueStruct,
 				Scope origin) {
@@ -317,7 +318,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineValue inline(
+		public InlineEval inline(
 				Normalizer normalizer,
 				ValueStruct<?, ?> valueStruct,
 				Scope origin) {

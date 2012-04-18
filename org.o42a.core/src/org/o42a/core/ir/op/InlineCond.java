@@ -17,35 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
+package org.o42a.core.ir.op;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineCond;
-import org.o42a.util.fn.Cancelable;
+import org.o42a.core.ref.Normal;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.impl.normalizer.InlineFalse;
+import org.o42a.core.ref.impl.normalizer.InlineTrue;
+import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
 
 
-public class UnknownInlineCond extends InlineCond {
+public abstract class InlineCond extends Normal {
 
-	public static final InlineCond INSTANCE = new UnknownInlineCond();
+	public static final InlineCond INLINE_TRUE = InlineTrue.INSTANCE;
+	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
+	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
 
-	private UnknownInlineCond() {
-		super(null);
+	public InlineCond(Normalizer normalizer) {
+		super(normalizer);
 	}
 
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		dirs.code().go(dirs.unknownDir());
-	}
-
-	@Override
-	public String toString() {
-		return "UNKNOWN";
-	}
-
-	@Override
-	protected Cancelable cancelable() {
-		return null;
-	}
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 }

@@ -19,14 +19,16 @@
 */
 package org.o42a.core.member;
 
-import static org.o42a.core.ref.InlineValue.inlineUnknown;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
 
@@ -59,11 +61,11 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return inlineUnknown(valueStruct);
+		return InlineEval.noInlineEval();
 	}
 
 	@Override

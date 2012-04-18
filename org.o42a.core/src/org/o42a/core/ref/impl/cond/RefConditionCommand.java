@@ -21,10 +21,9 @@ package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.Cmd;
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ir.local.RefCmd;
+import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;

@@ -25,6 +25,7 @@ import static org.o42a.core.st.ImplicationTargets.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.ValueStruct;
@@ -68,7 +69,7 @@ public abstract class Definer extends Implication<Definer> {
 		}
 	}
 
-	public abstract InlineValue inline(
+	public abstract InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
