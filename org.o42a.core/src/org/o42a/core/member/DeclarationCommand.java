@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;

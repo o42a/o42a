@@ -29,6 +29,7 @@ import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlin
 import java.util.List;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.ValueDef;

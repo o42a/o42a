@@ -27,6 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.impl.LogicalCondDef;
 import org.o42a.core.ref.impl.logical.*;

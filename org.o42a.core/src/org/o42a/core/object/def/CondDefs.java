@@ -19,12 +19,12 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.ir.op.InlineCond.INLINE_UNKNOWN;
 import static org.o42a.core.object.def.DefKind.PROPOSITION;
-import static org.o42a.core.ref.InlineCond.INLINE_UNKNOWN;
 
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.impl.InlineCondDefs;
 import org.o42a.core.object.def.impl.RuntimeCondDef;
-import org.o42a.core.ref.InlineCond;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;

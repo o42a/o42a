@@ -35,6 +35,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.common.object.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.AdapterId;

@@ -28,6 +28,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
@@ -177,7 +178,7 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {

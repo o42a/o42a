@@ -17,19 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st;
+package org.o42a.core.ir.def;
 
-import org.o42a.core.ir.local.Control;
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ir.HostOp;
+import org.o42a.util.fn.Cancelable;
 
 
-public abstract class InlineCmd extends Normal {
+final class NoInlineEval extends InlineEval {
 
-	public InlineCmd(Normalizer normalizer) {
-		super(normalizer);
+	static final NoInlineEval NO_INLINE_EVAL = new NoInlineEval();
+
+	private NoInlineEval() {
+		super(null);
 	}
 
-	public abstract void write(Control control);
+	@Override
+	public void write(DefDirs dirs, HostOp host) {
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
+	}
 
 }

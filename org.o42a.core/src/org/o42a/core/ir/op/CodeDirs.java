@@ -222,7 +222,7 @@ public class CodeDirs {
 		return toString("CodeDirs", this.code);
 	}
 
-	String toString(String title, Code code) {
+	public String toString(String title, Code code) {
 
 		final StringBuilder out = new StringBuilder();
 		boolean semicolon = false;

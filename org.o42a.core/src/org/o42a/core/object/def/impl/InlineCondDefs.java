@@ -22,9 +22,9 @@ package org.o42a.core.object.def.impl;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.CondDefs;
-import org.o42a.core.ref.InlineCond;
 import org.o42a.util.fn.Cancelable;
 
 

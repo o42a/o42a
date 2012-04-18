@@ -20,12 +20,12 @@
 package org.o42a.core.object.def.impl;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.local.InlineControl;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ref.InlineValue;
-import org.o42a.core.st.InlineCmd;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 

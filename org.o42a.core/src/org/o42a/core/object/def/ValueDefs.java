@@ -19,11 +19,11 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.ref.InlineValue.inlineUnknown;
+import static org.o42a.core.ir.op.InlineValue.inlineUnknown;
 
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.impl.InlineValueDefs;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.InlineValue;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;

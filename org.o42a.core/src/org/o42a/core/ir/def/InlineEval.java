@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ir.def;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ref.impl.normalizer.InlineFalse;
-import org.o42a.core.ref.impl.normalizer.InlineTrue;
-import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
+import org.o42a.core.ref.Normal;
+import org.o42a.core.ref.Normalizer;
 
 
-public abstract class InlineCond extends Normal {
+public abstract class InlineEval extends Normal {
 
-	public static final InlineCond INLINE_TRUE = InlineTrue.INSTANCE;
-	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
-	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
+	public static InlineEval noInlineEval() {
+		return NoInlineEval.NO_INLINE_EVAL;
+	}
 
-	public InlineCond(Normalizer normalizer) {
+	public InlineEval(Normalizer normalizer) {
 		super(normalizer);
 	}
 
-	public abstract void writeCond(CodeDirs dirs, HostOp host);
+	public abstract void write(DefDirs dirs, HostOp host);
 
 }

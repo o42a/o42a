@@ -22,6 +22,7 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
@@ -29,6 +30,7 @@ import org.o42a.core.ir.value.ValOp;
 public class InlineControl extends MainControl {
 
 	private final ValDirs dirs;
+	private final DefDirs defDirs;
 	private Block returnCode;
 	private ValOp finalResult;
 	private Code singleResultInset;
@@ -41,6 +43,17 @@ public class InlineControl extends MainControl {
 				dirs.unknownDir(),
 				dirs.falseDir());
 		this.dirs = dirs;
+		this.defDirs = null;
+	}
+
+	public InlineControl(DefDirs dirs) {
+		super(
+				dirs.getBuilder(),
+				dirs.code(),
+				dirs.unknownDir(),
+				dirs.falseDir());
+		this.dirs = dirs.valDirs();
+		this.defDirs = dirs;
 	}
 
 	public final ValOp finalResult() {
@@ -52,7 +65,11 @@ public class InlineControl extends MainControl {
 		super.end();
 		code().go(exit());
 		if (this.returnCode != null) {
-			this.returnCode.go(code().tail());
+			if (this.defDirs != null) {
+				this.defDirs.returnValue(this.returnCode, finalResult());
+			} else {
+				this.returnCode.go(code().tail());
+			}
 		}
 	}
 

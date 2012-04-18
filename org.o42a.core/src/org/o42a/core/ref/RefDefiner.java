@@ -24,10 +24,9 @@ import static org.o42a.core.st.DefinitionTarget.valueDefinition;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.Eval;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.*;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.ValueDef;
@@ -35,6 +34,7 @@ import org.o42a.core.ref.impl.RefEnv;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public class RefDefiner extends Definer {
@@ -100,11 +100,18 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
-	public InlineValue inline(
+	public InlineEval inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return getRef().inline(normalizer, origin);
+
+		final InlineValue inline = getRef().inline(normalizer, origin);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new Inline(inline);
 	}
 
 	@Override
@@ -138,6 +145,40 @@ public class RefDefiner extends Definer {
 		return new InlineRefEvalImpl(builder, getRef(), this.inline);
 	}
 
+	private static final class Inline extends InlineEval {
+
+		private final InlineValue value;
+
+		Inline(InlineValue value) {
+			super(null);
+			this.value = value;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final DefDirs defDirs = dirs.falseWhenUnknown();
+			final ValOp value = this.value.writeValue(defDirs.valDirs(), host);
+
+			defDirs.done();
+			dirs.returnValue(value);
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
+	}
+
 	private static final class RefEvalImpl extends RefEval {
 
 		RefEvalImpl(CodeBuilder builder, Ref ref) {
@@ -154,14 +195,13 @@ public class RefDefiner extends Definer {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs valDirs = dirs.falseWhenUnknown();
-			final ValOp value = getRef().op(host).writeValue(valDirs);
+			final DefDirs defDirs = dirs.falseWhenUnknown();
+			final ValOp value = getRef().op(host).writeValue(defDirs.valDirs());
 
-			valDirs.done();
-
-			return value;
+			defDirs.done();
+			dirs.returnValue(value);
 		}
 
 	}
@@ -185,14 +225,13 @@ public class RefDefiner extends Definer {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs valDirs = dirs.falseWhenUnknown();
-			final ValOp value = this.inline.writeValue(valDirs, host);
+			final DefDirs defDirs = dirs.falseWhenUnknown();
+			final ValOp value = this.inline.writeValue(defDirs.valDirs(), host);
 
-			valDirs.done();
-
-			return value;
+			defDirs.done();
+			dirs.returnValue(value);
 		}
 
 		@Override

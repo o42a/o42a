@@ -25,6 +25,8 @@ import static org.o42a.core.object.def.Definitions.NO_REQUIREMENTS;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.InlineCond;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;

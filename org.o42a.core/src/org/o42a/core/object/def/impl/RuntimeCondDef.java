@@ -23,6 +23,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;

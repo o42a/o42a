@@ -28,6 +28,8 @@ import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.ir.op.InlineCond;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
 import org.o42a.core.object.link.LinkValueStruct;

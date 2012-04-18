@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.def;
 
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.ref.*;
 
 
