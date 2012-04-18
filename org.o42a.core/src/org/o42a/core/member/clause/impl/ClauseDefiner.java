@@ -28,7 +28,9 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueStruct;
 

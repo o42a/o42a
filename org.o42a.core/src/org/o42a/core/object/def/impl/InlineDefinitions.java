@@ -24,7 +24,8 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.*;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.util.fn.Cancelable;
 
 

@@ -25,7 +25,9 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.st.*;
+import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandEnv;
+import org.o42a.core.st.Instruction;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.value.ValueStruct;
 
