@@ -66,9 +66,6 @@ public abstract class ImperativeSentence
 			prerequisiteTarget = noCommand();
 		} else {
 			prerequisiteTarget = prerequisite.getCommandTargets();
-			if (prerequisiteTarget.isEmpty()) {
-				return this.commandTargets = prerequisiteTarget;
-			}
 		}
 
 		return this.commandTargets = applyExitTargets(
@@ -120,19 +117,25 @@ public abstract class ImperativeSentence
 			}
 			continue;
 		}
-		if (isIssue() && result.isEmpty() && !result.haveError()) {
-			reportEmptyIssue();
-			return result.addError();
-		}
 
 		return result;
 	}
 
 	private CommandTargets applyExitTargets(CommandTargets targets) {
-		if (!isClaim()) {
-			return targets;
+
+		final CommandTargets result;
+
+		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
+			reportEmptyIssue();
+			result = targets.addError();
+		} else {
+			result = targets;
 		}
-		return targets.add(exitCommand(this));
+		if (!isClaim()) {
+			return result;
+		}
+
+		return result.add(exitCommand(this));
 	}
 
 }

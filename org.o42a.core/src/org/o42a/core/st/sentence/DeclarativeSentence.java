@@ -249,14 +249,20 @@ public abstract class DeclarativeSentence
 	}
 
 	private DefTargets addSentenceTargets(DefTargets targets) {
+
+		final DefTargets result;
+
 		if (isIssue() && targets.isEmpty() && !targets.haveError()) {
 			reportEmptyIssue();
-			return targets.addError();
+			result = targets.addError();
+		} else {
+			result = targets;
 		}
 		if (!isInsideClaim()) {
-			return targets;
+			return result;
 		}
-		return targets.claim();
+
+		return result.claim();
 	}
 
 	private DefinitionTargets altDefinitionTargets() {
@@ -268,6 +274,7 @@ public abstract class DeclarativeSentence
 			final DefinitionTargets targets = alt.getDefinitionTargets();
 
 			if (targets.isEmpty()) {
+				result = result.add(targets);
 				continue;
 			}
 			if (result.isEmpty()) {

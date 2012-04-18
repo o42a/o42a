@@ -29,7 +29,7 @@ import java.util.Map;
 final class EmptyDefinitionTargets extends DefinitionTargets {
 
 	EmptyDefinitionTargets() {
-		super((byte) 0);
+		super((byte) 0, false);
 	}
 
 	@Override

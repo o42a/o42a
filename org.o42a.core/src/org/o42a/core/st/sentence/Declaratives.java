@@ -104,6 +104,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			final DefinitionTargets targets = definer.getDefinitionTargets();
 
 			if (targets.isEmpty()) {
+				result = result.add(targets);
 				continue;
 			}
 			if (inhibit && targets.haveDeclaration()) {

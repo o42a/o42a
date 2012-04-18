@@ -39,6 +39,7 @@ import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class DeclarativePart
@@ -154,11 +155,19 @@ public final class DeclarativePart
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
-		return inlineBlock(
+
+		final InlineDeclarativeSentences inline =
+				inlineBlock(
 				normalizer,
 				getValueStruct(),
 				getScope(),
 				this);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new Inline(valueStruct, inline);
 	}
 
 	@Override
@@ -192,6 +201,41 @@ public final class DeclarativePart
 	@Override
 	protected Logical buildLogical() {
 		throw new UnsupportedOperationException();
+	}
+
+	private final class Inline extends InlineValue {
+
+		private final InlineDeclarativeSentences inlineSentences;
+
+		Inline(
+				ValueStruct<?, ?> valueStruct,
+				InlineDeclarativeSentences inlineSentences) {
+			super(null, valueStruct);
+			this.inlineSentences = inlineSentences;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return writeSentences(
+					dirs,
+					host,
+					DeclarativePart.this,
+					this.inlineSentences);
+		}
+
+		@Override
+		public String toString() {
+			if (this.inlineSentences == null) {
+				return super.toString();
+			}
+			return this.inlineSentences.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
 
 }

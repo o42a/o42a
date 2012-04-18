@@ -45,7 +45,7 @@ public abstract class DefinitionTargets
 	private final byte mask;
 	private boolean error;
 
-	DefinitionTargets(byte mask) {
+	DefinitionTargets(byte mask, boolean error) {
 		this.mask = mask;
 	}
 
@@ -115,10 +115,16 @@ public abstract class DefinitionTargets
 
 	public final DefinitionTargets add(DefinitionTargets other) {
 		if (other.isEmpty()) {
-			return this;
+			if (!other.haveError()) {
+				return this;
+			}
+			return addError();
 		}
 		if (isEmpty()) {
-			return other;
+			if (!haveError()) {
+				return other;
+			}
+			return other.addError();
 		}
 		return new MultiDefinitionTargets(this, other);
 	}

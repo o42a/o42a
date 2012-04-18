@@ -21,16 +21,22 @@ package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
+import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.DeclarativeBlock;
@@ -182,8 +188,11 @@ public final class BlockDefiner
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		// TODO Auto-generated method stub
-		return null;
+		return inlineBlock(
+				normalizer,
+				valueStruct,
+				origin,
+				this);
 	}
 
 	@Override
@@ -199,8 +208,7 @@ public final class BlockDefiner
 
 	@Override
 	protected Eval createEval(CodeBuilder builder) {
-		// TODO Auto-generated method stub
-		return null;
+		return new BlockEval(builder, this);
 	}
 
 	private DefTargets sentenceTargets() {
@@ -300,6 +308,22 @@ public final class BlockDefiner
 		for (Definer definer : statements.getImplications()) {
 			definer.normalize(normalizer);
 		}
+	}
+
+	private static final class BlockEval extends Eval {
+
+		private final BlockDefiner definer;
+
+		BlockEval(CodeBuilder builder, BlockDefiner definer) {
+			super(builder, definer.getStatement());
+			this.definer = definer;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			writeSentences(dirs, host, this.definer, null);
+		}
+
 	}
 
 }

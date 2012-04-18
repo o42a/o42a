@@ -33,7 +33,9 @@ final class MultiDefinitionTargets extends DefinitionTargets {
 	MultiDefinitionTargets(
 			DefinitionTargets targets1,
 			DefinitionTargets targets2) {
-		super((byte) (targets1.mask() | targets2.mask()));
+		super(
+				(byte) (targets1.mask() | targets2.mask()),
+				targets1.haveError() || targets2.haveError());
 
 		final Map<DefinitionKey, Entry> t1 = targets1.targets();
 		final Map<DefinitionKey, Entry> t2 = targets2.targets();

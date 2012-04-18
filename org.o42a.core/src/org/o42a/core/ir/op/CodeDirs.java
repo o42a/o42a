@@ -169,7 +169,11 @@ public class CodeDirs {
 		if (isFalseWhenUnknown()) {
 			return this;
 		}
-		return new CodeDirs(getBuilder(), code(), falseDir(), falseDir());
+		return falseWhenUnknown(falseDir());
+	}
+
+	public final CodeDirs falseWhenUnknown(CodePos falseDir) {
+		return new CodeDirs(getBuilder(), code(), falseDir, falseDir);
 	}
 
 	public final CodeDirs unknownWhenFalse() {
