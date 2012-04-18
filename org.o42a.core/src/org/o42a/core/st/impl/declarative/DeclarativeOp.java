@@ -21,10 +21,16 @@ package org.o42a.core.st.impl.declarative;
 
 import java.util.List;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
+import org.o42a.core.st.sentence.Declaratives;
 
 
 final class DeclarativeOp {
@@ -35,14 +41,171 @@ final class DeclarativeOp {
 			DeclarativeSentences block,
 			InlineDeclarativeSentences inline) {
 
-		final List<DeclarativeSentence> sentences = block.getSentences();
-		final int len = sentences.size();
+		final Block result = dirs.addBlock("result");
+		final DefDirs defDirs = new DefDirs(dirs, result.head());
 
-		for (int i = 0; i < len; ++i) {
+		writeSentences(defDirs, host, block, inline);
+		defDirs.done();
 
+		final Block code = dirs.code();
+
+		if (code.exists()) {
+			code.go(dirs.unknownDir());
 		}
-		// TODO Implement IR of declarative sentences.
-		return null;
+		if (result.exists()) {
+			result.go(code.tail());
+		}
+
+		return defDirs.result();
+	}
+
+	public static void writeSentences(
+			DefDirs dirs,
+			HostOp host,
+			DeclarativeSentences block,
+			InlineDeclarativeSentences inline) {
+
+		final List<DeclarativeSentence> sentences = block.getSentences();
+		final int size = sentences.size();
+		final Block code = dirs.code();
+
+		if (size == 0) {
+			return;
+		}
+
+		final Block result = code.addBlock("result");
+
+		for (int i = 0; i < size; ++i) {
+			writeSentence(
+					dirs.id((i + 1) + "_sent"),
+					dirs,
+					host,
+					sentences.get(i),
+					inline != null ? inline.get(i) : null);
+		}
+
+		if (result.exists()) {
+			result.go(dirs.unknownDir());
+		}
+
+		dirs.done();
+	}
+
+	private static void writeSentence(
+			CodeId prefix,
+			DefDirs dirs,
+			HostOp host,
+			DeclarativeSentence sentence,
+			InlineDeclarativeSentence inline) {
+
+		final DeclarativeSentence prerequisite = sentence.getPrerequisite();
+		final Block prereqFailed;
+
+		if (prerequisite == null) {
+			prereqFailed = null;
+		} else {
+			prereqFailed = dirs.addBlock(prefix.sub("prereq_failed"));
+
+			final DefDirs prereqDirs =
+					dirs.falseWhenUnknown(prereqFailed.head());
+
+			writeSentence(
+					prefix.sub("prereq"),
+					prereqDirs,
+					host,
+					prerequisite,
+					inline != null ? inline.getPrerequisite() : null);
+
+			prereqDirs.done();
+		}
+
+		final List<Declaratives> alts = sentence.getAlternatives();
+		final int size = alts.size();
+
+		if (size <= 1) {
+			if (size != 0) {
+				return;
+			}
+			writeStatements(
+					prefix,
+					dirs,
+					host,
+					alts.get(0),
+					inline != null ? inline.get(0) : null);
+			return;
+		}
+
+		final Block end = dirs.addBlock(prefix.sub("end"));
+		Block code = dirs.code();
+		int i = 0;
+
+		for (;;) {
+
+			final DefDirs altDirs;
+			final Block next;
+			final int nextIdx = i + 1;
+
+			if (nextIdx < size) {
+				next = dirs.addBlock(prefix.sub((nextIdx + 1) + "_alt"));
+				altDirs = dirs.falseWhenUnknown(next.head());
+			} else {
+				next = null;
+				altDirs = dirs.falseWhenUnknown(dirs.falseDir());
+			}
+
+			writeStatements(
+					prefix.sub(nextIdx + "_alt"),
+					altDirs,
+					host,
+					alts.get(i),
+					inline != null ? inline.get(i) : null);
+
+			altDirs.done();
+
+			if (next == null) {
+				if (code.exists()) {
+					code.go(dirs.code().tail());
+				}
+				break;
+			}
+			if (code.exists()) {
+				code.go(end.head());
+			}
+			i = nextIdx;
+			code = next;
+		}
+
+		if (end.exists()) {
+			end.go(dirs.code().tail());
+		}
+		if (prereqFailed != null && prereqFailed.exists()) {
+			prereqFailed.go(dirs.code().tail());
+		}
+	}
+
+	private static void writeStatements(
+			CodeId prefix,
+			DefDirs dirs,
+			HostOp host,
+			Declaratives statements,
+			InlineDefiners inline) {
+
+		final List<Definer> definers = statements.getImplications();
+		final int size = definers.size();
+
+		for (int i = 0; i < size; ++i) {
+			if (inline != null) {
+
+				final InlineEval inlineEval = inline.get(i);
+
+				if (inlineEval != null) {
+					inlineEval.write(dirs, host);
+					continue;
+				}
+			}
+
+			definers.get(i).eval(dirs.getBuilder()).write(dirs, host);
+		}
 	}
 
 }

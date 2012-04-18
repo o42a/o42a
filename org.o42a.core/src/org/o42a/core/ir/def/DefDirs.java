@@ -137,6 +137,17 @@ public final class DefDirs {
 		return new DefDirs(this, dirs.falseWhenUnknown());
 	}
 
+	public final DefDirs falseWhenUnknown(CodePos falsePos) {
+
+		final ValDirs dirs = valDirs();
+
+		if (dirs.falseDir() == dirs.unknownDir()) {
+			return this;
+		}
+
+		return new DefDirs(this, dirs.falseWhenUnknown(falsePos));
+	}
+
 	public final void done() {
 		valDirs().done();
 	}

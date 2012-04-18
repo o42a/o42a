@@ -35,6 +35,15 @@ public class MisplacedDeclarativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void emptyCompoundIssue() {
+		expectError("compiler.prohibited_empty_issue");
+		compile(
+				"A := integer (",
+				"  (())? = 2",
+				")");
+	}
+
+	@Test
 	public void selfAssignInsideIssue() {
 		expectError("compiler.prohibited_issue_assignment");
 		compile(

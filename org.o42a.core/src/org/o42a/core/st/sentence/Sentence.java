@@ -164,7 +164,7 @@ public abstract class Sentence<
 
 	final void reportEmptyIssue() {
 		if (!this.statementDropped) {
-			getLogger().error("prohibited_empty_issue", this, "Impty issue");
+			getLogger().warning("prohibited_empty_issue", this, "Impty issue");
 		}
 	}
 

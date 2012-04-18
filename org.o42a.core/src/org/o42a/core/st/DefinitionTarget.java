@@ -64,7 +64,7 @@ public final class DefinitionTarget
 			byte mask,
 			Statement statement,
 			DefinitionKey definitionKey) {
-		super(mask);
+		super(mask, false);
 		this.statement = statement;
 		this.definitionKey = definitionKey;
 	}

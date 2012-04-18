@@ -26,16 +26,15 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public class InlineDeclarativeSentences extends InlineValue {
+public class InlineDeclarativeSentences extends InlineEval {
 
 	public static InlineDeclarativeSentences inlineBlock(
 			Normalizer normalizer,
@@ -54,24 +53,27 @@ public class InlineDeclarativeSentences extends InlineValue {
 		}
 
 		return normalizer.isCancelled() ? null
-			: new InlineDeclarativeSentences(valueStruct, block, inlines);
+			: new InlineDeclarativeSentences(block, inlines);
 	}
 
 	private final DeclarativeSentences block;
 	private final InlineDeclarativeSentence[] sentences;
 
 	private InlineDeclarativeSentences(
-			ValueStruct<?, ?> valueStruct,
 			DeclarativeSentences block,
 			InlineDeclarativeSentence[] sentences) {
-		super(null, valueStruct);
+		super(null);
 		this.block = block;
 		this.sentences = sentences;
 	}
 
+	public final InlineDeclarativeSentence get(int index) {
+		return this.sentences[index];
+	}
+
 	@Override
-	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		return writeSentences(dirs, host, this.block, this);
+	public void write(DefDirs dirs, HostOp host) {
+		writeSentences(dirs, host, this.block, this);
 	}
 
 	@Override

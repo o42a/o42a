@@ -130,7 +130,7 @@ public abstract class ValDirs {
 	}
 
 	public final ValDirs sub(Block code) {
-		return new SubValDirs(this, code);
+		return dirs().sub(code).value(this);
 	}
 
 	public final ValDirs falseWhenUnknown() {
@@ -141,7 +141,19 @@ public abstract class ValDirs {
 			return this;
 		}
 
-		return new FalseWhenUnknownValDirs(this, code());
+		return dirs.falseWhenUnknown().value(this);
+	}
+
+	public final ValDirs falseWhenUnknown(CodePos falseDir) {
+
+		final CodeDirs oldDirs = dirs();
+		final CodeDirs newDirs = oldDirs.falseWhenUnknown(falseDir);
+
+		if (oldDirs == newDirs) {
+			return this;
+		}
+
+		return newDirs.value(this);
 	}
 
 	public ValDirs begin(String message) {
@@ -283,46 +295,6 @@ public abstract class ValDirs {
 		@Override
 		CodeDirs createDirs() {
 			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	private static class SubValDirs extends ValDirs {
-
-		final ValDirs enclosing;
-		private final TopLevelValDirs topLevel;
-
-		SubValDirs(ValDirs enclosing, Block code) {
-			super(enclosing.getBuilder(), code, enclosing.getValueStruct());
-			this.enclosing = enclosing;
-			this.topLevel = enclosing.topLevel();
-		}
-
-		@Override
-		public void done() {
-		}
-
-		@Override
-		final TopLevelValDirs topLevel() {
-			return this.topLevel;
-		}
-
-		@Override
-		CodeDirs createDirs() {
-			return this.enclosing.dirs().sub(code());
-		}
-
-	}
-
-	private static final class FalseWhenUnknownValDirs extends SubValDirs {
-
-		FalseWhenUnknownValDirs(ValDirs enclosing, Block code) {
-			super(enclosing, code);
-		}
-
-		@Override
-		CodeDirs createDirs() {
-			return this.enclosing.dirs().falseWhenUnknown();
 		}
 
 	}

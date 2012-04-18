@@ -35,6 +35,15 @@ public class MisplacedImperativeStatementTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void emptyCompundIssue() {
+		expectError("compiler.prohibited_empty_issue");
+		compile(
+				"A := integer ({",
+				"  (())? = 2",
+				"})");
+	}
+
+	@Test
 	public void returnInsideIssue() {
 		expectError("compiler.prohibited_issue_assignment");
 		compile(
