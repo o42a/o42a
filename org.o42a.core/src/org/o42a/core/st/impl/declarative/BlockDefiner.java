@@ -24,7 +24,6 @@ import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.core.Scope;
@@ -39,14 +38,12 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
-import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.core.st.sentence.*;
 import org.o42a.core.value.ValueStruct;
 
 
 public final class BlockDefiner
-		extends Definer
+		extends MainDefiner
 		implements DeclarativeSentences {
 
 	static DefValue sentencesValue(
@@ -83,21 +80,11 @@ public final class BlockDefiner
 		}
 	}
 
-	private DefTargets targets;
+	private BlockDefinitions blockDefinitions;
 	private DefinitionTargets definitionTargets;
-	private ArrayList<DeclarativeSentence> claims;
-	private ArrayList<DeclarativeSentence> propositions;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
 		super(block, env);
-		this.claims = new ArrayList<DeclarativeSentence>(
-				block.getSentences().size());
-		this.propositions = new ArrayList<DeclarativeSentence>(
-				block.getSentences().size());
-	}
-
-	public final DeclarativeBlock getBlock() {
-		return (DeclarativeBlock) getStatement();
 	}
 
 	@Override
@@ -105,23 +92,9 @@ public final class BlockDefiner
 		return getBlock().getSentences();
 	}
 
-	public final List<DeclarativeSentence> getClaims() {
-		getDefTargets();
-		return this.claims;
-	}
-
-	public final List<DeclarativeSentence> getPropositions() {
-		getDefTargets();
-		return this.propositions;
-	}
-
 	@Override
-	public DefTargets getDefTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		getBlock().executeInstructions();
-		return this.targets = sentenceTargets();
+	public final DefTargets getDefTargets() {
+		return getBlockDefinitions().getTargets();
 	}
 
 	@Override
@@ -174,6 +147,11 @@ public final class BlockDefiner
 	}
 
 	@Override
+	public Definitions createDefinitions() {
+		return getBlockDefinitions().createDefinitions();
+	}
+
+	@Override
 	public DefValue value(Resolver resolver) {
 		return sentencesValue(resolver, this);
 	}
@@ -211,58 +189,11 @@ public final class BlockDefiner
 		return new BlockEval(builder, this);
 	}
 
-	private DefTargets sentenceTargets() {
-
-		DefTargets result = noDefs();
-		DefTargets prev = noDefs();
-
-		for (DeclarativeSentence sentence : getBlock().getSentences()) {
-
-			final DefTargets targets = sentence.getDefTargets();
-
-			if (!targets.defining()) {
-				continue;
-			}
-
-			final boolean claim;
-
-			if (targets.isClaim() && result.defining() && !result.isClaim()) {
-				if (!result.haveError()) {
-					getLogger().error(
-							"prohibited_claim_after_proposition",
-							sentence,
-							"Claims should never follow propositions");
-					result = result.addError();
-				}
-				claim = false;
-			} else {
-				claim = targets.isClaim();
-			}
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (targets.breaking()) {
-					prev = targets;
-				} else {
-					prev = targets.toPreconditions();
-				}
-				result = result.add(prev);
-				if (claim) {
-					this.claims.add(sentence);
-				} else {
-					this.propositions.add(sentence);
-				}
-				continue;
-			}
-			if (result.haveError()) {
-				continue;
-			}
-			result = result.addError();
-			getLogger().error(
-					"redundant_sentence",
-					targets,
-					"Redundant sentence");
+	private BlockDefinitions getBlockDefinitions() {
+		if (this.blockDefinitions != null) {
+			return this.blockDefinitions;
 		}
-
-		return result;
+		return this.blockDefinitions = new BlockDefinitions(this);
 	}
 
 	private static void resolveSentence(
