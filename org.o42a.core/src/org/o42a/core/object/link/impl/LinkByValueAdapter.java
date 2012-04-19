@@ -27,11 +27,9 @@ import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.def.impl.RefCondDef;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -41,7 +39,6 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	private final Ref ref;
 	private final LinkValueStruct expectedStruct;
-	private LinkValueStruct linkStruct;
 
 	public LinkByValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
 		this.ref = ref;
@@ -54,18 +51,6 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	public final LinkValueStruct getExpectedStruct() {
 		return this.expectedStruct;
-	}
-
-	@Override
-	public LinkValueStruct valueStruct(Scope scope) {
-		if (this.linkStruct != null) {
-			return this.linkStruct;
-		}
-
-		final LinkValueType expectedType = getExpectedStruct().getValueType();
-		final TypeRef typeRef = ref().ancestor(ref());
-
-		return this.linkStruct = expectedType.linkStruct(typeRef);
 	}
 
 	@Override
@@ -85,7 +70,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return linkByValue(ref(), valueStruct(resolver.getScope()));
+		return linkByValue(ref(), getExpectedStruct());
 	}
 
 	@Override

@@ -35,9 +35,9 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
 import org.o42a.core.ref.Logical;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -47,7 +47,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	private Ascendants ascendants;
 	private Registry memberRegistry;
 	private DeclarativeBlock content;
-	private Definer definer;
+	private MainDefiner definer;
 	private boolean invalid;
 
 	DeclaredField(DeclaredMemberField member, FieldDefinition definition) {
@@ -147,7 +147,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	}
 
 	Definitions define(Scope scope) {
-		return getContentDefiner().define(scope);
+		return getContentDefiner().createDefinitions();
 	}
 
 	void updateMembers() {
@@ -169,7 +169,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return (DeclaredMemberField) toMember();
 	}
 
-	private Definer getContentDefiner() {
+	private MainDefiner getContentDefiner() {
 		if (this.definer == null) {
 			getContent();
 		}

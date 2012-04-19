@@ -41,8 +41,8 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.FieldCompiler;
 import org.o42a.core.source.ObjectCompiler;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.MainDefiner;
 
 
 public class CompiledObject extends Obj {
@@ -86,7 +86,7 @@ public class CompiledObject extends Obj {
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private ScopeSet errorReportedAt;
-	private Definer definer;
+	private MainDefiner definer;
 
 	public CompiledObject(CompiledField field) {
 		super(field);
@@ -139,7 +139,7 @@ public class CompiledObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.define(getScope());
+		return this.definer.createDefinitions();
 	}
 
 	@Override

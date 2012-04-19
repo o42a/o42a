@@ -29,7 +29,6 @@ import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.ValueType;
 
 
 public class AncestorFragment extends PathFragment {
@@ -56,12 +55,6 @@ public class AncestorFragment extends PathFragment {
 		}
 
 		final Intrinsics intrinsics = start.getContext().getIntrinsics();
-		final TypeRef ancestor = object.type().getAncestor();
-
-		if (ancestor == null) {
-			return ValueType.VOID.path(intrinsics);
-		}
-
 		final Obj valueTypeObject =
 				object.value().getValueType().typeObject(intrinsics);
 
@@ -70,8 +63,14 @@ public class AncestorFragment extends PathFragment {
 			return SELF_PATH;
 		}
 
-		return start.getEnclosingScopePath()
-				.append(ancestor.getPath().getPath());
+		final TypeRef ancestor = object.type().getAncestor();
+		final Path ancestorPath = ancestor.getPath().getPath();
+
+		if (ancestor.isStatic()) {
+			return ancestorPath;
+		}
+
+		return start.getEnclosingScopePath().append(ancestorPath);
 	}
 
 	@Override

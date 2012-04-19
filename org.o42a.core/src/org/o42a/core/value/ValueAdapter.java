@@ -35,8 +35,6 @@ public abstract class ValueAdapter {
 		return new RawValueAdapter(ref);
 	}
 
-	public abstract ValueStruct<?, ?> valueStruct(Scope scope);
-
 	public abstract ValueDef valueDef();
 
 	public abstract CondDef condDef();

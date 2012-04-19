@@ -137,8 +137,8 @@ public final class BlockCommand extends Command {
 
 	private CommandTargets sentenceTargets() {
 
-		CommandTargets result = noCommand();
-		CommandTargets prev = noCommand();
+		CommandTargets result = noCommands();
+		CommandTargets prev = noCommands();
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 

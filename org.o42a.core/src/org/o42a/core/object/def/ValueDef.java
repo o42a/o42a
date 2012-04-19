@@ -69,6 +69,8 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return getKind().isClaim();
 	}
 
+	public abstract boolean unconditional();
+
 	public boolean isLocal() {
 		return false;
 	}

@@ -107,6 +107,11 @@ final class LinkCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	public Ref target() {
 		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
 			return null;

@@ -37,6 +37,7 @@ import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Command;
+import org.o42a.core.st.CommandTargets;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -110,6 +111,14 @@ public class LocalDef extends ValueDef {
 		return valueStruct
 				.prefixWith(getLocalPrefix())
 				.prefixWith(getScopeUpgrade().toPrefix());
+	}
+
+	@Override
+	public boolean unconditional() {
+
+		final CommandTargets targets = getCommand().getCommandTargets();
+
+		return targets.haveValue() && !targets.havePrerequisite();
 	}
 
 	@Override

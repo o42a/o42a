@@ -54,15 +54,6 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ArrayValueStruct valueStruct(Scope scope) {
-
-		final ArrayValueStruct valueStruct =
-				(ArrayValueStruct) ref().valueStruct(scope);
-
-		return valueStruct.setVariable(getExpectedStruct().isVariable());
-	}
-
-	@Override
 	public ValueDef valueDef() {
 		return new ArrayCopyValueDef(ref(), getExpectedStruct().isVariable());
 	}

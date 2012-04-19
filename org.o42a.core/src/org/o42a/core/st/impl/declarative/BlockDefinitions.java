@@ -34,7 +34,9 @@ import org.o42a.core.value.ValueStruct;
 final class BlockDefinitions {
 
 	private final BlockDefiner definer;
-	private DefTargets targets;
+	private DefTargets targets = noDefs();
+	private DefTargets claimTargets = noDefs();
+	private DefTargets propositionTargets = noDefs();
 	private ArrayList<DeclarativeSentence> claims;
 	private ArrayList<DeclarativeSentence> propositions;
 
@@ -75,7 +77,11 @@ final class BlockDefinitions {
 					getBlock().getScope());
 		} else {
 			claims =
-					new DeclarativePart(this.definer, this.claims, true)
+					new DeclarativePart(
+							this.definer,
+							this.claimTargets,
+							this.claims,
+							true)
 					.toDefinitions(valueStruct);
 		}
 
@@ -84,7 +90,11 @@ final class BlockDefinitions {
 		}
 
 		return claims.refine(
-				new DeclarativePart(this.definer, this.propositions, false)
+				new DeclarativePart(
+						this.definer,
+						this.propositionTargets,
+						this.propositions,
+						false)
 				.toDefinitions(valueStruct));
 	}
 
@@ -98,7 +108,6 @@ final class BlockDefinitions {
 
 	private void build() {
 		getBlock().executeInstructions();
-		this.targets = noDefs();
 
 		DefTargets prev = noDefs();
 		int index = -1;
@@ -134,8 +143,7 @@ final class BlockDefinitions {
 				} else {
 					prev = sentenceTargets.toPreconditions();
 				}
-				this.targets = this.targets.add(prev);
-				addSentence(sentence, index, claim);
+				addSentence(sentence, prev, index, claim);
 				continue;
 			}
 			if (this.targets.haveError()) {
@@ -151,15 +159,19 @@ final class BlockDefinitions {
 
 	private void addSentence(
 			DeclarativeSentence sentence,
+			DefTargets targets,
 			int index,
 			boolean claim) {
+		this.targets = this.targets.add(targets);
 		if (claim) {
+			this.claimTargets.add(targets);
 			if (this.claims == null) {
 				this.claims = new ArrayList<DeclarativeSentence>(
 						getBlock().getSentences().size() - index);
 			}
 			this.claims.add(sentence);
 		} else {
+			this.propositionTargets.add(targets);
 			if (this.propositions == null) {
 				this.propositions = new ArrayList<DeclarativeSentence>(
 						getBlock().getSentences().size() - index);

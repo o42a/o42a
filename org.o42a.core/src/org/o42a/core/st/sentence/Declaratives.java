@@ -24,6 +24,7 @@ import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.DefinitionTargets.noDefinitions;
+import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
 import java.util.List;
 
@@ -298,11 +299,34 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 		DefTargets result = noDefs();
 		DefTargets prev = noDefs();
+		DefTargets firstDeclaring = null;
 
 		for (Definer definer : getImplications()) {
 
 			final DefTargets targets = definer.getDefTargets();
 
+			if (targets.declaring()) {
+				if (firstDeclaring != null) {
+					if (!result.haveError()) {
+						declarationNotAlone(getLogger(), targets);
+						result = result.addError();
+					}
+					continue;
+				}
+				firstDeclaring = targets;
+				if (result.defining() && !result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
+			if (firstDeclaring != null && !targets.isEmpty()) {
+				if (!result.haveError()) {
+					declarationNotAlone(getLogger(), firstDeclaring);
+					result = result.addError();
+				}
+				continue;
+			}
 			if (!prev.breaking() || prev.havePrerequisite()) {
 				if (targets.breaking()) {
 					prev = targets;
@@ -320,6 +344,10 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 					"redundant_statement",
 					targets,
 					"Redundant statement");
+		}
+
+		if (firstDeclaring != null && result.isEmpty()) {
+			return result.add(firstDeclaring);
 		}
 
 		return result;

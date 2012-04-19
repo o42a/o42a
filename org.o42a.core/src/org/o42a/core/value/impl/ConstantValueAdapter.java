@@ -51,11 +51,6 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.valueType.struct();
-	}
-
-	@Override
 	public ValueDef valueDef() {
 		return this.valueType.struct().constantDef(
 				sourceOf(this.scope),

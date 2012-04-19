@@ -20,7 +20,7 @@
 package org.o42a.core.st.sentence;
 
 import static org.o42a.core.st.Command.exitCommand;
-import static org.o42a.core.st.Command.noCommand;
+import static org.o42a.core.st.Command.noCommands;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Command;
@@ -58,23 +58,24 @@ public abstract class ImperativeSentence
 		if (this.commandTargets != null) {
 			return this.commandTargets;
 		}
+		return this.commandTargets = applyExitTargets(
+				prerequisiteTargets().add(altTargets()));
+	}
 
-		final CommandTargets prerequisiteTarget;
+	private CommandTargets prerequisiteTargets() {
+
 		final ImperativeSentence prerequisite = getPrerequisite();
 
 		if (prerequisite == null) {
-			prerequisiteTarget = noCommand();
-		} else {
-			prerequisiteTarget = prerequisite.getCommandTargets();
+			return noCommands();
 		}
 
-		return this.commandTargets = applyExitTargets(
-				prerequisiteTarget.toPrerequisites().add(altTargets()));
+		return prerequisite.getCommandTargets().toPrerequisites();
 	}
 
 	private CommandTargets altTargets() {
 
-		CommandTargets result = noCommand();
+		CommandTargets result = noCommands();
 		Imperatives first = null;
 
 		for (Imperatives alt : getAlternatives()) {

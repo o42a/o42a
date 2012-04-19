@@ -1,6 +1,6 @@
 /*
     Compiler Tests
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -23,19 +23,11 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
-public class DefinitionErrorTest extends CompilerTestCase {
-
-	@Test
-	public void conditionAfterField() {
-		expectError("compiler.redundant_statement_after_field");
-		compile(
-				"A := 1,",
-				"false");
-	}
+public class DeclarativeStatementErrorTest extends CompilerTestCase {
 
 	@Test
 	public void conditionAfterValue() {
-		expectError("compiler.redundant_statement_after_value");
+		expectError("compiler.redundant_statement");
 		compile(
 				"A := integer (",
 				"  = 1,",
@@ -44,16 +36,8 @@ public class DefinitionErrorTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void conditionAfterBlockWithField() {
-		expectError("compiler.redundant_statement_after_field");
-		compile(
-				"(A := 1),",
-				"false");
-	}
-
-	@Test
 	public void conditionAfterBlockWithValue() {
-		expectError("compiler.redundant_statement_after_value");
+		expectError("compiler.redundant_statement");
 		compile(
 				"A := integer (",
 				"  (= 2),",
@@ -63,12 +47,48 @@ public class DefinitionErrorTest extends CompilerTestCase {
 
 	@Test
 	public void ambiguousSequentialValue() {
-		expectError("compiler.redundant_statement_after_value");
+		expectError("compiler.redundant_statement");
 		compile(
 				"A := integer (",
 				"  = 1,",
 				"  = 2",
 				")");
+	}
+
+	@Test
+	public void statementBeforeField() {
+		expectError("compiler.not_alone_field");
+		compile("Void, a := 1");
+	}
+
+	@Test
+	public void statementAfterField() {
+		expectError("compiler.not_alone_field");
+		compile("A := 1, void");
+	}
+
+	@Test
+	public void twoFields() {
+		expectError("compiler.not_alone_field");
+		compile("A := 1, b := 2");
+	}
+
+	@Test
+	public void statementBeforeClause() {
+		expectError("compiler.not_alone_clause");
+		compile("Void, <a> false");
+	}
+
+	@Test
+	public void statementAfterClause() {
+		expectError("compiler.not_alone_clause");
+		compile("<A> false, void");
+	}
+
+	@Test
+	public void twoClauses() {
+		expectError("compiler.not_alone_clause");
+		compile("<A> false, <b> false");
 	}
 
 }

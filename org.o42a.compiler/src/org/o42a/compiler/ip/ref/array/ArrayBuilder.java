@@ -52,7 +52,7 @@ abstract class ArrayBuilder {
 		TypeRef arrayItemType;
 
 		if (!typeByItems) {
-			valueStruct = knownArrayStruct();
+			valueStruct = knownArrayStruct().upgradeScope(scope);
 			arrayItemType = valueStruct.getItemTypeRef();
 		} else {
 			valueStruct = null;

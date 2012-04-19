@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.st.Command.noCommand;
+import static org.o42a.core.st.Command.noCommands;
 
 import org.o42a.core.Container;
 import org.o42a.core.source.LocationInfo;
@@ -139,8 +139,8 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	private CommandTargets commandTargets() {
 
-		CommandTargets result = noCommand();
-		CommandTargets prev = noCommand();
+		CommandTargets result = noCommands();
+		CommandTargets prev = noCommands();
 
 		for (Command command : getImplications()) {
 

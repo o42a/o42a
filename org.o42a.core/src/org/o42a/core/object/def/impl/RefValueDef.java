@@ -58,6 +58,11 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.ref.normalize(normalizer.getAnalyzer());
 		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
