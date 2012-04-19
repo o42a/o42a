@@ -47,16 +47,20 @@ public final class DeclarativePart
 		implements DeclarativeSentences {
 
 	private final BlockDefiner definer;
-	private List<DeclarativeSentence> sentences;
+	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences inline;
 
-	public DeclarativePart(BlockDefiner definer, boolean claim) {
+	public DeclarativePart(
+			BlockDefiner definer,
+			List<DeclarativeSentence> sentences,
+			boolean claim) {
 		super(
 				sourceOf(definer),
 				definer.getBlock(),
 				noScopeUpgrade(definer.getScope()),
 				claim);
 		this.definer = definer;
+		this.sentences = sentences;
 	}
 
 	private DeclarativePart(
@@ -69,13 +73,7 @@ public final class DeclarativePart
 
 	@Override
 	public final List<DeclarativeSentence> getSentences() {
-		if (this.sentences != null) {
-			return this.sentences;
-		}
-		if (isClaim()) {
-			return this.sentences = this.definer.getClaims();
-		}
-		return this.sentences = this.definer.getPropositions();
+		return this.sentences;
 	}
 
 	@Override
