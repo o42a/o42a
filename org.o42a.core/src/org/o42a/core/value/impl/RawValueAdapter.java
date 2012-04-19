@@ -28,7 +28,9 @@ import org.o42a.core.object.def.impl.RefValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.*;
+import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 
 
 public class RawValueAdapter extends ValueAdapter {
@@ -41,11 +43,6 @@ public class RawValueAdapter extends ValueAdapter {
 
 	public Ref ref() {
 		return this.ref;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return ref().valueStruct(scope);
 	}
 
 	@Override

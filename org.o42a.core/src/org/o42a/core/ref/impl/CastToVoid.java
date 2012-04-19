@@ -31,8 +31,10 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 final class CastToVoid extends Step {
@@ -55,6 +57,14 @@ final class CastToVoid extends Step {
 	@Override
 	public String toString() {
 		return "@@void";
+	}
+
+	@Override
+	protected TypeRef ancestor(
+			BoundPath path,
+			LocationInfo location,
+			Distributor distributor) {
+		return ValueType.VOID.typeRef(location, distributor.getScope());
 	}
 
 	@Override

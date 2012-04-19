@@ -19,7 +19,7 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.st.CommandTargets.NO_COMMAND;
+import static org.o42a.core.st.CommandTargets.NO_COMMANDS;
 import static org.o42a.core.st.ImplicationTargets.*;
 
 import org.o42a.core.Scope;
@@ -36,8 +36,8 @@ import org.o42a.util.log.LogInfo;
 
 public abstract class Command extends Implication<Command> {
 
-	public static CommandTargets noCommand() {
-		return NO_COMMAND;
+	public static CommandTargets noCommands() {
+		return NO_COMMANDS;
 	}
 
 	public static CommandTargets exitCommand(LogInfo loggable) {

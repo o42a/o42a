@@ -79,7 +79,8 @@ public abstract class DeclarativeSentence
 		if (this.targets != null) {
 			return this.targets;
 		}
-		return this.targets = addSentenceTargets(altTargets());
+		return this.targets = addSentenceTargets(
+				prerequisiteTargets().add(altTargets()));
 	}
 
 	public DefinitionTargets getDefinitionTargets() {
@@ -200,6 +201,17 @@ public abstract class DeclarativeSentence
 		return result;
 	}
 
+	private DefTargets prerequisiteTargets() {
+
+		final DeclarativeSentence prerequisite = getPrerequisite();
+
+		if (prerequisite == null) {
+			return noDefs();
+		}
+
+		return prerequisite.getDefTargets().toPrerequisites();
+	}
+
 	private DefTargets altTargets() {
 
 		DefTargets result = noDefs();
@@ -214,20 +226,20 @@ public abstract class DeclarativeSentence
 			} else if (result.isEmpty()) {
 				if (!result.haveError()) {
 					first.reportEmptyAlternative();
+					result = result.addError();
 				}
-				result = result.addError();
 				continue;
 			} else if (!result.defining()) {
 				if (!result.haveError()) {
 					declarationNotAlone(getLogger(), result);
+					result = result.addError();
 				}
-				result = result.addError();
 				continue;
 			} else if (!targets.defining()) {
 				if (!result.haveError()) {
 					declarationNotAlone(getLogger(), targets);
+					result = result.addError();
 				}
-				result = result.addError();
 				continue;
 			}
 			if (result.isEmpty()) {

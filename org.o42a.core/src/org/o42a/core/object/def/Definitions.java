@@ -269,17 +269,33 @@ public class Definitions extends Scoped {
 		final ValueStruct<?, ?> valueStruct =
 				getValueStruct() != null
 				? getValueStruct() : refinements.getValueStruct();
+		final ValueDefs newClaims = claims().add(refinements.claims());
+		final ValueDefs newPropositions;
 
-		return refineRequirements(refinements.requirements())
+		if (newClaims.unconditional()) {
+			newPropositions = NO_PROPOSITIONS;
+		} else {
+			newPropositions = refinements.propositions().add(propositions());
+		}
+
+		return new Definitions(
+				this,
+				valueStruct,
+				requirements(),
+				conditions(),
+				newClaims,
+				newPropositions);
+		/*return refineRequirements(refinements.requirements())
 				.refineConditions(refinements.conditions())
 				.refineClaims(valueStruct, refinements.claims())
 				.refinePropositions(
 						valueStruct,
-						refinements.propositions());
+						refinements.propositions());*/
 	}
 
 	public Definitions override(Definitions overriders) {
-		if (overriders.isEmpty()) {
+		return refine(overriders);
+		/*if (overriders.isEmpty()) {
 			return this;
 		}
 		if (isEmpty()) {
@@ -310,7 +326,7 @@ public class Definitions extends Scoped {
 				.refineClaims(overriders.getValueStruct(), overriders.claims())
 				.refinePropositions(
 						overriders.getValueStruct(),
-						overriders.propositions());
+						overriders.propositions());*/
 	}
 
 	public Definitions claim() {

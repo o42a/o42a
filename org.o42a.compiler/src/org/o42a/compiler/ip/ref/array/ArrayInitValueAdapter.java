@@ -32,7 +32,9 @@ import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.*;
+import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 
 
 final class ArrayInitValueAdapter extends ValueAdapter {
@@ -48,11 +50,6 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		this.ref = ref;
 		this.constructor = constructor;
 		this.arrayStruct = arrayStruct;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-		return this.arrayStruct.upgradeScope(scope);
 	}
 
 	@Override

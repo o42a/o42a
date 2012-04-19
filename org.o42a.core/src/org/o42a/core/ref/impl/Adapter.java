@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
+import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -35,7 +36,6 @@ import org.o42a.core.ref.path.PathFragment;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
@@ -135,20 +135,18 @@ public final class Adapter extends PathFragment implements LocationInfo {
 	}
 
 	private boolean castToVoid(Scope start) {
-
-		final ValueType<?> adapterValueType =
-				getAdapterType().typeObject(dummyUser())
-				.value()
-				.getValueType();
-
-		if (!adapterValueType.isVoid()) {
+		if (!getAdapterType().getValueType().isVoid()) {
 			return false;
 		}
 
-		final Obj object = start.toObject();
-		final ValueType<?> valueType = object.value().getValueType();
+		final Obj typeObject = getAdapterType().typeObject(User.dummyUser());
+		final Obj voidObject = start.getContext().getIntrinsics().getVoid();
 
-		return valueType.isVoid();
+		if (typeObject.getScope() != voidObject.getScope()) {
+			return false;
+		}
+
+		return !start.toObject().value().getValueType().isVoid();
 	}
 
 }

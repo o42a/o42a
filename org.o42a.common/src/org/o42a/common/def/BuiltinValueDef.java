@@ -60,6 +60,11 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
 	}

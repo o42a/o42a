@@ -137,7 +137,7 @@ public final class ImperativeDefiner extends Definer {
 		final InlineCmd inline = getCommand().inline(
 				normalizer,
 				valueStruct,
-				getLocalPrefix().rescope(getScope()));
+				getLocalPrefix().rescope(origin));
 
 		if (inline == null) {
 			return null;

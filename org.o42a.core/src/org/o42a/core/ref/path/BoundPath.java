@@ -253,6 +253,14 @@ public class BoundPath extends Location {
 	public final BoundPath prefixWith(PrefixPath prefix) {
 
 		final Path oldPath = getRawPath();
+
+		if (oldPath.isAbsolute()) {
+			if (prefix.getStart() == getOrigin()) {
+				return this;
+			}
+			return oldPath.bind(this, prefix.getStart());
+		}
+
 		final Path newPath = oldPath.prefixWith(prefix);
 
 		if (oldPath == newPath) {

@@ -120,6 +120,11 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 	}
 

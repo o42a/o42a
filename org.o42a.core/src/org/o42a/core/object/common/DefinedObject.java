@@ -27,8 +27,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.MainDefiner;
 
 
 public abstract class DefinedObject extends Obj {
@@ -36,7 +36,7 @@ public abstract class DefinedObject extends Obj {
 	private ObjectMemberRegistry memberRegistry;
 	private DeclarativeBlock definition;
 	private boolean definitionBuilt;
-	private Definer definer;
+	private MainDefiner definer;
 
 	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
@@ -70,7 +70,7 @@ public abstract class DefinedObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return getDefiner().define(getScope());
+		return getDefiner().createDefinitions();
 	}
 
 	protected abstract void buildDefinition(DeclarativeBlock definition);
@@ -111,7 +111,7 @@ public abstract class DefinedObject extends Obj {
 		return this.memberRegistry;
 	}
 
-	private Definer getDefiner() {
+	private MainDefiner getDefiner() {
 		if (this.definer == null) {
 			getDefinition();
 		}

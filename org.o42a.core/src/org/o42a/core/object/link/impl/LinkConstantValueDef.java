@@ -75,6 +75,11 @@ public final class LinkConstantValueDef extends ValueDef {
 				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
+	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
 	public final KnownLink getLink() {
 		return this.value.getCompilerValue();
 	}

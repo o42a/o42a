@@ -34,6 +34,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.LogicalValue;
@@ -47,11 +48,13 @@ public final class DeclarativePart
 		implements DeclarativeSentences {
 
 	private final BlockDefiner definer;
+	private final DefTargets targets;
 	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences inline;
 
 	public DeclarativePart(
 			BlockDefiner definer,
+			DefTargets targets,
 			List<DeclarativeSentence> sentences,
 			boolean claim) {
 		super(
@@ -61,6 +64,7 @@ public final class DeclarativePart
 				claim);
 		this.definer = definer;
 		this.sentences = sentences;
+		this.targets = targets;
 	}
 
 	private DeclarativePart(
@@ -68,7 +72,26 @@ public final class DeclarativePart
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.definer = prototype.definer;
+		this.targets = prototype.targets;
 		this.sentences = prototype.getSentences();
+	}
+
+	@Override
+	public ValueStruct<?, ?> getValueStruct() {
+
+		final ValueStruct<?, ?> valueStruct =
+				this.definer.env().getExpectedValueStruct();
+
+		if (!valueStruct.isScoped()) {
+			return valueStruct;
+		}
+
+		return valueStruct.prefixWith(getScopeUpgrade().toPrefix());
+	}
+
+	@Override
+	public boolean unconditional() {
+		return this.targets.haveValue() && !this.targets.havePrecondition();
 	}
 
 	@Override
@@ -114,13 +137,8 @@ public final class DeclarativePart
 	}
 
 	@Override
-	public ValueStruct<?, ?> getValueStruct() {
-		return this.definer.env().getExpectedValueStruct();
-	}
-
-	@Override
 	protected boolean hasConstantValue() {
-		return this.definer.getDefTargets().isConstant();
+		return this.targets.isConstant();
 	}
 
 	@Override

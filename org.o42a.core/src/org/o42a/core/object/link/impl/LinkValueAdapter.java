@@ -27,11 +27,12 @@ import org.o42a.core.object.def.CondDef;
 import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.def.impl.RefCondDef;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.*;
+import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 
 
 public class LinkValueAdapter extends ValueAdapter {
@@ -52,16 +53,6 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	public final LinkValueStruct getExpectedStruct() {
 		return this.expectedStruct;
-	}
-
-	@Override
-	public ValueStruct<?, ?> valueStruct(Scope scope) {
-
-		final LinkValueType expectedType = getExpectedStruct().getValueType();
-		final LinkValueStruct valueStruct =
-				ref().valueStruct(scope).toLinkStruct();
-
-		return valueStruct.setValueType(expectedType);
 	}
 
 	@Override

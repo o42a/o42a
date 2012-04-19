@@ -39,8 +39,8 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.io.URLSource;
 
@@ -73,7 +73,7 @@ public class Root extends Obj {
 
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
-	private Definer definer;
+	private MainDefiner definer;
 
 	private Root(
 			Scope topScope,
@@ -207,7 +207,7 @@ public class Root extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.define(getScope());
+		return this.definer.createDefinitions();
 	}
 
 	@Override

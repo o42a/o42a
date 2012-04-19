@@ -51,6 +51,11 @@ final class CondValueDef extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.def.normalize(normalizer);
 	}

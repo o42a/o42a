@@ -68,6 +68,11 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return true;
 	}

@@ -77,6 +77,11 @@ public class ArrayConstantValueDef extends ValueDef {
 				valueStruct.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
+	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
 	public final Array getArray() {
 		return this.value.getCompilerValue();
 	}

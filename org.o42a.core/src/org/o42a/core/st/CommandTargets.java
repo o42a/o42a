@@ -24,7 +24,7 @@ import org.o42a.util.log.LogInfo;
 
 public final class CommandTargets extends ImplicationTargets<CommandTargets> {
 
-	static final CommandTargets NO_COMMAND = new CommandTargets();
+	static final CommandTargets NO_COMMANDS = new CommandTargets();
 
 	private CommandTargets() {
 	}

@@ -38,8 +38,8 @@ import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.core.st.sentence.MainDefiner;
 
 
 public class Module extends Obj {
@@ -48,7 +48,7 @@ public class Module extends Obj {
 	private final String moduleName;
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
-	private Definer definer;
+	private MainDefiner definer;
 
 	public Module(CompilerContext context, String moduleName) {
 		this(context.compileModule(), moduleName);
@@ -120,7 +120,7 @@ public class Module extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.definer.define(getScope());
+		return this.definer.createDefinitions();
 	}
 
 	@Override

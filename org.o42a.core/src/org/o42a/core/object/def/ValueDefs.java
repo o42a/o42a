@@ -28,6 +28,7 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.ArrayUtil;
 
 
 public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
@@ -38,6 +39,18 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		super(defKind, defs);
 		assert defKind.isValue() :
 			"Value definition kind expected";
+	}
+
+	public final boolean unconditional() {
+
+		final ValueDef[] defs = get();
+		final int length = defs.length;
+
+		if (length == 0) {
+			return false;
+		}
+
+		return defs[length - 1].unconditional();
 	}
 
 	public final Value<?> constant(Definitions definitions) {
@@ -73,6 +86,22 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 	@Override
 	final ValueDefs create(DefKind defKind, ValueDef[] defs) {
 		return new ValueDefs(defKind, defs);
+	}
+
+	final ValueDefs add(ValueDefs additions) {
+		if (additions.isEmpty()) {
+			return this;
+		}
+		if (isEmpty()) {
+			return additions;
+		}
+		if (unconditional()) {
+			return this;
+		}
+
+		return new ValueDefs(
+				getDefKind(),
+				ArrayUtil.append(get(), additions.get()));
 	}
 
 	final Definitions refineClaims(
