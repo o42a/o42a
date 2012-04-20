@@ -19,8 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import org.o42a.core.Scope;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeFactory;
@@ -44,18 +42,6 @@ public final class DeclarativeClaim extends DeclarativeSentence {
 	@Override
 	public boolean isIssue() {
 		return false;
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-
-		final Definitions definitions = super.define(scope);
-
-		if (definitions == null) {
-			return null;
-		}
-
-		return definitions.claim();
 	}
 
 }

@@ -19,15 +19,11 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import static org.o42a.core.st.DefinitionTarget.conditionDefinition;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.*;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
@@ -59,29 +55,11 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public DefinerEnv nextEnv() {
-		return new RefEnvWrap(this);
-	}
-
-	@Override
 	public DefTargets getDefTargets() {
 		if (!getRef().isConstant()) {
 			return expressionDef();
 		}
 		return expressionDef().setConstant();
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-
-		final DefinitionTargets targets =
-				getRefDefiner().getDefinitionTargets();
-
-		if (targets.haveDefinition()) {
-			return conditionDefinition(getRef());
-		}
-
-		return noDefinitions();
 	}
 
 	@Override
@@ -99,12 +77,6 @@ final class RefConditionDefiner extends Definer {
 		}
 
 		return new ApplyDirective(getRef(), resolver, directive);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		return getRefDefiner().getValueAdapter().condDef().toDefinitions(
-				env().getExpectedValueStruct());
 	}
 
 	@Override
@@ -153,26 +125,6 @@ final class RefConditionDefiner extends Definer {
 
 		Env(DefinerEnv initialEnv) {
 			this.initialEnv = initialEnv;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.initialEnv.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.initialEnv.prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return this.initialEnv.hasPrecondition();
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.initialEnv.precondition(scope);
 		}
 
 		@Override

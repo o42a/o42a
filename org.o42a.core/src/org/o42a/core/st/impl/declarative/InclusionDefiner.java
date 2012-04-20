@@ -19,13 +19,10 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -59,16 +56,6 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public final DefinitionTargets getDefinitionTargets() {
-		return noDefinitions();
-	}
-
-	@Override
-	public DefinerEnv nextEnv() {
-		return new InclusionEnv(this);
-	}
-
-	@Override
 	public final void execute(InstructionContext context) {
 
 		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
@@ -79,11 +66,6 @@ abstract class InclusionDefiner<I extends Inclusion>
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return this;
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

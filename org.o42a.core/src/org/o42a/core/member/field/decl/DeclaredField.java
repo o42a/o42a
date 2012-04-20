@@ -34,7 +34,6 @@ import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
@@ -165,19 +164,11 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return !this.invalid;
 	}
 
-	private final DeclaredMemberField member() {
-		return (DeclaredMemberField) toMember();
-	}
-
 	private MainDefiner getContentDefiner() {
 		if (this.definer == null) {
 			getContent();
 		}
 		return this.definer;
-	}
-
-	private final DefinerEnv getInitialEnv() {
-		return member().getStatement().getInitialEnv();
 	}
 
 	private Ascendants buildAscendants(Ascendants implicitAscendants) {
@@ -230,26 +221,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 		DeclarationEnv(DeclaredField field) {
 			this.field = field;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return this.field.getInitialEnv().hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return this.field.getInitialEnv().prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return this.field.getInitialEnv().hasPrecondition();
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.field.getInitialEnv().precondition(scope);
 		}
 
 		@Override

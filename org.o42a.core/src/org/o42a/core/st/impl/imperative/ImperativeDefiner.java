@@ -19,9 +19,6 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.object.def.impl.LocalDef.localDef;
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -38,8 +35,6 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -82,25 +77,6 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public DefTargets getDefTargets() {
 		return this.command.getCommandTargets().toDefTargets();
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return valueDefinition(getStatement());
-	}
-
-	@Override
-	public DefinerEnv nextEnv() {
-		return new ImperativeDefinerEnv(this);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-
-		final ValueDef localDef = localDef(getBlock(), scope, this.command);
-
-		return env().apply(localDef).toDefinitions(
-				env().getExpectedValueStruct());
 	}
 
 	@Override

@@ -19,11 +19,6 @@
 */
 package org.o42a.core.st;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
-
-import org.o42a.core.Scope;
-import org.o42a.core.object.def.Def;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 
@@ -31,74 +26,10 @@ import org.o42a.core.value.ValueStruct;
 public abstract class DefinerEnv extends ImplicationEnv {
 
 	public static DefinerEnv defaultEnv(LocationInfo location) {
-		return new DefaultEnv(location);
-	}
-
-	public final boolean isConditional() {
-		return hasPrerequisite() || hasPrecondition();
-	}
-
-	public abstract boolean hasPrerequisite();
-
-	public abstract Logical prerequisite(Scope scope);
-
-	public abstract boolean hasPrecondition();
-
-	public abstract Logical precondition(Scope scope);
-
-	public Logical fullLogical(Scope scope) {
-		return prerequisite(scope).and(precondition(scope));
-	}
-
-	public DefinerEnv notCondition(LocationInfo location) {
-		return new DefaultEnv(location);
-	}
-
-	public <D extends Def<D>> D apply(D def) {
-
-		final D prereqDef;
-
-		if (hasPrerequisite()) {
-			prereqDef = def.addPrerequisite(prerequisite(def.getScope()));
-		} else {
-			prereqDef = def;
-		}
-
-		return prereqDef.addPrecondition(precondition(def.getScope()));
+		return new DefaultEnv();
 	}
 
 	private static final class DefaultEnv extends DefinerEnv {
-
-		private final LocationInfo location;
-
-		DefaultEnv(LocationInfo location) {
-			this.location = location;
-		}
-
-		@Override
-		public boolean hasPrerequisite() {
-			return false;
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-			return logicalTrue(this.location, scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-			return false;
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return logicalTrue(this.location, scope);
-		}
-
-		@Override
-		public <D extends Def<D>> D apply(D def) {
-			return def;
-		}
 
 		@Override
 		public String toString() {

@@ -19,15 +19,12 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -48,21 +45,6 @@ final class ClauseDefiner extends Definer {
 	@Override
 	public DefTargets getDefTargets() {
 		return definer().getDefTargets();
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return definer().getDefinitionTargets();
-	}
-
-	@Override
-	public DefinerEnv nextEnv() {
-		return env().notCondition(this);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		return definer().define(scope);
 	}
 
 	@Override
@@ -142,16 +124,6 @@ final class ClauseDefiner extends Definer {
 			return clauseDef();
 		}
 
-		@Override
-		public DefinerEnv nextEnv() {
-			return env().notCondition(this);
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
 	}
 
 	private static final class ExpressionClauseDefiner extends Definer {
@@ -165,21 +137,6 @@ final class ClauseDefiner extends Definer {
 		@Override
 		public DefTargets getDefTargets() {
 			return expressionDef();
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return env().notCondition(this);
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override
@@ -230,21 +187,6 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return env().notCondition(this);
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public DefValue value(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
@@ -292,21 +234,6 @@ final class ClauseDefiner extends Definer {
 		@Override
 		public DefTargets getDefTargets() {
 			return this.definer.getDefTargets();
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return env().notCondition(this);
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override

@@ -25,7 +25,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -43,11 +42,6 @@ public abstract class DeclarationDefiner extends Definer {
 
 	public final DeclarationStatement getDeclarationStatement() {
 		return (DeclarationStatement) getStatement();
-	}
-
-	@Override
-	public final Definitions define(Scope scope) {
-		return null;
 	}
 
 	@Override
