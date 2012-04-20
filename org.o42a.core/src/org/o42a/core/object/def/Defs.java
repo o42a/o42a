@@ -20,37 +20,42 @@
 package org.o42a.core.object.def;
 
 import static java.lang.System.arraycopy;
-import static org.o42a.core.object.def.DefKind.PROPOSITION;
+import static org.o42a.core.ir.op.InlineValue.inlineUnknown;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
+import org.o42a.core.object.def.impl.InlineValueDefs;
+import org.o42a.core.object.def.impl.RuntimeDef;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.ref.ScopeUpgrade;
+import org.o42a.core.ref.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 
 
-public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
+public final class Defs {
 
-	private final DefKind defKind;
-	private final D[] defs;
+	private final boolean claims;
+	private final Def[] defs;
+	private Value<?> constant;
 
-	Defs(DefKind defKind, D[] defs) {
-		this.defKind = defKind;
+	Defs(boolean claims, Def... defs) {
+		this.claims = claims;
 		this.defs = defs;
 	}
 
-	public final DefKind getDefKind() {
-		return this.defKind;
+	public final boolean isClaims() {
+		return this.claims;
 	}
 
-	public final D[] get() {
+	public final Def[] get() {
 		return this.defs;
 	}
 
@@ -62,11 +67,53 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return this.defs.length;
 	}
 
+	public final boolean unconditional() {
+
+		final Def[] defs = get();
+		final int length = defs.length;
+
+		if (length == 0) {
+			return false;
+		}
+
+		return defs[length - 1].unconditional();
+	}
+
+	public final Value<?> constant(Definitions definitions) {
+		if (this.constant != null) {
+			return this.constant;
+		}
+
+		for (Def def : get()) {
+
+			final Value<?> constantValue = def.getConstantValue();
+
+			if (!constantValue.getKnowledge().hasUnknownCondition()) {
+				return this.constant = constantValue;
+			}
+		}
+
+		return this.constant = definitions.getValueStruct().unknownValue();
+	}
+
+	public final Value<?> value(Definitions definitions, Resolver resolver) {
+		for (Def def : get()) {
+
+			final Value<?> value = def.value(resolver);
+
+			if (!value.getKnowledge().hasUnknownCondition()) {
+				return value;
+			}
+		}
+
+		return definitions.getValueStruct().unknownValue();
+	}
+
 	public final boolean updatedSince(Obj ascendant) {
 
 		final ObjectType ascendantType = ascendant.type();
 
-		for (D def : get()) {
+		for (Def def : get()) {
 			if (!ascendantType.derivedFrom(def.getSource().type())) {
 				return true;
 			}
@@ -79,7 +126,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 		final ObjectType ascendantType = ascendant.type();
 
-		for (D def : get()) {
+		for (Def def : get()) {
 			if (ascendantType.derivedFrom(def.getSource().type())) {
 				return true;
 			}
@@ -96,26 +143,17 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(this.defKind.displayName());
-		out.append("s[");
+		out.append(isClaims() ? "Claims[" : "Propositions[");
 		defsToString(out, false);
 		out.append(']');
 
 		return out.toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	final S self() {
-		return (S) this;
-	}
-
-	abstract S create(DefKind defKind, D[] defs);
-
-	final boolean assertValid(Scope scope, DefKind defKind) {
-		assert getDefKind() == defKind :
-			"Wrong definition kind: " + getDefKind()
-			+ ", but " + defKind + " expected";
-		for (Def<?> def : this.defs) {
+	final boolean assertValid(Scope scope, boolean claims) {
+		assert isClaims() == claims :
+			"Wrong definition kind";
+		for (Def def : this.defs) {
 			def.assertScopeIs(scope);
 		}
 		return true;
@@ -125,7 +163,7 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 
 		boolean hasComma = comma;
 
-		for (Def<?> def : this.defs) {
+		for (Def def : this.defs) {
 			if (hasComma) {
 				out.append(", ");
 			} else {
@@ -137,144 +175,40 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 		return hasComma;
 	}
 
-	final boolean imply(D def) {
-		for (D d : get()) {
-			if (d.impliesWhenBefore(def)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	final S removeImpliedBy(S existing) {
-
-		final int len = this.defs.length;
-		@SuppressWarnings("unchecked")
-		final D[] newItems = (D[]) Array.newInstance(
-				this.defs.getClass().getComponentType(),
-				len);
-		int idx = 0;
-
-		for (D def : this.defs) {
-			if (!existing.imply(def)) {
-				newItems[idx++] = def;
-			}
-		}
-		if (idx == len) {
-			return self();
-		}
-
-		return create(getDefKind(), ArrayUtil.clip(newItems, idx));
-	}
-
-	final S addClaims(S defs) {
-
-		final D[] claims = get();
-		final int len = claims.length;
-
-		if (len == 0) {
-			return defs;
-		}
-
-		final D[] items = defs.get();
-		@SuppressWarnings("unchecked")
-		final D[] newClaims = (D[]) Array.newInstance(
-				claims.getClass().getComponentType(),
-				len + items.length);
-		int idx = 0;
-
-		for (D def : items) {
-			for (int i = 0; i < len; ++i) {
-
-				final D c1 = claims[i];
-
-				if (c1.impliesWhenBefore(def)) {
-					if (items.length == 1) {
-						return self();
-					}
-				} else if (def.impliesWhenAfter(c1)) {
-					++i;
-					for (; i < len; ++i) {
-
-						final D c2 = claims[i];
-
-						if (def.impliesWhenAfter(c2)) {
-							continue;
-						}
-						newClaims[idx++] = c2;
-					}
-					newClaims[idx++] = def;
-					break;
-				}
-				newClaims[idx++] = c1;
-			}
-		}
-
-		return create(getDefKind().unclaim(), ArrayUtil.clip(newClaims, idx));
-	}
-
-	final S addPropositions(S claims, S defs) {
-
-		final D[] propositions = get();
-		final int len = propositions.length;
-
-		if (len == 0) {
-			return defs;
-		}
-
-		final D[] items = defs.get();
-		final D[] newPropositions =
-				Arrays.copyOf(propositions, len + items.length);
-		int idx = propositions.length;
-
-		for (D proposition : items) {
-			if (imply(proposition)) {
-				continue;
-			}
-			if (claims.imply(proposition)) {
-				continue;
-			}
-			newPropositions[idx++] = proposition;
-		}
-
-		return create(getDefKind(), ArrayUtil.clip(newPropositions, idx));
-	}
-
-	final S claim(S claims) {
+	final Defs claim(Defs claims) {
 		if (isEmpty()) {
 			return claims;
 		}
 
-		final D[] propositions = get();
-		final D[] oldClaims = claims.get();
-		final D[] newClaims = Arrays.copyOf(
+		final Def[] propositions = get();
+		final Def[] oldClaims = claims.get();
+		final Def[] newClaims = Arrays.copyOf(
 				oldClaims,
 				oldClaims.length + propositions.length);
 
 		int idx = oldClaims.length;
 
-		for (D proposition : propositions) {
+		for (Def proposition : propositions) {
 			newClaims[idx++] = proposition.claim();
 		}
 
-		return create(getDefKind().claim(), newClaims);
+		return new Defs(true, newClaims);
 	}
 
-	final S unclaim(S propositions) {
+	final Defs unclaim(Defs propositions) {
 		if (isEmpty()) {
 			return propositions;
 		}
 
-		final D[] oldPropositions = propositions.get();
-		final D[] claims = get();
-		@SuppressWarnings("unchecked")
-		final D[] newPropositions = (D[]) Array.newInstance(
+		final Def[] oldPropositions = propositions.get();
+		final Def[] claims = get();
+		final Def[] newPropositions = (Def[]) Array.newInstance(
 				propositions.getClass().getComponentType(),
 				claims.length + oldPropositions.length);
 
 		int idx = 0;
 
-		for (D claim : claims) {
+		for (Def claim : claims) {
 			newPropositions[idx++] = claim.unclaim();
 		}
 
@@ -285,28 +219,27 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 				claims.length,
 				oldPropositions.length);
 
-		return create(PROPOSITION, newPropositions);
+		return new Defs(false, newPropositions);
 	}
 
-	final S upgradeScope(ScopeUpgrade scopeUpgrade) {
+	final Defs upgradeScope(ScopeUpgrade scopeUpgrade) {
 		if (isEmpty()) {
-			return self();
+			return this;
 		}
 
-		final D[] items = get();
+		final Def[] items = get();
 
 		for (int i = 0; i < items.length; ++i) {
 
-			final D def = items[i];
-			final D newDef = def.upgradeScope(scopeUpgrade);
+			final Def def = items[i];
+			final Def newDef = def.upgradeScope(scopeUpgrade);
 
 			newDef.assertScopeIs(scopeUpgrade.getFinalScope());
 			if (def == newDef) {
 				continue;
 			}
 
-			@SuppressWarnings("unchecked")
-			final D[] newItems = (D[]) Array.newInstance(
+			final Def[] newItems = (Def[]) Array.newInstance(
 					items.getClass().getComponentType(),
 					items.length);
 
@@ -316,26 +249,120 @@ public abstract class Defs<D extends Def<D>, S extends Defs<D, S>> {
 				newItems[i] = items[i].upgradeScope(scopeUpgrade);
 			}
 
-			return create(getDefKind(), newItems);
+			return new Defs(isClaims(), newItems);
 		}
 
-		return self();
+		return this;
+	}
+
+	final Defs add(Defs additions) {
+		if (additions.isEmpty()) {
+			return this;
+		}
+		if (isEmpty()) {
+			return additions;
+		}
+		if (unconditional()) {
+			return this;
+		}
+
+		return new Defs(
+				isClaims(),
+				ArrayUtil.append(get(), additions.get()));
+	}
+
+	InlineValue inline(Normalizer normalizer, Definitions definitions) {
+
+		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
+
+		if (isEmpty()) {
+			return inlineUnknown(valueStruct);
+		}
+
+		final Def[] defs = get();
+
+		if (defs.length == 1) {
+			return defs[0].inline(normalizer, valueStruct);
+		}
+
+		final InlineValue[] inlines = new InlineValue[defs.length];
+
+		for (int i = 0; i < defs.length; ++i) {
+			inlines[i] = defs[i].inline(normalizer, valueStruct);
+		}
+
+		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
+	}
+
+	final Defs runtime(Definitions definitions) {
+		return new Defs(
+				isClaims(),
+				new RuntimeDef(definitions));
+	}
+
+	boolean upgradeValueStruct(
+			Definitions definitions,
+			ValueStruct<?, ?> valueStruct) {
+
+		boolean ok = true;
+
+		for (Def def : get()) {
+			if (!valueStruct.assignableFrom(def.getValueStruct())) {
+				definitions.getLogger().incompatible(def, valueStruct);
+			}
+		}
+
+		return ok;
+	}
+
+	final Defs toVoid() {
+
+		final Def[] oldDefs = get();
+
+		if (oldDefs.length == 0) {
+			return this;
+		}
+
+		final Def[] newDefs = new Def[oldDefs.length];
+
+		for (int i = 0; i < newDefs.length; ++i) {
+			newDefs[i] = oldDefs[i].toVoid();
+		}
+
+		return new Defs(isClaims(), newDefs);
+	}
+
+	final void resolveTargets(TargetResolver wrapper) {
+		for (Def def : get()) {
+			def.resolveTarget(wrapper);
+		}
+	}
+
+	private void validate(ValueStruct<?, ?> valueStruct) {
+		for (Def def : get()) {
+			if (!valueStruct.assignableFrom(def.getValueStruct())) {
+				def.getContext().getLogger().incompatible(
+						def,
+						valueStruct);
+			}
+		}
 	}
 
 	void resolveAll(Definitions definitions) {
+		validate(definitions.getValueStruct());
 
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
-		final ObjectValuePart<?, ?> part = objectValue.part(getDefKind());
+		final ObjectValuePart part = objectValue.part(isClaims());
 		final Resolver resolver = part.resolver();
 
-		for (Def<?> def : get()) {
+		for (Def def : get()) {
 			def.resolveAll(resolver);
 		}
 	}
 
 	final void normalize(RootNormalizer normalizer) {
-		for (Def<?> def : get()) {
+		for (Def def : get()) {
 			def.normalize(normalizer);
 		}
 	}

@@ -29,23 +29,20 @@ import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.object.def.Def;
-import org.o42a.core.object.def.DefKind;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.ref.Resolver;
 
 
-public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
-		implements UserInfo {
+public final class ObjectValuePart implements UserInfo {
 
 	private final ObjectValue objectValue;
-	private final DefKind defKind;
+	private final boolean claim;
 	private Usable<ValuePartUsage> uses;
 	private Usable<SimpleUsage> ancestorDefsUpdates;
 
-	ObjectValuePart(ObjectValue objectValue, DefKind defKind) {
+	ObjectValuePart(ObjectValue objectValue, boolean claim) {
 		this.objectValue = objectValue;
-		this.defKind = defKind;
+		this.claim = claim;
 	}
 
 	public final Obj getObject() {
@@ -56,13 +53,12 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return this.objectValue;
 	}
 
-	public final DefKind getDefKind() {
-		return this.defKind;
+	public final boolean isClaim() {
+		return this.claim;
 	}
 
-	@SuppressWarnings("unchecked")
-	public final S getDefs() {
-		return (S) getObjectValue().getDefinitions().defs(getDefKind());
+	public final Defs getDefs() {
+		return getObjectValue().getDefinitions().defs(isClaim());
 	}
 
 	public final Uses<SimpleUsage> ancestorDefsUpdates() {
@@ -112,7 +108,7 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		return getObject().getScope().newResolver(uses());
 	}
 
-	public final void wrapBy(ObjectValuePart<?, ?> wrapPart) {
+	public final void wrapBy(ObjectValuePart wrapPart) {
 		uses().useBy(
 				wrapPart.uses().usageUser(VALUE_PART_USAGE),
 				VALUE_PART_USAGE);
@@ -126,10 +122,10 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 
 	@Override
 	public String toString() {
-		if (this.defKind == null) {
+		if (this.objectValue == null) {
 			return super.toString();
 		}
-		return this.defKind.displayName() + "Of[" + getObject() + ']';
+		return (isClaim() ? "ClaimOf[" : "PropositionOf[") + getObject() + ']';
 	}
 
 	final Usable<ValuePartUsage> uses() {
@@ -160,8 +156,11 @@ public abstract class ObjectValuePart<D extends Def<D>, S extends Defs<D, S>>
 		if (this.ancestorDefsUpdates != null) {
 			return this.ancestorDefsUpdates;
 		}
+
+		final String name = isClaim() ? "Claim" : "Proposition";
+
 		return this.ancestorDefsUpdates = simpleUsable(
-				"Ancestor " + getDefKind().displayName() + "sUpdatesOf",
+				"Ancestor " + name + "UpdatesOf",
 				getObject());
 	}
 

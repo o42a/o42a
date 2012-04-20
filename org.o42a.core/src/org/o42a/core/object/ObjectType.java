@@ -36,7 +36,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.def.DefKind;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
@@ -458,14 +457,28 @@ public final class ObjectType implements UserInfo {
 		final ObjectValue ascendantValue = getObject().value();
 		final ObjectValue derivedValue = derived.value();
 
-		for (DefKind defKind : DefKind.values()) {
+		trackAscendantPartUsage(
+				ancestor,
+				ascendantValue,
+				derivedValue,
+				true);
+		trackAscendantPartUsage(
+				ancestor,
+				ascendantValue,
+				derivedValue,
+				false);
+	}
 
-			final ObjectValuePart<?, ?> derivedPart =
-					derivedValue.part(defKind);
+	private void trackAscendantPartUsage(
+			final Obj ancestor,
+			final ObjectValue ascendantValue,
+			final ObjectValue derivedValue,
+			final boolean claim) {
 
-			if (derivedPart.getDefs().presentIn(ancestor)) {
-				ascendantValue.part(defKind).accessBy(derivedPart);
-			}
+		final ObjectValuePart derivedPart = derivedValue.part(claim);
+
+		if (derivedPart.getDefs().presentIn(ancestor)) {
+			ascendantValue.part(claim).accessBy(derivedPart);
 		}
 	}
 
@@ -488,19 +501,34 @@ public final class ObjectType implements UserInfo {
 		final Obj oldAncestorObject =
 				oldAncestor.typeObject(dummyUser());
 
-		for (DefKind defKind : DefKind.values()) {
+		trackAncestorPartUpdates(
+				since,
+				newAncestorValue,
+				oldAncestorObject,
+				true);
+		trackAncestorPartUpdates(
+				since,
+				newAncestorValue,
+				oldAncestorObject,
+				false);
+	}
 
-			final ObjectValuePart<?, ?> sampleValuePart =
-					getObject().value().part(defKind);
-			final ObjectValuePart<?, ?> sinceValuePart =
-					since.value().part(defKind);
+	private void trackAncestorPartUpdates(
+			final Obj since,
+			final ObjectValue newAncestorValue,
+			final Obj oldAncestorObject,
+			final boolean claim) {
 
-			sampleValuePart.updateAncestorDefsBy(
-					sinceValuePart.ancestorDefsUpdatedByUser());
-			if (newAncestorValue.part(defKind).getDefs().updatedSince(
-					oldAncestorObject)) {
-				sampleValuePart.updateAncestorDefsBy(sinceValuePart);
-			}
+		final ObjectValuePart sampleValuePart =
+				getObject().value().part(claim);
+		final ObjectValuePart sinceValuePart =
+				since.value().part(claim);
+
+		sampleValuePart.updateAncestorDefsBy(
+				sinceValuePart.ancestorDefsUpdatedByUser());
+		if (newAncestorValue.part(claim).getDefs().updatedSince(
+				oldAncestorObject)) {
+			sampleValuePart.updateAncestorDefsBy(sinceValuePart);
 		}
 	}
 

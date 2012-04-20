@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -29,7 +27,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -38,7 +36,7 @@ import org.o42a.core.value.ValueKnowledge;
 import org.o42a.core.value.ValueStruct;
 
 
-public class LinkByValueDef extends ValueDef {
+public class LinkByValueDef extends Def {
 
 	static Value<?> linkByValue(Ref ref, LinkValueStruct linkStruct) {
 
@@ -91,12 +89,6 @@ public class LinkByValueDef extends ValueDef {
 
 	@Override
 	public Ref target() {
-		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
-			return null;
-		}
-		if (!getPrecondition().isTrue()) {
-			return null;
-		}
 		return this.ref;
 	}
 
@@ -110,27 +102,12 @@ public class LinkByValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return this.ref.getLogical();
-	}
-
-	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return linkByValue(this.ref, this.linkStruct);
 	}
 
 	@Override
-	protected ValueDef create(
+	protected LinkByValueDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new LinkByValueDef(this, upgrade, additionalUpgrade);
@@ -142,12 +119,12 @@ public class LinkByValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolve(resolver).resolveTarget();
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

@@ -20,7 +20,7 @@
 package org.o42a.common.object;
 
 import org.o42a.common.def.Builtin;
-import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.def.BuiltinDef;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
@@ -90,7 +90,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 			valueStruct = ancestorValueStruct.prefixWith(prefix);
 		}
 
-		return new BuiltinValueDef(this).toDefinitions(valueStruct);
+		return new BuiltinDef(this).toDefinitions(valueStruct);
 	}
 
 }

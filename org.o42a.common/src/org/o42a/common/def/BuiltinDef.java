@@ -19,8 +19,6 @@
 */
 package org.o42a.common.def;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
@@ -28,18 +26,18 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public class BuiltinValueDef extends ValueDef {
+public class BuiltinDef extends Def {
 
 	private final Builtin builtin;
 	private InlineValue inline;
 
-	public BuiltinValueDef(Builtin builtin) {
+	public BuiltinDef(Builtin builtin) {
 		super(
 				builtin.toObject(),
 				builtin,
@@ -47,8 +45,8 @@ public class BuiltinValueDef extends ValueDef {
 		this.builtin = builtin;
 	}
 
-	private BuiltinValueDef(
-			BuiltinValueDef prototype,
+	private BuiltinDef(
+			BuiltinDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.builtin = prototype.builtin;
@@ -70,35 +68,15 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	protected String name() {
-		return "BuiltinValueDef";
-	}
-
-	@Override
 	protected boolean hasConstantValue() {
 		return this.builtin.isConstantBuiltin();
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.builtin.toObject().getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.builtin.toObject().getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return runtimeLogical(this, this.builtin.toObject().getScope());
-	}
-
-	@Override
-	protected BuiltinValueDef create(
+	protected BuiltinDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new BuiltinValueDef(this, upgrade);
+		return new BuiltinDef(this, upgrade);
 	}
 
 	@Override
@@ -107,7 +85,7 @@ public class BuiltinValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 
 		final Obj object = resolver.getContainer().toObject();
 		final Obj builtin = this.builtin.toObject();
@@ -117,11 +95,11 @@ public class BuiltinValueDef extends ValueDef {
 		}
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
-				object.value().valuePart(isClaim()).resolver());
+				object.value().part(isClaim()).resolver());
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return this.builtin.inlineBuiltin(

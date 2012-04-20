@@ -27,7 +27,6 @@ import static org.o42a.core.object.value.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.Scope;
-import org.o42a.core.object.def.DefKind;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValueParts;
@@ -237,9 +236,8 @@ public final class ObjectValue extends ObjectValueParts {
 	}
 
 	public final void wrapBy(ObjectValue wrapValue) {
-		for (DefKind defKind : DefKind.values()) {
-			part(defKind).wrapBy(wrapValue.part(defKind));
-		}
+		claim().wrapBy(wrapValue.claim());
+		proposition().wrapBy(wrapValue.proposition());
 	}
 
 	public final void resolveAll(UserInfo user) {

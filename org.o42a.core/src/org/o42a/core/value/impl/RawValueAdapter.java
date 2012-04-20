@@ -21,10 +21,8 @@ package org.o42a.core.value.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.object.def.impl.RefCondDef;
-import org.o42a.core.object.def.impl.RefValueDef;
+import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -46,13 +44,8 @@ public class RawValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueDef valueDef() {
-		return new RefValueDef(this.ref);
-	}
-
-	@Override
-	public CondDef condDef() {
-		return new RefCondDef(this.ref);
+	public Def valueDef() {
+		return new RefDef(this.ref);
 	}
 
 	@Override

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
@@ -28,7 +27,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
@@ -38,12 +37,12 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class LinkConstantValueDef extends ValueDef {
+public final class LinkConstantDef extends Def {
 
 	private final Value<KnownLink> value;
 	private LinkValueStruct valueStruct;
 
-	public LinkConstantValueDef(
+	public LinkConstantDef(
 			Obj source,
 			LocationInfo location,
 			LinkValueStruct valueStruct,
@@ -55,8 +54,8 @@ public final class LinkConstantValueDef extends ValueDef {
 		this.value = valueStruct.compilerValue(value);
 	}
 
-	private LinkConstantValueDef(
-			LinkConstantValueDef prototype,
+	private LinkConstantDef(
+			LinkConstantDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
@@ -86,12 +85,6 @@ public final class LinkConstantValueDef extends ValueDef {
 
 	@Override
 	public Ref target() {
-		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
-			return null;
-		}
-		if (!getPrecondition().isTrue()) {
-			return null;
-		}
 		return this.value.getCompilerValue().getTargetRef().getRef();
 	}
 
@@ -113,25 +106,10 @@ public final class LinkConstantValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ValueDef create(
+	protected LinkConstantDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new LinkConstantValueDef(this, upgrade);
-	}
-
-	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return logicalTrue(this, getSource().getScope());
+		return new LinkConstantDef(this, upgrade);
 	}
 
 	@Override
@@ -140,12 +118,12 @@ public final class LinkConstantValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.value.resolveAll(resolver);
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

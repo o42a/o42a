@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
@@ -28,7 +27,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
@@ -36,22 +35,22 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public final class ConstantValueDef<T> extends ValueDef {
+public final class ConstantDef<T> extends Def {
 
 	private final Value<T> value;
 
-	public ConstantValueDef(Obj source, LocationInfo location, Value<T> value) {
+	public ConstantDef(Obj source, LocationInfo location, Value<T> value) {
 		super(source, location, noScopeUpgrade(source.getScope()));
 		this.value = value;
 	}
 
-	ConstantValueDef(ConstantObject<T> source) {
+	ConstantDef(ConstantObject<T> source) {
 		super(source, source, noScopeUpgrade(source.getScope()));
 		this.value = source.getValue();
 	}
 
-	private ConstantValueDef(
-			ConstantValueDef<T> prototype,
+	private ConstantDef(
+			ConstantDef<T> prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
@@ -83,34 +82,19 @@ public final class ConstantValueDef<T> extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected ValueDef create(
+	protected ConstantDef<T> create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new ConstantValueDef<T>(this, upgrade);
+		return new ConstantDef<T>(this, upgrade);
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.value.resolveAll(resolver);
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return new Inline(this.value);
@@ -119,11 +103,6 @@ public final class ConstantValueDef<T> extends ValueDef {
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.value.op(dirs.getBuilder(), dirs.code());
-	}
-
-	@Override
-	protected String name() {
-		return "ConstantValueDef";
 	}
 
 	private static final class Inline extends InlineValue {

@@ -23,17 +23,17 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.object.value.ValuePart;
+import org.o42a.core.object.value.ObjectValuePart;
 
 
-public final class ObjectPropositionFunc extends ObjectValueIRValFunc {
+public final class ObjectPropositionFunc extends ObjectValueIRFunc {
 
 	public ObjectPropositionFunc(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
 	@Override
-	public final ValuePart part() {
+	public final ObjectValuePart part() {
 		return getObject().value().proposition();
 	}
 

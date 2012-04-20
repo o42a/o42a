@@ -19,16 +19,13 @@
 */
 package org.o42a.core.object.def;
 
-import static org.o42a.core.object.def.DefKind.*;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
-import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
@@ -37,15 +34,15 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public class Definitions extends Scoped {
 
-	static final CondDefs NO_REQUIREMENTS = new CondDefs(REQUIREMENT);
-	static final CondDefs NO_CONDITIONS = new CondDefs(CONDITION);
-	static final ValueDefs NO_CLAIMS = new ValueDefs(CLAIM);
-	static final ValueDefs NO_PROPOSITIONS = new ValueDefs(PROPOSITION);
+	static final Defs NO_CLAIMS = new Defs(true);
+	static final Defs NO_PROPOSITIONS = new Defs(false);
 
 	public static Definitions emptyDefinitions(
 			LocationInfo location,
@@ -57,26 +54,17 @@ public class Definitions extends Scoped {
 			LocationInfo location,
 			Scope scope,
 			ValueStruct<?, ?> valueStruct) {
-
-		final CondDefs conditions = new CondDefs(
-				DefKind.CONDITION,
-				logicalTrue(location, scope).toCondDef());
-
 		return new Definitions(
 				location,
 				scope,
 				valueStruct,
-				NO_REQUIREMENTS,
-				conditions,
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
 	}
 
 	private final ValueStruct<?, ?> valueStruct;
-	private final CondDefs requirements;
-	private final CondDefs conditions;
-	private final ValueDefs claims;
-	private final ValueDefs propositions;
+	private final Defs claims;
+	private final Defs propositions;
 
 	private Value<?> constant;
 	private DefTarget target;
@@ -85,18 +73,12 @@ public class Definitions extends Scoped {
 			LocationInfo location,
 			Scope scope,
 			ValueStruct<?, ?> valueStruct,
-			CondDefs requirements,
-			CondDefs conditions,
-			ValueDefs claims,
-			ValueDefs propositions) {
+			Defs claims,
+			Defs propositions) {
 		super(location, scope);
-		assert requirements.assertValid(scope, REQUIREMENT);
-		assert conditions.assertValid(scope, CONDITION);
-		assert claims.assertValid(scope, CLAIM);
-		assert propositions.assertValid(scope, PROPOSITION);
+		assert claims.assertValid(scope, true);
+		assert propositions.assertValid(scope, false);
 		this.valueStruct = valueStruct;
-		this.requirements = requirements;
-		this.conditions = conditions;
 		this.claims = claims;
 		this.propositions = propositions;
 		assert assertEmptyWithoutValues();
@@ -107,8 +89,6 @@ public class Definitions extends Scoped {
 				location,
 				scope,
 				null,
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
 				NO_CLAIMS,
 				NO_PROPOSITIONS);
 	}
@@ -116,16 +96,12 @@ public class Definitions extends Scoped {
 	Definitions(
 			Definitions prototype,
 			ValueStruct<?, ?> valueStruct,
-			CondDefs requirements,
-			CondDefs conditions,
-			ValueDefs claims,
-			ValueDefs propositions) {
+			Defs claims,
+			Defs propositions) {
 		this(
 				prototype,
 				prototype.getScope(),
 				valueStruct,
-				requirements,
-				conditions,
 				claims,
 				propositions);
 	}
@@ -158,28 +134,6 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final ValueStruct<?, ?> valueStruct =
-				isEmpty() ? ValueStruct.VOID : getValueStruct();
-
-		switch (requirements().getConstant()) {
-		case RUNTIME:
-			return valueStruct.runtimeValue();
-		case FALSE:
-			return valueStruct.falseValue();
-		case TRUE:
-		case UNKNOWN:
-			switch (conditions().getConstant()) {
-			case TRUE:
-				break;
-			case RUNTIME:
-				return valueStruct.runtimeValue();
-			case UNKNOWN:
-			case FALSE:
-				return valueStruct.falseValue();
-			}
-			break;
-		}
-
 		final Value<?> claim = claims().constant(this);
 
 		if (!claim.getKnowledge().hasUnknownCondition()) {
@@ -189,64 +143,30 @@ public class Definitions extends Scoped {
 		return propositions().constant(this);
 	}
 
-	public final CondDefs requirements() {
-		return this.requirements;
-	}
-
-	public final CondDefs conditions() {
-		return this.conditions;
-	}
-
-	public final ValueDefs claims() {
+	public final Defs claims() {
 		return this.claims;
 	}
 
-	public final ValueDefs propositions() {
+	public final Defs propositions() {
 		return this.propositions;
 	}
 
-	public final Defs<?, ?> defs(DefKind defKind) {
-		switch (defKind) {
-		case REQUIREMENT:
-			return requirements();
-		case CONDITION:
-			return conditions();
-		case CLAIM:
+	public final Defs defs(boolean claim) {
+		if (claim) {
 			return claims();
-		case PROPOSITION:
-			return propositions();
 		}
-		throw new IllegalArgumentException(
-				"Unknown definition kind: " + defKind);
+		return propositions();
 	}
 
 	public final boolean onlyClaims() {
-		return propositions().isEmpty() && conditions().isEmpty();
+		return propositions().isEmpty();
 	}
 
 	public final boolean noClaims() {
-		return claims().isEmpty() && requirements().isEmpty();
+		return claims().isEmpty();
 	}
 
 	public Value<?> value(Resolver resolver) {
-
-		final Condition requirement = requirements().condition(resolver);
-
-		if (!requirement.isConstant()) {
-			return requirement.toValue(valueStruct());
-		}
-		if (requirement.isFalse() && !requirement.isUnknown()) {
-			return requirement.toValue(getValueStruct());
-		}
-
-		final Condition condition = conditions().condition(resolver);
-
-		if (!condition.isConstant()) {
-			return condition.toValue(valueStruct());
-		}
-		if (condition.isFalse()) {
-			return condition.toValue(valueStruct());
-		}
 
 		final Value<?> claim = claims().value(this, resolver);
 
@@ -269,8 +189,8 @@ public class Definitions extends Scoped {
 		final ValueStruct<?, ?> valueStruct =
 				getValueStruct() != null
 				? getValueStruct() : refinements.getValueStruct();
-		final ValueDefs newClaims = claims().add(refinements.claims());
-		final ValueDefs newPropositions;
+		final Defs newClaims = claims().add(refinements.claims());
+		final Defs newPropositions;
 
 		if (newClaims.unconditional()) {
 			newPropositions = NO_PROPOSITIONS;
@@ -281,8 +201,6 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				valueStruct,
-				requirements(),
-				conditions(),
 				newClaims,
 				newPropositions);
 	}
@@ -298,8 +216,6 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueStruct(),
-				conditions().claim(requirements()),
-				NO_CONDITIONS,
 				propositions().claim(claims()),
 				NO_PROPOSITIONS);
 	}
@@ -311,8 +227,6 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueStruct(),
-				NO_REQUIREMENTS,
-				requirements().unclaim(conditions()),
 				NO_CLAIMS,
 				claims().unclaim(propositions()));
 	}
@@ -335,8 +249,6 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				ValueStruct.VOID,
-				requirements(),
-				conditions(),
 				claims().toVoid(),
 				propositions().toVoid());
 	}
@@ -362,8 +274,6 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				valueStruct,
-				requirements(),
-				conditions(),
 				claims(),
 				propositions());
 	}
@@ -377,19 +287,11 @@ public class Definitions extends Scoped {
 		return new Definitions(
 				this,
 				getValueStruct(),
-				requirements(),
-				conditions(),
 				claims().runtime(this),
 				propositions().runtime(this));
 	}
 
 	public final boolean updatedSince(Obj ascendant) {
-		if (requirements().updatedSince(ascendant)) {
-			return true;
-		}
-		if (conditions().updatedSince(ascendant)) {
-			return true;
-		}
 		if (claims().updatedSince(ascendant)) {
 			return true;
 		}
@@ -398,14 +300,10 @@ public class Definitions extends Scoped {
 
 	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineCond requirement = requirements().inline(normalizer);
-		final InlineCond condition = conditions().inline(normalizer);
 		final InlineValue claim = claims().inline(normalizer, this);
 		final InlineValue proposition = propositions().inline(normalizer, this);
 
 		return normalizer.isCancelled() ? null : new InlineDefinitions(
-				requirement,
-				condition,
 				claim,
 				proposition);
 	}
@@ -413,8 +311,6 @@ public class Definitions extends Scoped {
 	public final void resolveAll() {
 		getContext().fullResolution().start();
 		try {
-			requirements().resolveAll(this);
-			conditions().resolveAll(this);
 			claims().resolveAll(this);
 			propositions().resolveAll(this);
 
@@ -431,8 +327,6 @@ public class Definitions extends Scoped {
 	}
 
 	public final void normalize(RootNormalizer normalizer) {
-		requirements().normalize(normalizer);
-		conditions().normalize(normalizer);
 		claims().normalize(normalizer);
 		propositions().normalize(normalizer);
 
@@ -462,23 +356,11 @@ public class Definitions extends Scoped {
 		if (linkStruct == null) {
 			return this.target = NO_DEF_TARGET;
 		}
-
-		final CondDefs requirements = requirements();
-
-		if (!requirements.isEmpty() && !requirements.getConstant().isTrue()) {
-			return this.target = NO_DEF_TARGET;
-		}
-
-		final CondDefs conditions = conditions();
-
-		if (!conditions.isEmpty() && !conditions.getConstant().isTrue()) {
-			return this.target = NO_DEF_TARGET;
-		}
 		if (!claims().isEmpty()) {
 			return this.target = NO_DEF_TARGET;
 		}
 
-		final ValueDef[] defs = propositions().get();
+		final Def[] defs = propositions().get();
 
 		if (defs.length == 0) {
 			return this.target = UNKNOWN_DEF_TARGET;
@@ -524,8 +406,6 @@ public class Definitions extends Scoped {
 
 		boolean comma = false;
 
-		comma = this.requirements.defsToString(out, comma);
-		comma = this.conditions.defsToString(out, comma);
 		comma = this.claims.defsToString(out, comma);
 		comma = this.propositions.defsToString(out, comma);
 
@@ -541,10 +421,6 @@ public class Definitions extends Scoped {
 		return true;
 	}
 
-	private final ValueStruct<?, ?> valueStruct() {
-		return this.valueStruct != null ? this.valueStruct : ValueStruct.VOID;
-	}
-
 	private Definitions upgradeScope(ScopeUpgrade scopeUpgrade) {
 		if (!scopeUpgrade.upgradeOf(this)) {
 			return this;
@@ -556,16 +432,10 @@ public class Definitions extends Scoped {
 			return emptyDefinitions(this, resultScope);
 		}
 
-		final CondDefs requirements = requirements();
-		final CondDefs newRequirements =
-				requirements.upgradeScope(scopeUpgrade);
-		final CondDefs conditions = conditions();
-		final CondDefs newConditions = conditions.upgradeScope(scopeUpgrade);
-		final ValueDefs claims = claims();
-		final ValueDefs newClaims = claims.upgradeScope(scopeUpgrade);
-		final ValueDefs propositions = propositions();
-		final ValueDefs newPropositions =
-				propositions.upgradeScope(scopeUpgrade);
+		final Defs claims = claims();
+		final Defs newClaims = claims.upgradeScope(scopeUpgrade);
+		final Defs propositions = propositions();
+		final Defs newPropositions = propositions.upgradeScope(scopeUpgrade);
 		final ValueStruct<?, ?> valueStruct = getValueStruct();
 		final ValueStruct<?, ?> newValueStruct =
 				valueStruct != null
@@ -575,8 +445,6 @@ public class Definitions extends Scoped {
 		if (resultScope == getScope()
 				// This may fail when there is no definitions.
 				&& valueStruct == newValueStruct
-				&& requirements == newRequirements
-				&& conditions == newConditions
 				&& claims == newClaims
 				&& propositions == newPropositions) {
 			return this;
@@ -586,8 +454,6 @@ public class Definitions extends Scoped {
 				this,
 				resultScope,
 				newValueStruct,
-				newRequirements,
-				newConditions,
 				newClaims,
 				newPropositions);
 	}

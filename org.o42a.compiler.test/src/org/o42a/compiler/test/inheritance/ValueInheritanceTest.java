@@ -25,7 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.object.def.ValueDefs;
+import org.o42a.core.object.def.Defs;
 import org.o42a.core.value.ValueType;
 
 
@@ -82,7 +82,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				"A := 1",
 				"B := a (Rt-void)");
 
-		final ValueDefs propositions =
+		final Defs propositions =
 				field("b")
 				.toObject()
 				.value()
@@ -99,7 +99,7 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				"A := void",
 				"B := a (Rt-void)");
 
-		final ValueDefs propositions =
+		final Defs propositions =
 				field("b")
 				.toObject()
 				.value()

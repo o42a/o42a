@@ -26,7 +26,7 @@ import static org.o42a.core.value.Value.falseValue;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.def.BuiltinDef;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -101,7 +101,7 @@ public final class False extends BuiltinObject {
 
 	@Override
 	protected final Definitions explicitDefinitions() {
-		return new BuiltinValueDef(this)
+		return new BuiltinDef(this)
 				.claim()
 				.toDefinitions(ValueStruct.VOID);
 	}

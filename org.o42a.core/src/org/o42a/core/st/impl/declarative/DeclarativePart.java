@@ -19,7 +19,6 @@
 */
 package org.o42a.core.st.impl.declarative;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.impl.declarative.BlockDefiner.resolveSentences;
 import static org.o42a.core.st.impl.declarative.BlockDefiner.sentencesValue;
@@ -32,7 +31,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
@@ -44,7 +43,7 @@ import org.o42a.util.fn.Cancelable;
 
 
 final class DeclarativePart
-		extends ValueDef
+		extends Def
 		implements DeclarativeSentences {
 
 	private final BlockDefiner definer;
@@ -163,12 +162,12 @@ final class DeclarativePart
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		resolveSentences(resolver, this);
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
@@ -198,25 +197,10 @@ final class DeclarativePart
 	}
 
 	@Override
-	protected ValueDef create(
+	protected DeclarativePart create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new DeclarativePart(this, upgrade);
-	}
-
-	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.definer.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.definer.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		throw new UnsupportedOperationException();
 	}
 
 	private final class Inline extends InlineValue {

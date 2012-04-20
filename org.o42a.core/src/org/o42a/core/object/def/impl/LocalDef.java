@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.Scope;
@@ -33,7 +32,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Command;
@@ -43,9 +42,9 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public class LocalDef extends ValueDef {
+public class LocalDef extends Def {
 
-	public static ValueDef localDef(
+	public static Def localDef(
 			ImperativeBlock block,
 			Scope scope,
 			Command command) {
@@ -81,11 +80,6 @@ public class LocalDef extends ValueDef {
 		this.block = prototype.block;
 		this.command = prototype.command;
 		this.localPrefix = prototype.localPrefix;
-	}
-
-	@Override
-	public boolean isLocal() {
-		return true;
 	}
 
 	public final ImperativeBlock getBlock() {
@@ -141,15 +135,6 @@ public class LocalDef extends ValueDef {
 		final StringBuilder out = new StringBuilder();
 
 		out.append("LocalDef{");
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
 		out.append(getLocation());
 		if (isClaim()) {
 			out.append("!}");
@@ -158,11 +143,6 @@ public class LocalDef extends ValueDef {
 		}
 
 		return out.toString();
-	}
-
-	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, getOwnerScope());
 	}
 
 	@Override
@@ -186,16 +166,6 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, getOwnerScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return new LocalLogical(this);
-	}
-
-	@Override
 	protected LocalDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
@@ -203,7 +173,7 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 
 		final LocalScope local =
 				getLocalPrefix().rescope(resolver.getScope()).toLocal();
@@ -212,7 +182,7 @@ public class LocalDef extends ValueDef {
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 

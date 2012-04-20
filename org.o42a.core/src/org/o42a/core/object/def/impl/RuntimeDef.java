@@ -19,22 +19,20 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
-import static org.o42a.core.ref.Logical.runtimeLogical;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class RuntimeDef extends ValueDef {
+public final class RuntimeDef extends Def {
 
 	private final Definitions definitions;
 
@@ -60,27 +58,7 @@ public final class RuntimeDef extends ValueDef {
 	}
 
 	@Override
-	protected String name() {
-		return "RuntimeCondDef";
-	}
-
-	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.definitions.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.definitions.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return runtimeLogical(this, this.definitions.getScope());
-	}
-
-	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 	}
 
 	@Override
@@ -116,7 +94,7 @@ public final class RuntimeDef extends ValueDef {
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		throw new UnsupportedOperationException();

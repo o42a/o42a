@@ -23,8 +23,8 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
@@ -90,10 +90,7 @@ public abstract class SingleValueType<T>
 		return path.target(distributor);
 	}
 
-	public final ValueDef constantDef(
-			Obj source,
-			LocationInfo location,
-			T value) {
+	public final Def constantDef(Obj source, LocationInfo location, T value) {
 		return struct().constantDef(source, location, value);
 	}
 

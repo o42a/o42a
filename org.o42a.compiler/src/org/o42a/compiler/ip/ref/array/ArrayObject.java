@@ -23,8 +23,8 @@ import static org.o42a.core.ref.Ref.errorRef;
 
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.array.*;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.ConstructedObject;
 import org.o42a.core.ref.path.PrefixPath;
@@ -99,8 +99,7 @@ final class ArrayObject extends ConstructedObject {
 	protected Definitions explicitDefinitions() {
 
 		final Array array = getArray();
-		final ValueDef def =
-				array.getValueStruct().constantDef(this, this, array);
+		final Def def = array.getValueStruct().constantDef(this, this, array);
 		final PrefixPath prefix =
 				getScope().getEnclosingScopePath().toPrefix(getScope());
 
