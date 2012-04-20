@@ -191,7 +191,6 @@ public class RefDefiner extends Definer {
 			final CodeDirs condDirs = dirs.falseWhenUnknown();
 
 			getRef().op(host).writeCond(condDirs);
-			condDirs.end();
 		}
 
 		@Override

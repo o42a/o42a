@@ -22,12 +22,10 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
 import org.o42a.core.object.def.SourceInfo;
 import org.o42a.core.object.type.Derivation;
-import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -41,17 +39,7 @@ abstract class DefCollector<D extends Def<D>> {
 			return true;
 		}
 
-		final ObjectType sourceType = source.type();
-
-		for (Sample sample : object.type().getSamples()) {
-			if (sample.type(dummyUser()).derivedFrom(
-					sourceType,
-					Derivation.PROPAGATION)) {
-				return true;
-			}
-		}
-
-		return false;
+		return object.type().derivedFrom(source.type(), Derivation.PROPAGATION);
 	}
 
 	private final Obj object;

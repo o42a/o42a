@@ -25,6 +25,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 import org.o42a.core.member.field.Field;
+import org.o42a.core.object.def.ValueDefs;
 import org.o42a.core.value.ValueType;
 
 
@@ -63,6 +64,49 @@ public class ValueInheritanceTest extends CompilerTestCase {
 				"B := &a (= 2)");
 		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
 		assertThat(definiteValue(this.b, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void enforceCondition() {
+		compile(
+				"A := 1",
+				"B := a (void)");
+		assertThat(definiteValue(this.a, ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(this.b, ValueType.INTEGER), is(1L));
+	}
+
+	@Test
+	public void enforceByRuntimeCondition() {
+		compile(
+				"Use namespace 'Test'",
+				"A := 1",
+				"B := a (Rt-void)");
+
+		final ValueDefs propositions =
+				field("b")
+				.toObject()
+				.value()
+				.getDefinitions()
+				.propositions();
+
+		assertThat(propositions.length(), is(2));
+	}
+
+	@Test
+	public void enforceVoidByRuntimeCondition() {
+		compile(
+				"Use namespace 'Test'",
+				"A := void",
+				"B := a (Rt-void)");
+
+		final ValueDefs propositions =
+				field("b")
+				.toObject()
+				.value()
+				.getDefinitions()
+				.propositions();
+
+		assertThat(propositions.length(), is(2));
 	}
 
 	@Override

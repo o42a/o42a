@@ -57,6 +57,26 @@ public class ImperativeSentenceErrorTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void unreachableAfterBracesWithReturn() {
+		expectError("compiler.unreachable_sentence");
+		compile(
+				"A := integer ({",
+				"  {False? Void. = 2}",
+				"  Void",
+				"})");
+	}
+
+	@Test
+	public void unreachableAfterParenthesesWithReturn() {
+		expectError("compiler.unreachable_sentence");
+		compile(
+				"A := integer ({",
+				"  (False? Void. = 2)",
+				"  Void",
+				"})");
+	}
+
+	@Test
 	public void unreachableAfterUnconditionalRepeat() {
 		expectError("compiler.unreachable_sentence");
 		compile(

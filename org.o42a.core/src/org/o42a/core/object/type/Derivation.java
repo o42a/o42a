@@ -20,7 +20,6 @@
 package org.o42a.core.object.type;
 
 
-
 public abstract class Derivation {
 
 	private static final int PROPAGATION_MASK = 0x40;

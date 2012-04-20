@@ -57,6 +57,26 @@ public class DeclarativeSentenceErrorTest extends CompilerTestCase {
 	}
 
 	@Test
+	public void redundantAfterBlockWithValue() {
+		expectError("compiler.redundant_sentence");
+		compile(
+				"A := integer (",
+				"  (False? Void. = 2)",
+				"  Void",
+				")");
+	}
+
+	@Test
+	public void redundantAfterBracesWithReturn() {
+		expectError("compiler.redundant_sentence");
+		compile(
+				"A := integer (",
+				"  {False? Void. = 2}",
+				"  Void",
+				")");
+	}
+
+	@Test
 	public void redundantAfterValueAlts() {
 		expectError("compiler.redundant_sentence");
 		compile(
