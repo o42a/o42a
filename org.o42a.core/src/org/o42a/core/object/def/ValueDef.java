@@ -99,11 +99,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		if (!hasConstantValue()) {
 			return this.constantValue = getValueStruct().runtimeValue();
 		}
-
-		final Resolver resolver =
-				getScopeUpgrade().rescope(getScope().dummyResolver());
-
-		return this.constantValue = calculateValue(resolver);
+		return this.constantValue = value(getScope().dummyResolver());
 	}
 
 	@Override
@@ -135,7 +131,7 @@ public abstract class ValueDef extends Def<ValueDef> {
 		return this.condition = createCondDef();
 	}
 
-	public final Value<?> value(Resolver resolver) {
+	public Value<?> value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
 		final Resolver rescoped = getScopeUpgrade().rescope(resolver);

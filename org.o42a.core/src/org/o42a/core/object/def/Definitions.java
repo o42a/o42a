@@ -285,48 +285,10 @@ public class Definitions extends Scoped {
 				conditions(),
 				newClaims,
 				newPropositions);
-		/*return refineRequirements(refinements.requirements())
-				.refineConditions(refinements.conditions())
-				.refineClaims(valueStruct, refinements.claims())
-				.refinePropositions(
-						valueStruct,
-						refinements.propositions());*/
 	}
 
-	public Definitions override(Definitions overriders) {
+	public final Definitions override(Definitions overriders) {
 		return refine(overriders);
-		/*if (overriders.isEmpty()) {
-			return this;
-		}
-		if (isEmpty()) {
-			return overriders;
-		}
-
-		if (overriders.propositions().isEmpty()) {
-			// No propositions specified.
-			if (overriders.conditions().isEmpty()) {
-				// No condition specified.
-				return refineRequirements(overriders.requirements())
-						.refineClaims(
-								overriders.getValueStruct(),
-								overriders.claims());
-			}
-			return removeConditions()
-					.refineRequirements(overriders.requirements())
-					.refineConditions(overriders.conditions())
-					.refineClaims(
-							overriders.getValueStruct(),
-							overriders.claims());
-		}
-
-		// Inherit claims, but not propositions.
-		return removePropositions()
-				.refineRequirements(overriders.requirements())
-				.refineConditions(overriders.conditions())
-				.refineClaims(overriders.getValueStruct(), overriders.claims())
-				.refinePropositions(
-						overriders.getValueStruct(),
-						overriders.propositions());*/
 	}
 
 	public Definitions claim() {
@@ -411,66 +373,14 @@ public class Definitions extends Scoped {
 		propositions().resolveTargets(resolver);
 	}
 
-	public Definitions requirementPart(LocationInfo location) {
-		return new Definitions(
-				location,
-				getScope(),
-				getValueStruct(),
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				NO_CLAIMS,
-				requirements().toValues());
-	}
-
-	public Definitions conditionPart(LocationInfo location) {
-		return new Definitions(
-				location,
-				getScope(),
-				getValueStruct(),
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				NO_CLAIMS,
-				conditions().toValues());
-	}
-
-	public Definitions valuePart(LocationInfo location) {
-		return new Definitions(
-				this,
-				getValueStruct(),
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				NO_CLAIMS,
-				claims().unclaim(propositions()));
-	}
-
-	public Definitions claimPart(LocationInfo location) {
-		return new Definitions(
-				this,
-				getValueStruct(),
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				NO_CLAIMS,
-				claims().unclaim(NO_PROPOSITIONS));
-	}
-
-	public Definitions propositionPart(LocationInfo location) {
-		return new Definitions(
-				this,
-				getValueStruct(),
-				NO_REQUIREMENTS,
-				NO_CONDITIONS,
-				NO_CLAIMS,
-				propositions());
-	}
-
 	public Definitions runtime() {
 		return new Definitions(
 				this,
 				getValueStruct(),
 				requirements(),
-				conditions().runtime(this),
-				claims(),
-				propositions());
+				conditions(),
+				claims().runtime(this),
+				propositions().runtime(this));
 	}
 
 	public final boolean updatedSince(Obj ascendant) {
@@ -633,55 +543,6 @@ public class Definitions extends Scoped {
 
 	private final ValueStruct<?, ?> valueStruct() {
 		return this.valueStruct != null ? this.valueStruct : ValueStruct.VOID;
-	}
-
-	private final Definitions refineRequirements(CondDefs refinements) {
-		return requirements().refineRequirements(this, refinements);
-	}
-
-	private final Definitions refineConditions(CondDefs refinements) {
-		return conditions().refineConditions(this, refinements);
-	}
-
-	private final Definitions refineClaims(
-			ValueStruct<?, ?> valueStruct,
-			ValueDefs refinements) {
-		return claims().refineClaims(this, valueStruct, refinements);
-	}
-
-	private final Definitions refinePropositions(
-			ValueStruct<?, ?> valueStruct,
-			ValueDefs refinements) {
-		return propositions().refinePropositions(
-				this,
-				valueStruct,
-				refinements);
-	}
-
-	private Definitions removeConditions() {
-		if (conditions().isEmpty()) {
-			return this;
-		}
-		return new Definitions(
-				this,
-				this.valueStruct,
-				requirements(),
-				NO_CONDITIONS,
-				claims(),
-				propositions());
-	}
-
-	private Definitions removePropositions() {
-		if (onlyClaims()) {
-			return this;
-		}
-		return new Definitions(
-				this,
-				getValueStruct(),
-				requirements(),
-				NO_CONDITIONS,
-				claims(),
-				NO_PROPOSITIONS);
 	}
 
 	private Definitions upgradeScope(ScopeUpgrade scopeUpgrade) {

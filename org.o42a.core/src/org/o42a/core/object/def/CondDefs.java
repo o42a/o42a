@@ -24,11 +24,9 @@ import static org.o42a.core.object.def.DefKind.PROPOSITION;
 
 import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.object.def.impl.InlineCondDefs;
-import org.o42a.core.object.def.impl.RuntimeCondDef;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Condition;
-import org.o42a.util.ArrayUtil;
 
 
 public final class CondDefs extends Defs<CondDef, CondDefs> {
@@ -154,14 +152,6 @@ public final class CondDefs extends Defs<CondDef, CondDefs> {
 		}
 
 		return new ValueDefs(PROPOSITION, values);
-	}
-
-	final CondDefs runtime(Definitions definitions) {
-		return new CondDefs(
-				getDefKind(),
-				ArrayUtil.prepend(
-						new RuntimeCondDef(definitions),
-						get()));
 	}
 
 	final Definitions refineRequirements(

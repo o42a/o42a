@@ -23,6 +23,7 @@ import static org.o42a.core.ir.op.InlineValue.inlineUnknown;
 
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.impl.InlineValueDefs;
+import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -170,6 +171,12 @@ public final class ValueDefs extends Defs<ValueDef, ValueDefs> {
 		}
 
 		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
+	}
+
+	final ValueDefs runtime(Definitions definitions) {
+		return new ValueDefs(
+				getDefKind(),
+				new RuntimeDef(definitions));
 	}
 
 	boolean upgradeValueStruct(
