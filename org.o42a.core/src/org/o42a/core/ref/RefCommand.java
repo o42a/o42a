@@ -145,8 +145,6 @@ public final class RefCommand extends Command {
 					control.falseDir());
 
 			getRef().op(control.host()).writeCond(dirs);
-
-			dirs.end();
 		}
 
 		@Override

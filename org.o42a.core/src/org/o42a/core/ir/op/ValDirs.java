@@ -156,6 +156,12 @@ public abstract class ValDirs {
 		return newDirs.value(this);
 	}
 
+	public final ValDirs splitWhenUnknown(
+			CodePos falseDir,
+			CodePos unknownDir) {
+		return dirs().splitWhenUnknown(falseDir, unknownDir).value(this);
+	}
+
 	public ValDirs begin(String message) {
 		if (!isDebug()) {
 			return this;

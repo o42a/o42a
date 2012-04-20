@@ -72,4 +72,5 @@ public class DefinitionBlockTest extends CompilerTestCase {
 		assertFalseVoid(this.module);
 		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(34L));
 	}
+
 }

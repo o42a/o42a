@@ -50,6 +50,7 @@ final class DeclarativeOp {
 		final Block code = dirs.code();
 
 		if (code.exists()) {
+			code.debug("(!) UNKNOWN");
 			code.go(dirs.unknownDir());
 		}
 		if (result.exists()) {
@@ -67,13 +68,10 @@ final class DeclarativeOp {
 
 		final List<DeclarativeSentence> sentences = block.getSentences();
 		final int size = sentences.size();
-		final Block code = dirs.code();
 
 		if (size == 0) {
 			return;
 		}
-
-		final Block result = code.addBlock("result");
 
 		for (int i = 0; i < size; ++i) {
 			writeSentence(
@@ -82,10 +80,6 @@ final class DeclarativeOp {
 					host,
 					sentences.get(i),
 					inline != null ? inline.get(i) : null);
-		}
-
-		if (result.exists()) {
-			result.go(dirs.unknownDir());
 		}
 
 		dirs.done();
@@ -123,7 +117,7 @@ final class DeclarativeOp {
 		final int size = alts.size();
 
 		if (size <= 1) {
-			if (size != 0) {
+			if (size == 0) {
 				return;
 			}
 			writeStatements(
@@ -147,10 +141,10 @@ final class DeclarativeOp {
 
 			if (nextIdx < size) {
 				next = dirs.addBlock(prefix.sub((nextIdx + 1) + "_alt"));
-				altDirs = dirs.falseWhenUnknown(next.head());
+				altDirs = dirs.sub(code).falseWhenUnknown(next.head());
 			} else {
 				next = null;
-				altDirs = dirs.falseWhenUnknown(dirs.falseDir());
+				altDirs = dirs.sub(code).falseWhenUnknown(dirs.falseDir());
 			}
 
 			writeStatements(

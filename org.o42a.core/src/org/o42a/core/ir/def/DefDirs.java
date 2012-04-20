@@ -22,6 +22,7 @@ package org.o42a.core.ir.def;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
@@ -106,7 +107,7 @@ public final class DefDirs {
 	}
 
 	public final void returnValue(Block code, ValOp value) {
-		this.shared.result = value;
+		this.shared.store(code, value);
 		code.go(this.shared.returnDir);
 	}
 
@@ -124,6 +125,18 @@ public final class DefDirs {
 
 	public final Block addBlock(CodeId name) {
 		return valDirs().addBlock(name);
+	}
+
+	public final DefDirs sub(String name) {
+		return sub(addBlock(name));
+	}
+
+	public final DefDirs sub(CodeId name) {
+		return sub(addBlock(name));
+	}
+
+	public final DefDirs sub(Block code) {
+		return new DefDirs(this, valDirs().sub(code));
 	}
 
 	public final DefDirs falseWhenUnknown() {
@@ -160,13 +173,29 @@ public final class DefDirs {
 		return dirs().toString("DefDirs", code());
 	}
 
-	private static final class Shared {
+	private final class Shared {
 
 		private final CodePos returnDir;
 		private ValOp result;
+		private Code singleResultInset;
+		private boolean storeInstantly;
 
 		Shared(CodePos returnDir) {
 			this.returnDir = returnDir;
+		}
+
+		private void store(Code code, ValOp result) {
+			if (this.result == null) {
+				this.result = result;
+				this.singleResultInset = code.inset("store_def");
+				return;
+			}
+			if (!this.storeInstantly) {
+				value().store(this.singleResultInset, this.result);
+				this.result = value();
+				this.storeInstantly = true;
+			}
+			value().store(code, result);
 		}
 
 	}
