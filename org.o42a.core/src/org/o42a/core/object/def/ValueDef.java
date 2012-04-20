@@ -177,7 +177,10 @@ public abstract class ValueDef extends Def<ValueDef> {
 	}
 
 	public final ValueDef toVoid() {
-		return toCondition().toValue();
+		if (getValueType().isVoid()) {
+			return this;
+		}
+		return new VoidValueDef(this);
 	}
 
 	public final Definitions toDefinitions(ValueStruct<?, ?> valueStruct) {

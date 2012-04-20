@@ -27,13 +27,6 @@ Name = "Imperative values"
 
 Run tests
 
-Value := test (
-
-  Value := integer ({= Rt-integer '1'}. = Rt-integer '2')
-  
-  Assert [value == 1] "Imperative value ignored"
-)
-
 Default value := test (
 
   Value := integer ({}. = Rt-integer '2')
