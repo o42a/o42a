@@ -65,7 +65,7 @@ public class ImplicitInclusion extends Inclusion {
 			// if at least one implicit inclusion present.
 			return false;
 		}
-		if (getInitialEnv().isConditional()) {
+		if (this.statements.isInsideIssue()) {
 			// Implicit inclusions not supported
 			// inside conditional declarations.
 			return false;

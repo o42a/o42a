@@ -19,20 +19,13 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Definer.noDefs;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
-import org.o42a.core.Scope;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.st.impl.declarative.SentenceEnv;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.ValueStruct;
 
@@ -40,10 +33,8 @@ import org.o42a.core.value.ValueStruct;
 public abstract class DeclarativeSentence
 		extends Sentence<Declaratives, Definer> {
 
-	private AltEnv altEnv;
-	private SentenceEnv env;
+	private final AltEnv altEnv = new AltEnv(this);
 	private DefTargets targets;
-	private DefinitionTargets definitionTargets;
 	private boolean ignored;
 
 	protected DeclarativeSentence(
@@ -83,80 +74,12 @@ public abstract class DeclarativeSentence
 				prerequisiteTargets().add(altTargets()));
 	}
 
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.definitionTargets != null) {
-			return this.definitionTargets;
-		}
-
-		final DefinitionTargets prerequisiteTargets;
-		final DeclarativeSentence prerequisite = getPrerequisite();
-
-		if (prerequisite == null) {
-			prerequisiteTargets = noDefinitions();
-		} else {
-			prerequisiteTargets = prerequisite.getDefinitionTargets();
-		}
-
-		return this.definitionTargets =
-				prerequisiteTargets.add(altDefinitionTargets());
-	}
-
-	public final DefinerEnv getFinalEnv() {
-		if (this.env != null) {
-			return this.env;
-		}
-		return this.env = new SentenceEnv(this);
-	}
-
-	public final DefinerEnv getAltEnv() {
-		if (this.altEnv != null) {
-			return this.altEnv;
-		}
-		return this.altEnv = new AltEnv(this);
-	}
-
 	public final boolean isIgnored() {
 		return this.ignored;
 	}
 
 	public final void ignore() {
 		this.ignored = true;
-	}
-
-	public Definitions define(Scope scope) {
-
-		final DefinitionTargets targets = getDefinitionTargets();
-
-		if (!targets.haveDefinition()) {
-			return null;
-		}
-		if (!targets.haveValue()) {
-
-			final Logical fullLogical = getFinalEnv().fullLogical(scope);
-			final CondDef def = fullLogical.toCondDef();
-			final DeclarativeSentence prerequisite = getPrerequisite();
-
-			if (prerequisite == null) {
-				return def.toDefinitions(
-						getBlock().getInitialEnv().getExpectedValueStruct());
-			}
-
-			final CondDef withPrereq = def.addPrerequisite(
-					prerequisite.getFinalEnv().fullLogical(getScope()));
-
-			return withPrereq.toDefinitions(
-					getBlock().getInitialEnv().getExpectedValueStruct());
-		}
-		for (Declaratives alt : getAlternatives()) {
-
-			final Definitions definitions = alt.define(scope);
-
-			if (definitions != null) {
-				return definitions;
-			}
-		}
-
-		throw new IllegalStateException("Value expected");
 	}
 
 	public DefValue value(Resolver resolver) {
@@ -199,6 +122,10 @@ public abstract class DeclarativeSentence
 		}
 
 		return result;
+	}
+
+	final DefinerEnv getAltEnv() {
+		return this.altEnv;
 	}
 
 	private DefTargets prerequisiteTargets() {
@@ -277,122 +204,6 @@ public abstract class DeclarativeSentence
 		return result.claim();
 	}
 
-	private DefinitionTargets altDefinitionTargets() {
-
-		DefinitionTargets result = noDefinitions();
-
-		for (Declaratives alt : getAlternatives()) {
-
-			final DefinitionTargets targets = alt.getDefinitionTargets();
-
-			if (targets.isEmpty()) {
-				result = result.add(targets);
-				continue;
-			}
-			if (result.isEmpty()) {
-				result = targets;
-				continue;
-			}
-			if (targets.haveDeclaration()) {
-				if (result.haveDeclaration()) {
-					result = reportAmbiguity(result, targets);
-					continue;
-				}
-
-				final DefinitionTarget declaration = targets.firstDeclaration();
-
-				if (declaration.isValue()) {
-					result = result.addError();
-					getLogger().error(
-							"unexpected_value_alt",
-							logAnotherLocation(
-									declaration,
-									result.lastCondition()),
-							"Alternative should not contain value assignment, "
-							+ " because previous one contains only condition");
-					continue;
-				}
-
-				getLogger().error(
-						"unexpected_field_alt",
-						logAnotherLocation(
-								declaration,
-								result.lastCondition()),
-						"Alternative should not contain field declaration, "
-						+ " because previous one contains only condition");
-				continue;
-			}
-			if (!result.haveDeclaration()) {
-				result = result.add(targets);
-				continue;
-			}
-
-			final DefinitionTarget declaration = result.lastDeclaration();
-
-			if (declaration.isValue()) {
-				getLogger().error(
-						"unexpected_condition_alt_after_value",
-						logAnotherLocation(
-								targets.firstCondition(),
-								declaration),
-						"Alternative should contain condition, "
-						+ " because previous one contains value assignment");
-				continue;
-			}
-			getLogger().error(
-					"unexpected_condition_alt_after_field",
-					logAnotherLocation(targets.firstCondition(), declaration),
-					"Alternative should contain condition, "
-					+ " because previous one contains field declaration");
-		}
-
-		if (isIssue() && result.isEmpty() && !result.haveError()) {
-			reportEmptyIssue();
-			return result.addError();
-		}
-
-		return result;
-	}
-
-	private DefinitionTargets reportAmbiguity(
-			DefinitionTargets result,
-			DefinitionTargets targets) {
-
-		DefinitionTargets res = targets;
-
-		for (DefinitionKey key : targets) {
-			if (!key.isDeclaration()) {
-				continue;
-			}
-
-			final DefinitionTarget previousDeclaration = result.last(key);
-
-			if (previousDeclaration == null) {
-				continue;
-			}
-			if (key.isValue()) {
-				res = res.addError();
-				getLogger().error(
-						"ambiguous_value",
-						logAnotherLocation(
-								targets.first(key),
-								previousDeclaration),
-						"Ambiguous value");
-				continue;
-			}
-			res = res.addError();
-			getLogger().error(
-					"ambiguous_field",
-					logAnotherLocation(
-							targets.first(key),
-							previousDeclaration),
-					"Ambiguous declaration of field '%s'",
-					previousDeclaration.getFieldKey().getMemberId());
-		}
-
-		return result.add(res);
-	}
-
 	private static final class AltEnv extends DefinerEnv {
 
 		private final DeclarativeSentence sentence;
@@ -402,63 +213,17 @@ public abstract class DeclarativeSentence
 		}
 
 		@Override
-		public boolean hasPrerequisite() {
-			if (this.sentence.getPrerequisite() != null) {
-				return true;
-			}
-
-			final DefinerEnv initial =
-					this.sentence.getBlock().getInitialEnv();
-
-			return initial.hasPrerequisite();
-		}
-
-		@Override
-		public Logical prerequisite(Scope scope) {
-
-			final DeclarativeSentence prerequisite =
-					this.sentence.getPrerequisite();
-
-			if (prerequisite != null) {
-				return prerequisite.getFinalEnv().fullLogical(scope);
-			}
-
-			final DefinerEnv initial =
-					this.sentence.getBlock().getInitialEnv();
-
-			return initial.prerequisite(scope);
-		}
-
-		@Override
-		public boolean hasPrecondition() {
-
-			final DefinerEnv initial =
-					this.sentence.getBlock().getInitialEnv();
-
-			return initial.hasPrecondition();
-		}
-
-		@Override
-		public Logical precondition(Scope scope) {
-			return this.sentence.getBlock().getInitialEnv().precondition(scope);
-		}
-
-		@Override
 		public String toString() {
-
-			final DeclarativeSentence prerequisite =
-					this.sentence.getPrerequisite();
-
-			if (prerequisite != null) {
-				return prerequisite + "? " + this.sentence;
+			if (this.sentence == null) {
+				return super.toString();
 			}
-
 			return this.sentence.toString();
 		}
 
 		@Override
 		protected ValueStruct<?, ?> expectedValueStruct() {
-			return this.sentence.getBlock().getInitialEnv()
+			return this.sentence.getBlock()
+					.getInitialEnv()
 					.getExpectedValueStruct();
 		}
 

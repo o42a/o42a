@@ -19,14 +19,12 @@
 */
 package org.o42a.compiler.ip.file;
 
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.Instruction.SKIP_INSTRUCTION;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
@@ -87,11 +85,8 @@ class HeaderStatement extends Statement {
 
 	private static final class HeaderDefiner extends Definer {
 
-		private Definer refDefiner;
-
 		HeaderDefiner(HeaderStatement header, DefinerEnv env) {
 			super(header, env);
-			this.refDefiner = header.getRef().define(env);
 		}
 
 		public final HeaderStatement getHeader() {
@@ -101,16 +96,6 @@ class HeaderStatement extends Statement {
 		@Override
 		public DefTargets getDefTargets() {
 			return noDefs();
-		}
-
-		@Override
-		public DefinitionTargets getDefinitionTargets() {
-			return noDefinitions();
-		}
-
-		@Override
-		public DefinerEnv nextEnv() {
-			return this.refDefiner.nextEnv();
 		}
 
 		@Override
@@ -125,11 +110,6 @@ class HeaderStatement extends Statement {
 			}
 
 			return new HeaderInstruction(ref, directive);
-		}
-
-		@Override
-		public Definitions define(Scope scope) {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override

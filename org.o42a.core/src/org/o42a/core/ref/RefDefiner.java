@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.st.DefinitionTarget.valueDefinition;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -29,15 +27,14 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.ref.impl.RefEnv;
+import org.o42a.core.object.def.impl.RefValueDef;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public class RefDefiner extends Definer {
+public final class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
 	private InlineValue inline;
@@ -51,21 +48,11 @@ public class RefDefiner extends Definer {
 	}
 
 	@Override
-	public DefinerEnv nextEnv() {
-		return new RefEnv(this);
-	}
-
-	@Override
 	public DefTargets getDefTargets() {
 		if (!getRef().isConstant()) {
 			return valueDef();
 		}
 		return valueDef().setConstant();
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		return valueDefinition(getRef());
 	}
 
 	public ValueAdapter getValueAdapter() {
@@ -78,15 +65,11 @@ public class RefDefiner extends Definer {
 		return this.valueAdapter = getRef().valueAdapter(expectedStruct, true);
 	}
 
-	@Override
-	public Definitions define(Scope scope) {
-		if (getDefinitionTargets().isEmpty()) {
-			return null;
-		}
+	public Definitions createDefinitions() {
 
-		final ValueDef def = getValueAdapter().valueDef();
+		final RefValueDef def = new RefValueDef(getRef());
 
-		return env().apply(def).toDefinitions(env().getExpectedValueStruct());
+		return def.toDefinitions(env().getExpectedValueStruct());
 	}
 
 	@Override

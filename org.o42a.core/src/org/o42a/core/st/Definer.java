@@ -26,7 +26,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -49,15 +48,9 @@ public abstract class Definer extends Implication<Definer> {
 
 	public abstract DefTargets getDefTargets();
 
-	public abstract DefinitionTargets getDefinitionTargets();
-
 	public final DefinerEnv env() {
 		return this.env;
 	}
-
-	public abstract DefinerEnv nextEnv();
-
-	public abstract Definitions define(Scope scope);
 
 	public abstract DefValue value(Resolver resolver);
 

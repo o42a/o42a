@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
-import static org.o42a.core.st.DefinitionTargets.noDefinitions;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
@@ -81,7 +80,6 @@ public final class BlockDefiner
 	}
 
 	private BlockDefinitions blockDefinitions;
-	private DefinitionTargets definitionTargets;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
 		super(block, env);
@@ -95,55 +93,6 @@ public final class BlockDefiner
 	@Override
 	public final DefTargets getDefTargets() {
 		return getBlockDefinitions().getTargets();
-	}
-
-	@Override
-	public DefinitionTargets getDefinitionTargets() {
-		if (this.definitionTargets != null) {
-			return this.definitionTargets;
-		}
-		getBlock().executeInstructions();
-
-		DefinitionTargets result = noDefinitions();
-
-		for (DeclarativeSentence sentence : getBlock().getSentences()) {
-			result = result.add(sentence.getDefinitionTargets());
-		}
-
-		return this.definitionTargets = result;
-	}
-
-	@Override
-	public DefinerEnv nextEnv() {
-		return new DeclarativeBlockEnv(this);
-	}
-
-	@Override
-	public Definitions define(Scope scope) {
-		if (!getDefinitionTargets().haveDefinition()) {
-			return null;
-		}
-
-		Definitions result = null;
-
-		for (DeclarativeSentence sentence : getBlock().getSentences()) {
-
-			final Definitions definitions = sentence.define(scope);
-
-			if (definitions == null) {
-				continue;
-			}
-			if (result == null) {
-				result = definitions;
-			} else {
-				result = result.refine(definitions);
-			}
-		}
-
-		assert result != null :
-			"Missing definitions: " + this;
-
-		return result;
 	}
 
 	@Override

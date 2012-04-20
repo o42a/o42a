@@ -19,11 +19,7 @@
 */
 package org.o42a.core.st.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
-
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Logical;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.value.ValueStruct;
 
@@ -37,28 +33,11 @@ public final class ObjectEnv extends DefinerEnv {
 	}
 
 	@Override
-	public boolean hasPrerequisite() {
-		return false;
-	}
-
-	@Override
-	public Logical prerequisite(Scope scope) {
-		return logicalTrue(this.object, scope);
-	}
-
-	@Override
-	public boolean hasPrecondition() {
-		return false;
-	}
-
-	@Override
-	public Logical precondition(Scope scope) {
-		return logicalTrue(this.object, scope);
-	}
-
-	@Override
 	public String toString() {
-		return "ObjectEnv[" + this.object + ']';
+		if (this.object == null) {
+			return super.toString();
+		}
+		return this.object.toString();
 	}
 
 	@Override
