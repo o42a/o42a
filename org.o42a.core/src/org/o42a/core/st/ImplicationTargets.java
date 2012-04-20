@@ -120,8 +120,6 @@ public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 	}
 
 	public final T toPrerequisites() {
-		assert !breaking() :
-			"Prerequisite should not contain breaking statements";
 		if (!havePrecondition()) {
 			return self();
 		}
@@ -129,8 +127,6 @@ public abstract class ImplicationTargets<T extends ImplicationTargets<T>>
 	}
 
 	public final T toPreconditions() {
-		assert !breaking() :
-			"Preconditions should not contain breaking statements";
 		if (!havePrerequisite()) {
 			return self();
 		}
