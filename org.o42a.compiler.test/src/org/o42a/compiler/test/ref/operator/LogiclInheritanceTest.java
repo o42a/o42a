@@ -60,36 +60,6 @@ public class LogiclInheritanceTest extends CompilerTestCase {
 		assertTrueVoid(this.cBar);
 	}
 
-	@Test
-	public void known() {
-		compile(
-				"A := void(",
-				"  Foo := void(= False)",
-				"  Bar := +-foo",
-				")",
-				"B := a(Foo = *(False? = void))",
-				"C := b");
-
-		assertTrueVoid(this.aBar);
-		assertFalseVoid(this.bBar);
-		assertFalseVoid(this.cBar);
-	}
-
-	@Test
-	public void unknown() {
-		compile(
-				"A := void(",
-				"  Foo := void(= False)",
-				"  Bar := -+foo",
-				")",
-				"B := a(Foo = *(False? = void))",
-				"C := b");
-
-		assertFalseVoid(this.aBar);
-		assertTrueVoid(this.bBar);
-		assertTrueVoid(this.cBar);
-	}
-
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
