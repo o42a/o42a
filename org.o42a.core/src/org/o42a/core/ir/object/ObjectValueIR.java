@@ -28,7 +28,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.impl.value.*;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
@@ -46,18 +45,14 @@ public class ObjectValueIR {
 
 	private final ObjectIRLocals locals;
 	private final ObjectValueFunc value;
-	private final ObjectRequirementFunc requirement;
 	private final ObjectClaimFunc claim;
-	private final ObjectConditionFunc condition;
 	private final ObjectPropositionFunc proposition;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.locals = new ObjectIRLocals(this);
 		this.value = new ObjectValueFunc(this);
-		this.requirement = new ObjectRequirementFunc(this);
 		this.claim = new ObjectClaimFunc(this);
-		this.condition = new ObjectConditionFunc(this);
 		this.proposition = new ObjectPropositionFunc(this);
 	}
 
@@ -73,24 +68,12 @@ public class ObjectValueIR {
 		return this.objectIR;
 	}
 
-	public final ObjectRequirementFunc requirement() {
-		return this.requirement;
-	}
-
 	public final ObjectClaimFunc claim() {
 		return this.claim;
 	}
 
-	public final ObjectConditionFunc condition() {
-		return this.condition;
-	}
-
 	public final ObjectPropositionFunc proposition() {
 		return this.proposition;
-	}
-
-	public final ObjectValueIRCondFunc condition(boolean requirement) {
-		return requirement ? requirement() : condition();
 	}
 
 	public final ObjectValueIRValFunc value(boolean claim) {
@@ -105,19 +88,8 @@ public class ObjectValueIR {
 		return this.value.call(dirs, host, body);
 	}
 
-	public final void writeRequirement(
-			CodeDirs dirs,
-			ObjOp host,
-			ObjectOp body) {
-		this.requirement.call(dirs, host, body);
-	}
-
 	public final ValOp writeClaim(ValDirs dirs, ObjOp host, ObjectOp body) {
 		return this.claim.call(dirs, host, body);
-	}
-
-	public final void writeCondition(CodeDirs dirs, ObjOp host, ObjectOp body) {
-		this.condition.call(dirs, host, body);
 	}
 
 	public final ValOp writeProposition(
@@ -134,9 +106,7 @@ public class ObjectValueIR {
 
 	protected void allocate(ObjectTypeIR typeIR) {
 		this.value.allocate(typeIR);
-		this.requirement.allocate(typeIR);
 		this.claim.allocate(typeIR);
-		this.condition.allocate(typeIR);
 		this.proposition.allocate(typeIR);
 	}
 

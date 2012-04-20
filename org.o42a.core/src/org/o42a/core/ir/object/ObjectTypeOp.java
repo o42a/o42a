@@ -23,7 +23,8 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -83,15 +84,6 @@ public final class ObjectTypeOp extends IROp {
 		return result;
 	}
 
-	public final void writeRequirement(CodeDirs dirs, ObjectOp body) {
-
-		final Block code = dirs.code();
-		final ObjectCondFunc function =
-				ptr().data(code).requirementFunc(code).load(null, code);
-
-		function.call(code, body(code, body)).go(code, dirs);
-	}
-
 	public final ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
 		final Code code = dirs.code();
@@ -99,15 +91,6 @@ public final class ObjectTypeOp extends IROp {
 				ptr().data(code).claimFunc(code).load(null, code);
 
 		return function.call(dirs, body(code, body));
-	}
-
-	public final void writeCondition(CodeDirs dirs, ObjectOp body) {
-
-		final Block code = dirs.code();
-		final ObjectCondFunc function =
-				ptr().data(code).conditionFunc(code).load(null, code);
-
-		function.call(code, body(code, body)).go(code, dirs);
 	}
 
 	public final ValOp writeProposition(ValDirs dirs, ObjectOp body) {

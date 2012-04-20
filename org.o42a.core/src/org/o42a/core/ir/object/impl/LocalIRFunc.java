@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -57,11 +56,6 @@ public final class LocalIRFunc
 		final ValDirs subDirs =
 				dirs.begin(body != null ? "Value for " + body : "Value");
 		final Code code = subDirs.code();
-
-		if (writeFalseValue(subDirs.dirs())) {
-			subDirs.done();
-			return falseValue().op(subDirs.getBuilder(), code);
-		}
 
 		code.debug("Call");
 

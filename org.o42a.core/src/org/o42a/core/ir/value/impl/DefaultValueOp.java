@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -49,22 +48,6 @@ public final class DefaultValueOp extends ValueOp {
 	}
 
 	@Override
-	public void writeRequirement(CodeDirs dirs, ObjectOp body) {
-
-		final CodeDirs subDirs;
-
-		if (body != null) {
-			subDirs = dirs.begin("obj_req", "Requirement of " + body);
-		} else {
-			subDirs = dirs.begin("obj_req", "Requirement");
-		}
-
-		object().objectType(subDirs.code()).writeRequirement(subDirs, body);
-
-		subDirs.end();
-	}
-
-	@Override
 	public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
 		final ValDirs subDirs = dirs.begin(
@@ -78,22 +61,6 @@ public final class DefaultValueOp extends ValueOp {
 		subDirs.done();
 
 		return result;
-	}
-
-	@Override
-	public void writeCondition(CodeDirs dirs, ObjOp body) {
-
-		final CodeDirs subDirs;
-
-		if (body != null) {
-			subDirs = dirs.begin("obj_cond", "Condition of " + body);
-		} else {
-			subDirs = dirs.begin("obj_cond", "Condition");
-		}
-
-		object().objectType(subDirs.code()).writeCondition(subDirs, body);
-
-		subDirs.end();
 	}
 
 	@Override

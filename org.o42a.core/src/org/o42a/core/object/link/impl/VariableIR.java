@@ -79,18 +79,8 @@ final class VariableIR extends ValueIR<VariableIR.Op> {
 		}
 
 		@Override
-		public void writeRequirement(CodeDirs dirs, ObjectOp body) {
-			this.value.writeRequirement(dirs, body);
-		}
-
-		@Override
 		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 			return this.value.writeClaim(dirs, body);
-		}
-
-		@Override
-		public void writeCondition(CodeDirs dirs, ObjOp body) {
-			this.value.writeCondition(dirs, body);
 		}
 
 		@Override

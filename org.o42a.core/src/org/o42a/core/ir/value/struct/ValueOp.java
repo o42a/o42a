@@ -26,7 +26,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -121,23 +120,11 @@ public abstract class ValueOp {
 
 	public abstract ValOp writeValue(ValDirs dirs, ObjectOp body);
 
-	public final void writeRequirement(CodeDirs dirs) {
-		writeRequirement(dirs, null);
-	}
-
-	public abstract void writeRequirement(CodeDirs dirs, ObjectOp body);
-
 	public final ValOp writeClaim(ValDirs dirs) {
 		return writeClaim(dirs, null);
 	}
 
 	public abstract ValOp writeClaim(ValDirs dirs, ObjectOp body);
-
-	public final void writeCondition(CodeDirs dirs) {
-		writeCondition(dirs, null);
-	}
-
-	public abstract void writeCondition(CodeDirs dirs, ObjOp body);
 
 	public final ValOp writeProposition(ValDirs dirs) {
 		return writeProposition(dirs, null);
