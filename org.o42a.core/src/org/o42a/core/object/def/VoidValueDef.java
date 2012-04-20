@@ -26,6 +26,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 final class VoidValueDef extends ValueDef {
@@ -53,8 +54,28 @@ final class VoidValueDef extends ValueDef {
 	}
 
 	@Override
+	public Value<?> value(Resolver resolver) {
+
+		final Value<?> value = this.def.value(resolver);
+
+		return value.getKnowledge().getCondition().toValue(ValueStruct.VOID);
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.def.normalize(normalizer);
+	}
+
+	@Override
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+
+		final ValueStruct<?, ?> valueStruct = this.def.getValueStruct();
+		final ValDirs defDirs = dirs.dirs().value(valueStruct);
+
+		this.def.write(defDirs, host);
+		defDirs.done();
+
+		return Value.voidValue().op(dirs.getBuilder(), dirs.code());
 	}
 
 	@Override
@@ -64,10 +85,7 @@ final class VoidValueDef extends ValueDef {
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-
-		final Value<?> value = this.def.calculateValue(resolver);
-
-		return value.getKnowledge().getCondition().toValue(ValueStruct.VOID);
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -98,6 +116,21 @@ final class VoidValueDef extends ValueDef {
 	}
 
 	@Override
+	protected InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct) {
+
+		final InlineValue inline =
+				this.def.inline(normalizer, this.def.getValueStruct());
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new Inline(inline);
+	}
+
+	@Override
 	protected InlineValue inlineDef(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
@@ -107,6 +140,42 @@ final class VoidValueDef extends ValueDef {
 	@Override
 	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		throw new UnsupportedOperationException();
+	}
+
+	private static final class Inline extends InlineValue {
+
+		private final InlineValue inline;
+
+		Inline(InlineValue inline) {
+			super(null, ValueStruct.VOID);
+			this.inline = inline;
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+
+			final ValueStruct<?, ?> valueStruct = this.inline.getValueStruct();
+			final ValDirs defDirs = dirs.dirs().value(valueStruct);
+
+			this.inline.writeValue(defDirs, host);
+			defDirs.done();
+
+			return Value.voidValue().op(dirs.getBuilder(), dirs.code());
+		}
+
+		@Override
+		public String toString() {
+			if (this.inline == null) {
+				return super.toString();
+			}
+			return "(void) "+ this.inline.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
 
 }
