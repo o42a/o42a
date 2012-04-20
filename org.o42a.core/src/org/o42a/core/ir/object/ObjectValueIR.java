@@ -42,7 +42,6 @@ import org.o42a.core.value.Value;
 public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
-
 	private final ObjectIRLocals locals;
 	private final ObjectValueFunc value;
 	private final ObjectClaimFunc claim;
@@ -76,7 +75,7 @@ public class ObjectValueIR {
 		return this.proposition;
 	}
 
-	public final ObjectValueIRValFunc value(boolean claim) {
+	public final ObjectValueIRFunc value(boolean claim) {
 		return claim ? claim() : proposition();
 	}
 

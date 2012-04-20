@@ -20,7 +20,7 @@
 package org.o42a.common.object;
 
 import org.o42a.common.def.Builtin;
-import org.o42a.common.def.BuiltinValueDef;
+import org.o42a.common.def.BuiltinDef;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.path.PrefixPath;
@@ -57,7 +57,7 @@ public abstract class AnnotatedBuiltin
 			valueStruct = ancestorValueStruct.prefixWith(prefix);
 		}
 
-		return new BuiltinValueDef(this).toDefinitions(valueStruct);
+		return new BuiltinDef(this).toDefinitions(valueStruct);
 	}
 
 }

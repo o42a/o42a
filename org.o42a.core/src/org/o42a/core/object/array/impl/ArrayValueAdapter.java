@@ -19,14 +19,12 @@
 */
 package org.o42a.core.object.array.impl;
 
-import static org.o42a.core.object.array.impl.ArrayCopyValueDef.arrayValue;
+import static org.o42a.core.object.array.impl.ArrayCopyDef.arrayValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.object.def.impl.RefCondDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -54,13 +52,8 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueDef valueDef() {
-		return new ArrayCopyValueDef(ref(), getExpectedStruct().isVariable());
-	}
-
-	@Override
-	public CondDef condDef() {
-		return new RefCondDef(ref());
+	public Def valueDef() {
+		return new ArrayCopyDef(ref(), getExpectedStruct().isVariable());
 	}
 
 	@Override

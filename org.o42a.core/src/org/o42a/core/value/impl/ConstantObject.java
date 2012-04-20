@@ -85,7 +85,7 @@ final class ConstantObject<T> extends ConstructedObject {
 			valueStruct = ancestorValueStruct.prefixWith(prefix);
 		}
 
-		return new ConstantValueDef<T>(this).toDefinitions(valueStruct);
+		return new ConstantDef<T>(this).toDefinitions(valueStruct);
 	}
 
 }

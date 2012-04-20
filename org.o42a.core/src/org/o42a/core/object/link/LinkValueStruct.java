@@ -25,9 +25,9 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
-import org.o42a.core.object.link.impl.LinkConstantValueDef;
+import org.o42a.core.object.link.impl.LinkConstantDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -85,11 +85,11 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public ValueDef constantDef(
+	public Def constantDef(
 			Obj source,
 			LocationInfo location,
 			KnownLink value) {
-		return new LinkConstantValueDef(source, location, this, value);
+		return new LinkConstantDef(source, location, this, value);
 	}
 
 	@Override

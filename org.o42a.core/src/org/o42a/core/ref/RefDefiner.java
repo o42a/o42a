@@ -27,7 +27,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.def.impl.RefValueDef;
+import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
@@ -67,7 +67,7 @@ public final class RefDefiner extends Definer {
 
 	public Definitions createDefinitions() {
 
-		final RefValueDef def = new RefValueDef(getRef());
+		final RefDef def = new RefDef(getRef());
 
 		return def.toDefinitions(env().getExpectedValueStruct());
 	}

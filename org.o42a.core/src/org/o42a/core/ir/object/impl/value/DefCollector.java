@@ -21,6 +21,9 @@ package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
@@ -29,7 +32,7 @@ import org.o42a.core.object.type.Derivation;
 import org.o42a.core.ref.type.TypeRef;
 
 
-abstract class DefCollector<D extends Def<D>> {
+final class DefCollector {
 
 	public static boolean explicitDef(Obj object, SourceInfo sourceInfo) {
 
@@ -44,9 +47,17 @@ abstract class DefCollector<D extends Def<D>> {
 
 	private final Obj object;
 	private final Obj ancestor;
+	private final CodeDirs dirs;
+	private final Def[] explicitDefs;
+	private final Block[] blocks;
+	private int size;
+	private int ancestorIndex = -1;
 
-	public DefCollector(Obj object) {
+	DefCollector(CodeDirs dirs, Obj object, int capacity) {
 		this.object = object;
+		this.dirs = dirs;
+		this.explicitDefs = new Def[capacity];
+		this.blocks = new Block[capacity];
 
 		final TypeRef ancestorRef = object.type().getAncestor();
 
@@ -65,7 +76,19 @@ abstract class DefCollector<D extends Def<D>> {
 		return this.ancestor;
 	}
 
-	public void addDef(D def) {
+	public final int getAncestorIndex() {
+		return this.ancestorIndex;
+	}
+
+	public final Def[] getExplicitDefs() {
+		return this.explicitDefs;
+	}
+
+	public final int size() {
+		return this.size;
+	}
+
+	public final void addDef(Def def) {
 		if (explicitDef(this.object, def)) {
 			explicitDef(def);
 			return;
@@ -73,20 +96,45 @@ abstract class DefCollector<D extends Def<D>> {
 		ancestorDef(def);
 	}
 
-	public final void addDefs(Defs<D, ?> defs) {
-		for (D source : defs.get()) {
+	public final void addDefs(Defs defs) {
+		for (Def source : defs.get()) {
 			addDef(source);
 		}
 	}
 
-	public void addDefs(D[] sources) {
-		for (D source : sources) {
+	public final void addDefs(Def[] sources) {
+		for (Def source : sources) {
 			addDef(source);
 		}
 	}
 
-	protected abstract void explicitDef(D def);
+	public final Block block(int index) {
+		return this.blocks[index];
+	}
 
-	protected abstract void ancestorDef(D def);
+	public final CodePos next(int index) {
+
+		final int next = index + 1;
+
+		if (next < this.size) {
+			return this.blocks[next].head();
+		}
+
+		return this.dirs.unknownDir();
+	}
+
+	protected void explicitDef(Def def) {
+		this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
+		this.explicitDefs[this.size++] = def;
+	}
+
+	protected void ancestorDef(Def def) {
+		if (this.ancestorIndex >= 0) {
+			return;
+		}
+		this.ancestorIndex = this.size;
+		this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
+		++this.size;
+	}
 
 }

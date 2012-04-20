@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.core.Scope;
@@ -28,7 +27,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -36,7 +35,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-final class LinkCopyValueDef extends ValueDef {
+final class LinkCopyDef extends Def {
 
 	static Value<?> linkValue(
 			Ref ref,
@@ -84,14 +83,14 @@ final class LinkCopyValueDef extends ValueDef {
 	private LinkValueStruct toStruct;
 	private LinkValueStruct fromStruct;
 
-	LinkCopyValueDef(Ref ref, LinkValueType toLinkType) {
+	LinkCopyDef(Ref ref, LinkValueType toLinkType) {
 		super(sourceOf(ref), ref, ScopeUpgrade.noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
 		this.toLinkType = toLinkType;
 	}
 
-	private LinkCopyValueDef(
-			LinkCopyValueDef prototype,
+	private LinkCopyDef(
+			LinkCopyDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
@@ -113,12 +112,6 @@ final class LinkCopyValueDef extends ValueDef {
 
 	@Override
 	public Ref target() {
-		if (hasPrerequisite() && !getPrerequisite().isTrue()) {
-			return null;
-		}
-		if (!getPrecondition().isTrue()) {
-			return null;
-		}
 		return this.ref.getPath().dereference().target(this.ref.distribute());
 	}
 
@@ -132,30 +125,15 @@ final class LinkCopyValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return this.ref.getLogical();
-	}
-
-	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return linkValue(this.ref, resolver, this.toLinkType);
 	}
 
 	@Override
-	protected ValueDef create(
+	protected LinkCopyDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new LinkCopyValueDef(this, upgrade);
+		return new LinkCopyDef(this, upgrade);
 	}
 
 	@Override
@@ -167,12 +145,12 @@ final class LinkCopyValueDef extends ValueDef {
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

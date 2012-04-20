@@ -32,19 +32,19 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.object.value.ValuePart;
+import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
-public final class ObjectValueFunc extends ObjectValueIRValFunc {
+public final class ObjectValueFunc extends ObjectValueIRFunc {
 
 	public ObjectValueFunc(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
 	@Override
-	public final ValuePart part() {
+	public final ObjectValuePart part() {
 		return null;
 	}
 

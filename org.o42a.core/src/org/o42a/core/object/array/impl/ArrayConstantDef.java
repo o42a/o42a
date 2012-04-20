@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.array.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
@@ -33,19 +32,19 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public class ArrayConstantValueDef extends ValueDef {
+public class ArrayConstantDef extends Def {
 
 	private final Value<Array> value;
 	private ArrayValueStruct valueStruct;
 
-	public ArrayConstantValueDef(
+	public ArrayConstantDef(
 			Obj source,
 			LocationInfo location,
 			ArrayValueStruct valueStruct,
@@ -57,8 +56,8 @@ public class ArrayConstantValueDef extends ValueDef {
 		this.value = valueStruct.compilerValue(value);
 	}
 
-	private ArrayConstantValueDef(
-			ArrayConstantValueDef prototype,
+	private ArrayConstantDef(
+			ArrayConstantDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.value = prototype.value;
@@ -104,34 +103,19 @@ public class ArrayConstantValueDef extends ValueDef {
 	}
 
 	@Override
-	protected ArrayConstantValueDef create(
+	protected ArrayConstantDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new ArrayConstantValueDef(this, upgrade);
+		return new ArrayConstantDef(this, upgrade);
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return logicalTrue(this, getSource().getScope());
-	}
-
-	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.value.resolveAll(resolver);
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;
@@ -154,11 +138,6 @@ public class ArrayConstantValueDef extends ValueDef {
 				arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
 
 		return constructor.call(dirs, array);
-	}
-
-	@Override
-	protected String name() {
-		return "ArrayConstantValueDef";
 	}
 
 }

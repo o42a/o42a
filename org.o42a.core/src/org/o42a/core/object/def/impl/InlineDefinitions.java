@@ -23,7 +23,8 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.fn.Cancelable;
@@ -31,19 +32,11 @@ import org.o42a.util.fn.Cancelable;
 
 public class InlineDefinitions extends InlineValue {
 
-	private final InlineCond requirement;
-	private final InlineCond condition;
 	private final InlineValue claim;
 	private final InlineValue proposition;
 
-	public InlineDefinitions(
-			InlineCond requirement,
-			InlineCond condition,
-			InlineValue claim,
-			InlineValue proposition) {
+	public InlineDefinitions(InlineValue claim, InlineValue proposition) {
 		super(null, proposition.getValueStruct());
-		this.requirement = requirement;
-		this.condition = condition;
 		this.claim = claim;
 		this.proposition = proposition;
 	}
@@ -52,10 +45,6 @@ public class InlineDefinitions extends InlineValue {
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
 		final Block code = dirs.code();
-
-		writeRequirement(dirs.dirs(), host);
-		this.condition.writeCond(dirs.dirs(), host);
-
 		final Block unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 				dirs.dirs().splitWhenUnknown(
@@ -102,8 +91,6 @@ public class InlineDefinitions extends InlineValue {
 		final StringBuilder out = new StringBuilder();
 
 		out.append('(');
-		out.append(this.requirement).append("! ");
-		out.append(this.condition).append(". ");
 		out.append(this.claim).append("! ");
 		out.append(this.proposition);
 		out.append(')');
@@ -114,19 +101,6 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	protected Cancelable cancelable() {
 		return null;
-	}
-
-	private void writeRequirement(CodeDirs dirs, HostOp host) {
-
-		final Block unknownReq = dirs.addBlock("unknown_req");
-		final CodeDirs reqDirs = dirs.splitWhenUnknown(
-				dirs.falseDir(),
-				unknownReq.head());
-
-		this.requirement.writeCond(reqDirs, host);
-		if (unknownReq.exists()) {
-			unknownReq.go(dirs.code().tail());
-		}
 	}
 
 	private ValType.Op writeProposition(ValDirs dirs, Block code, HostOp host) {

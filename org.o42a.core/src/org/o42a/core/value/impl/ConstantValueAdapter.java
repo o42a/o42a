@@ -24,8 +24,7 @@ import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
@@ -51,16 +50,11 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public ValueDef valueDef() {
+	public Def valueDef() {
 		return this.valueType.struct().constantDef(
 				sourceOf(this.scope),
 				this.location,
 				this.constant);
-	}
-
-	@Override
-	public CondDef condDef() {
-		return logicalTrue(this.location, this.scope).toCondDef();
 	}
 
 	@Override

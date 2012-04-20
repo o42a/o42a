@@ -27,8 +27,7 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
@@ -53,7 +52,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueDef valueDef() {
+	public Def valueDef() {
 
 		final Scope scope = this.ref.getScope();
 		final Array array = createArray(scope);
@@ -62,11 +61,6 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 				sourceOf(scope),
 				this.constructor,
 				array);
-	}
-
-	@Override
-	public CondDef condDef() {
-		return logical(this.ref.getScope()).toCondDef();
 	}
 
 	@Override

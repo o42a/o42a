@@ -19,19 +19,29 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.object.def.Definitions.NO_CLAIMS;
+import static org.o42a.core.object.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.*;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
-public abstract class Def<D extends Def<D>> implements SourceInfo {
+public abstract class Def implements SourceInfo {
 
 	public static final Obj sourceOf(ScopeInfo scope) {
 		return sourceOf(scope.getScope().getContainer());
@@ -56,34 +66,37 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
 	private final LocationInfo location;
-	private DefKind kind;
-	private boolean hasPrerequisite;
+	private Value<?> constantValue;
+	private boolean claim;
 	private boolean allResolved;
-	private Logical precondition;
-	private Logical prerequisite;
-	private Logical logical;
 
-	Def(
+	public Def(
 			Obj source,
 			LocationInfo location,
-			DefKind kind,
 			ScopeUpgrade scopeUpgrade) {
+		this(source, location, scopeUpgrade, false);
+	}
+
+	public Def(
+			Obj source,
+			LocationInfo location,
+			ScopeUpgrade scopeUpgrade,
+			boolean claim) {
 		this.scopeUpgrade = scopeUpgrade;
 		this.location = location;
 		this.source = source;
-		this.kind = kind;
-		this.hasPrerequisite = false;
+		this.claim = claim;
 	}
 
-	Def(D prototype, ScopeUpgrade scopeUpgrade) {
+	protected Def(Def prototype, ScopeUpgrade scopeUpgrade) {
 		this.scopeUpgrade = scopeUpgrade;
 		this.source = prototype.source;
 		this.location = prototype.location;
-		this.kind = prototype.kind;
-		this.hasPrerequisite = prototype.hasPrerequisite;
-		this.prerequisite = prototype.prerequisite;
-		this.precondition = prototype.precondition;
-		this.logical = prototype.logical;
+		this.claim = prototype.claim;
+	}
+
+	public final boolean isClaim() {
+		return this.claim;
 	}
 
 	@Override
@@ -114,99 +127,108 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return this.source;
 	}
 
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
+	public abstract ValueStruct<?, ?> getValueStruct();
+
+	public abstract boolean unconditional();
+
 	public final boolean isExplicit() {
 		return getSource() == sourceOf(getScope().toObject());
 	}
 
-	public final DefKind getKind() {
-		return this.kind;
-	}
-
-	public final boolean isValue() {
-		return getKind().isValue();
-	}
-
-	public final boolean hasPrerequisite() {
-		return this.hasPrerequisite;
-	}
-
-	public final D upgradeScope(Scope toScope) {
+	public final Def upgradeScope(Scope toScope) {
 		if (toScope == getScope()) {
-			return self();
+			return this;
 		}
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, toScope));
 	}
 
-	public final Logical fullLogical() {
-		return getLogical().upgradeScope(getScopeUpgrade());
-	}
-
-	public final D addPrerequisite(Logical prerequisite) {
-
-		final Logical oldPrerequisite = getPrerequisite();
-		final Logical newPrerequisite = oldPrerequisite.and(prerequisite);
-
-		if (oldPrerequisite.sameAs(newPrerequisite)) {
-			return self();
+	public final Def claim() {
+		if (isClaim()) {
+			return this;
 		}
 
-		final D copy = copy();
+		final Def copy = copy();
 
-		copy.hasPrerequisite = true;
-		copy.prerequisite = newPrerequisite;
+		copy.claim = true;
 
 		return copy;
 	}
 
-	public final D addPrecondition(Logical precondition) {
-
-		final Logical oldPrecondition = getPrecondition();
-		final Logical newPrecondition =
-				Logical.and(oldPrecondition, precondition);
-
-		if (newPrecondition == oldPrecondition) {
-			return self();
+	public final Def unclaim() {
+		if (!isClaim()) {
+			return this;
 		}
 
-		final D copy = copy();
+		final Def copy = copy();
 
-		copy.precondition = newPrecondition;
-		copy.logical = null;
+		copy.claim = false;
 
 		return copy;
 	}
 
-	public final D claim() {
-		if (getKind().isClaim()) {
-			return self();
+	public final Value<?> getConstantValue() {
+		if (this.constantValue != null) {
+			return this.constantValue;
 		}
-
-		final D copy = copy();
-
-		copy.kind = this.kind.claim();
-
-		return copy;
+		if (!hasConstantValue()) {
+			return this.constantValue = getValueStruct().runtimeValue();
+		}
+		return this.constantValue = value(getScope().dummyResolver());
 	}
 
-	public final D unclaim() {
-		if (!getKind().isClaim()) {
-			return self();
+	public Value<?> value(Resolver resolver) {
+		assertCompatible(resolver.getScope());
+
+		final Resolver rescoped = getScopeUpgrade().rescope(resolver);
+		final Value<?> value = calculateValue(rescoped);
+
+		if (value == null) {
+			return getValueStruct().unknownValue();
 		}
 
-		final D copy = copy();
-
-		copy.kind = this.kind.unclaim();
-
-		return copy;
+		return value.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
-	public abstract boolean impliesWhenAfter(D def);
+	public Ref target() {
+		return null;
+	}
 
-	public abstract boolean impliesWhenBefore(D def);
+	public final Def toVoid() {
+		if (getValueType().isVoid()) {
+			return this;
+		}
+		return new VoidDef(this);
+	}
 
-	public abstract ValueDef toValue();
+	public final Definitions toDefinitions(ValueStruct<?, ?> valueStruct) {
+		assert valueStruct != null :
+			"Value structure expected";
 
-	public abstract CondDef toCondition();
+		if (isClaim()) {
+			return new Definitions(
+					this,
+					getScope(),
+					valueStruct,
+					new Defs(true, this),
+					NO_PROPOSITIONS);
+		}
+
+		return new Definitions(
+				this,
+				getScope(),
+				valueStruct,
+				NO_CLAIMS,
+				new Defs(false, this));
+	}
+
+	public final ValOp write(ValDirs dirs, HostOp host) {
+		assertFullyResolved();
+		return writeDef(dirs, host);
+	}
 
 	public final void resolveAll(Resolver resolver) {
 		this.allResolved = true;
@@ -251,21 +273,9 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 
 		final StringBuilder out = new StringBuilder();
 
-		out.append(name()).append('[');
-		if (hasPrerequisite()) {
-			out.append(getPrerequisite()).append("? ");
-		}
-
-		final Logical precondition = getPrecondition();
-
-		if (!precondition.isTrue()) {
-			out.append(precondition).append(", ");
-		}
-		if (isValue()) {
-			out.append('=');
-		}
+		out.append(getClass().getSimpleName()).append('[');
 		out.append(getLocation());
-		if (getKind().isClaim()) {
+		if (isClaim()) {
 			out.append("!]");
 		} else {
 			out.append(".]");
@@ -274,75 +284,50 @@ public abstract class Def<D extends Def<D>> implements SourceInfo {
 		return out.toString();
 	}
 
-	@SuppressWarnings("unchecked")
-	protected final D self() {
-		return (D) this;
-	}
-
-	protected abstract D create(
+	protected abstract Def create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade);
 
+	protected abstract boolean hasConstantValue();
+
+	protected abstract Value<?> calculateValue(Resolver resolver);
+
+	protected void resolveTarget(TargetResolver resolver) {
+	}
+
 	protected abstract void fullyResolve(Resolver resolver);
 
-	protected final Logical getPrerequisite() {
-		if (this.prerequisite != null) {
-			return this.prerequisite;
-		}
-		this.prerequisite = buildPrerequisite();
-		assert this.prerequisite != null :
-			"Definition without prerequisite";
-		if (!hasPrerequisite()) {
-			assert this.prerequisite.isTrue() :
-				"No prerequisite, so it should be TRUE: " + this.prerequisite;
-		}
-		return this.prerequisite;
+	protected abstract InlineValue inline(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct);
+
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
+		return writeDefValue(dirs, host);
 	}
 
-	protected abstract Logical buildPrerequisite();
-
-	protected final Logical getPrecondition() {
-		if (this.precondition != null) {
-			return this.precondition;
-		}
-		return this.precondition = buildPrecondition();
+	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
+		return writeValue(dirs.falseWhenUnknown(), host);
 	}
 
-	protected abstract Logical buildPrecondition();
-
-	protected final Logical getLogical() {
-		if (this.logical != null) {
-			return this.logical;
-		}
-		return this.logical = getPrecondition().and(buildLogical());
-	}
-
-	protected abstract Logical buildLogical();
-
-	protected abstract String name();
+	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
 	protected final LocationInfo getLocation() {
 		return this.location;
 	}
 
-	final void update(DefKind kind, boolean hasPrerequisite) {
-		this.kind = kind;
-		this.hasPrerequisite = hasPrerequisite;
-	}
-
-	final D upgradeScope(ScopeUpgrade upgrade) {
+	final Def upgradeScope(ScopeUpgrade upgrade) {
 
 		final ScopeUpgrade oldUpgrade = getScopeUpgrade();
 		final ScopeUpgrade newUpgrade = oldUpgrade.and(upgrade);
 
 		if (newUpgrade == oldUpgrade) {
-			return self();
+			return this;
 		}
 
 		return create(newUpgrade, upgrade);
 	}
 
-	private final D copy() {
+	private final Def copy() {
 		return create(getScopeUpgrade(), noScopeUpgrade(getScope()));
 	}
 

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.Scope;
@@ -27,23 +26,23 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class RefValueDef extends ValueDef {
+public final class RefDef extends Def {
 
 	private final Ref ref;
 	private InlineValue inline;
 
-	public RefValueDef(Ref ref) {
+	public RefDef(Ref ref) {
 		super(sourceOf(ref), ref, noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
 	}
 
-	private RefValueDef(RefValueDef prototype, ScopeUpgrade scopeUpgrade) {
+	private RefDef(RefDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
 	}
@@ -69,21 +68,6 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return this.ref.getLogical();
-	}
-
-	@Override
 	protected boolean hasConstantValue() {
 		return this.ref.isConstant();
 	}
@@ -94,19 +78,19 @@ public final class RefValueDef extends ValueDef {
 	}
 
 	@Override
-	protected RefValueDef create(
+	protected RefDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new RefValueDef(this, upgrade);
+		return new RefDef(this, upgrade);
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return this.ref.inline(normalizer, getScope());

@@ -20,7 +20,6 @@
 package org.o42a.core.object.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
@@ -34,14 +33,14 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayItem;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.ValueDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-final class ArrayCopyValueDef extends ValueDef {
+final class ArrayCopyDef extends Def {
 
 	static Value<?> arrayValue(Ref ref, Resolver resolver, boolean toVariable) {
 
@@ -97,14 +96,14 @@ final class ArrayCopyValueDef extends ValueDef {
 	private ArrayValueStruct fromStruct;
 	private ArrayValueStruct toStruct;
 
-	ArrayCopyValueDef(Ref ref, boolean toVariable) {
+	ArrayCopyDef(Ref ref, boolean toVariable) {
 		super(sourceOf(ref), ref, ScopeUpgrade.noScopeUpgrade(ref.getScope()));
 		this.ref = ref;
 		this.toVariable = toVariable;
 	}
 
-	private ArrayCopyValueDef(
-			ArrayCopyValueDef prototype,
+	private ArrayCopyDef(
+			ArrayCopyDef prototype,
 			ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.ref = prototype.ref;
@@ -134,39 +133,24 @@ final class ArrayCopyValueDef extends ValueDef {
 	}
 
 	@Override
-	protected Logical buildPrerequisite() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildPrecondition() {
-		return logicalTrue(this, this.ref.getScope());
-	}
-
-	@Override
-	protected Logical buildLogical() {
-		return this.ref.getLogical();
-	}
-
-	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
 		return arrayValue(this.ref, resolver, this.toVariable);
 	}
 
 	@Override
-	protected ValueDef create(
+	protected ArrayCopyDef create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new ArrayCopyValueDef(this, upgrade);
+		return new ArrayCopyDef(this, upgrade);
 	}
 
 	@Override
-	protected void fullyResolveDef(Resolver resolver) {
+	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
 	}
 
 	@Override
-	protected InlineValue inlineDef(
+	protected InlineValue inline(
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 		return null;

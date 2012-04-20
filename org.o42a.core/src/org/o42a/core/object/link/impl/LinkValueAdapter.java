@@ -19,13 +19,11 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.object.link.impl.LinkCopyValueDef.linkValue;
+import static org.o42a.core.object.link.impl.LinkCopyDef.linkValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.CondDef;
-import org.o42a.core.object.def.ValueDef;
-import org.o42a.core.object.def.impl.RefCondDef;
+import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Logical;
 import org.o42a.core.ref.Ref;
@@ -56,13 +54,8 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public ValueDef valueDef() {
-		return new LinkCopyValueDef(ref(), getExpectedStruct().getValueType());
-	}
-
-	@Override
-	public CondDef condDef() {
-		return new RefCondDef(ref());
+	public Def valueDef() {
+		return new LinkCopyDef(ref(), getExpectedStruct().getValueType());
 	}
 
 	@Override
