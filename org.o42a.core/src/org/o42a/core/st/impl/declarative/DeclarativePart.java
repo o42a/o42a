@@ -43,7 +43,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public final class DeclarativePart
+final class DeclarativePart
 		extends ValueDef
 		implements DeclarativeSentences {
 
@@ -52,7 +52,7 @@ public final class DeclarativePart
 	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences inline;
 
-	public DeclarativePart(
+	DeclarativePart(
 			BlockDefiner definer,
 			DefTargets targets,
 			List<DeclarativeSentence> sentences,
@@ -91,7 +91,7 @@ public final class DeclarativePart
 
 	@Override
 	public boolean unconditional() {
-		return this.targets.haveValue() && !this.targets.havePrecondition();
+		return this.targets.haveValue() && !this.targets.havePrerequisite();
 	}
 
 	@Override

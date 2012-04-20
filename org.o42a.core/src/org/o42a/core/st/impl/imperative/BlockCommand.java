@@ -138,19 +138,20 @@ public final class BlockCommand extends Command {
 	private CommandTargets sentenceTargets() {
 
 		CommandTargets result = noCommands();
-		CommandTargets prev = noCommands();
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
 			final CommandTargets targets = sentence.getCommandTargets();
 
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (targets.breaking()) {
-					prev = targets;
+			if (!result.breaking() || result.havePrerequisite()) {
+				if (!targets.breaking()) {
+					result = result.add(targets.toPreconditions());
 				} else {
-					prev = targets.toPreconditions();
+					result = result.add(targets);
+					if (!targets.havePrerequisite()) {
+						result = result.toPreconditions();
+					}
 				}
-				result = result.add(prev);
 				continue;
 			}
 			if (result.haveError()) {

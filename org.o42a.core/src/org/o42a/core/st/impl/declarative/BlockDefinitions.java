@@ -109,21 +109,20 @@ final class BlockDefinitions {
 	private void build() {
 		getBlock().executeInstructions();
 
-		DefTargets prev = noDefs();
 		int index = -1;
 
 		for (DeclarativeSentence sentence : getBlock().getSentences()) {
 			++index;
 
-			final DefTargets sentenceTargets = sentence.getDefTargets();
+			final DefTargets targets = sentence.getDefTargets();
 
-			if (!sentenceTargets.defining()) {
+			if (!targets.defining()) {
 				continue;
 			}
 
 			final boolean claim;
 
-			if (sentenceTargets.isClaim()
+			if (targets.isClaim()
 					&& this.targets.defining()
 					&& !this.targets.isClaim()) {
 				if (!this.targets.haveError()) {
@@ -135,15 +134,10 @@ final class BlockDefinitions {
 				}
 				claim = false;
 			} else {
-				claim = sentenceTargets.isClaim();
+				claim = targets.isClaim();
 			}
-			if (!prev.breaking() || prev.havePrerequisite()) {
-				if (sentenceTargets.breaking()) {
-					prev = sentenceTargets;
-				} else {
-					prev = sentenceTargets.toPreconditions();
-				}
-				addSentence(sentence, prev, index, claim);
+			if (!this.targets.breaking() || this.targets.havePrerequisite()) {
+				addSentence(sentence, targets, index, claim);
 				continue;
 			}
 			if (this.targets.haveError()) {
@@ -152,7 +146,7 @@ final class BlockDefinitions {
 			this.targets = this.targets.addError();
 			getLogger().error(
 					"redundant_sentence",
-					sentenceTargets,
+					targets,
 					"Redundant sentence");
 		}
 	}
@@ -162,21 +156,42 @@ final class BlockDefinitions {
 			DefTargets targets,
 			int index,
 			boolean claim) {
-		this.targets = this.targets.add(targets);
 		if (claim) {
-			this.claimTargets.add(targets);
 			if (this.claims == null) {
 				this.claims = new ArrayList<DeclarativeSentence>(
 						getBlock().getSentences().size() - index);
 			}
 			this.claims.add(sentence);
 		} else {
-			this.propositionTargets.add(targets);
 			if (this.propositions == null) {
 				this.propositions = new ArrayList<DeclarativeSentence>(
 						getBlock().getSentences().size() - index);
 			}
 			this.propositions.add(sentence);
+		}
+
+		if (!targets.breaking()) {
+			addTargets(targets.toPreconditions(), claim);
+		} else {
+			addTargets(targets, claim);
+			if (!targets.havePrerequisite()) {
+				this.targets = this.targets.toPreconditions();
+				if (claim) {
+					this.claimTargets = this.claimTargets.toPreconditions();
+				} else {
+					this.propositionTargets =
+							this.propositionTargets.toPreconditions();
+				}
+			}
+		}
+	}
+
+	private void addTargets(DefTargets targets, boolean claim) {
+		this.targets = this.targets.add(targets);
+		if (claim) {
+			this.claimTargets = this.claimTargets.add(targets);
+		} else {
+			this.propositionTargets = this.propositionTargets.add(targets);
 		}
 	}
 
