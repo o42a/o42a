@@ -23,47 +23,42 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
-public class DeclarativeSentenceErrorTest extends CompilerTestCase {
+public class DeclarativeAltErrorTest extends CompilerTestCase {
 
 	@Test
-	public void redundantAfterUnconditionalValue() {
-		expectError("compiler.redundant_sentence");
-		compile(
-				"A := integer (",
-				"  = 2",
-				"  Void",
-				")");
+	public void statementBeforeField() {
+		expectError("compiler.not_alone_field");
+		compile("Void; a := 1");
 	}
 
 	@Test
-	public void redundantAfterConditionalValue() {
-		expectError("compiler.redundant_sentence");
-		compile(
-				"A := integer (",
-				"  False, = 2",
-				"  Void",
-				")");
+	public void statementAfterField() {
+		expectError("compiler.not_alone_field");
+		compile("A := 1; void");
 	}
 
 	@Test
-	public void redundantAfterCompoundValue() {
-		expectError("compiler.redundant_sentence");
-		compile(
-				"A := integer (",
-				"  False? Void",
-				"  = 2",
-				"  Void",
-				")");
+	public void twoFields() {
+		expectError("compiler.not_alone_field");
+		compile("A := 1; b := 2");
 	}
 
 	@Test
-	public void redundantAfterValueAlts() {
-		expectError("compiler.redundant_sentence");
-		compile(
-				"A := integer (",
-				"  = 2; = 3",
-				"  Void",
-				")");
+	public void statementBeforeClause() {
+		expectError("compiler.not_alone_clause");
+		compile("Void; <a> false");
+	}
+
+	@Test
+	public void statementAfterClause() {
+		expectError("compiler.not_alone_clause");
+		compile("<A> false; void");
+	}
+
+	@Test
+	public void twoClauses() {
+		expectError("compiler.not_alone_clause");
+		compile("<A> false; <b> false");
 	}
 
 }

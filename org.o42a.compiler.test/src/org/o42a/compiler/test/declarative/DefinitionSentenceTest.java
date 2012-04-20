@@ -32,8 +32,8 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	@Test
 	public void conditionAfterField() {
 		compile(
-				"A := 42.",
-				"False.");
+				"A := 42",
+				"False");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);
@@ -42,10 +42,10 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	@Test
 	public void valueAfterField() {
 		compile(
-				"A := string(",
-				"  Foo := 42.",
-				"  = \"value\".",
-				").");
+				"A := string (",
+				"  Foo := 42",
+				"  = \"value\"",
+				")");
 
 		assertThat(
 				definiteValue(field("a", "foo"), ValueType.INTEGER),
@@ -56,26 +56,11 @@ public class DefinitionSentenceTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void fieldValueAndCondition() {
-		compile(
-				"A := string(",
-				"  Foo := 42.",
-				"  = \"value\".",
-				"  False.",
-				").");
-
-		assertThat(
-				definiteValue(field("a", "foo"), ValueType.INTEGER),
-				is(42L));
-		assertFalseValue(valueOf(field("a")));
-	}
-
-	@Test
 	public void fieldConditionField() {
 		compile(
-				"A := 42.",
-				"False.",
-				"B := 34.");
+				"A := 42",
+				"False",
+				"B := 34");
 
 		assertThat(definiteValue(field("a"), ValueType.INTEGER), is(42L));
 		assertFalseVoid(this.module);

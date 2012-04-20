@@ -28,11 +28,11 @@ public class ConditionTest extends CompilerTestCase {
 	@Test
 	public void condition() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Condition := void",
-				"  Value := void(Condition)",
+				"  Value := void (Condition)",
 				")",
-				"B := a(Condition = false)",
+				"B := a (Condition = false)",
 				"C := b");
 
 		assertTrueVoid(field("a", "value"));
@@ -43,11 +43,11 @@ public class ConditionTest extends CompilerTestCase {
 	@Test
 	public void not() {
 		compile(
-				"A := void(",
-				"  Condition := (`void) false.",
-				"  Value := void(--Condition)",
+				"A := void (",
+				"  Condition := (`void) false",
+				"  Value := void (--Condition)",
 				")",
-				"B := a(Condition = void)",
+				"B := a (Condition = void)",
 				"C := b");
 
 		assertTrueVoid(field("a", "value"));
@@ -58,11 +58,11 @@ public class ConditionTest extends CompilerTestCase {
 	@Test
 	public void issue() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Condition := 1",
-				"  Condition > 0? Void. False",
+				"  Condition > 0? = Void. = False",
 				")",
-				"B := a(Condition = 0)",
+				"B := a (Condition = 0)",
 				"C := b");
 
 		assertTrueVoid(field("a"));
@@ -73,11 +73,11 @@ public class ConditionTest extends CompilerTestCase {
 	@Test
 	public void unlessIssue() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Condition := 1",
-				"  Condition > 0? False. Void",
+				"  Condition > 0? = False. = Void",
 				")",
-				"B := a(Condition = 0)",
+				"B := a (Condition = 0)",
 				"C := b");
 
 		assertFalseVoid(field("a"));

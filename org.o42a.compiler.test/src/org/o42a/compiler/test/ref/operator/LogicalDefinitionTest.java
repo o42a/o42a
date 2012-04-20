@@ -57,56 +57,6 @@ public class LogicalDefinitionTest extends CompilerTestCase {
 		assertTrueVoid(this.c);
 	}
 
-	@Test
-	public void known() {
-		compile(
-				"A := false.",
-				"B := +-a.",
-				"C := b.");
-
-		assertKnownValue(valueOf(this.a));
-		assertFalseVoid(this.a);
-		assertTrueVoid(this.b);
-		assertTrueVoid(this.c);
-	}
-
-	@Test
-	public void notKnown() {
-		compile(
-				"A := void(False? = Void).",
-				"B := +-a.",
-				"C := b.");
-
-		assertUnknownValue(valueOf(this.a));
-		assertFalseVoid(this.b);
-		assertFalseVoid(this.c);
-	}
-
-	@Test
-	public void notUnknown() {
-		compile(
-				"A := void.",
-				"B := -+a.",
-				"C := b.");
-
-		assertKnownValue(valueOf(this.a));
-		assertTrueVoid(this.a);
-		assertFalseVoid(this.b);
-		assertFalseVoid(this.c);
-	}
-
-	@Test
-	public void unknown() {
-		compile(
-				"A := void(False? = Void).",
-				"B := -+a.",
-				"C := b.");
-
-		assertUnknownValue(valueOf(this.a));
-		assertTrueVoid(this.b);
-		assertTrueVoid(this.c);
-	}
-
 	@Override
 	protected void compile(String line, String... lines) {
 		super.compile(line, lines);
