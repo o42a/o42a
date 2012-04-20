@@ -225,18 +225,8 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public void writeRequirement(CodeDirs dirs, ObjectOp body) {
-			objectValueIR().writeRequirement(dirs, obj(), body);
-		}
-
-		@Override
 		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 			return objectValueIR().writeClaim(dirs, obj(), body);
-		}
-
-		@Override
-		public void writeCondition(CodeDirs dirs, ObjOp body) {
-			objectValueIR().writeCondition(dirs, obj(), body);
 		}
 
 		@Override

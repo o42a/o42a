@@ -20,16 +20,13 @@
 package org.o42a.core.ir.object.impl;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.value.Condition;
 
 
 public abstract class ObjectIRFunc {
@@ -72,23 +69,6 @@ public abstract class ObjectIRFunc {
 			+ ", while " + getObject() + " expected";
 
 		return code.nullDataPtr();
-	}
-
-	public boolean writeFalseValue(CodeDirs dirs) {
-
-		final Condition finalCondition =
-				getObjectIR().getObjectValueIR().condition().getFinal();
-
-		if (!finalCondition.isFalse()) {
-			return false;
-		}
-
-		final Block code = dirs.code();
-
-		code.debug("Object condition is FALSE");
-		code.go(dirs.falseDir());
-
-		return true;
 	}
 
 }

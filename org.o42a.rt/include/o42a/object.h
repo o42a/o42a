@@ -42,15 +42,6 @@ typedef struct o42a_obj_body o42a_obj_t;
 typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
 /**
- * Object condition calculator function.
- *
- * \param object[in] object pointer.
- *
- * \return condition.
- */
-typedef o42a_cond_t o42a_obj_cond_ft(O42A_DECLS o42a_obj_t *);
-
-/**
  * Object reference function.
  *
  * \param scope[in] scope object pointer.
@@ -236,27 +227,11 @@ typedef struct o42a_obj_data {
 	o42a_obj_val_ft *value_f;
 
 	/**
-	 * Object's requirement calculator function.
-	 *
-	 * Accepts main object body as a second argument.
-	 */
-	o42a_obj_cond_ft *requirement_f;
-
-	/**
 	 * Object's claim calculator function.
 	 *
 	 * Accepts main object body as a second argument.
 	 */
 	o42a_obj_val_ft *claim_f;
-
-	/**
-	 * Object's condition calculator function.
-	 *
-	 * Implies common claim.
-	 *
-	 * Accepts main object body as a second argument.
-	 */
-	o42a_obj_cond_ft *condition_f;
 
 	/**
 	 * Object's proposition calculator function.

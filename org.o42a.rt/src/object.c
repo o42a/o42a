@@ -588,9 +588,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
 	data->value_f = adata->value_f;
-	data->requirement_f = adata->requirement_f;
 	data->claim_f = adata->claim_f;
-	data->condition_f = adata->condition_f;
 	data->proposition_f = adata->proposition_f;
 
 	data->ancestor_type = adata->ancestor_type;
@@ -905,9 +903,7 @@ o42a_obj_t *o42a_obj_new(
 
 	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
 	data->value_f = sdata->value_f;
-	data->requirement_f = sdata->requirement_f;
 	data->claim_f = sdata->claim_f;
-	data->condition_f = sdata->condition_f;
 	data->proposition_f = sdata->proposition_f;
 
 	data->ancestor_type = atype;

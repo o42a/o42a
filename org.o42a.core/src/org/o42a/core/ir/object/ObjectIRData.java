@@ -22,7 +22,6 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
-import static org.o42a.core.ir.op.ObjectCondFunc.OBJECT_COND;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
@@ -32,7 +31,6 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.op.ObjectCondFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValType;
@@ -56,9 +54,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private RelRec start;
 	private ValType value;
 	private FuncRec<ObjectValFunc> valueFunc;
-	private FuncRec<ObjectCondFunc> requirementFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
-	private FuncRec<ObjectCondFunc> conditionFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private StructRec<ObjectIRType.Op> ancestorType;
 	private RelList<ObjectBodyIR> ascendants;
@@ -92,16 +88,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.valueFunc;
 	}
 
-	public final FuncRec<ObjectCondFunc> requirementFunc() {
-		return this.requirementFunc;
-	}
-
 	public final FuncRec<ObjectValFunc> claimFunc() {
 		return this.claimFunc;
-	}
-
-	public final FuncRec<ObjectCondFunc> conditionFunc() {
-		return this.conditionFunc;
 	}
 
 	public final FuncRec<ObjectValFunc> propositionFunc() {
@@ -140,9 +128,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.start = data.addRelPtr("start");
 		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VAL);
-		this.requirementFunc = data.addFuncPtr("requirement_f", OBJECT_COND);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
-		this.conditionFunc = data.addFuncPtr("condition_f", OBJECT_COND);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
 		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
@@ -196,16 +182,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			return func(null, code, getType().valueFunc());
 		}
 
-		public final FuncOp<ObjectCondFunc> requirementFunc(Code code) {
-			return func(null, code, getType().requirementFunc());
-		}
-
 		public final FuncOp<ObjectValFunc> claimFunc(Code code) {
 			return func(null, code, getType().claimFunc());
-		}
-
-		public final FuncOp<ObjectCondFunc> conditionFunc(Code code) {
-			return func(null, code, getType().conditionFunc());
 		}
 
 		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {

@@ -43,7 +43,9 @@ import org.o42a.core.object.def.ValueDefs;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ValuePart;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public abstract class ObjectValueIRValFunc
@@ -78,14 +80,6 @@ public abstract class ObjectValueIRValFunc
 		if (this.constant != null) {
 			return this.constant;
 		}
-
-		final Condition constantCondition =
-				getValueIR().condition().getConstant();
-
-		if (constantCondition.isFalse()) {
-			return this.constant = getValueStruct().falseValue();
-		}
-
 		return this.constant = determineConstant();
 	}
 
@@ -98,13 +92,6 @@ public abstract class ObjectValueIRValFunc
 
 		if (constant.getKnowledge().isKnown()) {
 			return this.finalValue = constant;
-		}
-
-		final Condition finalCondition =
-				getValueIR().condition().getFinal();
-
-		if (finalCondition.isFalse()) {
-			return this.finalValue = getValueStruct().falseValue();
 		}
 
 		return this.finalValue = determineFinal();

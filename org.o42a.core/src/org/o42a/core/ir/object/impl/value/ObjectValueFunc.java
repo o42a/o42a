@@ -28,7 +28,6 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
@@ -62,13 +61,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	@Override
 	protected Value<?> determineConstant() {
 
-		final Condition constantCondition =
-				getValueIR().condition().getConstant();
-
-		if (!constantCondition.isConstant()) {
-			return getValueStruct().runtimeValue();
-		}
-
 		final Value<?> claim = getValueIR().claim().getConstant();
 
 		if (!claim.getKnowledge().hasUnknownCondition()) {
@@ -80,9 +72,7 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 	@Override
 	protected Value<?> determineFinal() {
-		if (!getValueIR().requirement().getFinal().isConstant()
-				|| !getValueIR().condition().getFinal().isConstant()
-				|| !getValueIR().claim().getFinal().getKnowledge().isKnown()
+		if (!getValueIR().claim().getFinal().getKnowledge().isKnown()
 				|| !getValueIR().proposition().getFinal()
 				.getKnowledge().isKnown()) {
 			return getValueStruct().runtimeValue();
@@ -94,10 +84,8 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 
 	@Override
 	protected boolean canStub() {
-		return getValueIR().requirement().canStub()
-				&& getValueIR().condition().canStub()
-				&& getValueIR().claim().canStub()
-				&& getValueIR().requirement().canStub()
+		return getValueIR().claim().canStub()
+				&& getValueIR().proposition().canStub()
 				&& !getObject().value().isUsed(
 						getGenerator().getAnalyzer(),
 						ALL_VALUE_USAGES);
@@ -107,11 +95,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	protected void reuse() {
 
 		final ObjectValueIR valueIR = getValueIR();
-
-		if (!valueIR.condition().getFinal().isTrue()) {
-			return;
-		}
-
 		final FuncPtr<ObjectValFunc> reused;
 		final ObjectClaimFunc claim = valueIR.claim();
 		final Value<?> finalClaim = claim.getFinal();
@@ -141,10 +124,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 	protected ValOp build(ValDirs dirs, ObjOp host) {
 
 		final Block code = dirs.code();
-
-		writeRequirement(dirs.dirs(), host);
-		getValueIR().writeCondition(dirs.dirs(), host, null);
-
 		final Block unknownClaim = dirs.addBlock("unknown_claim");
 		final ValDirs claimDirs =
 				dirs.dirs().splitWhenUnknown(
@@ -180,19 +159,6 @@ public final class ObjectValueFunc extends ObjectValueIRValFunc {
 		return code.phi(null, result1, result2).op(
 				dirs.getBuilder(),
 				getObject().value().getValueStruct());
-	}
-
-	private void writeRequirement(CodeDirs dirs, ObjOp host) {
-
-		final Block unknownReq = dirs.addBlock("unknown_req");
-		final CodeDirs reqDirs = dirs.splitWhenUnknown(
-				dirs.falseDir(),
-				unknownReq.head());
-
-		getValueIR().writeRequirement(reqDirs, host, null);
-		if (unknownReq.exists()) {
-			unknownReq.go(dirs.code().tail());
-		}
 	}
 
 	private ValType.Op writeProposition(ValDirs dirs, Block code, ObjOp host) {
