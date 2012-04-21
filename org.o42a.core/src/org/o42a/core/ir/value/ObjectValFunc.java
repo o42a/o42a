@@ -26,6 +26,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
@@ -42,6 +43,10 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 
 	public void call(Code code, ValOp value, ObjectOp object) {
 		call(code, value, object.toData(code));
+	}
+
+	public void call(DefDirs dirs, ObjectOp object) {
+		call(dirs, object.toData(dirs.code()));
 	}
 
 	public ValOp call(ValDirs dirs, ObjectOp object) {
@@ -61,6 +66,16 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		value.go(code, dirs);
 
 		return value;
+	}
+
+	public void call(DefDirs dirs, DataOp object) {
+
+		final Block code = dirs.code();
+		final ValOp value = dirs.value();
+
+		invoke(null, code, OBJECT_VAL.result(), value.ptr(), object);
+		value.go(code, dirs);
+		dirs.returnValue(value);
 	}
 
 	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {

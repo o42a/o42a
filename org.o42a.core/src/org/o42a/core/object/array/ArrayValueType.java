@@ -20,8 +20,8 @@
 package org.o42a.core.object.array;
 
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.ArrayValueTypeIR;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;

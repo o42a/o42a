@@ -20,12 +20,15 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.RefOpEval;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.impl.RefDef;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -35,6 +38,11 @@ public class RawValueAdapter extends ValueAdapter {
 
 	public RawValueAdapter(Ref adaptedRef) {
 		super(adaptedRef);
+	}
+
+	@Override
+	public boolean isConstant() {
+		return getAdaptedRef().isConstant();
 	}
 
 	@Override
@@ -55,6 +63,24 @@ public class RawValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+
+		final InlineValue inline = getAdaptedRef().inline(normalizer, origin);
+
+		return inline != null ? inline.toInlineEval() : null;
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+		return new RefOpEval(builder, getAdaptedRef());
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getAdaptedRef().resolve(resolver).resolveValue();
 	}
 
 }

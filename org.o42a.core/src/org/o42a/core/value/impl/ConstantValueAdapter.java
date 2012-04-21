@@ -23,18 +23,23 @@ import static org.o42a.core.object.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
+import org.o42a.util.fn.Cancelable;
 
 
 final class ConstantValueAdapter<T> extends ValueAdapter {
 
 	private final SingleValueType<T> valueType;
-	private final T constant;
+	private final Value<T> value;
 
 	ConstantValueAdapter(
 			Ref adaptedRef,
@@ -42,7 +47,12 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 			T constant) {
 		super(adaptedRef);
 		this.valueType = valueType;
-		this.constant = constant;
+		this.value = valueType.constantValue(constant);
+	}
+
+	@Override
+	public boolean isConstant() {
+		return true;
 	}
 
 	@Override
@@ -50,7 +60,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 		return this.valueType.struct().constantDef(
 				sourceOf(getAdaptedRef()),
 				getAdaptedRef(),
-				this.constant);
+				this.value.getCompilerValue());
 	}
 
 	@Override
@@ -60,7 +70,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return this.valueType.constantValue(this.constant);
+		return this.valueType.constantValue(this.value.getCompilerValue());
 	}
 
 	@Override
@@ -69,11 +79,83 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return new InlineConstant(this.value);
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+		return new ConstantEval(builder, getAdaptedRef(), this.value);
+	}
+
+	@Override
 	public String toString() {
-		if (this.constant == null) {
+		if (this.value == null) {
 			return "null";
 		}
-		return this.valueType.struct().valueString(this.constant);
+		return this.value.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+	}
+
+	private static final class ConstantEval extends RefEval {
+
+		private final Value<?> value;
+
+		ConstantEval(CodeBuilder builder, Ref ref, Value<?> value) {
+			super(builder, ref);
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			// Always TRUE.
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+	}
+
+	private static final class InlineConstant extends InlineEval {
+
+		private final Value<?> value;
+
+		InlineConstant(Value<?> value) {
+			super(null);
+			this.value = value;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
 	}
 
 }

@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
+import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;

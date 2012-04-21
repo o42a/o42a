@@ -21,13 +21,19 @@ package org.o42a.core.object.link.impl;
 
 import static org.o42a.core.object.link.impl.LinkByValueDef.linkByValue;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -44,6 +50,14 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	public final LinkValueStruct getExpectedStruct() {
 		return this.expectedStruct;
+	}
+
+	@Override
+	public boolean isConstant() {
+		if (getExpectedStruct().getValueType().isRuntimeConstructed()) {
+			return false;
+		}
+		return getAdaptedRef().isConstant();
 	}
 
 	@Override
@@ -67,8 +81,48 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+		return new LinkByValueEval(builder, getAdaptedRef());
+	}
+
+	@Override
 	public String toString() {
 		return "`" + super.toString();
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getAdaptedRef().resolve(resolver).resolveTarget();
+	}
+
+	private static final class LinkByValueEval extends RefEval {
+
+		LinkByValueEval(CodeBuilder builder, Ref ref) {
+			super(builder, ref);
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			getRef().op(host).writeCond(dirs);
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final Block code = dirs.code();
+			final ObjectOp target =
+					getRef().op(host)
+					.target(dirs.dirs())
+					.materialize(dirs.dirs());
+
+			dirs.returnValue(dirs.value().store(code, target.toAny(code)));
+		}
+
 	}
 
 }

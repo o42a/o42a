@@ -37,7 +37,7 @@ import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayItem;
 
 
-public class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
+final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 	private final ArrayIR arrayIR;
 	private final DataRec[] items;

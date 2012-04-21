@@ -17,47 +17,53 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.array.impl;
+package org.o42a.core.ir.value.array;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.object.array.Array;
-import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 
 
-public final class ArrayValueStructIR
-		extends ValueStructIR<ArrayValueStruct, Array> {
+public class ArrayValueTypeIR implements ArrayIRGenerator {
 
-	public ArrayValueStructIR(
-			Generator generator,
-			ArrayValueStruct valueStruct) {
-		super(generator, valueStruct);
-	}
+	private final Generator generator;
+	private final ArrayValueType valueType;
+	private int idSeq;
 
-	public ArrayValueTypeIR getValueTypeIR() {
-
-		final ArrayValueType valueType = (ArrayValueType) getValueType();
-
-		return valueType.ir(getGenerator());
+	public ArrayValueTypeIR(Generator generator, ArrayValueType valueType) {
+		this.generator = generator;
+		this.valueType = valueType;
 	}
 
 	@Override
-	public boolean hasLength() {
-		return true;
+	public final Generator getGenerator() {
+		return this.generator;
+	}
+
+	public final ArrayValueType getValueType() {
+		return this.valueType;
 	}
 
 	@Override
-	public Val val(Array value) {
-		return value.ir(getValueTypeIR()).getVal();
+	public CodeId nextId() {
+
+		final String prefix;
+
+		if (!getValueType().isVariable()) {
+			prefix = "ROW";
+		} else {
+			prefix = "ARRAY";
+		}
+
+		return getGenerator().id("DATA").sub(prefix).anonymous(++this.idSeq);
 	}
 
 	@Override
-	public Ptr<ValType.Op> valPtr(Array value) {
-		return value.ir(getValueTypeIR()).getValPtr();
+	public String toString() {
+		if (this.valueType == null) {
+			return super.toString();
+		}
+		return this.valueType + " IR";
 	}
 
 }

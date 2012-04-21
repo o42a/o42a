@@ -29,6 +29,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.impl.AllocatedValOp;
 import org.o42a.core.value.ValueStruct;
@@ -336,6 +337,10 @@ public abstract class ValOp extends IROp implements CondOp {
 				alignment,
 				length);
 		return this;
+	}
+
+	public final void go(Block code, DefDirs dirs) {
+		go(code, dirs.dirs());
 	}
 
 	public final void go(Block code, ValDirs dirs) {

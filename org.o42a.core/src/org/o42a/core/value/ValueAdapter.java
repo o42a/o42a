@@ -20,11 +20,12 @@
 package org.o42a.core.value;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.impl.RawValueAdapter;
 
 
@@ -44,17 +45,36 @@ public abstract class ValueAdapter {
 		return this.adaptedRef;
 	}
 
+	public abstract boolean isConstant();
+
+	@Deprecated
 	public abstract Def valueDef();
 
+	@Deprecated
 	public abstract Logical logical(Scope scope);
 
 	public abstract Value<?> value(Resolver resolver);
 
+	@Deprecated
 	public Value<?> initialValue(LocalResolver resolver) {
 		return value(resolver);
 	}
 
+	@Deprecated
 	public abstract LogicalValue initialCond(LocalResolver resolver);
+
+	public final void resolveAll(Resolver resolver) {
+		resolver.getContext().fullResolution().start();
+		try {
+			fullyResolve(resolver);
+		} finally {
+			resolver.getContext().fullResolution().end();
+		}
+	}
+
+	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
+
+	public abstract RefEval eval(CodeBuilder builder);
 
 	@Override
 	public String toString() {
@@ -63,5 +83,7 @@ public abstract class ValueAdapter {
 		}
 		return this.adaptedRef.toString();
 	}
+
+	protected abstract void fullyResolve(Resolver resolver);
 
 }

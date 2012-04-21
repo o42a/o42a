@@ -25,6 +25,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValType.Op;
 
@@ -43,6 +44,15 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 
 		invoke(null, dirs.code(), VAL_COPY.result(), from.ptr(), to.ptr());
 		to.go(dirs.code(), dirs);
+	}
+
+	public void copy(DefDirs dirs, ValOp from) {
+
+		final ValOp to = dirs.value();
+
+		invoke(null, dirs.code(), VAL_COPY.result(), from.ptr(), to.ptr());
+		to.go(dirs.code(), dirs.valDirs());
+		dirs.returnValue(to);
 	}
 
 	public static final class ValCopySignature extends Signature<ValCopyFunc> {
