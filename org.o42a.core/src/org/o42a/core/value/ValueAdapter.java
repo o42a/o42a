@@ -30,8 +30,18 @@ import org.o42a.core.value.impl.RawValueAdapter;
 
 public abstract class ValueAdapter {
 
-	public static ValueAdapter rawValueAdapter(Ref ref) {
-		return new RawValueAdapter(ref);
+	public static ValueAdapter rawValueAdapter(Ref adaptedRef) {
+		return new RawValueAdapter(adaptedRef);
+	}
+
+	private final Ref adaptedRef;
+
+	public ValueAdapter(Ref adaptedRef) {
+		this.adaptedRef = adaptedRef;
+	}
+
+	public final Ref getAdaptedRef() {
+		return this.adaptedRef;
 	}
 
 	public abstract Def valueDef();
@@ -45,5 +55,13 @@ public abstract class ValueAdapter {
 	}
 
 	public abstract LogicalValue initialCond(LocalResolver resolver);
+
+	@Override
+	public String toString() {
+		if (this.adaptedRef == null) {
+			return super.toString();
+		}
+		return this.adaptedRef.toString();
+	}
 
 }

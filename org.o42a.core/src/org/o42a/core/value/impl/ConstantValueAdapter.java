@@ -26,25 +26,21 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.Logical;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.*;
 
 
 final class ConstantValueAdapter<T> extends ValueAdapter {
 
-	private final LocationInfo location;
-	private final Scope scope;
 	private final SingleValueType<T> valueType;
 	private final T constant;
 
 	ConstantValueAdapter(
-			LocationInfo location,
-			Scope scope,
+			Ref adaptedRef,
 			SingleValueType<T> valueType,
 			T constant) {
-		this.location = location;
-		this.scope = scope;
+		super(adaptedRef);
 		this.valueType = valueType;
 		this.constant = constant;
 	}
@@ -52,14 +48,14 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	@Override
 	public Def valueDef() {
 		return this.valueType.struct().constantDef(
-				sourceOf(this.scope),
-				this.location,
+				sourceOf(getAdaptedRef()),
+				getAdaptedRef(),
 				this.constant);
 	}
 
 	@Override
 	public Logical logical(Scope scope) {
-		return logicalTrue(this.location, scope);
+		return logicalTrue(getAdaptedRef(), scope);
 	}
 
 	@Override
@@ -79,4 +75,5 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 		}
 		return this.valueType.struct().valueString(this.constant);
 	}
+
 }
