@@ -100,8 +100,9 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 
 	@Override
 	protected Command implicate(Statement statement) {
-		final ImplicationEnv initialEnv =
-				getSentence().getBlock().getInitialEnv();
+
+		final CommandEnv initialEnv = getSentence().getBlock().sentencesEnv();
+
 		return statement.command(new BlockCommandEnv(this, initialEnv));
 	}
 

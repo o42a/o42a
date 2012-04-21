@@ -32,7 +32,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public final class DefDirs {
+public class DefDirs {
 
 	private final ValDirs valDirs;
 	private final Shared shared;
@@ -95,7 +95,7 @@ public final class DefDirs {
 		return valDirs().value();
 	}
 
-	public final ValOp result() {
+	public ValOp result() {
 		if (this.shared.result != null) {
 			return this.shared.result;
 		}
@@ -106,7 +106,7 @@ public final class DefDirs {
 		returnValue(code(), value);
 	}
 
-	public final void returnValue(Block code, ValOp value) {
+	public void returnValue(Block code, ValOp value) {
 		this.shared.store(code, value);
 		code.go(this.shared.returnDir);
 	}

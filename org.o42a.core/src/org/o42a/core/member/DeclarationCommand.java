@@ -29,7 +29,6 @@ import org.o42a.core.st.Command;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationCommand extends Command {
@@ -50,7 +49,6 @@ public abstract class DeclarationCommand extends Command {
 	@Override
 	public final InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 		return null;
 	}

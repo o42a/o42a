@@ -31,7 +31,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -40,7 +39,6 @@ public class InlineDeclarativeSentences extends InlineEval {
 	public static InlineDeclarativeSentences inlineBlock(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			DeclarativeSentences block) {
 
@@ -53,7 +51,6 @@ public class InlineDeclarativeSentences extends InlineEval {
 			inlines[i++] = inlineSentence(
 					rootNormalizer,
 					normalizer,
-					valueStruct,
 					origin,
 					sentence);
 		}

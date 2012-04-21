@@ -27,7 +27,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueStruct;
 
 
 final class InlineDefiners {
@@ -35,7 +34,6 @@ final class InlineDefiners {
 	static InlineDefiners inlineDefiners(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			Declaratives declaratives) {
 
@@ -50,7 +48,6 @@ final class InlineDefiners {
 			if (normalizer != null) {
 				inline = definer.inline(
 						normalizer,
-						valueStruct,
 						origin);
 				if (inline == null) {
 					normalizer.cancelAll();

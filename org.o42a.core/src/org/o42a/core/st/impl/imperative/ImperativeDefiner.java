@@ -43,7 +43,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -106,14 +105,10 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 
 		final InlineCmd inline = getCommand().inline(
 				normalizer,
-				valueStruct,
 				getLocalPrefix().rescope(origin));
 
 		if (inline == null) {
@@ -127,10 +122,7 @@ public final class ImperativeDefiner extends Definer {
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 
 		final Scope localScope = getLocalPrefix().rescope(origin);
-		final RootNormalizer imperativeNormalizer =
-				new RootNormalizer(normalizer.getAnalyzer(), localScope);
-		final InlineCmd normal =
-				getCommand().normalize(imperativeNormalizer, localScope);
+		final InlineCmd normal = getCommand().normalize(normalizer, localScope);
 
 		if (normal == null) {
 			return null;

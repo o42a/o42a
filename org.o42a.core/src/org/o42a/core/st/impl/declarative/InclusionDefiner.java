@@ -28,7 +28,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
-import org.o42a.core.value.ValueStruct;
 
 
 abstract class InclusionDefiner<I extends Inclusion>
@@ -74,10 +73,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

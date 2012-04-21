@@ -29,7 +29,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.LogInfo;
 
 
@@ -118,10 +117,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public InlineEval inline(
-				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
-				Scope origin) {
+		public InlineEval inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

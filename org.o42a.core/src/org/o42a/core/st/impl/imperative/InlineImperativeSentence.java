@@ -28,7 +28,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.ValueStruct;
 
 
 final class InlineImperativeSentence {
@@ -36,7 +35,6 @@ final class InlineImperativeSentence {
 	static InlineImperativeSentence inlineSentence(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			ImperativeSentence sentence) {
 
@@ -49,7 +47,6 @@ final class InlineImperativeSentence {
 			inlinePrereq = inlineSentence(
 					rootNormalizer,
 					normalizer,
-					valueStruct,
 					origin,
 					prereq);
 		}
@@ -62,7 +59,6 @@ final class InlineImperativeSentence {
 			inlineAlts[i++] = inlineCommands(
 					rootNormalizer,
 					normalizer,
-					valueStruct,
 					origin,
 					alt);
 		}

@@ -29,7 +29,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
 
 
 final class ClauseDefiner extends Definer {
@@ -58,11 +57,8 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return definer().inline(normalizer, valueStruct, origin);
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return definer().inline(normalizer, origin);
 	}
 
 	@Override
@@ -150,10 +146,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineEval inline(
-				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
-				Scope origin) {
+		public InlineEval inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -197,10 +190,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineEval inline(
-				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
-				Scope origin) {
+		public InlineEval inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -247,10 +237,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public InlineEval inline(
-				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
-				Scope origin) {
+		public InlineEval inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

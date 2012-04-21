@@ -29,7 +29,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DeclarationDefiner extends Definer {
@@ -55,10 +54,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 		return InlineEval.noInlineEval();
 	}
 

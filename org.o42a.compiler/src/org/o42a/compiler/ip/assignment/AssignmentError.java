@@ -28,7 +28,6 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
 
 
 final class AssignmentError extends AssignmentKind {
@@ -49,7 +48,6 @@ final class AssignmentError extends AssignmentKind {
 	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 		return null;
 	}

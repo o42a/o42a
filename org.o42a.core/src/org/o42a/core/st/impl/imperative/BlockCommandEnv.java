@@ -31,6 +31,8 @@ public class BlockCommandEnv extends CommandEnv {
 
 	public BlockCommandEnv(Imperatives imperatives, ImplicationEnv initialEnv) {
 		super(imperatives);
+		assert initialEnv != null :
+			"Command environment not provided";
 		this.initialEnv = initialEnv;
 	}
 
