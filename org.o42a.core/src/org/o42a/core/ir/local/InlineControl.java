@@ -63,7 +63,9 @@ public class InlineControl extends MainControl {
 	@Override
 	public void end() {
 		super.end();
-		code().go(exit());
+		if (this.defDirs == null) {
+			code().go(exit());
+		}
 		if (this.returnCode != null) {
 			if (this.defDirs != null) {
 				this.defDirs.returnValue(this.returnCode, finalResult());
