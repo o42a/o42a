@@ -35,6 +35,7 @@ public class InlineControl extends MainControl {
 	private ValOp finalResult;
 	private Code singleResultInset;
 	private byte results;
+	private final Block continuation;
 
 	public InlineControl(ValDirs dirs) {
 		super(
@@ -44,16 +45,18 @@ public class InlineControl extends MainControl {
 				dirs.falseDir());
 		this.dirs = dirs;
 		this.defDirs = null;
+		this.continuation = null;
 	}
 
-	public InlineControl(DefDirs dirs) {
+	public InlineControl(DefDirs dirs, Block continuation) {
 		super(
 				dirs.getBuilder(),
 				dirs.code(),
-				dirs.unknownDir(),
+				continuation.head(),
 				dirs.falseDir());
 		this.dirs = dirs.valDirs();
 		this.defDirs = dirs;
+		this.continuation = continuation;
 	}
 
 	public final ValOp finalResult() {
@@ -65,6 +68,8 @@ public class InlineControl extends MainControl {
 		super.end();
 		if (this.defDirs == null) {
 			code().go(exit());
+		} else if (this.continuation.exists()) {
+			this.continuation.go(code().tail());
 		}
 		if (this.returnCode != null) {
 			if (this.defDirs != null) {
