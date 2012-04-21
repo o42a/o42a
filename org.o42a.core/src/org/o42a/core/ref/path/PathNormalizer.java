@@ -44,6 +44,7 @@ public final class PathNormalizer {
 				new PathNormalizer(normalizer, startPrediction(origin), path);
 
 		if (!pathNormalizer.init()) {
+			normalizer.cancelAll();
 			return null;
 		}
 

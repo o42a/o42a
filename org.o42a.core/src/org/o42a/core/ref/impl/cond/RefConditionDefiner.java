@@ -24,6 +24,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.*;
 import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
@@ -77,6 +78,11 @@ final class RefConditionDefiner extends Definer {
 		}
 
 		return new ApplyDirective(getRef(), resolver, directive);
+	}
+
+	@Override
+	public DefTarget toTarget() {
+		return DefTarget.NO_DEF_TARGET;
 	}
 
 	@Override

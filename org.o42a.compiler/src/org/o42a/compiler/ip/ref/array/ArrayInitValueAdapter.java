@@ -64,6 +64,11 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public Ref toTarget() {
+		return null;
+	}
+
+	@Override
 	public Def valueDef() {
 
 		final Scope scope = getAdaptedRef().getScope();

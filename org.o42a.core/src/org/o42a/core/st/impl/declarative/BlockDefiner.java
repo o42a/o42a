@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.impl.declarative;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
@@ -31,6 +32,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
@@ -62,6 +64,29 @@ public final class BlockDefiner
 		return TRUE_DEF_VALUE;
 	}
 
+	static DefTarget sentencesTargets(DeclarativeSentences sentences) {
+
+		final DefTargets defTargets = sentences.getDefTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		for (DeclarativeSentence sentence : sentences.getSentences()) {
+
+			final DefTarget sentenceTarget = sentenceTarget(sentence);
+
+			if (sentenceTarget != null) {
+				return sentenceTarget;
+			}
+		}
+
+		return null;
+	}
+
 	static void resolveSentences(
 			Resolver resolver,
 			DeclarativeSentences sentences) {
@@ -89,6 +114,11 @@ public final class BlockDefiner
 	@Override
 	public Definitions createDefinitions() {
 		return getBlockDefinitions().createDefinitions();
+	}
+
+	@Override
+	public DefTarget toTarget() {
+		return sentencesTargets(this);
 	}
 
 	@Override
@@ -127,6 +157,54 @@ public final class BlockDefiner
 			return this.blockDefinitions;
 		}
 		return this.blockDefinitions = new BlockDefinitions(this);
+	}
+
+	private static DefTarget sentenceTarget(DeclarativeSentence sentence) {
+
+		final DefTargets defTargets = sentence.getDefTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<Declaratives> alts = sentence.getAlternatives();
+		final int size = alts.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return NO_DEF_TARGET;
+		}
+
+		return statementsTarget(alts.get(0));
+	}
+
+	private static DefTarget statementsTarget(Declaratives statements) {
+
+		final DefTargets defTargets = statements.getDefTargets();
+
+		if (!defTargets.defining()) {
+			return null;
+		}
+		if (defTargets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<Definer> definers = statements.getImplications();
+		final int size = definers.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return NO_DEF_TARGET;
+		}
+
+		return definers.get(0).toTarget();
 	}
 
 	private static void resolveSentence(

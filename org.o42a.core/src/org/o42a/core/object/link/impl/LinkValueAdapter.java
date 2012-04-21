@@ -64,6 +64,11 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public final Ref toTarget() {
+		return getAdaptedRef().dereference();
+	}
+
+	@Override
 	public Def valueDef() {
 		return new LinkCopyDef(
 				getAdaptedRef(),

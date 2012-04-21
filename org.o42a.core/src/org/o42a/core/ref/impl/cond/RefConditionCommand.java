@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -71,6 +72,11 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
+	public DefTarget toTarget() {
+		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
 	public Action initialValue(LocalResolver resolver) {
 		return getRefCommand().initialCond(resolver);
 	}
@@ -81,9 +87,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = getRef().inline(normalizer, origin);
 

@@ -20,7 +20,6 @@
 package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
-import static org.o42a.core.object.def.DefTarget.UNKNOWN_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
@@ -303,9 +302,11 @@ public class Definitions extends Scoped {
 		final InlineValue claim = claims().inline(normalizer, this);
 		final InlineValue proposition = propositions().inline(normalizer, this);
 
-		return normalizer.isCancelled() ? null : new InlineDefinitions(
-				claim,
-				proposition);
+		if (normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineDefinitions(claim, proposition);
 	}
 
 	public final void resolveAll() {
@@ -356,38 +357,20 @@ public class Definitions extends Scoped {
 		if (linkStruct == null) {
 			return this.target = NO_DEF_TARGET;
 		}
-		if (!claims().isEmpty()) {
-			return this.target = NO_DEF_TARGET;
+
+		final DefTarget claimedTarget = claims().target();
+
+		if (claimedTarget != null) {
+			return setTarget(claimedTarget);
 		}
 
-		final Def[] defs = propositions().get();
+		final DefTarget proposedTarget = propositions().target();
 
-		if (defs.length == 0) {
-			return this.target = UNKNOWN_DEF_TARGET;
-		}
-		if (defs.length != 1) {
-			return this.target = NO_DEF_TARGET;
+		if (proposedTarget != null) {
+			return setTarget(proposedTarget);
 		}
 
-		final Ref target = defs[0].target();
-
-		if (target == null) {
-			return this.target = NO_DEF_TARGET;
-		}
-
-		final BoundPath targetPath =
-				defTarget(target.getPath(), getScope().getEnclosingScope());
-
-		if (targetPath == null) {
-			return this.target = NO_DEF_TARGET;
-		}
-
-		assert targetPath.getOrigin() == getScope().getEnclosingScope() :
-			"Wrong target scope: " + targetPath.getOrigin()
-			+ ", but " + getScope().getEnclosingScope() + " expected";
-
-		return this.target = new DefTarget(targetPath.target(
-				target.distributeIn(targetPath.getOrigin().getContainer())));
+		return this.target = DefTarget.UNKNOWN_DEF_TARGET;
 	}
 
 	@Override
@@ -456,6 +439,29 @@ public class Definitions extends Scoped {
 				newValueStruct,
 				newClaims,
 				newPropositions);
+	}
+
+	private DefTarget setTarget(DefTarget target) {
+
+		final Ref ref = target.getRef();
+
+		if (ref == null) {
+			return this.target = target;
+		}
+
+		final BoundPath targetPath =
+				defTarget(ref.getPath(), getScope().getEnclosingScope());
+
+		if (targetPath == null) {
+			return this.target = NO_DEF_TARGET;
+		}
+
+		assert targetPath.getOrigin() == getScope().getEnclosingScope() :
+			"Wrong target scope: " + targetPath.getOrigin()
+			+ ", but " + getScope().getEnclosingScope() + " expected";
+
+		return this.target = new DefTarget(targetPath.target(
+				ref.distributeIn(targetPath.getOrigin().getContainer())));
 	}
 
 	private static final class Empty extends Definitions {

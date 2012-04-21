@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
@@ -84,8 +85,9 @@ public final class LinkConstantDef extends Def {
 	}
 
 	@Override
-	public Ref target() {
-		return this.value.getCompilerValue().getTargetRef().getRef();
+	public DefTarget target() {
+		return new DefTarget(
+				this.value.getCompilerValue().getTargetRef().getRef());
 	}
 
 	@Override

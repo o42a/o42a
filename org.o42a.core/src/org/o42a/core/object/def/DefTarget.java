@@ -29,7 +29,7 @@ public final class DefTarget {
 
 	private final Ref ref;
 
-	DefTarget(Ref ref) {
+	public DefTarget(Ref ref) {
 		this.ref = ref;
 	}
 

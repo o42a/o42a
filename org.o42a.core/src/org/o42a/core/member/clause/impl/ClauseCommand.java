@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -58,9 +59,7 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return command().inline(normalizer, origin);
 	}
 
@@ -82,6 +81,11 @@ final class ClauseCommand extends Command {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return command().toInstruction(resolver);
+	}
+
+	@Override
+	public DefTarget toTarget() {
+		return command().toTarget();
 	}
 
 	private final ClauseDeclarationStatement declaration() {
@@ -138,9 +142,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inline(
-				Normalizer normalizer,
-				Scope origin) {
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -161,6 +163,11 @@ final class ClauseCommand extends Command {
 		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public DefTarget toTarget() {
+			return DefTarget.NO_DEF_TARGET;
 		}
 
 	}
@@ -192,9 +199,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public InlineCmd inline(
-				Normalizer normalizer,
-				Scope origin) {
+		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -216,6 +221,11 @@ final class ClauseCommand extends Command {
 		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public DefTarget toTarget() {
+			return DefTarget.NO_DEF_TARGET;
 		}
 
 		private final ClauseDeclarationStatement declaration() {

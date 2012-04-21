@@ -24,6 +24,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.st.*;
@@ -76,6 +77,18 @@ public final class RefDefiner extends Definer {
 	@Override
 	public final Instruction toInstruction(Resolver resolver) {
 		return null;
+	}
+
+	@Override
+	public DefTarget toTarget() {
+
+		final Ref target = getValueAdapter().toTarget();
+
+		if (target == null) {
+			return DefTarget.NO_DEF_TARGET;
+		}
+
+		return new DefTarget(target);
 	}
 
 	@Override

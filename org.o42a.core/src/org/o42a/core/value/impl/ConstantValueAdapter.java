@@ -58,6 +58,11 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
+	public Ref toTarget() {
+		return null;
+	}
+
+	@Override
 	public Def valueDef() {
 		return this.valueType.struct().constantDef(
 				sourceOf(getAdaptedRef()),

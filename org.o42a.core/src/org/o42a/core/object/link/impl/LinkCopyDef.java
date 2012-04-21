@@ -28,6 +28,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.*;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
@@ -111,8 +112,9 @@ final class LinkCopyDef extends Def {
 	}
 
 	@Override
-	public Ref target() {
-		return this.ref.getPath().dereference().target(this.ref.distribute());
+	public DefTarget target() {
+		return new DefTarget(
+				this.ref.getPath().dereference().target(this.ref.distribute()));
 	}
 
 	@Override

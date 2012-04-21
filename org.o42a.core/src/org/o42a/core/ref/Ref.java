@@ -126,6 +126,10 @@ public class Ref extends Statement {
 		return resolve(getScope().dummyResolver());
 	}
 
+	public final Ref dereference() {
+		return getPath().dereference().target(distribute());
+	}
+
 	@Override
 	public RefDefiner define(DefinerEnv env) {
 		return new RefDefiner(this, env);

@@ -79,6 +79,18 @@ public final class Defs {
 		return defs[length - 1].unconditional();
 	}
 
+	public final DefTarget target() {
+		for (Def def : get()) {
+
+			final DefTarget target = def.target();
+
+			if (target != null) {
+				return target;
+			}
+		}
+		return null;
+	}
+
 	public final Value<?> constant(Definitions definitions) {
 		if (this.constant != null) {
 			return this.constant;
@@ -282,13 +294,13 @@ public final class Defs {
 		final Def[] defs = get();
 
 		if (defs.length == 1) {
-			return defs[0].inline(normalizer, valueStruct);
+			return inlineDef(normalizer, valueStruct, defs[0]);
 		}
 
 		final InlineValue[] inlines = new InlineValue[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
-			inlines[i] = defs[i].inline(normalizer, valueStruct);
+			inlines[i] = inlineDef(normalizer, valueStruct, defs[i]);
 		}
 
 		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
@@ -365,6 +377,20 @@ public final class Defs {
 		for (Def def : get()) {
 			def.normalize(normalizer);
 		}
+	}
+
+	private InlineValue inlineDef(
+			Normalizer normalizer,
+			ValueStruct<?, ?> valueStruct,
+			Def def) {
+
+		final InlineValue inline = def.inline(normalizer, valueStruct);
+
+		if (inline == null) {
+			normalizer.cancelAll();
+		}
+
+		return inline;
 	}
 
 }
