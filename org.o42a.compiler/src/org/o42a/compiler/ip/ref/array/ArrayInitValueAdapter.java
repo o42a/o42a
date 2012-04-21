@@ -23,14 +23,22 @@ import static org.o42a.core.object.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.value.ObjectValFunc;
+import org.o42a.core.ir.value.array.ArrayIR;
+import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -48,6 +56,11 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		super(adaptedRef);
 		this.constructor = constructor;
 		this.arrayStruct = arrayStruct;
+	}
+
+	@Override
+	public boolean isConstant() {
+		return !this.arrayStruct.getValueType().isRuntimeConstructed();
 	}
 
 	@Override
@@ -69,15 +82,25 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-
-		final Array array = createArray(resolver.getScope());
-
-		return array.getValueStruct().compilerValue(array);
+		return createArray(resolver.getScope()).toValue();
 	}
 
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return LogicalValue.TRUE;
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+		return new ArrayInitEval(
+				builder,
+				getAdaptedRef(),
+				createArray(getAdaptedRef().getScope()).toValue());
 	}
 
 	@Override
@@ -88,17 +111,22 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		return this.constructor.toString();
 	}
 
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		value(resolver).resolveAll(resolver);
+	}
+
 	private Array createArray(Scope scope) {
-		return new Builder(this).createArray(
+		return new ArrayInitBuilder(this).createArray(
 				this.constructor.distributeIn(scope.getEnclosingContainer()),
 				scope);
 	}
 
-	private static final class Builder extends ArrayBuilder {
+	private static final class ArrayInitBuilder extends ArrayBuilder {
 
 		private final ArrayInitValueAdapter adapter;
 
-		Builder(ArrayInitValueAdapter adapter) {
+		ArrayInitBuilder(ArrayInitValueAdapter adapter) {
 			super(adapter.constructor);
 			this.adapter = adapter;
 		}
@@ -116,6 +144,53 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		@Override
 		protected ArrayValueStruct knownArrayStruct() {
 			return this.adapter.arrayStruct;
+		}
+
+	}
+
+	private static final class ArrayInitEval extends RefEval {
+
+		private final Value<Array> value;
+
+		ArrayInitEval(CodeBuilder builder, Ref ref, Value<Array> value) {
+			super(builder, ref);
+			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			// Always TRUE.
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			if (!this.value.getCompilerValue().isVariable()) {
+				dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
+				return;
+			}
+
+			final Array array = this.value.getCompilerValue();
+			final ArrayValueType valueType =
+					this.value.getValueType().toArrayType();
+			final ArrayValueTypeIR valueTypeIR =
+					valueType.ir(dirs.getGenerator());
+			final ArrayIR arrayIR = array.ir(valueTypeIR);
+			final ObjectOp arrayOp =
+					array.getPrefix()
+					.write(dirs.dirs(), host)
+					.materialize(dirs.dirs());
+			final ObjectValFunc constructor =
+					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
+
+			constructor.call(dirs, arrayOp);
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
 		}
 
 	}

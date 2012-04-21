@@ -21,23 +21,18 @@ package org.o42a.core.ref;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.*;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.fn.Cancelable;
 
 
 public final class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
-	private InlineValue inline;
 
 	RefDefiner(Ref ref, DefinerEnv env) {
 		super(ref, env);
@@ -49,7 +44,7 @@ public final class RefDefiner extends Definer {
 
 	@Override
 	public DefTargets getDefTargets() {
-		if (!getRef().isConstant()) {
+		if (!getValueAdapter().isConstant()) {
 			return valueDef();
 		}
 		return valueDef().setConstant();
@@ -87,22 +82,11 @@ public final class RefDefiner extends Definer {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-
-		final InlineValue inline = getRef().inline(normalizer, origin);
-
-		if (inline == null) {
-			return null;
-		}
-
-		return new Inline(inline);
+		return getValueAdapter().inline(normalizer, origin);
 	}
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.inline = getRef().inline(normalizer.newNormalizer(), getScope());
-		if (this.inline == null) {
-			getRef().normalize(normalizer.getAnalyzer());
-		}
 	}
 
 	@Override
@@ -117,113 +101,12 @@ public final class RefDefiner extends Definer {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		getRef().resolve(resolver).resolveValue();
+		getValueAdapter().resolveAll(resolver);
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		if (this.inline == null) {
-			return new RefEvalImpl(builder, getRef());
-		}
-		return new InlineRefEvalImpl(builder, getRef(), this.inline);
-	}
-
-	private static final class Inline extends InlineEval {
-
-		private final InlineValue value;
-
-		Inline(InlineValue value) {
-			super(null);
-			this.value = value;
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-
-			final DefDirs defDirs = dirs.falseWhenUnknown();
-			final ValOp value = this.value.writeValue(defDirs.valDirs(), host);
-
-			defDirs.done();
-			dirs.returnValue(value);
-		}
-
-		@Override
-		public String toString() {
-			if (this.value == null) {
-				return super.toString();
-			}
-			return this.value.toString();
-		}
-
-		@Override
-		protected Cancelable cancelable() {
-			return null;
-		}
-
-	}
-
-	private static final class RefEvalImpl extends RefEval {
-
-		RefEvalImpl(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-
-			final CodeDirs condDirs = dirs.falseWhenUnknown();
-
-			getRef().op(host).writeCond(condDirs);
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-
-			final DefDirs defDirs = dirs.falseWhenUnknown();
-			final ValOp value = getRef().op(host).writeValue(defDirs.valDirs());
-
-			defDirs.done();
-			dirs.returnValue(value);
-		}
-
-	}
-
-	private static final class InlineRefEvalImpl extends RefEval {
-
-		private final InlineValue inline;
-
-		InlineRefEvalImpl(CodeBuilder builder, Ref ref, InlineValue inline) {
-			super(builder, ref);
-			this.inline = inline;
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-
-			final CodeDirs condDirs = dirs.falseWhenUnknown();
-
-			this.inline.writeCond(condDirs, host);
-			condDirs.end();
-		}
-
-		@Override
-		public void write(DefDirs dirs, HostOp host) {
-
-			final DefDirs defDirs = dirs.falseWhenUnknown();
-			final ValOp value = this.inline.writeValue(defDirs.valDirs(), host);
-
-			defDirs.done();
-			dirs.returnValue(value);
-		}
-
-		@Override
-		public String toString() {
-			if (this.inline == null) {
-				return super.toString();
-			}
-			return this.inline.toString();
-		}
-
+	protected RefEval createEval(CodeBuilder builder) {
+		return getValueAdapter().eval(builder);
 	}
 
 }

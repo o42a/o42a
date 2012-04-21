@@ -20,6 +20,7 @@
 package org.o42a.core.ir.op;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
@@ -66,5 +67,9 @@ public abstract class InlineValue extends InlineCond {
 	}
 
 	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
+
+	public final InlineEval toInlineEval() {
+		return new InlineValueEval(this);
+	}
 
 }

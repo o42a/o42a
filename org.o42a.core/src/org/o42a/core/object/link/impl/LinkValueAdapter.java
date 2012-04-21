@@ -22,12 +22,16 @@ package org.o42a.core.object.link.impl;
 import static org.o42a.core.object.link.impl.LinkCopyDef.linkValue;
 
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -46,6 +50,14 @@ public class LinkValueAdapter extends ValueAdapter {
 
 	public final LinkValueStruct getExpectedStruct() {
 		return this.expectedStruct;
+	}
+
+	@Override
+	public boolean isConstant() {
+		if (getExpectedStruct().getValueType().isRuntimeConstructed()) {
+			return false;
+		}
+		return getAdaptedRef().isConstant();
 	}
 
 	@Override
@@ -71,6 +83,57 @@ public class LinkValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+
+		final LinkValueStruct fromStruct =
+				getAdaptedRef()
+				.valueStruct(getAdaptedRef().getScope())
+				.toLinkStruct();
+
+		if (getExpectedStruct().assignableFrom(fromStruct)) {
+			return new RefOpEval(builder, getAdaptedRef());
+		}
+
+		return new LinkEval(builder, getAdaptedRef(), fromStruct);
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getAdaptedRef().resolve(resolver).resolveValue();
+	}
+
+	private static final class LinkEval extends RefEval {
+
+		private final LinkValueStruct fromStruct;
+
+		LinkEval(CodeBuilder builder, Ref ref, LinkValueStruct fromStruct) {
+			super(builder, ref);
+			this.fromStruct = fromStruct;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			getRef().op(host).writeCond(dirs);
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValDirs fromDirs = dirs.dirs().value(this.fromStruct);
+			final ValOp from = getRef().op(host).writeValue(fromDirs);
+
+			fromDirs.done();
+			dirs.returnValue(from);
+		}
+
 	}
 
 }

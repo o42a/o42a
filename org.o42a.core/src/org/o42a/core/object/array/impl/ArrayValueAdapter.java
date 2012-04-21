@@ -19,18 +19,23 @@
 */
 package org.o42a.core.object.array.impl;
 
+import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.object.array.impl.ArrayCopyDef.arrayValue;
 
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
+import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValCopyFunc;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Def;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.ref.*;
+import org.o42a.core.value.*;
 
 
 public final class ArrayValueAdapter extends ValueAdapter {
@@ -44,6 +49,14 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	public final ArrayValueStruct getExpectedStruct() {
 		return this.expectedStruct;
+	}
+
+	@Override
+	public boolean isConstant() {
+		if (getExpectedStruct().getValueType().isRuntimeConstructed()) {
+			return false;
+		}
+		return getAdaptedRef().isConstant();
 	}
 
 	@Override
@@ -69,6 +82,60 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return null;
+	}
+
+	@Override
+	public RefEval eval(CodeBuilder builder) {
+		if (fromConstToConst()) {
+			return new RefOpEval(builder, getAdaptedRef());
+		}
+		return new ArrayEval(builder, getAdaptedRef());
+	}
+
+	@Override
+	protected void fullyResolve(Resolver resolver) {
+		getAdaptedRef().resolve(resolver).resolveValue();
+	}
+
+	private boolean fromConstToConst() {
+		if (getExpectedStruct().isVariable()) {
+			return false;
+		}
+		return !getAdaptedRef().getValueType().isVariable();
+	}
+
+	private static final class ArrayEval extends RefEval {
+
+		ArrayEval(CodeBuilder builder, Ref ref) {
+			super(builder, ref);
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			getRef().op(host).writeCond(dirs);
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValueStruct<?, ?> fromValueStruct =
+					getRef().valueStruct(getRef().getScope());
+			final ValDirs fromDirs = dirs.dirs().value(fromValueStruct);
+			final ValOp from = getRef().op(host).writeValue(fromDirs);
+			final FuncPtr<ValCopyFunc> func =
+					dirs.getGenerator()
+					.externalFunction()
+					.link("o42a_array_copy", VAL_COPY);
+
+			func.op(null, dirs.code()).copy(dirs, from);
+			fromDirs.done();
+		}
+
 	}
 
 }
