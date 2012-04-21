@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -50,14 +51,17 @@ abstract class EllipsisCommand extends Command {
 	}
 
 	@Override
+	public DefTarget toTarget() {
+		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
 	public Action initialCond(LocalResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 

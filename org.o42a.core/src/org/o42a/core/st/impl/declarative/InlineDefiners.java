@@ -46,9 +46,7 @@ final class InlineDefiners {
 			final InlineEval inline;
 
 			if (normalizer != null) {
-				inline = definer.inline(
-						normalizer,
-						origin);
+				inline = definer.inline(normalizer, origin);
 				if (inline == null) {
 					normalizer.cancelAll();
 				}

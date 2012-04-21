@@ -47,6 +47,8 @@ public abstract class ValueAdapter {
 
 	public abstract boolean isConstant();
 
+	public abstract Ref toTarget();
+
 	@Deprecated
 	public abstract Def valueDef();
 

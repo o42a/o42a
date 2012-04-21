@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -90,9 +91,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
 
@@ -111,6 +110,18 @@ public final class RefCommand extends Command {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return null;
+	}
+
+	@Override
+	public DefTarget toTarget() {
+
+		final Ref target = getValueAdapter().toTarget();
+
+		if (target == null) {
+			return DefTarget.NO_DEF_TARGET;
+		}
+
+		return new DefTarget(target);
 	}
 
 	@Override

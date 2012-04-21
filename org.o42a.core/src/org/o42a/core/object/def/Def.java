@@ -193,8 +193,8 @@ public abstract class Def implements SourceInfo {
 		return value.prefixWith(getScopeUpgrade().toPrefix());
 	}
 
-	public Ref target() {
-		return null;
+	public DefTarget target() {
+		return DefTarget.NO_DEF_TARGET;
 	}
 
 	public final Def toVoid() {

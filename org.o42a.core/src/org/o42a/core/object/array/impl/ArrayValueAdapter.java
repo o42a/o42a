@@ -63,6 +63,11 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public Ref toTarget() {
+		return null;
+	}
+
+	@Override
 	public Def valueDef() {
 		return new ArrayCopyDef(
 				getAdaptedRef(),

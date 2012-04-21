@@ -35,9 +35,8 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
@@ -76,6 +75,24 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public DefTargets getDefTargets() {
 		return this.command.getCommandTargets().toDefTargets();
+	}
+
+	@Override
+	public DefTarget toTarget() {
+
+		final DefTarget target = getCommand().toTarget();
+
+		if (target == null) {
+			return null;
+		}
+
+		final Ref ref = target.getRef();
+
+		if (ref == null) {
+			return target;
+		}
+
+		return new DefTarget(ref.prefixWith(getLocalPrefix()));
 	}
 
 	@Override

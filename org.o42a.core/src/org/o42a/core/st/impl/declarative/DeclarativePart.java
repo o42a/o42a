@@ -21,6 +21,7 @@ package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.impl.declarative.BlockDefiner.resolveSentences;
+import static org.o42a.core.st.impl.declarative.BlockDefiner.sentencesTargets;
 import static org.o42a.core.st.impl.declarative.BlockDefiner.sentencesValue;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
@@ -32,6 +33,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
@@ -40,6 +42,7 @@ import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.fn.Holder;
 
 
 final class DeclarativePart extends Def implements DeclarativeSentences {
@@ -48,6 +51,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	private final DefTargets targets;
 	private final List<DeclarativeSentence> sentences;
 	private InlineDeclarativeSentences inline;
+	private Holder<DefTarget> defTarget;
 
 	DeclarativePart(
 			BlockDefiner definer,
@@ -92,8 +96,26 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
+	public final DefTargets getDefTargets() {
+		return this.targets;
+	}
+
+	@Override
 	public final List<DeclarativeSentence> getSentences() {
 		return this.sentences;
+	}
+
+	@Override
+	public DefTarget target() {
+		if (this.defTarget != null) {
+			return this.defTarget.get();
+		}
+
+		final DefTarget defTarget = sentencesTargets(this);
+
+		this.defTarget = Holder.holder(defTarget);
+
+		return defTarget;
 	}
 
 	@Override
@@ -131,7 +153,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.targets.isConstant();
+		return getDefTargets().isConstant();
 	}
 
 	@Override

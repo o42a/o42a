@@ -45,6 +45,11 @@ public class RawValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public Ref toTarget() {
+		return null;
+	}
+
+	@Override
 	public Def valueDef() {
 		return new RefDef(getAdaptedRef());
 	}

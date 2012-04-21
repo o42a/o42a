@@ -25,6 +25,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -54,6 +55,11 @@ final class ClauseDefiner extends Definer {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return definer().toInstruction(resolver);
+	}
+
+	@Override
+	public DefTarget toTarget() {
+		return definer().toTarget();
 	}
 
 	@Override
@@ -146,6 +152,11 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
+		public DefTarget toTarget() {
+			return DefTarget.NO_DEF_TARGET;
+		}
+
+		@Override
 		public InlineEval inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
@@ -187,6 +198,11 @@ final class ClauseDefiner extends Definer {
 		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public DefTarget toTarget() {
+			return DefTarget.NO_DEF_TARGET;
 		}
 
 		@Override
@@ -234,6 +250,11 @@ final class ClauseDefiner extends Definer {
 		@Override
 		public Instruction toInstruction(Resolver resolver) {
 			return null;
+		}
+
+		@Override
+		public DefTarget toTarget() {
+			return DefTarget.NO_DEF_TARGET;
 		}
 
 		@Override

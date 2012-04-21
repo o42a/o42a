@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -60,6 +61,11 @@ abstract class InclusionDefiner<I extends Inclusion>
 		final DeclarativeBlock block = context.getBlock().toDeclarativeBlock();
 
 		includeInto(block);
+	}
+
+	@Override
+	public DefTarget toTarget() {
+		return DefTarget.NO_DEF_TARGET;
 	}
 
 	@Override

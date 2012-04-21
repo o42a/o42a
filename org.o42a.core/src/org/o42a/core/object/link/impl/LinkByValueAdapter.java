@@ -61,6 +61,11 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public Ref toTarget() {
+		return getAdaptedRef();
+	}
+
+	@Override
 	public Def valueDef() {
 		return new LinkByValueDef(getAdaptedRef(), getExpectedStruct());
 	}

@@ -70,6 +70,14 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 		return super.getSentenceFactory().toDeclarativeFactory();
 	}
 
+	public final DefTargets getDefTargets() {
+		if (this.targets != null) {
+			return this.targets;
+		}
+		executeInstructions();
+		return this.targets = definerTargets();
+	}
+
 	@Override
 	public FieldBuilder field(
 			FieldDeclaration declaration,
@@ -130,14 +138,6 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	@Override
 	protected Definer implicate(Statement statement) {
 		return statement.define(this.env);
-	}
-
-	DefTargets getDefTargets() {
-		if (this.targets != null) {
-			return this.targets;
-		}
-		executeInstructions();
-		return this.targets = definerTargets();
 	}
 
 	DefValue value(Resolver resolver) {

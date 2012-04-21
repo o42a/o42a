@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.st.impl.imperative.InlineImperativeBlock.inlineBlock;
 
 import java.util.List;
@@ -28,6 +29,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -61,6 +63,36 @@ public final class BlockCommand extends Command {
 		getBlock().executeInstructions();
 
 		return this.commandTargets = applyBraceTargets(sentenceTargets());
+	}
+
+	@Override
+	public DefTarget toTarget() {
+
+		final CommandTargets targets = getCommandTargets();
+
+		if (targets.isEmpty()) {
+			return null;
+		}
+		if (targets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+		if (targets.looping()) {
+			return NO_DEF_TARGET;
+		}
+		if (!targets.haveValue()) {
+			return NO_DEF_TARGET;
+		}
+
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+
+			final DefTarget target = sentenceTarget(sentence);
+
+			if (target != null) {
+				return target;
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -257,7 +289,67 @@ public final class BlockCommand extends Command {
 		return new ExecuteCommand(alt, LogicalValue.TRUE);
 	}
 
-	private final void resolveSentence(
+	private static DefTarget sentenceTarget(ImperativeSentence sentence) {
+
+		final CommandTargets targets = sentence.getCommandTargets();
+
+		if (targets.isEmpty()) {
+			return null;
+		}
+		if (targets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+		if (targets.looping()) {
+			return NO_DEF_TARGET;
+		}
+		if (!targets.haveValue()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<Imperatives> alts = sentence.getAlternatives();
+		final int size = alts.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return NO_DEF_TARGET;
+		}
+
+		return statementsTarget(alts.get(0));
+	}
+
+	private static DefTarget statementsTarget(Imperatives statements) {
+
+		final CommandTargets targets = statements.getCommandTargets();
+
+		if (targets.isEmpty()) {
+			return null;
+		}
+		if (targets.havePrerequisite()) {
+			return NO_DEF_TARGET;
+		}
+		if (targets.looping()) {
+			return NO_DEF_TARGET;
+		}
+		if (!targets.haveValue()) {
+			return NO_DEF_TARGET;
+		}
+
+		final List<Command> commands = statements.getImplications();
+		final int size = commands.size();
+
+		if (size != 1) {
+			if (size == 0) {
+				return null;
+			}
+			return commands.get(0).toTarget();
+		}
+
+		return NO_DEF_TARGET;
+	}
+
+	private static void resolveSentence(
 			LocalResolver resolver,
 			ImperativeSentence sentence) {
 
@@ -271,7 +363,7 @@ public final class BlockCommand extends Command {
 		}
 	}
 
-	private void resolveCommands(
+	private static void resolveCommands(
 			LocalResolver resolver,
 			Imperatives imperatives) {
 		assert imperatives.assertInstructionsExecuted();
