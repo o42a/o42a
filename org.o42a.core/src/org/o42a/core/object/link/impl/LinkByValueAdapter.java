@@ -35,16 +35,11 @@ import org.o42a.core.value.ValueAdapter;
 
 public class LinkByValueAdapter extends ValueAdapter {
 
-	private final Ref ref;
 	private final LinkValueStruct expectedStruct;
 
-	public LinkByValueAdapter(Ref ref, LinkValueStruct expectedStruct) {
-		this.ref = ref;
+	public LinkByValueAdapter(Ref adaptedRef, LinkValueStruct expectedStruct) {
+		super(adaptedRef);
 		this.expectedStruct = expectedStruct;
-	}
-
-	public final Ref ref() {
-		return this.ref;
 	}
 
 	public final LinkValueStruct getExpectedStruct() {
@@ -53,22 +48,27 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	@Override
 	public Def valueDef() {
-		return new LinkByValueDef(ref(), getExpectedStruct());
+		return new LinkByValueDef(getAdaptedRef(), getExpectedStruct());
 	}
 
 	@Override
 	public Logical logical(Scope scope) {
-		return ref().rescope(scope).getLogical();
+		return getAdaptedRef().rescope(scope).getLogical();
 	}
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return linkByValue(ref(), getExpectedStruct());
+		return linkByValue(getAdaptedRef(), getExpectedStruct());
 	}
 
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
-		return ref().value(resolver).getKnowledge().toLogicalValue();
+		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public String toString() {
+		return "`" + super.toString();
 	}
 
 }

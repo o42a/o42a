@@ -38,15 +38,14 @@ import org.o42a.core.value.ValueAdapter;
 
 final class ArrayInitValueAdapter extends ValueAdapter {
 
-	private final Ref ref;
 	private final ArrayConstructor constructor;
 	private final ArrayValueStruct arrayStruct;
 
 	ArrayInitValueAdapter(
-			Ref ref,
+			Ref adaptedRef,
 			ArrayConstructor constructor,
 			ArrayValueStruct arrayStruct) {
-		this.ref = ref;
+		super(adaptedRef);
 		this.constructor = constructor;
 		this.arrayStruct = arrayStruct;
 	}
@@ -54,7 +53,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	@Override
 	public Def valueDef() {
 
-		final Scope scope = this.ref.getScope();
+		final Scope scope = getAdaptedRef().getScope();
 		final Array array = createArray(scope);
 
 		return array.getValueStruct().constantDef(
@@ -79,6 +78,14 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return LogicalValue.TRUE;
+	}
+
+	@Override
+	public String toString() {
+		if (this.constructor == null) {
+			return super.toString();
+		}
+		return this.constructor.toString();
 	}
 
 	private Array createArray(Scope scope) {

@@ -35,16 +35,11 @@ import org.o42a.core.value.ValueAdapter;
 
 public final class ArrayValueAdapter extends ValueAdapter {
 
-	private final Ref ref;
 	private final ArrayValueStruct expectedStruct;
 
-	public ArrayValueAdapter(Ref ref, ArrayValueStruct expectedStruct) {
-		this.ref = ref;
+	public ArrayValueAdapter(Ref adaptedRef, ArrayValueStruct expectedStruct) {
+		super(adaptedRef);
 		this.expectedStruct = expectedStruct;
-	}
-
-	public final Ref ref() {
-		return this.ref;
 	}
 
 	public final ArrayValueStruct getExpectedStruct() {
@@ -53,22 +48,27 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	@Override
 	public Def valueDef() {
-		return new ArrayCopyDef(ref(), getExpectedStruct().isVariable());
+		return new ArrayCopyDef(
+				getAdaptedRef(),
+				getExpectedStruct().isVariable());
 	}
 
 	@Override
 	public Logical logical(Scope scope) {
-		return ref().rescope(scope).getLogical();
+		return getAdaptedRef().rescope(scope).getLogical();
 	}
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return arrayValue(ref(), resolver, getExpectedStruct().isVariable());
+		return arrayValue(
+				getAdaptedRef(),
+				resolver,
+				getExpectedStruct().isVariable());
 	}
 
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
-		return ref().value(resolver).getKnowledge().toLogicalValue();
+		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
 	}
 
 }

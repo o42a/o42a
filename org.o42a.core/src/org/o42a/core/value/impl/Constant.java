@@ -83,8 +83,7 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		return new ConstantValueAdapter<T>(
-				this,
-				ref.getScope(),
+				ref,
 				getValueType(),
 				this.constant);
 	}

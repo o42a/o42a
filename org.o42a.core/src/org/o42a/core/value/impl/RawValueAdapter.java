@@ -33,42 +33,28 @@ import org.o42a.core.value.ValueAdapter;
 
 public class RawValueAdapter extends ValueAdapter {
 
-	private final Ref ref;
-
-	public RawValueAdapter(Ref ref) {
-		this.ref = ref;
-	}
-
-	public Ref ref() {
-		return this.ref;
+	public RawValueAdapter(Ref adaptedRef) {
+		super(adaptedRef);
 	}
 
 	@Override
 	public Def valueDef() {
-		return new RefDef(this.ref);
+		return new RefDef(getAdaptedRef());
 	}
 
 	@Override
 	public Logical logical(Scope scope) {
-		return ref().rescope(scope).getLogical();
+		return getAdaptedRef().rescope(scope).getLogical();
 	}
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return ref().value(resolver);
+		return getAdaptedRef().value(resolver);
 	}
 
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
-		return ref().value(resolver).getKnowledge().toLogicalValue();
-	}
-
-	@Override
-	public String toString() {
-		if (this.ref == null) {
-			return super.toString();
-		}
-		return this.ref.toString();
+		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
 	}
 
 }
