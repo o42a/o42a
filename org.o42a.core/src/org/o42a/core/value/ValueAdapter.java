@@ -21,8 +21,8 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
@@ -72,7 +72,7 @@ public abstract class ValueAdapter {
 		}
 	}
 
-	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
+	public abstract InlineValue inline(Normalizer normalizer, Scope origin);
 
 	public abstract RefEval eval(CodeBuilder builder);
 

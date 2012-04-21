@@ -89,7 +89,7 @@ final class RefConditionCommand extends Command {
 		final InlineValue value = getRef().inline(normalizer, origin);
 
 		if (value != null) {
-			return new Inline(valueStruct, value);
+			return new Inline(value);
 		}
 
 		getRef().normalize(normalizer.getAnalyzer());
@@ -98,8 +98,8 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		getRefCommand().normalize(normalizer);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), null, origin);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ final class RefConditionCommand extends Command {
 
 		private final InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
+		Inline(InlineValue value) {
 			super(null);
 			this.value = value;
 		}

@@ -26,8 +26,11 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.*;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValCopyFunc;
 import org.o42a.core.ir.value.ValOp;
@@ -85,7 +88,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 

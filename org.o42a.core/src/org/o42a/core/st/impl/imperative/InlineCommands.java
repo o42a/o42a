@@ -24,6 +24,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
@@ -32,6 +33,7 @@ import org.o42a.core.value.ValueStruct;
 final class InlineCommands {
 
 	static InlineCommands inlineCommands(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -43,19 +45,21 @@ final class InlineCommands {
 
 		for (Command command : commands) {
 
-			final InlineCmd inline = command.inline(
-					normalizer,
-					valueStruct,
-					origin);
+			final InlineCmd inline;
 
-			if (inline == null) {
-				normalizer.cancelAll();
+			if (normalizer != null) {
+				inline = command.inline(normalizer, valueStruct, origin);
+				if (inline == null) {
+					normalizer.cancelAll();
+				}
+			} else {
+				inline = command.normalize(rootNormalizer, origin);
 			}
 
 			inlines[i++] = inline;
 		}
 
-		if (normalizer.isCancelled()) {
+		if (normalizer != null && normalizer.isCancelled()) {
 			return null;
 		}
 

@@ -32,7 +32,9 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefCommand;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
@@ -103,11 +105,6 @@ final class CustomAssignment extends AssignmentKind {
 		}
 
 		return new Inline(value);
-	}
-
-	@Override
-	public void normalize(RootNormalizer normalizer) {
-		getRefCommand().normalize(normalizer);
 	}
 
 	@Override

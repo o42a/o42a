@@ -67,8 +67,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		command().normalize(normalizer);
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return command().normalize(normalizer, origin);
 	}
 
 	@Override
@@ -148,7 +148,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -203,7 +203,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

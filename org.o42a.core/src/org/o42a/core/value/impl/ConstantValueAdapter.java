@@ -26,9 +26,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
@@ -79,8 +81,8 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
-		return new InlineConstant(this.value);
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
+		return new InlineConstant(this.valueType.struct(), this.value);
 	}
 
 	@Override
@@ -129,18 +131,18 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 	}
 
-	private static final class InlineConstant extends InlineEval {
+	private static final class InlineConstant extends InlineValue {
 
 		private final Value<?> value;
 
-		InlineConstant(Value<?> value) {
-			super(null);
+		InlineConstant(ValueStruct<?, ?> valueStruct, Value<?> value) {
+			super(null, valueStruct);
 			this.value = value;
 		}
 
 		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return this.value.op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override

@@ -56,7 +56,8 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public final void normalize(RootNormalizer normalizer) {
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return null;
 	}
 
 	@Override

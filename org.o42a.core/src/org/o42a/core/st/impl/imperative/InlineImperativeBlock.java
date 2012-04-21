@@ -28,6 +28,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.value.ValueStruct;
@@ -37,6 +38,7 @@ import org.o42a.util.fn.Cancelable;
 public class InlineImperativeBlock extends InlineCmd {
 
 	public static InlineImperativeBlock inlineBlock(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -48,12 +50,19 @@ public class InlineImperativeBlock extends InlineCmd {
 		int i = 0;
 
 		for (ImperativeSentence sentence : sentences) {
-			inlines[i++] =
-					inlineSentence(normalizer, valueStruct, origin, sentence);
+			inlines[i++] = inlineSentence(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					sentence);
 		}
 
-		return normalizer.isCancelled()
-				? null : new InlineImperativeBlock(block, inlines);
+		if (normalizer != null && normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineImperativeBlock(block, inlines);
 	}
 
 	private final ImperativeBlock block;

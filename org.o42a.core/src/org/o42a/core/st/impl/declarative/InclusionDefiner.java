@@ -82,7 +82,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -42,7 +42,6 @@ import org.o42a.util.fn.Cancelable;
 public final class RefCommand extends Command {
 
 	private ValueAdapter valueAdapter;
-	private InlineValue inline;
 
 	RefCommand(Ref ref, CommandEnv env) {
 		super(ref, env);
@@ -75,14 +74,17 @@ public final class RefCommand extends Command {
 		return new ReturnValue(
 				this,
 				resolver,
-				getValueAdapter().initialValue(resolver));
+				getValueAdapter().value(resolver));
 	}
 
 	@Override
 	public Action initialCond(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
-				getValueAdapter().initialCond(resolver));
+				getValueAdapter()
+				.value(resolver)
+				.getKnowledge()
+				.toLogicalValue());
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public final class RefCommand extends Command {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
-		final InlineValue inline = getRef().inline(normalizer, origin);
+		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
 
 		if (inline == null) {
 			return null;
@@ -101,11 +103,8 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		this.inline = getRef().inline(normalizer.newNormalizer(), getScope());
-		if (this.inline == null) {
-			getRef().normalize(normalizer.getAnalyzer());
-		}
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), null, origin);
 	}
 
 	@Override
@@ -125,10 +124,7 @@ public final class RefCommand extends Command {
 
 	@Override
 	protected final RefCmd createCmd(CodeBuilder builder) {
-		if (this.inline == null) {
-			return new RefCmdImpl(builder, getRef());
-		}
-		return new InlineRefCmdImpl(builder, getRef(), this.inline);
+		return new RefCmdImpl(builder, getRef());
 	}
 
 	private static final class RefCmdImpl extends RefCmd {
@@ -161,52 +157,6 @@ public final class RefCommand extends Command {
 			dirs.done();
 
 			control.returnValue(value);
-		}
-
-	}
-
-	private static final class InlineRefCmdImpl extends RefCmd {
-
-		private final InlineValue inline;
-
-		InlineRefCmdImpl(CodeBuilder builder, Ref ref, InlineValue inline) {
-			super(builder, ref);
-			this.inline = inline;
-		}
-
-		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			this.inline.writeCond(dirs, getBuilder().host());
-		}
-
-		@Override
-		public void write(Control control) {
-
-			final Block code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(control.result());
-			final ValOp value =
-					this.inline.writeValue(dirs, getBuilder().host());
-
-			dirs.done();
-
-			control.returnValue(value);
-		}
-
-		@Override
-		public String toString() {
-			if (this.inline == null) {
-				return super.toString();
-			}
-			return this.inline.toString();
 		}
 
 	}

@@ -26,10 +26,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -81,7 +81,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
 

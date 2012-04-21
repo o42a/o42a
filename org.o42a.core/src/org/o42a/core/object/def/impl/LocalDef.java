@@ -117,16 +117,6 @@ public class LocalDef extends Def {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		if (!isExplicit()) {
-			return;
-		}
-
-		final Scope localScope =
-				getLocalPrefix().rescope(getScopeUpgrade().rescope(getScope()));
-		final RootNormalizer imperativeNormalizer =
-				new RootNormalizer(normalizer.getAnalyzer(), localScope);
-
-		getCommand().normalize(imperativeNormalizer);
 	}
 
 	@Override

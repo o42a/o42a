@@ -25,7 +25,6 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 
@@ -59,8 +58,6 @@ abstract class AssignmentKind {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
-
-	public abstract void normalize(RootNormalizer normalizer);
 
 	public abstract Cmd op(CodeBuilder builder);
 

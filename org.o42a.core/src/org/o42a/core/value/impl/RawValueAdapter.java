@@ -21,7 +21,6 @@ package org.o42a.core.value.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
@@ -66,11 +65,11 @@ public class RawValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public InlineEval inline(Normalizer normalizer, Scope origin) {
+	public InlineValue inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue inline = getAdaptedRef().inline(normalizer, origin);
 
-		return inline != null ? inline.toInlineEval() : null;
+		return inline != null ? inline : null;
 	}
 
 	@Override
