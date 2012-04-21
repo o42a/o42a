@@ -30,7 +30,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
 
 
 final class ClauseCommand extends Command {
@@ -61,9 +60,8 @@ final class ClauseCommand extends Command {
 	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return command().inline(normalizer, valueStruct, origin);
+		return command().inline(normalizer, origin);
 	}
 
 	@Override
@@ -142,7 +140,6 @@ final class ClauseCommand extends Command {
 		@Override
 		public InlineCmd inline(
 				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
 				Scope origin) {
 			throw new UnsupportedOperationException();
 		}
@@ -197,7 +194,6 @@ final class ClauseCommand extends Command {
 		@Override
 		public InlineCmd inline(
 				Normalizer normalizer,
-				ValueStruct<?, ?> valueStruct,
 				Scope origin) {
 			throw new UnsupportedOperationException();
 		}

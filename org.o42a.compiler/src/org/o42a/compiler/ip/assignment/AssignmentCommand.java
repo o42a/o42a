@@ -31,7 +31,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueStruct;
 
 
 final class AssignmentCommand extends Command {
@@ -78,19 +77,13 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return getAssignmentKind().inline(normalizer, valueStruct, origin);
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
+		return getAssignmentKind().inline(normalizer, origin);
 	}
 
 	@Override
 	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(
-				normalizer.newNormalizer(),
-				env().getExpectedValueStruct(),
-				origin);
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override

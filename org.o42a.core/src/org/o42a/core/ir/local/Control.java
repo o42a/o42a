@@ -26,7 +26,9 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
 
@@ -68,8 +70,12 @@ public abstract class Control {
 	public abstract CodePos falseDir();
 
 	public final void returnValue(ValOp value) {
-		main().storeResult(code(), value);
-		code().go(returnDir());
+		returnValue(code(), value);
+	}
+
+	public final void returnValue(Block code, ValOp value) {
+		main().storeResult(code, value);
+		code.go(returnDir());
 	}
 
 	public final void exitBraces() {
@@ -129,6 +135,17 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
+	public final DefDirs defDirs() {
+
+		final ValDirs dirs =
+				getBuilder().falseWhenUnknown(
+						code(),
+						falseDir())
+				.value(result());
+
+		return new ControlDirs(dirs);
+	}
+
 	public abstract void end();
 
 	@Override
@@ -176,6 +193,24 @@ public abstract class Control {
 				location,
 				"Block '%s' not found",
 				name);
+	}
+
+	private final class ControlDirs extends DefDirs {
+
+		ControlDirs(ValDirs valDirs) {
+			super(valDirs, returnDir());
+		}
+
+		@Override
+		public void returnValue(Block code, ValOp value) {
+			Control.this.returnValue(code, value);
+		}
+
+		@Override
+		public ValOp result() {
+			return Control.this.result();
+		}
+
 	}
 
 }

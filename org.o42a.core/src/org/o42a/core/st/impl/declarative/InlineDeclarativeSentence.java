@@ -28,7 +28,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
-import org.o42a.core.value.ValueStruct;
 
 
 final class InlineDeclarativeSentence {
@@ -36,7 +35,6 @@ final class InlineDeclarativeSentence {
 	static InlineDeclarativeSentence inlineSentence(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			DeclarativeSentence sentence) {
 
@@ -49,7 +47,6 @@ final class InlineDeclarativeSentence {
 			inlinePrereq = inlineSentence(
 					rootNormalizer,
 					normalizer,
-					valueStruct,
 					origin,
 					prereq);
 		}
@@ -62,7 +59,6 @@ final class InlineDeclarativeSentence {
 			inlineAlts[i++] = inlineDefiners(
 					rootNormalizer,
 					normalizer,
-					valueStruct,
 					origin,
 					alt);
 		}

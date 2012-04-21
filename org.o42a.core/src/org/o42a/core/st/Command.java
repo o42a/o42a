@@ -30,7 +30,6 @@ import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.action.Action;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.log.LogInfo;
 
 
@@ -72,10 +71,7 @@ public abstract class Command extends Implication<Command> {
 		}
 	}
 
-	public abstract InlineCmd inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin);
+	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
 	public abstract InlineCmd normalize(
 			RootNormalizer normalizer,

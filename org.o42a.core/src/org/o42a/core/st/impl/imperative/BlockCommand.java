@@ -38,7 +38,6 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class BlockCommand extends Command {
@@ -99,26 +98,17 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return inlineBlock(
 				normalizer.getRoot(),
 				normalizer,
-				valueStruct,
 				origin,
 				getBlock());
 	}
 
 	@Override
 	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(
-				normalizer,
-				null,
-				env().getExpectedValueStruct(),
-				origin,
-				getBlock());
+		return inlineBlock(normalizer, null, origin, getBlock());
 	}
 
 	@Override

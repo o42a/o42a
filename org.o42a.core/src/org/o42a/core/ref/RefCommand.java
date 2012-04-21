@@ -22,6 +22,8 @@ package org.o42a.core.ref;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.local.RefCmd;
@@ -90,7 +92,6 @@ public final class RefCommand extends Command {
 	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
 		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
@@ -104,7 +105,7 @@ public final class RefCommand extends Command {
 
 	@Override
 	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), null, origin);
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
@@ -119,18 +120,24 @@ public final class RefCommand extends Command {
 
 	@Override
 	protected void fullyResolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveValue();
+		getValueAdapter().resolveAll(resolver);
 	}
 
 	@Override
 	protected final RefCmd createCmd(CodeBuilder builder) {
-		return new RefCmdImpl(builder, getRef());
+		return new RefCmdImpl(
+				builder,
+				getRef(),
+				getValueAdapter().eval(builder));
 	}
 
 	private static final class RefCmdImpl extends RefCmd {
 
-		RefCmdImpl(CodeBuilder builder, Ref ref) {
+		private final RefEval eval;
+
+		RefCmdImpl(CodeBuilder builder, Ref ref, RefEval eval) {
 			super(builder, ref);
+			this.eval = eval;
 		}
 
 		@Override
@@ -140,23 +147,17 @@ public final class RefCommand extends Command {
 					control.code(),
 					control.falseDir());
 
-			getRef().op(control.host()).writeCond(dirs);
+			this.eval.writeCond(dirs, control.host());
 		}
 
 		@Override
 		public void write(Control control) {
 
-			final Block code = control.code();
-			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
-							code,
-							control.falseDir())
-					.value(control.result());
-			final ValOp value = getRef().op(control.host()).writeValue(dirs);
+			final DefDirs dirs = control.defDirs();
+
+			this.eval.write(dirs, control.host());
 
 			dirs.done();
-
-			control.returnValue(value);
 		}
 
 	}

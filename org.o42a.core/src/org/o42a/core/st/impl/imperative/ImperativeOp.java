@@ -24,8 +24,8 @@ import java.util.List;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
-import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
@@ -168,14 +168,17 @@ final class ImperativeOp {
 
 			final Command command = commands.get(i);
 
-			if (inlines == null) {
+			if (inlines != null) {
 
-				final Cmd cmd = command.cmd(control.getBuilder());
+				final InlineCmd inline = inlines.get(i);
 
-				cmd.write(control);
-			} else {
-				inlines.get(i).write(control);
+				if (inline != null) {
+					inline.write(control);
+					continue;
+				}
 			}
+
+			command.cmd(control.getBuilder()).write(control);
 		}
 	}
 

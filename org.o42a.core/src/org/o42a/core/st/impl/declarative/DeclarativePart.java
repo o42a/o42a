@@ -98,12 +98,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.inline = inlineBlock(
-				normalizer,
-				null,
-				getValueStruct(),
-				getScope(),
-				this);
+		this.inline = inlineBlock(normalizer, null, getScope(), this);
 	}
 
 	@Override
@@ -173,7 +168,6 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 		final InlineDeclarativeSentences inline = inlineBlock(
 				normalizer.getRoot(),
 				normalizer,
-				getValueStruct(),
 				getScope(),
 				this);
 

@@ -29,7 +29,6 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class Definer extends Implication<Definer> {
@@ -64,10 +63,7 @@ public abstract class Definer extends Implication<Definer> {
 		}
 	}
 
-	public abstract InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin);
+	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
 	public abstract InlineEval normalize(
 			RootNormalizer normalizer,

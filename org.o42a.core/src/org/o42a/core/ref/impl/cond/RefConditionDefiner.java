@@ -88,10 +88,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = getRef().inline(normalizer, origin);
 
@@ -106,7 +103,7 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), null, origin);
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override

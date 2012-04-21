@@ -35,6 +35,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.*;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.fn.Lambda;
 import org.o42a.util.log.Loggable;
@@ -94,6 +95,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	private final boolean parentheses;
 	private final String name;
+	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private final Trace trace;
 	private Locals locals;
@@ -198,6 +200,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	@Override
 	public final Definer define(DefinerEnv env) {
+		this.initialEnv = env;
 		assert isTopLevel() :
 			"Not a top-level imperative block";
 		return new ImperativeDefiner(this, env);
@@ -258,8 +261,25 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				getEnclosing().getSentence().getBlock().getLocals();
 	}
 
-	final ImplicationEnv getInitialEnv() {
+	final CommandEnv sentencesEnv() {
+		return this.sentencesEnv;
+	}
+
+	private final ImplicationEnv getInitialEnv() {
 		return this.initialEnv;
+	}
+
+	private final class SentencesEnv extends CommandEnv {
+
+		SentencesEnv() {
+			super(null);
+		}
+
+		@Override
+		protected ValueStruct<?, ?> expectedValueStruct() {
+			return getInitialEnv().getExpectedValueStruct();
+		}
+
 	}
 
 	public static final class BlockDistributor extends Distributor {

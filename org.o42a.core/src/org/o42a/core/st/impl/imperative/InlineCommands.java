@@ -27,7 +27,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.ValueStruct;
 
 
 final class InlineCommands {
@@ -35,7 +34,6 @@ final class InlineCommands {
 	static InlineCommands inlineCommands(
 			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin,
 			Imperatives imperatives) {
 
@@ -48,7 +46,7 @@ final class InlineCommands {
 			final InlineCmd inline;
 
 			if (normalizer != null) {
-				inline = command.inline(normalizer, valueStruct, origin);
+				inline = command.inline(normalizer, origin);
 				if (inline == null) {
 					normalizer.cancelAll();
 				}

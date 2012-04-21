@@ -32,7 +32,6 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExitLoop;
 import org.o42a.core.st.action.RepeatLoop;
-import org.o42a.core.value.ValueStruct;
 
 
 abstract class EllipsisCommand extends Command {
@@ -58,7 +57,6 @@ abstract class EllipsisCommand extends Command {
 	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 		return null;
 	}

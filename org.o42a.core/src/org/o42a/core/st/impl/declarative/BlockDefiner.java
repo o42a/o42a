@@ -38,7 +38,6 @@ import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.ValueStruct;
 
 
 public final class BlockDefiner
@@ -103,26 +102,13 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return inlineBlock(
-				normalizer.getRoot(),
-				normalizer,
-				valueStruct,
-				origin,
-				this);
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
+		return inlineBlock(normalizer.getRoot(), normalizer, origin, this);
 	}
 
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(
-				normalizer,
-				null,
-				env().getExpectedValueStruct(),
-				origin,
-				this);
+		return inlineBlock(normalizer, null, origin, this);
 	}
 
 	@Override

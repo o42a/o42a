@@ -178,7 +178,6 @@ public class LocalDef extends Def {
 
 		final InlineCmd inline = getCommand().inline(
 				normalizer,
-				valueStruct,
 				getLocalPrefix().rescope(getScope()));
 
 		if (inline == null) {

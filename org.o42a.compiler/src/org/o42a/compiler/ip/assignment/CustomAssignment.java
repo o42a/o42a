@@ -94,7 +94,6 @@ final class CustomAssignment extends AssignmentKind {
 	@Override
 	public InlineCmd inline(
 			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);

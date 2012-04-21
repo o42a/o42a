@@ -79,13 +79,9 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public InlineEval inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inline(Normalizer normalizer, Scope origin) {
 
-		final InlineValue inline =
-				getValueAdapter().inline(normalizer, origin);
+		final InlineValue inline = getValueAdapter().inline(normalizer, origin);
 
 		if (inline == null) {
 			return null;
@@ -96,7 +92,7 @@ public final class RefDefiner extends Definer {
 
 	@Override
 	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
-		return inline(normalizer.newNormalizer(), null, origin);
+		return inline(normalizer.newNormalizer(), origin);
 	}
 
 	@Override
