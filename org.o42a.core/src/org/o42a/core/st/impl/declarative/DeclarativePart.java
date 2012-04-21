@@ -42,9 +42,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-final class DeclarativePart
-		extends Def
-		implements DeclarativeSentences {
+final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	private final BlockDefiner definer;
 	private final DefTargets targets;
@@ -101,7 +99,8 @@ final class DeclarativePart
 	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.inline = inlineBlock(
-				normalizer.newNormalizer(),
+				normalizer,
+				null,
 				getValueStruct(),
 				getScope(),
 				this);
@@ -171,8 +170,8 @@ final class DeclarativePart
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct) {
 
-		final InlineDeclarativeSentences inline =
-				inlineBlock(
+		final InlineDeclarativeSentences inline = inlineBlock(
+				normalizer.getRoot(),
 				normalizer,
 				getValueStruct(),
 				getScope(),

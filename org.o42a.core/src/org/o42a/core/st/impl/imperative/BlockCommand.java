@@ -104,6 +104,7 @@ public final class BlockCommand extends Command {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 		return inlineBlock(
+				normalizer.getRoot(),
 				normalizer,
 				valueStruct,
 				origin,
@@ -111,10 +112,13 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		for (ImperativeSentence sentence : getBlock().getSentences()) {
-			normalizeSentence(normalizer, sentence);
-		}
+	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
+		return inlineBlock(
+				normalizer,
+				null,
+				env().getExpectedValueStruct(),
+				origin,
+				getBlock());
 	}
 
 	@Override
@@ -283,28 +287,6 @@ public final class BlockCommand extends Command {
 		assert imperatives.assertInstructionsExecuted();
 		for (Command command : imperatives.getImplications()) {
 			command.resolveAll(resolver);
-		}
-	}
-
-	private void normalizeSentence(
-			RootNormalizer normalizer,
-			ImperativeSentence sentence) {
-
-		final ImperativeSentence prerequisite = sentence.getPrerequisite();
-
-		if (prerequisite != null) {
-			normalizeSentence(normalizer, prerequisite);
-		}
-		for (Imperatives alt : sentence.getAlternatives()) {
-			normalizeCommands(normalizer, alt);
-		}
-	}
-
-	private void normalizeCommands(
-			RootNormalizer normalizer,
-			Imperatives imperatives) {
-		for (Command command : imperatives.getImplications()) {
-			command.normalize(normalizer);
 		}
 	}
 

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.ValueStruct;
@@ -33,6 +34,7 @@ import org.o42a.core.value.ValueStruct;
 final class InlineDeclarativeSentence {
 
 	static InlineDeclarativeSentence inlineSentence(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -44,8 +46,12 @@ final class InlineDeclarativeSentence {
 		if (prereq == null) {
 			inlinePrereq = null;
 		} else {
-			inlinePrereq =
-					inlineSentence(normalizer, valueStruct, origin, prereq);
+			inlinePrereq = inlineSentence(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					prereq);
 		}
 
 		final List<Declaratives> alts = sentence.getAlternatives();
@@ -53,12 +59,22 @@ final class InlineDeclarativeSentence {
 		int i = 0;
 
 		for (Declaratives alt : alts) {
-			inlineAlts[i++] =
-					inlineDefiners(normalizer, valueStruct, origin, alt);
+			inlineAlts[i++] = inlineDefiners(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					alt);
 		}
 
-		return normalizer.isCancelled() ? null
-			: new InlineDeclarativeSentence(sentence, inlinePrereq, inlineAlts);
+		if (normalizer != null && normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineDeclarativeSentence(
+				sentence,
+				inlinePrereq,
+				inlineAlts);
 	}
 
 	private final DeclarativeSentence sentence;

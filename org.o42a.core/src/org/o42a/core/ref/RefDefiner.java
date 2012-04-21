@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.st.*;
@@ -82,11 +83,20 @@ public final class RefDefiner extends Definer {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
-		return getValueAdapter().inline(normalizer, origin);
+
+		final InlineValue inline =
+				getValueAdapter().inline(normalizer, origin);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return inline.toInlineEval();
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), null, origin);
 	}
 
 	@Override

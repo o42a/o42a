@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.core.value.ValueStruct;
@@ -33,6 +34,7 @@ import org.o42a.core.value.ValueStruct;
 final class InlineImperativeSentence {
 
 	static InlineImperativeSentence inlineSentence(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -44,8 +46,12 @@ final class InlineImperativeSentence {
 		if (prereq == null) {
 			inlinePrereq = null;
 		} else {
-			inlinePrereq =
-					inlineSentence(normalizer, valueStruct, origin, prereq);
+			inlinePrereq = inlineSentence(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					prereq);
 		}
 
 		final List<Imperatives> alts = sentence.getAlternatives();
@@ -53,12 +59,19 @@ final class InlineImperativeSentence {
 		int i = 0;
 
 		for (Imperatives alt : alts) {
-			inlineAlts[i++] =
-					inlineCommands(normalizer, valueStruct, origin, alt);
+			inlineAlts[i++] = inlineCommands(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					alt);
 		}
 
-		return normalizer.isCancelled() ? null
-			: new InlineImperativeSentence(sentence, inlinePrereq, inlineAlts);
+		if (normalizer != null && normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineImperativeSentence(sentence, inlinePrereq, inlineAlts);
 	}
 
 	private final ImperativeSentence sentence;

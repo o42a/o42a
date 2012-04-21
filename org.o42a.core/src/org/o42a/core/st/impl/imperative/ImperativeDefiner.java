@@ -124,14 +124,19 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 
-		final Scope localScope =
-				getLocalPrefix().rescope(normalizer.getNormalizedScope());
+		final Scope localScope = getLocalPrefix().rescope(origin);
 		final RootNormalizer imperativeNormalizer =
 				new RootNormalizer(normalizer.getAnalyzer(), localScope);
+		final InlineCmd normal =
+				getCommand().normalize(imperativeNormalizer, localScope);
 
-		getCommand().normalize(imperativeNormalizer);
+		if (normal == null) {
+			return null;
+		}
+
+		return new InlineLocal(normal);
 	}
 
 	@Override
@@ -167,6 +172,14 @@ public final class ImperativeDefiner extends Definer {
 
 			control.end();
 			localDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.cmd == null) {
+				return super.toString();
+			}
+			return this.cmd.toString();
 		}
 
 		@Override

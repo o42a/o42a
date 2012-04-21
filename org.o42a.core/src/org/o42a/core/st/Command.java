@@ -77,7 +77,9 @@ public abstract class Command extends Implication<Command> {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
 
-	public abstract void normalize(RootNormalizer normalizer);
+	public abstract InlineCmd normalize(
+			RootNormalizer normalizer,
+			Scope origin);
 
 	public Cmd cmd(CodeBuilder builder) {
 

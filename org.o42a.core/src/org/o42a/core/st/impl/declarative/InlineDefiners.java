@@ -24,6 +24,7 @@ import java.util.List;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.Declaratives;
 import org.o42a.core.value.ValueStruct;
@@ -32,6 +33,7 @@ import org.o42a.core.value.ValueStruct;
 final class InlineDefiners {
 
 	static InlineDefiners inlineDefiners(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -43,19 +45,24 @@ final class InlineDefiners {
 
 		for (Definer definer : definers) {
 
-			final InlineEval inline = definer.inline(
-					normalizer,
-					valueStruct,
-					origin);
+			final InlineEval inline;
 
-			if (inline == null) {
-				normalizer.cancelAll();
+			if (normalizer != null) {
+				inline = definer.inline(
+						normalizer,
+						valueStruct,
+						origin);
+				if (inline == null) {
+					normalizer.cancelAll();
+				}
+			} else {
+				inline = definer.normalize(rootNormalizer, origin);
 			}
 
 			inlines[i++] = inline;
 		}
 
-		if (normalizer.isCancelled()) {
+		if (normalizer != null && normalizer.isCancelled()) {
 			return null;
 		}
 

@@ -29,6 +29,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
@@ -37,6 +38,7 @@ import org.o42a.util.fn.Cancelable;
 public class InlineDeclarativeSentences extends InlineEval {
 
 	public static InlineDeclarativeSentences inlineBlock(
+			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct,
 			Scope origin,
@@ -48,12 +50,18 @@ public class InlineDeclarativeSentences extends InlineEval {
 		int i = 0;
 
 		for (DeclarativeSentence sentence : sentences) {
-			inlines[i++] =
-					inlineSentence(normalizer, valueStruct, origin, sentence);
+			inlines[i++] = inlineSentence(
+					rootNormalizer,
+					normalizer,
+					valueStruct,
+					origin,
+					sentence);
+		}
+		if (normalizer != null && normalizer.isCancelled()) {
+			return null;
 		}
 
-		return normalizer.isCancelled() ? null
-			: new InlineDeclarativeSentences(block, inlines);
+		return new InlineDeclarativeSentences(block, inlines);
 	}
 
 	private final DeclarativeSentences block;

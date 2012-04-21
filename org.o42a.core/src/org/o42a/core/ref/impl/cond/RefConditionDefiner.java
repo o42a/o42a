@@ -105,8 +105,8 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		getRefDefiner().normalize(normalizer);
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return inline(normalizer.newNormalizer(), null, origin);
 	}
 
 	@Override

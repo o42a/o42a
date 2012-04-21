@@ -69,7 +69,9 @@ public abstract class Definer extends Implication<Definer> {
 			ValueStruct<?, ?> valueStruct,
 			Scope origin);
 
-	public abstract void normalize(RootNormalizer normalizer);
+	public abstract InlineEval normalize(
+			RootNormalizer normalizer,
+			Scope origin);
 
 	public Eval eval(CodeBuilder builder) {
 

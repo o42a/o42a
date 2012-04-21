@@ -71,14 +71,6 @@ public final class BlockDefiner
 		}
 	}
 
-	static void normalizeSentences(
-			RootNormalizer normalizer,
-			DeclarativeSentences sentences) {
-		for (DeclarativeSentence sentence : sentences.getSentences()) {
-			normalizeSentence(normalizer, sentence);
-		}
-	}
-
 	private BlockDefinitions blockDefinitions;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
@@ -116,6 +108,7 @@ public final class BlockDefiner
 			ValueStruct<?, ?> valueStruct,
 			Scope origin) {
 		return inlineBlock(
+				normalizer.getRoot(),
 				normalizer,
 				valueStruct,
 				origin,
@@ -123,8 +116,13 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		normalizeSentences(normalizer, this);
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return inlineBlock(
+				normalizer,
+				null,
+				env().getExpectedValueStruct(),
+				origin,
+				this);
 	}
 
 	@Override
@@ -165,28 +163,6 @@ public final class BlockDefiner
 		assert statements.assertInstructionsExecuted();
 		for (Definer command : statements.getImplications()) {
 			command.resolveAll(resolver);
-		}
-	}
-
-	private static void normalizeSentence(
-			RootNormalizer normalizer,
-			DeclarativeSentence sentence) {
-
-		final DeclarativeSentence prerequisite = sentence.getPrerequisite();
-
-		if (prerequisite != null) {
-			normalizeSentence(normalizer, prerequisite);
-		}
-		for (Declaratives alt : sentence.getAlternatives()) {
-			normalizeCommands(normalizer, alt);
-		}
-	}
-
-	private static void normalizeCommands(
-			RootNormalizer normalizer,
-			Declaratives statements) {
-		for (Definer definer : statements.getImplications()) {
-			definer.normalize(normalizer);
 		}
 	}
 

@@ -66,8 +66,8 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public void normalize(RootNormalizer normalizer) {
-		definer().normalize(normalizer);
+	public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
+		return definer().normalize(normalizer, origin);
 	}
 
 	@Override
@@ -158,7 +158,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -205,7 +205,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -255,7 +255,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public void normalize(RootNormalizer normalizer) {
+		public InlineEval normalize(RootNormalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
