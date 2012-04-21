@@ -157,8 +157,10 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
+			final Block continuation = dirs.addBlock("continuation");
 			final DefDirs localDirs = dirs.falseWhenUnknown();
-			final InlineControl control = new InlineControl(localDirs);
+			final InlineControl control =
+					new InlineControl(localDirs, continuation);
 
 			this.cmd.write(control);
 
