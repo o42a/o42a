@@ -41,9 +41,12 @@ final class VoidDef extends Def {
 		this.def = def;
 	}
 
-	private VoidDef(VoidDef prototype, ScopeUpgrade scopeUpgrade) {
+	private VoidDef(
+			VoidDef prototype,
+			ScopeUpgrade scopeUpgrade,
+			ScopeUpgrade additionalUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.def = prototype.def;
+		this.def = prototype.def.upgradeScope(additionalUpgrade);
 	}
 
 	@Override
@@ -95,7 +98,7 @@ final class VoidDef extends Def {
 	protected Def create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
-		return new VoidDef(this, upgrade);
+		return new VoidDef(this, upgrade, additionalUpgrade);
 	}
 
 	@Override
