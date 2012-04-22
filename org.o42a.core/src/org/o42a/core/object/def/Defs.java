@@ -309,7 +309,9 @@ public final class Defs {
 	final Defs runtime(Definitions definitions) {
 		return new Defs(
 				isClaims(),
-				new RuntimeDef(definitions));
+				ArrayUtil.prepend(
+						new RuntimeDef(definitions, true),
+						this.defs));
 	}
 
 	boolean upgradeValueStruct(

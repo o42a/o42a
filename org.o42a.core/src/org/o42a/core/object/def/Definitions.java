@@ -287,7 +287,7 @@ public class Definitions extends Scoped {
 				this,
 				getValueStruct(),
 				claims().runtime(this),
-				propositions().runtime(this));
+				propositions());
 	}
 
 	public final boolean updatedSince(Obj ascendant) {

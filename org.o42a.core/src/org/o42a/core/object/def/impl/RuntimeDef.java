@@ -36,19 +36,18 @@ public final class RuntimeDef extends Def {
 
 	private final Definitions definitions;
 
-	public RuntimeDef(Definitions definitions) {
+	public RuntimeDef(Definitions definitions, boolean claim) {
 		super(
 				/* The source should differ from scope,
 				 * as this definition is not explicit. */
 				definitions.getContext().getVoid(),
 				definitions,
-				noScopeUpgrade(definitions.getScope()));
+				noScopeUpgrade(definitions.getScope()),
+				claim);
 		this.definitions = definitions;
 	}
 
-	private RuntimeDef(
-			RuntimeDef prototype,
-			ScopeUpgrade scopeUpgrade) {
+	private RuntimeDef(RuntimeDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.definitions = prototype.definitions;
 	}
