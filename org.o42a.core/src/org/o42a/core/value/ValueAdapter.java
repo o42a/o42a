@@ -23,10 +23,10 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.impl.RawValueAdapter;
 
 
@@ -50,21 +50,7 @@ public abstract class ValueAdapter {
 
 	public abstract Ref toTarget();
 
-	@Deprecated
-	public abstract Def valueDef();
-
-	@Deprecated
-	public abstract Logical logical(Scope scope);
-
 	public abstract Value<?> value(Resolver resolver);
-
-	@Deprecated
-	public Value<?> initialValue(LocalResolver resolver) {
-		return value(resolver);
-	}
-
-	@Deprecated
-	public abstract LogicalValue initialCond(LocalResolver resolver);
 
 	public final void resolveAll(Resolver resolver) {
 		resolver.getContext().fullResolution().start();

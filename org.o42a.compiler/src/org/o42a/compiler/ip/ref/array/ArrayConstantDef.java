@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2011,2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.array.impl;
+package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
@@ -35,26 +35,18 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
 
-public class ArrayConstantDef extends Def {
+final class ArrayConstantDef extends Def {
 
 	private final Value<Array> value;
 	private ArrayValueStruct valueStruct;
 
-	public ArrayConstantDef(
-			Obj source,
-			LocationInfo location,
-			ArrayValueStruct valueStruct,
-			Array value) {
-		super(
-				source,
-				location,
-				noScopeUpgrade(valueStruct.toScoped().getScope()));
-		this.value = valueStruct.compilerValue(value);
+	ArrayConstantDef(Obj source, Array value) {
+		super(source, source, noScopeUpgrade(source.getScope()));
+		this.value = value.toValue();
 	}
 
 	private ArrayConstantDef(

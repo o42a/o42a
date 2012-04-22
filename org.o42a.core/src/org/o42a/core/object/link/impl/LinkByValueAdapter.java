@@ -19,7 +19,7 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static org.o42a.core.object.link.impl.LinkByValueDef.linkByValue;
+import static org.o42a.core.object.link.impl.TargetLink.linkByValue;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.code.Block;
@@ -31,12 +31,11 @@ import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.*;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 
@@ -68,16 +67,6 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Def valueDef() {
-		return new LinkByValueDef(getAdaptedRef(), getExpectedStruct());
-	}
-
-	@Override
-	public Logical logical(Scope scope) {
-		return getAdaptedRef().rescope(scope).getLogical();
-	}
-
-	@Override
 	public Value<?> value(Resolver resolver) {
 
 		final Value<?> value =
@@ -85,11 +74,6 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 		return value.prefixWith(
 				upgradePrefix(getAdaptedRef(), resolver.getScope()));
-	}
-
-	@Override
-	public LogicalValue initialCond(LocalResolver resolver) {
-		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
 	}
 
 	@Override

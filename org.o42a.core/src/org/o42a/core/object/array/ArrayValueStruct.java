@@ -26,10 +26,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.array.ArrayValueStructIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.ArrayConstantDef;
 import org.o42a.core.object.array.impl.ArrayValueAdapter;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
@@ -37,7 +34,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
@@ -79,14 +75,6 @@ public final class ArrayValueStruct
 
 	public final TypeRef getItemTypeRef() {
 		return this.itemTypeRef;
-	}
-
-	@Override
-	public final Def constantDef(
-			Obj source,
-			LocationInfo location,
-			Array value) {
-		return new ArrayConstantDef(source, location, this, value);
 	}
 
 	@Override

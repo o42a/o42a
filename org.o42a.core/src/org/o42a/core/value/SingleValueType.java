@@ -21,9 +21,7 @@ package org.o42a.core.value;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
@@ -88,10 +86,6 @@ public abstract class SingleValueType<T>
 				distributor.getScope());
 
 		return path.target(distributor);
-	}
-
-	public final Def constantDef(Obj source, LocationInfo location, T value) {
-		return struct().constantDef(source, location, value);
 	}
 
 	public final Definitions noValueDefinitions(

@@ -21,16 +21,12 @@ package org.o42a.core.value;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.impl.ConstantDef;
 
 
 public abstract class SingleValueStruct<T>
@@ -50,11 +46,6 @@ public abstract class SingleValueStruct<T>
 	@Override
 	public final int getLinkDepth() {
 		return 0;
-	}
-
-	@Override
-	public final Def constantDef(Obj source, LocationInfo location, T value) {
-		return new ConstantDef<T>(source, location, compilerValue(value));
 	}
 
 	@Override

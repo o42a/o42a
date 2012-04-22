@@ -25,9 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
@@ -120,11 +118,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public final Value<T> unknownValue() {
 		return this.unknownValue;
 	}
-
-	public abstract Def constantDef(
-			Obj source,
-			LocationInfo location,
-			T value);
 
 	public final Definitions noValueDefinitions(
 			LocationInfo location,
