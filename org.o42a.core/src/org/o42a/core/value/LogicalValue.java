@@ -23,9 +23,6 @@ import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Logical;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 
 
@@ -43,11 +40,6 @@ public enum LogicalValue {
 			return TRUE_DEF_VALUE;
 		}
 
-		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.logicalTrue(location, scope);
-		}
-
 	},
 
 	RUNTIME(1, 1) {
@@ -62,11 +54,6 @@ public enum LogicalValue {
 			return RUNTIME_DEF_VALUE;
 		}
 
-		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.runtimeLogical(location, scope);
-		}
-
 	},
 
 	FALSE(2, 0) {
@@ -79,11 +66,6 @@ public enum LogicalValue {
 		@Override
 		public DefValue toDefValue() {
 			return FALSE_DEF_VALUE;
-		}
-
-		@Override
-		public Logical toLogical(LocationInfo location, Scope scope) {
-			return Logical.logicalFalse(location, scope);
 		}
 
 	};
@@ -143,8 +125,6 @@ public enum LogicalValue {
 	public abstract Condition toCondition();
 
 	public abstract DefValue toDefValue();
-
-	public abstract Logical toLogical(LocationInfo location, Scope scope);
 
 	public final <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
 		return toCondition().toValue(valueStruct);

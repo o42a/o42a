@@ -36,7 +36,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
-import org.o42a.core.ref.impl.RefLogical;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
@@ -68,7 +67,6 @@ public class Ref extends Statement {
 	}
 
 	private final BoundPath path;
-	private Logical logical;
 	private RefOp op;
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
@@ -113,13 +111,6 @@ public class Ref extends Statement {
 				resolution.toObject().value().getValueStruct();
 
 		return valueStruct.prefixWith(getPath().toPrefix(scope));
-	}
-
-	public final Logical getLogical() {
-		if (this.logical == null) {
-			this.logical = new RefLogical(this);
-		}
-		return this.logical;
 	}
 
 	public final Resolution getResolution() {
