@@ -131,16 +131,14 @@ public final class BlockCommand extends Command {
 
 	@Override
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
-		return inlineBlock(
-				normalizer.getRoot(),
-				normalizer,
-				origin,
-				getBlock());
+		return inlineBlock(normalizer, origin, getBlock());
 	}
 
 	@Override
-	public InlineCmd normalize(RootNormalizer normalizer, Scope origin) {
-		return inlineBlock(normalizer, null, origin, getBlock());
+	public void normalize(RootNormalizer normalizer) {
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+			normalizeSentence(normalizer, sentence);
+		}
 	}
 
 	@Override
@@ -359,16 +357,38 @@ public final class BlockCommand extends Command {
 			resolveSentence(resolver, prerequisite);
 		}
 		for (Imperatives alt : sentence.getAlternatives()) {
-			resolveCommands(resolver, alt);
+			resolveStatements(resolver, alt);
 		}
 	}
 
-	private static void resolveCommands(
+	private static void resolveStatements(
 			LocalResolver resolver,
 			Imperatives imperatives) {
 		assert imperatives.assertInstructionsExecuted();
 		for (Command command : imperatives.getImplications()) {
 			command.resolveAll(resolver);
+		}
+	}
+
+	private static void normalizeSentence(
+			RootNormalizer normalizer,
+			ImperativeSentence sentence) {
+
+		final ImperativeSentence prerequisite = sentence.getPrerequisite();
+
+		if (prerequisite != null) {
+			normalizeSentence(normalizer, prerequisite);
+		}
+		for (Imperatives alt : sentence.getAlternatives()) {
+			normalizeStatements(normalizer, alt);
+		}
+	}
+
+	private static void normalizeStatements(
+			RootNormalizer normalizer,
+			Imperatives statements) {
+		for (Command command : statements.getImplications()) {
+			command.normalize(normalizer);
 		}
 	}
 

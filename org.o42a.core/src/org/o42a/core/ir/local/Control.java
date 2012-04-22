@@ -28,6 +28,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
@@ -135,15 +136,16 @@ public abstract class Control {
 		return new NestedControl.AltControl(this, code, next);
 	}
 
+	public final CodeDirs dirs() {
+		return getBuilder().falseWhenUnknown(code(), falseDir());
+	}
+
+	public final ValDirs valDirs() {
+		return dirs().value(result());
+	}
+
 	public final DefDirs defDirs() {
-
-		final ValDirs dirs =
-				getBuilder().falseWhenUnknown(
-						code(),
-						falseDir())
-				.value(result());
-
-		return new ControlDirs(dirs);
+		return new ControlDirs(valDirs());
 	}
 
 	public abstract void end();

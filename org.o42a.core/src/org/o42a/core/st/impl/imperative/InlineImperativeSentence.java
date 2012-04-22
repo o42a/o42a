@@ -25,7 +25,6 @@ import java.util.List;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 
@@ -33,7 +32,6 @@ import org.o42a.core.st.sentence.Imperatives;
 final class InlineImperativeSentence {
 
 	static InlineImperativeSentence inlineSentence(
-			RootNormalizer rootNormalizer,
 			Normalizer normalizer,
 			Scope origin,
 			ImperativeSentence sentence) {
@@ -44,11 +42,7 @@ final class InlineImperativeSentence {
 		if (prereq == null) {
 			inlinePrereq = null;
 		} else {
-			inlinePrereq = inlineSentence(
-					rootNormalizer,
-					normalizer,
-					origin,
-					prereq);
+			inlinePrereq = inlineSentence(normalizer, origin, prereq);
 		}
 
 		final List<Imperatives> alts = sentence.getAlternatives();
@@ -56,14 +50,10 @@ final class InlineImperativeSentence {
 		int i = 0;
 
 		for (Imperatives alt : alts) {
-			inlineAlts[i++] = inlineCommands(
-					rootNormalizer,
-					normalizer,
-					origin,
-					alt);
+			inlineAlts[i++] = inlineCommands(normalizer, origin, alt);
 		}
 
-		if (normalizer != null && normalizer.isCancelled()) {
+		if (normalizer.isCancelled()) {
 			return null;
 		}
 

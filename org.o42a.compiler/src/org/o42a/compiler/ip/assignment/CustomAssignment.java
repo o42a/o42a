@@ -32,11 +32,10 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefCommand;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.CommandEnv;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
@@ -66,6 +65,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	private final Ref ref;
 	private RefCommand refCommand;
+	private InlineValue normal;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
 		super(statement);
@@ -92,9 +92,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
 		final InlineValue value = this.ref.inline(normalizer, origin);
 
@@ -104,6 +102,13 @@ final class CustomAssignment extends AssignmentKind {
 		}
 
 		return new Inline(value);
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
+		this.normal = this.ref.inline(
+				normalizer.newNormalizer(),
+				normalizer.getNormalizedScope());
 	}
 
 	@Override
@@ -122,7 +127,10 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public Cmd op(CodeBuilder builder) {
-		return new AssignCmd(builder, this.ref, this.refCommand);
+		if (this.normal == null) {
+			return new AssignCmd(builder, this.ref, this.refCommand);
+		}
+		return new NormalAssignCmd(builder, this.ref, this.normal);
 	}
 
 	private final static class Env extends CommandEnv {
@@ -184,6 +192,25 @@ final class CustomAssignment extends AssignmentKind {
 		@Override
 		public void write(Control control) {
 			this.refCommand.cmd(getBuilder()).writeCond(control);
+		}
+
+	}
+
+	private static final class NormalAssignCmd extends Cmd {
+
+		private final InlineValue value;
+
+		NormalAssignCmd(
+				CodeBuilder builder,
+				Statement statement,
+				InlineValue value) {
+			super(builder, statement);
+			this.value = value;
+		}
+
+		@Override
+		public void write(Control control) {
+			this.value.writeCond(control.dirs(), control.host());
 		}
 
 	}

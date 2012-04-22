@@ -28,9 +28,7 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.Reproducer;
 
@@ -100,10 +98,12 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override
