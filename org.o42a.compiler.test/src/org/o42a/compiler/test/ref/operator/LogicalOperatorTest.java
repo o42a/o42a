@@ -50,40 +50,4 @@ public class LogicalOperatorTest extends CompilerTestCase {
 		assertTrueVoid(b);
 	}
 
-	@Test
-	public void known() {
-		compile(
-				"A := +-1.",
-				"B := Integer(False ? = 1).",
-				"C := +-b.");
-
-		final Obj a = field("a").toObject();
-		final Obj b = field("b").toObject();
-		final Obj c = field("c").toObject();
-
-		assertTrueVoid(a);
-		assertFalseValue(valueOf(b));
-		assertUnknownValue(valueOf(b));
-		assertFalseVoid(c);
-		assertKnownValue(valueOf(c));
-	}
-
-	@Test
-	public void unknown() {
-		compile(
-				"A := -+1.",
-				"B := Integer(False ? = 1).",
-				"C := -+b.");
-
-		final Obj a = field("a").toObject();
-		final Obj b = field("b").toObject();
-		final Obj c = field("c").toObject();
-
-		assertFalseVoid(a);
-		assertKnownValue(valueOf(a));
-		assertFalseValue(valueOf(b));
-		assertUnknownValue(valueOf(b));
-		assertTrueVoid(c);
-	}
-
 }

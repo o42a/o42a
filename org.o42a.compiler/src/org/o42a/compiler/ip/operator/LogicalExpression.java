@@ -107,21 +107,18 @@ public class LogicalExpression extends ObjectConstructor {
 		return new LogicalResult(this);
 	}
 
-	ValOp write(
-			ValDirs dirs,
-			HostOp host,
-			RefOp op,
-			InlineValue inlineOp) {
+	ValOp write(ValDirs dirs, HostOp host, RefOp op, InlineValue inlineOp) {
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final Block code = dirs.code();
-		final Block operandFalse = dirs.addBlock("operand_false");
-		final Block operandUnknown = dirs.addBlock("operand_unknown");
 
 		switch (this.node.getOperator()) {
 		case NOT:
+
+			final Block operandFalse = dirs.addBlock("operand_false");
+
 			writeLogicalValue(
-					builder.falseWhenUnknown(code, operandFalse.head()),
+					dirs.dirs().falseWhenUnknown(operandFalse.head()),
 					host,
 					op,
 					inlineOp);
@@ -132,46 +129,10 @@ public class LogicalExpression extends ObjectConstructor {
 			break;
 		case IS_TRUE:
 			writeLogicalValue(
-					builder.falseWhenUnknown(code, operandFalse.head()),
+					dirs.dirs().falseWhenUnknown(),
 					host,
 					op,
 					inlineOp);
-			if (operandFalse.exists()) {
-				operandFalse.go(dirs.falseDir());
-			}
-			break;
-		case KNOWN:
-			writeLogicalValue(
-					builder.splitWhenUnknown(
-							code,
-							operandFalse.head(),
-							operandUnknown.head()),
-					host,
-					op,
-					inlineOp);
-			if (operandFalse.exists()) {
-				operandFalse.go(code.tail());
-			}
-			if (operandUnknown.exists()) {
-				operandUnknown.go(dirs.falseDir());
-			}
-			break;
-		case UNKNOWN:
-			writeLogicalValue(
-					builder.splitWhenUnknown(
-							code,
-							operandFalse.head(),
-							operandUnknown.head()),
-					host,
-					op,
-					inlineOp);
-			code.go(dirs.falseDir());
-			if (operandFalse.exists()) {
-				operandFalse.go(dirs.falseDir());
-			}
-			if (operandUnknown.exists()) {
-				operandUnknown.go(code.tail());
-			}
 			break;
 		default:
 			throw new IllegalStateException(
