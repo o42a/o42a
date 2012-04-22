@@ -38,8 +38,7 @@ Test :=> void (
   */
   Name := string (False)
 
-  <*> (<*{}> (). = Void)
-
+  <*{}> ()
 )
 
 /* Failure message. */
@@ -52,7 +51,6 @@ Fail :=> void (
     Print error (
       Text = "\n"
     )
-    = Void
   }
 )
 
