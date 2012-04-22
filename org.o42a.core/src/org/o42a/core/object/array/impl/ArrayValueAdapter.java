@@ -37,6 +37,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 
@@ -85,6 +86,10 @@ public final class ArrayValueAdapter extends ValueAdapter {
 				getAdaptedRef(),
 				resolver,
 				getExpectedStruct().isVariable());
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

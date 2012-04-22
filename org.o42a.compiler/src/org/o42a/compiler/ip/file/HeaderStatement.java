@@ -26,6 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.*;
@@ -115,6 +116,11 @@ class HeaderStatement extends Statement {
 		@Override
 		public DefTarget toTarget() {
 			return null;
+		}
+
+		@Override
+		public void resolveTargets(TargetResolver resolver) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override

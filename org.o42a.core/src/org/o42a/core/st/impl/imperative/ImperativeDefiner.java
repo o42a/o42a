@@ -36,6 +36,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.*;
@@ -119,6 +120,11 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return new ExecuteInstructions(getBlock());
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		getCommand().resolveTargets(resolver);
 	}
 
 	@Override

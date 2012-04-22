@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.object.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
+import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 
 import java.util.IdentityHashMap;
 
@@ -40,6 +41,7 @@ import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -50,6 +52,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	private final ArrayConstructor constructor;
 	private final ArrayValueStruct arrayStruct;
+	private Value<Array> value;
 	private IdentityHashMap<Scope, Value<Array>> cache;
 
 	ArrayInitValueAdapter(
@@ -99,6 +102,10 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
+	public void resolveTargets(TargetResolver resolver) {
+	}
+
+	@Override
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
 		return null;
 	}
@@ -125,6 +132,12 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	private Value<Array> array(Scope scope) {
+		if (scope == getAdaptedRef().getScope()) {
+			if (this.value != null) {
+				return this.value;
+			}
+			return this.value = createArray(scope);
+		}
 		if (this.cache == null) {
 			this.cache = new IdentityHashMap<Scope, Value<Array>>();
 		} else {
@@ -136,14 +149,22 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 			}
 		}
 
-		final Array array = new ArrayInitBuilder(this).createArray(
-				this.constructor.distributeIn(scope.getEnclosingContainer()),
-				scope);
-		final Value<Array> value = array.toValue();
+		final Value<Array> value =
+				array(getAdaptedRef().getScope())
+				.prefixWith(upgradeScope(getAdaptedRef(), scope).toPrefix());
 
 		this.cache.put(scope, value);
 
 		return value;
+	}
+
+	private Value<Array> createArray(Scope scope) {
+
+		final Array array = new ArrayInitBuilder(this).createArray(
+				this.constructor.distributeIn(scope.getEnclosingContainer()),
+				scope);
+
+		return array.toValue();
 	}
 
 	private static final class ArrayInitBuilder extends ArrayBuilder {

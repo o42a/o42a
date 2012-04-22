@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -80,6 +81,10 @@ final class AssignmentCommand extends Command {
 	@Override
 	public DefTarget toTarget() {
 		return DefTarget.NO_DEF_TARGET;
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

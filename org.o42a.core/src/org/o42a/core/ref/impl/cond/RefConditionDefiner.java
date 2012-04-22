@@ -25,6 +25,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.*;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
@@ -91,6 +92,10 @@ final class RefConditionDefiner extends Definer {
 		final Value<?> value = getRef().value(resolver);
 
 		return value.getKnowledge().toLogicalValue().toDefValue();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

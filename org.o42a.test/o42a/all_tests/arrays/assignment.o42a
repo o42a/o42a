@@ -43,5 +43,3 @@ Array := $$array (`string) [["a", "b", "c"]]
   fail "Assignment to array item with wrong index didn't failed";
   void
 }
-
-= Void

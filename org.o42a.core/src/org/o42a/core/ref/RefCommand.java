@@ -33,6 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -101,6 +102,11 @@ public final class RefCommand extends Command {
 		}
 
 		return new InlineRefCmd(inline);
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		getValueAdapter().resolveTargets(resolver);
 	}
 
 	@Override

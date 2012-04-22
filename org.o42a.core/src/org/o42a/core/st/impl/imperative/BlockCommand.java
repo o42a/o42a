@@ -30,6 +30,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -127,6 +128,16 @@ public final class BlockCommand extends Command {
 	@Override
 	public Action initialCond(LocalResolver resolver) {
 		return initialValue(resolver).toInitialLogicalValue();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		if (!getCommandTargets().haveValue()) {
+			return;
+		}
+		for (ImperativeSentence sentence : getBlock().getSentences()) {
+			resolveSentenceTargets(resolver, sentence);
+		}
 	}
 
 	@Override
@@ -367,6 +378,26 @@ public final class BlockCommand extends Command {
 		assert imperatives.assertInstructionsExecuted();
 		for (Command command : imperatives.getImplications()) {
 			command.resolveAll(resolver);
+		}
+	}
+
+	private static void resolveSentenceTargets(
+			TargetResolver resolver,
+			ImperativeSentence sentence) {
+		if (!sentence.getCommandTargets().haveValue()) {
+			return;
+		}
+		for (Imperatives alt : sentence.getAlternatives()) {
+			resolveStatementsTargets(resolver, alt);
+		}
+	}
+
+	private static void resolveStatementsTargets(
+			TargetResolver resolver,
+			Imperatives statements) {
+		assert statements.assertInstructionsExecuted();
+		for (Command command : statements.getImplications()) {
+			command.resolveTargets(resolver);
 		}
 	}
 
