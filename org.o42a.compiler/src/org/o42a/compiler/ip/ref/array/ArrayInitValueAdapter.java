@@ -22,6 +22,8 @@ package org.o42a.compiler.ip.ref.array;
 import static org.o42a.core.object.def.Def.sourceOf;
 import static org.o42a.core.ref.Logical.logicalTrue;
 
+import java.util.IdentityHashMap;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -48,6 +50,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	private final ArrayConstructor constructor;
 	private final ArrayValueStruct arrayStruct;
+	private IdentityHashMap<Scope, Value<Array>> cache;
 
 	ArrayInitValueAdapter(
 			Ref adaptedRef,
@@ -72,7 +75,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	public Def valueDef() {
 
 		final Scope scope = getAdaptedRef().getScope();
-		final Array array = createArray(scope);
+		final Array array = array(scope).getCompilerValue();
 
 		return array.getValueStruct().constantDef(
 				sourceOf(scope),
@@ -87,7 +90,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	@Override
 	public Value<?> value(Resolver resolver) {
-		return createArray(resolver.getScope()).toValue();
+		return array(resolver.getScope());
 	}
 
 	@Override
@@ -105,7 +108,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		return new ArrayInitEval(
 				builder,
 				getAdaptedRef(),
-				createArray(getAdaptedRef().getScope()).toValue());
+				array(getAdaptedRef().getScope()));
 	}
 
 	@Override
@@ -121,10 +124,26 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 		value(resolver).resolveAll(resolver);
 	}
 
-	private Array createArray(Scope scope) {
-		return new ArrayInitBuilder(this).createArray(
+	private Value<Array> array(Scope scope) {
+		if (this.cache == null) {
+			this.cache = new IdentityHashMap<Scope, Value<Array>>();
+		} else {
+
+			final Value<Array> cached = this.cache.get(scope);
+
+			if (cached != null) {
+				return cached;
+			}
+		}
+
+		final Array array = new ArrayInitBuilder(this).createArray(
 				this.constructor.distributeIn(scope.getEnclosingContainer()),
 				scope);
+		final Value<Array> value = array.toValue();
+
+		this.cache.put(scope, value);
+
+		return value;
 	}
 
 	private static final class ArrayInitBuilder extends ArrayBuilder {
