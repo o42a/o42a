@@ -27,6 +27,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.impl.RefDef;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -67,6 +68,10 @@ public class RawValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

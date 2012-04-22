@@ -27,6 +27,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
@@ -72,6 +73,11 @@ public final class RefDefiner extends Definer {
 	@Override
 	public DefValue value(Resolver resolver) {
 		return getValueAdapter().value(resolver).toDefValue();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		getValueAdapter().resolveTargets(resolver);
 	}
 
 	@Override

@@ -33,6 +33,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.*;
 import org.o42a.util.fn.Cancelable;
@@ -83,6 +84,10 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return LogicalValue.TRUE;
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

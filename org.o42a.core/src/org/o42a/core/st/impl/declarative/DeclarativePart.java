@@ -20,9 +20,7 @@
 package org.o42a.core.st.impl.declarative;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
-import static org.o42a.core.st.impl.declarative.BlockDefiner.resolveSentences;
-import static org.o42a.core.st.impl.declarative.BlockDefiner.sentencesTargets;
-import static org.o42a.core.st.impl.declarative.BlockDefiner.sentencesValue;
+import static org.o42a.core.st.impl.declarative.BlockDefiner.*;
 import static org.o42a.core.st.impl.declarative.DeclarativeOp.writeSentences;
 import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlineBlock;
 
@@ -34,6 +32,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
@@ -175,6 +174,11 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 		default:
 			return getValueStruct().runtimeValue();
 		}
+	}
+
+	@Override
+	protected void resolveTarget(TargetResolver resolver) {
+		resolveSentencesTargets(resolver, this);
 	}
 
 	@Override

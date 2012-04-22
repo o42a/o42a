@@ -26,6 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -57,6 +58,10 @@ public abstract class DeclarationDefiner extends Definer {
 	@Override
 	public DefValue value(Resolver resolver) {
 		return TRUE_DEF_VALUE;
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 	}
 
 	@Override

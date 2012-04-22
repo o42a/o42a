@@ -28,7 +28,6 @@ Assign :=> void (
   {
     Target: value = value
   }
-  = Void
 )
   
 Property :=> getter (`string) (
@@ -50,5 +49,3 @@ Prop := property` (value = "old")
   Prop = "new"
   Assert [prop == "new"] "Wrong value assigned to property"
 }
-
-= Void

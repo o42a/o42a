@@ -32,8 +32,10 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
@@ -91,6 +93,14 @@ public class LinkValueAdapter extends ValueAdapter {
 	@Override
 	public LogicalValue initialCond(LocalResolver resolver) {
 		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+
+		final Obj object = getAdaptedRef().getResolution().toObject();
+
+		object.value().getDefinitions().resolveTargets(resolver);
 	}
 
 	@Override

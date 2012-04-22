@@ -27,34 +27,34 @@ Name = "Integers"
 
 Run tests
 
-Unary conditions := test(
+Unary conditions := test (
   Assert [+5] 'Unary integer constant plus is not true'
   Assert [-5] 'Unary integer constant minus is not true'
   Assert [+rt-integer '3'] 'Unary integer plus is not true'
   Assert [-rt-integer '3'] 'Unary integer minus is not true'
 )
 
-Equal := test(
+Equal := test (
   Assert [2 == 2] 'Integer constants not equal'
   Assert [4 == rt-integer '4'] 'Integers not equal'
   Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
 )
 
-Not equal := test(
+Not equal := test (
   Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
   Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
 )
 
-Plus := test(
+Plus := test (
   Assert [+5 == 5] 'Plus failed on constant integer'
   Assert [+rt-integer '5' == 5] 'Integer plus failed'
 )
 
-Minus := test(
+Minus := test (
   Assert [-rt-integer '5' == rt-integer '-5'] 'Integer minus failed'
 )
 
-Arithmetics := test(
+Arithmetics := test (
   Assert [rt-integer '5' + 6 == 11] 'Addition failed'
   Assert [rt-integer '6' - 5 == 1] 'Subtraction failed'
   Assert [rt-integer '5' * 6 == 30] 'Multiplication failed'

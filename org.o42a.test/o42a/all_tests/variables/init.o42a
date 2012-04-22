@@ -36,5 +36,3 @@ Var object := variable (`integer) 1
   Assert [var object] "Initial value of variable object is false"
   Assert [var object == 1] "Wrong initial value of variable object"
 }
-
-= Void

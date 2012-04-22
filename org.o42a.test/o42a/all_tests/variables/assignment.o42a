@@ -41,5 +41,3 @@ Var object := variable (`integer) 1
   Assert [var object == 3]
   _ "Wrong value assigned to variable object for the second time"
 }
-
-= Void

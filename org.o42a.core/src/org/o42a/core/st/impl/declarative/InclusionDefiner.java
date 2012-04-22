@@ -24,6 +24,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -75,6 +76,11 @@ abstract class InclusionDefiner<I extends Inclusion>
 
 	@Override
 	public DefValue value(Resolver resolver) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

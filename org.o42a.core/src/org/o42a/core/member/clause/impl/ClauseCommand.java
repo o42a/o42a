@@ -26,6 +26,7 @@ import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -56,6 +57,11 @@ final class ClauseCommand extends Command {
 	@Override
 	public Action initialCond(LocalResolver resolver) {
 		return command().initialCond(resolver);
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		command().resolveTargets(resolver);
 	}
 
 	@Override
@@ -142,6 +148,10 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
+		public void resolveTargets(TargetResolver resolver) {
+		}
+
+		@Override
 		public InlineCmd inline(Normalizer normalizer, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
@@ -196,6 +206,10 @@ final class ClauseCommand extends Command {
 		@Override
 		public Action initialCond(LocalResolver resolver) {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void resolveTargets(TargetResolver resolver) {
 		}
 
 		@Override

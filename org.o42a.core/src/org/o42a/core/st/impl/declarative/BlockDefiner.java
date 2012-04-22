@@ -34,6 +34,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.RootNormalizer;
@@ -95,6 +96,17 @@ public final class BlockDefiner
 		}
 	}
 
+	static void resolveSentencesTargets(
+			TargetResolver resolver,
+			DeclarativeSentences sentences) {
+		if (!sentences.getDefTargets().haveValue()) {
+			return;
+		}
+		for (DeclarativeSentence sentence : sentences.getSentences()) {
+			resolveSentenceTargets(resolver, sentence);
+		}
+	}
+
 	private BlockDefinitions blockDefinitions;
 
 	public BlockDefiner(DeclarativeBlock block, DefinerEnv env) {
@@ -129,6 +141,11 @@ public final class BlockDefiner
 	@Override
 	public Instruction toInstruction(Resolver resolver) {
 		return new ExecuteInstructions(getBlock());
+	}
+
+	@Override
+	public void resolveTargets(TargetResolver resolver) {
+		resolveSentencesTargets(resolver, this);
 	}
 
 	@Override
@@ -225,8 +242,28 @@ public final class BlockDefiner
 			Resolver resolver,
 			Declaratives statements) {
 		assert statements.assertInstructionsExecuted();
-		for (Definer command : statements.getImplications()) {
-			command.resolveAll(resolver);
+		for (Definer definer : statements.getImplications()) {
+			definer.resolveAll(resolver);
+		}
+	}
+
+	private static void resolveSentenceTargets(
+			TargetResolver resolver,
+			DeclarativeSentence sentence) {
+		if (!sentence.getDefTargets().haveValue()) {
+			return;
+		}
+		for (Declaratives alt : sentence.getAlternatives()) {
+			resolveStatementsTargets(resolver, alt);
+		}
+	}
+
+	private static void resolveStatementsTargets(
+			TargetResolver resolver,
+			Declaratives statements) {
+		assert statements.assertInstructionsExecuted();
+		for (Definer definer : statements.getImplications()) {
+			definer.resolveTargets(resolver);
 		}
 	}
 

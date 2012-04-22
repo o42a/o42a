@@ -34,7 +34,6 @@ Reference := test (
     Value = 2
     Assert [proxy == 2] "Getter reference value did not update properly"
   }
-  = Void
 )
 
 Expression := test (
@@ -47,5 +46,4 @@ Expression := test (
     Value = 2
     Assert [proxy == 20] "Getter expression value did not update properly"
   }
-  = Void
 )
