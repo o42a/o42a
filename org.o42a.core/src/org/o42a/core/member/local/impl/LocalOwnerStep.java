@@ -139,7 +139,7 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 			assert local != null :
 				start() + " is not local";
 
-			return local.getBuilder().owner();
+			return local.owner();
 		}
 
 	}

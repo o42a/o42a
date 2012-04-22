@@ -25,6 +25,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
 
 
@@ -54,6 +55,8 @@ abstract class AssignmentKind {
 			Reproducer reproducer);
 
 	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
+
+	public abstract void normalize(RootNormalizer normalizer);
 
 	public abstract Cmd op(CodeBuilder builder);
 

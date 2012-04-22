@@ -27,6 +27,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
 
 
@@ -46,10 +47,12 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public InlineCmd inline(
-			Normalizer normalizer,
-			Scope origin) {
+	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 		return null;
+	}
+
+	@Override
+	public void normalize(RootNormalizer normalizer) {
 	}
 
 	@Override

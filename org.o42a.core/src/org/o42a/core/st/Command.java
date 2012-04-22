@@ -73,9 +73,7 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 
-	public abstract InlineCmd normalize(
-			RootNormalizer normalizer,
-			Scope origin);
+	public abstract void normalize(RootNormalizer normalizer);
 
 	public Cmd cmd(CodeBuilder builder) {
 
