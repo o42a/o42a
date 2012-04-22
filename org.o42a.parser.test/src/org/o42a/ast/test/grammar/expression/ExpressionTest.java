@@ -119,16 +119,6 @@ public class ExpressionTest extends GrammarTestCase {
 				UnaryOperator.NOT,
 				"foo",
 				parse("- --foo"));
-		assertUnaries(
-				UnaryOperator.UNKNOWN,
-				UnaryOperator.MINUS,
-				"foo",
-				parse("-+-foo"));
-		assertUnaries(
-				UnaryOperator.KNOWN,
-				UnaryOperator.PLUS,
-				"foo",
-				parse("+-+foo"));
 	}
 
 	private static void assertUnaries(

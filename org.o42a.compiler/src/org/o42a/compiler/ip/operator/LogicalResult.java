@@ -65,16 +65,6 @@ final class LogicalResult extends BuiltinObject {
 				return Value.falseValue();
 			}
 			return Value.voidValue();
-		case KNOWN:
-			if (value.getKnowledge().hasUnknownCondition()) {
-				return Value.falseValue();
-			}
-			return Value.voidValue();
-		case UNKNOWN:
-			if (value.getKnowledge().hasUnknownCondition()) {
-				return Value.voidValue();
-			}
-			return Value.falseValue();
 		default:
 			throw new IllegalStateException(
 					"Unsupported logical operator: "
