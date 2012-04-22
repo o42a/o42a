@@ -19,8 +19,6 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
-import static org.o42a.core.object.def.Def.sourceOf;
-import static org.o42a.core.ref.Logical.logicalTrue;
 import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 
 import java.util.IdentityHashMap;
@@ -36,14 +34,13 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
-import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.*;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 
@@ -75,30 +72,8 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Def valueDef() {
-
-		final Scope scope = getAdaptedRef().getScope();
-		final Array array = array(scope).getCompilerValue();
-
-		return array.getValueStruct().constantDef(
-				sourceOf(scope),
-				this.constructor,
-				array);
-	}
-
-	@Override
-	public Logical logical(Scope scope) {
-		return logicalTrue(this.constructor, scope);
-	}
-
-	@Override
 	public Value<?> value(Resolver resolver) {
 		return array(resolver.getScope());
-	}
-
-	@Override
-	public LogicalValue initialCond(LocalResolver resolver) {
-		return LogicalValue.TRUE;
 	}
 
 	@Override

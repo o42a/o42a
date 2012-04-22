@@ -20,7 +20,7 @@
 package org.o42a.core.object.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
-import static org.o42a.core.object.array.impl.ArrayCopyDef.arrayValue;
+import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
@@ -34,12 +34,16 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValCopyFunc;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.array.Array;
+import org.o42a.core.object.array.ArrayItem;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.*;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class ArrayValueAdapter extends ValueAdapter {
@@ -69,18 +73,6 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public Def valueDef() {
-		return new ArrayCopyDef(
-				getAdaptedRef(),
-				getExpectedStruct().isVariable());
-	}
-
-	@Override
-	public Logical logical(Scope scope) {
-		return getAdaptedRef().rescope(scope).getLogical();
-	}
-
-	@Override
 	public Value<?> value(Resolver resolver) {
 		return arrayValue(
 				getAdaptedRef(),
@@ -90,11 +82,6 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	@Override
 	public void resolveTargets(TargetResolver resolver) {
-	}
-
-	@Override
-	public LogicalValue initialCond(LocalResolver resolver) {
-		return getAdaptedRef().value(resolver).getKnowledge().toLogicalValue();
 	}
 
 	@Override
@@ -120,6 +107,58 @@ public final class ArrayValueAdapter extends ValueAdapter {
 			return false;
 		}
 		return !getAdaptedRef().getValueType().isVariable();
+	}
+
+	private static Value<?> arrayValue(
+			Ref ref,
+			Resolver resolver,
+			boolean toVariable) {
+
+		final Resolution arrayResolution = ref.resolve(resolver);
+
+		if (arrayResolution.isError()) {
+			return falseValue();
+		}
+
+		final Obj arrayObject = arrayResolution.toObject();
+		final Value<?> value =
+				arrayObject.value().explicitUseBy(resolver).getValue();
+		final ArrayValueStruct sourceStruct =
+				(ArrayValueStruct) value.getValueStruct();
+
+		final PrefixPath prefix = ref.getPath().toPrefix(resolver.getScope());
+		final ArrayValueStruct resultStruct =
+				sourceStruct.setVariable(toVariable).prefixWith(prefix);
+
+		if (value.getKnowledge().isFalse()) {
+			return resultStruct.falseValue();
+		}
+		if (!value.getKnowledge().isKnownToCompiler()) {
+			return resultStruct.runtimeValue();
+		}
+		if (sourceStruct.isVariable()) {
+			// Mutable array can not be copied at compile time.
+			return resultStruct.runtimeValue();
+		}
+
+		final Array array = sourceStruct.cast(value).getCompilerValue();
+		final ArrayItem[] items = array.items(arrayObject.getScope());
+		final ArrayItem[] defItems = new ArrayItem[items.length];
+
+		for (int i = 0; i < items.length; ++i) {
+
+			final Ref valueRef = items[i].getValueRef();
+			final Ref defValueRef = valueRef.prefixWith(prefix);
+
+			defItems[i] = new ArrayItem(i, defValueRef);
+		}
+
+		return resultStruct.compilerValue(
+				new Array(
+						array,
+						array.distributeIn(resolver.getContainer()),
+						resultStruct,
+						defItems));
 	}
 
 	private static final class ArrayEval extends RefEval {

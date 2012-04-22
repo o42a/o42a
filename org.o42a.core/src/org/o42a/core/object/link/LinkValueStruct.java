@@ -23,18 +23,14 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
-import org.o42a.core.object.link.impl.LinkConstantDef;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
 
@@ -82,14 +78,6 @@ public final class LinkValueStruct
 		}
 		return this.linkDepth =
 				1 + getTypeRef().getValueStruct().getLinkDepth();
-	}
-
-	@Override
-	public Def constantDef(
-			Obj source,
-			LocationInfo location,
-			KnownLink value) {
-		return new LinkConstantDef(source, location, this, value);
 	}
 
 	@Override

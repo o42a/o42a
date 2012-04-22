@@ -26,23 +26,16 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
-public final class ConstantDef<T> extends Def {
+final class ConstantDef<T> extends Def {
 
 	private final Value<T> value;
-
-	public ConstantDef(Obj source, LocationInfo location, Value<T> value) {
-		super(source, location, noScopeUpgrade(source.getScope()));
-		this.value = value;
-	}
 
 	ConstantDef(ConstantObject<T> source) {
 		super(source, source, noScopeUpgrade(source.getScope()));

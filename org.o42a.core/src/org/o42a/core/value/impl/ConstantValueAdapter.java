@@ -19,9 +19,6 @@
 */
 package org.o42a.core.value.impl;
 
-import static org.o42a.core.object.def.Def.sourceOf;
-import static org.o42a.core.ref.Logical.logicalTrue;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -31,10 +28,10 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.def.Def;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.*;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.*;
 import org.o42a.util.fn.Cancelable;
 
@@ -64,26 +61,8 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public Def valueDef() {
-		return this.valueType.struct().constantDef(
-				sourceOf(getAdaptedRef()),
-				getAdaptedRef(),
-				this.value.getCompilerValue());
-	}
-
-	@Override
-	public Logical logical(Scope scope) {
-		return logicalTrue(getAdaptedRef(), scope);
-	}
-
-	@Override
 	public Value<?> value(Resolver resolver) {
 		return this.valueType.constantValue(this.value.getCompilerValue());
-	}
-
-	@Override
-	public LogicalValue initialCond(LocalResolver resolver) {
-		return LogicalValue.TRUE;
 	}
 
 	@Override

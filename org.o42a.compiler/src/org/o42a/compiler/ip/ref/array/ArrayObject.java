@@ -98,8 +98,7 @@ final class ArrayObject extends ConstructedObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 
-		final Array array = getArray();
-		final Def def = array.getValueStruct().constantDef(this, this, array);
+		final Def def = new ArrayConstantDef(this, getArray());
 		final PrefixPath prefix =
 				getScope().getEnclosingScopePath().toPrefix(getScope());
 
