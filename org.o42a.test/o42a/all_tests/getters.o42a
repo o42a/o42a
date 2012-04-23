@@ -17,14 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 Getters := test
 ===============
 
+Name = "Getters"
+
+Print error [name] nl
 Run tests
 
 Reference := test (
+  Name = "Reference Getter"
+  Print error '  ' [name] nl
 
   Value := ``1
   Proxy := ```value
@@ -37,6 +43,8 @@ Reference := test (
 )
 
 Expression := test (
+  Name = "Expression Getter"
+  Print error '  ' [name] nl
 
   Value := ``1
   Proxy := ```value * 10

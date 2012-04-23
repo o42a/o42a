@@ -17,15 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
 Assignment := test
 ==================
 
+Name = "Variable Assignment"
+
+Print error '  ' [name] nl
+
 Var := ``1
 
 {
+  Print error "    Simple Declaration" nl
+
   Var = 2
   Assert [var == 2] "Wrong value assigned to variable"
   Var = 3
@@ -35,6 +42,8 @@ Var := ``1
 Var object := variable (`integer) 1
 
 {
+  Print error "    Object Declaration" nl
+  
   Var object = 2
   Assert [var object == 2] "Wrong value assigned to variable object"
   Var object = 3
