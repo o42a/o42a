@@ -29,6 +29,7 @@ import org.o42a.analysis.use.User;
 
 public class Analyzer implements UseCaseInfo {
 
+	private final Doubts doubts = new Doubts();
 	private UseCase useCase;
 	private boolean normalizationEnabled = true;
 
@@ -59,6 +60,20 @@ public class Analyzer implements UseCaseInfo {
 			boolean normalizationEnabled) {
 		this.normalizationEnabled = normalizationEnabled;
 		return this;
+	}
+
+	public final void doubt(Doubt doubt) {
+		this.doubts.add(doubt);
+	}
+
+	public void resolveDoubts() {
+
+		Doubt doubt = this.doubts.getFirst();
+
+		while (doubt != null) {
+			doubt.resolveDoubt();
+			doubt = doubt.getNext();
+		}
 	}
 
 	@Override
