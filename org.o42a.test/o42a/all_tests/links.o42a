@@ -17,18 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 Links := test
 =============
 
+Name = "Link Tests"
+
+Print error [name] nl
+Run tests
+
 Static link := link (`integer) [1]
 
 Runtime link := link (`integer) [rt-integer '2']
 
-Run tests
 
 Target and body := test {
+  Print error "  Target and Body" nl
+  
   Assert [static link`] "Static link body is false"
   Assert [static link] "Static link target is false"
   Assert [static link == 1] "Wrong static link target"

@@ -17,16 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 Init := test
 ============
+
+Name = "Array Init"
+
+Print error '  ' [name] nl
 Run tests
 
 
 Array := [1, 2, 3]
 
 Constant := test {
+  Print error "    Constant Array Init" nl
   Assert [array] "Constant array access failed"
   Assert [array[1]] "Constant array item access failed"
   Assert [array[1] == 2] "Constant array item is wrong"
@@ -44,6 +50,7 @@ Constant := test {
 Var-array := $$array (`integer) [[4, 5, 6, 7]]
 
 Variable := test {
+  Print error "    Variable Array Init" nl
   Assert [var-array] "Variable array access failed"
   Assert [var-array[0]] "Variable array item access failed"
   Assert [var-array[1] == 5] "Variable array item is wrong"

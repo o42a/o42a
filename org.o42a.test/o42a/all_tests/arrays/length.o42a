@@ -17,10 +17,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 Length := test
 ==============
+
+Name = "Array Length"
+
+Print error '  ' [name] nl
 
 Assert [[1, rt-integer '2']: length == 2] "Wrong constant array length"
 Assert [array (`integer) [[1, rt-integer '2', 3]]: length == 3]
