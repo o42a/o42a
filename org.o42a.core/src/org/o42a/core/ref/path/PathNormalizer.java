@@ -44,6 +44,7 @@ public final class PathNormalizer {
 				new PathNormalizer(normalizer, startPrediction(origin), path);
 
 		if (!pathNormalizer.init()) {
+			path.doubt(normalizer.getAnalyzer()).abortNormalization();
 			normalizer.cancelAll();
 			return null;
 		}
@@ -365,7 +366,7 @@ public final class PathNormalizer {
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
-						isStatic()).done(!isNested());
+						isStatic()).done(getAnalyzer(), !isNested());
 			}
 			if (!isStepNormalized()) {
 				// Normalization failed.
@@ -387,7 +388,7 @@ public final class PathNormalizer {
 				this.normalSteps,
 				this.firstNonIgnored,
 				isAbsolute(),
-				isStatic()).done(!isNested());
+				isStatic()).done(getAnalyzer(), !isNested());
 	}
 
 	private NormalPath normalizeStatic() {
@@ -421,7 +422,7 @@ public final class PathNormalizer {
 						this.normalSteps,
 						this.firstNonIgnored,
 						isAbsolute(),
-						isStatic()).done(!isNested());
+						isStatic()).done(getAnalyzer(), !isNested());
 			}
 			if (!isStepNormalized()) {
 				break;
@@ -437,11 +438,12 @@ public final class PathNormalizer {
 			this.data.restore(stored);
 			this.firstNonIgnored = 0;
 			this.data.normalizationFinished = true;
+			path.doubt(getAnalyzer()).abortNormalization();
 			return new UnchangedNormalPath(
 					path.getPath().bind(path, getNormalizedStart()));
 		}
 
-		return new UnNormalizedPath(path);
+		return unnormalized();
 	}
 
 	private boolean upTo(Scope scope) {
@@ -540,7 +542,9 @@ public final class PathNormalizer {
 
 		@Override
 		public void cancel() {
-			getPath().cancelNormalization();
+			getPath()
+			.doubt(getNormalizer().getAnalyzer())
+			.abortNormalization();
 			for (NormalStep step : PathNormalizer.this.normalSteps) {
 				step.cancel();
 			}
