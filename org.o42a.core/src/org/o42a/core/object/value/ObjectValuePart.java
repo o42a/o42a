@@ -145,7 +145,7 @@ public final class ObjectValuePart implements UserInfo {
 		this.uses.useBy(
 				valueUses.usageUser(
 						object.isClone()
-						? EXPLICIT_RUNTINE_VALUE_USAGE
+						? EXPLICIT_RUNTIME_VALUE_USAGE
 						: EXPLICIT_STATIC_VALUE_USAGE),
 				VALUE_PART_USAGE);
 

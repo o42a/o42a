@@ -68,18 +68,27 @@ public class FieldAnalysis {
 	public String reasonNotFound(Analyzer analyzer) {
 
 		final StringBuilder out = new StringBuilder();
-		boolean comma = false;
+		final boolean substanceUsed = uses().isUsed(analyzer, SUBSTANCE_USAGE);
+		final boolean nestedUsed = uses().isUsed(analyzer, NESTED_USAGE);
 
 		if (!uses().isUsed(analyzer, FIELD_ACCESS)) {
-			out.append("never accessed");
-			comma = true;
-		}
-		if (!uses().isUsed(analyzer, SUBSTANCE_USAGE)
-				&& !uses().isUsed(analyzer, NESTED_USAGE)) {
-			if (comma) {
-				out.append(", ");
+			if (!substanceUsed && !nestedUsed) {
+				out.append("never used");
+			} else {
+				out.append("never accessed, but ");
+				if (substanceUsed) {
+					if (nestedUsed) {
+						out.append("content");
+					} else {
+						out.append("substance");
+					}
+				} else {
+					out.append("nested fields");
+				}
+				out.append(" used");
 			}
-			out.append("neither substance nor nested fields accessed");
+		} else if (!substanceUsed && !nestedUsed) {
+			out.append("accessed, but content never used");
 		}
 
 		return out.toString();
