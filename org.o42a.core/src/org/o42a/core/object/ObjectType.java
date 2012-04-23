@@ -27,6 +27,8 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 import static org.o42a.core.object.type.DerivationUsage.STATIC_DERIVATION_USAGE;
 import static org.o42a.core.object.type.TypeUsage.RUNTIME_TYPE_USAGE;
 import static org.o42a.core.object.type.TypeUsage.STATIC_TYPE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.STATIC_VALUE_USAGE;
 
 import java.util.*;
 
@@ -39,6 +41,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.impl.ObjectResolution;
 import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.type.TypeRef;
 
 
@@ -310,6 +313,15 @@ public final class ObjectType implements UserInfo {
 			this.uses = cloneOf.type().uses();
 		} else {
 			this.uses = TypeUsage.usable(this);
+
+			final Usable<ValueUsage> valueUses = getObject().value().uses();
+
+			this.uses.useBy(
+					valueUses.usageUser(RUNTIME_VALUE_USAGE),
+					RUNTIME_TYPE_USAGE);
+			this.uses.useBy(
+					valueUses.usageUser(STATIC_VALUE_USAGE),
+					STATIC_TYPE_USAGE);
 		}
 		getObject().content().useBy(this.uses);
 

@@ -33,7 +33,7 @@ public class ValueUsage extends Usage<ValueUsage> {
 			new ValueUsage("RuntimeValue");
 	public static final ValueUsage EXPLICIT_STATIC_VALUE_USAGE =
 			new ValueUsage("ExplicitStaticValue");
-	public static final ValueUsage EXPLICIT_RUNTINE_VALUE_USAGE =
+	public static final ValueUsage EXPLICIT_RUNTIME_VALUE_USAGE =
 			new ValueUsage("ExplicitRuntimeValue");
 
 	public static final Uses<ValueUsage> alwaysUsed() {

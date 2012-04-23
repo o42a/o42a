@@ -81,7 +81,7 @@ public abstract class RefFldOp<
 
 			return targetBodyPtr.op(
 					getBuilder(),
-					targetType,
+					fld().getTargetAscendant(),
 					ObjectPrecision.EXACT);
 		}
 
