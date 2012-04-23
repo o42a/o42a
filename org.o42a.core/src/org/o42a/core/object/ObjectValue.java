@@ -21,7 +21,7 @@ package org.o42a.core.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
-import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTINE_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
 
 import org.o42a.analysis.Analyzer;
@@ -235,7 +235,7 @@ public final class ObjectValue extends ObjectValueParts {
 			uses().useBy(
 					user,
 					getObject().isClone()
-					? EXPLICIT_RUNTINE_VALUE_USAGE
+					? EXPLICIT_RUNTIME_VALUE_USAGE
 					: EXPLICIT_STATIC_VALUE_USAGE);
 		}
 		return this;
