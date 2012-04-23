@@ -24,15 +24,20 @@ Use namespace 'Test'
 Simple := test
 ==============
 
-Name = "Simple tests"
+Name = "Simple Tests"
 
+Print error [name] nl
 Run tests
 
-Assertion := test {
+Assertions := test (
+  Name = "Assertions"
+  
+  Print error '  ' [name] nl
+
   Print error 'NOT ERROR: 2 such messages expected' nl
   Assert [false] 'NOT ERROR (1/2): false is false'
   Assert [rt-false] 'NOT ERROR (2/2): rt-false is false'
   Assert [void] 'Void is not true' 
   Assert [rt-void] 'Rt-void is not true'
   Assert [--rt-false] 'Rt-false is not false'
-}
+)

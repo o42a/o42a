@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
@@ -25,19 +26,29 @@ Strings := test
 
 Name = "Strings"
 
+Print error '  ' [name] nl
 Run tests
 
 Input := test (
+  Name = "Input"
+  Print error '    ' [name] nl
+
   Assert [rt-string ''] "Empty string input is false"
   Assert [rt-string 'abc'] "String input is false"
 )
 
 Length := test (
+  Name = "Length"
+  Print error '    ' [name] nl
+
   Assert [rt-string '': length == 0] "Wrong empty string length"
   Assert [rt-string 'abc': length == 3] "Wrong string length"
 )
 
 Equality := test (
+  Name = "Equality"
+  Print error '    ' [name] nl
+
   Assert [rt-string '' == ""] "Empty strings not equal"
   Assert [rt-string 'abc' == "abc"] "Short strings equality failed"
   Assert [rt-string 'Hello, World!' == "Hello, World!"] "Strings equality failed"
@@ -45,11 +56,17 @@ Equality := test (
 )
 
 Non-equality := test (
+  Name = "Non-Equality"
+  Print error '    ' [name] nl
+
   Assert [rt-string 'abc' <> "b"] "Strings non-equality failed"
   Assert [--(rt-string 'abc' <> "abc")] "Equal strings are not equal"
 )
 
 Less := test (
+  Name = "Less"
+  Print error '    ' [name] nl
+
   Assert [rt-string 'a' < "ab"] "Shorter string is not less"
   Assert [rt-string 'a' < "b"] "String is not less"
   Assert [--(rt-string 'b' < "a")] "String is less"
@@ -57,6 +74,9 @@ Less := test (
 )
 
 Less or equal := test (
+  Name = "Less or Equal"
+  Print error '    ' [name] nl
+
   Assert [rt-string 'a' <= "ab"] "Shorter string is not less or equal"
   Assert [rt-string 'a' <= "a"] "String is not less or equal than itself"
   Assert [rt-string 'a' <= "b"] "String is not less or equal"
@@ -64,6 +84,9 @@ Less or equal := test (
 )
 
 Greater := test (
+  Name = "Greater"
+  Print error '    ' [name] nl
+
   Assert [rt-string 'ab' > "a"] "Longer string is not greater"
   Assert [rt-string 'b' > "a"] "String is not greater"
   Assert [--(rt-string 'a' > "b")] "String is greater"
@@ -71,6 +94,9 @@ Greater := test (
 )
 
 Greater or equal := test (
+  Name = "Greater or Equal"
+  Print error '    ' [name] nl
+
   Assert [rt-string 'ab' >= "a"] "Longer string is not greater or equal"
   Assert [rt-string 'a' >= "a"] "String is not greater or equal than itself"
   Assert [rt-string 'b' >= "a"] "String is not greater or equal"
@@ -78,6 +104,9 @@ Greater or equal := test (
 )
 
 Char := test (
+  Name = "Char"
+  Print error '    ' [name] nl
+
   Assert [(rt-string 'abc')[1] == "b"] "Wrong char #1"
   Assert [rt-string 'abc': char[0] == "a"] "Wrong first char"
   Assert [rt-string 'abc': char[2] == "c"] "Wrong last char"

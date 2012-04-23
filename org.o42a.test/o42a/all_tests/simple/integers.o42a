@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
@@ -25,9 +26,13 @@ Integers := test
 
 Name = "Integers"
 
+Print error '  ' [name] nl
 Run tests
 
 Unary conditions := test (
+  Name = "Unary Conditions"
+  Print error '    ' [name] nl
+
   Assert [+5] 'Unary integer constant plus is not true'
   Assert [-5] 'Unary integer constant minus is not true'
   Assert [+rt-integer '3'] 'Unary integer plus is not true'
@@ -35,26 +40,41 @@ Unary conditions := test (
 )
 
 Equal := test (
+  Name = "Equal"
+  Print error '    ' [name] nl
+
   Assert [2 == 2] 'Integer constants not equal'
   Assert [4 == rt-integer '4'] 'Integers not equal'
   Assert [rt-integer '7' == rt-integer '7'] 'Integers not equal'
 )
 
 Not equal := test (
+  Name = "Not Equal"
+  Print error '    ' [name] nl
+
   Assert [rt-integer '5' <> rt-integer '6'] 'Integers equal'
   Assert [--(rt-integer '9' == rt-integer '7')] 'Integers equal' 
 )
 
 Plus := test (
+  Name = "Plus"
+  Print error '    ' [name] nl
+
   Assert [+5 == 5] 'Plus failed on constant integer'
   Assert [+rt-integer '5' == 5] 'Integer plus failed'
 )
 
 Minus := test (
+  Name = "Minus"
+  Print error '    ' [name] nl
+
   Assert [-rt-integer '5' == rt-integer '-5'] 'Integer minus failed'
 )
 
 Arithmetics := test (
+  Name = "Arithmetics"
+  Print error '    ' [name] nl
+
   Assert [rt-integer '5' + 6 == 11] 'Addition failed'
   Assert [rt-integer '6' - 5 == 1] 'Subtraction failed'
   Assert [rt-integer '5' * 6 == 30] 'Multiplication failed'

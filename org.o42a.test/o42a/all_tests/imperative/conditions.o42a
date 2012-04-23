@@ -17,17 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
 Conditions := test
 ==================
 
-Name = "Imperative conditions"
+Name = "Imperative Conditions"
 
+Print error '  ' [name] nl
 Run tests
 
 True := test (
+  Name = "True"
+  
+  Print error '    ' [name] nl
 
   Value := void ({Rt-void}. = Rt-void)
   
@@ -35,6 +40,9 @@ True := test (
 )
 
 False := test (
+  Name = "False"
+  
+  Print error '    ' [name] nl
 
   Value := void ({Rt-false}. = Rt-void)
   
