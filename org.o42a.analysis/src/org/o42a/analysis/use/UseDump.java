@@ -35,15 +35,30 @@ public class UseDump<U extends Usage<U>> {
 
 	private static final ArrayList<UseDump<?>> uses =
 			new ArrayList<UseDump<?>>();
+	private static boolean enabled = true;
+
+	public static boolean isEnabled() {
+		return enabled;
+	}
+
+	public static void setEnabled(boolean enabled) {
+		UseDump.enabled = enabled;
+	}
 
 	public static <U extends Usage<U>> void dumpUse(
 			Object what,
 			User<U> user,
 			U usage) {
+		if (!isEnabled()) {
+			return;
+		}
 		uses.add(new UseDump<U>(what.toString(), user, usage));
 	}
 
 	public static void dumpSeparator(String what) {
+		if (!isEnabled()) {
+			return;
+		}
 		uses.add(new Separator(what));
 	}
 
