@@ -386,7 +386,7 @@ public final class ObjectType implements UserInfo {
 
 		if (ancestor != null) {
 
-			final ObjectType type = ancestor.type(this);
+			final ObjectType type = ancestor.type(dummyUser());
 
 			for (Scope scope : type.allAscendants().keySet()) {
 				allAscendants.put(scope, Derivation.INHERITANCE);
@@ -406,7 +406,7 @@ public final class ObjectType implements UserInfo {
 			Sample[] samples) {
 		for (Sample sample : samples) {
 
-			final ObjectType type = sample.type(this);
+			final ObjectType type = sample.type(dummyUser());
 
 			for (Map.Entry<Scope, Derivation> e
 					: type.allAscendants().entrySet()) {

@@ -194,8 +194,14 @@ public final class ObjectValue extends ObjectValueParts {
 			definitions = emptyDefinitions(object, object.getScope());
 		}
 
-		final ObjectType type =
-				object.type().useBy(scope.toObject().value().uses());
+		final ObjectType type;
+
+		if (scope == object.getScope()) {
+			type = object.type().useBy(dummyUser());
+		} else {
+			type = object.type().useBy(scope.toObject().value().uses());
+		}
+
 		boolean hasExplicitAncestor =
 				type.getAscendants().getExplicitAncestor() != null;
 		final Sample[] samples = object.type().getSamples();
