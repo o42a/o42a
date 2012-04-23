@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -139,7 +138,7 @@ public final class Adapter extends PathFragment implements LocationInfo {
 			return false;
 		}
 
-		final Obj typeObject = getAdapterType().typeObject(User.dummyUser());
+		final Obj typeObject = getAdapterType().typeObject(dummyUser());
 		final Obj voidObject = start.getContext().getIntrinsics().getVoid();
 
 		if (typeObject.getScope() != voidObject.getScope()) {

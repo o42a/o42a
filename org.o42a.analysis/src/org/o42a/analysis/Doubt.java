@@ -1,5 +1,5 @@
 /*
-    Tests
+    Compilation Analysis
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,41 +17,21 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-Use namespace 'Console'
-Use namespace 'Test'
+package org.o42a.analysis;
 
-Getters := test
-===============
 
-Name = "Getters"
+public abstract class Doubt {
 
-Print error [name] nl
-Run tests
+	private Doubt next;
 
-Reference := test (
-  Name = "Reference Getter"
-  Print error '  ' [name] nl
+	public abstract void resolveDoubt();
 
-  Value := ``1
-  Proxy := ```value
+	final Doubt getNext() {
+		return this.next;
+	}
 
-  {
-    Assert [proxy == 1] "Wrong initial getter reference value"
-    Value = 2
-    Assert [proxy == 2] "Getter reference value did not update properly"
-  }
-)
+	final void setNext(Doubt next) {
+		this.next = next;
+	}
 
-Expression := test (
-  Name = "Expression Getter"
-  Print error '  ' [name] nl
-
-  Value := ``1
-  Proxy := ```value * 10
-
-  {
-    Assert [proxy == 10] "Wrong initial getter expression value"
-    Value = 2
-    Assert [proxy == 20] "Getter expression value did not update properly"
-  }
-)
+}

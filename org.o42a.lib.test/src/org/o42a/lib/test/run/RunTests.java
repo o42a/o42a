@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.test.run;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
 
@@ -69,8 +70,7 @@ public class RunTests extends DirectiveObject {
 				.braces(definition, "_tests_");
 		final Imperatives statements =
 				braces.propose(definition).alternative(definition);
-		final UserInfo user =
-				definition.getScope().toObject().value().proposition();
+		final UserInfo user = dummyUser();
 
 		for (Member member : object.getMembers()) {
 

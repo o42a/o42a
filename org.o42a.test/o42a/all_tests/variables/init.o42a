@@ -17,15 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+Use namespace 'Console'
 Use namespace 'Test'
 
 
 Init := test
 ==================
 
+Name = "Variable Init"
+
+Print error '  ' [name] nl
+
 Var := ``1
 
 {
+  Print error "    Simple Declaration" nl
+
   Assert [var] "Initial value of variable is false"
   Assert [var == 1] "Wrong initial value of variable"
 }
@@ -33,6 +40,8 @@ Var := ``1
 Var object := variable (`integer) 1
 
 {
+  Print error "    Object Declaration" nl
+
   Assert [var object] "Initial value of variable object is false"
   Assert [var object == 1] "Wrong initial value of variable object"
 }

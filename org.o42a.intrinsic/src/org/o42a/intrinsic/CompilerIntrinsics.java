@@ -230,6 +230,7 @@ public class CompilerIntrinsics extends Intrinsics {
 			for (ModuleUse module : this.modules.values()) {
 				module.normalize(analyzer);
 			}
+			analyzer.resolveDoubts();
 		}
 	}
 

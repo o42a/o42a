@@ -892,8 +892,7 @@ public abstract class Obj
 		final TypeRef ancestor = objectType.getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(
-					ancestor.typeObject(objectType));
+			this.objectMembers.deriveMembers(ancestor.typeObject(dummyUser()));
 		}
 	}
 
