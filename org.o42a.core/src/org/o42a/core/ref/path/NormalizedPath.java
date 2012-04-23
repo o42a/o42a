@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.User;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -93,11 +94,15 @@ final class NormalizedPath implements NormalPath {
 		return this.path.op(dirs.dirs(), host).writeValue(dirs);
 	}
 
-	public final NormalPath done(boolean done) {
+	public final NormalPath done(Analyzer analyzer, boolean done) {
 
-		final User<?> user = this.path.pathNormalized();
+		// Inform the doubt that the path is normalized.
+		final User<?> user = this.path.doubt(analyzer).pathNormalized();
 
 		if (done) {
+			// Build the normal path.
+			// This is called only for a top-level path.
+			// The nested paths will be included in the result.
 			ignoreLeading();
 			build(user);
 		}

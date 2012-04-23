@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
@@ -34,9 +32,6 @@ import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 import java.util.Arrays;
 
 import org.o42a.analysis.Analyzer;
-import org.o42a.analysis.use.ProxyUsable;
-import org.o42a.analysis.use.SimpleUsage;
-import org.o42a.analysis.use.User;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -66,9 +61,8 @@ public class BoundPath extends Location {
 
 	private final Scope origin;
 	private final Path rawPath;
-	private final ProxyUsable<SimpleUsage> user =
-			new ProxyUsable<SimpleUsage>(ALL_SIMPLE_USAGES, this);
-	private User<SimpleUsage> originalUser;
+	private final PathNormalizationDoubt doubt =
+			new PathNormalizationDoubt(this);
 	private Path path;
 
 	private Scope startObjectScope;
@@ -348,7 +342,6 @@ public class BoundPath extends Location {
 				pathNormalizer(normalizer, origin, this);
 
 		if (pathNormalizer == null) {
-			cancelNormalization();
 			return new UnNormalizedPath(this);
 		}
 
@@ -417,31 +410,9 @@ public class BoundPath extends Location {
 		return this.rawPath;
 	}
 
-	final User<?> pathNormalized() {
-		// The path is successfully normalized.
-		// Replace the user a path resolved against with a dummy one,
-		// unless this path's normalization ever cancelled.
-		// This marks the original path steps unused.
-		if (this.originalUser == null) {
-			this.originalUser = this.user.getProxied();
-			this.user.setProxied(dummyUser());
-		}
-		// Return the original user.
-		// It will be used to fully resolve the normalized path.
-		return this.originalUser;
-	}
-
-	final void cancelNormalization() {
-		// If the path normalization cancelled at least once,
-		// the original user gets restored,
-		// thus marking the original paths steps used again.
-		// Note, that the same path's normalization can happen multiple times,
-		// but it is enough to fail once.
-		if (this.originalUser != null) {
-			this.user.setProxied(this.originalUser);
-		} else {
-			this.originalUser = this.user.getProxied();
-		}
+	final PathNormalizationDoubt doubt(Analyzer analyzer) {
+		this.doubt.reuse(analyzer);
+		return this.doubt;
 	}
 
 	final Scope root() {
@@ -480,7 +451,8 @@ public class BoundPath extends Location {
 			boolean expand) {
 		this.path = path;
 
-		final PathResolver resolver = wrapResolutionUser(originalResolver);
+		final PathResolver resolver =
+				this.doubt.wrapResolutionUser(originalResolver);
 		final Scope start;
 		final PathTracker tracker;
 
@@ -530,21 +502,6 @@ public class BoundPath extends Location {
 		}
 
 		return walkFrom(start, tracker);
-	}
-
-	private PathResolver wrapResolutionUser(PathResolver originalResolver) {
-
-		final User<?> originalUser = originalResolver.toUser();
-
-		if (originalUser.isDummy()) {
-			return originalResolver;
-		}
-
-		final ProxyUsable<SimpleUsage> user = this.user;
-
-		user.useBy(originalUser, SIMPLE_USAGE);
-
-		return originalResolver.resolveBy(user);
 	}
 
 	private PathResolution walkFrom(Scope start, PathTracker tracker) {
