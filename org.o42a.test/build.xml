@@ -95,12 +95,10 @@
 			failonerror="true">
 			<arg line="-rt-debug=${_compile.debug}"/>
 			<arg line="o42a/all_tests.o42a"/>
+			<arg line="-o ${_compile.name}"/>
 
 			<arg line="--vmargs"/>
 			<arg line="-ea:org.o42a..."/>
-
-			<arg line="--"/>
-			<arg line="-o ${_compile.name}"/>
 		</exec>
 	</target>
 
