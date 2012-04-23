@@ -75,8 +75,7 @@ final class TestRunner extends ConstructedObject {
 			return;
 		}
 
-		final Obj adapter =
-				adapterMember.toField().object(user);
+		final Obj adapter = adapterMember.toField().object(user);
 
 		if (!adapter.isValid()) {
 			return;
