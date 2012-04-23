@@ -65,7 +65,9 @@ o42ac_args=()
 vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
 cc_args=(-Xlinker --no-undefined)
 append_arg="o42ac"
-nopipe=0
+follows=""
+format=""
+output=""
 rt_debug=0
 rt_debug_follows=0
 
@@ -78,24 +80,64 @@ for arg in "$@"; do
 		cc) cc_args[${#cc_args[*]}]="${arg}";;
 		vm) vm_args[${#vm_args[*]}]="${arg}";;
 		*)
-			o42ac_args[${#o42ac_args[*]}]="${arg}"
-			if ((rt_debug_follows)); then
-				rt_debug=$(arg_is_true "${arg}")
-				rt_debug_follows=0
-			fi
-			argn=$(arg_name "${arg}")
-			if [ "${arg}" != "${argn}" ]; then
-				case "${argn}" in
-				rt-debug=*) rt_debug=$(arg_is_true "${argn#rt-debug=}");; 
-				rt-debug) rt_debug_follows=1;;
-				o*) nopipe=1;;
-				format=*) nopipe=1;;
-				format) nopipe=1;;
+			append_arg=1;
+
+			if [ -n "${follows}" ]; then
+				case "${follows}" in
+				rt-debug) rt_debug=$(arg_is_true "${arg}");;
+				format) format="${arg}"; append_arg=0;;
+				output) output="${arg}"; append_arg=0;;
 				esac
-			fi;;
+				follows=""
+			else
+				argn=$(arg_name "${arg}")
+				if [ "${arg}" != "${argn}" ]; then
+					case "${argn}" in
+
+					rt-debug=*) rt_debug=$(arg_is_true "${argn#rt-debug=}");; 
+					rt-debug) follows="rt-debug";;
+
+					o=*) output="${argn#o=}"; append_arg=0;;
+					o) follows="output"; append_arg=0;;
+					o*) output="${argn#o}"; append_arg=0;;
+
+					F=*) format="${argn#F=}"; append_arg=0;;
+					F) follows="format"; append_arg=0;;
+					F*) format="${argn#F}"; append_arg=0;;
+					format=*) format="${argn#F=}"; append_arg=0;;
+					format) follows="format"; append_arg=0;;
+					esac
+				fi
+			fi
+			
+			((append_arg)) && o42ac_args[${#o42ac_args[*]}]="${arg}";;
 		esac;;
 	esac
 done
+
+if [ -z "${format}" ] && [ -n "${output}" ]; then
+	case "${output}" in
+	*.ll) format="ll";;
+	*.s) format="s";;
+	*.o) format="o";;
+	*) format="";
+	esac
+fi
+
+nopipe=1
+
+if [ -z "${format}" ]; then
+	nopipe=0
+	o42ac_args[${#o42ac_args[*]}]="-format=s"
+	if [ -n "${output}" ]; then
+		cc_args[${#cc_args[*]}]="-o${output}"
+	fi
+else
+	o42ac_args[${#o42ac_args[*]}]="-format=${format}"
+	if [ -n "${output}" ]; then
+		o42ac_args[${#o42ac_args[*]}]="-o${output}"
+	fi
+fi
 
 if ((nopipe)); then
 	call_o42ac
@@ -103,7 +145,7 @@ if ((nopipe)); then
 fi
 
 cc_args=(-x assembler - "${cc_args[@]}")
-o42ac_args=("${o42ac_args[@]}" -format s -o /dev/fd/5)
+o42ac_args=("${o42ac_args[@]}" -o /dev/fd/5)
 
 if ((rt_debug)); then
 	LDFLAGS="${DEBUG_LDFLAGS}"

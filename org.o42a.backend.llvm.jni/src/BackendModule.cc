@@ -88,11 +88,11 @@ enum OutputFormat {
 static cl::opt<OutputFormat> OutFormat(
 		"format",
 		cl::ValueRequired,
-		cl::desc("Set the output format"),
+		cl::desc("Override the output format"),
 		cl::values(
 				clEnumValN(OUTF_LL, "ll", "LLVM assembly"),
 				clEnumValN(OUTF_ASM, "s", "assembly"),
-				clEnumValN(OUTF_OBJ, "o", "object (the default)"),
+				clEnumValN(OUTF_OBJ, "o", "object"),
 				clEnumValEnd));
 
 static cl::alias ShortOutFormat(
