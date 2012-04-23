@@ -83,8 +83,16 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 		// At least one of the other usages is required.
 		final AllUsages<FieldUsage> allUsages = allUsages();
 		final FieldUsage[] usages = allUsages.usages();
+		boolean accepted = false;
 
 		for (int i = 1, size = allUsages.size(); i < size; ++i) {
+
+			final FieldUsage usage = usages[i];
+
+			if (!selector.acceptUsage(usage)) {
+				continue;
+			}
+			accepted = true;
 
 			final UsedBy usedBy = this.usedBy[i];
 
@@ -92,11 +100,6 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 				continue;
 			}
 
-			final FieldUsage usage = usages[i];
-
-			if (!selector.acceptUsage(usage)) {
-				continue;
-			}
 
 			final UseFlag useFlag = usedBy.selectUse(useCase);
 
@@ -106,7 +109,14 @@ final class MemberFieldUses implements UserInfo, Uses<FieldUsage> {
 			unknown |= !useFlag.isKnown();
 		}
 
-		return unknown ? uc.checkUseFlag() : uc.unusedFlag();
+		if (unknown) {
+			return uc.checkUseFlag();
+		}
+		if (accepted) {
+			return uc.unusedFlag();
+		}
+
+		return uc.usedFlag();
 	}
 
 	@Override
