@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.core.ir.local.InlineControl.inlineControl;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -184,10 +186,8 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final Block continuation = dirs.addBlock("continuation");
 			final DefDirs localDirs = dirs.falseWhenUnknown();
-			final InlineControl control =
-					new InlineControl(localDirs, continuation);
+			final InlineControl control = inlineControl(localDirs);
 
 			this.cmd.write(control);
 

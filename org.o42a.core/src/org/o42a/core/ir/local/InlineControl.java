@@ -23,39 +23,29 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 
 
-public class InlineControl extends MainControl {
+public final class InlineControl extends MainControl {
 
-	private final ValDirs dirs;
-	private final DefDirs defDirs;
+	public static InlineControl inlineControl(DefDirs dirs) {
+		return new InlineControl(dirs, dirs.addBlock("continuation"));
+	}
+
+	private final DefDirs dirs;
+	private final Block continuation;
 	private Block returnCode;
 	private ValOp finalResult;
 	private Code singleResultInset;
 	private byte results;
-	private final Block continuation;
 
-	public InlineControl(ValDirs dirs) {
-		super(
-				dirs.getBuilder(),
-				dirs.code(),
-				dirs.unknownDir(),
-				dirs.falseDir());
-		this.dirs = dirs;
-		this.defDirs = null;
-		this.continuation = null;
-	}
-
-	public InlineControl(DefDirs dirs, Block continuation) {
+	InlineControl(DefDirs dirs, Block continuation) {
 		super(
 				dirs.getBuilder(),
 				dirs.code(),
 				continuation.head(),
 				dirs.falseDir());
-		this.dirs = dirs.valDirs();
-		this.defDirs = dirs;
+		this.dirs = dirs;
 		this.continuation = continuation;
 	}
 
@@ -66,17 +56,11 @@ public class InlineControl extends MainControl {
 	@Override
 	public void end() {
 		super.end();
-		if (this.defDirs == null) {
-			code().go(exit());
-		} else if (this.continuation.exists()) {
+		if (this.continuation.exists()) {
 			this.continuation.go(code().tail());
 		}
 		if (this.returnCode != null) {
-			if (this.defDirs != null) {
-				this.defDirs.returnValue(this.returnCode, finalResult());
-			} else {
-				this.returnCode.go(code().tail());
-			}
+			this.dirs.returnValue(this.returnCode, finalResult());
 		}
 	}
 
