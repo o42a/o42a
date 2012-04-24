@@ -26,9 +26,8 @@ import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
@@ -86,7 +85,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval() {
+	public Eval eval() {
 		return new LinkByValueEval(getAdaptedRef());
 	}
 
@@ -100,15 +99,14 @@ public class LinkByValueAdapter extends ValueAdapter {
 		getAdaptedRef().resolve(resolver).resolveTarget();
 	}
 
-	private static final class LinkByValueEval extends RefEval {
+	private static final class LinkByValueEval extends Eval {
 
 		LinkByValueEval(Ref ref) {
 			super(ref);
 		}
 
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			getRef().op(host).writeCond(dirs);
+		public final Ref getRef() {
+			return (Ref) getStatement();
 		}
 
 		@Override

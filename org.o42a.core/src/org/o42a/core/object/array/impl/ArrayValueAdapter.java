@@ -26,9 +26,8 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValCopyFunc;
@@ -89,7 +88,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval() {
+	public Eval eval() {
 		if (fromConstToConst()) {
 			return new RefOpEval(getAdaptedRef());
 		}
@@ -160,15 +159,14 @@ public final class ArrayValueAdapter extends ValueAdapter {
 						defItems));
 	}
 
-	private static final class ArrayEval extends RefEval {
+	private static final class ArrayEval extends Eval {
 
 		ArrayEval(Ref ref) {
 			super(ref);
 		}
 
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			getRef().op(host).writeCond(dirs);
+		public final Ref getRef() {
+			return (Ref) getStatement();
 		}
 
 		@Override

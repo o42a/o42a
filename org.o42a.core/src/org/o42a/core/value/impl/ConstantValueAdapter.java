@@ -22,8 +22,7 @@ package org.o42a.core.value.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
-import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -74,7 +73,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval() {
+	public Eval eval() {
 		return new ConstantEval(getAdaptedRef(), this.value);
 	}
 
@@ -90,18 +89,13 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	protected void fullyResolve(Resolver resolver) {
 	}
 
-	private static final class ConstantEval extends RefEval {
+	private static final class ConstantEval extends Eval {
 
 		private final Value<?> value;
 
 		ConstantEval(Ref ref, Value<?> value) {
 			super(ref);
 			this.value = value;
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			// Always TRUE.
 		}
 
 		@Override

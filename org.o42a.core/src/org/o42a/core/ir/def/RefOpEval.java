@@ -20,20 +20,18 @@
 package org.o42a.core.ir.def;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
-public class RefOpEval extends RefEval {
+public class RefOpEval extends Eval {
 
 	public RefOpEval(Ref ref) {
 		super(ref);
 	}
 
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		getRef().op(host).writeCond(dirs);
+	public final Ref getRef() {
+		return (Ref) getStatement();
 	}
 
 	@Override

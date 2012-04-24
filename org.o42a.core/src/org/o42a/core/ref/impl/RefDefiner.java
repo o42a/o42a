@@ -17,17 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.def.impl.RefDef;
 import org.o42a.core.object.link.TargetResolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
@@ -37,7 +38,7 @@ public final class RefDefiner extends Definer {
 
 	private ValueAdapter valueAdapter;
 
-	RefDefiner(Ref ref, DefinerEnv env) {
+	public RefDefiner(Ref ref, DefinerEnv env) {
 		super(ref, env);
 	}
 
@@ -115,7 +116,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public final RefEval eval(CodeBuilder builder) {
+	public final Eval eval(CodeBuilder builder) {
 		assert getStatement().assertFullyResolved();
 		return getValueAdapter().eval();
 	}

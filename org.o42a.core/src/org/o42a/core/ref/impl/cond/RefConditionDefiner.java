@@ -22,7 +22,9 @@ package org.o42a.core.ref.impl.cond;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.*;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
@@ -30,26 +32,19 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.value.Directive;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionDefiner extends Definer {
 
-	private RefDefiner refDefiner;
 	private Definer replacement;
 
 	RefConditionDefiner(RefCondition statement, DefinerEnv env) {
 		super(statement, env);
-		this.refDefiner = statement.getRef().define(new Env(env));
 	}
 
 	public final Ref getRef() {
 		return ((RefCondition) getStatement()).getRef();
-	}
-
-	public final RefDefiner getRefDefiner() {
-		return this.refDefiner;
 	}
 
 	public final Definer getReplacement() {
@@ -120,32 +115,12 @@ final class RefConditionDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder) {
 		assert getStatement().assertFullyResolved();
-		return new CondEval(builder, getRef(), getRefDefiner());
+		return new CondEval(builder, getRef());
 	}
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		getRef().resolve(resolver).resolveLogical();
-	}
-
-	private static final class Env extends DefinerEnv {
-
-		private final DefinerEnv initialEnv;
-
-		Env(DefinerEnv initialEnv) {
-			this.initialEnv = initialEnv;
-		}
-
-		@Override
-		public String toString() {
-			return this.initialEnv.toString();
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return null;// To prevent Ref adaption.
-		}
-
 	}
 
 	private static final class Inline extends InlineEval {
@@ -171,18 +146,18 @@ final class RefConditionDefiner extends Definer {
 
 	private static final class CondEval extends Eval {
 
-		private final RefEval refEval;
-
-		CondEval(CodeBuilder builder, Ref ref, RefDefiner refDefiner) {
+		CondEval(CodeBuilder builder, Ref ref) {
 			super(ref);
-			this.refEval = refDefiner.eval(builder);
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			this.refEval.writeCond(dirs.dirs(), host);
+			ref().op(host).writeCond(dirs.dirs());
 		}
 
+		private final Ref ref() {
+			return (Ref) getStatement();
+		}
 	}
 
 }

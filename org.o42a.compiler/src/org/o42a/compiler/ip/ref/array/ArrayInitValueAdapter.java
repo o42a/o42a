@@ -26,9 +26,8 @@ import java.util.IdentityHashMap;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.array.ArrayIR;
@@ -85,7 +84,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval() {
+	public Eval eval() {
 		return new ArrayInitEval(
 				getAdaptedRef(),
 				array(getAdaptedRef().getScope()));
@@ -166,18 +165,13 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	}
 
-	private static final class ArrayInitEval extends RefEval {
+	private static final class ArrayInitEval extends Eval {
 
 		private final Value<Array> value;
 
 		ArrayInitEval(Ref ref, Value<Array> value) {
 			super(ref);
 			this.value = value;
-		}
-
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			// Always TRUE.
 		}
 
 		@Override

@@ -50,7 +50,6 @@ final class DeclarativeOp {
 		final Block code = dirs.code();
 
 		if (code.exists()) {
-			code.debug("(!) UNKNOWN");
 			code.go(dirs.unknownDir());
 		}
 		if (result.exists()) {
