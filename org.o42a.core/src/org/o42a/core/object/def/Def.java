@@ -301,15 +301,7 @@ public abstract class Def implements SourceInfo {
 			Normalizer normalizer,
 			ValueStruct<?, ?> valueStruct);
 
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		return writeDefValue(dirs, host);
-	}
-
-	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
-		return writeValue(dirs.falseWhenUnknown(), host);
-	}
-
-	protected abstract ValOp writeValue(ValDirs dirs, HostOp host);
+	protected abstract ValOp writeDef(ValDirs dirs, HostOp host);
 
 	protected final LocationInfo getLocation() {
 		return this.location;

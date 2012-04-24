@@ -121,11 +121,6 @@ final class VoidDef extends Def {
 		return new Inline(inline);
 	}
 
-	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		throw new UnsupportedOperationException();
-	}
-
 	private static final class Inline extends InlineValue {
 
 		private final InlineValue inline;

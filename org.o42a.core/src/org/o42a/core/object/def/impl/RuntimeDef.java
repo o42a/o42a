@@ -100,7 +100,7 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		throw new UnsupportedOperationException();
 	}
 

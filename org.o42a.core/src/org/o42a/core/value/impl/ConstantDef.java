@@ -94,7 +94,7 @@ final class ConstantDef<T> extends Def {
 	}
 
 	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		return this.value.op(dirs.getBuilder(), dirs.code());
 	}
 
