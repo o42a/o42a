@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -28,8 +27,8 @@ import org.o42a.core.ref.Ref;
 
 public class RefOpEval extends RefEval {
 
-	public RefOpEval(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
+	public RefOpEval(Ref ref) {
+		super(ref);
 	}
 
 	@Override

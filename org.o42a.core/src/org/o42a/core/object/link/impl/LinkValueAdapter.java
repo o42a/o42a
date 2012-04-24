@@ -22,7 +22,6 @@ package org.o42a.core.object.link.impl;
 import static org.o42a.core.object.link.impl.LinkCopy.linkValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
@@ -91,7 +90,7 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
+	public RefEval eval() {
 
 		final LinkValueStruct fromStruct =
 				getAdaptedRef()
@@ -99,10 +98,10 @@ public class LinkValueAdapter extends ValueAdapter {
 				.toLinkStruct();
 
 		if (getExpectedStruct().assignableFrom(fromStruct)) {
-			return new RefOpEval(builder, getAdaptedRef());
+			return new RefOpEval(getAdaptedRef());
 		}
 
-		return new LinkEval(builder, getAdaptedRef(), fromStruct);
+		return new LinkEval(getAdaptedRef(), fromStruct);
 	}
 
 	@Override
@@ -114,8 +113,8 @@ public class LinkValueAdapter extends ValueAdapter {
 
 		private final LinkValueStruct fromStruct;
 
-		LinkEval(CodeBuilder builder, Ref ref, LinkValueStruct fromStruct) {
-			super(builder, ref);
+		LinkEval(Ref ref, LinkValueStruct fromStruct) {
+			super(ref);
 			this.fromStruct = fromStruct;
 		}
 

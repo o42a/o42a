@@ -218,7 +218,7 @@ public final class ImperativeDefiner extends Definer {
 				CodeBuilder builder,
 				ImperativeBlock block,
 				Command command) {
-			super(builder, block);
+			super(block);
 			this.command = command;
 		}
 

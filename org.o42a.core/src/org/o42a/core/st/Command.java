@@ -23,7 +23,6 @@ import static org.o42a.core.st.CommandTargets.NO_COMMANDS;
 import static org.o42a.core.st.ImplicationTargets.*;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -77,7 +76,7 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract void normalize(RootNormalizer normalizer);
 
-	public abstract Cmd cmd(CodeBuilder builder);
+	public abstract Cmd cmd();
 
 	protected abstract void fullyResolve(LocalResolver resolver);
 

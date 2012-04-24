@@ -25,7 +25,6 @@ import static org.o42a.core.st.impl.imperative.InlineImperativeBlock.inlineBlock
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -158,9 +157,9 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		return new ImperativeBlockCmd(builder, getBlock());
+		return new ImperativeBlockCmd(getBlock());
 	}
 
 	@Override

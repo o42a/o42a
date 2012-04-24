@@ -24,7 +24,6 @@ import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 import java.util.IdentityHashMap;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
@@ -86,9 +85,8 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
+	public RefEval eval() {
 		return new ArrayInitEval(
-				builder,
 				getAdaptedRef(),
 				array(getAdaptedRef().getScope()));
 	}
@@ -172,8 +170,8 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 		private final Value<Array> value;
 
-		ArrayInitEval(CodeBuilder builder, Ref ref, Value<Array> value) {
-			super(builder, ref);
+		ArrayInitEval(Ref ref, Value<Array> value) {
+			super(ref);
 			this.value = value;
 		}
 

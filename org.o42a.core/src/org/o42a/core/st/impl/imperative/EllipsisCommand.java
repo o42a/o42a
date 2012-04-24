@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -95,9 +94,9 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(CodeBuilder builder) {
+		public Cmd cmd() {
 			assert getStatement().assertFullyResolved();
-			return new ExitCmd(builder, getEllipsis());
+			return new ExitCmd(getEllipsis());
 		}
 
 	}
@@ -119,17 +118,17 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(CodeBuilder builder) {
+		public Cmd cmd() {
 			assert getStatement().assertFullyResolved();
-			return new RepeatCmd(builder, getEllipsis());
+			return new RepeatCmd(getEllipsis());
 		}
 
 	}
 
 	private static final class ExitCmd extends Cmd {
 
-		ExitCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
+		ExitCmd(EllipsisStatement statement) {
+			super(statement);
 		}
 
 		@Override
@@ -144,8 +143,8 @@ abstract class EllipsisCommand extends Command {
 
 	private static final class RepeatCmd extends Cmd {
 
-		RepeatCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
+		RepeatCmd(EllipsisStatement statement) {
+			super(statement);
 		}
 
 		@Override

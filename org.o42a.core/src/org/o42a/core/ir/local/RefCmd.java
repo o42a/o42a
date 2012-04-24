@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ref.Ref;
 
 
 public abstract class RefCmd extends Cmd {
 
-	public RefCmd(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
+	public RefCmd(Ref ref) {
+		super(ref);
 	}
 
 	public final Ref getRef() {

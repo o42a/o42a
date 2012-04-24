@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ref.Ref;
@@ -27,8 +26,8 @@ import org.o42a.core.ref.Ref;
 
 public abstract class RefEval extends Eval {
 
-	public RefEval(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
+	public RefEval(Ref ref) {
+		super(ref);
 	}
 
 	public final Ref getRef() {

@@ -20,7 +20,6 @@
 package org.o42a.core.member.clause.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.clause.Clause;
@@ -75,9 +74,9 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		return command().cmd(builder);
+		return command().cmd();
 	}
 
 	@Override
@@ -163,7 +162,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(CodeBuilder builder) {
+		public Cmd cmd() {
 			throw new UnsupportedOperationException();
 		}
 
@@ -224,7 +223,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public Cmd cmd(CodeBuilder builder) {
+		public Cmd cmd() {
 			throw new UnsupportedOperationException();
 		}
 

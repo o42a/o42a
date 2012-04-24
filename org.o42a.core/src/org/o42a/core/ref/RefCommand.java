@@ -21,7 +21,6 @@ package org.o42a.core.ref;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
 import org.o42a.core.ir.local.Control;
@@ -134,15 +133,12 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final RefCmd cmd(CodeBuilder builder) {
+	public final RefCmd cmd() {
 		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
-			return new RefCmdImpl(
-					builder,
-					getRef(),
-					getValueAdapter().eval(builder));
+			return new RefCmdImpl(getRef(), getValueAdapter().eval());
 		}
-		return new NormalRefCmdImpl(builder, getRef(), this.normal);
+		return new NormalRefCmdImpl(getRef(), this.normal);
 	}
 
 	@Override
@@ -154,8 +150,8 @@ public final class RefCommand extends Command {
 
 		private final RefEval eval;
 
-		RefCmdImpl(CodeBuilder builder, Ref ref, RefEval eval) {
-			super(builder, ref);
+		RefCmdImpl(Ref ref, RefEval eval) {
+			super(ref);
 			this.eval = eval;
 		}
 
@@ -185,8 +181,8 @@ public final class RefCommand extends Command {
 
 		private final InlineValue value;
 
-		NormalRefCmdImpl(CodeBuilder builder, Ref ref, InlineValue value) {
-			super(builder, ref);
+		NormalRefCmdImpl(Ref ref, InlineValue value) {
+			super(ref);
 			this.value = value;
 		}
 
