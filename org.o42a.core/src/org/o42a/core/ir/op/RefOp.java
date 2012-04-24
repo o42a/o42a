@@ -60,10 +60,7 @@ public class RefOp {
 	}
 
 	public void writeCond(CodeDirs dirs) {
-
-		final HostOp target = target(dirs);
-
-		target.materialize(dirs).value().writeCond(dirs);
+		target(dirs).materialize(dirs).value().writeCond(dirs);
 	}
 
 	public HostOp target(CodeDirs dirs) {
