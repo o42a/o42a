@@ -205,13 +205,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	protected ValOp writeDefValue(ValDirs dirs, HostOp host) {
-		// Declarative block`s value CAN be UNKNOWN.
-		return writeValue(dirs, host);
-	}
-
-	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		return writeSentences(dirs, host, this, this.inline);
 	}
 

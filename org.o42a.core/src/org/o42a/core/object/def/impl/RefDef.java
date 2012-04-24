@@ -105,11 +105,6 @@ public final class RefDef extends Def {
 			return inline.writeValue(dirs, host);
 		}
 
-		return super.writeDef(dirs, host);
-	}
-
-	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
 		return this.ref.op(host).writeValue(dirs);
 	}
 

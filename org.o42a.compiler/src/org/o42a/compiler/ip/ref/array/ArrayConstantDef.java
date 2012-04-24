@@ -115,7 +115,7 @@ final class ArrayConstantDef extends Def {
 	}
 
 	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
+	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		if (hasConstantValue()) {
 			return this.value.op(dirs.getBuilder(), dirs.code());
 		}
