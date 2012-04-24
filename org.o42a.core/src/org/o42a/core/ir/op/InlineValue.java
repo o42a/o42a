@@ -22,6 +22,7 @@ package org.o42a.core.ir.op;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
@@ -29,7 +30,7 @@ import org.o42a.core.ref.impl.normalizer.VoidInlineValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class InlineValue extends InlineCond {
+public abstract class InlineValue extends Normal {
 
 	private static final VoidInlineValue INLINE_VOID = new VoidInlineValue();
 
@@ -56,7 +57,6 @@ public abstract class InlineValue extends InlineCond {
 		return this.valueStruct;
 	}
 
-	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
 		final ValDirs valDirs = dirs.value(getValueStruct());

@@ -24,7 +24,6 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
@@ -165,11 +164,11 @@ final class RefConditionCommand extends Command {
 
 	private static final class NormalCondCmd extends Cmd {
 
-		private final InlineCond cond;
+		private final InlineValue cond;
 
-		NormalCondCmd(RefCondition statement, InlineCond cond) {
+		NormalCondCmd(RefCondition statement, InlineValue value) {
 			super(statement);
-			this.cond = cond;
+			this.cond = value;
 		}
 
 		@Override

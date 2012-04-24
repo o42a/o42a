@@ -20,6 +20,7 @@
 package org.o42a.core.object.def;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -128,6 +129,11 @@ final class VoidDef extends Def {
 		Inline(InlineValue inline) {
 			super(null, ValueStruct.VOID);
 			this.inline = inline;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.inline.writeCond(dirs, host);
 		}
 
 		@Override

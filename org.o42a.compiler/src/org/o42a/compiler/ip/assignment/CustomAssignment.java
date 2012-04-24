@@ -27,7 +27,7 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineCond;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
@@ -63,7 +63,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	private final Ref ref;
-	private InlineCond normal;
+	private InlineValue normal;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
 		super(statement);
@@ -87,7 +87,7 @@ final class CustomAssignment extends AssignmentKind {
 	@Override
 	public InlineCmd inline(Normalizer normalizer, Scope origin) {
 
-		final InlineCond value = this.ref.inline(normalizer, origin);
+		final InlineValue value = this.ref.inline(normalizer, origin);
 
 		if (value == null) {
 			this.ref.normalize(normalizer.getAnalyzer());
@@ -128,9 +128,9 @@ final class CustomAssignment extends AssignmentKind {
 
 	private static final class Inline extends InlineCmd {
 
-		private final InlineCond value;
+		private final InlineValue value;
 
-		Inline(InlineCond value) {
+		Inline(InlineValue value) {
 			super(null);
 			this.value = value;
 		}
@@ -178,9 +178,9 @@ final class CustomAssignment extends AssignmentKind {
 
 	private static final class NormalAssignCmd extends Cmd {
 
-		private final InlineCond cond;
+		private final InlineValue cond;
 
-		NormalAssignCmd(Statement statement, InlineCond value) {
+		NormalAssignCmd(Statement statement, InlineValue value) {
 			super(statement);
 			this.cond = value;
 		}
