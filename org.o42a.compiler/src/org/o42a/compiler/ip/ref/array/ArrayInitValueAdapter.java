@@ -165,12 +165,11 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	}
 
-	private static final class ArrayInitEval extends Eval {
+	private static final class ArrayInitEval implements Eval {
 
 		private final Value<Array> value;
 
 		ArrayInitEval(Ref ref, Value<Array> value) {
-			super(ref);
 			this.value = value;
 		}
 

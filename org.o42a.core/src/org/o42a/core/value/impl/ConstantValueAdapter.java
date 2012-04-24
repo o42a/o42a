@@ -74,7 +74,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 	@Override
 	public Eval eval() {
-		return new ConstantEval(getAdaptedRef(), this.value);
+		return new ConstantEval(this.value);
 	}
 
 	@Override
@@ -89,12 +89,11 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	protected void fullyResolve(Resolver resolver) {
 	}
 
-	private static final class ConstantEval extends Eval {
+	private static final class ConstantEval implements Eval {
 
 		private final Value<?> value;
 
-		ConstantEval(Ref ref, Value<?> value) {
-			super(ref);
+		ConstantEval(Value<?> value) {
 			this.value = value;
 		}
 

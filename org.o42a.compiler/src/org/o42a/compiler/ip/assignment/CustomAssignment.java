@@ -35,7 +35,6 @@ import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -123,7 +122,7 @@ final class CustomAssignment extends AssignmentKind {
 		if (this.normal == null) {
 			return new AssignCmd(this.ref);
 		}
-		return new NormalAssignCmd(this.ref, this.normal);
+		return new NormalAssignCmd(this.normal);
 	}
 
 	private static final class Inline extends InlineCmd {
@@ -160,42 +159,48 @@ final class CustomAssignment extends AssignmentKind {
 
 	}
 
-	private static final class AssignCmd extends Cmd {
+	private static final class AssignCmd implements Cmd {
+
+		private final Ref ref;
 
 		AssignCmd(Ref ref) {
-			super(ref);
+			this.ref = ref;
 		}
 
 		@Override
 		public void write(Control control) {
-			ref().op(control.host()).writeCond(control.dirs());
-		}
-
-		private final Ref ref() {
-			return (Ref) getStatement();
-		}
-	}
-
-	private static final class NormalAssignCmd extends Cmd {
-
-		private final InlineValue cond;
-
-		NormalAssignCmd(Statement statement, InlineValue value) {
-			super(statement);
-			this.cond = value;
-		}
-
-		@Override
-		public void write(Control control) {
-			this.cond.writeCond(control.dirs(), control.host());
+			this.ref.op(control.host()).writeCond(control.dirs());
 		}
 
 		@Override
 		public String toString() {
-			if (this.cond == null) {
+			if (this.ref == null) {
 				return super.toString();
 			}
-			return this.cond.toString();
+			return this.ref.toString();
+		}
+
+	}
+
+	private static final class NormalAssignCmd implements Cmd {
+
+		private final InlineValue value;
+
+		NormalAssignCmd(InlineValue value) {
+			this.value = value;
+		}
+
+		@Override
+		public void write(Control control) {
+			this.value.writeCond(control.dirs(), control.host());
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
 		}
 
 	}

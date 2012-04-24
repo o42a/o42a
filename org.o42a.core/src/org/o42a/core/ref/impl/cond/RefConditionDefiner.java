@@ -44,7 +44,11 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	public final Ref getRef() {
-		return ((RefCondition) getStatement()).getRef();
+		return getRefCondition().getRef();
+	}
+
+	public final RefCondition getRefCondition() {
+		return (RefCondition) getStatement();
 	}
 
 	public final Definer getReplacement() {
@@ -115,7 +119,7 @@ final class RefConditionDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder) {
 		assert getStatement().assertFullyResolved();
-		return new CondEval(builder, getRef());
+		return new CondEval(getRefCondition());
 	}
 
 	@Override
@@ -144,10 +148,12 @@ final class RefConditionDefiner extends Definer {
 
 	}
 
-	private static final class CondEval extends Eval {
+	private static final class CondEval implements Eval {
 
-		CondEval(CodeBuilder builder, Ref ref) {
-			super(ref);
+		private final RefCondition refCondition;
+
+		CondEval(RefCondition refCondition) {
+			this.refCondition = refCondition;
 		}
 
 		@Override
@@ -155,9 +161,18 @@ final class RefConditionDefiner extends Definer {
 			ref().op(host).writeCond(dirs.dirs());
 		}
 
-		private final Ref ref() {
-			return (Ref) getStatement();
+		@Override
+		public String toString() {
+			if (this.refCondition == null) {
+				return super.toString();
+			}
+			return this.refCondition.toString();
 		}
+
+		private final Ref ref() {
+			return this.refCondition.getRef();
+		}
+
 	}
 
 }

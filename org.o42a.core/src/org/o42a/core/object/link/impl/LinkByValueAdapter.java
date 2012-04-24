@@ -99,14 +99,16 @@ public class LinkByValueAdapter extends ValueAdapter {
 		getAdaptedRef().resolve(resolver).resolveTarget();
 	}
 
-	private static final class LinkByValueEval extends Eval {
+	private static final class LinkByValueEval implements Eval {
+
+		private final Ref ref;
 
 		LinkByValueEval(Ref ref) {
-			super(ref);
+			this.ref = ref;
 		}
 
 		public final Ref getRef() {
-			return (Ref) getStatement();
+			return this.ref;
 		}
 
 		@Override
@@ -119,6 +121,14 @@ public class LinkByValueAdapter extends ValueAdapter {
 					.materialize(dirs.dirs());
 
 			dirs.returnValue(dirs.value().store(code, target.toAny(code)));
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

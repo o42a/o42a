@@ -136,9 +136,9 @@ public final class RefCommand extends Command {
 	public final Cmd cmd() {
 		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
-			return new RefCmdImpl(getRef(), getValueAdapter().eval());
+			return new RefCmd(getValueAdapter().eval());
 		}
-		return new NormalRefCmdImpl(getRef(), this.normal);
+		return new NormalRefCmd(this.normal);
 	}
 
 	@Override
@@ -146,12 +146,11 @@ public final class RefCommand extends Command {
 		getValueAdapter().resolveAll(resolver);
 	}
 
-	private static final class RefCmdImpl extends Cmd {
+	private static final class RefCmd implements Cmd {
 
 		private final Eval eval;
 
-		RefCmdImpl(Ref ref, Eval eval) {
-			super(ref);
+		RefCmd(Eval eval) {
 			this.eval = eval;
 		}
 
@@ -165,14 +164,21 @@ public final class RefCommand extends Command {
 			dirs.done();
 		}
 
+		@Override
+		public String toString() {
+			if (this.eval == null) {
+				return super.toString();
+			}
+			return this.eval.toString();
+		}
+
 	}
 
-	private static final class NormalRefCmdImpl extends Cmd {
+	private static final class NormalRefCmd implements Cmd {
 
 		private final InlineValue value;
 
-		NormalRefCmdImpl(Ref ref, InlineValue value) {
-			super(ref);
+		NormalRefCmd(InlineValue value) {
 			this.value = value;
 		}
 
