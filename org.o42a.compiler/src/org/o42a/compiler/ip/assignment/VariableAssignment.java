@@ -114,7 +114,7 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd op(CodeBuilder builder) {
+	public Cmd cmd(CodeBuilder builder) {
 		return new AssignmentCmd(builder, getStatement());
 	}
 

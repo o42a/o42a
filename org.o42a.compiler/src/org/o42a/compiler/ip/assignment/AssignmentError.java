@@ -63,7 +63,7 @@ final class AssignmentError extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd op(CodeBuilder builder) {
+	public Cmd cmd(CodeBuilder builder) {
 		return noCmd(builder, getStatement());
 	}
 

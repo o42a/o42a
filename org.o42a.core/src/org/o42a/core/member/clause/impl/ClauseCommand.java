@@ -75,13 +75,14 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		command().resolveAll(resolver);
+	public Cmd cmd(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return command().cmd(builder);
 	}
 
 	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return command().cmd(builder);
+	protected void fullyResolve(LocalResolver resolver) {
+		command().resolveAll(resolver);
 	}
 
 	@Override
@@ -162,12 +163,12 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		protected void fullyResolve(LocalResolver resolver) {
+		public Cmd cmd(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
-			throw new UnsupportedOperationException();
+		protected void fullyResolve(LocalResolver resolver) {
 		}
 
 		@Override
@@ -223,13 +224,13 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		protected void fullyResolve(LocalResolver resolver) {
-			this.command.resolveAll(resolver);
+		public Cmd cmd(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
-			throw new UnsupportedOperationException();
+		protected void fullyResolve(LocalResolver resolver) {
+			this.command.resolveAll(resolver);
 		}
 
 		@Override

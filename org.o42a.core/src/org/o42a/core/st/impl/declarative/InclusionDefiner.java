@@ -99,15 +99,15 @@ abstract class InclusionDefiner<I extends Inclusion>
 		return this.replacement = statement.define(env());
 	}
 
+	@Override
+	public Eval eval(CodeBuilder builder) {
+		throw new UnsupportedOperationException();
+	}
+
 	protected abstract void includeInto(DeclarativeBlock block);
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected Eval createEval(CodeBuilder builder) {
 		throw new UnsupportedOperationException();
 	}
 

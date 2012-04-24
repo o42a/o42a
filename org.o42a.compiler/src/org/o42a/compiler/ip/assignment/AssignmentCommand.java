@@ -98,13 +98,14 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		getAssignmentKind().resolve(resolver);
+	public Cmd cmd(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return getAssignmentKind().cmd(builder);
 	}
 
 	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return getAssignmentKind().op(builder);
+	protected void fullyResolve(LocalResolver resolver) {
+		getAssignmentKind().resolve(resolver);
 	}
 
 }

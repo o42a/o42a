@@ -45,7 +45,6 @@ public abstract class Command extends Implication<Command> {
 	}
 
 	private final CommandEnv env;
-	private Cmd cmd;
 
 	public Command(Statement statement, CommandEnv env) {
 		super(statement);
@@ -78,22 +77,9 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract void normalize(RootNormalizer normalizer);
 
-	public Cmd cmd(CodeBuilder builder) {
-
-		final Cmd cmd = this.cmd;
-
-		if (cmd != null && cmd.getBuilder() == builder) {
-			return cmd;
-		}
-
-		assert getStatement().assertFullyResolved();
-
-		return this.cmd = createCmd(builder);
-	}
+	public abstract Cmd cmd(CodeBuilder builder);
 
 	protected abstract void fullyResolve(LocalResolver resolver);
-
-	protected abstract Cmd createCmd(CodeBuilder builder);
 
 	protected final CommandTargets actionCommand() {
 		return new CommandTargets(

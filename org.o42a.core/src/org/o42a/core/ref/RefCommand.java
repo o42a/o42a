@@ -135,16 +135,7 @@ public final class RefCommand extends Command {
 
 	@Override
 	public final RefCmd cmd(CodeBuilder builder) {
-		return (RefCmd) super.cmd(builder);
-	}
-
-	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		getValueAdapter().resolveAll(resolver);
-	}
-
-	@Override
-	protected final RefCmd createCmd(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
 			return new RefCmdImpl(
 					builder,
@@ -152,6 +143,11 @@ public final class RefCommand extends Command {
 					getValueAdapter().eval(builder));
 		}
 		return new NormalRefCmdImpl(builder, getRef(), this.normal);
+	}
+
+	@Override
+	protected void fullyResolve(LocalResolver resolver) {
+		getValueAdapter().resolveAll(resolver);
 	}
 
 	private static final class RefCmdImpl extends RefCmd {

@@ -158,17 +158,18 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new LocalEval(builder, getBlock(), getCommand());
+	}
+
+	@Override
 	protected void fullyResolve(Resolver resolver) {
 
 		final LocalScope local =
 				getLocalPrefix().rescope(resolver.getScope()).toLocal();
 
 		getCommand().resolveAll(local.walkingResolver(resolver));
-	}
-
-	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return new LocalEval(builder, getBlock(), getCommand());
 	}
 
 	private static final class InlineLocal extends InlineEval {
