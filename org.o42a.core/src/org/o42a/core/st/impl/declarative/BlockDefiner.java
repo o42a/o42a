@@ -273,7 +273,7 @@ public final class BlockDefiner
 		private final BlockDefiner definer;
 
 		BlockEval(CodeBuilder builder, BlockDefiner definer) {
-			super(builder, definer.getStatement());
+			super(definer.getStatement());
 			this.definer = definer;
 		}
 

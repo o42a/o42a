@@ -174,7 +174,7 @@ final class RefConditionDefiner extends Definer {
 		private final RefEval refEval;
 
 		CondEval(CodeBuilder builder, Ref ref, RefDefiner refDefiner) {
-			super(builder, ref);
+			super(ref);
 			this.refEval = refDefiner.eval(builder);
 		}
 

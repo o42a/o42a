@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -126,11 +125,11 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Cmd cmd() {
 		if (this.normal == null) {
-			return new AssignCmd(builder, this.ref, this.refCommand);
+			return new AssignCmd(this.ref, this.refCommand);
 		}
-		return new NormalAssignCmd(builder, this.ref, this.normal);
+		return new NormalAssignCmd(this.ref, this.normal);
 	}
 
 	private final static class Env extends CommandEnv {
@@ -184,14 +183,14 @@ final class CustomAssignment extends AssignmentKind {
 
 		private final RefCommand refCommand;
 
-		AssignCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
-			super(builder, ref);
+		AssignCmd(Ref ref, RefCommand refCommand) {
+			super(ref);
 			this.refCommand = refCommand;
 		}
 
 		@Override
 		public void write(Control control) {
-			this.refCommand.cmd(getBuilder()).writeCond(control);
+			this.refCommand.cmd().writeCond(control);
 		}
 
 	}
@@ -200,11 +199,8 @@ final class CustomAssignment extends AssignmentKind {
 
 		private final InlineValue value;
 
-		NormalAssignCmd(
-				CodeBuilder builder,
-				Statement statement,
-				InlineValue value) {
-			super(builder, statement);
+		NormalAssignCmd(Statement statement, InlineValue value) {
+			super(statement);
 			this.value = value;
 		}
 

@@ -20,7 +20,6 @@
 package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
@@ -111,9 +110,9 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		return new CondCmd(builder, getRef(), getRefCommand());
+		return new CondCmd(getRef(), getRefCommand());
 	}
 
 	@Override
@@ -172,9 +171,9 @@ final class RefConditionCommand extends Command {
 
 		private final RefCmd refCmd;
 
-		CondCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
-			super(builder, ref);
-			this.refCmd = refCommand.cmd(builder);
+		CondCmd(Ref ref, RefCommand refCommand) {
+			super(ref);
+			this.refCmd = refCommand.cmd();
 		}
 
 		@Override

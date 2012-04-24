@@ -24,7 +24,6 @@ import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
@@ -90,11 +89,11 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
+	public RefEval eval() {
 		if (fromConstToConst()) {
-			return new RefOpEval(builder, getAdaptedRef());
+			return new RefOpEval(getAdaptedRef());
 		}
-		return new ArrayEval(builder, getAdaptedRef());
+		return new ArrayEval(getAdaptedRef());
 	}
 
 	@Override
@@ -163,8 +162,8 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 	private static final class ArrayEval extends RefEval {
 
-		ArrayEval(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
+		ArrayEval(Ref ref) {
+			super(ref);
 		}
 
 		@Override

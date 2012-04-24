@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -98,9 +97,9 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public Cmd cmd(CodeBuilder builder) {
+	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		return getAssignmentKind().cmd(builder);
+		return getAssignmentKind().cmd();
 	}
 
 	@Override

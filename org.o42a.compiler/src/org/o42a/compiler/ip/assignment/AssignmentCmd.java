@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.assignment;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
@@ -28,8 +27,8 @@ import org.o42a.core.ir.op.CodeDirs;
 
 final class AssignmentCmd extends Cmd {
 
-	AssignmentCmd(CodeBuilder builder, AssignmentStatement assignment) {
-		super(builder, assignment);
+	AssignmentCmd(AssignmentStatement assignment) {
+		super(assignment);
 	}
 
 	public final AssignmentStatement getAssignment() {

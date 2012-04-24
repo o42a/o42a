@@ -20,7 +20,6 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
@@ -75,8 +74,8 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
-		return new ConstantEval(builder, getAdaptedRef(), this.value);
+	public RefEval eval() {
+		return new ConstantEval(getAdaptedRef(), this.value);
 	}
 
 	@Override
@@ -95,8 +94,8 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 		private final Value<?> value;
 
-		ConstantEval(CodeBuilder builder, Ref ref, Value<?> value) {
-			super(builder, ref);
+		ConstantEval(Ref ref, Value<?> value) {
+			super(ref);
 			this.value = value;
 		}
 

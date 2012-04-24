@@ -24,7 +24,6 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.RefEval;
@@ -87,8 +86,8 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
-		return new LinkByValueEval(builder, getAdaptedRef());
+	public RefEval eval() {
+		return new LinkByValueEval(getAdaptedRef());
 	}
 
 	@Override
@@ -103,8 +102,8 @@ public class LinkByValueAdapter extends ValueAdapter {
 
 	private static final class LinkByValueEval extends RefEval {
 
-		LinkByValueEval(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
+		LinkByValueEval(Ref ref) {
+			super(ref);
 		}
 
 		@Override

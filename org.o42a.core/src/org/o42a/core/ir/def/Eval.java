@@ -19,28 +19,16 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.st.Statement;
 
 
 public abstract class Eval {
 
-	private final CodeBuilder builder;
 	private final Statement statement;
 
-	public Eval(CodeBuilder builder, Statement statement) {
-		this.builder = builder;
+	public Eval(Statement statement) {
 		this.statement = statement;
-	}
-
-	public final Generator getGenerator() {
-		return getBuilder().getGenerator();
-	}
-
-	public final CodeBuilder getBuilder() {
-		return this.builder;
 	}
 
 	public final Statement getStatement() {

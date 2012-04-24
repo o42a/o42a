@@ -19,31 +19,19 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.st.Statement;
 
 
 public abstract class Cmd {
 
-	public static Cmd noCmd(CodeBuilder builder, Statement statement) {
-		return new NoCmd(builder, statement);
+	public static Cmd noCmd(Statement statement) {
+		return new NoCmd(statement);
 	}
 
-	private final CodeBuilder builder;
 	private final Statement statement;
 
-	public Cmd(CodeBuilder builder, Statement statement) {
-		this.builder = builder;
+	public Cmd(Statement statement) {
 		this.statement = statement;
-	}
-
-	public final Generator getGenerator() {
-		return getBuilder().getGenerator();
-	}
-
-	public final CodeBuilder getBuilder() {
-		return this.builder;
 	}
 
 	public final Statement getStatement() {

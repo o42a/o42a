@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.st.Statement;
 
 
 final class NoCmd extends Cmd {
 
-	NoCmd(CodeBuilder builder, Statement statement) {
-		super(builder, statement);
+	NoCmd(Statement statement) {
+		super(statement);
 	}
 
 	@Override

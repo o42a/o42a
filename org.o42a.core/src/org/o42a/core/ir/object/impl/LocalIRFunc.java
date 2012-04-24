@@ -118,7 +118,7 @@ public final class LocalIRFunc
 
 	private void build(LocalBuilder builder, Block code, ValOp result) {
 
-		final Cmd cmd = this.command.cmd(builder);
+		final Cmd cmd = this.command.cmd();
 		final Block exit = code.addBlock("exit");
 		final Block failure = code.addBlock("failure");
 		final Control control = builder.createControl(
