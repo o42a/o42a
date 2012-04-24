@@ -116,7 +116,8 @@ public final class RefDefiner extends Definer {
 
 	@Override
 	public final RefEval eval(CodeBuilder builder) {
-		return (RefEval) super.eval(builder);
+		assert getStatement().assertFullyResolved();
+		return getValueAdapter().eval(builder);
 	}
 
 	@Override
@@ -127,11 +128,6 @@ public final class RefDefiner extends Definer {
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		getValueAdapter().resolveAll(resolver);
-	}
-
-	@Override
-	protected RefEval createEval(CodeBuilder builder) {
-		return getValueAdapter().eval(builder);
 	}
 
 }

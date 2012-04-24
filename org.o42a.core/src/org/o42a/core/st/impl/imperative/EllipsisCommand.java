@@ -95,7 +95,8 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
+		public Cmd cmd(CodeBuilder builder) {
+			assert getStatement().assertFullyResolved();
 			return new ExitCmd(builder, getEllipsis());
 		}
 
@@ -118,7 +119,8 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
+		public Cmd cmd(CodeBuilder builder) {
+			assert getStatement().assertFullyResolved();
 			return new RepeatCmd(builder, getEllipsis());
 		}
 

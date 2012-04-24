@@ -158,16 +158,17 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
+	public Cmd cmd(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new ImperativeBlockCmd(builder, getBlock());
+	}
+
+	@Override
 	protected void fullyResolve(LocalResolver resolver) {
 		getCommandTargets();
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 			resolveSentence(resolver, sentence);
 		}
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new ImperativeBlockCmd(builder, getBlock());
 	}
 
 	private CommandTargets sentenceTargets() {

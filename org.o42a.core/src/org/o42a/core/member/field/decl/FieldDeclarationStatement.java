@@ -163,7 +163,8 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
+		public Cmd cmd(CodeBuilder builder) {
+			assert getStatement().assertFullyResolved();
 
 			final FieldDeclarationStatement statement =
 					(FieldDeclarationStatement) getStatement();

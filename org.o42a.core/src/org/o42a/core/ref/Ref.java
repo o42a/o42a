@@ -67,7 +67,6 @@ public class Ref extends Statement {
 	}
 
 	private final BoundPath path;
-	private RefOp op;
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
 		super(location, distributor);
@@ -316,16 +315,8 @@ public class Ref extends Statement {
 	}
 
 	public final RefOp op(HostOp host) {
-
-		final RefOp op = this.op;
-
-		if (op != null && op.host() == host) {
-			return op;
-		}
-
 		assert assertFullyResolved();
-
-		return this.op = new RefOp(host, this);
+		return new RefOp(host, this);
 	}
 
 	@Override

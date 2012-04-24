@@ -111,13 +111,14 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveLogical();
+	public Cmd cmd(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new CondCmd(builder, getRef(), getRefCommand());
 	}
 
 	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new CondCmd(builder, getRef(), getRefCommand());
+	protected void fullyResolve(LocalResolver resolver) {
+		getRef().resolve(resolver).resolveLogical();
 	}
 
 	private final static class Env extends CommandEnv {

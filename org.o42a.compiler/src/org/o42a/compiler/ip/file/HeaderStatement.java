@@ -139,12 +139,12 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		public Eval eval(CodeBuilder builder) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Eval createEval(CodeBuilder builder) {
+		protected void fullyResolve(Resolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -126,7 +126,7 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd op(CodeBuilder builder) {
+	public Cmd cmd(CodeBuilder builder) {
 		if (this.normal == null) {
 			return new AssignCmd(builder, this.ref, this.refCommand);
 		}

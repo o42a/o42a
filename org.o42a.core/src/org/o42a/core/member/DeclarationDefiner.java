@@ -75,12 +75,12 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	public Eval eval(CodeBuilder builder) {
+		return null;
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return null;
+	protected void fullyResolve(Resolver resolver) {
 	}
 
 }

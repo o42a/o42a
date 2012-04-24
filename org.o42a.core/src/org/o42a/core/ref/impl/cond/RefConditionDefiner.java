@@ -118,13 +118,14 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getRef().resolve(resolver).resolveLogical();
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new CondEval(builder, getRef(), getRefDefiner());
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return new CondEval(builder, getRef(), getRefDefiner());
+	protected void fullyResolve(Resolver resolver) {
+		getRef().resolve(resolver).resolveLogical();
 	}
 
 	private static final class Env extends DefinerEnv {

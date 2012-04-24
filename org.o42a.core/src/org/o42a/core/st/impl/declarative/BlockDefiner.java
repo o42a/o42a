@@ -159,14 +159,15 @@ public final class BlockDefiner
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getDefTargets();
-		resolveSentences(resolver, this);
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new BlockEval(builder, this);
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return new BlockEval(builder, this);
+	protected void fullyResolve(Resolver resolver) {
+		getDefTargets();
+		resolveSentences(resolver, this);
 	}
 
 	private BlockDefinitions getBlockDefinitions() {

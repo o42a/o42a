@@ -58,7 +58,7 @@ abstract class AssignmentKind {
 
 	public abstract void normalize(RootNormalizer normalizer);
 
-	public abstract Cmd op(CodeBuilder builder);
+	public abstract Cmd cmd(CodeBuilder builder);
 
 	@Override
 	public String toString() {
