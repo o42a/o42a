@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.assignment;
 
-import static org.o42a.core.ir.local.Cmd.noCmd;
+import static org.o42a.core.ir.local.Cmd.NO_CMD;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
@@ -63,7 +63,7 @@ final class AssignmentError extends AssignmentKind {
 
 	@Override
 	public Cmd cmd() {
-		return noCmd(getStatement());
+		return NO_CMD;
 	}
 
 }

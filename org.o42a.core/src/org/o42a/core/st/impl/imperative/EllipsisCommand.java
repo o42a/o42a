@@ -125,34 +125,48 @@ abstract class EllipsisCommand extends Command {
 
 	}
 
-	private static final class ExitCmd extends Cmd {
+	private static final class ExitCmd implements Cmd {
+
+		private final EllipsisStatement statement;
 
 		ExitCmd(EllipsisStatement statement) {
-			super(statement);
+			this.statement = statement;
 		}
 
 		@Override
 		public void write(Control control) {
+			control.exitBraces(this.statement, this.statement.getName());
+		}
 
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.exitBraces(st, st.getName());
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
 		}
 
 	}
 
-	private static final class RepeatCmd extends Cmd {
+	private static final class RepeatCmd implements Cmd {
+
+		private final EllipsisStatement statement;
 
 		RepeatCmd(EllipsisStatement statement) {
-			super(statement);
+			this.statement = statement;
 		}
 
 		@Override
 		public void write(Control control) {
+			control.repeat(this.statement, this.statement.getName());
+		}
 
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.repeat(st, st.getName());
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
 		}
 
 	}

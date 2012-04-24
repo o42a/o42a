@@ -25,34 +25,41 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.op.CodeDirs;
 
 
-final class AssignmentCmd extends Cmd {
+final class AssignmentCmd implements Cmd {
+
+	private final AssignmentStatement assignment;
 
 	AssignmentCmd(AssignmentStatement assignment) {
-		super(assignment);
-	}
-
-	public final AssignmentStatement getAssignment() {
-		return (AssignmentStatement) getStatement();
+		this.assignment = assignment;
 	}
 
 	@Override
 	public void write(Control control) {
 
-		final AssignmentStatement assignment = getAssignment();
 		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
 				control.code(),
 				control.falseDir());
 		final CodeDirs subDirs =
-				dirs.begin("assign", assignment.toString());
+				dirs.begin("assign", this.assignment.toString());
 
 		final HostOp destination =
-				assignment.getDestination().op(control.host()).target(subDirs);
+				this.assignment.getDestination()
+				.op(control.host())
+				.target(subDirs);
 		final HostOp value =
-				assignment.getValue().op(control.host()).target(subDirs);
+				this.assignment.getValue().op(control.host()).target(subDirs);
 
 		destination.assign(subDirs, value);
 
 		subDirs.end();
+	}
+
+	@Override
+	public String toString() {
+		if (this.assignment == null) {
+			return super.toString();
+		}
+		return this.assignment.toString();
 	}
 
 }

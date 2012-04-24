@@ -159,14 +159,16 @@ public final class ArrayValueAdapter extends ValueAdapter {
 						defItems));
 	}
 
-	private static final class ArrayEval extends Eval {
+	private static final class ArrayEval implements Eval {
+
+		private final Ref ref;
 
 		ArrayEval(Ref ref) {
-			super(ref);
+			this.ref = ref;
 		}
 
 		public final Ref getRef() {
-			return (Ref) getStatement();
+			return this.ref;
 		}
 
 		@Override
@@ -183,6 +185,14 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 			func.op(null, dirs.code()).copy(dirs, from);
 			fromDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

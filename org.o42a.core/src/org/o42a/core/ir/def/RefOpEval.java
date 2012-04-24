@@ -24,14 +24,16 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
-public class RefOpEval extends Eval {
+public class RefOpEval implements Eval {
+
+	private final Ref ref;
 
 	public RefOpEval(Ref ref) {
-		super(ref);
+		this.ref = ref;
 	}
 
 	public final Ref getRef() {
-		return (Ref) getStatement();
+		return this.ref;
 	}
 
 	@Override
@@ -42,6 +44,14 @@ public class RefOpEval extends Eval {
 
 		defDirs.done();
 		dirs.returnValue(value);
+	}
+
+	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
 	}
 
 }

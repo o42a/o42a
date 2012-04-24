@@ -19,33 +19,11 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.core.st.Statement;
 
+public interface Cmd {
 
-public abstract class Cmd {
+	Cmd NO_CMD = new NoCmd();
 
-	public static Cmd noCmd(Statement statement) {
-		return new NoCmd(statement);
-	}
-
-	private final Statement statement;
-
-	public Cmd(Statement statement) {
-		this.statement = statement;
-	}
-
-	public final Statement getStatement() {
-		return this.statement;
-	}
-
-	public abstract void write(Control control);
-
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+	void write(Control control);
 
 }

@@ -108,17 +108,18 @@ public class LinkValueAdapter extends ValueAdapter {
 		getAdaptedRef().resolve(resolver).resolveValue();
 	}
 
-	private static final class LinkEval extends Eval {
+	private static final class LinkEval implements Eval {
 
 		private final LinkValueStruct fromStruct;
+		private final Ref ref;
 
 		LinkEval(Ref ref, LinkValueStruct fromStruct) {
-			super(ref);
+			this.ref = ref;
 			this.fromStruct = fromStruct;
 		}
 
 		public final Ref getRef() {
-			return (Ref) getStatement();
+			return this.ref;
 		}
 
 		@Override
@@ -129,6 +130,14 @@ public class LinkValueAdapter extends ValueAdapter {
 
 			fromDirs.done();
 			dirs.returnValue(from);
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

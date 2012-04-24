@@ -169,7 +169,6 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 					(FieldDeclarationStatement) getStatement();
 
 			return new LocalFieldCmd(
-					statement,
 					statement.member.toField().field(dummyUser()));
 		}
 

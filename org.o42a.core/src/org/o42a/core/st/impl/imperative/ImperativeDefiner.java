@@ -162,7 +162,7 @@ public final class ImperativeDefiner extends Definer {
 	@Override
 	public Eval eval(CodeBuilder builder) {
 		assert getStatement().assertFullyResolved();
-		return new LocalEval(builder, getBlock(), getCommand());
+		return new LocalEval(getBlock(), getCommand());
 	}
 
 	@Override
@@ -210,15 +210,13 @@ public final class ImperativeDefiner extends Definer {
 
 	}
 
-	private static final class LocalEval extends Eval {
+	private static final class LocalEval implements Eval {
 
+		private final ImperativeBlock block;
 		private final Command command;
 
-		LocalEval(
-				CodeBuilder builder,
-				ImperativeBlock block,
-				Command command) {
-			super(block);
+		LocalEval(ImperativeBlock block, Command command) {
+			this.block = block;
 			this.command = command;
 		}
 
@@ -261,8 +259,16 @@ public final class ImperativeDefiner extends Definer {
 			}
 		}
 
+		@Override
+		public String toString() {
+			if (this.command == null) {
+				return super.toString();
+			}
+			return this.command.toString();
+		}
+
 		private final ImperativeBlock getBlock() {
-			return (ImperativeBlock) getStatement();
+			return this.block;
 		}
 
 	}

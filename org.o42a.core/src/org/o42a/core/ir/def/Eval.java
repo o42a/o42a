@@ -20,29 +20,10 @@
 package org.o42a.core.ir.def;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.st.Statement;
 
 
-public abstract class Eval {
+public interface Eval {
 
-	private final Statement statement;
-
-	public Eval(Statement statement) {
-		this.statement = statement;
-	}
-
-	public final Statement getStatement() {
-		return this.statement;
-	}
-
-	public abstract void write(DefDirs dirs, HostOp host);
-
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+	void write(DefDirs dirs, HostOp host);
 
 }

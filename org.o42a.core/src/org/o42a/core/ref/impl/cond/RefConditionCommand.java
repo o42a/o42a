@@ -162,34 +162,35 @@ final class RefConditionCommand extends Command {
 
 	}
 
-	private static final class NormalCondCmd extends Cmd {
+	private static final class NormalCondCmd implements Cmd {
 
-		private final InlineValue cond;
+		private final InlineValue value;
 
 		NormalCondCmd(RefCondition statement, InlineValue value) {
-			super(statement);
-			this.cond = value;
+			this.value = value;
 		}
 
 		@Override
 		public void write(Control control) {
-			this.cond.writeCond(control.dirs(), control.host());
+			this.value.writeCond(control.dirs(), control.host());
 		}
 
 		@Override
 		public String toString() {
-			if (this.cond == null) {
+			if (this.value == null) {
 				return super.toString();
 			}
-			return this.cond.toString();
+			return this.value.toString();
 		}
 
 	}
 
-	private static final class CondCmd extends Cmd {
+	private static final class CondCmd implements Cmd {
+
+		private final RefCondition statement;
 
 		CondCmd(RefCondition statement) {
-			super(statement);
+			this.statement = statement;
 		}
 
 		@Override
@@ -197,8 +198,16 @@ final class RefConditionCommand extends Command {
 			ref().op(control.host()).writeCond(control.dirs());
 		}
 
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
+		}
+
 		private final Ref ref() {
-			return ((RefCondition) getStatement()).getRef();
+			return this.statement.getRef();
 		}
 
 	}
