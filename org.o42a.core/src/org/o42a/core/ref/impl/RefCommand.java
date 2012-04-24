@@ -17,22 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ir.local.RefCmd;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -47,7 +47,7 @@ public final class RefCommand extends Command {
 	private ValueAdapter valueAdapter;
 	private InlineValue normal;
 
-	RefCommand(Ref ref, CommandEnv env) {
+	public RefCommand(Ref ref, CommandEnv env) {
 		super(ref, env);
 	}
 
@@ -133,7 +133,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final RefCmd cmd() {
+	public final Cmd cmd() {
 		assert getStatement().assertFullyResolved();
 		if (this.normal == null) {
 			return new RefCmdImpl(getRef(), getValueAdapter().eval());
@@ -146,23 +146,13 @@ public final class RefCommand extends Command {
 		getValueAdapter().resolveAll(resolver);
 	}
 
-	private static final class RefCmdImpl extends RefCmd {
+	private static final class RefCmdImpl extends Cmd {
 
-		private final RefEval eval;
+		private final Eval eval;
 
-		RefCmdImpl(Ref ref, RefEval eval) {
+		RefCmdImpl(Ref ref, Eval eval) {
 			super(ref);
 			this.eval = eval;
-		}
-
-		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			this.eval.writeCond(dirs, control.host());
 		}
 
 		@Override
@@ -177,18 +167,13 @@ public final class RefCommand extends Command {
 
 	}
 
-	private static final class NormalRefCmdImpl extends RefCmd {
+	private static final class NormalRefCmdImpl extends Cmd {
 
 		private final InlineValue value;
 
 		NormalRefCmdImpl(Ref ref, InlineValue value) {
 			super(ref);
 			this.value = value;
-		}
-
-		@Override
-		public void writeCond(Control control) {
-			this.value.writeCond(control.dirs(), control.host());
 		}
 
 		@Override

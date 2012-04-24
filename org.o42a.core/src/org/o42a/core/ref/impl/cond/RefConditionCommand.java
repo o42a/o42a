@@ -20,8 +20,11 @@
 package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.local.*;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.InlineCond;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
@@ -29,26 +32,25 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.Directive;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionCommand extends Command {
 
-	private final RefCommand refCommand;
+	private InlineValue normal;
 
 	RefConditionCommand(RefCondition ref, CommandEnv env) {
 		super(ref, env);
-		this.refCommand = ref.getRef().command(new Env(env));
 	}
 
 	public final Ref getRef() {
-		return ((RefCondition) getStatement()).getRef();
+		return getRefCondition().getRef();
 	}
 
-	public final RefCommand getRefCommand() {
-		return this.refCommand;
+	public final RefCondition getRefCondition() {
+		return (RefCondition) getStatement();
 	}
 
 	@Override
@@ -78,7 +80,9 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return getRefCommand().initialCond(resolver);
+		return new ExecuteCommand(
+				this,
+				getRef().value(resolver).getKnowledge().toLogicalValue());
 	}
 
 	@Override
@@ -106,31 +110,23 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		getRefCommand().normalize(normalizer);
+		this.normal = getRef().inline(
+				normalizer.newNormalizer(),
+				normalizer.getNormalizedScope());
 	}
 
 	@Override
 	public Cmd cmd() {
 		assert getStatement().assertFullyResolved();
-		return new CondCmd(getRef(), getRefCommand());
+		if (this.normal == null) {
+			return new CondCmd(getRefCondition());
+		}
+		return new NormalCondCmd(getRefCondition(), this.normal);
 	}
 
 	@Override
 	protected void fullyResolve(LocalResolver resolver) {
 		getRef().resolve(resolver).resolveLogical();
-	}
-
-	private final static class Env extends CommandEnv {
-
-		Env(CommandEnv initialEnv) {
-			super(initialEnv.getStatements());
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return null;// To prevent Ref adaption.
-		}
-
 	}
 
 	private static final class Inline extends InlineCmd {
@@ -167,18 +163,43 @@ final class RefConditionCommand extends Command {
 
 	}
 
-	private static final class CondCmd extends Cmd {
+	private static final class NormalCondCmd extends Cmd {
 
-		private final RefCmd refCmd;
+		private final InlineCond cond;
 
-		CondCmd(Ref ref, RefCommand refCommand) {
-			super(ref);
-			this.refCmd = refCommand.cmd();
+		NormalCondCmd(RefCondition statement, InlineCond cond) {
+			super(statement);
+			this.cond = cond;
 		}
 
 		@Override
 		public void write(Control control) {
-			this.refCmd.writeCond(control);
+			this.cond.writeCond(control.dirs(), control.host());
+		}
+
+		@Override
+		public String toString() {
+			if (this.cond == null) {
+				return super.toString();
+			}
+			return this.cond.toString();
+		}
+
+	}
+
+	private static final class CondCmd extends Cmd {
+
+		CondCmd(RefCondition statement) {
+			super(statement);
+		}
+
+		@Override
+		public void write(Control control) {
+			ref().op(control.host()).writeCond(control.dirs());
+		}
+
+		private final Ref ref() {
+			return ((RefCondition) getStatement()).getRef();
 		}
 
 	}

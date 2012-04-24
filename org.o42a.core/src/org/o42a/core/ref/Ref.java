@@ -36,6 +36,8 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
+import org.o42a.core.ref.impl.RefCommand;
+import org.o42a.core.ref.impl.RefDefiner;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
@@ -121,13 +123,17 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public RefDefiner define(DefinerEnv env) {
+	public final Definer define(DefinerEnv env) {
 		return new RefDefiner(this, env);
 	}
 
 	@Override
-	public RefCommand command(CommandEnv env) {
+	public final Command command(CommandEnv env) {
 		return new RefCommand(this, env);
+	}
+
+	public final Definitions toDefinitions(DefinerEnv env) {
+		return new RefDefiner(this, env).createDefinitions();
 	}
 
 	public final Resolution resolve(Resolver resolver) {

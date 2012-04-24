@@ -20,7 +20,7 @@
 package org.o42a.core.value.impl;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.link.TargetResolver;
@@ -65,7 +65,7 @@ public class RawValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval() {
+	public Eval eval() {
 		return new RefOpEval(getAdaptedRef());
 	}
 
