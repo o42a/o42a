@@ -164,7 +164,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				getBodyIR().getAscendant(),
 				getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 		final CodeDirs dirs =
-				builder.falseWhenUnknown(assigner, failure.head());
+				builder.dirs(assigner, failure.head());
 
 		final VarFldOp fld = op(assigner, builder.host());
 		final TypeRef typeRef = getTypeRef();

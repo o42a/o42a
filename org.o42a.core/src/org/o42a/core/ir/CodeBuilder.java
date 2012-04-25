@@ -117,17 +117,8 @@ public abstract class CodeBuilder {
 		return getFunction().getId().anonymous(++this.nameSeq);
 	}
 
-	public final CodeDirs falseWhenUnknown(
-			Block code,
-			CodePos falseDir) {
-		return CodeDirs.falseWhenUnknown(this, code, falseDir);
-	}
-
-	public final CodeDirs splitWhenUnknown(
-			Block code,
-			CodePos falseDir,
-			CodePos unknownDir) {
-		return CodeDirs.splitWhenUnknown(this, code, falseDir, unknownDir);
+	public final CodeDirs dirs(Block code, CodePos falseDir) {
+		return CodeDirs.codeDirs(this, code, falseDir);
 	}
 
 	public ObjectOp newObject(

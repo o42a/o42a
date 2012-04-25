@@ -278,7 +278,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			"Link target can not be constructed";
 
 		if (target.isUnknown()) {
-			dirs.code().go(dirs.unknownDir());
+			dirs.code().go(dirs.falseDir());
 			return builder.getContext()
 					.getFalse()
 					.ir(getGenerator())
@@ -447,7 +447,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 					getBodyIR().getAscendant(),
 					getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 			final CodeDirs dirs =
-					builder.falseWhenUnknown(constructor, failure.head());
+					builder.dirs(constructor, failure.head());
 
 			buildConstructor(builder, dirs);
 

@@ -224,7 +224,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 				.op(builder, getValueStruct())
 				.setStoreMode(INITIAL_VAL_STORE);
 		final DefDirs dirs =
-				builder.falseWhenUnknown(function, failure.head())
+				builder.dirs(function, failure.head())
 				.value(result)
 				.def(done.head());
 		final Block code = dirs.code();

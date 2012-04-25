@@ -145,12 +145,10 @@ public abstract class ValueOp {
 			ValDirs resultDirs) {
 
 		final Block falseCode = code.addBlock("eval_false");
-		final Block unknownCode = code.addBlock("eval_unknown");
 		final ValDirs valDirs =
-				getBuilder().splitWhenUnknown(
+				getBuilder().dirs(
 						code,
-						falseCode.head(),
-						unknownCode.head())
+						falseCode.head())
 				.value(value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
@@ -162,10 +160,6 @@ public abstract class ValueOp {
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);
 			falseCode.go(resultDirs.falseDir());
-		}
-		if (unknownCode.exists()) {
-			value.storeUnknown(unknownCode);
-			unknownCode.go(resultDirs.unknownDir());
 		}
 	}
 

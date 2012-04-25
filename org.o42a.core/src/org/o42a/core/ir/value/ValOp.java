@@ -354,9 +354,7 @@ public abstract class ValOp extends IROp implements CondOp {
 
 		if (constant != null) {
 			if (!constant.getCondition()) {
-				if (constant.isUnknown()) {
-					code.go(dirs.unknownDir());
-				} else {
+				if (!constant.isUnknown()) {
 					code.go(dirs.falseDir());
 				}
 			}

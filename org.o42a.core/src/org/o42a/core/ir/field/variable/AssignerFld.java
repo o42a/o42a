@@ -282,7 +282,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 				getBodyIR().getAscendant(),
 				getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
 		final CodeDirs dirs =
-				builder.falseWhenUnknown(assigner, failure.head());
+				builder.dirs(assigner, failure.head());
 
 		final AssignerFldOp fld = op(assigner, builder.host());
 		final TypeRef typeRef = linkStruct().getTypeRef();

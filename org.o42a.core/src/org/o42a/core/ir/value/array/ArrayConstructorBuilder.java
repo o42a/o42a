@@ -21,7 +21,7 @@ package org.o42a.core.ir.value.array;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.op.CodeDirs.falseWhenUnknown;
+import static org.o42a.core.ir.op.CodeDirs.codeDirs;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
@@ -73,7 +73,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 		} else {
 
 			final ValDirs dirs =
-					falseWhenUnknown(builder, function, failure.head())
+					codeDirs(builder, function, failure.head())
 					.value(value);
 
 			allocateItems(dirs);
@@ -117,7 +117,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 			int index) {
 
 		final Block failure = arrayDirs.addBlock("item_" + index + "_failed");
-		final ValDirs dirs = falseWhenUnknown(
+		final ValDirs dirs = codeDirs(
 				arrayDirs.getBuilder(),
 				arrayDirs.code(),
 				failure.head()).value(arrayDirs);

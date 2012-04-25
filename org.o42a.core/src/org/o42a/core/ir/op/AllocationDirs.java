@@ -33,7 +33,6 @@ public class AllocationDirs {
 	private final CodeDirs enclosing;
 	private final AllocationCode code;
 	private Block falseExit;
-	private Block unknownExit;
 	private CodeDirs dirs;
 
 	AllocationDirs(CodeDirs enclosing, AllocationCode code) {
@@ -78,17 +77,11 @@ public class AllocationDirs {
 		}
 
 		this.falseExit = this.code.addExitBlock("false");
-		if (this.enclosing.isFalseWhenUnknown()) {
-			this.unknownExit = this.falseExit;
-		} else {
-			this.unknownExit = this.code.addExitBlock("unknown");
-		}
 
 		return this.dirs = new CodeDirs(
 				this.enclosing.getBuilder(),
 				this.enclosing.code(),
-				this.falseExit.head(),
-				this.unknownExit.head());
+				this.falseExit.head());
 	}
 
 	public void done() {
@@ -98,9 +91,6 @@ public class AllocationDirs {
 		}
 		if (this.falseExit.exists()) {
 			this.falseExit.go(this.enclosing.falseDir());
-		}
-		if (this.unknownExit.exists() && this.unknownExit != this.falseExit) {
-			this.unknownExit.go(this.enclosing.unknownDir());
 		}
 	}
 

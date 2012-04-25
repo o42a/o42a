@@ -216,7 +216,7 @@ public final class RefCommand extends Command {
 
 			final Block code = control.code();
 			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
+					control.getBuilder().dirs(
 							code,
 							control.falseDir())
 					.value(control.result());

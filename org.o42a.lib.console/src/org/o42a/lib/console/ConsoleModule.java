@@ -183,7 +183,7 @@ public class ConsoleModule extends AnnotatedModule {
 				builder,
 				ValueStruct.INTEGER);
 		final ValDirs dirs =
-				builder.falseWhenUnknown(main, exit.head())
+				builder.dirs(main, exit.head())
 				.value(result);
 		final ValOp programResult;
 

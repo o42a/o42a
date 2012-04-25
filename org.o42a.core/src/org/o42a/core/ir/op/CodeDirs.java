@@ -24,7 +24,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
@@ -32,43 +31,27 @@ import org.o42a.core.value.ValueStruct;
 
 public class CodeDirs {
 
-	public static CodeDirs falseWhenUnknown(
+	public static CodeDirs codeDirs(
 			CodeBuilder builder,
 			Block code,
 			CodePos falseDir) {
-		return new CodeDirs(builder, code, falseDir, falseDir);
-	}
-
-	public static CodeDirs splitWhenUnknown(
-			CodeBuilder builder,
-			Block code,
-			CodePos falseDir,
-			CodePos unknownDir) {
-		return new CodeDirs(builder, code, falseDir, unknownDir);
+		return new CodeDirs(builder, code, falseDir);
 	}
 
 	private final Block code;
 	private final CodePos falseDir;
-	private final CodePos unknownDir;
 	private final CodeBuilder builder;
 
-	CodeDirs(
-			CodeBuilder builder,
-			Block code,
-			CodePos falseDir,
-			CodePos unknownDir) {
+	CodeDirs(CodeBuilder builder, Block code, CodePos falseDir) {
 		assert builder != null :
 			"Code builder not specified";
 		assert code != null :
 			"Code not specified";
 		assert falseDir != null :
 			"False direction not specified";
-		assert unknownDir != null :
-			"Unknown direction not specified";
 		this.builder = builder;
 		this.code = code;
 		this.falseDir = falseDir;
-		this.unknownDir = unknownDir;
 	}
 
 	public final Generator getGenerator() {
@@ -104,7 +87,7 @@ public class CodeDirs {
 	}
 
 	public final CodeDirs sub(Block code) {
-		return new CodeDirs(getBuilder(), code, this.falseDir, this.unknownDir);
+		return new CodeDirs(getBuilder(), code, this.falseDir);
 	}
 
 	public CodeDirs begin(String id, String message) {
@@ -119,15 +102,8 @@ public class CodeDirs {
 		this.code.begin(message);
 
 		final Block falseCode = this.code.addBlock(id.detail("false"));
-		final Block unknownCode;
 
-		if (isFalseWhenUnknown()) {
-			unknownCode = falseCode;
-		} else {
-			unknownCode = this.code.addBlock(id.detail("unknown"));
-		}
-
-		return new Nested(this, falseCode, unknownCode);
+		return new Nested(this, falseCode);
 	}
 
 	public CodeDirs end() {
@@ -169,60 +145,16 @@ public class CodeDirs {
 		return new ValDirs.NestedValDirs(this, storage);
 	}
 
-	public final CodeDirs falseWhenUnknown() {
-		if (isFalseWhenUnknown()) {
-			return this;
-		}
-		return falseWhenUnknown(falseDir());
-	}
-
-	public final CodeDirs falseWhenUnknown(CodePos falseDir) {
-		return new CodeDirs(getBuilder(), code(), falseDir, falseDir);
-	}
-
-	public final CodeDirs unknownWhenFalse() {
-		if (isFalseWhenUnknown()) {
-			return this;
-		}
-		return new CodeDirs(getBuilder(), code(), unknownDir(), unknownDir());
-	}
-
-	public final CodeDirs splitWhenUnknown(
-			CodePos falseDir,
-			CodePos unknownDir) {
-		return new CodeDirs(getBuilder(), code(), falseDir, unknownDir);
-	}
-
-	public final boolean isFalseWhenUnknown() {
-		return this.falseDir == this.unknownDir;
+	public final CodeDirs setFalseDir(CodePos falseDir) {
+		return new CodeDirs(getBuilder(), code(), falseDir);
 	}
 
 	public final CodePos falseDir() {
 		return this.falseDir;
 	}
 
-	public final CodePos unknownDir() {
-		return this.unknownDir;
-	}
-
 	public final void go(Block code, CondOp cond) {
-
-		final BoolOp condition = cond.loadCondition(null, code);
-
-		if (isFalseWhenUnknown()) {
-			condition.goUnless(code, falseDir());
-			return;
-		}
-
-		final Block condFalse = code.addBlock("false");
-
-		condition.goUnless(code, condFalse.head());
-		if (condFalse.exists()) {
-			cond.loadUnknown(null, condFalse).go(
-					condFalse,
-					unknownDir(),
-					falseDir());
-		}
+		cond.loadCondition(null, code).goUnless(code, falseDir());
 	}
 
 	@Override
@@ -242,17 +174,7 @@ public class CodeDirs {
 			} else {
 				semicolon = true;
 			}
-			if (this.falseDir == this.unknownDir) {
-				out.append("false,unknown->").append(this.falseDir);
-			} else {
-				out.append("false->").append(this.falseDir);
-			}
-		}
-		if (this.unknownDir != null && this.unknownDir != this.falseDir) {
-			if (semicolon) {
-				out.append("; ");
-			}
-			out.append("unknown->").append(this.unknownDir);
+			out.append("false->").append(this.falseDir);
 		}
 		out.append(']');
 
@@ -263,21 +185,15 @@ public class CodeDirs {
 
 		private final CodeDirs enclosing;
 		private final Block falseCode;
-		private final Block unknownCode;
 		private boolean ended;
 
-		Nested(
-				CodeDirs enclosing,
-				Block falseCode,
-				Block unknownCode) {
+		Nested(CodeDirs enclosing, Block falseCode) {
 			super(
 					enclosing.getBuilder(),
 					enclosing.code(),
-					falseCode.head(),
-					unknownCode.head());
+					falseCode.head());
 			this.enclosing = enclosing;
 			this.falseCode = falseCode;
-			this.unknownCode = unknownCode;
 		}
 
 		@Override
@@ -288,10 +204,6 @@ public class CodeDirs {
 			if (this.falseCode.exists()) {
 				this.falseCode.end();
 				this.falseCode.go(this.enclosing.falseDir());
-			}
-			if (!isFalseWhenUnknown() && this.unknownCode.exists()) {
-				this.unknownCode.end();
-				this.unknownCode.go(this.enclosing.unknownDir());
 			}
 			this.ended = true;
 			return this.enclosing;

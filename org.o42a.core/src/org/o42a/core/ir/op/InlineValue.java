@@ -24,20 +24,10 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
-import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
 import org.o42a.core.value.ValueStruct;
 
 
 public abstract class InlineValue extends Normal {
-
-	public static InlineValue inlineFalse(ValueStruct<?, ?> valueStruct) {
-		return new FalseInlineValue(valueStruct);
-	}
-
-	public static InlineValue inlineUnknown(ValueStruct<?, ?> valueStruct) {
-		return new UnknownInlineValue(valueStruct);
-	}
 
 	private final ValueStruct<?, ?> valueStruct;
 
