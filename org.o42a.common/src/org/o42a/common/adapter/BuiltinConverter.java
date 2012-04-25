@@ -23,6 +23,9 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -79,36 +82,20 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
-		final InlineValue object = object().inline(normalizer, origin);
+		final InlineValue value = object().inline(normalizer, origin);
 
-		if (object == null) {
+		if (value == null) {
 			return null;
 		}
 
-		return new Inline(valueStruct, object);
+		return new InlineConverter(this, value);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final Ref object = object();
-		final ValDirs valueDirs = dirs.dirs().value(
-				object.valueStruct(object.getScope()),
-				"value");
-		final ValOp value = object().op(host).writeValue(valueDirs);
-
-		final ValDirs targetDirs = valueDirs.dirs().value(dirs);
-		final ValOp result = convert(targetDirs, value);
-
-		targetDirs.done();
-		valueDirs.done();
-
-		return result;
+	public Eval evalBuiltin() {
+		return new ConverterEval(this);
 	}
 
 	protected abstract T convert(
@@ -128,36 +115,40 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		return this.object = path.bind(this, getScope()).target(distribute());
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class InlineConverter extends InlineEval {
 
+		private final BuiltinConverter<?, ?> converter;
 		private InlineValue value;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue value) {
-			super(null, valueStruct);
+		InlineConverter(BuiltinConverter<?, ?> converter, InlineValue value) {
+			super(null);
+			this.converter = converter;
 			this.value = value;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final Ref object = object();
+			final Ref object = this.converter.object();
 			final ValDirs valueDirs = dirs.dirs().value(
 					object.valueStruct(object.getScope()),
 					"value");
 			final ValOp value = this.value.writeValue(valueDirs, host);
 
-			final ValDirs targetDirs = valueDirs.dirs().value(dirs);
-			final ValOp result = convert(targetDirs, value);
+			final ValDirs targetDirs = valueDirs.dirs().value(dirs.valDirs());
+
+			dirs.returnValue(this.converter.convert(targetDirs, value));
 
 			targetDirs.done();
 			valueDirs.done();
-
-			return result;
 		}
 
 		@Override
 		public String toString() {
-			return "In-line[" + BuiltinConverter.this + ']';
+			if (this.converter == null) {
+				return super.toString();
+			}
+			return this.converter.toString();
 		}
 
 		@Override
@@ -166,4 +157,40 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 		}
 
 	}
+
+	private static final class ConverterEval implements Eval {
+
+		private final BuiltinConverter<?, ?> converter;
+
+		ConverterEval(BuiltinConverter<?, ?> converter) {
+			this.converter = converter;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final Ref object = this.converter.object();
+			final ValDirs valueDirs = dirs.dirs().value(
+					object.valueStruct(object.getScope()),
+					"value");
+			final ValOp value = object.op(host).writeValue(valueDirs);
+
+			final ValDirs targetDirs = valueDirs.dirs().value(dirs.valDirs());
+
+			dirs.returnValue(this.converter.convert(targetDirs, value));
+
+			targetDirs.done();
+			valueDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.converter == null) {
+				return super.toString();
+			}
+			return this.converter.toString();
+		}
+
+	}
+
 }

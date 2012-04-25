@@ -17,37 +17,46 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.impl.normalizer;
-
-import static org.o42a.core.value.Value.voidValue;
+package org.o42a.core.object.def.impl;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.util.fn.Cancelable;
 
 
-public class VoidInlineValue extends InlineValue {
+public class InlineDefs extends InlineEval {
 
-	public VoidInlineValue() {
-		super(null, ValueStruct.VOID);
+	private final InlineEval[] defs;
+
+	public InlineDefs(InlineEval[] defs) {
+		super(null);
+		this.defs = defs;
 	}
 
 	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-	}
-
-	@Override
-	public ValOp writeValue(ValDirs dirs, HostOp host) {
-		return voidValue().op(dirs.getBuilder(), dirs.code());
+	public void write(DefDirs dirs, HostOp host) {
+		for (InlineEval def : this.defs) {
+			def.write(dirs, host);
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "VOID";
+		if (this.defs == null) {
+			return super.toString();
+		}
+
+		final StringBuilder out = new StringBuilder();
+
+		out.append('(');
+		out.append(this.defs[0]);
+		for (int i = 1; i < this.defs.length; ++i) {
+			out.append(". ").append(this.defs[i]);
+		}
+		out.append(')');
+
+		return out.toString();
 	}
 
 	@Override

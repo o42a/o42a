@@ -24,10 +24,8 @@ import static org.o42a.core.object.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.*;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.TargetResolver;
@@ -225,11 +223,6 @@ public abstract class Def implements SourceInfo {
 				new Defs(false, this));
 	}
 
-	public final ValOp write(ValDirs dirs, HostOp host) {
-		assertFullyResolved();
-		return writeDef(dirs, host);
-	}
-
 	public final void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
@@ -240,7 +233,11 @@ public abstract class Def implements SourceInfo {
 		}
 	}
 
+	public abstract InlineEval inline(Normalizer normalizer);
+
 	public abstract void normalize(RootNormalizer normalizer);
+
+	public abstract Eval eval();
 
 	@Override
 	public final void assertScopeIs(Scope scope) {
@@ -296,12 +293,6 @@ public abstract class Def implements SourceInfo {
 	}
 
 	protected abstract void fullyResolve(Resolver resolver);
-
-	protected abstract InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct);
-
-	protected abstract ValOp writeDef(ValDirs dirs, HostOp host);
 
 	protected final LocationInfo getLocation() {
 		return this.location;

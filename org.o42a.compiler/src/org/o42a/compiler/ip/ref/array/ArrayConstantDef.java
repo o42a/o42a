@@ -22,11 +22,11 @@ package org.o42a.compiler.ip.ref.array;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.array.ArrayIR;
 import org.o42a.core.ir.value.array.ArrayValueTypeIR;
 import org.o42a.core.object.Obj;
@@ -36,7 +36,6 @@ import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 
 
 final class ArrayConstantDef extends Def {
@@ -79,7 +78,29 @@ final class ArrayConstantDef extends Def {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer) {
+		normalizer.cancelAll();
+		return null;
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
+	}
+
+	@Override
+	public Eval eval() {
+		if (hasConstantValue()) {
+			return new ConstArrayEval(this.value);
+		}
+		return new ArrayConstantEval(this.value.getCompilerValue());
+	}
+
+	@Override
+	public String toString() {
+		if (this.value == null) {
+			return super.toString();
+		}
+		return this.value.toString();
 	}
 
 	@Override
@@ -107,30 +128,62 @@ final class ArrayConstantDef extends Def {
 		this.value.resolveAll(resolver);
 	}
 
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		return null;
-	}
+	private static final class ConstArrayEval implements Eval {
 
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		if (hasConstantValue()) {
-			return this.value.op(dirs.getBuilder(), dirs.code());
+		private final Value<Array> value;
+
+		public ConstArrayEval(Value<Array> value) {
+			this.value = value;
 		}
 
-		final ArrayValueType valueType = (ArrayValueType) getValueType();
-		final ArrayValueTypeIR valueTypeIR = valueType.ir(dirs.getGenerator());
-		final ArrayIR arrayIR = getArray().ir(valueTypeIR);
-		final ObjectOp array =
-				getArray().getPrefix()
-				.write(dirs.dirs(), host)
-				.materialize(dirs.dirs());
-		final ObjectValFunc constructor =
-				arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
+		}
 
-		return constructor.call(dirs, array);
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+	}
+
+	private static final class ArrayConstantEval implements Eval {
+
+		private final Array array;
+
+		ArrayConstantEval(Array value) {
+			this.array = value;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ArrayValueType valueType = this.array.getValueType();
+			final ArrayValueTypeIR valueTypeIR =
+					valueType.ir(dirs.getGenerator());
+			final ArrayIR arrayIR = this.array.ir(valueTypeIR);
+			final ObjectOp array =
+					this.array.getPrefix()
+					.write(dirs.dirs(), host)
+					.materialize(dirs.dirs());
+			final ObjectValFunc constructor =
+					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
+
+			constructor.call(dirs, array);
+		}
+
+		@Override
+		public String toString() {
+			if (this.array == null) {
+				return super.toString();
+			}
+			return this.array.toString();
+		}
+
 	}
 
 }

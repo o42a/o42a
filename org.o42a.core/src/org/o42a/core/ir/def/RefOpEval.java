@@ -20,7 +20,6 @@
 package org.o42a.core.ir.def;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
@@ -38,12 +37,7 @@ public class RefOpEval implements Eval {
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
-
-		final DefDirs defDirs = dirs.falseWhenUnknown();
-		final ValOp value = getRef().op(host).writeValue(defDirs.valDirs());
-
-		defDirs.done();
-		dirs.returnValue(value);
+		dirs.returnValue(getRef().op(host).writeValue(dirs.valDirs()));
 	}
 
 	@Override

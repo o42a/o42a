@@ -25,6 +25,7 @@ import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
@@ -299,14 +300,14 @@ public class Definitions extends Scoped {
 
 	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineValue claim = claims().inline(normalizer, this);
-		final InlineValue proposition = propositions().inline(normalizer, this);
+		final InlineEval claim = claims().inline(normalizer, this);
+		final InlineEval proposition = propositions().inline(normalizer, this);
 
 		if (normalizer.isCancelled()) {
 			return null;
 		}
 
-		return new InlineDefinitions(claim, proposition);
+		return new InlineDefinitions(getValueStruct(), claim, proposition);
 	}
 
 	public final void resolveAll() {

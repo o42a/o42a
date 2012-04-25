@@ -22,10 +22,9 @@ package org.o42a.core.value.impl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
@@ -55,13 +54,23 @@ final class ConstantDef<T> extends Def {
 	}
 
 	@Override
+	public boolean unconditional() {
+		return true;
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer) {
+		return new ConstantEval(this.value);
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		// No need to normalize the scalar constant.
 	}
 
 	@Override
-	public boolean unconditional() {
-		return true;
+	public Eval eval() {
+		return new ConstantEval(this.value);
 	}
 
 	@Override
@@ -86,34 +95,18 @@ final class ConstantDef<T> extends Def {
 		this.value.resolveAll(resolver);
 	}
 
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		return new Inline(this.value);
-	}
-
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		return this.value.op(dirs.getBuilder(), dirs.code());
-	}
-
-	private static final class Inline extends InlineValue {
+	private static final class ConstantEval extends InlineEval {
 
 		private final Value<?> value;
 
-		public Inline(Value<?> value) {
-			super(null, value.getValueStruct());
+		public ConstantEval(Value<?> value) {
+			super(null);
 			this.value = value;
 		}
 
 		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return this.value.op(dirs.getBuilder(), dirs.code());
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.value.op(dirs.getBuilder(), dirs.code()));
 		}
 
 		@Override

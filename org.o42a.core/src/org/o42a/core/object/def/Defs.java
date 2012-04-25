@@ -20,17 +20,17 @@
 package org.o42a.core.object.def;
 
 import static java.lang.System.arraycopy;
-import static org.o42a.core.ir.op.InlineValue.inlineUnknown;
+import static org.o42a.core.ir.def.InlineEval.noInlineEval;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.object.def.impl.InlineValueDefs;
+import org.o42a.core.object.def.impl.InlineDefs;
 import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.object.value.ObjectValuePart;
@@ -283,27 +283,23 @@ public final class Defs {
 				ArrayUtil.append(get(), additions.get()));
 	}
 
-	InlineValue inline(Normalizer normalizer, Definitions definitions) {
-
-		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
-
+	InlineEval inline(Normalizer normalizer, Definitions definitions) {
 		if (isEmpty()) {
-			return inlineUnknown(valueStruct);
+			return noInlineEval();
 		}
 
 		final Def[] defs = get();
-
-		if (defs.length == 1) {
-			return inlineDef(normalizer, valueStruct, defs[0]);
-		}
-
-		final InlineValue[] inlines = new InlineValue[defs.length];
+		final InlineEval[] inlines = new InlineEval[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
-			inlines[i] = inlineDef(normalizer, valueStruct, defs[i]);
+			inlines[i] = inlineDef(normalizer, defs[i]);
 		}
 
-		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
+		if (normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineDefs(inlines);
 	}
 
 	final Defs runtime(Definitions definitions) {
@@ -381,12 +377,9 @@ public final class Defs {
 		}
 	}
 
-	private InlineValue inlineDef(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Def def) {
+	private InlineEval inlineDef(Normalizer normalizer, Def def) {
 
-		final InlineValue inline = def.inline(normalizer, valueStruct);
+		final InlineEval inline = def.inline(normalizer);
 
 		if (inline == null) {
 			normalizer.cancelAll();

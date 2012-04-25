@@ -26,11 +26,10 @@ import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.impl.ObjectIRLocals;
 import org.o42a.core.ir.object.impl.value.*;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.object.Obj;
@@ -83,19 +82,19 @@ public class ObjectValueIR {
 		return getObjectIR().op(builder, code).value();
 	}
 
-	public final ValOp writeValue(ValDirs dirs, ObjOp host, ObjectOp body) {
-		return this.value.call(dirs, host, body);
+	public final void writeValue(DefDirs dirs, ObjOp host, ObjectOp body) {
+		this.value.call(dirs, host, body);
 	}
 
-	public final ValOp writeClaim(ValDirs dirs, ObjOp host, ObjectOp body) {
-		return this.claim.call(dirs, host, body);
+	public final void writeClaim(DefDirs dirs, ObjOp host, ObjectOp body) {
+		this.claim.call(dirs, host, body);
 	}
 
-	public final ValOp writeProposition(
-			ValDirs dirs,
+	public final void writeProposition(
+			DefDirs dirs,
 			ObjOp host,
 			ObjectOp body) {
-		return this.proposition.call(dirs, host, body);
+		this.proposition.call(dirs, host, body);
 	}
 
 	@Override

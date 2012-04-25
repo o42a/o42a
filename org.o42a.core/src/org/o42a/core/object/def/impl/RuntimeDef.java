@@ -21,10 +21,8 @@ package org.o42a.core.object.def.impl;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
@@ -83,24 +81,22 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Eval eval() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	protected boolean hasConstantValue() {
 		return false;
 	}
 
 	@Override
 	protected Value<?> calculateValue(Resolver resolver) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
 		throw new UnsupportedOperationException();
 	}
 

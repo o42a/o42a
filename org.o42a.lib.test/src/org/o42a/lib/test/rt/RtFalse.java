@@ -19,29 +19,27 @@
 */
 package org.o42a.lib.test.rt;
 
-import static org.o42a.core.value.Value.falseValue;
-
 import org.o42a.codegen.code.Block;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.lib.test.TestModule;
 import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "rt-false.o42a")
 public class RtFalse extends AnnotatedBuiltin {
+
+	private static final RtFalseEval RT_FALSE_EVAL = new RtFalseEval();
 
 	public RtFalse(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
@@ -57,48 +55,28 @@ public class RtFalse extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return new Inline(valueStruct);
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
+		return RT_FALSE_EVAL;
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final Block code = dirs.code();
-
-		code.debug("Run-time false");
-		code.go(dirs.falseDir());
-
-		return falseValue().op(dirs.getBuilder(), code);
+	public Eval evalBuiltin() {
+		return RT_FALSE_EVAL;
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class RtFalseEval extends InlineEval {
 
-		Inline(ValueStruct<?, ?> valueStruct) {
-			super(null, valueStruct);
+		RtFalseEval() {
+			super(null);
 		}
 
 		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
 			final Block code = dirs.code();
 
 			code.debug("Run-time false");
 			code.go(dirs.falseDir());
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-
-			final Block code = dirs.code();
-
-			code.debug("Run-time false");
-			code.go(dirs.falseDir());
-
-			return falseValue().op(dirs.getBuilder(), code);
 		}
 
 		@Override

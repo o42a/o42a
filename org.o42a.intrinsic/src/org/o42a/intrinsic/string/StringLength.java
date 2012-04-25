@@ -19,15 +19,17 @@
 */
 package org.o42a.intrinsic.string;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
@@ -75,23 +77,28 @@ final class StringLength extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
-		final InlineValue stringValue = string().inline(normalizer, origin);
+		final InlineValue inlineString = string().inline(normalizer, origin);
 
-		if (stringValue == null) {
+		if (inlineString == null) {
 			return null;
 		}
 
-		return new Inline(valueStruct, stringValue);
+		return new LengthEval(this, inlineString);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return write(dirs, host, string().op(host), null);
+	public Eval evalBuiltin() {
+		return new LengthEval(this, null);
+	}
+
+	@Override
+	public String toString() {
+		if (this.string == null) {
+			return super.toString();
+		}
+		return this.string + ":length";
 	}
 
 	private Ref string() {
@@ -104,53 +111,53 @@ final class StringLength extends AnnotatedBuiltin {
 		return this.string = path.bind(this, getScope()).target(distribute());
 	}
 
-	private static ValOp write(
-			ValDirs dirs,
-			HostOp host,
-			RefOp str,
-			InlineValue inlineStr) {
+	private void write(DefDirs dirs, HostOp host, InlineValue inlineString) {
 
 		final ValDirs stringDirs =
 				dirs.dirs().value(ValueStruct.STRING, "string_val");
-		final Code code = stringDirs.code();
+		final Block code = stringDirs.code();
 
 		final ValOp stringVal;
 
-		if (inlineStr != null) {
-			stringVal = inlineStr.writeValue(stringDirs, host);
+		if (inlineString != null) {
+			stringVal = inlineString.writeValue(stringDirs, host);
 		} else {
-			stringVal = str.writeValue(stringDirs);
+			stringVal = string().op(host).writeValue(stringDirs);
 		}
 
 		final Int32op length = stringVal.loadLength(code.id("str_len"), code);
 		final ValOp result =
 				dirs.value().store(code, length.toInt64(null, code));
 
+		dirs.returnValue(code, result);
 		stringDirs.done();
-
-		return result;
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class LengthEval extends InlineEval {
 
-		private final InlineValue stringValue;
+		private final StringLength length;
+		private final InlineValue inlineString;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue stringValue) {
-			super(null, valueStruct);
-			this.stringValue = stringValue;
+		LengthEval(StringLength length, InlineValue inlineString) {
+			super(null);
+			this.length = length;
+			this.inlineString = inlineString;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return write(dirs, host, null, this.stringValue);
+		public void write(DefDirs dirs, HostOp host) {
+			this.length.write(dirs, host, this.inlineString);
 		}
 
 		@Override
 		public String toString() {
-			if (this.stringValue == null) {
+			if (this.length == null) {
 				return super.toString();
 			}
-			return this.stringValue + ":length";
+			if (this.inlineString == null) {
+				return this.length.toString();
+			}
+			return this.inlineString + ":length";
 		}
 
 		@Override

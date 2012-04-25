@@ -22,9 +22,10 @@ package org.o42a.compiler.ip.operator;
 import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
@@ -73,10 +74,12 @@ final class LogicalResult extends BuiltinObject {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public void resolveBuiltin(Resolver resolver) {
+		operand().resolve(resolver).resolveValue();
+	}
+
+	@Override
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue operand = operand().inline(normalizer, origin);
 
@@ -84,17 +87,12 @@ final class LogicalResult extends BuiltinObject {
 			return null;
 		}
 
-		return new Inline(valueStruct, this.ref, operand);
+		return new InlineLogical(this.ref, operand);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return this.ref.write(dirs, host, operand().op(host), null);
-	}
-
-	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		operand().resolve(resolver).resolveValue();
+	public Eval evalBuiltin() {
+		return new LogicalEval(this);
 	}
 
 	@Override
@@ -114,23 +112,24 @@ final class LogicalResult extends BuiltinObject {
 		return this.operand = this.ref.operand().rescope(getScope());
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class InlineLogical extends InlineEval {
 
 		private final LogicalExpression ref;
 		private final InlineValue operandValue;
 
-		Inline(
-				ValueStruct<?, ?> valueStruct,
-				LogicalExpression ref,
-				InlineValue operandValue) {
-			super(null, valueStruct);
+		InlineLogical(LogicalExpression ref, InlineValue operandValue) {
+			super(null);
 			this.ref = ref;
 			this.operandValue = operandValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return this.ref.write(dirs, host, null, this.operandValue);
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.ref.write(
+					dirs.valDirs(),
+					host,
+					null,
+					this.operandValue));
 		}
 
 		@Override
@@ -144,6 +143,34 @@ final class LogicalResult extends BuiltinObject {
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class LogicalEval implements Eval {
+
+		private final LogicalResult ref;
+
+		LogicalEval(LogicalResult ref) {
+			this.ref = ref;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.ref.ref.write(
+					dirs.valDirs(),
+					host,
+					this.ref.operand().op(host),
+					null));
+
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

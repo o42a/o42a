@@ -26,6 +26,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.value.ValueStruct;
@@ -119,6 +120,22 @@ public abstract class ValDirs {
 			return this.dirs;
 		}
 		return this.dirs = createDirs();
+	}
+
+	public final DefDirs def() {
+		return new ValDefDirs(this, addBlock("result"), true);
+	}
+
+	public final DefDirs subDef() {
+		return new ValDefDirs(this, addBlock("result"), false);
+	}
+
+	public final DefDirs def(CodePos returnDir) {
+		return new DefDirs(this, returnDir, true);
+	}
+
+	public final DefDirs subDef(CodePos returnDir) {
+		return new DefDirs(this, returnDir, false);
 	}
 
 	public final ValDirs sub(String name) {
@@ -345,6 +362,28 @@ public abstract class ValDirs {
 		void endUnknown(CodeDirs enclosing, Block code) {
 			code.end();
 			super.endUnknown(enclosing, code);
+		}
+
+	}
+
+	private static final class ValDefDirs extends DefDirs {
+
+		private final Block returnCode;
+
+		ValDefDirs(ValDirs valDirs, Block returnCode, boolean ownsValDirs) {
+			super(valDirs, returnCode.head(), ownsValDirs);
+			this.returnCode = returnCode;
+		}
+
+		@Override
+		public void done() {
+			super.done();
+			if (code().exists()) {
+				code().go(falseDir());
+			}
+			if (this.returnCode.exists()) {
+				this.returnCode.go(code().tail());
+			}
 		}
 
 	}

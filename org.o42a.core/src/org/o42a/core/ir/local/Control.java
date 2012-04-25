@@ -200,7 +200,7 @@ public abstract class Control {
 	private final class ControlDirs extends DefDirs {
 
 		ControlDirs(ValDirs valDirs) {
-			super(valDirs, returnDir());
+			super(valDirs, returnDir(), true);
 		}
 
 		@Override

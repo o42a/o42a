@@ -26,17 +26,10 @@ import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.impl.normalizer.FalseInlineValue;
 import org.o42a.core.ref.impl.normalizer.UnknownInlineValue;
-import org.o42a.core.ref.impl.normalizer.VoidInlineValue;
 import org.o42a.core.value.ValueStruct;
 
 
 public abstract class InlineValue extends Normal {
-
-	private static final VoidInlineValue INLINE_VOID = new VoidInlineValue();
-
-	public static InlineValue inlineVoid() {
-		return INLINE_VOID;
-	}
 
 	public static InlineValue inlineFalse(ValueStruct<?, ?> valueStruct) {
 		return new FalseInlineValue(valueStruct);

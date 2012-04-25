@@ -24,6 +24,8 @@ import org.o42a.core.ir.HostOp;
 
 public interface Eval {
 
+	Eval FALSE_EVAL = FalseInlineEval.FALSE_INLINE_EVAL;
+
 	void write(DefDirs dirs, HostOp host);
 
 }

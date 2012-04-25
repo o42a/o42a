@@ -23,6 +23,9 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -80,10 +83,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue input = input().inline(normalizer, origin);
 
@@ -91,23 +91,12 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 			return null;
 		}
 
-		return new Inline(valueStruct, input);
+		return new InlineByString(this, input);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs inputDirs =
-				dirs.dirs().value(ValueStruct.STRING, "input");
-		final ValOp inputValue = input().op(host).writeValue(inputDirs);
-
-		final ValDirs parseDirs = inputDirs.dirs().value(dirs);
-		final ValOp result = parse(parseDirs, inputValue);
-
-		parseDirs.done();
-		inputDirs.done();
-
-		return result;
+	public Eval evalBuiltin() {
+		return new EvalByString(this);
 	}
 
 	protected abstract T byString(
@@ -128,40 +117,78 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		return this.input = path.bind(this, getScope()).target(distribute());
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class InlineByString extends InlineEval {
 
-		private InlineValue inputValue;
+		private final ByString<?> byString;
+		private final InlineValue inputValue;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue inputValue) {
-			super(null, valueStruct);
+		InlineByString(ByString<?> byString, InlineValue inputValue) {
+			super(null);
+			this.byString = byString;
 			this.inputValue = inputValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs inputDirs =
 					dirs.dirs().value(ValueStruct.STRING, "input");
 			final ValOp inputValue =
 					this.inputValue.writeValue(inputDirs, host);
 
-			final ValDirs parseDirs = inputDirs.dirs().value(dirs);
-			final ValOp result = parse(parseDirs, inputValue);
+			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
+
+			dirs.returnValue(this.byString.parse(parseDirs, inputValue));
 
 			parseDirs.done();
 			inputDirs.done();
-
-			return result;
 		}
 
 		@Override
 		public String toString() {
-			return "In-line[" + ByString.this + ']';
+			if (this.byString == null) {
+				return super.toString();
+			}
+			return this.byString.toString();
 		}
 
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class EvalByString implements Eval {
+
+		private final ByString<?> byString;
+
+		EvalByString(ByString<?> byString) {
+			this.byString = byString;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValDirs inputDirs =
+					dirs.dirs().value(ValueStruct.STRING, "input");
+			final ValOp inputValue =
+					this.byString.input().op(host).writeValue(inputDirs);
+
+			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
+
+			dirs.returnValue(this.byString.parse(parseDirs, inputValue));
+
+			parseDirs.done();
+			inputDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.byString == null) {
+				return super.toString();
+			}
+			return this.byString.toString();
 		}
 
 	}
