@@ -36,7 +36,7 @@ final class AssignmentCmd implements Cmd {
 	@Override
 	public void write(Control control) {
 
-		final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+		final CodeDirs dirs = control.getBuilder().dirs(
 				control.code(),
 				control.falseDir());
 		final CodeDirs subDirs =

@@ -74,10 +74,6 @@ public class DefDirs {
 		return getValueStruct().getValueType();
 	}
 
-	public final boolean isFalseWhenUnknown() {
-		return dirs().isFalseWhenUnknown();
-	}
-
 	public final CodeDirs dirs() {
 		return valDirs().dirs();
 	}
@@ -88,10 +84,6 @@ public class DefDirs {
 
 	public final CodePos falseDir() {
 		return valDirs().falseDir();
-	}
-
-	public final CodePos unknownDir() {
-		return valDirs().unknownDir();
 	}
 
 	public final Block code() {
@@ -161,7 +153,7 @@ public class DefDirs {
 	public final DefDirs setFalseDir(CodePos falsePos) {
 
 		final ValDirs dirs = valDirs();
-		final ValDirs newDirs = dirs.falseWhenUnknown(falsePos);
+		final ValDirs newDirs = dirs.setFalseDir(falsePos);
 
 		return new DefDirs(this, newDirs, dirs != newDirs);
 	}

@@ -140,7 +140,7 @@ final class RefConditionCommand extends Command {
 		@Override
 		public void write(Control control) {
 
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+			final CodeDirs dirs = control.getBuilder().dirs(
 					control.code(),
 					control.falseDir());
 

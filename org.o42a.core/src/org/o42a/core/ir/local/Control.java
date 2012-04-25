@@ -137,7 +137,7 @@ public abstract class Control {
 	}
 
 	public final CodeDirs dirs() {
-		return getBuilder().falseWhenUnknown(code(), falseDir());
+		return getBuilder().dirs(code(), falseDir());
 	}
 
 	public final ValDirs valDirs() {

@@ -91,7 +91,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				.branch(code, "construct", "delegate");
 		final DataOp result1 = construct(
 				builder,
-				builder.falseWhenUnknown(construct, dirs.falseDir()))
+				builder.dirs(construct, dirs.falseDir()))
 				.toData(construct);
 
 		construct.go(code.tail());
@@ -99,7 +99,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final Block delegate = construct.otherwise();
 		final DataOp result2 = delegate(
 				builder,
-				builder.falseWhenUnknown(delegate, dirs.falseDir()),
+				builder.dirs(delegate, dirs.falseDir()),
 				previousPtr).toData(delegate);
 
 		delegate.go(code.tail());
