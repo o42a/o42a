@@ -115,7 +115,7 @@ public class DefDirs {
 
 	public void returnValue(Block code, ValOp value) {
 		this.shared.store(code, value);
-		code.go(this.shared.returnDir);
+		code.go(returnDir());
 	}
 
 	public final CodeId id() {
@@ -155,7 +155,7 @@ public class DefDirs {
 			return new DefDirs(this, newDirs, false);
 		}
 
-		return new DebugDefDirs(this, newDirs, addBlock("debug_result"));
+		return new DebugDefDirs(this, newDirs);
 	}
 
 	public final DefDirs setFalseDir(CodePos falsePos) {
@@ -178,6 +178,10 @@ public class DefDirs {
 			return super.toString();
 		}
 		return dirs().toString("DefDirs", code());
+	}
+
+	CodePos returnDir() {
+		return this.shared.returnDir;
 	}
 
 	private final class Shared {
@@ -210,21 +214,28 @@ public class DefDirs {
 	private static final class DebugDefDirs extends DefDirs {
 
 		private final DefDirs enclosing;
-		private final Block returnCode;
+		private Block returnCode;
 
-		DebugDefDirs(DefDirs enclosing, ValDirs valDirs, Block returnCode) {
-			super(valDirs, returnCode.head(), true);
+		DebugDefDirs(DefDirs enclosing, ValDirs valDirs) {
+			super(enclosing, valDirs, true);
 			this.enclosing = enclosing;
-			this.returnCode = returnCode;
 		}
 
 		@Override
 		public void done() {
 			super.done();
-			if (this.returnCode.exists()) {
+			if (this.returnCode != null && this.returnCode.exists()) {
 				this.returnCode.end();
 				this.enclosing.returnValue(this.returnCode, result());
 			}
+		}
+
+		@Override
+		CodePos returnDir() {
+			if (this.returnCode == null) {
+				this.returnCode = addBlock("debug_result");
+			}
+			return this.returnCode.head();
 		}
 
 	}

@@ -137,7 +137,9 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 			final ValDirs targetDirs = valueDirs.dirs().value(dirs.valDirs());
 
-			dirs.returnValue(this.converter.convert(targetDirs, value));
+			dirs.returnValue(
+					targetDirs.code(),
+					this.converter.convert(targetDirs, value));
 
 			targetDirs.done();
 			valueDirs.done();
@@ -177,7 +179,9 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 			final ValDirs targetDirs = valueDirs.dirs().value(dirs.valDirs());
 
-			dirs.returnValue(this.converter.convert(targetDirs, value));
+			dirs.returnValue(
+					targetDirs.code(),
+					this.converter.convert(targetDirs, value));
 
 			targetDirs.done();
 			valueDirs.done();

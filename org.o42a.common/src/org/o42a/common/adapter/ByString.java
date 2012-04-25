@@ -138,7 +138,9 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
 
-			dirs.returnValue(this.byString.parse(parseDirs, inputValue));
+			dirs.returnValue(
+					parseDirs.code(),
+					this.byString.parse(parseDirs, inputValue));
 
 			parseDirs.done();
 			inputDirs.done();
@@ -177,7 +179,9 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 
 			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
 
-			dirs.returnValue(this.byString.parse(parseDirs, inputValue));
+			dirs.returnValue(
+					parseDirs.code(),
+					this.byString.parse(parseDirs, inputValue));
 
 			parseDirs.done();
 			inputDirs.done();

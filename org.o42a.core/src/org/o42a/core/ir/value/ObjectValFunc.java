@@ -25,12 +25,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
-import org.o42a.core.ir.op.ValDirs;
 
 
 public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
@@ -45,21 +45,6 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		call(dirs, object.toData(dirs.code()));
 	}
 
-	public ValOp call(ValDirs dirs, ObjectOp object) {
-		return call(dirs, object.toData(dirs.code()));
-	}
-
-	public ValOp call(ValDirs dirs, DataOp object) {
-
-		final Block code = dirs.code();
-		final ValOp value = dirs.value();
-
-		invoke(null, code, OBJECT_VAL.result(), value.ptr(), object);
-		value.go(code, dirs);
-
-		return value;
-	}
-
 	public void call(DefDirs dirs, DataOp object) {
 
 		final Block code = dirs.code();
@@ -69,7 +54,9 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 
 		final Block hasResult = code.addBlock("has_result");
 
-		value.loadCondition(null, code).go(code, hasResult.head());
+		final BoolOp condition = value.loadCondition(null, code);
+
+		condition.go(code, hasResult.head());
 		dirs.returnValue(hasResult, value);
 
 		value.loadIndefinite(null, code).goUnless(code, dirs.falseDir());

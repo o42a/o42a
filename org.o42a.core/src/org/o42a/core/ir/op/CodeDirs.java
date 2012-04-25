@@ -108,19 +108,23 @@ public class CodeDirs {
 	}
 
 	public CodeDirs begin(String id, String message) {
+		return begin(id(id), message);
+	}
+
+	public CodeDirs begin(CodeId id, String message) {
 		if (!isDebug()) {
 			return this;
 		}
 
 		this.code.begin(message);
 
-		final Block falseCode = this.code.addBlock(id + "_false");
+		final Block falseCode = this.code.addBlock(id.detail("false"));
 		final Block unknownCode;
 
 		if (isFalseWhenUnknown()) {
 			unknownCode = falseCode;
 		} else {
-			unknownCode = this.code.addBlock(id + "_unknown");
+			unknownCode = this.code.addBlock(id.detail("unknown"));
 		}
 
 		return new Nested(this, falseCode, unknownCode);

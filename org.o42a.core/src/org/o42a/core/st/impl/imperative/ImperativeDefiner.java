@@ -21,7 +21,6 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.InlineControl.inlineControl;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -33,8 +32,6 @@ import org.o42a.core.ir.local.InlineControl;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
@@ -226,35 +223,9 @@ public final class ImperativeDefiner extends Definer {
 			final Obj ownerType = scope.getOwner();
 			final ObjOp ownerBody =
 					ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
-			final Block localUnknown = dirs.addBlock("local_unknown");
-			final ValDirs valDirs = dirs.valDirs().splitWhenUnknown(
-					dirs.falseDir(),
-					localUnknown.head());
-
 			final LocalIR ir = scope.ir(host.getGenerator());
-			final ValOp value = ir.writeValue(
-					valDirs,
-					ownerBody,
-					null,
-					this.command);
 
-			valDirs.done();
-
-			final Block code = dirs.code();
-
-			if (code.exists()) {
-
-				final Block hasLocal = code.addBlock("has_local");
-
-				value.loadIndefinite(null, code)
-				.goUnless(code, hasLocal.head());
-				if (hasLocal.exists()) {
-					dirs.returnValue(hasLocal, value);
-				}
-			}
-			if (localUnknown.exists()) {
-				localUnknown.go(code.tail());
-			}
+			ir.write(dirs, ownerBody, null, this.command);
 		}
 
 		@Override

@@ -128,8 +128,8 @@ public class LinkValueAdapter extends ValueAdapter {
 			final ValDirs fromDirs = dirs.dirs().value(this.fromStruct);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 
-			fromDirs.done();
 			dirs.returnValue(from);
+			fromDirs.done();
 		}
 
 		@Override
