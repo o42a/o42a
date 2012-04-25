@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.value.impl;
 
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -36,47 +37,34 @@ public final class DefaultValueOp extends ValueOp {
 	@Override
 	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
 
-		final ValDirs dubDirs = dirs.begin(
-				"Value of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object().objectType(dubDirs.code()).writeValue(dubDirs, body);
+		final DefDirs defDirs = dirs.subDef();
 
-		dubDirs.done();
+		object().objectType(defDirs.code()).writeValue(defDirs, body);
+		defDirs.done();
 
-		return result;
+		return defDirs.result();
 	}
 
 	@Override
 	public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
-		final ValDirs subDirs = dirs.begin(
-				"Claim of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object()
-				.objectType(subDirs.code())
-				.writeClaim(subDirs, body);
+		final DefDirs defDirs = dirs.subDef();
 
-		subDirs.done();
+		object().objectType(defDirs.code()).writeClaim(defDirs, body);
+		defDirs.done();
 
-		return result;
+		return defDirs.result();
 	}
 
 	@Override
 	public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
-		final ValDirs subDirs = dirs.begin(
-				"Proposition of "
-				+ (body != null ? body + " by " + this : toString()));
-		final ValOp result =
-				object()
-				.objectType(subDirs.code())
-				.writeProposition(subDirs, body);
+		final DefDirs defDirs = dirs.subDef();
 
-		subDirs.done();
+		object().objectType(defDirs.code()).writeProposition(defDirs, body);
+		defDirs.done();
 
-		return result;
+		return defDirs.result();
 	}
 
 	@Override

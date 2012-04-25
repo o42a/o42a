@@ -30,6 +30,9 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -69,10 +72,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue text = text().inline(normalizer, origin);
 
@@ -80,24 +80,12 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 			return null;
 		}
 
-		return new Inline(valueStruct, text);
+		return new InlinePrint(this, text);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs textDirs = dirs.dirs().value(ValueStruct.STRING, "text");
-		final Code code = textDirs.code();
-
-		final ValOp text = text().op(host).writeValue(textDirs);
-		final PrintFunc printFunc =
-				printFunc(code.getGenerator()).op(null, code);
-
-		printFunc.print(code, text);
-
-		textDirs.done();
-
-		return voidValue().op(dirs.getBuilder(), dirs.code());
+	public Eval evalBuiltin() {
+		return new PrintEval(this);
 	}
 
 	@Override
@@ -130,36 +118,80 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		return generator.externalFunction().link(this.funcName, PRINT);
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class InlinePrint extends InlineEval {
 
-		private final InlineValue inlineText;
+		private final InlineValue text;
+		private final AbstractPrint print;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue text) {
-			super(null, valueStruct);
-			this.inlineText = text;
+		InlinePrint(AbstractPrint print, InlineValue inlineText) {
+			super(null);
+			this.print = print;
+			this.text = inlineText;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs textDirs =
 					dirs.dirs().value(ValueStruct.STRING, "text");
 			final Code code = textDirs.code();
 
-			final ValOp text = this.inlineText.writeValue(textDirs, host);
+			final ValOp text = this.text.writeValue(textDirs, host);
 			final PrintFunc printFunc =
-					printFunc(code.getGenerator()).op(null, code);
+					this.print.printFunc(code.getGenerator()).op(null, code);
 
 			printFunc.print(code, text);
+			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
 
 			textDirs.done();
+		}
 
-			return voidValue().op(dirs.getBuilder(), dirs.code());
+		@Override
+		public String toString() {
+			if (this.print == null) {
+				return super.toString();
+			}
+			return this.print.toString();
 		}
 
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class PrintEval implements Eval {
+
+		private final AbstractPrint print;
+
+		PrintEval(AbstractPrint print) {
+			this.print = print;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValDirs textDirs =
+					dirs.dirs().value(ValueStruct.STRING, "text");
+			final Code code = textDirs.code();
+
+			final ValOp text = this.print.text().op(host).writeValue(textDirs);
+			final PrintFunc printFunc =
+					this.print.printFunc(code.getGenerator()).op(null, code);
+
+			printFunc.print(code, text);
+			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+
+			textDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.print == null) {
+				return super.toString();
+			}
+			return this.print.toString();
 		}
 
 	}

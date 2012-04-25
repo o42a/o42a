@@ -29,7 +29,7 @@ public abstract class InlineStep extends NormalStep {
 
 	public abstract void after(InlineStep preceding);
 
-	public abstract void writeLogicalValue(CodeDirs dirs, HostOp host);
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
 

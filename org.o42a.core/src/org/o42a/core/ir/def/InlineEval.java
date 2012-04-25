@@ -29,6 +29,10 @@ public abstract class InlineEval extends Normal implements Eval {
 		return NoInlineEval.NO_INLINE_EVAL;
 	}
 
+	public static InlineEval falseInlineEval() {
+		return FalseInlineEval.FALSE_INLINE_EVAL;
+	}
+
 	public InlineEval(Normalizer normalizer) {
 		super(normalizer);
 	}

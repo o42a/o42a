@@ -27,9 +27,9 @@ import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlin
 import java.util.List;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
@@ -49,7 +49,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	private final BlockDefiner definer;
 	private final DefTargets targets;
 	private final List<DeclarativeSentence> sentences;
-	private InlineDeclarativeSentences inline;
+	private InlineDeclarativeSentences normal;
 	private Holder<DefTarget> defTarget;
 
 	DeclarativePart(
@@ -119,7 +119,28 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.inline = inlineBlock(normalizer, null, getScope(), this);
+		this.normal = inlineBlock(normalizer, null, getScope(), this);
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer) {
+
+		final InlineDeclarativeSentences inline = inlineBlock(
+				normalizer.getRoot(),
+				normalizer,
+				getScope(),
+				this);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new DeclarativePartEval(this, inline);
+	}
+
+	@Override
+	public Eval eval() {
+		return new DeclarativePartEval(this, this.normal);
 	}
 
 	@Override
@@ -187,59 +208,41 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-
-		final InlineDeclarativeSentences inline = inlineBlock(
-				normalizer.getRoot(),
-				normalizer,
-				getScope(),
-				this);
-
-		if (inline == null) {
-			return null;
-		}
-
-		return new Inline(valueStruct, inline);
-	}
-
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-		return writeSentences(dirs, host, this, this.inline);
-	}
-
-	@Override
 	protected DeclarativePart create(
 			ScopeUpgrade upgrade,
 			ScopeUpgrade additionalUpgrade) {
 		return new DeclarativePart(this, upgrade);
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class DeclarativePartEval extends InlineEval {
 
+		private final DeclarativePart part;
 		private final InlineDeclarativeSentences inlineSentences;
 
-		Inline(
-				ValueStruct<?, ?> valueStruct,
+		DeclarativePartEval(
+				DeclarativePart part,
 				InlineDeclarativeSentences inlineSentences) {
-			super(null, valueStruct);
+			super(null);
+			this.part = part;
 			this.inlineSentences = inlineSentences;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return writeSentences(
+		public void write(DefDirs dirs, HostOp host) {
+			writeSentences(
 					dirs,
 					host,
-					DeclarativePart.this,
+					this.part,
 					this.inlineSentences);
 		}
 
 		@Override
 		public String toString() {
-			if (this.inlineSentences == null) {
+			if (this.part == null) {
 				return super.toString();
+			}
+			if (this.inlineSentences == null) {
+				return this.part.toString();
 			}
 			return this.inlineSentences.toString();
 		}

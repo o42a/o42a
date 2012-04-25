@@ -19,7 +19,6 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.ir.op.InlineValue.inlineVoid;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.CodeId;
@@ -32,9 +31,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
@@ -45,9 +44,12 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.fn.Cancelable;
 
 
 public final class VoidObject extends BuiltinObject {
+
+	private static final VoidEval VOID_EVAL = new VoidEval();
 
 	public VoidObject(Scope topScope) {
 		super(voidScope(topScope), ValueStruct.VOID);
@@ -73,16 +75,13 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return inlineVoid();
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
+		return VOID_EVAL;
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return voidValue().op(dirs.getBuilder(), dirs.code());
+	public Eval evalBuiltin() {
+		return VOID_EVAL;
 	}
 
 	@Override
@@ -149,6 +148,29 @@ public final class VoidObject extends BuiltinObject {
 		@Override
 		protected HostOp createOp(CodeBuilder builder, Code code) {
 			return getScope().toObject().ir(getGenerator()).op(builder, code);
+		}
+
+	}
+
+	private static final class VoidEval extends InlineEval {
+
+		VoidEval() {
+			super(null);
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+		}
+
+		@Override
+		public String toString() {
+			return "VOID";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

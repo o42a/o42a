@@ -22,10 +22,10 @@ package org.o42a.core.object.def.impl;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
@@ -35,7 +35,7 @@ import org.o42a.core.value.ValueStruct;
 public final class RefDef extends Def {
 
 	private final Ref ref;
-	private InlineValue inline;
+	private InlineEval normal;
 
 	public RefDef(Ref ref) {
 		super(sourceOf(ref), ref, noScopeUpgrade(ref.getScope()));
@@ -62,9 +62,29 @@ public final class RefDef extends Def {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer) {
+
+		final InlineValue inline = this.ref.inline(normalizer, getScope());
+
+		if (inline == null) {
+			return null;
+		}
+
+		return inline.toInlineEval();
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
 		this.ref.normalize(normalizer.getAnalyzer());
-		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
+		this.normal = inline(normalizer.newNormalizer());
+	}
+
+	@Override
+	public Eval eval() {
+		if (this.normal != null) {
+			return this.normal;
+		}
+		return new RefOpEval(this.ref);
 	}
 
 	@Override
@@ -87,25 +107,6 @@ public final class RefDef extends Def {
 	@Override
 	protected void fullyResolve(Resolver resolver) {
 		this.ref.resolve(resolver).resolveValue();
-	}
-
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		return this.ref.inline(normalizer, getScope());
-	}
-
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-
-		final InlineValue inline = this.inline;
-
-		if (inline != null) {
-			return inline.writeValue(dirs, host);
-		}
-
-		return this.ref.op(host).writeValue(dirs);
 	}
 
 }

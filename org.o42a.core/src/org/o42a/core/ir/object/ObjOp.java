@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -221,17 +222,35 @@ public final class ObjOp extends ObjectOp {
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-			return objectValueIR().writeValue(dirs, obj(), body);
+
+			final DefDirs defDirs = dirs.subDef();
+
+			objectValueIR().writeValue(defDirs, obj(), body);
+			defDirs.done();
+
+			return defDirs.result();
 		}
 
 		@Override
 		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-			return objectValueIR().writeClaim(dirs, obj(), body);
+
+			final DefDirs defDirs = dirs.subDef();
+
+			objectValueIR().writeClaim(defDirs, obj(), body);
+			defDirs.done();
+
+			return defDirs.result();
 		}
 
 		@Override
 		public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-			return objectValueIR().writeProposition(dirs, obj(), body);
+
+			final DefDirs defDirs = dirs.subDef();
+
+			objectValueIR().writeProposition(defDirs, obj(), body);
+			defDirs.done();
+
+			return defDirs.result();
 		}
 
 		@Override

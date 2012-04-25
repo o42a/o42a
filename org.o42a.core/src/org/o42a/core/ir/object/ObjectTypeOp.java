@@ -23,10 +23,9 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.IROp;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 
 
@@ -72,34 +71,31 @@ public final class ObjectTypeOp extends IROp {
 				.op(null, this, type);
 	}
 
-	public final ValOp writeValue(ValDirs dirs, ObjectOp body) {
+	public final void writeValue(DefDirs dirs, ObjectOp body) {
 
 		final Code code = dirs.code();
 		final ObjectValFunc function =
 				ptr().data(code).valueFunc(code).load(null, code);
-		final ValOp result = function.call(dirs, body(code, body));
 
-		code.dump("Value: ", result.ptr());
-
-		return result;
+		function.call(dirs, body(code, body));
 	}
 
-	public final ValOp writeClaim(ValDirs dirs, ObjectOp body) {
+	public final void writeClaim(DefDirs dirs, ObjectOp body) {
 
 		final Code code = dirs.code();
 		final ObjectValFunc function =
 				ptr().data(code).claimFunc(code).load(null, code);
 
-		return function.call(dirs, body(code, body));
+		function.call(dirs, body(code, body));
 	}
 
-	public final ValOp writeProposition(ValDirs dirs, ObjectOp body) {
+	public final void writeProposition(DefDirs dirs, ObjectOp body) {
 
 		final Block code = dirs.code();
 		final ObjectValFunc function =
 				ptr().data(code).propositionFunc(code).load(null, code);
 
-		return function.call(dirs, body(code, body));
+		function.call(dirs, body(code, body));
 	}
 
 	@Override

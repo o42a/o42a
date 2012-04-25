@@ -119,7 +119,7 @@ public class VoidStep extends Step {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
+		public void writeCond(CodeDirs dirs, HostOp host) {
 		}
 
 		@Override

@@ -21,10 +21,8 @@ package org.o42a.common.def;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
@@ -35,7 +33,7 @@ import org.o42a.core.value.ValueStruct;
 public class BuiltinDef extends Def {
 
 	private final Builtin builtin;
-	private InlineValue inline;
+	private InlineEval normal;
 
 	public BuiltinDef(Builtin builtin) {
 		super(
@@ -45,9 +43,7 @@ public class BuiltinDef extends Def {
 		this.builtin = builtin;
 	}
 
-	private BuiltinDef(
-			BuiltinDef prototype,
-			ScopeUpgrade scopeUpgrade) {
+	private BuiltinDef(BuiltinDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
 		this.builtin = prototype.builtin;
 	}
@@ -63,8 +59,21 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
+	public InlineEval inline(Normalizer normalizer) {
+		return this.builtin.inlineBuiltin(normalizer, getScope());
+	}
+
+	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.inline = inline(normalizer.newNormalizer(), getValueStruct());
+		this.normal = inline(normalizer.newNormalizer());
+	}
+
+	@Override
+	public Eval eval() {
+		if (this.normal != null) {
+			return this.normal;
+		}
+		return this.builtin.evalBuiltin();
 	}
 
 	@Override
@@ -96,28 +105,6 @@ public class BuiltinDef extends Def {
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
 				object.value().part(isClaim()).resolver());
-	}
-
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
-		return this.builtin.inlineBuiltin(
-				normalizer,
-				valueStruct,
-				getScope());
-	}
-
-	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-
-		final InlineValue inline = this.inline;
-
-		if (inline != null) {
-			return inline.writeValue(dirs, host);
-		}
-
-		return this.builtin.writeBuiltin(dirs, host);
 	}
 
 }

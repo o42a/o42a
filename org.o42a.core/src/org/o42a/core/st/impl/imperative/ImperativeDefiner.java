@@ -186,13 +186,11 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final DefDirs localDirs = dirs.falseWhenUnknown();
-			final InlineControl control = inlineControl(localDirs);
+			final InlineControl control = inlineControl(dirs);
 
 			this.cmd.write(control);
 
 			control.end();
-			localDirs.done();
 		}
 
 		@Override

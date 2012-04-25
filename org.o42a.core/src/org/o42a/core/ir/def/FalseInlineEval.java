@@ -17,39 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.def;
 
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.InlineEval;
 import org.o42a.util.fn.Cancelable;
 
 
-final class InlineValueEval extends InlineEval {
+final class FalseInlineEval extends InlineEval {
 
-	private final InlineValue value;
+	static final FalseInlineEval FALSE_INLINE_EVAL = new FalseInlineEval();
 
-	InlineValueEval(InlineValue value) {
+	private FalseInlineEval() {
 		super(null);
-		this.value = value;
 	}
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
-		dirs.returnValue(this.value.writeValue(dirs.valDirs(), host));
+		dirs.code().go(dirs.falseDir());
+	}
+
+	@Override
+	public String toString() {
+		return "FALSE";
 	}
 
 	@Override
 	protected Cancelable cancelable() {
 		return null;
-	}
-
-	@Override
-	public String toString() {
-		if (this.value == null) {
-			return super.toString();
-		}
-		return this.value.toString();
 	}
 
 }
