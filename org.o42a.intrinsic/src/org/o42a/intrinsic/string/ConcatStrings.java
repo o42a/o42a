@@ -174,6 +174,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		func.concat(code, result, whatVal, withVal);
 
+		result.go(code, withDirs);
 		dirs.returnValue(code, result);
 		withDirs.done();
 		whatDirs.done();

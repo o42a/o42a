@@ -149,12 +149,12 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 		final DefDirs subDirs = dirs.begin(
 				"Calculate " + suffix() + " of " + getObjectIR().getId());
+		final Block code = subDirs.code();
 
-		if (body != null && subDirs.isDebug()) {
-			subDirs.code().dumpName("For: ", body.toData(subDirs.code()));
+		if (body != null) {
+			code.dumpName("For: ", body.toData(code));
 		}
 
-		final Block code = subDirs.code();
 		final Value<?> finalValue = getFinal();
 
 		if (finalValue.getKnowledge().isKnown()) {
@@ -164,14 +164,12 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 			result.go(code, subDirs);
 			subDirs.returnValue(result);
-			subDirs.done();
+		} else {
 
-			return;
+			final ObjectValFunc func = get(host).op(code.id(suffix()), code);
+
+			func.call(subDirs, objectArg(code, host, body));
 		}
-
-		final ObjectValFunc func = get(host).op(code.id(suffix()), code);
-
-		func.call(subDirs, objectArg(code, host, body));
 
 		subDirs.done();
 	}
@@ -248,9 +246,6 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		}
 		if (done.exists()) {
 			result.store(done, dirs.result());
-			if (done.isDebug()) {
-				done.dump("Result: ", result.toData(done));
-			}
 			done.returnVoid();
 		}
 	}

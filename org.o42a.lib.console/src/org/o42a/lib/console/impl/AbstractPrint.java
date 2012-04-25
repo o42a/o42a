@@ -24,7 +24,7 @@ import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.lib.console.impl.PrintFunc.PRINT;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -134,14 +134,16 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 			final ValDirs textDirs =
 					dirs.dirs().value(ValueStruct.STRING, "text");
-			final Code code = textDirs.code();
+			final Block code = textDirs.code();
 
 			final ValOp text = this.text.writeValue(textDirs, host);
 			final PrintFunc printFunc =
 					this.print.printFunc(code.getGenerator()).op(null, code);
 
 			printFunc.print(code, text);
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+			dirs.returnValue(
+					code,
+					voidValue().op(dirs.getBuilder(), dirs.code()));
 
 			textDirs.done();
 		}
@@ -174,14 +176,16 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 			final ValDirs textDirs =
 					dirs.dirs().value(ValueStruct.STRING, "text");
-			final Code code = textDirs.code();
+			final Block code = textDirs.code();
 
 			final ValOp text = this.print.text().op(host).writeValue(textDirs);
 			final PrintFunc printFunc =
 					this.print.printFunc(code.getGenerator()).op(null, code);
 
 			printFunc.print(code, text);
-			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
+			dirs.returnValue(
+					code,
+					voidValue().op(dirs.getBuilder(), dirs.code()));
 
 			textDirs.done();
 		}

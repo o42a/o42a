@@ -248,7 +248,6 @@ public abstract class ValDirs {
 					enclosing.getBuilder(),
 					enclosing.code(),
 					valueStruct);
-			this.dirs = enclosing;
 			this.enclosing = enclosing;
 			this.allocation = enclosing.allocate(name);
 			this.value = allocateVal(
@@ -256,6 +255,7 @@ public abstract class ValDirs {
 					this.allocation.code(),
 					getBuilder(),
 					valueStruct);
+			this.dirs = this.allocation.dirs();
 		}
 
 		TopLevelValDirs(CodeDirs enclosing, ValOp value) {
