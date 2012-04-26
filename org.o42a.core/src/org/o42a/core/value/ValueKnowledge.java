@@ -66,8 +66,4 @@ public enum ValueKnowledge {
 		return this == INITIALLY_KNOWN_VALUE || this == VARIABLE_VALUE;
 	}
 
-	public final LogicalValue toLogicalValue() {
-		return getCondition().toLogicalValue();
-	}
-
 }

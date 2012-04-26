@@ -88,7 +88,7 @@ public final class RefCommand extends Command {
 				getValueAdapter()
 				.value(resolver)
 				.getKnowledge()
-				.toLogicalValue());
+				.getCondition());
 	}
 
 	@Override

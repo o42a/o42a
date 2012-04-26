@@ -90,7 +90,7 @@ final class RefConditionDefiner extends Definer {
 
 		final Value<?> value = getRef().value(resolver);
 
-		return value.getKnowledge().toLogicalValue().toDefValue();
+		return value.getKnowledge().getCondition().toDefValue();
 	}
 
 	@Override

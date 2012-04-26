@@ -34,7 +34,7 @@ import org.o42a.core.value.ValueType;
 public class DefinitionConditionTest extends CompilerTestCase {
 
 	@Test
-	public void trueLogicalValue() {
+	public void truePrecondition() {
 		compile(
 				"A := integer(Void(), = 1).",
 				"B := A().");
@@ -54,7 +54,7 @@ public class DefinitionConditionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void falseLogicalValue() {
+	public void falsePrecondition() {
 		compile(
 				"A := integer(Void(False), = 1).",
 				"B := A().");
@@ -88,7 +88,7 @@ public class DefinitionConditionTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void runtimeLogicalValue() {
+	public void runtimePrecondition() {
 		compile(
 				"Use namespace 'Test'.",
 				"A := integer(Rt-void, = 1).",

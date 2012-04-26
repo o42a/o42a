@@ -117,7 +117,7 @@ public class LogicalExpression extends ObjectConstructor {
 
 			final Block operandFalse = dirs.addBlock("operand_false");
 
-			writeLogicalValue(
+			writeCond(
 					dirs.dirs().setFalseDir(operandFalse.head()),
 					host,
 					op,
@@ -128,7 +128,7 @@ public class LogicalExpression extends ObjectConstructor {
 			}
 			break;
 		case IS_TRUE:
-			writeLogicalValue(dirs.dirs(), host, op, inlineOp);
+			writeCond(dirs.dirs(), host, op, inlineOp);
 			break;
 		default:
 			throw new IllegalStateException(
@@ -139,7 +139,7 @@ public class LogicalExpression extends ObjectConstructor {
 		return voidValue().op(builder, code);
 	}
 
-	private final void writeLogicalValue(
+	private final void writeCond(
 			CodeDirs dirs,
 			HostOp host,
 			RefOp op,

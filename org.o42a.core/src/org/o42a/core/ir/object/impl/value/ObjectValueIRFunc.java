@@ -294,7 +294,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 		if (isConstantValue(finalValue)) {
 			if (!finalValue.hasValue()) {
-				if (finalValue.getLogicalValue().isTrue()) {
+				if (finalValue.getCondition().isTrue()) {
 					reuse(unknownValFunc());
 				} else {
 					reuse(falseValFunc());
@@ -442,7 +442,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 	}
 
 	static boolean isConstantValue(DefValue value) {
-		if (!value.getLogicalValue().isConstant()) {
+		if (!value.getCondition().isConstant()) {
 			return false;
 		}
 		if (!value.hasValue()) {
@@ -497,7 +497,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 		code.debug(suffix() + " = " + value.valueString());
 
-		if (value.getLogicalValue().isFalse()) {
+		if (value.getCondition().isFalse()) {
 			code.go(dirs.falseDir());
 			return true;
 		}

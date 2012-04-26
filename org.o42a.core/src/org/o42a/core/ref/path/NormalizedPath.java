@@ -82,7 +82,7 @@ final class NormalizedPath implements NormalPath {
 		if (this.inline != null) {
 			this.inline.writeCond(dirs, host);
 		} else {
-			this.path.op(dirs, host).writeLogicalValue(dirs);
+			this.path.op(dirs, host).writeCond(dirs);
 		}
 	}
 

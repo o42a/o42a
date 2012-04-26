@@ -104,7 +104,7 @@ public final class Defs {
 			if (constant.hasValue()) {
 				return this.constant = constant;
 			}
-			if (!constant.getLogicalValue().isTrue()) {
+			if (!constant.getCondition().isTrue()) {
 				return this.constant = constant;
 			}
 		}
@@ -120,7 +120,7 @@ public final class Defs {
 			if (value.hasValue()) {
 				return value;
 			}
-			if (!value.getLogicalValue().isTrue()) {
+			if (!value.getCondition().isTrue()) {
 				return value;
 			}
 		}

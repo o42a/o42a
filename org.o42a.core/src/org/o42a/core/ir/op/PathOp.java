@@ -107,7 +107,7 @@ public abstract class PathOp implements HostOp {
 		target(dirs).assign(dirs, value);
 	}
 
-	public void writeLogicalValue(CodeDirs dirs) {
+	public void writeCond(CodeDirs dirs) {
 		materialize(dirs).value().writeCond(dirs);
 	}
 

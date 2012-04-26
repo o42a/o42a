@@ -201,7 +201,7 @@ public final class ParentLocalStep extends Step implements ReversePath {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
+		public void writeCond(CodeDirs dirs) {
 			throw new UnsupportedOperationException(
 					"Can not write logical value of " + this);
 		}

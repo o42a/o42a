@@ -21,17 +21,17 @@ package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
-public class ExecuteCommand extends LogicalAction {
+public class ExecuteCommand extends ConditionAction {
 
-	private final LogicalValue logicalValue;
+	private final Condition condition;
 
-	public ExecuteCommand(ScopeInfo statement, LogicalValue logicalValue) {
+	public ExecuteCommand(ScopeInfo statement, Condition condition) {
 		super(statement);
-		this.logicalValue = logicalValue;
+		this.condition = condition;
 	}
 
 	@Override
@@ -40,8 +40,8 @@ public class ExecuteCommand extends LogicalAction {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return this.logicalValue;
+	public Condition getCondition() {
+		return this.condition;
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class ExecuteCommand extends LogicalAction {
 
 	@Override
 	public LoopAction toLoopAction(ImperativeBlock block) {
-		if (getLogicalValue().isTrue()) {
+		if (getCondition().isTrue()) {
 			return LoopAction.CONTINUE;
 		}
 		return LoopAction.EXIT;

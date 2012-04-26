@@ -57,7 +57,7 @@ public final class BlockDefiner
 			if (value.hasValue()) {
 				return value;
 			}
-			if (!value.getLogicalValue().isTrue()) {
+			if (!value.getCondition().isTrue()) {
 				return value;
 			}
 		}

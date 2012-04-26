@@ -20,33 +20,33 @@
 package org.o42a.core.st;
 
 import org.o42a.core.ref.ScopeUpgrade;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
 public final class DefValue {
 
 	public static final DefValue TRUE_DEF_VALUE =
-			new DefValue(LogicalValue.TRUE, null);
+			new DefValue(Condition.TRUE, null);
 	public static final DefValue FALSE_DEF_VALUE =
-			new DefValue(LogicalValue.FALSE, null);
+			new DefValue(Condition.FALSE, null);
 	public static final DefValue RUNTIME_DEF_VALUE =
-			new DefValue(LogicalValue.RUNTIME, null);
+			new DefValue(Condition.RUNTIME, null);
 
 	public static DefValue defValue(Value<?> value) {
-		return new DefValue(value.getKnowledge().toLogicalValue(), value);
+		return new DefValue(value.getKnowledge().getCondition(), value);
 	}
 
-	private final LogicalValue logicalValue;
+	private final Condition condition;
 	private final Value<?> value;
 
-	private DefValue(LogicalValue logicalValue, Value<?> value) {
-		this.logicalValue = logicalValue;
+	private DefValue(Condition condition, Value<?> value) {
+		this.condition = condition;
 		this.value = value;
 	}
 
-	public final LogicalValue getLogicalValue() {
-		return this.logicalValue;
+	public final Condition getCondition() {
+		return this.condition;
 	}
 
 	public final Value<?> getValue() {
@@ -76,18 +76,18 @@ public final class DefValue {
 		if (hasValue()) {
 			return getValue().valueString();
 		}
-		return getLogicalValue().toString();
+		return getCondition().toString();
 	}
 
 	@Override
 	public String toString() {
-		if (this.logicalValue == null) {
+		if (this.condition == null) {
 			return super.toString();
 		}
 		if (this.value != null) {
 			return this.value.toString();
 		}
-		return this.logicalValue.toString();
+		return this.condition.toString();
 	}
 
 }

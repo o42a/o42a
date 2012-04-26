@@ -31,7 +31,7 @@ import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 
 
 final class AssignmentCommand extends Command {
@@ -64,7 +64,7 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return new ExecuteCommand(this, LogicalValue.RUNTIME);
+		return new ExecuteCommand(this, Condition.RUNTIME);
 	}
 
 	@Override

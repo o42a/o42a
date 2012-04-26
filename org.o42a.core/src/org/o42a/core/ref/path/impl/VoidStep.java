@@ -144,7 +144,7 @@ public class VoidStep extends Step {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
+		public void writeCond(CodeDirs dirs) {
 		}
 
 		@Override
