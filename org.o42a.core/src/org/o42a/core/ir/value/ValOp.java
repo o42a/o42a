@@ -30,14 +30,16 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.impl.AllocatedValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 
 
-public abstract class ValOp extends IROp implements CondOp {
+public abstract class ValOp extends IROp {
 
 	public static ValOp allocateVal(
 			String name,
@@ -97,7 +99,6 @@ public abstract class ValOp extends IROp implements CondOp {
 		return ptr().flags(id, code);
 	}
 
-	@Override
 	public final BoolOp loadCondition(CodeId id, Code code) {
 
 		final Int32op flags = flags(null, code).load(null, code);
@@ -337,7 +338,6 @@ public abstract class ValOp extends IROp implements CondOp {
 		go(code, dirs.dirs());
 	}
 
-	@Override
 	public final void go(Block code, CodeDirs dirs) {
 
 		final Val constant = getConstant();
@@ -348,7 +348,8 @@ public abstract class ValOp extends IROp implements CondOp {
 			}
 			return;
 		}
-		dirs.go(code, this);
+
+		loadCondition(null, code).goUnless(code, dirs.falseDir());
 	}
 
 	public void use(Code code) {

@@ -153,10 +153,6 @@ public class CodeDirs {
 		return this.falseDir;
 	}
 
-	public final void go(Block code, CondOp cond) {
-		cond.loadCondition(null, code).goUnless(code, falseDir());
-	}
-
 	@Override
 	public String toString() {
 		return toString("CodeDirs", this.code);
