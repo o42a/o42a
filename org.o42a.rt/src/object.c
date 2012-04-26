@@ -586,7 +586,7 @@ static o42a_obj_rtype_t *propagate_object(
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = adata->start;
 
-	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
+	data->value.flags = O42A_INDEFINITE;
 	data->value_f = adata->value_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
@@ -901,7 +901,7 @@ o42a_obj_t *o42a_obj_new(
 	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = -data_start;
 
-	data->value.flags = O42A_UNKNOWN | O42A_INDEFINITE;
+	data->value.flags = O42A_INDEFINITE;
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
@@ -951,28 +951,6 @@ o42a_obj_t *o42a_obj_new(
 
 	O42A_RETURN object;
 }
-
-o42a_cond_t o42a_obj_cond_false(O42A_PARAMS o42a_obj_t *const object) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN O42A_FALSE;
-}
-
-o42a_cond_t o42a_obj_cond_true(O42A_PARAMS o42a_obj_t *const object) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN O42A_TRUE;
-}
-
-o42a_cond_t o42a_obj_cond_unknown(O42A_PARAMS o42a_obj_t *const object) {
-	O42A_ENTER(return O42A_FALSE);
-	O42A_RETURN O42A_UNKNOWN;
-}
-
-o42a_cond_t o42a_obj_cond_stub(O42A_PARAMS o42a_obj_t *const object) {
-	O42A_ENTER(return O42A_FALSE);
-	o42a_error_print(O42A_ARGS "Object condition stub invoked");
-	O42A_RETURN O42A_UNKNOWN;
-}
-
 
 void o42a_obj_val_false(
 		O42A_PARAMS
