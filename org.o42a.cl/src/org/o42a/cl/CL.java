@@ -23,7 +23,7 @@ import static org.o42a.backend.llvm.LLVMGenerator.newGenerator;
 import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.o42a.analysis.Analyzer;
@@ -36,7 +36,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.io.FileSource;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
@@ -53,16 +52,13 @@ public class CL {
 		this.generator = generator;
 	}
 
-	public void compile(FileSource rootSource) throws IOException {
+	public void compile(FileSourceTree sourceTree) throws IOException {
 
 		final Compiler compiler = compiler();
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);
-		final CompilerContext rootContext =
-				intrinsics.getRoot().getContext();
-		final FileSourceTree sourceTree = new FileSourceTree(rootSource);
+		final CompilerContext rootContext = intrinsics.getRoot().getContext();
 		final Log logger = new Log();
-		final CompilerContext context =
-				sourceTree.context(rootContext, logger);
+		final CompilerContext context = sourceTree.context(rootContext, logger);
 		final Module module = new Module(context, null);
 
 		intrinsics.setMainModule(module);
@@ -84,6 +80,7 @@ public class CL {
 		final Analyzer analyzer = new Analyzer("compiler");
 		final LLVMGenerator llvmGenerator =
 				newGenerator(null, analyzer, llvmArgs);
+		final FileSourceTree source = createSource(llvmGenerator);
 		final Generator generator = new ConstGenerator(llvmGenerator);
 
 		try {
@@ -91,7 +88,7 @@ public class CL {
 			final CL instance = new CL(generator);
 
 			try {
-				instance.compile(rootSource(llvmGenerator));
+				instance.compile(source);
 			} catch (Throwable e) {
 				e.printStackTrace();
 				System.exit(COMPILATION_FAILED);
@@ -102,34 +99,14 @@ public class CL {
 		}
 	}
 
-	private static FileSource rootSource(LLVMGenerator llvmGenerator) {
-
-		final String path = llvmGenerator.getInputFilename();
-
-		if (path == null) {
-			System.err.println("Input file not specified");
+	private static FileSourceTree createSource(LLVMGenerator llvmGenerator) {
+		try {
+			return new FileSourceTree(llvmGenerator.createSource());
+		} catch (FileNotFoundException e) {
+			System.err.println(e.getMessage());
 			System.exit(INVALID_INPUT);
 			return null;
 		}
-
-		final FileSource rootSource = sourceByPath(path);
-
-		rootSource.setEncoding(llvmGenerator.getInputEncoding());
-
-		return rootSource;
-	}
-
-	private static FileSource sourceByPath(String path) {
-
-		final File file = new File(path);
-
-		if (!file.isFile()) {
-			System.err.println("No such file: " + path);
-			System.exit(INVALID_INPUT);
-			return null;
-		}
-
-		return new FileSource(file.getParentFile(), file.getName());
 	}
 
 	private static final class Log implements Logger {
