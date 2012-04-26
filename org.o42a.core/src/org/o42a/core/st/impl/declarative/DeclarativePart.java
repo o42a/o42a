@@ -37,8 +37,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.st.DefTargets;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.st.sentence.DeclarativeSentence;
-import org.o42a.core.value.LogicalValue;
-import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 import org.o42a.util.fn.Holder;
@@ -177,24 +175,8 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-
-		final DefValue value = sentencesValue(resolver, this);
-
-		if (value.hasValue()) {
-			return value.getValue();
-		}
-
-		final LogicalValue logicalValue = value.getLogicalValue();
-
-		switch (logicalValue) {
-		case TRUE:
-			return getValueStruct().unknownValue();
-		case FALSE:
-			return getValueStruct().falseValue();
-		default:
-			return getValueStruct().runtimeValue();
-		}
+	protected DefValue calculateValue(Resolver resolver) {
+		return sentencesValue(resolver, this);
 	}
 
 	@Override

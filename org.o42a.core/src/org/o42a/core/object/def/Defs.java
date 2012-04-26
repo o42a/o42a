@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static java.lang.System.arraycopy;
 import static org.o42a.core.ir.def.InlineEval.noInlineEval;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 
@@ -44,7 +45,7 @@ public final class Defs {
 
 	private final boolean claims;
 	private final Def[] defs;
-	private Value<?> constant;
+	private DefValue constant;
 
 	Defs(boolean claims, Def... defs) {
 		this.claims = claims;
@@ -91,34 +92,40 @@ public final class Defs {
 		return null;
 	}
 
-	public final Value<?> constant(Definitions definitions) {
+	public final DefValue constant(Definitions definitions) {
 		if (this.constant != null) {
 			return this.constant;
 		}
 
 		for (Def def : get()) {
 
-			final Value<?> constantValue = def.getConstantValue();
+			final DefValue constant = def.getConstantValue();
 
-			if (!constantValue.getKnowledge().hasUnknownCondition()) {
-				return this.constant = constantValue;
+			if (constant.hasValue()) {
+				return this.constant = constant;
+			}
+			if (!constant.getLogicalValue().isTrue()) {
+				return this.constant = constant;
 			}
 		}
 
-		return this.constant = definitions.getValueStruct().unknownValue();
+		return this.constant = TRUE_DEF_VALUE;
 	}
 
-	public final Value<?> value(Definitions definitions, Resolver resolver) {
+	public final DefValue value(Definitions definitions, Resolver resolver) {
 		for (Def def : get()) {
 
-			final Value<?> value = def.value(resolver);
+			final DefValue value = def.value(resolver);
 
-			if (!value.getKnowledge().hasUnknownCondition()) {
+			if (value.hasValue()) {
+				return value;
+			}
+			if (!value.getLogicalValue().isTrue()) {
 				return value;
 			}
 		}
 
-		return definitions.getValueStruct().unknownValue();
+		return TRUE_DEF_VALUE;
 	}
 
 	public final boolean updatedSince(Obj ascendant) {

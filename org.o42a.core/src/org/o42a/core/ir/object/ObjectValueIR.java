@@ -21,7 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
-import static org.o42a.core.ir.value.Val.UNKNOWN_VAL;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
@@ -139,8 +138,6 @@ public class ObjectValueIR {
 			return value.val(getGenerator());
 		case RUNTIME:
 			return INDEFINITE_VAL;
-		case UNKNOWN:
-			return UNKNOWN_VAL;
 		case FALSE:
 			return FALSE_VAL;
 		}

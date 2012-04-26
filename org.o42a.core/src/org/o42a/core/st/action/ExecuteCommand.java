@@ -23,7 +23,6 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
 
 
 public class ExecuteCommand extends LogicalAction {
@@ -47,16 +46,7 @@ public class ExecuteCommand extends LogicalAction {
 
 	@Override
 	public Value<?> getValue() {
-		switch (getLogicalValue()) {
-		case TRUE:
-			return ValueType.VOID.unknownValue();
-		case FALSE:
-			return ValueType.VOID.falseValue();
-		case RUNTIME:
-			return ValueType.VOID.runtimeValue();
-		}
-		throw new IllegalStateException(
-				"Unsupported logical value: " + getLogicalValue());
+		return null;
 	}
 
 	@Override

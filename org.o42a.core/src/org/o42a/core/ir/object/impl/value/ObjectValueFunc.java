@@ -29,8 +29,7 @@ import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 
 
 public final class ObjectValueFunc extends ObjectValueIRFunc {
@@ -55,11 +54,11 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 	}
 
 	@Override
-	protected Value<?> determineConstant() {
+	protected DefValue determineConstant() {
 
-		final Value<?> claim = getValueIR().claim().getConstant();
+		final DefValue claim = getValueIR().claim().getConstant();
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
+		if (claim.hasValue() || !claim.getLogicalValue().isTrue()) {
 			return claim;
 		}
 
@@ -67,15 +66,15 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 	}
 
 	@Override
-	protected Value<?> determineFinal() {
-		if (!getValueIR().claim().getFinal().getKnowledge().isKnown()
-				|| !getValueIR().proposition().getFinal()
-				.getKnowledge().isKnown()) {
-			return getValueStruct().runtimeValue();
+	protected DefValue determineFinal() {
+
+		final DefValue claim = getValueIR().claim().getFinal();
+
+		if (claim.hasValue() || !claim.getLogicalValue().isTrue()) {
+			return claim;
 		}
 
-		return getObject().value().getDefinitions().value(
-				getObject().getScope().dummyResolver());
+		return getValueIR().proposition().getFinal();
 	}
 
 	@Override
@@ -93,27 +92,26 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 		final ObjectValueIR valueIR = getValueIR();
 		final FuncPtr<ObjectValFunc> reused;
 		final ObjectClaimFunc claim = valueIR.claim();
-		final Value<?> finalClaim = claim.getFinal();
+		final DefValue finalClaim = claim.getFinal();
 
-		if (finalClaim.getKnowledge().isKnown()) {
-			if (finalClaim.getKnowledge().getCondition() == Condition.FALSE) {
-				reused = falseValFunc();
-			} else {
-				reused = valueIR.proposition().getNotStub();
-				if (reused == null) {
-					return;
-				}
-			}
-		} else if (!valueIR.proposition().getFinal().getKnowledge().isKnown()) {
-			return;
-		} else {
-			reused = claim.getNotStub();
-			if (reused == null) {
+		if (isConstantValue(finalClaim)) {
+			if (finalClaim.getLogicalValue().isFalse()) {
+				reuse(falseValFunc());
 				return;
 			}
+			reused = valueIR.proposition().getNotStub();
+			if (reused != null) {
+				reuse(reused);
+			}
+			return;
 		}
-
-		reuse(reused);
+		if (!isConstantValue(valueIR.proposition().getFinal())) {
+			return;
+		}
+		reused = claim.getNotStub();
+		if (reused != null) {
+			reuse(reused);
+		}
 	}
 
 	@Override

@@ -20,6 +20,7 @@
 package org.o42a.core.object.def.impl;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
@@ -28,7 +29,7 @@ import org.o42a.core.ir.def.RefOpEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -93,8 +94,8 @@ public final class RefDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.ref.value(resolver);
+	protected DefValue calculateValue(Resolver resolver) {
+		return defValue(this.ref.value(resolver));
 	}
 
 	@Override

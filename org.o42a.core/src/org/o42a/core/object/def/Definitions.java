@@ -34,6 +34,7 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -134,13 +135,31 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final Value<?> claim = claims().constant(this);
+		final DefValue claim = claims().constant(this);
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
-			return claim;
+		if (claim.hasValue()) {
+			return this.constant = claim.getValue();
 		}
 
-		return propositions().constant(this);
+		switch (claim.getLogicalValue()) {
+		case FALSE:
+			return this.constant = getValueStruct().falseValue();
+		case RUNTIME:
+			return this.constant = getValueStruct().runtimeValue();
+		case TRUE:
+			break;
+		}
+
+		final DefValue proposition = propositions().constant(this);
+
+		if (proposition.hasValue()) {
+			return this.constant = proposition.getValue();
+		}
+		if (proposition.getLogicalValue().isConstant()) {
+			return this.constant = getValueStruct().falseValue();
+		}
+
+		return this.constant = getValueStruct().runtimeValue();
 	}
 
 	public final Defs claims() {
@@ -168,13 +187,31 @@ public class Definitions extends Scoped {
 
 	public Value<?> value(Resolver resolver) {
 
-		final Value<?> claim = claims().value(this, resolver);
+		final DefValue claim = claims().value(this, resolver);
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
-			return claim;
+		if (claim.hasValue()) {
+			return claim.getValue();
 		}
 
-		return propositions().value(this, resolver);
+		switch (claim.getLogicalValue()) {
+		case FALSE:
+			return getValueStruct().falseValue();
+		case RUNTIME:
+			return getValueStruct().runtimeValue();
+		case TRUE:
+			break;
+		}
+
+		final DefValue proposition = propositions().value(this, resolver);
+
+		if (proposition.hasValue()) {
+			return proposition.getValue();
+		}
+		if (proposition.getLogicalValue().isConstant()) {
+			return getValueStruct().falseValue();
+		}
+
+		return getValueStruct().runtimeValue();
 	}
 
 	public Definitions refine(Definitions refinements) {

@@ -20,13 +20,14 @@
 package org.o42a.common.def;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -89,8 +90,8 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.builtin.calculateBuiltin(resolver);
+	protected DefValue calculateValue(Resolver resolver) {
+		return defValue(this.builtin.calculateBuiltin(resolver));
 	}
 
 	@Override

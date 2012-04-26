@@ -29,8 +29,6 @@ public interface CondOp {
 
 	BoolOp loadCondition(CodeId id, Code code);
 
-	BoolOp loadUnknown(CodeId id, Code code);
-
 	void go(Block code, CodeDirs dirs);
 
 }

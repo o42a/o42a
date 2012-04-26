@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
@@ -35,6 +36,7 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
 
 
@@ -112,8 +114,8 @@ final class ArrayConstantDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.value;
+	protected DefValue calculateValue(Resolver resolver) {
+		return defValue(this.value);
 	}
 
 	@Override

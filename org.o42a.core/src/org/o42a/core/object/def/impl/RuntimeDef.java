@@ -20,13 +20,14 @@
 package org.o42a.core.object.def.impl;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -76,11 +77,6 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	public Value<?> value(Resolver resolver) {
-		return getValueStruct().runtimeValue();
-	}
-
-	@Override
 	public InlineEval inline(Normalizer normalizer) {
 		throw new UnsupportedOperationException();
 	}
@@ -96,8 +92,8 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		throw new UnsupportedOperationException();
+	protected DefValue calculateValue(Resolver resolver) {
+		return RUNTIME_DEF_VALUE;
 	}
 
 }

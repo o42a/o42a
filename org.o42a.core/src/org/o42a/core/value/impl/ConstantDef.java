@@ -20,6 +20,7 @@
 package org.o42a.core.value.impl;
 
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
@@ -27,6 +28,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.ref.*;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
@@ -79,8 +81,8 @@ final class ConstantDef<T> extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
-		return this.value;
+	protected DefValue calculateValue(Resolver resolver) {
+		return defValue(this.value);
 	}
 
 	@Override
