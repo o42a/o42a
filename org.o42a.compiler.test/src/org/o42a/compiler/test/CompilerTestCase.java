@@ -171,7 +171,7 @@ public abstract class CompilerTestCase {
 		return linkTarget(scope.toObject());
 	}
 
-	public static void assertTrueValue(LogicalValue condition) {
+	public static void assertTrueValue(Condition condition) {
 		assertTrue(condition + " is not true", condition.isTrue());
 	}
 
@@ -181,7 +181,7 @@ public abstract class CompilerTestCase {
 				value.getKnowledge().getCondition().isTrue());
 	}
 
-	public static void assertFalseValue(LogicalValue condition) {
+	public static void assertFalseValue(Condition condition) {
 		assertTrue(condition + " is not false", condition.isFalse());
 	}
 

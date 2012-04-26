@@ -60,7 +60,7 @@ public class UnchangedNormalPath implements NormalPath {
 
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
-		getPath().op(dirs, host).writeLogicalValue(dirs);
+		getPath().op(dirs, host).writeCond(dirs);
 	}
 
 	@Override

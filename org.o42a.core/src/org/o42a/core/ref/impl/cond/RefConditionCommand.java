@@ -81,7 +81,7 @@ final class RefConditionCommand extends Command {
 	public Action initialValue(LocalResolver resolver) {
 		return new ExecuteCommand(
 				this,
-				getRef().value(resolver).getKnowledge().toLogicalValue());
+				getRef().value(resolver).getKnowledge().getCondition());
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.ValueStruct;
 
 
@@ -93,10 +93,10 @@ public abstract class DeclarativeSentence
 			assert !prereqValue.hasValue() :
 				"Prerequisite can not have a value";
 
-			final LogicalValue logicalValue = prereqValue.getLogicalValue();
+			final Condition condition = prereqValue.getCondition();
 
-			if (!logicalValue.isTrue()) {
-				return logicalValue.negate().toDefValue();
+			if (!condition.isTrue()) {
+				return condition.negate().toDefValue();
 			}
 		}
 
@@ -110,10 +110,10 @@ public abstract class DeclarativeSentence
 				return value;
 			}
 
-			final LogicalValue logicalValue = value.getLogicalValue();
+			final Condition condition = value.getCondition();
 
-			if (!logicalValue.isTrue()) {
-				if (logicalValue.isFalse()) {
+			if (!condition.isTrue()) {
+				if (condition.isFalse()) {
 					result = value;
 					continue;
 				}

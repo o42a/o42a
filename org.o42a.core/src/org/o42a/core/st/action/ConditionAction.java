@@ -22,14 +22,14 @@ package org.o42a.core.st.action;
 import org.o42a.core.ScopeInfo;
 
 
-public abstract class LogicalAction extends Action {
+public abstract class ConditionAction extends Action {
 
-	public LogicalAction(ScopeInfo statement) {
+	public ConditionAction(ScopeInfo statement) {
 		super(statement);
 	}
 
 	@Override
-	public Action toInitialLogicalValue() {
+	public Action toInitialCondition() {
 		return this;
 	}
 

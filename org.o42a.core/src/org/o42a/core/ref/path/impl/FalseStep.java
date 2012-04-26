@@ -151,7 +151,7 @@ public class FalseStep extends Step {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
+		public void writeCond(CodeDirs dirs) {
 			dirs.code().go(dirs.falseDir());
 		}
 

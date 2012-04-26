@@ -117,10 +117,10 @@ public final class ImperativeDefiner extends Definer {
 				return defValue(value.prefixWith(getLocalPrefix()));
 			}
 
-			return initialValue.getLogicalValue().toDefValue();
+			return initialValue.getCondition().toDefValue();
 		}
 
-		return initialValue.getLogicalValue().toDefValue();
+		return initialValue.getCondition().toDefValue();
 	}
 
 	@Override

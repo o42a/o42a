@@ -58,7 +58,7 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 
 		final DefValue claim = getValueIR().claim().getConstant();
 
-		if (claim.hasValue() || !claim.getLogicalValue().isTrue()) {
+		if (claim.hasValue() || !claim.getCondition().isTrue()) {
 			return claim;
 		}
 
@@ -70,7 +70,7 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 
 		final DefValue claim = getValueIR().claim().getFinal();
 
-		if (claim.hasValue() || !claim.getLogicalValue().isTrue()) {
+		if (claim.hasValue() || !claim.getCondition().isTrue()) {
 			return claim;
 		}
 
@@ -95,7 +95,7 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 		final DefValue finalClaim = claim.getFinal();
 
 		if (isConstantValue(finalClaim)) {
-			if (finalClaim.getLogicalValue().isFalse()) {
+			if (finalClaim.getCondition().isFalse()) {
 				reuse(falseValFunc());
 				return;
 			}

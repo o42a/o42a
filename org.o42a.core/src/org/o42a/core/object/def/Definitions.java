@@ -141,7 +141,7 @@ public class Definitions extends Scoped {
 			return this.constant = claim.getValue();
 		}
 
-		switch (claim.getLogicalValue()) {
+		switch (claim.getCondition()) {
 		case FALSE:
 			return this.constant = getValueStruct().falseValue();
 		case RUNTIME:
@@ -155,7 +155,7 @@ public class Definitions extends Scoped {
 		if (proposition.hasValue()) {
 			return this.constant = proposition.getValue();
 		}
-		if (proposition.getLogicalValue().isConstant()) {
+		if (proposition.getCondition().isConstant()) {
 			return this.constant = getValueStruct().falseValue();
 		}
 
@@ -193,7 +193,7 @@ public class Definitions extends Scoped {
 			return claim.getValue();
 		}
 
-		switch (claim.getLogicalValue()) {
+		switch (claim.getCondition()) {
 		case FALSE:
 			return getValueStruct().falseValue();
 		case RUNTIME:
@@ -207,7 +207,7 @@ public class Definitions extends Scoped {
 		if (proposition.hasValue()) {
 			return proposition.getValue();
 		}
-		if (proposition.getLogicalValue().isConstant()) {
+		if (proposition.getCondition().isConstant()) {
 			return getValueStruct().falseValue();
 		}
 
