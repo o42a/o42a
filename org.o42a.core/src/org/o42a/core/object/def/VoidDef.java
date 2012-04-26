@@ -19,13 +19,15 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.st.DefValue.defValue;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
@@ -61,11 +63,19 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	public Value<?> value(Resolver resolver) {
+	public DefValue value(Resolver resolver) {
 
-		final Value<?> value = this.def.value(resolver);
+		final DefValue value = this.def.value(resolver);
 
-		return value.getKnowledge().getCondition().toValue(ValueStruct.VOID);
+		if (!value.hasValue()) {
+			return value;
+		}
+
+		return defValue(
+				value.getValue()
+				.getKnowledge()
+				.getCondition()
+				.toValue(ValueStruct.VOID));
 	}
 
 	@Override
@@ -96,7 +106,7 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
+	protected DefValue calculateValue(Resolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

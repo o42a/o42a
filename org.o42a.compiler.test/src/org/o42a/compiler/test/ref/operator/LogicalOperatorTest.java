@@ -35,7 +35,6 @@ public class LogicalOperatorTest extends CompilerTestCase {
 
 		assertTrueVoid(a);
 		assertFalseVoid(b);
-		assertKnownValue(valueOf(b));
 	}
 
 	@Test
@@ -46,7 +45,6 @@ public class LogicalOperatorTest extends CompilerTestCase {
 		final Obj b = field("b").toObject();
 
 		assertFalseVoid(a);
-		assertKnownValue(valueOf(a));
 		assertTrueVoid(b);
 	}
 

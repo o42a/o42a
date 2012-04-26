@@ -61,7 +61,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	private final RuntimeValue<T> runtimeValue = new RuntimeValue<T>(this);
 	private final FalseValue<T> falseValue = new FalseValue<T>(this);
-	private final UnknownValue<T> unknownValue = new UnknownValue<T>(this);
 
 	private ValueStructIR<S, T> ir;
 
@@ -113,10 +112,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public final Value<T> falseValue() {
 		return this.falseValue;
-	}
-
-	public final Value<T> unknownValue() {
-		return this.unknownValue;
 	}
 
 	public final Definitions noValueDefinitions(

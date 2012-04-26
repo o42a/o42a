@@ -107,11 +107,6 @@ public abstract class ValOp extends IROp implements CondOp {
 				code);
 	}
 
-	@Override
-	public final BoolOp loadUnknown(CodeId id, Code code) {
-		return loadFlag(id, "unknown_flag", code, UNKNOWN_FLAG);
-	}
-
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
 		return loadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
 	}
@@ -249,15 +244,10 @@ public abstract class ValOp extends IROp implements CondOp {
 		return this;
 	}
 
-	public final ValOp storeUnknown(Code code) {
-		flags(null, code).store(code, code.int32(UNKNOWN_FLAG));
-		return this;
-	}
-
 	public final ValOp storeIndefinite(Code code) {
 		flags(null, code).store(
 				code,
-				code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
+				code.int32(INDEFINITE_FLAG));
 		return this;
 	}
 
@@ -354,9 +344,7 @@ public abstract class ValOp extends IROp implements CondOp {
 
 		if (constant != null) {
 			if (!constant.getCondition()) {
-				if (!constant.isUnknown()) {
-					code.go(dirs.falseDir());
-				}
+				code.go(dirs.falseDir());
 			}
 			return;
 		}

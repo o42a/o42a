@@ -22,6 +22,8 @@ package org.o42a.core.object.def;
 import static org.o42a.core.object.def.Definitions.NO_CLAIMS;
 import static org.o42a.core.object.def.Definitions.NO_PROPOSITIONS;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import org.o42a.core.*;
 import org.o42a.core.ir.def.Eval;
@@ -33,7 +35,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
@@ -64,7 +66,7 @@ public abstract class Def implements SourceInfo {
 	private final ScopeUpgrade scopeUpgrade;
 	private final Obj source;
 	private final LocationInfo location;
-	private Value<?> constantValue;
+	private DefValue constantValue;
 	private boolean claim;
 	private boolean allResolved;
 
@@ -168,27 +170,27 @@ public abstract class Def implements SourceInfo {
 		return copy;
 	}
 
-	public final Value<?> getConstantValue() {
+	public final DefValue getConstantValue() {
 		if (this.constantValue != null) {
 			return this.constantValue;
 		}
 		if (!hasConstantValue()) {
-			return this.constantValue = getValueStruct().runtimeValue();
+			return this.constantValue = RUNTIME_DEF_VALUE;
 		}
 		return this.constantValue = value(getScope().dummyResolver());
 	}
 
-	public Value<?> value(Resolver resolver) {
+	public DefValue value(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 
 		final Resolver rescoped = getScopeUpgrade().rescope(resolver);
-		final Value<?> value = calculateValue(rescoped);
+		final DefValue value = calculateValue(rescoped);
 
 		if (value == null) {
-			return getValueStruct().unknownValue();
+			return TRUE_DEF_VALUE;
 		}
 
-		return value.prefixWith(getScopeUpgrade().toPrefix());
+		return value.upgradeScope(getScopeUpgrade());
 	}
 
 	public DefTarget target() {
@@ -287,7 +289,7 @@ public abstract class Def implements SourceInfo {
 
 	protected abstract boolean hasConstantValue();
 
-	protected abstract Value<?> calculateValue(Resolver resolver);
+	protected abstract DefValue calculateValue(Resolver resolver);
 
 	protected void resolveTarget(TargetResolver resolver) {
 	}

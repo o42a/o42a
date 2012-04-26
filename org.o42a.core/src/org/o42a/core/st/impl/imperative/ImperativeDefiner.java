@@ -20,6 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.InlineControl.inlineControl;
+import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
@@ -42,6 +43,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.Value;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -108,9 +110,14 @@ public final class ImperativeDefiner extends Definer {
 				.initialValue(local.walkingResolver(resolver));
 
 		if (initialValue.isAbort()) {
-			return initialValue.getValue()
-					.prefixWith(getLocalPrefix())
-					.toDefValue();
+
+			final Value<?> value = initialValue.getValue();
+
+			if (value != null) {
+				return defValue(value.prefixWith(getLocalPrefix()));
+			}
+
+			return initialValue.getLogicalValue().toDefValue();
 		}
 
 		return initialValue.getLogicalValue().toDefValue();

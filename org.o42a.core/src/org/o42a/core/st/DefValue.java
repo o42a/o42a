@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st;
 
+import org.o42a.core.ref.ScopeUpgrade;
 import org.o42a.core.value.LogicalValue;
 import org.o42a.core.value.Value;
 
@@ -56,10 +57,32 @@ public final class DefValue {
 		return this.value != null;
 	}
 
+	public final DefValue upgradeScope(ScopeUpgrade upgrade) {
+		if (!hasValue() || !getValue().getValueStruct().isScoped()) {
+			return this;
+		}
+
+		final Value<?> oldValue = getValue();
+		final Value<?> newValue = oldValue.prefixWith(upgrade.toPrefix());
+
+		if (newValue == oldValue) {
+			return this;
+		}
+
+		return defValue(newValue);
+	}
+
+	public final String valueString() {
+		if (hasValue()) {
+			return getValue().valueString();
+		}
+		return getLogicalValue().toString();
+	}
+
 	@Override
 	public String toString() {
 		if (this.logicalValue == null) {
-			return "NoValue";
+			return super.toString();
 		}
 		if (this.value != null) {
 			return this.value.toString();

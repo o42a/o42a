@@ -28,6 +28,7 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -46,7 +47,7 @@ import org.o42a.core.object.def.SourceInfo;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -59,8 +60,8 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 	private FuncPtr<ObjectValFunc> funcPtr;
 	private FuncRec<ObjectValFunc> func;
 	private byte reused;
-	private Value<?> constant;
-	private Value<?> finalValue;
+	private DefValue constant;
+	private DefValue finalValue;
 
 	ObjectValueIRFunc(ObjectValueIR valueIR) {
 		super(valueIR.getObjectIR());
@@ -124,21 +125,21 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		return isStub() ? null : this.funcPtr;
 	}
 
-	public final Value<?> getConstant() {
+	public final DefValue getConstant() {
 		if (this.constant != null) {
 			return this.constant;
 		}
 		return this.constant = determineConstant();
 	}
 
-	public final Value<?> getFinal() {
+	public final DefValue getFinal() {
 		if (this.finalValue != null) {
 			return this.finalValue;
 		}
 
-		final Value<?> constant = getConstant();
+		final DefValue constant = getConstant();
 
-		if (constant.getKnowledge().isKnown()) {
+		if (isConstantValue(constant)) {
 			return this.finalValue = constant;
 		}
 
@@ -155,16 +156,9 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 			code.dumpName("For: ", body.toData(code));
 		}
 
-		final Value<?> finalValue = getFinal();
+		final DefValue finalValue = getFinal();
 
-		if (finalValue.getKnowledge().isKnown()) {
-			code.debug(suffix() + " = " + finalValue.valueString());
-
-			final ValOp result = finalValue.op(subDirs.getBuilder(), code);
-
-			result.go(code, subDirs);
-			subDirs.returnValue(result);
-		} else {
+		if (!writeIfConstant(subDirs, finalValue)) {
 
 			final ObjectValFunc func = get(host).op(code.id(suffix()), code);
 
@@ -263,12 +257,12 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		return getId().toString();
 	}
 
-	protected Value<?> determineConstant() {
+	protected DefValue determineConstant() {
 
-		final Value<?> constant = defs().constant(definitions());
+		final DefValue constant = defs().constant(definitions());
 
-		if (!constant.getKnowledge().isKnown()) {
-			return getValueStruct().runtimeValue();
+		if (!isConstantValue(constant)) {
+			return constant;
 		}
 		if (!part().ancestorDefsUpdates().isUsed(
 				getGenerator().getAnalyzer(),
@@ -276,12 +270,12 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 			return constant;
 		}
 
-		return getValueStruct().runtimeValue();
+		return RUNTIME_DEF_VALUE;
 	}
 
-	protected Value<?> determineFinal() {
+	protected DefValue determineFinal() {
 		if (!canStub()) {
-			return getValueStruct().runtimeValue();
+			return RUNTIME_DEF_VALUE;
 		}
 		return defs().value(
 				definitions(),
@@ -296,11 +290,11 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 			return;
 		}
 
-		final Value<?> finalValue = getFinal();
+		final DefValue finalValue = getFinal();
 
-		if (finalValue.getKnowledge().isKnown()) {
-			if (finalValue.getKnowledge().isFalse()) {
-				if (finalValue.getKnowledge().hasUnknownCondition()) {
+		if (isConstantValue(finalValue)) {
+			if (!finalValue.hasValue()) {
+				if (finalValue.getLogicalValue().isTrue()) {
 					reuse(unknownValFunc());
 				} else {
 					reuse(falseValFunc());
@@ -397,19 +391,9 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 	protected void build(DefDirs dirs, ObjOp host) {
 
-		final Value<?> finalValue = getFinal();
+		final DefValue finalValue = getFinal();
 
-		if (finalValue.getKnowledge().isKnown()) {
-
-			final Block code = dirs.code();
-			final ValOp result = finalValue.op(dirs.getBuilder(), code);
-
-			code.debug(
-					"Constant " + suffix()
-					+ " = " + finalValue.valueString());
-			result.go(code, dirs.dirs());
-			dirs.returnValue(result);
-
+		if (writeIfConstant(dirs, finalValue)) {
 			return;
 		}
 
@@ -457,6 +441,16 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 				.link("o42a_obj_val_stub", OBJECT_VAL);
 	}
 
+	static boolean isConstantValue(DefValue value) {
+		if (!value.getLogicalValue().isConstant()) {
+			return false;
+		}
+		if (!value.hasValue()) {
+			return true;
+		}
+		return value.getValue().getKnowledge().isKnown();
+	}
+
 	private int addSource(SourceInfo[] destination, int at, SourceInfo source) {
 
 		final Obj src = source.getSource();
@@ -492,6 +486,32 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		destination[at] = source;
 
 		return at + 1;
+	}
+
+	private boolean writeIfConstant(DefDirs dirs, DefValue value) {
+		if (!isConstantValue(value)) {
+			return false;
+		}
+
+		final Block code = dirs.code();
+
+		code.debug(suffix() + " = " + value.valueString());
+
+		if (value.getLogicalValue().isFalse()) {
+			code.go(dirs.falseDir());
+			return true;
+		}
+		if (!value.hasValue()) {
+			return true;
+		}
+
+		final ValOp result =
+				value.getValue().op(dirs.getBuilder(), code);
+
+		result.go(code, dirs);
+		dirs.returnValue(result);
+
+		return true;
 	}
 
 	private void writeExplicitDefs(

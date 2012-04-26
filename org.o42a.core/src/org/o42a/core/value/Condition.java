@@ -44,15 +44,6 @@ public enum Condition {
 
 	},
 
-	UNKNOWN(LogicalValue.FALSE) {
-
-		@Override
-		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
-			return valueStruct.unknownValue();
-		}
-
-	},
-
 	FALSE(LogicalValue.FALSE) {
 
 		@Override
@@ -66,14 +57,6 @@ public enum Condition {
 
 	Condition(LogicalValue logicalValue) {
 		this.logicalValue = logicalValue;
-	}
-
-	public final boolean isKnown() {
-		return !isUnknown();
-	}
-
-	public final boolean isUnknown() {
-		return this == UNKNOWN;
 	}
 
 	public final boolean isConstant() {
