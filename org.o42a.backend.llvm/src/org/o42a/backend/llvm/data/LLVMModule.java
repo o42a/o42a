@@ -42,7 +42,6 @@ public final class LLVMModule {
 		System.loadLibrary("o42ac_llvm");
 	}
 
-	private final String id;
 	private final String inputFilename;
 	private final String inputEncoding;
 	private long nativePtr;
@@ -65,18 +64,9 @@ public final class LLVMModule {
 	private long anyType;
 	private LLVMGenerator generator;
 
-	public LLVMModule(String id, String[] args) {
+	public LLVMModule(String[] args) {
 		parseArgs(encodeArgs(args));
-
 		this.inputFilename = decodeArg(inputFilename());
-		if (id != null) {
-			this.id = id;
-		} else if (this.inputFilename != null) {
-			this.id = this.inputFilename;
-		} else {
-			this.id = "module";
-		}
-
 		this.inputEncoding = decodeArg(inputEncoding());
 
 		this.ids = new NativeBuffer(512);
@@ -84,16 +74,14 @@ public final class LLVMModule {
 		this.dataAllocator = new LLVMDataAllocator(this);
 		this.dataWriter = new LLVMDataWriter(this);
 		this.codeBackend = new LLVMCodeBackend(this);
-
 	}
 
-	public final void init(LLVMGenerator generator) {
+	public final void createModule(LLVMGenerator generator, CodeId id) {
 		this.generator = generator;
-		this.nativePtr = createModule(
-				ids().writeCodeId(generator.id(this.id)),
-				ids().length());
+		this.nativePtr = createModule(ids().writeCodeId(id), ids().length());
+
 		assert this.nativePtr != 0 :
-			"Failed to create LLVM module " + this.id;
+			"Failed to create LLVM module " + id;
 
 		final Analyzer analyzer = generator.getAnalyzer();
 		final int debugEnabled = debugEnabled();
@@ -117,10 +105,6 @@ public final class LLVMModule {
 
 	public final LLVMGenerator getGenerator() {
 		return this.generator;
-	}
-
-	public final String getId() {
-		return this.id;
 	}
 
 	public final String getInputFilename() {

@@ -19,12 +19,18 @@
 */
 package org.o42a.backend.llvm;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.AbstractGenerator;
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.io.FileSource;
+import org.o42a.util.io.SourceFileName;
 
 
 public class LLVMGenerator extends AbstractGenerator {
@@ -33,15 +39,32 @@ public class LLVMGenerator extends AbstractGenerator {
 			String id,
 			Analyzer analyzer,
 			String... args) {
-		return new LLVMGenerator(new LLVMModule(id, args), analyzer);
+		return new LLVMGenerator(id, new LLVMModule(args), analyzer);
 	}
 
+	private final String id;
 	private final LLVMModule module;
 
-	private LLVMGenerator(LLVMModule module, Analyzer analyzer) {
+	private LLVMGenerator(String id, LLVMModule module, Analyzer analyzer) {
 		super(analyzer);
+		this.id = id;
 		this.module = module;
-		module.init(this);
+	}
+
+	public FileSource createSource() throws FileNotFoundException {
+
+		final String path = getInputFilename();
+
+		if (path == null) {
+			throw new FileNotFoundException("Input file not specified");
+		}
+
+		final FileSource source = sourceByPath(path);
+
+		source.setEncoding(getInputEncoding());
+		this.module.createModule(this, moduleId(source));
+
+		return source;
 	}
 
 	public final String getInputFilename() {
@@ -54,28 +77,65 @@ public class LLVMGenerator extends AbstractGenerator {
 
 	@Override
 	public DataAllocator dataAllocator() {
-		return this.module.dataAllocator();
+		return initializedModule().dataAllocator();
 	}
 
 	@Override
 	public DataWriter dataWriter() {
-		return this.module.dataWriter();
+		return initializedModule().dataWriter();
 	}
 
 	@Override
 	public CodeBackend codeBackend() {
-		return this.module.codeBackend();
+		return initializedModule().codeBackend();
 	}
 
 	@Override
 	public void write() {
 		super.write();
-		this.module.write();
+		initializedModule().write();
 	}
 
 	@Override
 	public void close() {
 		this.module.destroy();
+	}
+
+	private LLVMModule initializedModule() {
+		if (this.module.getNativePtr() == 0L) {
+			this.module.createModule(
+					this,
+					this.id != null ? id(this.id) : id("module"));
+		}
+		return this.module;
+	}
+
+	private static FileSource sourceByPath(
+			String path)
+	throws FileNotFoundException {
+
+		final File file = new File(path);
+
+		if (!file.isFile()) {
+			throw new FileNotFoundException("No such file: " + path);
+		}
+
+		return new FileSource(file.getParentFile(), file.getName());
+	}
+
+	private CodeId moduleId(FileSource source) {
+		if (this.id != null) {
+			return id(this.id);
+		}
+
+		final String name =
+				new SourceFileName(source.getName()).getFieldName();
+
+		if (name != null) {
+			return id(name);
+		}
+
+		return id("module");
 	}
 
 }
