@@ -31,7 +31,7 @@ import org.o42a.core.value.ValueType;
 public final class Val implements Content<ValType> {
 
 	public static final int CONDITION_FLAG = 0x01;
-	public static final int INDEFINITE_FLAG = 0x04;
+	public static final int INDEFINITE_FLAG = 0x02;
 	public static final int ALIGNMENT_MASK = 0x700;
 	public static final int EXTERNAL_FLAG = 0x800;
 	public static final int STATIC_FLAG = 0x1000;

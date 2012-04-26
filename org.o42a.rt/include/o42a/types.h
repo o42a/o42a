@@ -295,16 +295,9 @@ enum o42a_val_flags {
 	O42A_TRUE = 1,
 
 	/**
-	 * If value condition is false (O42A_FALSE), then this bit set means that
-	 * the value is unknown and expected to be computed later.
+	 * A bit meaning the value is not yet calculated.
 	 */
-	O42A_UNKNOWN = 2,
-
-	/**
-	 * A bit meaning the value is not yet calculated. This is only applicable to
-	 * o42a_obj_data.value and should be set along with O42A_UNKNOWN.
-	 */
-	O42A_INDEFINITE = 4,
+	O42A_INDEFINITE = 2,
 
 	/**
 	 * Value alignment mask.
