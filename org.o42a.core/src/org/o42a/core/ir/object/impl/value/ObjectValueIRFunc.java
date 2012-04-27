@@ -153,7 +153,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		final Block code = subDirs.code();
 
 		if (body != null) {
-			code.dumpName("For: ", body.toData(code));
+			code.dumpName("For: ", body);
 		}
 
 		final DefValue finalValue = getFinal();
@@ -224,7 +224,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 		final Block code = dirs.code();
 		final ObjOp host = builder.host();
 
-		code.dumpName("Host: ", host.ptr());
+		code.dumpName("Host: ", host);
 		build(dirs, host);
 
 		dirs.done();
@@ -247,7 +247,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 	@Override
 	public DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
 		if (isReused()) {
-			return body != null ? body.toData(code) : host.toData(code);
+			return body != null ? body.toData(null, code) : host.toData(null, code);
 		}
 		return super.objectArg(code, host, body);
 	}
@@ -591,9 +591,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 		final DefDirs defDirs = dirs.begin("Ancestor " + suffix());
 
-		defDirs.code().dumpName(
-				"Ancestor: ",
-				ancestorBody.toData(defDirs.code()));
+		defDirs.code().dumpName("Ancestor: ", ancestorBody);
 
 		if (isClaim()) {
 			ancestorType.writeClaim(defDirs, ancestorBody);

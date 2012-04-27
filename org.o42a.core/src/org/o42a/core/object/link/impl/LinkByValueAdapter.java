@@ -120,7 +120,7 @@ public class LinkByValueAdapter extends ValueAdapter {
 					.target(dirs.dirs())
 					.materialize(dirs.dirs());
 
-			dirs.returnValue(dirs.value().store(code, target.toAny(code)));
+			dirs.returnValue(dirs.value().store(code, target.toAny(null, code)));
 		}
 
 		@Override

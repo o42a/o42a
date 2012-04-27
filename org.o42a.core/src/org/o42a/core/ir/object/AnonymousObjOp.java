@@ -113,7 +113,7 @@ final class AnonymousObjOp extends ObjectOp {
 		final FldOp op = ascendant.field(subDirs, memberKey);
 
 		if (!op.isOmitted()) {
-			subDirs.code().dumpName("Field: ", op.ptr());
+			subDirs.code().dumpName("Field: ", op);
 		} else {
 			subDirs.code().debug("Final field: " + op.getId());
 		}
@@ -135,7 +135,7 @@ final class AnonymousObjOp extends ObjectOp {
 				dep.getObject());
 		final DepOp op = ascendant.dep(subDirs, dep);
 
-		subDirs.code().dumpName("Dep: ", op.ptr());
+		subDirs.code().dumpName("Dep: ", op);
 		subDirs.end();
 
 		return op;

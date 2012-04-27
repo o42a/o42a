@@ -128,7 +128,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				itemOp.target(dirs.dirs()).materialize(dirs.dirs());
 		final Code code = dirs.code();
 
-		data.store(code, itemValue.toAny(code));
+		data.store(code, itemValue.toAny(null, code));
 
 		dirs.done();
 

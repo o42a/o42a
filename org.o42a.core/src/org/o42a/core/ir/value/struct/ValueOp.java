@@ -106,13 +106,13 @@ public abstract class ValueOp {
 				"val_definite");
 		final Block definite = indefinite.otherwise();
 
-		definite.dump(this + " value is definite: ", value.ptr());
+		definite.dump(this + " value is definite: ", value);
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
 		evaluateAndStoreValue(indefinite, value, dirs);
 
-		indefinite.dump(this + " value calculated: ", value.ptr());
+		indefinite.dump(this + " value calculated: ", value);
 		indefinite.go(code.tail());
 
 		return value;

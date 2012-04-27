@@ -84,11 +84,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				.branch(code, "bound_unknown", "bound_known");
 		final Block boundKnown = boundUnknown.otherwise();
 
-		if (boundKnown.isDebug()) {
-			boundKnown.dumpName(
-					"Known bound: ",
-					knownBound.toData(null, boundKnown));
-		}
+		boundKnown.dumpName("Known bound: ", knownBound);
 
 		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
 		final ObjectOp castObject = valueObject.dynamicCast(
@@ -100,8 +96,8 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 		ptr().object(null, boundKnown).store(
 				boundKnown,
-				castObject.toData(boundKnown));
-		boundKnown.dump("Assigned: ", ptr());
+				castObject.toData(null, boundKnown));
+		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());
 

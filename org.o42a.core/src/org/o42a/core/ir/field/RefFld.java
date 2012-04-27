@@ -144,7 +144,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		final Block code = dirs.code();
 		final ObjectOp result = construct(builder, dirs);
-		final DataOp res = result.toData(code);
+		final DataOp res = result.toData(null, code);
 
 		if (!isStateless()) {
 			op(code, builder.host()).ptr().object(null, code).store(code, res);
@@ -343,7 +343,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			final C constructor = constructor(null, code).load(null, code);
 
 			code.dumpName("Constructor: ", constructor);
-			code.dumpName("Host: ", host.ptr());
+			code.dumpName("Host: ", host);
 
 			return construct(code, host, constructor);
 		}

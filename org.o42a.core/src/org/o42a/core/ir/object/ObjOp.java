@@ -156,7 +156,7 @@ public final class ObjOp extends ObjectOp {
 		final FldOp op = fld.op(code, host);
 
 		if (!op.isOmitted()) {
-			code.dumpName("Field: ", op.ptr());
+			code.dumpName("Field: ", op);
 		} else {
 			code.debug("Final field: " + op.getId());
 		}
@@ -180,7 +180,7 @@ public final class ObjOp extends ObjectOp {
 				dep.getObject());
 		final DepOp op = ir.op(code, host);
 
-		code.dumpName("Dep: ", op.ptr());
+		code.dumpName("Dep: ", op);
 
 		subDirs.end();
 

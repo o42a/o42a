@@ -190,7 +190,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 		fld.ptr().object(null, assigner).store(
 				assigner,
-				castObject.toData(assigner));
+				castObject.toData(null, assigner));
 		assigner.bool(true).returnValue(assigner);
 
 		if (failure.exists()) {
@@ -200,7 +200,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 			fld.ptr().object(null, failure).store(
 					failure,
-					falseIR.op(builder, failure).toData(failure));
+					falseIR.op(builder, failure).toData(null, failure));
 			fld.ptr().bound(null, failure).store(
 					failure,
 					falseIR.getTypeIR()
