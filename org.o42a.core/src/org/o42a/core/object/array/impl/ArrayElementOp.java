@@ -164,7 +164,7 @@ final class ArrayElementOp extends PathOp {
 
 		// TODO implement array element type checking.
 
-		itemRec.store(code, value.materialize(arrayDirs.dirs()).toAny(code));
+		itemRec.store(code, value.materialize(arrayDirs.dirs()).toAny(null, code));
 	}
 
 }

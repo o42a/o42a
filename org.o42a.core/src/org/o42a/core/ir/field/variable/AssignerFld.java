@@ -308,7 +308,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		fld.value(assigner).store(
 				assigner,
-				castObject.toAny(assigner));
+				castObject.toAny(null, assigner));
 		assigner.bool(true).returnValue(assigner);
 
 		if (failure.exists()) {
@@ -318,7 +318,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 			fld.value(failure).store(
 					failure,
-					falseIR.op(builder, failure).toAny(failure));
+					falseIR.op(builder, failure).toAny(null, failure));
 			fld.ptr().bound(null, failure).store(
 					failure,
 					falseIR.getTypeIR()

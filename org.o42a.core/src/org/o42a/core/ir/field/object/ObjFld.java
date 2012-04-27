@@ -92,7 +92,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final DataOp result1 = construct(
 				builder,
 				builder.dirs(construct, dirs.falseDir()))
-				.toData(construct);
+				.toData(null, construct);
 
 		construct.go(code.tail());
 
@@ -100,7 +100,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final DataOp result2 = delegate(
 				builder,
 				builder.dirs(delegate, dirs.falseDir()),
-				previousPtr).toData(delegate);
+				previousPtr).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -108,7 +108,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final FldOp ownFld = host.field(dirs, getField().getKey());
 		final BoolOp isOwn =
-				ownFld.toAny(code).eq(null, code, fld.toAny(null, code));
+				ownFld.toAny(null, code).eq(null, code, fld.toAny(null, code));
 		final CondBlock store = isOwn.branch(code, "store", "do_not_store");
 
 		fld.object(null, store).store(store, result);

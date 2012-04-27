@@ -42,7 +42,7 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 	}
 
 	public void call(DefDirs dirs, ObjectOp object) {
-		call(dirs, object.toData(dirs.code()));
+		call(dirs, object.toData(null, dirs.code()));
 	}
 
 	public void call(DefDirs dirs, DataOp object) {

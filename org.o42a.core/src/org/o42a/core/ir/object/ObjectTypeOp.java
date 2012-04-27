@@ -104,7 +104,7 @@ public final class ObjectTypeOp extends IROp {
 	}
 
 	private final DataOp body(Code code, ObjectOp body) {
-		return body != null ? body.toData(code) : mainBody(code);
+		return body != null ? body.toData(null, code) : mainBody(code);
 	}
 
 	private final DataOp mainBody(Code code) {

@@ -48,6 +48,11 @@ public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
 	}
 
 	@Override
+	public DataOp toData(CodeId id, Code code) {
+		return code.phi(id, this);
+	}
+
+	@Override
 	public <S extends StructOp<S>> S to(
 			final CodeId id,
 			final Code code,

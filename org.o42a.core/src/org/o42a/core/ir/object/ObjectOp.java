@@ -103,7 +103,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final Block code = subDirs.code();
 
-		code.dumpName("To", type.ptr());
+		code.dumpName("To", type);
 
 		final DataOp castResult =
 				castFunc(reportError)
@@ -133,7 +133,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 					.getFalse()
 					.ir(getGenerator())
 					.op(getBuilder(), code)
-					.toData(code);
+					.toData(null, code);
 
 			resultPtr =
 					castResult.isNull(null, code)

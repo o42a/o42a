@@ -64,8 +64,8 @@ public abstract class RefFldOp<
 		final Block code = dirs.code();
 		final FldKind kind = fld().getKind();
 
-		code.dumpName(kind + " field: ", ptr());
-		code.dumpName(kind + " host: ", host().ptr());
+		code.dumpName(kind + " field: ", this);
+		code.dumpName(kind + " host: ", host());
 
 		final DataOp ptr = ptr().target(code, host());
 		final Obj hostAscendant = host().getAscendant();

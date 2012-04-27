@@ -84,11 +84,7 @@ public final class AssignerFldOp extends FldOp {
 				.branch(code, "bound_unknown", "bound_known");
 		final Block boundKnown = boundUnknown.otherwise();
 
-		if (boundKnown.isDebug()) {
-			boundKnown.dumpName(
-					"Known bound: ",
-					knownBound.toData(null, boundKnown));
-		}
+		boundKnown.dumpName("Known bound: ", knownBound);
 
 		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
 		final ObjectOp castObject = valueObject.dynamicCast(
@@ -98,8 +94,8 @@ public final class AssignerFldOp extends FldOp {
 				fld().linkStruct().getTypeRef().typeObject(dummyUser()),
 				true);
 
-		value(boundKnown).store(boundKnown, castObject.toAny(boundKnown));
-		boundKnown.dump("Assigned: ", ptr());
+		value(boundKnown).store(boundKnown, castObject.toAny(null, boundKnown));
+		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());
 
@@ -123,8 +119,8 @@ public final class AssignerFldOp extends FldOp {
 		final Block code = dirs.code();
 		final FldKind kind = fld().getKind();
 
-		code.dumpName(kind + " field: ", ptr());
-		code.dumpName(kind + " host: ", host().ptr());
+		code.dumpName(kind + " field: ", this);
+		code.dumpName(kind + " host: ", host());
 
 		final ValOp hostValue = value(code);
 		final ValDirs valDirs = dirs.value(hostValue);

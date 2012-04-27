@@ -24,12 +24,13 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.DataPtrOp;
+import org.o42a.codegen.debug.Dumpable;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.source.CompilerContext;
 
 
-public abstract class IROp {
+public abstract class IROp implements Dumpable {
 
 	private final CodeBuilder builder;
 
@@ -53,13 +54,15 @@ public abstract class IROp {
 		return ptr().getId();
 	}
 
-	public abstract PtrOp<?> ptr();
+	public abstract DataPtrOp<?> ptr();
 
-	public final DataOp toData(Code code) {
-		return toAny(code).toData(null, code);
+	@Override
+	public final DataOp toData(CodeId id, Code code) {
+		return ptr().toData(id, code);
 	}
 
-	public final AnyOp toAny(Code code) {
+	@Override
+	public final AnyOp toAny(CodeId id, Code code) {
 		return ptr().toAny(null, code);
 	}
 
