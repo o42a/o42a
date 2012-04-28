@@ -21,7 +21,10 @@
 #define O42AC_LLVM_UTIL_H
 
 #include <jni.h>
+
+#include "llvm/Instruction.h"
 #include "llvm/ADT/StringRef.h"
+
 
 using namespace llvm;
 
@@ -32,6 +35,18 @@ template<typename T> inline T* from_ptr(const jlong ptr) {
 template<typename T> inline jlong to_ptr(T *const object) {
 	return reinterpret_cast<jlong>(object);
 }
+
+inline jlong to_instr_ptr(Value *const value) {
+
+	const jlong ptr = to_ptr<Value>(value);
+
+	return isa<Instruction>(value) ? ptr : ptr | 1;
+}
+
+inline jlong to_instr_ptr(Instruction *const instr) {
+	return to_ptr<Value>(instr);
+}
+
 
 template<typename X, typename I> class jArrayBase {
 protected:

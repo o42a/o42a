@@ -341,17 +341,27 @@ public abstract class LLCode implements CodeWriter {
 						falseOp.getNativePtr())));
 	}
 
-	public long instr(long instr) {
-		if (this.lastInset != null) {
-			this.lastInset.nextInstr(instr);
-			this.lastInset = null;
+	public final long instr(long instr) {
+
+		final long realInstr = instr & ~1;
+
+		if (instr == realInstr) {
+			addInstr(instr);
 		}
-		return instr;
+
+		return realInstr;
 	}
 
 	@Override
 	public String toString() {
 		return getId().toString();
+	}
+
+	protected void addInstr(long instr) {
+		if (this.lastInset != null) {
+			this.lastInset.nextInstr(instr);
+			this.lastInset = null;
+		}
 	}
 
 	static long createBlock(LLFunction<?> function, CodeId id) {

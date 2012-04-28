@@ -55,7 +55,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 			field,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
@@ -73,7 +73,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 			pointer,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
@@ -89,7 +89,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	Value *value = from_ptr<Value>(valuePtr);
 	StoreInst *result = builder.CreateStore(value, pointer);
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
@@ -108,7 +108,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 			builder.getInt8PtrTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
@@ -127,7 +127,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toPtr(
 			builder.getInt8PtrTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
@@ -147,7 +147,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toInt(
 			IntegerType::get(builder.getContext(), intBits)->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
@@ -166,7 +166,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp32(
 			builder.getFloatTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
@@ -185,7 +185,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toFp64(
 			builder.getDoubleTy()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
@@ -204,7 +204,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toRelPtr(
 			builder.getInt32Ty()->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
@@ -225,7 +225,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castStructTo(
 			type->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
@@ -246,7 +246,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_castFuncTo(
 			type->getPointerTo(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
@@ -265,7 +265,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_isNull(
 			Constant::getNullValue(pointer->getType()),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
@@ -286,7 +286,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_offset(
 			index,
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
@@ -311,5 +311,5 @@ jlong Java_org_o42a_backend_llvm_code_op_RelLLOp_offsetBy(
 			builder.getInt8PtrTy(),
 			StringRef(from_ptr<char>(id), idLen));
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(result);
 }
