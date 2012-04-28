@@ -118,11 +118,11 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 	}
 
 	@Override
-	public long instr(long instr) {
+	protected void addInstr(long instr) {
 		if (this.firstInstr == 0L) {
 			this.firstInstr = instr;
 		}
-		return super.instr(instr);
+		super.addInstr(instr);
 	}
 
 	private final AllocationCode allocation() {
