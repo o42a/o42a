@@ -17,23 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.impl;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.ir.local.RefCmd;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
@@ -48,7 +47,7 @@ public final class RefCommand extends Command {
 	private ValueAdapter valueAdapter;
 	private InlineValue normal;
 
-	RefCommand(Ref ref, CommandEnv env) {
+	public RefCommand(Ref ref, CommandEnv env) {
 		super(ref, env);
 	}
 
@@ -89,7 +88,7 @@ public final class RefCommand extends Command {
 				getValueAdapter()
 				.value(resolver)
 				.getKnowledge()
-				.toLogicalValue());
+				.getCondition());
 	}
 
 	@Override
@@ -134,8 +133,12 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public final RefCmd cmd(CodeBuilder builder) {
-		return (RefCmd) super.cmd(builder);
+	public final Cmd cmd() {
+		assert getStatement().assertFullyResolved();
+		if (this.normal == null) {
+			return new RefCmd(getValueAdapter().eval());
+		}
+		return new NormalRefCmd(this.normal);
 	}
 
 	@Override
@@ -143,34 +146,12 @@ public final class RefCommand extends Command {
 		getValueAdapter().resolveAll(resolver);
 	}
 
-	@Override
-	protected final RefCmd createCmd(CodeBuilder builder) {
-		if (this.normal == null) {
-			return new RefCmdImpl(
-					builder,
-					getRef(),
-					getValueAdapter().eval(builder));
-		}
-		return new NormalRefCmdImpl(builder, getRef(), this.normal);
-	}
+	private static final class RefCmd implements Cmd {
 
-	private static final class RefCmdImpl extends RefCmd {
+		private final Eval eval;
 
-		private final RefEval eval;
-
-		RefCmdImpl(CodeBuilder builder, Ref ref, RefEval eval) {
-			super(builder, ref);
+		RefCmd(Eval eval) {
 			this.eval = eval;
-		}
-
-		@Override
-		public void writeCond(Control control) {
-
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
-					control.code(),
-					control.falseDir());
-
-			this.eval.writeCond(dirs, control.host());
 		}
 
 		@Override
@@ -183,20 +164,22 @@ public final class RefCommand extends Command {
 			dirs.done();
 		}
 
+		@Override
+		public String toString() {
+			if (this.eval == null) {
+				return super.toString();
+			}
+			return this.eval.toString();
+		}
+
 	}
 
-	private static final class NormalRefCmdImpl extends RefCmd {
+	private static final class NormalRefCmd implements Cmd {
 
 		private final InlineValue value;
 
-		NormalRefCmdImpl(CodeBuilder builder, Ref ref, InlineValue value) {
-			super(builder, ref);
+		NormalRefCmd(InlineValue value) {
 			this.value = value;
-		}
-
-		@Override
-		public void writeCond(Control control) {
-			this.value.writeCond(control.dirs(), control.host());
 		}
 
 		@Override
@@ -233,7 +216,7 @@ public final class RefCommand extends Command {
 
 			final Block code = control.code();
 			final ValDirs dirs =
-					control.getBuilder().falseWhenUnknown(
+					control.getBuilder().dirs(
 							code,
 							control.falseDir())
 					.value(control.result());

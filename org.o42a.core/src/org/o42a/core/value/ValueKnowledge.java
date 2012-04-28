@@ -23,7 +23,6 @@ package org.o42a.core.value;
 public enum ValueKnowledge {
 
 	FALSE_VALUE(Condition.FALSE),
-	UNKNOWN_VALUE(Condition.UNKNOWN),
 	KNOWN_VALUE(Condition.TRUE),
 	INITIALLY_KNOWN_VALUE(Condition.TRUE),
 	RUNTIME_CONSTRUCTED_VALUE(Condition.TRUE),
@@ -59,20 +58,12 @@ public enum ValueKnowledge {
 		return getCondition().isFalse();
 	}
 
-	public final boolean hasUnknownCondition() {
-		return getCondition().isUnknown();
-	}
-
 	public final boolean isKnownToCompiler() {
 		return this != RUNTIME_VALUE;
 	}
 
 	public final boolean isVariable() {
 		return this == INITIALLY_KNOWN_VALUE || this == VARIABLE_VALUE;
-	}
-
-	public final LogicalValue toLogicalValue() {
-		return getCondition().toLogicalValue();
 	}
 
 }

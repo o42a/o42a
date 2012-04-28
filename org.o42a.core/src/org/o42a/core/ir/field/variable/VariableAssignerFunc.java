@@ -52,8 +52,8 @@ public class VariableAssignerFunc extends ObjectFunc<VariableAssignerFunc> {
 				null,
 				code,
 				VARIABLE_ASSIGNER.result(),
-				object != null ? object.toData(code) : code.nullDataPtr(),
-				value.toData(code));
+				object != null ? object.toData(null, code) : code.nullDataPtr(),
+				value.toData(null, code));
 	}
 
 	public static final class VariableAssigner

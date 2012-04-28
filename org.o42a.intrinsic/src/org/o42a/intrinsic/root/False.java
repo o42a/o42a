@@ -19,7 +19,8 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.ir.op.InlineValue.inlineFalse;
+import static org.o42a.core.ir.def.Eval.FALSE_EVAL;
+import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.Value.falseValue;
 
@@ -33,9 +34,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
@@ -74,17 +74,13 @@ public final class False extends BuiltinObject {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return inlineFalse(valueStruct);
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
+		return falseInlineEval();
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		dirs.code().go(dirs.falseDir());
-		return falseValue().op(dirs.getBuilder(), dirs.code());
+	public Eval evalBuiltin() {
+		return FALSE_EVAL;
 	}
 
 	@Override

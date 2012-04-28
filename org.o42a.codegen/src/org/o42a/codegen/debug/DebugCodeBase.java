@@ -27,7 +27,9 @@ import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.Int8recOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.CodeBase;
 import org.o42a.codegen.data.Ptr;
 
@@ -168,14 +170,7 @@ public abstract class DebugCodeBase extends CodeBase {
 		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 	}
 
-	public final void dumpName(String prefix, StructOp<?> data) {
-		assert assertIncomplete();
-		if (isDebug()) {
-			dumpName(prefix, data.toData(null, code()));
-		}
-	}
-
-	public final void dumpName(String prefix, DataOp data) {
+	public final void dumpName(String prefix, Dumpable data) {
 		assert assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -211,22 +206,11 @@ public abstract class DebugCodeBase extends CodeBase {
 				func.toAny(null, code()));
 	}
 
-	public final void dump(String message, StructOp<?> data) {
-		dump(message, data, Integer.MAX_VALUE);
+	public final void dump(String message, Dumpable data) {
+		dump(message, data, 5);
 	}
 
-	public final void dump(String message, StructOp<?> data, int depth) {
-		assert assertIncomplete();
-		if (isDebug()) {
-			dump(message, data.toData(null, code()), depth);
-		}
-	}
-
-	public final void dump(String message, DataOp data) {
-		dump(message, data, 3);
-	}
-
-	public final void dump(String message, DataOp data, int depth) {
+	public final void dump(String message, Dumpable data, int depth) {
 		assert assertIncomplete();
 		if (!getGenerator().isDebug()) {
 			return;
@@ -241,7 +225,7 @@ public abstract class DebugCodeBase extends CodeBase {
 		func.op(null, code).call(
 				code,
 				binaryMessage(message).op(null, code),
-				data,
+				data.toData(code.id("dump"), code),
 				code.int32(depth));
 	}
 

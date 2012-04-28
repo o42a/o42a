@@ -27,21 +27,21 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.lib.test.TestModule;
 import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "rt-void.o42a")
 public class RtVoid extends AnnotatedBuiltin {
+
+	private static final RtVoidEval RT_VOID_EVAL = new RtVoidEval();
 
 	public RtVoid(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
@@ -57,42 +57,28 @@ public class RtVoid extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
-		return new Inline(valueStruct);
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
+		return RT_VOID_EVAL;
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final Code code = dirs.code();
-
-		code.debug("Run-time void");
-
-		return voidValue().op(dirs.getBuilder(), code);
+	public Eval evalBuiltin() {
+		return RT_VOID_EVAL;
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class RtVoidEval extends InlineEval {
 
-		Inline(ValueStruct<?, ?> valueStruct) {
-			super(null, valueStruct);
+		RtVoidEval() {
+			super(null);
 		}
 
 		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			dirs.code().debug("Run-time void");
-		}
-
-		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
 			final Code code = dirs.code();
 
 			code.debug("Run-time void");
-
-			return voidValue().op(dirs.getBuilder(), code);
+			dirs.returnValue(voidValue().op(dirs.getBuilder(), code));
 		}
 
 		@Override

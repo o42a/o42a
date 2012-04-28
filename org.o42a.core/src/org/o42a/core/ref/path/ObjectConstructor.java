@@ -201,11 +201,7 @@ public abstract class ObjectConstructor extends Placed {
 					getBuilder(),
 					dirs.code());
 
-			if (dirs.isDebug()) {
-				dirs.code().dumpName(
-						"Static object: ",
-						target.toData(dirs.code()));
-			}
+			dirs.code().dumpName("Static object: ", target);
 			if (local != null) {
 				target.fillDeps(dirs, sample);
 			}

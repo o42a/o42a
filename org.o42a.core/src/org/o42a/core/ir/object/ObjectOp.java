@@ -98,12 +98,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			boolean reportError) {
 
 		final CodeDirs subDirs = dirs.begin(
-				id != null ? id.getId() : "cast",
+				id != null ? id : dirs.id("cast"),
 				"Dynamic cast " + this + " to " + wellKnownType);
 
 		final Block code = subDirs.code();
 
-		code.dumpName("To", type.ptr());
+		code.dumpName("To", type);
 
 		final DataOp castResult =
 				castFunc(reportError)
@@ -133,7 +133,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 					.getFalse()
 					.ir(getGenerator())
 					.op(getBuilder(), code)
-					.toData(code);
+					.toData(null, code);
 
 			resultPtr =
 					castResult.isNull(null, code)
@@ -241,7 +241,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 		final CodeDirs subDirs = dirs.begin(
-				id != null ? id.getId() : "cast",
+				id != null ? id : dirs.id("cast"),
 				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
 		final Block code = subDirs.code();

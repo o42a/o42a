@@ -21,10 +21,9 @@ package org.o42a.core.ir.object;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.ScopeIR;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.impl.LocalIRFunc;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Command;
 
@@ -43,12 +42,12 @@ public abstract class ObjectLocalIR extends ScopeIR {
 		this.function = new LocalIRFunc(localIR, ownerValueIR.getLocals());
 	}
 
-	public ValOp writeValue(
-			ValDirs dirs,
+	public void write(
+			DefDirs dirs,
 			ObjOp owner,
 			ObjOp ownerBody,
 			Command command) {
-		return this.function.call(dirs, owner, ownerBody, command);
+		this.function.call(dirs, owner, ownerBody, command);
 	}
 
 }

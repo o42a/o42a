@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,12 +19,22 @@
 */
 package org.o42a.core.value;
 
+import static org.o42a.core.st.DefValue.FALSE_DEF_VALUE;
+import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.value.Value.voidValue;
+
+import org.o42a.core.st.DefValue;
 
 
 public enum Condition {
 
-	TRUE(LogicalValue.TRUE) {
+	TRUE() {
+
+		@Override
+		public DefValue toDefValue() {
+			return TRUE_DEF_VALUE;
+		}
 
 		@Override
 		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
@@ -35,7 +45,12 @@ public enum Condition {
 
 	},
 
-	RUNTIME(LogicalValue.RUNTIME) {
+	RUNTIME() {
+
+		@Override
+		public DefValue toDefValue() {
+			return RUNTIME_DEF_VALUE;
+		}
 
 		@Override
 		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
@@ -44,16 +59,12 @@ public enum Condition {
 
 	},
 
-	UNKNOWN(LogicalValue.FALSE) {
+	FALSE() {
 
 		@Override
-		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
-			return valueStruct.unknownValue();
+		public DefValue toDefValue() {
+			return FALSE_DEF_VALUE;
 		}
-
-	},
-
-	FALSE(LogicalValue.FALSE) {
 
 		@Override
 		public <T> Value<T> toValue(ValueStruct<?, T> valueStruct) {
@@ -62,35 +73,31 @@ public enum Condition {
 
 	};
 
-	private final LogicalValue logicalValue;
-
-	Condition(LogicalValue logicalValue) {
-		this.logicalValue = logicalValue;
-	}
-
-	public final boolean isKnown() {
-		return !isUnknown();
-	}
-
-	public final boolean isUnknown() {
-		return this == UNKNOWN;
-	}
-
 	public final boolean isConstant() {
-		return toLogicalValue().isConstant();
+		return this != RUNTIME;
 	}
 
 	public final boolean isTrue() {
-		return toLogicalValue().isTrue();
+		return this == TRUE;
 	}
 
 	public final boolean isFalse() {
-		return toLogicalValue().isFalse();
+		return this == FALSE;
 	}
 
-	public final LogicalValue toLogicalValue() {
-		return this.logicalValue;
+	public Condition negate() {
+		switch (this) {
+		case FALSE:
+			return Condition.TRUE;
+		case TRUE:
+			return Condition.FALSE;
+		case RUNTIME:
+		default:
+			return Condition.RUNTIME;
+		}
 	}
+
+	public abstract DefValue toDefValue();
 
 	public abstract <T> Value<T> toValue(ValueStruct<?, T> valueStruct);
 

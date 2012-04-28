@@ -23,12 +23,10 @@ import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
 
 
-public abstract class InlineCmd extends Normal {
+public abstract class InlineCmd extends Normal implements Cmd {
 
 	public InlineCmd(Normalizer normalizer) {
 		super(normalizer);
 	}
-
-	public abstract void write(Control control);
 
 }

@@ -30,14 +30,16 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.impl.AllocatedValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
 
 
-public abstract class ValOp extends IROp implements CondOp {
+public abstract class ValOp extends IROp {
 
 	public static ValOp allocateVal(
 			String name,
@@ -97,7 +99,6 @@ public abstract class ValOp extends IROp implements CondOp {
 		return ptr().flags(id, code);
 	}
 
-	@Override
 	public final BoolOp loadCondition(CodeId id, Code code) {
 
 		final Int32op flags = flags(null, code).load(null, code);
@@ -105,11 +106,6 @@ public abstract class ValOp extends IROp implements CondOp {
 		return flags.lowestBit(
 				id != null ? id : getId().sub("condition_flag"),
 				code);
-	}
-
-	@Override
-	public final BoolOp loadUnknown(CodeId id, Code code) {
-		return loadFlag(id, "unknown_flag", code, UNKNOWN_FLAG);
 	}
 
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
@@ -249,15 +245,10 @@ public abstract class ValOp extends IROp implements CondOp {
 		return this;
 	}
 
-	public final ValOp storeUnknown(Code code) {
-		flags(null, code).store(code, code.int32(UNKNOWN_FLAG));
-		return this;
-	}
-
 	public final ValOp storeIndefinite(Code code) {
 		flags(null, code).store(
 				code,
-				code.int32(UNKNOWN_FLAG | INDEFINITE_FLAG));
+				code.int32(INDEFINITE_FLAG));
 		return this;
 	}
 
@@ -347,22 +338,18 @@ public abstract class ValOp extends IROp implements CondOp {
 		go(code, dirs.dirs());
 	}
 
-	@Override
 	public final void go(Block code, CodeDirs dirs) {
 
 		final Val constant = getConstant();
 
 		if (constant != null) {
 			if (!constant.getCondition()) {
-				if (constant.isUnknown()) {
-					code.go(dirs.unknownDir());
-				} else {
-					code.go(dirs.falseDir());
-				}
+				code.go(dirs.falseDir());
 			}
 			return;
 		}
-		dirs.go(code, this);
+
+		loadCondition(null, code).goUnless(code, dirs.falseDir());
 	}
 
 	public void use(Code code) {

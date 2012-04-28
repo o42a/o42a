@@ -107,21 +107,18 @@ public class LogicalExpression extends ObjectConstructor {
 		return new LogicalResult(this);
 	}
 
-	ValOp write(
-			ValDirs dirs,
-			HostOp host,
-			RefOp op,
-			InlineValue inlineOp) {
+	ValOp write(ValDirs dirs, HostOp host, RefOp op, InlineValue inlineOp) {
 
 		final CodeBuilder builder = dirs.getBuilder();
 		final Block code = dirs.code();
-		final Block operandFalse = dirs.addBlock("operand_false");
-		final Block operandUnknown = dirs.addBlock("operand_unknown");
 
 		switch (this.node.getOperator()) {
 		case NOT:
-			writeLogicalValue(
-					builder.falseWhenUnknown(code, operandFalse.head()),
+
+			final Block operandFalse = dirs.addBlock("operand_false");
+
+			writeCond(
+					dirs.dirs().setFalseDir(operandFalse.head()),
 					host,
 					op,
 					inlineOp);
@@ -131,47 +128,7 @@ public class LogicalExpression extends ObjectConstructor {
 			}
 			break;
 		case IS_TRUE:
-			writeLogicalValue(
-					builder.falseWhenUnknown(code, operandFalse.head()),
-					host,
-					op,
-					inlineOp);
-			if (operandFalse.exists()) {
-				operandFalse.go(dirs.falseDir());
-			}
-			break;
-		case KNOWN:
-			writeLogicalValue(
-					builder.splitWhenUnknown(
-							code,
-							operandFalse.head(),
-							operandUnknown.head()),
-					host,
-					op,
-					inlineOp);
-			if (operandFalse.exists()) {
-				operandFalse.go(code.tail());
-			}
-			if (operandUnknown.exists()) {
-				operandUnknown.go(dirs.falseDir());
-			}
-			break;
-		case UNKNOWN:
-			writeLogicalValue(
-					builder.splitWhenUnknown(
-							code,
-							operandFalse.head(),
-							operandUnknown.head()),
-					host,
-					op,
-					inlineOp);
-			code.go(dirs.falseDir());
-			if (operandFalse.exists()) {
-				operandFalse.go(dirs.falseDir());
-			}
-			if (operandUnknown.exists()) {
-				operandUnknown.go(code.tail());
-			}
+			writeCond(dirs.dirs(), host, op, inlineOp);
 			break;
 		default:
 			throw new IllegalStateException(
@@ -182,7 +139,7 @@ public class LogicalExpression extends ObjectConstructor {
 		return voidValue().op(builder, code);
 	}
 
-	private final void writeLogicalValue(
+	private final void writeCond(
 			CodeDirs dirs,
 			HostOp host,
 			RefOp op,

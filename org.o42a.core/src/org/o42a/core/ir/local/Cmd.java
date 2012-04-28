@@ -19,45 +19,11 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.st.Statement;
 
+public interface Cmd {
 
-public abstract class Cmd {
+	Cmd NO_CMD = new NoCmd();
 
-	public static Cmd noCmd(CodeBuilder builder, Statement statement) {
-		return new NoCmd(builder, statement);
-	}
-
-	private final CodeBuilder builder;
-	private final Statement statement;
-
-	public Cmd(CodeBuilder builder, Statement statement) {
-		this.builder = builder;
-		this.statement = statement;
-	}
-
-	public final Generator getGenerator() {
-		return getBuilder().getGenerator();
-	}
-
-	public final CodeBuilder getBuilder() {
-		return this.builder;
-	}
-
-	public final Statement getStatement() {
-		return this.statement;
-	}
-
-	public abstract void write(Control control);
-
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+	void write(Control control);
 
 }

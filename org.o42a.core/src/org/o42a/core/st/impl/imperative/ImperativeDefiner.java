@@ -19,7 +19,9 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import org.o42a.codegen.code.Block;
+import static org.o42a.core.ir.local.InlineControl.inlineControl;
+import static org.o42a.core.st.DefValue.defValue;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -31,8 +33,6 @@ import org.o42a.core.ir.local.InlineControl;
 import org.o42a.core.ir.local.LocalIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.DefTarget;
@@ -43,6 +43,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.value.Value;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -109,12 +110,17 @@ public final class ImperativeDefiner extends Definer {
 				.initialValue(local.walkingResolver(resolver));
 
 		if (initialValue.isAbort()) {
-			return initialValue.getValue()
-					.prefixWith(getLocalPrefix())
-					.toDefValue();
+
+			final Value<?> value = initialValue.getValue();
+
+			if (value != null) {
+				return defValue(value.prefixWith(getLocalPrefix()));
+			}
+
+			return initialValue.getCondition().toDefValue();
 		}
 
-		return initialValue.getLogicalValue().toDefValue();
+		return initialValue.getCondition().toDefValue();
 	}
 
 	@Override
@@ -158,17 +164,18 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new LocalEval(getBlock(), getCommand());
+	}
+
+	@Override
 	protected void fullyResolve(Resolver resolver) {
 
 		final LocalScope local =
 				getLocalPrefix().rescope(resolver.getScope()).toLocal();
 
 		getCommand().resolveAll(local.walkingResolver(resolver));
-	}
-
-	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return new LocalEval(builder, getBlock(), getCommand());
 	}
 
 	private static final class InlineLocal extends InlineEval {
@@ -183,15 +190,11 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final Block continuation = dirs.addBlock("continuation");
-			final DefDirs localDirs = dirs.falseWhenUnknown();
-			final InlineControl control =
-					new InlineControl(localDirs, continuation);
+			final InlineControl control = inlineControl(dirs);
 
 			this.cmd.write(control);
 
 			control.end();
-			localDirs.done();
 		}
 
 		@Override
@@ -209,15 +212,13 @@ public final class ImperativeDefiner extends Definer {
 
 	}
 
-	private static final class LocalEval extends Eval {
+	private static final class LocalEval implements Eval {
 
+		private final ImperativeBlock block;
 		private final Command command;
 
-		LocalEval(
-				CodeBuilder builder,
-				ImperativeBlock block,
-				Command command) {
-			super(builder, block);
+		LocalEval(ImperativeBlock block, Command command) {
+			this.block = block;
 			this.command = command;
 		}
 
@@ -229,39 +230,21 @@ public final class ImperativeDefiner extends Definer {
 			final Obj ownerType = scope.getOwner();
 			final ObjOp ownerBody =
 					ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
-			final Block localUnknown = dirs.addBlock("local_unknown");
-			final ValDirs valDirs = dirs.valDirs().splitWhenUnknown(
-					dirs.falseDir(),
-					localUnknown.head());
-
 			final LocalIR ir = scope.ir(host.getGenerator());
-			final ValOp value = ir.writeValue(
-					valDirs,
-					ownerBody,
-					null,
-					this.command);
 
-			valDirs.done();
+			ir.write(dirs, ownerBody, null, this.command);
+		}
 
-			final Block code = dirs.code();
-
-			if (code.exists()) {
-
-				final Block hasLocal = code.addBlock("has_local");
-
-				value.loadIndefinite(null, code)
-				.goUnless(code, hasLocal.head());
-				if (hasLocal.exists()) {
-					dirs.returnValue(hasLocal, value);
-				}
+		@Override
+		public String toString() {
+			if (this.command == null) {
+				return super.toString();
 			}
-			if (localUnknown.exists()) {
-				localUnknown.go(code.tail());
-			}
+			return this.command.toString();
 		}
 
 		private final ImperativeBlock getBlock() {
-			return (ImperativeBlock) getStatement();
+			return this.block;
 		}
 
 	}

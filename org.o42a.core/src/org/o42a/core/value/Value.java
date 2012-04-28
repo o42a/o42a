@@ -41,10 +41,6 @@ public abstract class Value<T> {
 		return ValueType.VOID.falseValue();
 	}
 
-	public static final Value<Void> unknownValue() {
-		return ValueType.VOID.unknownValue();
-	}
-
 	private final ValueStruct<?, T> valueStruct;
 	private final ValueKnowledge knowledge;
 

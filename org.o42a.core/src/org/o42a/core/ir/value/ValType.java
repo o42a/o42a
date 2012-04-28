@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.value;
 
-import static org.o42a.core.ir.value.Val.UNKNOWN_FLAG;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.AllocationCode;
@@ -76,13 +74,6 @@ public final class ValType extends Type<ValType.Op> {
 			value().setValue(val.getValue());
 		}
 
-		return this;
-	}
-
-	public final ValType setUnknown() {
-		flags().setValue(UNKNOWN_FLAG);
-		length().setValue(0);
-		value().setValue(0L);
 		return this;
 	}
 

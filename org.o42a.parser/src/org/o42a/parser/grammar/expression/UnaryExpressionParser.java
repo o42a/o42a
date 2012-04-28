@@ -52,10 +52,6 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 				operator = UnaryOperator.IS_TRUE;
 				context.acceptAll();
 				break;
-			case '-':
-				operator = UnaryOperator.KNOWN;
-				context.acceptAll();
-				break;
 			default:
 				operator = UnaryOperator.PLUS;
 				context.acceptButLast();
@@ -64,10 +60,6 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 		case '-':
 		case MINUS:
 			switch (context.next()) {
-			case '+':
-				operator = UnaryOperator.UNKNOWN;
-				context.acceptAll();
-				break;
 			case '-':
 				operator = UnaryOperator.NOT;
 				context.acceptAll();

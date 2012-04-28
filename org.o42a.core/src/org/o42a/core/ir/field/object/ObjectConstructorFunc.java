@@ -43,7 +43,7 @@ public class ObjectConstructorFunc extends ObjectFunc<ObjectConstructorFunc> {
 				null,
 				code,
 				OBJECT_CONSTRUCTOR.result(),
-				object != null ? object.toData(code) : code.nullDataPtr(),
+				object != null ? object.toData(null, code) : code.nullDataPtr(),
 				fld);
 	}
 

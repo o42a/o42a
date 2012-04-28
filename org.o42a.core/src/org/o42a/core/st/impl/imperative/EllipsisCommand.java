@@ -20,7 +20,6 @@
 package org.o42a.core.st.impl.imperative;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -95,8 +94,9 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
-			return new ExitCmd(builder, getEllipsis());
+		public Cmd cmd() {
+			assert getStatement().assertFullyResolved();
+			return new ExitCmd(getEllipsis());
 		}
 
 	}
@@ -118,40 +118,55 @@ abstract class EllipsisCommand extends Command {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
-			return new RepeatCmd(builder, getEllipsis());
+		public Cmd cmd() {
+			assert getStatement().assertFullyResolved();
+			return new RepeatCmd(getEllipsis());
 		}
 
 	}
 
-	private static final class ExitCmd extends Cmd {
+	private static final class ExitCmd implements Cmd {
 
-		ExitCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
+		private final EllipsisStatement statement;
+
+		ExitCmd(EllipsisStatement statement) {
+			this.statement = statement;
 		}
 
 		@Override
 		public void write(Control control) {
+			control.exitBraces(this.statement, this.statement.getName());
+		}
 
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.exitBraces(st, st.getName());
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
 		}
 
 	}
 
-	private static final class RepeatCmd extends Cmd {
+	private static final class RepeatCmd implements Cmd {
 
-		RepeatCmd(CodeBuilder builder, EllipsisStatement statement) {
-			super(builder, statement);
+		private final EllipsisStatement statement;
+
+		RepeatCmd(EllipsisStatement statement) {
+			this.statement = statement;
 		}
 
 		@Override
 		public void write(Control control) {
+			control.repeat(this.statement, this.statement.getName());
+		}
 
-			final EllipsisStatement st = (EllipsisStatement) getStatement();
-
-			control.repeat(st, st.getName());
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
 		}
 
 	}

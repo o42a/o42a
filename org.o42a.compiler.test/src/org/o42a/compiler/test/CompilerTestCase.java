@@ -99,9 +99,6 @@ public abstract class CompilerTestCase {
 				"Value is not definite: " + value,
 				value.getKnowledge().isKnownToCompiler());
 		assertFalse(
-				"Value is unknown: " + value,
-				value.getKnowledge().hasUnknownCondition());
-		assertFalse(
 				"Value is false: " + value,
 				value.getKnowledge().isFalse());
 
@@ -127,9 +124,6 @@ public abstract class CompilerTestCase {
 		assertTrue(
 				"Value is not definite: " + value,
 				value.getKnowledge().isKnownToCompiler());
-		assertFalse(
-				"Value is unknown: " + value,
-				value.getKnowledge().hasUnknownCondition());
 		assertFalse(
 				"Value is false: " + value,
 				value.getKnowledge().isFalse());
@@ -177,7 +171,7 @@ public abstract class CompilerTestCase {
 		return linkTarget(scope.toObject());
 	}
 
-	public static void assertTrueValue(LogicalValue condition) {
+	public static void assertTrueValue(Condition condition) {
 		assertTrue(condition + " is not true", condition.isTrue());
 	}
 
@@ -187,7 +181,7 @@ public abstract class CompilerTestCase {
 				value.getKnowledge().getCondition().isTrue());
 	}
 
-	public static void assertFalseValue(LogicalValue condition) {
+	public static void assertFalseValue(Condition condition) {
 		assertTrue(condition + " is not false", condition.isFalse());
 	}
 
@@ -197,23 +191,10 @@ public abstract class CompilerTestCase {
 				value.getKnowledge().isFalse());
 	}
 
-	public static void assertKnownValue(Value<?> value) {
-		assertFalse(
-				value + " is unknown",
-				value.getKnowledge().hasUnknownCondition());
-	}
-
 	public static void assertRuntimeValue(Value<?> value) {
-		assertKnownValue(value);
 		assertFalse(
 				value + " is definite",
 				value.getKnowledge().isKnownToCompiler());
-	}
-
-	public static void assertUnknownValue(Value<?> value) {
-		assertTrue(
-				value + " is known",
-				value.getKnowledge().hasUnknownCondition());
 	}
 
 	public static void assertTrueVoid(Field field) {
@@ -238,18 +219,6 @@ public abstract class CompilerTestCase {
 				ValueType.VOID,
 				object.value().getValueType());
 		assertFalseValue(object.value().getValue());
-	}
-
-	public static void assertUnknownVoid(Field field) {
-		assertUnknownVoid(field.toObject());
-	}
-
-	public static void assertUnknownVoid(Obj object) {
-		assertEquals(
-				object + " is not void",
-				ValueType.VOID,
-				object.value().getValueType());
-		assertKnownValue(object.value().getValue());
 	}
 
 	public static Field field(

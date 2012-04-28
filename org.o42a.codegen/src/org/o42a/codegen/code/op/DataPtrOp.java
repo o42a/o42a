@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Compiler Code Generator
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.debug.Dumpable;
 
 
-public interface CondOp {
-
-	BoolOp loadCondition(CodeId id, Code code);
-
-	BoolOp loadUnknown(CodeId id, Code code);
-
-	void go(Block code, CodeDirs dirs);
+public interface DataPtrOp<P extends DataPtrOp<P>> extends PtrOp<P>, Dumpable {
 
 }

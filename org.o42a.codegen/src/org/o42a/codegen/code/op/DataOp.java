@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Type;
 
 
-public interface DataOp extends PtrOp<DataOp> {
+public interface DataOp extends DataPtrOp<DataOp> {
 
 	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
 

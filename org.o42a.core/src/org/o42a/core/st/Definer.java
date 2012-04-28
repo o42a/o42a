@@ -39,7 +39,6 @@ public abstract class Definer extends Implication<Definer> {
 	}
 
 	private final DefinerEnv env;
-	private Eval eval;
 
 	public Definer(Statement statement, DefinerEnv env) {
 		super(statement);
@@ -72,18 +71,7 @@ public abstract class Definer extends Implication<Definer> {
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public Eval eval(CodeBuilder builder) {
-
-		final Eval eval = this.eval;
-
-		if (eval != null && eval.getBuilder() == builder) {
-			return eval;
-		}
-
-		assert getStatement().assertFullyResolved();
-
-		return this.eval = createEval(builder);
-	}
+	public abstract Eval eval(CodeBuilder builder);
 
 	protected final DefTargets expressionDef() {
 		return new DefTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);
@@ -104,7 +92,5 @@ public abstract class Definer extends Implication<Definer> {
 	}
 
 	protected abstract void fullyResolve(Resolver resolver);
-
-	protected abstract Eval createEval(CodeBuilder builder);
 
 }

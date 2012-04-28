@@ -19,32 +19,33 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
-public class RefOpEval extends RefEval {
+public class RefOpEval implements Eval {
 
-	public RefOpEval(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
+	private final Ref ref;
+
+	public RefOpEval(Ref ref) {
+		this.ref = ref;
 	}
 
-	@Override
-	public void writeCond(CodeDirs dirs, HostOp host) {
-		getRef().op(host).writeCond(dirs);
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
+		dirs.returnValue(getRef().op(host).writeValue(dirs.valDirs()));
+	}
 
-		final DefDirs defDirs = dirs.falseWhenUnknown();
-		final ValOp value = getRef().op(host).writeValue(defDirs.valDirs());
-
-		defDirs.done();
-		dirs.returnValue(value);
+	@Override
+	public String toString() {
+		if (this.ref == null) {
+			return super.toString();
+		}
+		return this.ref.toString();
 	}
 
 }

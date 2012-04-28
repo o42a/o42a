@@ -20,8 +20,9 @@
 package org.o42a.core.ref.impl.cond;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.local.*;
+import org.o42a.core.ir.local.Cmd;
+import org.o42a.core.ir.local.Control;
+import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
@@ -30,26 +31,25 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
+import org.o42a.core.st.action.ExecuteCommand;
 import org.o42a.core.value.Directive;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
 final class RefConditionCommand extends Command {
 
-	private final RefCommand refCommand;
+	private InlineValue normal;
 
 	RefConditionCommand(RefCondition ref, CommandEnv env) {
 		super(ref, env);
-		this.refCommand = ref.getRef().command(new Env(env));
 	}
 
 	public final Ref getRef() {
-		return ((RefCondition) getStatement()).getRef();
+		return getRefCondition().getRef();
 	}
 
-	public final RefCommand getRefCommand() {
-		return this.refCommand;
+	public final RefCondition getRefCondition() {
+		return (RefCondition) getStatement();
 	}
 
 	@Override
@@ -79,7 +79,9 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return getRefCommand().initialCond(resolver);
+		return new ExecuteCommand(
+				this,
+				getRef().value(resolver).getKnowledge().getCondition());
 	}
 
 	@Override
@@ -107,30 +109,23 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		getRefCommand().normalize(normalizer);
+		this.normal = getRef().inline(
+				normalizer.newNormalizer(),
+				normalizer.getNormalizedScope());
+	}
+
+	@Override
+	public Cmd cmd() {
+		assert getStatement().assertFullyResolved();
+		if (this.normal == null) {
+			return new CondCmd(getRefCondition());
+		}
+		return new NormalCondCmd(getRefCondition(), this.normal);
 	}
 
 	@Override
 	protected void fullyResolve(LocalResolver resolver) {
 		getRef().resolve(resolver).resolveLogical();
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new CondCmd(builder, getRef(), getRefCommand());
-	}
-
-	private final static class Env extends CommandEnv {
-
-		Env(CommandEnv initialEnv) {
-			super(initialEnv.getStatements());
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return null;// To prevent Ref adaption.
-		}
-
 	}
 
 	private static final class Inline extends InlineCmd {
@@ -145,7 +140,7 @@ final class RefConditionCommand extends Command {
 		@Override
 		public void write(Control control) {
 
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+			final CodeDirs dirs = control.getBuilder().dirs(
 					control.code(),
 					control.falseDir());
 
@@ -167,18 +162,52 @@ final class RefConditionCommand extends Command {
 
 	}
 
-	private static final class CondCmd extends Cmd {
+	private static final class NormalCondCmd implements Cmd {
 
-		private final RefCmd refCmd;
+		private final InlineValue value;
 
-		CondCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
-			super(builder, ref);
-			this.refCmd = refCommand.cmd(builder);
+		NormalCondCmd(RefCondition statement, InlineValue value) {
+			this.value = value;
 		}
 
 		@Override
 		public void write(Control control) {
-			this.refCmd.writeCond(control);
+			this.value.writeCond(control.dirs(), control.host());
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
+		}
+
+	}
+
+	private static final class CondCmd implements Cmd {
+
+		private final RefCondition statement;
+
+		CondCmd(RefCondition statement) {
+			this.statement = statement;
+		}
+
+		@Override
+		public void write(Control control) {
+			ref().op(control.host()).writeCond(control.dirs());
+		}
+
+		@Override
+		public String toString() {
+			if (this.statement == null) {
+				return super.toString();
+			}
+			return this.statement.toString();
+		}
+
+		private final Ref ref() {
+			return this.statement.getRef();
 		}
 
 	}

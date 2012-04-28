@@ -21,25 +21,30 @@ package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.st.impl.imperative.ImperativeOp.writeSentences;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.st.sentence.ImperativeBlock;
 
 
-public final class ImperativeBlockCmd extends Cmd {
+public final class ImperativeBlockCmd implements Cmd {
 
-	public ImperativeBlockCmd(CodeBuilder builder, ImperativeBlock block) {
-		super(builder, block);
+	private final ImperativeBlock block;
+
+	public ImperativeBlockCmd(ImperativeBlock block) {
+		this.block = block;
 	}
 
 	@Override
 	public void write(Control control) {
-		writeSentences(control, getBlock(), null);
+		writeSentences(control, this.block, null);
 	}
 
-	private final ImperativeBlock getBlock() {
-		return (ImperativeBlock) getStatement();
+	@Override
+	public String toString() {
+		if (this.block == null) {
+			return super.toString();
+		}
+		return this.block.toString();
 	}
 
 }

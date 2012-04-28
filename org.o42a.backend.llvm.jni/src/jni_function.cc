@@ -159,16 +159,13 @@ jlong Java_org_o42a_backend_llvm_code_op_LLFunc_call(
 		args[i] = from_ptr<Value>(argArray[i]);
 	}
 
-	Value *result;
-
-	if (id) {
-		result = builder.CreateCall(
-				callee,
-				ArrayRef<Value*>(args, numArgs),
-				StringRef(from_ptr<char>(id), idLen));
-	} else {
-		result = builder.CreateCall(callee, ArrayRef<Value*>(args, numArgs));
+	if (!id) {
+		return to_instr_ptr(
+				builder.CreateCall(callee, ArrayRef<Value*>(args, numArgs)));
 	}
 
-	return to_ptr<Value>(result);
+	return to_instr_ptr(builder.CreateCall(
+			callee,
+			ArrayRef<Value*>(args, numArgs),
+			StringRef(from_ptr<char>(id), idLen)));
 }

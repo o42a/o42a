@@ -106,13 +106,13 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 				targetRef.resolve(targetRef.getScope().dummyResolver());
 
 		if (resolution.isError() || !resolution.isResolved()) {
-			return UNKNOWN_VALUE;
+			return FALSE_VALUE;
 		}
 
 		final Obj target = resolution.toObject();
 
 		if (target == null) {
-			return UNKNOWN_VALUE;
+			return FALSE_VALUE;
 		}
 		if (target.getConstructionMode().isRuntime()) {
 			if (!getLink().getValueType().isVariable()) {

@@ -25,7 +25,6 @@ import static org.o42a.core.st.impl.imperative.InlineImperativeBlock.inlineBlock
 import java.util.List;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -40,7 +39,7 @@ import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 
 
 public final class BlockCommand extends Command {
@@ -99,7 +98,7 @@ public final class BlockCommand extends Command {
 	@Override
 	public Action initialValue(LocalResolver resolver) {
 		if (getCommandTargets().isEmpty()) {
-			return new ExecuteCommand(this, LogicalValue.TRUE);
+			return new ExecuteCommand(this, Condition.TRUE);
 		}
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
@@ -113,21 +112,21 @@ public final class BlockCommand extends Command {
 			case PULL:
 				return action;
 			case EXIT:
-				return new ExecuteCommand(action, action.getLogicalValue());
+				return new ExecuteCommand(action, action.getCondition());
 			case REPEAT:
 				// Repeating is not supported at compile time.
-				return new ExecuteCommand(this, LogicalValue.RUNTIME);
+				return new ExecuteCommand(this, Condition.RUNTIME);
 			}
 
 			throw new IllegalStateException("Unhandled action: " + action);
 		}
 
-		return new ExecuteCommand(this, LogicalValue.TRUE);
+		return new ExecuteCommand(this, Condition.TRUE);
 	}
 
 	@Override
 	public Action initialCond(LocalResolver resolver) {
-		return initialValue(resolver).toInitialLogicalValue();
+		return initialValue(resolver).toInitialCondition();
 	}
 
 	@Override
@@ -158,16 +157,17 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
+	public Cmd cmd() {
+		assert getStatement().assertFullyResolved();
+		return new ImperativeBlockCmd(getBlock());
+	}
+
+	@Override
 	protected void fullyResolve(LocalResolver resolver) {
 		getCommandTargets();
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 			resolveSentence(resolver, sentence);
 		}
-	}
-
-	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return new ImperativeBlockCmd(builder, getBlock());
 	}
 
 	private CommandTargets sentenceTargets() {
@@ -213,7 +213,7 @@ public final class BlockCommand extends Command {
 			ImperativeSentence sentence,
 			LocalResolver resolver) {
 		if (sentence.getCommandTargets().isEmpty()) {
-			return new ExecuteCommand(this, LogicalValue.TRUE);
+			return new ExecuteCommand(this, Condition.TRUE);
 		}
 
 		final ImperativeSentence prerequisite = sentence.getPrerequisite();
@@ -225,15 +225,15 @@ public final class BlockCommand extends Command {
 			assert !action.isAbort() :
 				"Prerequisite can not abort execution";
 
-			final LogicalValue logicalValue = action.getLogicalValue();
+			final Condition condition = action.getCondition();
 
-			if (!logicalValue.isConstant()) {
+			if (!condition.isConstant()) {
 				// Can not go on.
 				return action;
 			}
-			if (logicalValue.isFalse()) {
+			if (condition.isFalse()) {
 				// Skip this sentence, as it`s prerequisite not satisfied.
-				return new ExecuteCommand(sentence, LogicalValue.TRUE);
+				return new ExecuteCommand(sentence, Condition.TRUE);
 			}
 		}
 
@@ -250,13 +250,13 @@ public final class BlockCommand extends Command {
 				return action;
 			}
 
-			final LogicalValue logicalValue = action.getLogicalValue();
+			final Condition condition = action.getCondition();
 
-			if (!logicalValue.isConstant()) {
+			if (!condition.isConstant()) {
 				// can not go on
 				return action;
 			}
-			if (result != null && !result.getLogicalValue().isTrue()) {
+			if (result != null && !result.getCondition().isTrue()) {
 				return result;
 			}
 
@@ -270,7 +270,7 @@ public final class BlockCommand extends Command {
 			return result;
 		}
 
-		return new ExecuteCommand(sentence, LogicalValue.TRUE);
+		return new ExecuteCommand(sentence, Condition.TRUE);
 	}
 
 	private Action initialValue(Imperatives alt, LocalResolver resolver) {
@@ -284,7 +284,7 @@ public final class BlockCommand extends Command {
 			if (action.isAbort()) {
 				return action;
 			}
-			if (!action.getLogicalValue().isFalse()) {
+			if (!action.getCondition().isFalse()) {
 				return action;
 			}
 
@@ -295,7 +295,7 @@ public final class BlockCommand extends Command {
 			return result;
 		}
 
-		return new ExecuteCommand(alt, LogicalValue.TRUE);
+		return new ExecuteCommand(alt, Condition.TRUE);
 	}
 
 	private static DefTarget sentenceTarget(ImperativeSentence sentence) {

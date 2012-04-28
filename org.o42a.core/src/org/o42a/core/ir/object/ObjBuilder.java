@@ -63,7 +63,7 @@ public final class ObjBuilder extends CodeBuilder {
 		case EXACT:
 			return hostIR.getObjectIR().op(this, code).cast(
 					null,
-					falseWhenUnknown(code, exit),
+					dirs(code, exit),
 					hostType);
 		case COMPATIBLE:
 			return getFunction().arg(code, getObjectSignature().object())
@@ -78,7 +78,7 @@ public final class ObjBuilder extends CodeBuilder {
 
 			return host.cast(
 					code.id("host"),
-					falseWhenUnknown(code, exit),
+					dirs(code, exit),
 					hostType);
 		}
 

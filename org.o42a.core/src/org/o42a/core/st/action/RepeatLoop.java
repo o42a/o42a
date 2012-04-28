@@ -21,11 +21,11 @@ package org.o42a.core.st.action;
 
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 
 
-public class RepeatLoop extends LogicalAction {
+public class RepeatLoop extends ConditionAction {
 
 	private final String blockName;
 
@@ -44,8 +44,8 @@ public class RepeatLoop extends LogicalAction {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return LogicalValue.RUNTIME;
+	public Condition getCondition() {
+		return Condition.RUNTIME;
 	}
 
 	@Override

@@ -36,18 +36,21 @@ public class DefDirs {
 
 	private final ValDirs valDirs;
 	private final Shared shared;
+	private final boolean ownsValDirs;
 
-	public DefDirs(ValDirs valDirs, CodePos returnDir) {
+	public DefDirs(ValDirs valDirs, CodePos returnDir, boolean ownsValDirs) {
 		assert valDirs != null :
 			"Value directions not specified";
 		assert returnDir != null :
 			"Return direction not specified";
 		this.valDirs = valDirs;
+		this.ownsValDirs = ownsValDirs;
 		this.shared = new Shared(returnDir);
 	}
 
-	private DefDirs(DefDirs prototype, ValDirs valDirs) {
+	private DefDirs(DefDirs prototype, ValDirs valDirs, boolean ownsValDirs) {
 		this.valDirs = valDirs;
+		this.ownsValDirs = ownsValDirs;
 		this.shared = prototype.shared;
 	}
 
@@ -59,16 +62,16 @@ public class DefDirs {
 		return valDirs().getBuilder();
 	}
 
+	public final boolean isDebug() {
+		return dirs().isDebug();
+	}
+
 	public final ValueStruct<?, ?> getValueStruct() {
 		return valDirs().getValueStruct();
 	}
 
 	public final ValueType<?> getValueType() {
 		return getValueStruct().getValueType();
-	}
-
-	public final boolean isFalseWhenUnknown() {
-		return dirs().isFalseWhenUnknown();
 	}
 
 	public final CodeDirs dirs() {
@@ -81,10 +84,6 @@ public class DefDirs {
 
 	public final CodePos falseDir() {
 		return valDirs().falseDir();
-	}
-
-	public final CodePos unknownDir() {
-		return valDirs().unknownDir();
 	}
 
 	public final Block code() {
@@ -108,7 +107,7 @@ public class DefDirs {
 
 	public void returnValue(Block code, ValOp value) {
 		this.shared.store(code, value);
-		code.go(this.shared.returnDir);
+		code.go(returnDir());
 	}
 
 	public final CodeId id() {
@@ -136,33 +135,33 @@ public class DefDirs {
 	}
 
 	public final DefDirs sub(Block code) {
-		return new DefDirs(this, valDirs().sub(code));
+		return new DefDirs(this, valDirs().sub(code), true);
 	}
 
-	public final DefDirs falseWhenUnknown() {
+	public final DefDirs begin(String message) {
 
-		final ValDirs dirs = valDirs();
+		final ValDirs oldDirs = valDirs();
+		final ValDirs newDirs = oldDirs.begin(message);
 
-		if (dirs.falseDir() == dirs.unknownDir()) {
-			return this;
+		if (newDirs == oldDirs) {
+			return new DefDirs(this, newDirs, false);
 		}
 
-		return new DefDirs(this, dirs.falseWhenUnknown());
+		return new DebugDefDirs(this, newDirs);
 	}
 
-	public final DefDirs falseWhenUnknown(CodePos falsePos) {
+	public final DefDirs setFalseDir(CodePos falsePos) {
 
 		final ValDirs dirs = valDirs();
+		final ValDirs newDirs = dirs.setFalseDir(falsePos);
 
-		if (dirs.falseDir() == dirs.unknownDir()) {
-			return this;
-		}
-
-		return new DefDirs(this, dirs.falseWhenUnknown(falsePos));
+		return new DefDirs(this, newDirs, dirs != newDirs);
 	}
 
-	public final void done() {
-		valDirs().done();
+	public void done() {
+		if (this.ownsValDirs) {
+			valDirs().done();
+		}
 	}
 
 	@Override
@@ -171,6 +170,10 @@ public class DefDirs {
 			return super.toString();
 		}
 		return dirs().toString("DefDirs", code());
+	}
+
+	CodePos returnDir() {
+		return this.shared.returnDir;
 	}
 
 	private final class Shared {
@@ -196,6 +199,35 @@ public class DefDirs {
 				this.storeInstantly = true;
 			}
 			value().store(code, result);
+		}
+
+	}
+
+	private static final class DebugDefDirs extends DefDirs {
+
+		private final DefDirs enclosing;
+		private Block returnCode;
+
+		DebugDefDirs(DefDirs enclosing, ValDirs valDirs) {
+			super(enclosing, valDirs, true);
+			this.enclosing = enclosing;
+		}
+
+		@Override
+		public void done() {
+			super.done();
+			if (this.returnCode != null && this.returnCode.exists()) {
+				this.returnCode.end();
+				this.enclosing.returnValue(this.returnCode, result());
+			}
+		}
+
+		@Override
+		CodePos returnDir() {
+			if (this.returnCode == null) {
+				this.returnCode = addBlock("debug_result");
+			}
+			return this.returnCode.head();
 		}
 
 	}

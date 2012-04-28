@@ -22,7 +22,7 @@ package org.o42a.core.st.action;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 
@@ -52,16 +52,16 @@ public class ReturnValue extends Action {
 	}
 
 	@Override
-	public LogicalValue getLogicalValue() {
-		return getValue().getKnowledge().toLogicalValue();
+	public Condition getCondition() {
+		return getValue().getKnowledge().getCondition();
 	}
 
 	@Override
-	public Action toInitialLogicalValue() {
+	public Action toInitialCondition() {
 		return new ReturnValue(
 				this,
 				this.resolver,
-				getValue().getKnowledge().toLogicalValue().toValue(
+				getValue().getKnowledge().getCondition().toValue(
 						ValueStruct.VOID));
 	}
 

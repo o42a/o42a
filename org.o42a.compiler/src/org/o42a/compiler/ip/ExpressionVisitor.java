@@ -87,8 +87,6 @@ public final class ExpressionVisitor
 			return phrase.toRef();
 		case IS_TRUE:
 		case NOT:
-		case KNOWN:
-		case UNKNOWN:
 			return new LogicalExpression(
 					ip(),
 					p.getContext(),

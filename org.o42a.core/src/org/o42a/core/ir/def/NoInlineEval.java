@@ -36,6 +36,11 @@ final class NoInlineEval extends InlineEval {
 	}
 
 	@Override
+	public String toString() {
+		return "_";
+	}
+
+	@Override
 	protected Cancelable cancelable() {
 		return null;
 	}

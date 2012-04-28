@@ -17,26 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.st.action;
 
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ref.Normal;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.impl.normalizer.InlineFalse;
-import org.o42a.core.ref.impl.normalizer.InlineTrue;
-import org.o42a.core.ref.impl.normalizer.UnknownInlineCond;
+import org.o42a.core.ScopeInfo;
 
 
-public abstract class InlineCond extends Normal {
+public abstract class ConditionAction extends Action {
 
-	public static final InlineCond INLINE_TRUE = InlineTrue.INSTANCE;
-	public static final InlineCond INLINE_FALSE = InlineFalse.INSTANCE;
-	public static final InlineCond INLINE_UNKNOWN = UnknownInlineCond.INSTANCE;
-
-	public InlineCond(Normalizer normalizer) {
-		super(normalizer);
+	public ConditionAction(ScopeInfo statement) {
+		super(statement);
 	}
 
-	public abstract void writeCond(CodeDirs dirs, HostOp host);
+	@Override
+	public Action toInitialCondition() {
+		return this;
+	}
 
 }

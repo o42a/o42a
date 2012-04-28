@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.assignment;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -32,7 +31,7 @@ import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 
 
 final class AssignmentCommand extends Command {
@@ -65,7 +64,7 @@ final class AssignmentCommand extends Command {
 
 	@Override
 	public Action initialValue(LocalResolver resolver) {
-		return new ExecuteCommand(this, LogicalValue.RUNTIME);
+		return new ExecuteCommand(this, Condition.RUNTIME);
 	}
 
 	@Override
@@ -98,13 +97,14 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		getAssignmentKind().resolve(resolver);
+	public Cmd cmd() {
+		assert getStatement().assertFullyResolved();
+		return getAssignmentKind().cmd();
 	}
 
 	@Override
-	protected Cmd createCmd(CodeBuilder builder) {
-		return getAssignmentKind().op(builder);
+	protected void fullyResolve(LocalResolver resolver) {
+		getAssignmentKind().resolve(resolver);
 	}
 
 }

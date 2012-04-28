@@ -23,6 +23,9 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -92,10 +95,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue operandValue = operand().inline(normalizer, origin);
 
@@ -103,23 +103,12 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 			return null;
 		}
 
-		return new Inline(valueStruct, operandValue);
+		return new InlineUnary(this, operandValue);
 	}
 
 	@Override
-	public final ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs operandDirs =
-				dirs.dirs().value(getOperandStruct(), "operand");
-		final ValOp operandVal = operand().op(host).writeValue(operandDirs);
-
-		final ValDirs resultDirs = operandDirs.dirs().value(dirs);
-		final ValOp result = write(resultDirs, operandVal);
-
-		resultDirs.done();
-		operandDirs.done();
-
-		return result;
+	public Eval evalBuiltin() {
+		return new UnaryEval(this);
 	}
 
 	protected abstract T calculate(O operand);
@@ -138,40 +127,80 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		return this.operand = path.bind(this, getScope()).target(distribute());
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class InlineUnary extends InlineEval {
 
+		private final UnaryResult<?, ?> unary;
 		private final InlineValue operandValue;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue operandValue) {
-			super(null, valueStruct);
+		InlineUnary(UnaryResult<?, ?> unary, InlineValue operandValue) {
+			super(null);
+			this.unary = unary;
 			this.operandValue = operandValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs operandDirs =
-					dirs.dirs().value(getOperandStruct(), "operand");
+			final ValDirs operandDirs = dirs.dirs().value(
+					this.unary.getOperandStruct(),
+					"operand");
 			final ValOp operandVal =
 					this.operandValue.writeValue(operandDirs, host);
 
-			final ValDirs resultDirs = operandDirs.dirs().value(dirs);
-			final ValOp result = write(resultDirs, operandVal);
+			final ValDirs resultDirs = operandDirs.dirs().value(dirs.valDirs());
+			final ValOp result = this.unary.write(resultDirs, operandVal);
 
+			dirs.returnValue(resultDirs.code(), result);
 			resultDirs.done();
 			operandDirs.done();
-
-			return result;
 		}
 
 		@Override
 		public String toString() {
-			return UnaryResult.this.toString();
+			if (this.unary == null) {
+				return super.toString();
+			}
+			return this.unary.toString();
 		}
 
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class UnaryEval implements Eval {
+
+		private final UnaryResult<?, ?> unary;
+
+		UnaryEval(UnaryResult<?, ?> unary) {
+			this.unary = unary;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValDirs operandDirs = dirs.dirs().value(
+					this.unary.getOperandStruct(),
+					"operand");
+			final ValOp operandVal =
+					this.unary.operand().op(host).writeValue(operandDirs);
+
+			final ValDirs resultDirs = operandDirs.dirs().value(dirs.valDirs());
+			final ValOp result = this.unary.write(resultDirs, operandVal);
+
+			dirs.returnValue(resultDirs.code(), result);
+			resultDirs.done();
+			operandDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.unary == null) {
+				return super.toString();
+			}
+			return this.unary.toString();
 		}
 
 	}

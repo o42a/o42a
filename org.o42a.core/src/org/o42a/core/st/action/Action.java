@@ -24,7 +24,7 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.st.sentence.ImperativeBlock;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
@@ -54,11 +54,11 @@ public abstract class Action implements ScopeInfo {
 
 	public abstract boolean isAbort();
 
-	public abstract LogicalValue getLogicalValue();
+	public abstract Condition getCondition();
 
 	public abstract Value<?> getValue();
 
-	public abstract Action toInitialLogicalValue();
+	public abstract Action toInitialCondition();
 
 	public abstract LoopAction toLoopAction(ImperativeBlock block);
 
