@@ -19,22 +19,17 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.FuncRec;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 import org.o42a.core.object.value.ObjectValuePart;
-import org.o42a.core.value.Condition;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 
 
 public final class ObjectValueFunc extends ObjectValueIRFunc {
@@ -59,11 +54,11 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 	}
 
 	@Override
-	protected Value<?> determineConstant() {
+	protected DefValue determineConstant() {
 
-		final Value<?> claim = getValueIR().claim().getConstant();
+		final DefValue claim = getValueIR().claim().getConstant();
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
+		if (claim.hasValue() || !claim.getCondition().isTrue()) {
 			return claim;
 		}
 
@@ -71,15 +66,15 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 	}
 
 	@Override
-	protected Value<?> determineFinal() {
-		if (!getValueIR().claim().getFinal().getKnowledge().isKnown()
-				|| !getValueIR().proposition().getFinal()
-				.getKnowledge().isKnown()) {
-			return getValueStruct().runtimeValue();
+	protected DefValue determineFinal() {
+
+		final DefValue claim = getValueIR().claim().getFinal();
+
+		if (claim.hasValue() || !claim.getCondition().isTrue()) {
+			return claim;
 		}
 
-		return getObject().value().getDefinitions().value(
-				getObject().getScope().dummyResolver());
+		return getValueIR().proposition().getFinal();
 	}
 
 	@Override
@@ -97,80 +92,32 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 		final ObjectValueIR valueIR = getValueIR();
 		final FuncPtr<ObjectValFunc> reused;
 		final ObjectClaimFunc claim = valueIR.claim();
-		final Value<?> finalClaim = claim.getFinal();
+		final DefValue finalClaim = claim.getFinal();
 
-		if (finalClaim.getKnowledge().isKnown()) {
-			if (finalClaim.getKnowledge().getCondition() == Condition.FALSE) {
-				reused = falseValFunc();
-			} else {
-				reused = valueIR.proposition().getNotStub();
-				if (reused == null) {
-					return;
-				}
-			}
-		} else if (!valueIR.proposition().getFinal().getKnowledge().isKnown()) {
-			return;
-		} else {
-			reused = claim.getNotStub();
-			if (reused == null) {
+		if (isConstantValue(finalClaim)) {
+			if (finalClaim.getCondition().isFalse()) {
+				reuse(falseValFunc());
 				return;
 			}
+			reused = valueIR.proposition().getNotStub();
+			if (reused != null) {
+				reuse(reused);
+			}
+			return;
 		}
-
-		reuse(reused);
+		if (!isConstantValue(valueIR.proposition().getFinal())) {
+			return;
+		}
+		reused = claim.getNotStub();
+		if (reused != null) {
+			reuse(reused);
+		}
 	}
 
 	@Override
-	protected ValOp build(ValDirs dirs, ObjOp host) {
-
-		final Block code = dirs.code();
-		final Block unknownClaim = dirs.addBlock("unknown_claim");
-		final ValDirs claimDirs =
-				dirs.dirs().splitWhenUnknown(
-						dirs.dirs().falseDir(),
-						unknownClaim.head())
-				.value(dirs);
-		final ValOp claim = getValueIR().writeClaim(claimDirs, host, null);
-
-		if (!code.exists()) {
-			claimDirs.done();
-			if (!unknownClaim.exists()) {
-				return claim;
-			}
-
-			unknownClaim.go(code.tail());
-			dirs.setStoreMode(INITIAL_VAL_STORE);
-
-			return getValueIR().writeProposition(dirs, host, null);
-		}
-		if (!unknownClaim.exists()) {
-			claimDirs.done();
-			return claim;
-		}
-
-		final ValType.Op result1 = code.phi(null, claim.ptr());
-
-		claimDirs.done();
-
-		final ValType.Op result2 = writeProposition(dirs, unknownClaim, host);
-
-		unknownClaim.go(code.tail());
-
-		return code.phi(null, result1, result2).op(
-				dirs.getBuilder(),
-				getObject().value().getValueStruct());
-	}
-
-	private ValType.Op writeProposition(ValDirs dirs, Block code, ObjOp host) {
-
-		final ValDirs propDirs = dirs.sub(code).setStoreMode(INITIAL_VAL_STORE);
-		final ValType.Op prop = code.phi(
-				null,
-				getValueIR().writeProposition(propDirs, host, null).ptr());
-
-		propDirs.done();
-
-		return prop;
+	protected void build(DefDirs dirs, ObjOp host) {
+		getValueIR().writeClaim(dirs, host, null);
+		getValueIR().writeProposition(dirs, host, null);
 	}
 
 }

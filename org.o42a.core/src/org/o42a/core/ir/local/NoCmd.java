@@ -19,18 +19,19 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.st.Statement;
 
+final class NoCmd implements Cmd {
 
-final class NoCmd extends Cmd {
-
-	NoCmd(CodeBuilder builder, Statement statement) {
-		super(builder, statement);
+	NoCmd() {
 	}
 
 	@Override
 	public void write(Control control) {
+	}
+
+	@Override
+	public String toString() {
+		return "_";
 	}
 
 }

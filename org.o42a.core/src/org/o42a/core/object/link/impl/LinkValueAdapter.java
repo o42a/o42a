@@ -22,12 +22,10 @@ package org.o42a.core.object.link.impl;
 import static org.o42a.core.object.link.impl.LinkCopy.linkValue;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.RefOpEval;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -91,7 +89,7 @@ public class LinkValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
+	public Eval eval() {
 
 		final LinkValueStruct fromStruct =
 				getAdaptedRef()
@@ -99,10 +97,10 @@ public class LinkValueAdapter extends ValueAdapter {
 				.toLinkStruct();
 
 		if (getExpectedStruct().assignableFrom(fromStruct)) {
-			return new RefOpEval(builder, getAdaptedRef());
+			return new RefOpEval(getAdaptedRef());
 		}
 
-		return new LinkEval(builder, getAdaptedRef(), fromStruct);
+		return new LinkEval(getAdaptedRef(), fromStruct);
 	}
 
 	@Override
@@ -110,18 +108,18 @@ public class LinkValueAdapter extends ValueAdapter {
 		getAdaptedRef().resolve(resolver).resolveValue();
 	}
 
-	private static final class LinkEval extends RefEval {
+	private static final class LinkEval implements Eval {
 
 		private final LinkValueStruct fromStruct;
+		private final Ref ref;
 
-		LinkEval(CodeBuilder builder, Ref ref, LinkValueStruct fromStruct) {
-			super(builder, ref);
+		LinkEval(Ref ref, LinkValueStruct fromStruct) {
+			this.ref = ref;
 			this.fromStruct = fromStruct;
 		}
 
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			getRef().op(host).writeCond(dirs);
+		public final Ref getRef() {
+			return this.ref;
 		}
 
 		@Override
@@ -130,8 +128,16 @@ public class LinkValueAdapter extends ValueAdapter {
 			final ValDirs fromDirs = dirs.dirs().value(this.fromStruct);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 
-			fromDirs.done();
 			dirs.returnValue(from);
+			fromDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

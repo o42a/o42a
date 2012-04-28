@@ -23,7 +23,6 @@ import static org.o42a.core.st.CommandTargets.NO_COMMANDS;
 import static org.o42a.core.st.ImplicationTargets.*;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -45,7 +44,6 @@ public abstract class Command extends Implication<Command> {
 	}
 
 	private final CommandEnv env;
-	private Cmd cmd;
 
 	public Command(Statement statement, CommandEnv env) {
 		super(statement);
@@ -78,22 +76,9 @@ public abstract class Command extends Implication<Command> {
 
 	public abstract void normalize(RootNormalizer normalizer);
 
-	public Cmd cmd(CodeBuilder builder) {
-
-		final Cmd cmd = this.cmd;
-
-		if (cmd != null && cmd.getBuilder() == builder) {
-			return cmd;
-		}
-
-		assert getStatement().assertFullyResolved();
-
-		return this.cmd = createCmd(builder);
-	}
+	public abstract Cmd cmd();
 
 	protected abstract void fullyResolve(LocalResolver resolver);
-
-	protected abstract Cmd createCmd(CodeBuilder builder);
 
 	protected final CommandTargets actionCommand() {
 		return new CommandTargets(

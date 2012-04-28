@@ -26,6 +26,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.value.ValueStruct;
@@ -38,7 +39,6 @@ public abstract class ValDirs {
 	private final Block code;
 	private final ValueStruct<?, ?> valueStruct;
 	private Block falseCode;
-	private Block unknownCode;
 	protected CodeDirs dirs;
 
 	ValDirs(CodeBuilder builder, Block code, ValueStruct<?, ?> valueStruct) {
@@ -96,16 +96,8 @@ public abstract class ValDirs {
 		return this.code.addBlock(name);
 	}
 
-	public final boolean isFalseWhenUnknown() {
-		return dirs().isFalseWhenUnknown();
-	}
-
 	public final CodePos falseDir() {
 		return dirs().falseDir();
-	}
-
-	public final CodePos unknownDir() {
-		return dirs().unknownDir();
 	}
 
 	public ValOp value() {
@@ -121,6 +113,22 @@ public abstract class ValDirs {
 		return this.dirs = createDirs();
 	}
 
+	public final DefDirs def() {
+		return new ValDefDirs(this, addBlock("result"), true);
+	}
+
+	public final DefDirs subDef() {
+		return new ValDefDirs(this, addBlock("result"), false);
+	}
+
+	public final DefDirs def(CodePos returnDir) {
+		return new DefDirs(this, returnDir, true);
+	}
+
+	public final DefDirs subDef(CodePos returnDir) {
+		return new DefDirs(this, returnDir, false);
+	}
+
 	public final ValDirs sub(String name) {
 		return sub(addBlock(name));
 	}
@@ -133,33 +141,16 @@ public abstract class ValDirs {
 		return dirs().sub(code).value(this);
 	}
 
-	public final ValDirs falseWhenUnknown() {
-
-		final CodeDirs dirs = dirs();
-
-		if (dirs.falseDir() == dirs.unknownDir()) {
-			return this;
-		}
-
-		return dirs.falseWhenUnknown().value(this);
-	}
-
-	public final ValDirs falseWhenUnknown(CodePos falseDir) {
+	public final ValDirs setFalseDir(CodePos falseDir) {
 
 		final CodeDirs oldDirs = dirs();
-		final CodeDirs newDirs = oldDirs.falseWhenUnknown(falseDir);
+		final CodeDirs newDirs = oldDirs.setFalseDir(falseDir);
 
 		if (oldDirs == newDirs) {
 			return this;
 		}
 
 		return newDirs.value(this);
-	}
-
-	public final ValDirs splitWhenUnknown(
-			CodePos falseDir,
-			CodePos unknownDir) {
-		return dirs().splitWhenUnknown(falseDir, unknownDir).value(this);
 	}
 
 	public ValDirs begin(String message) {
@@ -187,16 +178,7 @@ public abstract class ValDirs {
 
 	final CodeDirs createDirs(CodeDirs enclosing) {
 		this.falseCode = addBlock("false");
-		if (enclosing.isFalseWhenUnknown()) {
-			this.unknownCode = this.falseCode;
-		} else {
-			this.unknownCode = addBlock("unknown");
-		}
-		return new CodeDirs(
-				getBuilder(),
-				code(),
-				this.falseCode.head(),
-				this.unknownCode.head());
+		return new CodeDirs(getBuilder(), code(), this.falseCode.head());
 	}
 
 	void endDirs(CodeDirs enclosing) {
@@ -204,17 +186,10 @@ public abstract class ValDirs {
 		if (this.falseCode.exists()) {
 			endFalse(enclosing, this.falseCode);
 		}
-		if (this.unknownCode.exists() && this.unknownCode != this.falseCode) {
-			endUnknown(enclosing, this.unknownCode);
-		}
 	}
 
 	void endFalse(CodeDirs enclosing, Block code) {
 		code.go(enclosing.falseDir());
-	}
-
-	void endUnknown(CodeDirs enclosing, Block code) {
-		code.go(enclosing.unknownDir());
 	}
 
 	static final class TopLevelValDirs extends ValDirs {
@@ -231,7 +206,6 @@ public abstract class ValDirs {
 					enclosing.getBuilder(),
 					enclosing.code(),
 					valueStruct);
-			this.dirs = enclosing;
 			this.enclosing = enclosing;
 			this.allocation = enclosing.allocate(name);
 			this.value = allocateVal(
@@ -239,6 +213,7 @@ public abstract class ValDirs {
 					this.allocation.code(),
 					getBuilder(),
 					valueStruct);
+			this.dirs = this.allocation.dirs();
 		}
 
 		TopLevelValDirs(CodeDirs enclosing, ValOp value) {
@@ -341,10 +316,26 @@ public abstract class ValDirs {
 			super.endFalse(enclosing, code);
 		}
 
+	}
+
+	private static final class ValDefDirs extends DefDirs {
+
+		private final Block returnCode;
+
+		ValDefDirs(ValDirs valDirs, Block returnCode, boolean ownsValDirs) {
+			super(valDirs, returnCode.head(), ownsValDirs);
+			this.returnCode = returnCode;
+		}
+
 		@Override
-		void endUnknown(CodeDirs enclosing, Block code) {
-			code.end();
-			super.endUnknown(enclosing, code);
+		public void done() {
+			super.done();
+			if (code().exists()) {
+				code().go(falseDir());
+			}
+			if (this.returnCode.exists()) {
+				this.returnCode.go(code().tail());
+			}
 		}
 
 	}

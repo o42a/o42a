@@ -19,12 +19,15 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.st.DefValue.defValue;
+
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
@@ -60,11 +63,31 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	public Value<?> value(Resolver resolver) {
+	public DefValue value(Resolver resolver) {
 
-		final Value<?> value = this.def.value(resolver);
+		final DefValue value = this.def.value(resolver);
 
-		return value.getKnowledge().getCondition().toValue(ValueStruct.VOID);
+		if (!value.hasValue()) {
+			return value;
+		}
+
+		return defValue(
+				value.getValue()
+				.getKnowledge()
+				.getCondition()
+				.toValue(ValueStruct.VOID));
+	}
+
+	@Override
+	public InlineEval inline(Normalizer normalizer) {
+
+		final InlineEval inline = this.def.inline(normalizer);
+
+		if (inline == null) {
+			return null;
+		}
+
+		return new EvalToVoid(this.def.getValueStruct(), inline);
 	}
 
 	@Override
@@ -73,15 +96,8 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected ValOp writeDef(ValDirs dirs, HostOp host) {
-
-		final ValueStruct<?, ?> valueStruct = this.def.getValueStruct();
-		final ValDirs defDirs = dirs.dirs().value(valueStruct);
-
-		this.def.write(defDirs, host);
-		defDirs.done();
-
-		return Value.voidValue().op(dirs.getBuilder(), dirs.code());
+	public Eval eval() {
+		return new EvalToVoid(this.def.getValueStruct(), this.def.eval());
 	}
 
 	@Override
@@ -90,7 +106,7 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected Value<?> calculateValue(Resolver resolver) {
+	protected DefValue calculateValue(Resolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -106,53 +122,38 @@ final class VoidDef extends Def {
 		this.def.fullyResolve(resolver);
 	}
 
-	@Override
-	protected InlineValue inline(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct) {
+	private static final class EvalToVoid extends InlineEval {
 
-		final InlineValue inline =
-				this.def.inline(normalizer, this.def.getValueStruct());
+		private final ValueStruct<?, ?> valueStruct;
+		private final Eval def;
 
-		if (inline == null) {
-			return null;
-		}
-
-		return new Inline(inline);
-	}
-
-	@Override
-	protected ValOp writeValue(ValDirs dirs, HostOp host) {
-		throw new UnsupportedOperationException();
-	}
-
-	private static final class Inline extends InlineValue {
-
-		private final InlineValue inline;
-
-		Inline(InlineValue inline) {
-			super(null, ValueStruct.VOID);
-			this.inline = inline;
+		EvalToVoid(ValueStruct<?, ?> valueStruct, Eval def) {
+			super(null);
+			this.valueStruct = valueStruct;
+			this.def = def;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final ValueStruct<?, ?> valueStruct = this.inline.getValueStruct();
-			final ValDirs defDirs = dirs.dirs().value(valueStruct);
+			final Block trueVal = dirs.addBlock("true_def");
+			final DefDirs defDirs =
+					dirs.dirs().value(this.valueStruct).def(trueVal.head());
 
-			this.inline.writeValue(defDirs, host);
+			this.def.write(defDirs, host);
 			defDirs.done();
 
-			return Value.voidValue().op(dirs.getBuilder(), dirs.code());
+			if (trueVal.exists()) {
+				trueVal.go(dirs.code().tail());
+			}
 		}
 
 		@Override
 		public String toString() {
-			if (this.inline == null) {
+			if (this.def == null) {
 				return super.toString();
 			}
-			return "(void) "+ this.inline.toString();
+			return "(void) "+ this.def.toString();
 		}
 
 		@Override

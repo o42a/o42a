@@ -26,7 +26,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType.Op;
 
@@ -39,8 +39,8 @@ final class SubStringFunc extends Func<SubStringFunc> {
 		super(caller);
 	}
 
-	public ValOp substring(
-			ValDirs dirs,
+	public void substring(
+			DefDirs dirs,
 			ValOp string,
 			Int64op from,
 			Int64op to) {
@@ -51,8 +51,7 @@ final class SubStringFunc extends Func<SubStringFunc> {
 		substring(code, sub, string, from, to);
 
 		sub.go(code, dirs);
-
-		return sub;
+		dirs.returnValue(sub);
 	}
 
 	public void substring(

@@ -40,7 +40,7 @@ public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 				null,
 				code,
 				OBJECT_REF.result(),
-				object != null ? object.toData(code) : code.nullDataPtr());
+				object != null ? object.toData(null, code) : code.nullDataPtr());
 	}
 
 	public static final class ObjectRef

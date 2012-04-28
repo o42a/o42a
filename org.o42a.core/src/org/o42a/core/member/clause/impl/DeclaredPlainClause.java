@@ -68,26 +68,13 @@ public final class DeclaredPlainClause extends PlainClause {
 	}
 
 	@Override
-	public boolean isMandatory() {
+	public final boolean isMandatory() {
 		return this.builder.isMandatory();
 	}
 
 	@Override
-	public Obj getObject() {
-
-		final Obj object = getClauseObject();
-
-		if (object != null) {
-			return object;
-		}
-
-		final ClauseDefinition definition = getDefinition();
-
-		if (definition != null) {
-			return setClauseObject(definition);
-		}
-
-		return setClauseObject(getContext().getFalse());
+	public final Obj getObject() {
+		return getDefinition();
 	}
 
 	@Override
@@ -175,6 +162,7 @@ public final class DeclaredPlainClause extends PlainClause {
 		}
 
 		this.definition = new Holder<ClauseDefinition>(definition);
+		setClauseObject(definition);
 
 		return definition;
 	}

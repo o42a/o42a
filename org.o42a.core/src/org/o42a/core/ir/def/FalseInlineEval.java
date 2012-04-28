@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,20 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.st.action;
+package org.o42a.core.ir.def;
 
-import org.o42a.core.ScopeInfo;
+import org.o42a.core.ir.HostOp;
+import org.o42a.util.fn.Cancelable;
 
 
-public abstract class LogicalAction extends Action {
+final class FalseInlineEval extends InlineEval {
 
-	public LogicalAction(ScopeInfo statement) {
-		super(statement);
+	static final FalseInlineEval FALSE_INLINE_EVAL = new FalseInlineEval();
+
+	private FalseInlineEval() {
+		super(null);
 	}
 
 	@Override
-	public Action toInitialLogicalValue() {
-		return this;
+	public void write(DefDirs dirs, HostOp host) {
+		dirs.code().go(dirs.falseDir());
+	}
+
+	@Override
+	public String toString() {
+		return "FALSE";
+	}
+
+	@Override
+	protected Cancelable cancelable() {
+		return null;
 	}
 
 }

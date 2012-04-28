@@ -22,7 +22,6 @@ package org.o42a.core.member.field.decl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.LocalFieldCmd;
 import org.o42a.core.member.*;
@@ -35,7 +34,7 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.st.*;
 import org.o42a.core.st.action.Action;
 import org.o42a.core.st.action.ExecuteCommand;
-import org.o42a.core.value.LogicalValue;
+import org.o42a.core.value.Condition;
 
 
 public final class FieldDeclarationStatement extends DeclarationStatement {
@@ -148,14 +147,14 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
 			final Obj object = member.toField().object(resolver);
-			final LogicalValue logicalValue =
+			final Condition condition =
 					object.value()
 					.getDefinitions()
 					.value(resolver)
 					.getKnowledge()
-					.toLogicalValue();
+					.getCondition();
 
-			return new ExecuteCommand(this, logicalValue);
+			return new ExecuteCommand(this, condition);
 		}
 
 		@Override
@@ -163,14 +162,13 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		protected Cmd createCmd(CodeBuilder builder) {
+		public Cmd cmd() {
+			assert getStatement().assertFullyResolved();
 
 			final FieldDeclarationStatement statement =
 					(FieldDeclarationStatement) getStatement();
 
 			return new LocalFieldCmd(
-					builder,
-					statement,
 					statement.member.toField().field(dummyUser()));
 		}
 

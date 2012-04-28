@@ -137,7 +137,7 @@ public final class Constant<T> extends ObjectConstructor {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
+		public void writeCond(CodeDirs dirs) {
 		}
 
 		@Override

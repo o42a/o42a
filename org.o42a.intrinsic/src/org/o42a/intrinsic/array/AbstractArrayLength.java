@@ -19,12 +19,15 @@
 */
 package org.o42a.intrinsic.array;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -36,7 +39,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
 
@@ -76,23 +78,28 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
-		final InlineValue arrayValue = array().inline(normalizer, origin);
+		final InlineValue inlineArray = array().inline(normalizer, origin);
 
-		if (arrayValue == null) {
+		if (inlineArray == null) {
 			return null;
 		}
 
-		return new Inline(valueStruct, arrayValue);
+		return new ArrayLengthEval(this, inlineArray);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return write(dirs, host, null);
+	public Eval evalBuiltin() {
+		return new ArrayLengthEval(this, null);
+	}
+
+	@Override
+	public String toString() {
+		if (this.array == null) {
+			return super.toString();
+		}
+		return "(" + this.array + "):length";
 	}
 
 	private ArrayValueStruct valueStruct(Scope scope) {
@@ -109,11 +116,11 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 		return this.array = path.bind(this, getScope()).target(distribute());
 	}
 
-	private ValOp write(ValDirs dirs, HostOp host, InlineValue inlineArray) {
+	private void write(DefDirs dirs, HostOp host, InlineValue inlineArray) {
 
 		final ValDirs arrayDirs =
 				dirs.dirs().value(valueStruct(getScope()), "array_val");
-		final Code code = arrayDirs.code();
+		final Block code = arrayDirs.code();
 
 		final ValOp arrayVal;
 
@@ -127,31 +134,35 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 		final ValOp result =
 				dirs.value().store(code, length.toInt64(null, code));
 
+		dirs.returnValue(code, result);
 		arrayDirs.done();
-
-		return result;
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class ArrayLengthEval extends InlineEval {
 
-		private final InlineValue arrayValue;
+		private final AbstractArrayLength length;
+		private final InlineValue inlineArray;
 
-		Inline(ValueStruct<?, ?> valueStruct, InlineValue arrayValue) {
-			super(null, valueStruct);
-			this.arrayValue = arrayValue;
+		ArrayLengthEval(AbstractArrayLength length, InlineValue inlineArray) {
+			super(null);
+			this.length = length;
+			this.inlineArray = inlineArray;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return write(dirs, host, this.arrayValue);
+		public void write(DefDirs dirs, HostOp host) {
+			this.length.write(dirs, host, this.inlineArray);
 		}
 
 		@Override
 		public String toString() {
-			if (this.arrayValue == null) {
+			if (this.length == null) {
 				return super.toString();
 			}
-			return this.arrayValue + ":length";
+			if (this.inlineArray == null) {
+				return this.length.toString();
+			}
+			return "(" + this.inlineArray + "):length";
 		}
 
 		@Override

@@ -22,14 +22,21 @@ package org.o42a.lib.test.rt.parser;
 import org.o42a.common.adapter.ByString;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.fn.Cancelable;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "parser/string.o42a")
@@ -52,8 +59,20 @@ public final class ParseString extends ByString<String> {
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return parse(dirs, input().op(host).writeValue(dirs));
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
+
+		final InlineValue inlineInput = input().inline(normalizer, origin);
+
+		if (inlineInput == null) {
+			return null;
+		}
+
+		return new InlineCopyString(this, inlineInput);
+	}
+
+	@Override
+	public Eval evalBuiltin() {
+		return new EvalCopyString(this);
 	}
 
 	@Override
@@ -68,6 +87,63 @@ public final class ParseString extends ByString<String> {
 	protected ValOp parse(ValDirs dirs, ValOp value) {
 		dirs.code().debug("Run-time string");
 		return value;
+	}
+
+	private static final class InlineCopyString extends InlineEval {
+
+		private final ParseString parseString;
+		private final InlineValue inputValue;
+
+		InlineCopyString(ParseString parseString, InlineValue inputValue) {
+			super(null);
+			this.parseString = parseString;
+			this.inputValue = inputValue;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.code().debug("Run-time string");
+			dirs.returnValue(this.inputValue.writeValue(dirs.valDirs(), host));
+		}
+
+		@Override
+		public String toString() {
+			if (this.parseString == null) {
+				return super.toString();
+			}
+			return this.parseString.toString();
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
+		}
+
+	}
+
+	private static final class EvalCopyString implements Eval {
+
+		private final ParseString byString;
+
+		EvalCopyString(ParseString byString) {
+			this.byString = byString;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.code().debug("Run-time string");
+			dirs.returnValue(
+					this.byString.input().op(host).writeValue(dirs.valDirs()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.byString == null) {
+				return super.toString();
+			}
+			return this.byString.toString();
+		}
+
 	}
 
 }

@@ -66,10 +66,6 @@ public abstract class SingleValueType<T>
 		return struct().falseValue();
 	}
 
-	public final Value<T> unknownValue() {
-		return struct().unknownValue();
-	}
-
 	public final Value<T> compilerValue(T value) {
 		return struct().compilerValue(value);
 	}

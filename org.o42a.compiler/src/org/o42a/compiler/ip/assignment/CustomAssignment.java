@@ -23,7 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -32,11 +31,10 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.*;
-import org.o42a.core.st.CommandEnv;
+import org.o42a.core.ref.Normalizer;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.st.Statement;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -64,7 +62,6 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	private final Ref ref;
-	private RefCommand refCommand;
 	private InlineValue normal;
 
 	private CustomAssignment(AssignmentStatement statement, Ref ref) {
@@ -76,19 +73,14 @@ final class CustomAssignment extends AssignmentKind {
 		return this.ref;
 	}
 
-	public final RefCommand getRefCommand() {
-		return this.refCommand;
-	}
-
 	@Override
 	public void init(AssignmentCommand command) {
 		super.init(command);
-		this.refCommand = this.ref.command(new Env(command.env()));
 	}
 
 	@Override
 	public void resolve(LocalResolver resolver) {
-		getRefCommand().resolveAll(resolver);
+		getRef().resolve(resolver).resolveLogical();
 	}
 
 	@Override
@@ -126,24 +118,11 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd op(CodeBuilder builder) {
+	public Cmd cmd() {
 		if (this.normal == null) {
-			return new AssignCmd(builder, this.ref, this.refCommand);
+			return new AssignCmd(this.ref);
 		}
-		return new NormalAssignCmd(builder, this.ref, this.normal);
-	}
-
-	private final static class Env extends CommandEnv {
-
-		Env(CommandEnv initialEnv) {
-			super(initialEnv.getStatements());
-		}
-
-		@Override
-		protected ValueStruct<?, ?> expectedValueStruct() {
-			return null;// To prevent Ref adaption.
-		}
-
+		return new NormalAssignCmd(this.normal);
 	}
 
 	private static final class Inline extends InlineCmd {
@@ -158,7 +137,7 @@ final class CustomAssignment extends AssignmentKind {
 		@Override
 		public void write(Control control) {
 
-			final CodeDirs dirs = control.getBuilder().falseWhenUnknown(
+			final CodeDirs dirs = control.getBuilder().dirs(
 					control.code(),
 					control.falseDir());
 
@@ -180,37 +159,48 @@ final class CustomAssignment extends AssignmentKind {
 
 	}
 
-	private static final class AssignCmd extends Cmd {
+	private static final class AssignCmd implements Cmd {
 
-		private final RefCommand refCommand;
+		private final Ref ref;
 
-		AssignCmd(CodeBuilder builder, Ref ref, RefCommand refCommand) {
-			super(builder, ref);
-			this.refCommand = refCommand;
+		AssignCmd(Ref ref) {
+			this.ref = ref;
 		}
 
 		@Override
 		public void write(Control control) {
-			this.refCommand.cmd(getBuilder()).writeCond(control);
+			this.ref.op(control.host()).writeCond(control.dirs());
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}
 
-	private static final class NormalAssignCmd extends Cmd {
+	private static final class NormalAssignCmd implements Cmd {
 
 		private final InlineValue value;
 
-		NormalAssignCmd(
-				CodeBuilder builder,
-				Statement statement,
-				InlineValue value) {
-			super(builder, statement);
+		NormalAssignCmd(InlineValue value) {
 			this.value = value;
 		}
 
 		@Override
 		public void write(Control control) {
 			this.value.writeCond(control.dirs(), control.host());
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				return super.toString();
+			}
+			return this.value.toString();
 		}
 
 	}

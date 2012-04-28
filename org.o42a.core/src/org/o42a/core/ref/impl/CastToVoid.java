@@ -121,15 +121,15 @@ final class CastToVoid extends Step {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs, HostOp host) {
-			this.preceding.writeLogicalValue(dirs, host);
+		public void writeCond(CodeDirs dirs, HostOp host) {
+			this.preceding.writeCond(dirs, host);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs, HostOp host) {
 			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
 
-			writeLogicalValue(dirs.dirs(), host);
+			writeCond(dirs.dirs(), host);
 
 			return voidValue().op(dirs.getBuilder(), dirs.code());
 		}
@@ -152,15 +152,15 @@ final class CastToVoid extends Step {
 		}
 
 		@Override
-		public void writeLogicalValue(CodeDirs dirs) {
-			start().writeLogicalValue(dirs);
+		public void writeCond(CodeDirs dirs) {
+			start().writeCond(dirs);
 		}
 
 		@Override
 		public ValOp writeValue(ValDirs dirs) {
 			assert dirs.getValueStruct().assertIs(ValueStruct.VOID);
 
-			writeLogicalValue(dirs.dirs());
+			writeCond(dirs.dirs());
 
 			return voidValue().op(dirs.getBuilder(), dirs.code());
 		}

@@ -21,9 +21,6 @@ package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.analysis.use.User.dummyUser;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
@@ -47,17 +44,13 @@ final class DefCollector {
 
 	private final Obj object;
 	private final Obj ancestor;
-	private final CodeDirs dirs;
 	private final Def[] explicitDefs;
-	private final Block[] blocks;
 	private int size;
 	private int ancestorIndex = -1;
 
-	DefCollector(CodeDirs dirs, Obj object, int capacity) {
+	DefCollector(Obj object, int capacity) {
 		this.object = object;
-		this.dirs = dirs;
 		this.explicitDefs = new Def[capacity];
-		this.blocks = new Block[capacity];
 
 		final TypeRef ancestorRef = object.type().getAncestor();
 
@@ -108,23 +101,7 @@ final class DefCollector {
 		}
 	}
 
-	public final Block block(int index) {
-		return this.blocks[index];
-	}
-
-	public final CodePos next(int index) {
-
-		final int next = index + 1;
-
-		if (next < this.size) {
-			return this.blocks[next].head();
-		}
-
-		return this.dirs.unknownDir();
-	}
-
 	protected void explicitDef(Def def) {
-		this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
 		this.explicitDefs[this.size++] = def;
 	}
 
@@ -133,7 +110,6 @@ final class DefCollector {
 			return;
 		}
 		this.ancestorIndex = this.size;
-		this.blocks[this.size] = this.dirs.addBlock(this.size + "_vvar");
 		++this.size;
 	}
 

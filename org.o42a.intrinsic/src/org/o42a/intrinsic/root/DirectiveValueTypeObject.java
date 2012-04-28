@@ -64,7 +64,7 @@ public class DirectiveValueTypeObject
 		final Ref ref =
 				ValueType.DIRECTIVE.constantRef(this, distribute(), this);
 
-		return ref.define(definitionEnv()).createDefinitions();
+		return ref.toDefinitions(definitionEnv());
 	}
 
 	@Override

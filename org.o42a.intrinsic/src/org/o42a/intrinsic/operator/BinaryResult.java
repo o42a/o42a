@@ -23,6 +23,9 @@ import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -110,10 +113,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
 		final InlineValue leftValue = leftOperand().inline(normalizer, origin);
 		final InlineValue rightValue =
@@ -123,28 +123,12 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 			return null;
 		}
 
-		return new Inline(valueStruct, leftValue, rightValue);
+		return new InlineBinary(this, leftValue, rightValue);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-
-		final ValDirs leftDirs =
-				dirs.dirs().value(getLeftOperandStruct(), "left");
-		final ValOp leftVal = leftOperand().op(host).writeValue(leftDirs);
-
-		final ValDirs rightDirs =
-				leftDirs.dirs().value(getRightOperandStruct(), "right");
-		final ValOp rightVal = rightOperand().op(host).writeValue(rightDirs);
-
-		final ValDirs resultDirs = rightDirs.dirs().value(dirs);
-		final ValOp result = write(resultDirs, leftVal, rightVal);
-
-		resultDirs.done();
-		rightDirs.done();
-		leftDirs.done();
-
-		return result;
+	public Eval evalBuiltin() {
+		return new BinaryEval(this);
 	}
 
 	protected abstract T calculate(Resolver resolver, L left, R right);
@@ -180,49 +164,100 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 				path.bind(this, getScope()).target(distribute());
 	}
 
-	private final class Inline extends InlineValue {
+	private static final class InlineBinary extends InlineEval {
 
+		private final BinaryResult<?, ?, ?> binary;
 		private final InlineValue leftValue;
 		private final InlineValue rightValue;
 
-		Inline(
-				ValueStruct<?, ?> valueStruct,
+		InlineBinary(
+				BinaryResult<?, ?, ?> binary,
 				InlineValue leftValue,
 				InlineValue rightValue) {
-			super(null, valueStruct);
+			super(null);
+			this.binary = binary;
 			this.leftValue = leftValue;
 			this.rightValue = rightValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
+		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs leftDirs =
-					dirs.dirs().value(getLeftOperandStruct(), "left");
+			final ValDirs leftDirs = dirs.dirs().value(
+					this.binary.getLeftOperandStruct(),
+					"left");
 			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
 
-			final ValDirs rightDirs =
-					leftDirs.dirs().value(getRightOperandStruct(), "right");
+			final ValDirs rightDirs = leftDirs.dirs().value(
+					this.binary.getRightOperandStruct(),
+					"right");
 			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
 
-			final ValDirs resultDirs = rightDirs.dirs().value(dirs);
-			final ValOp result = write(resultDirs, leftVal, rightVal);
+			final ValDirs resultDirs = rightDirs.dirs().value(dirs.valDirs());
+			final ValOp result =
+					this.binary.write(resultDirs, leftVal, rightVal);
+
+			dirs.returnValue(resultDirs.code(), result);
 
 			resultDirs.done();
 			rightDirs.done();
 			leftDirs.done();
-
-			return result;
 		}
 
 		@Override
 		public String toString() {
-			return BinaryResult.this.toString();
+			if (this.binary == null) {
+				return super.toString();
+			}
+			return this.binary.toString();
 		}
 
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class BinaryEval implements Eval {
+
+		private final BinaryResult<?, ?, ?> binary;
+
+		BinaryEval(BinaryResult<?, ?, ?> binary) {
+			this.binary = binary;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+
+			final ValDirs leftDirs = dirs.dirs().value(
+					this.binary.getLeftOperandStruct(),
+					"left");
+			final ValOp leftVal =
+					this.binary.leftOperand().op(host).writeValue(leftDirs);
+
+			final ValDirs rightDirs = leftDirs.dirs().value(
+					this.binary.getRightOperandStruct(),
+					"right");
+			final ValOp rightVal =
+					this.binary.rightOperand().op(host).writeValue(rightDirs);
+
+			final ValDirs resultDirs = rightDirs.dirs().value(dirs.valDirs());
+			final ValOp result =
+					this.binary.write(resultDirs, leftVal, rightVal);
+
+			dirs.returnValue(resultDirs.code(), result);
+			resultDirs.done();
+			rightDirs.done();
+			leftDirs.done();
+		}
+
+		@Override
+		public String toString() {
+			if (this.binary == null) {
+				return super.toString();
+			}
+			return this.binary.toString();
 		}
 
 	}

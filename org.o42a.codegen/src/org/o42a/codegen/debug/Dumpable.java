@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler Code Generator
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,22 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.local;
+package org.o42a.codegen.debug;
 
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ref.Ref;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.DataOp;
 
 
-public abstract class RefCmd extends Cmd {
+public interface Dumpable {
 
-	public RefCmd(CodeBuilder builder, Ref ref) {
-		super(builder, ref);
-	}
+	DataOp toData(CodeId id, Code code);
 
-	public final Ref getRef() {
-		return (Ref) getStatement();
-	}
-
-	public abstract void writeCond(Control control);
+	AnyOp toAny(CodeId id, Code code);
 
 }

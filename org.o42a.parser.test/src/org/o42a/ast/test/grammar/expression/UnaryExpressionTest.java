@@ -91,30 +91,6 @@ public class UnaryExpressionTest extends GrammarTestCase {
 		assertRange(0, 2, result.getSign());
 	}
 
-	@Test
-	public void known() {
-
-		final UnaryNode result = parse("+-foo");
-
-		assertNotNull(result);
-		assertEquals(UnaryOperator.KNOWN, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 5, result);
-		assertRange(0, 2, result.getSign());
-	}
-
-	@Test
-	public void unknown() {
-
-		final UnaryNode result = parse("-+foo");
-
-		assertNotNull(result);
-		assertEquals(UnaryOperator.UNKNOWN, result.getOperator());
-		assertName("foo", result.getOperand());
-		assertRange(0, 5, result);
-		assertRange(0, 2, result.getSign());
-	}
-
 	private UnaryNode parse(String text) {
 		return parse(unaryExpression(), text);
 	}

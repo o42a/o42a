@@ -57,7 +57,7 @@ public final class BlockDefiner
 			if (value.hasValue()) {
 				return value;
 			}
-			if (!value.getLogicalValue().isTrue()) {
+			if (!value.getCondition().isTrue()) {
 				return value;
 			}
 		}
@@ -159,14 +159,15 @@ public final class BlockDefiner
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getDefTargets();
-		resolveSentences(resolver, this);
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return new BlockEval(this);
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return new BlockEval(builder, this);
+	protected void fullyResolve(Resolver resolver) {
+		getDefTargets();
+		resolveSentences(resolver, this);
 	}
 
 	private BlockDefinitions getBlockDefinitions() {
@@ -267,18 +268,25 @@ public final class BlockDefiner
 		}
 	}
 
-	private static final class BlockEval extends Eval {
+	private static final class BlockEval implements Eval {
 
 		private final BlockDefiner definer;
 
-		BlockEval(CodeBuilder builder, BlockDefiner definer) {
-			super(builder, definer.getStatement());
+		BlockEval(BlockDefiner definer) {
 			this.definer = definer;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 			writeSentences(dirs, host, this.definer, null);
+		}
+
+		@Override
+		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
+			return this.definer.toString();
 		}
 
 	}

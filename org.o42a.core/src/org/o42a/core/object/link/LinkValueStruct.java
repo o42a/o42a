@@ -268,9 +268,6 @@ public final class LinkValueStruct
 		if (!value.getKnowledge().isKnownToCompiler()) {
 			return rescopedStruct.runtimeValue();
 		}
-		if (value.getKnowledge().getCondition().isUnknown()) {
-			return rescopedStruct.unknownValue();
-		}
 
 		return rescopedStruct.falseValue();
 	}

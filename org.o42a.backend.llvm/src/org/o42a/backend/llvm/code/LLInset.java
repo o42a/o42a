@@ -61,14 +61,13 @@ class LLInset extends LLCode {
 	}
 
 	@Override
-	public long instr(long instr) {
-		super.instr(instr);
+	protected void addInstr(long instr) {
+		super.addInstr(instr);
 		this.exists = true;
 		if (this.prevInset != null) {
 			this.prevInset.nextInstr(instr);
 			this.prevInset = null;
 		}
-		return instr;
 	}
 
 	final void nextInstr(long nextInstr) {

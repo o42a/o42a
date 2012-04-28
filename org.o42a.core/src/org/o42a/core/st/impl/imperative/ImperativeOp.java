@@ -178,7 +178,7 @@ final class ImperativeOp {
 				}
 			}
 
-			command.cmd(control.getBuilder()).write(control);
+			command.cmd().write(control);
 		}
 	}
 

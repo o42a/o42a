@@ -40,9 +40,6 @@ final class TargetLink extends KnownLink {
 
 		if (!knowledge.hasCompilerValue()) {
 			if (knowledge.isKnownToCompiler()) {
-				if (knowledge.hasUnknownCondition()) {
-					return linkStruct.unknownValue();
-				}
 				return linkStruct.falseValue();
 			}
 			return linkStruct.runtimeValue();

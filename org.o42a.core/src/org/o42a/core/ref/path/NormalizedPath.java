@@ -80,9 +80,9 @@ final class NormalizedPath implements NormalPath {
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
 		if (this.inline != null) {
-			this.inline.writeLogicalValue(dirs, host);
+			this.inline.writeCond(dirs, host);
 		} else {
-			this.path.op(dirs, host).writeLogicalValue(dirs);
+			this.path.op(dirs, host).writeCond(dirs);
 		}
 	}
 

@@ -31,8 +31,7 @@ import org.o42a.core.value.ValueType;
 public final class Val implements Content<ValType> {
 
 	public static final int CONDITION_FLAG = 0x01;
-	public static final int UNKNOWN_FLAG = 0x02;
-	public static final int INDEFINITE_FLAG = 0x04;
+	public static final int INDEFINITE_FLAG = 0x02;
 	public static final int ALIGNMENT_MASK = 0x700;
 	public static final int EXTERNAL_FLAG = 0x800;
 	public static final int STATIC_FLAG = 0x1000;
@@ -41,10 +40,8 @@ public final class Val implements Content<ValType> {
 			new Val(ValueStruct.VOID, CONDITION_FLAG, 0, 0L);
 	public static final Val FALSE_VAL =
 			new Val(ValueStruct.VOID, 0, 0, 0L);
-	public static final Val UNKNOWN_VAL =
-			new Val(ValueStruct.VOID, UNKNOWN_FLAG, 0, 0L);
 	public static final Val INDEFINITE_VAL =
-			new Val(ValueStruct.VOID, UNKNOWN_FLAG | INDEFINITE_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, INDEFINITE_FLAG, 0, 0L);
 
 	private final ValueStruct<?, ?> valueStruct;
 	private final int flags;
@@ -112,10 +109,6 @@ public final class Val implements Content<ValType> {
 		return (this.flags & CONDITION_FLAG) != 0;
 	}
 
-	public final boolean isUnknown() {
-		return (this.flags & UNKNOWN_FLAG) != 0;
-	}
-
 	public final boolean isIndefinite() {
 		return (this.flags & INDEFINITE_FLAG) != 0;
 	}
@@ -150,9 +143,6 @@ public final class Val implements Content<ValType> {
 		if (!getCondition()) {
 			if (isIndefinite()) {
 				return "indefinite";
-			}
-			if (isUnknown()) {
-				return "unknown";
 			}
 			return "false";
 		}

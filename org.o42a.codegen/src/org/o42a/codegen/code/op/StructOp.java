@@ -25,7 +25,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
 
-public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
+public abstract class StructOp<S extends StructOp<S>> implements DataPtrOp<S> {
 
 	private final StructWriter<S> writer;
 
@@ -159,6 +159,7 @@ public abstract class StructOp<S extends StructOp<S>> implements PtrOp<S> {
 		return writer().toAny(id, code);
 	}
 
+	@Override
 	public final DataOp toData(CodeId id, Code code) {
 		return writer().toData(code.opId(id), code);
 	}

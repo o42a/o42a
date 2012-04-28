@@ -52,7 +52,7 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void falseLogicalValue() {
+	public void falsePrecondition() {
 		compile(
 				"A := integer(False, = 1).",
 				"B := A().");
@@ -86,7 +86,7 @@ public class DeclarativeDefinitionsTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void runtimeLogicalValue() {
+	public void runtimePrecondition() {
 		compile(
 				"Use namespace 'Test'.",
 				"A := integer(Rt-void, = 1).",

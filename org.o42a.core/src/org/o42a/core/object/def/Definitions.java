@@ -25,6 +25,7 @@ import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import org.o42a.core.Scope;
 import org.o42a.core.Scoped;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.impl.InlineDefinitions;
@@ -33,6 +34,7 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -133,13 +135,31 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final Value<?> claim = claims().constant(this);
+		final DefValue claim = claims().constant(this);
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
-			return claim;
+		if (claim.hasValue()) {
+			return this.constant = claim.getValue();
 		}
 
-		return propositions().constant(this);
+		switch (claim.getCondition()) {
+		case FALSE:
+			return this.constant = getValueStruct().falseValue();
+		case RUNTIME:
+			return this.constant = getValueStruct().runtimeValue();
+		case TRUE:
+			break;
+		}
+
+		final DefValue proposition = propositions().constant(this);
+
+		if (proposition.hasValue()) {
+			return this.constant = proposition.getValue();
+		}
+		if (proposition.getCondition().isConstant()) {
+			return this.constant = getValueStruct().falseValue();
+		}
+
+		return this.constant = getValueStruct().runtimeValue();
 	}
 
 	public final Defs claims() {
@@ -167,13 +187,31 @@ public class Definitions extends Scoped {
 
 	public Value<?> value(Resolver resolver) {
 
-		final Value<?> claim = claims().value(this, resolver);
+		final DefValue claim = claims().value(this, resolver);
 
-		if (!claim.getKnowledge().hasUnknownCondition()) {
-			return claim;
+		if (claim.hasValue()) {
+			return claim.getValue();
 		}
 
-		return propositions().value(this, resolver);
+		switch (claim.getCondition()) {
+		case FALSE:
+			return getValueStruct().falseValue();
+		case RUNTIME:
+			return getValueStruct().runtimeValue();
+		case TRUE:
+			break;
+		}
+
+		final DefValue proposition = propositions().value(this, resolver);
+
+		if (proposition.hasValue()) {
+			return proposition.getValue();
+		}
+		if (proposition.getCondition().isConstant()) {
+			return getValueStruct().falseValue();
+		}
+
+		return getValueStruct().runtimeValue();
 	}
 
 	public Definitions refine(Definitions refinements) {
@@ -299,14 +337,14 @@ public class Definitions extends Scoped {
 
 	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineValue claim = claims().inline(normalizer, this);
-		final InlineValue proposition = propositions().inline(normalizer, this);
+		final InlineEval claim = claims().inline(normalizer, this);
+		final InlineEval proposition = propositions().inline(normalizer, this);
 
 		if (normalizer.isCancelled()) {
 			return null;
 		}
 
-		return new InlineDefinitions(claim, proposition);
+		return new InlineDefinitions(getValueStruct(), claim, proposition);
 	}
 
 	public final void resolveAll() {

@@ -148,7 +148,7 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 			if (value.hasValue()) {
 				return value;
 			}
-			if (!value.getLogicalValue().isTrue()) {
+			if (!value.getCondition().isTrue()) {
 				return value;
 			}
 		}

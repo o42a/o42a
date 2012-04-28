@@ -106,13 +106,13 @@ public abstract class ValueOp {
 				"val_definite");
 		final Block definite = indefinite.otherwise();
 
-		definite.dump(this + " value is definite: ", value.ptr());
+		definite.dump(this + " value is definite: ", value);
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
 		evaluateAndStoreValue(indefinite, value, dirs);
 
-		indefinite.dump(this + " value calculated: ", value.ptr());
+		indefinite.dump(this + " value calculated: ", value);
 		indefinite.go(code.tail());
 
 		return value;
@@ -145,12 +145,10 @@ public abstract class ValueOp {
 			ValDirs resultDirs) {
 
 		final Block falseCode = code.addBlock("eval_false");
-		final Block unknownCode = code.addBlock("eval_unknown");
 		final ValDirs valDirs =
-				getBuilder().splitWhenUnknown(
+				getBuilder().dirs(
 						code,
-						falseCode.head(),
-						unknownCode.head())
+						falseCode.head())
 				.value(value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
@@ -162,10 +160,6 @@ public abstract class ValueOp {
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);
 			falseCode.go(resultDirs.falseDir());
-		}
-		if (unknownCode.exists()) {
-			value.storeUnknown(unknownCode);
-			unknownCode.go(resultDirs.unknownDir());
 		}
 	}
 

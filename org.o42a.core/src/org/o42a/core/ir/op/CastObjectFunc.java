@@ -48,7 +48,7 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 				id,
 				code,
 				CAST_OBJECT.result(),
-				object.toData(code), type.ptr());
+				object.toData(null, code), type.ptr());
 	}
 
 	public static final class CastObject extends Signature<CastObjectFunc> {

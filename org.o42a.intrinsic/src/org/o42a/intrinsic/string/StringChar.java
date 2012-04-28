@@ -32,8 +32,10 @@ import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
@@ -98,30 +100,29 @@ final class StringChar extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 
-		final InlineValue stringValue = string().inline(normalizer, origin);
-		final InlineValue indexValue = index().inline(normalizer, origin);
+		final InlineValue inlineString = string().inline(normalizer, origin);
+		final InlineValue inlineIndex = index().inline(normalizer, origin);
 
-		if (stringValue == null || indexValue == null) {
+		if (inlineString == null || inlineIndex == null) {
 			return null;
 		}
 
-		return new Inline(valueStruct, stringValue, indexValue);
+		return new CharEval(this, inlineString, inlineIndex);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
-		return write(
-				dirs,
-				host,
-				string().op(host),
-				null,
-				index().op(host),
-				null);
+	public Eval evalBuiltin() {
+		return new CharEval(this, null, null);
+	}
+
+	@Override
+	public String toString() {
+		if (this.string == null || this.index == null) {
+			return super.toString();
+		}
+		return "(" + this.string + "):char[" + this.index+ ']';
 	}
 
 	private Ref string() {
@@ -148,32 +149,30 @@ final class StringChar extends AnnotatedBuiltin {
 		return this.index = path.bind(this, getScope()).target(distribute());
 	}
 
-	private static ValOp write(
-			ValDirs dirs,
+	private void write(
+			DefDirs dirs,
 			HostOp host,
-			RefOp str,
-			InlineValue inlineStr,
-			RefOp idx,
-			InlineValue inlineIdx) {
+			InlineValue inlineString,
+			InlineValue inlineIndex) {
 
 		final ValDirs stringDirs =
 				dirs.dirs().value(ValueStruct.STRING, "string");
 		final ValOp stringVal;
 
-		if (inlineStr != null) {
-			stringVal = inlineStr.writeValue(stringDirs, host);
+		if (inlineString != null) {
+			stringVal = inlineString.writeValue(stringDirs, host);
 		} else {
-			stringVal = str.writeValue(stringDirs);
+			stringVal = string().op(host).writeValue(stringDirs);
 		}
 
 		final ValDirs indexDirs =
 				stringDirs.dirs().value(ValueStruct.INTEGER, "index");
 		final ValOp indexVal;
 
-		if (inlineIdx != null) {
-			indexVal = inlineIdx.writeValue(indexDirs, host);
+		if (inlineIndex != null) {
+			indexVal = inlineIndex.writeValue(indexDirs, host);
 		} else {
-			indexVal = idx.writeValue(indexDirs);
+			indexVal = index().op(host).writeValue(indexDirs);
 		}
 
 		final Block code = indexDirs.code();
@@ -220,43 +219,46 @@ final class StringChar extends AnnotatedBuiltin {
 				code,
 				chr.toInt64(null, code));
 
+		dirs.returnValue(code, result);
 		indexDirs.done();
 		stringDirs.done();
-
-		return result;
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class CharEval extends InlineEval {
 
-		private final InlineValue stringValue;
-		private final InlineValue indexValue;
+		private final StringChar stringChar;
+		private final InlineValue inlineString;
+		private final InlineValue inlineIndex;
 
-		Inline(
-				ValueStruct<?, ?> valueStruct,
-				InlineValue stringValue,
-				InlineValue indexValue) {
-			super(null, valueStruct);
-			this.stringValue = stringValue;
-			this.indexValue = indexValue;
+		CharEval(
+				StringChar stringChar,
+				InlineValue inlineString,
+				InlineValue inlineValue) {
+			super(null);
+			this.stringChar = stringChar;
+			this.inlineString = inlineString;
+			this.inlineIndex = inlineValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return write(
+		public void write(DefDirs dirs, HostOp host) {
+			this.stringChar.write(
 					dirs,
 					host,
-					null,
-					this.stringValue,
-					null,
-					this.indexValue);
+					this.inlineString,
+					this.inlineIndex);
 		}
 
 		@Override
 		public String toString() {
-			if (this.indexValue == null) {
+			if (this.stringChar == null) {
 				return super.toString();
 			}
-			return "(" + this.stringValue + "):char[" + this.indexValue + ']';
+			if (this.inlineIndex == null) {
+				return this.stringChar.toString();
+			}
+			return "(" + this.inlineString
+					+ "):char[" + this.inlineIndex + ']';
 		}
 
 		@Override

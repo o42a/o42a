@@ -26,39 +26,12 @@ import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
 
 
 final class DeclarativeOp {
-
-	public static ValOp writeSentences(
-			ValDirs dirs,
-			HostOp host,
-			DeclarativeSentences block,
-			InlineDeclarativeSentences inline) {
-
-		final Block result = dirs.addBlock("result");
-		final DefDirs defDirs = new DefDirs(dirs, result.head());
-
-		writeSentences(defDirs, host, block, inline);
-		defDirs.done();
-
-		final Block code = dirs.code();
-
-		if (code.exists()) {
-			code.debug("(!) UNKNOWN");
-			code.go(dirs.unknownDir());
-		}
-		if (result.exists()) {
-			result.go(code.tail());
-		}
-
-		return defDirs.result();
-	}
 
 	public static void writeSentences(
 			DefDirs dirs,
@@ -81,8 +54,6 @@ final class DeclarativeOp {
 					sentences.get(i),
 					inline != null ? inline.get(i) : null);
 		}
-
-		dirs.done();
 	}
 
 	private static void writeSentence(
@@ -100,8 +71,7 @@ final class DeclarativeOp {
 		} else {
 			prereqFailed = dirs.addBlock(prefix.sub("prereq_failed"));
 
-			final DefDirs prereqDirs =
-					dirs.falseWhenUnknown(prereqFailed.head());
+			final DefDirs prereqDirs = dirs.setFalseDir(prereqFailed.head());
 
 			writeSentence(
 					prefix.sub("prereq"),
@@ -141,10 +111,10 @@ final class DeclarativeOp {
 
 			if (nextIdx < size) {
 				next = dirs.addBlock(prefix.sub((nextIdx + 1) + "_alt"));
-				altDirs = dirs.sub(code).falseWhenUnknown(next.head());
+				altDirs = dirs.sub(code).setFalseDir(next.head());
 			} else {
 				next = null;
-				altDirs = dirs.sub(code).falseWhenUnknown(dirs.falseDir());
+				altDirs = dirs.sub(code).setFalseDir(dirs.falseDir());
 			}
 
 			writeStatements(

@@ -19,20 +19,14 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.field.Field;
 
 
-public final class LocalFieldCmd extends Cmd {
+public final class LocalFieldCmd implements Cmd {
 
 	private final Field field;
 
-	public LocalFieldCmd(
-			CodeBuilder builder,
-			DeclarationStatement statement,
-			Field field) {
-		super(builder, statement);
+	public LocalFieldCmd(Field field) {
 		this.field = field;
 	}
 
@@ -43,11 +37,19 @@ public final class LocalFieldCmd extends Cmd {
 	@Override
 	public void write(Control control) {
 
-		final LocalFieldIRBase fieldIR = this.field.ir(getGenerator());
+		final LocalFieldIRBase fieldIR = this.field.ir(control.getGenerator());
 		final LclOp op =
 				fieldIR.allocate(control.getBuilder(), control.allocation());
 
 		op.write(control);
+	}
+
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return "LocalField[" + this.field.getKey() + ']';
 	}
 
 }

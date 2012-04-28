@@ -79,13 +79,14 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		definer().resolveAll(resolver);
+	public Eval eval(CodeBuilder builder) {
+		assert getStatement().assertFullyResolved();
+		return definer().eval(builder);
 	}
 
 	@Override
-	protected Eval createEval(CodeBuilder builder) {
-		return definer().eval(builder);
+	protected void fullyResolve(Resolver resolver) {
+		definer().resolveAll(resolver);
 	}
 
 	private final Definer definer() {
@@ -177,12 +178,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		public Eval eval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Eval createEval(CodeBuilder builder) {
-			throw new UnsupportedOperationException();
+		protected void fullyResolve(Resolver resolver) {
 		}
 
 	}
@@ -230,12 +231,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		public Eval eval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Eval createEval(CodeBuilder builder) {
-			throw new UnsupportedOperationException();
+		protected void fullyResolve(Resolver resolver) {
 		}
 
 	}
@@ -286,12 +287,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		public Eval eval(CodeBuilder builder) {
+			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		protected Eval createEval(CodeBuilder builder) {
-			throw new UnsupportedOperationException();
+		protected void fullyResolve(Resolver resolver) {
 		}
 
 		private final ClauseDeclarationStatement declaration() {

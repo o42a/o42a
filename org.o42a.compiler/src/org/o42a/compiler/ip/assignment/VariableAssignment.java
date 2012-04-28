@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.assignment;
 import static org.o42a.core.object.link.LinkValueType.VARIABLE;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.LocalResolver;
@@ -114,8 +113,8 @@ final class VariableAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public Cmd op(CodeBuilder builder) {
-		return new AssignmentCmd(builder, getStatement());
+	public Cmd cmd() {
+		return new AssignmentCmd(getStatement());
 	}
 
 }

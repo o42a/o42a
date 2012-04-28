@@ -102,7 +102,7 @@ public final class RefLclOp extends LclOp {
 
 		final Block code = control.code();
 		final CodeDirs dirs =
-				control.getBuilder().falseWhenUnknown(code, control.falseDir());
+				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
 
 		final ObjectOp newObject = getBuilder().newObject(
@@ -111,7 +111,7 @@ public final class RefLclOp extends LclOp {
 				getBuilder().objectAncestor(dirs, object),
 				object);
 
-		ptr().object(code).store(code, newObject.toData(code));
+		ptr().object(code).store(code, newObject.toData(null, code));
 		newObject.value().writeCond(dirs);
 	}
 
@@ -121,7 +121,7 @@ public final class RefLclOp extends LclOp {
 		final Code code = dirs.code();
 		final ObjectOp object = value.materialize(dirs);
 
-		ptr().object(code).store(code, object.toData(code));
+		ptr().object(code).store(code, object.toData(null, code));
 		object.value().writeCond(dirs);
 	}
 

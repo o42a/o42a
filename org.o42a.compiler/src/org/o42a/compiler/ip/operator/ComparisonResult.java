@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.operator;
 
-import static org.o42a.core.ir.op.InlineValue.inlineFalse;
+import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
@@ -30,9 +30,10 @@ import org.o42a.common.object.BuiltinObject;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
@@ -86,12 +87,9 @@ final class ComparisonResult extends BuiltinObject {
 	}
 
 	@Override
-	public InlineValue inlineBuiltin(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Scope origin) {
+	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
 		if (this.ref.hasError()) {
-			return inlineFalse(valueStruct);
+			return falseInlineEval();
 		}
 
 		final InlineValue cmpValue = this.cmp.inline(normalizer, origin);
@@ -100,16 +98,15 @@ final class ComparisonResult extends BuiltinObject {
 			return null;
 		}
 
-		return new Inline(valueStruct, this.ref, cmpValue);
+		return new InlineComparison(this.ref, cmpValue);
 	}
 
 	@Override
-	public ValOp writeBuiltin(ValDirs dirs, HostOp host) {
+	public Eval evalBuiltin() {
 		if (this.ref.hasError()) {
-			dirs.code().go(dirs.falseDir());
-			return falseValue().op(dirs.getBuilder(), dirs.code());
+			return Eval.FALSE_EVAL;
 		}
-		return this.ref.write(dirs, host, this.cmp.op(host), null);
+		return new ComparisonEval(this.ref, this.cmp);
 	}
 
 	@Override
@@ -164,23 +161,24 @@ final class ComparisonResult extends BuiltinObject {
 		return this.ref.resolve(enclosing);
 	}
 
-	private static final class Inline extends InlineValue {
+	private static final class InlineComparison extends InlineEval {
 
 		private final ComparisonExpression ref;
 		private final InlineValue cmpValue;
 
-		Inline(
-				ValueStruct<?, ?> valueStruct,
-				ComparisonExpression ref,
-				InlineValue cmpValue) {
-			super(null, valueStruct);
+		InlineComparison(ComparisonExpression ref, InlineValue cmpValue) {
+			super(null);
 			this.ref = ref;
 			this.cmpValue = cmpValue;
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, HostOp host) {
-			return this.ref.write(dirs, host, null, this.cmpValue);
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.ref.write(
+					dirs.valDirs(),
+					host,
+					null,
+					this.cmpValue));
 		}
 
 		@Override
@@ -194,6 +192,35 @@ final class ComparisonResult extends BuiltinObject {
 		@Override
 		protected Cancelable cancelable() {
 			return null;
+		}
+
+	}
+
+	private static final class ComparisonEval implements Eval {
+
+		private final ComparisonExpression ref;
+		private final Ref cmp;
+
+		ComparisonEval(ComparisonExpression ref, Ref cmp) {
+			this.ref = ref;
+			this.cmp = cmp;
+		}
+
+		@Override
+		public void write(DefDirs dirs, HostOp host) {
+			dirs.returnValue(this.ref.write(
+					dirs.valDirs(),
+					host,
+					this.cmp.op(host),
+					null));
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

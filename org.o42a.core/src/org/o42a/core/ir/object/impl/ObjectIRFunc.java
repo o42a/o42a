@@ -58,7 +58,7 @@ public abstract class ObjectIRFunc {
 		final ObjectIR objectIR = getObjectIR();
 
 		if (!objectIR.isExact()) {
-			return body != null ? body.toData(code) : host.toData(code);
+			return body != null ? body.toData(null, code) : host.toData(null, code);
 		}
 
 		assert body == null :

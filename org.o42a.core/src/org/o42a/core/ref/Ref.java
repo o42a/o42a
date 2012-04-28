@@ -36,6 +36,8 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
+import org.o42a.core.ref.impl.RefCommand;
+import org.o42a.core.ref.impl.RefDefiner;
 import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
@@ -67,7 +69,6 @@ public class Ref extends Statement {
 	}
 
 	private final BoundPath path;
-	private RefOp op;
 
 	public Ref(LocationInfo location, Distributor distributor, BoundPath path) {
 		super(location, distributor);
@@ -122,13 +123,17 @@ public class Ref extends Statement {
 	}
 
 	@Override
-	public RefDefiner define(DefinerEnv env) {
+	public final Definer define(DefinerEnv env) {
 		return new RefDefiner(this, env);
 	}
 
 	@Override
-	public RefCommand command(CommandEnv env) {
+	public final Command command(CommandEnv env) {
 		return new RefCommand(this, env);
+	}
+
+	public final Definitions toDefinitions(DefinerEnv env) {
+		return new RefDefiner(this, env).createDefinitions();
 	}
 
 	public final Resolution resolve(Resolver resolver) {
@@ -316,16 +321,8 @@ public class Ref extends Statement {
 	}
 
 	public final RefOp op(HostOp host) {
-
-		final RefOp op = this.op;
-
-		if (op != null && op.host() == host) {
-			return op;
-		}
-
 		assert assertFullyResolved();
-
-		return this.op = new RefOp(host, this);
+		return new RefOp(host, this);
 	}
 
 	@Override

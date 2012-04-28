@@ -100,9 +100,7 @@ public class DepOp extends IROp implements HostOp {
 		final Code code = dirs.code();
 
 		ptr().object(code).store(code, object);
-		if (code.isDebug()) {
-			code.dump(getDep() + ": ", toData(code));
-		}
+		code.dump(getDep() + ": ", this);
 	}
 
 	private DataOp object(CodeBuilder builder, CodeDirs dirs) {
@@ -111,13 +109,13 @@ public class DepOp extends IROp implements HostOp {
 
 		switch (getDep().getDepKind()) {
 		case ENCLOSING_OWNER_DEP:
-			return builder.owner().toData(code);
+			return builder.owner().toData(null, code);
 		case REF_DEP:
 
 			final Ref depRef = getDep().getDepRef();
 			final HostOp refTarget = depRef.op(builder.host()).target(dirs);
 
-			return refTarget.materialize(dirs).toData(code);
+			return refTarget.materialize(dirs).toData(null, code);
 		}
 
 		throw new IllegalStateException(

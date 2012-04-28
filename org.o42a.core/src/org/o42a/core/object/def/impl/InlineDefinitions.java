@@ -19,24 +19,26 @@
 */
 package org.o42a.core.object.def.impl;
 
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-
-import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
+import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
 
 
 public class InlineDefinitions extends InlineValue {
 
-	private final InlineValue claim;
-	private final InlineValue proposition;
+	private final InlineEval claim;
+	private final InlineEval proposition;
 
-	public InlineDefinitions(InlineValue claim, InlineValue proposition) {
-		super(null, proposition.getValueStruct());
+	public InlineDefinitions(
+			ValueStruct<?, ?> valueStruct,
+			InlineEval claim,
+			InlineEval proposition) {
+		super(null, valueStruct);
 		this.claim = claim;
 		this.proposition = proposition;
 	}
@@ -44,42 +46,13 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-		final Block code = dirs.code();
-		final Block unknownClaim = dirs.addBlock("unknown_claim");
-		final ValDirs claimDirs =
-				dirs.dirs().splitWhenUnknown(
-						dirs.dirs().falseDir(),
-						unknownClaim.head())
-				.value(dirs);
-		final ValOp claim = this.claim.writeValue(claimDirs, host);
+		final DefDirs defDirs = dirs.subDef();
 
-		if (!code.exists()) {
-			claimDirs.done();
-			if (!unknownClaim.exists()) {
-				return claim;
-			}
+		this.claim.write(defDirs, host);
+		this.proposition.write(defDirs, host);
+		defDirs.done();
 
-			unknownClaim.go(code.tail());
-			dirs.setStoreMode(INITIAL_VAL_STORE);
-
-			return this.proposition.writeValue(dirs, host);
-		}
-		if (!unknownClaim.exists()) {
-			claimDirs.done();
-			return claim;
-		}
-
-		final ValType.Op result1 = code.phi(null, claim.ptr());
-
-		claimDirs.done();
-
-		final ValType.Op result2 = writeProposition(dirs, unknownClaim, host);
-
-		unknownClaim.go(code.tail());
-
-		return code.phi(null, result1, result2).op(
-				dirs.getBuilder(),
-				getValueStruct());
+		return defDirs.result();
 	}
 
 	@Override
@@ -101,18 +74,6 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	protected Cancelable cancelable() {
 		return null;
-	}
-
-	private ValType.Op writeProposition(ValDirs dirs, Block code, HostOp host) {
-
-		final ValDirs propDirs = dirs.sub(code);
-		final ValType.Op prop = code.phi(
-				null,
-				this.proposition.writeValue(propDirs, host).ptr());
-
-		propDirs.done();
-
-		return prop;
 	}
 
 }

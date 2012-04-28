@@ -20,22 +20,23 @@
 package org.o42a.core.object.def;
 
 import static java.lang.System.arraycopy;
-import static org.o42a.core.ir.op.InlineValue.inlineUnknown;
+import static org.o42a.core.ir.def.InlineEval.noInlineEval;
+import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.ObjectValue;
-import org.o42a.core.object.def.impl.InlineValueDefs;
+import org.o42a.core.object.def.impl.InlineDefs;
 import org.o42a.core.object.def.impl.RuntimeDef;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.*;
-import org.o42a.core.value.Value;
+import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.ArrayUtil;
 
@@ -44,7 +45,7 @@ public final class Defs {
 
 	private final boolean claims;
 	private final Def[] defs;
-	private Value<?> constant;
+	private DefValue constant;
 
 	Defs(boolean claims, Def... defs) {
 		this.claims = claims;
@@ -91,34 +92,40 @@ public final class Defs {
 		return null;
 	}
 
-	public final Value<?> constant(Definitions definitions) {
+	public final DefValue constant(Definitions definitions) {
 		if (this.constant != null) {
 			return this.constant;
 		}
 
 		for (Def def : get()) {
 
-			final Value<?> constantValue = def.getConstantValue();
+			final DefValue constant = def.getConstantValue();
 
-			if (!constantValue.getKnowledge().hasUnknownCondition()) {
-				return this.constant = constantValue;
+			if (constant.hasValue()) {
+				return this.constant = constant;
+			}
+			if (!constant.getCondition().isTrue()) {
+				return this.constant = constant;
 			}
 		}
 
-		return this.constant = definitions.getValueStruct().unknownValue();
+		return this.constant = TRUE_DEF_VALUE;
 	}
 
-	public final Value<?> value(Definitions definitions, Resolver resolver) {
+	public final DefValue value(Definitions definitions, Resolver resolver) {
 		for (Def def : get()) {
 
-			final Value<?> value = def.value(resolver);
+			final DefValue value = def.value(resolver);
 
-			if (!value.getKnowledge().hasUnknownCondition()) {
+			if (value.hasValue()) {
+				return value;
+			}
+			if (!value.getCondition().isTrue()) {
 				return value;
 			}
 		}
 
-		return definitions.getValueStruct().unknownValue();
+		return TRUE_DEF_VALUE;
 	}
 
 	public final boolean updatedSince(Obj ascendant) {
@@ -283,27 +290,23 @@ public final class Defs {
 				ArrayUtil.append(get(), additions.get()));
 	}
 
-	InlineValue inline(Normalizer normalizer, Definitions definitions) {
-
-		final ValueStruct<?, ?> valueStruct = definitions.getValueStruct();
-
+	InlineEval inline(Normalizer normalizer, Definitions definitions) {
 		if (isEmpty()) {
-			return inlineUnknown(valueStruct);
+			return noInlineEval();
 		}
 
 		final Def[] defs = get();
-
-		if (defs.length == 1) {
-			return inlineDef(normalizer, valueStruct, defs[0]);
-		}
-
-		final InlineValue[] inlines = new InlineValue[defs.length];
+		final InlineEval[] inlines = new InlineEval[defs.length];
 
 		for (int i = 0; i < defs.length; ++i) {
-			inlines[i] = inlineDef(normalizer, valueStruct, defs[i]);
+			inlines[i] = inlineDef(normalizer, defs[i]);
 		}
 
-		return normalizer.isCancelled() ? null : new InlineValueDefs(inlines);
+		if (normalizer.isCancelled()) {
+			return null;
+		}
+
+		return new InlineDefs(inlines);
 	}
 
 	final Defs runtime(Definitions definitions) {
@@ -381,12 +384,9 @@ public final class Defs {
 		}
 	}
 
-	private InlineValue inlineDef(
-			Normalizer normalizer,
-			ValueStruct<?, ?> valueStruct,
-			Def def) {
+	private InlineEval inlineDef(Normalizer normalizer, Def def) {
 
-		final InlineValue inline = def.inline(normalizer, valueStruct);
+		final InlineEval inline = def.inline(normalizer);
 
 		if (inline == null) {
 			normalizer.cancelAll();

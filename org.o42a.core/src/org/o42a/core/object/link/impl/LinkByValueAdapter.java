@@ -24,12 +24,10 @@ import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.def.RefEval;
+import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
@@ -87,8 +85,8 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	public RefEval eval(CodeBuilder builder) {
-		return new LinkByValueEval(builder, getAdaptedRef());
+	public Eval eval() {
+		return new LinkByValueEval(getAdaptedRef());
 	}
 
 	@Override
@@ -101,15 +99,16 @@ public class LinkByValueAdapter extends ValueAdapter {
 		getAdaptedRef().resolve(resolver).resolveTarget();
 	}
 
-	private static final class LinkByValueEval extends RefEval {
+	private static final class LinkByValueEval implements Eval {
 
-		LinkByValueEval(CodeBuilder builder, Ref ref) {
-			super(builder, ref);
+		private final Ref ref;
+
+		LinkByValueEval(Ref ref) {
+			this.ref = ref;
 		}
 
-		@Override
-		public void writeCond(CodeDirs dirs, HostOp host) {
-			getRef().op(host).writeCond(dirs);
+		public final Ref getRef() {
+			return this.ref;
 		}
 
 		@Override
@@ -121,7 +120,15 @@ public class LinkByValueAdapter extends ValueAdapter {
 					.target(dirs.dirs())
 					.materialize(dirs.dirs());
 
-			dirs.returnValue(dirs.value().store(code, target.toAny(code)));
+			dirs.returnValue(dirs.value().store(code, target.toAny(null, code)));
+		}
+
+		@Override
+		public String toString() {
+			if (this.ref == null) {
+				return super.toString();
+			}
+			return this.ref.toString();
 		}
 
 	}

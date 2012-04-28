@@ -19,42 +19,13 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.st.Statement;
 
 
-public abstract class Eval {
+public interface Eval {
 
-	private final CodeBuilder builder;
-	private final Statement statement;
+	Eval FALSE_EVAL = FalseInlineEval.FALSE_INLINE_EVAL;
 
-	public Eval(CodeBuilder builder, Statement statement) {
-		this.builder = builder;
-		this.statement = statement;
-	}
-
-	public final Generator getGenerator() {
-		return getBuilder().getGenerator();
-	}
-
-	public final CodeBuilder getBuilder() {
-		return this.builder;
-	}
-
-	public final Statement getStatement() {
-		return this.statement;
-	}
-
-	public abstract void write(DefDirs dirs, HostOp host);
-
-	@Override
-	public String toString() {
-		if (this.statement == null) {
-			return super.toString();
-		}
-		return this.statement.toString();
-	}
+	void write(DefDirs dirs, HostOp host);
 
 }

@@ -137,7 +137,7 @@ public abstract class Control {
 	}
 
 	public final CodeDirs dirs() {
-		return getBuilder().falseWhenUnknown(code(), falseDir());
+		return getBuilder().dirs(code(), falseDir());
 	}
 
 	public final ValDirs valDirs() {
@@ -200,7 +200,7 @@ public abstract class Control {
 	private final class ControlDirs extends DefDirs {
 
 		ControlDirs(ValDirs valDirs) {
-			super(valDirs, returnDir());
+			super(valDirs, returnDir(), true);
 		}
 
 		@Override
