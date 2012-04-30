@@ -120,6 +120,7 @@ public final class AllocationCode extends Inset {
 			return;
 		}
 
+		/* FIXME: Stack allocation/deallocation is broken in IR.
 		if (isDisposable()) {
 			if (this.exits != null) {
 				for (Code exit : this.exits) {
@@ -128,7 +129,7 @@ public final class AllocationCode extends Inset {
 					}
 				}
 			}
-		}
+		}*/
 
 		super.done();
 	}
