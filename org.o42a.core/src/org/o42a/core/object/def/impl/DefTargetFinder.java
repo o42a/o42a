@@ -88,11 +88,6 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
-	public boolean skip(Step step, Scope scope) {
-		return appendIfExist(step);
-	}
-
-	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return true;
 	}

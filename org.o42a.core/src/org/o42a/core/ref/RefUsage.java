@@ -30,8 +30,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final AllUsages<RefUsage> ALL_REF_USAGES =
 			new AllUsages<RefUsage>(RefUsage.class);
 
-	public static final RefUsage LOGICAL_REF_USAGE =
-			new ValueUsage("RefLogical");
+	public static final RefUsage CONDITION_REF_USAGE =
+			new ValueUsage("RefCondition");
 	public static final RefUsage VALUE_REF_USAGE =
 			new ValueUsage("RefValue");
 	public static final RefUsage DEREF_USAGE =
@@ -46,7 +46,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			new ResolutionUsage("RefAssignee");
 
 	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
-			LOGICAL_REF_USAGE.or(VALUE_REF_USAGE);
+			CONDITION_REF_USAGE.or(VALUE_REF_USAGE);
 	public static final UseSelector<RefUsage> NON_VALUE_REF_USAGES =
 			VALUE_REF_USAGES.not();
 	public static final UseSelector<RefUsage> NON_DEREF_USAGES =

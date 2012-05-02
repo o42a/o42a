@@ -45,11 +45,6 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean skip(Step step, Scope scope) {
-		return walk(walker().skip(step, scope));
-	}
-
-	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return walk(walker().staticScope(step, scope));
 	}

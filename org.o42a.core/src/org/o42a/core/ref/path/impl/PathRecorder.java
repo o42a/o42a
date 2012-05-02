@@ -80,16 +80,6 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public boolean skip(final Step step, final Scope scope) {
-		return record(new Record() {
-			@Override
-			public boolean replay(PathWalker walker) {
-				return walker.skip(step, scope);
-			}
-		});
-	}
-
-	@Override
 	public boolean staticScope(final Step step, final Scope scope) {
 		return record(new Record() {
 			@Override

@@ -21,7 +21,6 @@ package org.o42a.core.ref.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.ref.impl.CastToVoid.CAST_TO_VOID;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -67,25 +66,6 @@ public final class Adapter extends PathFragment implements LocationInfo {
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 
-		final Path path = path(start);
-
-		if (path == null) {
-			return null;
-		}
-		if (!castToVoid(start)) {
-			return path;
-		}
-
-		return path.append(CAST_TO_VOID);
-	}
-
-	@Override
-	public String toString() {
-		return "@@" + this.adapterType;
-	}
-
-	private Path path(Scope start) {
-
 		final ObjectType objectType = start.toObject().type();
 
 		if (objectType.derivedFrom(this.adapterType.type(dummyUser()))) {
@@ -130,22 +110,11 @@ public final class Adapter extends PathFragment implements LocationInfo {
 		// adapter to the link of the same depth.
 		// Use the field itself as adapter.
 		return key.toPath();
-
 	}
 
-	private boolean castToVoid(Scope start) {
-		if (!getAdapterType().getValueType().isVoid()) {
-			return false;
-		}
-
-		final Obj typeObject = getAdapterType().typeObject(dummyUser());
-		final Obj voidObject = start.getContext().getIntrinsics().getVoid();
-
-		if (typeObject.getScope() != voidObject.getScope()) {
-			return false;
-		}
-
-		return !start.toObject().value().getValueType().isVoid();
+	@Override
+	public String toString() {
+		return "@@" + this.adapterType;
 	}
 
 }

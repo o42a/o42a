@@ -74,11 +74,6 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean skip(Step step, Scope scope) {
-		return skip();
-	}
-
-	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return set(scope.getEnclosingScope(), scope.toObject());
 	}
