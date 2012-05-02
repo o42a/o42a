@@ -134,8 +134,8 @@ public final class Resolution implements ScopeInfo {
 		return resolveAll(TYPE_REF_USAGE);
 	}
 
-	public final Resolution resolveLogical() {
-		return resolveAll(LOGICAL_REF_USAGE);
+	public final Resolution resolveCondition() {
+		return resolveAll(CONDITION_REF_USAGE);
 	}
 
 	public final Resolution resolveValue() {

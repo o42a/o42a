@@ -125,7 +125,7 @@ final class RefConditionCommand extends Command {
 
 	@Override
 	protected void fullyResolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveLogical();
+		getRef().resolve(resolver).resolveCondition();
 	}
 
 	private static final class Inline extends InlineCmd {

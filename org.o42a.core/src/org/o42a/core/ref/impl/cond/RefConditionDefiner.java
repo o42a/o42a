@@ -124,7 +124,7 @@ final class RefConditionDefiner extends Definer {
 
 	@Override
 	protected void fullyResolve(Resolver resolver) {
-		getRef().resolve(resolver).resolveLogical();
+		getRef().resolve(resolver).resolveCondition();
 	}
 
 	private static final class Inline extends InlineEval {

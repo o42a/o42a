@@ -161,7 +161,7 @@ public class Ref extends Statement {
 		final Step lastStep = getPath().lastStep();
 
 		if (lastStep == null) {
-			return valueStruct(getScope()).defaultAdapter(
+			return valueStruct(getScope()).valueAdapter(
 					this,
 					expectedStruct,
 					adapt);

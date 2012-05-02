@@ -62,7 +62,7 @@ public abstract class Step {
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct,
 			boolean adapt) {
-		return ref.valueStruct(ref.getScope()).defaultAdapter(
+		return ref.valueStruct(ref.getScope()).valueAdapter(
 				ref,
 				expectedStruct,
 				adapt);

@@ -141,30 +141,19 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return (Value<T>) value;
 	}
 
-	public ValueAdapter defaultAdapter(
+	public final ValueAdapter valueAdapter(
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct,
 			boolean adapt) {
-		if (!adapt
-				|| expectedStruct == null
-				|| expectedStruct.assignableFrom(this)) {
-			return rawValueAdapter(ref);
+		assert expectedStruct != null :
+			"Expected value structure not specified";
+		if (expectedStruct.isVoid()) {
+			if (isVoid()) {
+				return rawValueAdapter(ref);
+			}
+			return new VoidValueAdapter(ref);
 		}
-
-		final LinkValueStruct expectedLinkStruct =
-				expectedStruct.toLinkStruct();
-
-		if (expectedLinkStruct != null) {
-			return new LinkByValueAdapter(
-					adapterRef(ref, expectedLinkStruct.getTypeRef()),
-					expectedLinkStruct);
-		}
-
-		final Ref adapter = adapterRef(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
-
-		return adapter.valueAdapter(expectedStruct, false);
+		return defaultAdapter(ref, expectedStruct, adapt);
 	}
 
 	public Ref adapterRef(Ref ref, TypeRef expectedTypeRef) {
@@ -241,6 +230,30 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 				"Type parameters not supported by %s",
 				this);
 		return this;
+	}
+
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt || expectedStruct.assignableFrom(this)) {
+			return rawValueAdapter(ref);
+		}
+
+		final LinkValueStruct expectedLinkStruct =
+				expectedStruct.toLinkStruct();
+
+		if (expectedLinkStruct != null) {
+			return new LinkByValueAdapter(
+					adapterRef(ref, expectedLinkStruct.getTypeRef()),
+					expectedLinkStruct);
+		}
+
+		final Ref adapter = adapterRef(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return adapter.valueAdapter(expectedStruct, false);
 	}
 
 	protected abstract ValueKnowledge valueKnowledge(T value);

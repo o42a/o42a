@@ -77,7 +77,7 @@ public abstract class ObjectConstructor extends Placed {
 			Ref ref,
 			ValueStruct<?, ?> expectedStruct,
 			boolean adapt) {
-		return ref.valueStruct(ref.getScope()).defaultAdapter(
+		return ref.valueStruct(ref.getScope()).valueAdapter(
 				ref,
 				expectedStruct,
 				adapt);

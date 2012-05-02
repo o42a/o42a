@@ -61,11 +61,6 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
-	public boolean skip(Step step, Scope scope) {
-		return skip(step);
-	}
-
-	@Override
 	public boolean staticScope(Step step, Scope scope) {
 		return skip(step);
 	}

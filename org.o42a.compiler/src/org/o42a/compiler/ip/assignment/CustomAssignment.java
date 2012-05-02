@@ -80,7 +80,7 @@ final class CustomAssignment extends AssignmentKind {
 
 	@Override
 	public void resolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveLogical();
+		getRef().resolve(resolver).resolveCondition();
 	}
 
 	@Override

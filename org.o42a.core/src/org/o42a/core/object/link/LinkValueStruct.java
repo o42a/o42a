@@ -121,37 +121,6 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (!adapt
-				|| expectedStruct == null
-				|| expectedStruct.convertibleFrom(this)) {
-			return new LinkValueAdapter(
-					ref,
-					expectedStruct != null
-					? expectedStruct.toLinkStruct()
-					: ref.valueStruct(ref.getScope()).toLinkStruct());
-		}
-		if (expectedStruct.getLinkDepth() - getLinkDepth() == 1) {
-
-			final LinkValueStruct expectedLinkStruct =
-					expectedStruct.toLinkStruct();
-
-			return new LinkByValueAdapter(
-					adapterRef(ref, expectedLinkStruct.getTypeRef()),
-					expectedLinkStruct);
-		}
-
-		final Ref adapter = ref.adapt(
-				ref,
-				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
-
-		return adapter.valueAdapter(expectedStruct, false);
-	}
-
-	@Override
 	public LinkValueStruct prefixWith(PrefixPath prefix) {
 
 		final TypeRef oldTypeRef = getTypeRef();
@@ -235,6 +204,35 @@ public final class LinkValueStruct
 		}
 
 		return new LinkValueStruct(this, getValueType(), newTypeRef);
+	}
+
+	@Override
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt || expectedStruct.convertibleFrom(this)) {
+			return new LinkValueAdapter(
+					ref,
+					expectedStruct != null
+					? expectedStruct.toLinkStruct()
+					: ref.valueStruct(ref.getScope()).toLinkStruct());
+		}
+		if (expectedStruct.getLinkDepth() - getLinkDepth() == 1) {
+
+			final LinkValueStruct expectedLinkStruct =
+					expectedStruct.toLinkStruct();
+
+			return new LinkByValueAdapter(
+					adapterRef(ref, expectedLinkStruct.getTypeRef()),
+					expectedLinkStruct);
+		}
+
+		final Ref adapter = adapterRef(
+				ref,
+				expectedStruct.getValueType().typeRef(ref, ref.getScope()));
+
+		return adapter.valueAdapter(expectedStruct, false);
 	}
 
 	@Override

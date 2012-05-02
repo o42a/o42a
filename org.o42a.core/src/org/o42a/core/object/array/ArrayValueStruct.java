@@ -120,21 +120,6 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public ValueAdapter defaultAdapter(
-			Ref ref,
-			ValueStruct<?, ?> expectedStruct,
-			boolean adapt) {
-		if (!adapt
-				|| expectedStruct == null
-				|| expectedStruct.convertibleFrom(this)) {
-			return new ArrayValueAdapter(
-					ref,
-					(ArrayValueStruct) expectedStruct);
-		}
-		return super.defaultAdapter(ref, expectedStruct, adapt);
-	}
-
-	@Override
 	public final ScopeInfo toScoped() {
 		return getItemTypeRef();
 	}
@@ -221,6 +206,19 @@ public final class ArrayValueStruct
 		}
 
 		return new ArrayValueStruct(getValueType(), newItemTypeRef);
+	}
+
+	@Override
+	protected ValueAdapter defaultAdapter(
+			Ref ref,
+			ValueStruct<?, ?> expectedStruct,
+			boolean adapt) {
+		if (!adapt || expectedStruct.convertibleFrom(this)) {
+			return new ArrayValueAdapter(
+					ref,
+					(ArrayValueStruct) expectedStruct);
+		}
+		return super.defaultAdapter(ref, expectedStruct, adapt);
 	}
 
 	@Override
