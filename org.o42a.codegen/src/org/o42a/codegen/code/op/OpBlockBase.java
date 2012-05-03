@@ -46,21 +46,46 @@ public abstract class OpBlockBase extends Code {
 			CodeId trueName,
 			CodeId falseName);
 
-	protected void disposeUpTo(Allocator toAllocator) {
-		disposeFromTo(getAllocator(), toAllocator);
+	protected boolean disposeUpTo(CodePos pos) {
+		return disposeFromTo(getAllocator(), pos);
+	}
+
+	protected boolean disposeFromTo(Allocator fromAllocator, CodePos pos) {
+
+		final Allocator toAllocator = pos.code().getAllocator();
+		// Go to the allocator's head?
+		final boolean includeTarget =
+				unwrapPos(toAllocator.head()) == unwrapPos(pos);
+
+		disposeFromTo(fromAllocator, toAllocator, includeTarget);
+
+		return includeTarget;
 	}
 
 	protected void disposeFromTo(
-			Allocator fromAllocator,
-			Allocator toAllocator) {
+			final Allocator fromAllocator,
+			final Allocator toAllocator,
+			final boolean includeTarget) {
 
 		Allocator allocator = fromAllocator;
 
-		while (allocator != toAllocator) {
-			allocator.allocation().writer().dispose(writer());
-			allocator = allocator.getEnclosingAllocator();
-			assert allocator != null :
-				fromAllocator + " is not inside " + toAllocator;
+		if (!includeTarget) {
+			while (allocator != toAllocator) {
+				allocator.allocation().writer().dispose(writer());
+				allocator = allocator.getEnclosingAllocator();
+				assert allocator != null :
+					fromAllocator + " is not inside " + toAllocator;
+			}
+		} else {
+			for (;;) {
+				allocator.allocation().writer().dispose(writer());
+				if (allocator == toAllocator) {
+					break;
+				}
+				allocator = allocator.getEnclosingAllocator();
+				assert allocator != null :
+					fromAllocator + " is not inside " + toAllocator;
+			}
 		}
 	}
 

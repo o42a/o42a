@@ -67,7 +67,7 @@ public abstract class Block extends OpBlockBase {
 
 	public final void go(CodePos pos) {
 		assert assertIncomplete();
-		disposeUpTo(pos.code().getAllocator());
+		disposeUpTo(pos);
 		writer().go(unwrapPos(pos));
 	}
 
