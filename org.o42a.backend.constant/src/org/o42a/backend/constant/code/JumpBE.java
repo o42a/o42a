@@ -75,6 +75,18 @@ public abstract class JumpBE extends TermBE implements EntryBE {
 
 	}
 
+	static class Fake extends Unconditional {
+
+		Fake(CBlockPart part, CCodePos target) {
+			super(part, target);
+		}
+
+		@Override
+		protected void emit() {
+		}
+
+	}
+
 	static final class Next extends Unconditional {
 
 		Next(CBlockPart part, CCodePos target) {

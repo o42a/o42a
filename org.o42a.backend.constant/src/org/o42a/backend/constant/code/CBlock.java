@@ -59,11 +59,14 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 
 	@Override
 	public boolean exists() {
-		return this.nextPart != null && this.nextPart.exists();
+		if (this.nextPart == null || !this.nextPart.exists()) {
+			return false;
+		}
+		return !this.nextPart.isTerminated();
 	}
 
 	@Override
-	public CodePos head() {
+	public final CCodePos head() {
 		return firstPart().head();
 	}
 
