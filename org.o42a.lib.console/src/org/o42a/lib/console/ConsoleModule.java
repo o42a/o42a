@@ -176,10 +176,9 @@ public class ConsoleModule extends AnnotatedModule {
 				.getMainModule();
 		final CodeBuilder builder = defaultBuilder(main, mainModule);
 		final Block exit = main.addBlock("exit");
-		final AllocationCode alloc = main.undisposable();
 		final ValOp result = allocateVal(
 				"result",
-				alloc,
+				main.allocation(),
 				builder,
 				ValueStruct.INTEGER);
 		final ValDirs dirs =
@@ -194,7 +193,6 @@ public class ConsoleModule extends AnnotatedModule {
 		}
 
 		dirs.done();
-		alloc.done();
 
 		if (exit.exists()) {
 			exit.debug("Execution failed");
