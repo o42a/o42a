@@ -86,16 +86,6 @@ abstract class NestedControl extends Control {
 		return this.parent.returnDir();
 	}
 
-	@Override
-	final CodePos exitDir(BracesControl braces) {
-		return this.parent.exitDir(braces);
-	}
-
-	@Override
-	final CodePos repeatDir(BracesControl braces) {
-		return this.parent.repeatDir(braces);
-	}
-
 	static final class ParenthesesControl extends NestedControl {
 
 		ParenthesesControl(Control parent, Block code, CodePos next) {

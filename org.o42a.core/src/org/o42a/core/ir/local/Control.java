@@ -88,7 +88,7 @@ public abstract class Control {
 		final BracesControl braces = enclosingBraces(name);
 
 		if (braces != null) {
-			code().go(exitDir(braces));
+			code().go(braces.exit());
 		} else {
 			unresolvedBlock(location, name);
 		}
@@ -99,7 +99,7 @@ public abstract class Control {
 		final BracesControl braces = enclosingBraces(name);
 
 		if (braces != null) {
-			code().go(repeatDir(braces));
+			code().go(braces.code().head());
 		} else {
 			unresolvedBlock(location, name);
 		}
@@ -167,10 +167,6 @@ public abstract class Control {
 	abstract BracesControl braces();
 
 	abstract CodePos returnDir();
-
-	abstract CodePos exitDir(BracesControl braces);
-
-	abstract CodePos repeatDir(BracesControl braces);
 
 	private BracesControl enclosingBraces(String name) {
 		if (name == null) {
