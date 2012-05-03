@@ -153,8 +153,9 @@ public final class CAllocation
 				if (allocPart.isNoOp()) {
 					return;
 				}
-				allocPart.underlying().writer().dispose(
-						part().underlying().writer());
+				allocPart.underlying()
+				.writer()
+				.dispose(part().underlying().writer());
 			}
 		};
 	}
