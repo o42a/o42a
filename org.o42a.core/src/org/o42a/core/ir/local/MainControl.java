@@ -86,18 +86,6 @@ abstract class MainControl extends Control {
 		return null;
 	}
 
-	@Override
-	final CodePos exitDir(BracesControl braces) {
-		throw new UnsupportedOperationException(
-				"Main control does not support loops");
-	}
-
-	@Override
-	final CodePos repeatDir(BracesControl braces) {
-		throw new UnsupportedOperationException(
-				"Main control does not support loops");
-	}
-
 	final String anonymousName() {
 		return Integer.toString(++this.seq);
 	}
