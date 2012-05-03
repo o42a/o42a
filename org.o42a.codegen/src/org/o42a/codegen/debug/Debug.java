@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.code.backend.CodeCallback.NOOP_CODE_CALLBACK;
+import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
 import static org.o42a.codegen.debug.DebugCodeBase.allocateStackFrame;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.*;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -40,8 +40,8 @@ import org.o42a.codegen.data.*;
 
 public class Debug {
 
-	private static final CodeCallback DEBUG_CODE_CALLBACK =
-			new DebugCodeCallback();
+	private static final BeforeReturn TRACE_BEFORE_RETURN =
+			new TraceBeforReturn();
 
 	private final Generator generator;
 	private final DebugSettings settings;
@@ -150,14 +150,14 @@ public class Debug {
 		enterFunc().op(null, function).trace(function, debugEnv);
 	}
 
-	public CodeCallback createCodeCallback(Function<?> function) {
+	public BeforeReturn createBeforeReturn(Function<?> function) {
 		if (isProxied()) {
-			return NOOP_CODE_CALLBACK;
+			return NOTHING_BEFORE_RETURN;
 		}
 		if (isDebug() && function.getSignature().isDebuggable()) {
-			return DEBUG_CODE_CALLBACK;
+			return TRACE_BEFORE_RETURN;
 		}
-		return NOOP_CODE_CALLBACK;
+		return NOTHING_BEFORE_RETURN;
 	}
 
 	public void registerType(SubData<?> typeData) {
@@ -266,7 +266,7 @@ public class Debug {
 				.link("o42a_dbg_exec_command", DEBUG_EXEC_COMMAND);
 	}
 
-	private static final class DebugCodeCallback implements CodeCallback {
+	private static final class TraceBeforReturn implements BeforeReturn {
 
 		@Override
 		public void beforeReturn(Block code) {

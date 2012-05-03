@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.CodeBackend;
-import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
@@ -83,7 +83,7 @@ public abstract class Functions {
 
 	protected abstract DataWriter dataWriter();
 
-	protected abstract CodeCallback createCodeCallback(Function<?> function);
+	protected abstract BeforeReturn createBeforeReturn(Function<?> function);
 
 	protected abstract <F extends Func<F>> void addFunction(
 			CodeId id,

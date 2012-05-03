@@ -40,6 +40,12 @@ public final class AllocationCode extends Inset {
 		this.writer = enclosing.writer().allocation(this);
 	}
 
+	AllocationCode(Allocator allocator) {
+		super(allocator, allocator.id().detail("alloc"));
+		this.disposable = true;
+		this.writer = allocator.writer().init(this);
+	}
+
 	public final boolean isDisposable() {
 		return this.disposable;
 	}

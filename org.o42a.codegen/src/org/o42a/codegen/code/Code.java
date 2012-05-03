@@ -41,6 +41,8 @@ public abstract class Code extends DebugCodeBase {
 		this.id = id;
 	}
 
+	public abstract Allocator getAllocator();
+
 	public abstract Block getBlock();
 
 	public final OpNames getOpNames() {

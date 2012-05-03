@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,21 +19,11 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.codegen.code.AllocationCode;
 
 
-public interface CodeBackend {
+public interface AllocatorWriter extends BlockWriter {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
-
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
-
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
-			FuncPtr<F> pointer);
+	AllocationWriter init(AllocationCode code);
 
 }

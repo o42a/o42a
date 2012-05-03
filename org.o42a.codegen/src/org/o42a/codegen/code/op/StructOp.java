@@ -63,6 +63,17 @@ public abstract class StructOp<S extends StructOp<S>> implements DataPtrOp<S> {
 	}
 
 	@Override
+	public void allocated(Allocator allocator, StructOp<?> enclosing) {
+		for (Data<?> field : getType().iterate(getType().getGenerator())) {
+
+			final CodeId fieldId = fieldId(null, allocator, field);
+			final PtrOp<?> fieldPtr = field.fieldOf(fieldId, allocator, this);
+
+			fieldPtr.allocated(allocator, this);
+		}
+	}
+
+	@Override
 	public final void returnValue(Block code) {
 		writer().returnValue(code);
 	}

@@ -19,21 +19,13 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.codegen.code.Block;
 
 
-public interface CodeBackend {
+public interface BeforeReturn {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	BeforeReturn NOTHING_BEFORE_RETURN = new NotingBeforeReturn();
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
-
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
-			FuncPtr<F> pointer);
+	void beforeReturn(Block code);
 
 }

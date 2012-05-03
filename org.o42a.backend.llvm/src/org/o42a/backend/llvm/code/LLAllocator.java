@@ -1,5 +1,5 @@
 /*
-    Constant Handler Compiler Back-end
+    Compiler LLVM Back-end
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,23 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.code;
+package org.o42a.backend.llvm.code;
+
+import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.backend.AllocationWriter;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 
 
-public abstract class ReturnBE extends TermBE {
+public abstract class LLAllocator extends LLBlock implements AllocatorWriter {
 
-	public ReturnBE(CBlockPart part) {
-		super(part);
-
-		final CBlock<?> block = part.block();
-
-		block.getFunction().beforeReturn(block.code());
-		block.resetNextPart();
+	public LLAllocator(
+			LLVMModule module,
+			LLFunction<?> function,
+			Allocator allocator) {
+		super(module, function, allocator);
 	}
 
 	@Override
-	public final JumpBE toJump() {
-		return null;
+	public AllocationWriter init(AllocationCode code) {
+
+		final LLAllocation allocation = new LLAllocation(this, code);
+
+		addInset(allocation);
+
+		return allocation;
 	}
 
 }

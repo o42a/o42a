@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.code;
 
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.backend.BlockWriter;
@@ -104,6 +105,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
+	public LLAllocator allocator(Allocator allocator) {
+		return new LLAllocatorCode(this, allocator);
+	}
+
+	@Override
 	public void go(CodePos pos) {
 		instr(go(nextPtr(), nextInstr(), blockPtr(pos)));
 		endBlock();
@@ -142,12 +148,12 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 
 	@Override
 	public void returnVoid() {
-		getFunction().getCallback().beforeReturn(block());
+		getFunction().beforeReturn(block());
 		instr(returnVoid(nextPtr(), nextInstr()));
 	}
 
 	public void returnValue(LLOp<?> result) {
-		getFunction().getCallback().beforeReturn(block());
+		getFunction().beforeReturn(block());
 		instr(returnValue(nextPtr(), nextInstr(),result.getNativePtr()));
 	}
 

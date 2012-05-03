@@ -26,7 +26,7 @@ import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -38,8 +38,8 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 	private long stackPtr;
 	private long firstInstr;
 
-	LLAllocation(LLCode enclosing, LLInset prevInset, AllocationCode code) {
-		super(enclosing, prevInset, code);
+	LLAllocation(LLCode enclosing, Code code) {
+		super(enclosing, code);
 	}
 
 	@Override
@@ -125,13 +125,7 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 		super.addInstr(instr);
 	}
 
-	private final AllocationCode allocation() {
-		return (AllocationCode) code();
-	}
-
 	private final long stackPtr() {
-		assert allocation().isDisposable() :
-			this + " is not disposable, so stack is not saved";
 		if (this.stackPtr != 0L) {
 			return this.stackPtr;
 		}

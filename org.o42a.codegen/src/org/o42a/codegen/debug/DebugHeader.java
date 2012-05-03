@@ -23,6 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -113,6 +114,20 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		@Override
 		public void allocated(AllocationCode code, StructOp<?> enclosing) {
 
+			fillAllocatedHeader(code, enclosing);
+
+			super.allocated(code, enclosing);
+		}
+
+		@Override
+		public void allocated(Allocator allocator, StructOp<?> enclosing) {
+			fillAllocatedHeader(allocator, enclosing);
+			super.allocated(allocator, enclosing);
+		}
+
+		private void fillAllocatedHeader(
+				Code code,
+				StructOp<?> enclosing) {
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator.getDebug();
 
@@ -149,8 +164,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 						code,
 						typeInfo.pointer(generator).toAny().op(null, code));
 			}
-
-			super.allocated(code, enclosing);
 		}
 
 	}

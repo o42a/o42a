@@ -55,8 +55,19 @@ public abstract class Block extends OpBlockBase {
 		return writer().tail();
 	}
 
+	public final Allocator allocator(String name) {
+		assert assertIncomplete();
+		return new AllocatorCode(this, id(name));
+	}
+
+	public final Allocator allocator(CodeId name) {
+		assert assertIncomplete();
+		return new AllocatorCode(this, name);
+	}
+
 	public final void go(CodePos pos) {
 		assert assertIncomplete();
+		disposeUpTo(pos.code().getAllocator());
 		writer().go(unwrapPos(pos));
 	}
 

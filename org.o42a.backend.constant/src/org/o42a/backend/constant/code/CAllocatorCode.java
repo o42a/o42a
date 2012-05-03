@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Constant Handler Compiler Back-end
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Allocator;
 
 
-final class NoOpCodeCallback implements CodeCallback {
+final class CAllocatorCode extends CAllocator<Allocator> {
+
+	private final CBlock<?> enclosing;
+
+	CAllocatorCode(CBlock<?> enclosing, Allocator allocator) {
+		super(enclosing.getBackend(), enclosing.getFunction(), allocator);
+		this.enclosing = enclosing;
+	}
+
+	public final CBlock<?> getEnclosing() {
+		return this.enclosing;
+	}
 
 	@Override
-	public void beforeReturn(Block code) {
+	protected CBlockPart createFirstBlock() {
+		return new CAllocatorPart(this);
 	}
 
 }

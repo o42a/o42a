@@ -159,16 +159,20 @@ public abstract class LLCode implements CodeWriter {
 
 	@Override
 	public final LLInset inset(Code code) {
-		return this.lastInset = new LLInset(this, this.lastInset, code);
+
+		final LLInset inset = new LLInset(this, code);
+
+		addInset(inset);
+
+		return inset;
 	}
 
 	@Override
 	public LLAllocation allocation(AllocationCode code) {
 
-		final LLAllocation allocation =
-				new LLAllocation(this, this.lastInset, code);
+		final LLAllocation allocation = new LLAllocation(this, code);
 
-		this.lastInset = allocation;
+		addInset(allocation);
 
 		return allocation;
 	}
@@ -362,6 +366,15 @@ public abstract class LLCode implements CodeWriter {
 			this.lastInset.nextInstr(instr);
 			this.lastInset = null;
 		}
+	}
+
+	protected final LLInset lastInset() {
+		return this.lastInset;
+	}
+
+	protected final void addInset(LLInset inset) {
+		inset.setPrevInset(lastInset());
+		this.lastInset = inset;
 	}
 
 	static long createBlock(LLFunction<?> function, CodeId id) {

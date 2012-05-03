@@ -49,8 +49,8 @@ public class ConstCodeBackend implements CodeBackend {
 	@Override
 	public <F extends Func<F>> FuncWriter<F> addFunction(
 			Function<F> function,
-			CodeCallback callback) {
-		return new CFunction<F>(this.backend, function, callback);
+			BeforeReturn beforeReturn) {
+		return new CFunction<F>(this.backend, function, beforeReturn);
 	}
 
 	@Override
