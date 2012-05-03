@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,33 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.codegen.code.backend.BeforeReturn;
 
 
-public interface CodeBackend {
+final class DisposeBeforeReturn implements BeforeReturn {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	private final BeforeReturn beforeReturn;
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
+	DisposeBeforeReturn(BeforeReturn beforeReturn) {
+		this.beforeReturn = beforeReturn;
+	}
 
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
-			FuncPtr<F> pointer);
+	@Override
+	public void beforeReturn(Block code) {
+		this.beforeReturn.beforeReturn(code);
+		disposeAll(code);
+	}
+
+	private static void disposeAll(Block code) {
+
+		Allocator allocator = code.getAllocator();
+
+		do {
+			allocator.allocation().writer().dispose(code.writer());
+			allocator = allocator.getEnclosingAllocator();
+		} while (allocator != null);
+	}
 
 }

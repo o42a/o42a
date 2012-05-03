@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,41 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 
 
-public interface CodeBackend {
+public abstract class Allocator extends Block {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	private AllocationCode allocation;
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
+	Allocator(Block enclosing, CodeId name) {
+		super(enclosing, name);
+	}
 
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
-			FuncPtr<F> pointer);
+	Allocator(Generator generator, CodeId id) {
+		super(generator, id);
+	}
+
+	@Override
+	public final Allocator getAllocator() {
+		return this;
+	}
+
+	public abstract Allocator getEnclosingAllocator();
+
+	public final AllocationCode allocation() {
+		return this.allocation;
+	}
+
+	@Override
+	public abstract AllocatorWriter writer();
+
+	protected final void initAllocator() {
+		this.allocation = new AllocationCode(this);
+	}
 
 }

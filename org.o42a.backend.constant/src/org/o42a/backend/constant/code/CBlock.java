@@ -23,8 +23,10 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.BoolCOp;
 import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.util.Chain;
@@ -98,6 +100,11 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	@Override
 	public final CCodeBlock block(Block code) {
 		return this.subBlocks.add(new CCodeBlock(this, code));
+	}
+
+	@Override
+	public AllocatorWriter allocator(Allocator allocator) {
+		return this.subBlocks.add(new CAllocatorCode(this, allocator));
 	}
 
 	@Override

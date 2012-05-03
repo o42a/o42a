@@ -33,6 +33,11 @@ abstract class Inset extends Code {
 	}
 
 	@Override
+	public final Allocator getAllocator() {
+		return getBlock().getAllocator();
+	}
+
+	@Override
 	public final Block getBlock() {
 		return this.block;
 	}

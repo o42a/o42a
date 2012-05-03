@@ -46,6 +46,24 @@ public abstract class OpBlockBase extends Code {
 			CodeId trueName,
 			CodeId falseName);
 
+	protected void disposeUpTo(Allocator toAllocator) {
+		disposeFromTo(getAllocator(), toAllocator);
+	}
+
+	protected void disposeFromTo(
+			Allocator fromAllocator,
+			Allocator toAllocator) {
+
+		Allocator allocator = fromAllocator;
+
+		while (allocator != toAllocator) {
+			allocator.allocation().writer().dispose(writer());
+			allocator = allocator.getEnclosingAllocator();
+			assert allocator != null :
+				fromAllocator + " is not inside " + toAllocator;
+		}
+	}
+
 	protected static final class Head implements CodePos {
 
 		private final Block code;

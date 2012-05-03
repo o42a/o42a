@@ -27,25 +27,28 @@ import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
 public final class LLFunction<F extends Func<F>>
-		extends LLBlock
+		extends LLAllocator
 		implements FuncWriter<F> {
 
 	private final Function<F> function;
-	private final CodeCallback callback;
+	private final BeforeReturn beforeReturn;
 	private final LLFAlloc<F> allocation;
 	private long functionPtr;
 
-	LLFunction(LLVMModule module, Function<F> function, CodeCallback callback) {
+	LLFunction(
+			LLVMModule module,
+			Function<F> function,
+			BeforeReturn beforeReturn) {
 		super(module, null, function);
 		this.function = function;
-		this.callback = callback;
+		this.beforeReturn = beforeReturn;
 		init();
 		getBlockPtr();
 		this.allocation = new LLFAlloc<F>(
@@ -58,8 +61,8 @@ public final class LLFunction<F extends Func<F>>
 		return this.functionPtr;
 	}
 
-	public final CodeCallback getCallback() {
-		return this.callback;
+	public final void beforeReturn(Block code) {
+		this.beforeReturn.beforeReturn(code);
 	}
 
 	@Override

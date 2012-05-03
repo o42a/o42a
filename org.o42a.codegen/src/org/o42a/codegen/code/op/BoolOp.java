@@ -77,9 +77,76 @@ public abstract class BoolOp implements Op {
 	}
 
 	public final void go(Block source, CodePos truePos, CodePos falsePos) {
-		source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
+
+		final Allocator allocator1 = allocatorOf(source, truePos);
+		final Allocator allocator2 = allocatorOf(source, falsePos);
+		final Allocator enclosedAllocator =
+				enclosedAllocator(allocator1, allocator2);
+
+		assert enclosedAllocator != null :
+			"Neither " + truePos + " allocator includes the " + falsePos
+			+ " one, nor vice versa";
+
+		final OpBlockBase src = source;
+
+		src.disposeUpTo(enclosedAllocator);
+
+		source.writer().go(
+				this,
+				exitPos(source, enclosedAllocator, allocator1, truePos),
+				exitPos(source, enclosedAllocator, allocator2, falsePos));
 	}
 
 	public abstract void returnValue(Block code);
+
+	private static final Allocator allocatorOf(Block source, CodePos pos) {
+		if (pos == null) {
+			return source.getAllocator();
+		}
+		return pos.code().getAllocator();
+	}
+
+	private static Allocator enclosedAllocator(
+			Allocator allocator1,
+			Allocator allocator2) {
+
+		Allocator allocator = allocator1;
+
+		do {
+			if (allocator == allocator2) {
+				return allocator1;
+			}
+			allocator = allocator.getEnclosingAllocator();
+		} while (allocator != null);
+
+		allocator = allocator2;
+
+		do {
+			if (allocator == allocator1) {
+				return allocator2;
+			}
+			allocator = allocator.getEnclosingAllocator();
+		} while (allocator != null);
+
+		return null;
+	}
+
+	private static CodePos exitPos(
+			Block source,
+			Allocator fromAllocator,
+			Allocator toAllocator,
+			CodePos pos) {
+		if (fromAllocator == toAllocator) {
+			return unwrapPos(pos);
+		}
+
+		final Block exitBlock = source.addBlock(
+				source.id().detail("exit_to").detail(toAllocator.getId()));
+
+		exitBlock.disposeFromTo(fromAllocator, toAllocator);
+		exitBlock.writer().go(unwrapPos(pos));
+
+		return unwrapPos(exitBlock.head());
+	}
 
 }

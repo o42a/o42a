@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Compiler LLVM Back-end
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.llvm.code;
 
-import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Allocator;
 
 
-public interface CodeCallback {
+final class LLAllocatorCode extends LLAllocator {
 
-	CodeCallback NOOP_CODE_CALLBACK = new NoOpCodeCallback();
+	LLAllocatorCode(LLBlock enclosing, Allocator allocator) {
+		super(
+				enclosing.getModule(),
+				enclosing.getFunction(),
+				allocator);
+		init();
+		enclosing.go(head());
+	}
 
-	void beforeReturn(Block code);
+	@Override
+	protected long createFirtsBlock() {
+		return createBlock(getFunction(), getId());
+	}
 
 }

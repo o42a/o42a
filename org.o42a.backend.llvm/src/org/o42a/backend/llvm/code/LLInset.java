@@ -29,15 +29,12 @@ class LLInset extends LLCode {
 	private long nextInstr;
 	private boolean exists;
 
-	LLInset(LLCode enclosing, LLInset prevInset, Code code) {
+	LLInset(LLCode enclosing, Code code) {
 		super(
 				enclosing.getModule(),
 				enclosing.getFunction(),
 				code);
-		this.prevInset = prevInset;
 		this.blockPtr = enclosing.nextPtr();
-		assert prevInset == null || prevInset.blockPtr == this.blockPtr :
-			this + " belongs to another block than " + prevInset;
 	}
 
 	@Override
@@ -68,6 +65,12 @@ class LLInset extends LLCode {
 			this.prevInset.nextInstr(instr);
 			this.prevInset = null;
 		}
+	}
+
+	final void setPrevInset(LLInset prevInset) {
+		assert prevInset == null || prevInset.blockPtr == this.blockPtr :
+			this + " belongs to another block than " + prevInset;
+		this.prevInset = prevInset;
 	}
 
 	final void nextInstr(long nextInstr) {

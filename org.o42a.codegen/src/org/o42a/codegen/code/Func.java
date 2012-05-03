@@ -59,6 +59,10 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
+	public void allocated(Allocator allocator, StructOp<?> enclosing) {
+	}
+
+	@Override
 	public final void returnValue(Block code) {
 		this.caller.returnValue(code);
 	}

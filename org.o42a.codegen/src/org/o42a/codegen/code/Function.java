@@ -19,14 +19,17 @@
 */
 package org.o42a.codegen.code;
 
+import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
+
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.debug.DebugEnvOp;
 
 
 public final class Function<F extends Func<F>>
-		extends Block
+		extends Allocator
 		implements FunctionAttributes {
 
 	private final FunctionSettings settings;
@@ -73,6 +76,11 @@ public final class Function<F extends Func<F>>
 	}
 
 	@Override
+	public final Allocator getEnclosingAllocator() {
+		return null;
+	}
+
+	@Override
 	public boolean created() {
 		return this.writer != null;
 	}
@@ -116,10 +124,20 @@ public final class Function<F extends Func<F>>
 		}
 
 		final Functions functions = getGenerator().getFunctions();
+		final BeforeReturn beforeReturn;
 
-		return this.writer = functions.codeBackend().addFunction(
-				this,
-				functions.createCodeCallback(this));
+		if (getGenerator().isProxied()) {
+			beforeReturn = NOTHING_BEFORE_RETURN;
+		} else {
+			beforeReturn =
+					new DisposeBeforeReturn(functions.createBeforeReturn(this));
+		}
+
+		this.writer = functions.codeBackend().addFunction(this, beforeReturn);
+
+		initAllocator();
+
+		return this.writer;
 	}
 
 	@Override

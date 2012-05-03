@@ -20,9 +20,7 @@
 package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.AllocClass;
 
 
@@ -31,6 +29,8 @@ public interface PtrOp<P extends PtrOp<P>> extends Op {
 	AllocClass getAllocClass();
 
 	void allocated(AllocationCode code, StructOp<?> enclosing);
+
+	void allocated(Allocator allocator, StructOp<?> enclosing);
 
 	BoolOp isNull(CodeId id, Code code);
 

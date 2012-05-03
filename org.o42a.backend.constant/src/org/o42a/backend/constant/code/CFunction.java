@@ -29,17 +29,17 @@ import org.o42a.backend.constant.data.func.FunctionCFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.backend.CodeCallback;
+import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 
 
 public class CFunction<F extends Func<F>>
-		extends CBlock<Function<F>>
+		extends CAllocator<Function<F>>
 		implements FuncWriter<F> {
 
-	private final CodeCallback callback;
+	private final BeforeReturn beforeReturn;
 	private FunctionCFAlloc<F> allocation;
 	private Function<F> underlying;
 	private byte status;
@@ -47,9 +47,9 @@ public class CFunction<F extends Func<F>>
 	CFunction(
 			ConstBackend backend,
 			Function<F> function,
-			CodeCallback callback) {
+			BeforeReturn beforeReturn) {
 		super(backend, null, function);
-		this.callback = callback;
+		this.beforeReturn = beforeReturn;
 	}
 
 	public final Function<F> getUnderlying() {
@@ -64,8 +64,8 @@ public class CFunction<F extends Func<F>>
 		return this.underlying;
 	}
 
-	public final CodeCallback getCallback() {
-		return this.callback;
+	public final void beforeReturn(Block code) {
+		this.beforeReturn.beforeReturn(code);
 	}
 
 	@Override

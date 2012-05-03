@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Constant Handler Compiler Back-end
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,23 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.backend;
+package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.backend.constant.data.ConstBackend;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 
 
-public interface CodeBackend {
+public abstract class CAllocator<A extends Allocator>
+		extends CBlock<A>
+		implements AllocatorWriter {
 
-	<F extends Func<F>> SignatureWriter<F> addSignature(Signature<F> signature);
+	public CAllocator(
+			ConstBackend backend,
+			CFunction<?> function,
+			A allocator) {
+		super(backend, function, allocator);
+	}
 
-	<F extends Func<F>> FuncWriter<F> addFunction(
-			Function<F> function,
-			BeforeReturn beforeReturn);
-
-	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
-			FuncPtr<F> pointer);
+	@Override
+	public final CAllocation init(AllocationCode code) {
+		return new CAllocation(this, code);
+	}
 
 }

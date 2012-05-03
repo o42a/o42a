@@ -25,7 +25,7 @@ import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.FuncAllocation;
 
 
-public interface FuncWriter<F extends Func<F>> extends BlockWriter {
+public interface FuncWriter<F extends Func<F>> extends AllocatorWriter {
 
 	FuncAllocation<F> getAllocation();
 

@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,44 +20,39 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.BlockWriter;
+import org.o42a.codegen.code.backend.AllocatorWriter;
 
 
-class CodeBlock extends Block {
+final class AllocatorCode extends Allocator {
 
-	private final Code enclosing;
-	BlockWriter writer;
+	private final AllocatorWriter writer;
+	private final Allocator enclosingAllocator;
 
-	CodeBlock(Code enclosing, CodeId name) {
+	AllocatorCode(Block enclosing, CodeId name) {
 		super(enclosing, name);
-		this.enclosing = enclosing;
+		this.enclosingAllocator = enclosing.getAllocator();
+		this.writer = enclosing.writer().allocator(this);
+		initAllocator();
 	}
 
 	@Override
-	public final Allocator getAllocator() {
-		return getEnclosing().getAllocator();
-	}
-
-	public final Code getEnclosing() {
-		return this.enclosing;
+	public final Allocator getEnclosingAllocator() {
+		return this.enclosingAllocator;
 	}
 
 	@Override
 	public boolean created() {
-		return this.writer != null && this.writer.created();
+		return writer().created();
 	}
 
 	@Override
 	public final boolean exists() {
-		return this.writer != null && this.writer.exists();
+		return writer().exists();
 	}
 
 	@Override
-	public BlockWriter writer() {
-		if (this.writer != null) {
-			return this.writer;
-		}
-		return this.writer = getEnclosing().getBlock().writer().block(this);
+	public final AllocatorWriter writer() {
+		return this.writer;
 	}
 
 }
