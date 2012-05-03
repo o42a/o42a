@@ -80,21 +80,38 @@ public abstract class BoolOp implements Op {
 
 		final Allocator allocator1 = allocatorOf(source, truePos);
 		final Allocator allocator2 = allocatorOf(source, falsePos);
-		final Allocator enclosedAllocator =
-				enclosedAllocator(allocator1, allocator2);
+		final Allocator innermostAllocator;
+		final CodePos innermostPos;
 
-		assert enclosedAllocator != null :
-			"Neither " + truePos + " allocator includes the " + falsePos
-			+ " one, nor vice versa";
+		// Find the innermost allocator.
+		if (contains(allocator2, allocator1)) {
+			innermostAllocator = allocator1;
+			innermostPos = truePos;
+		} else {
+			assert contains(allocator1, allocator2) :
+				"Neither " + truePos + " allocator includes the " + falsePos
+				+ " one, nor vice versa";
+			innermostAllocator = allocator2;
+			innermostPos = falsePos;
+		}
 
+		// Dispose up to the innermost allocator.
 		final OpBlockBase src = source;
+		final boolean included;
 
-		src.disposeUpTo(enclosedAllocator);
+		if (innermostPos == null) {
+			included = false;
+		} else {
+			included = src.disposeUpTo(innermostPos);
+		}
 
+		// Create an auxiliary block either for true or false position
+		// if necessary. This block will dispose the rest of the allocations
+		// made between innermost position and the target one.
 		source.writer().go(
 				this,
-				exitPos(source, enclosedAllocator, allocator1, truePos),
-				exitPos(source, enclosedAllocator, allocator2, falsePos));
+				exitPos(source, innermostAllocator, truePos, !included),
+				exitPos(source, innermostAllocator, falsePos, !included));
 	}
 
 	public abstract void returnValue(Block code);
@@ -106,44 +123,50 @@ public abstract class BoolOp implements Op {
 		return pos.code().getAllocator();
 	}
 
-	private static Allocator enclosedAllocator(
+	private static boolean contains(
 			Allocator allocator1,
 			Allocator allocator2) {
 
-		Allocator allocator = allocator1;
-
-		do {
-			if (allocator == allocator2) {
-				return allocator1;
-			}
-			allocator = allocator.getEnclosingAllocator();
-		} while (allocator != null);
-
-		allocator = allocator2;
+		Allocator allocator = allocator2;
 
 		do {
 			if (allocator == allocator1) {
-				return allocator2;
+				return true;
 			}
 			allocator = allocator.getEnclosingAllocator();
 		} while (allocator != null);
 
-		return null;
+		return false;
 	}
 
 	private static CodePos exitPos(
 			Block source,
 			Allocator fromAllocator,
-			Allocator toAllocator,
-			CodePos pos) {
-		if (fromAllocator == toAllocator) {
-			return unwrapPos(pos);
+			CodePos pos,
+			boolean includingFrom) {
+		if (pos == null) {
+			return null;
+		}
+
+		final Allocator from;
+
+		if (includingFrom) {
+			from = fromAllocator;
+		} else {
+			// The source allocations already disposed.
+			// Start from the enclosing allocator.
+			from = fromAllocator.getEnclosingAllocator();
+			if (from == null) {
+				return unwrapPos(pos);
+			}
 		}
 
 		final Block exitBlock = source.addBlock(
-				source.id().detail("exit_to").detail(toAllocator.getId()));
+				source.id()
+				.detail("to")
+				.detail(pos.code().getId()));
 
-		exitBlock.disposeFromTo(fromAllocator, toAllocator);
+		exitBlock.disposeFromTo(from, pos);
 		exitBlock.writer().go(unwrapPos(pos));
 
 		return unwrapPos(exitBlock.head());
