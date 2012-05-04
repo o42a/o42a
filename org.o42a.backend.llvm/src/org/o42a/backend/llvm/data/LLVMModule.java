@@ -76,12 +76,8 @@ public final class LLVMModule {
 		this.codeBackend = new LLVMCodeBackend(this);
 	}
 
-	public final void createModule(LLVMGenerator generator, CodeId id) {
+	public void init(LLVMGenerator generator) {
 		this.generator = generator;
-		this.nativePtr = createModule(ids().writeCodeId(id), ids().length());
-
-		assert this.nativePtr != 0 :
-			"Failed to create LLVM module " + id;
 
 		final Analyzer analyzer = generator.getAnalyzer();
 		final int debugEnabled = debugEnabled();
@@ -101,6 +97,12 @@ public final class LLVMModule {
 		if (normalizationEnabled != 0) {
 			analyzer.setNormalizationEnabled(normalizationEnabled > 0);
 		}
+	}
+
+	public final void createModule(CodeId id) {
+		this.nativePtr = createModule(ids().writeCodeId(id), ids().length());
+		assert this.nativePtr != 0 :
+			"Failed to create LLVM module " + id;
 	}
 
 	public final LLVMGenerator getGenerator() {
