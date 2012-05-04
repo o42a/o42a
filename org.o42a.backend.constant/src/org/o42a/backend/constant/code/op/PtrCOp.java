@@ -27,7 +27,9 @@ import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.AllocClass;
@@ -72,10 +74,6 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 
 	@Override
 	public void allocated(AllocationCode code, StructOp<?> enclosing) {
-	}
-
-	@Override
-	public void allocated(Allocator allocator, StructOp<?> enclosing) {
 	}
 
 	@Override
