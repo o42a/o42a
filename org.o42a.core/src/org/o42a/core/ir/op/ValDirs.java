@@ -35,15 +35,11 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ValDirs {
 
-	private final CodeBuilder builder;
-	private final Block code;
+	private final CodeDirs dirs;
 	private final ValueStruct<?, ?> valueStruct;
-	private Block falseCode;
-	protected CodeDirs dirs;
 
-	ValDirs(CodeBuilder builder, Block code, ValueStruct<?, ?> valueStruct) {
-		this.builder = builder;
-		this.code = code;
+	ValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
+		this.dirs = dirs;
 		this.valueStruct = valueStruct;
 	}
 
@@ -57,11 +53,11 @@ public abstract class ValDirs {
 	}
 
 	public final Generator getGenerator() {
-		return this.code.getGenerator();
+		return dirs().getGenerator();
 	}
 
 	public final CodeBuilder getBuilder() {
-		return this.builder;
+		return dirs().getBuilder();
 	}
 
 	public final ValueType<?> getValueType() {
@@ -73,11 +69,11 @@ public abstract class ValDirs {
 	}
 
 	public final boolean isDebug() {
-		return this.code.isDebug();
+		return dirs().isDebug();
 	}
 
 	public final Block code() {
-		return this.code;
+		return dirs().code();
 	}
 
 	public final CodeId id() {
@@ -89,11 +85,11 @@ public abstract class ValDirs {
 	}
 
 	public final Block addBlock(String name) {
-		return this.code.addBlock(name);
+		return dirs().addBlock(name);
 	}
 
 	public final Block addBlock(CodeId name) {
-		return this.code.addBlock(name);
+		return dirs().addBlock(name);
 	}
 
 	public final CodePos falseDir() {
@@ -104,127 +100,68 @@ public abstract class ValDirs {
 		return topLevel().value();
 	}
 
-	public abstract void done();
-
 	public final CodeDirs dirs() {
-		if (this.dirs != null) {
-			return this.dirs;
-		}
-		return this.dirs = createDirs();
+		return this.dirs;
 	}
 
 	public final DefDirs def() {
-		return new ValDefDirs(this, addBlock("result"), true);
-	}
-
-	public final DefDirs subDef() {
-		return new ValDefDirs(this, addBlock("result"), false);
+		return new ValDefDirs(this, addBlock("result"));
 	}
 
 	public final DefDirs def(CodePos returnDir) {
-		return new DefDirs(this, returnDir, true);
-	}
-
-	public final DefDirs subDef(CodePos returnDir) {
-		return new DefDirs(this, returnDir, false);
-	}
-
-	public final ValDirs sub(String name) {
-		return sub(addBlock(name));
-	}
-
-	public final ValDirs sub(CodeId name) {
-		return sub(addBlock(name));
+		return new DefDirs(this, returnDir);
 	}
 
 	public final ValDirs sub(Block code) {
 		return dirs().sub(code).value(this);
 	}
 
-	public final ValDirs setFalseDir(CodePos falseDir) {
-
-		final CodeDirs oldDirs = dirs();
-		final CodeDirs newDirs = oldDirs.setFalseDir(falseDir);
-
-		if (oldDirs == newDirs) {
-			return this;
-		}
-
-		return newDirs.value(this);
+	public final ValDirs nested() {
+		return new NestedValDirs(dirs().nested(), this);
 	}
 
-	public ValDirs begin(String message) {
-		if (!isDebug()) {
-			return this;
-		}
+	public final ValDirs setFalseDir(CodePos falseDir) {
+		return dirs().setFalseDir(falseDir).value(this);
+	}
 
-		final DebugValDirs result = new DebugValDirs(this);
+	public final ValDirs begin(String id, String message) {
+		return begin(id != null ? id(id) : null, message);
+	}
 
-		result.code().begin(message);
+	public final ValDirs begin(CodeId id, String message) {
+		return new NestedValDirs(dirs().begin(id, message), this);
+	}
 
-		return result;
+	public CodeDirs done() {
+		return dirs().done();
 	}
 
 	@Override
 	public String toString() {
-		return topLevel().enclosing.toString(
-				getClass().getSimpleName(),
-				code());
+		return dirs().toString(getClass().getSimpleName(), code());
 	}
 
 	abstract TopLevelValDirs topLevel();
 
-	abstract CodeDirs createDirs();
-
-	final CodeDirs createDirs(CodeDirs enclosing) {
-		this.falseCode = addBlock("false");
-		return new CodeDirs(getBuilder(), code(), this.falseCode.head());
-	}
-
-	void endDirs(CodeDirs enclosing) {
-		dirs();
-		if (this.falseCode.exists()) {
-			endFalse(enclosing, this.falseCode);
-		}
-	}
-
-	void endFalse(CodeDirs enclosing, Block code) {
-		code.go(enclosing.falseDir());
-	}
-
 	static final class TopLevelValDirs extends ValDirs {
 
-		private final CodeDirs enclosing;
-		private final AllocationDirs allocation;
 		private final ValOp value;
 
 		TopLevelValDirs(
-				CodeDirs enclosing,
+				CodeDirs dirs,
 				CodeId name,
 				ValueStruct<?, ?> valueStruct) {
-			super(
-					enclosing.getBuilder(),
-					enclosing.code(),
-					valueStruct);
-			this.enclosing = enclosing;
-			this.allocation = enclosing.allocate(name);
+			super(dirs, valueStruct);
 			this.value = allocateVal(
 					"value",
-					this.allocation.code(),
+					dirs.code().getAllocator().allocation(),
 					getBuilder(),
 					valueStruct);
-			this.dirs = this.allocation.dirs();
 		}
 
-		TopLevelValDirs(CodeDirs enclosing, ValOp value) {
-			super(
-					enclosing.getBuilder(),
-					enclosing.code(),
-					value.getValueStruct());
-			this.dirs = enclosing;
-			this.enclosing = enclosing;
+		TopLevelValDirs(CodeDirs dirs, ValOp value) {
+			super(dirs, value.getValueStruct());
 			this.value = value;
-			this.allocation = null;
 		}
 
 		@Override
@@ -233,20 +170,8 @@ public abstract class ValDirs {
 		}
 
 		@Override
-		public void done() {
-			if (this.allocation != null) {
-				this.allocation.done();
-			}
-		}
-
-		@Override
 		final TopLevelValDirs topLevel() {
 			return this;
-		}
-
-		@Override
-		CodeDirs createDirs() {
-			throw new UnsupportedOperationException();
 		}
 
 	}
@@ -255,65 +180,14 @@ public abstract class ValDirs {
 
 		private TopLevelValDirs topLevel;
 
-		NestedValDirs(CodeDirs enclosing, ValDirs storage) {
-			super(
-					enclosing.getBuilder(),
-					enclosing.code(),
-					storage.getValueStruct());
+		NestedValDirs(CodeDirs dirs, ValDirs storage) {
+			super(dirs, storage.getValueStruct());
 			this.topLevel = storage.topLevel();
-			this.dirs = enclosing;
-		}
-
-		@Override
-		public void done() {
 		}
 
 		@Override
 		TopLevelValDirs topLevel() {
 			return this.topLevel;
-		}
-
-		@Override
-		CodeDirs createDirs() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	private static final class DebugValDirs extends ValDirs {
-
-		private final ValDirs enclosing;
-		private final TopLevelValDirs topLevel;
-
-		DebugValDirs(ValDirs enclosing) {
-			super(
-					enclosing.getBuilder(),
-					enclosing.code(),
-					enclosing.getValueStruct());
-			this.enclosing = enclosing;
-			this.topLevel = enclosing.topLevel();
-		}
-
-		@Override
-		public void done() {
-			code().end();
-			endDirs(this.enclosing.dirs());
-		}
-
-		@Override
-		final TopLevelValDirs topLevel() {
-			return this.topLevel;
-		}
-
-		@Override
-		CodeDirs createDirs() {
-			return createDirs(this.enclosing.dirs());
-		}
-
-		@Override
-		void endFalse(CodeDirs enclosing, Block code) {
-			code.end();
-			super.endFalse(enclosing, code);
 		}
 
 	}
@@ -322,20 +196,24 @@ public abstract class ValDirs {
 
 		private final Block returnCode;
 
-		ValDefDirs(ValDirs valDirs, Block returnCode, boolean ownsValDirs) {
-			super(valDirs, returnCode.head(), ownsValDirs);
+		ValDefDirs(ValDirs valDirs, Block returnCode) {
+			super(valDirs, returnCode.head());
 			this.returnCode = returnCode;
 		}
 
 		@Override
-		public void done() {
-			super.done();
-			if (code().exists()) {
-				code().go(falseDir());
+		public CodeDirs done() {
+
+			final CodeDirs result = super.done();
+
+			if (result.code().exists()) {
+				result.code().go(falseDir());
 			}
 			if (this.returnCode.exists()) {
-				this.returnCode.go(code().tail());
+				this.returnCode.go(result.code().tail());
 			}
+
+			return result;
 		}
 
 	}

@@ -75,36 +75,6 @@ public abstract class Code extends DebugCodeBase {
 		return new InsetCode(this, name);
 	}
 
-	public final AllocationCode allocate() {
-		assert assertIncomplete();
-		return new AllocationCode(this, null, true);
-	}
-
-	public final AllocationCode allocate(String name) {
-		assert assertIncomplete();
-		return new AllocationCode(this, id(name), true);
-	}
-
-	public final AllocationCode allocate(CodeId name) {
-		assert assertIncomplete();
-		return new AllocationCode(this, name, true);
-	}
-
-	public final AllocationCode undisposable() {
-		assert assertIncomplete();
-		return new AllocationCode(this, null, false);
-	}
-
-	public final AllocationCode undisposable(String name) {
-		assert assertIncomplete();
-		return new AllocationCode(this, id(name), false);
-	}
-
-	public final AllocationCode undisposable(CodeId name) {
-		assert assertIncomplete();
-		return new AllocationCode(this, name, false);
-	}
-
 	public final Block addBlock(String name) {
 		return new CodeBlock(this, getGenerator().id(name));
 	}

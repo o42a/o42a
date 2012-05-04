@@ -168,16 +168,6 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public LLAllocation allocation(AllocationCode code) {
-
-		final LLAllocation allocation = new LLAllocation(this, code);
-
-		addInset(allocation);
-
-		return allocation;
-	}
-
-	@Override
 	public Int8llOp int8(byte value) {
 		return new Int8llOp(
 				code().getOpNames().opId(null),

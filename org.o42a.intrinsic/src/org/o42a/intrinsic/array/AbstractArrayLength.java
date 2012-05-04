@@ -119,7 +119,9 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 	private void write(DefDirs dirs, HostOp host, InlineValue inlineArray) {
 
 		final ValDirs arrayDirs =
-				dirs.dirs().value(valueStruct(getScope()), "array_val");
+				dirs.dirs()
+				.nested()
+				.value(valueStruct(getScope()), "array_val");
 		final Block code = arrayDirs.code();
 
 		final ValOp arrayVal;

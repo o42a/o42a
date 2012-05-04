@@ -164,7 +164,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 	ValOp write(ValDirs dirs, HostOp host, RefOp cmp, InlineValue inlineCmp) {
 
 		final ComparisonOperator operator = getOperator();
-		final ValDirs cmpDirs = dirs.dirs().value(
+		final ValDirs cmpDirs = dirs.dirs().nested().value(
 				operator.getValueStruct(),
 				"cmp");
 		final ValOp cmpVal;
@@ -175,7 +175,7 @@ public final class ComparisonExpression extends ObjectConstructor {
 			cmpVal = operator.writeComparison(cmpDirs, cmp);
 		}
 
-		final ValDirs resultDirs = cmpDirs.dirs().value(dirs);
+		final ValDirs resultDirs = cmpDirs.dirs().nested().value(dirs);
 		final ValOp result = operator.write(resultDirs, cmpVal);
 
 		resultDirs.done();

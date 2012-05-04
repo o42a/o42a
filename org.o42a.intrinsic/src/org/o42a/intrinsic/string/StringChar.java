@@ -156,7 +156,7 @@ final class StringChar extends AnnotatedBuiltin {
 			InlineValue inlineIndex) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueStruct.STRING, "string");
+				dirs.dirs().nested().value(ValueStruct.STRING, "string");
 		final ValOp stringVal;
 
 		if (inlineString != null) {
@@ -166,7 +166,7 @@ final class StringChar extends AnnotatedBuiltin {
 		}
 
 		final ValDirs indexDirs =
-				stringDirs.dirs().value(ValueStruct.INTEGER, "index");
+				stringDirs.dirs().nested().value(ValueStruct.INTEGER, "index");
 		final ValOp indexVal;
 
 		if (inlineIndex != null) {

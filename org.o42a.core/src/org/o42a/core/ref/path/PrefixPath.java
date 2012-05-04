@@ -153,7 +153,7 @@ public final class PrefixPath {
 				dirs.begin("rescope_by_path", "Resccope to " + this.prefix);
 		final HostOp result = getBoundPath().op(subDirs, host);
 
-		subDirs.end();
+		subDirs.done();
 
 		return result;
 	}

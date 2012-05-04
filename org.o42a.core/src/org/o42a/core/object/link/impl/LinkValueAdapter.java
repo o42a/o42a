@@ -125,7 +125,8 @@ public class LinkValueAdapter extends ValueAdapter {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs fromDirs = dirs.dirs().value(this.fromStruct);
+			final ValDirs fromDirs =
+					dirs.dirs().nested().value(this.fromStruct);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 
 			dirs.returnValue(from);

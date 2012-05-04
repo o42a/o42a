@@ -22,26 +22,15 @@ package org.o42a.codegen.debug;
 import static org.o42a.codegen.debug.DebugDumpFunc.DEBUG_DUMP;
 import static org.o42a.codegen.debug.DebugNameFunc.DEBUG_NAME;
 import static org.o42a.codegen.debug.DebugPrintFunc.DEBUG_PRINT;
-import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.Int8recOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.CodeBase;
 import org.o42a.codegen.data.Ptr;
 
 
 public abstract class DebugCodeBase extends CodeBase {
-
-	static DebugStackFrameOp allocateStackFrame(Code code, CodeId id) {
-
-		final AllocationCode allocation = code.undisposable("stack_frame");
-
-		return allocation.allocate(id, DEBUG_STACK_FRAME_TYPE);
-	}
 
 	private final Generator generator;
 	private final Function<?> function;
@@ -78,96 +67,14 @@ public abstract class DebugCodeBase extends CodeBase {
 			return;
 		}
 
-		printFunc().op(null, code()).call(
+		printFunc(getGenerator()).op(null, code()).call(
 				code(),
-				binaryMessage(nl ? message + '\n' : message).op(null, code()));
-	}
-
-	public final void begin(String comment) {
-		if (!isDebug()) {
-			return;
+				binaryMessage(getGenerator(), message).op(null, code()));
+		if (nl) {
+			printWoPrefixFunc(getGenerator()).op(null, code()).call(
+					code(),
+					binaryMessage(getGenerator(), "\n").op(null, code()));
 		}
-
-		final Code code = code();
-		final Function<?> function = code.getFunction();
-
-		final DebugEnvOp debugEnv = function.debugEnv(code);
-		final StructRecOp<DebugStackFrameOp> envStackFrame =
-				debugEnv.stackFrame(code);
-		final DebugStackFrameOp prevStackFrame = envStackFrame.load(null, code);
-		final DebugStackFrameOp stackFrame = allocateStackFrame(code, null);
-
-		prevStackFrame.comment(code).store(
-				code,
-				binaryMessage(comment).op(null, code));
-		stackFrame.name(code).store(
-				code,
-				prevStackFrame.name(code).load(null, code));
-		stackFrame.prev(code).store(code, prevStackFrame);
-		stackFrame.comment(code).store(code, code.nullPtr());
-		stackFrame.file(code).store(code, code.nullPtr());
-		stackFrame.line(code).store(code, code.int32(0));
-
-		final DebugPrintFunc printFunc = printWoPrefixFunc().op(null, code);
-
-		debug("((( /* ", false);
-		printFunc.call(code, binaryMessage(comment).op(null, code));
-		printFunc.call(code, binaryMessage(" */\n").op(null, code));
-		envStackFrame.store(code, stackFrame);
-
-		final Int8recOp indent = debugEnv.indent(code);
-
-		indent.store(
-				code,
-				indent.load(null, code).add(null, code, code.int8((byte) 1)));
-	}
-
-	public CodePos end(String id, CodePos codePos) {
-		if (codePos == null) {
-			return null;
-		}
-		if (!isDebug()) {
-			return codePos;
-		}
-
-		final Block block = code().addBlock(id);
-
-		block.end();
-		block.go(codePos);
-
-		return block.head();
-	}
-
-	public final void end() {
-		if (!isDebug()) {
-			return;
-		}
-
-		final Code code = code();
-		final Function<?> function = code.getFunction();
-
-		final DebugEnvOp debugEnv = function.debugEnv(code);
-
-		final StructRecOp<DebugStackFrameOp> envStackFrame =
-				debugEnv.stackFrame(code);
-		final DebugStackFrameOp prevStackFrame =
-				envStackFrame.load(null, code).prev(code).load(null, code);
-		final AnyOp comment = prevStackFrame.comment(code).load(null, code);
-
-		prevStackFrame.comment(code).store(code, code.nullPtr());
-		envStackFrame.store(code, prevStackFrame);
-
-		final Int8recOp indent = debugEnv.indent(code);
-
-		indent.store(
-				code,
-				indent.load(null, code).sub(null, code, code.int8((byte) 1)));
-
-		final DebugPrintFunc printFunc = printWoPrefixFunc().op(null, code);
-
-		debug("))) /* ", false);
-		printFunc.call(code, comment);
-		printFunc.call(code, binaryMessage(" */\n").op(null, code));
 	}
 
 	public final void dumpName(String prefix, Dumpable data) {
@@ -183,7 +90,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 		func.op(null, code()).call(
 				code(),
-				binaryMessage(prefix).op(null, code()),
+				binaryMessage(getGenerator(), prefix).op(null, code()),
 				data.toAny(null, code()));
 	}
 
@@ -202,7 +109,7 @@ public abstract class DebugCodeBase extends CodeBase {
 
 		debugFunc.op(null, code()).call(
 				code(),
-				binaryMessage(prefix).op(null, code()),
+				binaryMessage(getGenerator(), prefix).op(null, code()),
 				func.toAny(null, code()));
 	}
 
@@ -224,27 +131,29 @@ public abstract class DebugCodeBase extends CodeBase {
 
 		func.op(null, code).call(
 				code,
-				binaryMessage(message).op(null, code),
+				binaryMessage(getGenerator(), message).op(null, code),
 				data.toData(code.id("dump"), code),
 				code.int32(depth));
 	}
 
-	private FuncPtr<DebugPrintFunc> printFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_dbg_print", DEBUG_PRINT);
+	protected static final FuncPtr<DebugPrintFunc> printFunc(
+			Generator generator) {
+		return generator.externalFunction().link("o42a_dbg_print", DEBUG_PRINT);
 	}
 
-	private FuncPtr<DebugPrintFunc> printWoPrefixFunc() {
-		return getGenerator()
-				.externalFunction()
+	protected static final FuncPtr<DebugPrintFunc> printWoPrefixFunc(
+			Generator generator) {
+		return generator.externalFunction()
 				.link("o42a_dbg_print_wo_prefix", DEBUG_PRINT);
 	}
 
-	private Ptr<AnyOp> binaryMessage(String message) {
-		return getGenerator().getDebug().allocateMessage(
-				getGenerator().getDebug().nextDebugId(),
-				message);
+	protected static final Ptr<AnyOp> binaryMessage(
+			Generator generator,
+			String message) {
+
+		final Debug debug = generator.getDebug();
+
+		return debug.allocateMessage(debug.nextDebugId(), message);
 	}
 
 	private final Code code() {

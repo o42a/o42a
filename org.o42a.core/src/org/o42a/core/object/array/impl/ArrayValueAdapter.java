@@ -176,7 +176,8 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 			final ValueStruct<?, ?> fromValueStruct =
 					getRef().valueStruct(getRef().getScope());
-			final ValDirs fromDirs = dirs.dirs().value(fromValueStruct);
+			final ValDirs fromDirs =
+					dirs.dirs().nested().value(fromValueStruct);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 			final FuncPtr<ValCopyFunc> func =
 					dirs.getGenerator()

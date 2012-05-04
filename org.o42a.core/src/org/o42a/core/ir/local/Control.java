@@ -196,7 +196,7 @@ public abstract class Control {
 	private final class ControlDirs extends DefDirs {
 
 		ControlDirs(ValDirs valDirs) {
-			super(valDirs, returnDir(), true);
+			super(valDirs, returnDir());
 		}
 
 		@Override

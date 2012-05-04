@@ -138,7 +138,10 @@ final class VoidDef extends Def {
 
 			final Block trueVal = dirs.addBlock("true_def");
 			final DefDirs defDirs =
-					dirs.dirs().value(this.valueStruct).def(trueVal.head());
+					dirs.dirs()
+					.nested()
+					.value(this.valueStruct)
+					.def(trueVal.head());
 
 			this.def.write(defDirs, host);
 			defDirs.done();

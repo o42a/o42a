@@ -54,11 +54,11 @@ final class ArrayElementOp extends PathOp {
 			value + " is immutable of type " + this.arrayStruct
 			+ ". Can not re-assign it`s element";
 
-		final ValDirs indexDirs = dirs.value(ValueStruct.INTEGER);
+		final ValDirs indexDirs = dirs.nested().value(ValueStruct.INTEGER);
 		final Int64op index = loadIndex(indexDirs);
 
 		final ValDirs arrayDirs =
-				indexDirs.dirs().value(this.arrayStruct);
+				indexDirs.dirs().nested().value(this.arrayStruct);
 
 		assignItem(index, arrayDirs, value);
 
@@ -69,11 +69,11 @@ final class ArrayElementOp extends PathOp {
 	@Override
 	public HostOp target(CodeDirs dirs) {
 
-		final ValDirs indexDirs = dirs.value(ValueStruct.INTEGER);
+		final ValDirs indexDirs = dirs.nested().value(ValueStruct.INTEGER);
 		final Int64op index = loadIndex(indexDirs);
 
 		final ValDirs arrayDirs =
-				indexDirs.dirs().value(this.arrayStruct);
+				indexDirs.dirs().nested().value(this.arrayStruct);
 		final ObjectOp itemObject = loadItem(arrayDirs, index);
 
 		arrayDirs.done();
@@ -164,7 +164,9 @@ final class ArrayElementOp extends PathOp {
 
 		// TODO implement array element type checking.
 
-		itemRec.store(code, value.materialize(arrayDirs.dirs()).toAny(null, code));
+		itemRec.store(
+				code,
+				value.materialize(arrayDirs.dirs()).toAny(null, code));
 	}
 
 }

@@ -20,8 +20,8 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
-import static org.o42a.codegen.debug.DebugCodeBase.allocateStackFrame;
 import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
+import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 import static org.o42a.util.string.StringCodec.nullTermASCIIString;
 import static org.o42a.util.string.StringCodec.nullTermString;
@@ -119,8 +119,9 @@ public class Debug {
 		final DebugEnvOp debugEnv = function.debugEnv(function);
 		final StructRecOp<DebugStackFrameOp> envStackFrame =
 				debugEnv.stackFrame(function);
-		final DebugStackFrameOp stackFrame =
-				allocateStackFrame(function, null);
+		final DebugStackFrameOp stackFrame = function.allocation().allocate(
+				function.id("func_stack_frame"),
+				DEBUG_STACK_FRAME_TYPE);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
 		stackFrame.prev(function).store(

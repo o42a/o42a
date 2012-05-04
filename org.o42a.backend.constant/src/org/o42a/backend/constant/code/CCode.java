@@ -30,7 +30,9 @@ import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
@@ -97,11 +99,6 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	@Override
 	public final CodeWriter inset(Code code) {
 		return new CCodeInset(this, code);
-	}
-
-	@Override
-	public final CAllocation allocation(AllocationCode code) {
-		return new CAllocation(this, code);
 	}
 
 	@Override

@@ -73,8 +73,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 		} else {
 
 			final ValDirs dirs =
-					codeDirs(builder, function, failure.head())
-					.value(value);
+					builder.dirs(function, failure.head()).value(value);
 
 			allocateItems(dirs);
 

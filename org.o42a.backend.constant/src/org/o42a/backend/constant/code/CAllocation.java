@@ -31,7 +31,6 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -46,16 +45,8 @@ public final class CAllocation
 		extends CInset<AllocationCode>
 		implements AllocationWriter {
 
-	private final boolean allocator;
-
-	CAllocation(CCode<?> enclosing, AllocationCode code) {
-		super(enclosing, code);
-		this.allocator = false;
-	}
-
 	CAllocation(CAllocator<?> allocator, AllocationCode code) {
 		super(allocator, code);
-		this.allocator = true;
 	}
 
 	@Override
@@ -162,16 +153,7 @@ public final class CAllocation
 
 	@Override
 	protected AllocationCode createUnderlying(Code enclosingUnderlying) {
-		if (this.allocator) {
-
-			final Allocator allocator = (Allocator) enclosingUnderlying;
-
-			return allocator.allocation();
-		}
-		if (code().isDisposable()) {
-			return enclosingUnderlying.allocate(getId().getLocal());
-		}
-		return enclosingUnderlying.undisposable(getId().getLocal());
+		return enclosingUnderlying.getAllocator().allocation();
 	}
 
 }

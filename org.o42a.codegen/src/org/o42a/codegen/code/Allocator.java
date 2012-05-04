@@ -44,14 +44,13 @@ public abstract class Allocator extends Block {
 	public abstract Allocator getEnclosingAllocator();
 
 	public final AllocationCode allocation() {
-		return this.allocation;
+		if (this.allocation != null) {
+			return this.allocation;
+		}
+		return this.allocation = new AllocationCode(this);
 	}
 
 	@Override
 	public abstract AllocatorWriter writer();
-
-	protected final void initAllocator() {
-		this.allocation = new AllocationCode(this);
-	}
 
 }

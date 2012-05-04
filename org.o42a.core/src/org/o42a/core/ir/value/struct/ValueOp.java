@@ -70,7 +70,7 @@ public abstract class ValueOp {
 
 	public final void writeCond(CodeDirs dirs) {
 
-		final ValDirs valDirs = dirs.value(getValueStruct());
+		final ValDirs valDirs = dirs.nested().value(getValueStruct());
 
 		writeValue(valDirs);
 		valDirs.done();
@@ -80,7 +80,7 @@ public abstract class ValueOp {
 		assert body == null
 				|| body.value().getValueStruct().assertIs(getValueStruct());
 
-		final ValDirs valDirs = dirs.value(getValueStruct());
+		final ValDirs valDirs = dirs.nested().value(getValueStruct());
 
 		writeValue(valDirs, body);
 		valDirs.done();

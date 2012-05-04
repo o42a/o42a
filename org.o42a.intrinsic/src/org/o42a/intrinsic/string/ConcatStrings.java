@@ -145,7 +145,8 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			InlineValue inlineWhat,
 			InlineValue inlineWith) {
 
-		final ValDirs whatDirs = dirs.dirs().value(ValueStruct.STRING, "what");
+		final ValDirs whatDirs =
+				dirs.dirs().nested().value(ValueStruct.STRING, "what");
 		final ValOp whatVal;
 
 		if (inlineWhat != null) {
@@ -155,7 +156,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		final ValDirs withDirs =
-				whatDirs.dirs().value(ValueStruct.STRING, "with");
+				whatDirs.dirs().nested().value(ValueStruct.STRING, "with");
 		final ValOp withVal;
 
 		if (inlineWith != null) {

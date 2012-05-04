@@ -114,7 +114,7 @@ final class StringLength extends AnnotatedBuiltin {
 	private void write(DefDirs dirs, HostOp host, InlineValue inlineString) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueStruct.STRING, "string_val");
+				dirs.dirs().nested().value(ValueStruct.STRING, "string_val");
 		final Block code = stringDirs.code();
 
 		final ValOp stringVal;

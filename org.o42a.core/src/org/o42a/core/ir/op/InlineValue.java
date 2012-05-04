@@ -42,7 +42,7 @@ public abstract class InlineValue extends Normal {
 
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
-		final ValDirs valDirs = dirs.value(getValueStruct());
+		final ValDirs valDirs = dirs.nested().value(getValueStruct());
 
 		writeValue(valDirs, host);
 

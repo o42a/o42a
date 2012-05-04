@@ -21,9 +21,8 @@ package org.o42a.core.ir.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.debug.TaskBlock;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
@@ -38,9 +37,9 @@ public class CodeDirs {
 		return new CodeDirs(builder, code, falseDir);
 	}
 
+	private final CodeBuilder builder;
 	private final Block code;
 	private final CodePos falseDir;
-	private final CodeBuilder builder;
 
 	CodeDirs(CodeBuilder builder, Block code, CodePos falseDir) {
 		assert builder != null :
@@ -87,54 +86,39 @@ public class CodeDirs {
 	}
 
 	public final CodeDirs sub(Block code) {
-		return new CodeDirs(getBuilder(), code, this.falseDir);
+		return new CodeDirs(getBuilder(), code, falseDir());
+	}
+
+	public final CodeDirs nested() {
+		return new CodeDirs(getBuilder(), code(), falseDir());
 	}
 
 	public CodeDirs begin(String id, String message) {
-		return begin(id(id), message);
+		return begin(id != null ? id(id) : null, message);
 	}
 
 	public CodeDirs begin(CodeId id, String message) {
-		if (!isDebug()) {
-			return this;
-		}
-
-		this.code.begin(message);
-
-		final Block falseCode = this.code.addBlock(id.detail("false"));
-
-		return new Nested(this, falseCode);
+		return new DebugCodeDirs(this, this.code.begin(id, message));
 	}
 
-	public CodeDirs end() {
-		if (!isDebug()) {
-			return this;
-		}
-		throw new IllegalStateException("Not a nested code dirs: " + this);
-	}
-
-	public final AllocationDirs allocate() {
-		return new AllocationDirs(this, code().allocate());
-	}
-
-	public final AllocationDirs allocate(String name) {
-		return new AllocationDirs(this, code().allocate(name));
-	}
-
-	public final AllocationDirs allocate(CodeId name) {
-		return new AllocationDirs(this, code().allocate(name));
+	public CodeDirs done() {
+		return this;
 	}
 
 	public final ValDirs value(ValueStruct<?, ?> valueStruct) {
-		return new ValDirs.TopLevelValDirs(this, id("value"), valueStruct);
+		return value(valueStruct, id("value"));
 	}
 
 	public final ValDirs value(ValueStruct<?, ?> valueStruct, String name) {
-		return new ValDirs.TopLevelValDirs(this, id(name), valueStruct);
+		return value(valueStruct, name != null ? id (name) : id("value"));
 	}
 
 	public final ValDirs value(ValueStruct<?, ?> valueStruct, CodeId name) {
-		return new ValDirs.TopLevelValDirs(this, name, valueStruct);
+
+		final AllocatorCodeDirs dirs =
+				new AllocatorCodeDirs(this, code().allocator(name));
+
+		return new ValDirs.TopLevelValDirs(dirs, name, valueStruct);
 	}
 
 	public final ValDirs value(ValOp value) {
@@ -177,31 +161,50 @@ public class CodeDirs {
 		return out.toString();
 	}
 
-	private static final class Nested extends CodeDirs {
+	private static final class AllocatorCodeDirs extends CodeDirs {
 
 		private final CodeDirs enclosing;
-		private final Block falseCode;
 		private boolean ended;
 
-		Nested(CodeDirs enclosing, Block falseCode) {
-			super(
-					enclosing.getBuilder(),
-					enclosing.code(),
-					falseCode.head());
+		AllocatorCodeDirs(CodeDirs enclosing, Allocator allocator) {
+			super(enclosing.getBuilder(), allocator, enclosing.falseDir());
 			this.enclosing = enclosing;
-			this.falseCode = falseCode;
 		}
 
 		@Override
-		public CodeDirs end() {
+		public CodeDirs done() {
 			assert !this.ended :
 				"Already ended: " + this;
-			code().end();
-			if (this.falseCode.exists()) {
-				this.falseCode.end();
-				this.falseCode.go(this.enclosing.falseDir());
-			}
 			this.ended = true;
+			if (code().exists()) {
+				code().go(this.enclosing.code().tail());
+			}
+			return this.enclosing;
+		}
+
+	}
+
+	private static final class DebugCodeDirs extends CodeDirs {
+
+		private final CodeDirs enclosing;
+		private final TaskBlock task;
+		private boolean ended;
+
+		DebugCodeDirs(CodeDirs enclosing, TaskBlock task) {
+			super(
+					enclosing.getBuilder(),
+					task.code(),
+					enclosing.falseDir());
+			this.enclosing = enclosing;
+			this.task = task;
+		}
+
+		@Override
+		public CodeDirs done() {
+			assert !this.ended :
+				"Already ended: " + this;
+			this.ended = true;
+			this.task.end();
 			return this.enclosing;
 		}
 

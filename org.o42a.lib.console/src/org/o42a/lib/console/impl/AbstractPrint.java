@@ -133,7 +133,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs textDirs =
-					dirs.dirs().value(ValueStruct.STRING, "text");
+					dirs.dirs().nested().value(ValueStruct.STRING, "text");
 			final Block code = textDirs.code();
 
 			final ValOp text = this.text.writeValue(textDirs, host);
@@ -175,7 +175,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs textDirs =
-					dirs.dirs().value(ValueStruct.STRING, "text");
+					dirs.dirs().nested().value(ValueStruct.STRING, "text");
 			final Block code = textDirs.code();
 
 			final ValOp text = this.print.text().op(host).writeValue(textDirs);

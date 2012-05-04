@@ -37,7 +37,7 @@ public final class DefaultValueOp extends ValueOp {
 	@Override
 	public ValOp writeValue(ValDirs dirs, ObjectOp body) {
 
-		final DefDirs defDirs = dirs.subDef();
+		final DefDirs defDirs = dirs.nested().def();
 
 		object().objectType(defDirs.code()).writeValue(defDirs, body);
 		defDirs.done();
@@ -48,7 +48,7 @@ public final class DefaultValueOp extends ValueOp {
 	@Override
 	public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
-		final DefDirs defDirs = dirs.subDef();
+		final DefDirs defDirs = dirs.nested().def();
 
 		object().objectType(defDirs.code()).writeClaim(defDirs, body);
 		defDirs.done();
@@ -59,7 +59,7 @@ public final class DefaultValueOp extends ValueOp {
 	@Override
 	public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
-		final DefDirs defDirs = dirs.subDef();
+		final DefDirs defDirs = dirs.nested().def();
 
 		object().objectType(defDirs.code()).writeProposition(defDirs, body);
 		defDirs.done();
