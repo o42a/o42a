@@ -122,7 +122,9 @@ public class LogicalExpression extends ObjectConstructor {
 					host,
 					op,
 					inlineOp);
-			code.go(dirs.falseDir());
+			if (code.exists()) {
+				code.go(dirs.falseDir());
+			}
 			if (operandFalse.exists()) {
 				operandFalse.go(code.tail());
 			}

@@ -183,17 +183,18 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs leftDirs = dirs.dirs().value(
+			final ValDirs leftDirs = dirs.dirs().nested().value(
 					this.binary.getLeftOperandStruct(),
 					"left");
 			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
 
-			final ValDirs rightDirs = leftDirs.dirs().value(
+			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					this.binary.getRightOperandStruct(),
 					"right");
 			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
 
-			final ValDirs resultDirs = rightDirs.dirs().value(dirs.valDirs());
+			final ValDirs resultDirs =
+					rightDirs.dirs().nested().value(dirs.valDirs());
 			final ValOp result =
 					this.binary.write(resultDirs, leftVal, rightVal);
 
@@ -230,23 +231,25 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs leftDirs = dirs.dirs().value(
+			final ValDirs leftDirs = dirs.dirs().nested().value(
 					this.binary.getLeftOperandStruct(),
 					"left");
 			final ValOp leftVal =
 					this.binary.leftOperand().op(host).writeValue(leftDirs);
 
-			final ValDirs rightDirs = leftDirs.dirs().value(
+			final ValDirs rightDirs = leftDirs.dirs().nested().value(
 					this.binary.getRightOperandStruct(),
 					"right");
 			final ValOp rightVal =
 					this.binary.rightOperand().op(host).writeValue(rightDirs);
 
-			final ValDirs resultDirs = rightDirs.dirs().value(dirs.valDirs());
+			final ValDirs resultDirs =
+					rightDirs.dirs().nested().value(dirs.valDirs());
 			final ValOp result =
 					this.binary.write(resultDirs, leftVal, rightVal);
 
 			dirs.returnValue(resultDirs.code(), result);
+
 			resultDirs.done();
 			rightDirs.done();
 			leftDirs.done();

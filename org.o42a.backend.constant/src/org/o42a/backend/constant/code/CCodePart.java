@@ -52,7 +52,10 @@ public abstract class CCodePart<C extends Code> {
 
 	public abstract C underlying();
 
-	public void revealUpTo(OpRecord last) {
+	public boolean revealUpTo(OpRecord last) {
+		if (this.revealing && this.lastRevealed == last) {
+			return false;
+		}
 		assert last.part() == this :
 			last + " belongs to " + last.part() + ", but " + this + " expected";
 		assert !this.revealing :
@@ -67,19 +70,18 @@ public abstract class CCodePart<C extends Code> {
 			} else {
 				record = this.lastRevealed.getNext();
 				if (record == null) {
-					return;// All revealed
+					return true;// All revealed
 				}
 			}
 
 			for (;;) {
+				this.lastRevealed = record;
 				record.reveal();
 				if (record == last) {
-					break;
+					return true;
 				}
 				record = record.getNext();
 			}
-
-			this.lastRevealed = record;
 		} finally {
 			this.revealing = false;
 		}

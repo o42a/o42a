@@ -25,29 +25,28 @@ import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
-import org.o42a.util.ArrayUtil;
 
 
 public final class AllocationCode extends Inset {
 
-	private final AllocationWriter writer;
-	private final boolean disposable;
-	private Code exits[];
+	public static final Disposal NO_DISPOSAL = new NoDisposal();
 
-	AllocationCode(Code enclosing, CodeId name, boolean disposable) {
-		super(enclosing, name != null ? name : enclosing.id().detail("alloc"));
-		this.disposable = disposable;
-		this.writer = enclosing.writer().allocation(this);
-	}
+	private final AllocationWriter writer;
+	private Disposal disposal = NO_DISPOSAL;
 
 	AllocationCode(Allocator allocator) {
 		super(allocator, allocator.id().detail("alloc"));
-		this.disposable = true;
 		this.writer = allocator.writer().init(this);
 	}
 
-	public final boolean isDisposable() {
-		return this.disposable;
+	public final void addDisposal(Disposal disposal) {
+		assert disposal != null :
+			"Disposal not specified";
+		if (this.disposal == NO_DISPOSAL) {
+			this.disposal = disposal;
+		} else {
+			this.disposal = new CombinedDisposal(this.disposal, disposal);
+		}
 	}
 
 	public final AnyRecOp allocatePtr(CodeId id) {
@@ -90,59 +89,53 @@ public final class AllocationCode extends Inset {
 		return result;
 	}
 
-	public final void addExit(Code exit) {
-		if (this.exits == null) {
-			this.exits = new Code[] {exit};
-		} else {
-			this.exits = ArrayUtil.append(this.exits, exit);
-		}
-	}
-
-	public final Block addExitBlock(String name) {
-
-		final Block exit = addBlock(name);
-
-		addExit(exit);
-
-		return exit;
-	}
-
-	public final Block addExitBlock(CodeId name) {
-
-		final Block exit = addBlock(name);
-
-		addExit(exit);
-
-		return exit;
-	}
-
-	@Override
-	public void done() {
-		if (isComplete()) {
-			return;
-		}
-		if (getGenerator().isProxied()) {
-			super.done();
-			return;
-		}
-
-		/* FIXME: Stack allocation/deallocation is broken in IR.
-		if (isDisposable()) {
-			if (this.exits != null) {
-				for (Code exit : this.exits) {
-					if (exit.exists()) {
-						writer().dispose(exit.writer());
-					}
-				}
-			}
-		}*/
-
-		super.done();
-	}
-
 	@Override
 	public final AllocationWriter writer() {
 		return this.writer;
+	}
+
+	final void dispose(Block code) {
+		this.disposal.dispose(code);
+		writer().dispose(code.writer());
+	}
+
+	private static final class NoDisposal implements Disposal {
+
+		@Override
+		public void dispose(Code code) {
+		}
+
+		@Override
+		public String toString() {
+			return "_";
+		}
+
+	}
+
+	private static final class CombinedDisposal implements Disposal {
+
+		private final Disposal first;
+		private final Disposal second;
+
+		CombinedDisposal(Disposal first, Disposal second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		@Override
+		public void dispose(Code code) {
+			this.first.dispose(code);
+			this.second.dispose(code);
+		}
+
+		@Override
+		public String toString() {
+			if (this.second == null) {
+				return super.toString();
+			}
+			return this.first + ", " + this.second;
+		}
+
 	}
 
 }

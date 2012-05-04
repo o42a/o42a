@@ -51,7 +51,8 @@ final class AssignmentCmd implements Cmd {
 
 		destination.assign(subDirs, value);
 
-		subDirs.end();
+		subDirs.done();
+		dirs.done();
 	}
 
 	@Override

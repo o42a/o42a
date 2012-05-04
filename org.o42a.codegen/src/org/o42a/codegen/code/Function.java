@@ -134,8 +134,7 @@ public final class Function<F extends Func<F>>
 		}
 
 		this.writer = functions.codeBackend().addFunction(this, beforeReturn);
-
-		initAllocator();
+		allocation();
 
 		return this.writer;
 	}

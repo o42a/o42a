@@ -71,14 +71,14 @@ public abstract class OpBlockBase extends Code {
 
 		if (!includeTarget) {
 			while (allocator != toAllocator) {
-				allocator.allocation().writer().dispose(writer());
+				disposeBy(allocator.allocation());
 				allocator = allocator.getEnclosingAllocator();
 				assert allocator != null :
 					fromAllocator + " is not inside " + toAllocator;
 			}
 		} else {
 			for (;;) {
-				allocator.allocation().writer().dispose(writer());
+				disposeBy(allocator.allocation());
 				if (allocator == toAllocator) {
 					break;
 				}
@@ -88,6 +88,8 @@ public abstract class OpBlockBase extends Code {
 			}
 		}
 	}
+
+	protected abstract void disposeBy(AllocationCode allocation);
 
 	protected static final class Head implements CodePos {
 

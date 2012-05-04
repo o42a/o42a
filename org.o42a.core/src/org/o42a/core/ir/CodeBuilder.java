@@ -23,9 +23,7 @@ import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.*;
@@ -127,18 +125,14 @@ public abstract class CodeBuilder {
 			ObjectOp ancestor,
 			Obj sample) {
 
-		final AllocationDirs alloc = dirs.allocate("new_object");
+		final AllocationCode alloc = dirs.code().getAllocator().allocation();
 		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
-		final CodeDirs subDirs = alloc.dirs();
-		final ObjectOp result = ctr.op(this).newObject(
-				subDirs,
+
+		return ctr.op(this).newObject(
+				dirs,
 				owner,
 				ancestor,
-				sample.ir(getGenerator()).op(this, subDirs.code()));
-
-		alloc.done();
-
-		return result;
+				sample.ir(getGenerator()).op(this, dirs.code()));
 	}
 
 	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {

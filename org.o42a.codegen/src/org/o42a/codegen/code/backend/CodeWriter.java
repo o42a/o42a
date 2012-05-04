@@ -20,7 +20,9 @@
 package org.o42a.codegen.code.backend;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Func;
+import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
@@ -39,8 +41,6 @@ public interface CodeWriter {
 			FuncAllocation<F> allocation);
 
 	CodeWriter inset(Code code);
-
-	AllocationWriter allocation(AllocationCode code);
 
 	Int8op int8(byte value);
 

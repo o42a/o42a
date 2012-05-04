@@ -161,7 +161,7 @@ public final class ObjOp extends ObjectOp {
 			code.debug("Final field: " + op.getId());
 		}
 
-		subDirs.end();
+		subDirs.done();
 
 		return op;
 	}
@@ -182,7 +182,7 @@ public final class ObjOp extends ObjectOp {
 
 		code.dumpName("Dep: ", op);
 
-		subDirs.end();
+		subDirs.done();
 
 		return op;
 	}
@@ -223,7 +223,7 @@ public final class ObjOp extends ObjectOp {
 		@Override
 		public ValOp writeValue(ValDirs dirs, ObjectOp body) {
 
-			final DefDirs defDirs = dirs.subDef();
+			final DefDirs defDirs = dirs.nested().def();
 
 			objectValueIR().writeValue(defDirs, obj(), body);
 			defDirs.done();
@@ -234,7 +234,7 @@ public final class ObjOp extends ObjectOp {
 		@Override
 		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
 
-			final DefDirs defDirs = dirs.subDef();
+			final DefDirs defDirs = dirs.nested().def();
 
 			objectValueIR().writeClaim(defDirs, obj(), body);
 			defDirs.done();
@@ -245,7 +245,7 @@ public final class ObjOp extends ObjectOp {
 		@Override
 		public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
 
-			final DefDirs defDirs = dirs.subDef();
+			final DefDirs defDirs = dirs.nested().def();
 
 			objectValueIR().writeProposition(defDirs, obj(), body);
 			defDirs.done();

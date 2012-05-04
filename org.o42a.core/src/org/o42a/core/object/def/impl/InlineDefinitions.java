@@ -46,7 +46,7 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	public ValOp writeValue(ValDirs dirs, HostOp host) {
 
-		final DefDirs defDirs = dirs.subDef();
+		final DefDirs defDirs = dirs.nested().def();
 
 		this.claim.write(defDirs, host);
 		this.proposition.write(defDirs, host);

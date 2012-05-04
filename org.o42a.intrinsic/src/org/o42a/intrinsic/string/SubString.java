@@ -209,7 +209,7 @@ final class SubString extends AnnotatedBuiltin {
 			InlineValue inlineTo) {
 
 		final ValDirs stringDirs =
-				dirs.dirs().value(ValueStruct.STRING, "string");
+				dirs.dirs().nested().value(ValueStruct.STRING, "string");
 		final ValOp stringVal;
 
 		if (inlineString != null) {
@@ -219,7 +219,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final ValDirs fromDirs =
-				stringDirs.dirs().value(ValueStruct.INTEGER, "from");
+				stringDirs.dirs().nested().value(ValueStruct.INTEGER, "from");
 		final ValOp fromVal;
 
 		if (inlineFrom != null) {
@@ -229,7 +229,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final ValDirs toDirs =
-				fromDirs.dirs().value(ValueStruct.INTEGER, "to");
+				fromDirs.dirs().nested().value(ValueStruct.INTEGER, "to");
 		final ValOp toVal;
 
 		if (inlineTo != null) {
@@ -239,7 +239,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final DefDirs substringDirs =
-				toDirs.dirs().value(dirs.valDirs()).def();
+				toDirs.dirs().nested().value(dirs.valDirs()).def();
 
 		final Block code = substringDirs.code();
 		final FuncPtr<SubStringFunc> funcPtr =

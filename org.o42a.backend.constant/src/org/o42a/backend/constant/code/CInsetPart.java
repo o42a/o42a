@@ -50,8 +50,11 @@ final class CInsetPart<C extends Code>
 		}
 
 		inset().getEnclosingPart().revealUpTo(this);
+		this.underlying = inset().createUnderlying(
+				inset().getEnclosingPart().underlying());
+
 		assert this.underlying != null :
-			"Inset \"" + this + "\" not revealed yet";
+			"Can not construct an underlying inset for " + this;
 
 		return this.underlying;
 	}
@@ -81,10 +84,6 @@ final class CInsetPart<C extends Code>
 		if (isEmpty()) {
 			return;
 		}
-		assert this.underlying == null :
-			"Insset \"" + this + "\" already revealed";
-		this.underlying = inset().createUnderlying(
-				inset().getEnclosingPart().underlying());
 		revealRecords();
 	}
 

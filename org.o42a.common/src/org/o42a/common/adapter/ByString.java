@@ -132,11 +132,12 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs inputDirs =
-					dirs.dirs().value(ValueStruct.STRING, "input");
+					dirs.dirs().nested().value(ValueStruct.STRING, "input");
 			final ValOp inputValue =
 					this.inputValue.writeValue(inputDirs, host);
 
-			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
+			final ValDirs parseDirs =
+					inputDirs.dirs().nested().value(dirs.valDirs());
 
 			dirs.returnValue(
 					parseDirs.code(),
@@ -173,11 +174,12 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs inputDirs =
-					dirs.dirs().value(ValueStruct.STRING, "input");
+					dirs.dirs().nested().value(ValueStruct.STRING, "input");
 			final ValOp inputValue =
 					this.byString.input().op(host).writeValue(inputDirs);
 
-			final ValDirs parseDirs = inputDirs.dirs().value(dirs.valDirs());
+			final ValDirs parseDirs =
+					inputDirs.dirs().nested().value(dirs.valDirs());
 
 			dirs.returnValue(
 					parseDirs.code(),

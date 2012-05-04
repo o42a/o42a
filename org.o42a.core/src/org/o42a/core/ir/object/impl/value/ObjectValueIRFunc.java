@@ -149,6 +149,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 	public void call(DefDirs dirs, ObjOp host, ObjectOp body) {
 
 		final DefDirs subDirs = dirs.begin(
+				null,
 				"Calculate " + suffix() + " of " + getObjectIR().getId());
 		final Block code = subDirs.code();
 
@@ -221,13 +222,12 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 				builder.dirs(function, failure.head())
 				.value(result)
 				.def(done.head());
-		final Block code = dirs.code();
 		final ObjOp host = builder.host();
 
-		code.dumpName("Host: ", host);
+		dirs.code().dumpName("Host: ", host);
 		build(dirs, host);
 
-		dirs.done();
+		final Block code = dirs.done().code();
 
 		if (code.exists()) {
 			code.debug("Indefinite");
@@ -589,7 +589,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 			ObjectOp ancestorBody,
 			ObjectTypeOp ancestorType) {
 
-		final DefDirs defDirs = dirs.begin("Ancestor " + suffix());
+		final DefDirs defDirs = dirs.begin(null, "Ancestor " + suffix());
 
 		defDirs.code().dumpName("Ancestor: ", ancestorBody);
 

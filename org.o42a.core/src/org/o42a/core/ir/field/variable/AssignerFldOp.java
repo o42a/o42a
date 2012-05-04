@@ -116,14 +116,14 @@ public final class AssignerFldOp extends FldOp {
 
 	public ObjectOp target(CodeDirs dirs) {
 
-		final Block code = dirs.code();
 		final FldKind kind = fld().getKind();
 
-		code.dumpName(kind + " field: ", this);
-		code.dumpName(kind + " host: ", host());
+		dirs.code().dumpName(kind + " field: ", this);
+		dirs.code().dumpName(kind + " host: ", host());
 
-		final ValOp hostValue = value(code);
-		final ValDirs valDirs = dirs.value(hostValue);
+		final ValOp hostValue = value(dirs.code());
+		final ValDirs valDirs = dirs.nested().value(hostValue);
+		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);
 
 		final DataOp targetPtr =

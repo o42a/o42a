@@ -19,40 +19,9 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.AllocatorWriter;
 
+public interface Disposal {
 
-final class AllocatorCode extends Allocator {
-
-	private final AllocatorWriter writer;
-	private final Allocator enclosingAllocator;
-
-	AllocatorCode(Block enclosing, CodeId name) {
-		super(enclosing, name);
-		this.enclosingAllocator = enclosing.getAllocator();
-		this.writer = enclosing.writer().allocator(this);
-		allocation();
-	}
-
-	@Override
-	public final Allocator getEnclosingAllocator() {
-		return this.enclosingAllocator;
-	}
-
-	@Override
-	public boolean created() {
-		return writer().created();
-	}
-
-	@Override
-	public final boolean exists() {
-		return writer().exists();
-	}
-
-	@Override
-	public final AllocatorWriter writer() {
-		return this.writer;
-	}
+	void dispose(Code code);
 
 }

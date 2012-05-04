@@ -84,7 +84,7 @@ public class CtrOp extends IROp {
 
 		result.isNull(null, code).go(code, subDirs.falseDir());
 
-		subDirs.end();
+		subDirs.done();
 
 		return anonymousObject(
 				sample.getBuilder(),

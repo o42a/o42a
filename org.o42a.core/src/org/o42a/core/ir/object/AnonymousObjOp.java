@@ -117,7 +117,7 @@ final class AnonymousObjOp extends ObjectOp {
 		} else {
 			subDirs.code().debug("Final field: " + op.getId());
 		}
-		subDirs.end();
+		subDirs.done();
 
 		return op;
 	}
@@ -136,7 +136,7 @@ final class AnonymousObjOp extends ObjectOp {
 		final DepOp op = ascendant.dep(subDirs, dep);
 
 		subDirs.code().dumpName("Dep: ", op);
-		subDirs.end();
+		subDirs.done();
 
 		return op;
 	}

@@ -141,13 +141,14 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs operandDirs = dirs.dirs().value(
+			final ValDirs operandDirs = dirs.dirs().nested().value(
 					this.unary.getOperandStruct(),
 					"operand");
 			final ValOp operandVal =
 					this.operandValue.writeValue(operandDirs, host);
 
-			final ValDirs resultDirs = operandDirs.dirs().value(dirs.valDirs());
+			final ValDirs resultDirs =
+					operandDirs.dirs().nested().value(dirs.valDirs());
 			final ValOp result = this.unary.write(resultDirs, operandVal);
 
 			dirs.returnValue(resultDirs.code(), result);
@@ -181,16 +182,18 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs operandDirs = dirs.dirs().value(
+			final ValDirs operandDirs = dirs.dirs().nested().value(
 					this.unary.getOperandStruct(),
 					"operand");
 			final ValOp operandVal =
 					this.unary.operand().op(host).writeValue(operandDirs);
 
-			final ValDirs resultDirs = operandDirs.dirs().value(dirs.valDirs());
+			final ValDirs resultDirs =
+					operandDirs.dirs().nested().value(dirs.valDirs());
 			final ValOp result = this.unary.write(resultDirs, operandVal);
 
 			dirs.returnValue(resultDirs.code(), result);
+
 			resultDirs.done();
 			operandDirs.done();
 		}

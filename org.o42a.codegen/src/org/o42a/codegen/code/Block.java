@@ -23,10 +23,10 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.OpBlockBase;
+import org.o42a.codegen.debug.DebugBlockBase;
 
 
-public abstract class Block extends OpBlockBase {
+public abstract class Block extends DebugBlockBase {
 
 	private final Head head = new Head(this);
 
@@ -87,6 +87,11 @@ public abstract class Block extends OpBlockBase {
 			CodeId falseName) {
 		assert assertIncomplete();
 		return new CondBlock(this, condition, trueName, falseName);
+	}
+
+	@Override
+	protected void disposeBy(AllocationCode allocation) {
+		allocation.dispose(this);
 	}
 
 }

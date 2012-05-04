@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.impl;
 
-import org.o42a.codegen.code.Block;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -214,10 +213,9 @@ public final class RefCommand extends Command {
 		@Override
 		public void write(Control control) {
 
-			final Block code = control.code();
 			final ValDirs dirs =
 					control.getBuilder().dirs(
-							code,
+							control.code(),
 							control.falseDir())
 					.value(control.result());
 			final ValOp value = this.inline.writeValue(dirs, control.host());

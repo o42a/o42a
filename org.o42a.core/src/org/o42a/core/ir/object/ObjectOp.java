@@ -143,7 +143,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		final ObjectOp result =
 				anonymousObject(getBuilder(), resultPtr, wellKnownType);
 
-		subDirs.end();
+		subDirs.done();
 
 		return result;
 	}
@@ -189,7 +189,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		assert linkStruct != null :
 			"Not a link: " + this;
 
-		final ValDirs valDirs = dirs.value(linkStruct, "link");
+		final ValDirs valDirs = dirs.nested().value(linkStruct, "link");
 		final ValOp value = value().writeValue(valDirs);
 		final Block code = valDirs.code();
 
@@ -267,7 +267,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 						ascendant,
 						COMPATIBLE);
 
-		subDirs.end();
+		subDirs.done();
 
 		return result;
 	}

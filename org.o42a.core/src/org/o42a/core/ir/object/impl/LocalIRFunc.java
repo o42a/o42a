@@ -54,7 +54,7 @@ public final class LocalIRFunc
 		this.command = command;
 
 		final DefDirs subDirs =
-				dirs.begin(body != null ? "Value for " + body : "Value");
+				dirs.begin(null, body != null ? "Value for " + body : "Value");
 		final Code code = subDirs.code();
 		final ObjectValFunc func = getFunction().getPointer().op(null, code);
 
