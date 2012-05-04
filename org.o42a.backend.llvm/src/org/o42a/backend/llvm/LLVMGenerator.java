@@ -49,6 +49,7 @@ public class LLVMGenerator extends AbstractGenerator {
 		super(analyzer);
 		this.id = id;
 		this.module = module;
+		module.init(this);
 	}
 
 	public FileSource createSource() throws FileNotFoundException {
@@ -62,7 +63,7 @@ public class LLVMGenerator extends AbstractGenerator {
 		final FileSource source = sourceByPath(path);
 
 		source.setEncoding(getInputEncoding());
-		this.module.createModule(this, moduleId(source));
+		this.module.createModule(moduleId(source));
 
 		return source;
 	}
@@ -104,7 +105,6 @@ public class LLVMGenerator extends AbstractGenerator {
 	private LLVMModule initializedModule() {
 		if (this.module.getNativePtr() == 0L) {
 			this.module.createModule(
-					this,
 					this.id != null ? id(this.id) : id("module"));
 		}
 		return this.module;
