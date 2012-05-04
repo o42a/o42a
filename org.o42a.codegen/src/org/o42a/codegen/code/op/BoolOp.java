@@ -77,6 +77,10 @@ public abstract class BoolOp implements Op {
 	}
 
 	public final void go(Block source, CodePos truePos, CodePos falsePos) {
+		if (source.getGenerator().isProxied()) {
+			source.writer().go(this, unwrapPos(truePos), unwrapPos(falsePos));
+			return;
+		}
 
 		final Allocator allocator1 = allocatorOf(source, truePos);
 		final Allocator allocator2 = allocatorOf(source, falsePos);
@@ -167,6 +171,11 @@ public abstract class BoolOp implements Op {
 				.detail(pos.code().getId()));
 
 		exitBlock.disposeFromTo(from, pos);
+
+		if (!exitBlock.exists()) {
+			return unwrapPos(pos);
+		}
+
 		exitBlock.writer().go(unwrapPos(pos));
 
 		return unwrapPos(exitBlock.head());

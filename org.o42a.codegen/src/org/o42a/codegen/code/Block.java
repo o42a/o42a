@@ -67,7 +67,9 @@ public abstract class Block extends DebugBlockBase {
 
 	public final void go(CodePos pos) {
 		assert assertIncomplete();
-		disposeUpTo(pos);
+		if (!getGenerator().isProxied()) {
+			disposeUpTo(pos);
+		}
 		writer().go(unwrapPos(pos));
 	}
 
