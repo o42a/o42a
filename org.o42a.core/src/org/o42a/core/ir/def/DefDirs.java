@@ -159,17 +159,24 @@ public class DefDirs {
 		}
 
 		private void store(Code code, ValOp result) {
-			if (this.result == null) {
+			if (this.result == null && sameAllocator(code)) {
 				this.result = result;
 				this.singleResultInset = code.inset("store_def");
 				return;
 			}
 			if (!this.storeInstantly) {
-				value().store(this.singleResultInset, this.result);
-				this.result = value();
+				if (this.singleResultInset != null) {
+					value().store(this.singleResultInset, this.result);
+					this.singleResultInset = null;
+				}
 				this.storeInstantly = true;
+				this.result = value();
 			}
 			value().store(code, result);
+		}
+
+		private boolean sameAllocator(Code code) {
+			return code.getAllocator() == valDirs().code().getAllocator();
 		}
 
 	}
