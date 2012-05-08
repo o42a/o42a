@@ -118,7 +118,7 @@ public class CodeDirs {
 		final AllocatorCodeDirs dirs =
 				new AllocatorCodeDirs(this, code().allocator(name));
 
-		return new ValDirs.TopLevelValDirs(dirs, name, valueStruct);
+		return new ValDirs.TopLevelValDirs(dirs, valueStruct);
 	}
 
 	public final ValDirs value(ValOp value) {

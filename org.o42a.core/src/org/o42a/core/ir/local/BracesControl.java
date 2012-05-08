@@ -37,12 +37,11 @@ final class BracesControl extends Control {
 			Block enclosingBlock,
 			CodePos next,
 			String name) {
-		super(parent);
-		this.enclosingBlock = enclosingBlock;
 		this.main = parent.main();
-		this.allocator = enclosingBlock.allocator(enclosingBlock.id("braces"));
 		this.parent = parent;
 		this.enclosing = parent.braces();
+		this.enclosingBlock = enclosingBlock;
+		this.allocator = enclosingBlock.allocator(enclosingBlock.id("braces"));
 		this.name = name;
 		this.done = next;
 	}

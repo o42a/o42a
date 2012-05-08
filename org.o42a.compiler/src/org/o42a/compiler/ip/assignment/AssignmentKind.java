@@ -44,9 +44,6 @@ abstract class AssignmentKind {
 		return false;
 	}
 
-	public void init(AssignmentCommand command) {
-	}
-
 	public abstract void resolve(LocalResolver resolver);
 
 	public abstract AssignmentKind reproduce(

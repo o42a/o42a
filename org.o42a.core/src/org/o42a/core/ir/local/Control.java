@@ -39,9 +39,6 @@ public abstract class Control {
 	Control() {
 	}
 
-	Control(Control parent) {
-	}
-
 	public final Generator getGenerator() {
 		return getBuilder().getGenerator();
 	}

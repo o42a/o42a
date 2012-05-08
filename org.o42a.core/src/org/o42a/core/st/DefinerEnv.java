@@ -19,14 +19,15 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.ValueStruct;
 
 
 public abstract class DefinerEnv extends ImplicationEnv {
 
-	public static DefinerEnv defaultEnv(LocationInfo location) {
-		return new DefaultEnv();
+	private static final DefaultEnv DEFAULT_ENV = new DefaultEnv();
+
+	public static DefinerEnv defaultEnv() {
+		return DEFAULT_ENV;
 	}
 
 	private static final class DefaultEnv extends DefinerEnv {

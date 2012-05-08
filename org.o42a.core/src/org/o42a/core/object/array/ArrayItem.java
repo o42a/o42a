@@ -93,7 +93,7 @@ public final class ArrayItem extends ArrayElement {
 		return items[getIndex()];
 	}
 
-	protected ArrayItem reproduce(Array array, Reproducer reproducer) {
+	protected ArrayItem reproduce(Reproducer reproducer) {
 		getScope().assertCompatible(reproducer.getReproducingScope());
 
 		final Ref valueRef = getValueRef().reproduce(reproducer);

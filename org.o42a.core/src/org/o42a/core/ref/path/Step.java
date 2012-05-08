@@ -81,17 +81,57 @@ public abstract class Step {
 		return null;
 	}
 
+	/**
+	 * Rebuilds the path.
+	 *
+	 * <p>This method is called during the bound path rebuild and may replace
+	 * the previous step or path fragment.</p>
+	 *
+	 * @param rebuilder path rebuilder.
+	 */
 	protected void rebuild(PathRebuilder rebuilder) {
 	}
 
+	/**
+	 * Combines the step with the next one.
+	 *
+	 * <p>This method is called during the bound path rebuild after
+	 * {@link #rebuild(PathRebuilder) rebuild attempt} of the next step, which
+	 * didn't change the path. The combining may replace the current step
+	 * or path fragment.</p>
+	 *
+	 * @param rebuilder path rebuilder.
+	 * @param next the next step to combine this one with.
+	 */
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
 	}
 
+	/**
+	 * Combines the current step with a preceding local owner step.
+	 *
+	 * <p>This method is called during the bound path rebuild when the preceding
+	 * step is a local owner one. The combining may replace the preceding step
+	 * or path fragment.</p>
+	 *
+	 * @param rebuilder path rebuilder
+	 * @param owner local owner.
+	 */
 	protected void combineWithLocalOwner(
 			PathRebuilder rebuilder,
 			Obj owner) {
 	}
 
+	/**
+	 * Builds an ancestor of an object pointed by the path.
+	 *
+	 * <p>This method is called on the last step of the path.</p>
+	 *
+	 * @param path the bound path to build an ancestor for.
+	 * @param location the location of ancestor expression.
+	 * @param distributor the constructing ancestor's distributor.
+	 *
+	 * @return an ancestor type reference.
+	 */
 	protected TypeRef ancestor(
 			BoundPath path,
 			LocationInfo location,
@@ -114,10 +154,29 @@ public abstract class Step {
 
 	protected abstract void normalizeStatic(PathNormalizer normalizer);
 
+	/**
+	 * Return the non-normalized path remainder.
+	 *
+	 * <p>This method is called when the  {@link PathNormalizer#up(Scope, Path,
+	 * org.o42a.core.ref.ReversePath)} call leads out of the
+	 * {@link PathNormalizer#getOrigin() normalized path origin}.</p>
+	 *
+	 * @param normalizer path normalizer.
+	 *
+	 * @return path remainder.
+	 */
 	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
 		return Path.SELF_PATH;
 	}
 
+	/**
+	 * Normalize the step.
+	 *
+	 * <p>This is called during the path normalization when its inlining failed.
+	 * </p>
+	 *
+	 * @param analyzer analyzer.
+	 */
 	protected void normalizeStep(Analyzer analyzer) {
 	}
 

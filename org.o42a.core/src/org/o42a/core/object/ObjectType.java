@@ -238,7 +238,6 @@ public final class ObjectType implements UserInfo {
 			}
 			if (derived.getWrapped() == null) {
 				registerDerivative(
-						derived.getScope().getEnclosingScope(),
 						new Inheritor(derived));
 			}
 		}
@@ -265,7 +264,7 @@ public final class ObjectType implements UserInfo {
 				linkUses.useAsSample(sample);
 			}
 			if (derived.getWrapped() == null) {
-				registerDerivative(sample.getScope(), sample);
+				registerDerivative(sample);
 			}
 		}
 	}
@@ -544,7 +543,7 @@ public final class ObjectType implements UserInfo {
 		}
 	}
 
-	private void registerDerivative(Scope scope, Derivative derivative) {
+	private void registerDerivative(Derivative derivative) {
 		if (this.allDerivatives == null) {
 			this.allDerivatives = new ArrayList<Derivative>();
 		}
@@ -558,9 +557,7 @@ public final class ObjectType implements UserInfo {
 
 				final Sample sample = getSamples()[0];
 
-				sample.getObject().type().registerDerivative(
-						sample.getScope(),
-						sample);
+				sample.getObject().type().registerDerivative(sample);
 			}
 		}
 	}

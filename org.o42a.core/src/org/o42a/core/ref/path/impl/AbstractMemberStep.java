@@ -126,6 +126,16 @@ public abstract class AbstractMemberStep extends Step {
 		return reproduce(location, reproducer, origin, reproducer.getScope());
 	}
 
+	/**
+	 * Reproduces a member step.
+	 *
+	 * @param location the reproduced step location.
+	 * @param reproducer the reproducer.
+	 * @param origin the member's {@link MemberKey#getOrigin() origin}.
+	 * @param scope the scope the reproduced member belongs to.
+	 *
+	 * @return the reproduced step in the form of path reproduction.
+	 */
 	protected PathReproduction reproduce(
 			LocationInfo location,
 			PathReproducer reproducer,

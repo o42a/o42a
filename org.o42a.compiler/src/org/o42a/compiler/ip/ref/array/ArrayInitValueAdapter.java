@@ -85,9 +85,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 	@Override
 	public Eval eval() {
-		return new ArrayInitEval(
-				getAdaptedRef(),
-				array(getAdaptedRef().getScope()));
+		return new ArrayInitEval(array(getAdaptedRef().getScope()));
 	}
 
 	@Override
@@ -169,7 +167,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 
 		private final Value<Array> value;
 
-		ArrayInitEval(Ref ref, Value<Array> value) {
+		ArrayInitEval(Value<Array> value) {
 			this.value = value;
 		}
 

@@ -222,7 +222,7 @@ public final class DeclaredGroupClause
 		super.fullyResolve();
 		validate();
 		if (isTopLevel()) {
-			this.definition.define(defaultEnv(this)).resolveAll(
+			this.definition.define(defaultEnv()).resolveAll(
 					getScope().dummyResolver());
 		}
 	}

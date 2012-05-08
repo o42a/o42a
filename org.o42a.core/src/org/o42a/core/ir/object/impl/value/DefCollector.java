@@ -86,7 +86,7 @@ final class DefCollector {
 			explicitDef(def);
 			return;
 		}
-		ancestorDef(def);
+		ancestorDef();
 	}
 
 	public final void addDefs(Defs defs) {
@@ -105,7 +105,7 @@ final class DefCollector {
 		this.explicitDefs[this.size++] = def;
 	}
 
-	protected void ancestorDef(Def def) {
+	protected void ancestorDef() {
 		if (this.ancestorIndex >= 0) {
 			return;
 		}

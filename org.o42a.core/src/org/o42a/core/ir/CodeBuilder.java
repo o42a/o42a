@@ -77,7 +77,7 @@ public abstract class CodeBuilder {
 			return null;
 		}
 
-		final RefOp ancestor = ancestorType.op(dirs, host);
+		final RefOp ancestor = ancestorType.op(host);
 
 		return ancestor.target(dirs).materialize(dirs);
 	}

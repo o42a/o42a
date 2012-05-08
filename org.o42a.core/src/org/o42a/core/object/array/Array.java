@@ -282,7 +282,7 @@ public final class Array extends Placed {
 		for (int i = 0; i < items.length; ++i) {
 
 			final ArrayItem oldItem = items[i];
-			final ArrayItem newItem = oldItem.reproduce(this, reproducer);
+			final ArrayItem newItem = oldItem.reproduce(reproducer);
 
 			if (newItem != null) {
 				newItems[i] = newItem;

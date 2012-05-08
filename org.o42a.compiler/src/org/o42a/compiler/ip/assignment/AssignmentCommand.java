@@ -50,11 +50,7 @@ final class AssignmentCommand extends Command {
 		if (this.assignmentKind != null) {
 			return this.assignmentKind;
 		}
-
-		this.assignmentKind = getAssignment().getAssignmentKind();
-		this.assignmentKind.init(this);
-
-		return this.assignmentKind;
+		return this.assignmentKind = getAssignment().getAssignmentKind();
 	}
 
 	@Override

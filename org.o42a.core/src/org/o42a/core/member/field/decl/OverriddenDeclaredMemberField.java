@@ -40,7 +40,7 @@ final class OverriddenDeclaredMemberField extends OverriddenMemberField<Field> {
 
 	@Override
 	protected Field propagateField(Field propagatedFrom) {
-		return new OverriddenField(this, propagatedFrom);
+		return new OverriddenField(this);
 	}
 
 }

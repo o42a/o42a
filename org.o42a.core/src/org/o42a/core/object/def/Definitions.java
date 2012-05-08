@@ -135,7 +135,7 @@ public class Definitions extends Scoped {
 			return this.constant;
 		}
 
-		final DefValue claim = claims().constant(this);
+		final DefValue claim = claims().getConstant();
 
 		if (claim.hasValue()) {
 			return this.constant = claim.getValue();
@@ -150,7 +150,7 @@ public class Definitions extends Scoped {
 			break;
 		}
 
-		final DefValue proposition = propositions().constant(this);
+		final DefValue proposition = propositions().getConstant();
 
 		if (proposition.hasValue()) {
 			return this.constant = proposition.getValue();
@@ -187,7 +187,7 @@ public class Definitions extends Scoped {
 
 	public Value<?> value(Resolver resolver) {
 
-		final DefValue claim = claims().value(this, resolver);
+		final DefValue claim = claims().value(resolver);
 
 		if (claim.hasValue()) {
 			return claim.getValue();
@@ -202,7 +202,7 @@ public class Definitions extends Scoped {
 			break;
 		}
 
-		final DefValue proposition = propositions().value(this, resolver);
+		final DefValue proposition = propositions().value(resolver);
 
 		if (proposition.hasValue()) {
 			return proposition.getValue();
@@ -337,8 +337,8 @@ public class Definitions extends Scoped {
 
 	public final InlineValue inline(Normalizer normalizer) {
 
-		final InlineEval claim = claims().inline(normalizer, this);
-		final InlineEval proposition = propositions().inline(normalizer, this);
+		final InlineEval claim = claims().inline(normalizer);
+		final InlineEval proposition = propositions().inline(normalizer);
 
 		if (normalizer.isCancelled()) {
 			return null;

@@ -57,12 +57,12 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean module(Step step, Obj module) {
-		return skip(step);
+		return skip();
 	}
 
 	@Override
 	public boolean staticScope(Step step, Scope scope) {
-		return skip(step);
+		return skip();
 	}
 
 	@Override
@@ -88,27 +88,27 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	@Override
 	public boolean member(Container container, Step step, Member member) {
-		return enter(step, container.getScope());
+		return enter(container.getScope());
 	}
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return enter(step, linkObject.getScope());
+		return enter(linkObject.getScope());
 	}
 
 	@Override
 	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return enter(step, array.getScope());
+		return enter(array.getScope());
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return skip(step);
+		return skip();
 	}
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		return enter(step, object.getScope().getEnclosingScope());
+		return enter(object.getScope().getEnclosingScope());
 	}
 
 	@Override
@@ -151,12 +151,12 @@ public class OddPathFragmentRemover implements PathWalker {
 		return result;
 	}
 
-	private boolean skip(Step step) {
+	private boolean skip() {
 		this.entries.add(NO_ENTRY);
 		return true;
 	}
 
-	private boolean enter(Step step, Scope start) {
+	private boolean enter(Scope start) {
 		this.entries.add(new Entry(start));
 		return true;
 	}
