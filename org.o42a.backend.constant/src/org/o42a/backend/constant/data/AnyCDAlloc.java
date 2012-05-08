@@ -26,11 +26,11 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.data.*;
-import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.data.Ptr;
 
 
-public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
+public final class AnyCDAlloc extends CDAlloc<AnyOp> {
 
 	public AnyCDAlloc(
 			ConstBackend backend,
@@ -58,23 +58,8 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp, Data<AnyOp>> {
 	}
 
 	@Override
-	public TopLevelCDAlloc<?> getTopLevel() {
-		return null;
-	}
-
-	@Override
-	public ContainerCDAlloc<?> getEnclosing() {
-		return null;
-	}
-
-	@Override
-	public DataAllocation<AnyOp> toAny() {
+	public AnyCDAlloc toAny() {
 		return this;
-	}
-
-	@Override
-	protected Data<AnyOp> allocateUnderlying(SubData<?> container) {
-		throw new UnsupportedOperationException();
 	}
 
 }

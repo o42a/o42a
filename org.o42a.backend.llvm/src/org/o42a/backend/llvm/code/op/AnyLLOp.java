@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public final class AnyLLOp extends PtrLLOp<AnyOp> implements AnyOp {
+public final class AnyLLOp extends MemPtrLLOp<AnyOp> implements AnyOp {
 
 	public AnyLLOp(
 			CodeId id,

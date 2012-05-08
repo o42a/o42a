@@ -19,27 +19,25 @@
 */
 package org.o42a.backend.constant.data;
 
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Ptr;
 
 
-public abstract class UnderAlloc<P extends PtrOp<P>> {
+public abstract class UnderAlloc<P extends MemPtrOp<P>> {
 
 	@SuppressWarnings("rawtypes")
 	private static final Default DEFAULT_UNDER_ALLOC = new Default();
 
 	@SuppressWarnings("unchecked")
-	public static <P extends PtrOp<P>> UnderAlloc<P> defaultUnderAlloc() {
+	public static <P extends AllocPtrOp<P>> UnderAlloc<P> defaultUnderAlloc() {
 		return DEFAULT_UNDER_ALLOC;
 	}
 
-	public static UnderAlloc<AnyOp> anyUnderAlloc(CDAlloc<?, ?> source) {
+	public static UnderAlloc<AnyOp> anyUnderAlloc(CDAlloc<?> source) {
 		return new ToAny(source);
 	}
 
-	public static UnderAlloc<DataOp> dataUnderAlloc(CDAlloc<?, ?> source) {
+	public static UnderAlloc<DataOp> dataUnderAlloc(CDAlloc<?> source) {
 		return new ToData(source);
 	}
 
@@ -47,17 +45,21 @@ public abstract class UnderAlloc<P extends PtrOp<P>> {
 		return this == DEFAULT_UNDER_ALLOC;
 	}
 
-	public abstract Ptr<P> allocateUnderlying(CDAlloc<P, ?> alloc);
+	public abstract Ptr<P> allocateUnderlying(CDAlloc<P> alloc);
 
-	private static final class Default<P extends PtrOp<P>>
+	private static final class Default<P extends AllocPtrOp<P>>
 			extends UnderAlloc<P> {
 
 		private Default() {
 		}
 
 		@Override
-		public Ptr<P> allocateUnderlying(CDAlloc<P, ?> alloc) {
-			return alloc.getUnderlying().getPointer();
+		public Ptr<P> allocateUnderlying(CDAlloc<P> alloc) {
+
+			@SuppressWarnings("unchecked")
+			final DCDAlloc<P, ?> dcdAlloc = (DCDAlloc<P, ?>) alloc;
+
+			return dcdAlloc.getUnderlying().getPointer();
 		}
 
 		@Override
@@ -69,14 +71,14 @@ public abstract class UnderAlloc<P extends PtrOp<P>> {
 
 	private static final class ToAny extends UnderAlloc<AnyOp> {
 
-		private final CDAlloc<?, ?> source;
+		private final CDAlloc<?> source;
 
-		ToAny(CDAlloc<?, ?> source) {
+		ToAny(CDAlloc<?> source) {
 			this.source = source;
 		}
 
 		@Override
-		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp, ?> alloc) {
+		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp> alloc) {
 			return this.source.getUnderlyingPtr().toAny();
 		}
 
@@ -89,14 +91,14 @@ public abstract class UnderAlloc<P extends PtrOp<P>> {
 
 	private static final class ToData extends UnderAlloc<DataOp> {
 
-		private final CDAlloc<?, ?> source;
+		private final CDAlloc<?> source;
 
-		ToData(CDAlloc<?, ?> source) {
+		ToData(CDAlloc<?> source) {
 			this.source = source;
 		}
 
 		@Override
-		public Ptr<DataOp> allocateUnderlying(CDAlloc<DataOp, ?> alloc) {
+		public Ptr<DataOp> allocateUnderlying(CDAlloc<DataOp> alloc) {
 			return this.source.getUnderlyingPtr().toData();
 		}
 

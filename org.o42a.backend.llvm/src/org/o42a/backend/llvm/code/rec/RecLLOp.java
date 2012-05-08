@@ -23,7 +23,7 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
-import org.o42a.backend.llvm.code.op.PtrLLOp;
+import org.o42a.backend.llvm.code.op.AllocPtrLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -33,7 +33,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
-		extends PtrLLOp<R>
+		extends AllocPtrLLOp<R>
 		implements RecOp<R, O> {
 
 	public RecLLOp(

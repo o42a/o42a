@@ -26,7 +26,7 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.MemPtrOp;
 import org.o42a.codegen.code.op.RelOp;
 
 
@@ -58,7 +58,7 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 	}
 
 	@Override
-	public AnyLLOp offset(CodeId id, Code code, PtrOp<?> from) {
+	public AnyLLOp offset(CodeId id, Code code, MemPtrOp<?> from) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();

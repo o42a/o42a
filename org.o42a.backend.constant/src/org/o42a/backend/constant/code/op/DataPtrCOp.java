@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,49 +17,49 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data;
+package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
-import org.o42a.backend.constant.code.op.DataCOp;
-import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 
 
-public final class DataCDAlloc extends CDAlloc<DataOp> {
+public abstract class DataPtrCOp<P extends DataPtrOp<P>>
+		extends MemPtrCOp<P>
+		implements DataPtrOp<P> {
 
-	public DataCDAlloc(
-			ConstBackend backend,
-			Ptr<DataOp> pointer,
-			UnderAlloc<DataOp> underlAlloc) {
-		super(backend, pointer, underlAlloc);
+	public DataPtrCOp(OpBE<P> backend, AllocClass allocClass) {
+		super(backend, allocClass);
+	}
+
+	public DataPtrCOp(OpBE<P> backend, AllocClass allocClass, Ptr<P> constant) {
+		super(backend, allocClass, constant);
 	}
 
 	@Override
-	public DataCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public DataOp toData(CodeId id, Code code) {
+
+		final CodeId castId = code.getOpNames().castId(id, "data", this);
+
 		return new DataCOp(
-				new OpBE<DataOp>(id, cast(writer)) {
+				new OpBE<DataOp>(castId, cast(code)) {
 					@Override
 					public void prepare() {
+						use(backend());
 					}
 					@Override
 					protected DataOp write() {
-						return getUnderlyingPtr().op(
+						return backend().underlying().toData(
 								getId(),
 								part().underlying());
 					}
 				},
-				allocClass,
-				getPointer());
-	}
-
-	@Override
-	public DataCDAlloc toData() {
-		return this;
+				getAllocClass());
 	}
 
 }

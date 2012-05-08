@@ -20,60 +20,27 @@
 package org.o42a.backend.constant.code.op;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
-import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.ReturnBE;
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AbstractPtr;
-import org.o42a.codegen.data.AllocClass;
 
 
 public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 		extends AbstractCOp<P, PT>
 		implements PtrOp<P> {
 
-	private final AllocClass allocClass;
-
-	public PtrCOp(OpBE<P> backend, AllocClass allocClass) {
+	public PtrCOp(OpBE<P> backend) {
 		super(backend);
-		if (allocClass != null) {
-			this.allocClass = allocClass;
-		} else {
-			this.allocClass = DEFAULT_ALLOC_CLASS;
-		}
 	}
 
-	public PtrCOp(OpBE<P> backend, AllocClass allocClass, PT constant) {
+	public PtrCOp(OpBE<P> backend, PT constant) {
 		super(backend, constant);
-		if (constant != null) {
-			if (constant.isPtrToConstant()) {
-				this.allocClass = CONSTANT_ALLOC_CLASS;
-			} else {
-				this.allocClass = STATIC_ALLOC_CLASS;
-			}
-		} else {
-			if (allocClass != null) {
-				this.allocClass = allocClass;
-			} else {
-				this.allocClass = DEFAULT_ALLOC_CLASS;
-			}
-		}
-	}
-
-	@Override
-	public final AllocClass getAllocClass() {
-		return this.allocClass;
-	}
-
-	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override
@@ -129,62 +96,6 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 						o.backend().underlying());
 			}
 		});
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public final P offset(CodeId id, Code code, IntOp<?> index) {
-
-		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().indexId(id, this, index);
-		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
-
-		if (idx.isConstant() && idx.getConstant().intValue() == 0) {
-			if (part() == ccode.nextPart()) {
-				return (P) this;
-			}
-			return create(
-					new AliasBE<P>(resultId, ccode, backend()),
-					getConstant());
-		}
-
-		return create(
-				new OpBE<P>(resultId, ccode) {
-					@Override
-					public void prepare() {
-						use(backend());
-						use(idx);
-					}
-					@Override
-					protected P write() {
-						return backend().underlying().offset(
-								getId(),
-								part().underlying(),
-								idx.backend().underlying());
-					}
-				},
-				null);
-	}
-
-	@Override
-	public AnyCOp toAny(CodeId id, Code code) {
-
-		final CodeId resultId = code.getOpNames().castId(id, "any", this);
-
-		return new AnyCOp(
-				new OpBE<AnyOp>(resultId, cast(code)) {
-					@Override
-					public void prepare() {
-						use(backend());
-					}
-					@Override
-					protected AnyOp write() {
-						return backend().underlying().toAny(
-								getId(),
-								part().underlying());
-					}
-				},
-				getAllocClass());
 	}
 
 	@Override

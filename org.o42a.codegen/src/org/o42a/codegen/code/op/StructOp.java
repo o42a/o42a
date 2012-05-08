@@ -25,7 +25,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
 
-public abstract class StructOp<S extends StructOp<S>> implements DataPtrOp<S> {
+public abstract class StructOp<S extends StructOp<S>> implements AllocPtrOp<S> {
 
 	private final StructWriter<S> writer;
 
@@ -56,7 +56,7 @@ public abstract class StructOp<S extends StructOp<S>> implements DataPtrOp<S> {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final CodeId fieldId = fieldId(null, code, field);
-			final PtrOp<?> fieldPtr = field.fieldOf(fieldId, code, this);
+			final AllocPtrOp<?> fieldPtr = field.fieldOf(fieldId, code, this);
 
 			fieldPtr.allocated(code, this);
 		}

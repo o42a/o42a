@@ -20,10 +20,10 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AllocPtrOp;
 
 
-public abstract class PtrRec<P extends PtrOp<P>, T extends Ptr<?>>
+public abstract class PtrRec<P extends AllocPtrOp<P>, T extends Ptr<?>>
 		extends Rec<P, T> {
 
 	PtrRec(SubData<?> enclosing, CodeId id) {

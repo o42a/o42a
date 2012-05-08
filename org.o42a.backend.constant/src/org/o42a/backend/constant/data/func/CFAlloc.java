@@ -89,7 +89,7 @@ public abstract class CFAlloc<F extends Func<F>>
 	private final class ToAny extends UnderAlloc<AnyOp> {
 
 		@Override
-		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp, ?> alloc) {
+		public Ptr<AnyOp> allocateUnderlying(CDAlloc<AnyOp> alloc) {
 			return getUnderlyingPtr().toAny();
 		}
 

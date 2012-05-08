@@ -20,7 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
-import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.struct.CStruct;
@@ -38,12 +38,12 @@ public final class CFunc<F extends Func<F>>
 	private final Signature<F> signature;
 
 	public CFunc(OpBE<F> backend, Signature<F> signature) {
-		super(backend, FUNC_ALLOC_CLASS);
+		super(backend);
 		this.signature = signature;
 	}
 
 	public CFunc(OpBE<F> backend, Signature<F> signature, FuncPtr<F> constant) {
-		super(backend, FUNC_ALLOC_CLASS, constant);
+		super(backend, constant);
 		this.signature = signature;
 	}
 
@@ -346,6 +346,27 @@ public final class CFunc<F extends Func<F>>
 				},
 				null,
 				type));
+	}
+
+	@Override
+	public AnyCOp toAny(CodeId id, Code code) {
+
+		final CodeId resultId = code.getOpNames().castId(id, "any", this);
+
+		return new AnyCOp(
+				new OpBE<AnyOp>(resultId, cast(code)) {
+					@Override
+					public void prepare() {
+						use(backend());
+					}
+					@Override
+					protected AnyOp write() {
+						return backend().underlying().toAny(
+								getId(),
+								part().underlying());
+					}
+				},
+				CONSTANT_ALLOC_CLASS);
 	}
 
 	private void useArgs(InstrBE instr, final Op[] args) {

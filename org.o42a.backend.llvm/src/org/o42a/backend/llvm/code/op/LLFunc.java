@@ -21,7 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
+import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
@@ -45,13 +45,33 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 			Signature<F> signature,
 			long blockPtr,
 			long nativePtr) {
-		super(id, FUNC_ALLOC_CLASS, blockPtr, nativePtr);
+		super(id, blockPtr, nativePtr);
 		this.signature = signature;
 	}
 
 	@Override
 	public Signature<F> getSignature() {
 		return this.signature;
+	}
+
+	@Override
+	public AnyLLOp toAny(CodeId id, Code code) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+		final CodeId castId = code.getOpNames().castId(id, "any", this);
+
+		return new AnyLLOp(
+				castId,
+				CONSTANT_ALLOC_CLASS,
+				nextPtr,
+				llvm.instr(toAny(
+						nextPtr,
+						llvm.nextInstr(),
+						ids.writeCodeId(castId),
+						ids.length(),
+						getNativePtr())));
 	}
 
 	@Override

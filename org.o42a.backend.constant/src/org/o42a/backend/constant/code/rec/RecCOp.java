@@ -37,10 +37,9 @@ import org.o42a.codegen.data.Rec;
 import org.o42a.util.fn.Getter;
 
 
-public abstract class RecCOp<
-		R extends RecOp<R, O>,
-		O extends Op,
-		T> extends PtrCOp<R, Ptr<R>> implements RecOp<R, O> {
+public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
+		extends AllocPtrCOp<R>
+		implements RecOp<R, O> {
 
 	private final RecStore store;
 	private final Usable<SimpleUsage> explicitUses;

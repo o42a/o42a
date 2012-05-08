@@ -33,7 +33,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class FuncLLOp<F extends Func<F>>
-		extends PtrLLOp<FuncOp<F>>
+		extends AllocPtrLLOp<FuncOp<F>>
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;
@@ -51,6 +51,30 @@ public final class FuncLLOp<F extends Func<F>>
 	@Override
 	public Signature<F> getSignature() {
 		return this.signature;
+	}
+
+	@Override
+	public <FF extends Func<FF>> FuncLLOp<FF> toFunc(
+			CodeId id,
+			Code code,
+			Signature<FF> signature) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+
+		return new FuncLLOp<FF>(
+				id,
+				getAllocClass(),
+				nextPtr,
+				llvm.instr(castFuncTo(
+						nextPtr,
+						llvm.nextInstr(),
+						ids.writeCodeId(id),
+						ids.length(),
+						getNativePtr(),
+						llvm.getModule().nativePtr(signature))),
+				signature);
 	}
 
 	@Override

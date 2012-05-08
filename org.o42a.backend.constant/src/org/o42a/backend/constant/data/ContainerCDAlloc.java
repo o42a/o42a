@@ -30,16 +30,16 @@ import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 
 
 public abstract class ContainerCDAlloc<S extends StructOp<S>>
-		extends CDAlloc<S, SubData<S>> {
+		extends DCDAlloc<S, SubData<S>> {
 
-	private final ArrayList<CDAlloc<?, ?>> nested =
-			new ArrayList<CDAlloc<?,?>>();
+	private final ArrayList<DCDAlloc<?, ?>> nested =
+			new ArrayList<DCDAlloc<?,?>>();
 	private final CType<S> underlyingStruct;
 	private Allocated<S, ?> underlyingAllocated;
 	private ContainerCDAlloc<S> declaringType;
@@ -120,9 +120,9 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	@SuppressWarnings("unchecked")
-	public <P extends PtrOp<P>, D extends Data<P>> CDAlloc<P, D> field(
+	public <P extends AllocPtrOp<P>, D extends Data<P>> DCDAlloc<P, D> field(
 			D field) {
-		return (CDAlloc<P, D>) field(field.getPointer());
+		return (DCDAlloc<P, D>) field(field.getPointer());
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 
 		final SubData<S> underlying = getUnderlying();
 
-		for (CDAlloc<?, ?> nested : this.nested) {
+		for (DCDAlloc<?, ?> nested : this.nested) {
 			nested.initUnderlying(underlying);
 		}
 		if (isContainerAllocated()) {
@@ -177,7 +177,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	protected abstract Allocated<S, ?> startUnderlyingAllocation(
 			SubData<?> container);
 
-	final int nest(CDAlloc<?, ?> nested) {
+	final int nest(DCDAlloc<?, ?> nested) {
 
 		final int index = this.nested.size();
 
@@ -196,11 +196,11 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		}
 	}
 
-	private final CDAlloc<?, ?> field(Ptr<?> pointer) {
+	private final DCDAlloc<?, ?> field(Ptr<?> pointer) {
 
-		final CDAlloc<?, ?> allocation =
-				(CDAlloc<?, ?>) pointer.getAllocation();
-		final CDAlloc<?, ?> field = field(allocation);
+		final DCDAlloc<?, ?> allocation =
+				(DCDAlloc<?, ?>) pointer.getAllocation();
+		final DCDAlloc<?, ?> field = field(allocation);
 
 		assert field != null :
 			pointer + " is not inside of " + this;
@@ -208,7 +208,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 		return field;
 	}
 
-	private CDAlloc<?, ?> field(CDAlloc<?, ?> alloc) {
+	private DCDAlloc<?, ?> field(DCDAlloc<?, ?> alloc) {
 
 		final ContainerCDAlloc<?> enclosing = alloc.getEnclosing();
 

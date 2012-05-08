@@ -21,12 +21,10 @@ package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
 
 
-public interface AnyOp extends PtrOp<AnyOp> {
+public interface AnyOp extends MemPtrOp<AnyOp> {
 
 	AnyRecOp toPtr(CodeId id, Code code);
 
@@ -45,11 +43,6 @@ public interface AnyOp extends PtrOp<AnyOp> {
 	RelRecOp toRel(CodeId id, Code code);
 
 	DataOp toData(CodeId id, Code code);
-
-	<F extends Func<F>> FuncOp<F> toFunc(
-			CodeId id,
-			Code code,
-			Signature<F> signature);
 
 	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
 

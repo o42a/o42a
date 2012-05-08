@@ -21,8 +21,8 @@ package org.o42a.backend.llvm.code;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
+import org.o42a.backend.llvm.code.op.DataPtrLLOp;
 import org.o42a.backend.llvm.code.op.FuncLLOp;
-import org.o42a.backend.llvm.code.op.PtrLLOp;
 import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
@@ -37,7 +37,7 @@ import org.o42a.codegen.data.*;
 
 
 public class LLStruct<S extends StructOp<S>>
-		extends PtrLLOp<S>
+		extends DataPtrLLOp<S>
 		implements StructWriter<S> {
 
 	private ContainerLLDAlloc<S> type;
