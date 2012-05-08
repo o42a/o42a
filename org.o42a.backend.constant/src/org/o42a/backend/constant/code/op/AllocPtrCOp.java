@@ -1,6 +1,6 @@
 /*
     Constant Handler Compiler Back-end
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data.rec;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.op.AllocPtrOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.PtrRec;
 
 
-public abstract class PtrRecCDAlloc<
-		R extends PtrRec<P, T>,
-		P extends AllocPtrOp<P>,
-		T extends Ptr<?>>
-				extends RecCDAlloc<R, P, T> {
+public abstract class AllocPtrCOp<P extends AllocPtrOp<P>>
+		extends DataPtrCOp<P>
+		implements AllocPtrOp<P> {
 
-	public PtrRecCDAlloc(
-			ContainerCDAlloc<?> enclosing,
-			R data,
-			RecCDAlloc<R, P, T> typeAllocation) {
-		super(enclosing, data, typeAllocation);
+	public AllocPtrCOp(OpBE<P> backend, AllocClass allocClass) {
+		super(backend, allocClass);
+	}
+
+	public AllocPtrCOp(OpBE<P> backend, AllocClass allocClass, Ptr<P> constant) {
+		super(backend, allocClass, constant);
+	}
+
+	@Override
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 }

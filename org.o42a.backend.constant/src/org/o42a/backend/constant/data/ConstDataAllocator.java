@@ -55,7 +55,7 @@ public class ConstDataAllocator implements DataAllocator {
 				new UnderAlloc<AnyOp>() {
 					@Override
 					public Ptr<AnyOp> allocateUnderlying(
-							CDAlloc<AnyOp, ?> alloc) {
+							CDAlloc<AnyOp> alloc) {
 						return alloc.getBackend()
 								.getUnderlyingGenerator()
 								.addBinary(

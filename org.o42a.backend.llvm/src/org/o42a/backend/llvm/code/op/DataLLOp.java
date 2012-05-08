@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public final class DataLLOp extends PtrLLOp<DataOp> implements DataOp {
+public final class DataLLOp extends DataPtrLLOp<DataOp> implements DataOp {
 
 	public DataLLOp(
 			CodeId id,

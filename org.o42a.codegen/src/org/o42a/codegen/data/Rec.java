@@ -20,11 +20,11 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.util.fn.Getter;
 
 
-public abstract class Rec<P extends PtrOp<P>, T>
+public abstract class Rec<P extends AllocPtrOp<P>, T>
 		extends Data<P>
 		implements RecAttributes {
 

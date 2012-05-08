@@ -37,14 +37,14 @@ import org.o42a.codegen.data.backend.RelAllocation;
 public final class RelCDAlloc implements RelAllocation {
 
 	private final RelPtr pointer;
-	private final CDAlloc<?, ?> relativeTo;
-	private final CDAlloc<?, ?> target;
+	private final CDAlloc<?> relativeTo;
+	private final CDAlloc<?> target;
 	private RelPtr underlying;
 
 	public RelCDAlloc(
 			RelPtr pointer,
-			CDAlloc<?, ?> relativeTo,
-			CDAlloc<?, ?> target) {
+			CDAlloc<?> relativeTo,
+			CDAlloc<?> target) {
 		this.pointer = pointer;
 		this.relativeTo = relativeTo;
 		this.target = target;
@@ -58,11 +58,11 @@ public final class RelCDAlloc implements RelAllocation {
 		return this.pointer;
 	}
 
-	public final CDAlloc<?, ?> getRelativeTo() {
+	public final CDAlloc<?> getRelativeTo() {
 		return this.relativeTo;
 	}
 
-	public final CDAlloc<?, ?> getTarget() {
+	public final CDAlloc<?> getTarget() {
 		return this.target;
 	}
 

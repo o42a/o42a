@@ -33,8 +33,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public final class DataCOp extends PtrCOp<DataOp, Ptr<DataOp>>
-		implements DataOp {
+public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
 
 	public DataCOp(OpBE<DataOp> backend, AllocClass allocClass) {
 		super(backend, allocClass);

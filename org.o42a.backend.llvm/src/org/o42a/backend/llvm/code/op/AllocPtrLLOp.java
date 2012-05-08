@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Compiler LLVM Back-end
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,24 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
+package org.o42a.backend.llvm.code.op;
+
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.op.AllocPtrOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.AllocClass;
 
 
-public enum AllocClass {
+public abstract class AllocPtrLLOp<P extends AllocPtrOp<P>>
+		extends DataPtrLLOp<P>
+		implements AllocPtrOp<P> {
 
-	UNKNOWN_ALLOC_CLASS,
-	AUTO_ALLOC_CLASS,
-	STATIC_ALLOC_CLASS,
-	CONSTANT_ALLOC_CLASS;
-
-	public static final AllocClass DEFAULT_ALLOC_CLASS = UNKNOWN_ALLOC_CLASS;
-
-	public final boolean isStatic() {
-		return ordinal() >= STATIC_ALLOC_CLASS.ordinal();
+	public AllocPtrLLOp(
+			CodeId id,
+			AllocClass allocClass,
+			long blockPtr,
+			long nativePtr) {
+		super(id, allocClass, blockPtr, nativePtr);
 	}
 
-	public final boolean isAuto() {
-		return this == AUTO_ALLOC_CLASS;
+	@Override
+	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 }

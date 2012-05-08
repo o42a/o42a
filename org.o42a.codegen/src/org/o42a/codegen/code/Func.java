@@ -19,12 +19,9 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.data.AllocClass.FUNC_ALLOC_CLASS;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
-import org.o42a.codegen.data.AllocClass;
 import org.o42a.util.ArrayUtil;
 
 
@@ -41,21 +38,12 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 		return this.caller.getId();
 	}
 
-	@Override
-	public final AllocClass getAllocClass() {
-		return FUNC_ALLOC_CLASS;
-	}
-
 	public final Signature<F> getSignature() {
 		return this.caller.getSignature();
 	}
 
 	public final FuncCaller<F> getCaller() {
 		return this.caller;
-	}
-
-	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
 	}
 
 	@Override
@@ -71,11 +59,6 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	@Override
 	public final BoolOp eq(CodeId id, Code code, F other) {
 		return this.caller.eq(id, code, other);
-	}
-
-	@Override
-	public final F offset(CodeId id, Code code, IntOp<?> index) {
-		return this.caller.offset(id, code, index);
 	}
 
 	@Override

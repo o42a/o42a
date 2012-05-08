@@ -53,7 +53,7 @@ public final class ConstDataWriter implements DataWriter {
 				new UnderAlloc<AnyOp>() {
 					@Override
 					public Ptr<AnyOp> allocateUnderlying(
-							CDAlloc<AnyOp, ?> alloc) {
+							CDAlloc<AnyOp> alloc) {
 						return alloc.getBackend()
 								.getUnderlyingGenerator()
 								.getGlobals()
@@ -70,7 +70,7 @@ public final class ConstDataWriter implements DataWriter {
 				new UnderAlloc<DataOp>() {
 					@Override
 					public Ptr<DataOp> allocateUnderlying(
-							CDAlloc<DataOp, ?> alloc) {
+							CDAlloc<DataOp> alloc) {
 						return alloc.getBackend()
 								.getUnderlyingGenerator()
 								.getGlobals()
@@ -88,7 +88,7 @@ public final class ConstDataWriter implements DataWriter {
 				pointer,
 				new UnderAlloc<S>() {
 					@Override
-					public Ptr<S> allocateUnderlying(CDAlloc<S, ?> alloc) {
+					public Ptr<S> allocateUnderlying(CDAlloc<S> alloc) {
 
 						final ConstBackend backend = alloc.getBackend();
 

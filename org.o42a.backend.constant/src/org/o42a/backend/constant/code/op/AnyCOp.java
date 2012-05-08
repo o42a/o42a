@@ -27,15 +27,13 @@ import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
+public final class AnyCOp extends MemPtrCOp<AnyOp> implements AnyOp {
 
 	public AnyCOp(
 			OpBE<AnyOp> backend,
@@ -235,33 +233,6 @@ public final class AnyCOp extends PtrCOp<AnyOp, Ptr<AnyOp>> implements AnyOp {
 					}
 				},
 				getAllocClass());
-	}
-
-	@Override
-	public final <F extends Func<F>> FuncCOp<F> toFunc(
-			final CodeId id,
-			final Code code,
-			final Signature<F> signature) {
-
-		final CodeId castId =
-				code.getOpNames().castId(id, signature.getId(), this);
-
-		return new FuncCOp<F>(
-				new OpBE<FuncOp<F>>(castId, cast(code)) {
-					@Override
-					public void prepare() {
-						use(backend());
-					}
-					@Override
-					protected FuncOp<F> write() {
-						return backend().underlying().toFunc(
-								getId(),
-								part().underlying(),
-								getBackend().underlying(signature));
-					}
-				},
-				allocRecStore(getAllocClass()),
-				signature);
 	}
 
 	@Override

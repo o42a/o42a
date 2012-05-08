@@ -22,14 +22,14 @@ package org.o42a.codegen.data;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 
 
-public abstract class Data<P extends PtrOp<P>> implements DataAttributes {
+public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 
 	private final Generator generator;
 	private final CodeId id;

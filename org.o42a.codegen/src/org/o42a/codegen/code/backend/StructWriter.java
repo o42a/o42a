@@ -26,7 +26,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
+public interface StructWriter<S extends StructOp<S>> extends DataPtrOp<S> {
 
 	Type<S> getType();
 
@@ -56,8 +56,6 @@ public interface StructWriter<S extends StructOp<S>> extends PtrOp<S> {
 	<SS extends StructOp<SS>> SS struct(CodeId id, Code code, Type<SS> field);
 
 	<F extends Func<F>> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
-
-	DataOp toData(CodeId id, Code code);
 
 	<SS extends StructOp<SS>> SS to(CodeId id, Code code, Type<SS> type);
 

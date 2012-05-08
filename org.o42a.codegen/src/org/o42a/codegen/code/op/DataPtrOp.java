@@ -22,6 +22,7 @@ package org.o42a.codegen.code.op;
 import org.o42a.codegen.debug.Dumpable;
 
 
-public interface DataPtrOp<P extends DataPtrOp<P>> extends PtrOp<P>, Dumpable {
+public interface DataPtrOp<P extends DataPtrOp<P>>
+		extends MemPtrOp<P>, Dumpable {
 
 }

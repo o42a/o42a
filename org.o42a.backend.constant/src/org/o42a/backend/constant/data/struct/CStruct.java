@@ -25,9 +25,9 @@ import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.CCode;
+import org.o42a.backend.constant.code.op.AllocPtrCOp;
 import org.o42a.backend.constant.code.op.DataCOp;
 import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.backend.constant.code.op.PtrCOp;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
@@ -40,7 +40,7 @@ import org.o42a.codegen.data.*;
 
 
 public final class CStruct<S extends StructOp<S>>
-		extends PtrCOp<S, Ptr<S>>
+		extends AllocPtrCOp<S>
 		implements StructWriter<S> {
 
 	private final StructStore store;

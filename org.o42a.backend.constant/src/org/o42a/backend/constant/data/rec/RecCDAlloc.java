@@ -22,12 +22,12 @@ package org.o42a.backend.constant.data.rec;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
+import org.o42a.backend.constant.data.DCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
-import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Rec;
 import org.o42a.codegen.data.SubData;
@@ -36,8 +36,8 @@ import org.o42a.util.fn.Getter;
 
 public abstract class RecCDAlloc<
 		R extends Rec<P, T>,
-		P extends PtrOp<P>,
-		T> extends CDAlloc<P, R> implements Getter<T> {
+		P extends AllocPtrOp<P>,
+		T> extends DCDAlloc<P, R> implements Getter<T> {
 
 	private final TopLevelCDAlloc<?> topLevel;
 	private final ContainerCDAlloc<?> enclosing;
