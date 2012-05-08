@@ -287,7 +287,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		final AssignerFldOp fld = op(assigner, builder.host());
 		final TypeRef typeRef = linkStruct().getTypeRef();
 		final Obj typeObject = typeRef.typeObject(dummyUser());
-		final RefOp boundRef = typeRef.op(dirs, builder.host());
+		final RefOp boundRef = typeRef.op(builder.host());
 		final ObjectTypeOp bound =
 				boundRef.target(dirs).materialize(dirs).objectType(assigner);
 

@@ -91,7 +91,6 @@ final class DeclarativeOp {
 				return;
 			}
 			writeStatements(
-					prefix,
 					dirs,
 					host,
 					alts.get(0),
@@ -118,7 +117,6 @@ final class DeclarativeOp {
 			}
 
 			writeStatements(
-					prefix.sub(nextIdx + "_alt"),
 					altDirs,
 					host,
 					alts.get(i),
@@ -148,7 +146,6 @@ final class DeclarativeOp {
 	}
 
 	private static void writeStatements(
-			CodeId prefix,
 			DefDirs dirs,
 			HostOp host,
 			Declaratives statements,

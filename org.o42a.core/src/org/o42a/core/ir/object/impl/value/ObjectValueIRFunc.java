@@ -259,7 +259,7 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 
 	protected DefValue determineConstant() {
 
-		final DefValue constant = defs().constant(definitions());
+		final DefValue constant = defs().getConstant();
 
 		if (!isConstantValue(constant)) {
 			return constant;
@@ -278,7 +278,6 @@ public abstract class ObjectValueIRFunc extends ObjectIRFunc
 			return RUNTIME_DEF_VALUE;
 		}
 		return defs().value(
-				definitions(),
 				getObject().getScope().dummyResolver());
 	}
 

@@ -234,7 +234,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				reproducer.getMemberRegistry(),
 				getSentenceFactory());
 
-		reproduction.define(defaultEnv(this));
+		reproduction.define(defaultEnv());
 		reproduceSentences(reproducer, reproduction);
 
 		return reproduction;

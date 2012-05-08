@@ -25,10 +25,6 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
-import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
@@ -36,7 +32,6 @@ import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
 
@@ -128,13 +123,6 @@ public final class TargetRef implements ScopeInfo {
 		return prefixWith(upgradePrefix(this, toScope));
 	}
 
-	public TargetRef rescope(Scope scope) {
-		if (getScope() == scope) {
-			return this;
-		}
-		return prefixWith(scope.pathTo(getScope()));
-	}
-
 	public void resolveAll(Resolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
@@ -144,32 +132,6 @@ public final class TargetRef implements ScopeInfo {
 		} finally {
 			getContext().fullResolution().end();
 		}
-	}
-
-	public TargetRef reproduce(Reproducer reproducer) {
-		assertCompatible(reproducer.getReproducingScope());
-
-		final Ref ref = getRef().reproduce(reproducer);
-
-		if (ref == null) {
-			return null;
-		}
-
-		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
-
-		if (typeRef == null) {
-			return null;
-		}
-
-		return new TargetRef(ref, typeRef);
-	}
-
-	public final RefOp ref(CodeDirs dirs, ObjOp host) {
-		return getRef().op(host);
-	}
-
-	public final HostOp target(CodeDirs dirs, ObjOp host) {
-		return ref(dirs, host).target(dirs);
 	}
 
 	@Override

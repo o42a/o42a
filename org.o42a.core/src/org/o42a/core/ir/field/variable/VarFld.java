@@ -169,7 +169,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		final VarFldOp fld = op(assigner, builder.host());
 		final TypeRef typeRef = getTypeRef();
 		final Obj typeObject = typeRef.typeObject(dummyUser());
-		final RefOp boundRef = typeRef.op(dirs, builder.host());
+		final RefOp boundRef = typeRef.op(builder.host());
 		final ObjectTypeOp bound =
 				boundRef.target(dirs).materialize(dirs).objectType(assigner);
 

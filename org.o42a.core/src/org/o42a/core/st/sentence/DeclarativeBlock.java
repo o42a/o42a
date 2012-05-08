@@ -154,7 +154,7 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 					reproducer.getMemberRegistry(),
 					DECLARATIVE_FACTORY,
 					true);
-			reproduction.define(defaultEnv(this));
+			reproduction.define(defaultEnv());
 			reproduceSentences(reproducer, reproduction);
 			return null;
 		}

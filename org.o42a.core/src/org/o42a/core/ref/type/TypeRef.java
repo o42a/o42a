@@ -30,7 +30,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
@@ -402,7 +401,7 @@ public abstract class TypeRef implements ScopeInfo {
 				valueStruct);
 	}
 
-	public RefOp op(CodeDirs dirs, HostOp host) {
+	public final RefOp op(HostOp host) {
 		return getRef().op(host);
 	}
 

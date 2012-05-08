@@ -63,7 +63,7 @@ public final class ScopeField extends ObjectField {
 	}
 
 	private ScopeField(MemberField member, ScopeField overridden) {
-		super(member, overridden, false);
+		super(member);
 		this.overridden = overridden;
 	}
 
@@ -119,11 +119,6 @@ public final class ScopeField extends ObjectField {
 	@Override
 	protected ObjectField propagate(MemberField member) {
 		return new ScopeField(member, this);
-	}
-
-	@Override
-	protected Obj propagateObject(Field overridden) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

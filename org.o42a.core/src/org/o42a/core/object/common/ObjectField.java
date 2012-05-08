@@ -24,30 +24,18 @@ import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.field.decl.PropagatedObject;
 import org.o42a.core.object.Obj;
 
 
 public abstract class ObjectField extends Field {
 
+	public ObjectField(MemberField member) {
+		super(member);
+	}
+
 	public ObjectField(MemberOwner owner, FieldDeclaration declaration) {
 		super(new MemberObjectField(owner, declaration));
 		((MemberObjectField) toMember()).init(this);
-	}
-
-	protected ObjectField(MemberField member, Field propagatedFrom) {
-		super(member);
-		setScopeObject(propagateObject(propagatedFrom));
-	}
-
-	protected ObjectField(
-			MemberField member,
-			Field propagatedFrom,
-			boolean propagateObject) {
-		super(member);
-		if (propagateObject) {
-			setScopeObject(new PropagatedObject(this));
-		}
 	}
 
 	@Override
@@ -66,9 +54,5 @@ public abstract class ObjectField extends Field {
 	}
 
 	protected abstract ObjectField propagate(MemberField member);
-
-	protected Obj propagateObject(Field overridden) {
-		return new PropagatedObject(this);
-	}
 
 }

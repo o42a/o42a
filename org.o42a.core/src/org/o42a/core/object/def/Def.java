@@ -291,6 +291,11 @@ public abstract class Def implements SourceInfo {
 
 	protected abstract DefValue calculateValue(Resolver resolver);
 
+	/**
+	 * Fully resolves the link target in case this is a link definition.
+	 *
+	 * @param resolver resolver to apply to target object.
+	 */
 	protected void resolveTarget(TargetResolver resolver) {
 	}
 

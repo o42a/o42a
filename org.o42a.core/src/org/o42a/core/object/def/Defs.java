@@ -92,7 +92,7 @@ public final class Defs {
 		return null;
 	}
 
-	public final DefValue constant(Definitions definitions) {
+	public final DefValue getConstant() {
 		if (this.constant != null) {
 			return this.constant;
 		}
@@ -112,7 +112,7 @@ public final class Defs {
 		return this.constant = TRUE_DEF_VALUE;
 	}
 
-	public final DefValue value(Definitions definitions, Resolver resolver) {
+	public final DefValue value(Resolver resolver) {
 		for (Def def : get()) {
 
 			final DefValue value = def.value(resolver);
@@ -290,7 +290,7 @@ public final class Defs {
 				ArrayUtil.append(get(), additions.get()));
 	}
 
-	InlineEval inline(Normalizer normalizer, Definitions definitions) {
+	InlineEval inline(Normalizer normalizer) {
 		if (isEmpty()) {
 			return noInlineEval();
 		}

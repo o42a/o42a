@@ -147,10 +147,7 @@ public abstract class ValDirs {
 
 		private final ValOp value;
 
-		TopLevelValDirs(
-				CodeDirs dirs,
-				CodeId name,
-				ValueStruct<?, ?> valueStruct) {
+		TopLevelValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
 			super(dirs, valueStruct);
 			this.value = allocateVal(
 					"value",

@@ -40,7 +40,8 @@ public final class CompiledField extends ObjectField {
 	}
 
 	private CompiledField(MemberField member, CompiledField propagatedFrom) {
-		super(member, propagatedFrom);
+		super(member);
+		setScopeObject(propagateObject());
 		this.compiler = propagatedFrom.compiler;
 	}
 

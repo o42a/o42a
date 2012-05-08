@@ -66,7 +66,7 @@ class DeclaredObject extends Obj {
 
 	@Override
 	protected Definitions explicitDefinitions() {
-		return this.field.define(getScope());
+		return this.field.createDefinitions();
 	}
 
 	@Override

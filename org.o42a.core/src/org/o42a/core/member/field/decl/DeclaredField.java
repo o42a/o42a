@@ -130,7 +130,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return this.content;
 	}
 
-	void initDefinitions(Obj object) {
+	final void initDefinitions(Obj object) {
 
 		final Ascendants ascendants =
 				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
@@ -138,18 +138,18 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		getDefinition().setImplicitAscendants(ascendants);
 	}
 
-	ObjectMemberRegistry getMemberRegistry() {
+	final ObjectMemberRegistry getMemberRegistry() {
 		if (this.memberRegistry == null) {
 			this.memberRegistry = new Registry();
 		}
 		return this.memberRegistry;
 	}
 
-	Definitions define(Scope scope) {
+	final Definitions createDefinitions() {
 		return getContentDefiner().createDefinitions();
 	}
 
-	void updateMembers() {
+	final void updateMembers() {
 		getContent().executeInstructions();
 	}
 

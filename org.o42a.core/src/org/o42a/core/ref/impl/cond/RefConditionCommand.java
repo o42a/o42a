@@ -120,7 +120,7 @@ final class RefConditionCommand extends Command {
 		if (this.normal == null) {
 			return new CondCmd(getRefCondition());
 		}
-		return new NormalCondCmd(getRefCondition(), this.normal);
+		return new NormalCondCmd(this.normal);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ final class RefConditionCommand extends Command {
 
 		private final InlineValue value;
 
-		NormalCondCmd(RefCondition statement, InlineValue value) {
+		NormalCondCmd(InlineValue value) {
 			this.value = value;
 		}
 

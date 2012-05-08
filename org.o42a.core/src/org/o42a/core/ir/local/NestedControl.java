@@ -35,13 +35,12 @@ abstract class NestedControl extends Control {
 	private final CodePos falseDir;
 
 	NestedControl(Control parent, Block code, CodePos exit, CodePos falseDir) {
-		super(parent);
-		this.falseDir = falseDir;
 		this.main = parent.main();
-		this.exit = exit;
-		this.braces = parent.braces();
 		this.parent = parent;
 		this.code = code;
+		this.falseDir = falseDir;
+		this.exit = exit;
+		this.braces = parent.braces();
 	}
 
 	@Override

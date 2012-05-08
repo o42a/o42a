@@ -74,11 +74,6 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void init(AssignmentCommand command) {
-		super.init(command);
-	}
-
-	@Override
 	public void resolve(LocalResolver resolver) {
 		getRef().resolve(resolver).resolveCondition();
 	}

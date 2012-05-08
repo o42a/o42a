@@ -26,9 +26,9 @@ import org.o42a.core.object.Obj;
 
 final class OverriddenField extends Field {
 
-	OverriddenField(MemberField member, Field propagatedFrom) {
+	OverriddenField(MemberField member) {
 		super(member);
-		setScopeObject(new PropagatedObject(this));
+		setScopeObject(propagateObject());
 	}
 
 	@Override
