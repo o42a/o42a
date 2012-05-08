@@ -24,7 +24,6 @@ import static org.o42a.compiler.Compiler.compiler;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.backend.constant.ConstGenerator;
@@ -52,7 +51,7 @@ public class CL {
 		this.generator = generator;
 	}
 
-	public void compile(FileSourceTree sourceTree) throws IOException {
+	public void compile(FileSourceTree sourceTree) {
 
 		final Compiler compiler = compiler();
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);
