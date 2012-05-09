@@ -29,6 +29,10 @@ struct o42a_obj_methods;
 union o42a_obj_type;
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** Object represented by it's body. */
 typedef struct o42a_obj_body o42a_obj_t;
 
@@ -64,6 +68,11 @@ typedef o42a_obj_t *o42a_obj_constructor_ft(
 		O42A_DECLS
 		o42a_obj_t *,
 		struct o42a_fld_obj *);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
 
 /**
  * Object type flags.
@@ -677,7 +686,7 @@ o42a_obj_body_t *o42a_obj_constructor_stub(
 
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 

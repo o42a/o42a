@@ -21,6 +21,7 @@
 #define O42A_FIELDS_H
 
 #include "o42a/fld/assigner.h"
+#include "o42a/fld/dep.h"
 #include "o42a/fld/getter.h"
 #include "o42a/fld/link.h"
 #include "o42a/fld/obj.h"
@@ -41,6 +42,8 @@ union o42a_fld {
 	o42a_fld_getter getter;
 
 	o42a_fld_scope scope;
+
+	o42a_fld_dep dep;
 
 	o42a_fld_assigner assigner;
 

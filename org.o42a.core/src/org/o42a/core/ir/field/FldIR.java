@@ -1,6 +1,6 @@
 /*
-    Run-Time Library
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,39 +17,25 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FLD_OBJ_H
-#define O42A_FLD_OBJ_H
+package org.o42a.core.ir.field;
 
-#include "o42a/field.h"
-
-
-typedef struct o42a_fld_obj o42a_fld_obj;
-
-struct o42a_fld_obj {
-
-	O42A_HEADER;
-
-	o42a_obj_t *object;
-
-	o42a_obj_constructor_ft *constructor;
-
-	o42a_fld_obj *previous;
-
-};
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.data.Data;
+import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.object.Obj;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+public interface FldIR {
 
+	CodeId getId();
 
-void o42a_fld_obj_propagate(O42A_DECLS o42a_obj_ctable_t*);
+	FldKind getKind();
 
-void o42a_fld_obj_inherit(O42A_DECLS o42a_obj_ctable_t*);
+	Obj getDeclaredIn();
 
+	ObjectBodyIR getBodyIR();
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+	Data<?> data(Generator generator);
 
-#endif /* O42A_FLD_OBJ_H */
+}

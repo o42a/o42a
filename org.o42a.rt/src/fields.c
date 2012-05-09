@@ -44,8 +44,8 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 		inherit: &o42a_fld_scope_inherit,
 	},
 	{// dependency field
-		propagate: NULL,
-		inherit: NULL,
+		propagate: &o42a_fld_dep_copy,
+		inherit: &o42a_fld_dep_copy,
 	},
 	{// variable assigner
 		propagate: &o42a_fld_assigner_propagate,

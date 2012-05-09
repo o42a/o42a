@@ -28,21 +28,21 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldIR;
 
 
 public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 	public static final Type FIELD_DESC_IR = new Type();
 
-	private final Fld fld;
+	private final FldIR fld;
 	private Type instance;
 
-	FieldDescIR(Fld fld) {
+	FieldDescIR(FldIR fld) {
 		this.fld = fld;
 	}
 
-	public final Fld fld() {
+	public final FldIR fld() {
 		return this.fld;
 	}
 
@@ -59,8 +59,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public void fill(Type instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectIR declaredInIR =
-				this.fld.getDeclaredIn().ir(fld().getGenerator());
+		final ObjectIR declaredInIR = this.fld.getDeclaredIn().ir(generator);
 
 		instance.declaredIn().setConstant(true).setValue(
 				declaredInIR.getTypeIR().getObjectType()
@@ -68,7 +67,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 		instance.kind().setConstant(true).setValue(
 				this.fld.getKind().getCode());
 		instance.fld().setConstant(true).setValue(
-				this.fld.getInstance().data(generator).getPointer()
+				this.fld.data(generator).getPointer()
 				.relativeTo(
 						this.fld.getBodyIR().data(generator).getPointer()));
 	}

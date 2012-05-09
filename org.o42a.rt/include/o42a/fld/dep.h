@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,19 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FLD_OBJ_H
-#define O42A_FLD_OBJ_H
+#ifndef O42A_FLD_DEP_H
+#define O42A_FLD_DEP_H
 
 #include "o42a/field.h"
 
 
-typedef struct o42a_fld_obj o42a_fld_obj;
-
-struct o42a_fld_obj {
+typedef struct {
 
 	O42A_HEADER;
 
 	o42a_obj_t *object;
 
-	o42a_obj_constructor_ft *constructor;
-
-	o42a_fld_obj *previous;
-
-};
+} o42a_fld_dep;
 
 
 #ifdef __cplusplus
@@ -43,13 +37,11 @@ extern "C" {
 #endif
 
 
-void o42a_fld_obj_propagate(O42A_DECLS o42a_obj_ctable_t*);
-
-void o42a_fld_obj_inherit(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_dep_copy(O42A_DECLS o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* O42A_FLD_OBJ_H */
+#endif /* O42A_FLD_DEP_H */
