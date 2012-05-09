@@ -41,14 +41,6 @@ typedef int32_t o42a_rptr_t;
  */
 typedef uint8_t o42a_bool_t;
 
-
-/**
- * Condition value.
- *
- * Possible values are O42A_TRUE, O42A_FALSE and O42A_UNKNOWN.
- */
-typedef uint8_t o42a_cond_t;
-
 /**
  * Data allocation.
  *
@@ -297,7 +289,12 @@ enum o42a_val_flags {
 	/**
 	 * A bit meaning the value is not yet calculated.
 	 */
-	O42A_INDEFINITE = 2,
+	O42A_VAL_INDEFINITE = 2,
+
+	/**
+	 * Value condition mask.
+	 */
+	O42A_VAL_CONDITION_MASK = 1,
 
 	/**
 	 * Value alignment mask.
