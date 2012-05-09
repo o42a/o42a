@@ -24,6 +24,7 @@ import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectOp;
@@ -76,23 +77,13 @@ public abstract class ValueOp {
 		valDirs.done();
 	}
 
-	public final void writeCond(CodeDirs dirs, ObjectOp body) {
-		assert body == null
-				|| body.value().getValueStruct().assertIs(getValueStruct());
-
-		final ValDirs valDirs = dirs.nested().value(getValueStruct());
-
-		writeValue(valDirs, body);
-		valDirs.done();
-	}
-
 	public final ValOp writeValue(ValDirs dirs) {
 		assert dirs.getValueType() == getValueType() :
 			"Wrong value type: " + getValueType()
 			+ ", but " + dirs.getValueType() + " expected";
 
 		if (getValueType().isStateless()) {
-			return writeValue(dirs, null);
+			return write(dirs);
 		}
 
 		final Block code = dirs.code();
@@ -110,27 +101,13 @@ public abstract class ValueOp {
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
-		evaluateAndStoreValue(indefinite, value, dirs);
+		evaluateAndStoreValue(indefinite, value, dirs.falseDir());
 
 		indefinite.dump(this + " value calculated: ", value);
 		indefinite.go(code.tail());
 
 		return value;
 	}
-
-	public abstract ValOp writeValue(ValDirs dirs, ObjectOp body);
-
-	public final ValOp writeClaim(ValDirs dirs) {
-		return writeClaim(dirs, null);
-	}
-
-	public abstract ValOp writeClaim(ValDirs dirs, ObjectOp body);
-
-	public final ValOp writeProposition(ValDirs dirs) {
-		return writeProposition(dirs, null);
-	}
-
-	public abstract ValOp writeProposition(ValDirs dirs, ObjectOp body);
 
 	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
@@ -139,27 +116,26 @@ public abstract class ValueOp {
 		return "ValueOp[" + this.object + ']';
 	}
 
+	protected abstract ValOp write(ValDirs dirs);
+
 	private void evaluateAndStoreValue(
 			Block code,
 			ValOp value,
-			ValDirs resultDirs) {
+			CodePos falseDir) {
 
 		final Block falseCode = code.addBlock("eval_false");
-		final ValDirs valDirs =
-				getBuilder().dirs(
-						code,
-						falseCode.head())
-				.value(value);
+		final ValDirs dirs =
+				getBuilder().dirs(code, falseCode.head()).value(value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
-		writeValue(valDirs, null);
+		write(dirs);
 
-		valDirs.done();
+		dirs.done();
 		value.setStoreMode(ASSIGNMENT_VAL_STORE);
 
 		if (falseCode.exists()) {
 			value.storeFalse(falseCode);
-			falseCode.go(resultDirs.falseDir());
+			falseCode.go(falseDir);
 		}
 	}
 

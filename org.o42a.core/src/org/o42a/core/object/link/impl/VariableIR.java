@@ -74,21 +74,6 @@ final class VariableIR extends ValueIR<VariableIR.Op> {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-			return this.value.writeValue(dirs, body);
-		}
-
-		@Override
-		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-			return this.value.writeClaim(dirs, body);
-		}
-
-		@Override
-		public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-			return this.value.writeProposition(dirs, body);
-		}
-
-		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
 
 			final AssignerFldOp fld = (AssignerFldOp) object().field(
@@ -96,6 +81,11 @@ final class VariableIR extends ValueIR<VariableIR.Op> {
 					assignerKey(getBuilder().getContext()));
 
 			fld.assign(dirs, value);
+		}
+
+		@Override
+		protected ValOp write(ValDirs dirs) {
+			return this.value.writeValue(dirs);
 		}
 
 	}
