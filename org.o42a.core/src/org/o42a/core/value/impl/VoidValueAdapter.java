@@ -94,7 +94,7 @@ public class VoidValueAdapter extends ValueAdapter {
 		private final InlineValue value;
 
 		InlineToVoid(InlineValue value) {
-			super(null, ValueStruct.VOID);
+			super(null);
 			this.value = value;
 		}
 

@@ -243,7 +243,7 @@ public class Ref extends Statement {
 			return null;
 		}
 
-		return new InlineRef(valueStruct(origin), normalPath);
+		return new InlineRef(normalPath);
 	}
 
 	public final void normalize(Analyzer analyzer) {
@@ -361,8 +361,8 @@ public class Ref extends Statement {
 
 		private final NormalPath normalPath;
 
-		InlineRef(ValueStruct<?, ?> valueStruct, NormalPath normalPath) {
-			super(null, valueStruct);
+		InlineRef(NormalPath normalPath) {
+			super(null);
 			this.normalPath = normalPath;
 		}
 

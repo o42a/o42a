@@ -22,6 +22,7 @@ package org.o42a.core.object.def.impl;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -31,6 +32,7 @@ import org.o42a.util.fn.Cancelable;
 
 public class InlineDefinitions extends InlineValue {
 
+	private final ValueStruct<?, ?> valueStruct;
 	private final InlineEval claim;
 	private final InlineEval proposition;
 
@@ -38,9 +40,20 @@ public class InlineDefinitions extends InlineValue {
 			ValueStruct<?, ?> valueStruct,
 			InlineEval claim,
 			InlineEval proposition) {
-		super(null, valueStruct);
+		super(null);
+		this.valueStruct = valueStruct;
 		this.claim = claim;
 		this.proposition = proposition;
+	}
+
+	@Override
+	public void writeCond(CodeDirs dirs, HostOp host) {
+
+		final DefDirs defDirs = dirs.nested().value(this.valueStruct).def();
+
+		this.claim.write(defDirs, host);
+		this.proposition.write(defDirs, host);
+		defDirs.done();
 	}
 
 	@Override

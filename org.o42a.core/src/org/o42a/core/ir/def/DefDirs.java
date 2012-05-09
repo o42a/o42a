@@ -159,7 +159,7 @@ public class DefDirs {
 		}
 
 		private void store(Code code, ValOp result) {
-			if (this.result == null && sameAllocator(code)) {
+			if (this.result == null && valueAccessibleBy(code)) {
 				this.result = result;
 				this.singleResultInset = code.inset("store_def");
 				return;
@@ -175,7 +175,10 @@ public class DefDirs {
 			value().store(code, result);
 		}
 
-		private boolean sameAllocator(Code code) {
+		private boolean valueAccessibleBy(Code code) {
+			if (!valDirs().value().isStackAllocated()) {
+				return true;
+			}
 			return code.getAllocator() == valDirs().code().getAllocator();
 		}
 

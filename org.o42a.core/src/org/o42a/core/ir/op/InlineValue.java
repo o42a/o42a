@@ -24,30 +24,15 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Normal;
 import org.o42a.core.ref.Normalizer;
-import org.o42a.core.value.ValueStruct;
 
 
 public abstract class InlineValue extends Normal {
 
-	private final ValueStruct<?, ?> valueStruct;
-
-	public InlineValue(Normalizer normalizer, ValueStruct<?, ?> valueStruct) {
+	public InlineValue(Normalizer normalizer) {
 		super(normalizer);
-		this.valueStruct = valueStruct;
 	}
 
-	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
-	}
-
-	public void writeCond(CodeDirs dirs, HostOp host) {
-
-		final ValDirs valDirs = dirs.nested().value(getValueStruct());
-
-		writeValue(valDirs, host);
-
-		valDirs.done();
-	}
+	public abstract void writeCond(CodeDirs dirs, HostOp host);
 
 	public abstract ValOp writeValue(ValDirs dirs, HostOp host);
 
