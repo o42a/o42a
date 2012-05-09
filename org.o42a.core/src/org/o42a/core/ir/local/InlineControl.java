@@ -71,7 +71,7 @@ public final class InlineControl extends MainControl {
 
 	@Override
 	void storeResult(Block code, ValOp value) {
-		if (this.results == 0 && sameAllocator(code)) {
+		if (this.results == 0 && valueAccessibleBy(code)) {
 			this.singleResultInset = code.inset("sgl_res");
 			this.finalResult = value;
 			this.results = 1;
@@ -96,7 +96,10 @@ public final class InlineControl extends MainControl {
 		return this.returnCode.head();
 	}
 
-	private boolean sameAllocator(Code code) {
+	private boolean valueAccessibleBy(Code code) {
+		if (!this.dirs.value().isStackAllocated()) {
+			return true;
+		}
 		return code.getAllocator() == this.dirs.code().getAllocator();
 	}
 }

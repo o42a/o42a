@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
@@ -30,7 +31,9 @@ import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueType;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueAdapter;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -69,7 +72,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 	@Override
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
-		return new InlineConstant(this.valueType.struct(), this.value);
+		return new InlineConstant(this.value);
 	}
 
 	@Override
@@ -116,9 +119,13 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 
 		private final Value<?> value;
 
-		InlineConstant(ValueStruct<?, ?> valueStruct, Value<?> value) {
-			super(null, valueStruct);
+		InlineConstant(Value<?> value) {
+			super(null);
 			this.value = value;
+		}
+
+		@Override
+		public void writeCond(CodeDirs dirs, HostOp host) {
 		}
 
 		@Override

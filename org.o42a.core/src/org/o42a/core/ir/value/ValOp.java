@@ -33,7 +33,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.impl.AllocatedValOp;
+import org.o42a.core.ir.value.impl.StackAllocatedValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
@@ -41,7 +41,7 @@ import org.o42a.util.DataAlignment;
 
 public abstract class ValOp extends IROp {
 
-	public static ValOp allocateVal(
+	public static ValOp stackAllocateVal(
 			String name,
 			AllocationCode code,
 			CodeBuilder builder,
@@ -50,7 +50,7 @@ public abstract class ValOp extends IROp {
 		final CodeId valId =
 				code.getId().setLocal(name != null ? name : "value");
 
-		return new AllocatedValOp(valId, code, builder, valueStruct);
+		return new StackAllocatedValOp(valId, code, builder, valueStruct);
 	}
 
 	private final ValueStruct<?, ?> valueStruct;
@@ -74,6 +74,10 @@ public abstract class ValOp extends IROp {
 
 	public final boolean isConstant() {
 		return getConstant() != null;
+	}
+
+	public boolean isStackAllocated() {
+		return false;
 	}
 
 	public abstract Val getConstant();

@@ -28,13 +28,13 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class AllocatedValOp extends ValOp {
+public final class StackAllocatedValOp extends ValOp {
 
 	private final CodeId id;
 	private final AllocationCode code;
 	private ValType.Op ptr;
 
-	public AllocatedValOp(
+	public StackAllocatedValOp(
 			CodeId id,
 			AllocationCode code,
 			CodeBuilder builder,
@@ -47,6 +47,11 @@ public final class AllocatedValOp extends ValOp {
 	@Override
 	public final CodeId getId() {
 		return this.id;
+	}
+
+	@Override
+	public final boolean isStackAllocated() {
+		return true;
 	}
 
 	@Override

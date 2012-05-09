@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.value.ValOp.allocateVal;
+import static org.o42a.core.ir.value.ValOp.stackAllocateVal;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -149,7 +149,7 @@ public abstract class ValDirs {
 
 		TopLevelValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
 			super(dirs, valueStruct);
-			this.value = allocateVal(
+			this.value = stackAllocateVal(
 					"value",
 					dirs.code().getAllocator().allocation(),
 					getBuilder(),
