@@ -221,41 +221,19 @@ public final class ObjOp extends ObjectOp {
 		}
 
 		@Override
-		public ValOp writeValue(ValDirs dirs, ObjectOp body) {
-
-			final DefDirs defDirs = dirs.nested().def();
-
-			objectValueIR().writeValue(defDirs, obj(), body);
-			defDirs.done();
-
-			return defDirs.result();
-		}
-
-		@Override
-		public ValOp writeClaim(ValDirs dirs, ObjectOp body) {
-
-			final DefDirs defDirs = dirs.nested().def();
-
-			objectValueIR().writeClaim(defDirs, obj(), body);
-			defDirs.done();
-
-			return defDirs.result();
-		}
-
-		@Override
-		public ValOp writeProposition(ValDirs dirs, ObjectOp body) {
-
-			final DefDirs defDirs = dirs.nested().def();
-
-			objectValueIR().writeProposition(defDirs, obj(), body);
-			defDirs.done();
-
-			return defDirs.result();
-		}
-
-		@Override
 		public void assign(CodeDirs dirs, ObjectOp value) {
 			this.value.assign(dirs, value);
+		}
+
+		@Override
+		protected ValOp write(ValDirs dirs) {
+
+			final DefDirs defDirs = dirs.nested().def();
+
+			objectValueIR().writeValue(defDirs, obj(), null);
+			defDirs.done();
+
+			return defDirs.result();
 		}
 
 		private final ObjOp obj() {
