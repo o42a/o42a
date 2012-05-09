@@ -586,7 +586,7 @@ static o42a_obj_rtype_t *propagate_object(
 	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = adata->start;
 
-	data->value.flags = O42A_INDEFINITE;
+	data->value.flags = O42A_VAL_INDEFINITE;
 	data->value_f = adata->value_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
@@ -901,7 +901,7 @@ o42a_obj_t *o42a_obj_new(
 	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = -data_start;
 
-	data->value.flags = O42A_INDEFINITE;
+	data->value.flags = O42A_VAL_INDEFINITE;
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
