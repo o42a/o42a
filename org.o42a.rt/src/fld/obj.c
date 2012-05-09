@@ -18,7 +18,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "o42a/fields.h"
-#include "o42a/object.h"
 
 
 void o42a_fld_obj_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {

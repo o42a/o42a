@@ -24,9 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -63,7 +61,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private final ArrayList<Fld> fieldList = new ArrayList<Fld>();
 	private final HashMap<MemberKey, Fld> fieldMap =
 			new HashMap<MemberKey, Fld>();
-	private final HashMap<Dep, DepIR> deps = new HashMap<Dep, DepIR>();
+	private final LinkedHashMap<Dep, DepIR> deps =
+			new LinkedHashMap<Dep, DepIR>();
 
 	private RelRec objectType;
 	private RelRec ancestorBody;
@@ -218,6 +217,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.fieldList;
 	}
 
+	final Collection<DepIR> getDeclaredDeps() {
+		return this.deps.values();
+	}
+
 	void allocateMethodsIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectMethodsIR(this);
@@ -312,7 +315,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				continue;
 			}
 
-			final DepIR depIR = new DepIR(getGenerator(), dep);
+			final DepIR depIR = new DepIR(this, dep);
 
 			depIR.allocate(data);
 			this.deps.put(dep, depIR);

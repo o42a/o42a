@@ -23,8 +23,14 @@
 #include "o42a/object.h"
 
 
+/**
+ * A union of all supported field kinds.
+ */
 typedef union o42a_fld o42a_fld;
 
+/**
+ * A field kind identifiers.
+ */
 enum o42a_fld_kind {
 
 	O42A_FLD_OBJ = 0,
@@ -43,18 +49,17 @@ enum o42a_fld_kind {
 
 };
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Field copy function type.
+ *
+ * Such functions are called when constructing a new object.
+ */
 typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
-
-typedef const struct o42a_fld_desc {
-
-	O42A_HEADER;
-
-	o42a_fld_copy_ft *const inherit;
-
-	o42a_fld_copy_ft *const propagate;
-
-} o42a_fld_desc_t;
-
 
 /**
  * Variable assigner function.
@@ -66,12 +71,41 @@ typedef const struct o42a_fld_desc {
  */
 typedef o42a_bool_t o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
 
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+
+/**
+ * The descriptor of the field kind.
+ */
+typedef const struct o42a_fld_desc {
+
+	O42A_HEADER;
+
+	/**
+	 * This function is called for a constructing object to fill the field
+	 * inherited from ancestor.
+	 */
+	o42a_fld_copy_ft *const inherit;
+
+	/**
+	 * This function is called for a constructing object to fill the field
+	 * propagated from sample.
+	 */
+	o42a_fld_copy_ft *const propagate;
+
+} o42a_fld_desc_t;
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
+/**
+ * Returns
+ */
 o42a_fld_desc_t *o42a_fld_desc(O42A_DECLS const o42a_obj_field_t *);
 
 /**
@@ -98,7 +132,7 @@ o42a_fld *o42a_fld_by_overrider(O42A_DECLS const o42a_obj_overrider_t *);
 
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 

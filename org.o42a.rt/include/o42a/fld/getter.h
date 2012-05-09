@@ -43,7 +43,7 @@ void o42a_fld_getter_inherit(O42A_DECLS o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #endif /* O42A_FLD_GETTER_H */

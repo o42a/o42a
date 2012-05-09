@@ -25,6 +25,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
+import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
@@ -32,7 +33,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
 
-public abstract class Fld {
+public abstract class Fld implements FldIR {
 
 	private final ObjectBodyIR bodyIR;
 	private Type<?> instance;
@@ -46,12 +47,19 @@ public abstract class Fld {
 		return getBodyIR().getGenerator();
 	}
 
+	@Override
 	public final ObjectBodyIR getBodyIR() {
 		return this.bodyIR;
 	}
 
+	@Override
+	public final Data<?> data(Generator generator) {
+		return getInstance().data(generator);
+	}
+
 	public abstract MemberKey getKey();
 
+	@Override
 	public abstract CodeId getId();
 
 	public final boolean isOmitted() {
@@ -66,10 +74,12 @@ public abstract class Fld {
 		return false;
 	}
 
+	@Override
 	public abstract FldKind getKind();
 
 	public abstract boolean isOverrider();
 
+	@Override
 	public abstract Obj getDeclaredIn();
 
 	public abstract Obj getDefinedIn();

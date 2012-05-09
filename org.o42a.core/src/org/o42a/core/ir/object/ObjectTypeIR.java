@@ -163,6 +163,10 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 			}
 		}
 
+		for (DepIR dep : objectIR.getMainBodyIR().getDeclaredDeps()) {
+			fields.add(new FieldDescIR(dep));
+		}
+
 		final RelList<OverriderDescIR> overriders =
 				getObjectType().overriders();
 

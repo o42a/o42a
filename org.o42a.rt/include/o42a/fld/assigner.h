@@ -45,7 +45,7 @@ void o42a_fld_assigner_inherit(O42A_DECLS o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #endif /* O42A_FLD_ASSIGNER_H */

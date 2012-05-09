@@ -26,28 +26,32 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.member.local.Dep;
+import org.o42a.core.object.Obj;
 
 
-public class DepIR {
+public class DepIR implements FldIR {
 
 	public static final Type DEP_IR = new Type();
 
-	private final Generator generator;
+	private final ObjectBodyIR bodyIR;
 	private final Dep dep;
 	private Type instance;
 
-	public DepIR(Generator generator, Dep dep) {
+	public DepIR(ObjectBodyIR bodyIR, Dep dep) {
 		assert !dep.isDisabled() :
 			dep + " is disabled";
-		this.generator = generator;
+		this.bodyIR = bodyIR;
 		this.dep = dep;
 	}
 
 	public final Generator getGenerator() {
-		return this.generator;
+		return getBodyIR().getGenerator();
 	}
 
 	public final Dep getDep() {
@@ -56,6 +60,31 @@ public class DepIR {
 
 	public Type getInstance() {
 		return this.instance;
+	}
+
+	@Override
+	public final CodeId getId() {
+		return localId();
+	}
+
+	@Override
+	public final FldKind getKind() {
+		return FldKind.DEP;
+	}
+
+	@Override
+	public final Obj getDeclaredIn() {
+		return getDep().getObject();
+	}
+
+	@Override
+	public final ObjectBodyIR getBodyIR() {
+		return this.bodyIR;
+	}
+
+	@Override
+	public final Data<?> data(Generator generator) {
+		return getInstance().data(generator);
 	}
 
 	public final DepOp op(Code code, ObjOp host) {

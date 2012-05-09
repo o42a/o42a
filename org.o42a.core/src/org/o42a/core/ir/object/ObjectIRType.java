@@ -32,6 +32,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.op.RelList;
 
 
@@ -119,8 +120,8 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 				int index,
 				FieldDescIR item) {
 
-			final Fld fld = item.fld();
-			final Generator generator = fld.getGenerator();
+			final FldIR fld = item.fld();
+			final Generator generator = fld.getBodyIR().getGenerator();
 			final CodeId id =
 					generator.id("field")
 					.detail(fld.getId().getLocal());
