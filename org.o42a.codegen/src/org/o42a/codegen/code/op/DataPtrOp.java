@@ -19,10 +19,15 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.debug.Dumpable;
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.AllocClass;
 
 
-public interface DataPtrOp<P extends DataPtrOp<P>>
-		extends MemPtrOp<P>, Dumpable {
+public interface DataPtrOp<P extends DataPtrOp<P>> extends PtrOp<P> {
+
+	AllocClass getAllocClass();
+
+	P offset(CodeId id, Code code, IntOp<?> index);
 
 }

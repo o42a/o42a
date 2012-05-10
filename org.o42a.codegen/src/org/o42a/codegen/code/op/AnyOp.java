@@ -24,7 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Type;
 
 
-public interface AnyOp extends MemPtrOp<AnyOp> {
+public interface AnyOp extends DataPtrOp<AnyOp> {
 
 	AnyRecOp toPtr(CodeId id, Code code);
 

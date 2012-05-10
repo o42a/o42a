@@ -23,7 +23,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Ptr;
 
 
-public abstract class UnderAlloc<P extends MemPtrOp<P>> {
+public abstract class UnderAlloc<P extends DataPtrOp<P>> {
 
 	@SuppressWarnings("rawtypes")
 	private static final Default DEFAULT_UNDER_ALLOC = new Default();
