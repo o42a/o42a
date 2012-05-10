@@ -17,9 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.data;
+package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.debug.Dumpable;
 
 

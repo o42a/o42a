@@ -23,16 +23,19 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.backend.llvm.code.op.DataPtrLLOp;
 import org.o42a.backend.llvm.code.op.FuncLLOp;
+import org.o42a.backend.llvm.code.op.SystemLLOp;
 import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLDAlloc;
+import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.*;
 
 
@@ -142,6 +145,21 @@ public class LLStruct<S extends StructOp<S>>
 				getAllocClass(),
 				llvm.nextPtr(),
 				field(id, llvm, field));
+	}
+
+	@Override
+	public SystemOp system(CodeId id, Code code, SystemData field) {
+
+		final LLCode llvm = llvm(code);
+		final SystemTypeLLAlloc typeAlloc =
+				(SystemTypeLLAlloc) field.getSystemType().getAllocation();
+
+		return new SystemLLOp(
+				id,
+				getAllocClass(),
+				llvm.nextPtr(),
+				field(id, llvm, field),
+				typeAlloc);
 	}
 
 	@Override

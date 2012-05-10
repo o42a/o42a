@@ -58,10 +58,10 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_refineT
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateInt
- * Signature: (JJB)V
+ * Signature: (JJS)V
  */
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt
-  (JNIEnv *, jclass, jlong, jlong, jbyte);
+  (JNIEnv *, jclass, jlong, jlong, jshort);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
@@ -289,6 +289,14 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeRelPt
  */
 JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct
   (JNIEnv *, jclass, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataWriter
+ * Method:    writeSystemStruct
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeSystemStruct
+  (JNIEnv *, jclass, jlong, jlong);
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataWriter

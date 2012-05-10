@@ -116,6 +116,10 @@ public abstract class StructOp<S extends StructOp<S>>
 		return writer().fp64(fieldId(id, code, field), code, field);
 	}
 
+	public final SystemOp system(CodeId id, Code code, SystemData field) {
+		return writer().system(fieldId(id, code, field), code, field);
+	}
+
 	public final AnyRecOp ptr(CodeId id, Code code, AnyRec field) {
 		return writer().ptr(fieldId(id, code, field), code, field);
 	}

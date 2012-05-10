@@ -17,40 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.constant.data.struct;
+package org.o42a.backend.constant.code.op;
 
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
-import org.o42a.backend.constant.code.op.SystemStore;
-import org.o42a.backend.constant.code.rec.RecStore;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.AllocClass;
 
 
-public abstract class StructStore {
+public abstract class SystemStore {
 
-	private static final StructStore[] ALLOC_STORES;
+	private static final SystemStore[] ALLOC_STORES;
 
 	static {
 
 		final AllocClass[] allocClasses = AllocClass.values();
 
-		ALLOC_STORES = new StructStore[allocClasses.length];
+		ALLOC_STORES = new SystemStore[allocClasses.length];
 		for (int i = 0; i < allocClasses.length; ++i) {
-			ALLOC_STORES[i] = new AllocStructStore(allocClasses[i]);
+			ALLOC_STORES[i] = new AllocSystemStore(allocClasses[i]);
 		}
 	}
 
-	public static StructStore autoStructStore() {
-		return new AutoStructStore();
-	}
-
-	public static StructStore allocStructStore(AllocClass allocClass) {
+	public static SystemStore allocSystemStore(AllocClass allocClass) {
 		return ALLOC_STORES[allocClass.ordinal()];
 	}
 
 	private final AllocClass allocClass;
 
-	public StructStore(AllocClass allocClass) {
+	public SystemStore(AllocClass allocClass) {
 		this.allocClass = allocClass;
 	}
 
@@ -58,21 +52,20 @@ public abstract class StructStore {
 		return this.allocClass;
 	}
 
-	public abstract RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field);
-
-	public abstract SystemStore systemStore(
-			CStruct<?> struct,
-			SystemData field);
-
-	public abstract StructStore subStore(CStruct<?> struct, Type<?> field);
-
 	@Override
 	public String toString() {
 		return String.valueOf(this.allocClass);
 	}
 
 	protected abstract Usable<SimpleUsage> init(
-			CStruct<?> struct,
+			SystemCOp op,
 			Usable<SimpleUsage> allUses);
+
+	protected static final Usable<SimpleUsage> init(
+			SystemStore store,
+			SystemCOp op,
+			Usable<SimpleUsage> allUses) {
+		return store.init(op, allUses);
+	}
 
 }

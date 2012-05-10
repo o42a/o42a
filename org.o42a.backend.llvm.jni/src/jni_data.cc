@@ -159,7 +159,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt(
 		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr,
-		jbyte intBits) {
+		jshort intBits) {
 
 	o42ac::BackendModule *const module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
@@ -527,7 +527,31 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeStruct(
 			from_ptr<std::vector<Constant*> >(dataPtr);
 	Constant *constant = ConstantStruct::get(type, *data);
 
+    delete data;
     enclosing->push_back(constant);
+}
+
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeSystemStruct(
+		JNIEnv *,
+		jclass,
+		jlong enclosingPtr,
+		jlong typePtr) {
+
+	StructType *type = from_ptr<StructType>(typePtr);
+	std::vector<Constant*> *enclosing =
+			from_ptr<std::vector<Constant*> >(enclosingPtr);
+	const unsigned size = type->getNumElements();
+	Constant* data[size];
+
+	for (unsigned i = 0; i < size; ++i) {
+
+		IntegerType *itemType = cast<IntegerType>(type->getTypeAtIndex(i));
+
+		data[i] = ConstantInt::get(itemType, 0);
+	}
+
+	enclosing->push_back(
+			ConstantStruct::get(type, ArrayRef<Constant*>(data, size)));
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal(

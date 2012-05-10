@@ -33,6 +33,8 @@ public interface DataAllocator {
 			int start,
 			int end);
 
+	DataAllocation<SystemOp> addSystemType(SystemType systemType);
+
 	<S extends StructOp<S>> DataAllocation<S> begin(
 			SubData<S> data,
 			Type<S> type);
@@ -82,6 +84,11 @@ public interface DataAllocator {
 			DataAllocation<?> enclosing,
 			Fp64rec data,
 			DataAllocation<Fp64recOp> type);
+
+	DataAllocation<SystemOp> allocateSystem(
+			DataAllocation<?> enclosing,
+			SystemData data,
+			DataAllocation<SystemOp> type);
 
 	<F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,

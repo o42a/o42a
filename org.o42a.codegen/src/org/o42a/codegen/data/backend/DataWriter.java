@@ -74,4 +74,6 @@ public interface DataWriter {
 
 	void writeFp64(DataAllocation<Fp64recOp> destination, Getter<Double> value);
 
+	void writeSystem(DataAllocation<SystemOp> destination);
+
 }

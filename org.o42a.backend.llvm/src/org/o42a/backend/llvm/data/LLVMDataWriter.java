@@ -61,7 +61,9 @@ public class LLVMDataWriter implements DataWriter {
 	}
 
 	@Override
-	public <S extends StructOp<S>> DataAllocation<S> nullPtr(Ptr<S> pointer, Type<S> type) {
+	public <S extends StructOp<S>> DataAllocation<S> nullPtr(
+			Ptr<S> pointer,
+			Type<S> type) {
 
 		final ContainerLLDAlloc<S> typeAlloc =
 				(ContainerLLDAlloc<S>) type.pointer(type.getGenerator())
@@ -177,6 +179,16 @@ public class LLVMDataWriter implements DataWriter {
 		writeFp64(getModule().getNativePtr(), getStructPtr(), value.get());
 	}
 
+	@Override
+	public void writeSystem(DataAllocation<SystemOp> destination) {
+
+		final SystemLLDAlloc alloc = (SystemLLDAlloc) destination;
+
+		writeSystemStruct(
+				getStructPtr(),
+				alloc.getTypeAlloc().getTypePtr());
+	}
+
 	public final void writeDataId(LLVMId llvmId) {
 
 		final long ptr = llvmId.expression(getModule());
@@ -270,6 +282,10 @@ public class LLVMDataWriter implements DataWriter {
 			long enclosingPtr,
 			long typePtr,
 			long dataPtr);
+
+	private static native void writeSystemStruct(
+			long enclosingPtr,
+			long typePtr);
 
 	private static native void writeGlobal(long globalPtr, long dataPtr);
 
