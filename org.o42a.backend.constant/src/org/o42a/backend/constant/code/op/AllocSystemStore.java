@@ -1,6 +1,6 @@
 /*
-    Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Constant Handler Compiler Back-end
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,15 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
+package org.o42a.backend.constant.code.op;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.Type;
+import org.o42a.analysis.use.SimpleUsage;
+import org.o42a.analysis.use.Usable;
+import org.o42a.codegen.data.AllocClass;
 
 
-public interface DataOp extends DumpablePtrOp<DataOp> {
+final class AllocSystemStore extends SystemStore {
 
-	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
+	AllocSystemStore(AllocClass allocClass) {
+		super(allocClass);
+	}
+
+	@Override
+	protected Usable<SimpleUsage> init(
+			SystemCOp op,
+			Usable<SimpleUsage> allUses) {
+		return allUses;
+	}
 
 }

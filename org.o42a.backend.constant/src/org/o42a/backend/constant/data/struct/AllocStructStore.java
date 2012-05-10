@@ -21,14 +21,11 @@ package org.o42a.backend.constant.data.struct;
 
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
-import org.o42a.backend.constant.code.op.InstrBE;
-import org.o42a.backend.constant.code.op.OpBE;
+import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.RecCOp;
 import org.o42a.backend.constant.code.rec.RecStore;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.Rec;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 final class AllocStructStore extends StructStore {
@@ -40,6 +37,11 @@ final class AllocStructStore extends StructStore {
 	@Override
 	public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
 		return new FieldStore(getAllocClass(), struct);
+	}
+
+	@Override
+	public SystemStore systemStore(CStruct<?> struct, SystemData field) {
+		return new SystemFieldStore(getAllocClass(), struct);
 	}
 
 	@Override
@@ -88,6 +90,27 @@ final class AllocStructStore extends StructStore {
 
 	}
 
+	private static final class SystemFieldStore extends SystemStore {
+
+		private final CStruct<?> enclosing;
+		private final SystemStore systemStore;
+
+		SystemFieldStore(AllocClass allocClass, CStruct<?> struct) {
+			super(allocClass);
+			this.enclosing = struct;
+			this.systemStore = allocSystemStore(allocClass);
+		}
+
+		@Override
+		protected Usable<SimpleUsage> init(
+				SystemCOp op,
+				Usable<SimpleUsage> allUses) {
+			this.enclosing.useBy(allUses);
+			return init(this.systemStore, op, allUses);
+		}
+
+	}
+
 	private static final class SubStore extends StructStore {
 
 		private final CStruct<?> enclosing;
@@ -102,6 +125,11 @@ final class AllocStructStore extends StructStore {
 		@Override
 		public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
 			return this.structStore.fieldStore(struct, field);
+		}
+
+		@Override
+		public SystemStore systemStore(CStruct<?> struct, SystemData field) {
+			return this.structStore.systemStore(struct, field);
 		}
 
 		@Override

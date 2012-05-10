@@ -39,6 +39,10 @@ public abstract class LLVMId {
 		return new TypeLLVMId(typeAllocation);
 	}
 
+	public static LLVMId systemTypeId(SystemTypeLLAlloc typeAllocation) {
+		return new SystemTypeLLVMId(typeAllocation);
+	}
+
 	public static LLVMId dataId(
 			CodeId globalId,
 			ContainerLLDAlloc<?> globalContainer) {

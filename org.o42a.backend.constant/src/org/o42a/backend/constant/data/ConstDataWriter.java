@@ -205,4 +205,8 @@ public final class ConstDataWriter implements DataWriter {
 		dest.setValue(value);
 	}
 
+	@Override
+	public void writeSystem(DataAllocation<SystemOp> destination) {
+	}
+
 }

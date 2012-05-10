@@ -20,9 +20,7 @@
 package org.o42a.backend.constant.data;
 
 import org.o42a.backend.constant.data.rec.*;
-import org.o42a.backend.constant.data.struct.GlobalCDAlloc;
-import org.o42a.backend.constant.data.struct.StructCDAlloc;
-import org.o42a.backend.constant.data.struct.TypeCDAlloc;
+import org.o42a.backend.constant.data.struct.*;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
@@ -66,6 +64,11 @@ public class ConstDataAllocator implements DataAllocator {
 										end);
 					}
 				});
+	}
+
+	@Override
+	public DataAllocation<SystemOp> addSystemType(SystemType systemType) {
+		return new SystemTypeCDAlloc(getBackend(), systemType);
 	}
 
 	@Override
@@ -189,6 +192,17 @@ public class ConstDataAllocator implements DataAllocator {
 	}
 
 	@Override
+	public SystemCDAlloc allocateSystem(
+			DataAllocation<?> enclosing,
+			SystemData data,
+			DataAllocation<SystemOp> type) {
+		return new SystemCDAlloc(
+				enclosing(enclosing),
+				data,
+				(SystemCDAlloc) type);
+	}
+
+	@Override
 	public <F extends Func<F>> FuncRecCDAlloc<F> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
@@ -222,8 +236,6 @@ public class ConstDataAllocator implements DataAllocator {
 				data,
 				(DataRecCDAlloc) type);
 	}
-
-
 
 	@Override
 	public <S extends StructOp<S>> DataAllocation<StructRecOp<S>> allocatePtr(

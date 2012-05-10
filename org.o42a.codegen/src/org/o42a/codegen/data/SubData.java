@@ -80,6 +80,13 @@ public abstract class SubData<S extends StructOp<S>>
 		return add(new Fp64rec(this, id(name)));
 	}
 
+	public final SystemData addSystem(
+			String name,
+			SystemType systemType) {
+		systemType.allocate(getGenerator());
+		return add(new SystemData(this, id(name), systemType));
+	}
+
 	public final <F extends Func<F>> FuncRec<F> addFuncPtr(
 			String name,
 			Signature<F> signature) {

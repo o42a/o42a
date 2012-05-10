@@ -27,15 +27,12 @@ import java.util.HashMap;
 
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
-import org.o42a.backend.constant.code.op.InstrBE;
-import org.o42a.backend.constant.code.op.OpBE;
+import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.RecCOp;
 import org.o42a.backend.constant.code.rec.RecStore;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.PtrOp;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.codegen.data.Rec;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public class AutoStructStore extends StructStore {
@@ -52,6 +49,12 @@ public class AutoStructStore extends StructStore {
 	public RecStore fieldStore(CStruct<?> struct, Rec<?, ?> field) {
 		assert this.struct == struct;
 		return new FieldStore(this, field);
+	}
+
+	@Override
+	public SystemStore systemStore(CStruct<?> struct, SystemData field) {
+		assert this.struct == struct;
+		return new SystemFieldScore(this, field);
 	}
 
 	@Override
@@ -139,6 +142,39 @@ public class AutoStructStore extends StructStore {
 
 			final Usable<SimpleUsage> explicitUses =
 					simpleUsable("PointerTo", rec);
+
+			allUses.useBy(explicitUses, SIMPLE_USAGE);
+			this.enclosing.allUses.useBy(allUses, SIMPLE_USAGE);
+			this.enclosing.struct.useBy(explicitUses);
+
+			return explicitUses;
+		}
+
+		public final Usable<SimpleUsage> storeUses() {
+			return this.enclosing.storeUses(this.field.getPointer());
+		}
+
+	}
+
+	private final class SystemFieldScore extends SystemStore {
+
+		private final AutoStructStore enclosing;
+		private final SystemData field;
+
+		SystemFieldScore(AutoStructStore enclosing, SystemData field) {
+			super(AUTO_ALLOC_CLASS);
+			this.enclosing = enclosing;
+			this.field = field;
+		}
+
+		@Override
+		protected Usable<SimpleUsage> init(
+				SystemCOp op,
+				Usable<SimpleUsage> allUses) {
+			storeUses().useBy(allUses, SIMPLE_USAGE);
+
+			final Usable<SimpleUsage> explicitUses =
+					simpleUsable("PointerTo", op);
 
 			allUses.useBy(explicitUses, SIMPLE_USAGE);
 			this.enclosing.allUses.useBy(allUses, SIMPLE_USAGE);

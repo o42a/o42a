@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,17 +20,17 @@
 package org.o42a.backend.llvm.id;
 
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.backend.llvm.data.alloc.TypeLLAlloc;
+import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
 
 
-final class TypeLLVMId extends TopLevelLLVMId {
+final class SystemTypeLLVMId extends TopLevelLLVMId {
 
-	private final TypeLLAlloc<?> typeAllocation;
+	private final SystemTypeLLAlloc typeAllocation;
 	private long nativePtr;
 
-	TypeLLVMId(TypeLLAlloc<?> typeAllocation) {
+	SystemTypeLLVMId(SystemTypeLLAlloc typeAllocation) {
 		super(
-				typeAllocation.getType().codeId(
+				typeAllocation.getSystemType().codeId(
 						typeAllocation.getModule().getGenerator()),
 				LLVMIdKind.TYPE);
 		this.typeAllocation = typeAllocation;

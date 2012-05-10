@@ -49,10 +49,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 	}
 
 	public RecCOp(OpBE<R> backend, RecStore store, Ptr<R> constant) {
-		super(
-				backend,
-				store != null ? store.getAllocClass() : null,
-				constant);
+		super(backend, store != null ? store.getAllocClass() : null, constant);
 		this.store = store != null ? store : allocRecStore(getAllocClass());
 		this.explicitUses = this.store.init(this, allUses());
 	}

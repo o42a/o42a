@@ -31,9 +31,9 @@ import org.o42a.codegen.data.Type;
 
 public final class CType<S extends StructOp<S>> extends Struct<S> {
 
+	private final ConstBackend backend;
 	private final Type<S> original;
 	private Type<?>[] dependencies;
-	private final ConstBackend backend;
 
 	public CType(ConstBackend backend, Type<S> original) {
 		this.backend = backend;

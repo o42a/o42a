@@ -25,9 +25,7 @@ import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore
 import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.Usable;
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.backend.constant.code.op.AllocPtrCOp;
-import org.o42a.backend.constant.code.op.DataCOp;
-import org.o42a.backend.constant.code.op.OpBE;
+import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
@@ -284,6 +282,43 @@ public final class CStruct<S extends StructOp<S>>
 					}
 				},
 				store().fieldStore(this, field),
+				pointer);
+	}
+
+	@Override
+	public SystemOp system(CodeId id, Code code, SystemData field) {
+
+		final Ptr<SystemOp> pointer;
+
+		if (!isConstant()) {
+			pointer = null;
+		} else {
+
+			final ContainerCDAlloc<S> constAlloc =
+					(ContainerCDAlloc<S>) getConstant().getAllocation();
+
+			pointer = constAlloc.field(field).getPointer();
+		}
+
+		final CCode<?> ccode = cast(code);
+		final SystemCDAlloc fld =
+				(SystemCDAlloc) field.getPointer().getAllocation();
+
+		return new SystemCOp(
+				new OpBE<SystemOp>(id, ccode) {
+					@Override
+					public void prepare() {
+					}
+					@Override
+					protected SystemOp write() {
+						return backend().underlying().writer().system(
+								getId(),
+								part().underlying(),
+								fld.getUnderlying());
+					}
+				},
+				store().systemStore(this, field),
+				fld.getUnderlyingType(),
 				pointer);
 	}
 

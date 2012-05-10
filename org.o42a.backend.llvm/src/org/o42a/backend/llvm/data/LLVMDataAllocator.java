@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.llvm.data;
 
+import static org.o42a.backend.llvm.data.SystemTypeInfo.allocateSystemType;
 import static org.o42a.backend.llvm.id.LLVMId.dataId;
 
 import org.o42a.backend.llvm.data.alloc.*;
@@ -79,6 +80,11 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
+	public DataAllocation<SystemOp> addSystemType(SystemType systemType) {
+		return allocateSystemType(this, systemType);
+	}
+
+	@Override
 	public <S extends StructOp<S>> DataAllocation<S> begin(
 			SubData<S> data,
 			Type<S> type) {
@@ -98,7 +104,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	@Override
 	public <S extends StructOp<S>> DataAllocation<S> begin(
 			SubData<S> data,
-			DataAllocation<S> type, Global<S, ?> global) {
+			DataAllocation<S> type,
+			Global<S, ?> global) {
 
 		final long typePtr;
 		final long typeDataPtr;
@@ -294,6 +301,24 @@ public class LLVMDataAllocator implements DataAllocator {
 	}
 
 	@Override
+	public DataAllocation<SystemOp> allocateSystem(
+			DataAllocation<?> enclosing,
+			SystemData data,
+			DataAllocation<SystemOp> type) {
+
+		final SystemTypeLLAlloc typeAlloc =
+				(SystemTypeLLAlloc) data.getSystemType().getAllocation();
+
+		return new SystemLLDAlloc(
+				container(enclosing),
+				typeAlloc,
+				allocateStruct(
+						getModulePtr(),
+						typeDataPtr(enclosing),
+						typeAlloc.getTypePtr()));
+	}
+
+	@Override
 	public <F extends Func<F>> DataAllocation<FuncOp<F>> allocateFuncPtr(
 			DataAllocation<?> enclosing,
 			FuncRec<F> data,
@@ -454,12 +479,12 @@ public class LLVMDataAllocator implements DataAllocator {
 			int end,
 			boolean isConstant);
 
-	private static native long createType(
+	static native long createType(
 			long modulePtr,
 			long id,
 			int idLen);
 
-	private static native long createTypeData(long modulePtr);
+	static native long createTypeData(long modulePtr);
 
 	private static native long allocateStruct(
 			long modulePtr,
@@ -474,15 +499,15 @@ public class LLVMDataAllocator implements DataAllocator {
 			boolean constant,
 			boolean exported);
 
-	private static native void refineType(
+	static native void refineType(
 			long typePtr,
 			long typeDataPtr,
 			boolean packed);
 
-	private static native void allocateInt(
+	static native void allocateInt(
 			long modulePtr,
 			long enclosingPtr,
-			byte numBits);
+			short numBits);
 
 	private static native void allocateFp32(long modulePtr, long enclosingPtr);
 
