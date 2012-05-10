@@ -25,7 +25,8 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 
 
-public abstract class StructOp<S extends StructOp<S>> implements AllocPtrOp<S> {
+public abstract class StructOp<S extends StructOp<S>>
+		implements AllocPtrOp<S>, DumpablePtrOp<S> {
 
 	private final StructWriter<S> writer;
 

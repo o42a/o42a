@@ -26,7 +26,8 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 
 
-public interface StructWriter<S extends StructOp<S>> extends DataPtrOp<S> {
+public interface StructWriter<S extends StructOp<S>>
+		extends DumpablePtrOp<S> {
 
 	Type<S> getType();
 

@@ -17,17 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code.op;
+package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.data.AllocClass;
+import org.o42a.codegen.code.op.DataPtrOp;
+import org.o42a.codegen.debug.Dumpable;
 
 
-public interface MemPtrOp<P extends MemPtrOp<P>> extends PtrOp<P> {
-
-	AllocClass getAllocClass();
-
-	P offset(CodeId id, Code code, IntOp<?> index);
+public interface DumpablePtrOp<P extends DumpablePtrOp<P>>
+		extends DataPtrOp<P>, Dumpable {
 
 }

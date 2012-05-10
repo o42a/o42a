@@ -39,14 +39,7 @@ public final class DataLLOp extends DataPtrLLOp<DataOp> implements DataOp {
 
 	@Override
 	public DataLLOp toData(CodeId id, Code code) {
-
-		final long nextPtr = llvm(code).nextPtr();
-
-		if (nextPtr == getBlockPtr()) {
-			return this;
-		}
-
-		return super.toData(id, code);
+		return llvm(code).phi(id, this);
 	}
 
 	@Override

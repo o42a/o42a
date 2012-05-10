@@ -23,7 +23,7 @@ import static org.o42a.backend.constant.data.UnderAlloc.anyUnderAlloc;
 import static org.o42a.backend.constant.data.UnderAlloc.dataUnderAlloc;
 
 import org.o42a.backend.constant.data.rec.PtrRecCDAlloc;
-import org.o42a.codegen.code.op.MemPtrOp;
+import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
@@ -31,7 +31,7 @@ import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
 
 
-public abstract class CDAlloc<P extends MemPtrOp<P>>
+public abstract class CDAlloc<P extends DataPtrOp<P>>
 		implements DataAllocation<P> {
 
 	private final ConstBackend backend;

@@ -21,10 +21,11 @@ package org.o42a.codegen.code.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.data.DumpablePtrOp;
 import org.o42a.codegen.data.Type;
 
 
-public interface DataOp extends DataPtrOp<DataOp> {
+public interface DataOp extends DumpablePtrOp<DataOp> {
 
 	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
 

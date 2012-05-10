@@ -44,7 +44,7 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 	public final AnyCOp offset(
 			final CodeId id,
 			final Code code,
-			final MemPtrOp<?> from) {
+			final DataPtrOp<?> from) {
 
 		final CCode<?> ccode = cast(code);
 		final CodeId resultId = code.getOpNames().offsetId(id, from, this);

@@ -279,10 +279,16 @@ public abstract class LLCode implements CodeWriter {
 	public <O extends Op> O phi(CodeId id, O op) {
 
 		final LLOp<O> o = llvm(op);
+		final long nextPtr = nextPtr();
+
+		if (o.getBlockPtr() == nextPtr) {
+			return op;
+		}
 
 		return o.create(
 				id != null ? id : op.getId(),
-			nextPtr(), o.getNativePtr());
+				nextPtr,
+				o.getNativePtr());
 	}
 
 	@Override

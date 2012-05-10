@@ -33,7 +33,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public final class AnyCOp extends MemPtrCOp<AnyOp> implements AnyOp {
+public final class AnyCOp extends DataPtrCOp<AnyOp> implements AnyOp {
 
 	public AnyCOp(
 			OpBE<AnyOp> backend,
