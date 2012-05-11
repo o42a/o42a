@@ -70,4 +70,10 @@ public interface CodeWriter {
 
 	<O extends Op> O phi(CodeId id, O op1, O op2);
 
+	void acquireBarrier();
+
+	void releaseBarrier();
+
+	void fullBarrier();
+
 }

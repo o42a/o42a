@@ -348,30 +348,31 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_phi2(
 	return to_instr_ptr(phi);
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLCode_phiN(
-		JNIEnv *env,
+jlong Java_org_o42a_backend_llvm_code_LLCode_acquireBarrier(
+		JNIEnv *,
 		jclass,
 		jlong blockPtr,
-		jlong instrPtr,
-		jlong id,
-		jint idLen,
-		jlongArray blockAndValuePtrs) {
-
+		jlong instrPtr) {
 	MAKE_BUILDER;
-	jInt64Array blocksAndValues(env, blockAndValuePtrs);
-	size_t len = blocksAndValues.length();
-	PHINode *phi = builder.CreatePHI(
-			from_ptr<Value>(blocksAndValues[1])->getType(),
-			len >> 1,
-			StringRef(from_ptr<char>(id), idLen));
+	return to_instr_ptr(builder.CreateFence(Acquire));
+}
 
-	for (size_t i = 0; i < len; i += 2) {
-		phi->addIncoming(
-				from_ptr<Value>(blocksAndValues[i + 1]),
-				from_ptr<BasicBlock>(blocksAndValues[i]));
-	}
+jlong Java_org_o42a_backend_llvm_code_LLCode_releaseBarrier(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr) {
+	MAKE_BUILDER;
+	return to_instr_ptr(builder.CreateFence(Release));
+}
 
-	return to_instr_ptr(phi);
+jlong Java_org_o42a_backend_llvm_code_LLCode_fullBarrier(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr) {
+	MAKE_BUILDER;
+	return to_instr_ptr(builder.CreateFence(SequentiallyConsistent));
 }
 
 jlong Java_org_o42a_backend_llvm_code_LLCode_select(
