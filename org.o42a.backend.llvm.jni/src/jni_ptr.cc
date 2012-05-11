@@ -28,6 +28,7 @@
 #include "llvm/Module.h"
 #include "llvm/Value.h"
 #include "llvm/Support/IRBuilder.h"
+#include "llvm/Target/TargetData.h"
 
 using namespace llvm;
 
@@ -70,15 +71,44 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
-	LoadInst *result = builder.CreateLoad(
-			pointer,
-			StringRef(from_ptr<char>(id), idLen));
 
-	if (atomic) {
-		result->setAtomic(Unordered);
+	if (!atomic) {
+		return to_instr_ptr(builder.CreateLoad(
+				pointer,
+				StringRef(from_ptr<char>(id), idLen)));
 	}
 
-	return to_instr_ptr(result);
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
+			builder.GetInsertBlock()->getParent()->getParent());
+	const TargetData &targetData = module->getTargetData();
+	Type *storeType = pointer->getType()->getContainedType(0);
+	Value *ptr;
+
+	// Atomic operations support only integers.
+	if (storeType->isIntegerTy()) {
+		ptr = pointer;
+	} else {
+
+		IntegerType *intType = IntegerType::get(
+				module->getContext(),
+				targetData.getTypeSizeInBits(storeType));
+
+		ptr = builder.CreateBitCast(pointer, intType->getPointerTo());
+	}
+
+	LoadInst *result =
+			builder.CreateLoad(ptr, StringRef(from_ptr<char>(id), idLen));
+
+	// Guarantee the data loaded one piece.
+	result->setAtomic(Unordered);
+	// Atomic operations require alignment.
+	result->setAlignment(targetData.getABITypeAlignment(storeType));
+
+	if (ptr == pointer) {
+		return to_instr_ptr(result);
+	}
+
+	return to_instr_ptr(builder.CreateBitCast(result, storeType));
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
@@ -93,11 +123,38 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *value = from_ptr<Value>(valuePtr);
-	StoreInst *result = builder.CreateStore(value, pointer);
 
-	if (atomic) {
-		result->setAtomic(Unordered);
+	if (!atomic) {
+		return to_instr_ptr(builder.CreateStore(value, pointer));
 	}
+
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
+			builder.GetInsertBlock()->getParent()->getParent());
+	const TargetData &targetData = module->getTargetData();
+	Type *storeType = pointer->getType()->getContainedType(0);
+	Value *ptr;
+	Value *val;
+
+	// Atomic operations support only integers.
+	if (storeType->isIntegerTy()) {
+		ptr = pointer;
+		val = value;
+	} else {
+
+		IntegerType *intType = IntegerType::get(
+				module->getContext(),
+				targetData.getTypeSizeInBits(storeType));
+
+		ptr = builder.CreateBitCast(pointer, intType->getPointerTo());
+		val = builder.CreateBitCast(value, intType);
+	}
+
+	StoreInst *result = builder.CreateStore(val, ptr);
+
+	// Guarantee the data stored one piece.
+	result->setAtomic(Unordered);
+	// Atomic operations require alignment.
+	result->setAlignment(targetData.getABITypeAlignment(storeType));
 
 	return to_instr_ptr(result);
 }
