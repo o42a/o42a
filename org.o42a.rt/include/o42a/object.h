@@ -230,10 +230,9 @@ typedef struct o42a_obj_data {
 	/**
 	 * Object mutex initialization flag.
 	 *
-	 * This is set to true by atomic operations and should not be accessed
-	 * directly.
+	 * This is set to by atomic operations and should not be accessed directly.
 	 */
-	o42a_bool_t mutex_init;
+	uint8_t mutex_init;
 
 	/**
 	 * Object mutex.
@@ -674,13 +673,27 @@ o42a_obj_body_t *o42a_obj_cast_or_error(
  */
 o42a_obj_t *o42a_obj_new(O42A_DECLS const o42a_obj_ctr_t *);
 
-
+/**
+ * False object value.
+ */
 void o42a_obj_val_false(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
+/**
+ * Void object value.
+ */
 void o42a_obj_val_void(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
+/**
+ * Unknown object value.
+ *
+ * This function does not modify the value. So, after the function call,
+ * the value remain indefinite, as it was before.
+ */
 void o42a_obj_val_unknown(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
+/**
+ * Object value function stub.
+ */
 void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
 
@@ -704,6 +717,22 @@ o42a_obj_body_t *o42a_obj_constructor_stub(
 		O42A_DECLS
 		o42a_obj_t *,
 		struct o42a_fld_obj *);
+
+
+/**
+ * Locks an object mutex, initializing it if necessary.
+ *
+ * Use o42a_obj_unlock to unlock the mutex. An object mutex is recursive, which
+ * means it can be locked multiple times by the same thread and remains locked
+ * until unlocked the same number of times.
+ */
+void o42a_obj_lock(O42A_DECLS o42a_obj_data_t *);
+
+/**
+ * Unlocks and object mutex previously locked with o42a_obj_lock by the same
+ * thread.
+ */
+void o42a_obj_unlock(O42A_DECLS o42a_obj_data_t *);
 
 
 #ifdef __cplusplus

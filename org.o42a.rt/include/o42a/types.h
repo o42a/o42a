@@ -417,6 +417,9 @@ void o42a_val_use(O42A_DECLS o42a_val_t *);
 void o42a_val_unuse(O42A_DECLS o42a_val_t *);
 
 
+void o42a_init(O42A_DECL);
+
+
 #ifdef __cplusplus
 }
 #endif

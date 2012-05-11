@@ -63,6 +63,7 @@ endif
 
 
 includes += -I include
+CXXFLAGS += -pthread -D_XOPEN_SOURCE=500
 CXXFLAGS += -Wall -Winline -W -Wwrite-strings
 CXXFLAGS := $(CXXFLAGS) $(shell $(llvm_config) --cxxflags) $(debug_cxxflags) $(includes)
 LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell $(llvm_config) --ldflags)

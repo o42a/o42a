@@ -27,6 +27,7 @@ import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 import static org.o42a.lib.console.MainFunc.MAIN;
+import static org.o42a.lib.console.impl.InitFunc.INIT;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UserInfo;
@@ -168,6 +169,12 @@ public class ConsoleModule extends AnnotatedModule {
 	}
 
 	private ValOp callMain(Function<DebuggableMainFunc> main) {
+		main.getGenerator()
+		.externalFunction()
+		.link("o42a_init", INIT)
+		.op(null, main)
+		.init(main);
+
 		main.debug("Start execution");
 
 		final Module mainModule =
