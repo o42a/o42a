@@ -20,6 +20,8 @@
 #ifndef O42A_OBJECT_H
 #define O42A_OBJECT_H
 
+#include <pthread.h>
+
 #include "o42a/types.h"
 
 
@@ -96,13 +98,13 @@ enum o42a_obj_type_flags {
 	O42A_OBJ_PROTOTYPE = 0x4,
 
 	/** Object is VOID special object. */
-	O42A_OBJ_VOID = 0x80000000,
+	O42A_OBJ_VOID = 0x8000,
 
 	/** Object is FALSE special object. */
-	O42A_OBJ_FALSE = 0x40000000,
+	O42A_OBJ_FALSE = 0x4000,
 
 	/** Type flags mask inherited when constructing new instance. */
-	O42A_OBJ_INHERIT_MASK = 0x0FFFFFFF,
+	O42A_OBJ_INHERIT_MASK = 0xFF,
 
 };
 
@@ -210,20 +212,39 @@ typedef struct o42a_obj_data {
 	o42a_rptr_t object;
 
 	/**
-	 * Type flags.
-	 *
-	 * This can be used to distinguish object type implementation and contains
-	 * other information. See o42a_obj_type_flags enum.
-	 */
-	uint32_t flags;
-
-	/**
 	 * Relative pointer to memory block containing this object.
 	 *
 	 * This may be a virtual block start when ancestor body is not physically
 	 * present.
 	 */
 	o42a_rptr_t start;
+
+	/**
+	 * Type flags.
+	 *
+	 * This can be used to distinguish object type implementation and contains
+	 * other information. See o42a_obj_type_flags enum.
+	 */
+	uint16_t flags;
+
+	/**
+	 * Object mutex initialization flag.
+	 *
+	 * This is set to true by atomic operations and should not be accessed
+	 * directly.
+	 */
+	o42a_bool_t mutex_init;
+
+	/**
+	 * Object mutex.
+	 *
+	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
+	 * function takes care of proper mutext initialization.
+	 *
+	 * Use o42a_obj_lock and o42a_obj_unlock respectively to lock or unlock this
+	 * mutex.
+	 */
+	pthread_mutex_t mutex;
 
 	/** Constructed object value. */
 	o42a_val_t value;

@@ -191,10 +191,10 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 	}
 
-	private int objectFlags() {
+	private short objectFlags() {
 
 		final Obj object = getObjectIR().getObject();
-		int flags = 0;
+		short flags = 0;
 
 		if (object.isAbstract()) {
 			flags |= OBJ_FLAG_ABSTRACT;

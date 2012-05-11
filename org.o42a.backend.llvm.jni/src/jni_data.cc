@@ -19,6 +19,8 @@
 */
 #include "jni_data.h"
 
+#include <pthread.h>
+
 #include "o42ac/llvm/BackendModule.h"
 #include "o42ac/llvm/debug.h"
 #include "o42ac/llvm/util.h"
@@ -30,6 +32,12 @@
 
 using namespace llvm;
 
+
+jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadMutexLayout(
+		JNIEnv *,
+		jclass) {
+	return O42A_LAYOUT(pthread_mutex_t);
+}
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(
 		JNIEnv *env,
@@ -370,6 +378,40 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_createStruct(
 	result->reserve(size);
 
 	return to_ptr<std::vector<Constant*> >(result);
+}
+
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt8(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr,
+		jlong structPtr,
+		jbyte value) {
+
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+	IntegerType *type = IntegerType::getInt8Ty(module->getContext());
+	std::vector<Constant*> *data =
+			from_ptr<std::vector<Constant*> >(structPtr);
+	ConstantInt *result = ConstantInt::getSigned(type, value);
+
+	data->push_back(result);
+}
+
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt16(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr,
+		jlong structPtr,
+		jshort value) {
+
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+	IntegerType *type = IntegerType::getInt16Ty(module->getContext());
+	std::vector<Constant*> *data =
+			from_ptr<std::vector<Constant*> >(structPtr);
+	ConstantInt *result = ConstantInt::getSigned(type, value);
+
+	data->push_back(result);
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt32(
