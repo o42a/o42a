@@ -120,13 +120,15 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long instrPtr,
 			long id,
 			int idLen,
-			long pointerPtr);
+			long pointerPtr,
+			boolean atomic);
 
 	protected static native long store(
 			long blockPtr,
 			long instrPtr,
 			long pointerPtr,
-			long valuePtr);
+			long valuePtr,
+			boolean atomic);
 
 	static native long toAny(
 			long blockPtr,
