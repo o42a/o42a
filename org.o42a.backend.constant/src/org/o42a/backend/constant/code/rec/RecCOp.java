@@ -79,6 +79,39 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 
 	@Override
 	public final O load(CodeId id, Code code) {
+		return load(id, code, false);
+	}
+
+	@Override
+	public final O atomicLoad(CodeId id, Code code) {
+		return load(id, code, true);
+	}
+
+	@Override
+	public final void store(final Code code, final O value) {
+		store(code, value, false);
+	}
+
+	@Override
+	public final void atomicStore(final Code code, final O value) {
+		store(code, value, true);
+	}
+
+	@Override
+	protected final Usable<SimpleUsage> explicitUses() {
+		return this.explicitUses;
+	}
+
+	protected abstract O loaded(OpBE<O> backend, T constant);
+
+	protected abstract O underlyingConstant(CCodePart<?> part, T constant);
+
+	@SuppressWarnings("unchecked")
+	private RecCDAlloc<?, ?, T> getAllocation() {
+		return (RecCDAlloc<?, ?, T>) getConstant().getAllocation();
+	}
+
+	private final O load(CodeId id, Code code, final boolean atomic) {
 
 		final CodeId derefId = code.getOpNames().derefId(id, this);
 		final CCode<?> ccode = cast(code);
@@ -103,7 +136,16 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 					}
 					@Override
 					protected O write() {
-						return backend().underlying().load(
+
+						final R underlying = backend().underlying();
+
+						if (!atomic) {
+							return underlying.load(
+									getId(),
+									part().underlying());
+						}
+
+						return underlying.atomicLoad(
 								getId(),
 								part().underlying());
 					}
@@ -111,8 +153,10 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 				null);
 	}
 
-	@Override
-	public final void store(final Code code, final O value) {
+	private final void store(
+			final Code code,
+			final O value,
+			final boolean atomic) {
 
 		final COp<O, ?> cValue = cast(value);
 
@@ -127,25 +171,21 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			}
 			@Override
 			protected void emit() {
-				backend().underlying().store(
+
+				final R underlying = backend().underlying();
+
+				if (!atomic) {
+					underlying.store(
+							part().underlying(),
+							cValue.backend().underlying());
+					return;
+				}
+
+				underlying.atomicStore(
 						part().underlying(),
 						cValue.backend().underlying());
 			}
 		};
-	}
-
-	@Override
-	protected final Usable<SimpleUsage> explicitUses() {
-		return this.explicitUses;
-	}
-
-	protected abstract O loaded(OpBE<O> backend, T constant);
-
-	protected abstract O underlyingConstant(CCodePart<?> part, T constant);
-
-	@SuppressWarnings("unchecked")
-	private RecCDAlloc<?, ?, T> getAllocation() {
-		return (RecCDAlloc<?, ?, T>) getConstant().getAllocation();
 	}
 
 }

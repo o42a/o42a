@@ -79,6 +79,35 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	public final F load(CodeId id, Code code) {
+		return load(id, code, false);
+	}
+
+	@Override
+	public final F atomicLoad(CodeId id, Code code) {
+		return load(id, code, true);
+	}
+
+	@Override
+	public final void store(Code code, F value) {
+		store(code, value, false);
+	}
+
+	@Override
+	public final void atomicStore(Code code, F value) {
+		store(code, value, true);
+	}
+
+	@Override
+	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
+		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.signature.getId() + "*) " + getId();
+	}
+
+	private final F load(CodeId id, Code code, boolean atomic) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
@@ -94,11 +123,11 @@ public final class FuncLLOp<F extends Func<F>>
 						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr()))));
+						getNativePtr(),
+						atomic))));
 	}
 
-	@Override
-	public final void store(Code code, F value) {
+	private final void store(Code code, F value, boolean atomic) {
 
 		final LLCode llvm = llvm(code);
 
@@ -106,17 +135,8 @@ public final class FuncLLOp<F extends Func<F>>
 				llvm.nextPtr(),
 				llvm.nextInstr(),
 				getNativePtr(),
-				nativePtr(value)));
-	}
-
-	@Override
-	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
-		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
-	}
-
-	@Override
-	public String toString() {
-		return "(" + this.signature.getId() + "*) " + getId();
+				nativePtr(value),
+				atomic));
 	}
 
 }

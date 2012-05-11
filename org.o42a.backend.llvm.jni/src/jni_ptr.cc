@@ -65,13 +65,18 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		jlong instrPtr,
 		jlong id,
 		jint idLen,
-		jlong pointerPtr) {
+		jlong pointerPtr,
+		jboolean atomic) {
 
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	LoadInst *result = builder.CreateLoad(
 			pointer,
 			StringRef(from_ptr<char>(id), idLen));
+
+	if (atomic) {
+		result->setAtomic(Unordered);
+	}
 
 	return to_instr_ptr(result);
 }
@@ -82,12 +87,17 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		jlong blockPtr,
 		jlong instrPtr,
 		jlong pointerPtr,
-		jlong valuePtr) {
+		jlong valuePtr,
+		jboolean atomic) {
 
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 	StoreInst *result = builder.CreateStore(value, pointer);
+
+	if (atomic) {
+		result->setAtomic(Unordered);
+	}
 
 	return to_instr_ptr(result);
 }

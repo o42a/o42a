@@ -46,6 +46,27 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 
 	@Override
 	public final O load(CodeId id, Code code) {
+		return load(id, code, false);
+	}
+
+	@Override
+	public O atomicLoad(CodeId id, Code code) {
+		return load(id, code, true);
+	}
+
+	@Override
+	public final void store(Code code, O value) {
+		store(code, value, false);
+	}
+
+	@Override
+	public final void atomicStore(Code code, O value) {
+		store(code, value, true);
+	}
+
+	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
+
+	private final O load(CodeId id, Code code, boolean atomic) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
@@ -60,11 +81,11 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
-						getNativePtr())));
+						getNativePtr(),
+						atomic)));
 	}
 
-	@Override
-	public final void store(Code code, O value) {
+	private final void store(Code code, O value, boolean atomic) {
 
 		final LLCode llvm = llvm(code);
 
@@ -72,9 +93,8 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 				llvm.nextPtr(),
 				llvm.nextInstr(),
 				getNativePtr(),
-				nativePtr(value)));
+				nativePtr(value),
+				atomic));
 	}
-
-	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
 
 }
