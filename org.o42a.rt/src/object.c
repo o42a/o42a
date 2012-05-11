@@ -1009,3 +1009,60 @@ o42a_obj_body_t *o42a_obj_constructor_stub(
 	o42a_error_print(O42A_ARGS "Object constructor stub invoked");
 	O42A_RETURN NULL;
 }
+
+static pthread_mutexattr_t recursive_mutex_attr;
+
+void o42a_init(O42A_PARAM) {
+	O42A_ENTER(return);
+	if (O42A(pthread_mutexattr_init(&recursive_mutex_attr))
+			|| O42A(pthread_mutexattr_settype(
+					&recursive_mutex_attr,
+					PTHREAD_MUTEX_RECURSIVE))) {
+		o42a_error_print(O42A_ARGS "Can not initialize o42a runtime");
+		exit(EXIT_FAILURE);
+	}
+	O42A_RETURN;
+}
+
+void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+
+	// Ensure the mutex is initialized.
+	while (1) {
+
+		// Attempt to start the mutex initialization.
+		uint8_t old = __sync_val_compare_and_swap(&data->mutex_init, 0, 1);
+
+		if (old) {
+			if (old == 2) {
+				// The mutex is initialized already.
+				break;
+			}
+			// The mutext is currently initializing by another thread.
+			continue;
+		}
+
+		// Initialize the (recursive) mutex.
+		pthread_mutex_init(&data->mutex, &recursive_mutex_attr);
+		__sync_val_compare_and_swap(&data->mutex_init, 1, 2);
+
+		break;
+	}
+
+	// Lock the mutex.
+	if (!O42A(pthread_mutex_lock(&data->mutex))) {
+		O42A(o42a_error_print(O42A_ARGS "Failed to lock an object mutex"));
+	}
+
+	O42A_RETURN;
+}
+
+void o42a_obj_unlock(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	if (O42A(pthread_mutex_unlock(&data->mutex))) {
+		O42A(o42a_error_print(
+				O42A_ARGS
+				"Current thread does not own an object mutex"));
+	}
+	O42A_RETURN;
+}

@@ -21,7 +21,7 @@
 #
 
 CFLAGS += $(shell $(icu_config) --cflags-dynamic)
-CFLAGS += -std=c99 -fPIC
+CFLAGS += -std=c99 -fPIC -pthread -D_XOPEN_SOURCE=500
 
 CPPGLAGS += $(shell $(icu_config) --cppflags-dynamic)
 
