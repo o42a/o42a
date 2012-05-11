@@ -274,6 +274,48 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				null);
 	}
 
+	@Override
+	public final void acquireBarrier() {
+		new BaseInstrBE(this) {
+			@Override
+			public void prepare() {
+				alwaysEmit();
+			}
+			@Override
+			protected void emit() {
+				part().underlying().acquireBarrier();
+			}
+		};
+	}
+
+	@Override
+	public final void releaseBarrier() {
+		new BaseInstrBE(this) {
+			@Override
+			public void prepare() {
+				alwaysEmit();
+			}
+			@Override
+			protected void emit() {
+				part().underlying().releaseBarrier();
+			}
+		};
+	}
+
+	@Override
+	public final void fullBarrier() {
+		new BaseInstrBE(this) {
+			@Override
+			public void prepare() {
+				alwaysEmit();
+			}
+			@Override
+			protected void emit() {
+				part().underlying().fullBarrier();
+			}
+		};
+	}
+
 	public final CCodePart<?> op(InstrBE op) {
 		return record(op);
 	}

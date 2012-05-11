@@ -315,6 +315,21 @@ public abstract class LLCode implements CodeWriter {
 						o2.getNativePtr())));
 	}
 
+	@Override
+	public void acquireBarrier() {
+		instr(acquireBarrier(nextPtr(), nextInstr()));
+	}
+
+	@Override
+	public void releaseBarrier() {
+		instr(releaseBarrier(nextPtr(), nextInstr()));
+	}
+
+	@Override
+	public void fullBarrier() {
+		instr(fullBarrier(nextPtr(), nextInstr()));
+	}
+
 	public <O extends Op> O select(
 			CodeId id,
 			BoolLLOp condition,
@@ -457,12 +472,11 @@ public abstract class LLCode implements CodeWriter {
 			long block2ptr,
 			long value2);
 
-	private static native long phiN(
-			long blockPtr,
-			long instrPtr,
-			long id,
-			int idLen,
-			long[] blockAndValuePtrs);
+	private static native long acquireBarrier(long blockPtr, long instrPtr);
+
+	private static native long releaseBarrier(long blockPtr, long instrPtr);
+
+	private static native long fullBarrier(long blockPtr, long instrPtr);
 
 	private static native long select(
 			long blockPtr,

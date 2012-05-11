@@ -154,6 +154,30 @@ public abstract class Code extends DebugCodeBase {
 		return writer().phi(opId(id), op1, op2);
 	}
 
+	/**
+	 * An "acquire" memory barrier.
+	 */
+	public final void acquireBarrier() {
+		assert assertIncomplete();
+		writer().acquireBarrier();
+	}
+
+	/**
+	 * A "release" memory barrier.
+	 */
+	public final void releaseBarrier() {
+		assert assertIncomplete();
+		writer().releaseBarrier();
+	}
+
+	/**
+	 * Full memory barrier.
+	 */
+	public final void fullBarrier() {
+		assert assertIncomplete();
+		writer().fullBarrier();
+	}
+
 	public final CodeId opId(CodeId id) {
 		return getOpNames().opId(id);
 	}
