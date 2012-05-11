@@ -38,7 +38,7 @@ jlong Java_org_o42a_backend_llvm_code_LLSignatureWriter_createSignature(
 		jlongArray paramPtrs) {
 
 	Type *returnType = from_ptr<Type>(returnTypePtr);
-	jArray<jlongArray, jlong> paramArray(env, paramPtrs);
+	jInt64Array paramArray(env, paramPtrs);
 	const size_t numParams = paramArray.length();
 	Type* params[numParams];
 
