@@ -34,9 +34,8 @@ enum SystemTypeInfo {
 	PTHREAD_MUTEX("pthread_mutex_t") {
 
 		@Override
-		protected int layout(long modulePtr) {
-			// TODO Auto-generated method stub
-			throw new UnsupportedOperationException();
+		protected int layout() {
+			return pthreadMutexLayout();
 		}
 
 	};
@@ -67,7 +66,7 @@ enum SystemTypeInfo {
 		return this.id;
 	}
 
-	protected abstract int layout(long modulePtr);
+	protected abstract int layout();
 
 	private final SystemTypeLLAlloc allocate(
 			final LLVMDataAllocator allocator,
@@ -75,7 +74,7 @@ enum SystemTypeInfo {
 
 		final LLVMModule module = allocator.getModule();
 		final long modulePtr = module.getNativePtr();
-		final DataLayout layout = new DataLayout(layout(modulePtr));
+		final DataLayout layout = new DataLayout(layout());
 		final NativeBuffer ids = module.ids();
 		final long typePtr = createType(
 				modulePtr,
@@ -127,5 +126,7 @@ enum SystemTypeInfo {
 		}
 
 	}
+
+	private static native int pthreadMutexLayout();
 
 }

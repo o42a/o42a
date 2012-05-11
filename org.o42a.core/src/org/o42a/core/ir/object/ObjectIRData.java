@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
+import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
@@ -38,11 +39,11 @@ import org.o42a.core.ir.value.ValType;
 
 public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
-	public static final int OBJ_FLAG_RT = 0x1;
-	public static final int OBJ_FLAG_ABSTRACT = 0x2;
-	public static final int OBJ_FLAG_PROTOTYPE = 0x4;
-	public static final int OBJ_FLAG_VOID = 0x80000000;
-	public static final int OBJ_FLAG_FALSE = 0x40000000;
+	public static final short OBJ_FLAG_RT = 0x1;
+	public static final short OBJ_FLAG_ABSTRACT = 0x2;
+	public static final short OBJ_FLAG_PROTOTYPE = 0x4;
+	public static final short OBJ_FLAG_VOID = ~0x7fff;
+	public static final short OBJ_FLAG_FALSE = 0x4000;
 
 	public static final ObjectIRData OBJECT_DATA_TYPE = new ObjectIRData();
 
@@ -50,8 +51,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			new Type<?>[] {OBJECT_TYPE};
 
 	private RelRec object;
-	private Int32rec flags;
 	private RelRec start;
+	private Int16rec flags;
 	private ValType value;
 	private FuncRec<ObjectValFunc> valueFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
@@ -72,12 +73,12 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.object;
 	}
 
-	public final Int32rec flags() {
-		return this.flags;
-	}
-
 	public final RelRec start() {
 		return this.start;
+	}
+
+	public final Int16rec flags() {
+		return this.flags;
 	}
 
 	public final ValType value() {
@@ -124,8 +125,10 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		final Generator generator = data.getGenerator();
 
 		this.object = data.addRelPtr("object");
-		this.flags = data.addInt32("flags");
 		this.start = data.addRelPtr("start");
+		this.flags = data.addInt16("flags");
+		data.addInt8("mutex_init").setValue((byte) 0);
+		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VAL);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);

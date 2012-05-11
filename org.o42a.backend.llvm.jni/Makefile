@@ -1,5 +1,5 @@
 #    Compiler JNI Bindings to LLVM Build Script
-#    Copyright (C) 2010 Ruslan Lopatin
+#    Copyright (C) 2010-2012 Ruslan Lopatin
 #
 #    This file is part of o42a.
 #
@@ -131,7 +131,7 @@ $(so_lib) : $(srcdir)/jni_ptr.o
 $(so_lib) : $(srcdir)/jni_code.o
 $(so_lib) :
 	mkdir -p $(target_dir)
-	$(CXX) $(LDFLAGS) -Xlinker --no-undefined -shared -o $@ $+ $(llvm_ldflags)
+	$(CXX) $(LDFLAGS) -Wl,--no-undefined -shared -o $@ $+ $(llvm_ldflags)
 
 
 # Compile commons.
@@ -152,6 +152,7 @@ $(srcdir)/jni_module.h : $(java_package_dir)/data/LLVMModule.class
 $(srcdir)/jni_id.h : $(java_package_dir)/id/LLVMId.class
 	$(call make_javah)
 
+$(srcdir)/jni_data.h : $(java_package_dir)/data/SystemTypeInfo.class
 $(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataAllocator.class
 $(srcdir)/jni_data.h : $(java_package_dir)/data/LLVMDataWriter.class
 $(srcdir)/jni_data.h :

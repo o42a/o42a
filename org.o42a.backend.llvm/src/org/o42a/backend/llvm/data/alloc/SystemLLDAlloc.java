@@ -29,23 +29,16 @@ import org.o42a.codegen.data.DataLayout;
 public class SystemLLDAlloc extends SimpleLLDAlloc<SystemOp> {
 
 	private final SystemTypeLLAlloc typeAlloc;
-	private final long nativePtr;
 
 	public SystemLLDAlloc(
 			ContainerLLDAlloc<?> enclosing,
-			SystemTypeLLAlloc typeAlloc,
-			long nativePtr) {
+			SystemTypeLLAlloc typeAlloc) {
 		super(enclosing);
 		this.typeAlloc = typeAlloc;
-		this.nativePtr = nativePtr;
 	}
 
 	public final SystemTypeLLAlloc getTypeAlloc() {
 		return this.typeAlloc;
-	}
-
-	public final long getNativePtr() {
-		return this.nativePtr;
 	}
 
 	@Override

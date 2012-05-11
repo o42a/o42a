@@ -309,13 +309,14 @@ public class LLVMDataAllocator implements DataAllocator {
 		final SystemTypeLLAlloc typeAlloc =
 				(SystemTypeLLAlloc) data.getSystemType().getAllocation();
 
-		return new SystemLLDAlloc(
-				container(enclosing),
-				typeAlloc,
-				allocateStruct(
-						getModulePtr(),
-						typeDataPtr(enclosing),
-						typeAlloc.getTypePtr()));
+		if (allocate(enclosing)) {
+			allocateStruct(
+					getModulePtr(),
+					typeDataPtr(enclosing),
+					typeAlloc.getTypePtr());
+		}
+
+		return new SystemLLDAlloc(container(enclosing), typeAlloc);
 	}
 
 	@Override
