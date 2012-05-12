@@ -82,17 +82,36 @@ enum SystemTypeInfo {
 				ids.length());
 		final long dataPtr = createTypeData(modulePtr);
 
-		fillTypeData(modulePtr, dataPtr, layout);
+		fillTypeData(allocator, systemType, dataPtr, layout);
 		refineType(
 				typePtr,
 				dataPtr,
 				layout.getAlignment() == DataAlignment.ALIGN_1);
 
+		assert assertLayoutCorrect(systemType, modulePtr, layout, typePtr);
+
 		return new SystemTypeLLAlloc(module, systemType, layout, typePtr);
 	}
 
-	private static void fillTypeData(
+	private static boolean assertLayoutCorrect(
+			final SystemType systemType,
 			final long modulePtr,
+			final DataLayout layout,
+			final long typePtr) {
+
+		final DataLayout actualLayout =
+				new DataLayout(structLayout(modulePtr, typePtr));
+
+		assert layout.equals(actualLayout) :
+			"Actual data layout (" + actualLayout + ") of " + systemType
+			+ " differs from the requested one (" + layout + ")";
+
+		return true;
+	}
+
+	private static void fillTypeData(
+			final LLVMDataAllocator allocator,
+			final SystemType systemType,
 			final long dataPtr,
 			final DataLayout layout) {
 
@@ -107,7 +126,12 @@ enum SystemTypeInfo {
 			final int allocate = Math.min(size, alignment);
 
 			size -= alignment;
-			allocateInt(modulePtr, dataPtr, (short) (allocate << 3));
+			if (!allocator.allocateField(dataPtr, allocate)) {
+				throw new IllegalArgumentException(
+						"Can not allocate the system type " + systemType
+						+ ": can not allocate a field"
+						+ " with size and alignment " + allocate);
+			}
 		}
 	}
 

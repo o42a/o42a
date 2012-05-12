@@ -457,6 +457,101 @@ public class LLVMDataAllocator implements DataAllocator {
 		return "LLVM data allocator";
 	}
 
+	/**
+	 * Allocates the field of the given size with the same alignment.
+	 *
+	 * @param enclosingPtr enclosing type's data native pointer.
+	 * @param numBytes number of bytes to allocate and an alignment
+	 * of the allocated data.
+	 */
+	boolean allocateField(long enclosingPtr, int numBytes) {
+
+		final long modulePtr = getModule().getNativePtr();
+
+		if (allocatePtrField(modulePtr, enclosingPtr, numBytes)) {
+			return true;
+		}
+		if (allocateIntField(modulePtr, enclosingPtr, numBytes)) {
+			return true;
+		}
+		if (allocateFpField(modulePtr, enclosingPtr, numBytes)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean allocatePtrField(
+			long modulePtr,
+			long enclosingPtr,
+			int numBytes) {
+		if (ptrLayout().getAlignment().getBytes() != numBytes) {
+			return false;
+		}
+		allocatePtr(modulePtr, enclosingPtr);
+		return true;
+	}
+
+	private boolean allocateIntField(
+			long modulePtr,
+			long enclosingPtr,
+			int numBytes) {
+		// An alignment of the integer type may differ from it's size.
+		// In this case the integer can not be used to ensure the proper
+		// alignment.
+		if (numBytes != 1) {
+
+			final int alignment;
+
+			switch (numBytes) {
+			case 8:
+				alignment = int64layout().getAlignment().getBytes();
+				break;
+			case 4:
+				alignment = int32layout().getAlignment().getBytes();
+				break;
+			case 2:
+				alignment = int16layout().getAlignment().getBytes();
+				break;
+			default:
+				alignment =
+						new DataLayout(intLayout(modulePtr, numBytes << 3))
+						.getAlignment()
+						.getBytes();
+			}
+
+			if (alignment != numBytes) {
+				return false;
+			}
+		}
+
+		allocateInt(modulePtr, enclosingPtr, (short) (numBytes << 3));
+
+		return true;
+	}
+
+	private boolean allocateFpField(
+			long modulePtr,
+			long enclosingPtr,
+			int numBytes) {
+		switch (numBytes) {
+		case 8:
+			if (fp64layout().getAlignment().getBytes() != numBytes) {
+				return false;
+			}
+			allocateFp64(modulePtr, enclosingPtr);
+			return true;
+		case 4:
+			if (fp32layout().getAlignment().getBytes() != numBytes) {
+				return false;
+			}
+			allocateFp32(modulePtr, enclosingPtr);
+			return true;
+		}
+
+		return false;
+	}
+
 	private static boolean allocate(DataAllocation<?> enclosing) {
 		return !container(enclosing).isTypeAllocated();
 	}
@@ -507,7 +602,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			long typeDataPtr,
 			boolean packed);
 
-	static native void allocateInt(
+	private static native void allocateInt(
 			long modulePtr,
 			long enclosingPtr,
 			int numBits);
@@ -536,6 +631,6 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private static native int relPtrLayout(long modulePtr);
 
-	private static native int structLayout(long modulePtr, long typePtr);
+	static native int structLayout(long modulePtr, long typePtr);
 
 }

@@ -263,8 +263,9 @@ static inline jint typeLayout(
 
 	const TargetData &targetData = module->getTargetData();
 
-	return targetData.getTypeStoreSize(type)
-			| (targetData.getPreferredTypeAlignmentShift(type) << 29);
+	return o42a_layout(
+			targetData.getABITypeAlignment(type),
+			targetData.getTypeStoreSize(type));
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(

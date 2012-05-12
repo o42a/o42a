@@ -54,6 +54,28 @@ public final class DataLayout {
 	}
 
 	@Override
+	public int hashCode() {
+		return this.layout;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+
+		final DataLayout other = (DataLayout) obj;
+
+		return this.layout == other.layout;
+	}
+
+	@Override
 	public String toString() {
 		return "DataLayout[size=" + getSize()
 				+ ", alignment=" + getAlignment() + ']';

@@ -78,6 +78,14 @@ public enum DataAlignment {
 		return this.shift;
 	}
 
+	@Override
+	public String toString() {
+		if (this.bytes == 1) {
+			return "1 byte";
+		}
+		return this.bytes + " bytes";
+	}
+
 	private static final class Registry {
 
 		private static final DataAlignment[] byShift = new DataAlignment[8];
