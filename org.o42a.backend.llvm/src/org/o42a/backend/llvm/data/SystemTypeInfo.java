@@ -31,11 +31,29 @@ import org.o42a.util.DataAlignment;
 
 enum SystemTypeInfo {
 
+	PTHREAD("pthread_t") {
+
+		@Override
+		protected int layout() {
+			return pthreadLayout();
+		}
+
+	},
+
 	PTHREAD_MUTEX("pthread_mutex_t") {
 
 		@Override
 		protected int layout() {
 			return pthreadMutexLayout();
+		}
+
+	},
+
+	PTHREAD_COND("pthread_cond_t") {
+
+		@Override
+		protected int layout() {
+			return pthreadCondLayout();
 		}
 
 	};
@@ -151,6 +169,10 @@ enum SystemTypeInfo {
 
 	}
 
+	private static native int pthreadLayout();
+
 	private static native int pthreadMutexLayout();
+
+	private static native int pthreadCondLayout();
 
 }

@@ -23,6 +23,8 @@ import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
+import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
+import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 
 import org.o42a.codegen.CodeId;
@@ -128,7 +130,10 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.start = data.addRelPtr("start");
 		this.flags = data.addInt16("flags");
 		data.addInt8("mutex_init").setValue((byte) 0);
+		data.addInt8("value_calc").setValue((byte) 0);
+		data.addSystem("value_thread", THREAD_SYSTEM_TYPE);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
+		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VAL);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);

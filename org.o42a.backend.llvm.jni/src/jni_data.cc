@@ -33,10 +33,22 @@
 using namespace llvm;
 
 
+jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadLayout(
+		JNIEnv *,
+		jclass) {
+	return O42A_LAYOUT(pthread_t);
+}
+
 jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadMutexLayout(
 		JNIEnv *,
 		jclass) {
 	return O42A_LAYOUT(pthread_mutex_t);
+}
+
+jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCondLayout(
+		JNIEnv *,
+		jclass) {
+	return O42A_LAYOUT(pthread_cond_t);
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(

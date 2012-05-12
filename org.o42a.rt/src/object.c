@@ -1043,7 +1043,10 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 		}
 
 		// Initialize the (recursive) mutex.
-		pthread_mutex_init(&data->mutex, &recursive_mutex_attr);
+		if (O42A(pthread_mutex_init(&data->mutex, &recursive_mutex_attr))
+				|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
+			o42a_error_print(O42A_ARGS "Failed to initialize an object mutex");
+		}
 		__sync_val_compare_and_swap(&data->mutex_init, -1, 1);
 
 		break;
@@ -1051,7 +1054,7 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 
 	// Lock the mutex.
 	if (!O42A(pthread_mutex_lock(&data->mutex))) {
-		O42A(o42a_error_print(O42A_ARGS "Failed to lock an object mutex"));
+		o42a_error_print(O42A_ARGS "Failed to lock an object mutex");
 	}
 
 	O42A_RETURN;
@@ -1060,9 +1063,39 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 void o42a_obj_unlock(O42A_PARAMS o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
 	if (O42A(pthread_mutex_unlock(&data->mutex))) {
-		O42A(o42a_error_print(
+		o42a_error_print(
 				O42A_ARGS
-				"Current thread does not own an object mutex"));
+				"Current thread does not own an object mutex");
+	}
+	O42A_RETURN;
+}
+
+void o42a_obj_wait(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	if (O42A(pthread_cond_wait(&data->thread_cond, &data->mutex))) {
+		o42a_error_print(
+				O42A_ARGS
+				"Current thread does not own an object mutex");
+	}
+	O42A_RETURN;
+}
+
+void o42a_obj_signal(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	if (O42A(pthread_cond_signal(&data->thread_cond))) {
+		o42a_error_print(
+				O42A_ARGS
+				"Failed to send signal to an object condition waiter");
+	}
+	O42A_RETURN;
+}
+
+void o42a_obj_broadcast(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	if (O42A(pthread_cond_broadcast(&data->thread_cond))) {
+		o42a_error_print(
+				O42A_ARGS
+				"Failed to broadcast signal to an object condition waiters");
 	}
 	O42A_RETURN;
 }
