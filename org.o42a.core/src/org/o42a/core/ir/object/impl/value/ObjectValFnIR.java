@@ -30,68 +30,29 @@ import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.impl.ObjectFnIR;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Def;
 import org.o42a.core.object.def.Defs;
-import org.o42a.core.object.def.SourceInfo;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefValue;
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
-public abstract class ObjectValFnIR extends ObjectFnIR
-		implements FunctionBuilder<ObjectValFunc> {
-
-	private final ObjectValueIR valueIR;
-	private final CodeId id;
-	private FuncPtr<ObjectValFunc> funcPtr;
-	private FuncRec<ObjectValFunc> func;
-	private byte reused;
-	private DefValue constant;
-	private DefValue finalValue;
+public abstract class ObjectValFnIR
+		extends AbstractObjectValFnIR<ObjectValFunc> {
 
 	ObjectValFnIR(ObjectValueIR valueIR) {
-		super(valueIR.getObjectIR());
-		this.valueIR = valueIR;
-		this.id = getObjectIR().getId().setLocal(
-				getGenerator().id().detail(suffix()));
-	}
-
-	public final ObjectValueIR getValueIR() {
-		return this.valueIR;
-	}
-
-	public final CodeId getId() {
-		return this.id;
-	}
-
-	public final boolean isReused() {
-		return this.reused > 0;
-	}
-
-	public final boolean isStub() {
-		return this.reused == 2;
-	}
-
-	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getObject().value().getValueStruct();
+		super(valueIR);
 	}
 
 	public abstract ObjectValuePart part();
@@ -102,100 +63,6 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 
 	public final boolean isClaim() {
 		return part().isClaim();
-	}
-
-	public final FuncPtr<ObjectValFunc> get() {
-
-		final FuncPtr<ObjectValFunc> ptr = getNotStub();
-
-		assert ptr != null :
-			"Attempt to call a stub function: " + this;
-
-		return this.funcPtr;
-	}
-
-	public final FuncPtr<ObjectValFunc> getNotStub() {
-		if (this.funcPtr == null) {
-			create();
-		}
-
-		assert this.funcPtr != null :
-			"Can't call " + this;
-
-		return isStub() ? null : this.funcPtr;
-	}
-
-	public final DefValue getConstant() {
-		if (this.constant != null) {
-			return this.constant;
-		}
-		return this.constant = determineConstant();
-	}
-
-	public final DefValue getFinal() {
-		if (this.finalValue != null) {
-			return this.finalValue;
-		}
-
-		final DefValue constant = getConstant();
-
-		if (isConstantValue(constant)) {
-			return this.finalValue = constant;
-		}
-
-		return this.finalValue = determineFinal();
-	}
-
-	public void call(DefDirs dirs, ObjOp host, ObjectOp body) {
-
-		final DefDirs subDirs = dirs.begin(
-				null,
-				"Calculate " + suffix() + " of " + getObjectIR().getId());
-		final Block code = subDirs.code();
-
-		if (body != null) {
-			code.dumpName("For: ", body);
-		}
-
-		final DefValue finalValue = getFinal();
-
-		if (!writeIfConstant(subDirs, finalValue)) {
-
-			final ObjectValFunc func = get(host).op(code.id(suffix()), code);
-
-			func.call(subDirs, objectArg(code, host, body));
-		}
-
-		subDirs.done();
-	}
-
-	public void allocate(ObjectTypeIR typeIR) {
-		this.func = func(typeIR.getObjectData());
-		if (this.funcPtr == null) {
-			create();
-		}
-		this.func.setConstant(true).setValue(this.funcPtr);
-	}
-
-	public final FuncPtr<ObjectValFunc> get(ObjOp host) {
-
-		final ObjectIR objectIR = host.getAscendant().ir(getGenerator());
-		final ObjectTypeIR typeIR =
-				objectIR.getBodyType().getObjectIR().getTypeIR();
-		final ObjectIRData data = typeIR.getObjectData();
-
-		return func(data).getValue().get();
-	}
-
-	public int addSources(SourceInfo[] destination, SourceInfo[] sources) {
-
-		int size = 0;
-
-		for (SourceInfo def : sources) {
-			size = addSource(destination, size, def);
-		}
-
-		return size;
 	}
 
 	@Override
@@ -245,18 +112,6 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 	}
 
 	@Override
-	public DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
-		if (isReused()) {
-			return body != null ? body.toData(null, code) : host.toData(null, code);
-		}
-		return super.objectArg(code, host, body);
-	}
-
-	@Override
-	public String toString() {
-		return getId().toString();
-	}
-
 	protected DefValue determineConstant() {
 
 		final DefValue constant = defs().getConstant();
@@ -273,6 +128,7 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 		return RUNTIME_DEF_VALUE;
 	}
 
+	@Override
 	protected DefValue determineFinal() {
 		if (!canStub()) {
 			return RUNTIME_DEF_VALUE;
@@ -281,6 +137,7 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 				getObject().getScope().dummyResolver());
 	}
 
+	@Override
 	protected void create() {
 		if (canStub() && !getObject().value().isUsed(
 				getGenerator().getAnalyzer(),
@@ -322,25 +179,6 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 		}
 		return !part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS);
 	}
-
-	protected abstract String suffix();
-
-	protected final void set(Function<ObjectValFunc> function) {
-		this.funcPtr = function.getPointer();
-		this.reused = -1;
-	}
-
-	protected final void reuse(FuncPtr<ObjectValFunc> ptr) {
-		this.funcPtr = ptr;
-		this.reused = 1;
-	}
-
-	protected final void stub(FuncPtr<ObjectValFunc> ptr) {
-		this.funcPtr = ptr;
-		this.reused = 2;
-	}
-
-	protected abstract FuncRec<ObjectValFunc> func(ObjectIRData data);
 
 	protected void reuse() {
 
@@ -416,6 +254,11 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 		writeExplicitDefs(dirs, host, collector);
 	}
 
+	@Override
+	protected void call(DefDirs subDirs, ObjectValFunc func, DataOp objectArg) {
+		func.call(subDirs, objectArg);
+	}
+
 	final FuncPtr<ObjectValFunc> falseValFunc() {
 		return getGenerator()
 				.externalFunction()
@@ -438,79 +281,6 @@ public abstract class ObjectValFnIR extends ObjectFnIR
 		return getGenerator()
 				.externalFunction()
 				.link("o42a_obj_val_stub", OBJECT_VAL);
-	}
-
-	static boolean isConstantValue(DefValue value) {
-		if (!value.getCondition().isConstant()) {
-			return false;
-		}
-		if (!value.hasValue()) {
-			return true;
-		}
-		return value.getValue().getKnowledge().isKnown();
-	}
-
-	private int addSource(SourceInfo[] destination, int at, SourceInfo source) {
-
-		final Obj src = source.getSource();
-
-		if (src == getObjectIR().getObject()) {
-			// explicit definition - add unconditionally
-			destination[at] = source;
-			return at + 1;
-		}
-
-		final ObjectType srcType = src.type();
-
-		for (int i = 0; i < at; ++i) {
-
-			final SourceInfo dest = destination[i];
-
-			if (dest == null) {
-				continue;
-			}
-
-			final ObjectType destType = dest.getSource().type();
-
-			if (destType.derivedFrom(srcType)) {
-				// definition will be generated by derived definition
-				return at;
-			}
-			if (destType.derivedFrom(srcType)) {
-				// new definition generates ascending one
-				destination[i] = null;
-			}
-		}
-
-		destination[at] = source;
-
-		return at + 1;
-	}
-
-	private boolean writeIfConstant(DefDirs dirs, DefValue value) {
-		if (!isConstantValue(value)) {
-			return false;
-		}
-
-		final Block code = dirs.code();
-
-		code.debug(suffix() + " = " + value.valueString());
-
-		if (value.getCondition().isFalse()) {
-			code.go(dirs.falseDir());
-			return true;
-		}
-		if (!value.hasValue()) {
-			return true;
-		}
-
-		final ValOp result =
-				value.getValue().op(dirs.getBuilder(), code);
-
-		result.go(code, dirs);
-		dirs.returnValue(result);
-
-		return true;
 	}
 
 	private void writeExplicitDefs(

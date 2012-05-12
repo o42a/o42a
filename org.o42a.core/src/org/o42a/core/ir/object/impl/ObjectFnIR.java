@@ -58,7 +58,8 @@ public abstract class ObjectFnIR {
 		final ObjectIR objectIR = getObjectIR();
 
 		if (!objectIR.isExact()) {
-			return body != null ? body.toData(null, code) : host.toData(null, code);
+			return body != null
+					? body.toData(null, code) : host.toData(null, code);
 		}
 
 		assert body == null :
