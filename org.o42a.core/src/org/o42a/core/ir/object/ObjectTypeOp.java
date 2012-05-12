@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.object.impl.value.ObjectValueFunc;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.Obj;
@@ -71,13 +72,14 @@ public final class ObjectTypeOp extends IROp {
 				.op(null, this, type);
 	}
 
-	public final void writeValue(DefDirs dirs, ObjectOp body) {
+	public final void writeValue(DefDirs dirs) {
 
 		final Code code = dirs.code();
-		final ObjectValFunc function =
+		final ObjectValueFunc function =
 				ptr().data(code).valueFunc(code).load(null, code);
+		final ObjectIRData.Op data = ptr().data(code);
 
-		function.call(dirs, body(code, body));
+		function.call(dirs, data, data.loadObject(code));
 	}
 
 	public final void writeClaim(DefDirs dirs, ObjectOp body) {

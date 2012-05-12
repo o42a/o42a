@@ -27,15 +27,14 @@ import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
-import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.Function;
-import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
@@ -48,10 +47,10 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefValue;
 
 
-public abstract class ObjectValFnIR
-		extends AbstractObjectValFnIR<ObjectValFunc> {
+public abstract class ObjectValuePartFnIR
+		extends AbstractObjectValueFnIR<ObjectValFunc> {
 
-	ObjectValFnIR(ObjectValueIR valueIR) {
+	ObjectValuePartFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
@@ -63,6 +62,29 @@ public abstract class ObjectValFnIR
 
 	public final boolean isClaim() {
 		return part().isClaim();
+	}
+
+	public final void call(DefDirs dirs, ObjOp host, ObjectOp body) {
+
+		final DefDirs subDirs = dirs.begin(
+				null,
+				"Calculate " + suffix() + " of " + getObjectIR().getId());
+		final Block code = subDirs.code();
+
+		if (body != null) {
+			code.dumpName("For: ", body);
+		}
+
+		final DefValue finalValue = getFinal();
+
+		if (!writeIfConstant(subDirs, finalValue)) {
+
+			final ObjectValFunc func = get(host).op(code.id(suffix()), code);
+
+			func.call(subDirs, objectArg(code, host, body));
+		}
+
+		subDirs.done();
 	}
 
 	@Override
@@ -138,39 +160,11 @@ public abstract class ObjectValFnIR
 	}
 
 	@Override
-	protected void create() {
-		if (canStub() && !getObject().value().isUsed(
-				getGenerator().getAnalyzer(),
-				ALL_VALUE_USAGES)) {
-			stub(stubFunc());
-			return;
-		}
-
-		final DefValue finalValue = getFinal();
-
-		if (isConstantValue(finalValue)) {
-			if (!finalValue.hasValue()) {
-				if (finalValue.getCondition().isTrue()) {
-					reuse(unknownValFunc());
-				} else {
-					reuse(falseValFunc());
-				}
-				return;
-			}
-			if (getValueStruct().isVoid()) {
-				reuse(voidValFunc());
-				return;
-			}
-		}
-
-		reuse();
-		if (isReused()) {
-			return;
-		}
-
-		set(getGenerator().newFunction().create(getId(), OBJECT_VAL, this));
+	protected ObjectSignature<ObjectValFunc> signature() {
+		return OBJECT_VAL;
 	}
 
+	@Override
 	protected boolean canStub() {
 		if (getObject().type().derivation().isUsed(
 				getGenerator().getAnalyzer(),
@@ -180,6 +174,35 @@ public abstract class ObjectValFnIR
 		return !part().isUsed(getGenerator().getAnalyzer(), VALUE_PART_ACCESS);
 	}
 
+	@Override
+	protected final FuncPtr<ObjectValFunc> stubFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_stub", OBJECT_VAL);
+	}
+
+	@Override
+	protected final FuncPtr<ObjectValFunc> unknownValFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_unknown", OBJECT_VAL);
+	}
+
+	@Override
+	protected final FuncPtr<ObjectValFunc> falseValFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_false", OBJECT_VAL);
+	}
+
+	@Override
+	protected final FuncPtr<ObjectValFunc> voidValFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_val_void", OBJECT_VAL);
+	}
+
+	@Override
 	protected void reuse() {
 
 		final ObjectType type = getObject().type();
@@ -252,35 +275,6 @@ public abstract class ObjectValFnIR
 		}
 
 		writeExplicitDefs(dirs, host, collector);
-	}
-
-	@Override
-	protected void call(DefDirs subDirs, ObjectValFunc func, DataOp objectArg) {
-		func.call(subDirs, objectArg);
-	}
-
-	final FuncPtr<ObjectValFunc> falseValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_val_false", OBJECT_VAL);
-	}
-
-	final FuncPtr<ObjectValFunc> voidValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_val_void", OBJECT_VAL);
-	}
-
-	final FuncPtr<ObjectValFunc> unknownValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_val_unknown", OBJECT_VAL);
-	}
-
-	final FuncPtr<ObjectValFunc> stubFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_val_stub", OBJECT_VAL);
 	}
 
 	private void writeExplicitDefs(

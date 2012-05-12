@@ -101,7 +101,7 @@ public abstract class ValueOp {
 		value.go(definite, dirs);
 		definite.go(code.tail());
 
-		evaluateAndStoreValue(indefinite, value, dirs.falseDir());
+		evaluateValue(indefinite, value, dirs.falseDir());
 
 		indefinite.dump(this + " value calculated: ", value);
 		indefinite.go(code.tail());
@@ -118,25 +118,14 @@ public abstract class ValueOp {
 
 	protected abstract ValOp write(ValDirs dirs);
 
-	private void evaluateAndStoreValue(
-			Block code,
-			ValOp value,
-			CodePos falseDir) {
+	private void evaluateValue(Block code, ValOp value, CodePos falseDir) {
 
-		final Block falseCode = code.addBlock("eval_false");
-		final ValDirs dirs =
-				getBuilder().dirs(code, falseCode.head()).value(value);
+		final ValDirs dirs = getBuilder().dirs(code, falseDir).value(value);
 
 		value.setStoreMode(INITIAL_VAL_STORE);
 		write(dirs);
-
 		dirs.done();
 		value.setStoreMode(ASSIGNMENT_VAL_STORE);
-
-		if (falseCode.exists()) {
-			value.storeFalse(falseCode);
-			falseCode.go(falseDir);
-		}
 	}
 
 }

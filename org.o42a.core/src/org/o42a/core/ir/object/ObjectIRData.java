@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
+import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
@@ -34,6 +35,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.core.ir.object.impl.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValType;
@@ -56,7 +58,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private RelRec start;
 	private Int16rec flags;
 	private ValType value;
-	private FuncRec<ObjectValFunc> valueFunc;
+	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private StructRec<ObjectIRType.Op> ancestorType;
@@ -87,7 +89,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.value;
 	}
 
-	public final FuncRec<ObjectValFunc> valueFunc() {
+	public final FuncRec<ObjectValueFunc> valueFunc() {
 		return this.valueFunc;
 	}
 
@@ -135,7 +137,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
 		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
-		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VAL);
+		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
 		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
@@ -186,7 +188,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 			return struct(null, code, getType().value());
 		}
 
-		public final FuncOp<ObjectValFunc> valueFunc(Code code) {
+		public final FuncOp<ObjectValueFunc> valueFunc(Code code) {
 			return func(null, code, getType().valueFunc());
 		}
 

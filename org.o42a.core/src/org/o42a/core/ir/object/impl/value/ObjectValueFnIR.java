@@ -19,28 +19,108 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectValueIR;
-import org.o42a.core.ir.value.ObjectValFunc;
-import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
 
 
-public final class ObjectValueFnIR extends ObjectValFnIR {
+public final class ObjectValueFnIR
+		extends AbstractObjectValueFnIR<ObjectValueFunc> {
 
 	public ObjectValueFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
+	public final void call(DefDirs dirs, ObjOp host) {
+
+		final DefDirs subDirs = dirs.begin(
+				null,
+				"Calculate value of " + getObjectIR().getId());
+		final Block code = subDirs.code();
+
+		final DefValue finalValue = getFinal();
+
+		if (!writeIfConstant(subDirs, finalValue)) {
+
+			final ObjectValueFunc func = get(host).op(code.id(suffix()), code);
+
+			func.call(subDirs, getObjectIR().isExact() ? null : host);
+		}
+
+		subDirs.done();
+	}
+
 	@Override
-	public final ObjectValuePart part() {
-		return null;
+	public void build(Function<ObjectValueFunc> function) {
+		if (isReused()) {
+			return;
+		}
+
+		function.debug("Calculating value");
+
+		final Block failure = function.addBlock("failure");
+		final Block done = function.addBlock("done");
+		final ObjBuilder builder = new ObjBuilder(
+				function,
+				failure.head(),
+				getObjectIR().getMainBodyIR(),
+				getObjectIR().getObject(),
+				getObjectIR().isExact() ? EXACT : DERIVED);
+
+		final ValOp result =
+				function.arg(function, OBJECT_VALUE.value())
+				.op(builder, getValueStruct())
+				.setStoreMode(INITIAL_VAL_STORE);
+		final ObjOp host = builder.host();
+		/*final ObjectIRData.Op data;
+
+		if (getObjectIR().isExact()) {
+			data =
+					getObjectIR()
+					.getTypeIR()
+					.getObjectData()
+					.pointer(getGenerator())
+					.op(function.id("data"), function);
+		} else {
+			data = function.arg(function, OBJECT_VALUE.data());
+		}*/
+
+		final DefDirs dirs =
+				builder.dirs(function, failure.head())
+				.value(result)
+				.def(done.head());
+
+		dirs.code().dumpName("Host: ", host);
+		getValueIR().writeClaim(dirs, host, null);
+		getValueIR().writeProposition(dirs, host, null);
+
+		final Block code = dirs.done().code();
+
+		if (code.exists()) {
+			code.debug("Indefinite");
+			code.returnVoid();
+		}
+		if (failure.exists()) {
+			failure.debug("False");
+			result.storeFalse(failure);
+			failure.returnVoid();
+		}
+		if (done.exists()) {
+			result.store(done, dirs.result());
+			done.returnVoid();
+		}
 	}
 
 	@Override
@@ -49,7 +129,7 @@ public final class ObjectValueFnIR extends ObjectValFnIR {
 	}
 
 	@Override
-	protected FuncRec<ObjectValFunc> func(ObjectIRData data) {
+	protected FuncRec<ObjectValueFunc> func(ObjectIRData data) {
 		return data.valueFunc();
 	}
 
@@ -78,6 +158,11 @@ public final class ObjectValueFnIR extends ObjectValFnIR {
 	}
 
 	@Override
+	protected ObjectSignature<ObjectValueFunc> signature() {
+		return OBJECT_VALUE;
+	}
+
+	@Override
 	protected boolean canStub() {
 		return getValueIR().claim().canStub()
 				&& getValueIR().proposition().canStub()
@@ -87,37 +172,33 @@ public final class ObjectValueFnIR extends ObjectValFnIR {
 	}
 
 	@Override
-	protected void reuse() {
-
-		final ObjectValueIR valueIR = getValueIR();
-		final FuncPtr<ObjectValFunc> reused;
-		final ObjectClaimFnIR claim = valueIR.claim();
-		final DefValue finalClaim = claim.getFinal();
-
-		if (isConstantValue(finalClaim)) {
-			if (finalClaim.getCondition().isFalse()) {
-				reuse(falseValFunc());
-				return;
-			}
-			reused = valueIR.proposition().getNotStub();
-			if (reused != null) {
-				reuse(reused);
-			}
-			return;
-		}
-		if (!isConstantValue(valueIR.proposition().getFinal())) {
-			return;
-		}
-		reused = claim.getNotStub();
-		if (reused != null) {
-			reuse(reused);
-		}
+	protected FuncPtr<ObjectValueFunc> stubFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_stub", OBJECT_VALUE);
 	}
 
 	@Override
-	protected void build(DefDirs dirs, ObjOp host) {
-		getValueIR().writeClaim(dirs, host, null);
-		getValueIR().writeProposition(dirs, host, null);
+	protected FuncPtr<ObjectValueFunc> unknownValFunc() {
+		return falseValFunc();
+	}
+
+	@Override
+	protected FuncPtr<ObjectValueFunc> falseValFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_false", OBJECT_VALUE);
+	}
+
+	@Override
+	protected FuncPtr<ObjectValueFunc> voidValFunc() {
+		return getGenerator()
+				.externalFunction()
+				.link("o42a_obj_value_void", OBJECT_VALUE);
+	}
+
+	@Override
+	protected void reuse() {
 	}
 
 }
