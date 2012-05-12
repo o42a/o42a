@@ -100,14 +100,14 @@ clean :
 $(release_so_lib) : $(subst .o,.rel.o,$(objects))
 $(release_so_lib) :
 	mkdir -p $(target_dir)
-	$(LD) $(LDFLAGS) -shared -soname=$(so_name) -o $@ $+
+	$(CC) $(LDFLAGS) -pthread -shared -Wl,-soname=$(so_name) -o $@ $+
 
 # Build debug shared library.
 $(debug_so_lib) : $(srcdir)/debug.o
 $(debug_so_lib) : $(subst .o,.dbg.o,$(objects))
 $(debug_so_lib) :
 	mkdir -p $(target_dir)
-	$(LD) $(LDFLAGS) -shared -soname=$(debug_so_name) -o $@ $+
+	$(CC) $(LDFLAGS) -pthread -shared -Wl,-soname=$(debug_so_name) -o $@ $+
 
 
 # Compile individual files.

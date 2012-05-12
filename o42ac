@@ -63,7 +63,7 @@ call_o42ac () {
 
 o42ac_args=()
 vm_args=(-Djava.library.path="${JAVA_LIBRARY_PATH}")
-cc_args=(-Xlinker --no-undefined)
+cc_args=(-pthread -Wl,--no-undefined)
 append_arg="o42ac"
 follows=""
 format=""
