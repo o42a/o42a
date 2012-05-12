@@ -22,6 +22,9 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.object.impl.value.PredefObjValue.FALSE_OBJ_VALUE;
+import static org.o42a.core.ir.object.impl.value.PredefObjValue.STUB_OBJ_VALUE;
+import static org.o42a.core.ir.object.impl.value.PredefObjValue.VOID_OBJ_VALUE;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
@@ -173,9 +176,9 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> stubFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_stub", OBJECT_VALUE);
+		return STUB_OBJ_VALUE.get(
+				getObject().getContext(),
+				getGenerator());
 	}
 
 	@Override
@@ -185,16 +188,16 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> falseValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_false", OBJECT_VALUE);
+		return FALSE_OBJ_VALUE.get(
+				getObject().getContext(),
+				getGenerator());
 	}
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> voidValFunc() {
-		return getGenerator()
-				.externalFunction()
-				.link("o42a_obj_value_void", OBJECT_VALUE);
+		return VOID_OBJ_VALUE.get(
+				getObject().getContext(),
+				getGenerator());
 	}
 
 	@Override

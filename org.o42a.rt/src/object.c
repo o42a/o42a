@@ -989,38 +989,6 @@ void o42a_obj_val_stub(
 }
 
 
-void o42a_obj_value_false(
-		O42A_PARAMS
-		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
-	O42A_ENTER(return);
-	result->flags = O42A_FALSE;
-	O42A_RETURN;
-}
-
-void o42a_obj_value_void(
-		O42A_PARAMS
-		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
-	O42A_ENTER(return);
-	result->flags = O42A_TRUE;
-	O42A_RETURN;
-}
-
-void o42a_obj_value_stub(
-		O42A_PARAMS
-		o42a_val_t *const result,
-		o42a_obj_data_t *const data,
-		o42a_obj_t *const object) {
-	O42A_ENTER(return);
-	o42a_error_print(O42A_ARGS "Object value stub invoked");
-	result->flags = O42A_FALSE;
-	O42A_RETURN;
-}
-
-
 o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;

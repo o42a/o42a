@@ -745,34 +745,6 @@ void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
 
 
 /**
- * False object value.
- */
-void o42a_obj_value_false(
-		O42A_DECLS
-		o42a_val_t *,
-		o42a_obj_data_t *,
-		o42a_obj_t *);
-
-/**
- * Void object value.
- */
-void o42a_obj_value_void(
-		O42A_DECLS
-		o42a_val_t *,
-		o42a_obj_data_t *,
-		o42a_obj_t *);
-
-/**
- * Object value evaluation stub.
- */
-void o42a_obj_value_stub(
-		O42A_DECLS
-		o42a_val_t *,
-		o42a_obj_data_t *,
-		o42a_obj_t *);
-
-
-/**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.
