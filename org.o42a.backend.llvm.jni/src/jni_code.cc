@@ -117,60 +117,16 @@ jlong Java_org_o42a_backend_llvm_code_LLCode_choose(
 	return to_instr_ptr(builder.CreateCondBr(condition, trueBlock, falseBlock));
 }
 
-jlong Java_org_o42a_backend_llvm_code_LLCode_int8(
+jlong Java_org_o42a_backend_llvm_code_LLCode_integer(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jbyte value) {
+		jlong value,
+		jint numBits) {
 
 	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
 	Constant *result = ConstantInt::get(
-			Type::getInt8Ty(module->getContext()),
-			value,
-			true);
-
-	return to_ptr<Value>(result);
-}
-
-jlong Java_org_o42a_backend_llvm_code_LLCode_int16(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jshort value) {
-
-	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
-	Constant *result = ConstantInt::get(
-			Type::getInt16Ty(module->getContext()),
-			value,
-			true);
-
-	return to_ptr<Value>(result);
-}
-
-jlong Java_org_o42a_backend_llvm_code_LLCode_int32(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jint value) {
-
-	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
-	Constant *result = ConstantInt::get(
-			Type::getInt32Ty(module->getContext()),
-			value,
-			true);
-
-	return to_ptr<Value>(result);
-}
-
-jlong Java_org_o42a_backend_llvm_code_LLCode_int64(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jlong value) {
-
-	o42ac::BackendModule *module = from_ptr<o42ac::BackendModule>(modulePtr);
-	Constant *result = ConstantInt::get(
-			Type::getInt64Ty(module->getContext()),
+			IntegerType::get(module->getContext(), numBits),
 			value,
 			true);
 

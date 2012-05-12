@@ -167,14 +167,14 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateInt(
 		jclass,
 		jlong modulePtr,
 		jlong enclosingPtr,
-		jshort intBits) {
+		jint numBits) {
 
 	o42ac::BackendModule *const module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
 	std::vector<const Type*> *enclosing =
 			from_ptr<std::vector<const Type*> >(enclosingPtr);
 
-	enclosing->push_back(IntegerType::get(module->getContext(), intBits));
+	enclosing->push_back(IntegerType::get(module->getContext(), numBits));
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp32(
@@ -271,7 +271,7 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_intLayout(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jbyte intBits) {
+		jint intBits) {
 
 	const o42ac::BackendModule *module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
@@ -380,67 +380,17 @@ jlong Java_org_o42a_backend_llvm_data_LLVMDataWriter_createStruct(
 	return to_ptr<std::vector<Constant*> >(result);
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt8(
+void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr,
 		jlong structPtr,
-		jbyte value) {
+		jlong value,
+		jint numBits) {
 
 	o42ac::BackendModule *const module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
-	IntegerType *type = IntegerType::getInt8Ty(module->getContext());
-	std::vector<Constant*> *data =
-			from_ptr<std::vector<Constant*> >(structPtr);
-	ConstantInt *result = ConstantInt::getSigned(type, value);
-
-	data->push_back(result);
-}
-
-void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt16(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jlong structPtr,
-		jshort value) {
-
-	o42ac::BackendModule *const module =
-			from_ptr<o42ac::BackendModule>(modulePtr);
-	IntegerType *type = IntegerType::getInt16Ty(module->getContext());
-	std::vector<Constant*> *data =
-			from_ptr<std::vector<Constant*> >(structPtr);
-	ConstantInt *result = ConstantInt::getSigned(type, value);
-
-	data->push_back(result);
-}
-
-void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt32(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jlong structPtr,
-		jint value) {
-
-	o42ac::BackendModule *const module =
-			from_ptr<o42ac::BackendModule>(modulePtr);
-	IntegerType *type = IntegerType::getInt32Ty(module->getContext());
-	std::vector<Constant*> *data =
-			from_ptr<std::vector<Constant*> >(structPtr);
-	ConstantInt *result = ConstantInt::getSigned(type, value);
-
-	data->push_back(result);
-}
-
-void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeInt64(
-		JNIEnv *,
-		jclass,
-		jlong modulePtr,
-		jlong structPtr,
-		jlong value) {
-
-	o42ac::BackendModule *const module =
-			from_ptr<o42ac::BackendModule>(modulePtr);
-	IntegerType* type = Type::getInt64Ty(module->getContext());
+	IntegerType* type = IntegerType::get(module->getContext(), numBits);
 	std::vector<Constant*> *data =
 			from_ptr<std::vector<Constant*> >(structPtr);
 	ConstantInt *result = ConstantInt::getSigned(type, value);

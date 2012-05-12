@@ -49,35 +49,11 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_choose
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
- * Method:    int8
- * Signature: (JB)J
+ * Method:    integer
+ * Signature: (JJI)J
  */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_int8
-  (JNIEnv *, jclass, jlong, jbyte);
-
-/*
- * Class:     org_o42a_backend_llvm_code_LLCode
- * Method:    int16
- * Signature: (JS)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_int16
-  (JNIEnv *, jclass, jlong, jshort);
-
-/*
- * Class:     org_o42a_backend_llvm_code_LLCode
- * Method:    int32
- * Signature: (JI)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_int32
-  (JNIEnv *, jclass, jlong, jint);
-
-/*
- * Class:     org_o42a_backend_llvm_code_LLCode
- * Method:    int64
- * Signature: (JJ)J
- */
-JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_int64
-  (JNIEnv *, jclass, jlong, jlong);
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_LLCode_integer
+  (JNIEnv *, jclass, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_LLCode
