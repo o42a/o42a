@@ -32,9 +32,9 @@ import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.st.DefValue;
 
 
-public final class ObjectValueFunc extends ObjectValueIRFunc {
+public final class ObjectValueFnIR extends ObjectValFnIR {
 
-	public ObjectValueFunc(ObjectValueIR valueIR) {
+	public ObjectValueFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
 	}
 
@@ -91,7 +91,7 @@ public final class ObjectValueFunc extends ObjectValueIRFunc {
 
 		final ObjectValueIR valueIR = getValueIR();
 		final FuncPtr<ObjectValFunc> reused;
-		final ObjectClaimFunc claim = valueIR.claim();
+		final ObjectClaimFnIR claim = valueIR.claim();
 		final DefValue finalClaim = claim.getFinal();
 
 		if (isConstantValue(finalClaim)) {

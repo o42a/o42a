@@ -23,14 +23,14 @@ import org.o42a.codegen.Generator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.local.LocalIR;
-import org.o42a.core.ir.object.impl.LocalIRFunc;
+import org.o42a.core.ir.object.impl.LocalFnIR;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Command;
 
 
 public abstract class ObjectLocalIR extends ScopeIR {
 
-	private final LocalIRFunc function;
+	private final LocalFnIR function;
 
 	public ObjectLocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
@@ -39,7 +39,7 @@ public abstract class ObjectLocalIR extends ScopeIR {
 		final ObjectValueIR ownerValueIR =
 				localIR.getOwnerIR().getObjectValueIR();
 
-		this.function = new LocalIRFunc(localIR, ownerValueIR.getLocals());
+		this.function = new LocalFnIR(localIR, ownerValueIR.getLocals());
 	}
 
 	public void write(

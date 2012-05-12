@@ -29,11 +29,11 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Definitions;
 
 
-public abstract class ObjectIRFunc {
+public abstract class ObjectFnIR {
 
 	private final ObjectIR objectIR;
 
-	public ObjectIRFunc(ObjectIR objectIR) {
+	public ObjectFnIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 	}
 
