@@ -128,28 +128,44 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeInt8(
 			DataAllocation<Int8recOp> destination,
 			Getter<Byte> value) {
-		writeInt8(getModule().getNativePtr(), getStructPtr(), value.get());
+		writeInt(
+				getModule().getNativePtr(),
+				getStructPtr(),
+				value.get(),
+				8);
 	}
 
 	@Override
 	public void writeInt16(
 			DataAllocation<Int16recOp> destination,
 			Getter<Short> value) {
-		writeInt16(getModule().getNativePtr(), getStructPtr(), value.get());
+		writeInt(
+				getModule().getNativePtr(),
+				getStructPtr(),
+				value.get(),
+				16);
 	}
 
 	@Override
 	public void writeInt32(
 			DataAllocation<Int32recOp> destination,
 			Getter<Integer> value) {
-		writeInt32(getModule().getNativePtr(), getStructPtr(), value.get());
+		writeInt(
+				getModule().getNativePtr(),
+				getStructPtr(),
+				value.get(),
+				32);
 	}
 
 	@Override
 	public void writeInt64(
 			DataAllocation<Int64recOp> destination,
 			Getter<Long> value) {
-		writeInt64(getModule().getNativePtr(), getStructPtr(), value.get());
+		writeInt(
+				getModule().getNativePtr(),
+				getStructPtr(),
+				value.get(),
+				64);
 	}
 
 	@Override
@@ -237,25 +253,11 @@ public class LLVMDataWriter implements DataWriter {
 
 	private static native long createStruct(int size);
 
-	private static native void writeInt8(
+	private static native void writeInt(
 			long modulePtr,
 			long structPtr,
-			byte value);
-
-	private static native void writeInt16(
-			long modulePtr,
-			long structPtr,
-			short value);
-
-	private static native void writeInt32(
-			long modulePtr,
-			long structPtr,
-			int value);
-
-	private static native void writeInt64(
-			long modulePtr,
-			long structPtr,
-			long value);
+			long value,
+			int numBits);
 
 	private static native void writePtrAsInt64(
 			long modulePtr,

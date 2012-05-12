@@ -372,7 +372,9 @@ public class LLVMDataAllocator implements DataAllocator {
 					llvmStruct.getTypePtr());
 		}
 
-		return new StructRecLLDAlloc<S>(container(enclosing), llvmStruct.getType());
+		return new StructRecLLDAlloc<S>(
+				container(enclosing),
+				llvmStruct.getType());
 	}
 
 	@Override
@@ -381,7 +383,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			RelRec data,
 			DataAllocation<RelRecOp> type) {
 		if (allocate(enclosing)) {
-			allocateRelPtr(getModulePtr(), typeDataPtr(enclosing));
+			allocateInt(getModulePtr(), typeDataPtr(enclosing), 32);
 		}
 		return new RelRecLLDAlloc(container(enclosing));
 	}
@@ -391,7 +393,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int8layout;
 		}
 		return this.int8layout =
-				new DataLayout(intLayout(getModulePtr(), (byte) 8));
+				new DataLayout(intLayout(getModulePtr(), 8));
 	}
 
 	public final DataLayout int16layout() {
@@ -399,7 +401,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int16layout;
 		}
 		return this.int16layout =
-				new DataLayout(intLayout(getModulePtr(), (byte) 16));
+				new DataLayout(intLayout(getModulePtr(), 16));
 	}
 
 	public final DataLayout int32layout() {
@@ -407,7 +409,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int32layout;
 		}
 		return this.int32layout =
-				new DataLayout(intLayout(getModulePtr(), (byte) 32));
+				new DataLayout(intLayout(getModulePtr(), 32));
 	}
 
 	public final DataLayout int64layout() {
@@ -415,7 +417,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			return this.int64layout;
 		}
 		return this.int64layout =
-				new DataLayout(intLayout(getModulePtr(), (byte) 64));
+				new DataLayout(intLayout(getModulePtr(), 64));
 	}
 
 	public final DataLayout fp32layout() {
@@ -508,7 +510,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	static native void allocateInt(
 			long modulePtr,
 			long enclosingPtr,
-			short numBits);
+			int numBits);
 
 	private static native void allocateFp32(long modulePtr, long enclosingPtr);
 
@@ -524,11 +526,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			long enclosingPtr,
 			long typePtr);
 
-	private static native void allocateRelPtr(
-			long modulePtr,
-			long enclosingPtr);
-
-	private static native int intLayout(long modulePtr, byte numBits);
+	private static native int intLayout(long modulePtr, int numBits);
 
 	private static native int fp32layout(long modulePtr);
 

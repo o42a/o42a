@@ -172,7 +172,7 @@ public abstract class LLCode implements CodeWriter {
 		return new Int8llOp(
 				code().getOpNames().opId(null),
 				nextPtr(),
-				int8(getModule().getNativePtr(), value));
+				integer(getModule().getNativePtr(), value, 8));
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public abstract class LLCode implements CodeWriter {
 		return new Int16llOp(
 				code().getOpNames().opId(null),
 				nextPtr(),
-				int16(getModule().getNativePtr(), value));
+				integer(getModule().getNativePtr(), value, 16));
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public abstract class LLCode implements CodeWriter {
 		return new Int32llOp(
 				code().getOpNames().opId(null),
 				nextPtr(),
-				int32(getModule().getNativePtr(), value));
+				integer(getModule().getNativePtr(), value, 32));
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public abstract class LLCode implements CodeWriter {
 		return new Int64llOp(
 				code().getOpNames().opId(null),
 				nextPtr(),
-				int64(getModule().getNativePtr(), value));
+				integer(getModule().getNativePtr(), value, 64));
 	}
 
 	@Override
@@ -228,7 +228,7 @@ public abstract class LLCode implements CodeWriter {
 		return new RelLLOp(
 				code().getOpNames().opId(null),
 				nextPtr(),
-				int32(getModule().getNativePtr(), 0));
+				integer(getModule().getNativePtr(), 0, 32));
 	}
 
 	@Override
@@ -422,13 +422,7 @@ public abstract class LLCode implements CodeWriter {
 			long truePtr,
 			long falsePtr);
 
-	private static native long int8(long modulePtr, byte value);
-
-	private static native long int16(long modulePtr, short value);
-
-	private static native long int32(long modulePtr, int value);
-
-	private static native long int64(long modulePtr, long value);
+	private static native long integer(long modulePtr, long value, int numBits);
 
 	private static native long fp32(long modulePtr, float value);
 
