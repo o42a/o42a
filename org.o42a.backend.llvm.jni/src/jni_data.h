@@ -9,10 +9,26 @@ extern "C" {
 #endif
 /*
  * Class:     org_o42a_backend_llvm_data_SystemTypeInfo
+ * Method:    pthreadLayout
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadLayout
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_SystemTypeInfo
  * Method:    pthreadMutexLayout
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadMutexLayout
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_SystemTypeInfo
+ * Method:    pthreadCondLayout
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCondLayout
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

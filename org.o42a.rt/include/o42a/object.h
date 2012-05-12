@@ -97,10 +97,10 @@ enum o42a_obj_type_flags {
 	/** Object is protobj_type. */
 	O42A_OBJ_PROTOTYPE = 0x4,
 
-	/** Object is VOID special object. */
+	/** Object is a VOID special object. */
 	O42A_OBJ_VOID = 0x8000,
 
-	/** Object is FALSE special object. */
+	/** Object is a FALSE special object. */
 	O42A_OBJ_FALSE = 0x4000,
 
 	/** Type flags mask inherited when constructing new instance. */
@@ -235,15 +235,45 @@ typedef struct o42a_obj_data {
 	int8_t mutex_init;
 
 	/**
+	 * This flag is set while calculating an object value.
+	 *
+	 * It is modified only together with value_thread field.
+	 */
+	int8_t value_calc;
+
+	/**
+	 * An identifier of the thread evaluating the object value.
+	 *
+	 * This value can only be  set by the thread owning an object mutex and only
+	 * together with value_calc flag.
+	 */
+	pthread_t value_thread;
+
+	/**
 	 * Object mutex.
 	 *
 	 * The mutex is valid only when mutex_init flags set. The o42a_obj_lock
-	 * function takes care of proper mutext initialization.
+	 * function takes care of proper mutex initialization.
 	 *
 	 * Use o42a_obj_lock and o42a_obj_unlock respectively to lock or unlock this
 	 * mutex.
 	 */
 	pthread_mutex_t mutex;
+
+	/**
+	 * Threading condition of object.
+	 *
+	 * Waiting on this condition is always happens when the thread owns
+	 * an object mutex.
+	 *
+	 * The o42a_obj_lock function takes care of proper thread_cond
+	 * initialization.
+	 *
+	 * Use o42a_obj_wait to start waiting on this condition, o42a_obj_signal
+	 * to unblock at least one waiting thread, or o42a_obj_broadcast to unblock
+	 * all waiting thread.
+	 */
+	pthread_cond_t thread_cond;
 
 	/** Constructed object value. */
 	o42a_val_t value;
@@ -729,10 +759,26 @@ o42a_obj_body_t *o42a_obj_constructor_stub(
 void o42a_obj_lock(O42A_DECLS o42a_obj_data_t *);
 
 /**
- * Unlocks and object mutex previously locked with o42a_obj_lock by the same
+ * Unlocks an object mutex previously locked with o42a_obj_lock by the same
  * thread.
  */
 void o42a_obj_unlock(O42A_DECLS o42a_obj_data_t *);
+
+
+/**
+ * Waits for an object condition.
+ */
+void o42a_obj_wait(O42A_DECLS o42a_obj_data_t *);
+
+/**
+ * Unblocks at least one thread waiting on an object condition.
+ */
+void o42a_obj_signal(O42A_DECLS o42a_obj_data_t *);
+
+/**
+ * Unblocks all threads waiting on an object condition.
+ */
+void o42a_obj_broadcast(O42A_DECLS o42a_obj_data_t *);
 
 
 #ifdef __cplusplus
