@@ -21,6 +21,8 @@ package org.o42a.codegen;
 
 import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 
+import java.util.HashMap;
+
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
@@ -36,6 +38,8 @@ public abstract class Generator {
 
 	private final GeneratorFunctions functions;
 	private final GeneratorGlobals globals;
+	private final HashMap<Class<?>, Object> features =
+			new HashMap<Class<?>, Object>();
 	private boolean proxied;
 
 	Generator() {
@@ -69,6 +73,16 @@ public abstract class Generator {
 
 	public final void setDebug(boolean debug) {
 		getDebug().setDebug(debug);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <T> T getFeature(Class<? extends T> featureType) {
+		return (T) this.features.get(featureType);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <T> T setFeature(Class<? extends T> featureType, T feature) {
+		return (T) this.features.put(featureType, feature);
 	}
 
 	public final CodeId id() {
