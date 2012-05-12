@@ -1031,10 +1031,10 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 	while (1) {
 
 		// Attempt to start the mutex initialization.
-		uint8_t old = __sync_val_compare_and_swap(&data->mutex_init, 0, 1);
+		int8_t old = __sync_val_compare_and_swap(&data->mutex_init, 0, -1);
 
 		if (old) {
-			if (old == 2) {
+			if (old > 0) {
 				// The mutex is initialized already.
 				break;
 			}
@@ -1044,7 +1044,7 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 
 		// Initialize the (recursive) mutex.
 		pthread_mutex_init(&data->mutex, &recursive_mutex_attr);
-		__sync_val_compare_and_swap(&data->mutex_init, 1, 2);
+		__sync_val_compare_and_swap(&data->mutex_init, -1, 1);
 
 		break;
 	}
