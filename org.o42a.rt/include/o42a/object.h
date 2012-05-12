@@ -232,7 +232,7 @@ typedef struct o42a_obj_data {
 	 *
 	 * This is set to by atomic operations and should not be accessed directly.
 	 */
-	uint8_t mutex_init;
+	int8_t mutex_init;
 
 	/**
 	 * Object mutex.
