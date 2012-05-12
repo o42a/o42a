@@ -44,7 +44,7 @@ public final class DefaultValueOp extends ValueOp {
 
 		final DefDirs defDirs = dirs.nested().def();
 
-		object().objectType(defDirs.code()).writeValue(defDirs, null);
+		object().objectType(defDirs.code()).writeValue(defDirs);
 		defDirs.done();
 
 		return defDirs.result();

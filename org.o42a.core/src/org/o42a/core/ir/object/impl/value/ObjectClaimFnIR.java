@@ -26,7 +26,7 @@ import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.value.ObjectValuePart;
 
 
-public final class ObjectClaimFnIR extends ObjectValFnIR {
+public final class ObjectClaimFnIR extends ObjectValuePartFnIR {
 
 	public ObjectClaimFnIR(ObjectValueIR valueIR) {
 		super(valueIR);

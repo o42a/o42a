@@ -20,16 +20,20 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 
 
 public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
@@ -40,27 +44,52 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectOp object) {
+	public final void call(DefDirs dirs, ObjectOp object) {
+
+		final Block code = dirs.code();
+
 		call(
-				code,
+				dirs,
 				object != null
 				? object.objectType(code).ptr().data(code) : null,
 				object);
 	}
 
-	public final void call(Code code, ObjectIRData.Op data, ObjectOp object) {
+	public final void call(
+			DefDirs dirs,
+			ObjectIRData.Op data,
+			ObjectOp object) {
+		call(
+				dirs,
+				data,
+				object != null ? object.toData(null, dirs.code()) : null);
+	}
+
+	public final void call(
+			DefDirs dirs,
+			ObjectIRData.Op data,
+			DataOp object) {
+
+		final Block code = dirs.code();
+		final ValOp value = dirs.value();
+
 		invoke(
 				null,
 				code,
 				OBJECT_VALUE.result(),
-				data,
-				object != null ? object.toData(null, code) : null);
+				value.ptr(),
+				data != null ? data : code.nullPtr(OBJECT_DATA_TYPE),
+				object != null ? object : code.nullDataPtr());
+
+		value.loadCondition(null, code).goUnless(code, dirs.falseDir());
+		dirs.returnValue(value);
 	}
 
 	public static final class ObjectValue
 			extends ObjectSignature<ObjectValueFunc> {
 
 		private Return<Void> result;
+		private Arg<ValType.Op> value;
 		private Arg<ObjectIRData.Op> data;
 		private Arg<DataOp> object;
 
@@ -69,6 +98,10 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 
 		public final Return<Void> result() {
 			return this.result;
+		}
+
+		public final Arg<ValType.Op> value() {
+			return this.value;
 		}
 
 		public final Arg<ObjectIRData.Op> data() {
@@ -93,6 +126,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
+			this.value = builder.addPtr("value", VAL_TYPE);
 			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 			this.object = builder.addData("object");
 		}

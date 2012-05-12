@@ -73,7 +73,7 @@ public class ObjectValueIR {
 		return this.proposition;
 	}
 
-	public final ObjectValFnIR value(boolean claim) {
+	public final ObjectValuePartFnIR value(boolean claim) {
 		return claim ? claim() : proposition();
 	}
 
@@ -81,8 +81,8 @@ public class ObjectValueIR {
 		return getObjectIR().op(builder, code).value();
 	}
 
-	public final void writeValue(DefDirs dirs, ObjOp host, ObjectOp body) {
-		this.value.call(dirs, host, body);
+	public final void writeValue(DefDirs dirs, ObjOp host) {
+		this.value.call(dirs, host);
 	}
 
 	public final void writeClaim(DefDirs dirs, ObjOp host, ObjectOp body) {

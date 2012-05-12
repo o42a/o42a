@@ -230,7 +230,7 @@ public final class ObjOp extends ObjectOp {
 
 			final DefDirs defDirs = dirs.nested().def();
 
-			objectValueIR().writeValue(defDirs, obj(), null);
+			objectValueIR().writeValue(defDirs, obj());
 			defDirs.done();
 
 			return defDirs.result();

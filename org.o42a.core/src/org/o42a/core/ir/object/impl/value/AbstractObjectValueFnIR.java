@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataOp;
@@ -27,13 +29,14 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.impl.ObjectFnIR;
 import org.o42a.core.ir.op.ObjectFunc;
+import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public abstract class AbstractObjectValFnIR<F extends ObjectFunc<F>>
+public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		extends ObjectFnIR
 		implements FunctionBuilder<F> {
 
@@ -45,7 +48,7 @@ public abstract class AbstractObjectValFnIR<F extends ObjectFunc<F>>
 	private DefValue constant;
 	private DefValue finalValue;
 
-	AbstractObjectValFnIR(ObjectValueIR valueIR) {
+	AbstractObjectValueFnIR(ObjectValueIR valueIR) {
 		super(valueIR.getObjectIR());
 		this.valueIR = valueIR;
 		this.id = getObjectIR().getId().setLocal(
@@ -136,30 +139,6 @@ public abstract class AbstractObjectValFnIR<F extends ObjectFunc<F>>
 		return func(data).getValue().get();
 	}
 
-	public final void call(DefDirs dirs, ObjOp host, ObjectOp body) {
-
-		final DefDirs subDirs = dirs.begin(
-				null,
-				"Calculate " + suffix() + " of " + getObjectIR().getId());
-		final Block code = subDirs.code();
-
-		if (body != null) {
-			code.dumpName("For: ", body);
-		}
-
-		final DefValue finalValue = getFinal();
-
-		if (!writeIfConstant(subDirs, finalValue)) {
-
-			final F func = get(host).op(code.id(suffix()), code);
-			final DataOp objectArg = objectArg(code, host, body);
-
-			call(subDirs, func, objectArg);
-		}
-
-		subDirs.done();
-	}
-
 	@Override
 	public final DataOp objectArg(Code code, ObjOp host, ObjectOp body) {
 		if (isReused()) {
@@ -198,7 +177,52 @@ public abstract class AbstractObjectValFnIR<F extends ObjectFunc<F>>
 		this.reused = 2;
 	}
 
-	protected abstract void create();
+	protected final void create() {
+		if (canStub() && !getObject().value().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_VALUE_USAGES)) {
+			stub(stubFunc());
+			return;
+		}
+
+		final DefValue finalValue = getFinal();
+
+		if (isConstantValue(finalValue)) {
+			if (!finalValue.hasValue()) {
+				if (finalValue.getCondition().isTrue()) {
+					reuse(unknownValFunc());
+				} else {
+					reuse(falseValFunc());
+				}
+				return;
+			}
+			if (getValueStruct().isVoid()) {
+				reuse(voidValFunc());
+				return;
+			}
+		}
+
+		reuse();
+		if (isReused()) {
+			return;
+		}
+
+		set(getGenerator().newFunction().create(getId(), signature(), this));
+	}
+
+	protected abstract ObjectSignature<F> signature();
+
+	protected abstract boolean canStub();
+
+	protected abstract FuncPtr<F> stubFunc();
+
+	protected abstract FuncPtr<F> unknownValFunc();
+
+	protected abstract FuncPtr<F> falseValFunc();
+
+	protected abstract FuncPtr<F> voidValFunc();
+
+	protected abstract void reuse();
 
 	protected boolean writeIfConstant(DefDirs dirs, DefValue value) {
 		if (!isConstantValue(value)) {
@@ -225,8 +249,6 @@ public abstract class AbstractObjectValFnIR<F extends ObjectFunc<F>>
 
 		return true;
 	}
-
-	protected abstract void call(DefDirs subDirs, F func, DataOp objectArg);
 
 	static boolean isConstantValue(DefValue value) {
 		if (!value.getCondition().isConstant()) {

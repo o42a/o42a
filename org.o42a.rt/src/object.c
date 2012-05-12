@@ -983,6 +983,38 @@ void o42a_obj_val_stub(
 		o42a_val_t *const result,
 		o42a_obj_t *const object) {
 	O42A_ENTER(return);
+	o42a_error_print(O42A_ARGS "Object value part stub invoked");
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+
+void o42a_obj_value_false(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_FALSE;
+	O42A_RETURN;
+}
+
+void o42a_obj_value_void(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
+	result->flags = O42A_TRUE;
+	O42A_RETURN;
+}
+
+void o42a_obj_value_stub(
+		O42A_PARAMS
+		o42a_val_t *const result,
+		o42a_obj_data_t *const data,
+		o42a_obj_t *const object) {
+	O42A_ENTER(return);
 	o42a_error_print(O42A_ARGS "Object value stub invoked");
 	result->flags = O42A_FALSE;
 	O42A_RETURN;
