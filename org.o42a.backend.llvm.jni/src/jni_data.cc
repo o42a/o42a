@@ -533,18 +533,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeSystemStruct(
 	StructType *type = from_ptr<StructType>(typePtr);
 	std::vector<Constant*> *enclosing =
 			from_ptr<std::vector<Constant*> >(enclosingPtr);
-	const unsigned size = type->getNumElements();
-	Constant* data[size];
 
-	for (unsigned i = 0; i < size; ++i) {
-
-		IntegerType *itemType = cast<IntegerType>(type->getTypeAtIndex(i));
-
-		data[i] = ConstantInt::get(itemType, 0);
-	}
-
-	enclosing->push_back(
-			ConstantStruct::get(type, ArrayRef<Constant*>(data, size)));
+	enclosing->push_back(Constant::getNullValue(type));
 }
 
 void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writeGlobal(
