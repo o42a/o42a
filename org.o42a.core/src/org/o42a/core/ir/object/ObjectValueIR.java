@@ -41,16 +41,16 @@ public class ObjectValueIR {
 
 	private final ObjectIR objectIR;
 	private final ObjectIRLocals locals;
-	private final ObjectValueFunc value;
-	private final ObjectClaimFunc claim;
-	private final ObjectPropositionFunc proposition;
+	private final ObjectValueFnIR value;
+	private final ObjectClaimFnIR claim;
+	private final ObjectPropositionFnIR proposition;
 
 	protected ObjectValueIR(ObjectIR objectIR) {
 		this.objectIR = objectIR;
 		this.locals = new ObjectIRLocals(this);
-		this.value = new ObjectValueFunc(this);
-		this.claim = new ObjectClaimFunc(this);
-		this.proposition = new ObjectPropositionFunc(this);
+		this.value = new ObjectValueFnIR(this);
+		this.claim = new ObjectClaimFnIR(this);
+		this.proposition = new ObjectPropositionFnIR(this);
 	}
 
 	public final Generator getGenerator() {
@@ -65,15 +65,15 @@ public class ObjectValueIR {
 		return this.objectIR;
 	}
 
-	public final ObjectClaimFunc claim() {
+	public final ObjectClaimFnIR claim() {
 		return this.claim;
 	}
 
-	public final ObjectPropositionFunc proposition() {
+	public final ObjectPropositionFnIR proposition() {
 		return this.proposition;
 	}
 
-	public final ObjectValueIRFunc value(boolean claim) {
+	public final ObjectValFnIR value(boolean claim) {
 		return claim ? claim() : proposition();
 	}
 
