@@ -44,6 +44,7 @@ Test :=> void (
 /* Failure message. */
 Fail :=> void (
   <*> {
+    Print error (Text = "ERROR: ")
     <*> Print error (
       <*[]> Text = ()
       <*''> Text = ()
