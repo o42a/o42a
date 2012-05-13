@@ -92,7 +92,7 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
 
-	public ValueIR<?> valueIR(ObjectIR objectIR) {
+	public ValueIR valueIR(ObjectIR objectIR) {
 		return new DefaultValueIR(getValueStruct(), objectIR);
 	}
 

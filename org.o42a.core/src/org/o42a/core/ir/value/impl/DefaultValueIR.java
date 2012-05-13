@@ -23,10 +23,11 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.value.struct.ValueIR;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.value.ValueStruct;
 
 
-public final class DefaultValueIR extends ValueIR<DefaultValueOp> {
+public final class DefaultValueIR extends ValueIR {
 
 	public DefaultValueIR(ValueStruct<?, ?> valueStruct, ObjectIR objectIR) {
 		super(valueStruct, objectIR);
@@ -42,8 +43,8 @@ public final class DefaultValueIR extends ValueIR<DefaultValueOp> {
 	}
 
 	@Override
-	public DefaultValueOp op(ObjectOp object) {
-		return new DefaultValueOp(this, object);
+	public ValueOp op(ObjectOp object) {
+		return defaultOp(object);
 	}
 
 }
