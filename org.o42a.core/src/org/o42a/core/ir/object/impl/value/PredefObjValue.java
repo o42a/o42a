@@ -36,11 +36,12 @@ import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.PrintMessageFunc;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.value.ValueType;
 
 
 public enum PredefObjValue {
 
-	FALSE_OBJ_VALUE() {
+	FALSE_OBJ_VALUE(false) {
 
 		@Override
 		public CodeId codeId(Generator generator) {
@@ -54,7 +55,7 @@ public enum PredefObjValue {
 
 	},
 
-	VOID_OBJ_VALUE() {
+	VOID_OBJ_VALUE(false) {
 
 		@Override
 		public CodeId codeId(Generator generator) {
@@ -68,7 +69,7 @@ public enum PredefObjValue {
 
 	},
 
-	STUB_OBJ_VALUE() {
+	STUB_OBJ_VALUE(false) {
 
 		@Override
 		public CodeId codeId(Generator generator) {
@@ -103,7 +104,7 @@ public enum PredefObjValue {
 
 	},
 
-	DEFAULT_OBJ_VALUE() {
+	DEFAULT_OBJ_VALUE(true) {
 
 		@Override
 		public CodeId codeId(Generator generator) {
@@ -122,12 +123,23 @@ public enum PredefObjValue {
 
 	};
 
+	private final boolean typeAware;
+
+	PredefObjValue(boolean typeAware) {
+		this.typeAware = typeAware;
+	}
+
+	public final boolean isTypeAware() {
+		return this.typeAware;
+	}
+
 	public abstract CodeId codeId(Generator generator);
 
 	public final FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,
-			Generator generator) {
-		return predefObjValues(generator).get(context, this);
+			Generator generator,
+			ValueType<?> valueType) {
+		return predefObjValues(generator).get(context, this, valueType);
 	}
 
 	public abstract void write(DefDirs dirs, ObjectIRData.Op data);

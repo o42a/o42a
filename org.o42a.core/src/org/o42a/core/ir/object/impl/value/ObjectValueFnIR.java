@@ -139,7 +139,10 @@ public final class ObjectValueFnIR
 	}
 
 	private FuncPtr<ObjectValueFunc> predefined(PredefObjValue value) {
-		return value.get(getObject().getContext(), getGenerator());
+		return value.get(
+				getObject().getContext(),
+				getGenerator(),
+				getValueType());
 	}
 
 	private final class ObjectValueBuilder extends AbstractObjectValueBuilder {

@@ -31,7 +31,11 @@ public interface ValueStorageIR {
 
 	void storeVal(Code code, ValOp target, Val value);
 
+	void atomicStoreVal(Code code, ValOp target, Val value);
+
 	void storeCopy(Code code, ValOp target, ValOp value);
+
+	void atomicStoreCopy(Code code, ValOp target, ValOp value);
 
 	void storePtr(
 			Code code,

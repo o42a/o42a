@@ -22,6 +22,7 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.op.ObjectDataCondFunc.OBJECT_DATA_COND;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
+import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.code.*;
@@ -50,36 +51,44 @@ public abstract class AbstractObjectValueBuilder
 		final ObjOp host = builder.host();
 		final ObjectIRData.Op data = data(function);
 		final ObjectDataFunc finishOp;
+		final ValOp value;
 
 		if (!lock) {
 			finishOp = null;
+			value = result;
 		} else {
-			function.releaseBarrier();
 
 			final FuncPtr<ObjectDataCondFunc> startFn =
 					function.getGenerator().externalFunction().link(
 							"o42a_obj_value_start",
 							OBJECT_DATA_COND);
-			final Block finish = function.addBlock("finish");
-
-			startFn.op(null, function)
-			.call(function, data)
-			.goUnless(function, finish.head());
-
 			final FuncPtr<ObjectDataFunc> finishFn =
 					function.getGenerator().externalFunction().link(
 							"o42a_obj_value_finish",
 							OBJECT_DATA);
 
 			finishOp = finishFn.op(null, function);
+
+			final Block finish = function.addBlock("finish");
+
+			startFn.op(null, function)
+			.call(function, data)
+			.goUnless(function, finish.head());
+
 			finish.returnVoid();
+
+			value = stackAllocatedVal(
+					"value",
+					function.allocation(),
+					builder,
+					getValueStruct());
 		}
 
 		final Block done = function.addBlock("done");
 		final Block exit = function.addBlock("exit");
 		final DefDirs dirs =
 				builder.dirs(function, exit.head())
-				.value(result)
+				.value(value)
 				.def(done.head());
 
 		writeValue(dirs, host, data);
@@ -87,27 +96,36 @@ public abstract class AbstractObjectValueBuilder
 		final Block code = dirs.done().code();
 
 		if (code.exists()) {
-			if (finishOp != null) {
-				finishOp.call(code, data);
-			}
 			code.debug("Indefinite");
+			if (finishOp != null) {
+				code.releaseBarrier();
+				result.atomicStoreFalse(code);
+				finishOp.call(code, data);
+			} else {
+				result.storeFalse(code);
+			}
 			code.returnVoid();
 		}
 		if (exit.exists()) {
 			exit.debug("False");
 			if (lock) {
 				exit.releaseBarrier();
+				result.atomicStoreFalse(exit);
+			} else {
+				result.storeFalse(exit);
 			}
-			result.storeFalse(exit);
 			if (finishOp != null) {
 				finishOp.call(exit, data);
 			}
 			exit.returnVoid();
 		}
 		if (done.exists()) {
-			result.store(done, dirs.result());
 			if (finishOp != null) {
+				done.releaseBarrier();
+				result.atomicStore(done, dirs.result());
 				finishOp.call(done, data);
+			} else {
+				result.store(done, dirs.result());
 			}
 			done.returnVoid();
 		}
@@ -143,8 +161,10 @@ public abstract class AbstractObjectValueBuilder
 
 			if (lock()) {
 				failure.releaseBarrier();
+				result.atomicStoreFalse(failure);
+			} else {
+				result.storeFalse(failure);
 			}
-			result.storeFalse(failure);
 			failure.returnVoid();
 		}
 

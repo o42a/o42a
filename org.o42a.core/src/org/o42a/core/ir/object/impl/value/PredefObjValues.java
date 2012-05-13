@@ -22,8 +22,9 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 
-import java.util.EnumMap;
+import java.util.HashMap;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.FuncPtr;
@@ -35,6 +36,7 @@ import org.o42a.core.ir.object.ObjectIRData.Op;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 final class PredefObjValues {
@@ -56,9 +58,8 @@ final class PredefObjValues {
 	}
 
 	private final Generator generator;
-	private final EnumMap<PredefObjValue, FuncPtr<ObjectValueFunc>> cache =
-			new EnumMap<PredefObjValue, FuncPtr<ObjectValueFunc>>(
-						PredefObjValue.class);
+	private final HashMap<PredefKey, FuncPtr<ObjectValueFunc>> cache =
+			new HashMap<PredefKey, FuncPtr<ObjectValueFunc>>();
 
 	private PredefObjValues(Generator generator) {
 		this.generator = generator;
@@ -66,21 +67,29 @@ final class PredefObjValues {
 
 	FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,
-			PredefObjValue value) {
+			PredefObjValue value,
+			ValueType<?> valueType) {
 
-		final FuncPtr<ObjectValueFunc> cached = this.cache.get(value);
+		final ValueType<?> type =
+				value.isTypeAware() ? valueType : ValueType.VOID;
+		final PredefKey key = new PredefKey(value, type);
+
+		final FuncPtr<ObjectValueFunc> cached = this.cache.get(key);
 
 		if (cached != null) {
 			return cached;
 		}
 
+		final CodeId id = value.codeId(this.generator);
+		final PredefValueBuilder builder =
+				new PredefValueBuilder(context, value, type);
 		final FuncPtr<ObjectValueFunc> function =
 				this.generator.newFunction().create(
-						value.codeId(this.generator),
+						value.isTypeAware() ? id.sub(type.getSystemId()) : id,
 						OBJECT_VALUE,
-						new PredefValueBuilder(context, value)).getPointer();
+						builder).getPointer();
 
-		this.cache.put(value, function);
+		this.cache.put(key, function);
 
 		return function;
 	}
@@ -90,10 +99,15 @@ final class PredefObjValues {
 
 		private final CompilerContext context;
 		private final PredefObjValue value;
+		private final ValueType<?> valueType;
 
-		PredefValueBuilder(CompilerContext context, PredefObjValue value) {
+		PredefValueBuilder(
+				CompilerContext context,
+				PredefObjValue value,
+				ValueType<?> valueType) {
 			this.context = context;
 			this.value = value;
+			this.valueType = valueType;
 		}
 
 		@Override
@@ -112,7 +126,13 @@ final class PredefObjValues {
 
 		@Override
 		protected ValueStruct<?, ?> getValueStruct() {
-			return ValueStruct.VOID;
+			if (!this.value.isTypeAware()) {
+				return ValueStruct.VOID;
+			}
+			return this.valueType
+					.typeObject(this.context.getIntrinsics())
+					.value()
+					.getValueStruct();
 		}
 
 		@Override
@@ -143,6 +163,51 @@ final class PredefObjValues {
 		@Override
 		protected void writeValue(DefDirs dirs, ObjOp host, Op data) {
 			this.value.write(dirs, data);
+		}
+
+	}
+
+	private static final class PredefKey {
+
+		private final PredefObjValue value;
+		private final ValueType<?> valueType;
+
+		PredefKey(PredefObjValue value, ValueType<?> valueType) {
+			this.value = value;
+			this.valueType = valueType;
+		}
+
+		@Override
+		public int hashCode() {
+
+			final int prime = 31;
+			int result = 1;
+
+			result = prime * result + this.value.hashCode();
+			result = prime * result + this.valueType.hashCode();
+
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+
+			final PredefKey other = (PredefKey) obj;
+
+			if (this.value != other.value) {
+				return false;
+			}
+
+			return this.valueType == other.valueType;
 		}
 
 	}
