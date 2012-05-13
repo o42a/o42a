@@ -256,7 +256,7 @@ struct o42a_obj_data {
 	 *
 	 * It is modified only together with value_thread field.
 	 */
-	int8_t value_calc;
+	o42a_bool_t value_calc;
 
 	/**
 	 * An identifier of the thread evaluating the object value.
@@ -796,6 +796,30 @@ void o42a_obj_signal(O42A_DECLS o42a_obj_data_t *);
  * Unblocks all threads waiting on an object condition.
  */
 void o42a_obj_broadcast(O42A_DECLS o42a_obj_data_t *);
+
+
+/**
+ * Starts the object value evaluation.
+ *
+ * If O42A_TRUE returned, then the value should be evaluated and after that the
+ * o42a_obj_value_finish should be called.
+ *
+ * If O42A_FALSE returned, then the value should not be evaluated, because it
+ * is already known or because of error.
+ *
+ * If another thread already evaluating the value, then current thread
+ * will wait until the value evaluated and will return O42A_FALSE.
+ *
+ * If current thread already evaluating the value, then this is considered an
+ * error and this function returns O42A_FALSE.
+ */
+o42a_bool_t o42a_obj_value_start(O42A_DECLS o42a_obj_data_t *);
+
+/**
+ * Finishes the value evaluation started with o42a_obj_value_start and signals
+ * all waiting thread about the value availability.
+ */
+void o42a_obj_value_finish(O42A_DECLS o42a_obj_data_t *);
 
 
 #ifdef __cplusplus

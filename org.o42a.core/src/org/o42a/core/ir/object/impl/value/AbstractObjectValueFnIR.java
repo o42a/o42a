@@ -37,8 +37,7 @@ import org.o42a.core.value.ValueType;
 
 
 public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
-		extends ObjectFnIR
-		implements FunctionBuilder<F> {
+		extends ObjectFnIR {
 
 	private final ObjectValueIR valueIR;
 	private final CodeId id;
@@ -207,10 +206,14 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 			return;
 		}
 
-		set(getGenerator().newFunction().create(getId(), signature(), this));
+		set(getGenerator()
+				.newFunction()
+				.create(getId(), signature(), builder()));
 	}
 
 	protected abstract ObjectSignature<F> signature();
+
+	protected abstract FunctionBuilder<F> builder();
 
 	protected abstract boolean canStub();
 

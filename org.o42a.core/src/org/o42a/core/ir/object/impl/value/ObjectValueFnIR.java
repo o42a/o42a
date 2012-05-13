@@ -23,17 +23,15 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.impl.value.PredefObjValue.*;
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.ObjectIRData.Op;
 import org.o42a.core.ir.op.ObjectSignature;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
+import org.o42a.core.value.ValueStruct;
 
 
 public final class ObjectValueFnIR
@@ -60,67 +58,6 @@ public final class ObjectValueFnIR
 		}
 
 		subDirs.done();
-	}
-
-	@Override
-	public void build(Function<ObjectValueFunc> function) {
-		function.debug("Calculating value");
-
-		final Block failure = function.addBlock("failure");
-		final Block done = function.addBlock("done");
-		final ObjBuilder builder = new ObjBuilder(
-				function,
-				failure.head(),
-				getObjectIR().getMainBodyIR(),
-				getObjectIR().getObject(),
-				getObjectIR().isExact() ? EXACT : DERIVED);
-
-		final ValOp result =
-				function.arg(function, OBJECT_VALUE.value())
-				.op(builder, getValueStruct())
-				.setStoreMode(INITIAL_VAL_STORE);
-		final ObjOp host = builder.host();
-		/*final ObjectIRData.Op data;
-
-		if (getObjectIR().isExact()) {
-			data =
-					getObjectIR()
-					.getTypeIR()
-					.getObjectData()
-					.pointer(getGenerator())
-					.op(function.id("data"), function);
-		} else {
-			data = function.arg(function, OBJECT_VALUE.data());
-		}*/
-
-		final DefDirs dirs =
-				builder.dirs(function, failure.head())
-				.value(result)
-				.def(done.head());
-
-		if (!getObjectIR().isExact()) {
-			dirs.code().debug("Exact host: " + getObjectIR().getId());
-		} else {
-			dirs.code().dumpName("Host: ", host);
-		}
-		getValueIR().writeClaim(dirs, host, null);
-		getValueIR().writeProposition(dirs, host, null);
-
-		final Block code = dirs.done().code();
-
-		if (code.exists()) {
-			code.debug("Indefinite");
-			code.returnVoid();
-		}
-		if (failure.exists()) {
-			failure.debug("False");
-			result.storeFalse(failure);
-			failure.returnVoid();
-		}
-		if (done.exists()) {
-			result.store(done, dirs.result());
-			done.returnVoid();
-		}
 	}
 
 	@Override
@@ -163,6 +100,11 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
+	protected FunctionBuilder<ObjectValueFunc> builder() {
+		return new ObjectValueBuilder();
+	}
+
+	@Override
 	protected boolean canStub() {
 		return getValueIR().claim().canStub()
 				&& getValueIR().proposition().canStub();
@@ -199,4 +141,60 @@ public final class ObjectValueFnIR
 	private FuncPtr<ObjectValueFunc> predefined(PredefObjValue value) {
 		return value.get(getObject().getContext(), getGenerator());
 	}
+
+	private final class ObjectValueBuilder extends AbstractObjectValueBuilder {
+
+		@Override
+		public String toString() {
+			return String.valueOf(ObjectValueFnIR.this);
+		}
+
+		@Override
+		protected ValueStruct<?, ?> getValueStruct() {
+			return ObjectValueFnIR.this.getValueStruct();
+		}
+
+		@Override
+		protected boolean lock() {
+			return !getValueStruct().getValueType().isStateless();
+		}
+
+		@Override
+		protected ObjBuilder createBuilder(
+				Function<ObjectValueFunc> function,
+				CodePos failureDir) {
+			return new ObjBuilder(
+					function,
+					failureDir,
+					getObjectIR().getMainBodyIR(),
+					getObjectIR().getObject(),
+					getObjectIR().isExact() ? EXACT : DERIVED);
+		}
+
+		@Override
+		protected Op data(Function<ObjectValueFunc> function) {
+			if (!getObjectIR().isExact()) {
+				return function.arg(function, OBJECT_VALUE.data());
+			}
+			return getObjectIR()
+					.getTypeIR()
+					.getObjectData()
+					.pointer(getGenerator())
+					.op(function.id("data"), function);
+		}
+
+		@Override
+		protected void writeValue(DefDirs dirs, ObjOp host, Op data) {
+			if (!getObjectIR().isExact()) {
+				dirs.code().debug("Exact host: " + getObjectIR().getId());
+			} else {
+				dirs.code().dumpName("Host: ", host);
+			}
+
+			getValueIR().writeClaim(dirs, host, null);
+			getValueIR().writeProposition(dirs, host, null);
+		}
+
+	}
+
 }

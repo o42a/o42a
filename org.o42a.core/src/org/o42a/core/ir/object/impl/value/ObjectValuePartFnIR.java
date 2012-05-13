@@ -29,9 +29,7 @@ import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.ObjectSignature;
@@ -48,7 +46,8 @@ import org.o42a.core.st.DefValue;
 
 
 public abstract class ObjectValuePartFnIR
-		extends AbstractObjectValueFnIR<ObjectValFunc> {
+		extends AbstractObjectValueFnIR<ObjectValFunc>
+		implements FunctionBuilder<ObjectValFunc> {
 
 	ObjectValuePartFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -160,8 +159,13 @@ public abstract class ObjectValuePartFnIR
 	}
 
 	@Override
-	protected ObjectSignature<ObjectValFunc> signature() {
+	protected final ObjectSignature<ObjectValFunc> signature() {
 		return OBJECT_VAL;
+	}
+
+	@Override
+	protected final FunctionBuilder<ObjectValFunc> builder() {
+		return this;
 	}
 
 	@Override

@@ -87,6 +87,9 @@ public abstract class ValueOp {
 		}
 
 		final Block code = dirs.code();
+
+		code.acquireBarrier();
+
 		final ValOp value =
 				object().objectType(code).ptr().data(code).value(code).op(
 						getBuilder(),

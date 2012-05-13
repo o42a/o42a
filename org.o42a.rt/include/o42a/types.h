@@ -99,7 +99,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_HEADER_SIZE 0
 
 
-#define O42A(exp) exp
+#define O42A(exp) (exp)
 
 #define O42A_ARGC 0
 

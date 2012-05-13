@@ -21,20 +21,20 @@ package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.core.value.ValueStruct.VOID;
 
 import java.util.EnumMap;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.object.ObjectIRData.Op;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.value.ValueStruct;
 
 
 final class PredefObjValues {
@@ -86,7 +86,7 @@ final class PredefObjValues {
 	}
 
 	private static final class PredefValueBuilder
-			implements FunctionBuilder<ObjectValueFunc> {
+			extends AbstractObjectValueBuilder {
 
 		private final CompilerContext context;
 		private final PredefObjValue value;
@@ -99,48 +99,7 @@ final class PredefObjValues {
 		@Override
 		public void build(Function<ObjectValueFunc> function) {
 			function.debug(this.value.toString());
-
-			final Block failure = function.addBlock("failure");
-			final Block done = function.addBlock("done");
-			final Obj voidObject = this.context.getVoid();
-			final ObjBuilder builder = new ObjBuilder(
-					function,
-					failure.head(),
-					voidObject.ir(function.getGenerator()).getMainBodyIR(),
-					voidObject,
-					DERIVED);
-			final ValOp result =
-					function.arg(function, OBJECT_VALUE.value())
-					.op(builder, VOID)
-					.setStoreMode(INITIAL_VAL_STORE);
-			final ObjOp host = builder.host();
-			final ObjectIRData.Op data =
-					function.arg(function, OBJECT_VALUE.data());
-
-			final DefDirs dirs =
-					builder.dirs(function, failure.head())
-					.value(result)
-					.def(done.head());
-
-			dirs.code().dumpName("Host: ", host);
-
-			this.value.write(dirs, data);
-
-			final Block code = dirs.done().code();
-
-			if (code.exists()) {
-				code.debug("Indefinite");
-				code.returnVoid();
-			}
-			if (failure.exists()) {
-				failure.debug("False");
-				result.storeFalse(failure);
-				failure.returnVoid();
-			}
-			if (done.exists()) {
-				result.store(done, dirs.result());
-				done.returnVoid();
-			}
+			super.build(function);
 		}
 
 		@Override
@@ -149,6 +108,41 @@ final class PredefObjValues {
 				return super.toString();
 			}
 			return this.value.toString();
+		}
+
+		@Override
+		protected ValueStruct<?, ?> getValueStruct() {
+			return ValueStruct.VOID;
+		}
+
+		@Override
+		protected boolean lock() {
+			return true;
+		}
+
+		@Override
+		protected ObjBuilder createBuilder(
+				Function<ObjectValueFunc> function,
+				CodePos failureDir) {
+
+			final Obj voidObject = this.context.getVoid();
+
+			return new ObjBuilder(
+					function,
+					failureDir,
+					voidObject.ir(function.getGenerator()).getMainBodyIR(),
+					voidObject,
+					DERIVED);
+		}
+
+		@Override
+		protected Op data(Function<ObjectValueFunc> function) {
+			return function.arg(function, OBJECT_VALUE.data());
+		}
+
+		@Override
+		protected void writeValue(DefDirs dirs, ObjOp host, Op data) {
+			this.value.write(dirs, data);
 		}
 
 	}
