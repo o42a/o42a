@@ -21,7 +21,7 @@ package org.o42a.lib.console;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.CodeBuilder.defaultBuilder;
-import static org.o42a.core.ir.value.ValOp.stackAllocateVal;
+import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
@@ -183,7 +183,7 @@ public class ConsoleModule extends AnnotatedModule {
 				.getMainModule();
 		final CodeBuilder builder = defaultBuilder(main, mainModule);
 		final Block exit = main.addBlock("exit");
-		final ValOp result = stackAllocateVal(
+		final ValOp result = stackAllocatedVal(
 				"result",
 				main.allocation(),
 				builder,

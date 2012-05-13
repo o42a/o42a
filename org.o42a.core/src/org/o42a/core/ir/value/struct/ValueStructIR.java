@@ -23,6 +23,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
@@ -119,46 +120,26 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 	private final class TempStorageIR implements ValueStorageIR {
 
 		@Override
-		public void storeVal(Code code, ValOp target, Val value) {
-			target.flags(null, code).store(code, code.int32(value.getFlags()));
-			if (!value.getCondition()) {
-				return;
-			}
-			if (hasLength()) {
-				target.length(null, code)
-				.store(code, code.int32(value.getLength()));
-			}
-			if (hasValue()) {
-
-				final Ptr<AnyOp> pointer = value.getPointer();
-
-				if (pointer != null) {
-					target.value(null, code)
-					.toPtr(null, code)
-					.store(code, pointer.op(null, code));
-				} else {
-					target.rawValue(null, code).store(
-							code,
-							code.int64(value.getValue()));
-				}
-			}
+		public final void storeVal(Code code, ValOp target, Val value) {
+			storeVal(code, target, value, false);
 		}
 
 		@Override
-		public void storeCopy(Code code, ValOp target, ValOp value) {
-			target.flags(null, code).store(
-					code,
-					value.flags(null, code).load(null, code));
-			if (hasLength()) {
-				target.length(null, code).store(
-						code,
-						value.length(null, code).load(null, code));
-			}
-			if (hasValue()) {
-				target.rawValue(null, code).store(
-						code,
-						value.rawValue(null, code).load(null, code));
-			}
+		public final void atomicStoreVal(Code code, ValOp target, Val value) {
+			storeVal(code, target, value, true);
+		}
+
+		@Override
+		public final void storeCopy(Code code, ValOp target, ValOp value) {
+			storeCopy(code, target, value, false);
+		}
+
+		@Override
+		public final void atomicStoreCopy(
+				Code code,
+				ValOp target,
+				ValOp value) {
+			storeCopy(code, target, value, true);
 		}
 
 		@Override
@@ -210,6 +191,70 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 			}
 		}
 
+		private void storeVal(
+				Code code,
+				ValOp target,
+				Val value,
+				boolean atomic) {
+
+			final Int32recOp flags = target.flags(null, code);
+			final Int32op flagsValue = code.int32(value.getFlags());
+
+			if (atomic) {
+				flags.atomicStore(code, flagsValue);
+			} else {
+				flags.store(code, flagsValue);
+			}
+			if (!value.getCondition()) {
+				return;
+			}
+			if (hasLength()) {
+				target.length(null, code)
+				.store(code, code.int32(value.getLength()));
+			}
+			if (hasValue()) {
+
+				final Ptr<AnyOp> pointer = value.getPointer();
+
+				if (pointer != null) {
+					target.value(null, code)
+					.toPtr(null, code)
+					.store(code, pointer.op(null, code));
+				} else {
+					target.rawValue(null, code).store(
+							code,
+							code.int64(value.getValue()));
+				}
+			}
+		}
+
+		private void storeCopy(
+				Code code,
+				ValOp target,
+				ValOp value,
+				boolean atomic) {
+
+			final Int32recOp targetFlags = target.flags(null, code);
+			final Int32op sourceFlags =
+					value.flags(null, code).load(null, code);
+
+			if (atomic) {
+				targetFlags.atomicStore(code, sourceFlags);
+			} else {
+				targetFlags.store(code, sourceFlags);
+			}
+			if (hasLength()) {
+				target.length(null, code).store(
+						code,
+						value.length(null, code).load(null, code));
+			}
+			if (hasValue()) {
+				target.rawValue(null, code).store(
+						code,
+						value.rawValue(null, code).load(null, code));
+			}
+		}
+
 	}
 
 	private final class InitialStorageIR implements ValueStorageIR {
@@ -220,8 +265,21 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		}
 
 		@Override
+		public void atomicStoreVal(Code code, ValOp target, Val value) {
+			getTempStorage().atomicStoreVal(code, target, value);
+		}
+
+		@Override
 		public void storeCopy(Code code, ValOp target, ValOp value) {
 			getTempStorage().storeCopy(code, target, value);
+			if (hasLength() && !value.ptr().getAllocClass().isStatic()) {
+				target.use(code);
+			}
+		}
+
+		@Override
+		public void atomicStoreCopy(Code code, ValOp target, ValOp value) {
+			getTempStorage().atomicStoreCopy(code, target, value);
 			if (hasLength() && !value.ptr().getAllocClass().isStatic()) {
 				target.use(code);
 			}
@@ -274,11 +332,27 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		}
 
 		@Override
+		public void atomicStoreVal(Code code, ValOp target, Val value) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getInitialStorage().atomicStoreVal(code, target, value);
+		}
+
+		@Override
 		public void storeCopy(Code code, ValOp target, ValOp value) {
 			if (hasLength()) {
 				target.unuse(code);
 			}
 			getInitialStorage().storeCopy(code, target, value);
+		}
+
+		@Override
+		public void atomicStoreCopy(Code code, ValOp target, ValOp value) {
+			if (hasLength()) {
+				target.unuse(code);
+			}
+			getInitialStorage().atomicStoreCopy(code, target, value);
 		}
 
 		@Override

@@ -91,13 +91,15 @@ public abstract class ValueOp {
 		code.acquireBarrier();
 
 		final ValOp value =
-				object().objectType(code).ptr().data(code).value(code).op(
-						getBuilder(),
-						getValueStruct());
-		final CondBlock indefinite = value.loadIndefinite(null, code).branch(
-				code,
-				"val_indefinite",
-				"val_definite");
+				object()
+				.objectType(code)
+				.ptr()
+				.data(code)
+				.value(code)
+				.op(getBuilder(), getValueStruct());
+		final CondBlock indefinite =
+				value.atomicLoadIndefinite(null, code)
+				.branch(code, "val_indef", "val_def");
 		final Block definite = indefinite.otherwise();
 
 		definite.dump(this + " value is definite: ", value);

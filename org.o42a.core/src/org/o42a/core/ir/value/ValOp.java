@@ -41,7 +41,7 @@ import org.o42a.util.DataAlignment;
 
 public abstract class ValOp extends IROp {
 
-	public static ValOp stackAllocateVal(
+	public static ValOp stackAllocatedVal(
 			String name,
 			AllocationCode code,
 			CodeBuilder builder,
@@ -77,7 +77,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public boolean isStackAllocated() {
-		return false;
+		return ptr().isAllocatedOnStack();
 	}
 
 	public abstract Val getConstant();
@@ -86,8 +86,8 @@ public abstract class ValOp extends IROp {
 	public abstract ValType.Op ptr();
 
 	public final ValStoreMode getStoreMode() {
-		if (ptr().isAllocatedOnStack()) {
-			return this.storeMode = TEMP_VAL_STORE;
+		if (isStackAllocated()) {
+			return TEMP_VAL_STORE;
 		}
 		return this.storeMode;
 	}
@@ -114,6 +114,10 @@ public abstract class ValOp extends IROp {
 
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
 		return loadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
+	}
+
+	public final BoolOp atomicLoadIndefinite(CodeId id, Code code) {
+		return atomicLoadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
 	}
 
 	public final BoolOp loadExternal(CodeId id, Code code) {
@@ -249,6 +253,11 @@ public abstract class ValOp extends IROp {
 		return this;
 	}
 
+	public final ValOp atomicStoreFalse(Code code) {
+		flags(null, code).atomicStore(code, code.int32(0));
+		return this;
+	}
+
 	public final ValOp storeIndefinite(Code code) {
 		flags(null, code).store(
 				code,
@@ -262,6 +271,16 @@ public abstract class ValOp extends IROp {
 			"Can not store " + value + " in " + this;
 
 		getStoreMode().storage(this).storeVal(code, this, value);
+
+		return this;
+	}
+
+	public ValOp atomicStore(Code code, Val value) {
+		assert (value.getValueType() == getValueType()
+				|| !value.getCondition() && value.isVoid()) :
+			"Can not store " + value + " in " + this;
+
+		getStoreMode().storage(this).atomicStoreVal(code, this, value);
 
 		return this;
 	}
@@ -282,6 +301,26 @@ public abstract class ValOp extends IROp {
 			"Can not store " + value + " in " + this;
 
 		getStoreMode().storage(this).storeCopy(code, this, value);
+
+		return this;
+	}
+
+	public final ValOp atomicStore(Code code, ValOp value) {
+		if (this == value || ptr() == value.ptr()) {
+			return this;
+		}
+
+		final Val constant = value.getConstant();
+
+		if (constant != null) {
+			store(code, constant);
+			return this;
+		}
+
+		assert getValueStruct().assignableFrom(value.getValueStruct()) :
+			"Can not store " + value + " in " + this;
+
+		getStoreMode().storage(this).atomicStoreCopy(code, this, value);
 
 		return this;
 	}
@@ -376,11 +415,28 @@ public abstract class ValOp extends IROp {
 		func.op(null, code).call(code, this);
 	}
 
-	private BoolOp loadFlag(
+	private final BoolOp loadFlag(
 			CodeId id,
 			String defaultId,
 			Code code,
 			int mask) {
+		return loadFlag(id, defaultId, code, mask, false);
+	}
+
+	private final BoolOp atomicLoadFlag(
+			CodeId id,
+			String defaultId,
+			Code code,
+			int mask) {
+		return loadFlag(id, defaultId, code, mask, true);
+	}
+
+	private BoolOp loadFlag(
+			CodeId id,
+			String defaultId,
+			Code code,
+			int mask,
+			boolean atomic) {
 
 		final CodeId flagId;
 
@@ -390,7 +446,14 @@ public abstract class ValOp extends IROp {
 			flagId = id;
 		}
 
-		final Int32op flags = flags(null, code).load(null, code);
+		final Int32op flags;
+
+		if (atomic) {
+			flags = flags(null, code).atomicLoad(null, code);
+		} else {
+			flags = flags(null, code).load(null, code);
+		}
+
 		final Int32op uexternal = flags.lshr(
 				flagId.detail("ush"),
 				code,
