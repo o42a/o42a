@@ -22,11 +22,8 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
-import static org.o42a.core.ir.object.impl.value.PredefObjValue.FALSE_OBJ_VALUE;
-import static org.o42a.core.ir.object.impl.value.PredefObjValue.STUB_OBJ_VALUE;
-import static org.o42a.core.ir.object.impl.value.PredefObjValue.VOID_OBJ_VALUE;
+import static org.o42a.core.ir.object.impl.value.PredefObjValue.*;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -67,10 +64,6 @@ public final class ObjectValueFnIR
 
 	@Override
 	public void build(Function<ObjectValueFunc> function) {
-		if (isReused()) {
-			return;
-		}
-
 		function.debug("Calculating value");
 
 		final Block failure = function.addBlock("failure");
@@ -105,7 +98,11 @@ public final class ObjectValueFnIR
 				.value(result)
 				.def(done.head());
 
-		dirs.code().dumpName("Host: ", host);
+		if (!getObjectIR().isExact()) {
+			dirs.code().debug("Exact host: " + getObjectIR().getId());
+		} else {
+			dirs.code().dumpName("Host: ", host);
+		}
 		getValueIR().writeClaim(dirs, host, null);
 		getValueIR().writeProposition(dirs, host, null);
 
@@ -168,17 +165,12 @@ public final class ObjectValueFnIR
 	@Override
 	protected boolean canStub() {
 		return getValueIR().claim().canStub()
-				&& getValueIR().proposition().canStub()
-				&& !getObject().value().isUsed(
-						getGenerator().getAnalyzer(),
-						ALL_VALUE_USAGES);
+				&& getValueIR().proposition().canStub();
 	}
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> stubFunc() {
-		return STUB_OBJ_VALUE.get(
-				getObject().getContext(),
-				getGenerator());
+		return predefined(STUB_OBJ_VALUE);
 	}
 
 	@Override
@@ -188,20 +180,23 @@ public final class ObjectValueFnIR
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> falseValFunc() {
-		return FALSE_OBJ_VALUE.get(
-				getObject().getContext(),
-				getGenerator());
+		return predefined(FALSE_OBJ_VALUE);
 	}
 
 	@Override
 	protected FuncPtr<ObjectValueFunc> voidValFunc() {
-		return VOID_OBJ_VALUE.get(
-				getObject().getContext(),
-				getGenerator());
+		return predefined(VOID_OBJ_VALUE);
 	}
 
 	@Override
 	protected void reuse() {
+		if (getObjectIR().isExact()) {
+			return;
+		}
+		reuse(predefined(DEFAULT_OBJ_VALUE));
 	}
 
+	private FuncPtr<ObjectValueFunc> predefined(PredefObjValue value) {
+		return value.get(getObject().getContext(), getGenerator());
+	}
 }

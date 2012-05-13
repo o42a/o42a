@@ -20,12 +20,21 @@
 package org.o42a.core.ir.object.impl.value;
 
 import static org.o42a.core.ir.object.impl.value.PredefObjValues.predefObjValues;
+import static org.o42a.core.ir.op.PrintMessageFunc.PRINT_MESSAGE;
 import static org.o42a.core.value.Value.voidValue;
+
+import java.io.UnsupportedEncodingException;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.PrintMessageFunc;
 import org.o42a.core.source.CompilerContext;
 
 
@@ -39,7 +48,7 @@ public enum PredefObjValue {
 		}
 
 		@Override
-		public void write(DefDirs dirs) {
+		public void write(DefDirs dirs, ObjectIRData.Op data) {
 			dirs.code().go(dirs.falseDir());
 		}
 
@@ -53,7 +62,7 @@ public enum PredefObjValue {
 		}
 
 		@Override
-		public void write(DefDirs dirs) {
+		public void write(DefDirs dirs, ObjectIRData.Op data) {
 			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
 		}
 
@@ -67,9 +76,48 @@ public enum PredefObjValue {
 		}
 
 		@Override
-		public void write(DefDirs dirs) {
-			dirs.code().debug("Object value stub invoked");
+		public void write(DefDirs dirs, ObjectIRData.Op data) {
+
+			final Generator generator = dirs.getGenerator();
+			final Ptr<AnyOp> message;
+
+			try {
+				message = generator.addBinary(
+						generator.id("ERROR").sub("object_value_stub"),
+						true,
+						"Object value stub accessed".getBytes("ASCII"));
+			} catch (UnsupportedEncodingException e) {
+				throw new Error("ASCII not supported", e);
+			}
+
+			final FuncPtr<PrintMessageFunc> fn =
+					generator.externalFunction().link(
+							"o42a_error_print",
+							PRINT_MESSAGE);
+
+			final Block code = dirs.code();
+
+			fn.op(null, code).print(code, message.op(null, code));
 			dirs.code().go(dirs.falseDir());
+		}
+
+	},
+
+	DEFAULT_OBJ_VALUE() {
+
+		@Override
+		public CodeId codeId(Generator generator) {
+			return generator.id("_o42a_obj_value");
+		}
+
+		@Override
+		public void write(DefDirs dirs, ObjectIRData.Op data) {
+
+			final Block code = dirs.code();
+			final ObjectOp owner = dirs.getBuilder().owner();
+
+			data.claimFunc(code).load(null, code).call(dirs, owner);
+			data.propositionFunc(code).load(null, code).call(dirs, owner);
 		}
 
 	};
@@ -82,6 +130,6 @@ public enum PredefObjValue {
 		return predefObjValues(generator).get(context, this);
 	}
 
-	public abstract void write(DefDirs dirs);
+	public abstract void write(DefDirs dirs, ObjectIRData.Op data);
 
 }
