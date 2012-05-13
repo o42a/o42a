@@ -89,10 +89,6 @@ public abstract class ObjectValuePartFnIR
 
 	@Override
 	public void build(Function<ObjectValFunc> function) {
-		if (isReused()) {
-			return;
-		}
-
 		function.debug("Calculating " + suffix());
 
 		final Block failure = function.addBlock("failure");
@@ -113,7 +109,11 @@ public abstract class ObjectValuePartFnIR
 				.def(done.head());
 		final ObjOp host = builder.host();
 
-		dirs.code().dumpName("Host: ", host);
+		if (!getObjectIR().isExact()) {
+			dirs.code().debug("Exact host: " + getObjectIR().getId());
+		} else {
+			dirs.code().dumpName("Host: ", host);
+		}
 		build(dirs, host);
 
 		final Block code = dirs.done().code();

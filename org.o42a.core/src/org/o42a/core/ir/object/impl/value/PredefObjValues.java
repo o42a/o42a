@@ -31,6 +31,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
@@ -113,8 +114,8 @@ final class PredefObjValues {
 					.op(builder, VOID)
 					.setStoreMode(INITIAL_VAL_STORE);
 			final ObjOp host = builder.host();
-			/*final ObjectIRData.Op data =
-					function.arg(function, OBJECT_VALUE.data());*/
+			final ObjectIRData.Op data =
+					function.arg(function, OBJECT_VALUE.data());
 
 			final DefDirs dirs =
 					builder.dirs(function, failure.head())
@@ -123,7 +124,7 @@ final class PredefObjValues {
 
 			dirs.code().dumpName("Host: ", host);
 
-			this.value.write(dirs);
+			this.value.write(dirs, data);
 
 			final Block code = dirs.done().code();
 
