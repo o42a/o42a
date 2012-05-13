@@ -109,8 +109,7 @@ public final class ObjOp extends ObjectOp {
 			return this.value;
 		}
 
-		final ValueIR<?> valueIR =
-				getAscendant().ir(getGenerator()).getValueIR();
+		final ValueIR valueIR = getAscendant().ir(getGenerator()).getValueIR();
 		final ValueOp value = valueIR.op(this);
 
 		if (!getPrecision().isExact()) {

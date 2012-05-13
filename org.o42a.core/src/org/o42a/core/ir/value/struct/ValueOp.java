@@ -37,10 +37,10 @@ import org.o42a.core.value.ValueType;
 
 public abstract class ValueOp {
 
-	private final ValueIR<?> valueIR;
+	private final ValueIR valueIR;
 	private final ObjectOp object;
 
-	public ValueOp(ValueIR<?> valueIR, ObjectOp object) {
+	public ValueOp(ValueIR valueIR, ObjectOp object) {
 		this.valueIR = valueIR;
 		this.object = object;
 	}
@@ -53,7 +53,7 @@ public abstract class ValueOp {
 		return object().getBuilder();
 	}
 
-	public final ValueIR<?> getValueIR() {
+	public final ValueIR getValueIR() {
 		return this.valueIR;
 	}
 

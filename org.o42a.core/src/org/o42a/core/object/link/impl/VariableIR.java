@@ -34,7 +34,7 @@ import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.object.link.LinkValueStruct;
 
 
-final class VariableIR extends ValueIR<VariableIR.Op> {
+final class VariableIR extends ValueIR {
 
 	private ObjectBodyIR bodyIR;
 	private AssignerFld fld;
@@ -60,15 +60,15 @@ final class VariableIR extends ValueIR<VariableIR.Op> {
 	}
 
 	@Override
-	public Op op(ObjectOp object) {
-		return new Op(defaultOp(object));
+	public ValueOp op(ObjectOp object) {
+		return new VariableOp(defaultOp(object));
 	}
 
-	static final class Op extends ValueOp {
+	private static final class VariableOp extends ValueOp {
 
 		private final ValueOp value;
 
-		Op(ValueOp defaultOp) {
+		VariableOp(ValueOp defaultOp) {
 			super(defaultOp.getValueIR(), defaultOp.object());
 			this.value = defaultOp;
 		}

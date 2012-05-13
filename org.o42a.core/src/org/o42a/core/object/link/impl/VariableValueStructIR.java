@@ -34,7 +34,7 @@ public class VariableValueStructIR extends LinkValueStructIR {
 	}
 
 	@Override
-	public ValueIR<?> valueIR(ObjectIR objectIR) {
+	public ValueIR valueIR(ObjectIR objectIR) {
 		return new VariableIR(getValueStruct(), objectIR);
 	}
 

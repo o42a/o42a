@@ -74,7 +74,7 @@ final class AnonymousObjOp extends ObjectOp {
 			return this.value;
 		}
 
-		final ValueIR<?> valueIR =
+		final ValueIR valueIR =
 				getWellKnownType().ir(getGenerator()).getValueIR();
 
 		return this.value = valueIR.op(this);

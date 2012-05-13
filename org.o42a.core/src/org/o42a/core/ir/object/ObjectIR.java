@@ -42,7 +42,7 @@ public class ObjectIR  {
 
 	private final Generator generator;
 	private final Obj object;
-	private final ValueIR<?> valueIR;
+	private final ValueIR valueIR;
 	private ObjectIRStruct struct;
 	private ObjectValueIR objectValueIR;
 
@@ -118,7 +118,7 @@ public class ObjectIR  {
 		return getStruct().typeIR();
 	}
 
-	public final ValueIR<?> getValueIR() {
+	public final ValueIR getValueIR() {
 		return this.valueIR;
 	}
 

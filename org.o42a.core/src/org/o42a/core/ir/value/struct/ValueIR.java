@@ -27,7 +27,7 @@ import org.o42a.core.ir.value.impl.DefaultValueOp;
 import org.o42a.core.value.ValueStruct;
 
 
-public abstract class ValueIR<O extends ValueOp> {
+public abstract class ValueIR {
 
 	private final ObjectIR objectIR;
 	private final ValueStruct<?, ?> valueStruct;
@@ -61,7 +61,7 @@ public abstract class ValueIR<O extends ValueOp> {
 			ObjectMethodsIR methodsIR,
 			SubData<?> data);
 
-	public abstract O op(ObjectOp object);
+	public abstract ValueOp op(ObjectOp object);
 
 	@Override
 	public String toString() {

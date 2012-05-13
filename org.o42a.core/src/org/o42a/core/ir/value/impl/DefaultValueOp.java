@@ -30,7 +30,7 @@ import org.o42a.core.ir.value.struct.ValueOp;
 
 public final class DefaultValueOp extends ValueOp {
 
-	public DefaultValueOp(ValueIR<?> valueIR, ObjectOp object) {
+	public DefaultValueOp(ValueIR valueIR, ObjectOp object) {
 		super(valueIR, object);
 	}
 
