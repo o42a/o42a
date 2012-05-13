@@ -110,7 +110,6 @@ const o42a_obj_overrider_t *o42a_obj_field_overrider(
 	const o42a_obj_overrider_t *const overriders =
 			O42A(o42a_obj_overriders(O42A_ARGS sample_type));
 
-	// TODO perform a binary search for overrider
 	for (size_t i = 0; i < num_overriders; ++i) {
 
 		const o42a_obj_overrider_t *const overrider = overriders + i;
@@ -583,8 +582,10 @@ static o42a_obj_rtype_t *propagate_object(
 
 	// Fill object type and data.
 	data->object = adata->object;
-	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = adata->start;
+	data->flags = O42A_OBJ_RT | (adata->flags & O42A_OBJ_INHERIT_MASK);
+	data->mutex_init = 0;
+	data->value_calc = O42A_FALSE;
 
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->value_f = adata->value_f;
@@ -739,9 +740,7 @@ static inline void propagate_samples(
 	O42A_RETURN;
 }
 
-o42a_obj_t *o42a_obj_new(
-		O42A_PARAMS
-		const o42a_obj_ctr_t *const ctr) {
+o42a_obj_t *o42a_obj_new(O42A_PARAMS const o42a_obj_ctr_t *const ctr) {
 	O42A_ENTER(return NULL);
 
 	o42a_obj_t *ancestor = NULL;
@@ -898,8 +897,10 @@ o42a_obj_t *o42a_obj_new(
 	const size_t data_start = type_start + offsetof(o42a_obj_rtype_t, data);
 
 	data->object = main_body_start - data_start;
-	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
 	data->start = -data_start;
+	data->flags = O42A_OBJ_RT | (sdata->flags & O42A_OBJ_INHERIT_MASK);
+	data->mutex_init = 0;
+	data->value_calc = O42A_FALSE;
 
 	data->value.flags = O42A_VAL_INDEFINITE;
 	data->value_f = sdata->value_f;
@@ -1053,7 +1054,7 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 	}
 
 	// Lock the mutex.
-	if (!O42A(pthread_mutex_lock(&data->mutex))) {
+	if (O42A(pthread_mutex_lock(&data->mutex))) {
 		o42a_error_print(O42A_ARGS "Failed to lock an object mutex");
 	}
 
@@ -1097,5 +1098,52 @@ void o42a_obj_broadcast(O42A_PARAMS o42a_obj_data_t *const data) {
 				O42A_ARGS
 				"Failed to broadcast signal to an object condition waiters");
 	}
+	O42A_RETURN;
+}
+
+o42a_bool_t o42a_obj_value_start(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return O42A_FALSE);
+
+	O42A(o42a_obj_lock(O42A_ARGS data));
+	if (!(data->value.flags & O42A_VAL_INDEFINITE)) {
+		// Value already known.
+		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A_RETURN O42A_FALSE;
+	}
+	if (data->value_calc) {
+		// Value evaluation is in progress.
+		if (O42A(pthread_equal(data->value_thread, pthread_self()))) {
+			// Value evaluation happens in current thread and is recursive.
+			O42A(o42a_obj_unlock(O42A_ARGS data));
+			o42a_error_print(O42A_ARGS "Recursive value evaluation");
+			O42A_RETURN O42A_FALSE;
+		}
+		// Wait for another thread to evaluate the value.
+		while (data->value_calc) {
+			O42A(o42a_obj_wait(O42A_ARGS data));
+		}
+		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A_RETURN O42A_FALSE;
+	}
+
+	// Start the value evaluation.
+	data->value_calc = O42A_TRUE;
+	data->value_thread = O42A(pthread_self());
+	O42A(o42a_obj_unlock(O42A_ARGS data));
+
+	// The caller shall continue the value evaluation.
+	O42A_RETURN O42A_TRUE;
+}
+
+void o42a_obj_value_finish(O42A_PARAMS o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	O42A(o42a_obj_lock(O42A_ARGS data));
+
+	// Reset the value evaluation flag.
+	data->value_calc = O42A_FALSE;
+	// Unblock all value waiting thread.
+	O42A(o42a_obj_broadcast(O42A_ARGS data));
+
+	O42A(o42a_obj_unlock(O42A_ARGS data));
 	O42A_RETURN;
 }

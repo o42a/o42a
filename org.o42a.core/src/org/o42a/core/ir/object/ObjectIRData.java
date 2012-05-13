@@ -23,6 +23,7 @@ import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
@@ -32,10 +33,12 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.object.impl.value.ObjectValueFunc;
+import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValType;
@@ -202,6 +205,56 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
+		}
+
+		public final void lock(Code code) {
+
+			final FuncPtr<ObjectDataFunc> fn =
+					code.getGenerator().externalFunction().link(
+							"o42a_obj_lock",
+							OBJECT_DATA);
+
+			fn.op(null, code).call(code, this);
+		}
+
+		public final void unlock(Code code) {
+
+			final FuncPtr<ObjectDataFunc> fn =
+					code.getGenerator().externalFunction().link(
+							"o42a_obj_unlock",
+							OBJECT_DATA);
+
+			fn.op(null, code).call(code, this);
+		}
+
+		public final void wait(Code code) {
+
+			final FuncPtr<ObjectDataFunc> fn =
+					code.getGenerator().externalFunction().link(
+							"o42a_obj_wait",
+							OBJECT_DATA);
+
+			fn.op(null, code).call(code, this);
+		}
+
+		public final void signal(Code code) {
+
+			final FuncPtr<ObjectDataFunc> fn =
+					code.getGenerator().externalFunction().link(
+							"o42a_obj_signal",
+							OBJECT_DATA);
+
+			fn.op(null, code).call(code, this);
+		}
+
+		public final void broadcast(Code code) {
+
+			final FuncPtr<ObjectDataFunc> fn =
+					code.getGenerator().externalFunction().link(
+							"o42a_obj_broadcast",
+							OBJECT_DATA);
+
+			fn.op(null, code).call(code, this);
 		}
 
 		@Override

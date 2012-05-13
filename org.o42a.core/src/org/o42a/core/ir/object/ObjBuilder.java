@@ -61,12 +61,12 @@ public final class ObjBuilder extends CodeBuilder {
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {
 		case EXACT:
-			return hostIR.getObjectIR().op(this, code).cast(
-					null,
-					dirs(code, exit),
-					hostType);
+			return hostIR.getObjectIR()
+					.op(this, code)
+					.cast(null, dirs(code, exit), hostType);
 		case COMPATIBLE:
-			return getFunction().arg(code, getObjectSignature().object())
+			return getFunction()
+					.arg(code, getObjectSignature().object())
 					.to(null, code, hostIR)
 					.op(this, hostType, hostPrecision);
 		case DERIVED:
@@ -76,10 +76,7 @@ public final class ObjBuilder extends CodeBuilder {
 					getFunction().arg(code, getObjectSignature().object()),
 					hostType);
 
-			return host.cast(
-					code.id("host"),
-					dirs(code, exit),
-					hostType);
+			return host.cast(code.id("host"), dirs(code, exit), hostType);
 		}
 
 		throw new IllegalArgumentException(

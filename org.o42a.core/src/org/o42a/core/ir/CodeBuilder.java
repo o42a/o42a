@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.object.CtrOp.CTR_TYPE;
+import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -27,6 +27,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.op.CtrOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;

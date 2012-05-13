@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,59 +17,59 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
+
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.op.CtrOp;
-import org.o42a.core.ir.object.op.CtrOp.Op;
+import org.o42a.core.ir.object.ObjectIRData;
 
 
-public class NewObjectFunc extends Func<NewObjectFunc> {
+public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 
-	public static final NewObject NEW_OBJECT = new NewObject();
+	public static final ObjectData OBJECT_DATA = new ObjectData();
 
-	private NewObjectFunc(FuncCaller<NewObjectFunc> caller) {
+	private ObjectDataFunc(FuncCaller<ObjectDataFunc> caller) {
 		super(caller);
 	}
 
-	public DataOp newObject(Code code, CtrOp ctr) {
-		return invoke(null, code, NEW_OBJECT.result(), ctr.ptr());
+	public final void call(Code code, ObjectIRData.Op data) {
+		invoke(null, code, OBJECT_DATA.result(), data);
 	}
 
-	public static final class NewObject extends Signature<NewObjectFunc> {
+	public static final class ObjectData extends Signature<ObjectDataFunc> {
 
-		private Return<DataOp> result;
-		private Arg<Op> ctr;
+		private Return<Void> result;
+		private Arg<ObjectIRData.Op> data;
 
-		private NewObject() {
+		private ObjectData() {
 		}
 
-		public final Return<DataOp> result() {
+		public final Return<Void> result() {
 			return this.result;
 		}
 
-		public final Arg<Op> ctr() {
-			return this.ctr;
+		public final Arg<ObjectIRData.Op> data() {
+			return this.data;
 		}
 
 		@Override
-		public NewObjectFunc op(FuncCaller<NewObjectFunc> caller) {
-			return new NewObjectFunc(caller);
+		public final ObjectDataFunc op(FuncCaller<ObjectDataFunc> caller) {
+			return new ObjectDataFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("NewObjectF");
+			return factory.id("ObjectDataF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnData();
-			this.ctr = builder.addPtr("ctr", CtrOp.CTR_TYPE);
+			this.result = builder.returnVoid();
+			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 		}
 
 	}
