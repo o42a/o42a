@@ -28,7 +28,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	private static final short ENTRY_BLOCK = 0x01;
 	private static final short ENTRY_PREV_PART = 0x02;
 	private static final short MULTIPLE_ENTRIES = 0x04;
-	private static final short JOINT = 0x08;
+	private static final short JOINED = 0x08;
 	private static final short REVEALED = 0x10;
 
 	private static final short HAS_ENTRIES = ENTRY_BLOCK;
@@ -124,7 +124,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	}
 
 	final void reveal() {
-		if (!isJoint()) {// Do not reveal a joint part explicitly.
+		if (!isJoined()) {// Do not reveal a joint part explicitly.
 			revealPart();
 		}
 		if (this.nextPart != null) {
@@ -144,19 +144,19 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		assert this.underlying == null :
 			"Underlying block already created for " + this;
 
-		final CBlockPart joinWith = join();
+		final CBlockPart joinedTo = join();
 
-		if (joinWith != null) {
-			this.flags |= JOINT;
-			return joinWith.underlying();
+		if (joinedTo != null) {
+			this.flags |= JOINED;
+			return joinedTo.underlying();
 		}
 
 		return createUnderlying();
 	}
 
-	private final boolean isJoint() {
+	private final boolean isJoined() {
 		underlying();
-		return (this.flags & JOINT) != 0;
+		return (this.flags & JOINED) != 0;
 	}
 
 	private CBlockPart join() {
@@ -190,16 +190,16 @@ public abstract class CBlockPart extends CCodePart<Block> {
 			revealRecords();
 		}
 
-		final CBlockPart nextJoint = nextJoint();
+		final CBlockPart joined = nextJoined();
 
-		if (nextJoint != null) {
-			nextJoint.revealPart();
+		if (joined != null) {
+			joined.revealPart();
 		} else {
 			this.terminator.reveal();
 		}
 	}
 
-	private CBlockPart nextJoint() {
+	private CBlockPart nextJoined() {
 
 		final JumpBE jump = this.terminator.toJump();
 
@@ -216,7 +216,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 			return null;
 		}
 
-		assert nextPart.isJoint() :
+		assert nextPart.isJoined() :
 			nextPart + " expected to be joint with " + this;
 
 		return nextPart;

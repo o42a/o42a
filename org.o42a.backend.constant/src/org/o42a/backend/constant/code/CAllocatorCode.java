@@ -30,7 +30,7 @@ final class CAllocatorCode extends CAllocator<Allocator> {
 		super(enclosing.getBackend(), enclosing.getFunction(), allocator);
 		this.enclosing = enclosing;
 		new JumpBE.Fake(enclosing.nextPart(), head());
-		resetNextPart();
+		enclosing.resetNextPart();
 	}
 
 	public final CBlock<?> getEnclosing() {
