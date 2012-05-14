@@ -20,6 +20,7 @@
 #include "o42a/object.h"
 
 #include <assert.h>
+#include <sched.h>
 #include <stdlib.h>
 
 #include "o42a/error.h"
@@ -1040,6 +1041,7 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 				break;
 			}
 			// The mutext is currently initializing by another thread.
+			O42A(sched_yield());
 			continue;
 		}
 
