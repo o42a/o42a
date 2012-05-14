@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,19 +19,14 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
 
+public enum Atomicity {
 
-public interface RecOp<R extends RecOp<R, O>, O extends Op>
-		extends AllocPtrOp<R> {
+	NOT_ATOMIC,
+	ATOMIC;
 
-	O load(CodeId id, Code code);
-
-	O load(CodeId id, Code code, Atomicity atomicity);
-
-	void store(Code code, O value);
-
-	void store(Code code, O value, Atomicity atomicity);
+	public final boolean isAtomic() {
+		return this != NOT_ATOMIC;
+	}
 
 }

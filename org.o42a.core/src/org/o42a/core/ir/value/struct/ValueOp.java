@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.value.struct;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
@@ -98,7 +99,7 @@ public abstract class ValueOp {
 				.value(code)
 				.op(getBuilder(), getValueStruct());
 		final CondBlock indefinite =
-				value.atomicLoadIndefinite(null, code)
+				value.loadIndefinite(null, code, ATOMIC)
 				.branch(code, "val_indef", "val_def");
 		final Block definite = indefinite.otherwise();
 

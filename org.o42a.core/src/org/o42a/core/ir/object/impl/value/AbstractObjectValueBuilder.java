@@ -19,11 +19,13 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.op.ObjectDataCondFunc.OBJECT_DATA_COND;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
+import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
@@ -46,8 +48,7 @@ public abstract class AbstractObjectValueBuilder
 		final boolean lock = lock();
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
-				.op(builder, getValueStruct())
-				.setStoreMode(INITIAL_VAL_STORE);
+				.op(builder, getValueStruct());
 		final ObjOp host = builder.host();
 		final ObjectIRData.Op data = data(function);
 		final ObjectDataFunc finishOp;
@@ -55,8 +56,9 @@ public abstract class AbstractObjectValueBuilder
 
 		if (!lock) {
 			finishOp = null;
-			value = result;
+			value = result.setStoreMode(TEMP_VAL_STORE);
 		} else {
+			result.setStoreMode(INITIAL_VAL_STORE);
 
 			final FuncPtr<ObjectDataCondFunc> startFn =
 					function.getGenerator().externalFunction().link(
@@ -99,7 +101,7 @@ public abstract class AbstractObjectValueBuilder
 			code.debug("Indefinite");
 			if (finishOp != null) {
 				code.releaseBarrier();
-				result.atomicStoreFalse(code);
+				result.storeFalse(code, ATOMIC);
 				finishOp.call(code, data);
 			} else {
 				result.storeFalse(code);
@@ -110,7 +112,7 @@ public abstract class AbstractObjectValueBuilder
 			exit.debug("False");
 			if (lock) {
 				exit.releaseBarrier();
-				result.atomicStoreFalse(exit);
+				result.storeFalse(exit, ATOMIC);
 			} else {
 				result.storeFalse(exit);
 			}
@@ -122,7 +124,7 @@ public abstract class AbstractObjectValueBuilder
 		if (done.exists()) {
 			if (finishOp != null) {
 				done.releaseBarrier();
-				result.atomicStore(done, dirs.result());
+				result.store(done, dirs.result(), ATOMIC);
 				finishOp.call(done, data);
 			} else {
 				result.store(done, dirs.result());
@@ -161,7 +163,7 @@ public abstract class AbstractObjectValueBuilder
 
 			if (lock()) {
 				failure.releaseBarrier();
-				result.atomicStoreFalse(failure);
+				result.storeFalse(failure, ATOMIC);
 			} else {
 				result.storeFalse(failure);
 			}
