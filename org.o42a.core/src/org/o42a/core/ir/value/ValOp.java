@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value;
 
 import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.*;
 import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
@@ -113,19 +114,22 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
-		return loadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
+		return loadIndefinite(id, code, NOT_ATOMIC);
 	}
 
-	public final BoolOp atomicLoadIndefinite(CodeId id, Code code) {
-		return atomicLoadFlag(id, "indefinite_flag", code, INDEFINITE_FLAG);
+	public final BoolOp loadIndefinite(
+			CodeId id,
+			Code code,
+			Atomicity atomicity) {
+		return loadFlag(id, "indefinite", code, INDEFINITE_FLAG, atomicity);
 	}
 
 	public final BoolOp loadExternal(CodeId id, Code code) {
-		return loadFlag(id, "external_flag", code, EXTERNAL_FLAG);
+		return loadFlag(id, "external", code, EXTERNAL_FLAG, NOT_ATOMIC);
 	}
 
 	public final BoolOp loadStatic(CodeId id, Code code) {
-		return loadFlag(id, "static_flag", code, STATIC_FLAG);
+		return loadFlag(id, "static", code, STATIC_FLAG, NOT_ATOMIC);
 	}
 
 	public Int32op loadAlignmentShift(CodeId id, Code code) {
@@ -249,12 +253,11 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeFalse(Code code) {
-		flags(null, code).store(code, code.int32(0));
-		return this;
+		return storeFalse(code, NOT_ATOMIC);
 	}
 
-	public final ValOp atomicStoreFalse(Code code) {
-		flags(null, code).atomicStore(code, code.int32(0));
+	public final ValOp storeFalse(Code code, Atomicity atomicity) {
+		flags(null, code).store(code, code.int32(0), atomicity);
 		return this;
 	}
 
@@ -266,46 +269,24 @@ public abstract class ValOp extends IROp {
 	}
 
 	public ValOp store(Code code, Val value) {
-		assert (value.getValueType() == getValueType()
-				|| !value.getCondition() && value.isVoid()) :
-			"Can not store " + value + " in " + this;
-
-		getStoreMode().storage(this).storeVal(code, this, value);
-
-		return this;
+		return store(code, value, NOT_ATOMIC);
 	}
 
-	public ValOp atomicStore(Code code, Val value) {
+	public ValOp store(Code code, Val value, Atomicity atomicity) {
 		assert (value.getValueType() == getValueType()
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
-		getStoreMode().storage(this).atomicStoreVal(code, this, value);
+		getStoreMode().storage(this).storeVal(code, this, value, atomicity);
 
 		return this;
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		if (this == value || ptr() == value.ptr()) {
-			return this;
-		}
-
-		final Val constant = value.getConstant();
-
-		if (constant != null) {
-			store(code, constant);
-			return this;
-		}
-
-		assert getValueStruct().assignableFrom(value.getValueStruct()) :
-			"Can not store " + value + " in " + this;
-
-		getStoreMode().storage(this).storeCopy(code, this, value);
-
-		return this;
+		return store(code, value, NOT_ATOMIC);
 	}
 
-	public final ValOp atomicStore(Code code, ValOp value) {
+	public final ValOp store(Code code, ValOp value, Atomicity atomicity) {
 		if (this == value || ptr() == value.ptr()) {
 			return this;
 		}
@@ -320,7 +301,7 @@ public abstract class ValOp extends IROp {
 		assert getValueStruct().assignableFrom(value.getValueStruct()) :
 			"Can not store " + value + " in " + this;
 
-		getStoreMode().storage(this).atomicStoreCopy(code, this, value);
+		getStoreMode().storage(this).storeCopy(code, this, value, atomicity);
 
 		return this;
 	}
@@ -415,28 +396,12 @@ public abstract class ValOp extends IROp {
 		func.op(null, code).call(code, this);
 	}
 
-	private final BoolOp loadFlag(
-			CodeId id,
-			String defaultId,
-			Code code,
-			int mask) {
-		return loadFlag(id, defaultId, code, mask, false);
-	}
-
-	private final BoolOp atomicLoadFlag(
-			CodeId id,
-			String defaultId,
-			Code code,
-			int mask) {
-		return loadFlag(id, defaultId, code, mask, true);
-	}
-
 	private BoolOp loadFlag(
 			CodeId id,
 			String defaultId,
 			Code code,
 			int mask,
-			boolean atomic) {
+			Atomicity atomicity) {
 
 		final CodeId flagId;
 
@@ -446,13 +411,7 @@ public abstract class ValOp extends IROp {
 			flagId = id;
 		}
 
-		final Int32op flags;
-
-		if (atomic) {
-			flags = flags(null, code).atomicLoad(null, code);
-		} else {
-			flags = flags(null, code).load(null, code);
-		}
+		final Int32op flags = flags(null, code).load(null, code, atomicity);
 
 		final Int32op uexternal = flags.lshr(
 				flagId.detail("ush"),

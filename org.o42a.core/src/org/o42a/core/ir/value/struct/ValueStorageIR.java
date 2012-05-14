@@ -21,6 +21,7 @@ package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
@@ -29,13 +30,9 @@ import org.o42a.util.DataAlignment;
 
 public interface ValueStorageIR {
 
-	void storeVal(Code code, ValOp target, Val value);
+	void storeVal(Code code, ValOp target, Val value, Atomicity atomicity);
 
-	void atomicStoreVal(Code code, ValOp target, Val value);
-
-	void storeCopy(Code code, ValOp target, ValOp value);
-
-	void atomicStoreCopy(Code code, ValOp target, ValOp value);
+	void storeCopy(Code code, ValOp target, ValOp value, Atomicity atomicity);
 
 	void storePtr(
 			Code code,

@@ -21,6 +21,7 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
@@ -28,6 +29,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 
@@ -79,35 +81,11 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	public final F load(CodeId id, Code code) {
-		return load(id, code, false);
+		return load(id, code, NOT_ATOMIC);
 	}
 
 	@Override
-	public final F atomicLoad(CodeId id, Code code) {
-		return load(id, code, true);
-	}
-
-	@Override
-	public final void store(Code code, F value) {
-		store(code, value, false);
-	}
-
-	@Override
-	public final void atomicStore(Code code, F value) {
-		store(code, value, true);
-	}
-
-	@Override
-	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
-		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
-	}
-
-	@Override
-	public String toString() {
-		return "(" + this.signature.getId() + "*) " + getId();
-	}
-
-	private final F load(CodeId id, Code code, boolean atomic) {
+	public final F load(CodeId id, Code code, Atomicity atomicity) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
@@ -124,10 +102,16 @@ public final class FuncLLOp<F extends Func<F>>
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						atomic))));
+						atomicity.isAtomic()))));
 	}
 
-	private final void store(Code code, F value, boolean atomic) {
+	@Override
+	public final void store(Code code, F value) {
+		store(code, value, NOT_ATOMIC);
+	}
+
+	@Override
+	public final void store(Code code, F value, Atomicity atomicity) {
 
 		final LLCode llvm = llvm(code);
 
@@ -136,7 +120,17 @@ public final class FuncLLOp<F extends Func<F>>
 				llvm.nextInstr(),
 				getNativePtr(),
 				nativePtr(value),
-				atomic));
+				atomicity.isAtomic()));
+	}
+
+	@Override
+	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
+		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
+	}
+
+	@Override
+	public String toString() {
+		return "(" + this.signature.getId() + "*) " + getId();
 	}
 
 }
