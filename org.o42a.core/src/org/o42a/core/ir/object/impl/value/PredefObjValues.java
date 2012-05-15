@@ -26,9 +26,7 @@ import java.util.HashMap;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.Function;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
@@ -136,11 +134,6 @@ final class PredefObjValues {
 		}
 
 		@Override
-		protected boolean lock() {
-			return true;
-		}
-
-		@Override
 		protected ObjBuilder createBuilder(
 				Function<ObjectValueFunc> function,
 				CodePos failureDir) {
@@ -156,8 +149,8 @@ final class PredefObjValues {
 		}
 
 		@Override
-		protected Op data(Function<ObjectValueFunc> function) {
-			return function.arg(function, OBJECT_VALUE.data());
+		protected Op data(Code code, Function<ObjectValueFunc> function) {
+			return function.arg(code, OBJECT_VALUE.data());
 		}
 
 		@Override

@@ -158,11 +158,6 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected boolean lock() {
-			return !getValueStruct().getValueType().isStateless();
-		}
-
-		@Override
 		protected ObjBuilder createBuilder(
 				Function<ObjectValueFunc> function,
 				CodePos failureDir) {
@@ -175,15 +170,15 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected Op data(Function<ObjectValueFunc> function) {
+		protected Op data(Code code, Function<ObjectValueFunc> function) {
 			if (!getObjectIR().isExact()) {
-				return function.arg(function, OBJECT_VALUE.data());
+				return function.arg(code, OBJECT_VALUE.data());
 			}
 			return getObjectIR()
 					.getTypeIR()
 					.getObjectData()
 					.pointer(getGenerator())
-					.op(function.id("data"), function);
+					.op(code.id("data"), code);
 		}
 
 		@Override

@@ -43,7 +43,7 @@ extern "C" {
 /**
  * Function calculating some value by the given object.
  *
- * \param result[out] object value to fill by function.
+ * \param result[out] object value to fill by function (stack-allocated).
  * \param object[in] object pointer.
  */
 typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
@@ -54,7 +54,7 @@ typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  * "data" belongs to "object". "result" belongs to the same object, unless
  * object value type is stateless.
  *
- * \param result[out] object value to fill.
+ * \param result[out] object value to fill (stack-allocated).
  * \param data[in] object data pointer.
  * \param object[in] object pointer.
  */
@@ -813,7 +813,7 @@ void o42a_obj_broadcast(O42A_DECLS o42a_obj_data_t *);
  * If current thread already evaluating the value, then this is considered an
  * error and this function returns O42A_FALSE.
  */
-o42a_bool_t o42a_obj_value_start(O42A_DECLS o42a_obj_data_t *);
+o42a_bool_t o42a_obj_value_start(O42A_DECLS o42a_val_t *, o42a_obj_data_t *);
 
 /**
  * Finishes the value evaluation started with o42a_obj_value_start and signals

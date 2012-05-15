@@ -1103,7 +1103,10 @@ void o42a_obj_broadcast(O42A_PARAMS o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
-o42a_bool_t o42a_obj_value_start(O42A_PARAMS o42a_obj_data_t *const data) {
+o42a_bool_t o42a_obj_value_start(
+		O42A_PARAMS
+		o42a_val_t *value,
+		o42a_obj_data_t *const data) {
 	O42A_ENTER(return O42A_FALSE);
 
 	O42A(o42a_obj_lock(O42A_ARGS data));
@@ -1118,6 +1121,7 @@ o42a_bool_t o42a_obj_value_start(O42A_PARAMS o42a_obj_data_t *const data) {
 			// Value evaluation happens in current thread and is recursive.
 			O42A(o42a_obj_unlock(O42A_ARGS data));
 			o42a_error_print(O42A_ARGS "Recursive value evaluation");
+			value->flags = O42A_FALSE;
 			O42A_RETURN O42A_FALSE;
 		}
 		// Wait for another thread to evaluate the value.
