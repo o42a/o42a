@@ -428,7 +428,7 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 			module->getTargetData().getTypeSizeInBits(ptr->getType());
 
 	// Bit-cast pointer to integer.
-	Constant *result = ConstantExpr::getBitCast(
+	Constant *result = ConstantExpr::getPtrToInt(
 			ptr,
 			IntegerType::get(module->getContext(), ptrSize));
 	uint64_t sizeDiff = 64 - ptrSize;
