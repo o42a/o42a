@@ -589,6 +589,7 @@ static o42a_obj_rtype_t *propagate_object(
 	data->value_calc = O42A_FALSE;
 
 	data->value.flags = O42A_VAL_INDEFINITE;
+	data->value.value.v_integer = 0;
 	data->value_f = adata->value_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
@@ -904,6 +905,7 @@ o42a_obj_t *o42a_obj_new(O42A_PARAMS const o42a_obj_ctr_t *const ctr) {
 	data->value_calc = O42A_FALSE;
 
 	data->value.flags = O42A_VAL_INDEFINITE;
+	data->value.value.v_integer = 0;
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,18 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.value.struct;
+package org.o42a.core.ir.value;
 
-import org.o42a.codegen.code.Code;
-import org.o42a.core.ir.value.ValOp;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
+
+import org.o42a.codegen.code.op.Atomicity;
 
 
-public interface ValueStorageIR {
+public enum ValAtomicity {
 
-	ValueStructIR<?, ?> getValueStructIR();
+	NOT_ATOMIC_VAL(NOT_ATOMIC),
+	ATOMIC_VAL(ATOMIC),
+	VAR_ASSIGNMENT(ATOMIC);
 
-	void useVal(Code code, ValOp target, ValOp value);
+	private final Atomicity atomicity;
 
-	void unuseVal(Code code, ValOp target);
+	private ValAtomicity(Atomicity atomicity) {
+		this.atomicity = atomicity;
+	}
+
+	public final boolean isAtomic() {
+		return this.atomicity.isAtomic();
+	}
+
+	public final boolean isVarAssignment() {
+		return this == VAR_ASSIGNMENT;
+	}
+
+	public final Atomicity toAtomicity() {
+		return this.atomicity;
+	}
 
 }
