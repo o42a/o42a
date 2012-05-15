@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,17 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 
-public interface BoolRecOp extends RecOp<BoolRecOp, BoolOp> {
+
+public interface AtomicRecOp<R extends AtomicRecOp<R, O>, O extends Op>
+		extends RecOp<R, O> {
+
+	O load(CodeId id, Code code, Atomicity atomicity);
+
+	void store(Code code, O value, Atomicity atomicity);
+
+	O testAndSet(CodeId id, Code code, O expected, O value);
 
 }

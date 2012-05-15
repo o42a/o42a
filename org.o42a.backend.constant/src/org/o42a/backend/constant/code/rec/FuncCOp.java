@@ -32,7 +32,7 @@ import org.o42a.codegen.data.Ptr;
 
 
 public final class FuncCOp<F extends Func<F>>
-		extends RecCOp<FuncOp<F>, F, FuncPtr<F>>
+		extends AtomicRecCOp<FuncOp<F>, F, FuncPtr<F>>
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;

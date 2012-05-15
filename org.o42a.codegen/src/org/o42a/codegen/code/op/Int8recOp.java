@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Int8recOp extends RecOp<Int8recOp, Int8op> {
+public interface Int8recOp extends AtomicRecOp<Int8recOp, Int8op> {
 
 }

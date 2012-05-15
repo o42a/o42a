@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class AnyRecLLOp
-		extends RecLLOp<AnyRecOp, AnyOp>
+		extends AtomicRecLLOp<AnyRecOp, AnyOp>
 		implements AnyRecOp {
 
 	public AnyRecLLOp(

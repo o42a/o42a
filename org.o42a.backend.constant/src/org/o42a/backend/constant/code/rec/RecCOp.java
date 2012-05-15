@@ -84,7 +84,6 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 		return load(id, code, NOT_ATOMIC);
 	}
 
-	@Override
 	public final O load(
 			final CodeId id,
 			final Code code,
@@ -113,10 +112,7 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 					}
 					@Override
 					protected O write() {
-						return backend().underlying().load(
-								getId(),
-								part().underlying(),
-								atomicity);
+						return loadUnderlying(this, atomicity);
 					}
 				},
 				null);
@@ -127,7 +123,6 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 		store(code, value, NOT_ATOMIC);
 	}
 
-	@Override
 	public final void store(
 			final Code code,
 			final O value,
@@ -146,41 +141,9 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 			}
 			@Override
 			protected void emit() {
-				backend().underlying().store(
-						part().underlying(),
-						cValue.backend().underlying(),
-						atomicity);
+				storeUnderlying(this, cValue, atomicity);
 			}
 		};
-	}
-
-	@Override
-	public O testAndSet(CodeId id, Code code, O expected, O value) {
-
-		final CodeId derefId = code.getOpNames().derefId(id, this);
-		final CCode<?> ccode = cast(code);
-		final COp<O, ?> cExpected = cast(expected);
-		final COp<O, ?> cValue = cast(value);
-
-		return loaded(
-				new OpBE<O>(derefId, ccode) {
-					@Override
-					public void prepare() {
-						alwaysEmit();
-						store().store(this, RecCOp.this, cValue.backend());
-						store().load(RecCOp.this, this);
-						use(cValue);
-					}
-					@Override
-					protected O write() {
-						return backend().underlying().testAndSet(
-								getId(),
-								part().underlying(),
-								cExpected.backend().underlying(),
-								cValue.backend().underlying());
-					}
-				},
-				null);
 	}
 
 	@Override
@@ -191,6 +154,38 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 	protected abstract O loaded(OpBE<O> backend, T constant);
 
 	protected abstract O underlyingConstant(CCodePart<?> part, T constant);
+
+	/**
+	 * Performs the underlying load operation.
+	 *
+	 * @param be load operation back-end.
+	 * @param atomicity operations atomicity.
+	 *
+	 * @return loaded underlying loaded value. Can be atomic only for atomic
+	 * records.
+	 */
+	protected O loadUnderlying(OpBE<O> be, Atomicity atomicity) {
+		return backend().underlying().load(
+				be.getId(),
+				be.part().underlying());
+	}
+
+	/**
+	 * Performs the underlying store.
+	 *
+	 * @param be store instruction back-end.
+	 * @param value value to store.
+	 * @param atomicity operation atomicity. Can be atomic only for atomic
+	 * records.
+	 */
+	protected void storeUnderlying(
+			InstrBE be,
+			COp<O, ?> value,
+			Atomicity atomicity) {
+		backend().underlying().store(
+				be.part().underlying(),
+				value.backend().underlying());
+	}
 
 	@SuppressWarnings("unchecked")
 	private RecCDAlloc<?, ?, T> getAllocation() {

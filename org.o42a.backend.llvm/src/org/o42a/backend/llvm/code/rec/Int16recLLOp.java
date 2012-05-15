@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class Int16recLLOp
-		extends RecLLOp<Int16recOp, Int16op>
+		extends AtomicRecLLOp<Int16recOp, Int16op>
 		implements Int16recOp {
 
 	public Int16recLLOp(

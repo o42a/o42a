@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class DataRecLLOp
-		extends RecLLOp<DataRecOp, DataOp>
+		extends AtomicRecLLOp<DataRecOp, DataOp>
 		implements DataRecOp {
 
 	public DataRecLLOp(

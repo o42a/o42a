@@ -1,6 +1,6 @@
 /*
     Compiler LLVM Back-end
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -21,24 +21,22 @@ package org.o42a.backend.llvm.code.rec;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 
 import org.o42a.backend.llvm.code.LLCode;
-import org.o42a.backend.llvm.code.op.AllocPtrLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Atomicity;
+import org.o42a.codegen.code.op.AtomicRecOp;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AllocClass;
 
 
-public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
-		extends AllocPtrLLOp<R>
-		implements RecOp<R, O> {
 
-	public RecLLOp(
+public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
+		extends RecLLOp<R, O>
+		implements AtomicRecOp<R, O> {
+
+	public AtomicRecLLOp(
 			CodeId id,
 			AllocClass allocClass,
 			long blockPtr,
@@ -47,46 +45,25 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 	}
 
 	@Override
-	public final O load(CodeId id, Code code) {
-		return load(id, code, NOT_ATOMIC);
-	}
-
-	public final O load(CodeId id, Code code, Atomicity atomicity) {
+	public O testAndSet(CodeId id, Code code, O expected, O value) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().derefId(id, this);
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "tns", expected, value);
 
 		return createLoaded(
 				resultId,
 				nextPtr,
-				llvm.instr(load(
+				llvm.instr(testAndSet(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						atomicity.isAtomic())));
+						nativePtr(expected),
+						nativePtr(value))));
 	}
-
-	@Override
-	public final void store(Code code, O value) {
-		store(code, value, NOT_ATOMIC);
-	}
-
-	public final void store(Code code, O value, Atomicity atomicity) {
-
-		final LLCode llvm = llvm(code);
-
-		llvm.instr(store(
-				llvm.nextPtr(),
-				llvm.nextInstr(),
-				getNativePtr(),
-				nativePtr(value),
-				atomicity.isAtomic()));
-	}
-
-	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
 
 }

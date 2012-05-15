@@ -22,7 +22,7 @@ package org.o42a.backend.llvm.code.op;
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
 import org.o42a.backend.llvm.code.LLCode;
-import org.o42a.backend.llvm.code.rec.RecLLOp;
+import org.o42a.backend.llvm.code.rec.AtomicRecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
@@ -33,7 +33,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class FuncLLOp<F extends Func<F>>
-		extends RecLLOp<FuncOp<F>, F>
+		extends AtomicRecLLOp<FuncOp<F>, F>
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;

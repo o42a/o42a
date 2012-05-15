@@ -28,12 +28,6 @@ public interface RecOp<R extends RecOp<R, O>, O extends Op>
 
 	O load(CodeId id, Code code);
 
-	O load(CodeId id, Code code, Atomicity atomicity);
-
 	void store(Code code, O value);
-
-	void store(Code code, O value, Atomicity atomicity);
-
-	O testAndSet(CodeId id, Code code, O expected, O value);
 
 }

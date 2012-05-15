@@ -29,7 +29,7 @@ import org.o42a.codegen.data.Ptr;
 
 
 public final class DataRecCOp
-		extends RecCOp<DataRecOp, DataOp, Ptr<DataOp>>
+		extends AtomicRecCOp<DataRecOp, DataOp, Ptr<DataOp>>
 		implements DataRecOp {
 
 	public DataRecCOp(OpBE<DataRecOp> backend, RecStore store) {

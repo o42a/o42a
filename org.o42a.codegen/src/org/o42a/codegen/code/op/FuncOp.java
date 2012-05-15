@@ -25,7 +25,7 @@ import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 
 
-public interface FuncOp<F extends Func<F>> extends RecOp<FuncOp<F>, F> {
+public interface FuncOp<F extends Func<F>> extends AtomicRecOp<FuncOp<F>, F> {
 
 	Signature<F> getSignature();
 

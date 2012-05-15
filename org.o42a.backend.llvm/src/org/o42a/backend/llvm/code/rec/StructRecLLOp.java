@@ -28,7 +28,7 @@ import org.o42a.codegen.data.Type;
 
 
 public final class StructRecLLOp<S extends StructOp<S>>
-		extends RecLLOp<StructRecOp<S>, S>
+		extends AtomicRecLLOp<StructRecOp<S>, S>
 		implements StructRecOp<S> {
 
 	private final Type<S> type;
