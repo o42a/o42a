@@ -21,9 +21,6 @@ package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.Atomicity;
-import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
@@ -32,7 +29,6 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.DataAlignment;
 
 
 public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
@@ -120,108 +116,16 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 	private final class TempStorageIR implements ValueStorageIR {
 
 		@Override
-		public final void storeVal(
-				Code code,
-				ValOp target,
-				Val value,
-				Atomicity atomicity) {
-			target.flags(null, code).store(
-					code,
-					code.int32(value.getFlags()),
-					atomicity);
-			if (!value.getCondition()) {
-				return;
-			}
-			if (hasLength()) {
-				target.length(null, code)
-				.store(code, code.int32(value.getLength()));
-			}
-			if (hasValue()) {
-
-				final Ptr<AnyOp> pointer = value.getPointer();
-
-				if (pointer != null) {
-					target.value(null, code)
-					.toPtr(null, code)
-					.store(code, pointer.op(null, code));
-				} else {
-					target.rawValue(null, code).store(
-							code,
-							code.int64(value.getValue()));
-				}
-			}
+		public final ValueStructIR<?, ?> getValueStructIR() {
+			return ValueStructIR.this;
 		}
 
 		@Override
-		public final void storeCopy(
-				Code code,
-				ValOp target,
-				ValOp value,
-				Atomicity atomicity) {
-
-			target.flags(null, code).store(
-					code,
-					value.flags(null, code).load(null, code),
-					atomicity);
-			if (hasLength()) {
-				target.length(null, code).store(
-						code,
-						value.length(null, code).load(null, code));
-			}
-			if (hasValue()) {
-				target.rawValue(null, code).store(
-						code,
-						value.rawValue(null, code).load(null, code));
-			}
+		public void useVal(Code code, ValOp target, ValOp value) {
 		}
 
 		@Override
-		public void storePtr(Code code, ValOp target, AnyOp pointer) {
-			assert hasValue() :
-				"Can not store value to " + getValueStruct();
-			assert !hasLength() :
-				"Can not store pointer without length to " + getValueStruct();
-			target.value(null, code)
-			.toPtr(null, code)
-			.store(code, pointer);
-			target.flags(null, code)
-			.store(code, code.int32(Val.CONDITION_FLAG));
-		}
-
-		@Override
-		public void storePtr(
-				Code code,
-				ValOp target,
-				AnyOp pointer,
-				DataAlignment alignment,
-				Int32op length) {
-			assert hasValue() :
-				"Can not store value to " + getValueStruct();
-			assert hasLength() :
-				"Can not store pointer to value of scalar type: "
-				+ getValueStruct();
-			target.value(null, code)
-			.toPtr(null, code)
-			.store(code, code.nullPtr());
-			target.flags(null, code)
-			.store(code, code.int32(
-					Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
-					| (alignment.getShift() << 8)));
-			target.length(null, code).store(code, length);
-		}
-
-		@Override
-		public void storeNull(Code code, ValOp target) {
-			assert hasValue() :
-				"Can not store value to " + getValueStruct();
-			target.value(null, code)
-			.toPtr(null, code)
-			.store(code, code.nullPtr());
-			target.flags(null, code)
-			.store(code, code.int32(Val.CONDITION_FLAG));
-			if (hasLength()) {
-				target.length(null, code).store(code, code.int32(0));
-			}
+		public void unuseVal(Code code, ValOp target) {
 		}
 
 	}
@@ -229,118 +133,47 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 	private final class InitialStorageIR implements ValueStorageIR {
 
 		@Override
-		public void storeVal(
-				Code code,
-				ValOp target,
-				Val value,
-				Atomicity atomicity) {
-			getTempStorage().storeVal(code, target, value, atomicity);
-
+		public final ValueStructIR<?, ?> getValueStructIR() {
+			return ValueStructIR.this;
 		}
 
 		@Override
-		public void storeCopy(
-				Code code,
-				ValOp target,
-				ValOp value,
-				Atomicity atomicity) {
-			getTempStorage().storeCopy(code, target, value, atomicity);
-			if (hasLength() && !value.ptr().getAllocClass().isStatic()) {
+		public void useVal(Code code, ValOp target, ValOp value) {
+			if (hasLength()
+					&& (value == null
+					|| !value.ptr().getAllocClass().isStatic())) {
 				target.use(code);
 			}
 		}
 
 		@Override
-		public void storePtr(Code code, ValOp target, AnyOp pointer) {
-			getTempStorage().storePtr(code, target, pointer);
+		public void unuseVal(Code code, ValOp value) {
 		}
 
-		@Override
-		public void storePtr(
-				Code code,
-				ValOp target,
-				AnyOp pointer,
-				DataAlignment alignment,
-				Int32op length) {
-			getTempStorage().storePtr(
-					code,
-					target,
-					pointer,
-					alignment,
-					length);
-			if (hasLength()) {
-				target.use(code);
-			}
-		}
-
-		@Override
-		public void storeNull(Code code, ValOp target) {
-			assert hasValue() :
-				"Can not store value to " + getValueStruct();
-			target.value(null, code)
-			.toPtr(null, code)
-			.store(code, code.nullPtr());
-			target.flags(null, code)
-			.store(code, code.int32(Val.CONDITION_FLAG));
-		}
 
 	}
 
 	private final class AssignmentStorageIR implements ValueStorageIR {
 
 		@Override
-		public void storeVal(
-				Code code,
-				ValOp target,
-				Val value,
-				Atomicity atomicity) {
-			if (hasLength()) {
-				target.unuse(code);
-			}
-			getInitialStorage().storeVal(code, target, value, atomicity);
+		public final ValueStructIR<?, ?> getValueStructIR() {
+			return ValueStructIR.this;
 		}
 
 		@Override
-		public void storeCopy(
-				Code code,
-				ValOp target,
-				ValOp value,
-				Atomicity atomicity) {
-			if (hasLength()) {
-				target.unuse(code);
+		public void useVal(Code code, ValOp target, ValOp value) {
+			if (hasLength()
+					&& (value == null
+					|| !value.ptr().getAllocClass().isStatic())) {
+				target.use(code);
 			}
-			getInitialStorage().storeCopy(code, target, value, atomicity);
 		}
 
 		@Override
-		public void storePtr(Code code, ValOp target, AnyOp pointer) {
-			getInitialStorage().storePtr(code, target, pointer);
-		}
-
-		@Override
-		public void storePtr(
-				Code code,
-				ValOp target,
-				AnyOp pointer,
-				DataAlignment alignment,
-				Int32op length) {
+		public void unuseVal(Code code, ValOp value) {
 			if (hasLength()) {
-				target.unuse(code);
+				value.unuse(code);
 			}
-			getInitialStorage().storePtr(
-					code,
-					target,
-					pointer,
-					alignment,
-					length);
-		}
-
-		@Override
-		public void storeNull(Code code, ValOp target) {
-			if (hasLength()) {
-				target.unuse(code);
-			}
-			getTempStorage().storeNull(code, target);
 		}
 
 	}

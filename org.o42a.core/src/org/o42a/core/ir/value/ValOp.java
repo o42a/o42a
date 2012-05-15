@@ -24,17 +24,20 @@ import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.*;
 import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
 import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.impl.StackAllocatedValOp;
+import org.o42a.core.ir.value.struct.ValueStorageIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
@@ -114,7 +117,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final BoolOp loadIndefinite(CodeId id, Code code) {
-		return loadIndefinite(id, code, NOT_ATOMIC);
+		return loadIndefinite(id, code, Atomicity.NOT_ATOMIC);
 	}
 
 	public final BoolOp loadIndefinite(
@@ -153,7 +156,6 @@ public abstract class ValOp extends IROp {
 				code,
 				numberOfTrailingZeros(ALIGNMENT_MASK));
 	}
-
 
 	public Int32op loadAlignment(CodeId id, Code code) {
 
@@ -253,11 +255,37 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeFalse(Code code) {
-		return storeFalse(code, NOT_ATOMIC);
+		flags(null, code).store(code, code.int32(0));
+		return this;
 	}
 
-	public final ValOp storeFalse(Code code, Atomicity atomicity) {
-		flags(null, code).store(code, code.int32(0), atomicity);
+	public final ValOp storeFalse(Block code, ValAtomicity atomicity) {
+
+		final Int32recOp flags = flags(null, code);
+
+		if (!atomicity.isVarAssignment()) {
+			flags.store(code, code.int32(0), atomicity.toAtomicity());
+			return this;
+		}
+
+		assert getValueType().isLink() && getValueType().isVariable() :
+			"Not a variable " + getValueType();
+
+		final Int64recOp value = rawValue(null, code);
+		final Int64op expected =
+				value.load(code.id("expected"), code, atomicity.toAtomicity());
+		final Int64op old = value.testAndSet(
+				code.id("old"),
+				code,
+				expected,
+				code.int64(-1));
+		final Block assign = code.addBlock("assign");
+
+		expected.eq(code.id("unchanged"), code, old).go(code, assign.head());
+
+		flags.store(assign, code.int32(0), atomicity.toAtomicity());
+		assign.go(code.tail());
+
 		return this;
 	}
 
@@ -268,25 +296,33 @@ public abstract class ValOp extends IROp {
 		return this;
 	}
 
-	public ValOp store(Code code, Val value) {
-		return store(code, value, NOT_ATOMIC);
+	public final ValOp store(Code code, Val value) {
+		assert (value.getValueType() == getValueType()
+				|| !value.getCondition() && value.isVoid()) :
+			"Can not store " + value + " in " + this;
+		return storeVal(code, value, Atomicity.NOT_ATOMIC);
 	}
 
-	public ValOp store(Code code, Val value, Atomicity atomicity) {
+	public final ValOp store(Block code, Val value, ValAtomicity atomicity) {
 		assert (value.getValueType() == getValueType()
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
-		getStoreMode().storage(this).storeVal(code, this, value, atomicity);
+		if (!atomicity.isVarAssignment()) {
+			return storeVal(code, value, atomicity.toAtomicity());
+		}
 
-		return this;
+		return assignVal(code, value, atomicity.toAtomicity());
 	}
 
 	public final ValOp store(Code code, ValOp value) {
-		return store(code, value, NOT_ATOMIC);
+		if (this == value || ptr() == value.ptr()) {
+			return this;
+		}
+		return storeCopy(code, value, NOT_ATOMIC);
 	}
 
-	public final ValOp store(Code code, ValOp value, Atomicity atomicity) {
+	public final ValOp store(Block code, ValOp value, ValAtomicity atomicity) {
 		if (this == value || ptr() == value.ptr()) {
 			return this;
 		}
@@ -294,16 +330,13 @@ public abstract class ValOp extends IROp {
 		final Val constant = value.getConstant();
 
 		if (constant != null) {
-			store(code, constant);
-			return this;
+			return store(code, constant, atomicity);
+		}
+		if (!atomicity.isVarAssignment()) {
+			return storeCopy(code, value, atomicity.toAtomicity());
 		}
 
-		assert getValueStruct().assignableFrom(value.getValueStruct()) :
-			"Can not store " + value + " in " + this;
-
-		getStoreMode().storage(this).storeCopy(code, this, value, atomicity);
-
-		return this;
+		return assignCopy(code, value, atomicity.toAtomicity());
 	}
 
 	public final ValOp store(Code code, Int64op value) {
@@ -328,15 +361,36 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeNull(Code code) {
-		getStoreMode().storage(this).storeNull(code, this);
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		assert storage.getValueStructIR().hasValue() :
+			"Can not store value to " + getValueStruct();
+
+		storage.unuseVal(code, this);
+		value(null, code).toPtr(null, code).store(code, code.nullPtr());
+		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		if (storage.getValueStructIR().hasLength()) {
+			length(null, code).store(code, code.int32(0));
+		}
+
 		return this;
 	}
 
 	public final ValOp store(Code code, AnyOp pointer) {
-		getStoreMode().storage(this).storePtr(
-				code,
-				this,
-				pointer);
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		assert storage.getValueStructIR().hasValue() :
+			"Can not store value to " + getValueType();
+		assert !storage.getValueStructIR().hasLength() :
+			"Can not store pointer without length to " + getValueType();
+
+		storage.unuseVal(code, this);
+		value(null, code).toPtr(null, code).store(code, pointer);
+		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		storage.useVal(code, this, null);
+
 		return this;
 	}
 
@@ -345,12 +399,24 @@ public abstract class ValOp extends IROp {
 			AnyOp pointer,
 			DataAlignment alignment,
 			Int32op length) {
-		getStoreMode().storage(this).storePtr(
-				code,
-				this,
-				pointer,
-				alignment,
-				length);
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		assert storage.getValueStructIR().hasValue() :
+			"Can not store value to " + getValueType();
+		assert storage.getValueStructIR().hasLength() :
+			"Can not store pointer to value of scalar type: "
+			+ getValueType();
+
+		storage.unuseVal(code, this);
+		flags(null, code)
+		.store(code, code.int32(
+				Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
+				| (alignment.getShift() << 8)));
+		length(null, code).store(code, length);
+		value(null, code).toPtr(null, code).store(code, pointer);
+		storage.unuseVal(code, this);
+
 		return this;
 	}
 
@@ -419,6 +485,205 @@ public abstract class ValOp extends IROp {
 				numberOfTrailingZeros(mask));
 
 		return uexternal.lowestBit(flagId, code);
+	}
+
+	private ValOp storeVal(Code code, Val value, Atomicity atomicity) {
+		assert (value.getValueType() == getValueType()
+				|| !value.getCondition() && value.isVoid()) :
+			"Can not store " + value + " in " + this;
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		flags(null, code).store(
+				code,
+				code.int32(value.getFlags()),
+				atomicity);
+		if (value.getCondition()) {
+			if (storage.getValueStructIR().hasLength()) {
+				length(null, code)
+				.store(code, code.int32(value.getLength()), atomicity);
+			}
+		}
+		if (storage.getValueStructIR().hasValue()) {
+
+			final Ptr<AnyOp> pointer = value.getPointer();
+
+			storage.unuseVal(code, this);
+			if (pointer != null) {
+				value(null, code)
+				.toPtr(null, code)
+				.store(code, pointer.op(null, code), atomicity);
+			} else {
+				rawValue(null, code)
+				.store(code, code.int64(value.getValue()), atomicity);
+			}
+		}
+
+		return this;
+	}
+
+	private ValOp assignVal(Block code, Val value, Atomicity atomicity) {
+		assert getValueType().isLink() && getValueType().isVariable() :
+			"Not a variable: " + getValueType();
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+		final Int32recOp flags = flags(null, code);
+		final Int32recOp length = length(null, code);
+		final ValOp preserved = code.getAllocator().allocation().allocate(
+				code.id("preserved"),
+				VAL_TYPE).op(getBuilder(), getValueStruct());
+		final Block changed = code.addBlock("changed");
+		final Ptr<AnyOp> pointer = value.getPointer();
+
+		if (pointer != null && value.getCondition()) {
+
+			final AnyRecOp rec = value(null, code).toPtr(null, code);
+			final AnyOp expected = rec.load(
+					code.id("expected"),
+					code,
+					atomicity);
+			final AnyOp old = rec.testAndSet(
+					code.id("old"),
+					code,
+					expected,
+					pointer.op(null, code));
+
+			old.eq(code.id("unchanged"), code, expected)
+			.goUnless(code, changed.head());
+
+			preserved.flags(null, code).store(code, flags.load(null, code));
+			if (storage.getValueStructIR().hasLength()) {
+				preserved.length(null, code)
+				.store(null, length.load(null, code));
+			}
+			preserved.value(null, code).toPtr(null, code).store(code, expected);
+		} else {
+
+			final Int64recOp rec = rawValue(null, code);
+			final Int64op expected = rec.load(
+					code.id("expected"),
+					code,
+					atomicity);
+			final Int64op old = rec.testAndSet(
+					code.id("old"),
+					code,
+					expected,
+					value.getCondition()
+					? code.int64(value.getValue())
+					: code.int64(-1));
+
+			old.ne(code.id("changed"), code, expected).go(code, changed.head());
+
+			preserved.flags(null, code).store(code, flags.load(null, code));
+			if (storage.getValueStructIR().hasLength()) {
+				preserved.length(null, code)
+				.store(null, length.load(null, code));
+			}
+			preserved.rawValue(null, code).store(code, expected);
+		}
+
+		storage.unuseVal(code, preserved);
+
+		flags.store(
+				code,
+				code.int32(value.getFlags()),
+				atomicity);
+		if (value.getCondition() && storage.getValueStructIR().hasLength()) {
+			length.store(
+					code,
+					code.int32(value.getLength()),
+					atomicity);
+		}
+
+		changed.go(code.tail());
+
+		return this;
+	}
+
+	private final ValOp storeCopy(Code code, ValOp value, Atomicity atomicity) {
+
+		final Val constant = value.getConstant();
+
+		if (constant != null) {
+			return storeVal(code, constant, atomicity);
+		}
+
+		assert getValueStruct().assignableFrom(value.getValueStruct()) :
+			"Can not store " + value + " in " + this;
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		storage.unuseVal(code, this);
+		flags(null, code).store(
+				code,
+				value.flags(null, code).load(null, code),
+				atomicity);
+		if (storage.getValueStructIR().hasLength()) {
+			length(null, code).store(
+					code,
+					value.length(null, code).load(null, code),
+					atomicity);
+		}
+		if (storage.getValueStructIR().hasValue()) {
+			rawValue(null, code).store(
+					code,
+					value.rawValue(null, code).load(null, code),
+					atomicity);
+		}
+		storage.useVal(code, this, value);
+
+		return this;
+	}
+
+	private final ValOp assignCopy(
+			Block code,
+			ValOp value,
+			Atomicity atomicity) {
+		assert getValueStruct().assignableFrom(value.getValueStruct()) :
+			"Can not store " + value + " in " + this;
+		assert getValueType().isLink() && getValueType().isVariable() :
+			"Not a variable: " + getValueType();
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+		final Int32recOp flags = flags(null, code);
+		final Int32recOp length = length(null, code);
+		final Int64recOp rawValue = rawValue(null, code);
+		final ValOp preserved = code.getAllocator().allocation().allocate(
+				code.id("preserved"),
+				VAL_TYPE).op(getBuilder(), getValueStruct());
+		final Block changed = code.addBlock("changed");
+
+		final Int64op expected = rawValue.load(
+				code.id("expected"),
+				code,
+				atomicity);
+		final Int64op old = rawValue.testAndSet(
+				code.id("old"),
+				code,
+				expected,
+				value.rawValue(null, code).load(null, code));
+
+		old.ne(code.id("changed"), code, expected).go(code, changed.head());
+
+		preserved.flags(null, code).store(code, flags.load(null, code));
+		if (storage.getValueStructIR().hasLength()) {
+			preserved.length(null, code).store(null, length.load(null, code));
+		}
+		preserved.rawValue(null, code).store(code, expected);
+		storage.unuseVal(code, preserved);
+
+		flags.store(code, value.flags(null, code).load(null, code), atomicity);
+		if (storage.getValueStructIR().hasLength()) {
+			length.store(
+					code,
+					value.length(null, code).load(null, code),
+					atomicity);
+		}
+		storage.useVal(code, this, value);
+
+		changed.go(code.tail());
+
+		return this;
 	}
 
 }
