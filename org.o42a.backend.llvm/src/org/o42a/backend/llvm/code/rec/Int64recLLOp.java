@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class Int64recLLOp
-		extends RecLLOp<Int64recOp, Int64op>
+		extends AtomicRecLLOp<Int64recOp, Int64op>
 		implements Int64recOp {
 
 	public Int64recLLOp(

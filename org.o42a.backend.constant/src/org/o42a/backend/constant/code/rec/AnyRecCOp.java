@@ -29,7 +29,7 @@ import org.o42a.codegen.data.Ptr;
 
 
 public final class AnyRecCOp
-		extends RecCOp<AnyRecOp, AnyOp, Ptr<AnyOp>>
+		extends AtomicRecCOp<AnyRecOp, AnyOp, Ptr<AnyOp>>
 		implements AnyRecOp {
 
 	public AnyRecCOp(OpBE<AnyRecOp> backend, RecStore store) {

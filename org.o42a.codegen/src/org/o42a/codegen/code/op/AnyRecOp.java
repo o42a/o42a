@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface AnyRecOp extends RecOp<AnyRecOp, AnyOp> {
+public interface AnyRecOp extends AtomicRecOp<AnyRecOp, AnyOp> {
 
 }

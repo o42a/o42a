@@ -28,7 +28,7 @@ import org.o42a.codegen.data.Ptr;
 
 
 public final class Int16recCOp
-		extends RecCOp<Int16recOp, Int16op, Short>
+		extends AtomicRecCOp<Int16recOp, Int16op, Short>
 		implements Int16recOp {
 
 	public Int16recCOp(OpBE<Int16recOp> backend, RecStore store) {

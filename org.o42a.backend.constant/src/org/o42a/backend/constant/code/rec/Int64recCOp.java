@@ -28,7 +28,7 @@ import org.o42a.codegen.data.Ptr;
 
 
 public final class Int64recCOp
-		extends RecCOp<Int64recOp, Int64op, Long>
+		extends AtomicRecCOp<Int64recOp, Int64op, Long>
 		implements Int64recOp {
 
 	public Int64recCOp(OpBE<Int64recOp> backend, RecStore store) {

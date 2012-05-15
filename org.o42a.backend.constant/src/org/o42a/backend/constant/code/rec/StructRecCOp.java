@@ -30,7 +30,7 @@ import org.o42a.codegen.data.Type;
 
 
 public class StructRecCOp<S extends StructOp<S>>
-		extends RecCOp<StructRecOp<S>, S, Ptr<S>>
+		extends AtomicRecCOp<StructRecOp<S>, S, Ptr<S>>
 		implements StructRecOp<S> {
 
 	private final Type<S> type;
