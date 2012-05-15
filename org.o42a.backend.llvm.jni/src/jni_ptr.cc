@@ -100,7 +100,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 			builder.CreateLoad(ptr, StringRef(from_ptr<char>(id), idLen));
 
 	// Guarantee the data loaded one piece.
-	result->setAtomic(Unordered);
+	result->setAtomic(Monotonic);
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getABITypeAlignment(storeType));
 
@@ -152,7 +152,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	StoreInst *result = builder.CreateStore(val, ptr);
 
 	// Guarantee the data stored one piece.
-	result->setAtomic(Unordered);
+	result->setAtomic(Monotonic);
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getABITypeAlignment(storeType));
 
