@@ -24,7 +24,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
+import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
@@ -101,7 +101,7 @@ public abstract class ObjectValuePartFnIR
 		final ValOp result =
 				function.arg(function, OBJECT_VAL.value())
 				.op(builder, getValueStruct())
-				.setStoreMode(INITIAL_VAL_STORE);
+				.setStoreMode(TEMP_VAL_STORE);
 		final DefDirs dirs =
 				builder.dirs(function, failure.head())
 				.value(result)

@@ -20,13 +20,9 @@
 package org.o42a.core.ir.value.struct;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.CondBlock;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -91,6 +87,7 @@ public abstract class ValueOp {
 
 		code.acquireBarrier();
 
+		final Block definite = code.addBlock("definite");
 		final ValOp value =
 				object()
 				.objectType(code)
@@ -98,19 +95,15 @@ public abstract class ValueOp {
 				.data(code)
 				.value(code)
 				.op(getBuilder(), getValueStruct());
-		final CondBlock indefinite =
-				value.loadIndefinite(null, code, ATOMIC)
-				.branch(code, "val_indef", "val_def");
-		final Block definite = indefinite.otherwise();
+
+		value.loadIndefinite(null, code, ATOMIC)
+		.goUnless(code, definite.head());
+		write(dirs);
+		code.dump(this + " value calculated: ", value);
 
 		definite.dump(this + " value is definite: ", value);
 		value.go(definite, dirs);
 		definite.go(code.tail());
-
-		evaluateValue(indefinite, value, dirs.falseDir());
-
-		indefinite.dump(this + " value calculated: ", value);
-		indefinite.go(code.tail());
 
 		return value;
 	}
@@ -123,15 +116,5 @@ public abstract class ValueOp {
 	}
 
 	protected abstract ValOp write(ValDirs dirs);
-
-	private void evaluateValue(Block code, ValOp value, CodePos falseDir) {
-
-		final ValDirs dirs = getBuilder().dirs(code, falseDir).value(value);
-
-		value.setStoreMode(INITIAL_VAL_STORE);
-		write(dirs);
-		dirs.done();
-		value.setStoreMode(ASSIGNMENT_VAL_STORE);
-	}
 
 }
