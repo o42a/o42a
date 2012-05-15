@@ -424,17 +424,21 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 	std::vector<Constant*> *data =
 				from_ptr<std::vector<Constant*> >(structPtr);
 	IntegerType *int64type = Type::getInt64Ty(module->getContext());
-	Constant *result = ConstantExpr::getPtrToInt(ptr, int64type);
+	uint64_t ptrSize =
+			module->getTargetData().getTypeSizeInBits(ptr->getType());
 
-	if (module->getTargetData().isLittleEndian()) {
-		// If the target is little-endian, move the pointer data so that
-		// it become available at int64 address.
+	// Bit-cast pointer to integer.
+	Constant *result = ConstantExpr::getBitCast(
+			ptr,
+			IntegerType::get(module->getContext(), ptrSize));
+	uint64_t sizeDiff = 64 - ptrSize;
 
-		uint64_t ptrSize =
-				module->getTargetData().getTypeSizeInBits(ptr->getType());
-		uint64_t sizeDiff = 64 - ptrSize;
-
-		if (sizeDiff) {
+	if (sizeDiff) {
+	    // Extend to 64-bit integer if necessary.
+		result = ConstantExpr::getIntegerCast(result, int64type, false);
+		if (module->getTargetData().isLittleEndian()) {
+			// If the target is little-endian, move the pointer data so that
+			// it become available at int64 address.
 			result = ConstantExpr::getExactLShr(
 					result,
 					ConstantInt::get(int64type, sizeDiff));
