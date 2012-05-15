@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
 import org.o42a.codegen.code.Block;
@@ -76,7 +77,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		final Block code = dirs.code();
 		final ObjectOp valueObject = value.materialize(dirs);
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
-		final ObjectIRType.Op knownBound = boundRec.load(null, code);
+		final ObjectIRType.Op knownBound = boundRec.load(null, code, ATOMIC);
 
 		// Bound is already known.
 		final CondBlock boundUnknown =
@@ -94,9 +95,8 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				targetType,
 				true);
 
-		ptr().object(null, boundKnown).store(
-				boundKnown,
-				castObject.toData(null, boundKnown));
+		ptr().object(null, boundKnown)
+		.store(boundKnown, castObject.toData(null, boundKnown), ATOMIC);
 		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());

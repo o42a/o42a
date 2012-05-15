@@ -79,8 +79,6 @@
 			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
 			<arg line="-o/dev/null"/>
 			<arg line="o42a/all_tests.o42a"/>
-			<arg line="-normalize=0"/>
-			<arg line="-analyze-uses=0"/>
 		</java>
 	</target>
 
