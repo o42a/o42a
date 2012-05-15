@@ -20,16 +20,17 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.value.ValAtomicity.VAR_ASSIGNMENT;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructRecOp;
@@ -37,8 +38,6 @@ import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -112,7 +111,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		return this.assigner = getGenerator().newFunction().create(
 				getObjectIR().getId().detail("assigner"),
 				VARIABLE_ASSIGNER,
-				new AssignerBuilder()).getPointer();
+				new AssignerBuilder(this)).getPointer();
 	}
 
 	@Override
@@ -272,63 +271,6 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		return definedFld.getAssigner();
 	}
 
-	private void buildAssigner(Function<VariableAssignerFunc> assigner) {
-
-		final Block failure = assigner.addBlock("failure");
-		final ObjBuilder builder = new ObjBuilder(
-				assigner,
-				failure.head(),
-				getBodyIR(),
-				getBodyIR().getAscendant(),
-				getBodyIR().getObjectIR().isExact() ? EXACT : COMPATIBLE);
-		final CodeDirs dirs =
-				builder.dirs(assigner, failure.head());
-
-		final AssignerFldOp fld = op(assigner, builder.host());
-		final TypeRef typeRef = linkStruct().getTypeRef();
-		final Obj typeObject = typeRef.typeObject(dummyUser());
-		final RefOp boundRef = typeRef.op(builder.host());
-		final ObjectTypeOp bound =
-				boundRef.target(dirs).materialize(dirs).objectType(assigner);
-
-		fld.ptr().bound(null, assigner).store(assigner, bound.ptr());
-
-		final ObjectOp valueObject = anonymousObject(
-				builder,
-				assigner.arg(assigner, VARIABLE_ASSIGNER.value()),
-				builder.getContext().getVoid());
-
-		final ObjectOp castObject = valueObject.dynamicCast(
-				assigner.id("cast_target"),
-				dirs,
-				typeObject.ir(getGenerator())
-				.getTypeIR().op(builder, assigner),
-				typeObject,
-				true);
-
-		fld.value(assigner).store(
-				assigner,
-				castObject.toAny(null, assigner));
-		assigner.bool(true).returnValue(assigner);
-
-		if (failure.exists()) {
-
-			final ObjectIR falseIR =
-					builder.getContext().getFalse().ir(getGenerator());
-
-			fld.value(failure).store(
-					failure,
-					falseIR.op(builder, failure).toAny(null, failure));
-			fld.ptr().bound(null, failure).store(
-					failure,
-					falseIR.getTypeIR()
-					.getInstance()
-					.pointer(getGenerator())
-					.op(null, failure));
-			failure.bool(false).returnValue(failure);
-		}
-	}
-
 	public static final class Op extends Fld.Op<Op> {
 
 		Op(StructWriter<Op> writer) {
@@ -388,12 +330,45 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 	}
 
-	private final class AssignerBuilder
-			implements FunctionBuilder<VariableAssignerFunc> {
+	private static final class AssignerBuilder
+			extends AbstractAssignerBuilder<AssignerFldOp> {
+
+		private final AssignerFld fld;
+
+		AssignerBuilder(AssignerFld fld) {
+			this.fld = fld;
+		}
 
 		@Override
-		public void build(Function<VariableAssignerFunc> function) {
-			buildAssigner(function);
+		protected TypeRef getTypeRef() {
+			return this.fld.linkStruct().getTypeRef();
+		}
+
+		@Override
+		protected ObjectBodyIR getBodyIR() {
+			return this.fld.getBodyIR();
+		}
+
+		@Override
+		protected AssignerFldOp op(Code code, ObjOp host) {
+			return this.fld.op(code, host);
+		}
+
+		@Override
+		protected void storeBound(
+				Code code,
+				AssignerFldOp fld,
+				ObjectIRType.Op bound) {
+			fld.ptr().bound(null, code).store(code, bound, ATOMIC);
+		}
+
+		@Override
+		protected void storeObject(
+				Block code,
+				AssignerFldOp fld,
+				ObjectOp object) {
+			fld.value(code)
+			.store(code, object.toAny(null, code), VAR_ASSIGNMENT);
 		}
 
 	}

@@ -20,6 +20,7 @@
 package org.o42a.core.ir.value;
 
 import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.*;
 import static org.o42a.core.ir.value.ValStoreMode.ASSIGNMENT_VAL_STORE;
@@ -279,12 +280,14 @@ public abstract class ValOp extends IROp {
 				code,
 				expected,
 				code.int64(-1));
-		final Block assign = code.addBlock("assign");
+		final Block skip = code.addBlock("skip");
 
-		expected.eq(code.id("unchanged"), code, old).go(code, assign.head());
+		expected.eq(code.id("assigned"), code, old)
+		.goUnless(code, skip.head());
 
-		flags.store(assign, code.int32(0), atomicity.toAtomicity());
-		assign.go(code.tail());
+		flags.store(code, code.int32(0), atomicity.toAtomicity());
+
+		skip.go(code.tail());
 
 		return this;
 	}
@@ -386,12 +389,26 @@ public abstract class ValOp extends IROp {
 		assert !storage.getValueStructIR().hasLength() :
 			"Can not store pointer without length to " + getValueType();
 
-		storage.unuseVal(code, this);
-		value(null, code).toPtr(null, code).store(code, pointer);
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
-		storage.useVal(code, this, null);
+		return storePointer(code, pointer, NOT_ATOMIC);
+	}
 
-		return this;
+	public final ValOp store(
+			Block code,
+			AnyOp pointer,
+			ValAtomicity atomicity) {
+
+		final ValueStorageIR storage = getStoreMode().storage(this);
+
+		assert storage.getValueStructIR().hasValue() :
+			"Can not store value to " + getValueType();
+		assert !storage.getValueStructIR().hasLength() :
+			"Can not store pointer without length to " + getValueType();
+
+		if (!atomicity.isVarAssignment()) {
+			return storePointer(code, pointer, atomicity.toAtomicity());
+		}
+
+		return assignPointer(code, pointer, atomicity.toAtomicity());
 	}
 
 	public final ValOp store(
@@ -487,6 +504,35 @@ public abstract class ValOp extends IROp {
 		return uexternal.lowestBit(flagId, code);
 	}
 
+	private ValOp storePointer(Code code, AnyOp pointer, Atomicity atomicity) {
+		value(null, code).toPtr(null, code)
+		.store(code, pointer, atomicity);
+		flags(null, code)
+		.store(code, code.int32(Val.CONDITION_FLAG), atomicity);
+		return this;
+	}
+
+	private ValOp assignPointer(
+			Block code,
+			AnyOp pointer,
+			Atomicity atomicity) {
+
+		final Block skip = code.addBlock("skip");
+		final AnyRecOp rec = value(null, code).toPtr(null, code);
+		final AnyOp expected = rec.load(code.id("expected"), code, ATOMIC);
+		final AnyOp old =
+				rec.testAndSet(code.id("old"), code, expected, pointer);
+
+		old.eq(code.id("assigned"), code, expected)
+		.goUnless(code, skip.head());
+
+		flags(null, code).store(code, code.int32(CONDITION_FLAG), atomicity);
+
+		skip.go(code.tail());
+
+		return this;
+	}
+
 	private ValOp storeVal(Code code, Val value, Atomicity atomicity) {
 		assert (value.getValueType() == getValueType()
 				|| !value.getCondition() && value.isVoid()) :
@@ -532,7 +578,7 @@ public abstract class ValOp extends IROp {
 		final ValOp preserved = code.getAllocator().allocation().allocate(
 				code.id("preserved"),
 				VAL_TYPE).op(getBuilder(), getValueStruct());
-		final Block changed = code.addBlock("changed");
+		final Block skip = code.addBlock("skip");
 		final Ptr<AnyOp> pointer = value.getPointer();
 
 		if (pointer != null && value.getCondition()) {
@@ -548,8 +594,8 @@ public abstract class ValOp extends IROp {
 					expected,
 					pointer.op(null, code));
 
-			old.eq(code.id("unchanged"), code, expected)
-			.goUnless(code, changed.head());
+			old.eq(code.id("assigned"), code, expected)
+			.goUnless(code, skip.head());
 
 			preserved.flags(null, code).store(code, flags.load(null, code));
 			if (storage.getValueStructIR().hasLength()) {
@@ -572,7 +618,8 @@ public abstract class ValOp extends IROp {
 					? code.int64(value.getValue())
 					: code.int64(-1));
 
-			old.ne(code.id("changed"), code, expected).go(code, changed.head());
+			old.eq(code.id("assigned"), code, expected)
+			.goUnless(code, skip.head());
 
 			preserved.flags(null, code).store(code, flags.load(null, code));
 			if (storage.getValueStructIR().hasLength()) {
@@ -595,7 +642,7 @@ public abstract class ValOp extends IROp {
 					atomicity);
 		}
 
-		changed.go(code.tail());
+		skip.go(code.tail());
 
 		return this;
 	}
@@ -651,7 +698,7 @@ public abstract class ValOp extends IROp {
 		final ValOp preserved = code.getAllocator().allocation().allocate(
 				code.id("preserved"),
 				VAL_TYPE).op(getBuilder(), getValueStruct());
-		final Block changed = code.addBlock("changed");
+		final Block skip = code.addBlock("skip");
 
 		final Int64op expected = rawValue.load(
 				code.id("expected"),
@@ -663,7 +710,7 @@ public abstract class ValOp extends IROp {
 				expected,
 				value.rawValue(null, code).load(null, code));
 
-		old.ne(code.id("changed"), code, expected).go(code, changed.head());
+		old.eq(code.id("assigned"), code, expected).goUnless(code, skip.head());
 
 		preserved.flags(null, code).store(code, flags.load(null, code));
 		if (storage.getValueStructIR().hasLength()) {
@@ -681,7 +728,7 @@ public abstract class ValOp extends IROp {
 		}
 		storage.useVal(code, this, value);
 
-		changed.go(code.tail());
+		skip.go(code.tail());
 
 		return this;
 	}

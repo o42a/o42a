@@ -20,8 +20,10 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.value.ValAtomicity.VAR_ASSIGNMENT;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -76,7 +78,7 @@ public final class AssignerFldOp extends FldOp {
 		final Block code = dirs.code();
 		final ObjectOp valueObject = value.materialize(dirs);
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
-		final ObjectIRType.Op knownBound = boundRec.load(null, code);
+		final ObjectIRType.Op knownBound = boundRec.load(null, code, ATOMIC);
 
 		// Bound is already known.
 		final CondBlock boundUnknown =
@@ -94,7 +96,11 @@ public final class AssignerFldOp extends FldOp {
 				fld().linkStruct().getTypeRef().typeObject(dummyUser()),
 				true);
 
-		value(boundKnown).store(boundKnown, castObject.toAny(null, boundKnown));
+		value(boundKnown).store(
+				boundKnown,
+				castObject.toAny(null, boundKnown),
+				VAR_ASSIGNMENT);
+
 		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());
