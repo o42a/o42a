@@ -130,6 +130,15 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long valuePtr,
 			boolean atomic);
 
+	protected static native long testAndSet(
+			long blockPtr,
+			long instrPtr,
+			long id,
+			int idLen,
+			long pointerPtr,
+			long expectedPtr,
+			long valuePtr);
+
 	static native long toAny(
 			long blockPtr,
 			long instrPtr,
@@ -181,7 +190,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long pointerPtr,
 			long typePtr);
 
-	static native long castFuncTo(
+	protected static native long castFuncTo(
 			long blockPtr,
 			long instrPtr,
 			long id,
