@@ -44,9 +44,7 @@ final class AllocRecStore extends RecStore {
 	}
 
 	@Override
-	public <O extends Op> void load(
-			RecCOp<?, O, ?> rec,
-			OpBE<O> value) {
+	public <O extends Op> void load(RecCOp<?, O, ?> rec, OpBE<O> value) {
 		value.use(rec);
 	}
 

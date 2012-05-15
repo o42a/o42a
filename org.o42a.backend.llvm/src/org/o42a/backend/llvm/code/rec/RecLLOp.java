@@ -89,6 +89,28 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 				atomicity.isAtomic()));
 	}
 
+	@Override
+	public O testAndSet(CodeId id, Code code, O expected, O value) {
+
+		final LLCode llvm = llvm(code);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final long nextPtr = llvm.nextPtr();
+		final CodeId resultId =
+				code.getOpNames().binaryId(id, "tns", expected, value);
+
+		return createLoaded(
+				resultId,
+				nextPtr,
+				llvm.instr(testAndSet(
+						nextPtr,
+						llvm.nextInstr(),
+						ids.writeCodeId(resultId),
+						ids.length(),
+						getNativePtr(),
+						nativePtr(expected),
+						nativePtr(value))));
+	}
+
 	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
 
 }

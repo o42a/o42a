@@ -20,22 +20,20 @@
 package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
-import static org.o42a.backend.llvm.code.LLCode.nativePtr;
-import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 
 import org.o42a.backend.llvm.code.LLCode;
+import org.o42a.backend.llvm.code.rec.RecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
-import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
 
 
 public final class FuncLLOp<F extends Func<F>>
-		extends AllocPtrLLOp<FuncOp<F>>
+		extends RecLLOp<FuncOp<F>, F>
 		implements FuncOp<F> {
 
 	private final Signature<F> signature;
@@ -80,47 +78,12 @@ public final class FuncLLOp<F extends Func<F>>
 	}
 
 	@Override
-	public final F load(CodeId id, Code code) {
-		return load(id, code, NOT_ATOMIC);
-	}
-
-	@Override
-	public final F load(CodeId id, Code code, Atomicity atomicity) {
-
-		final LLCode llvm = llvm(code);
-		final NativeBuffer ids = llvm.getModule().ids();
-		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().derefId(id, this);
-
+	protected F createLoaded(CodeId id, long blockPtr, long nativePtr) {
 		return getSignature().op(new LLFunc<F>(
-				resultId,
+				id,
 				getSignature(),
-				nextPtr,
-				llvm.instr(load(
-						nextPtr,
-						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
-						ids.length(),
-						getNativePtr(),
-						atomicity.isAtomic()))));
-	}
-
-	@Override
-	public final void store(Code code, F value) {
-		store(code, value, NOT_ATOMIC);
-	}
-
-	@Override
-	public final void store(Code code, F value, Atomicity atomicity) {
-
-		final LLCode llvm = llvm(code);
-
-		llvm.instr(store(
-				llvm.nextPtr(),
-				llvm.nextInstr(),
-				getNativePtr(),
-				nativePtr(value),
-				atomicity.isAtomic()));
+				blockPtr,
+				nativePtr));
 	}
 
 	@Override

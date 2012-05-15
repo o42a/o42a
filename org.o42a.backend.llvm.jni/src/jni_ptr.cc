@@ -159,6 +159,29 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	return to_instr_ptr(result);
 }
 
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlong pointerPtr,
+		jlong expectedPtr,
+		jlong valuePtr) {
+
+	MAKE_BUILDER;
+	Value *pointer = from_ptr<Value>(pointerPtr);
+	Value *expected = from_ptr<Value>(expectedPtr);
+	Value *value = from_ptr<Value>(valuePtr);
+	AtomicCmpXchgInst *result =
+			builder.CreateAtomicCmpXchg(pointer, expected, value, Monotonic);
+
+	result->setName(StringRef(from_ptr<char>(id), idLen));
+
+	return to_instr_ptr(result);
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 		JNIEnv *,
 		jclass,

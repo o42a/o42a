@@ -155,6 +155,35 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 	}
 
 	@Override
+	public O testAndSet(CodeId id, Code code, O expected, O value) {
+
+		final CodeId derefId = code.getOpNames().derefId(id, this);
+		final CCode<?> ccode = cast(code);
+		final COp<O, ?> cExpected = cast(expected);
+		final COp<O, ?> cValue = cast(value);
+
+		return loaded(
+				new OpBE<O>(derefId, ccode) {
+					@Override
+					public void prepare() {
+						alwaysEmit();
+						store().store(this, RecCOp.this, cValue.backend());
+						store().load(RecCOp.this, this);
+						use(cValue);
+					}
+					@Override
+					protected O write() {
+						return backend().underlying().testAndSet(
+								getId(),
+								part().underlying(),
+								cExpected.backend().underlying(),
+								cValue.backend().underlying());
+					}
+				},
+				null);
+	}
+
+	@Override
 	protected final Usable<SimpleUsage> explicitUses() {
 		return this.explicitUses;
 	}

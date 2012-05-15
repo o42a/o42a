@@ -33,6 +33,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_store
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
+ * Method:    testAndSet
+ * Signature: (JJJIJJJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
  * Method:    toAny
  * Signature: (JJJIJ)J
  */
