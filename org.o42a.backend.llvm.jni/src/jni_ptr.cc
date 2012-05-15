@@ -85,7 +85,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 	LoadInst *result;
 
 	// Atomic operations support only integers.
-	if (storeType->isIntegerTy()) {
+	if (!storeType->isPointerTy()) {
 		result = builder.CreateLoad(
 				pointer,
 				StringRef(from_ptr<char>(id), idLen));
@@ -96,7 +96,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 				targetData.getTypeSizeInBits(storeType));
 
 		result = builder.CreateLoad(
-				builder.CreateBitCast(pointer, intType->getPointerTo()));
+				builder.CreatePointerCast(pointer, intType->getPointerTo()));
 	}
 
 	// Guarantee the data loaded one piece.
@@ -104,11 +104,11 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getTypeStoreSize(storeType));
 
-	if (storeType->isIntegerTy()) {
+	if (!storeType->isPointerTy()) {
 		return to_instr_ptr(result);
 	}
 
-	return to_instr_ptr(builder.CreateBitCast(
+	return to_instr_ptr(builder.CreateIntToPtr(
 			result,
 			storeType,
 			StringRef(from_ptr<char>(id), idLen)));
@@ -139,7 +139,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	Value *val;
 
 	// Atomic operations support only integers.
-	if (storeType->isIntegerTy()) {
+	if (!storeType->isPointerTy()) {
 		ptr = pointer;
 		val = value;
 	} else {
@@ -148,8 +148,8 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 				module->getContext(),
 				targetData.getTypeSizeInBits(storeType));
 
-		ptr = builder.CreateBitCast(pointer, intType->getPointerTo());
-		val = builder.CreateBitCast(value, intType);
+		ptr = builder.CreatePointerCast(pointer, intType->getPointerTo());
+		val = builder.CreatePtrToInt(value, intType);
 	}
 
 	StoreInst *result = builder.CreateStore(val, ptr);
@@ -184,7 +184,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 	Type *storeType = pointer->getType()->getContainedType(0);
 
 	// Atomic operations support only integers.
-	if (storeType->isIntegerTy()) {
+	if (!storeType->isPointerTy()) {
 
 		AtomicCmpXchgInst *result = builder.CreateAtomicCmpXchg(
 				pointer,
@@ -201,12 +201,12 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 			module->getContext(),
 			targetData.getTypeSizeInBits(storeType));
 	AtomicCmpXchgInst *result = builder.CreateAtomicCmpXchg(
-			builder.CreateBitCast(pointer, intType->getPointerTo()),
-			builder.CreateBitCast(expected, intType->getPointerTo()),
-			builder.CreateBitCast(value, intType),
+			builder.CreatePointerCast(pointer, intType->getPointerTo()),
+			builder.CreatePtrToInt(expected, intType),
+			builder.CreatePtrToInt(value, intType),
 			Monotonic);
 
-	return to_instr_ptr(builder.CreateBitCast(
+	return to_instr_ptr(builder.CreateIntToPtr(
 			result,
 			storeType,
 			StringRef(from_ptr<char>(id), idLen)));
