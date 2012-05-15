@@ -82,33 +82,36 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 			builder.GetInsertBlock()->getParent()->getParent());
 	const TargetData &targetData = module->getTargetData();
 	Type *storeType = pointer->getType()->getContainedType(0);
-	Value *ptr;
+	LoadInst *result;
 
 	// Atomic operations support only integers.
 	if (storeType->isIntegerTy()) {
-		ptr = pointer;
+		result = builder.CreateLoad(
+				pointer,
+				StringRef(from_ptr<char>(id), idLen));
 	} else {
 
 		IntegerType *intType = IntegerType::get(
 				module->getContext(),
 				targetData.getTypeSizeInBits(storeType));
 
-		ptr = builder.CreateBitCast(pointer, intType->getPointerTo());
+		result = builder.CreateLoad(
+				builder.CreateBitCast(pointer, intType->getPointerTo()));
 	}
-
-	LoadInst *result =
-			builder.CreateLoad(ptr, StringRef(from_ptr<char>(id), idLen));
 
 	// Guarantee the data loaded one piece.
 	result->setAtomic(Monotonic);
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getABITypeAlignment(storeType));
 
-	if (ptr == pointer) {
+	if (storeType->isIntegerTy()) {
 		return to_instr_ptr(result);
 	}
 
-	return to_instr_ptr(builder.CreateBitCast(result, storeType));
+	return to_instr_ptr(builder.CreateBitCast(
+			result,
+			storeType,
+			StringRef(from_ptr<char>(id), idLen)));
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
@@ -174,12 +177,39 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *expected = from_ptr<Value>(expectedPtr);
 	Value *value = from_ptr<Value>(valuePtr);
-	AtomicCmpXchgInst *result =
-			builder.CreateAtomicCmpXchg(pointer, expected, value, Monotonic);
 
-	result->setName(StringRef(from_ptr<char>(id), idLen));
+	o42ac::BackendModule *module = static_cast<o42ac::BackendModule *>(
+			builder.GetInsertBlock()->getParent()->getParent());
+	const TargetData &targetData = module->getTargetData();
+	Type *storeType = pointer->getType()->getContainedType(0);
 
-	return to_instr_ptr(result);
+	// Atomic operations support only integers.
+	if (storeType->isIntegerTy()) {
+
+		AtomicCmpXchgInst *result = builder.CreateAtomicCmpXchg(
+				pointer,
+				expected,
+				value,
+				Monotonic);
+
+		result->setName(StringRef(from_ptr<char>(id), idLen));
+
+		return to_instr_ptr(result);
+	}
+
+	IntegerType *intType = IntegerType::get(
+			module->getContext(),
+			targetData.getTypeSizeInBits(storeType));
+	AtomicCmpXchgInst *result = builder.CreateAtomicCmpXchg(
+			builder.CreateBitCast(pointer, intType->getPointerTo()),
+			builder.CreateBitCast(expected, intType->getPointerTo()),
+			builder.CreateBitCast(value, intType),
+			Monotonic);
+
+	return to_instr_ptr(builder.CreateBitCast(
+			result,
+			storeType,
+			StringRef(from_ptr<char>(id), idLen)));
 }
 
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
