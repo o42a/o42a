@@ -102,7 +102,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 	// Guarantee the data loaded one piece.
 	result->setAtomic(Monotonic);
 	// Atomic operations require alignment.
-	result->setAlignment(targetData.getABITypeAlignment(storeType));
+	result->setAlignment(targetData.getTypeStoreSize(storeType));
 
 	if (storeType->isIntegerTy()) {
 		return to_instr_ptr(result);
@@ -157,7 +157,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	// Guarantee the data stored one piece.
 	result->setAtomic(Monotonic);
 	// Atomic operations require alignment.
-	result->setAlignment(targetData.getABITypeAlignment(storeType));
+	result->setAlignment(targetData.getTypeStoreSize(storeType));
 
 	return to_instr_ptr(result);
 }
