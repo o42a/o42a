@@ -139,6 +139,15 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 			long expectedPtr,
 			long valuePtr);
 
+	protected static native long atomicRMW(
+			long blockPtr,
+			long instrPtr,
+			long id,
+			int idLen,
+			long pointerPtr,
+			int rmwKind,
+			long operandPtr);
+
 	static native long toAny(
 			long blockPtr,
 			long instrPtr,

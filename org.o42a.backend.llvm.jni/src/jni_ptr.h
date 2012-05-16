@@ -41,6 +41,14 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
+ * Method:    atomicRMW
+ * Signature: (JJJIJIJ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_atomicRMW
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jint, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
  * Method:    toAny
  * Signature: (JJJIJ)J
  */

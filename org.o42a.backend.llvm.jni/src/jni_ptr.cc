@@ -212,6 +212,39 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 			StringRef(from_ptr<char>(id), idLen)));
 }
 
+static const AtomicRMWInst::BinOp RMW_KINDS[] = {
+	AtomicRMWInst::Add,
+	AtomicRMWInst::Sub,
+	AtomicRMWInst::Or,
+	AtomicRMWInst::And,
+	AtomicRMWInst::Xor,
+	AtomicRMWInst::Nand
+};
+
+jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_atomicRMW(
+		JNIEnv *,
+		jclass,
+		jlong blockPtr,
+		jlong instrPtr,
+		jlong id,
+		jint idLen,
+		jlong pointerPtr,
+		jint rmwKind,
+		jlong operandPtr) {
+
+	MAKE_BUILDER;
+	Value* pointer = from_ptr < Value > (pointerPtr);
+	Value* operand = from_ptr < Value > (operandPtr);
+	AtomicRMWInst::BinOp op = RMW_KINDS[rmwKind];
+	AtomicRMWInst* result =
+			builder.CreateAtomicRMW(op, pointer, operand, Monotonic);
+
+	result->setName(StringRef(from_ptr<char>(id), idLen));
+
+	return to_instr_ptr(result);
+
+}
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_toAny(
 		JNIEnv *,
 		jclass,
