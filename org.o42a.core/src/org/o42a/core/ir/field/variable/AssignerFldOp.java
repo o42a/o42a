@@ -127,8 +127,8 @@ public final class AssignerFldOp extends FldOp {
 		dirs.code().dumpName(kind + " field: ", this);
 		dirs.code().dumpName(kind + " host: ", host());
 
-		final ValOp hostValue = value(dirs.code());
-		final ValDirs valDirs = dirs.nested().value(hostValue);
+		final ValDirs valDirs = dirs.nested().value(
+				host().getAscendant().value().getValueStruct());
 		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);
 
