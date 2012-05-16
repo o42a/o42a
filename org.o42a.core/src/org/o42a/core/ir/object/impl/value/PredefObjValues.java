@@ -127,10 +127,11 @@ final class PredefObjValues {
 			if (!this.value.isTypeAware()) {
 				return ValueStruct.VOID;
 			}
-			return this.valueType
-					.typeObject(this.context.getIntrinsics())
-					.value()
-					.getValueStruct();
+			return typeObject().value().getValueStruct();
+		}
+
+		private Obj typeObject() {
+			return this.valueType.typeObject(this.context.getIntrinsics());
 		}
 
 		@Override
@@ -138,13 +139,13 @@ final class PredefObjValues {
 				Function<ObjectValueFunc> function,
 				CodePos failureDir) {
 
-			final Obj voidObject = this.context.getVoid();
+			final Obj typeObject = typeObject();
 
 			return new ObjBuilder(
 					function,
 					failureDir,
-					voidObject.ir(function.getGenerator()).getMainBodyIR(),
-					voidObject,
+					typeObject.ir(function.getGenerator()).getMainBodyIR(),
+					typeObject,
 					DERIVED);
 		}
 

@@ -25,7 +25,7 @@ import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.object.link.LinkValueStruct;
 
 
-public class VariableValueStructIR extends LinkValueStructIR {
+public class VariableValueStructIR extends AbstractLinkValueStructIR {
 
 	public VariableValueStructIR(
 			Generator generator,
@@ -35,7 +35,7 @@ public class VariableValueStructIR extends LinkValueStructIR {
 
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
-		return new VariableIR(getValueStruct(), objectIR);
+		return new VariableIR(this, objectIR);
 	}
 
 }

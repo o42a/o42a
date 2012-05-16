@@ -19,39 +19,52 @@
 */
 package org.o42a.core.object.link.impl;
 
+import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType.Op;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.struct.AbstractValueStructIR;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
 
 
-public class GetterValueStructIR
-		extends ValueStructIR<LinkValueStruct, KnownLink> {
+abstract class AbstractLinkValueStructIR
+		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
 
-	public GetterValueStructIR(
+	private int constSeq;
+
+	AbstractLinkValueStructIR(
 			Generator generator,
 			LinkValueStruct valueStruct) {
 		super(generator, valueStruct);
 	}
 
 	@Override
-	public Ptr<Op> valPtr(KnownLink value) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public Val val(KnownLink value) {
-		throw new UnsupportedOperationException();
+
+		final Obj target =
+				value.getTargetRef()
+				.getRef()
+				.getResolution()
+				.toObject();
+		final ObjectIR targetIR = target.ir(getGenerator());
+		final Ptr<ObjectBodyIR.Op> mainBodyPtr =
+				targetIR.getMainBodyIR().pointer(getGenerator());
+
+		return new Val(
+				getValueStruct(),
+				Val.CONDITION_FLAG,
+				0,
+				mainBodyPtr.toAny());
 	}
 
 	@Override
-	public ValueIR valueIR(ObjectIR objectIR) {
-		return new GetterIR(this, objectIR);
+	protected CodeId constId(KnownLink value) {
+		return getGenerator().id("CONST").sub("LINK")
+				.anonymous(++this.constSeq);
 	}
 
 }

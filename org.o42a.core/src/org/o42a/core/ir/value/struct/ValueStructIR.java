@@ -20,11 +20,9 @@
 package org.o42a.core.ir.value.struct;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.value.ValueStruct;
@@ -35,9 +33,6 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	private final Generator generator;
 	private final S valueStruct;
-	private ValueStorageIR tempStorage;
-	private ValueStorageIR initialStorage;
-	private ValueStorageIR assignmentStorage;
 
 	public ValueStructIR(Generator generator, S valueStruct) {
 		this.generator = generator;
@@ -64,34 +59,11 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return false;
 	}
 
-	public final ValueStorageIR getTempStorage() {
-		if (this.tempStorage != null) {
-			return this.tempStorage;
-		}
-		return this.tempStorage = createTempStorage();
-	}
-
-	public final ValueStorageIR getInitialStorage() {
-		if (this.initialStorage != null) {
-			return this.initialStorage;
-		}
-		return this.initialStorage = createInitialStorage();
-	}
-
-	public final ValueStorageIR getAssignmentStorage() {
-		if (this.assignmentStorage != null) {
-			return this.assignmentStorage;
-		}
-		return this.assignmentStorage = createTempStorage();
-	}
-
 	public abstract Val val(T value);
 
 	public abstract Ptr<ValType.Op> valPtr(T value);
 
-	public ValueIR valueIR(ObjectIR objectIR) {
-		return new DefaultValueIR(getValueStruct(), objectIR);
-	}
+	public abstract ValueIR valueIR(ObjectIR objectIR);
 
 	@Override
 	public String toString() {
@@ -101,81 +73,8 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 		return this.valueStruct + " IR";
 	}
 
-	protected ValueStorageIR createTempStorage() {
-		return new TempStorageIR();
-	}
-
-	protected ValueStorageIR createInitialStorage() {
-		return new InitialStorageIR();
-	}
-
-	protected ValueStorageIR createAssignmentStorage() {
-		return new AssignmentStorageIR();
-	}
-
-	private final class TempStorageIR implements ValueStorageIR {
-
-		@Override
-		public final ValueStructIR<?, ?> getValueStructIR() {
-			return ValueStructIR.this;
-		}
-
-		@Override
-		public void useVal(Code code, ValOp target, ValOp value) {
-		}
-
-		@Override
-		public void unuseVal(Code code, ValOp target) {
-		}
-
-	}
-
-	private final class InitialStorageIR implements ValueStorageIR {
-
-		@Override
-		public final ValueStructIR<?, ?> getValueStructIR() {
-			return ValueStructIR.this;
-		}
-
-		@Override
-		public void useVal(Code code, ValOp target, ValOp value) {
-			if (hasLength()
-					&& (value == null
-					|| !value.ptr().getAllocClass().isStatic())) {
-				target.use(code);
-			}
-		}
-
-		@Override
-		public void unuseVal(Code code, ValOp value) {
-		}
-
-
-	}
-
-	private final class AssignmentStorageIR implements ValueStorageIR {
-
-		@Override
-		public final ValueStructIR<?, ?> getValueStructIR() {
-			return ValueStructIR.this;
-		}
-
-		@Override
-		public void useVal(Code code, ValOp target, ValOp value) {
-			if (hasLength()
-					&& (value == null
-					|| !value.ptr().getAllocClass().isStatic())) {
-				target.use(code);
-			}
-		}
-
-		@Override
-		public void unuseVal(Code code, ValOp value) {
-			if (hasLength()) {
-				value.unuse(code);
-			}
-		}
-
+	protected final ValueIR defaultValueIR(ObjectIR objectIR) {
+		return new DefaultValueIR(this, objectIR);
 	}
 
 }

@@ -19,50 +19,21 @@
 */
 package org.o42a.core.object.link.impl;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.struct.AbstractValueStructIR;
-import org.o42a.core.object.Obj;
-import org.o42a.core.object.link.KnownLink;
+import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.object.link.LinkValueStruct;
 
 
-public class LinkValueStructIR
-		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
-
-	private int constSeq;
+public class LinkValueStructIR extends AbstractLinkValueStructIR {
 
 	public LinkValueStructIR(Generator generator, LinkValueStruct valueStruct) {
 		super(generator, valueStruct);
 	}
 
 	@Override
-	public Val val(KnownLink value) {
-
-		final Obj target =
-				value.getTargetRef()
-				.getRef()
-				.getResolution()
-				.toObject();
-		final ObjectIR targetIR = target.ir(getGenerator());
-		final Ptr<ObjectBodyIR.Op> mainBodyPtr =
-				targetIR.getMainBodyIR().pointer(getGenerator());
-
-		return new Val(
-				getValueStruct(),
-				Val.CONDITION_FLAG,
-				0,
-				mainBodyPtr.toAny());
-	}
-
-	@Override
-	protected CodeId constId(KnownLink value) {
-		return getGenerator().id("CONST").sub("LINK")
-				.anonymous(++this.constSeq);
+	public ValueIR valueIR(ObjectIR objectIR) {
+		return defaultValueIR(objectIR);
 	}
 
 }

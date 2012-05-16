@@ -19,10 +19,13 @@
 */
 package org.o42a.core.ir.value;
 
+import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
+
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -136,6 +139,26 @@ public final class ValType extends Type<ValType.Op> {
 		public void allocated(AllocationCode code, StructOp<?> enclosing) {
 			this.allocatedOnStack = true;
 			super.allocated(code, enclosing);
+		}
+
+		public final void use(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_val_use", VAL_USE);
+
+			func.op(null, code).call(code, this);
+		}
+
+		public final void unuse(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_val_unuse", VAL_USE);
+
+			func.op(null, code).call(code, this);
 		}
 
 		final boolean isAllocatedOnStack() {

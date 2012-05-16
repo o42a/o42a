@@ -25,8 +25,10 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
@@ -82,6 +84,12 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 			return this.valPtr = global.getPointer();
 		}
 
+		@Override
+		public ValueIR valueIR(ObjectIR objectIR) {
+			return defaultValueIR(objectIR);
+		}
+
 	}
+
 }
 

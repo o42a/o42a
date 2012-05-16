@@ -22,8 +22,6 @@ package org.o42a.core.ir.object.impl.value;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.object.op.ObjectValueStartFunc.OBJECT_VALUE_START;
-import static org.o42a.core.ir.value.ValStoreMode.INITIAL_VAL_STORE;
-import static org.o42a.core.ir.value.ValStoreMode.TEMP_VAL_STORE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
@@ -32,10 +30,10 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.op.ObjectValueStartFunc;
-import org.o42a.core.ir.value.ValAtomicity;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 public abstract class AbstractObjectValueBuilder
@@ -45,19 +43,20 @@ public abstract class AbstractObjectValueBuilder
 	public void build(Function<ObjectValueFunc> function) {
 
 		final ObjBuilder builder = builder(function);
-		final ValAtomicity atomicity = atomicity();
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
-				.op(builder, getValueStruct())
-				.setStoreMode(TEMP_VAL_STORE);
+				.op(builder, getValueStruct());
 		final ObjOp host = builder.host();
+		final ValueOp value = host.value();
+
+		assert getValueStruct().getValueType() == value.getValueType() :
+			"Wrong value type";
+
 		final ObjectIRData.Op data = data(function, function);
 		final ObjectDataFunc finishOp;
-		final ValOp value;
 
-		if (!atomicity.isAtomic()) {
+		if (!lock()) {
 			finishOp = null;
-			value = result;
 		} else {
 
 			final FuncPtr<ObjectValueStartFunc> startFn =
@@ -78,8 +77,6 @@ public abstract class AbstractObjectValueBuilder
 			.goUnless(function, finish.head());
 
 			finish.returnVoid();
-
-			value = data.value(function).op(builder, getValueStruct());
 		}
 
 		final Block done = function.addBlock("done");
@@ -97,8 +94,7 @@ public abstract class AbstractObjectValueBuilder
 			code.debug("Indefinite");
 			result.storeFalse(code);
 			if (finishOp != null) {
-				code.releaseBarrier();
-				value.storeFalse(code, atomicity);
+				value.initToFalse(code);
 				finishOp.call(code, data);
 			}
 			code.returnVoid();
@@ -107,8 +103,7 @@ public abstract class AbstractObjectValueBuilder
 			exit.debug("False");
 			result.storeFalse(exit);
 			if (finishOp != null) {
-				exit.releaseBarrier();
-				value.storeFalse(exit, atomicity);
+				value.initToFalse(exit);
 				finishOp.call(exit, data);
 			}
 			exit.returnVoid();
@@ -116,8 +111,7 @@ public abstract class AbstractObjectValueBuilder
 		if (done.exists()) {
 			result.store(done, dirs.result());
 			if (finishOp != null) {
-				done.releaseBarrier();
-				value.store(done, result, atomicity);
+				value.init(done, result);
 				finishOp.call(done, data);
 			}
 			done.returnVoid();
@@ -126,17 +120,8 @@ public abstract class AbstractObjectValueBuilder
 
 	protected abstract ValueStruct<?, ?> getValueStruct();
 
-	protected ValAtomicity atomicity() {
-
-		final ValueType<?> valueType = getValueStruct().getValueType();
-
-		if (valueType.isStateless()) {
-			return ValAtomicity.NOT_ATOMIC_VAL;
-		}
-		if (valueType.isLink() && valueType.isVariable()) {
-			return ValAtomicity.VAR_ASSIGNMENT;
-		}
-		return ValAtomicity.ATOMIC_VAL;
+	protected boolean lock() {
+		return !getValueStruct().getValueType().isStateless();
 	}
 
 	protected abstract ObjBuilder createBuilder(
@@ -160,23 +145,17 @@ public abstract class AbstractObjectValueBuilder
 		if (failure.exists()) {
 			failure.debug("Failure");
 
-			final ValAtomicity atomicity = atomicity();
 			final ValOp result =
 					function.arg(failure, OBJECT_VALUE.value())
-					.op(builder, getValueStruct())
-					.setStoreMode(TEMP_VAL_STORE);
+					.op(builder, getValueStruct());
 
 			result.storeFalse(failure);
-			if (atomicity.isAtomic()) {
+			if (lock()) {
 
-				final ValOp value =
-						data(failure, function)
-						.value(failure)
-						.op(builder, getValueStruct())
-						.setStoreMode(INITIAL_VAL_STORE);
+				final ValType.Op value = data(failure, function).value(failure);
 
 				failure.releaseBarrier();
-				value.storeFalse(failure, atomicity);
+				value.flags(null, failure).store(failure, failure.int32(0));
 			}
 			failure.returnVoid();
 		}

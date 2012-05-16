@@ -25,7 +25,9 @@ import static org.o42a.util.string.StringCodec.stringToBinary;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.struct.ExternalValueStructIR;
+import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
@@ -66,6 +68,11 @@ public class StringValueStruct extends SingleValueStruct<String> {
 
 		IR(Generator generator, StringValueStruct valueStruct) {
 			super(generator, valueStruct);
+		}
+
+		@Override
+		public ValueIR valueIR(ObjectIR objectIR) {
+			return defaultValueIR(objectIR);
 		}
 
 		@Override

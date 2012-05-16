@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.value.ValAtomicity.VAR_ASSIGNMENT;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.codegen.CodeId;
@@ -367,8 +366,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 				Block code,
 				AssignerFldOp fld,
 				ObjectOp object) {
-			fld.value(code)
-			.store(code, object.toAny(null, code), VAR_ASSIGNMENT);
+			fld.assignValue(code, object);
 		}
 
 	}
