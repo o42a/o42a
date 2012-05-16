@@ -20,6 +20,6 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Int64recOp extends AtomicRecOp<Int64recOp, Int64op> {
+public interface Int64recOp extends IntRecOp<Int64recOp, Int64op> {
 
 }

@@ -26,16 +26,17 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AtomicRecOp;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.IntOp;
+import org.o42a.codegen.code.op.IntRecOp;
+import org.o42a.codegen.code.op.RMWKind;
 import org.o42a.codegen.data.AllocClass;
 
 
-public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
-		extends RecLLOp<R, O>
-		implements AtomicRecOp<R, O> {
+public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
+		extends AtomicRecLLOp<R, O>
+		implements IntRecOp<R, O> {
 
-	public AtomicRecLLOp(
+	public IntRecLLOp(
 			CodeId id,
 			AllocClass allocClass,
 			long blockPtr,
@@ -44,25 +45,28 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 	}
 
 	@Override
-	public O testAndSet(CodeId id, Code code, O expected, O value) {
+	public O atomicRMW(CodeId id, Code code, RMWKind kind, O operand) {
 
 		final LLCode llvm = llvm(code);
-		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "tns", expected, value);
+		final NativeBuffer ids = llvm.getModule().ids();
+		final CodeId resultId = code.getOpNames().binaryId(
+				id,
+				kind.name().toLowerCase(),
+				this,
+				operand);
 
 		return createLoaded(
 				resultId,
 				nextPtr,
-				llvm.instr(testAndSet(
+				llvm.instr(atomicRMW(
 						nextPtr,
 						llvm.nextInstr(),
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						nativePtr(expected),
-						nativePtr(value))));
+						kind.ordinal(),
+						nativePtr(operand))));
 	}
 
 }

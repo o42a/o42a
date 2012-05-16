@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,6 +20,13 @@
 package org.o42a.codegen.code.op;
 
 
-public interface Int8recOp extends IntRecOp<Int8recOp, Int8op> {
+public enum RMWKind {
+
+	R_ADD_W,
+	R_SUB_W,
+	R_OR_W,
+	R_AND_W,
+	R_XOR_W,
+	R_NAND_W
 
 }

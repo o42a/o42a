@@ -23,78 +23,65 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.COp;
-import org.o42a.backend.constant.code.op.InstrBE;
+import org.o42a.backend.constant.code.op.IntCOp;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.AtomicRecOp;
-import org.o42a.codegen.code.op.Atomicity;
-import org.o42a.codegen.code.op.Op;
+import org.o42a.codegen.code.op.RMWKind;
+import org.o42a.codegen.code.op.IntOp;
+import org.o42a.codegen.code.op.IntRecOp;
 import org.o42a.codegen.data.Ptr;
 
 
-public abstract class AtomicRecCOp<
-		R extends AtomicRecOp<R, O>,
-		O extends Op,
-		T> extends RecCOp<R, O, T> implements AtomicRecOp<R, O> {
+public abstract class IntRecCOp<
+		R extends IntRecOp<R, O>,
+		O extends IntOp<O>,
+		T extends Number>
+				extends AtomicRecCOp<R, O, T>
+				implements IntRecOp<R, O> {
 
-	public AtomicRecCOp(OpBE<R> backend, RecStore store) {
+	public IntRecCOp(OpBE<R> backend, RecStore store) {
 		super(backend, store);
 	}
 
-	public AtomicRecCOp(OpBE<R> backend, RecStore store, Ptr<R> constant) {
+	public IntRecCOp(OpBE<R> backend, RecStore store, Ptr<R> constant) {
 		super(backend, store, constant);
 	}
 
 	@Override
-	public O testAndSet(CodeId id, Code code, O expected, O value) {
+	public O atomicRMW(
+			final CodeId id,
+			final Code code,
+			final RMWKind kind,
+			final O operand) {
 
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "tns", this, value);
 		final CCode<?> ccode = cast(code);
-		final COp<O, ?> cExpected = cast(expected);
-		final COp<O, ?> cValue = cast(value);
+		final CodeId resultId = code.getOpNames().binaryId(
+				id,
+				kind.name().toLowerCase(),
+				this,
+				operand);
+		@SuppressWarnings("unchecked")
+		final COp<O, T> cOperand = (IntCOp<O, T>) operand;
 
 		return loaded(
 				new OpBE<O>(resultId, ccode) {
 					@Override
 					public void prepare() {
 						alwaysEmit();
-						store().store(
-								this,
-								AtomicRecCOp.this, cValue.backend());
-						store().load(AtomicRecCOp.this, this);
-						use(cValue);
+						use(backend());
+						use(cOperand);
 					}
 					@Override
 					protected O write() {
-						return backend().underlying().testAndSet(
+						return backend().underlying().atomicRMW(
 								getId(),
 								part().underlying(),
-								cExpected.backend().underlying(),
-								cValue.backend().underlying());
+								kind,
+								cOperand.backend().underlying());
 					}
 				},
 				null);
-	}
-
-	@Override
-	protected O loadUnderlying(OpBE<O> be, Atomicity atomicity) {
-		return backend().underlying().load(
-				be.getId(),
-				be.part().underlying(),
-				atomicity);
-	}
-
-	@Override
-	protected void storeUnderlying(
-			InstrBE be,
-			COp<O, ?> value,
-			Atomicity atomicity) {
-		backend().underlying().store(
-				be.part().underlying(),
-				value.backend().underlying(),
-				atomicity);
 	}
 
 }

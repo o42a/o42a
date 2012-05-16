@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,7 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Code;
 
-public interface Int8recOp extends IntRecOp<Int8recOp, Int8op> {
+
+public interface IntRecOp<R extends AtomicRecOp<R, O>, O extends IntOp<O>>
+		extends AtomicRecOp<R, O> {
+
+	O atomicRMW(CodeId id, Code code, RMWKind kind, O operand);
 
 }

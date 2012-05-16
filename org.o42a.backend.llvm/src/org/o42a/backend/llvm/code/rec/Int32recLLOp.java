@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class Int32recLLOp
-		extends AtomicRecLLOp<Int32recOp, Int32op>
+		extends IntRecLLOp<Int32recOp, Int32op>
 		implements Int32recOp {
 
 	public Int32recLLOp(

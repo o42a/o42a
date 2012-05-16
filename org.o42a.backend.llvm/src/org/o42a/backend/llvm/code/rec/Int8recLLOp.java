@@ -27,7 +27,7 @@ import org.o42a.codegen.data.AllocClass;
 
 
 public final class Int8recLLOp
-		extends AtomicRecLLOp<Int8recOp, Int8op>
+		extends IntRecLLOp<Int8recOp, Int8op>
 		implements Int8recOp {
 
 	public Int8recLLOp(
