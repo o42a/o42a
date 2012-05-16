@@ -21,8 +21,10 @@ package org.o42a.core.value.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
@@ -71,6 +73,11 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 		@Override
 		public Ptr<Op> valPtr(Directive value) {
 			return ValueStruct.VOID.ir(getGenerator()).valPtr(Void.VOID);
+		}
+
+		@Override
+		public ValueIR valueIR(ObjectIR objectIR) {
+			return defaultValueIR(objectIR);
 		}
 
 	}

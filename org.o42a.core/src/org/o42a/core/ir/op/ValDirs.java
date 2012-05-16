@@ -28,7 +28,6 @@ import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValStoreMode;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -41,15 +40,6 @@ public abstract class ValDirs {
 	ValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
 		this.dirs = dirs;
 		this.valueStruct = valueStruct;
-	}
-
-	public final ValStoreMode getStoreMode() {
-		return topLevel().value().getStoreMode();
-	}
-
-	public final ValDirs setStoreMode(ValStoreMode storeMode) {
-		topLevel().value().setStoreMode(storeMode);
-		return this;
 	}
 
 	public final Generator getGenerator() {

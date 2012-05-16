@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.core.ir.def.DefDirs;
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -35,19 +35,23 @@ public final class DefaultValueOp extends ValueOp {
 	}
 
 	@Override
+	public void init(Block code, ValOp value) {
+		defaultInit(code, value);
+	}
+
+	@Override
+	public void initToFalse(Block code) {
+		defaultInitToFalse(code);
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, ObjectOp value) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	protected ValOp write(ValDirs dirs) {
-
-		final DefDirs defDirs = dirs.nested().def();
-
-		object().objectType(defDirs.code()).writeValue(defDirs);
-		defDirs.done();
-
-		return defDirs.result();
+		return defaultWrite(dirs);
 	}
 
 }

@@ -19,8 +19,14 @@
 */
 package org.o42a.core.object.link.impl;
 
+import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.field.variable.AssignerFld.assignerKey;
+import static org.o42a.core.ir.value.Val.ASSIGN_FLAG;
 
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.op.Int32op;
+import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.variable.AssignerFld;
@@ -29,9 +35,9 @@ import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
-import org.o42a.core.object.link.LinkValueStruct;
 
 
 final class VariableIR extends ValueIR {
@@ -39,8 +45,8 @@ final class VariableIR extends ValueIR {
 	private ObjectBodyIR bodyIR;
 	private AssignerFld fld;
 
-	VariableIR(LinkValueStruct valueStruct, ObjectIR objectIR) {
-		super(valueStruct, objectIR);
+	VariableIR(VariableValueStructIR valueStructIR, ObjectIR objectIR) {
+		super(valueStructIR, objectIR);
 	}
 
 	public final ObjectBodyIR getBodyIR() {
@@ -61,16 +67,49 @@ final class VariableIR extends ValueIR {
 
 	@Override
 	public ValueOp op(ObjectOp object) {
-		return new VariableOp(defaultOp(object));
+		return new VariableOp(this, object);
 	}
 
 	private static final class VariableOp extends ValueOp {
 
-		private final ValueOp value;
+		VariableOp(VariableIR variableIR, ObjectOp object) {
+			super(variableIR, object);
+		}
 
-		VariableOp(ValueOp defaultOp) {
-			super(defaultOp.getValueIR(), defaultOp.object());
-			this.value = defaultOp;
+		@Override
+		public void init(Block code, ValOp value) {
+
+			final ValType.Op objectVal =
+					object()
+					.objectType(code)
+					.ptr()
+					.data(code).value(code);
+			final Int32recOp flags = objectVal.flags(null, code);
+			final Block skip = code.addBlock("skip");
+
+			code.acquireBarrier();
+
+			final Int32op old = flags.atomicRMW(
+					code.id("old"),
+					code,
+					R_OR_W,
+					code.int32(ASSIGN_FLAG));
+
+			old.lshr(
+					code.id("uassign_in_proc"),
+					code,
+					numberOfTrailingZeros(ASSIGN_FLAG))
+			.lowestBit(code.id("assign_in_proc"), code)
+			.go(code, skip.head());
+
+			defaultInit(code, value);
+
+			skip.go(code.tail());
+		}
+
+		@Override
+		public void initToFalse(Block code) {
+			defaultInitToFalse(code);
 		}
 
 		@Override
@@ -85,7 +124,7 @@ final class VariableIR extends ValueIR {
 
 		@Override
 		protected ValOp write(ValDirs dirs) {
-			return this.value.writeValue(dirs);
+			return defaultWrite(dirs);
 		}
 
 	}

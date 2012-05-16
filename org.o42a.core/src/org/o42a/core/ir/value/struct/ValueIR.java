@@ -30,23 +30,27 @@ import org.o42a.core.value.ValueStruct;
 public abstract class ValueIR {
 
 	private final ObjectIR objectIR;
-	private final ValueStruct<?, ?> valueStruct;
+	private final ValueStructIR<?, ?> valueStructIR;
 
-	public ValueIR(ValueStruct<?, ?> valueStruct, ObjectIR objectIR) {
-		assert valueStruct != null :
-			"Value structo not specified";
+	public ValueIR(ValueStructIR<?, ?> valueStructIR, ObjectIR objectIR) {
+		assert valueStructIR != null :
+			"Value struct not specified";
 		assert objectIR != null :
 			"Body not specified";
-		this.valueStruct = valueStruct;
+		this.valueStructIR = valueStructIR;
 		this.objectIR = objectIR;
 	}
 
 	public final ValueStruct<?, ?> getValueStruct() {
-		return this.valueStruct;
+		return getValueStructIR().getValueStruct();
 	}
 
 	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
+	}
+
+	public final ValueStructIR<?, ?> getValueStructIR() {
+		return this.valueStructIR;
 	}
 
 	public final ObjectIR getObjectIR() {

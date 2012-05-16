@@ -19,18 +19,18 @@
 */
 package org.o42a.core.ir.field.variable;
 
+import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.value.ValAtomicity.VAR_ASSIGNMENT;
+import static org.o42a.core.ir.value.Val.ASSIGN_FLAG;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 
 import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
@@ -40,6 +40,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.MemberKey;
 
 
@@ -96,10 +97,7 @@ public final class AssignerFldOp extends FldOp {
 				fld().linkStruct().getTypeRef().typeObject(dummyUser()),
 				true);
 
-		value(boundKnown).store(
-				boundKnown,
-				castObject.toAny(null, boundKnown),
-				VAR_ASSIGNMENT);
+		assignValue(boundKnown, castObject);
 
 		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
@@ -147,10 +145,38 @@ public final class AssignerFldOp extends FldOp {
 		return target;
 	}
 
-	public final ValOp value(Code code) {
-		return host().objectType(code).ptr().data(code).value(code).op(
-				getBuilder(),
-				fld().linkStruct());
+	void assignValue(Block code, ObjectOp object) {
+
+		final ValType.Op value =
+				host().objectType(code).ptr().data(code).value(code);
+		final Block skip = code.addBlock("skip");
+		final Int32recOp flags = value.flags(null, code);
+
+		code.acquireBarrier();
+
+		final Int32op old = flags.atomicRMW(
+				code.id("old"),
+				code,
+				R_OR_W,
+				code.int32(ASSIGN_FLAG));
+
+		old.lshr(
+				code.id("uassign_in_proc"),
+				code,
+				numberOfTrailingZeros(ASSIGN_FLAG))
+		.lowestBit(code.id("assign_in_proc"), code)
+		.go(code, skip.head());
+
+		value.rawValue(null, code)
+		.toAny(null, code)
+		.toPtr(null, code)
+		.store(code, object.toAny(null, code), ATOMIC);
+
+		code.releaseBarrier();
+
+		flags.store(code, code.int32(CONDITION_FLAG));
+
+		skip.go(code.tail());
 	}
 
 }

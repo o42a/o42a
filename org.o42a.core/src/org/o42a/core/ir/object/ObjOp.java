@@ -23,6 +23,7 @@ import static org.o42a.core.ir.IRUtil.encodeMemberId;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 
 import org.o42a.codegen.CodeId;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
@@ -217,6 +218,16 @@ public final class ObjOp extends ObjectOp {
 		ExactValueOp(ValueOp value) {
 			super(value.getValueIR(), value.object());
 			this.value = value;
+		}
+
+		@Override
+		public void init(Block code, ValOp value) {
+			this.value.init(code, value);
+		}
+
+		@Override
+		public void initToFalse(Block code) {
+			this.value.initToFalse(code);
 		}
 
 		@Override

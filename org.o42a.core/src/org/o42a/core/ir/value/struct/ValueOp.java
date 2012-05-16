@@ -20,14 +20,21 @@
 package org.o42a.core.ir.value.struct;
 
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.core.ir.CodeBuilder;
+import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.ValUseFunc;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -42,6 +49,14 @@ public abstract class ValueOp {
 		this.object = object;
 	}
 
+	public final ValueType<?> getValueType() {
+		return getValueStruct().getValueType();
+	}
+
+	public final ValueStruct<?, ?> getValueStruct() {
+		return getValueIR().getValueStruct();
+	}
+
 	public final Generator getGenerator() {
 		return object().getGenerator();
 	}
@@ -54,12 +69,8 @@ public abstract class ValueOp {
 		return this.valueIR;
 	}
 
-	public final ValueType<?> getValueType() {
-		return getValueStruct().getValueType();
-	}
-
-	public final ValueStruct<?, ?> getValueStruct() {
-		return getValueIR().getValueStruct();
+	public final ValueStructIR<?, ?> getValueStructIR() {
+		return getValueIR().getValueStructIR();
 	}
 
 	public final ObjectOp object() {
@@ -108,6 +119,10 @@ public abstract class ValueOp {
 		return value;
 	}
 
+	public abstract void init(Block code, ValOp value);
+
+	public abstract void initToFalse(Block code);
+
 	public abstract void assign(CodeDirs dirs, ObjectOp value);
 
 	@Override
@@ -116,5 +131,84 @@ public abstract class ValueOp {
 	}
 
 	protected abstract ValOp write(ValDirs dirs);
+
+	protected final void defaultInit(Block code, ValOp value) {
+
+		final ValueStructIR<?, ?> valueStructIR = getValueStructIR();
+		final ValType.Op objectVal =
+				object()
+				.objectType(code)
+				.ptr()
+				.data(code).value(code);
+
+		if (valueStructIR.hasValue()) {
+			objectVal.rawValue(null, code).store(
+					code,
+					value.rawValue(null, code).load(null, code),
+					ATOMIC);
+			if (valueStructIR.hasLength()) {
+				objectVal.length(null, code).store(
+						code,
+						value.length(null, code).load(null, code),
+						ATOMIC);
+			}
+		}
+
+		final Int32recOp flags = objectVal.flags(null, code);
+
+		code.releaseBarrier();
+
+		flags.store(
+				code,
+				value.flags(null, code).load(null, code),
+				ATOMIC);
+		if (valueStructIR.hasLength()) {
+			use(code, objectVal);
+		}
+	}
+
+	protected final void defaultInitToFalse(Block code) {
+
+		final ValType.Op objectVal =
+				object()
+				.objectType(code)
+				.ptr()
+				.data(code).value(code);
+		final Int32recOp flags = objectVal.flags(null, code);
+
+		code.releaseBarrier();
+
+		flags.store(code, code.int32(0), ATOMIC);
+	}
+
+	protected final ValOp defaultWrite(ValDirs dirs) {
+
+		final DefDirs defDirs = dirs.nested().def();
+
+		object().objectType(defDirs.code()).writeValue(defDirs);
+		defDirs.done();
+
+		return defDirs.result();
+	}
+
+	public static final void use(Code code, ValType.Op value) {
+
+		final FuncPtr<ValUseFunc> func =
+				code.getGenerator()
+				.externalFunction()
+				.link("o42a_val_use", VAL_USE);
+
+		func.op(null, code).call(code, value);
+	}
+
+	public static final void unuse(Code code, ValType.Op value) {
+
+		final FuncPtr<ValUseFunc> func =
+				code.getGenerator()
+				.externalFunction()
+				.link("o42a_val_unuse", VAL_USE);
+
+		func.op(null, code).call(code, value);
+	}
 
 }

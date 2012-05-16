@@ -25,10 +25,9 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.value.ValType.Op;
 
 
-public class ValUseFunc extends Func<ValUseFunc> {
+public final class ValUseFunc extends Func<ValUseFunc> {
 
 	public static final ValUse VAL_USE = new ValUse();
 
@@ -36,14 +35,14 @@ public class ValUseFunc extends Func<ValUseFunc> {
 		super(caller);
 	}
 
-	public void call(Code code, ValOp val) {
-		invoke(null, code, VAL_USE.result(), val.ptr());
+	public final void call(Code code, ValType.Op val) {
+		invoke(null, code, VAL_USE.result(), val);
 	}
 
 	public static final class ValUse extends Signature<ValUseFunc> {
 
 		private Return<Void> result;
-		private Arg<Op> val;
+		private Arg<ValType.Op> val;
 
 		private ValUse() {
 		}
@@ -52,7 +51,7 @@ public class ValUseFunc extends Func<ValUseFunc> {
 			return this.result;
 		}
 
-		public final Arg<Op> val() {
+		public final Arg<ValType.Op> val() {
 			return this.val;
 		}
 
