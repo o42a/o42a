@@ -19,14 +19,14 @@
 */
 package org.o42a.core.object.link.impl;
 
-import static java.lang.Integer.numberOfTrailingZeros;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.field.variable.AssignerFld.assignerKey;
 import static org.o42a.core.ir.value.Val.ASSIGN_FLAG;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.Int32op;
-import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.variable.AssignerFld;
@@ -34,6 +34,7 @@ import org.o42a.core.ir.field.variable.AssignerFldOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueIR;
@@ -78,38 +79,12 @@ final class VariableIR extends ValueIR {
 
 		@Override
 		public void init(Block code, ValOp value) {
-
-			final ValType.Op objectVal =
-					object()
-					.objectType(code)
-					.ptr()
-					.data(code).value(code);
-			final Int32recOp flags = objectVal.flags(null, code);
-			final Block skip = code.addBlock("skip");
-
-			code.acquireBarrier();
-
-			final Int32op old = flags.atomicRMW(
-					code.id("old"),
-					code,
-					R_OR_W,
-					code.int32(ASSIGN_FLAG));
-
-			old.lshr(
-					code.id("uassign_in_proc"),
-					code,
-					numberOfTrailingZeros(ASSIGN_FLAG))
-			.lowestBit(code.id("assign_in_proc"), code)
-			.go(code, skip.head());
-
-			defaultInit(code, value);
-
-			skip.go(code.tail());
+			initValue(code, value);
 		}
 
 		@Override
 		public void initToFalse(Block code) {
-			defaultInitToFalse(code);
+			initValue(code, null);
 		}
 
 		@Override
@@ -125,6 +100,57 @@ final class VariableIR extends ValueIR {
 		@Override
 		protected ValOp write(ValDirs dirs) {
 			return defaultWrite(dirs);
+		}
+
+		@Override
+		protected void checkFalse(
+				Block code,
+				CodePos falseDir,
+				ValType.Op value,
+				ValFlagsOp flags) {
+			value.rawValue(null, code).isNull(null, code).go(code, falseDir);
+		}
+
+		private void initValue(Block code, ValOp value) {
+
+			final ValType.Op objectVal =
+					object()
+					.objectType(code)
+					.ptr()
+					.data(code).value(code);
+			final ValFlagsOp flags = objectVal.flags(code, ATOMIC);
+			final Block skip = code.addBlock("skip");
+
+			code.acquireBarrier();
+
+			final ValFlagsOp old = flags.atomicRMW(
+					code.id("old"),
+					code,
+					R_OR_W,
+					ASSIGN_FLAG);
+
+			old.assigning(null, code).go(code, skip.head());
+
+			if (value != null) {
+				objectVal.rawValue(null, code).store(
+						code,
+						value.rawValue(null, code).load(null, code),
+						ATOMIC);
+			} else {
+				objectVal.rawValue(null, code).store(
+						code,
+						code.int64(0),
+						ATOMIC);
+			}
+
+			final Int32op newFlags =
+					value != null ? value.flags(code).get() : code.int32(0);
+
+			code.releaseBarrier();
+
+			flags.store(code, newFlags);
+
+			skip.go(code.tail());
 		}
 
 	}

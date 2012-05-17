@@ -120,8 +120,22 @@ public final class ValType extends Type<ValType.Op> {
 			return new ConstValOp(builder, this, constant);
 		}
 
-		public final Int32recOp flags(CodeId id, Code code) {
-			return int32(id, code, getType().flags());
+		public final ValFlagsOp flags(Code code, Atomicity atomicity) {
+			return flags((CodeId) null, code, atomicity);
+		}
+
+		public final ValFlagsOp flags(
+				String id,
+				Code code,
+				Atomicity atomicity) {
+			return flags(code.id(id), code, atomicity);
+		}
+
+		public final ValFlagsOp flags(
+				CodeId id,
+				Code code,
+				Atomicity atomicity) {
+			return new ValFlagsOp(id, code, this, atomicity);
 		}
 
 		public final Int32recOp length(CodeId id, Code code) {

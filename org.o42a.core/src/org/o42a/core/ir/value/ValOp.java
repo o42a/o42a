@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.value;
 
-import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
-import static org.o42a.core.ir.value.Val.*;
+import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.INDEFINITE_FLAG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -92,99 +92,16 @@ public abstract class ValOp extends IROp {
 	@Override
 	public abstract ValType.Op ptr();
 
-	public final Int32recOp flags(CodeId id, Code code) {
-		return ptr().flags(id, code);
+	public final ValFlagsOp flags(Code code) {
+		return flags((CodeId) null, code);
 	}
 
-	public final BoolOp loadCondition(CodeId id, Code code) {
-
-		final Int32op flags = flags(null, code).load(null, code);
-
-		return flags.lowestBit(
-				id != null ? id : getId().sub("condition_flag"),
-				code);
+	public final ValFlagsOp flags(String name, Code code) {
+		return flags(code.id(name), code);
 	}
 
-	public final BoolOp loadIndefinite(CodeId id, Code code) {
-		return loadIndefinite(id, code, Atomicity.NOT_ATOMIC);
-	}
-
-	public final BoolOp loadIndefinite(
-			CodeId id,
-			Code code,
-			Atomicity atomicity) {
-		return loadFlag(id, "indefinite", code, INDEFINITE_FLAG, atomicity);
-	}
-
-	public final BoolOp loadExternal(CodeId id, Code code) {
-		return loadFlag(id, "external", code, EXTERNAL_FLAG, NOT_ATOMIC);
-	}
-
-	public final BoolOp loadStatic(CodeId id, Code code) {
-		return loadFlag(id, "static", code, STATIC_FLAG, NOT_ATOMIC);
-	}
-
-	public Int32op loadAlignmentShift(CodeId id, Code code) {
-
-		final CodeId ashiftId;
-
-		if (id == null) {
-			ashiftId = getId().sub("alignment_shift");
-		} else {
-			ashiftId = id;
-		}
-
-		final Int32op flags = flags(null, code).load(null, code);
-		final Int32op ualignment = flags.and(
-				ashiftId.detail("ush"),
-				code,
-				code.int32(ALIGNMENT_MASK));
-
-		return ualignment.lshr(
-				ashiftId,
-				code,
-				numberOfTrailingZeros(ALIGNMENT_MASK));
-	}
-
-	public Int32op loadAlignment(CodeId id, Code code) {
-
-		final Int32op shift = loadAlignmentShift(
-				id != null ? id.detail("shift") : null,
-				code);
-
-		return code.int32(1).shl(
-				id != null ? id : getId().sub("alignment"),
-				code,
-				shift);
-	}
-
-	public Int32op loadCharMask(CodeId id, Block code) {
-
-		final Int32op alignment =
-				loadAlignment(id != null ? id.detail("alignment") : null, code);
-		final BoolOp is4bytes = alignment.ge(
-				alignment.getId().detail("4bytes"),
-				code,
-				code.int32(4));
-		final CondBlock when4bytes = is4bytes.branch(code, "4bytes");
-		final Block not4bytes = when4bytes.otherwise();
-
-		final Int32op result1 = when4bytes.int32(-1);
-
-		when4bytes.go(code.tail());
-
-		final Int32op result2 = not4bytes.int32(-1).shl(
-				null,
-				not4bytes,
-				alignment.shl(null, not4bytes, 3))
-				.comp(null, not4bytes);
-
-		not4bytes.go(code.tail());
-
-		return code.phi(
-				id != null ? id : getId().sub("char_mask"),
-				result1,
-				result2);
+	public final ValFlagsOp flags(CodeId id, Code code) {
+		return ptr().flags(id, code, NOT_ATOMIC);
 	}
 
 	public final Int32recOp length(CodeId id, Code code) {
@@ -216,8 +133,7 @@ public abstract class ValOp extends IROp {
 
 		final AnyOp value =
 				value(id != null ? id.detail("value") : null, code);
-		final BoolOp external =
-				loadExternal(id != null ? id.detail("external") : null, code);
+		final BoolOp external = flags(code).external(null, code);
 
 		final CondBlock whenExternal = external.branch(code, "external");
 		final Block notExternal = whenExternal.otherwise();
@@ -238,18 +154,18 @@ public abstract class ValOp extends IROp {
 		assert getValueStruct().isVoid() :
 			"Can not store VOID in " + getValueStruct() + " value";
 
-		flags(null, code).store(code, code.int32(CONDITION_FLAG));
+		flags(code).store(code, CONDITION_FLAG);
 
 		return this;
 	}
 
 	public final ValOp storeFalse(Code code) {
-		flags(null, code).store(code, code.int32(0));
+		flags(code).storeFalse(code);
 		return this;
 	}
 
 	public final ValOp storeIndefinite(Code code) {
-		flags(null, code).store(code, code.int32(INDEFINITE_FLAG));
+		flags(code).store(code, code.int32(INDEFINITE_FLAG));
 		return this;
 	}
 
@@ -261,7 +177,7 @@ public abstract class ValOp extends IROp {
 				|| !value.getCondition() && value.isVoid()) :
 			"Can not store " + value + " in " + this;
 
-		flags(null, code).store(code, code.int32(value.getFlags()));
+		flags(code).store(code, code.int32(value.getFlags()));
 
 		if (!value.getCondition()) {
 			return this;
@@ -300,7 +216,7 @@ public abstract class ValOp extends IROp {
 		assert getValueStruct().assignableFrom(value.getValueStruct()) :
 			"Can not store " + value + " in " + this;
 
-		flags(null, code).store(code, value.flags(null, code).load(null, code));
+		flags(code).store(code, value.flags(code).get());
 		if (!getValueStructIR().hasValue()) {
 			return this;
 		}
@@ -319,7 +235,7 @@ public abstract class ValOp extends IROp {
 			"Can not store integer in " + getValueStruct() + " value";
 
 		rawValue(null, code).store(code, value);
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		flags(code).store(code, CONDITION_FLAG);
 
 		return this;
 	}
@@ -330,7 +246,7 @@ public abstract class ValOp extends IROp {
 			+ getValueStruct() + " value";
 
 		value(null, code).toFp64(null, code).store(code, value);
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		flags(code).store(code, CONDITION_FLAG);
 
 		return this;
 	}
@@ -339,7 +255,7 @@ public abstract class ValOp extends IROp {
 		assert getValueStructIR().hasValue() :
 			"Can not store value to " + getValueStruct();
 
-		flags(null, code).store(code, code.int32(Val.CONDITION_FLAG));
+		flags(code).store(code, CONDITION_FLAG);
 		if (getValueStructIR().hasLength()) {
 			length(null, code).store(code, code.int32(0));
 		}
@@ -355,7 +271,7 @@ public abstract class ValOp extends IROp {
 			"Can not store pointer without length to " + getValueType();
 
 		value(null, code).toPtr(null, code).store(code, pointer);
-		flags(null, code).store(code, code.int32(CONDITION_FLAG));
+		flags(code).store(code, CONDITION_FLAG);
 
 		return this;
 	}
@@ -371,11 +287,10 @@ public abstract class ValOp extends IROp {
 			"Can not store pointer to value of scalar type: "
 			+ getValueType();
 
-		flags(null, code).store(
+		flags(code).store(
 				code,
-				code.int32(
-						Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
-						| (alignment.getShift() << 8)));
+				Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
+				| (alignment.getShift() << 8));
 		length(null, code).store(code, length);
 		value(null, code).toPtr(null, code).store(code, pointer);
 
@@ -401,7 +316,7 @@ public abstract class ValOp extends IROp {
 			return;
 		}
 
-		loadCondition(null, code).goUnless(code, dirs.falseDir());
+		flags(code).condition(null, code).goUnless(code, dirs.falseDir());
 	}
 
 	public final void use(Code code) {
@@ -410,31 +325,6 @@ public abstract class ValOp extends IROp {
 
 	public final void unuse(Code code) {
 		ptr().unuse(code);
-	}
-
-	private BoolOp loadFlag(
-			CodeId id,
-			String defaultId,
-			Code code,
-			int mask,
-			Atomicity atomicity) {
-
-		final CodeId flagId;
-
-		if (id == null) {
-			flagId = getId().sub(defaultId);
-		} else {
-			flagId = id;
-		}
-
-		final Int32op flags = flags(null, code).load(null, code, atomicity);
-
-		final Int32op uflag = flags.lshr(
-				flagId.detail("ush"),
-				code,
-				numberOfTrailingZeros(mask));
-
-		return uflag.lowestBit(flagId, code);
 	}
 
 }

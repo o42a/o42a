@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
@@ -30,7 +29,9 @@ import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
@@ -39,6 +40,7 @@ import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.MemberKey;
@@ -150,22 +152,17 @@ public final class AssignerFldOp extends FldOp {
 		final ValType.Op value =
 				host().objectType(code).ptr().data(code).value(code);
 		final Block skip = code.addBlock("skip");
-		final Int32recOp flags = value.flags(null, code);
+		final ValFlagsOp flags = value.flags(code, ATOMIC);
 
 		code.acquireBarrier();
 
-		final Int32op old = flags.atomicRMW(
+		final ValFlagsOp old = flags.atomicRMW(
 				code.id("old"),
 				code,
 				R_OR_W,
-				code.int32(ASSIGN_FLAG));
+				ASSIGN_FLAG);
 
-		old.lshr(
-				code.id("uassign_in_proc"),
-				code,
-				numberOfTrailingZeros(ASSIGN_FLAG))
-		.lowestBit(code.id("assign_in_proc"), code)
-		.go(code, skip.head());
+		old.assigning(null, code).go(code, skip.head());
 
 		value.rawValue(null, code)
 		.toAny(null, code)
@@ -174,7 +171,7 @@ public final class AssignerFldOp extends FldOp {
 
 		code.releaseBarrier();
 
-		flags.store(code, code.int32(CONDITION_FLAG));
+		flags.store(code, CONDITION_FLAG);
 
 		skip.go(code.tail());
 	}

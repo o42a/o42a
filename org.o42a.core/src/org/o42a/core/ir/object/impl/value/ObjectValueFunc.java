@@ -81,7 +81,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				data != null ? data : code.nullPtr(OBJECT_DATA_TYPE),
 				object != null ? object : code.nullDataPtr());
 
-		value.loadCondition(null, code).goUnless(code, dirs.falseDir());
+		value.flags(code).condition(null, code).goUnless(code, dirs.falseDir());
 		dirs.returnValue(value);
 	}
 
