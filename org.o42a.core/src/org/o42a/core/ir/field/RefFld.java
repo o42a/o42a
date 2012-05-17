@@ -21,6 +21,7 @@ package org.o42a.core.ir.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
@@ -32,6 +33,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.*;
+import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ObjectFunc;
@@ -146,10 +148,34 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
 
 		final Block code = dirs.code();
+		final FldCtrOp ctr;
+		final RefFldOp<?, C> fld;
+
+		if (isStateless()) {
+			fld = null;
+			ctr = null;
+		} else {
+			fld = op(code, builder.host());
+			ctr =
+					code.getAllocator()
+					.allocation()
+					.allocate(code.id("fld_ctr"), FLD_CTR_TYPE);
+
+			final Block constructed = code.addBlock("constructed");
+
+			ctr.start(code, fld).goUnless(code, constructed.head());
+
+			fld.ptr()
+			.object(null, constructed)
+			.load(null, constructed, ATOMIC)
+			.toData(null, constructed)
+			.returnValue(constructed);
+		}
+
 		final ObjectOp result = construct(builder, dirs);
 		final DataOp res = result.toData(null, code);
 
-		if (!isStateless()) {
+		if (ctr != null) {
 
 			final DataRecOp objectRec =
 					op(code, builder.host()).ptr().object(null, code);
@@ -157,12 +183,13 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			code.releaseBarrier();
 
 			objectRec.store(code, res, ATOMIC);
+			ctr.finish(code, fld);
 		}
 
 		res.returnValue(code);
 	}
 
-	protected ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
+	protected final ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
 
 		final Obj object = getField().toObject();
 
