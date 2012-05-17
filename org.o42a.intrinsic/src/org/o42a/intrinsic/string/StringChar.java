@@ -37,6 +37,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
@@ -189,9 +190,10 @@ final class StringChar extends AnnotatedBuiltin {
 
 		index.ge(null, code, length).go(code, indexDirs.falseDir());
 
-		final Int32op cmask = stringVal.loadCharMask(code.id("cmask"), code);
+		final ValFlagsOp stringFlags = stringVal.flags(code);
+		final Int32op cmask = stringFlags.charMask(code.id("cmask"), code);
 		final Int32op csizeShift =
-				stringVal.loadAlignmentShift(code.id("csizeshft"), code);
+				stringFlags.alignmentShift(code.id("csizeshft"), code);
 		final Int32op dataOffset =
 				index.toInt32(null, code)
 				.shl(code.id("data_offset"), code, csizeShift);
@@ -213,7 +215,7 @@ final class StringChar extends AnnotatedBuiltin {
 						code,
 						numberOfTrailingZeros(ALIGNMENT_MASK)));
 
-		result.flags(null, code).store(code, flags);
+		result.flags(code).store(code, flags);
 		result.length(null, code).store(code, code.int32(1));
 		result.rawValue(null, code).store(
 				code,

@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
@@ -136,8 +137,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		if (!isStateless()) {
 			getInstance().object().setNull();
 		}
-		getInstance().constructor().setConstant(true).setValue(
-				this.constructor);
+		getInstance()
+		.constructor()
+		.setConstant(true)
+		.setValue(this.constructor);
 	}
 
 	protected void buildConstructor(ObjBuilder builder, CodeDirs dirs) {
@@ -147,8 +150,15 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		final DataOp res = result.toData(null, code);
 
 		if (!isStateless()) {
-			op(code, builder.host()).ptr().object(null, code).store(code, res);
+
+			final DataRecOp objectRec =
+					op(code, builder.host()).ptr().object(null, code);
+
+			code.releaseBarrier();
+
+			objectRec.store(code, res, ATOMIC);
 		}
+
 		res.returnValue(code);
 	}
 
@@ -320,7 +330,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 		public DataOp target(Block code, ObjOp host) {
 
-			final DataOp object = object(null, code).load(null, code);
+			final DataRecOp objectRec = object(null, code);
+
+			code.acquireBarrier();
+
+			final DataOp object = objectRec.load(null, code, ATOMIC);
 			final CondBlock noTarget = object.isNull(null, code).branch(
 					code,
 					"no_target",

@@ -22,12 +22,12 @@ package org.o42a.intrinsic.numeric;
 import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
 
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.codegen.code.op.Int64recOp;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.value.ValueStruct;
@@ -52,10 +52,9 @@ public final class IntegerMinus extends UnaryResult<Long, Long> {
 
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
-		final Int32recOp resultFlagsRec =
-				result.flags(code.id("unary_flags_ptr"), code);
+		final ValFlagsOp resultFlagsRec = result.flags("unary_flags", code);
 
-		resultFlagsRec.store(code, code.int32(CONDITION_FLAG));
+		resultFlagsRec.store(code, CONDITION_FLAG);
 
 		final Int64recOp operandPtr =
 				operand.rawValue(code.id("operand_ptr"), code);

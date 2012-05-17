@@ -54,12 +54,14 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 
 		final Block hasResult = code.addBlock("has_result");
 
-		final BoolOp condition = value.loadCondition(null, code);
+		final BoolOp condition = value.flags(code).condition(null, code);
 
 		condition.go(code, hasResult.head());
 		dirs.returnValue(hasResult, value);
 
-		value.loadIndefinite(null, code).goUnless(code, dirs.falseDir());
+		value.flags(code)
+		.indefinite(null, code)
+		.goUnless(code, dirs.falseDir());
 	}
 
 	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {

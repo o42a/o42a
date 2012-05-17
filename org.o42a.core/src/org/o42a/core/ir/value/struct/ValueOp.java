@@ -23,18 +23,14 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
-import org.o42a.codegen.code.op.Int32recOp;
+import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.ValUseFunc;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -99,24 +95,25 @@ public abstract class ValueOp {
 		code.acquireBarrier();
 
 		final Block definite = code.addBlock("definite");
-		final ValOp value =
+		final ValType.Op value =
 				object()
 				.objectType(code)
 				.ptr()
 				.data(code)
-				.value(code)
-				.op(getBuilder(), getValueStruct());
+				.value(code);
+		final ValFlagsOp flags = value.flags(code, ATOMIC);
 
-		value.loadIndefinite(null, code, ATOMIC)
-		.goUnless(code, definite.head());
+		flags.indefinite(null, code).goUnless(code, definite.head());
+
 		write(dirs);
 		code.dump(this + " value calculated: ", value);
 
 		definite.dump(this + " value is definite: ", value);
-		value.go(definite, dirs);
+		checkFalse(definite, dirs.falseDir(), value, flags);
+
 		definite.go(code.tail());
 
-		return value;
+		return value.op(getBuilder(), getValueStruct());
 	}
 
 	public abstract void init(Block code, ValOp value);
@@ -132,53 +129,61 @@ public abstract class ValueOp {
 
 	protected abstract ValOp write(ValDirs dirs);
 
+	/**
+	 * Checks whether the object value is known to be false.
+	 *
+	 * @param code code to perform the check inside of.
+	 * @param falseDir position to jump to if the value is false.
+	 * @param value value to check.
+	 * @param flags value flags to check.
+	 */
+	protected void checkFalse(
+			Block code,
+			CodePos falseDir,
+			ValType.Op value,
+			ValFlagsOp flags) {
+		flags.condition(null, code).goUnless(code, falseDir);
+	}
+
 	protected final void defaultInit(Block code, ValOp value) {
 
 		final ValueStructIR<?, ?> valueStructIR = getValueStructIR();
-		final ValType.Op objectVal =
-				object()
-				.objectType(code)
-				.ptr()
-				.data(code).value(code);
+		final ValType.Op objectValue =
+				object().objectType(code).ptr().data(code).value(code);
 
 		if (valueStructIR.hasValue()) {
-			objectVal.rawValue(null, code).store(
+			objectValue.rawValue(null, code).store(
 					code,
 					value.rawValue(null, code).load(null, code),
 					ATOMIC);
 			if (valueStructIR.hasLength()) {
-				objectVal.length(null, code).store(
+				objectValue.length(null, code).store(
 						code,
 						value.length(null, code).load(null, code),
 						ATOMIC);
 			}
 		}
 
-		final Int32recOp flags = objectVal.flags(null, code);
+		final Int32op valueFlags = value.flags(code).get();
+		final ValFlagsOp objectValueFlags = objectValue.flags(code, ATOMIC);
 
 		code.releaseBarrier();
 
-		flags.store(
-				code,
-				value.flags(null, code).load(null, code),
-				ATOMIC);
+		objectValueFlags.store(code, valueFlags);
 		if (valueStructIR.hasLength()) {
-			use(code, objectVal);
+			use(code, objectValue);
 		}
 	}
 
 	protected final void defaultInitToFalse(Block code) {
 
-		final ValType.Op objectVal =
-				object()
-				.objectType(code)
-				.ptr()
-				.data(code).value(code);
-		final Int32recOp flags = objectVal.flags(null, code);
+		final ValType.Op objectValue =
+				object().objectType(code).ptr().data(code).value(code);
+		final ValFlagsOp flags = objectValue.flags(code, ATOMIC);
 
 		code.releaseBarrier();
 
-		flags.store(code, code.int32(0), ATOMIC);
+		flags.storeFalse(code);
 	}
 
 	protected final ValOp defaultWrite(ValDirs dirs) {
