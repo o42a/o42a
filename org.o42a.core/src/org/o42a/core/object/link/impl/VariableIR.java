@@ -108,7 +108,10 @@ final class VariableIR extends ValueIR {
 				CodePos falseDir,
 				ValType.Op value,
 				ValFlagsOp flags) {
-			value.rawValue(null, code).isNull(null, code).go(code, falseDir);
+			value.rawValue(null, code)
+			.load(null, code)
+			.eq(null, code, code.int64(0))
+			.go(code, falseDir);
 		}
 
 		private void initValue(Block code, ValOp value) {
