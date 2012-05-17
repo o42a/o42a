@@ -596,6 +596,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 	data->ancestor_type = adata->ancestor_type;
 
+	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
 
@@ -912,6 +913,7 @@ o42a_obj_t *o42a_obj_new(O42A_PARAMS const o42a_obj_ctr_t *const ctr) {
 
 	data->ancestor_type = atype;
 
+	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
 
@@ -992,27 +994,6 @@ void o42a_obj_val_stub(
 	O42A_RETURN;
 }
 
-
-o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
-	O42A_ENTER(return NULL);
-	O42A_RETURN NULL;
-}
-
-o42a_obj_body_t *o42a_obj_ref_stub(O42A_PARAMS o42a_obj_t *scope) {
-	O42A_ENTER(return NULL);
-	o42a_error_print(O42A_ARGS "Object reference stub invoked");
-	O42A_RETURN NULL;
-}
-
-
-o42a_obj_body_t *o42a_obj_constructor_stub(
-		O42A_PARAMS
-		o42a_obj_t *scope,
-		struct o42a_fld_obj *field) {
-	O42A_ENTER(return NULL);
-	o42a_error_print(O42A_ARGS "Object constructor stub invoked");
-	O42A_RETURN NULL;
-}
 
 static pthread_mutexattr_t recursive_mutex_attr;
 

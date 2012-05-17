@@ -25,6 +25,32 @@
 
 typedef struct o42a_fld_obj o42a_fld_obj;
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * Object constructor function.
+ *
+ * \param scope[in] scope object pointer.
+ * \param fld[in] pointer to field, which object construction invoked for. This
+ * may be a field from object different from scope (see o42a_fld_obj.previous),
+ * but is always belongs to compatible body of that object.
+ *
+ * \return resulting object reference.
+ */
+typedef o42a_obj_t *o42a_obj_constructor_ft(
+		O42A_DECLS
+		o42a_obj_t *,
+		o42a_fld_obj *);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+
 struct o42a_fld_obj {
 
 	O42A_HEADER;
@@ -42,10 +68,17 @@ struct o42a_fld_obj {
 extern "C" {
 #endif
 
-
 void o42a_fld_obj_propagate(O42A_DECLS o42a_obj_ctable_t*);
 
 void o42a_fld_obj_inherit(O42A_DECLS o42a_obj_ctable_t*);
+
+/**
+ * Object constructor stub.
+ */
+o42a_obj_body_t *o42a_obj_constructor_stub(
+		O42A_DECLS
+		o42a_obj_t *,
+		struct o42a_fld_obj *);
 
 
 #ifdef __cplusplus

@@ -19,6 +19,7 @@
 */
 #include "o42a/fields.h"
 
+#include "o42a/error.h"
 #include "o42a/object.h"
 
 
@@ -73,4 +74,109 @@ inline o42a_fld *o42a_fld_by_overrider(
 	void *const body = ((void*) overrider) + overrider->body;
 
 	return (o42a_fld*) (body + overrider->field->fld);
+}
+
+o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
+	O42A_ENTER(return NULL);
+	O42A_RETURN NULL;
+}
+
+o42a_obj_body_t *o42a_obj_ref_stub(O42A_PARAMS o42a_obj_t *scope) {
+	O42A_ENTER(return NULL);
+	o42a_error_print(O42A_ARGS "Object reference stub invoked");
+	O42A_RETURN NULL;
+}
+
+o42a_bool_t o42a_fld_start(
+		O42A_PARAMS
+		o42a_obj_data_t *const data,
+		o42a_fld_ctr_t *const ctr) {
+	O42A_ENTER(return O42A_FALSE);
+
+	O42A(o42a_obj_lock(O42A_ARGS data));
+	if (ctr->fld->obj.object) {
+		O42A(o42a_obj_unlock(O42A_ARGS data));
+		// Object already set.
+		O42A_RETURN O42A_FALSE;
+	}
+
+	o42a_fld_ctr_t *last_ctr = data->fld_ctrs;
+	pthread_t thread = O42A(pthread_self());
+
+	if (!last_ctr) {
+		// No fields currently constructing.
+		ctr->prev = NULL;
+		ctr->next = NULL;
+		ctr->thread = thread;
+		data->fld_ctrs = ctr;
+		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A_RETURN O42A_TRUE;
+	}
+
+	// Find out if the field already constructing.
+	while (1) {
+		if (last_ctr->fld != ctr->fld) {
+			// Check the next field.
+			o42a_fld_ctr_t *next_ctr = last_ctr->next;
+			if (!next_ctr) {
+				// No more fields to check.
+				break;
+			}
+			last_ctr = next_ctr;
+		}
+		// Field already constructing.
+		if (last_ctr->thread == thread) {
+			// A recursion during the field construction.
+			ctr->prev = NULL;
+			ctr->next = NULL;
+			ctr->thread = last_ctr->thread;
+			O42A(o42a_obj_unlock(O42A_ARGS data));
+			// Try to construct the field.
+			O42A_RETURN O42A_TRUE;
+		}
+		// Wait for another thread to construct the field.
+		while (last_ctr->fld->obj.object) {
+			O42A(o42a_obj_wait(O42A_ARGS data));
+		}
+		// Field constructed.
+		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A_RETURN O42A_FALSE;
+	}
+
+	// Append a construction info to the list.
+	last_ctr->next = ctr;
+	ctr->prev = last_ctr;
+	ctr->next = NULL;
+	ctr->thread = thread;
+	O42A(o42a_obj_unlock(O42A_ARGS data));
+
+	// Construct the field.
+	O42A_RETURN O42A_TRUE;
+}
+
+void o42a_fld_finish(
+		O42A_PARAMS
+		o42a_obj_data_t *const data,
+		o42a_fld_ctr_t *const ctr) {
+	O42A_ENTER(return);
+
+	O42A(o42a_obj_lock(O42A_ARGS data));
+
+	// Remove the construction info from the list.
+	o42a_fld_ctr_t *prev = ctr->prev;
+
+	if (!prev) {
+		// Not first in the list.
+		prev->next = ctr->next;
+	} else if (data->fld_ctrs == ctr) {
+		// First in the list.
+		data->fld_ctrs = ctr->next;
+	}// Not in the list otherwise.
+
+	// Inform others the field is constructed.
+	O42A(o42a_obj_broadcast(O42A_ARGS data));
+
+	O42A(o42a_obj_unlock(O42A_ARGS data));
+
+	O42A_RETURN;
 }
