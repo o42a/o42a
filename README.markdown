@@ -11,7 +11,7 @@ It is:
 * primarily **declarative**, while
 * the **imperative** programming style is also supported. 
 
-The program written in o42a is closer to natural English text than one written
+A program written in o42a is closer to natural English text than one written
 in any C-like programming language.
 
 The language is designed with programming productivity and code maintainability
