@@ -165,7 +165,7 @@ void o42a_fld_finish(
 	// Remove the construction info from the list.
 	o42a_fld_ctr_t *prev = ctr->prev;
 
-	if (!prev) {
+	if (prev) {
 		// Not first in the list.
 		prev->next = ctr->next;
 	} else if (data->fld_ctrs == ctr) {

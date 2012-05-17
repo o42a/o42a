@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
@@ -32,7 +34,6 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.field.FldKind;
-import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
@@ -84,6 +85,33 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final ObjOp host = builder.host();
 		final ObjFld.Op fld =
 				builder.getFunction().arg(code, OBJECT_CONSTRUCTOR.field());
+		final ObjFldOp ownFld =
+				(ObjFldOp) host.field(dirs, getField().getKey());
+		final BoolOp isOwn =
+				ownFld.toAny(null, code).eq(null, code, fld.toAny(null, code));
+		final FldCtrOp ctr =
+				code.getAllocator()
+				.allocation()
+				.allocate(code.id("fld_ctr"), FLD_CTR_TYPE);
+
+		final Block start = code.addBlock("start");
+
+		isOwn.go(code, start.head());
+		if (start.exists()) {
+
+			final Block constructed = start.addBlock("constructed");
+
+			ctr.start(start, ownFld).goUnless(start, constructed.head());
+
+			ownFld.ptr()
+			.object(null, constructed)
+			.load(null, constructed, ATOMIC)
+			.toData(null, constructed)
+			.returnValue(constructed);
+
+			start.go(code.tail());
+		}
+
 		final DataOp previousPtr = fld.previous(null, code).load(null, code);
 
 		final CondBlock construct =
@@ -106,15 +134,18 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		final DataOp result = code.phi(null, result1, result2);
 
-		final FldOp ownFld = host.field(dirs, getField().getKey());
-		final BoolOp isOwn =
-				ownFld.toAny(null, code).eq(null, code, fld.toAny(null, code));
-		final CondBlock store = isOwn.branch(code, "store", "do_not_store");
+		final Block dontStore = code.addBlock("dont_store");
 
-		fld.object(null, store).store(store, result);
-		result.returnValue(store);
+		isOwn.goUnless(code, dontStore.head());
+		if (dontStore.exists()) {
+			result.returnValue(dontStore);
+		}
 
-		result.returnValue(store.otherwise());
+		code.releaseBarrier();
+		fld.object(null, code).store(code, result, ATOMIC);
+		ctr.finish(code, ownFld);
+
+		result.returnValue(code);
 	}
 
 	private ObjectOp delegate(
