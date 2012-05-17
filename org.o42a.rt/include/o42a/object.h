@@ -25,8 +25,8 @@
 #include "o42a/types.h"
 
 
-struct o42a_fld_obj;
 union o42a_fld;
+struct o42a_fld_ctr;
 struct o42a_obj_methods;
 union o42a_obj_type;
 
@@ -63,30 +63,6 @@ typedef void o42a_obj_value_ft(
 		o42a_val_t *,
 		o42a_obj_data_t *,
 		o42a_obj_t *);
-
-/**
- * Object reference function.
- *
- * \param scope[in] scope object pointer.
- *
- * \return resulting object reference.
- */
-typedef o42a_obj_t *o42a_obj_ref_ft(O42A_DECLS o42a_obj_t *);
-
-/**
- * Object constructor function.
- *
- * \param scope[in] scope object pointer.
- * \param fld[in] pointer to field, which object construction invoked for. This
- * may be a field from object different from scope (see o42a_fld_obj.previous),
- * but is always belongs to compatible body of that object.
- *
- * \return resulting object reference.
- */
-typedef o42a_obj_t *o42a_obj_constructor_ft(
-		O42A_DECLS
-		o42a_obj_t *,
-		struct o42a_fld_obj *);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -324,6 +300,13 @@ struct o42a_obj_data {
 	 * NULL when ancestor is void.
 	 */
 	const union o42a_obj_type *ancestor_type;
+
+	/**
+	 * Pointer to the head of the constructing fields list.
+	 *
+	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.
+	 */
+	struct o42a_fld_ctr *fld_ctrs;
 
 	/** Relative pointer to the list of ascendant descriptors. */
 	o42a_rlist_t ascendants;
@@ -742,28 +725,6 @@ void o42a_obj_val_unknown(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  * Object value part evaluation stub.
  */
 void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
-
-
-/**
- * Object reference function, which always returns NULL.
- *
- * This can be used e.g. to refer void object ancestor.
- */
-o42a_obj_body_t *o42a_obj_ref_null(O42A_DECLS o42a_obj_t *);
-
-/**
- * Object reference evaluation stub.
- */
-o42a_obj_body_t *o42a_obj_ref_stub(O42A_DECLS o42a_obj_t *);
-
-
-/**
- * Object constructor stub.
- */
-o42a_obj_body_t *o42a_obj_constructor_stub(
-		O42A_DECLS
-		o42a_obj_t *,
-		struct o42a_fld_obj *);
 
 
 /**

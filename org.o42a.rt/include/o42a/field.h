@@ -62,6 +62,15 @@ extern "C" {
 typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
 
 /**
+ * Object reference function.
+ *
+ * \param scope[in] scope object pointer.
+ *
+ * \return resulting object reference.
+ */
+typedef o42a_obj_t *o42a_obj_ref_ft(O42A_DECLS o42a_obj_t *);
+
+/**
  * Variable assigner function.
  *
  * \param object[in] object pointer.
@@ -129,6 +138,18 @@ o42a_fld *o42a_fld_by_field(
  * \return overriding field pointer..
  */
 o42a_fld *o42a_fld_by_overrider(O42A_DECLS const o42a_obj_overrider_t *);
+
+/**
+ * Object reference function, which always returns NULL.
+ *
+ * This can be used e.g. to refer void object ancestor.
+ */
+o42a_obj_body_t *o42a_obj_ref_null(O42A_DECLS o42a_obj_t *);
+
+/**
+ * Object reference evaluation stub.
+ */
+o42a_obj_body_t *o42a_obj_ref_stub(O42A_DECLS o42a_obj_t *);
 
 
 #ifdef __cplusplus

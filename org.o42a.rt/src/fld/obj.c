@@ -19,6 +19,8 @@
 */
 #include "o42a/fields.h"
 
+#include "o42a/error.h"
+
 
 void o42a_fld_obj_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
@@ -68,4 +70,13 @@ void o42a_fld_obj_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	to->previous = from->previous;
 
 	O42A_RETURN;
+}
+
+o42a_obj_body_t *o42a_obj_constructor_stub(
+		O42A_PARAMS
+		o42a_obj_t *scope,
+		struct o42a_fld_obj *field) {
+	O42A_ENTER(return NULL);
+	o42a_error_print(O42A_ARGS "Object constructor stub invoked");
+	O42A_RETURN NULL;
 }
