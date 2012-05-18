@@ -22,11 +22,22 @@ package org.o42a.codegen.code.op;
 
 public enum RMWKind {
 
-	R_ADD_W,
-	R_SUB_W,
-	R_OR_W,
-	R_AND_W,
-	R_XOR_W,
-	R_NAND_W
+	XCHG(0),
+	R_ADD_W(1),
+	R_SUB_W(2),
+	R_OR_W(3),
+	R_AND_W(4),
+	R_XOR_W(5),
+	R_NAND_W(6);
+
+	private final int code;
+
+	RMWKind(int code) {
+		this.code = code;
+	}
+
+	public final int code() {
+		return this.code;
+	}
 
 }
