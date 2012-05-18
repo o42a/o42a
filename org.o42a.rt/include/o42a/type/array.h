@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_ARRAY_H
-#define O42A_ARRAY_H
+#ifndef O42A_TYPE_ARRAY_H
+#define O42A_TYPE_ARRAY_H
 
 #include "o42a/object.h"
 
@@ -40,4 +40,4 @@ void o42a_array_copy(O42A_DECLS const o42a_val_t *, o42a_val_t *);
 }
 #endif
 
-#endif /* O42A_ARRAY_H */
+#endif /* O42A_TYPE_ARRAY_H */

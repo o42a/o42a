@@ -19,7 +19,7 @@
 */
 #include "o42a/error.h"
 
-#include "o42a/string.h"
+#include "o42a/type/string.h"
 
 #include "unicode/ustdio.h"
 

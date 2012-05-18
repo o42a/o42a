@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "o42a/float.h"
+#include "o42a/type/float.h"
 
 #include <fenv.h>
 #include <math.h>
@@ -26,7 +26,7 @@
 
 #include "o42a/error.h"
 #include "o42a/memory/refcount.h"
-#include "o42a/string.h"
+#include "o42a/type/string.h"
 
 #include "unicode/uchar.h"
 
