@@ -213,6 +213,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_testAndSet(
 }
 
 static const AtomicRMWInst::BinOp RMW_KINDS[] = {
+	AtomicRMWInst::Xchg,
 	AtomicRMWInst::Add,
 	AtomicRMWInst::Sub,
 	AtomicRMWInst::Or,

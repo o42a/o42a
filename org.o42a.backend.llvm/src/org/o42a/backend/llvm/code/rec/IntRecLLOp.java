@@ -65,7 +65,7 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						kind.ordinal(),
+						kind.code(),
 						nativePtr(operand))));
 	}
 
