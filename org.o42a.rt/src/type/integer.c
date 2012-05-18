@@ -17,14 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "o42a/integer.h"
+#include "o42a/type/integer.h"
 
 #include <stdio.h>
 #include <string.h>
 
 #include "o42a/error.h"
 #include "o42a/memory/refcount.h"
-#include "o42a/string.h"
+#include "o42a/type/string.h"
 
 #include "unicode/uchar.h"
 

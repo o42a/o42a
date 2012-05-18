@@ -60,13 +60,11 @@ include $(default_mk)
 includes += -I include
 CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
 
-objects = $(srcdir)/types.o
-objects += $(srcdir)/string.o
-objects += $(srcdir)/error.o
-objects += $(srcdir)/integer.o
-objects += $(srcdir)/float.o
-objects += $(srcdir)/array.o
+objects = $(srcdir)/error.o
+objects += $(srcdir)/fields.o
 objects += $(srcdir)/object.o
+objects += $(srcdir)/types.o
+
 objects += $(srcdir)/fld/assigner.o
 objects += $(srcdir)/fld/dep.o
 objects += $(srcdir)/fld/getter.o
@@ -74,10 +72,16 @@ objects += $(srcdir)/fld/link.o
 objects += $(srcdir)/fld/obj.o
 objects += $(srcdir)/fld/scope.o
 objects += $(srcdir)/fld/var.o
-objects += $(srcdir)/fields.o
+
 objects += $(srcdir)/lib/io.o
+
 objects += $(srcdir)/memory/gc.o
 objects += $(srcdir)/memory/refcount.o
+
+objects += $(srcdir)/type/array.o
+objects += $(srcdir)/type/float.o
+objects += $(srcdir)/type/integer.o
+objects += $(srcdir)/type/string.o
 
 # Make all.
 all : $(release_so_lib) $(debug_so_lib)
@@ -117,6 +121,23 @@ $(srcdir)/debug.o : $(headersdir)/debug.h
 $(srcdir)/debug.o : $(srcdir)/debug.c
 	$(CC) -c $(CPPFLAGS) $(CFLAGS) $(debug_flags) -o $@ $<
 
+$(srcdir)/fields.*.o : $(fld_deps)
+$(srcdir)/fields.*.o : $(headersdir)/fld/*.h
+$(srcdir)/fields.%.o : $(srcdir)/fields.c
+	$(call compile)
+
+$(srcdir)/error.*.o : $(common_deps)
+$(srcdir)/error.*.o : $(headersdir)/type/string.h
+$(srcdir)/error.%.o : $(srcdir)/error.c
+	$(call compile)
+
+$(srcdir)/object.*.o : $(common_deps)
+$(srcdir)/object.*.o : $(headersdir)/memory/gc.h
+$(srcdir)/object.*.o : $(headersdir)/field.h
+$(srcdir)/object.*.o : $(headersdir)/object.h
+$(srcdir)/object.%.o : $(srcdir)/object.c
+	$(call compile)
+
 $(srcdir)/types.*.o : $(headersdir)/debug.h
 $(srcdir)/types.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/types.*.o : $(headersdir)/types.h
@@ -135,48 +156,31 @@ $(srcdir)/memory/refcount.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/memory/refcount.%.o : $(srcdir)/memory/refcount.c
 	$(call compile)
 
-$(srcdir)/string.*.o : $(common_deps)
-$(srcdir)/string.*.o : $(headersdir)/memory/refcount.h
-$(srcdir)/string.*.o : $(headersdir)/string.h
-$(srcdir)/string.%.o : $(srcdir)/string.c
+$(srcdir)/type/array.*.o : $(common_deps)
+$(srcdir)/type/array.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/type/array.*.o : $(headersdir)/object.h
+$(srcdir)/type/array.*.o : $(headersdir)/type/array.h
+$(srcdir)/type/array.%.o : $(srcdir)/type/array.c
 	$(call compile)
 
-$(srcdir)/error.*.o : $(common_deps)
-$(srcdir)/error.*.o : $(headersdir)/string.h
-$(srcdir)/error.%.o : $(srcdir)/error.c
+$(srcdir)/type/float.*.o : $(common_deps)
+$(srcdir)/type/float.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/type/float.*.o : $(headersdir)/type/string.h
+$(srcdir)/type/float.*.o : $(headersdir)/type/float.h
+$(srcdir)/type/float.%.o : $(srcdir)/type/float.c
 	$(call compile)
 
-$(srcdir)/integer.*.o : $(common_deps)
-$(srcdir)/integer.*.o : $(headersdir)/memory/refcount.h
-$(srcdir)/integer.*.o : $(headersdir)/string.h
-$(srcdir)/integer.*.o : $(headersdir)/integer.h
-$(srcdir)/integer.%.o : $(srcdir)/integer.c
+$(srcdir)/type/integer.*.o : $(common_deps)
+$(srcdir)/type/integer.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/type/integer.*.o : $(headersdir)/type/string.h
+$(srcdir)/type/integer.*.o : $(headersdir)/type/integer.h
+$(srcdir)/type/integer.%.o : $(srcdir)/type/integer.c
 	$(call compile)
 
-$(srcdir)/float.*.o : $(common_deps)
-$(srcdir)/float.*.o : $(headersdir)/memory/refcount.h
-$(srcdir)/float.*.o : $(headersdir)/string.h
-$(srcdir)/float.*.o : $(headersdir)/float.h
-$(srcdir)/float.%.o : $(srcdir)/float.c
-	$(call compile)
-
-$(srcdir)/array.*.o : $(common_deps)
-$(srcdir)/array.*.o : $(headersdir)/memory/refcount.h
-$(srcdir)/array.*.o : $(headersdir)/object.h
-$(srcdir)/array.*.o : $(headersdir)/array.h
-$(srcdir)/array.%.o : $(srcdir)/array.c
-	$(call compile)
-
-$(srcdir)/object.*.o : $(common_deps)
-$(srcdir)/object.*.o : $(headersdir)/memory/gc.h
-$(srcdir)/object.*.o : $(headersdir)/field.h
-$(srcdir)/object.*.o : $(headersdir)/object.h
-$(srcdir)/object.%.o : $(srcdir)/object.c
-	$(call compile)
-
-$(srcdir)/fields.*.o : $(fld_deps)
-$(srcdir)/fields.*.o : $(headersdir)/fld/*.h
-$(srcdir)/fields.%.o : $(srcdir)/fields.c
+$(srcdir)/type/string.*.o : $(common_deps)
+$(srcdir)/type/string.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/type/string.*.o : $(headersdir)/type/string.h
+$(srcdir)/type/string.%.o : $(srcdir)/type/string.c
 	$(call compile)
 
 # Implicit rule for field type descriptor compilation.
@@ -188,7 +192,7 @@ $(srcdir)/fld/%.rel.o : $(srcdir)/fld/%.c $(headersdir)/fld/%.h
 
 # Built-in modules compilation.
 $(srcdir)/lib/io.*.o : $(common_deps)
-$(srcdir)/lib/io.*.o : $(headersdir)/string.h
+$(srcdir)/lib/io.*.o : $(headersdir)/type/string.h
 $(srcdir)/lib/io.*.o : $(headersdir)/lib/io.h
 $(srcdir)/lib/io.%.o : $(srcdir)/lib/io.c
 	$(call compile)

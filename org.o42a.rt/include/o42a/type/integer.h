@@ -17,8 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_FLOAT_H
-#define O42A_FLOAT_H
+#ifndef O42A_TYPE_INTEGER_H
+#define O42A_TYPE_INTEGER_H
 
 #include "o42a/types.h"
 
@@ -28,15 +28,13 @@ extern "C" {
 #endif
 
 
-void o42a_float_by_str(O42A_DECLS o42a_val_t *, const o42a_val_t *);
+void o42a_int_by_str(O42A_DECLS o42a_val_t *, const o42a_val_t *, uint32_t);
 
-int o42a_float_error(O42A_DECLS o42a_val_t *);
-
-o42a_bool_t o42a_float_to_str(O42A_DECLS o42a_val_t *, double);
+o42a_bool_t o42a_int_to_str(O42A_DECLS o42a_val_t *, int64_t);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* O42A_INTEGER_H */
+#endif /* O42A_TYPE_INTEGER_H */
