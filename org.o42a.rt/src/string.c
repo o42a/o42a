@@ -21,7 +21,7 @@
 
 #include <string.h>
 
-#include "o42a/memory.h"
+#include "o42a/memory/refcount.h"
 
 
 inline UChar32 o42a_str_cmask(O42A_PARAMS const o42a_val_t *const val) {
@@ -89,7 +89,8 @@ void o42a_str_sub(
 		sub->flags =
 				O42A_TRUE | O42A_VAL_EXTERNAL
 				| (string->flags & O42A_VAL_ALIGNMENT_MASK);
-		sub->value.v_ptr = substr = O42A(o42a_mem_alloc_rc(O42A_ARGS subsize));
+		sub->value.v_ptr = substr =
+				O42A(o42a_refcount_alloc(O42A_ARGS subsize));
 	}
 
 	O42A(memcpy(substr, str + (from << ashift), subsize));
@@ -176,7 +177,7 @@ void o42a_str_concat(
 		data = &result->value;
 	} else {
 		result->flags = O42A_TRUE | O42A_VAL_EXTERNAL | (ashift << 8);
-		data = O42A(o42a_mem_alloc_rc(O42A_ARGS size));
+		data = O42A(o42a_refcount_alloc(O42A_ARGS size));
 	}
 
 	int8_t* copy_to;

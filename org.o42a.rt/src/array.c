@@ -22,7 +22,7 @@
 #include <string.h>
 
 #include "o42a/error.h"
-#include "o42a/memory.h"
+#include "o42a/memory/refcount.h"
 
 
 o42a_array_t o42a_array_alloc(
@@ -32,7 +32,7 @@ o42a_array_t o42a_array_alloc(
 	O42A_ENTER(return NULL);
 
 	const o42a_array_t array =
-			O42A(o42a_mem_alloc_rc(O42A_ARGS sizeof(o42a_array_t) * size));
+			O42A(o42a_refcount_alloc(O42A_ARGS sizeof(o42a_array_t) * size));
 
 	if (!array) {
 		value->flags = O42A_FALSE;

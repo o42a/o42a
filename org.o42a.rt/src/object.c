@@ -25,7 +25,7 @@
 
 #include "o42a/error.h"
 #include "o42a/field.h"
-#include "o42a/memory.h"
+#include "o42a/memory/gc.h"
 
 
 inline o42a_obj_type_t *o42a_obj_type(
@@ -559,7 +559,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 #endif
 
-	void *const mem = O42A(o42a_mem_alloc_gc(O42A_ARGS size));
+	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;
@@ -855,7 +855,7 @@ o42a_obj_t *o42a_obj_new(O42A_PARAMS const o42a_obj_ctr_t *const ctr) {
 
 #endif
 
-	void *const mem = O42A(o42a_mem_alloc_gc(O42A_ARGS size));
+	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;

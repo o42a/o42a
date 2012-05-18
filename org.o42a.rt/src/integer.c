@@ -23,7 +23,7 @@
 #include <string.h>
 
 #include "o42a/error.h"
-#include "o42a/memory.h"
+#include "o42a/memory/refcount.h"
 #include "o42a/string.h"
 
 #include "unicode/uchar.h"
@@ -165,7 +165,7 @@ o42a_bool_t o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
 		O42A_RETURN O42A_TRUE;
 	}
 
-	char *lbuf = O42A(o42a_mem_alloc_rc(O42A_ARGS len));
+	char *lbuf = O42A(o42a_refcount_alloc(O42A_ARGS len));
 
 	if (!lbuf) {
 		string->flags = O42A_FALSE;
