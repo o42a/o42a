@@ -19,7 +19,7 @@
 */
 #include "o42a/types.h"
 
-#include "o42a/memory.h"
+#include "o42a/memory/refcount.h"
 
 
 /**
@@ -162,9 +162,10 @@ inline void o42a_val_use(O42A_PARAMS o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_mem_block_t *const block = O42A(o42a_mem_block(val->value.v_ptr));
+	o42a_refcount_block_t *const block =
+			O42A(o42a_refcount_blockof(val->value.v_ptr));
 
-	O42A(__sync_fetch_and_add(&block->hdr.rc.ref_count, 1));
+	__sync_fetch_and_add(&block->ref_count, 1);
 
 	O42A_RETURN;
 }
@@ -181,10 +182,11 @@ inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	o42a_mem_block_t *const block = O42A(o42a_mem_block(val->value.v_ptr));
+	o42a_refcount_block_t *const block =
+			O42A(o42a_refcount_blockof(val->value.v_ptr));
 
-	if (!O42A(__sync_sub_and_fetch(&block->hdr.rc.ref_count, 1))) {
-		O42A(o42a_mem_free_block(O42A_ARGS block));
+	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
+		O42A(o42a_refcount_free_block(O42A_ARGS block));
 	}
 
 	O42A_RETURN;

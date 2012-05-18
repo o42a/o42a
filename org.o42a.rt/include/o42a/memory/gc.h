@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,65 +17,57 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_MEMORY_H
-#define O42A_MEMORY_H
-
+#ifndef O42A_MEMORY_GC_H
+#define O42A_MEMORY_GC_H
 
 #include "o42a/types.h"
 
 
-#define o42a_mem_block(mem) \
-	((o42a_mem_block_t*) (((void*) (mem)) - offsetof(o42a_mem_block_t, data)))
+#define o42a_gc_blockof(mem) \
+	((o42a_gc_block_t*) \
+			(((void*) (mem)) - offsetof(struct _o42a_gc_block, data)))
 
+typedef struct o42a_gc_block o42a_gc_block_t;
 
-enum o42a_mem_flags {
+struct o42a_gc_block {
 
-	O42A_MEM_GC = 0x00,
+	o42a_gc_block_t *prev;
 
-	O42A_MEM_RC = 0x01,
+	o42a_gc_block_t *next;
 
-};
-
-typedef struct o42a_mem_block {
-
-	union {
-
-		struct {
-
-		} gc;
-
-		struct {
-
-			uint64_t ref_count;
-
-		} rc;
-
-	} hdr;
+	uint8_t lock;
 
 	uint8_t flags;
 
+	uint8_t even_flags;
+
+	uint8_t odd_flags;
+
+	char data[0];
+
+};
+
+struct _o42a_gc_block {
+
+	o42a_gc_block_t block;
+
 	char data[0] __attribute__ ((aligned (__BIGGEST_ALIGNMENT__)));
 
-} o42a_mem_block_t;
-
+};
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
-o42a_mem_block_t *o42a_mem_alloc_rc_block(O42A_DECLS size_t);
+o42a_gc_block_t *o42a_gc_alloc_block(O42A_DECLS size_t);
 
-o42a_mem_block_t *o42a_mem_alloc_gc_block(O42A_DECLS size_t);
-
-void o42a_mem_free_block(O42A_DECLS o42a_mem_block_t *);
+void o42a_gc_free_block(O42A_DECLS o42a_gc_block_t *);
 
 
-void *o42a_mem_alloc_rc(O42A_DECLS size_t);
+void *o42a_gc_alloc(O42A_DECLS size_t);
 
-void *o42a_mem_alloc_gc(O42A_DECLS size_t);
-
-void o42a_mem_free(O42A_DECLS void *);
+void o42a_gc_free(O42A_DECLS void *);
 
 
 #ifdef __cplusplus
@@ -83,4 +75,4 @@ void o42a_mem_free(O42A_DECLS void *);
 #endif
 
 
-#endif /* O42A_MEMORY_H */
+#endif /* O42A_MEMORY_GC_H */
