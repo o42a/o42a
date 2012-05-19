@@ -32,8 +32,6 @@ typedef struct o42a_refcount_block {
 
 	uint64_t ref_count;
 
-	char data[0];
-
 } o42a_refcount_block_t;
 
 struct _o42a_refcount_block {
@@ -49,14 +47,11 @@ extern "C" {
 #endif
 
 
-o42a_refcount_block_t *o42a_refcount_alloc_block(O42A_DECLS size_t);
+o42a_refcount_block_t *o42a_refcount_balloc(O42A_DECLS size_t);
 
-void o42a_refcount_free_block(O42A_DECLS o42a_refcount_block_t *);
-
+void o42a_refcount_free(O42A_DECLS o42a_refcount_block_t *);
 
 void *o42a_refcount_alloc(O42A_DECLS size_t);
-
-void o42a_refcount_free(O42A_DECLS void *);
 
 
 #ifdef __cplusplus

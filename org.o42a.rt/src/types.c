@@ -186,7 +186,7 @@ inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
 			O42A(o42a_refcount_blockof(val->value.v_ptr));
 
 	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
-		O42A(o42a_refcount_free_block(O42A_ARGS block));
+		O42A(o42a_refcount_free(O42A_ARGS block));
 	}
 
 	O42A_RETURN;
