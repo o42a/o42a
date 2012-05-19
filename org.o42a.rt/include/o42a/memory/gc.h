@@ -43,8 +43,6 @@ struct o42a_gc_block {
 
 	uint8_t odd_flags;
 
-	char data[0];
-
 };
 
 struct _o42a_gc_block {
@@ -60,14 +58,11 @@ extern "C" {
 #endif
 
 
-o42a_gc_block_t *o42a_gc_alloc_block(O42A_DECLS size_t);
-
-void o42a_gc_free_block(O42A_DECLS o42a_gc_block_t *);
-
+o42a_gc_block_t *o42a_gc_balloc(O42A_DECLS size_t);
 
 void *o42a_gc_alloc(O42A_DECLS size_t);
 
-void o42a_gc_free(O42A_DECLS void *);
+void o42a_gc_free(O42A_DECLS o42a_gc_block_t *);
 
 
 #ifdef __cplusplus

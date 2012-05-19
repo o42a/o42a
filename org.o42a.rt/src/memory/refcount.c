@@ -24,7 +24,7 @@
 #include "o42a/error.h"
 
 
-o42a_refcount_block_t *o42a_refcount_alloc_block(
+o42a_refcount_block_t *o42a_refcount_balloc(
 		O42A_PARAMS
 		const size_t size) {
 	O42A_ENTER(return NULL);
@@ -42,28 +42,20 @@ o42a_refcount_block_t *o42a_refcount_alloc_block(
 	O42A_RETURN block;
 }
 
-void o42a_refcount_free_block(O42A_PARAMS o42a_refcount_block_t *const block) {
-	O42A_ENTER(return);
-
-	O42A(free(block));
-
-	O42A_RETURN;
-}
-
-
 inline void *o42a_refcount_alloc(O42A_PARAMS const size_t size) {
 	O42A_ENTER(return NULL);
 
-	o42a_refcount_block_t *const block =
-			O42A(o42a_refcount_alloc_block(O42A_ARGS size));
+	struct _o42a_refcount_block *const block =
+			(struct _o42a_refcount_block *)
+			O42A(o42a_refcount_balloc(O42A_ARGS size));
 
 	O42A_RETURN (void*) &block->data;
 }
 
-inline void o42a_refcount_free(O42A_PARAMS void *const mem) {
+void o42a_refcount_free(O42A_PARAMS o42a_refcount_block_t *const block) {
 	O42A_ENTER(return);
 
-	O42A(o42a_refcount_free_block(O42A_ARGS o42a_refcount_blockof(mem)));
+	O42A(free(block));
 
 	O42A_RETURN;
 }
