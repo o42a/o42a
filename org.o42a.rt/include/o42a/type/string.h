@@ -21,6 +21,7 @@
 #define O42A_TYPE_STRING_H
 
 #include "o42a/types.h"
+#include "o42a/value.h"
 
 #include "unicode/utypes.h"
 

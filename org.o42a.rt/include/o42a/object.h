@@ -23,6 +23,7 @@
 #include <pthread.h>
 
 #include "o42a/types.h"
+#include "o42a/value.h"
 
 
 union o42a_fld;
