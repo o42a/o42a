@@ -1020,6 +1020,7 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 
 		if (old) {
 			if (old > 0) {
+				__sync_synchronize();
 				// The mutex is initialized already.
 				break;
 			}
@@ -1033,7 +1034,9 @@ void o42a_obj_lock(O42A_PARAMS o42a_obj_data_t *const data) {
 				|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
 			o42a_error_print(O42A_ARGS "Failed to initialize an object mutex");
 		}
-		__sync_val_compare_and_swap(&data->mutex_init, -1, 1);
+
+		__sync_synchronize();
+		data->mutex_init = 1;
 
 		break;
 	}
