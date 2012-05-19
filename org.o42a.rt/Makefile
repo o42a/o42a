@@ -41,9 +41,10 @@ debug_so_lib = $(target_dir)/$(debug_so_name)
 release_flags = $(release_cppflags) $(release_cflags)
 debug_flags = $(debug_cppflags) $(debug_cflags)
 
-common_deps = $(headersdir)/types.h
-common_deps += $(headersdir)/debug.h
+common_deps = $(headersdir)/debug.h
 common_deps += $(headersdir)/error.h
+common_deps += $(headersdir)/types.h
+common_deps += $(headersdir)/value.h
 
 fld_deps = $(common_deps)
 fld_deps += $(headersdir)/object.h
@@ -64,6 +65,7 @@ objects = $(srcdir)/error.o
 objects += $(srcdir)/fields.o
 objects += $(srcdir)/object.o
 objects += $(srcdir)/types.o
+objects += $(srcdir)/value.o
 
 objects += $(srcdir)/fld/assigner.o
 objects += $(srcdir)/fld/dep.o
@@ -139,9 +141,15 @@ $(srcdir)/object.%.o : $(srcdir)/object.c
 	$(call compile)
 
 $(srcdir)/types.*.o : $(headersdir)/debug.h
-$(srcdir)/types.*.o : $(headersdir)/memory/refcount.h
 $(srcdir)/types.*.o : $(headersdir)/types.h
 $(srcdir)/types.%.o : $(srcdir)/types.c
+	$(call compile)
+
+$(srcdir)/value.*.o : $(headersdir)/debug.h
+$(srcdir)/value.*.o : $(headersdir)/memory/refcount.h
+$(srcdir)/value.*.o : $(headersdir)/types.h
+$(srcdir)/value.*.o : $(headersdir)/value.h
+$(srcdir)/value.%.o : $(srcdir)/value.c
 	$(call compile)
 
 $(srcdir)/memory/gc.*.o : $(headersdir)/types.h

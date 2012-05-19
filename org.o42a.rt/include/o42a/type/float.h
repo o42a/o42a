@@ -21,6 +21,7 @@
 #define O42A_TYPE_FLOAT_H
 
 #include "o42a/types.h"
+#include "o42a/value.h"
 
 
 #ifdef __cplusplus

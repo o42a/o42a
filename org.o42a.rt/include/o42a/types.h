@@ -35,6 +35,19 @@
 typedef int32_t o42a_rptr_t;
 
 /**
+ * Possible o42a_bool_t values.
+ */
+enum o42a_bool_values {
+
+	/** False. */
+	O42A_FALSE = 0,
+
+	/** True. */
+	O42A_TRUE = 1
+
+};
+
+/**
  * Boolean type.
  *
  * Possible values are O42A_TRUE and O42A_FALSE.
@@ -271,135 +284,10 @@ typedef struct o42a_rlist {
 
 } o42a_rlist_t;
 
-/**
- * Value flags.
- *
- * Used in o42a_val.flags field.
- */
-enum o42a_val_flags {
-
-	/**
-	 * Value condition is false, which means that value does not exist.
-	 */
-	O42A_FALSE = 0,
-
-	/**
-	 * Value condition is true, which means that value exists.
-	 */
-	O42A_TRUE = 1,
-
-	/**
-	 * A bit meaning the value is not yet calculated.
-	 */
-	O42A_VAL_INDEFINITE = 2,
-
-	/**
-	 * A bit meaning the value assignment is in progress.
-	 *
-	 * This is only used by variables.
-	 *
-	 * When the code wishes to assign a new value, it should acquire the memory
-	 * barrier and atomically set this flag. If the flag already set, then
-	 * assignment should be canceled. Otherwise the code should:
-	 * - modify the value,
-	 * - release the memory barrier, and
-	 * - atomically drop this flag.
-	 */
-	O42A_VAL_ASSIGN = 4,
-
-	/**
-	 * Value condition mask.
-	 */
-	O42A_VAL_CONDITION_MASK = 1,
-
-	/**
-	 * Value alignment mask.
-	 *
-	 * This is a number of bits to shift the 1 left to gain alignment in bytes.
-	 *
-	 * For strings alignment also means the number of bytes containing unicode
-	 * character.
-	 *
-	 * Note, that it can be useful for both externally stored value and for
-	 * variable-length value fully contained in o42a_val.value field,
-	 * such as string.
-	 */
-	O42A_VAL_ALIGNMENT_MASK = 0x700,
-
-	/**
-	 * Value is stored externally.
-	 *
-	 * This means that o42a_val.value contains pointer to external storage
-	 * and o42a_val.length contains data length in bytes.
-	 */
-	O42A_VAL_EXTERNAL = 0x800,
-
-	/**
-	 * Value is statically allocated.
-	 *
-	 * This is meaningful when value is stored externally.
-	 *
-	 * When value is stored externally, but this flag isn't set, the value
-	 * is allocated with o42a_mem_alloc_* function and is part of memory block
-	 * (o42a_mem_block_t).
-	 */
-	O42A_VAL_STATIC = 0x1000,
-
-};
-
-
-/**
- * Unified object value.
- */
-typedef struct o42a_val {
-
-	O42A_HEADER;
-
-	/**
-	 * Value flags.
-	 *
-	 * A bit-mask consisting of o42a_val_flags enum values.
-	 */
-	uint32_t flags;
-
-	/**
-	 * Value length.
-	 *
-	 * The length quantity depends on value type.
-	 */
-	uint32_t length;
-
-	/**
-	 * Contains plain value.
-	 *
-	 * The value type should be known to the user.
-	 *
-	 * This is only meaningful when value condition is true.
-	 */
-	union {
-
-		/** 32-bit integer value. */
-		int32_t v_int32;
-
-		/** Integer value. */
-		int64_t v_integer;
-
-		/** Floating point value. */
-		double v_float;
-
-		/** Pointer to externally stored value, e.g. to string. */
-		void *v_ptr;
-
-	} value;
-
-} o42a_val_t;
-
-
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 size_t o42a_layout_size(O42A_DECLS o42a_layout_t);
 
@@ -415,27 +303,12 @@ size_t o42a_layout_pad(O42A_DECLS size_t, o42a_layout_t);
 
 o42a_layout_t o42a_layout_both(O42A_DECLS o42a_layout_t, o42a_layout_t);
 
-
 o42a_layout_t o42a_layout(O42A_DECLS uint8_t, size_t);
-
-
-size_t o42a_val_ashift(O42A_DECLS const o42a_val_t *);
-
-size_t o42a_val_alignment(O42A_DECLS const o42a_val_t *);
-
-void *o42a_val_data(O42A_DECLS const o42a_val_t *);
-
-
-void o42a_val_use(O42A_DECLS o42a_val_t *);
-
-void o42a_val_unuse(O42A_DECLS o42a_val_t *);
-
 
 void o42a_init(O42A_DECL);
 
-
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 
