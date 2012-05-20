@@ -514,6 +514,12 @@ static inline void fill_field_infos(
 #endif /* NDEBUG */
 
 
+static void o42a_obj_gc_marker(O42A_PARAMS void *obj_data) {
+	O42A_ENTER(return);
+	// TODO Mark all referenced objects.
+	O42A_RETURN;
+}
+
 static o42a_obj_rtype_t *propagate_object(
 		O42A_PARAMS
 		const o42a_obj_ctr_t *const ctr,
@@ -559,7 +565,7 @@ static o42a_obj_rtype_t *propagate_object(
 
 #endif
 
-	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS size));
+	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS &o42a_obj_gc_marker, size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;
@@ -855,7 +861,7 @@ o42a_obj_t *o42a_obj_new(O42A_PARAMS const o42a_obj_ctr_t *const ctr) {
 
 #endif
 
-	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS size));
+	void *const mem = O42A(o42a_gc_alloc(O42A_ARGS &o42a_obj_gc_marker, size));
 	o42a_obj_t *const object = (o42a_obj_t*) (mem + main_body_start);
 	o42a_obj_rtype_t *const type = (o42a_obj_rtype_t*) (mem + type_start);
 	o42a_obj_data_t *const data = &type->data;

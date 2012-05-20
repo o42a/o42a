@@ -35,6 +35,26 @@ typedef struct o42a_gc_block o42a_gc_block_t;
 
 typedef struct o42a_gc_use o42a_gc_use_t;
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/**
+ * A garbage-collected data marker function type.
+ *
+ * Such function is responsible for marking all of the data blocks the given one
+ * refers to.
+ *
+ * It is called by GC thread at a "mark" stage.
+ */
+typedef void o42a_gc_marker_ft(O42A_DECLS void *);
+
+#ifdef __cplusplus
+} /* externd "C" */
+#endif
+
+
 /**
  * A garbage-collected block of data.
  *
@@ -56,6 +76,13 @@ struct o42a_gc_block {
 
 	/** Block status flags. */
 	uint16_t flags;
+
+	/**
+	 * Data marker function pointer.
+	 *
+	 * Assigned by o42a_gc_balloc or o42a_gc_alloc function.
+	 */
+	o42a_gc_marker_ft *marker_f;
 
 	/**
 	 * Previous block in the same list, or NULL if this is a first one.
@@ -121,11 +148,12 @@ extern "C" {
  * The allocated block won't be added to any GC list automatically.
  * Use o42a_gc_use right after allocation in order to do that.
  *
+ * \param marker_f allocated data marker.
  * \param size the size of data to allocate, excluding the block header.
  *
  * \return data block pointer of NULL if allocation failed.
  */
-o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS size_t);
+o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS o42a_gc_marker_ft *, size_t);
 
 /**
  * Allocates a garbage-collected data.
@@ -134,11 +162,12 @@ o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS size_t);
  * contrast to it, returns a pointer to the allocated data instead of a pointer
  * to the data block.
  *
+ * \param marker_f allocated data marker.
  * \param size the size of data to allocate.
  *
  * \return allocated data pointer or NULL if allocation failed.
  */
-void *o42a_gc_alloc(O42A_DECLS size_t);
+void *o42a_gc_alloc(O42A_DECLS o42a_gc_marker_ft *, size_t);
 
 /**
  * Frees a garbage-collected data block previously allocated with o42a_gc_alloc
@@ -157,6 +186,18 @@ void o42a_gc_lock_block(O42A_DECLS o42a_gc_block_t *);
  * Unlocks the GC data block.
  */
 void o42a_gc_unlock_block(O42A_DECLS o42a_gc_block_t *);
+
+/**
+ * Submits a statically allocated data block to GC.
+ *
+ * The marker function of the block should be assigned. All other fields
+ * should be set to zero.
+ *
+ * This function should be called only once per static data block.
+ *
+ * \param data block.
+ */
+void o42a_gc_static(O42A_DECLS o42a_gc_block_t *);
 
 /**
  * Declares the data block is used by current thread.
@@ -180,6 +221,12 @@ void o42a_gc_use(O42A_DECLS o42a_gc_use_t *);
  * thread.
  */
 void o42a_gc_unuse(O42A_DECLS o42a_gc_use_t *);
+
+/**
+ * Marks the garbage-allocated data block and all the blocks it references
+ * as used.
+ */
+void o42a_gc_mark(O42A_DECLS o42a_gc_block_t *);
 
 #ifdef __cplusplus
 } /* externd "C" */
