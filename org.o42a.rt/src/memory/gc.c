@@ -19,6 +19,7 @@
 */
 #include "o42a/memory/gc.h"
 
+#include <pthread.h>
 #include <sched.h>
 #include <stdlib.h>
 
@@ -107,7 +108,12 @@ enum o42a_gc_block_flags {
 	 * Shift this flag left by oddity bits to get the flag value for the
 	 * corresponding "even" or "odd" list.
 	 */
-	O42A_GC_BLOCK_CHECKED
+	O42A_GC_BLOCK_CHECKED = 0x01,
+
+	/**
+	 * The data block was unused before been checked by GC "mark" stage.
+	 */
+	O42A_GC_BLOCK_UNUSED = 0x40,
 
 };
 
@@ -120,30 +126,9 @@ typedef struct o42a_gc_list {
 } o42a_gc_list_t;
 
 
-/**
- * Next GC oddity, i.e. which of the "white" lists will be processed next.
- *
- * This can be either 0 or 1.
- *
- * Current oddity can be calculated as gc_next_oddity ^ 1.
- */
-static unsigned gc_next_oddity;
-
-/**
- * GC lock.
- *
- * Should be acquired with o42a_gc_lock for GC list modifications GC oddity
- * switch.
- */
-static int gc_lock;
-
-
-static o42a_gc_list_t gc_used_list;
-
-static o42a_gc_list_t gc_white_lists[2];
-
 o42a_gc_block_t *o42a_gc_balloc(
 		O42A_PARAMS
+		o42a_gc_marker_ft *const marker_f,
 		const size_t size) {
 	O42A_ENTER(return NULL);
 
@@ -158,6 +143,7 @@ o42a_gc_block_t *o42a_gc_balloc(
 	block->lock = 0;
 	block->list = O42A_GC_LIST_NONE;
 	block->flags = 0;
+	block->marker_f = marker_f;
 	block->prev = NULL;
 	block->next = NULL;
 	block->uses = NULL;
@@ -165,11 +151,17 @@ o42a_gc_block_t *o42a_gc_balloc(
 	O42A_RETURN block;
 }
 
-inline void *o42a_gc_alloc(O42A_PARAMS const size_t size) {
+static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
+	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
+	return (void*) &blk->data;
+}
+
+inline void *o42a_gc_alloc(
+		O42A_PARAMS
+		o42a_gc_marker_ft *const marker_f,
+		const size_t size) {
 	O42A_ENTER(return NULL);
-	struct _o42a_gc_block *const block =
-			(struct _o42a_gc_block *) O42A(o42a_gc_balloc(O42A_ARGS size));
-	O42A_RETURN (void*) &block->data;
+	O42A_RETURN o42a_gc_dataof(o42a_gc_balloc(O42A_ARGS marker_f, size));
 }
 
 inline void o42a_gc_free(O42A_PARAMS o42a_gc_block_t *const block) {
@@ -195,6 +187,15 @@ inline void o42a_gc_unlock_block(O42A_PARAMS o42a_gc_block_t *const block) {
 	O42A_RETURN;
 }
 
+
+/**
+ * GC lock.
+ *
+ * Should be acquired with o42a_gc_lock for GC list modifications
+ * or oddity switch.
+ */
+static int gc_lock;
+
 /**
  * Locks GC for list modifications.
  */
@@ -214,6 +215,30 @@ static inline void o42a_gc_unlock(O42A_PARAM) {
 	O42A_ENTER(return);
 	__sync_lock_release(&gc_lock, 0);
 	gc_lock = 0;
+	O42A_RETURN;
+}
+
+
+/**
+ * Next GC oddity, i.e. which of the "white" lists will be processed next.
+ *
+ * This can be either 0 or 1.
+ *
+ * Current oddity can be calculated as gc_next_oddity ^ 1.
+ */
+static unsigned gc_next_oddity;
+
+
+static o42a_gc_list_t gc_static_list;
+
+static o42a_gc_list_t gc_used_list;
+
+static o42a_gc_list_t gc_white_lists[2];
+
+
+static inline void o42a_gc_block_uncheck(O42A_PARAMS o42a_gc_block_t *block) {
+	O42A_ENTER(return);
+	block->flags &= ~(O42A_GC_BLOCK_CHECKED << gc_next_oddity);
 	O42A_RETURN;
 }
 
@@ -258,9 +283,180 @@ static inline void o42a_gc_list_remove(
 	O42A_RETURN;
 }
 
-static inline void o42a_gc_block_uncheck(O42A_PARAMS o42a_gc_block_t *block) {
+static void o42a_gc_do_mark(O42A_PARAMS o42a_gc_block_t *block) {
 	O42A_ENTER(return);
-	block->flags &= ~(O42A_GC_BLOCK_CHECKED << gc_next_oddity);
+
+	unsigned next_oddity = gc_next_oddity;
+	unsigned oddity = next_oddity ^ 1;
+
+	// Drop the checked flag for the next oddity and mark checked for this one.
+	O42A(o42a_gc_block_uncheck(O42A_ARGS block));
+	block->flags |= O42A_GC_BLOCK_CHECKED << oddity;
+	block->flags &= ~O42A_GC_BLOCK_UNUSED;
+
+	// Move to the next oddity's white list.
+	if (block->list == (O42A_GC_LIST_WHITE_FLAG | oddity)) {
+		O42A(o42a_gc_lock(O42A_ARG));
+		O42A(o42a_gc_list_remove(O42A_ARGS &gc_white_lists[oddity], block));
+		O42A(o42a_gc_list_add(O42A_ARGS &gc_white_lists[next_oddity], block));
+		O42A(o42a_gc_unlock(O42A_ARG));
+	}
+
+	O42A_RETURN;
+}
+
+static o42a_bool_t gc_thread_exists;
+
+static o42a_bool_t gc_has_white;
+
+static pthread_t gc_thread;
+
+static pthread_mutex_t gc_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static pthread_cond_t gc_cond = PTHREAD_COND_INITIALIZER;
+
+static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
+	O42A_ENTER(return);
+
+	o42a_gc_block_t *block;
+
+	O42A(o42a_gc_lock(O42A_ARG));
+	block = list->first;
+	O42A(o42a_gc_unlock(O42A_ARG));
+
+	while (block) {
+
+		o42a_gc_block_t *next;
+
+		O42A(o42a_gc_lock_block(O42A_ARGS block));
+
+		next = block->next;
+		if (block->flags & O42A_GC_BLOCK_UNUSED) {
+			// Block is marked as unused.
+			// Move it to the next oddity white list.
+			O42A(o42a_gc_lock(O42A_ARG));
+
+			O42A(o42a_gc_list_remove(O42A_ARGS &gc_used_list, block));
+
+			block->list = O42A_GC_LIST_WHITE_FLAG | gc_next_oddity;
+			block->flags &= ~O42A_GC_BLOCK_UNUSED;
+			O42A(o42a_gc_list_add(
+					O42A_ARGS
+					&gc_white_lists[gc_next_oddity],
+					block));
+
+			O42A(o42a_gc_unlock(O42A_ARG));
+
+			O42A(o42a_gc_unlock_block(O42A_ARGS block));
+
+			block = next;
+
+			continue;
+		}
+
+		// Mark the block.
+		O42A(o42a_gc_do_mark(O42A_ARGS block));
+		O42A(o42a_gc_unlock_block(O42A_ARGS block));
+
+		// Mark the referenced data.
+		O42A(block->marker_f(O42A_ARGS o42a_gc_dataof(block)));
+
+		block = next;
+	}
+
+	O42A_RETURN;
+}
+
+static void o42a_gc_thread_sweep(O42A_PARAMS o42a_gc_list_t *list) {
+	O42A_ENTER(return);
+
+	// No need to synchronize, as the white list entries are not referenced.
+	o42a_gc_block_t *block = list->first;
+
+	if (!block) {
+		// White list is empty.
+		O42A_RETURN;
+	}
+	do {
+
+		o42a_gc_block_t *next = block->next;
+
+		O42A(o42a_gc_free(O42A_ARGS block));
+
+		block = next;
+	} while (block);
+
+	// Clean the white list.
+	list->first = NULL;
+	list->last = NULL;
+
+	O42A_RETURN;
+}
+
+static void *o42a_gc_thread(void *data) {
+#ifndef NDEBUG
+	struct o42a_dbg_env debug_env = {
+		stack_frame: NULL,
+		command: O42A_DBG_CMD_EXEC,
+		indent: 0,
+	};
+	o42a_dbg_env_t *__o42a_dbg_env_p__ = &debug_env;
+	O42A_ENTER(return NULL);
+#endif /* NDEBUG */
+
+	while (1) {
+		O42A(pthread_mutex_lock(&gc_mutex));
+		while (!gc_has_white) {
+			O42A(pthread_cond_wait(&gc_cond, &gc_mutex));
+		}
+		gc_has_white = O42A_FALSE;
+		O42A(pthread_mutex_unlock(&gc_mutex));
+
+		unsigned oddity;
+
+		O42A(o42a_gc_lock(O42A_ARG));
+		oddity = gc_next_oddity;
+		gc_next_oddity = oddity ^ 1;
+		O42A(o42a_gc_unlock(O42A_ARG));
+
+		O42A(o42a_gc_thread_mark(O42A_ARGS &gc_used_list));
+		O42A(o42a_gc_thread_mark(O42A_ARGS &gc_static_list));
+		O42A(o42a_gc_thread_sweep(O42A_ARGS &gc_white_lists[oddity]));
+	}
+
+	O42A_RETURN NULL;
+}
+
+/**
+ * Informs the GC thread that the "white" list for the next oddity is not empty.
+ *
+ * This functions creates starts the GC thread if necessary.
+ */
+static void o42a_gc_signal(O42A_PARAM) {
+	O42A_ENTER(return);
+
+	O42A(pthread_mutex_lock(&gc_mutex));
+	if (gc_thread_exists) {
+		gc_has_white = O42A_TRUE;
+		O42A(pthread_cond_signal(&gc_cond));
+	} else if (O42A(pthread_create(&gc_thread, NULL, &o42a_gc_thread, NULL))) {
+		o42a_error_print(O42A_ARGS "Failed to create a GC thread");
+	} else {
+		gc_thread_exists = O42A_TRUE;
+	}
+	O42A(pthread_mutex_unlock(&gc_mutex));
+
+	O42A_RETURN;
+}
+
+void o42a_gc_static(O42A_PARAMS o42a_gc_block_t *const block) {
+	O42A_ENTER(return);
+
+	O42A(o42a_gc_lock(O42A_ARG));
+	block->flags = O42A_GC_LIST_STATIC;
+	O42A(o42a_gc_list_add(O42A_ARGS &gc_static_list, block));
+	O42A(o42a_gc_unlock(O42A_ARG));
+
 	O42A_RETURN;
 }
 
@@ -310,23 +506,27 @@ void o42a_gc_use(O42A_PARAMS o42a_gc_use_t *const use) {
 	}
 
 	// Data block is in the white list.
+	// Move it to the used list.
 	O42A(o42a_gc_lock(O42A_ARG));
-	// Remove from the white list.
+
 	O42A(o42a_gc_list_remove(
 			O42A_ARGS
 			&gc_white_lists[block->list & 1],
 			block));
-	// Add to the used list.
-	O42A(o42a_gc_list_add(O42A_ARGS &gc_used_list, block));
+
 	// Drop the checked flag for the next oddity.
 	O42A(o42a_gc_block_uncheck(O42A_ARGS block));
-	O42A(o42a_gc_unlock(O42A_ARG));
+	block->flags &= ~O42A_GC_BLOCK_UNUSED;
 
 	// Create the use list.
+	block->uses = use;
 	use->prev = NULL;
 	use->next = NULL;
-	block->uses = use;
+
 	block->list = O42A_GC_LIST_USED;
+	O42A(o42a_gc_list_add(O42A_ARGS &gc_used_list, block));
+
+	O42A(o42a_gc_unlock(O42A_ARG));
 
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
@@ -361,15 +561,43 @@ void o42a_gc_unuse(O42A_PARAMS o42a_gc_use_t *const use) {
 
 	// Not used any more.
 	O42A(o42a_gc_lock(O42A_ARG));
-	// Remove from used list.
-	O42A(o42a_gc_list_remove(O42A_ARGS &gc_used_list, block));
-	// Add to the next oddity white list.
-	O42A(o42a_gc_list_add(O42A_ARGS &gc_white_lists[gc_next_oddity], block));
-	// Drop the checked flag for the next oddity.
-	O42A(o42a_gc_block_uncheck(O42A_ARGS block));
+
+	unsigned oddity = gc_next_oddity ^ 1;
+
+	if (block->flags & (O42A_GC_BLOCK_CHECKED << oddity)) {
+		// Already checked by GC "mark" phase.
+		// Move to the next oddity white list and inform GC.
+		block->flags &= ~O42A_GC_BLOCK_UNUSED;
+		block->list = O42A_GC_LIST_WHITE_FLAG | gc_next_oddity;
+		O42A(o42a_gc_block_uncheck(O42A_ARGS block));
+		O42A(o42a_gc_list_remove(O42A_ARGS &gc_used_list, block));
+		O42A(o42a_gc_list_add(
+				O42A_ARGS
+				&gc_white_lists[gc_next_oddity],
+				block));
+		O42A(o42a_gc_signal(O42A_ARG));
+	} else {
+		// Mark as unused but do not remove it from the used list.
+		// A GC thread will do it.
+		block->flags |= O42A_GC_BLOCK_UNUSED;
+	}
+
 	O42A(o42a_gc_unlock(O42A_ARG));
 
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
+
+	O42A_RETURN;
+}
+
+void o42a_gc_mark(O42A_PARAMS o42a_gc_block_t *block) {
+	O42A_ENTER(return);
+
+	O42A(o42a_gc_lock_block(O42A_ARGS block));
+	O42A(o42a_gc_do_mark(O42A_ARGS block));
+	O42A(o42a_gc_unlock_block(O42A_ARGS block));
+
+	// Mark the referenced data.
+	O42A(block->marker_f(O42A_ARGS o42a_gc_dataof(block)));
 
 	O42A_RETURN;
 }
