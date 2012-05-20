@@ -57,39 +57,21 @@ struct o42a_gc_block {
 	/** Block status flags. */
 	uint16_t flags;
 
-	/** A data describing the details of this block belonging to a GC list. */
-	union {
+	/**
+	 * Previous block in the same list, or NULL if this is a first one.
+	 */
+	o42a_gc_block_t *prev;
 
-		/**
-		 * This variant is used when the block belongs to a general GC list.
-		 */
-		struct {
+	/**
+	 * Next block in the same list, or NULL if this is a last one.
+	 */
+	o42a_gc_block_t *next;
 
-			/**
-			 * Previous block in the same list, or NULL if this is a first one.
-			 */
-			o42a_gc_block_t *prev;
-
-			/**
-			 * Next block in the same list, or NULL if this is a last one.
-			 */
-			o42a_gc_block_t *next;
-
-		} list;
-
-		/**
-		 * This variant is used when the block is used by some thread.
-		 */
-		struct {
-
-			/**
-			 * A pointer to the first block use descriptor.
-			 */
-			o42a_gc_use_t *first;
-
-		} uses;
-
-	} belonging;
+	/**
+	 * A pointer to the first block use descriptor, or NULL if block is not
+	 * used.
+	 */
+	o42a_gc_use_t *uses;
 
 };
 
