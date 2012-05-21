@@ -428,8 +428,8 @@ static inline void o42a_gc_signal(O42A_PARAM) {
 	O42A_ENTER(return);
 
 	O42A(pthread_mutex_lock(&gc_mutex));
+	gc_has_white = O42A_TRUE;
 	if (gc_thread_exists) {
-		gc_has_white = O42A_TRUE;
 		O42A(pthread_cond_signal(&gc_cond));
 	} else if (O42A(pthread_create(&gc_thread, NULL, &o42a_gc_thread, NULL))) {
 		o42a_error_print(O42A_ARGS "Failed to create a GC thread");
