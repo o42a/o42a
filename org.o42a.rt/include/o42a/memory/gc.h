@@ -33,8 +33,6 @@
 
 typedef struct o42a_gc_block o42a_gc_block_t;
 
-typedef struct o42a_gc_use o42a_gc_use_t;
-
 
 #ifdef __cplusplus
 extern "C" {
@@ -77,6 +75,9 @@ struct o42a_gc_block {
 	/** Block status flags. */
 	uint16_t flags;
 
+	/** A number of uses of this data block. */
+	uint32_t use_count;
+
 	/**
 	 * Data marker function pointer.
 	 *
@@ -93,40 +94,6 @@ struct o42a_gc_block {
 	 * Next block in the same list, or NULL if this is a last one.
 	 */
 	o42a_gc_block_t *next;
-
-	/**
-	 * A pointer to the first block use descriptor, or NULL if block is not
-	 * used.
-	 */
-	o42a_gc_use_t *uses;
-
-};
-
-/**
- * The descriptor of the use of data block by some thread.
- *
- * This structure should be allocated on stack and the block field should be
- * filled with a pointer to the block to use. The use can be claimed with
- * o42a_gc_use function and freed with o42a_gc_unuse one.
- *
- * The same block can be used by multiple threads, thats one a list is needed.
- */
-struct o42a_gc_use {
-
-	/**
-	 * The used data block.
-	 */
-	o42a_gc_block_t *block;
-
-	/**
-	 * Previous use descriptor in the list, or NULL if this is a first one.
-	 */
-	o42a_gc_use_t *prev;
-
-	/**
-	 * Next use descriptor in the list, or NULL if this is a last one.
-	 */
-	o42a_gc_use_t *next;
 
 };
 
@@ -146,7 +113,7 @@ extern "C" {
  * Allocates a garbage-collected block of data.
  *
  * The allocated block won't be added to any GC list automatically.
- * Use o42a_gc_use right after allocation in order to do that.
+ * Use o42a_gc_use after filling the data to make GC aware of it.
  *
  * \param marker_f allocated data marker.
  * \param size the size of data to allocate, excluding the block header.
@@ -208,19 +175,18 @@ void o42a_gc_static(O42A_DECLS o42a_gc_block_t *);
  * This is an atomic operation. The block should not be locked by current
  * thread.
  */
-void o42a_gc_use(O42A_DECLS o42a_gc_use_t *);
+void o42a_gc_use(O42A_DECLS o42a_gc_block_t *);
 
 /**
  * Releases the use of data block.
  *
  * If this function releases the last use of the data block, then this data
- * block will be submitted to GC and thus became a subject of garbage
- * collection.
+ * block will became a subject of garbage collection.
  *
  * This is an atomic operation. The block should not be locked by current
  * thread.
  */
-void o42a_gc_unuse(O42A_DECLS o42a_gc_use_t *);
+void o42a_gc_unuse(O42A_DECLS o42a_gc_block_t *);
 
 /**
  * Marks the garbage-allocated data block and all the blocks it references
