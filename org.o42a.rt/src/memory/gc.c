@@ -419,12 +419,7 @@ static void *o42a_gc_thread(void *data) {
 	O42A_RETURN NULL;
 }
 
-/**
- * Informs the GC thread that the "white" list for the next oddity is not empty.
- *
- * This functions creates starts the GC thread if necessary.
- */
-static inline void o42a_gc_signal(O42A_PARAM) {
+void o42a_gc_signal(O42A_PARAM) {
 	O42A_ENTER(return);
 
 	O42A(pthread_mutex_lock(&gc_mutex));
@@ -507,16 +502,10 @@ void o42a_gc_use(O42A_PARAMS o42a_gc_block_t *const block) {
 void o42a_gc_unuse(O42A_PARAMS o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
+	// The block will be moved to the "white" list by GC thread if use count
+	// drops to zero.
 	O42A(o42a_gc_lock_block(O42A_ARGS block));
-
-	// Reduce the uses count.
-	// The block will be moved to the "white" list by GC thread.
-
-	if (!(--block->use_count)) {
-		// Not used any more. Inform the GC thread
-		O42A(o42a_gc_signal(O42A_ARG));
-	}
-
+	--block->use_count;
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 	O42A_RETURN;
