@@ -436,8 +436,8 @@ void Java_org_o42a_backend_llvm_data_LLVMDataWriter_writePtrAsInt64(
 	if (sizeDiff) {
 	    // Extend to 64-bit integer if necessary.
 		result = ConstantExpr::getIntegerCast(result, int64type, false);
-		if (module->getTargetData().isLittleEndian()) {
-			// If the target is little-endian, move the pointer data so that
+		if (module->getTargetData().isBigEndian()) {
+			// If the target is big-endian, move the pointer data so that
 			// it become available at int64 address.
 			result = ConstantExpr::getExactLShr(
 					result,
