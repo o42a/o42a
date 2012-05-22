@@ -121,9 +121,14 @@ typedef struct o42a_gc_list {
 } o42a_gc_list_t;
 
 
+static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
+	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
+	return (void*) &blk->data;
+}
+
 o42a_gc_block_t *o42a_gc_balloc(
 		O42A_PARAMS
-		o42a_gc_marker_ft *const marker_f,
+		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
 
@@ -139,24 +144,19 @@ o42a_gc_block_t *o42a_gc_balloc(
 	block->list = O42A_GC_LIST_NONE;
 	block->flags = 0;
 	block->use_count = 0;
-	block->marker_f = marker_f;
+	block->desc = desc;
 	block->prev = NULL;
 	block->next = NULL;
 
 	O42A_RETURN block;
 }
 
-static inline void* o42a_gc_dataof(o42a_gc_block_t *block) {
-	struct _o42a_gc_block *const blk = (struct _o42a_gc_block *) block;
-	return (void*) &blk->data;
-}
-
 inline void *o42a_gc_alloc(
 		O42A_PARAMS
-		o42a_gc_marker_ft *const marker_f,
+		const o42a_gc_desc_t *const desc,
 		const size_t size) {
 	O42A_ENTER(return NULL);
-	O42A_RETURN o42a_gc_dataof(o42a_gc_balloc(O42A_ARGS marker_f, size));
+	O42A_RETURN o42a_gc_dataof(o42a_gc_balloc(O42A_ARGS desc, size));
 }
 
 inline void o42a_gc_free(O42A_PARAMS o42a_gc_block_t *const block) {
@@ -351,7 +351,7 @@ static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
 		O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 		// Mark the referenced data.
-		O42A(block->marker_f(O42A_ARGS o42a_gc_dataof(block)));
+		O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
 
 		block = next;
 	}
@@ -373,6 +373,7 @@ static void o42a_gc_thread_sweep(O42A_PARAMS o42a_gc_list_t *list) {
 
 		o42a_gc_block_t *next = block->next;
 
+		O42A(block->desc->sweep(O42A_ARGS o42a_gc_dataof(block)));
 		O42A(o42a_gc_free(O42A_ARGS block));
 
 		block = next;
@@ -519,7 +520,7 @@ void o42a_gc_mark(O42A_PARAMS o42a_gc_block_t *block) {
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 	// Mark the referenced data.
-	O42A(block->marker_f(O42A_ARGS o42a_gc_dataof(block)));
+	O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
 
 	O42A_RETURN;
 }
