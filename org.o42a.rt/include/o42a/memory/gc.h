@@ -28,8 +28,8 @@
  * \param mem a pointer to the data start.
  */
 #define o42a_gc_blockof(mem) \
-	((o42a_gc_block_t*) \
-			(((void*) (mem)) - offsetof(struct _o42a_gc_block, data)))
+	((o42a_gc_block_t *) \
+			(((void *) (mem)) - offsetof(struct _o42a_gc_block, data)))
 
 typedef struct o42a_gc_block o42a_gc_block_t;
 
@@ -39,14 +39,36 @@ extern "C" {
 #endif
 
 /**
- * A garbage-collected data marker function type.
+ * Garbage-collected data descriptor.
  *
- * Such function is responsible for marking all of the data blocks the given one
- * refers to.
- *
- * It is called by GC thread at a "mark" stage.
+ * Each data block has a descriptor contained in o42a_gc_block.desc field.
  */
-typedef void o42a_gc_marker_ft(O42A_DECLS void *);
+typedef struct o42a_gc_desc {
+
+	/**
+	 * A garbage-collected data marker.
+	 *
+	 * This function is responsible for marking all of the data blocks
+	 * the given one refers to.
+	 *
+	 * It is called by GC thread at a "mark" stage.
+	 *
+	 * \data data pointer.
+	 */
+	void (*mark) (O42A_DECLS void *);
+
+	/**
+	 * A garbage-collected data sweeper.
+	 *
+	 * This function is called by GC at "sweep" stage right before the data
+	 * block deallocation to release the resources used by it. For example, this
+	 * function can decrease a reference counter of the referred data.
+	 *
+	 * \data data pointer.
+	 */
+	void (*sweep) (O42A_DECLS void *);
+
+} o42a_gc_desc_t;
 
 #ifdef __cplusplus
 } /* externd "C" */
@@ -78,12 +100,8 @@ struct o42a_gc_block {
 	/** A number of uses of this data block. */
 	uint32_t use_count;
 
-	/**
-	 * Data marker function pointer.
-	 *
-	 * Assigned by o42a_gc_balloc or o42a_gc_alloc function.
-	 */
-	o42a_gc_marker_ft *marker_f;
+	/* Data descriptor. */
+	const o42a_gc_desc_t *desc;
 
 	/**
 	 * Previous block in the same list, or NULL if this is a first one.
@@ -115,12 +133,12 @@ extern "C" {
  * The allocated block won't be added to any GC list automatically.
  * Use o42a_gc_use after filling the data to make GC aware of it.
  *
- * \param marker_f allocated data marker.
+ * \param desc allocated data descriptor.
  * \param size the size of data to allocate, excluding the block header.
  *
  * \return data block pointer of NULL if allocation failed.
  */
-o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS o42a_gc_marker_ft *, size_t);
+o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
 
 /**
  * Allocates a garbage-collected data.
@@ -129,12 +147,12 @@ o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS o42a_gc_marker_ft *, size_t);
  * contrast to it, returns a pointer to the allocated data instead of a pointer
  * to the data block.
  *
- * \param marker_f allocated data marker.
+ * \param desc allocated data descriptor.
  * \param size the size of data to allocate.
  *
  * \return allocated data pointer or NULL if allocation failed.
  */
-void *o42a_gc_alloc(O42A_DECLS o42a_gc_marker_ft *, size_t);
+void *o42a_gc_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
 
 /**
  * Frees a garbage-collected data block previously allocated with o42a_gc_alloc
@@ -157,7 +175,7 @@ void o42a_gc_unlock_block(O42A_DECLS o42a_gc_block_t *);
 /**
  * Submits a statically allocated data block to GC.
  *
- * The marker function of the block should be assigned. All other fields
+ * The data descriptor ("desc" field) should be assigned. All other fields
  * should be set to zero.
  *
  * This function should be called only once per static data block.
