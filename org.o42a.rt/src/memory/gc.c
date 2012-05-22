@@ -278,15 +278,23 @@ static inline void o42a_gc_list_remove(
 	O42A_RETURN;
 }
 
-static void o42a_gc_do_mark(O42A_PARAMS o42a_gc_block_t *block) {
-	O42A_ENTER(return);
+static o42a_bool_t o42a_gc_do_mark(O42A_PARAMS o42a_gc_block_t *block) {
+	O42A_ENTER(return O42A_FALSE);
 
 	unsigned next_oddity = gc_next_oddity;
 	unsigned oddity = next_oddity ^ 1;
 
 	// Drop the checked flag for the next oddity and mark checked for this one.
 	O42A(o42a_gc_block_uncheck(O42A_ARGS block));
-	block->flags |= O42A_GC_BLOCK_CHECKED << oddity;
+
+	const int checked = O42A_GC_BLOCK_CHECKED << oddity;
+
+	if (block->flags & checked) {
+		// Already checked
+		O42A_RETURN O42A_FALSE;
+	}
+
+	block->flags |= checked;
 
 	// Move to the next oddity's white list.
 	if (block->list == (O42A_GC_LIST_WHITE_FLAG | oddity)) {
@@ -296,7 +304,7 @@ static void o42a_gc_do_mark(O42A_PARAMS o42a_gc_block_t *block) {
 		O42A(o42a_gc_unlock(O42A_ARG));
 	}
 
-	O42A_RETURN;
+	O42A_RETURN O42A_TRUE;
 }
 
 static o42a_bool_t gc_thread_exists;
@@ -347,11 +355,14 @@ static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
 		}
 
 		// Mark the block.
-		O42A(o42a_gc_do_mark(O42A_ARGS block));
+		o42a_bool_t mark = O42A(o42a_gc_do_mark(O42A_ARGS block));
+
 		O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 		// Mark the referenced data.
-		O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
+		if (mark) {
+			O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
+		}
 
 		block = next;
 	}
@@ -515,12 +526,16 @@ void o42a_gc_unuse(O42A_PARAMS o42a_gc_block_t *const block) {
 void o42a_gc_mark(O42A_PARAMS o42a_gc_block_t *block) {
 	O42A_ENTER(return);
 
+	o42a_bool_t mark;
+
 	O42A(o42a_gc_lock_block(O42A_ARGS block));
-	O42A(o42a_gc_do_mark(O42A_ARGS block));
+	mark = O42A(o42a_gc_do_mark(O42A_ARGS block));
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 	// Mark the referenced data.
-	O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
+	if (mark) {
+		O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
+	}
 
 	O42A_RETURN;
 }

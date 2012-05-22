@@ -31,12 +31,11 @@
 	((o42a_gc_block_t *) \
 			(((void *) (mem)) - offsetof(struct _o42a_gc_block, data)))
 
-typedef struct o42a_gc_block o42a_gc_block_t;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct o42a_gc_block o42a_gc_block_t;
 
 /**
  * Garbage-collected data descriptor.
@@ -48,10 +47,11 @@ typedef struct o42a_gc_desc {
 	/**
 	 * A garbage-collected data marker.
 	 *
-	 * This function is responsible for marking all of the data blocks
-	 * the given one refers to.
+	 * This function is called by GC thread at a "mark" stage to mark all of the
+	 * data blocks the given one refers to with a o42a_gc_mark calls.
 	 *
-	 * It is called by GC thread at a "mark" stage.
+	 * The data block is not locked when this function called. Implementation
+	 * should be thread safe though.
 	 *
 	 * \data data pointer.
 	 */
@@ -64,15 +64,14 @@ typedef struct o42a_gc_desc {
 	 * block deallocation to release the resources used by it. For example, this
 	 * function can decrease a reference counter of the referred data.
 	 *
+	 * The data is considered unused, so the implementation is not required to
+	 * be thread-safe.
+	 *
 	 * \data data pointer.
 	 */
 	void (*sweep) (O42A_DECLS void *);
 
 } o42a_gc_desc_t;
-
-#ifdef __cplusplus
-} /* externd "C" */
-#endif
 
 
 /**
@@ -123,9 +122,6 @@ struct _o42a_gc_block {
 
 };
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * Allocates a garbage-collected block of data.
@@ -218,12 +214,14 @@ void o42a_gc_signal(O42A_DECL);
 /**
  * Marks the garbage-allocated data block and all the blocks it references
  * as used.
+ *
+ * This function is intended to be called by marker function (o42a_gc_desc.mark)
+ * as a primary target of it's work.
  */
 void o42a_gc_mark(O42A_DECLS o42a_gc_block_t *);
 
 #ifdef __cplusplus
 } /* externd "C" */
 #endif
-
 
 #endif /* O42A_MEMORY_GC_H */
