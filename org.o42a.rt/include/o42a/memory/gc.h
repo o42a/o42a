@@ -189,6 +189,15 @@ void o42a_gc_use(O42A_DECLS o42a_gc_block_t *);
 void o42a_gc_unuse(O42A_DECLS o42a_gc_block_t *);
 
 /**
+ * Informs the GC that there are data blocks to progress.
+ *
+ * This function should be called after one ore more o42a_gc_unuse calls.
+ *
+ * This functions starts the GC thread if necessary.
+ */
+void o42a_gc_signal(O42A_DECL);
+
+/**
  * Marks the garbage-allocated data block and all the blocks it references
  * as used.
  */
