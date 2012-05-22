@@ -317,13 +317,13 @@ static pthread_mutex_t gc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static pthread_cond_t gc_cond = PTHREAD_COND_INITIALIZER;
 
-static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
+static void o42a_gc_thread_mark_used(O42A_PARAM) {
 	O42A_ENTER(return);
 
 	o42a_gc_block_t *block;
 
 	O42A(o42a_gc_lock(O42A_ARG));
-	block = list->first;
+	block = gc_used_list.first;
 	O42A(o42a_gc_unlock(O42A_ARG));
 
 	while (block) {
@@ -333,17 +333,35 @@ static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
 		O42A(o42a_gc_lock_block(O42A_ARGS block));
 
 		next = block->next;
-		if (block->list == O42A_GC_LIST_USED && !block->use_count) {
-			// Block is not really used. Move it to the next oddity white list.
+		if (!block->use_count) {
+			// Block were used, but it's use count dropped to zero.
 			O42A(o42a_gc_lock(O42A_ARG));
 
+			// Remove the block from the used list.
 			O42A(o42a_gc_list_remove(O42A_ARGS &gc_used_list, block));
 
-			block->list = O42A_GC_LIST_WHITE_FLAG | gc_next_oddity;
-			O42A(o42a_gc_list_add(
-					O42A_ARGS
-					&gc_white_lists[gc_next_oddity],
-					block));
+			const unsigned oddity = gc_next_oddity ^ 1;
+
+			if (block->flags & (O42A_GC_BLOCK_CHECKED << oddity)) {
+				// Block already marked as used.
+				// Move it to the next oddity "white" list.
+				block->list = O42A_GC_LIST_WHITE_FLAG | gc_next_oddity;
+				O42A(o42a_gc_block_uncheck(O42A_ARGS block));
+				O42A(o42a_gc_list_add(
+						O42A_ARGS
+						&gc_white_lists[gc_next_oddity],
+						block));
+				// Process the next oddity unconditionally.
+				gc_has_white = O42A_TRUE;
+			} else {
+				// Block not marked as used yet.
+				// Move it to the current "white" list.
+				block->list = O42A_GC_LIST_WHITE_FLAG | oddity;
+				O42A(o42a_gc_list_add(
+						O42A_ARGS
+						&gc_white_lists[oddity],
+						block));
+			}
 
 			O42A(o42a_gc_unlock(O42A_ARG));
 
@@ -357,6 +375,37 @@ static void o42a_gc_thread_mark(O42A_PARAMS o42a_gc_list_t *list) {
 		// Mark the block.
 		o42a_bool_t mark = O42A(o42a_gc_do_mark(O42A_ARGS block));
 
+		O42A(o42a_gc_unlock_block(O42A_ARGS block));
+
+		// Mark the referenced data.
+		if (mark) {
+			O42A(block->desc->mark(O42A_ARGS o42a_gc_dataof(block)));
+		}
+
+		block = next;
+	}
+
+	O42A_RETURN;
+}
+
+static void o42a_gc_thread_mark_static(O42A_PARAM) {
+	O42A_ENTER(return);
+
+	o42a_gc_block_t *block;
+
+	O42A(o42a_gc_lock(O42A_ARG));
+	block = gc_static_list.first;
+	O42A(o42a_gc_unlock(O42A_ARG));
+
+	while (block) {
+
+		o42a_gc_block_t *next;
+		o42a_bool_t mark;
+
+		// Mark the static block.
+		O42A(o42a_gc_lock_block(O42A_ARGS block));
+		next = block->next;
+		mark = O42A(o42a_gc_do_mark(O42A_ARGS block));
 		O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 		// Mark the referenced data.
@@ -423,8 +472,8 @@ static void *o42a_gc_thread(void *data) {
 		gc_next_oddity = oddity ^ 1;
 		O42A(o42a_gc_unlock(O42A_ARG));
 
-		O42A(o42a_gc_thread_mark(O42A_ARGS &gc_used_list));
-		O42A(o42a_gc_thread_mark(O42A_ARGS &gc_static_list));
+		O42A(o42a_gc_thread_mark_used(O42A_ARG));
+		O42A(o42a_gc_thread_mark_static(O42A_ARG));
 		O42A(o42a_gc_thread_sweep(O42A_ARGS &gc_white_lists[oddity]));
 	}
 
