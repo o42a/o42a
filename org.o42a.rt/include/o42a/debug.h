@@ -85,7 +85,7 @@ struct o42a_dbg_type_info {
 };
 
 
-extern const struct {
+extern const struct o42a_dbg {
 
 	const o42a_dbg_type_info_t *rtype_type_info;
 
