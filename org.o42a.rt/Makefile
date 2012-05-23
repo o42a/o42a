@@ -52,7 +52,7 @@ fld_deps += $(headersdir)/field.h
 fld_deps += $(headersdir)/fields.h
 
 
-.PHONY : all clean
+.PHONY : all clean compile-tests test
 .DEFAULT_GOAL : all
 
 include $(default_mk)
@@ -67,14 +67,6 @@ objects += $(srcdir)/object.o
 objects += $(srcdir)/types.o
 objects += $(srcdir)/value.o
 
-objects += $(srcdir)/fld/assigner.o
-objects += $(srcdir)/fld/dep.o
-objects += $(srcdir)/fld/getter.o
-objects += $(srcdir)/fld/link.o
-objects += $(srcdir)/fld/obj.o
-objects += $(srcdir)/fld/scope.o
-objects += $(srcdir)/fld/var.o
-
 objects += $(srcdir)/lib/io.o
 
 objects += $(srcdir)/memory/gc.o
@@ -84,6 +76,16 @@ objects += $(srcdir)/type/array.o
 objects += $(srcdir)/type/float.o
 objects += $(srcdir)/type/integer.o
 objects += $(srcdir)/type/string.o
+
+field_objects = $(srcdir)/fld/assigner.o
+field_objects += $(srcdir)/fld/dep.o
+field_objects += $(srcdir)/fld/getter.o
+field_objects += $(srcdir)/fld/link.o
+field_objects += $(srcdir)/fld/obj.o
+field_objects += $(srcdir)/fld/scope.o
+field_objects += $(srcdir)/fld/var.o
+
+objects += $(field_objects)
 
 # Make all.
 all : $(release_so_lib) $(debug_so_lib)
@@ -101,6 +103,7 @@ clean :
 	rm -f $(srcdir)/*.o
 	rm -f $(srcdir)/fld/*.o
 	rm -f $(srcdir)/lib/*.o
+	rm -rf bin
 
 
 # Build shared library.
@@ -211,3 +214,26 @@ define compile
 		$(if $(findstring .dbg.,$@),$(debug_flags),$(release_flags)) \
 		-o $@ $<
 endef
+
+# Tests
+tests = gc
+
+compile-tests : $(addprefix bin/,$(tests))
+
+test : $(addprefix bin/,$(tests))
+	@echo "===== EXECUTING TESTS ====="
+	@for name in "$(tests)"; do \
+		echo "=== Executing $${name}" >&2; \
+		echo >&2; \
+		( bin/$${name} && echo && echo "=== $${name} OK" >&2 ) \
+		|| echo "=== $${name} FAILED" >&2;\
+	done
+
+$(addprefix bin/,$(tests)) : $(debug_so_lib)
+bin/% : test/%.c
+	mkdir -p bin
+	$(CC) $(CPPFLAGS) $(CFLAGS) \
+		$(debug_flags) \
+		$(LDFLAGS) -pthread \
+		-L$(target_dir) -lo42a_debug \
+		-Wl,--no-undefined,-rpath=$(target_dir) -o $@ $<
