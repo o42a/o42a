@@ -309,7 +309,7 @@ static o42a_bool_t o42a_gc_do_mark(O42A_PARAMS o42a_gc_block_t *block) {
 
 static o42a_bool_t gc_thread_exists;
 
-static o42a_bool_t gc_has_white;
+static volatile o42a_bool_t gc_has_white;
 
 static pthread_t gc_thread;
 
@@ -483,13 +483,19 @@ static void *o42a_gc_thread(void *data) {
 void o42a_gc_signal(O42A_PARAM) {
 	O42A_ENTER(return);
 
+	if (!gc_has_white) {
+		// Nothing to report.
+		O42A_RETURN;
+	}
+
 	O42A(pthread_mutex_lock(&gc_mutex));
-	gc_has_white = O42A_TRUE;
 	if (gc_thread_exists) {
+		// Wake up the to GC thread.
 		O42A(pthread_cond_signal(&gc_cond));
 	} else if (O42A(pthread_create(&gc_thread, NULL, &o42a_gc_thread, NULL))) {
 		o42a_error_print(O42A_ARGS "Failed to create a GC thread");
 	} else {
+		// GC thread created.
 		gc_thread_exists = O42A_TRUE;
 	}
 	O42A(pthread_mutex_unlock(&gc_mutex));
@@ -566,7 +572,9 @@ void o42a_gc_unuse(O42A_PARAMS o42a_gc_block_t *const block) {
 	// The block will be moved to the "white" list by GC thread if use count
 	// drops to zero.
 	O42A(o42a_gc_lock_block(O42A_ARGS block));
-	--block->use_count;
+	if (!(--block->use_count)) {
+		gc_has_white = O42A_TRUE;
+	}
 	O42A(o42a_gc_unlock_block(O42A_ARGS block));
 
 	O42A_RETURN;
