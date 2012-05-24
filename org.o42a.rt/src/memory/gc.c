@@ -317,7 +317,7 @@ static pthread_mutex_t gc_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static pthread_cond_t gc_cond = PTHREAD_COND_INITIALIZER;
 
-static void o42a_gc_thread_mark_used(O42A_PARAM) {
+static inline void o42a_gc_thread_mark_used(O42A_PARAM) {
 	O42A_ENTER(return);
 
 	o42a_gc_block_t *block;
@@ -388,7 +388,7 @@ static void o42a_gc_thread_mark_used(O42A_PARAM) {
 	O42A_RETURN;
 }
 
-static void o42a_gc_thread_mark_static(O42A_PARAM) {
+static inline void o42a_gc_thread_mark_static(O42A_PARAM) {
 	O42A_ENTER(return);
 
 	o42a_gc_block_t *block;
@@ -419,7 +419,7 @@ static void o42a_gc_thread_mark_static(O42A_PARAM) {
 	O42A_RETURN;
 }
 
-static void o42a_gc_thread_sweep(O42A_PARAMS o42a_gc_list_t *list) {
+static inline void o42a_gc_thread_sweep(O42A_PARAMS o42a_gc_list_t *list) {
 	O42A_ENTER(return);
 
 	// No need to synchronize, as the white list entries are not referenced.
@@ -446,6 +446,36 @@ static void o42a_gc_thread_sweep(O42A_PARAMS o42a_gc_list_t *list) {
 	O42A_RETURN;
 }
 
+static inline void o42a_gc_mark_and_sweep(O42A_PARAM) {
+	O42A_ENTER(return);
+
+	unsigned oddity;
+
+	O42A(o42a_gc_lock(O42A_ARG));
+	oddity = gc_next_oddity;
+	gc_next_oddity = oddity ^ 1;
+	O42A(o42a_gc_unlock(O42A_ARG));
+
+	O42A(o42a_gc_thread_mark_used(O42A_ARG));
+	O42A(o42a_gc_thread_mark_static(O42A_ARG));
+	O42A(o42a_gc_thread_sweep(O42A_ARGS &gc_white_lists[oddity]));
+
+	O42A_RETURN;
+}
+
+#ifndef NDEBUG
+void o42a_gc_run(O42A_PARAM) {
+	O42A_ENTER(return);
+
+	while (gc_has_white) {
+		gc_has_white = O42A_FALSE;
+		o42a_gc_mark_and_sweep(O42A_ARG);
+	}
+
+	O42A_RETURN;
+}
+#endif /* NDEBUG */
+
 static void *o42a_gc_thread(void *data) {
 #ifndef NDEBUG
 	struct o42a_dbg_env debug_env = {
@@ -465,16 +495,7 @@ static void *o42a_gc_thread(void *data) {
 		gc_has_white = O42A_FALSE;
 		O42A(pthread_mutex_unlock(&gc_mutex));
 
-		unsigned oddity;
-
-		O42A(o42a_gc_lock(O42A_ARG));
-		oddity = gc_next_oddity;
-		gc_next_oddity = oddity ^ 1;
-		O42A(o42a_gc_unlock(O42A_ARG));
-
-		O42A(o42a_gc_thread_mark_used(O42A_ARG));
-		O42A(o42a_gc_thread_mark_static(O42A_ARG));
-		O42A(o42a_gc_thread_sweep(O42A_ARGS &gc_white_lists[oddity]));
+		o42a_gc_mark_and_sweep(O42A_ARG);
 	}
 
 	O42A_RETURN NULL;
