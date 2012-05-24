@@ -55,7 +55,7 @@ typedef struct o42a_gc_desc {
 	 *
 	 * \data data pointer.
 	 */
-	void (*mark) (O42A_DECLS void *);
+	void (*mark) (void *);
 
 	/**
 	 * A garbage-collected data sweeper.
@@ -69,7 +69,7 @@ typedef struct o42a_gc_desc {
 	 *
 	 * \data data pointer.
 	 */
-	void (*sweep) (O42A_DECLS void *);
+	void (*sweep) (void *);
 
 } o42a_gc_desc_t;
 
@@ -134,7 +134,7 @@ struct _o42a_gc_block {
  *
  * \return data block pointer of NULL if allocation failed.
  */
-o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
+o42a_gc_block_t *o42a_gc_block_alloc(const o42a_gc_desc_t *, size_t);
 
 /**
  * Allocates a garbage-collected data.
@@ -148,7 +148,7 @@ o42a_gc_block_t *o42a_gc_block_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
  *
  * \return allocated data pointer or NULL if allocation failed.
  */
-void *o42a_gc_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
+void *o42a_gc_alloc(const o42a_gc_desc_t *, size_t);
 
 /**
  * Frees a garbage-collected data block previously allocated with o42a_gc_alloc
@@ -156,17 +156,17 @@ void *o42a_gc_alloc(O42A_DECLS const o42a_gc_desc_t *, size_t);
  *
  * \param the data block to free.
  */
-void o42a_gc_free(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_free(o42a_gc_block_t *);
 
 /**
  * Locks the GC data block.
  */
-void o42a_gc_lock_block(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_lock_block(o42a_gc_block_t *);
 
 /**
  * Unlocks the GC data block.
  */
-void o42a_gc_unlock_block(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_unlock_block(o42a_gc_block_t *);
 
 /**
  * Submits a statically allocated data block to GC.
@@ -178,7 +178,7 @@ void o42a_gc_unlock_block(O42A_DECLS o42a_gc_block_t *);
  *
  * \param data block.
  */
-void o42a_gc_static(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_static(o42a_gc_block_t *);
 
 /**
  * Declares the data block is used by current thread.
@@ -189,7 +189,7 @@ void o42a_gc_static(O42A_DECLS o42a_gc_block_t *);
  * This is an atomic operation. The block should not be locked by current
  * thread.
  */
-void o42a_gc_use(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_use(o42a_gc_block_t *);
 
 /**
  * Releases the use of data block.
@@ -200,7 +200,7 @@ void o42a_gc_use(O42A_DECLS o42a_gc_block_t *);
  * This is an atomic operation. The block should not be locked by current
  * thread.
  */
-void o42a_gc_unuse(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_unuse(o42a_gc_block_t *);
 
 /**
  * Informs the GC that there are data blocks to progress.
@@ -209,13 +209,13 @@ void o42a_gc_unuse(O42A_DECLS o42a_gc_block_t *);
  *
  * This functions starts the GC thread if necessary.
  */
-void o42a_gc_signal(O42A_DECL);
+void o42a_gc_signal();
 
 #ifndef NDEBUG
 /**
  * Run the GC manually, while there are blocks in a white list.
  */
-void o42a_gc_run(O42A_DECL);
+void o42a_gc_run();
 #endif /* NDEBUG */
 
 /**
@@ -225,7 +225,7 @@ void o42a_gc_run(O42A_DECL);
  * This function is intended to be called by marker function (o42a_gc_desc.mark)
  * as a primary target of it's work.
  */
-void o42a_gc_mark(O42A_DECLS o42a_gc_block_t *);
+void o42a_gc_mark(o42a_gc_block_t *);
 
 #ifdef __cplusplus
 } /* externd "C" */

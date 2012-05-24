@@ -24,9 +24,9 @@
 #include "o42a/memory/refcount.h"
 
 
-inline UChar32 o42a_str_cmask(O42A_PARAMS const o42a_val_t *const val) {
+inline UChar32 o42a_str_cmask(const o42a_val_t *const val) {
 
-	const size_t char_size = o42a_val_alignment(O42A_ARGS_ val);
+	const size_t char_size = o42a_val_alignment(val);
 	size_t mask;
 
 	if (sizeof (UChar32) <= char_size) {
@@ -39,7 +39,6 @@ inline UChar32 o42a_str_cmask(O42A_PARAMS const o42a_val_t *const val) {
 }
 
 void o42a_str_sub(
-		O42A_PARAMS
 		o42a_val_t *const sub,
 		const o42a_val_t *const string,
 		const int64_t from,
@@ -74,8 +73,8 @@ void o42a_str_sub(
 		O42A_RETURN;
 	}
 
-	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS string));
-	const void *const str = O42A(o42a_val_data(O42A_ARGS string));
+	const size_t ashift = O42A(o42a_val_ashift(string));
+	const void *const str = O42A(o42a_val_data(string));
 	void *substr;
 
 	sub->length = sublen;
@@ -90,7 +89,7 @@ void o42a_str_sub(
 				O42A_TRUE | O42A_VAL_EXTERNAL
 				| (string->flags & O42A_VAL_ALIGNMENT_MASK);
 		sub->value.v_ptr = substr =
-				O42A(o42a_refcount_alloc(O42A_ARGS subsize));
+				O42A(o42a_refcount_alloc(subsize));
 	}
 
 	O42A(memcpy(substr, str + (from << ashift), subsize));
@@ -99,21 +98,20 @@ void o42a_str_sub(
 }
 
 int64_t o42a_str_compare(
-		O42A_PARAMS
 		const o42a_val_t *const what,
 		const o42a_val_t *const with) {
 	O42A_ENTER(return 0);
 
-	const void *str1 = O42A(o42a_val_data(O42A_ARGS what));
-	const UChar32 cmask1 = O42A(o42a_str_cmask(O42A_ARGS what));
-	const size_t ashift1 = O42A(o42a_val_ashift(O42A_ARGS what));
+	const void *str1 = O42A(o42a_val_data(what));
+	const UChar32 cmask1 = O42A(o42a_str_cmask(what));
+	const size_t ashift1 = O42A(o42a_val_ashift(what));
 	const size_t step1 = 1 << ashift1;
 	const size_t len1 = what->length;
 	const void *const end1 = str1 + (len1 << ashift1);
 
-	const void *str2 = O42A(o42a_val_data(O42A_ARGS with));
-	const UChar32 cmask2 = O42A(o42a_str_cmask(O42A_ARGS with));
-	const size_t ashift2 = O42A(o42a_val_ashift(O42A_ARGS with));
+	const void *str2 = O42A(o42a_val_data(with));
+	const UChar32 cmask2 = O42A(o42a_str_cmask(with));
+	const size_t ashift2 = O42A(o42a_val_ashift(with));
 	const size_t step2 = 1 << ashift2;
 	const size_t len2 = with->length;
 	const void *const end2 = str2 + (len2 << ashift2);
@@ -145,21 +143,20 @@ int64_t o42a_str_compare(
 }
 
 void o42a_str_concat(
-		O42A_PARAMS
 		o42a_val_t *result,
 		const o42a_val_t *str1,
 		const o42a_val_t *str2) {
 	O42A_ENTER(return);
 
-	const size_t ashift1 = O42A(o42a_val_ashift(O42A_ARGS str1));
+	const size_t ashift1 = O42A(o42a_val_ashift(str1));
 	const size_t len1 = str1->length;
 	const size_t size1 = len1 << ashift1;
-	const void *data1 = O42A(o42a_val_data(O42A_ARGS str1));
+	const void *data1 = O42A(o42a_val_data(str1));
 
-	const size_t ashift2 = O42A(o42a_val_ashift(O42A_ARGS str1));
+	const size_t ashift2 = O42A(o42a_val_ashift(str1));
 	const size_t len2 = str2->length;
 	const size_t size2 = len2 << ashift2;
-	const void *data2 = O42A(o42a_val_data(O42A_ARGS str2));
+	const void *data2 = O42A(o42a_val_data(str2));
 
 	size_t ashift;
 
@@ -177,7 +174,7 @@ void o42a_str_concat(
 		data = &result->value;
 	} else {
 		result->flags = O42A_TRUE | O42A_VAL_EXTERNAL | (ashift << 8);
-		data = O42A(o42a_refcount_alloc(O42A_ARGS size));
+		data = O42A(o42a_refcount_alloc(size));
 	}
 
 	int8_t* copy_to;

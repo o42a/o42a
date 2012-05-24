@@ -24,7 +24,7 @@
 #include "unicode/ustdio.h"
 
 
-void o42a_io_print_str(O42A_PARAMS const o42a_val_t *const val) {
+void o42a_io_print_str(const o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	const size_t len = val->length;
@@ -33,9 +33,9 @@ void o42a_io_print_str(O42A_PARAMS const o42a_val_t *const val) {
 		O42A_RETURN;
 	}
 
-	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS val));
-	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS val));
-	const void *const str = O42A(o42a_val_data(O42A_ARGS val));
+	const size_t ashift = O42A(o42a_val_ashift(val));
+	const UChar32 cmask = O42A(o42a_str_cmask(val));
+	const void *const str = O42A(o42a_val_data(val));
 
 	UFILE *const uout = O42A(u_finit(stdout, NULL, NULL));
 

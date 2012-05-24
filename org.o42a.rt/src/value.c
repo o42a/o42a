@@ -21,15 +21,15 @@
 
 #include "o42a/memory/refcount.h"
 
-inline size_t o42a_val_ashift(O42A_PARAMS const o42a_val_t *const val) {
+inline size_t o42a_val_ashift(const o42a_val_t *const val) {
 	return (val->flags & O42A_VAL_ALIGNMENT_MASK) >> 8;
 }
 
-inline size_t o42a_val_alignment(O42A_PARAMS const o42a_val_t *const val) {
-	return 1 << o42a_val_ashift(O42A_ARGS_ val);
+inline size_t o42a_val_alignment(const o42a_val_t *const val) {
+	return 1 << o42a_val_ashift(val);
 }
 
-inline void *o42a_val_data(O42A_PARAMS const o42a_val_t *const val) {
+inline void *o42a_val_data(const o42a_val_t *const val) {
 	if (val->flags & O42A_VAL_EXTERNAL) {
 		return val->value.v_ptr;
 	}
@@ -37,7 +37,7 @@ inline void *o42a_val_data(O42A_PARAMS const o42a_val_t *const val) {
 }
 
 
-inline void o42a_val_use(O42A_PARAMS o42a_val_t *const val) {
+inline void o42a_val_use(o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	const uint32_t flags = val->flags;
@@ -57,7 +57,7 @@ inline void o42a_val_use(O42A_PARAMS o42a_val_t *const val) {
 	O42A_RETURN;
 }
 
-inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
+inline void o42a_val_unuse(o42a_val_t *const val) {
 	O42A_ENTER(return);
 
 	const uint32_t flags = val->flags;
@@ -73,7 +73,7 @@ inline void o42a_val_unuse(O42A_PARAMS o42a_val_t *const val) {
 			O42A(o42a_refcount_blockof(val->value.v_ptr));
 
 	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
-		O42A(o42a_refcount_free(O42A_ARGS block));
+		O42A(o42a_refcount_free(block));
 	}
 
 	O42A_RETURN;

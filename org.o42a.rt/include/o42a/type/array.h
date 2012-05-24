@@ -31,9 +31,9 @@ extern "C" {
 #endif
 
 
-o42a_array_t o42a_array_alloc(O42A_DECLS o42a_val_t *, uint32_t);
+o42a_array_t o42a_array_alloc(o42a_val_t *, uint32_t);
 
-void o42a_array_copy(O42A_DECLS const o42a_val_t *, o42a_val_t *);
+void o42a_array_copy(const o42a_val_t *, o42a_val_t *);
 
 
 #ifdef __cplusplus

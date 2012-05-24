@@ -48,20 +48,20 @@ static struct swept_objects {
 } swept_objects;
 
 
-static void mark_test_object(O42A_PARAMS void *const data) {
+static void mark_test_object(void *const data) {
 	O42A_ENTER(return);
 
 	test_object_t *const object = (test_object_t *) data;
 	const size_t num_refs = object->num_refs;
 
 	for (size_t i = 0; i < num_refs; ++i) {
-		O42A(o42a_gc_mark(O42A_ARGS o42a_gc_blockof(object->refs[0])));
+		O42A(o42a_gc_mark(o42a_gc_blockof(object->refs[0])));
 	}
 
 	O42A_RETURN;
 }
 
-static void sweep_test_object(O42A_PARAMS void *const data) {
+static void sweep_test_object(void *const data) {
 	O42A_ENTER(return);
 
 	assert(
@@ -81,13 +81,11 @@ static const o42a_gc_desc_t test_object_desc = {
 };
 
 static test_object_t *alloc_test_object(
-		O42A_PARAMS
 		const char *const name,
 		const size_t num_refs) {
 	O42A_ENTER(return NULL);
 
 	test_object_t *object = (test_object_t *) O42A(o42a_gc_alloc(
-			O42A_ARGS
 			&test_object_desc,
 			sizeof(test_object_t) + num_refs * sizeof(test_object_t *)));
 
@@ -121,24 +119,24 @@ static o42a_bool_t object_swept(const char *const name) {
 
 //////////////////// Tests
 
-static o42a_bool_t test_non_referenced_object(O42A_PARAM) {
+static o42a_bool_t test_non_referenced_object() {
 	O42A_ENTER(return O42A_FALSE);
 	O42A_DO("Non-referenced object");
 
 	setup_test(1);
 
-	test_object_t * test = O42A(alloc_test_object(O42A_ARGS "noref", 0));
+	test_object_t * test = O42A(alloc_test_object("noref", 0));
 
-	O42A(o42a_gc_use(O42A_ARGS o42a_gc_blockof(test)));
+	O42A(o42a_gc_use(o42a_gc_blockof(test)));
 	assert(!object_swept("noref") && "Object deallocated after use");
 
-	O42A(o42a_gc_run(O42A_ARG));
+	O42A(o42a_gc_run());
 	assert(!object_swept("noref") && "Object deallocated while it is in use");
 
-	O42A(o42a_gc_unuse(O42A_ARGS o42a_gc_blockof(test)));
+	O42A(o42a_gc_unuse(o42a_gc_blockof(test)));
 	assert(!object_swept("noref") && "Object deallocated after unuse");
 
-	O42A(o42a_gc_run(O42A_ARG));
+	O42A(o42a_gc_run());
 	assert(object_swept("noref") && "Object not deallocated");
 
 	O42A_DONE;
@@ -147,12 +145,12 @@ static o42a_bool_t test_non_referenced_object(O42A_PARAM) {
 
 //////////////////// Main functions
 
-static int32_t run_tests(O42A_PARAMS int32_t argc, char **argv) {
+static int32_t run_tests(int32_t argc, char **argv) {
 	O42A_ENTER(return 0);
 
 	o42a_bool_t ok = O42A_TRUE;
 
-	ok = test_non_referenced_object(O42A_ARG) & ok;
+	ok = test_non_referenced_object() & ok;
 
 	O42A_RETURN ok ? EXIT_SUCCESS : EXIT_FAILURE;
 }

@@ -47,7 +47,7 @@ extern "C" {
  * \param result[out] object value to fill by function (stack-allocated).
  * \param object[in] object pointer.
  */
-typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
+typedef void o42a_obj_val_ft(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object value evaluation function.
@@ -59,15 +59,7 @@ typedef void o42a_obj_val_ft(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  * \param data[in] object data pointer.
  * \param object[in] object pointer.
  */
-typedef void o42a_obj_value_ft(
-		O42A_DECLS
-		o42a_val_t *,
-		o42a_obj_data_t *,
-		o42a_obj_t *);
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+typedef void o42a_obj_value_ft(o42a_val_t *, o42a_obj_data_t *, o42a_obj_t *);
 
 
 /**
@@ -550,11 +542,6 @@ typedef struct o42a_obj_ctable {
 } o42a_obj_ctable_t;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 /**
  * Retrieves object type from it's body.
  *
@@ -562,7 +549,7 @@ extern "C" {
  *
  * \return object type pointer.
  */
-o42a_obj_type_t *o42a_obj_type(O42A_DECLS const o42a_obj_body_t *);
+o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *);
 
 /**
  * Retrieves object ancestor's body.
@@ -571,7 +558,7 @@ o42a_obj_type_t *o42a_obj_type(O42A_DECLS const o42a_obj_body_t *);
  *
  * \return ancestor body pointer.
  */
-o42a_obj_body_t *o42a_obj_ancestor(O42A_DECLS const o42a_obj_body_t *);
+o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
 
 /**
  * Extracts object's static type.
@@ -581,7 +568,7 @@ o42a_obj_body_t *o42a_obj_ancestor(O42A_DECLS const o42a_obj_body_t *);
  * \return either type itself (if it's static) or sample type (if type is
  * run-time generated).
  */
-o42a_obj_stype_t *o42a_obj_stype(O42A_DECLS o42a_obj_type_t *);
+o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *);
 
 /**
  * Retrieves object from it's data.
@@ -590,7 +577,7 @@ o42a_obj_stype_t *o42a_obj_stype(O42A_DECLS o42a_obj_type_t *);
  *
  * \return pointer to object's main body.
  */
-o42a_obj_body_t *o42a_obj_by_data(O42A_DECLS const o42a_obj_data_t *);
+o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t *);
 
 /**
  * Retrieves object ascendant's descriptors.
@@ -599,7 +586,7 @@ o42a_obj_body_t *o42a_obj_by_data(O42A_DECLS const o42a_obj_data_t *);
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
-o42a_obj_ascendant_t *o42a_obj_ascendants(O42A_DECLS const o42a_obj_data_t *);
+o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
 
 /**
  * Retrieves object sample's descriptors.
@@ -608,7 +595,7 @@ o42a_obj_ascendant_t *o42a_obj_ascendants(O42A_DECLS const o42a_obj_data_t *);
  *
  * \return pointer to the first element of sample descriptors array.
  */
-o42a_obj_sample_t *o42a_obj_samples(O42A_DECLS const o42a_obj_data_t *);
+o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *);
 
 /**
  * Retrieves field descriptors.
@@ -617,7 +604,7 @@ o42a_obj_sample_t *o42a_obj_samples(O42A_DECLS const o42a_obj_data_t *);
  *
  * \return pointer to the first element of the field descriptors array.
  */
-o42a_obj_field_t *o42a_obj_fields(O42A_DECLS const o42a_obj_stype_t *);
+o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *);
 
 /**
  * Retrieves field override descriptors.
@@ -626,7 +613,7 @@ o42a_obj_field_t *o42a_obj_fields(O42A_DECLS const o42a_obj_stype_t *);
  *
  * \return pointer to the first element of the field override descriptors array.
  */
-o42a_obj_overrider_t *o42a_obj_overriders(O42A_DECLS const o42a_obj_stype_t *);
+o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t *);
 
 /**
  * Retrieves object body corresponding to the given ascendant.
@@ -635,7 +622,7 @@ o42a_obj_overrider_t *o42a_obj_overriders(O42A_DECLS const o42a_obj_stype_t *);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_ascendant_body(O42A_DECLS const o42a_obj_ascendant_t *);
+o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
 
 /**
  * Retrieves object body corresponding to the given sample.
@@ -644,10 +631,9 @@ o42a_obj_t *o42a_obj_ascendant_body(O42A_DECLS const o42a_obj_ascendant_t *);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_sample_body(O42A_DECLS const o42a_obj_sample_t *);
+o42a_obj_t *o42a_obj_sample_body(const o42a_obj_sample_t *);
 
 o42a_obj_overrider_t *o42a_obj_field_overrider(
-		O42A_DECLS
 		const o42a_obj_stype_t *,
 		const o42a_obj_field_t *);
 
@@ -660,7 +646,6 @@ o42a_obj_overrider_t *o42a_obj_field_overrider(
  * \return ascendant descriptor or NULL if not found.
  */
 const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
-		O42A_DECLS
 		const o42a_obj_data_t *,
 		const o42a_obj_stype_t *);
 
@@ -674,7 +659,6 @@ const o42a_obj_ascendant_t *o42a_obj_ascendant_of_type(
  * is not derived from it.
  */
 o42a_obj_body_t *o42a_obj_cast(
-		O42A_DECLS
 		o42a_obj_t *,
 		const o42a_obj_stype_t *);
 
@@ -691,7 +675,6 @@ o42a_obj_body_t *o42a_obj_cast(
  * object is not derived from it.
  */
 o42a_obj_body_t *o42a_obj_cast_or_error(
-		O42A_DECLS
 		o42a_obj_t *,
 		const o42a_obj_stype_t *);
 
@@ -702,17 +685,17 @@ o42a_obj_body_t *o42a_obj_cast_or_error(
  *
  * \return pointer to object's body of the sample type.
  */
-o42a_obj_t *o42a_obj_new(O42A_DECLS const o42a_obj_ctr_t *);
+o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *);
 
 /**
  * False object value.
  */
-void o42a_obj_val_false(O42A_DECLS o42a_val_t *, o42a_obj_t *);
+void o42a_obj_val_false(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Void value.
  */
-void o42a_obj_val_void(O42A_DECLS o42a_val_t *, o42a_obj_t *);
+void o42a_obj_val_void(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Unknown value.
@@ -720,12 +703,12 @@ void o42a_obj_val_void(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  * This function does not modify the value. So, after the function call,
  * the value remain indefinite, as it was before.
  */
-void o42a_obj_val_unknown(O42A_DECLS o42a_val_t *, o42a_obj_t *);
+void o42a_obj_val_unknown(o42a_val_t *, o42a_obj_t *);
 
 /**
  * Object value part evaluation stub.
  */
-void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
+void o42a_obj_val_stub(o42a_val_t *, o42a_obj_t *);
 
 
 /**
@@ -735,29 +718,29 @@ void o42a_obj_val_stub(O42A_DECLS o42a_val_t *, o42a_obj_t *);
  * means it can be locked multiple times by the same thread and remains locked
  * until unlocked the same number of times.
  */
-void o42a_obj_lock(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_lock(o42a_obj_data_t *);
 
 /**
  * Unlocks an object mutex previously locked with o42a_obj_lock by the same
  * thread.
  */
-void o42a_obj_unlock(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_unlock(o42a_obj_data_t *);
 
 
 /**
  * Waits for an object condition.
  */
-void o42a_obj_wait(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_wait(o42a_obj_data_t *);
 
 /**
  * Unblocks at least one thread waiting on an object condition.
  */
-void o42a_obj_signal(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_signal(o42a_obj_data_t *);
 
 /**
  * Unblocks all threads waiting on an object condition.
  */
-void o42a_obj_broadcast(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_broadcast(o42a_obj_data_t *);
 
 
 /**
@@ -775,13 +758,13 @@ void o42a_obj_broadcast(O42A_DECLS o42a_obj_data_t *);
  * If current thread already evaluating the value, then this is considered an
  * error and this function returns O42A_FALSE.
  */
-o42a_bool_t o42a_obj_value_start(O42A_DECLS o42a_val_t *, o42a_obj_data_t *);
+o42a_bool_t o42a_obj_value_start(o42a_val_t *, o42a_obj_data_t *);
 
 /**
  * Finishes the value evaluation started with o42a_obj_value_start and signals
  * all waiting thread about the value availability.
  */
-void o42a_obj_value_finish(O42A_DECLS o42a_obj_data_t *);
+void o42a_obj_value_finish(o42a_obj_data_t *);
 
 
 #ifdef __cplusplus

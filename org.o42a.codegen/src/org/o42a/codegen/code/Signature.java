@@ -19,15 +19,12 @@
 */
 package org.o42a.codegen.code;
 
-import static org.o42a.codegen.debug.DebugEnvOp.DEBUG_ENV_TYPE;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 import org.o42a.codegen.code.backend.SignatureWriter;
-import org.o42a.codegen.debug.DebugEnvOp;
 import org.o42a.util.ArrayUtil;
 
 
@@ -39,7 +36,6 @@ public abstract class Signature<F extends Func<F>> {
 	private Generator generator;
 	private SignatureAllocation<F> allocation;
 	private Return<?> ret;
-	private Arg<DebugEnvOp> debugEnv;
 	private Arg<?>[] args = NO_ARGS;
 
 	public boolean isDebuggable() {
@@ -77,10 +73,6 @@ public abstract class Signature<F extends Func<F>> {
 	public final SignatureAllocation<F> allocation(Generator generator) {
 		allocate(generator);
 		return this.allocation;
-	}
-
-	public final Arg<DebugEnvOp> debugEnv() {
-		return this.debugEnv;
 	}
 
 	public abstract F op(FuncCaller<F> caller);
@@ -122,7 +114,6 @@ public abstract class Signature<F extends Func<F>> {
 				return this;
 			}
 			this.allocation = null;
-			this.debugEnv = null;
 			this.ret = null;
 			this.args = NO_ARGS;
 		}
@@ -131,10 +122,6 @@ public abstract class Signature<F extends Func<F>> {
 		final SignatureWriter<F> writer =
 				generator.getFunctions().codeBackend().addSignature(this);
 		final SignatureBuilder builder = new SignatureBuilder(this, writer);
-
-		if (generator.isDebug() && isDebuggable()) {
-			this.debugEnv = builder.addPtr("__o42a_dbg_env__", DEBUG_ENV_TYPE);
-		}
 
 		build(builder);
 

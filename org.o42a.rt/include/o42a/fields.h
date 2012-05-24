@@ -89,9 +89,9 @@ extern "C" {
 #endif
 
 
-o42a_bool_t o42a_fld_start(O42A_DECLS o42a_obj_data_t *, o42a_fld_ctr_t *);
+o42a_bool_t o42a_fld_start(o42a_obj_data_t *, o42a_fld_ctr_t *);
 
-void o42a_fld_finish(O42A_DECLS o42a_obj_data_t *, o42a_fld_ctr_t *);
+void o42a_fld_finish(o42a_obj_data_t *, o42a_fld_ctr_t *);
 
 
 #ifdef __cplusplus

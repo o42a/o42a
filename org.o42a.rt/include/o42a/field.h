@@ -59,7 +59,7 @@ extern "C" {
  *
  * Such functions are called when constructing a new object.
  */
-typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
+typedef void o42a_fld_copy_ft(o42a_obj_ctable_t *);
 
 /**
  * Object reference function.
@@ -68,7 +68,7 @@ typedef void o42a_fld_copy_ft(O42A_DECLS o42a_obj_ctable_t *);
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_obj_ref_ft(O42A_DECLS o42a_obj_t *);
+typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
 
 /**
  * Variable assigner function.
@@ -78,7 +78,7 @@ typedef o42a_obj_t *o42a_obj_ref_ft(O42A_DECLS o42a_obj_t *);
  *
  * \return O42A_TRUE on success or O42A_FALSE on failure.
  */
-typedef o42a_bool_t o42a_obj_assigner_ft(O42A_DECLS o42a_obj_t *, o42a_obj_t *);
+typedef o42a_bool_t o42a_obj_assigner_ft(o42a_obj_t *, o42a_obj_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */
@@ -115,7 +115,7 @@ extern "C" {
 /**
  * Returns
  */
-o42a_fld_desc_t *o42a_fld_desc(O42A_DECLS const o42a_obj_field_t *);
+o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *);
 
 /**
  * Retrieves field from body.
@@ -125,10 +125,7 @@ o42a_fld_desc_t *o42a_fld_desc(O42A_DECLS const o42a_obj_field_t *);
  *
  * \return field pointer.
  */
-o42a_fld *o42a_fld_by_field(
-		O42A_DECLS
-		const o42a_obj_body_t *,
-		const o42a_obj_field_t *);
+o42a_fld *o42a_fld_by_field(const o42a_obj_body_t *, const o42a_obj_field_t *);
 
 /**
  * Retrieves overriding field from body.
@@ -137,19 +134,19 @@ o42a_fld *o42a_fld_by_field(
  *
  * \return overriding field pointer..
  */
-o42a_fld *o42a_fld_by_overrider(O42A_DECLS const o42a_obj_overrider_t *);
+o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 
 /**
  * Object reference function, which always returns NULL.
  *
  * This can be used e.g. to refer void object ancestor.
  */
-o42a_obj_body_t *o42a_obj_ref_null(O42A_DECLS o42a_obj_t *);
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *);
 
 /**
  * Object reference evaluation stub.
  */
-o42a_obj_body_t *o42a_obj_ref_stub(O42A_DECLS o42a_obj_t *);
+o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *);
 
 
 #ifdef __cplusplus

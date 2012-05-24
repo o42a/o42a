@@ -30,6 +30,9 @@
 #endif
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /** Relative pointer. */
 typedef int32_t o42a_rptr_t;
@@ -62,7 +65,6 @@ typedef uint8_t o42a_bool_t;
 typedef uint32_t o42a_layout_t;
 
 #define O42A_LAYOUT(target) o42a_layout( \
-		O42A_ARGS \
 		__alignof__ (target), \
 		sizeof (target))
 
@@ -114,25 +116,6 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A(exp) (exp)
 
-#define O42A_ARGC 0
-
-#define O42A_DECL
-
-#define O42A_DECLS
-
-#define O42A_PARAM
-
-#define O42A_PARAMS
-
-#define O42A_ARG
-
-#define O42A_ARGS
-
-#define O42A_ARG_
-
-#define O42A_ARGS_
-
-
 #define O42A_START_THREAD
 
 #define O42A_ENTER(return_null)
@@ -165,28 +148,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
 
 
-#define O42A(exp) ( \
-		__o42a_dbg_env__->stack_frame->line = __LINE__, \
-		exp \
-	)
-
-#define O42A_ARGC 1
-
-#define O42A_DECL o42a_dbg_env_t *
-
-#define O42A_DECLS O42A_DECL,
-
-#define O42A_PARAM o42a_dbg_env_t *const __o42a_dbg_env_p__
-
-#define O42A_PARAMS O42A_PARAM,
-
-#define O42A_ARG __o42a_dbg_env__
-
-#define O42A_ARGS O42A_ARG,
-
-#define O42A_ARG_ __o42a_dbg_env_p__
-
-#define O42A_ARGS_ O42A_ARG_,
+#define O42A(exp) (o42a_dbg_set_line(__LINE__), exp)
 
 
 #define O42A_START_THREAD \
@@ -195,14 +157,11 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 		command: O42A_DBG_CMD_EXEC, \
 		indent: 0, \
 	}; \
-	o42a_dbg_env_t *__o42a_dbg_env_p__ = &__thread_dbg_env__; \
 	o42a_dbg_start_thread(&__thread_dbg_env__)
 
 #define O42A_ENTER(return_null) \
-	o42a_dbg_env_t *const __o42a_dbg_env__ = __o42a_dbg_env_p__; \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
 		name: __func__, \
-		prev: NULL, \
 		comment: NULL, \
 		file: __FILE__, \
 		line: __LINE__, \
@@ -215,12 +174,10 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_RETURN O42A(o42a_dbg_exit()); return
 
 #define O42A_DEBUG(format, args...) \
-	o42a_dbg_printf(O42A_ARGS format, ## args)
+	o42a_dbg_printf(format, ## args)
 
 #define _O42A_DO_(_sf, _comment) \
 	o42a_dbg_stack_frame_t _sf = { \
-		name: __func__, \
-		prev: __o42a_dbg_env__->stack_frame, \
 		comment: NULL, \
 		file: __FILE__, \
 		line: __LINE__, \
@@ -238,16 +195,16 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_DONE o42a_dbg_done(__LINE__)
 
 
-#define o42a_debug(message) O42A(o42a_dbg_print(O42A_ARGS message))
+#define o42a_debug(message) O42A(o42a_dbg_print(message))
 
 #define o42a_debug_mem_name(prefix, ptr) \
-	O42A(o42a_dbg_mem_name(O42A_ARGS prefix, ptr))
+	O42A(o42a_dbg_mem_name(prefix, ptr))
 
 #define o42a_debug_func_name(prefix, ptr) \
-	O42A(o42a_dbg_func_name(O42A_ARGS prefix, ptr))
+	O42A(o42a_dbg_func_name(prefix, ptr))
 
 #define o42a_debug_dump_mem(prefix, ptr, depth) \
-	O42A(o42a_dbg_dump_mem(O42A_ARGS prefix, ptr, depth))
+	O42A(o42a_dbg_dump_mem(prefix, ptr, depth))
 
 
 #include "o42a/debug.h"
@@ -272,27 +229,23 @@ typedef struct o42a_rlist {
 } o42a_rlist_t;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+size_t o42a_layout_size(o42a_layout_t);
 
-size_t o42a_layout_size(O42A_DECLS o42a_layout_t);
+size_t o42a_layout_array_size(o42a_layout_t, size_t);
 
-size_t o42a_layout_array_size(O42A_DECLS o42a_layout_t, size_t);
+o42a_layout_t o42a_layout_array(o42a_layout_t, size_t);
 
-o42a_layout_t o42a_layout_array(O42A_DECLS o42a_layout_t, size_t);
+uint8_t o42a_layout_alignment(o42a_layout_t);
 
-uint8_t o42a_layout_alignment(O42A_DECLS o42a_layout_t);
+size_t o42a_layout_offset(size_t, o42a_layout_t);
 
-size_t o42a_layout_offset(O42A_DECLS size_t, o42a_layout_t);
+size_t o42a_layout_pad(size_t, o42a_layout_t);
 
-size_t o42a_layout_pad(O42A_DECLS size_t, o42a_layout_t);
+o42a_layout_t o42a_layout_both(o42a_layout_t, o42a_layout_t);
 
-o42a_layout_t o42a_layout_both(O42A_DECLS o42a_layout_t, o42a_layout_t);
+o42a_layout_t o42a_layout(uint8_t, size_t);
 
-o42a_layout_t o42a_layout(O42A_DECLS uint8_t, size_t);
-
-void o42a_init(O42A_DECL);
+void o42a_init();
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -40,7 +40,6 @@ enum number_signs {
 };
 
 void o42a_int_by_str(
-		O42A_PARAMS
 		o42a_val_t *const result,
 		const o42a_val_t *const input,
 		const uint32_t radix) {
@@ -55,7 +54,6 @@ void o42a_int_by_str(
 
 	if (!len) {
 		O42A(o42a_error_print(
-				O42A_ARGS
 				"Empty string can not be converted to integer"));
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
@@ -65,9 +63,9 @@ void o42a_int_by_str(
 	o42a_bool_t negative = O42A_FALSE;
 	o42a_bool_t has_value = O42A_FALSE;
 	int64_t value = 0;
-	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS input));
-	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS input));
-	const void *const str = O42A(o42a_val_data(O42A_ARGS input));
+	const size_t ashift = O42A(o42a_val_ashift(input));
+	const UChar32 cmask = O42A(o42a_str_cmask(input));
+	const void *const str = O42A(o42a_val_data(input));
 
 	for (size_t i = 0; i < len; ++i) {
 
@@ -85,7 +83,6 @@ void o42a_int_by_str(
 		} else if (u_charType(c) == U_SPACE_SEPARATOR) {
 			if (space) {
 				O42A(o42a_error_printf(
-						O42A_ARGS
 						"Two subsequent spaces in number at position %zu",
 						i));
 				result->flags = O42A_FALSE;
@@ -99,7 +96,6 @@ void o42a_int_by_str(
 
 		if (digit < 0) {
 			O42A(o42a_error_printf(
-					O42A_ARGS
 					"Illegal character in number at position %zu",
 					i));
 			result->flags = O42A_FALSE;
@@ -109,14 +105,14 @@ void o42a_int_by_str(
 		if (negative) {
 			value = value * radix - digit;
 			if (value > 0) {
-				O42A(o42a_error_print(O42A_ARGS "Integer overflow"));
+				O42A(o42a_error_print("Integer overflow"));
 				result->flags = O42A_FALSE;
 				O42A_RETURN;
 			}
 		} else {
 			value = value * radix + digit;
 			if (value < 0) {
-				O42A(o42a_error_print(O42A_ARGS "Integer overflow"));
+				O42A(o42a_error_print("Integer overflow"));
 				result->flags = O42A_FALSE;
 				O42A_RETURN;
 			}
@@ -128,14 +124,13 @@ void o42a_int_by_str(
 
 	if (space) {
 		O42A(o42a_error_printf(
-				O42A_ARGS
 				"Unexpected space after number at position %zu",
 				len - 1));
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 	if (!has_value) {
-		O42A(o42a_error_print(O42A_ARGS "Unexpected end of integer input"));
+		O42A(o42a_error_print("Unexpected end of integer input"));
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
@@ -151,7 +146,7 @@ union str_and_int_ptr {
 	const char *p_char;
 };
 
-o42a_bool_t o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
+o42a_bool_t o42a_int_to_str(o42a_val_t *string, int64_t value) {
 	O42A_ENTER(return O42A_TRUE);
 
 	char buf[32];
@@ -165,7 +160,7 @@ o42a_bool_t o42a_int_to_str(O42A_PARAMS o42a_val_t *string, int64_t value) {
 		O42A_RETURN O42A_TRUE;
 	}
 
-	char *lbuf = O42A(o42a_refcount_alloc(O42A_ARGS len));
+	char *lbuf = O42A(o42a_refcount_alloc(len));
 
 	if (!lbuf) {
 		string->flags = O42A_FALSE;

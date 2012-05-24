@@ -39,9 +39,9 @@ extern "C" {
 #endif
 
 
-void o42a_fld_assigner_propagate(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_assigner_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_assigner_inherit(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_assigner_inherit(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus

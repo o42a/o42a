@@ -19,13 +19,11 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugCodeBase.binaryMessage;
-import static org.o42a.codegen.debug.DebugCodeBase.printWoPrefixFunc;
+import static org.o42a.codegen.debug.DebugDoneFunc.DEBUG_DONE;
 
-import org.o42a.codegen.code.*;
-import org.o42a.codegen.code.op.AnyOp;
-import org.o42a.codegen.code.op.Int8recOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Disposal;
 
 
 public final class TaskBlock {
@@ -60,35 +58,11 @@ public final class TaskBlock {
 
 		@Override
 		public void dispose(Code code) {
-
-			final Function<?> function = code.getFunction();
-			final DebugEnvOp debugEnv = function.debugEnv(code);
-
-			final StructRecOp<DebugStackFrameOp> envStackFrame =
-					debugEnv.stackFrame(code);
-			final DebugStackFrameOp prevStackFrame =
-					envStackFrame.load(null, code).prev(code).load(null, code);
-			final AnyOp comment = prevStackFrame.comment(code).load(null, code);
-
-			prevStackFrame.comment(code).store(code, code.nullPtr());
-			envStackFrame.store(code, prevStackFrame);
-
-			final Int8recOp indent = debugEnv.indent(code);
-
-			indent.store(
-					code,
-					indent.load(null, code)
-					.sub(null, code, code.int8((byte) 1)));
-
-			final DebugPrintFunc printFunc =
-					printWoPrefixFunc(code.getGenerator()).op(null, code);
-
-			code.debug("))) /* ", false);
-			printFunc.call(code, comment);
-			printFunc.call(
-					code,
-					binaryMessage(code.getGenerator(), " */\n")
-					.op(null, code));
+			code.getGenerator()
+			.externalFunction()
+			.link("o42a_dbg_done", DEBUG_DONE)
+			.op(null, code)
+			.call(code);
 		}
 
 	}

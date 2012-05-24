@@ -62,7 +62,6 @@ enum float_parse_stage {
 
 
 void o42a_float_by_str(
-		O42A_PARAMS
 		o42a_val_t *const result,
 		const o42a_val_t *const input) {
 	O42A_ENTER(return);
@@ -75,9 +74,7 @@ void o42a_float_by_str(
 	const size_t len = input->length;
 
 	if (!len) {
-		O42A(o42a_error_print(
-				O42A_ARGS
-				"Empty string can not be converted to float"));
+		O42A(o42a_error_print("Empty string can not be converted to float"));
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
@@ -85,12 +82,12 @@ void o42a_float_by_str(
 	fenv_t env;
 
 	if (feholdexcept(&env)) {
-		O42A(o42a_error_print(O42A_ARGS "Internal error"));
+		O42A(o42a_error_print("Internal error"));
 		result->flags = O42A_FALSE;
 		O42A_RETURN;
 	}
 	if (fesetround(FE_TONEAREST)) {
-		O42A(o42a_error_print(O42A_ARGS "Internal error"));
+		O42A(o42a_error_print("Internal error"));
 		result->flags = O42A_FALSE;
 		fesetenv(&env);
 		O42A_RETURN;
@@ -105,9 +102,9 @@ void o42a_float_by_str(
 	o42a_bool_t space = O42A_FALSE;
 	o42a_bool_t negative = O42A_FALSE;
 	double value = 0.0;
-	const size_t ashift = O42A(o42a_val_ashift(O42A_ARGS input));
-	const UChar32 cmask = O42A(o42a_str_cmask(O42A_ARGS input));
-	const void *const str = O42A(o42a_val_data(O42A_ARGS input));
+	const size_t ashift = O42A(o42a_val_ashift(input));
+	const UChar32 cmask = O42A(o42a_str_cmask(input));
+	const void *const str = O42A(o42a_val_data(input));
 
 	for (size_t i = 0; i < len; ++i) {
 
@@ -135,7 +132,6 @@ void o42a_float_by_str(
 			}
 			if (space) {
 				O42A(o42a_error_printf(
-						O42A_ARGS
 						"Unexpected space in number at position %zu",
 						i));
 				result->flags = O42A_FALSE;
@@ -154,7 +150,6 @@ void o42a_float_by_str(
 			}
 			if (space) {
 				O42A(o42a_error_printf(
-						O42A_ARGS
 						"Unexpected space in number at position %zu",
 						i));
 				result->flags = O42A_FALSE;
@@ -177,7 +172,6 @@ void o42a_float_by_str(
 			}
 			if (space) {
 				O42A(o42a_error_printf(
-						O42A_ARGS
 						"Two subsequent spaces in number at position %zu",
 						i));
 				result->flags = O42A_FALSE;
@@ -189,7 +183,6 @@ void o42a_float_by_str(
 					|| (stage == PARSE_FRAC_MATISSA
 							&& !frac_mantissa_len)) {
 				O42A(o42a_error_printf(
-						O42A_ARGS
 						"Unexpected space in number at position %zu",
 						i));
 				result->flags = O42A_FALSE;
@@ -204,7 +197,6 @@ void o42a_float_by_str(
 
 		if (digit < 0) {
 			O42A(o42a_error_printf(
-					O42A_ARGS
 					"Illegal character in number at position %zu",
 					i));
 			result->flags = O42A_FALSE;
@@ -213,7 +205,7 @@ void o42a_float_by_str(
 		}
 
 		value = fma(value, 10.0, digit);
-		if (O42A(o42a_float_error(O42A_ARGS result))) {
+		if (O42A(o42a_float_error(result))) {
 			fesetenv(&env);
 			O42A_RETURN;
 		}
@@ -227,7 +219,7 @@ void o42a_float_by_str(
 	}
 
 	if (space) {
-		O42A(o42a_error_print(O42A_ARGS "Unexpected space after number"));
+		O42A(o42a_error_print("Unexpected space after number"));
 		result->flags = O42A_FALSE;
 		fesetenv(&env);
 		O42A_RETURN;
@@ -245,7 +237,7 @@ void o42a_float_by_str(
 		break;
 	default:
 		O42A(o42a_error_print(
-				O42A_ARGS "Unexpected end of floating-point number input"));
+				"Unexpected end of floating-point number input"));
 		result->flags = O42A_FALSE;
 		fesetenv(&env);
 		O42A_RETURN;
@@ -257,14 +249,14 @@ void o42a_float_by_str(
 		res = int_mantissa;
 	} else {
 		res = fma(frac_mantissa, pow(0.1, frac_mantissa_len), int_mantissa);
-		if (O42A(o42a_float_error(O42A_ARGS result))) {
+		if (O42A(o42a_float_error(result))) {
 			fesetenv(&env);
 			O42A_RETURN;
 		}
 	}
 	if (stage == PARSE_EXPONENT) {
 		res = fma(res, pow(10.0, exponent), 0.0);
-		if (O42A(o42a_float_error(O42A_ARGS result))) {
+		if (O42A(o42a_float_error(result))) {
 			fesetenv(&env);
 			O42A_RETURN;
 		}
@@ -277,7 +269,7 @@ void o42a_float_by_str(
 	O42A_RETURN;
 }
 
-inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
+inline int o42a_float_error(o42a_val_t *const value) {
 	O42A_ENTER(return 0);
 
 	const int error = fetestexcept(
@@ -287,13 +279,13 @@ inline int o42a_float_error(O42A_PARAMS o42a_val_t *const value) {
 		O42A_RETURN 0;
 	}
 	if (error & FE_UNDERFLOW) {
-		O42A(o42a_error_print(O42A_ARGS "Floating point number underflow"));
+		O42A(o42a_error_print("Floating point number underflow"));
 	} else if (error & FE_OVERFLOW) {
-		O42A(o42a_error_print(O42A_ARGS "Floating point number overflow"));
+		O42A(o42a_error_print("Floating point number overflow"));
 	} else if (error & FE_DIVBYZERO) {
-		O42A(o42a_error_print(O42A_ARGS "Division by zero"));
+		O42A(o42a_error_print("Division by zero"));
 	} else {
-		O42A(o42a_error_print(O42A_ARGS "Floating point error"));
+		O42A(o42a_error_print("Floating point error"));
 	}
 
 	value->flags = O42A_FALSE;
@@ -312,7 +304,7 @@ static const char *const O42A_POSINF = "Infinity";
 static const char *const O42A_NEGINF = "-Infinity";
 
 o42a_bool_t o42a_float_to_str(
-		O42A_PARAMS o42a_val_t *const string,
+		o42a_val_t *const string,
 		double value) {
 	O42A_ENTER(return O42A_TRUE);
 
@@ -385,7 +377,7 @@ o42a_bool_t o42a_float_to_str(
 		O42A_RETURN O42A_TRUE;
 	}
 
-	char *lbuf = O42A(o42a_refcount_alloc(O42A_ARGS len));
+	char *lbuf = O42A(o42a_refcount_alloc(len));
 
 	if (!lbuf) {
 		string->flags = O42A_FALSE;

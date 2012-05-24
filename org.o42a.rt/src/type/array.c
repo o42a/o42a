@@ -25,19 +25,15 @@
 #include "o42a/memory/refcount.h"
 
 
-o42a_array_t o42a_array_alloc(
-		O42A_PARAMS
-		o42a_val_t *value,
-		const uint32_t size) {
+o42a_array_t o42a_array_alloc(o42a_val_t *value, const uint32_t size) {
 	O42A_ENTER(return NULL);
 
 	const o42a_array_t array =
-			O42A(o42a_refcount_alloc(O42A_ARGS sizeof(o42a_array_t) * size));
+			O42A(o42a_refcount_alloc(sizeof(o42a_array_t) * size));
 
 	if (!array) {
 		value->flags = O42A_FALSE;
 		O42A(o42a_error_printf(
-				O42A_ARGS
 				"Failed to allocate %ld array items",
 				(long) size));
 		O42A_RETURN NULL;
@@ -52,10 +48,7 @@ o42a_array_t o42a_array_alloc(
 	O42A_RETURN array;
 }
 
-void o42a_array_copy(
-		O42A_PARAMS
-		const o42a_val_t *const from,
-		o42a_val_t *const to) {
+void o42a_array_copy(const o42a_val_t *const from, o42a_val_t *const to) {
 	O42A_ENTER(return);
 
 	const uint32_t size = from->length;
@@ -65,7 +58,7 @@ void o42a_array_copy(
 		O42A_RETURN;
 	}
 
-	const o42a_array_t dest = O42A(o42a_array_alloc(O42A_ARGS to, size));
+	const o42a_array_t dest = O42A(o42a_array_alloc(to, size));
 
 	if (!dest) {
 		O42A_RETURN;

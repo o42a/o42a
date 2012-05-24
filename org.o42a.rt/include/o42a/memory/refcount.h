@@ -72,7 +72,7 @@ extern "C" {
  *
  * \return data block pointer of NULL if allocation failed.
  */
-o42a_refcount_block_t *o42a_refcount_balloc(O42A_DECLS size_t);
+o42a_refcount_block_t *o42a_refcount_balloc(size_t);
 
 /**
  * Allocates a reference-counted data.
@@ -85,7 +85,7 @@ o42a_refcount_block_t *o42a_refcount_balloc(O42A_DECLS size_t);
  *
  * \return allocated data pointer or NULL if allocation failed.
  */
-void *o42a_refcount_alloc(O42A_DECLS size_t);
+void *o42a_refcount_alloc(size_t);
 
 /**
  * Frees a reference-counted data block previously allocated with
@@ -93,7 +93,7 @@ void *o42a_refcount_alloc(O42A_DECLS size_t);
  *
  * \param the data block to free.
  */
-void o42a_refcount_free(O42A_DECLS o42a_refcount_block_t *);
+void o42a_refcount_free(o42a_refcount_block_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */

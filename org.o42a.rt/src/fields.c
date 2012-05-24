@@ -56,19 +56,17 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 
 
 inline o42a_fld_desc_t *o42a_fld_desc(
-		O42A_PARAMS const o42a_obj_field_t *const field) {
+		const o42a_obj_field_t *const field) {
 	return &o42a_obj_field_kinds[field->kind];
 }
 
 inline o42a_fld *o42a_fld_by_field(
-		O42A_PARAMS
 		const o42a_obj_body_t *const body,
 		const o42a_obj_field_t *const field) {
 	return (o42a_fld*) (((void*) body) + field->fld);
 }
 
 inline o42a_fld *o42a_fld_by_overrider(
-		O42A_PARAMS
 		const o42a_obj_overrider_t *const overrider) {
 
 	void *const body = ((void*) overrider) + overrider->body;
@@ -76,26 +74,25 @@ inline o42a_fld *o42a_fld_by_overrider(
 	return (o42a_fld*) (body + overrider->field->fld);
 }
 
-o42a_obj_body_t *o42a_obj_ref_null(O42A_PARAMS o42a_obj_t *scope) {
+o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);
 	O42A_RETURN NULL;
 }
 
-o42a_obj_body_t *o42a_obj_ref_stub(O42A_PARAMS o42a_obj_t *scope) {
+o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);
-	o42a_error_print(O42A_ARGS "Object reference stub invoked");
+	o42a_error_print("Object reference stub invoked");
 	O42A_RETURN NULL;
 }
 
 o42a_bool_t o42a_fld_start(
-		O42A_PARAMS
 		o42a_obj_data_t *const data,
 		o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return O42A_FALSE);
 
-	O42A(o42a_obj_lock(O42A_ARGS data));
+	O42A(o42a_obj_lock(data));
 	if (ctr->fld->obj.object) {
-		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A(o42a_obj_unlock(data));
 		// Object already set.
 		O42A_RETURN O42A_FALSE;
 	}
@@ -109,7 +106,7 @@ o42a_bool_t o42a_fld_start(
 		ctr->next = NULL;
 		ctr->thread = thread;
 		data->fld_ctrs = ctr;
-		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A(o42a_obj_unlock(data));
 		O42A_RETURN O42A_TRUE;
 	}
 
@@ -130,16 +127,16 @@ o42a_bool_t o42a_fld_start(
 			ctr->prev = NULL;
 			ctr->next = NULL;
 			ctr->thread = last_ctr->thread;
-			O42A(o42a_obj_unlock(O42A_ARGS data));
+			O42A(o42a_obj_unlock(data));
 			// Try to construct the field.
 			O42A_RETURN O42A_TRUE;
 		}
 		// Wait for another thread to construct the field.
 		while (last_ctr->fld->obj.object) {
-			O42A(o42a_obj_wait(O42A_ARGS data));
+			O42A(o42a_obj_wait(data));
 		}
 		// Field constructed.
-		O42A(o42a_obj_unlock(O42A_ARGS data));
+		O42A(o42a_obj_unlock(data));
 		O42A_RETURN O42A_FALSE;
 	}
 
@@ -148,19 +145,16 @@ o42a_bool_t o42a_fld_start(
 	ctr->prev = last_ctr;
 	ctr->next = NULL;
 	ctr->thread = thread;
-	O42A(o42a_obj_unlock(O42A_ARGS data));
+	O42A(o42a_obj_unlock(data));
 
 	// Construct the field.
 	O42A_RETURN O42A_TRUE;
 }
 
-void o42a_fld_finish(
-		O42A_PARAMS
-		o42a_obj_data_t *const data,
-		o42a_fld_ctr_t *const ctr) {
+void o42a_fld_finish(o42a_obj_data_t *const data, o42a_fld_ctr_t *const ctr) {
 	O42A_ENTER(return);
 
-	O42A(o42a_obj_lock(O42A_ARGS data));
+	O42A(o42a_obj_lock(data));
 
 	// Remove the construction info from the list.
 	o42a_fld_ctr_t *prev = ctr->prev;
@@ -174,9 +168,9 @@ void o42a_fld_finish(
 	}// Not in the list otherwise.
 
 	// Inform others the field is constructed.
-	O42A(o42a_obj_broadcast(O42A_ARGS data));
+	O42A(o42a_obj_broadcast(data));
 
-	O42A(o42a_obj_unlock(O42A_ARGS data));
+	O42A(o42a_obj_unlock(data));
 
 	O42A_RETURN;
 }

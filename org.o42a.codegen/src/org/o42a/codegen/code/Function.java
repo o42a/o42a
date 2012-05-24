@@ -25,7 +25,6 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
-import org.o42a.codegen.debug.DebugEnvOp;
 
 
 public final class Function<F extends Func<F>>
@@ -88,20 +87,6 @@ public final class Function<F extends Func<F>>
 	@Override
 	public final boolean exists() {
 		return this.writer != null && this.writer.exists();
-	}
-
-	public final DebugEnvOp debugEnv(Code code) {
-
-		final Arg<DebugEnvOp> debugEnv = getSignature().debugEnv();
-
-		if (debugEnv == null) {
-			assert !getSignature().isDebuggable() :
-				getSignature() + " is debuggable, but does not contain"
-				+ " a debug environment argument";
-			return null;
-		}
-
-		return arg(code, debugEnv);
 	}
 
 	public final <O extends Op> O arg(Code code, Arg<O> arg) {

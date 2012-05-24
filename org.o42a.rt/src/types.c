@@ -32,79 +32,66 @@ static const size_t ALIGNMENT_MASK = 0xFFFFFFFF & ~0x1FFFFFFF;
 
 static const size_t ALL_ONES = -1;
 
-static inline size_t alignment_shift(
-		O42A_PARAMS
-		const o42a_layout_t layout) {
+static inline size_t alignment_shift(const o42a_layout_t layout) {
 	return (layout & ALIGNMENT_MASK) >> 29;
 }
 
-inline size_t o42a_layout_size(O42A_PARAMS const o42a_layout_t layout) {
+inline size_t o42a_layout_size(const o42a_layout_t layout) {
 	return layout & SIZE_MASK;
 }
 
 inline size_t o42a_layout_array_size(
-		O42A_PARAMS
 		const o42a_layout_t layout,
 		const size_t num_elements) {
 
 	const size_t element_size = o42a_layout_pad(
-			O42A_ARGS_
-			o42a_layout_size(O42A_ARGS_ layout),
+			o42a_layout_size(layout),
 			layout);
 
 	return element_size * num_elements;
 }
 
 inline o42a_layout_t o42a_layout_array(
-		O42A_PARAMS
 		const o42a_layout_t layout,
 		const size_t num_elements) {
-	return o42a_layout_array_size(O42A_ARGS_ layout, num_elements)
+	return o42a_layout_array_size(layout, num_elements)
 			| (layout & ALIGNMENT_MASK);
 }
 
-inline uint8_t o42a_layout_alignment(O42A_PARAMS const o42a_layout_t layout) {
-	return 1 << alignment_shift(O42A_ARGS_ layout);
+inline uint8_t o42a_layout_alignment(const o42a_layout_t layout) {
+	return 1 << alignment_shift(layout);
 }
 
 inline size_t o42a_layout_offset(
-		O42A_PARAMS
 		const size_t start,
 		const o42a_layout_t layout) {
 
-	const uint8_t ashift = alignment_shift(O42A_ARGS_ layout);
+	const uint8_t ashift = alignment_shift(layout);
 	const size_t remainder = start & ~(ALL_ONES << ashift);
 
 	return remainder ? (1 << ashift) - remainder : 0;
 }
 
 inline size_t o42a_layout_pad(
-		O42A_PARAMS
 		const size_t start,
 		const o42a_layout_t layout) {
-	return start + o42a_layout_offset(O42A_ARGS_ start, layout);
+	return start + o42a_layout_offset(start, layout);
 }
 
 o42a_layout_t o42a_layout_both(
-		O42A_PARAMS
 		const o42a_layout_t layout1,
 		const o42a_layout_t layout2) {
 
-	const uint8_t al1 = o42a_layout_alignment(O42A_ARGS_ layout1);
-	const uint8_t al2 = o42a_layout_alignment(O42A_ARGS_ layout2);
+	const uint8_t al1 = o42a_layout_alignment(layout1);
+	const uint8_t al2 = o42a_layout_alignment(layout2);
 
 	return o42a_layout(
-			O42A_ARGS_
 			al1 >= al2 ? al1 : al2,
-			o42a_layout_pad(
-					O42A_ARGS_
-					o42a_layout_size(O42A_ARGS_ layout1),
-					layout2)
-			+ o42a_layout_size(O42A_ARGS_ layout2));
+			o42a_layout_pad(o42a_layout_size(layout1), layout2)
+			+ o42a_layout_size(layout2));
 }
 
 o42a_layout_t o42a_layout(
-		O42A_PARAMS
 		const uint8_t alignment,
 		const size_t size) {
 
