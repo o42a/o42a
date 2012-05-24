@@ -188,7 +188,7 @@ BackendModule *BackendModule::createBackend(StringRef &ModuleID) {
 
 	if (triple.empty()) {
 		backend->hostMachine = true;
-		backend->setTargetTriple(sys::getHostTriple());
+		backend->setTargetTriple(sys::getDefaultTargetTriple());
 	}
 
 	backend->setDataLayout(backend->getTargetData().getStringRepresentation());
@@ -353,8 +353,11 @@ bool BackendModule::writeCode() {
 			return false;
 		}
 
-		TargetMachine *const machine =
-				target->createTargetMachine(getTargetTriple(), CPU, features);
+		TargetMachine *const machine = target->createTargetMachine(
+				getTargetTriple(),
+				CPU,
+				features,
+				TargetOptions());
 
 		if (machine->addPassesToEmitFile(
 				pm,
