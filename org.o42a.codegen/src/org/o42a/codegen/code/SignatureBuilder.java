@@ -86,7 +86,7 @@ public final class SignatureBuilder {
 
 	public final <S extends StructOp<S>> Return<S> returnPtr(Type<S> type) {
 		this.writer.returnPtr(type);
-		return new Return.ReturnPtr<S>(this.signature, type);
+		return ret(new Return.ReturnPtr<S>(this.signature, type));
 	}
 
 	public final Arg<Int8op> addInt8(String name) {

@@ -19,32 +19,33 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugEnvOp.DEBUG_ENV_TYPE;
+import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.op.BoolOp;
 
 
-final class DebugTraceFunc extends Func<DebugTraceFunc> {
+final class DebugEnterFunc extends Func<DebugEnterFunc> {
 
-	public static final DebugTrace DEBUG_TRACE = new DebugTrace();
+	static final DebugEnter DEBUG_ENTER = new DebugEnter();
 
-	private DebugTraceFunc(FuncCaller<DebugTraceFunc> caller) {
+	private DebugEnterFunc(FuncCaller<DebugEnterFunc> caller) {
 		super(caller);
 	}
 
-	public void trace(Code code, DebugEnvOp env) {
-		invoke(null, code, DEBUG_TRACE.result(), env);
+	public BoolOp enter(Code code, DebugStackFrameOp stackFrame) {
+		return invoke(null, code, DEBUG_ENTER.result(), stackFrame);
 	}
 
-	public static final class DebugTrace extends Signature<DebugTraceFunc> {
+	static final class DebugEnter extends Signature<DebugEnterFunc> {
 
-		private Return<Void> result;
-		private Arg<DebugEnvOp> env;
+		private Return<BoolOp> result;
+		private Arg<DebugStackFrameOp> stackFrame;
 
-		private DebugTrace() {
+		private DebugEnter() {
 		}
 
 		@Override
@@ -52,17 +53,17 @@ final class DebugTraceFunc extends Func<DebugTraceFunc> {
 			return false;
 		}
 
-		public final Return<Void> result() {
+		public final Return<BoolOp> result() {
 			return this.result;
 		}
 
-		public final Arg<DebugEnvOp> env() {
-			return this.env;
+		public final Arg<DebugStackFrameOp> stackFrame() {
+			return this.stackFrame;
 		}
 
 		@Override
-		public DebugTraceFunc op(FuncCaller<DebugTraceFunc> caller) {
-			return new DebugTraceFunc(caller);
+		public DebugEnterFunc op(FuncCaller<DebugEnterFunc> caller) {
+			return new DebugEnterFunc(caller);
 		}
 
 		@Override
@@ -72,8 +73,8 @@ final class DebugTraceFunc extends Func<DebugTraceFunc> {
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnVoid();
-			this.env = builder.addPtr("env", DEBUG_ENV_TYPE);
+			this.result = builder.returnBool();
+			this.stackFrame = builder.addPtr("env", DEBUG_STACK_FRAME_TYPE);
 		}
 
 	}

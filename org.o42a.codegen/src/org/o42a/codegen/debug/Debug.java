@@ -20,9 +20,9 @@
 package org.o42a.codegen.debug;
 
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
-import static org.o42a.codegen.debug.DebugExecCommandFunc.DEBUG_EXEC_COMMAND;
+import static org.o42a.codegen.debug.DebugEnterFunc.DEBUG_ENTER;
+import static org.o42a.codegen.debug.DebugExitFunc.DEBUG_EXIT;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
-import static org.o42a.codegen.debug.DebugTraceFunc.DEBUG_TRACE;
 import static org.o42a.util.string.StringCodec.nullTermASCIIString;
 import static org.o42a.util.string.StringCodec.nullTermString;
 
@@ -34,7 +34,6 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 
 
@@ -49,9 +48,8 @@ public class Debug {
 	private int debugSeq;
 
 	private Code dontExitFrom;
-	private FuncPtr<DebugTraceFunc> enterFunc;
-	private FuncPtr<DebugTraceFunc> exitFunc;
-	private FuncPtr<DebugExecCommandFunc> execCommandFunc;
+	private FuncPtr<DebugEnterFunc> enterFunc;
+	private FuncPtr<DebugExitFunc> exitFunc;
 
 	private final HashMap<String, Ptr<AnyOp>> names =
 			new HashMap<String, Ptr<AnyOp>>();
@@ -116,39 +114,29 @@ public class Debug {
 						.sub(id),
 						id.getId());
 
-		final DebugEnvOp debugEnv = function.debugEnv(function);
-		final StructRecOp<DebugStackFrameOp> envStackFrame =
-				debugEnv.stackFrame(function);
 		final DebugStackFrameOp stackFrame = function.allocation().allocate(
 				function.id("func_stack_frame"),
 				DEBUG_STACK_FRAME_TYPE);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
-		stackFrame.prev(function).store(
-				function,
-				envStackFrame.load(null, function));
 		stackFrame.comment(function).store(function, function.nullPtr());
 		stackFrame.file(function).store(function, function.nullPtr());
 		stackFrame.line(function).store(function, function.int32(0));
 
-		envStackFrame.store(function, stackFrame);
+		final BoolOp canEnter =
+				enterFunc().op(null, function).enter(function, stackFrame);
+		final Block cantEnter = function.addBlock("cant_enter");
 
-		final BoolOp execResult =
-				execCommandFunc().op(null, function).exec(function, debugEnv);
-		final Block commandExecuted = function.addBlock("command_executed");
-
-		execResult.go(function, commandExecuted.head());
+		canEnter.goUnless(function, cantEnter.head());
 
 		final Code oldDontExitFrom = this.dontExitFrom;
 
 		try {
-			this.dontExitFrom = commandExecuted;
-			signature.returns(getGenerator()).returnNull(commandExecuted);
+			this.dontExitFrom = cantEnter;
+			signature.returns(getGenerator()).returnNull(cantEnter);
 		} finally {
 			this.dontExitFrom = oldDontExitFrom;
 		}
-
-		enterFunc().op(null, function).trace(function, debugEnv);
 	}
 
 	public BeforeReturn createBeforeReturn(Function<?> function) {
@@ -237,34 +225,24 @@ public class Debug {
 		return getGenerator().id("DEBUG_" + (this.debugSeq++));
 	}
 
-	private FuncPtr<DebugTraceFunc> enterFunc() {
+	private FuncPtr<DebugEnterFunc> enterFunc() {
 		if (this.enterFunc != null) {
 			return this.enterFunc;
 		}
 		return this.enterFunc =
 				getGenerator()
 				.externalFunction()
-				.link("o42a_dbg_enter", DEBUG_TRACE);
+				.link("o42a_dbg_enter", DEBUG_ENTER);
 	}
 
-	private FuncPtr<DebugTraceFunc> exitFunc() {
+	private FuncPtr<DebugExitFunc> exitFunc() {
 		if (this.exitFunc != null) {
 			return this.exitFunc;
 		}
 		return this.exitFunc =
 				getGenerator()
 				.externalFunction()
-				.link("o42a_dbg_exit", DEBUG_TRACE);
-	}
-
-	private FuncPtr<DebugExecCommandFunc> execCommandFunc() {
-		if (this.execCommandFunc != null) {
-			return this.execCommandFunc;
-		}
-		return this.execCommandFunc =
-				getGenerator()
-				.externalFunction()
-				.link("o42a_dbg_exec_command", DEBUG_EXEC_COMMAND);
+				.link("o42a_dbg_exit", DEBUG_EXIT);
 	}
 
 	private static final class TraceBeforReturn implements BeforeReturn {
@@ -275,9 +253,7 @@ public class Debug {
 			final Debug debug = code.getGenerator().getDebug();
 
 			if (debug.dontExitFrom != code) {
-				debug.exitFunc().op(null, code).trace(
-						code,
-						code.getFunction().debugEnv(code));
+				debug.exitFunc().op(null, code).exit(code);
 			}
 		}
 
