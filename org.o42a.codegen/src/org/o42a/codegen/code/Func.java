@@ -22,7 +22,6 @@ package org.o42a.codegen.code;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
-import org.o42a.util.ArrayUtil;
 
 
 public abstract class Func<F extends Func<F>> implements PtrOp<F> {
@@ -76,27 +75,6 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	protected final <O> O invoke(
-			CodeId id,
-			Code code,
-			Return<O> ret,
-			Op... args) {
-
-		final boolean debuggable = getSignature().isDebuggable();
-		final Function<?> callee = code.getFunction();
-
-		assert !debuggable || callee.getSignature().isDebuggable() :
-			code.getFunction() + " is not debuggable";
-
-		if (!debuggable || !code.isDebug()) {
-			return invokeFunc(id, code, ret, args);
-		}
-
-		final Op[] debugArgs = ArrayUtil.prepend(callee.debugEnv(code), args);
-
-		return invokeFunc(id, code, ret, debugArgs);
-	}
-
-	private <O> O invokeFunc(
 			CodeId id,
 			Code code,
 			Return<O> ret,

@@ -22,7 +22,7 @@
 #include "o42a/error.h"
 
 
-void o42a_fld_obj_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_obj_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	const o42a_fld_obj *const from = &ctable->from.fld->obj;
@@ -35,7 +35,7 @@ void o42a_fld_obj_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	O42A_RETURN;
 }
 
-void o42a_fld_obj_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_obj_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	o42a_fld_obj *const from = &ctable->from.fld->obj;
@@ -44,20 +44,17 @@ void o42a_fld_obj_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	to->object = NULL;
 
 	o42a_obj_overrider_t *const overrider = O42A(o42a_obj_field_overrider(
-			O42A_ARGS
 			ctable->sample_type,
 			ctable->field));
 
 	if (overrider) {// Field is overridden.
 		if (!O42A(o42a_obj_ascendant_of_type(
-				O42A_ARGS
 				&ctable->ancestor_type->type.data,
 				overrider->defined_in))) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.
 			// Use definition from overrider.
 			to->constructor = O42A(o42a_fld_by_overrider(
-					O42A_ARGS
 					overrider)->obj.constructor);
 			// Store pointer to previous definition.
 			to->previous = from;
@@ -73,10 +70,9 @@ void o42a_fld_obj_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 }
 
 o42a_obj_body_t *o42a_obj_constructor_stub(
-		O42A_PARAMS
 		o42a_obj_t *scope,
 		struct o42a_fld_obj *field) {
 	O42A_ENTER(return NULL);
-	o42a_error_print(O42A_ARGS "Object constructor stub invoked");
+	o42a_error_print("Object constructor stub invoked");
 	O42A_RETURN NULL;
 }

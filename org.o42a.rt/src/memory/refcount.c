@@ -24,16 +24,14 @@
 #include "o42a/error.h"
 
 
-o42a_refcount_block_t *o42a_refcount_balloc(
-		O42A_PARAMS
-		const size_t size) {
+o42a_refcount_block_t *o42a_refcount_balloc(const size_t size) {
 	O42A_ENTER(return NULL);
 
 	o42a_refcount_block_t *const block =
 			O42A(malloc(sizeof(struct _o42a_refcount_block) + size));
 
 	if (!block) {
-		O42A(o42a_error_print(O42A_ARGS "Can not allocate memory\n"));
+		O42A(o42a_error_print("Can not allocate memory\n"));
 		exit(EXIT_FAILURE);
 	}
 
@@ -42,17 +40,17 @@ o42a_refcount_block_t *o42a_refcount_balloc(
 	O42A_RETURN block;
 }
 
-inline void *o42a_refcount_alloc(O42A_PARAMS const size_t size) {
+inline void *o42a_refcount_alloc(const size_t size) {
 	O42A_ENTER(return NULL);
 
 	struct _o42a_refcount_block *const block =
 			(struct _o42a_refcount_block *)
-			O42A(o42a_refcount_balloc(O42A_ARGS size));
+			O42A(o42a_refcount_balloc(size));
 
 	O42A_RETURN (void*) &block->data;
 }
 
-void o42a_refcount_free(O42A_PARAMS o42a_refcount_block_t *const block) {
+void o42a_refcount_free(o42a_refcount_block_t *const block) {
 	O42A_ENTER(return);
 
 	O42A(free(block));

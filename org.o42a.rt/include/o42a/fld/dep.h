@@ -37,7 +37,7 @@ extern "C" {
 #endif
 
 
-void o42a_fld_dep_copy(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_dep_copy(o42a_obj_ctable_t*);
 
 
 #ifdef __cplusplus

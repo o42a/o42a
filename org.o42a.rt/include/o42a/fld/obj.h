@@ -40,10 +40,7 @@ extern "C" {
  *
  * \return resulting object reference.
  */
-typedef o42a_obj_t *o42a_obj_constructor_ft(
-		O42A_DECLS
-		o42a_obj_t *,
-		o42a_fld_obj *);
+typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, o42a_fld_obj *);
 
 
 #ifdef __cplusplus
@@ -68,17 +65,14 @@ struct o42a_fld_obj {
 extern "C" {
 #endif
 
-void o42a_fld_obj_propagate(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_obj_propagate(o42a_obj_ctable_t*);
 
-void o42a_fld_obj_inherit(O42A_DECLS o42a_obj_ctable_t*);
+void o42a_fld_obj_inherit(o42a_obj_ctable_t*);
 
 /**
  * Object constructor stub.
  */
-o42a_obj_body_t *o42a_obj_constructor_stub(
-		O42A_DECLS
-		o42a_obj_t *,
-		struct o42a_fld_obj *);
+o42a_obj_body_t *o42a_obj_constructor_stub(o42a_obj_t *, struct o42a_fld_obj *);
 
 
 #ifdef __cplusplus

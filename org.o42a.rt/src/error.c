@@ -24,35 +24,35 @@
 #include "unicode/ustdio.h"
 
 
-void o42a_error_print_str(O42A_PARAMS const o42a_val_t *const message) {
-	o42a_error_start(O42A_ARG_);
-	o42a_error_append_str(O42A_ARGS_ message);
-	o42a_error_end(O42A_ARG_);
+void o42a_error_print_str(const o42a_val_t *const message) {
+	o42a_error_start();
+	o42a_error_append_str(message);
+	o42a_error_end();
 }
 
-void o42a_error_print(O42A_PARAMS const char *const message) {
-	o42a_error_start(O42A_ARG_);
+void o42a_error_print(const char *const message) {
+	o42a_error_start();
 	fputs(message, stderr);
-	o42a_error_end(O42A_ARG_);
+	o42a_error_end();
 }
 
-void o42a_error_printf(O42A_PARAMS const char *const format, ...) {
+void o42a_error_printf(const char *const format, ...) {
 
 	va_list args;
 
 	va_start(args, format);
-	o42a_error_start(O42A_ARG_);
+	o42a_error_start();
 	vfprintf(stderr, format, args);
 	va_end(args);
-	o42a_error_end(O42A_ARG_);
+	o42a_error_end();
 }
 
 
-inline void o42a_error_start(O42A_PARAM) {
+inline void o42a_error_start() {
 	fputs("[E] ", stderr);
 }
 
-void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
+void o42a_error_append_str(const o42a_val_t *const message) {
 
 	const size_t len = message->length;
 
@@ -60,9 +60,9 @@ void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
 		return;
 	}
 
-	const size_t ashift = o42a_val_ashift(O42A_ARGS_ message);
-	const UChar32 cmask = o42a_str_cmask(O42A_ARGS_ message);
-	const void *const str = o42a_val_data(O42A_ARGS_ message);
+	const size_t ashift = o42a_val_ashift(message);
+	const UChar32 cmask = o42a_str_cmask(message);
+	const void *const str = o42a_val_data(message);
 
 	UFILE *const uerr = u_finit(stderr, NULL, NULL);
 
@@ -73,11 +73,11 @@ void o42a_error_append_str(O42A_PARAMS const o42a_val_t *const message) {
 	u_fclose(uerr);
 }
 
-inline void o42a_error_append(O42A_PARAMS const char *const message) {
+inline void o42a_error_append(const char *const message) {
 	fputs(message, stderr);
 }
 
-void o42a_error_appendf(O42A_PARAMS const char *const format, ...) {
+void o42a_error_appendf(const char *const format, ...) {
 
 	va_list args;
 
@@ -86,6 +86,6 @@ void o42a_error_appendf(O42A_PARAMS const char *const format, ...) {
 	va_end(args);
 }
 
-inline void o42a_error_end(O42A_PARAM) {
+inline void o42a_error_end() {
 	fputc('\n', stderr);
 }

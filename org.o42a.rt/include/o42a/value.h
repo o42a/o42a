@@ -140,15 +140,15 @@ typedef struct o42a_val {
 extern "C" {
 #endif
 
-size_t o42a_val_ashift(O42A_DECLS const o42a_val_t *);
+size_t o42a_val_ashift(const o42a_val_t *);
 
-size_t o42a_val_alignment(O42A_DECLS const o42a_val_t *);
+size_t o42a_val_alignment(const o42a_val_t *);
 
-void *o42a_val_data(O42A_DECLS const o42a_val_t *);
+void *o42a_val_data(const o42a_val_t *);
 
-void o42a_val_use(O42A_DECLS o42a_val_t *);
+void o42a_val_use(o42a_val_t *);
 
-void o42a_val_unuse(O42A_DECLS o42a_val_t *);
+void o42a_val_unuse(o42a_val_t *);
 
 #ifdef __cplusplus
 } /* extern "C" */

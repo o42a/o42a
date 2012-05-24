@@ -28,24 +28,24 @@
 extern "C" {
 #endif
 
-void o42a_error_print_str(O42A_DECLS const o42a_val_t *);
+void o42a_error_print_str(const o42a_val_t *);
 
-void o42a_error_print(O42A_DECLS const char *);
+void o42a_error_print(const char *);
 
-__attribute__ ((format(printf, O42A_ARGC + 1, O42A_ARGC + 2)))
-void o42a_error_printf(O42A_DECLS const char *, ...);
+__attribute__ ((format(printf, 1, 2)))
+void o42a_error_printf(const char *, ...);
 
 
-void o42a_error_start(O42A_DECL);
+void o42a_error_start();
 
-void o42a_error_append_str(O42A_DECLS const o42a_val_t *);
+void o42a_error_append_str(const o42a_val_t *);
 
-void o42a_error_append(O42A_DECLS const char *);
+void o42a_error_append(const char *);
 
-__attribute__ ((format(printf, O42A_ARGC + 1, O42A_ARGC + 2)))
-void o42a_error_appendf(O42A_DECLS const char *, ...);
+__attribute__ ((format(printf, 1, 2)))
+void o42a_error_appendf(const char *, ...);
 
-void o42a_error_end(O42A_DECL);
+void o42a_error_end();
 
 
 #ifdef __cplusplus

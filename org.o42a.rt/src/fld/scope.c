@@ -20,7 +20,7 @@
 #include "o42a/fields.h"
 
 
-void o42a_fld_scope_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	const o42a_fld_scope *const from = &ctable->from.fld->scope;
@@ -35,7 +35,7 @@ void o42a_fld_scope_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 
 		if (owner_type) {
 			to->object =
-					O42A(o42a_obj_by_data(O42A_ARGS &owner_type->type.data));
+					O42A(o42a_obj_by_data(&owner_type->type.data));
 
 			o42a_debug_mem_name("Updated scope: ", to->object);
 
@@ -52,7 +52,7 @@ void o42a_fld_scope_propagate(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
 	O42A_RETURN;
 }
 
-void o42a_fld_scope_inherit(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_scope_inherit(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	const o42a_fld_scope *const from = &ctable->from.fld->scope;

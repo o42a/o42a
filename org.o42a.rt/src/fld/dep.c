@@ -20,7 +20,7 @@
 #include "o42a/fields.h"
 
 
-void o42a_fld_dep_copy(O42A_PARAMS o42a_obj_ctable_t *const ctable) {
+void o42a_fld_dep_copy(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 
 	const o42a_fld_dep *const from = &ctable->from.fld->dep;
