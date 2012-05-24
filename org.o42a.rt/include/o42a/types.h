@@ -133,6 +133,8 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A_ARGS_
 
 
+#define O42A_START_THREAD
+
 #define O42A_ENTER(return_null)
 
 #define O42A_RETURN return
@@ -186,6 +188,15 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_ARGS_ O42A_ARG_,
 
+
+#define O42A_START_THREAD \
+	struct o42a_dbg_env __thread_dbg_env__ = { \
+		stack_frame: NULL, \
+		command: O42A_DBG_CMD_EXEC, \
+		indent: 0, \
+	}; \
+	o42a_dbg_env_t *__o42a_dbg_env_p__ = &__thread_dbg_env__; \
+	o42a_dbg_start_thread(&__thread_dbg_env__)
 
 #define O42A_ENTER(return_null) \
 	o42a_dbg_env_t *const __o42a_dbg_env__ = __o42a_dbg_env_p__; \
