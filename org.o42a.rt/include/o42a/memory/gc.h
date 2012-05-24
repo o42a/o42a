@@ -211,6 +211,13 @@ void o42a_gc_unuse(O42A_DECLS o42a_gc_block_t *);
  */
 void o42a_gc_signal(O42A_DECL);
 
+#ifndef NDEBUG
+/**
+ * Run the GC manually, while there are blocks in a white list.
+ */
+void o42a_gc_run(O42A_DECL);
+#endif /* NDEBUG */
+
 /**
  * Marks the garbage-allocated data block and all the blocks it references
  * as used.
