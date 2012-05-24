@@ -119,12 +119,14 @@ void o42a_dbg_func_name(O42A_DECLS const char *, const void *);
 
 void o42a_dbg_dump_mem(O42A_DECLS const char *, const void *, uint32_t);
 
-o42a_bool_t o42a_dbg_exec_command(o42a_dbg_env_t *);
 
+o42a_bool_t o42a_dbg_enter(o42a_dbg_stack_frame_t *);
 
-void o42a_dbg_enter(o42a_dbg_env_t *);
+void o42a_dbg_exit();
 
-void o42a_dbg_exit(o42a_dbg_env_t *);
+void o42a_dbg_do(o42a_dbg_stack_frame_t *, const char *comment);
+
+void o42a_dbg_done(uint32_t line);
 
 
 void o42a_dbg_print_stack_frame(o42a_dbg_stack_frame_t *);

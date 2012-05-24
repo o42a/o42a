@@ -202,25 +202,22 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 	o42a_dbg_env_t *const __o42a_dbg_env__ = __o42a_dbg_env_p__; \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
 		name: __func__, \
-		prev: __o42a_dbg_env__->stack_frame, \
+		prev: NULL, \
 		comment: NULL, \
 		file: __FILE__, \
 		line: __LINE__, \
 	}; \
-	__o42a_dbg_env__->stack_frame = &__o42a_dbg_stack_frame__; \
-	if (o42a_dbg_exec_command(__o42a_dbg_env__)) { \
+	if (!o42a_dbg_enter(&__o42a_dbg_stack_frame__)) { \
 		return_null; \
-	} \
-	o42a_dbg_enter(O42A_ARG)
+	}
 
-#define O42A_RETURN O42A(o42a_dbg_exit(__o42a_dbg_env__)); return
+
+#define O42A_RETURN O42A(o42a_dbg_exit()); return
 
 #define O42A_DEBUG(format, args...) \
 	o42a_dbg_printf(O42A_ARGS format, ## args)
 
 #define _O42A_DO_(_sf, _comment) \
-	__o42a_dbg_env__->stack_frame->line = __LINE__; \
-	__o42a_dbg_env__->stack_frame->comment = _comment; \
 	o42a_dbg_stack_frame_t _sf = { \
 		name: __func__, \
 		prev: __o42a_dbg_env__->stack_frame, \
@@ -228,14 +225,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 		file: __FILE__, \
 		line: __LINE__, \
 	}; \
-	o42a_dbg_printf( \
-			O42A_ARGS \
-			"((( /* %s */ (%s:%lu)\n", \
-			__o42a_dbg_env__->stack_frame->comment, \
-			__FILE__, \
-			(unsigned long) __LINE__); \
-	__o42a_dbg_env__->stack_frame = &_sf; \
-	++__o42a_dbg_env__->indent
+	o42a_dbg_do(&_sf, _comment)
 
 #define __O42A_DO(_sf, _sfend, _comment) \
 	_O42A_DO_(__o42a_dbg_stack_frame_##_sf##_sfend, _comment)
@@ -245,21 +235,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_DO(comment) _O42A_DO(__LINE__, __, (comment))
 
-#define O42A_DONE \
-	do { \
-		--__o42a_dbg_env__->indent; \
-		o42a_dbg_stack_frame_t *const _prev = \
-				__o42a_dbg_env__->stack_frame->prev; \
-		o42a_dbg_printf( \
-				O42A_ARGS \
-				"))) /* %s */ (%s:%lu)\n", \
-				_prev->comment, \
-				__FILE__, \
-				(unsigned long) __LINE__); \
-		_prev->line = __LINE__; \
-		_prev->comment = NULL; \
-		__o42a_dbg_env__->stack_frame = _prev; \
-	} while (0)
+#define O42A_DONE o42a_dbg_done(__LINE__)
 
 
 #define o42a_debug(message) O42A(o42a_dbg_print(O42A_ARGS message))

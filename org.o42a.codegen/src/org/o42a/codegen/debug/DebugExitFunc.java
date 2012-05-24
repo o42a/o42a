@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,35 +19,29 @@
 */
 package org.o42a.codegen.debug;
 
-import static org.o42a.codegen.debug.DebugEnvOp.DEBUG_ENV_TYPE;
-
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.BoolOp;
 
 
-final class DebugExecCommandFunc extends Func<DebugExecCommandFunc> {
+final class DebugExitFunc extends Func<DebugExitFunc> {
 
-	public static final DebugExecCommand DEBUG_EXEC_COMMAND =
-			new DebugExecCommand();
+	static final DebugExit DEBUG_EXIT = new DebugExit();
 
-	private DebugExecCommandFunc(FuncCaller<DebugExecCommandFunc> caller) {
+	private DebugExitFunc(FuncCaller<DebugExitFunc> caller) {
 		super(caller);
 	}
 
-	public BoolOp exec(Code code, DebugEnvOp env) {
-		return invoke(null, code, DEBUG_EXEC_COMMAND.result(), env);
+	public final void exit(Code code) {
+		invoke(null, code, DEBUG_EXIT.result());
 	}
 
-	public static final class DebugExecCommand
-			extends Signature<DebugExecCommandFunc> {
+	static class DebugExit extends Signature<DebugExitFunc> {
 
-		private Return<BoolOp> result;
-		private Arg<DebugEnvOp> env;
+		private Return<Void> result;
 
-		private DebugExecCommand() {
+		private DebugExit() {
 		}
 
 		@Override
@@ -55,29 +49,23 @@ final class DebugExecCommandFunc extends Func<DebugExecCommandFunc> {
 			return false;
 		}
 
-		public final Return<BoolOp> result() {
+		public final Return<Void> result() {
 			return this.result;
 		}
 
-		public final Arg<DebugEnvOp> env() {
-			return this.env;
-		}
-
 		@Override
-		public DebugExecCommandFunc op(
-				FuncCaller<DebugExecCommandFunc> caller) {
-			return new DebugExecCommandFunc(caller);
+		public DebugExitFunc op(FuncCaller<DebugExitFunc> caller) {
+			return new DebugExitFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("EnterF");
+			return factory.id("DEBUG").sub("ExitF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.env = builder.addPtr("env", DEBUG_ENV_TYPE);
+			this.result = builder.returnVoid();
 		}
 
 	}
