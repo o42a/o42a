@@ -477,15 +477,8 @@ void o42a_gc_run(O42A_PARAM) {
 #endif /* NDEBUG */
 
 static void *o42a_gc_thread(void *data) {
-#ifndef NDEBUG
-	struct o42a_dbg_env debug_env = {
-		stack_frame: NULL,
-		command: O42A_DBG_CMD_EXEC,
-		indent: 0,
-	};
-	o42a_dbg_env_t *__o42a_dbg_env_p__ = &debug_env;
+	O42A_START_THREAD;
 	O42A_ENTER(return NULL);
-#endif /* NDEBUG */
 
 	while (1) {
 		O42A(pthread_mutex_lock(&gc_mutex));

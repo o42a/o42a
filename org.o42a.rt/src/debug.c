@@ -27,11 +27,7 @@
 #include "unicode/ustdio.h"
 
 
-static o42a_dbg_env_t dbg_env = {
-	stack_frame: NULL,
-	command: O42A_DBG_CMD_EXEC,
-	indent: 0,
-};
+static __thread o42a_dbg_env_t *dbg_env;
 
 static volatile sig_atomic_t program_error_in_progress = 0;
 
@@ -42,19 +38,21 @@ static void program_error_signal(int sig) {
 	program_error_in_progress = 1;
 
 	fprintf(stderr, "Program error (%i) occurred at:\n", sig);
-	o42a_dbg_print_stack_trace(dbg_env.stack_frame);
+	o42a_dbg_print_stack_trace(dbg_env->stack_frame);
 
 	signal(sig, SIG_DFL);
 	raise(sig);
+}
+
+void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
+	dbg_env = env;
 }
 
 int32_t o42a_dbg_exec_main(
 		int32_t (*main)(O42A_DECLS int32_t, char**),
 		int32_t argc,
 		char** argv) {
-
-	o42a_dbg_env_t *__o42a_dbg_env_p__ = &dbg_env;
-
+	O42A_START_THREAD;
 	O42A_ENTER(return 0);
 
 	signal(SIGFPE, &program_error_signal);
@@ -178,7 +176,7 @@ static void dbg_exit(o42a_dbg_env_t *const env, o42a_bool_t print) {
 
 	o42a_dbg_stack_frame_t *const stack_frame = env->stack_frame;
 
-	assert(stack_frame || "Empty stack frame");
+	assert(stack_frame && "Empty stack frame");
 
 	o42a_dbg_stack_frame_t *const prev = stack_frame->prev;
 

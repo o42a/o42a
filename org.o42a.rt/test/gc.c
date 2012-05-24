@@ -64,7 +64,9 @@ static void mark_test_object(O42A_PARAMS void *const data) {
 static void sweep_test_object(O42A_PARAMS void *const data) {
 	O42A_ENTER(return);
 
-	assert(swept_objects.num_swept < swept_objects.max_swept);
+	assert(
+			(swept_objects.num_swept < swept_objects.max_swept)
+			&& "Too many objects swept");
 
 	test_object_t *const object = (test_object_t *) data;
 
@@ -128,16 +130,16 @@ static o42a_bool_t test_non_referenced_object(O42A_PARAM) {
 	test_object_t * test = O42A(alloc_test_object(O42A_ARGS "noref", 0));
 
 	O42A(o42a_gc_use(O42A_ARGS o42a_gc_blockof(test)));
-	assert("Object deallocated after use" && !object_swept("noref"));
+	assert(!object_swept("noref") && "Object deallocated after use");
 
 	O42A(o42a_gc_run(O42A_ARG));
-	assert("Object deallocated while it is used" && !object_swept("noref"));
+	assert(!object_swept("noref") && "Object deallocated while it is in use");
 
 	O42A(o42a_gc_unuse(O42A_ARGS o42a_gc_blockof(test)));
-	assert("Object deallocated after unuse" && !object_swept("noref"));
+	assert(!object_swept("noref") && "Object deallocated after unuse");
 
 	O42A(o42a_gc_run(O42A_ARG));
-	assert("Object not deallocated" && object_swept("noref"));
+	assert(object_swept("noref") && "Object not deallocated");
 
 	O42A_DONE;
 	O42A_RETURN O42A_TRUE;

@@ -25,6 +25,11 @@
 #include <stdio.h>
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 enum {
 
 	O42A_DBG_CMD_EXEC = 0,
@@ -92,10 +97,7 @@ extern const struct o42a_dbg {
 } o42a_dbg;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+void o42a_dbg_start_thread(struct o42a_dbg_env *);
 
 int32_t o42a_dbg_exec_main(
 		int32_t(*)(O42A_DECLS int32_t, char**), int32_t, char**);
@@ -149,7 +151,7 @@ void o42a_dbg_fill_field_info(
 
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #endif /* O42A_DEBUG_H */
