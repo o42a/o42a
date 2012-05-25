@@ -67,7 +67,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 						ids.writeCodeId(resultId),
 						ids.length(),
 						getNativePtr(),
-						atomicity.isAtomic())));
+						atomicity.code())));
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 				llvm.nextInstr(),
 				getNativePtr(),
 				nativePtr(value),
-				atomicity.isAtomic()));
+				atomicity.code()));
 	}
 
 	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);

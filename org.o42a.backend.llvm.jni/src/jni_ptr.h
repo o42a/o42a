@@ -18,18 +18,18 @@ JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_field
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
  * Method:    load
- * Signature: (JJJIJZ)J
+ * Signature: (JJJIJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_load
-  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jint, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp
  * Method:    store
- * Signature: (JJJJZ)J
+ * Signature: (JJJJI)J
  */
 JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_code_op_PtrLLOp_store
-  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jboolean);
+  (JNIEnv *, jclass, jlong, jlong, jlong, jlong, jint);
 
 /*
  * Class:     org_o42a_backend_llvm_code_op_PtrLLOp

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
@@ -141,8 +142,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			result.returnValue(dontStore);
 		}
 
-		code.releaseBarrier();
-		fld.object(null, code).store(code, result, ATOMIC);
+		fld.object(null, code).store(code, result, ACQUIRE_RELEASE);
 		ctr.finish(code, ownFld);
 
 		result.returnValue(code);

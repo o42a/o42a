@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
@@ -266,13 +266,13 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 				Code code,
 				VarFldOp fld,
 				ObjectIRType.Op bound) {
-			fld.ptr().bound(null, code).store(code, bound, ATOMIC);
+			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
 		}
 
 		@Override
 		protected void storeObject(Block code, VarFldOp fld, ObjectOp object) {
 			fld.ptr().object(null, code)
-			.store(code, object.toData(null, code), ATOMIC);
+			.store(code, object.toData(null, code), VOLATILE);
 		}
 
 	}

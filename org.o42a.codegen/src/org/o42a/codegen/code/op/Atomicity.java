@@ -22,11 +22,23 @@ package org.o42a.codegen.code.op;
 
 public enum Atomicity {
 
-	NOT_ATOMIC,
-	ATOMIC;
+	NOT_ATOMIC(0),
+	ATOMIC(1),
+	ACQUIRE_RELEASE(2),
+	VOLATILE(3);
+
+	private final int code;
+
+	Atomicity(int code) {
+		this.code = code;
+	}
 
 	public final boolean isAtomic() {
 		return this != NOT_ATOMIC;
+	}
+
+	public final int code() {
+		return this.code;
 	}
 
 }
