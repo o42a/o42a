@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.link.impl;
 
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.field.variable.AssignerFld.assignerKey;
@@ -121,7 +122,7 @@ final class VariableIR extends ValueIR {
 					.objectType(code)
 					.ptr()
 					.data(code).value(code);
-			final ValFlagsOp flags = objectVal.flags(code, ATOMIC);
+			final ValFlagsOp flags = objectVal.flags(code, ACQUIRE_RELEASE);
 			final Block skip = code.addBlock("skip");
 
 			code.acquireBarrier();
@@ -148,8 +149,6 @@ final class VariableIR extends ValueIR {
 
 			final Int32op newFlags =
 					value != null ? value.flags(code).get() : code.int32(0);
-
-			code.releaseBarrier();
 
 			flags.store(code, newFlags);
 

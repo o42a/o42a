@@ -20,7 +20,7 @@
 package org.o42a.core.ir.field.variable;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.member.MemberId.fieldName;
@@ -358,7 +358,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 				Code code,
 				AssignerFldOp fld,
 				ObjectIRType.Op bound) {
-			fld.ptr().bound(null, code).store(code, bound, ATOMIC);
+			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
 		}
 
 		@Override

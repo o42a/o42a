@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.value.struct;
 
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
@@ -165,9 +166,8 @@ public abstract class ValueOp {
 		}
 
 		final Int32op valueFlags = value.flags(code).get();
-		final ValFlagsOp objectValueFlags = objectValue.flags(code, ATOMIC);
-
-		code.releaseBarrier();
+		final ValFlagsOp objectValueFlags =
+				objectValue.flags(code, ACQUIRE_RELEASE);
 
 		objectValueFlags.store(code, valueFlags);
 		if (valueStructIR.hasLength()) {
@@ -179,9 +179,7 @@ public abstract class ValueOp {
 
 		final ValType.Op objectValue =
 				object().objectType(code).ptr().data(code).value(code);
-		final ValFlagsOp flags = objectValue.flags(code, ATOMIC);
-
-		code.releaseBarrier();
+		final ValFlagsOp flags = objectValue.flags(code, ACQUIRE_RELEASE);
 
 		flags.storeFalse(code);
 	}

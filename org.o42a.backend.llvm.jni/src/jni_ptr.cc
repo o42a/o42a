@@ -59,6 +59,13 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_field(
 	return to_instr_ptr(result);
 }
 
+static const AtomicOrdering LOAD_ORDERINGS[] = {
+	NotAtomic,
+	Monotonic,
+	Acquire,
+	SequentiallyConsistent,
+};
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		JNIEnv *,
 		jclass,
@@ -67,12 +74,12 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 		jlong id,
 		jint idLen,
 		jlong pointerPtr,
-		jboolean atomic) {
+		jint atomicity) {
 
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 
-	if (!atomic) {
+	if (!atomicity) {
 		return to_instr_ptr(builder.CreateLoad(
 				pointer,
 				StringRef(from_ptr<char>(id), idLen)));
@@ -100,7 +107,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 	}
 
 	// Guarantee the data loaded one piece.
-	result->setAtomic(Monotonic);
+	result->setAtomic(LOAD_ORDERINGS[atomicity]);
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getTypeStoreSize(storeType));
 
@@ -114,6 +121,13 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_load(
 			StringRef(from_ptr<char>(id), idLen)));
 }
 
+static const AtomicOrdering STORE_ORDERINGS[] = {
+	NotAtomic,
+	Monotonic,
+	Release,
+	SequentiallyConsistent,
+};
+
 jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		JNIEnv *,
 		jclass,
@@ -121,13 +135,13 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 		jlong instrPtr,
 		jlong pointerPtr,
 		jlong valuePtr,
-		jboolean atomic) {
+		jint atomicity) {
 
 	MAKE_BUILDER;
 	Value *pointer = from_ptr<Value>(pointerPtr);
 	Value *value = from_ptr<Value>(valuePtr);
 
-	if (!atomic) {
+	if (!atomicity) {
 		return to_instr_ptr(builder.CreateStore(value, pointer));
 	}
 
@@ -155,7 +169,7 @@ jlong Java_org_o42a_backend_llvm_code_op_PtrLLOp_store(
 	StoreInst *result = builder.CreateStore(val, ptr);
 
 	// Guarantee the data stored one piece.
-	result->setAtomic(Monotonic);
+	result->setAtomic(STORE_ORDERINGS[atomicity]);
 	// Atomic operations require alignment.
 	result->setAlignment(targetData.getTypeStoreSize(storeType));
 

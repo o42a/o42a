@@ -20,6 +20,7 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -180,9 +181,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			final DataRecOp objectRec =
 					op(code, builder.host()).ptr().object(null, code);
 
-			code.releaseBarrier();
-
-			objectRec.store(code, res, ATOMIC);
+			objectRec.store(code, res, ACQUIRE_RELEASE);
 			ctr.finish(code, fld);
 		}
 
@@ -362,10 +361,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			code.acquireBarrier();
 
 			final DataOp object = objectRec.load(null, code, ATOMIC);
-			final CondBlock noTarget = object.isNull(null, code).branch(
-					code,
-					"no_target",
-					"has_target");
+			final CondBlock noTarget =
+					object.isNull(null, code)
+					.branch(code, "no_target", "has_target");
 			final Block hasTarget = noTarget.otherwise();
 
 			final DataOp object1 = hasTarget.phi(null, object);

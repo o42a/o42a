@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.object.impl.value;
 
-import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.object.op.ObjectValueStartFunc.OBJECT_VALUE_START;
@@ -155,9 +155,8 @@ public abstract class AbstractObjectValueBuilder
 			if (lock()) {
 
 				final ValType.Op value = data(failure, function).value(failure);
-				final ValFlagsOp flags = value.flags(failure, ATOMIC);
+				final ValFlagsOp flags = value.flags(failure, ACQUIRE_RELEASE);
 
-				failure.releaseBarrier();
 				flags.storeFalse(failure);
 			}
 			failure.returnVoid();
