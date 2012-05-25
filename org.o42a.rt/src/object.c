@@ -939,7 +939,7 @@ void o42a_obj_lock(o42a_obj_data_t *const data) {
 	while (1) {
 
 		// Attempt to start the mutex initialization.
-		volatile int8_t *init = &data->mutex_init;
+		volatile int8_t *const init = &data->mutex_init;
 		int8_t old = __sync_val_compare_and_swap(init, 0, -1);
 
 		if (old) {
