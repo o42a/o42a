@@ -181,6 +181,17 @@ void o42a_gc_unlock_block(o42a_gc_block_t *);
 void o42a_gc_static(o42a_gc_block_t *);
 
 /**
+ * Discards a garbage-collected data block.
+ *
+ * This removes the block from GC. For example, it can be used to remove the
+ * block from the list of static blocks.
+ *
+ * This function is unsafe and should not be used directly, unless you know what
+ * you doing.
+ */
+void o42a_gc_discard(o42a_gc_block_t *);
+
+/**
  * Declares the data block is used by current thread.
  *
  * While the data block is in use, it can not be considered a garbage and thus
