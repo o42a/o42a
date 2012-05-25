@@ -275,6 +275,52 @@ static void test_cyclic_references() {
 	O42A_RETURN;
 }
 
+static void test_break_cyclic_references() {
+	O42A_ENTER(return);
+	O42A_DO("Break cyclic references");
+
+	setup_test(3);
+
+	test_object_t *const object1 = O42A(alloc_test_object("object1", 1));
+	test_object_t *const object2 = O42A(alloc_test_object("object2", 1));
+	test_object_t *const object3 = O42A(alloc_test_object("object3", 1));
+
+	object1->refs[0] = object2;
+	object2->refs[0] = object3;
+	object3->refs[0] = object1;
+
+	O42A(o42a_gc_use(o42a_gc_blockof(object1)));
+	O42A(o42a_gc_use(o42a_gc_blockof(object2)));
+	O42A(o42a_gc_use(o42a_gc_blockof(object3)));
+	O42A(o42a_gc_unuse(o42a_gc_blockof(object3)));
+	O42A(o42a_gc_unuse(o42a_gc_blockof(object2)));
+	O42A(o42a_gc_run());
+
+	assert(!object_swept("object1") && "Cyclic reference 1 deallocated");
+	assert(!object_swept("object2") && "Cyclic reference 2 deallocated");
+	assert(!object_swept("object3") && "Cyclic reference 3 deallocated");
+
+	O42A(o42a_gc_use(o42a_gc_blockof(object2)));
+	object2->refs[0] = NULL;
+	O42A(o42a_gc_unuse(o42a_gc_blockof(object2)));
+	O42A(o42a_gc_run());
+
+	assert(!object_swept("object1") && "Used block deallocated");
+	assert(!object_swept("object2") && "Reference deallocated");
+	assert(
+			object_swept("object3")
+			&& "Broken cyclic reference 3 not deallocated");
+
+	O42A(o42a_gc_unuse(o42a_gc_blockof(object1)));
+	O42A(o42a_gc_run());
+
+	assert(object_swept("object1") && "Root block not deallocated");
+	assert(object_swept("object2") && "Reference not deallocated");
+
+	O42A_DONE;
+	O42A_RETURN;
+}
+
 //////////////////// Main functions
 
 static int32_t run_tests(int32_t argc, char **argv) {
@@ -285,6 +331,7 @@ static int32_t run_tests(int32_t argc, char **argv) {
 	O42A(test_referenced());
 	O42A(test_self_referencing());
 	O42A(test_cyclic_references());
+	O42A(test_break_cyclic_references());
 
 	O42A_RETURN EXIT_SUCCESS;
 }
