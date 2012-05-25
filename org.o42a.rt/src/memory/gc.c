@@ -19,6 +19,7 @@
 */
 #include "o42a/memory/gc.h"
 
+#include <assert.h>
 #include <pthread.h>
 #include <sched.h>
 #include <stdlib.h>
@@ -166,17 +167,15 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 
 inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
-	while (__sync_val_compare_and_swap(&block->lock, 0, 1)) {
+	while (__sync_lock_test_and_set(&block->lock, 1)) {
 		O42A(sched_yield());
 	}
-	__sync_lock_test_and_set(&block->lock, 1);
 	O42A_RETURN;
 }
 
 inline void o42a_gc_unlock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 	__sync_lock_release(&block->lock);
-	block->lock = 0;
 	O42A_RETURN;
 }
 
@@ -194,10 +193,9 @@ static int gc_lock;
  */
 static inline void o42a_gc_lock() {
 	O42A_ENTER(return);
-	while (__sync_val_compare_and_swap(&gc_lock, 0, 1)) {
+	while (__sync_lock_test_and_set(&gc_lock, 1)) {
 		O42A(sched_yield());
 	}
-	__sync_lock_test_and_set(&gc_lock, 1);
 	O42A_RETURN;
 }
 
@@ -206,8 +204,7 @@ static inline void o42a_gc_lock() {
  */
 static inline void o42a_gc_unlock() {
 	O42A_ENTER(return);
-	__sync_lock_release(&gc_lock, 0);
-	gc_lock = 0;
+	__sync_lock_release(&gc_lock);
 	O42A_RETURN;
 }
 
@@ -573,11 +570,19 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 
 void o42a_gc_unuse(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
+	if (block->list == O42A_GC_LIST_STATIC) {
+		// Skip static blocks.
+		O42A_RETURN;
+	}
 
 	// The block will be moved to the "white" list by GC thread if use count
 	// drops to zero.
 	O42A(o42a_gc_lock_block(block));
-	if (!(--block->use_count)) {
+	if (block->list != O42A_GC_LIST_USED) {
+		assert(
+				(block->list & O42A_GC_LIST_GRAY_FLAG)
+				&& "The block is not in a \"grey\" list");
+	} else if (!(--block->use_count)) {
 		gc_has_white = O42A_TRUE;
 	}
 	O42A(o42a_gc_unlock_block(block));
