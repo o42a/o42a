@@ -31,6 +31,9 @@
 #include "unicode/uchar.h"
 
 
+const o42a_val_type_t o42a_val_type_float =
+		O42A_VAL_TYPE("float", &o42a_val_mark_none, &o42a_val_sweep_none);
+
 enum float_signs {
 
 	PLUS_SIGN = 0x002b,

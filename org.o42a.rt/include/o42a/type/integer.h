@@ -28,6 +28,7 @@
 extern "C" {
 #endif
 
+extern const o42a_val_type_t o42a_val_type_integer;
 
 void o42a_int_by_str(o42a_val_t *, const o42a_val_t *, uint32_t);
 

@@ -30,19 +30,19 @@ import org.o42a.core.value.ValueType;
 
 public final class Val implements Content<ValType> {
 
-	public static final int CONDITION_FLAG = 0x01;
-	public static final int INDEFINITE_FLAG = 0x02;
-	public static final int ASSIGN_FLAG = 0x40;
-	public static final int ALIGNMENT_MASK = 0x700;
-	public static final int EXTERNAL_FLAG = 0x800;
-	public static final int STATIC_FLAG = 0x1000;
+	public static final int VAL_CONDITION = 0x01;
+	public static final int VAL_INDEFINITE = 0x02;
+	public static final int VAL_ASSIGN = 0x40;
+	public static final int VAL_ALIGNMENT_MASK = 0x700;
+	public static final int VAL_EXTERNAL = 0x800;
+	public static final int VAL_STATIC = 0x1000;
 
 	public static final Val VOID_VAL =
-			new Val(ValueStruct.VOID, CONDITION_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, VAL_CONDITION, 0, 0L);
 	public static final Val FALSE_VAL =
 			new Val(ValueStruct.VOID, 0, 0, 0L);
 	public static final Val INDEFINITE_VAL =
-			new Val(ValueStruct.VOID, INDEFINITE_FLAG, 0, 0L);
+			new Val(ValueStruct.VOID, VAL_INDEFINITE, 0, 0L);
 
 	private final ValueStruct<?, ?> valueStruct;
 	private final int flags;
@@ -52,7 +52,7 @@ public final class Val implements Content<ValType> {
 
 	public Val(long value) {
 		this.valueStruct = ValueStruct.INTEGER;
-		this.flags = CONDITION_FLAG;
+		this.flags = VAL_CONDITION;
 		this.length = 0;
 		this.value = value;
 		this.pointer = null;
@@ -60,7 +60,7 @@ public final class Val implements Content<ValType> {
 
 	public Val(double value) {
 		this.valueStruct = ValueStruct.FLOAT;
-		this.flags = CONDITION_FLAG;
+		this.flags = VAL_CONDITION;
 		this.length = 0;
 		this.value = doubleToRawLongBits(value);
 		this.pointer = null;
@@ -107,15 +107,15 @@ public final class Val implements Content<ValType> {
 	}
 
 	public final boolean getCondition() {
-		return (this.flags & CONDITION_FLAG) != 0;
+		return (this.flags & VAL_CONDITION) != 0;
 	}
 
 	public final boolean isIndefinite() {
-		return (this.flags & INDEFINITE_FLAG) != 0;
+		return (this.flags & VAL_INDEFINITE) != 0;
 	}
 
 	public final boolean isExternal() {
-		return (this.flags & EXTERNAL_FLAG) != 0;
+		return (this.flags & VAL_EXTERNAL) != 0;
 	}
 
 	public int getLength() {

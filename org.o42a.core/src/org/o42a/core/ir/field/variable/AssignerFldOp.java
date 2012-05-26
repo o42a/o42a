@@ -26,8 +26,8 @@ import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
-import static org.o42a.core.ir.value.Val.ASSIGN_FLAG;
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
@@ -159,7 +159,7 @@ public final class AssignerFldOp extends FldOp {
 		code.acquireBarrier();
 
 		final ValFlagsOp old =
-				flags.atomicRMW(code.id("old"), code, R_OR_W, ASSIGN_FLAG);
+				flags.atomicRMW(code.id("old"), code, R_OR_W, VAL_ASSIGN);
 
 		old.assigning(null, code).go(code, skip.head());
 
@@ -168,7 +168,7 @@ public final class AssignerFldOp extends FldOp {
 		.toPtr(null, code)
 		.store(code, object.toAny(null, code), ATOMIC);
 
-		flags.store(code, CONDITION_FLAG);
+		flags.store(code, VAL_CONDITION);
 
 		skip.go(code.tail());
 	}

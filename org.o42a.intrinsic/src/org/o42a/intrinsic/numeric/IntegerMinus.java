@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
@@ -54,7 +54,7 @@ public final class IntegerMinus extends UnaryResult<Long, Long> {
 		final ValOp result = dirs.value();
 		final ValFlagsOp resultFlagsRec = result.flags("unary_flags", code);
 
-		resultFlagsRec.store(code, CONDITION_FLAG);
+		resultFlagsRec.store(code, VAL_CONDITION);
 
 		final Int64recOp operandPtr =
 				operand.rawValue(code.id("operand_ptr"), code);

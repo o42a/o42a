@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.value.struct;
 
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
-import static org.o42a.core.ir.value.Val.STATIC_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.Val.VAL_EXTERNAL;
+import static org.o42a.core.ir.value.Val.VAL_STATIC;
 
 import java.util.HashMap;
 
@@ -64,7 +64,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		if (bytes.length <= 8) {
 			val = new Val(
 					ValueStruct.STRING,
-					CONDITION_FLAG | (alignment.getShift() << 8),
+					VAL_CONDITION | (alignment.getShift() << 8),
 					length(value, bytes, alignment),
 					bytesToLong(bytes));
 		} else {
@@ -74,7 +74,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 
 			val = new Val(
 					ValueStruct.STRING,
-					CONDITION_FLAG | EXTERNAL_FLAG | STATIC_FLAG
+					VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
 					| (alignment.getShift() << 8),
 					length(value, bytes, alignment),
 					binary);

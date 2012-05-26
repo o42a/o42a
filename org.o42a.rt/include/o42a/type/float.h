@@ -28,6 +28,10 @@
 extern "C" {
 #endif
 
+/**
+ * Float value type descriptor.
+ */
+extern const o42a_val_type_t o42a_val_type_float;
 
 void o42a_float_by_str(o42a_val_t *, const o42a_val_t *);
 

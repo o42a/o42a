@@ -20,9 +20,9 @@
 package org.o42a.core.ir.value.array;
 
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.EXTERNAL_FLAG;
-import static org.o42a.core.ir.value.Val.STATIC_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.Val.VAL_EXTERNAL;
+import static org.o42a.core.ir.value.Val.VAL_STATIC;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -72,7 +72,7 @@ public class ArrayIR {
 
 		if (array.isEmpty()) {
 			return this.val =
-					new Val(array.getValueStruct(), CONDITION_FLAG, 0, 0L);
+					new Val(array.getValueStruct(), VAL_CONDITION, 0, 0L);
 		}
 
 		final ArrayItemsStruct items = getItems();
@@ -81,7 +81,7 @@ public class ArrayIR {
 
 		return this.val = new Val(
 				array.getValueStruct(),
-				CONDITION_FLAG | EXTERNAL_FLAG | STATIC_FLAG
+				VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
 				| (itemsLayout.getAlignmentShift() << 8),
 				items.getItems().length,
 				itemsData.getPointer().toAny());

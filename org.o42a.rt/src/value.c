@@ -20,6 +20,8 @@
 #include "o42a/value.h"
 
 #include "o42a/memory/refcount.h"
+#include "o42a/object.h"
+
 
 inline size_t o42a_val_ashift(const o42a_val_t *const val) {
 	return (val->flags & O42A_VAL_ALIGNMENT_MASK) >> 8;
@@ -71,6 +73,83 @@ inline void o42a_val_unuse(o42a_val_t *const val) {
 
 	o42a_refcount_block_t *const block =
 			O42A(o42a_refcount_blockof(val->value.v_ptr));
+
+	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
+		O42A(o42a_refcount_free(block));
+	}
+
+	O42A_RETURN;
+}
+
+#ifndef NDEBUG
+
+const o42a_dbg_type_info_t _O42A_DEBUG_TYPE_o42a_val_type = {
+	type_code: 0x042a0001,
+	field_num: 3,
+	name: "o42a_val_type_t",
+	fields: {
+		{
+			data_type: O42A_TYPE_PTR,
+			offset: offsetof(o42a_val_type_t, name),
+			name: "name",
+			type_info: NULL,
+		},
+		{
+			data_type: O42A_TYPE_FUNC_PTR,
+			offset: offsetof(o42a_val_type_t, mark),
+			name: "mark",
+			type_info: NULL,
+		},
+		{
+			data_type: O42A_TYPE_FUNC_PTR,
+			offset: offsetof(o42a_val_type_t, sweep),
+			name: "sweep",
+			type_info: NULL,
+		},
+	}
+};
+
+#endif /* NDEBUG */
+
+const o42a_val_type_t o42a_val_type_void =
+		O42A_VAL_TYPE("void", &o42a_val_mark_none, &o42a_val_sweep_none);
+
+const o42a_val_type_t o42a_val_type_directive =
+		O42A_VAL_TYPE("directive", &o42a_val_mark_none, &o42a_val_sweep_none);
+
+void o42a_val_mark_none(struct o42a_obj_data *data) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
+void o42a_val_sweep_none(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
+void o42a_val_sweep_external(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+
+	const volatile o42a_val_t *const value = &data->value;
+	const uint32_t flags = value->flags;
+
+	if (!(flags & O42A_VAL_CONDITION)) {
+		O42A_RETURN;
+	}
+	if (flags & O42A_VAL_STATIC) {
+		O42A_RETURN;
+	}
+	if (!(flags & O42A_VAL_EXTERNAL)) {
+		O42A_RETURN;
+	}
+
+	void *const ptr = value->value.v_ptr;
+
+	if (!ptr) {
+		O42A_RETURN;
+	}
+
+	o42a_refcount_block_t *const block = o42a_refcount_blockof(ptr);
 
 	if (!__sync_sub_and_fetch(&block->ref_count, 1)) {
 		O42A(o42a_refcount_free(block));

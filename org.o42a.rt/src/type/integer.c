@@ -28,6 +28,11 @@
 
 #include "unicode/uchar.h"
 
+/**
+ * Float value type descriptor.
+ */
+const o42a_val_type_t o42a_val_type_integer =
+		O42A_VAL_TYPE("integer", &o42a_val_mark_none, &o42a_val_sweep_none);
 
 enum number_signs {
 
