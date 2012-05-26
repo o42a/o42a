@@ -65,7 +65,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
-	private StructRec<ObjectIRType.Op> ancestorType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
@@ -105,10 +104,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.propositionFunc;
 	}
 
-	public final StructRec<ObjectIRType.Op> ancestorType() {
-		return this.ancestorType;
-	}
-
 	public final RelList<ObjectBodyIR> ascendants() {
 		return this.ascendants;
 	}
@@ -144,7 +139,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
-		this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");
@@ -203,10 +197,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
 			return func(null, code, getType().propositionFunc());
-		}
-
-		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
-			return ptr(null, code, getType().ancestorType());
 		}
 
 		public final void lock(Code code) {

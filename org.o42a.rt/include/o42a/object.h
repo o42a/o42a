@@ -28,8 +28,8 @@
 
 union o42a_fld;
 struct o42a_fld_ctr;
-struct o42a_obj_methods;
-union o42a_obj_type;
+typedef struct o42a_obj_methods o42a_obj_methods_t;
+typedef union o42a_obj_type o42a_obj_type_t;
 
 /** Object represented by it's body. */
 typedef struct o42a_obj_body o42a_obj_t;
@@ -165,7 +165,7 @@ typedef struct o42a_obj_body {
 	/**
 	 * Pointer to object methods corresponding to this body's type.
 	 */
-	struct o42a_obj_methods *methods;
+	o42a_obj_methods_t *methods;
 
 	/**
 	 * Object body flags.
@@ -284,15 +284,6 @@ struct o42a_obj_data {
 	 * Accepts main object body as a second argument.
 	 */
 	o42a_obj_val_ft *proposition_f;
-
-	/**
-	 * Ancestor type.
-	 *
-	 * Pointer to ancestor object data.
-	 *
-	 * NULL when ancestor is void.
-	 */
-	const union o42a_obj_type *ancestor_type;
 
 	/**
 	 * Pointer to the head of the constructing fields list.
@@ -430,7 +421,7 @@ typedef struct o42a_obj_rtype {
  * There is exactly one type section per object, which can be either of
  * o42a_obj_stype_t or o42a_obj_rtype_t type depending on header flags.
  */
-typedef union o42a_obj_type {
+union o42a_obj_type {
 
 	struct {
 
@@ -459,7 +450,7 @@ typedef union o42a_obj_type {
 	 */
 	o42a_obj_rtype_t rtype;
 
-} o42a_obj_type_t;
+};
 
 /**
  * Object methods.
@@ -467,7 +458,7 @@ typedef union o42a_obj_type {
  * Each body has an associated methods instance. Different bodies can share the
  * same meta instance.
  */
-typedef struct o42a_obj_methods {
+struct o42a_obj_methods {
 
 	O42A_HEADER;
 
@@ -476,7 +467,7 @@ typedef struct o42a_obj_methods {
 	 */
 	o42a_obj_stype_t *object_type;
 
-} o42a_obj_methods_t;
+};
 
 /**
  * Object construction data.
