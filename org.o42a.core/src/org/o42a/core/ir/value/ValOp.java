@@ -20,8 +20,8 @@
 package org.o42a.core.ir.value;
 
 import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
-import static org.o42a.core.ir.value.Val.INDEFINITE_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -154,7 +154,7 @@ public abstract class ValOp extends IROp {
 		assert getValueStruct().isVoid() :
 			"Can not store VOID in " + getValueStruct() + " value";
 
-		flags(code).store(code, CONDITION_FLAG);
+		flags(code).store(code, VAL_CONDITION);
 
 		return this;
 	}
@@ -165,7 +165,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp storeIndefinite(Code code) {
-		flags(code).store(code, code.int32(INDEFINITE_FLAG));
+		flags(code).store(code, code.int32(VAL_INDEFINITE));
 		return this;
 	}
 
@@ -235,7 +235,7 @@ public abstract class ValOp extends IROp {
 			"Can not store integer in " + getValueStruct() + " value";
 
 		rawValue(null, code).store(code, value);
-		flags(code).store(code, CONDITION_FLAG);
+		flags(code).store(code, VAL_CONDITION);
 
 		return this;
 	}
@@ -246,7 +246,7 @@ public abstract class ValOp extends IROp {
 			+ getValueStruct() + " value";
 
 		value(null, code).toFp64(null, code).store(code, value);
-		flags(code).store(code, CONDITION_FLAG);
+		flags(code).store(code, VAL_CONDITION);
 
 		return this;
 	}
@@ -255,7 +255,7 @@ public abstract class ValOp extends IROp {
 		assert getValueStructIR().hasValue() :
 			"Can not store value to " + getValueStruct();
 
-		flags(code).store(code, CONDITION_FLAG);
+		flags(code).store(code, VAL_CONDITION);
 		if (getValueStructIR().hasLength()) {
 			length(null, code).store(code, code.int32(0));
 		}
@@ -271,7 +271,7 @@ public abstract class ValOp extends IROp {
 			"Can not store pointer without length to " + getValueType();
 
 		value(null, code).toPtr(null, code).store(code, pointer);
-		flags(code).store(code, CONDITION_FLAG);
+		flags(code).store(code, VAL_CONDITION);
 
 		return this;
 	}
@@ -289,7 +289,7 @@ public abstract class ValOp extends IROp {
 
 		flags(code).store(
 				code,
-				Val.CONDITION_FLAG | Val.EXTERNAL_FLAG
+				Val.VAL_CONDITION | Val.VAL_EXTERNAL
 				| (alignment.getShift() << 8));
 		length(null, code).store(code, length);
 		value(null, code).toPtr(null, code).store(code, pointer);

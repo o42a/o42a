@@ -72,19 +72,19 @@ public final class ValFlagsOp {
 	}
 
 	public final BoolOp indefinite(CodeId id, Code code) {
-		return get(id, "indefinite", code, INDEFINITE_FLAG);
+		return get(id, "indefinite", code, VAL_INDEFINITE);
 	}
 
 	public final BoolOp external(CodeId id, Code code) {
-		return get(id, "external", code, EXTERNAL_FLAG);
+		return get(id, "external", code, VAL_EXTERNAL);
 	}
 
 	public final BoolOp staticStore(CodeId id, Code code) {
-		return get(id, "static", code, STATIC_FLAG);
+		return get(id, "static", code, VAL_STATIC);
 	}
 
 	public final BoolOp assigning(CodeId id, Code code) {
-		return get(id, "assigning", code, ASSIGN_FLAG);
+		return get(id, "assigning", code, VAL_ASSIGN);
 	}
 
 	public final Int32op alignmentShift(CodeId id, Code code) {
@@ -100,12 +100,12 @@ public final class ValFlagsOp {
 		final Int32op ualignment = get().and(
 				ashiftId.detail("ush"),
 				code,
-				code.int32(ALIGNMENT_MASK));
+				code.int32(VAL_ALIGNMENT_MASK));
 
 		return ualignment.lshr(
 				ashiftId,
 				code,
-				numberOfTrailingZeros(ALIGNMENT_MASK));
+				numberOfTrailingZeros(VAL_ALIGNMENT_MASK));
 	}
 
 	public final Int32op alignment(CodeId id, Code code) {

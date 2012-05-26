@@ -23,7 +23,7 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.field.variable.AssignerFld.assignerKey;
-import static org.o42a.core.ir.value.Val.ASSIGN_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
@@ -131,7 +131,7 @@ final class VariableIR extends ValueIR {
 					code.id("old"),
 					code,
 					R_OR_W,
-					ASSIGN_FLAG);
+					VAL_ASSIGN);
 
 			old.assigning(null, code).go(code, skip.head());
 

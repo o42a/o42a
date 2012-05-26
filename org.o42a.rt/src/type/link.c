@@ -1,6 +1,6 @@
 /*
     Run-Time Library
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,36 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef O42A_TYPE_ARRAY_H
-#define O42A_TYPE_ARRAY_H
+#include "o42a/type/link.h"
 
+#include "o42a/memory/gc.h"
 #include "o42a/object.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+static void o42a_val_mark_link(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
 
-typedef o42a_obj_t* o42a_array_t;
+	volatile o42a_val_t *const value = &data->value;
 
-/**
- * Mutable array value type descriptor.
- */
-extern const o42a_val_type_t o42a_val_type_array;
+	if (!(value->flags & O42A_VAL_CONDITION)) {
+		O42A_RETURN;
+	}
 
-/**
- * Immutable array (row) value type descriptor.
- */
-extern const o42a_val_type_t o42a_val_type_row;
+	void *const ptr = value->value.v_ptr;
 
+	if (ptr) {
+		O42A(o42a_gc_mark(ptr));
+	}
 
-o42a_array_t o42a_array_alloc(o42a_val_t *, uint32_t);
+	O42A_RETURN;
+}
 
-void o42a_array_copy(const o42a_val_t *, o42a_val_t *);
+const o42a_val_type_t o42a_val_type_getter =
+		O42A_VAL_TYPE("getter", &o42a_val_mark_none, &o42a_val_sweep_none);
 
+const o42a_val_type_t o42a_val_type_link =
+		O42A_VAL_TYPE("link", &o42a_val_mark_link, &o42a_val_sweep_none);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif /* O42A_TYPE_ARRAY_H */
+const o42a_val_type_t o42a_val_type_variable =
+		O42A_VAL_TYPE("variable", &o42a_val_mark_link, &o42a_val_sweep_none);

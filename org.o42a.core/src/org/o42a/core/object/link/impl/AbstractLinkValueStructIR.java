@@ -56,7 +56,7 @@ abstract class AbstractLinkValueStructIR
 
 		return new Val(
 				getValueStruct(),
-				Val.CONDITION_FLAG,
+				Val.VAL_CONDITION,
 				0,
 				mainBodyPtr.toAny());
 	}

@@ -20,8 +20,8 @@
 package org.o42a.intrinsic.string;
 
 import static java.lang.Integer.numberOfTrailingZeros;
-import static org.o42a.core.ir.value.Val.ALIGNMENT_MASK;
-import static org.o42a.core.ir.value.Val.CONDITION_FLAG;
+import static org.o42a.core.ir.value.Val.VAL_ALIGNMENT_MASK;
+import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
@@ -207,13 +207,13 @@ final class StringChar extends AnnotatedBuiltin {
 				.and(code.id("char"), code, cmask);
 
 		final ValOp result = dirs.value();
-		final Int32op flags = code.int32(CONDITION_FLAG).or(
+		final Int32op flags = code.int32(VAL_CONDITION).or(
 				code.id("flags"),
 				code,
 				csizeShift.shl(
 						null,
 						code,
-						numberOfTrailingZeros(ALIGNMENT_MASK)));
+						numberOfTrailingZeros(VAL_ALIGNMENT_MASK)));
 
 		result.flags(code).store(code, flags);
 		result.length(null, code).store(code, code.int32(1));
