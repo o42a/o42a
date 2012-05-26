@@ -140,10 +140,11 @@ enum o42a_obj_body_kind {
 /**
  * Object body.
  *
- * Contains field definitions, sample object bodies and other info.
+ * This structure is only a header, common to every object body. The fields
+ * are allocated after this header at proper alignments.
  *
- * Each object contains one or more bodies. One of them is called main
- * and corresponds to object type. Others corresponds to object ancestors.
+ * Each object contains one body per each ascendant, except void. One of the
+ * bodies is called main and corresponds to an object type.
  */
 typedef struct o42a_obj_body {
 
@@ -173,9 +174,6 @@ typedef struct o42a_obj_body {
 	 * \see o42a_obj_body_flags for possible values.
 	 */
 	uint32_t flags;
-
-	/* Arbitrary object fields. */
-	char fields[0];
 
 } o42a_obj_body_t;
 
