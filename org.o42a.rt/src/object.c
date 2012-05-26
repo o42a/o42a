@@ -556,8 +556,6 @@ static o42a_obj_rtype_t *propagate_object(
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
 
-	data->ancestor_type = adata->ancestor_type;
-
 	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
 	data->ascendants.size = num_ascendants;
@@ -850,8 +848,6 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
-
-	data->ancestor_type = atype;
 
 	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);

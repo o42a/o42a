@@ -98,7 +98,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				this.objectIRStruct.data(generator).getPointer().relativeTo(
 						data.data(generator).getPointer()));
 
-		fillAncestor(data);
 		instance.mainBodyLayout().setConstant(true).setLowLevel(true).setValue(
 				new Getter<Integer>() {
 					@Override
@@ -209,22 +208,6 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		}
 
 		return flags;
-	}
-
-	private void fillAncestor(ObjectIRData instance) {
-
-		final ObjectIR objectIR = getObjectIR();
-		final ObjectBodyIR ancestorBodyIR = objectIR.getAncestorBodyIR();
-
-		if (ancestorBodyIR == null) {
-			instance.ancestorType().setConstant(true).setNull();
-			return;
-		}
-
-		instance.ancestorType().setConstant(true).setValue(
-				ancestorBodyIR.getAscendant().ir(
-						getGenerator()).getTypeIR().getObjectType()
-						.pointer(instance.getGenerator()));
 	}
 
 }
