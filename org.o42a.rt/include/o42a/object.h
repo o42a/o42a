@@ -284,6 +284,11 @@ struct o42a_obj_data {
 	o42a_obj_val_ft *proposition_f;
 
 	/**
+	 * Pointer to Object value type descriptor.
+	 */
+	o42a_val_type_t *value_type;
+
+	/**
 	 * Pointer to the head of the constructing fields list.
 	 *
 	 * This is maintained with o42a_fld_start and o42a_fld_finish functions.

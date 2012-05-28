@@ -19,9 +19,12 @@
 */
 package org.o42a.core.ir.value.struct;
 
+import static org.o42a.core.ir.object.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ValueTypeDescOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
@@ -33,6 +36,7 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	private final Generator generator;
 	private final S valueStruct;
+	private Ptr<ValueTypeDescOp> valueTypeDesc;
 
 	public ValueStructIR(Generator generator, S valueStruct) {
 		this.generator = generator;
@@ -57,6 +61,16 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 
 	public boolean hasLength() {
 		return false;
+	}
+
+	public final Ptr<ValueTypeDescOp> getValueTypeDesc() {
+		if (this.valueTypeDesc != null) {
+			return this.valueTypeDesc;
+		}
+		return this.valueTypeDesc =
+				getGenerator().externalGlobal().setConstant().link(
+						"o42a_val_type_" + getValueType().getSystemId(),
+						VALUE_TYPE_DESC_TYPE);
 	}
 
 	public abstract Val val(T value);

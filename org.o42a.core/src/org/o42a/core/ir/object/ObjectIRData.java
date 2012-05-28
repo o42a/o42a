@@ -23,6 +23,7 @@ import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.SampleDescIR.SAMPLE_DESC_IR;
+import static org.o42a.core.ir.object.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
@@ -65,6 +66,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private FuncRec<ObjectValueFunc> valueFunc;
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
+	private StructRec<ValueTypeDescOp> valueType;
 	private RelList<ObjectBodyIR> ascendants;
 	private RelList<ObjectBodyIR> samples;
 
@@ -104,6 +106,10 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.propositionFunc;
 	}
 
+	public final StructRec<ValueTypeDescOp> valueType() {
+		return this.valueType;
+	}
+
 	public final RelList<ObjectBodyIR> ascendants() {
 		return this.ascendants;
 	}
@@ -139,6 +145,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
+		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");
