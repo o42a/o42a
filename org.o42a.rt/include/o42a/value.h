@@ -101,7 +101,7 @@ enum o42a_val_flags {
  */
 typedef struct o42a_val {
 
-	O42A_HEADER;
+	O42A_HEADER
 
 	/**
 	 * Value flags.
@@ -148,7 +148,7 @@ typedef struct o42a_val {
  */
 typedef struct o42a_val_type {
 
-	O42A_HEADER;
+	O42A_HEADER
 
 	/**
 	 * Value type name in lower case.
@@ -187,26 +187,28 @@ typedef struct o42a_val_type {
  * \param _sweep sweep function pointer.
  */
 #define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
-	name: _type_name, \
-	mark: _mark, \
-	sweep: _sweep, \
+	.name = _type_name, \
+	.mark = _mark, \
+	.sweep = _sweep, \
 }
 
 #else /* NDEBUG */
 
 #define O42A_VAL_TYPE(_type_name, _mark, _sweep) { \
-	__o42a_dbg_header__: { \
-		type_code: 0x042a0001, \
-		enclosing: 0, \
-		name: "o42a_val_type_" _type_name, \
-		type_info : &_O42A_DEBUG_TYPE_o42a_val_type, \
+	.__o42a_dbg_header__ = { \
+		.type_code = 0x042a0003, \
+		.enclosing = 0, \
+		.name = "o42a_val_type_" _type_name, \
+		.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type, \
 	}, \
-	name: _type_name, \
-	mark: _mark, \
-	sweep: _sweep, \
+	.name = _type_name, \
+	.mark = _mark, \
+	.sweep = _sweep, \
 }
 
-extern const o42a_dbg_type_info_t _O42A_DEBUG_TYPE_o42a_val_type;
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val;
+
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val_type;
 
 #endif /* NDEBUG */
 

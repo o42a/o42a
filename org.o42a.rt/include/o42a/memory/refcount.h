@@ -29,7 +29,7 @@
  */
 #define o42a_refcount_blockof(mem) \
 	((o42a_refcount_block_t*) \
-			(((void*) (mem)) - offsetof(struct _o42a_refcount_block, data)))
+			(((char *) (mem)) - offsetof(struct _o42a_refcount_block, data)))
 
 /**
  * A reference-counted block of data.
@@ -55,7 +55,7 @@ struct _o42a_refcount_block {
 
 	o42a_refcount_block_t block;
 
-	char data[0] __attribute__ ((aligned (__BIGGEST_ALIGNMENT__)));
+	char data[] __attribute__ ((aligned (__BIGGEST_ALIGNMENT__)));
 
 };
 

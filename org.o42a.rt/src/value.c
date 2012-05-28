@@ -81,41 +81,61 @@ inline void o42a_val_unuse(o42a_val_t *const val) {
 	O42A_RETURN;
 }
 
-#ifndef NDEBUG
-
-const o42a_dbg_type_info_t _O42A_DEBUG_TYPE_o42a_val_type = {
-	type_code: 0x042a0001,
-	field_num: 3,
-	name: "o42a_val_type_t",
-	fields: {
-		{
-			data_type: O42A_TYPE_PTR,
-			offset: offsetof(o42a_val_type_t, name),
-			name: "name",
-			type_info: NULL,
-		},
-		{
-			data_type: O42A_TYPE_FUNC_PTR,
-			offset: offsetof(o42a_val_type_t, mark),
-			name: "mark",
-			type_info: NULL,
-		},
-		{
-			data_type: O42A_TYPE_FUNC_PTR,
-			offset: offsetof(o42a_val_type_t, sweep),
-			name: "sweep",
-			type_info: NULL,
-		},
-	}
-};
-
-#endif /* NDEBUG */
-
 const o42a_val_type_t o42a_val_type_void =
 		O42A_VAL_TYPE("void", &o42a_val_mark_none, &o42a_val_sweep_none);
 
 const o42a_val_type_t o42a_val_type_directive =
 		O42A_VAL_TYPE("directive", &o42a_val_mark_none, &o42a_val_sweep_none);
+
+#ifndef NDEBUG
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val = {
+	.type_code = 0x042a0002,
+	.field_num = 3,
+	.name = "o42a_val_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_val_t, flags),
+			.name = "flags",
+		},
+		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_val_t, length),
+			.name = "length",
+		},
+		{
+			.data_type = O42A_TYPE_INT64,
+			.offset = offsetof(o42a_val_t, value),
+			.name = "value",
+		}
+	},
+};
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_val_type = {
+	.type_code = 0x042a0003,
+	.field_num = 3,
+	.name = "o42a_val_type_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_PTR,
+			.offset = offsetof(o42a_val_type_t, name),
+			.name = "name",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_val_type_t, mark),
+			.name = "mark",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_val_type_t, sweep),
+			.name = "sweep",
+		}
+	},
+};
+
+#endif /* NDEBUG */
 
 void o42a_val_mark_none(struct o42a_obj_data *data) {
 	O42A_ENTER(return);

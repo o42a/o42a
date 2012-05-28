@@ -21,7 +21,7 @@
 #
 
 CFLAGS += $(shell $(icu_config) --cflags-dynamic)
-CFLAGS += -std=c99 -fPIC -pthread -D_XOPEN_SOURCE=500
+CFLAGS += -std=c99 -pedantic -fPIC -pthread -D_XOPEN_SOURCE=500
 
 CPPGLAGS += $(shell $(icu_config) --cppflags-dynamic)
 
@@ -102,6 +102,7 @@ clean :
 	rm -f $(srcdir)/*.o
 	rm -f $(srcdir)/fld/*.o
 	rm -f $(srcdir)/lib/*.o
+	rm -f $(srcdir)/type/*.o
 	rm -rf bin
 
 

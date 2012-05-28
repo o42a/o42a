@@ -24,33 +24,33 @@
 
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
-	{// object field
-		propagate: &o42a_fld_obj_propagate,
-		inherit: &o42a_fld_obj_inherit,
+	[O42A_FLD_OBJ] = {// object field
+		.propagate = &o42a_fld_obj_propagate,
+		.inherit = &o42a_fld_obj_inherit,
 	},
-	{// link field
-		propagate: &o42a_fld_link_propagate,
-		inherit: &o42a_fld_link_inherit,
+	[O42A_FLD_LINK] = {// link field
+		.propagate = &o42a_fld_link_propagate,
+		.inherit = &o42a_fld_link_inherit,
 	},
-	{// variable field
-		propagate: &o42a_fld_var_propagate,
-		inherit: &o42a_fld_var_inherit,
+	[O42A_FLD_VAR] = {// variable field
+		.propagate = &o42a_fld_var_propagate,
+		.inherit = &o42a_fld_var_inherit,
 	},
-	{// getter field
-		propagate: &o42a_fld_getter_propagate,
-		inherit: &o42a_fld_getter_inherit,
+	[O42A_FLD_GETTER] = {// getter field
+		.propagate = &o42a_fld_getter_propagate,
+		.inherit = &o42a_fld_getter_inherit,
 	},
-	{// scope object pointer
-		propagate: &o42a_fld_scope_propagate,
-		inherit: &o42a_fld_scope_inherit,
+	[O42A_FLD_SCOPE] = {// scope object pointer
+		.propagate = &o42a_fld_scope_propagate,
+		.inherit = &o42a_fld_scope_inherit,
 	},
-	{// dependency field
-		propagate: &o42a_fld_dep_copy,
-		inherit: &o42a_fld_dep_copy,
+	[O42A_FLD_DEP] = {// dependency field
+		.propagate = &o42a_fld_dep_copy,
+		.inherit = &o42a_fld_dep_copy,
 	},
-	{// variable assigner
-		propagate: &o42a_fld_assigner_propagate,
-		inherit: &o42a_fld_assigner_inherit,
+	[O42A_FLD_ASSIGNER] = {// variable assigner
+		.propagate = &o42a_fld_assigner_propagate,
+		.inherit = &o42a_fld_assigner_inherit,
 	},
 };
 
@@ -63,15 +63,15 @@ inline o42a_fld_desc_t *o42a_fld_desc(
 inline o42a_fld *o42a_fld_by_field(
 		const o42a_obj_body_t *const body,
 		const o42a_obj_field_t *const field) {
-	return (o42a_fld*) (((void*) body) + field->fld);
+	return (o42a_fld *) (((char *) body) + field->fld);
 }
 
 inline o42a_fld *o42a_fld_by_overrider(
 		const o42a_obj_overrider_t *const overrider) {
 
-	void *const body = ((void*) overrider) + overrider->body;
+	char *const body = ((char *) overrider) + overrider->body;
 
-	return (o42a_fld*) (body + overrider->field->fld);
+	return (o42a_fld *) (body + overrider->field->fld);
 }
 
 o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope) {

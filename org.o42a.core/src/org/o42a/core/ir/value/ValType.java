@@ -29,6 +29,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.impl.ConstValOp;
 import org.o42a.core.ir.value.impl.FinalValOp;
@@ -95,6 +96,13 @@ public final class ValType extends Type<ValType.Op> {
 		this.flags = data.addInt32("flags");
 		this.length = data.addInt32("length");
 		this.value = data.addInt64("value");
+	}
+
+	@Override
+	protected DebugTypeInfo createTypeInfo() {
+		return externalTypeInfo(
+				"_O42A_DEBUG_TYPE_o42a_val",
+				0x042a0002);
 	}
 
 	public static final class Op extends StructOp<Op> {

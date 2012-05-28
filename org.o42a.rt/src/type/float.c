@@ -107,7 +107,7 @@ void o42a_float_by_str(
 	double value = 0.0;
 	const size_t ashift = O42A(o42a_val_ashift(input));
 	const UChar32 cmask = O42A(o42a_str_cmask(input));
-	const void *const str = O42A(o42a_val_data(input));
+	const char *const str = O42A(o42a_val_data(input));
 
 	for (size_t i = 0; i < len; ++i) {
 
@@ -313,7 +313,7 @@ o42a_bool_t o42a_float_to_str(
 
 	if (isinf(value)) {
 		if (!signbit(value)) {
-			union str_and_int_ptr ptr = {p_char: O42A_POSINF};
+			union str_and_int_ptr ptr = {.p_char = O42A_POSINF};
 			string->flags = O42A_TRUE;
 			string->length = 8;
 			string->value.v_integer = *ptr.p_integer;
@@ -326,7 +326,7 @@ o42a_bool_t o42a_float_to_str(
 	}
 
 	if (isnan(value)) {
-		union str_and_int_ptr ptr = {p_char: O42A_NAN};
+		union str_and_int_ptr ptr = {.p_char = O42A_NAN};
 		string->flags = O42A_TRUE;
 		string->length = 3;
 		string->value.v_integer = *ptr.p_integer;
@@ -336,7 +336,7 @@ o42a_bool_t o42a_float_to_str(
 	double absval = fabs(value);
 
 	if (absval == 0.0) {
-		union str_and_int_ptr ptr = {p_char: O42A_ZERO};
+		union str_and_int_ptr ptr = {.p_char = O42A_ZERO};
 		string->flags = O42A_TRUE;
 		string->length = 3;
 		string->value.v_integer = *ptr.p_integer;
@@ -373,7 +373,7 @@ o42a_bool_t o42a_float_to_str(
 	}
 
 	if (len <= 8) {
-		union str_and_int_ptr ptr = {p_char: buf};
+		union str_and_int_ptr ptr = {.p_char = buf};
 		string->flags = O42A_TRUE;
 		string->length = len;
 		string->value.v_integer = *ptr.p_integer;

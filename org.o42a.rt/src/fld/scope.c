@@ -42,7 +42,7 @@ void o42a_fld_scope_propagate(o42a_obj_ctable_t *const ctable) {
 			O42A_RETURN;
 		}
 
-		O42A_DEBUG("Object is local\n");
+		o42a_debug("Object is local\n");
 	}
 
 	to->object = from->object;
