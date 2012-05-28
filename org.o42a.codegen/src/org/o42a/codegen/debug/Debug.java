@@ -161,9 +161,7 @@ public class Debug {
 		}
 
 		final Type<?> type = typeData.getInstance();
-		final DebugTypeInfo typeInfo = new DebugTypeInfo(type);
-
-		getGenerator().newGlobal().struct(typeInfo);
+		final DebugTypeInfo typeInfo = type.createTypeInfo();
 
 		final DebugTypeInfo old =
 				this.typeInfo.put(typeData.getPointer(), typeInfo);

@@ -62,8 +62,7 @@ public class DebugIR extends Struct<DebugIR.Op> {
 	@Override
 	protected void fill() {
 		this.rtypeTypeInfo.setValue(
-				RUNTIME_OBJECT_TYPE.getTypeInfo().pointer(getGenerator())
-				.toAny());
+				RUNTIME_OBJECT_TYPE.getTypeInfo().getPointer());
 	}
 
 	static final class Op extends StructOp<Op> {

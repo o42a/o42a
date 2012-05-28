@@ -82,6 +82,7 @@ public abstract class Type<S extends StructOp<S>>
 		return !isDebugInfo();
 	}
 
+	@Override
 	public final Type<S> getType() {
 		return this.type;
 	}

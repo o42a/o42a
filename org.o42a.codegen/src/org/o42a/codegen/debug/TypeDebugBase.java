@@ -24,12 +24,22 @@ import org.o42a.codegen.data.Type;
 
 public abstract class TypeDebugBase {
 
+	public abstract Type<?> getType();
+
 	public final DebugTypeInfo getTypeInfo() {
 
-		final Type<?> type = (Type<?>) this;
+		final Type<?> type = getType();
 		final Debug debug = type.getGenerator().getDebug();
 
 		return debug.typeInfo(type);
+	}
+
+	protected DebugTypeInfo createTypeInfo() {
+		return new DefaultTypeInfo(getType());
+	}
+
+	protected final DebugTypeInfo externalTypeInfo(String name, int code) {
+		return new ExternalTypeInfo(getType(), name, code);
 	}
 
 }

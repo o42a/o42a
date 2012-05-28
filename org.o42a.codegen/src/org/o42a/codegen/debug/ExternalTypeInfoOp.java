@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler Code Generator
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,69 +17,67 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.codegen.debug;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyRec;
+import org.o42a.codegen.data.Int32rec;
 import org.o42a.codegen.data.SubData;
-import org.o42a.codegen.debug.DebugTypeInfo;
 
 
-public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
+final class ExternalTypeInfoOp extends StructOp<ExternalTypeInfoOp> {
 
-	public static final Type VALUE_TYPE_DESC_TYPE = new Type();
+	static final Type EXTERNAL_TYPE_INFO = new Type();
 
-	private ValueTypeDescOp(StructWriter<ValueTypeDescOp> writer) {
+	private ExternalTypeInfoOp(StructWriter<ExternalTypeInfoOp> writer) {
 		super(writer);
 	}
 
-	public static final class Type
-			extends org.o42a.codegen.data.Type<ValueTypeDescOp> {
+	static final class Type
+			extends org.o42a.codegen.data.Type<ExternalTypeInfoOp> {
 
+		private Int32rec typeCode;
+		private Int32rec fieldNum;
 		private AnyRec name;
-		private AnyRec mark;
-		private AnyRec sweep;
 
 		private Type() {
+		}
+
+		@Override
+		public boolean isDebugInfo() {
+			return true;
+		}
+
+		public final Int32rec typeCode() {
+			return this.typeCode;
+		}
+
+		public final Int32rec fieldNum() {
+			return this.fieldNum;
 		}
 
 		public final AnyRec name() {
 			return this.name;
 		}
 
-		public final AnyRec mark() {
-			return this.mark;
-		}
-
-		public final AnyRec sweep() {
-			return this.sweep;
-		}
-
 		@Override
-		public ValueTypeDescOp op(StructWriter<ValueTypeDescOp> writer) {
-			return new ValueTypeDescOp(writer);
+		public ExternalTypeInfoOp op(StructWriter<ExternalTypeInfoOp> writer) {
+			return new ExternalTypeInfoOp(writer);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_val_type_t");
+			return factory.id("DEBUG").sub("TypeInfo");
 		}
 
 		@Override
-		protected void allocate(SubData<ValueTypeDescOp> data) {
+		protected void allocate(SubData<ExternalTypeInfoOp> data) {
+			this.typeCode = data.addInt32("type_code");
+			this.fieldNum = data.addInt32("field_num");
 			this.name = data.addPtr("name");
-			this.mark = data.addPtr("mark");
-			this.sweep = data.addPtr("sweep");
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_val_type",
-					0x042a0001);
 		}
 
 	}
