@@ -19,29 +19,35 @@
 */
 package org.o42a.codegen.debug;
 
+import java.security.SecureRandom;
+
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class DebugTypeInfo {
+final class DefaultTypeInfo extends DebugTypeInfo {
 
-	private final Type<?> type;
-	private final int code;
+	private static final SecureRandom typeCodeGenerator = new SecureRandom();
 
-	public DebugTypeInfo(Type<?> type, int code) {
-		this.type = type;
-		this.code = code;
+	private Ptr<AnyOp> pointer;
+
+	DefaultTypeInfo(Type<?> target) {
+		super(target, typeCodeGenerator.nextInt());
 	}
 
-	public final Type<?> getType() {
-		return this.type;
+	@Override
+	public Ptr<AnyOp> getPointer() {
+		if (this.pointer != null) {
+			return this.pointer;
+		}
+		return this.pointer =
+				getType()
+				.getGenerator()
+				.newGlobal()
+				.struct(new DefaultTypeInfoOp.Struct(this))
+				.getPointer()
+				.toAny();
 	}
-
-	public final int getCode() {
-		return this.code;
-	}
-
-	public abstract Ptr<AnyOp> getPointer();
 
 }

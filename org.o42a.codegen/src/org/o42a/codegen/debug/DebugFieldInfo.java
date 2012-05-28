@@ -70,14 +70,14 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 
 		switch (fieldData.getDataType()) {
 		case STRUCT:
-			typeInfo = debug.typeInfo(fieldData.getInstance());
+			typeInfo = fieldData.getInstance().getTypeInfo();
 			break;
 		case DATA_PTR:
 			if (fieldData instanceof StructRec) {
 
 				final StructRec<?> structPtr = (StructRec<?>) fieldData;
 
-				typeInfo = debug.typeInfo(structPtr.getType());
+				typeInfo = structPtr.getType().getTypeInfo();
 			} else {
 				typeInfo = null;
 			}
@@ -90,7 +90,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		if (typeInfo == null) {
 			instance.typeInfo().setNull();
 		} else {
-			instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
+			instance.typeInfo().setValue(typeInfo.getPointer());
 		}
 	}
 

@@ -77,10 +77,10 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 							data.getPointer()));
 		}
 
-		final DebugTypeInfo typeInfo = debug.typeInfo(getTarget());
+		final DebugTypeInfo typeInfo = getTarget().getTypeInfo();
 
 		instance.typeCode().setValue(typeInfo.getCode());
-		instance.typeInfo().setValue(typeInfo.pointer(generator).toAny());
+		instance.typeInfo().setValue(typeInfo.getPointer());
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -149,12 +149,12 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 						.op(null, code));
 
 				final DebugTypeInfo typeInfo =
-						debug.typeInfo(enclosing.getType());
+						enclosing.getType().getTypeInfo();
 
 				typeCode(code).store(code, code.int32(typeInfo.getCode()));
 				typeInfo(code).store(
 						code,
-						typeInfo.pointer(generator).toAny().op(null, code));
+						typeInfo.getPointer().op(null, code));
 			}
 		}
 

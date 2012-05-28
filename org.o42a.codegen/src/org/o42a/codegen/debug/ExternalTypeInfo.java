@@ -1,6 +1,6 @@
 /*
     Compiler Code Generator
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,29 +19,35 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.ExternalTypeInfoOp.EXTERNAL_TYPE_INFO;
+
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
 
 
-public abstract class DebugTypeInfo {
+final class ExternalTypeInfo extends DebugTypeInfo {
 
-	private final Type<?> type;
-	private final int code;
+	private final String name;
+	private Ptr<AnyOp> pointer;
 
-	public DebugTypeInfo(Type<?> type, int code) {
-		this.type = type;
-		this.code = code;
+	ExternalTypeInfo(Type<?> type, String name, int code) {
+		super(type, code);
+		this.name = name;
 	}
 
-	public final Type<?> getType() {
-		return this.type;
+	@Override
+	public Ptr<AnyOp> getPointer() {
+		if (this.pointer != null) {
+			return this.pointer;
+		}
+		return this.pointer =
+				getType()
+				.getGenerator()
+				.externalGlobal()
+				.setConstant()
+				.link(this.name, EXTERNAL_TYPE_INFO)
+				.toAny();
 	}
-
-	public final int getCode() {
-		return this.code;
-	}
-
-	public abstract Ptr<AnyOp> getPointer();
 
 }
