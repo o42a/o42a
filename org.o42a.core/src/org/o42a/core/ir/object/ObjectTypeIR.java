@@ -108,6 +108,12 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 								.toBinaryForm();
 					}
 				});
+
+		instance.data().valueType().setConstant(true).setValue(
+				getObjectIR()
+				.getValueIR()
+				.getValueStructIR()
+				.getValueTypeDesc());
 		getObjectIR().getObjectValueIR().fill(this);
 	}
 

@@ -555,6 +555,11 @@ static o42a_obj_rtype_t *propagate_object(
 	data->value_f = adata->value_f;
 	data->claim_f = adata->claim_f;
 	data->proposition_f = adata->proposition_f;
+	if (adata->value_type != &o42a_val_type_void) {
+		data->value_type = adata->value_type;
+	} else {
+		data->value_type = sstype->data.value_type;
+	}
 
 	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
@@ -848,6 +853,11 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 	data->value_f = sdata->value_f;
 	data->claim_f = sdata->claim_f;
 	data->proposition_f = sdata->proposition_f;
+	if (sdata->value_type != &o42a_val_type_void) {
+		data->value_type = sdata->value_type;
+	} else {
+		data->value_type = adata->value_type;
+	}
 
 	data->fld_ctrs = NULL;
 	data->ascendants.list = ((void*) ascendants) - ((void*) &data->ascendants);
