@@ -113,6 +113,10 @@ public abstract class Generator {
 		return getGlobals().newGlobal();
 	}
 
+	public final ExternalGlobalSettings externalGlobal() {
+		return getGlobals().externalGlobal();
+	}
+
 	public final Ptr<AnyOp> addBinary(
 			CodeId id,
 			boolean isContant,

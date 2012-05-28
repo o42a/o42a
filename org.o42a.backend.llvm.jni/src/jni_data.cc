@@ -256,17 +256,26 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateStructPtr(
 	enclosing->push_back(type->getPointerTo());
 }
 
-void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateRelPtr(
+jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_externStruct(
 		JNIEnv *,
 		jclass,
 		jlong modulePtr,
-		jlong enclosingPtr) {
+		jlong id,
+		jint idLen,
+		jlong typePtr,
+		jboolean constant) {
 
 	o42ac::BackendModule *const module =
 			from_ptr<o42ac::BackendModule>(modulePtr);
-	std::vector<Type*> *typeData = from_ptr<std::vector<Type*> >(enclosingPtr);
+	Type *type = from_ptr<Type>(typePtr);
+	GlobalVariable *global = cast<GlobalVariable>(module->getOrInsertGlobal(
+			StringRef(from_ptr<char>(id), idLen),
+			type));
 
-	typeData->push_back(Type::getInt32Ty(module->getContext()));
+	global->setConstant(constant);
+	global->setLinkage(GlobalValue::ExternalLinkage);
+
+	return to_ptr<Value>(global);
 }
 
 static inline jint typeLayout(

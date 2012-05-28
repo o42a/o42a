@@ -20,27 +20,14 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 
 
-public final class GlobalSettings implements GlobalAttributes {
-
-	private final Globals globals;
-
-	private int flags;
+public final class GlobalSettings
+		extends AbstractGlobalSettings<GlobalSettings> {
 
 	GlobalSettings(Globals globals) {
-		this.globals = globals;
-	}
-
-	public final Generator getGenerator() {
-		return this.globals.getGenerator();
-	}
-
-	@Override
-	public final boolean isExported() {
-		return (this.flags & EXPORTED) != 0;
+		super(globals);
 	}
 
 	public final GlobalSettings export() {
@@ -51,33 +38,6 @@ public final class GlobalSettings implements GlobalAttributes {
 	public GlobalSettings dontExport() {
 		this.flags &= ~EXPORTED;
 		return this;
-	}
-
-	@Override
-	public final boolean isConstant() {
-		return (this.flags & CONSTANT) != 0;
-	}
-
-	public final GlobalSettings setConstant() {
-		this.flags |= CONSTANT;
-		return this;
-	}
-
-	public final GlobalSettings setVariable() {
-		this.flags &= ~CONSTANT;
-		return this;
-	}
-
-	public final GlobalSettings setConstant(boolean constant) {
-		if (constant) {
-			return setConstant();
-		}
-		return setVariable();
-	}
-
-	@Override
-	public final int getDataFlags() {
-		return this.flags;
 	}
 
 	public final GlobalSettings set(GlobalAttributes attributes) {
@@ -95,7 +55,7 @@ public final class GlobalSettings implements GlobalAttributes {
 				new Global<S, T>(this, id, type, null, null);
 		final SubData<S> instanceData = global.getInstance().getInstanceData();
 
-		instanceData.startAllocation(this.globals.dataAllocator());
+		instanceData.startAllocation(globals().dataAllocator());
 
 		return new Allocated.AllocatedGlobal<S, T>(
 				global,
@@ -112,7 +72,7 @@ public final class GlobalSettings implements GlobalAttributes {
 		final Global<S, T> global = new Global<S, T>(this, struct);
 		final SubData<S> instanceData = struct.setGlobal(global);
 
-		instanceData.startAllocation(this.globals.dataAllocator());
+		instanceData.startAllocation(globals().dataAllocator());
 
 		return new Allocated.AllocatedGlobal<S, T>(
 				global,
@@ -133,13 +93,13 @@ public final class GlobalSettings implements GlobalAttributes {
 			CodeId id,
 			T type,
 			Content<T> content) {
-		return this.globals.addGlobal(this, id, type, null, content);
+		return globals().addGlobal(this, id, type, null, content);
 	}
 
 	public final
 	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> struct(
 			ST struct) {
-		return this.globals.addGlobal(this, struct);
+		return globals().addGlobal(this, struct);
 	}
 
 	public final
@@ -156,7 +116,7 @@ public final class GlobalSettings implements GlobalAttributes {
 			T type,
 			T instance,
 			Content<T> content) {
-		return this.globals.addGlobal(this, id, type, instance, content);
+		return globals().addGlobal(this, id, type, instance, content);
 	}
 
 	public final

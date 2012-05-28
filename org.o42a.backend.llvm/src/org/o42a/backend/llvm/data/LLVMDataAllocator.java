@@ -388,6 +388,31 @@ public class LLVMDataAllocator implements DataAllocator {
 		return new RelRecLLDAlloc(container(enclosing));
 	}
 
+	@Override
+	public <S extends StructOp<S>> DataAllocation<S> externStruct(
+			Ptr<S> pointer,
+			DataAllocation<S> type,
+			GlobalAttributes attributes) {
+
+		final ContainerLLDAlloc<S> typeAlloc = (ContainerLLDAlloc<S>) type;
+		final GlobalLLDAlloc<S> global = new GlobalLLDAlloc<S>(
+				getModule(),
+				typeAlloc.getTypePtr(),
+				0L,
+				pointer.getId(),
+				typeAlloc.getType());
+		final NativeBuffer ids = getModule().ids();
+
+		global.setNativePtr(externStruct(
+				getModulePtr(),
+				ids.writeCodeId(pointer.getId()),
+				ids.length(),
+				global.getTypePtr(),
+				attributes.isConstant()));
+
+		return global;
+	}
+
 	public final DataLayout int8layout() {
 		if (this.int8layout != null) {
 			return this.int8layout;
@@ -620,6 +645,13 @@ public class LLVMDataAllocator implements DataAllocator {
 	private static native void allocateStructPtr(
 			long enclosingPtr,
 			long typePtr);
+
+	private static native long externStruct(
+			long modulePtr,
+			long id,
+			int idLen,
+			long typePtr,
+			boolean constant);
 
 	private static native int intLayout(long modulePtr, int numBits);
 

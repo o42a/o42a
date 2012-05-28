@@ -151,6 +151,14 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
+ * Method:    externStruct
+ * Signature: (JJIJZ)J
+ */
+JNIEXPORT jlong JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_externStruct
+  (JNIEnv *, jclass, jlong, jlong, jint, jlong, jboolean);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    intLayout
  * Signature: (JI)I
  */

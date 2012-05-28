@@ -17,28 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.codegen.code;
+package org.o42a.codegen.data;
 
 import org.o42a.codegen.Generator;
 
 
-abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
-		implements FunctionAttributes {
+abstract class AbstractGlobalSettings<
+		S extends AbstractGlobalSettings<S>>
+				implements GlobalAttributes {
 
-	final Functions functions;
+	private final Globals globals;
 	int flags;
 
-	AbstractFunctionSettings(Functions functions) {
-		this.functions = functions;
+	AbstractGlobalSettings(Globals globals) {
+		this.globals = globals;
 	}
 
 	public final Generator getGenerator() {
-		return this.functions.getGenerator();
-	}
-
-	@Override
-	public final int getFunctionFlags() {
-		return this.flags;
+		return this.globals.getGenerator();
 	}
 
 	@Override
@@ -47,25 +43,38 @@ abstract class AbstractFunctionSettings<S extends AbstractFunctionSettings<S>>
 	}
 
 	@Override
-	public final boolean hasSideEffects() {
-		return (this.flags & NO_SIDE_EFFECTS) == 0;
+	public final boolean isConstant() {
+		return (this.flags & CONSTANT) != 0;
 	}
 
-	public final S sideEffects(boolean sideEffects) {
-		if (sideEffects) {
-			this.flags &= ~NO_SIDE_EFFECTS;
-		} else {
-			this.flags |= NO_SIDE_EFFECTS;
-		}
+	public final S setConstant() {
+		this.flags |= CONSTANT;
 		return self();
 	}
 
-	final Functions functions() {
-		return this.functions;
+	public final S setVariable() {
+		this.flags &= ~CONSTANT;
+		return self();
+	}
+
+	public final S setConstant(boolean constant) {
+		if (constant) {
+			return setConstant();
+		}
+		return setVariable();
+	}
+
+	@Override
+	public final int getDataFlags() {
+		return this.flags;
+	}
+
+	final Globals globals() {
+		return this.globals;
 	}
 
 	@SuppressWarnings("unchecked")
-	final S self() {
+	private final S self() {
 		return (S) this;
 	}
 

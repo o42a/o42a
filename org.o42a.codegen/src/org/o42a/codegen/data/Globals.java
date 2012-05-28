@@ -19,6 +19,7 @@
 */
 package org.o42a.codegen.data;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.o42a.codegen.CodeId;
@@ -36,6 +37,8 @@ public abstract class Globals {
 	private final Generator generator;
 
 	private final DataChain globals = new DataChain();
+	private final HashMap<String, Ptr<?>> externals =
+			new HashMap<String, Ptr<?>>();
 	private int typesAllocating;
 	private final LinkedList<AbstractTypeData<?>> scheduled =
 			new LinkedList<AbstractTypeData<?>>();
@@ -114,6 +117,10 @@ public abstract class Globals {
 
 	public final GlobalSettings newGlobal() {
 		return new GlobalSettings(this);
+	}
+
+	public final ExternalGlobalSettings externalGlobal() {
+		return new ExternalGlobalSettings(this);
 	}
 
 	public final Ptr<AnyOp> addBinary(
@@ -215,6 +222,36 @@ public abstract class Globals {
 
 	final void globalAllocated(SubData<?> global) {
 		this.globals.add(global);
+	}
+
+	final <S extends StructOp<S>> Ptr<S> externalGlobal(
+			final String name,
+			final Type<S> type,
+			final ExternalGlobalSettings settings) {
+
+		@SuppressWarnings("unchecked")
+		final Ptr<S> found = (Ptr<S>) this.externals.get(name);
+
+		if (found != null) {
+			return found;
+		}
+
+		final Ptr<S> extern = new Ptr<S>(
+				getGenerator().rawId(name),
+				settings.isConstant(),
+				false) {
+			@Override
+			protected DataAllocation<S> createAllocation() {
+				return dataAllocator().externStruct(
+						this,
+						type.data(getGenerator()).getAllocation(),
+						settings);
+			}
+		};
+
+		this.externals.put(name, extern);
+
+		return extern;
 	}
 
 	private boolean allocateScheduled() {

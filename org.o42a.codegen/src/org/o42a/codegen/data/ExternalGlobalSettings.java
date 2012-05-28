@@ -1,6 +1,6 @@
 /*
-    Compiler LLVM Back-end
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Compiler Code Generator
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,35 +17,28 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.backend.llvm.data.alloc;
+package org.o42a.codegen.data;
 
-import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.Type;
 
 
-public final class StructLLDAlloc<S extends StructOp<S>>
-		extends ContainerLLDAlloc<S> {
+public class ExternalGlobalSettings
+		extends AbstractGlobalSettings<ExternalGlobalSettings> {
 
-	private final LLVMId llvmId;
-
-	public StructLLDAlloc(
-			long typePtr,
-			long nativePtr,
-			ContainerLLDAlloc<?> enclosing,
-			Type<S> type) {
-		super(
-				enclosing.getModule(),
-				typePtr,
-				nativePtr,
-				enclosing,
-				type);
-		this.llvmId = enclosing.nextId();
+	ExternalGlobalSettings(Globals globals) {
+		super(globals);
+		this.flags = EXPORTED;
 	}
 
-	@Override
-	public LLVMId llvmId() {
-		return this.llvmId;
+	public final ExternalGlobalSettings set(GlobalAttributes properties) {
+		this.flags = (properties.getDataFlags() & GLOBAL_FLAGS) | EXPORTED;
+		return this;
+	}
+
+	public final <S extends StructOp<S>> Ptr<S> link(
+			String name,
+			Type<S> type) {
+		return globals().externalGlobal(name, type, this);
 	}
 
 }
