@@ -126,7 +126,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	public final S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
 
 		final CCode<?> ccode = cast(writer);
 		final Type<S> type;

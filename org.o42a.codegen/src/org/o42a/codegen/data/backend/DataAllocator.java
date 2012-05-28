@@ -117,4 +117,9 @@ public interface DataAllocator {
 			RelRec data,
 			DataAllocation<RelRecOp> type);
 
+	<S extends StructOp<S>> DataAllocation<S> externStruct(
+			Ptr<S> pointer,
+			DataAllocation<S> type,
+			GlobalAttributes attributes);
+
 }

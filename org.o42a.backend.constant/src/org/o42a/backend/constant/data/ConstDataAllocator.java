@@ -261,6 +261,18 @@ public class ConstDataAllocator implements DataAllocator {
 				(RelRecCDAlloc) type);
 	}
 
+	@Override
+	public <S extends StructOp<S>> DataAllocation<S> externStruct(
+			Ptr<S> pointer,
+			DataAllocation<S> type,
+			GlobalAttributes attributes) {
+		return new ExternCDAlloc<S>(
+				getBackend(),
+				pointer,
+				((ContainerCDAlloc<S>) type).getType(),
+				attributes);
+	}
+
 	private static ContainerCDAlloc<?> enclosing(DataAllocation<?> enclosing) {
 		return (ContainerCDAlloc<?>) enclosing;
 	}

@@ -19,7 +19,6 @@
 */
 package org.o42a.backend.llvm.data.alloc;
 
-
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.LLVMModule;
@@ -27,9 +26,7 @@ import org.o42a.backend.llvm.id.LLVMId;
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.AllocClass;
-import org.o42a.codegen.data.DataLayout;
-import org.o42a.codegen.data.Type;
+import org.o42a.codegen.data.*;
 
 
 public abstract class ContainerLLDAlloc<S extends StructOp<S>>
@@ -55,11 +52,18 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 			this.typeAllocated = false;
 		} else {
 
-			final ContainerLLDAlloc<?> typeAllocation =
-					(ContainerLLDAlloc<?>) type.pointer(module.getGenerator())
-					.getProtoAllocation();
+			final Ptr<S> typePointer = type.pointer(module.getGenerator());
+			final ContainerLLDAlloc<?> typeAlloc;
+			final ContainerLLDAlloc<?> protoAlloc =
+					(ContainerLLDAlloc<?>) typePointer.getProtoAllocation();
 
-			this.typeAllocated = typeAllocation.isTypeAllocated();
+			if (protoAlloc != null) {
+				typeAlloc = protoAlloc;
+			} else {
+				typeAlloc = (ContainerLLDAlloc<?>) typePointer.getAllocation();
+			}
+
+			this.typeAllocated = typeAlloc.isTypeAllocated();
 		}
 
 		assert typePtr != 0L :
