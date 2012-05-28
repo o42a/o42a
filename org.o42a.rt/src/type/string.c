@@ -77,7 +77,7 @@ void o42a_str_sub(
 	}
 
 	const size_t ashift = O42A(o42a_val_ashift(string));
-	const void *const str = O42A(o42a_val_data(string));
+	const char *const str = O42A(o42a_val_data(string));
 	void *substr;
 
 	sub->length = sublen;
@@ -105,19 +105,19 @@ int64_t o42a_str_compare(
 		const o42a_val_t *const with) {
 	O42A_ENTER(return 0);
 
-	const void *str1 = O42A(o42a_val_data(what));
+	const char *str1 = O42A(o42a_val_data(what));
 	const UChar32 cmask1 = O42A(o42a_str_cmask(what));
 	const size_t ashift1 = O42A(o42a_val_ashift(what));
 	const size_t step1 = 1 << ashift1;
 	const size_t len1 = what->length;
-	const void *const end1 = str1 + (len1 << ashift1);
+	const char *const end1 = str1 + (len1 << ashift1);
 
-	const void *str2 = O42A(o42a_val_data(with));
+	const char *str2 = O42A(o42a_val_data(with));
 	const UChar32 cmask2 = O42A(o42a_str_cmask(with));
 	const size_t ashift2 = O42A(o42a_val_ashift(with));
 	const size_t step2 = 1 << ashift2;
 	const size_t len2 = with->length;
-	const void *const end2 = str2 + (len2 << ashift2);
+	const char *const end2 = str2 + (len2 << ashift2);
 
 	while (str1 < end1 && str2 < end2) {
 
@@ -170,11 +170,11 @@ void o42a_str_concat(
 	}
 
 	const size_t size = (len1 + len2) << ashift;
-	void *data;
+	char *data;
 
 	if (size <= 8) {
 		result->flags = O42A_TRUE;
-		data = &result->value;
+		data = (char *) &result->value;
 	} else {
 		result->flags = O42A_TRUE | O42A_VAL_EXTERNAL | (ashift << 8);
 		data = O42A(o42a_refcount_alloc(size));

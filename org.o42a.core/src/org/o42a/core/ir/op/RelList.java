@@ -29,6 +29,7 @@ import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 
 
 public abstract class RelList<T> implements Content<RelList.Type> {
@@ -154,13 +155,18 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("RelList");
+			return factory.id("o42a_rlist_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.list = data.addRelPtr("list");
 			this.size = data.addInt32("size");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo("_O42A_DEBUG_TYPE_o42a_rlist", 0x042a0001);
 		}
 
 	}

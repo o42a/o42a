@@ -35,7 +35,7 @@ void o42a_io_print_str(const o42a_val_t *const val) {
 
 	const size_t ashift = O42A(o42a_val_ashift(val));
 	const UChar32 cmask = O42A(o42a_str_cmask(val));
-	const void *const str = O42A(o42a_val_data(val));
+	const char *const str = O42A(o42a_val_data(val));
 
 	UFILE *const uout = O42A(u_finit(stdout, NULL, NULL));
 

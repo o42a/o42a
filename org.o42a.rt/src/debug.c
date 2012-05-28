@@ -27,6 +27,24 @@
 #include "unicode/ustdio.h"
 
 
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist = {
+	.type_code = 0x042a0001,
+	.field_num = 2,
+	.name = "o42a_rlist_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_rlist_t, list),
+			.name = "list",
+		},
+		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_rlist_t, size),
+			.name = "size",
+		},
+	},
+};
+
 static __thread o42a_dbg_env_t *dbg_env;
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *env) {
@@ -64,7 +82,7 @@ int32_t o42a_dbg_exec_main(
 	signal(SIGTRAP, &program_error_signal);
 	signal(SIGSYS, &program_error_signal);
 
-	O42A_DEBUG("Executing main\n");
+	o42a_debug("Executing main\n");
 
 	const int32_t result = O42A(main(argc, argv));
 
@@ -125,7 +143,7 @@ static inline void dbg_mem_name(const o42a_dbg_header_t *const header) {
 	const o42a_rptr_t enclosing = header->enclosing;
 
 	if (enclosing) {
-		dbg_mem_name(o42a_dbg_header((void*) header + enclosing));
+		dbg_mem_name(o42a_dbg_header(((char *) header) + enclosing));
 		fputc(':', stderr);
 	}
 
@@ -147,19 +165,24 @@ void o42a_dbg_mem_name(
 	fprintf(stderr, " <0x%lx>: %s\n", (long) ptr, header->type_info->name);
 }
 
+union ptr_and_func {
+	const void *ptr;
+	void (*const func) ();
+};
+
 static void dbg_func_name(const void *const ptr) {
 	if (!ptr) {
 		fputs("NULL", stderr);
 		return;
 	}
 
-	void (*const func) () = (void (*) ()) ptr;
+	const union ptr_and_func val = {.ptr = ptr};
 
 	o42a_dbg_env_t *const env = dbg_env;
 	const uint32_t old_command = env->command;
 
 	env->command = O42A_DBG_CMD_REPORT;
-	func();
+	val.func();
 	env->command = old_command;
 }
 
@@ -189,7 +212,7 @@ static void dbg_struct(
 		dbg_indent(indent);
 		fputs(field_info->name, stderr);
 
-		const void *field_ptr = data + field_info->offset;
+		const void *field_ptr = ((char *) data) + field_info->offset;
 
 		fprintf(stderr, " <0x%lx>", (long) field_ptr);
 		dbg_field_value(field_ptr, field_info, depth, indent);
@@ -212,7 +235,7 @@ static void dbg_field_value(
 		if (!val) {
 			fputs(": int8 = 0", stderr);
 		} else {
-			fprintf(stderr, ": int8 = %1$i (%1$#x)", val);
+			fprintf(stderr, ": int8 = %i (%#x)", val, val);
 		}
 
 		break;
@@ -224,7 +247,7 @@ static void dbg_field_value(
 		if (!val) {
 			fputs(": int16 = 0", stderr);
 		} else {
-			fprintf(stderr, ": int16 = %1$i (%1$#x)", val);
+			fprintf(stderr, ": int16 = %i (%#x)", val, val);
 		}
 
 		break;
@@ -236,7 +259,7 @@ static void dbg_field_value(
 		if (!val) {
 			fputs(": int32 = 0", stderr);
 		} else {
-			fprintf(stderr, ": int32 = %1$li (%1$#lx)", val);
+			fprintf(stderr, ": int32 = %li (%#lx)", val, val);
 		}
 
 		break;
@@ -248,7 +271,7 @@ static void dbg_field_value(
 		if (!val) {
 			fputs(": int64 = 0", stderr);
 		} else {
-			fprintf(stderr, ": int64 = %1$lli (%1$#llx)", val);
+			fprintf(stderr, ": int64 = %lli (%#llx)", val, val);
 		}
 
 		break;
@@ -511,7 +534,7 @@ void o42a_dbg_fill_header(
 	header->name = type_info->name;
 	header->type_info = type_info;
 	if (enclosing) {
-		header->enclosing = ((void*) enclosing) - ((void*) header);
+		header->enclosing = ((char *) enclosing) - ((char *) header);
 	} else {
 		header->enclosing = 0;
 	}
@@ -529,7 +552,7 @@ void o42a_dbg_fill_header(
 
 			o42a_dbg_header_t *const to =
 					(o42a_dbg_header_t*)
-					(((void*) header) + field_info->offset);
+					(((char *) header) + field_info->offset);
 
 			o42a_dbg_fill_header(
 					field_info->type_info,
@@ -562,7 +585,7 @@ void o42a_dbg_copy_header(
 	to->name = from->name;
 	to->type_info = from->type_info;
 	if (enclosing) {
-		to->enclosing = ((void*) enclosing) - ((void*) to);
+		to->enclosing = ((char *) enclosing) - ((char *) to);
 	} else {
 		to->enclosing = 0;
 	}
@@ -580,9 +603,9 @@ void o42a_dbg_copy_header(
 		if (field_info->data_type == O42A_TYPE_STRUCT) {
 
 			const o42a_dbg_header_t *const f =
-					(o42a_dbg_header_t*) (((void*) from) + field_info->offset);
+					(o42a_dbg_header_t*) (((char *) from) + field_info->offset);
 			o42a_dbg_header_t *const t =
-					(o42a_dbg_header_t*) (((void*) to) + field_info->offset);
+					(o42a_dbg_header_t*) (((char *) to) + field_info->offset);
 
 			O42A(o42a_dbg_copy_header(f, t, to));
 		}

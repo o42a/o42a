@@ -62,7 +62,7 @@ void o42a_error_append_str(const o42a_val_t *const message) {
 
 	const size_t ashift = o42a_val_ashift(message);
 	const UChar32 cmask = o42a_str_cmask(message);
-	const void *const str = o42a_val_data(message);
+	const char *const str = o42a_val_data(message);
 
 	UFILE *const uerr = u_finit(stderr, NULL, NULL);
 

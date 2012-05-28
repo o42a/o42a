@@ -32,9 +32,9 @@
 /**
  * A union of all field kinds.
  */
-typedef union o42a_fld {
+union o42a_fld {
 
-	O42A_HEADER;
+	O42A_HEADER
 
 	o42a_fld_obj obj;
 
@@ -50,7 +50,7 @@ typedef union o42a_fld {
 
 	o42a_fld_assigner assigner;
 
-} o42a_fld;
+};
 
 typedef struct o42a_fld_ctr o42a_fld_ctr_t;
 
@@ -67,7 +67,7 @@ typedef struct o42a_fld_ctr o42a_fld_ctr_t;
  */
 struct o42a_fld_ctr {
 
-	O42A_HEADER;
+	O42A_HEADER
 
 	/** Previous construction structure in the list or NULL if first. */
 	o42a_fld_ctr_t *prev;

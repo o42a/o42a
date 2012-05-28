@@ -89,6 +89,42 @@ struct o42a_dbg_type_info {
 
 };
 
+typedef struct o42a_dbg_type_info1f {
+
+	int32_t type_code;
+
+	uint32_t field_num;
+
+	const char *name;
+
+	o42a_dbg_field_info_t fields[1];
+
+} o42a_dbg_type_info1f_t;
+
+typedef struct o42a_dbg_type_info2f {
+
+	int32_t type_code;
+
+	uint32_t field_num;
+
+	const char *name;
+
+	o42a_dbg_field_info_t fields[2];
+
+} o42a_dbg_type_info2f_t;
+
+typedef struct o42a_dbg_type_info3f {
+
+	int32_t type_code;
+
+	uint32_t field_num;
+
+	const char *name;
+
+	o42a_dbg_field_info_t fields[3];
+
+} o42a_dbg_type_info3f_t;
+
 
 extern const struct o42a_dbg {
 
@@ -96,6 +132,8 @@ extern const struct o42a_dbg {
 
 } o42a_dbg;
 
+
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rtype;
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *);
 

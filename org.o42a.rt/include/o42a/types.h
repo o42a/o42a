@@ -70,7 +70,7 @@ typedef uint32_t o42a_layout_t;
 
 enum o42a_data_types {
 
-	O42A_TYPE_VOID = 0x80000000,
+	O42A_TYPE_VOID = ~0x7fffffff,
 	O42A_TYPE_STRUCT = 0,
 	O42A_TYPE_SYSTEM = 0x10,
 	O42A_TYPE_REL_PTR = 0x02,
@@ -143,7 +143,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #else /* NDEBUG */
 
 
-#define O42A_HEADER o42a_dbg_header_t __o42a_dbg_header__
+#define O42A_HEADER o42a_dbg_header_t __o42a_dbg_header__;
 
 #define O42A_HEADER_SIZE sizeof(o42a_dbg_header_t)
 
@@ -153,18 +153,18 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_START_THREAD \
 	struct o42a_dbg_env __thread_dbg_env__ = { \
-		stack_frame: NULL, \
-		command: O42A_DBG_CMD_EXEC, \
-		indent: 0, \
+		.stack_frame = NULL, \
+		.command = O42A_DBG_CMD_EXEC, \
+		.indent = 0, \
 	}; \
 	o42a_dbg_start_thread(&__thread_dbg_env__)
 
 #define O42A_ENTER(return_null) \
 	struct o42a_dbg_stack_frame __o42a_dbg_stack_frame__ = { \
-		name: __func__, \
-		comment: NULL, \
-		file: __FILE__, \
-		line: __LINE__, \
+		.name = __func__, \
+		.comment = NULL, \
+		.file = __FILE__, \
+		.line = __LINE__, \
 	}; \
 	if (!o42a_dbg_enter(&__o42a_dbg_stack_frame__)) { \
 		return_null; \
@@ -173,14 +173,14 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A_RETURN O42A(o42a_dbg_exit()); return
 
-#define O42A_DEBUG(format, args...) \
-	o42a_dbg_printf(format, ## args)
+#define O42A_DEBUG(format, ...) \
+	o42a_dbg_printf(format, ## __VA_ARGS__)
 
 #define _O42A_DO_(_sf, _comment) \
 	o42a_dbg_stack_frame_t _sf = { \
-		comment: NULL, \
-		file: __FILE__, \
-		line: __LINE__, \
+		.comment = NULL, \
+		.file = __FILE__, \
+		.line = __LINE__, \
 	}; \
 	o42a_dbg_do(&_sf, _comment)
 
@@ -218,7 +218,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
  */
 typedef struct o42a_rlist {
 
-	O42A_HEADER;
+	O42A_HEADER
 
 	/** Relative pointer to the first element of list. */
 	o42a_rptr_t list;
