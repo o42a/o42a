@@ -89,19 +89,11 @@ inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 	return &o42a_obj_field_kinds[field->kind];
 }
 
-inline o42a_fld *o42a_fld_by_field(
-		const o42a_obj_body_t *const body,
-		const o42a_obj_field_t *const field) {
-	return (o42a_fld *) (((char *) body) + field->fld);
-}
+extern o42a_fld *o42a_fld_by_field(
+		const o42a_obj_body_t *,
+		const o42a_obj_field_t *);
 
-inline o42a_fld *o42a_fld_by_overrider(
-		const o42a_obj_overrider_t *const overrider) {
-
-	char *const body = ((char *) overrider) + overrider->body;
-
-	return (o42a_fld *) (body + overrider->field->fld);
-}
+extern o42a_fld *o42a_fld_by_overrider(const o42a_obj_overrider_t *);
 
 o42a_obj_body_t *o42a_obj_ref_null(o42a_obj_t *scope) {
 	O42A_ENTER(return NULL);

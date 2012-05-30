@@ -26,6 +26,10 @@
 #include "o42a/value.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 union o42a_fld;
 struct o42a_fld_ctr;
 typedef struct o42a_obj_methods o42a_obj_methods_t;
@@ -36,10 +40,6 @@ typedef struct o42a_obj_body o42a_obj_t;
 
 typedef struct o42a_obj_data o42a_obj_data_t;
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * Function calculating some value by the given object.
@@ -543,7 +543,9 @@ typedef struct o42a_obj_ctable {
  *
  * \return object type pointer.
  */
-o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *);
+inline o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *const body) {
+	return (o42a_obj_type_t *) (((char *) body) + body->object_type);
+}
 
 /**
  * Retrieves object ancestor's body.
@@ -552,7 +554,10 @@ o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *);
  *
  * \return ancestor body pointer.
  */
-o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
+inline o42a_obj_body_t *o42a_obj_ancestor(
+		const o42a_obj_body_t *const body) {
+	return (o42a_obj_body_t *) (((char *) body) + body->ancestor_body);
+}
 
 /**
  * Extracts object's static type.
@@ -562,7 +567,10 @@ o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
  * \return either type itself (if it's static) or sample type (if type is
  * run-time generated).
  */
-o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *);
+inline o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *const type) {
+	return (type->type.data.flags & O42A_OBJ_RT)
+			? type->rtype.sample : &type->stype;
+}
 
 /**
  * Retrieves object from it's data.
@@ -571,7 +579,9 @@ o42a_obj_stype_t *o42a_obj_stype(o42a_obj_type_t *);
  *
  * \return pointer to object's main body.
  */
-o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t *);
+inline o42a_obj_t *o42a_obj_by_data(const o42a_obj_data_t *const data) {
+	return (o42a_obj_t *) (((char *) data) + data->object);
+}
 
 /**
  * Retrieves object ascendant's descriptors.
@@ -580,7 +590,13 @@ o42a_obj_body_t *o42a_obj_by_data(const o42a_obj_data_t *);
  *
  * \return pointer to the first element of ascendant descriptors array.
  */
-o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
+inline o42a_obj_ascendant_t *o42a_obj_ascendants(
+		const o42a_obj_data_t *const data) {
+
+	const o42a_rlist_t *const list = &data->ascendants;
+
+	return (o42a_obj_ascendant_t *) (((char *) list) + list->list);
+}
 
 /**
  * Retrieves object sample's descriptors.
@@ -589,7 +605,12 @@ o42a_obj_ascendant_t *o42a_obj_ascendants(const o42a_obj_data_t *);
  *
  * \return pointer to the first element of sample descriptors array.
  */
-o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *);
+inline o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *const data) {
+
+	const o42a_rlist_t *const list = &data->samples;
+
+	return (o42a_obj_sample_t *) (((char *) list) + list->list);
+}
 
 /**
  * Retrieves field descriptors.
@@ -598,7 +619,12 @@ o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *);
  *
  * \return pointer to the first element of the field descriptors array.
  */
-o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *);
+inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *const type) {
+
+	const o42a_rlist_t *const list = &type->fields;
+
+	return (o42a_obj_field_t *) (((char *) list) + list->list);
+}
 
 /**
  * Retrieves field override descriptors.
@@ -607,7 +633,13 @@ o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *);
  *
  * \return pointer to the first element of the field override descriptors array.
  */
-o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t *);
+inline o42a_obj_overrider_t *o42a_obj_overriders(
+		const o42a_obj_stype_t *const type) {
+
+	const o42a_rlist_t *const list = &type->overriders;
+
+	return (o42a_obj_overrider_t *) (((char *) list) + list->list);
+}
 
 /**
  * Retrieves object body corresponding to the given ascendant.
@@ -616,7 +648,11 @@ o42a_obj_overrider_t *o42a_obj_overriders(const o42a_obj_stype_t *);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
+inline o42a_obj_body_t *o42a_obj_ascendant_body(
+		const o42a_obj_ascendant_t *const ascendant) {
+	return (o42a_obj_body_t *) (((char *) ascendant) + ascendant->body);
+}
+
 
 /**
  * Retrieves object body corresponding to the given sample.
@@ -625,7 +661,10 @@ o42a_obj_t *o42a_obj_ascendant_body(const o42a_obj_ascendant_t *);
  *
  * \return body pointer.
  */
-o42a_obj_t *o42a_obj_sample_body(const o42a_obj_sample_t *);
+inline o42a_obj_body_t *o42a_obj_sample_body(
+		const o42a_obj_sample_t *const sample) {
+	return (o42a_obj_body_t *) (((char *) sample) + sample->body);
+}
 
 o42a_obj_overrider_t *o42a_obj_field_overrider(
 		const o42a_obj_stype_t *,

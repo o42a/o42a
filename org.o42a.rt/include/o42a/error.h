@@ -20,6 +20,8 @@
 #ifndef O42A_ERROR_H
 #define O42A_ERROR_H
 
+#include <stdio.h>
+
 #include "o42a/types.h"
 #include "o42a/value.h"
 
@@ -28,6 +30,14 @@
 extern "C" {
 #endif
 
+inline void o42a_error_start() {
+	fputs("[E] ", stderr);
+}
+
+inline void o42a_error_end() {
+	fputc('\n', stderr);
+}
+
 void o42a_error_print_str(const o42a_val_t *);
 
 void o42a_error_print(const char *);
@@ -35,21 +45,17 @@ void o42a_error_print(const char *);
 __attribute__ ((format(printf, 1, 2)))
 void o42a_error_printf(const char *, ...);
 
-
-void o42a_error_start();
-
 void o42a_error_append_str(const o42a_val_t *);
 
-void o42a_error_append(const char *);
+inline void o42a_error_append(const char *const message) {
+	fputs(message, stderr);
+}
 
 __attribute__ ((format(printf, 1, 2)))
 void o42a_error_appendf(const char *, ...);
 
-void o42a_error_end();
-
-
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #endif /* O42A_ERROR_H */
