@@ -20,37 +20,67 @@
 #include "o42a/fields.h"
 
 #include "o42a/error.h"
+#include "o42a/memory/gc.h"
 #include "o42a/object.h"
 
+
+static void o42a_fld_mark_none(o42a_fld *const field) {
+	O42A_ENTER(return);
+	O42A_RETURN;
+}
+
+static void o42a_fld_mark_obj(o42a_fld *const field) {
+	O42A_ENTER(return);
+
+	volatile o42a_fld_obj *const fld = &field->obj;
+	o42a_obj_t *const object = fld->object;
+
+	if (!object) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_data_t *const data = O42A(&o42a_obj_type(object)->type.data);
+
+	O42A(o42a_gc_mark(o42a_gc_blockof((char *) data + data->start)));
+
+	O42A_RETURN;
+}
 
 static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 	[O42A_FLD_OBJ] = {// object field
 		.propagate = &o42a_fld_obj_propagate,
 		.inherit = &o42a_fld_obj_inherit,
+		.mark = &o42a_fld_mark_obj,
 	},
 	[O42A_FLD_LINK] = {// link field
 		.propagate = &o42a_fld_link_propagate,
 		.inherit = &o42a_fld_link_inherit,
+		.mark = &o42a_fld_mark_obj,
 	},
 	[O42A_FLD_VAR] = {// variable field
 		.propagate = &o42a_fld_var_propagate,
 		.inherit = &o42a_fld_var_inherit,
+		.mark = &o42a_fld_var_mark,
 	},
 	[O42A_FLD_GETTER] = {// getter field
 		.propagate = &o42a_fld_getter_propagate,
 		.inherit = &o42a_fld_getter_inherit,
+		.mark = &o42a_fld_mark_none,
 	},
 	[O42A_FLD_SCOPE] = {// scope object pointer
 		.propagate = &o42a_fld_scope_propagate,
 		.inherit = &o42a_fld_scope_inherit,
+		.mark = &o42a_fld_mark_obj,
 	},
 	[O42A_FLD_DEP] = {// dependency field
 		.propagate = &o42a_fld_dep_copy,
 		.inherit = &o42a_fld_dep_copy,
+		.mark = &o42a_fld_mark_obj,
 	},
 	[O42A_FLD_ASSIGNER] = {// variable assigner
 		.propagate = &o42a_fld_assigner_propagate,
 		.inherit = &o42a_fld_assigner_inherit,
+		.mark = &o42a_fld_assigner_mark,
 	},
 };
 
