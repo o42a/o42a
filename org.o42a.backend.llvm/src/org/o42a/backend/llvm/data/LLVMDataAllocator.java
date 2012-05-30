@@ -47,6 +47,7 @@ public class LLVMDataAllocator implements DataAllocator {
 	private DataLayout int64layout;
 	private DataLayout fp32layout;
 	private DataLayout fp64layout;
+	private DataLayout fp128layout;
 	private DataLayout ptrLayout;
 	private DataLayout relPtrLayout;
 
@@ -459,6 +460,13 @@ public class LLVMDataAllocator implements DataAllocator {
 		return this.fp64layout = new DataLayout(fp64layout(getModulePtr()));
 	}
 
+	public final DataLayout fp128layout() {
+		if (this.fp128layout != null) {
+			return this.fp128layout;
+		}
+		return this.fp128layout = new DataLayout(fp128layout(getModulePtr()));
+	}
+
 	public final DataLayout ptrLayout() {
 		if (this.ptrLayout != null) {
 			return this.ptrLayout;
@@ -566,6 +574,12 @@ public class LLVMDataAllocator implements DataAllocator {
 			}
 			allocateFp64(modulePtr, enclosingPtr);
 			return true;
+		case 16:
+			if (fp128layout().getAlignment().getBytes() != numBytes) {
+				return false;
+			}
+			allocateFp128(modulePtr, enclosingPtr);
+			return true;
 		case 4:
 			if (fp32layout().getAlignment().getBytes() != numBytes) {
 				return false;
@@ -636,6 +650,8 @@ public class LLVMDataAllocator implements DataAllocator {
 
 	private static native void allocateFp64(long modulePtr, long enclosingPtr);
 
+	private static native void allocateFp128(long modulePtr, long enclosingPtr);
+
 	private static native void allocateFuncPtr(
 			long enclosingPtr,
 			long functTypePtr);
@@ -658,6 +674,8 @@ public class LLVMDataAllocator implements DataAllocator {
 	private static native int fp32layout(long modulePtr);
 
 	private static native int fp64layout(long modulePtr);
+
+	private static native int fp128layout(long modulePtr);
 
 	private static native int ptrLayout(long modulePtr);
 

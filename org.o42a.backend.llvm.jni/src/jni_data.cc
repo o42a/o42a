@@ -225,6 +225,20 @@ void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp64(
 	enclosing->push_back(Type::getDoubleTy(module->getContext()));
 }
 
+void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp128(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr,
+		jlong enclosingPtr) {
+
+	o42ac::BackendModule *const module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+	std::vector<const Type*> *enclosing =
+			from_ptr<std::vector<const Type*> >(enclosingPtr);
+
+	enclosing->push_back(Type::getFP128Ty(module->getContext()));
+}
+
 void Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFuncPtr(
 		JNIEnv *,
 		jclass,
@@ -329,6 +343,17 @@ jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout(
 			from_ptr<o42ac::BackendModule>(modulePtr);
 
 	return typeLayout(module, Type::getDoubleTy(module->getContext()));
+}
+
+jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp128layout(
+		JNIEnv *,
+		jclass,
+		jlong modulePtr) {
+
+	const o42ac::BackendModule *module =
+			from_ptr<o42ac::BackendModule>(modulePtr);
+
+	return typeLayout(module, Type::getFP128Ty(module->getContext()));
 }
 
 jint Java_org_o42a_backend_llvm_data_LLVMDataAllocator_ptrLayout(
