@@ -31,6 +31,14 @@ JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadMut
 JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCondLayout
   (JNIEnv *, jclass);
 
+/*
+ * Class:     org_o42a_backend_llvm_data_SystemTypeInfo
+ * Method:    gcBlockLayout
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockLayout
+  (JNIEnv *, jclass);
+
 #ifdef __cplusplus
 }
 #endif

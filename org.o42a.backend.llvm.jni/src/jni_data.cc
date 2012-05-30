@@ -30,7 +30,7 @@
 #include "llvm/Module.h"
 #include "llvm/Target/TargetData.h"
 
-#include "o42a/types.h"
+#include "o42a/memory/gc.h"
 
 using namespace llvm;
 
@@ -51,6 +51,12 @@ jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCondLayout(
 		JNIEnv *,
 		jclass) {
 	return O42A_LAYOUT(pthread_cond_t);
+}
+
+jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockLayout(
+		JNIEnv *,
+		jclass) {
+	return O42A_LAYOUT(struct _o42a_gc_block);
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(

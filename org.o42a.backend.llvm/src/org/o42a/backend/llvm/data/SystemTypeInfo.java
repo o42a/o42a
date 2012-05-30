@@ -56,6 +56,15 @@ enum SystemTypeInfo {
 			return pthreadCondLayout();
 		}
 
+	},
+
+	GC_BLOCK("o42a_gc_block_t") {
+
+		@Override
+		protected int layout() {
+			return gcBlockLayout();
+		}
+
 	};
 
 	public static SystemTypeLLAlloc allocateSystemType(
@@ -174,5 +183,7 @@ enum SystemTypeInfo {
 	private static native int pthreadMutexLayout();
 
 	private static native int pthreadCondLayout();
+
+	private static native int gcBlockLayout();
 
 }
