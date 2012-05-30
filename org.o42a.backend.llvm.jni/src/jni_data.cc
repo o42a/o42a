@@ -30,6 +30,8 @@
 #include "llvm/Module.h"
 #include "llvm/Target/TargetData.h"
 
+#include "o42a/types.h"
+
 using namespace llvm;
 
 
