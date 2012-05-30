@@ -21,6 +21,7 @@
 #
 
 headersdir = include/o42ac/llvm
+o42a_include_dir = ../org.o42a.rt/include
 srcdir = src
 java_classes_dir = ../org.o42a.backend.llvm/bin
 java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm
@@ -61,12 +62,11 @@ java_ldflags = -L $(JAVA_HOME)/jre/lib/$(java_arch) -l java
 
 endif
 
-
-includes += -I ../org.o42a.rt/include -I include
+includes += -I $(o42a_include_dir) -I include
 CXXFLAGS += -pthread -D_XOPEN_SOURCE=500
 CXXFLAGS += -Wall -Winline -W -Wwrite-strings
 CXXFLAGS := $(CXXFLAGS) $(shell $(llvm_config) --cxxflags) $(debug_cxxflags) $(includes)
-LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell $(llvm_config) --ldflags) -L $(target_dir) -l o42a
+LDFLAGS := $(LDFLAGS) $(java_ldflags) $(shell $(llvm_config) --ldflags)
 
 # Make all.
 all : $(so_lib)
@@ -183,7 +183,8 @@ $(srcdir)/jni_code.h :
 
 
 # Compile JNI bindings.
-$(srcdir)/jni_data.o : ../target/libo42a.so
+$(srcdir)/jni_data.o : $(o42a_include_dir)/o42a/memory/gc.h
+$(srcdir)/jni_data.o : $(o42a_include_dir)/o42a/types.h
 
 # Implicit rule for JNI bindings compilation.
 $(srcdir)/jni_*.o : $(common_deps)

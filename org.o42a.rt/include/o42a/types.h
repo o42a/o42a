@@ -287,9 +287,7 @@ inline o42a_layout_t o42a_layout_array(
 			| (layout & O42A_LAYOUT_ALIGNMENT_MASK);
 }
 
-inline o42a_layout_t o42a_layout(
-		const uint8_t alignment,
-		const size_t size) {
+inline o42a_layout_t o42a_layout(const uint8_t alignment, const size_t size) {
 
 	uint8_t ashift = 0;
 	const int diff = ((int) alignment) - 4;
