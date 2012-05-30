@@ -135,6 +135,14 @@ JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocat
 
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
+ * Method:    allocateFp128
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_allocateFp128
+  (JNIEnv *, jclass, jlong, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
  * Method:    allocateFuncPtr
  * Signature: (JJ)V
  */
@@ -187,6 +195,14 @@ JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp32lay
  * Signature: (J)I
  */
 JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp64layout
+  (JNIEnv *, jclass, jlong);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMDataAllocator
+ * Method:    fp128layout
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMDataAllocator_fp128layout
   (JNIEnv *, jclass, jlong);
 
 /*
