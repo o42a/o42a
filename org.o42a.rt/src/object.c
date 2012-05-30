@@ -61,14 +61,14 @@ inline o42a_obj_sample_t *o42a_obj_samples(const o42a_obj_data_t *const data) {
 	return (o42a_obj_sample_t *) (((char *) list) + list->list);
 }
 
-inline o42a_obj_field_t* o42a_obj_fields(const o42a_obj_stype_t *const type) {
+inline o42a_obj_field_t *o42a_obj_fields(const o42a_obj_stype_t *const type) {
 
 	const o42a_rlist_t *const list = &type->fields;
 
 	return (o42a_obj_field_t *) (((char *) list) + list->list);
 }
 
-inline o42a_obj_overrider_t* o42a_obj_overriders(
+inline o42a_obj_overrider_t *o42a_obj_overriders(
 		const o42a_obj_stype_t *const type) {
 
 	const o42a_rlist_t *const list = &type->overriders;
@@ -344,7 +344,7 @@ static inline void copy_samples(
 		void *start) {
 	O42A_ENTER(return);
 
-	void* astart = ((char *) ancestor_data) + ancestor_data->start;
+	void *const astart = ((char *) ancestor_data) + ancestor_data->start;
 	const o42a_obj_sample_t *asamples =
 			O42A(o42a_obj_samples(ancestor_data));
 	const o42a_rptr_t asamples_rptr =
@@ -402,7 +402,7 @@ static inline void fill_type_info(
 	type_info->name = "New object";
 
 	// Fill top-level debug header.
-	o42a_dbg_header_t *header = (o42a_dbg_header_t*) start;
+	o42a_dbg_header_t *const header = start;
 
 	header->type_code = type_info->type_code;
 	header->enclosing = 0;
@@ -472,13 +472,62 @@ static inline void fill_field_infos(
 
 static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
-	// TODO Mark all referenced objects.
+
+	o42a_obj_data_t *const data = obj_data;
+
+	// Mark object value.
+	O42A(data->value_type->mark(data));
+
+	uint32_t num_asc = data->ascendants.size;
+
+	if (!num_asc) {
+		O42A_RETURN;
+	}
+
+	// Mark all fields.
+	o42a_obj_ascendant_t *asc = O42A(o42a_obj_ascendants(data));
+
+	while (1) {
+
+		o42a_obj_body_t *const body = O42A(o42a_obj_ascendant_body(asc));
+		o42a_obj_stype_t *const type = asc->type;
+
+		uint32_t num_fields = type->fields.size;
+
+		if (num_fields) {
+
+			o42a_obj_field_t *field = O42A(o42a_obj_fields(type));
+
+			while (1) {
+
+				o42a_fld *const fld = O42A(o42a_fld_by_field(body, field));
+				o42a_fld_desc_t *const desc = O42A(o42a_fld_desc(field));
+
+				O42A(desc->mark(fld));
+
+				if (--num_fields) {
+					break;
+				}
+				++field;
+			}
+		}
+
+		if (!(--num_asc)) {
+			break;
+		}
+		++asc;
+	} while (num_asc);
+
 	O42A_RETURN;
 }
 
 static void o42a_obj_gc_sweeper(void *const obj_data) {
 	O42A_ENTER(return);
-	// TODO Sweep the object.
+
+	o42a_obj_data_t *const data = obj_data;
+
+	O42A(data->value_type->sweep(data));
+
 	O42A_RETURN;
 }
 

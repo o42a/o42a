@@ -85,8 +85,7 @@ static const o42a_fld_desc_t o42a_obj_field_kinds[] = {
 };
 
 
-inline o42a_fld_desc_t *o42a_fld_desc(
-		const o42a_obj_field_t *const field) {
+inline o42a_fld_desc_t *o42a_fld_desc(const o42a_obj_field_t *const field) {
 	return &o42a_obj_field_kinds[field->kind];
 }
 
