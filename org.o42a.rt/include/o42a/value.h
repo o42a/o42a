@@ -223,11 +223,20 @@ extern const o42a_val_type_t o42a_val_type_void;
 extern const o42a_val_type_t o42a_val_type_directive;
 
 
-size_t o42a_val_ashift(const o42a_val_t *);
+inline size_t o42a_val_ashift(const o42a_val_t *const val) {
+	return (val->flags & O42A_VAL_ALIGNMENT_MASK) >> 8;
+}
 
-size_t o42a_val_alignment(const o42a_val_t *);
+inline size_t o42a_val_alignment(const o42a_val_t *const val) {
+	return 1 << o42a_val_ashift(val);
+}
 
-void *o42a_val_data(const o42a_val_t *);
+inline void *o42a_val_data(const o42a_val_t *const val) {
+	if (val->flags & O42A_VAL_EXTERNAL) {
+		return val->value.v_ptr;
+	}
+	return (void*) &val->value;
+}
 
 void o42a_val_use(o42a_val_t *);
 

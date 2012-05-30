@@ -24,6 +24,10 @@
 #include "unicode/ustdio.h"
 
 
+extern void o42a_error_start();
+
+extern void o42a_error_end();
+
 void o42a_error_print_str(const o42a_val_t *const message) {
 	o42a_error_start();
 	o42a_error_append_str(message);
@@ -48,10 +52,6 @@ void o42a_error_printf(const char *const format, ...) {
 }
 
 
-inline void o42a_error_start() {
-	fputs("[E] ", stderr);
-}
-
 void o42a_error_append_str(const o42a_val_t *const message) {
 
 	const size_t len = message->length;
@@ -73,9 +73,7 @@ void o42a_error_append_str(const o42a_val_t *const message) {
 	u_fclose(uerr);
 }
 
-inline void o42a_error_append(const char *const message) {
-	fputs(message, stderr);
-}
+extern void o42a_error_append(const char *);
 
 void o42a_error_appendf(const char *const format, ...) {
 
@@ -84,8 +82,4 @@ void o42a_error_appendf(const char *const format, ...) {
 	va_start(args, format);
 	vfprintf(stderr, format, args);
 	va_end(args);
-}
-
-inline void o42a_error_end() {
-	fputc('\n', stderr);
 }
