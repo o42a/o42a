@@ -23,6 +23,10 @@
 #include "o42a/object.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * A union of all supported field kinds.
  */
@@ -50,10 +54,6 @@ enum o42a_fld_kind {
 };
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * Field copy function type.
  *
@@ -80,11 +80,6 @@ typedef o42a_obj_t *o42a_obj_ref_ft(o42a_obj_t *);
  */
 typedef o42a_bool_t o42a_obj_assigner_ft(o42a_obj_t *, o42a_obj_t *);
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-
 /**
  * The descriptor of the field kind.
  */
@@ -104,12 +99,17 @@ typedef const struct o42a_fld_desc {
 	 */
 	o42a_fld_copy_ft *const propagate;
 
+	/**
+	 * GC marker function pointer.
+	 *
+	 * This function is called when the GC marks an object containing the field
+	 * to mark the GC data referenced by this field.
+	 *
+	 * \param field marking field pointer.
+	 */
+	void (* mark) (o42a_fld *);
+
 } o42a_fld_desc_t;
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 /**
@@ -152,6 +152,5 @@ o42a_obj_body_t *o42a_obj_ref_stub(o42a_obj_t *);
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif /* O42A_FIELD_H */

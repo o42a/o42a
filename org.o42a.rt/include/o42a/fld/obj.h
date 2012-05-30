@@ -23,12 +23,11 @@
 #include "o42a/field.h"
 
 
-typedef struct o42a_fld_obj o42a_fld_obj;
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef struct o42a_fld_obj o42a_fld_obj;
 
 /**
  * Object constructor function.
@@ -43,11 +42,6 @@ extern "C" {
 typedef o42a_obj_t *o42a_obj_constructor_ft(o42a_obj_t *, o42a_fld_obj *);
 
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-
 struct o42a_fld_obj {
 
 	O42A_HEADER
@@ -60,10 +54,6 @@ struct o42a_fld_obj {
 
 };
 
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 void o42a_fld_obj_propagate(o42a_obj_ctable_t*);
 

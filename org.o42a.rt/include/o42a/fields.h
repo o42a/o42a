@@ -29,6 +29,10 @@
 #include "o42a/fld/var.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * A union of all field kinds.
  */
@@ -82,11 +86,6 @@ struct o42a_fld_ctr {
 	pthread_t thread;
 
 };
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 o42a_bool_t o42a_fld_start(o42a_obj_data_t *, o42a_fld_ctr_t *);

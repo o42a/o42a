@@ -23,6 +23,10 @@
 #include "o42a/field.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 
 	O42A_HEADER
@@ -32,11 +36,6 @@ typedef struct {
 	o42a_obj_ref_ft *constructor;
 
 } o42a_fld_link;
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 void o42a_fld_link_propagate(o42a_obj_ctable_t*);

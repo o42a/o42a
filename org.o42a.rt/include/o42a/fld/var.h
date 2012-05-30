@@ -23,6 +23,10 @@
 #include "o42a/field.h"
 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 
 	O42A_HEADER
@@ -38,14 +42,11 @@ typedef struct {
 } o42a_fld_var;
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
 void o42a_fld_var_propagate(o42a_obj_ctable_t*);
 
 void o42a_fld_var_inherit(o42a_obj_ctable_t*);
+
+void o42a_fld_var_mark(o42a_fld *);
 
 
 #ifdef __cplusplus

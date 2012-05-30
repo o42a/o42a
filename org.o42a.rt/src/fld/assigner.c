@@ -19,6 +19,8 @@
 */
 #include "o42a/fields.h"
 
+#include "o42a/memory/gc.h"
+
 
 void o42a_fld_assigner_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
@@ -62,6 +64,22 @@ void o42a_fld_assigner_inherit(o42a_obj_ctable_t *const ctable) {
 
 	// Use definition from ancestor.
 	to->assigner_f = from->assigner_f;
+
+	O42A_RETURN;
+}
+
+void o42a_fld_assigner_mark(o42a_fld *const field) {
+	O42A_ENTER(return);
+
+	volatile o42a_fld_assigner *const fld = &field->assigner;
+	o42a_obj_stype_t *const bound = fld->bound;
+
+	if (bound) {
+
+		o42a_obj_data_t *const data = &bound->data;
+
+		O42A(o42a_gc_mark(o42a_gc_blockof(((char *) data) + data->start)));
+	}
 
 	O42A_RETURN;
 }

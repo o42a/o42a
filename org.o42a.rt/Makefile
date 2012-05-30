@@ -47,9 +47,10 @@ common_deps += $(headersdir)/types.h
 common_deps += $(headersdir)/value.h
 
 fld_deps = $(common_deps)
-fld_deps += $(headersdir)/object.h
 fld_deps += $(headersdir)/field.h
 fld_deps += $(headersdir)/fields.h
+fld_deps += $(headersdir)/memory/gc.h
+fld_deps += $(headersdir)/object.h
 
 
 .PHONY : all clean compile-tests test
@@ -100,9 +101,7 @@ clean :
 	rm -f $(release_so_lib)
 	rm -f $(debug_so_lib)
 	rm -f $(srcdir)/*.o
-	rm -f $(srcdir)/fld/*.o
-	rm -f $(srcdir)/lib/*.o
-	rm -f $(srcdir)/type/*.o
+	rm -f $(srcdir)/*/*.o
 	rm -rf bin
 
 
