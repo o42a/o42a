@@ -182,6 +182,9 @@ $(srcdir)/jni_code.h :
 	$(call make_javah)
 
 
+# Compile JNI bindings.
+$(srcdir)/jni_data.o : ../target/libo42a.so
+
 # Implicit rule for JNI bindings compilation.
 $(srcdir)/jni_*.o : $(common_deps)
 $(srcdir)/jni_%.o : $(srcdir)/jni_%.cc $(srcdir)/jni_%.h
