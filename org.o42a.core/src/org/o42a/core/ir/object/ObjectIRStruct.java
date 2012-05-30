@@ -33,6 +33,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
@@ -98,7 +99,10 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return getObject().getScope().ir(getObjectIR().getGenerator()).getId();
+
+		final Scope scope = getObject().getScope();
+
+		return scope.ir(getObjectIR().getGenerator()).getId().detail("object");
 	}
 
 	private void allocateBodyIRs(SubData<?> data) {

@@ -196,9 +196,11 @@ public class ObjectIR  {
 
 		assert getObject().assertFullyResolved();
 
-		this.struct = new ObjectIRStruct(this);
+		final ObjectIRBlock block = new ObjectIRBlock(this);
 
-		getGenerator().newGlobal().struct(this.struct);
+		this.struct = block.getStruct();
+
+		getGenerator().newGlobal().struct(block);
 		getScopeIR().targetAllocated();
 
 		return this.struct;

@@ -32,8 +32,8 @@ final class DefaultTypeInfo extends DebugTypeInfo {
 
 	private Ptr<AnyOp> pointer;
 
-	DefaultTypeInfo(Type<?> target) {
-		super(target, typeCodeGenerator.nextInt());
+	DefaultTypeInfo(Type<?> type) {
+		super(type, typeCodeGenerator.nextInt());
 	}
 
 	@Override
