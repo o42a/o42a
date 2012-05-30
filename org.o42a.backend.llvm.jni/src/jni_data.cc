@@ -35,6 +35,8 @@
 using namespace llvm;
 
 
+extern o42a_layout_t o42a_layout(uint8_t, size_t size);
+
 jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadLayout(
 		JNIEnv *,
 		jclass) {

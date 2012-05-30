@@ -23,7 +23,6 @@
 
 	<filelist id="project.deps" dir="..">
 		<file name="org.o42a.backend.llvm"/>
-		<file name="org.o42a.rt"/>
 	</filelist>
 
 	<import file="../build/makefile.build.xml" />
