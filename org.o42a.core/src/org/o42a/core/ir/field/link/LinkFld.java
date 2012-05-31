@@ -124,9 +124,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_fld_link",
-					0x042a0201);
+			return externalTypeInfo(0x042a0200 | FldKind.LINK.code());
 		}
 
 	}

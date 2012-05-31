@@ -25,7 +25,7 @@
 
 #ifndef NDEBUG
 const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
-	.type_code = 0x042a0300,
+	.type_code = 0x042a02ff,
 	.field_num = 4,
 	.name = "o42a_fld_ctr_t",
 	.fields = {

@@ -115,9 +115,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_fld_ctr",
-					0x042a0300);
+			return externalTypeInfo(0x042a02ff);
 		}
 
 	}

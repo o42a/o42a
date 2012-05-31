@@ -77,9 +77,7 @@ public class ValueTypeDescOp extends StructOp<ValueTypeDescOp> {
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_val_type",
-					0x042a0003);
+			return externalTypeInfo(0x042a0003);
 		}
 
 	}

@@ -416,7 +416,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		}
 
 		@Override
-		public void allocate(SubData<S> data) {
+		protected void allocate(SubData<S> data) {
 			if (!isStateless()) {
 				this.object = data.addDataPtr("object");
 			}
