@@ -203,9 +203,6 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void generateAll(Generator generator) {
-		if (generator.isDebug()) {
-			generator.newGlobal().export().struct(new DebugIR());
-		}
 		if (consoleUsed()) {
 			this.consoleModule.generateMain(generator);
 		}

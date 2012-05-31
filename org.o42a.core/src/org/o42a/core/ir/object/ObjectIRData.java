@@ -39,6 +39,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.impl.value.ObjectValueFunc;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.op.RelList;
@@ -125,7 +126,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.id("ObjectData");
+		return factory.rawId("o42a_obj_data_t");
 	}
 
 	@Override
@@ -149,6 +150,11 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
 		this.ascendants = new Ascendants().allocate(data, "ascendants");
 		this.samples = new Samples().allocate(data, "samples");
+	}
+
+	@Override
+	protected DebugTypeInfo createTypeInfo() {
+		return externalTypeInfo(0x042a0100);
 	}
 
 	public static final class Op extends StructOp<Op> {

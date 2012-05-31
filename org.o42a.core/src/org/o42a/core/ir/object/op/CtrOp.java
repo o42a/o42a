@@ -34,6 +34,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
@@ -158,7 +159,7 @@ public class CtrOp extends IROp {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("Ctr");
+			return factory.rawId("o42a_obj_ctr_t");
 		}
 
 		@Override
@@ -166,6 +167,11 @@ public class CtrOp extends IROp {
 			this.ownerType = data.addPtr("owner_type", OBJECT_TYPE);
 			this.ancestorType = data.addPtr("ancestor_type", OBJECT_TYPE);
 			this.type = data.addPtr("type", OBJECT_TYPE);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0120);
 		}
 
 	}

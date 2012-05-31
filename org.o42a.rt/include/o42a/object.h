@@ -511,7 +511,7 @@ typedef struct o42a_obj_ctable {
 	 *
 	 * May be NULL when constructing object is local or exactly known.
 	 */
-	union o42a_obj_type *owner_type;
+	o42a_obj_type_t *owner_type;
 
 	o42a_obj_type_t *const ancestor_type;
 
@@ -525,6 +525,8 @@ typedef struct o42a_obj_ctable {
 
 	struct o42a_obj_cside {
 
+		O42A_HEADER
+
 		o42a_obj_body_t *body;
 
 		union o42a_fld *fld;
@@ -535,6 +537,34 @@ typedef struct o42a_obj_ctable {
 
 } o42a_obj_ctable_t;
 
+
+#ifndef NDEBUG
+
+extern const struct _O42A_DEBUG_TYPE_o42a_obj_data {
+	O42A_DBG_TYPE_INFO
+	o42a_dbg_field_info_t fields[16];
+} _O42A_DEBUG_TYPE_o42a_obj_data;
+
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_stype;
+
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_rtype;
+
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant;
+
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_sample;
+
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field;
+
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider;
+
+extern const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr;
+
+extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
+	O42A_DBG_TYPE_INFO
+	o42a_dbg_field_info_t fields[8];
+} _O42A_DEBUG_TYPE_o42a_obj_ctable;
+
+#endif /* NDEBUG */
 
 /**
  * Retrieves object type from it's body.

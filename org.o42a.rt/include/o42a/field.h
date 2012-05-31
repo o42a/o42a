@@ -110,6 +110,10 @@ typedef const struct o42a_fld_desc {
 } o42a_fld_desc_t;
 
 
+#ifndef NDEBUG
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr;
+#endif /* NDEBUG */
+
 /**
  * Returns
  */

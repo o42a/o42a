@@ -30,6 +30,7 @@ import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 
 
 public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
@@ -115,13 +116,18 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("AscendantDesc");
+			return factory.rawId("o42a_obj_ascendant_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.type = data.addPtr("type", OBJECT_TYPE);
 			this.body = data.addRelPtr("body");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0110);
 		}
 
 	}

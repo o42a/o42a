@@ -28,6 +28,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 
 
 public final class SampleDescIR implements Content<SampleDescIR.Type> {
@@ -96,12 +97,17 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("SampleDesc");
+			return factory.rawId("o42a_obj_sample_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.body = data.addRelPtr("body");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0111);
 		}
 
 	}

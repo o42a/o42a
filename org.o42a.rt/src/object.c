@@ -28,6 +28,346 @@
 #include "o42a/memory/gc.h"
 
 
+#ifndef NDEBUG
+
+const struct _O42A_DEBUG_TYPE_o42a_obj_data _O42A_DEBUG_TYPE_o42a_obj_data = {
+	.type_code = 0x042a0100,
+	.field_num = 16,
+	.name = "o42a_obj_data_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_data_t, object),
+			.name = "object",
+		},
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_data_t, start),
+			.name = "start",
+		},
+		{
+			.data_type = O42A_TYPE_INT16,
+			.offset = offsetof(o42a_obj_data_t, flags),
+			.name = "flags",
+		},
+		{
+			.data_type = O42A_TYPE_INT8,
+			.offset = offsetof(o42a_obj_data_t, mutex_init),
+			.name = "mutex_init",
+		},
+		{
+			.data_type = O42A_TYPE_BOOL,
+			.offset = offsetof(o42a_obj_data_t, value_calc),
+			.name = "value_calc",
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_obj_data_t, value_thread),
+			.name = "value_thread",
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_obj_data_t, mutex),
+			.name = "mutex",
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_obj_data_t, thread_cond),
+			.name = "thread_cond",
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_data_t, value),
+			.name = "value",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val,
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_obj_data_t, value_f),
+			.name = "value_f",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_obj_data_t, claim_f),
+			.name = "claim_f",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_obj_data_t, proposition_f),
+			.name = "proposition_f",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_data_t, value_type),
+			.name = "value_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_val_type,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_data_t, fld_ctrs),
+			.name = "fld_ctrs",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_ctr,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_data_t, ascendants),
+			.name = "ascendants",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_data_t, samples),
+			.name = "samples",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+	},
+};
+
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_obj_stype = {
+	.type_code = 0x042a0101,
+	.field_num = 4,
+	.name = "o42a_obj_stype_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_stype_t, data),
+			.name = "data",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_stype_t, fields),
+			.name = "fields",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_stype_t, overriders),
+			.name = "overriders",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_rlist,
+		},
+		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_obj_stype_t, main_body_layout),
+			.name = "main_body_layout",
+		},
+	},
+};
+
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_rtype = {
+	.type_code = 0x042a0102,
+	.field_num = 2,
+	.name = "o42a_obj_rtype_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_rtype_t, data),
+			.name = "data",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_rtype_t, sample),
+			.name = "sample",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+	},
+};
+
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_ascendant = {
+	.type_code = 0x042a0110,
+	.field_num = 2,
+	.name = "o42a_obj_ascendant_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ascendant_t, type),
+			.name = "type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_ascendant_t, body),
+			.name = "body",
+		},
+	},
+};
+
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_sample = {
+	.type_code = 0x042a0111,
+	.field_num = 1,
+	.name = "o42a_obj_sample_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_sample_t, body),
+			.name = "body",
+		},
+	},
+};
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_field = {
+	.type_code = 0x042a0112,
+	.field_num = 3,
+	.name = "o42a_obj_field_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_field_t, declared_in),
+			.name = "declared_in",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+		{
+			.data_type = O42A_TYPE_INT32,
+			.offset = offsetof(o42a_obj_field_t, kind),
+			.name = "kind",
+		},
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_field_t, fld),
+			.name = "fld",
+		},
+	},
+};
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider = {
+	.type_code = 0x042a0113,
+	.field_num = 3,
+	.name = "o42a_obj_overrider_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_overrider_t, field),
+			.name = "field",
+			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_overrider_t, defined_in),
+			.name = "defined_in",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+		{
+			.data_type = O42A_TYPE_REL_PTR,
+			.offset = offsetof(o42a_obj_overrider_t, body),
+			.name = "body",
+		},
+	},
+};
+
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_ctr = {
+	.type_code = 0x042a0120,
+	.field_num = 3,
+	.name = "o42a_obj_ctr_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctr_t, owner_type),
+			.name = "owner_type",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctr_t, ancestor_type),
+			.name = "ancestor_type",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctr_t, type),
+			.name = "type",
+		},
+	},
+};
+
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_obj_cside = {
+	.type_code = 0x042a0121,
+	.field_num = 2,
+	.name = "o42a_obj_cside_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(struct o42a_obj_cside, body),
+			.name = "body",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(struct o42a_obj_cside, fld),
+			.name = "fld",
+		},
+	},
+};
+
+const struct _O42A_DEBUG_TYPE_o42a_obj_ctable
+_O42A_DEBUG_TYPE_o42a_obj_ctable = {
+	.type_code = 0x042a0122,
+	.field_num = 8,
+	.name = "o42a_obj_ctable_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, owner_type),
+			.name = "owner_type",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, ancestor_type),
+			.name = "ancestor_type",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, sample_type),
+			.name = "sample_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, object_type),
+			.name = "object_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_rtype,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, body_type),
+			.name = "body_type",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_ctable_t, field),
+			.name = "field",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_ctable_t, from),
+			.name = "from",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_cside,
+		},
+		{
+			.data_type = O42A_TYPE_STRUCT,
+			.offset = offsetof(o42a_obj_ctable_t, to),
+			.name = "to",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_cside,
+		},
+	},
+};
+
+#endif /* NDEBUG */
+
+
 extern o42a_obj_type_t *o42a_obj_type(const o42a_obj_body_t *);
 
 extern o42a_obj_body_t *o42a_obj_ancestor(const o42a_obj_body_t *);
@@ -375,7 +715,7 @@ static inline void fill_type_info(
 	o42a_dbg_header_t *const type_header = &type->__o42a_dbg_header__;
 
 	O42A(o42a_dbg_fill_header(
-			o42a_dbg.rtype_type_info,
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_rtype,
 			type_header,
 			header));
 	type_header->name = "object_type";
@@ -597,12 +937,19 @@ static o42a_obj_rtype_t *propagate_object(
 		.object_type = type,
 	};
 
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_ctable,
+			&ctable.__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
 	O42A(derive_ancestor_bodies(&ctable, DK_COPY));
 	O42A(copy_samples(&atype->type.data, samples, mem));
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(type, type_info));
-#endif
+#endif /* NDEBUG */
 
 	o42a_debug_dump_mem("Object: ", mem, 3);
 
@@ -896,6 +1243,13 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 		.object_type = type,
 	};
 
+#ifndef NDEBUG
+	O42A(o42a_dbg_fill_header(
+			(const o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_ctable,
+			&ctable.__o42a_dbg_header__,
+			NULL));
+#endif /* NDEBUG */
+
 	o42a_obj_body_t *const ancestor_body =
 			(o42a_obj_body_t*) (mem + (adata->object - adata->start));
 
@@ -909,7 +1263,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 #ifndef NDEBUG
 	O42A(fill_field_infos(type, type_info));
-#endif
+#endif /* NDEBUG */
 
 	o42a_debug_dump_mem("Object: ", mem, 3);
 
