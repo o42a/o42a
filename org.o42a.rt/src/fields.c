@@ -23,6 +23,39 @@
 #include "o42a/memory/gc.h"
 #include "o42a/object.h"
 
+#ifndef NDEBUG
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr = {
+	.type_code = 0x042a0300,
+	.field_num = 4,
+	.name = "o42a_fld_ctr_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_ctr_t, prev),
+			.name = "prev",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_ctr,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_ctr_t, next),
+			.name = "next",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_ctr,
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_ctr_t, fld),
+			.name = "fld",
+		},
+		{
+			.data_type = O42A_TYPE_SYSTEM,
+			.offset = offsetof(o42a_fld_ctr_t, thread),
+			.name = "thread",
+		},
+	},
+};
+#endif /* NDEBUG */
 
 static void o42a_fld_mark_none(o42a_fld *const field) {
 	O42A_ENTER(return);

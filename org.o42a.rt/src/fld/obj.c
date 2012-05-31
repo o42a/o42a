@@ -22,6 +22,34 @@
 #include "o42a/error.h"
 
 
+#ifndef NDEBUG
+const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_fld_obj = {
+	.type_code = 0x042a0200,
+	.field_num = 3,
+	.name = "o42a_fld_obj",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_obj, object),
+			.name = "object",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_fld_obj, constructor),
+			.name = "constructor",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_obj, previous),
+			.name = "previous",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_fld_obj,
+		}
+	},
+};
+#endif /* NDEBUG */
+
+
 void o42a_fld_obj_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 

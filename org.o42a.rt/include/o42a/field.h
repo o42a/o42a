@@ -85,8 +85,6 @@ typedef o42a_bool_t o42a_obj_assigner_ft(o42a_obj_t *, o42a_obj_t *);
  */
 typedef const struct o42a_fld_desc {
 
-	O42A_HEADER
-
 	/**
 	 * This function is called for a constructing object to fill the field
 	 * inherited from ancestor.

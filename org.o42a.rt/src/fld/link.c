@@ -20,6 +20,26 @@
 #include "o42a/fields.h"
 
 
+#ifndef NDEBUG
+const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_link = {
+	.type_code = 0x042a0201,
+	.field_num = 2,
+	.name = "o42a_fld_link",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_link, object),
+			.name = "object",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_fld_link, constructor),
+			.name = "constructor",
+		},
+	},
+};
+#endif /* NDEBUG */
+
 void o42a_fld_link_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 

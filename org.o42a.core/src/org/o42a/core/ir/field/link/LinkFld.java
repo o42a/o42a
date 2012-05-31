@@ -27,6 +27,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjOp;
@@ -106,7 +107,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("LinkFld");
+			return factory.rawId("o42a_fld_link");
 		}
 
 		@Override
@@ -119,6 +120,13 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 			return getGenerator()
 					.externalFunction()
 					.link("o42a_obj_ref_stub", OBJECT_REF);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(
+					"_O42A_DEBUG_TYPE_o42a_fld_link",
+					0x042a0201);
 		}
 
 	}

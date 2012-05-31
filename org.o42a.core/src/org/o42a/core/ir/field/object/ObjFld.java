@@ -34,6 +34,7 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
@@ -229,7 +230,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjFld");
+			return factory.rawId("o42a_fld_obj");
 		}
 
 		@Override
@@ -242,6 +243,13 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return getGenerator()
 					.externalFunction()
 					.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(
+					"_O42A_DEBUG_TYPE_o42a_fld_obj",
+					0x042a0200);
 		}
 
 	}

@@ -37,6 +37,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.*;
@@ -220,12 +221,19 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("VarFld");
+			return factory.rawId("o42a_fld_var");
 		}
 
 		@Override
 		protected ObjectRef getSignature() {
 			return OBJECT_REF;
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(
+					"_O42A_DEBUG_TYPE_o42a_fld_var",
+					0x042a0202);
 		}
 
 		@Override

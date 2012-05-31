@@ -87,6 +87,9 @@ struct o42a_fld_ctr {
 
 };
 
+#ifndef NDEBUG
+extern const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_ctr;
+#endif /* NDEBUG */
 
 o42a_bool_t o42a_fld_start(o42a_obj_data_t *, o42a_fld_ctr_t *);
 
