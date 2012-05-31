@@ -77,6 +77,11 @@ typedef struct o42a_dbg_field_info {
 
 } o42a_dbg_field_info_t;
 
+#define O42A_DBG_TYPE_INFO \
+	int32_t type_code; \
+	uint32_t field_num; \
+	const char *name; \
+
 /**
  * Run-time debug type info.
  */
@@ -102,53 +107,36 @@ struct o42a_dbg_type_info {
 
 /** Type info with one field. */
 typedef struct o42a_dbg_type_info1f {
-	int32_t type_code;
-	uint32_t field_num;
-	const char *name;
+	O42A_DBG_TYPE_INFO
 	o42a_dbg_field_info_t fields[1];
 } o42a_dbg_type_info1f_t;
 
 /** Type info with two fields. */
 typedef struct o42a_dbg_type_info2f {
-	int32_t type_code;
-	uint32_t field_num;
-	const char *name;
+	O42A_DBG_TYPE_INFO
 	o42a_dbg_field_info_t fields[2];
 } o42a_dbg_type_info2f_t;
 
 /** Type info with 3 fields. */
 typedef struct o42a_dbg_type_info3f {
-	int32_t type_code;
-	uint32_t field_num;
-	const char *name;
+	O42A_DBG_TYPE_INFO
 	o42a_dbg_field_info_t fields[3];
 } o42a_dbg_type_info3f_t;
 
 /** Type info with 4 fields. */
 typedef struct o42a_dbg_type_info4f {
-	int32_t type_code;
-	uint32_t field_num;
-	const char *name;
+	O42A_DBG_TYPE_INFO
 	o42a_dbg_field_info_t fields[4];
 } o42a_dbg_type_info4f_t;
 
 /** Type info with 5 fields. */
 typedef struct o42a_dbg_type_info5f {
-	int32_t type_code;
-	uint32_t field_num;
-	const char *name;
+	O42A_DBG_TYPE_INFO
 	o42a_dbg_field_info_t fields[5];
 } o42a_dbg_type_info5f_t;
 
 
-extern const struct o42a_dbg {
-
-	const o42a_dbg_type_info_t *rtype_type_info;
-
-} o42a_dbg;
-
-
-extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rtype;
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_rlist;
 
 void o42a_dbg_start_thread(struct o42a_dbg_env *);
 

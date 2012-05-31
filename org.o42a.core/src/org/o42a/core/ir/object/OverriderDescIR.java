@@ -31,6 +31,7 @@ import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.object.Obj;
 
@@ -129,7 +130,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("OverriderDesc");
+			return factory.rawId("o42a_obj_overrider_t");
 		}
 
 		@Override
@@ -137,6 +138,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			this.field = data.addPtr("field", FIELD_DESC_IR);
 			this.definedIn = data.addPtr("defined_in", OBJECT_TYPE);
 			this.body = data.addRelPtr("body");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0113);
 		}
 
 	}

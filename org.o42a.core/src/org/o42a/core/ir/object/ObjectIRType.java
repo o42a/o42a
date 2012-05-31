@@ -30,6 +30,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldIR;
@@ -71,7 +72,7 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.id("ObjectType");
+		return factory.rawId("o42a_obj_stype_t");
 	}
 
 	@Override
@@ -82,6 +83,11 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 		this.fields = new Fields().allocate(data, "fields");
 		this.overriders = new Overriders().allocate(data, "overriders");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
+	}
+
+	@Override
+	protected DebugTypeInfo createTypeInfo() {
+		return externalTypeInfo(0x042a0101);
 	}
 
 	public static final class Op extends StructOp<Op> {

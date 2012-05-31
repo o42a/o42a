@@ -28,6 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 
 
@@ -131,7 +132,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("FieldDesc");
+			return factory.rawId("o42a_obj_field_t");
 		}
 
 		@Override
@@ -139,6 +140,11 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
 			this.kind = data.addInt32("kind");
 			this.fld = data.addRelPtr("fld");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0112);
 		}
 
 	}

@@ -32,6 +32,8 @@ const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_assigner = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_fld_assigner, bound),
 			.name = "bound",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_stype,
 		},
 		{
 			.data_type = O42A_TYPE_FUNC_PTR,
