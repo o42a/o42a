@@ -29,6 +29,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.member.local.Dep;
@@ -139,12 +140,17 @@ public class DepIR implements FldIR {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("Dep");
+			return factory.rawId("o42a_fld_dep");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.DEP.code());
 		}
 
 	}

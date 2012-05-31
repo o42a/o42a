@@ -208,13 +208,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		public void allocate(SubData<Op> data) {
-			super.allocate(data);
-			this.bound = data.addPtr("bound", OBJECT_TYPE);
-			this.assigner = data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER);
-		}
-
-		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
@@ -225,15 +218,20 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected ObjectRef getSignature() {
-			return OBJECT_REF;
+		protected void allocate(SubData<Op> data) {
+			super.allocate(data);
+			this.bound = data.addPtr("bound", OBJECT_TYPE);
+			this.assigner = data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER);
 		}
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_fld_var",
-					0x042a0202);
+			return externalTypeInfo(0x042a0200 | FldKind.VAR.code());
+		}
+
+		@Override
+		protected ObjectRef getSignature() {
+			return OBJECT_REF;
 		}
 
 		@Override

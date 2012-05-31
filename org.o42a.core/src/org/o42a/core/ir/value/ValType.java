@@ -88,7 +88,7 @@ public final class ValType extends Type<ValType.Op> {
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.id("Val");
+		return factory.rawId("o42a_val_t");
 	}
 
 	@Override
@@ -100,9 +100,7 @@ public final class ValType extends Type<ValType.Op> {
 
 	@Override
 	protected DebugTypeInfo createTypeInfo() {
-		return externalTypeInfo(
-				"_O42A_DEBUG_TYPE_o42a_val",
-				0x042a0002);
+		return externalTypeInfo(0x042a0002);
 	}
 
 	public static final class Op extends StructOp<Op> {

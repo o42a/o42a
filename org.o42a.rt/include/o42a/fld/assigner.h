@@ -38,6 +38,10 @@ typedef struct {
 } o42a_fld_assigner;
 
 
+#ifndef NDEBUG
+extern const o42a_dbg_type_info2f_t _O42A_DEBUG_TYPE_o42a_fld_assigner;
+#endif /* NDEBUG */
+
 void o42a_fld_assigner_propagate(o42a_obj_ctable_t *);
 
 void o42a_fld_assigner_inherit(o42a_obj_ctable_t *);

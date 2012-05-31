@@ -40,7 +40,7 @@ public enum FldKind {
 		this.synthetic = synthetic;
 	}
 
-	public final int getCode() {
+	public final int code() {
 		return this.code;
 	}
 

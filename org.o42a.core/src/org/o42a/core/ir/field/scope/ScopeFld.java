@@ -27,6 +27,7 @@ import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FieldFld;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
@@ -144,12 +145,17 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ScopeFld");
+			return factory.rawId("o42a_fld_scope");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
 			this.object = data.addDataPtr("object");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.SCOPE.code());
 		}
 
 	}

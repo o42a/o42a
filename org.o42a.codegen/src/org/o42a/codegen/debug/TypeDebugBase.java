@@ -38,6 +38,20 @@ public abstract class TypeDebugBase {
 		return new DefaultTypeInfo(getType());
 	}
 
+	protected final DebugTypeInfo externalTypeInfo(int code) {
+
+		final String id = getType().codeId(getType().getGenerator()).getId();
+		final String suffix;
+
+		if (id.endsWith("_t")) {
+			suffix = id.substring(0, id.length() - 2);
+		} else {
+			suffix = id;
+		}
+
+		return externalTypeInfo("_O42A_DEBUG_TYPE_" + suffix, code);
+	}
+
 	protected final DebugTypeInfo externalTypeInfo(String name, int code) {
 		return new ExternalTypeInfo(getType(), name, code);
 	}

@@ -34,6 +34,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.*;
@@ -316,7 +317,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("AssignerFld");
+			return factory.rawId("o42a_fld_assigner");
 		}
 
 		@Override
@@ -325,6 +326,11 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 			this.assigner =
 					data.addFuncPtr("assigner_f", VARIABLE_ASSIGNER)
 					.setConstant(true);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.ASSIGNER.code());
 		}
 
 	}

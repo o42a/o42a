@@ -218,12 +218,6 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		public void allocate(SubData<Op> data) {
-			super.allocate(data);
-			this.previous = data.addDataPtr("previous");
-		}
-
-		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
 		}
@@ -231,6 +225,17 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
 			return factory.rawId("o42a_fld_obj");
+		}
+
+		@Override
+		protected void allocate(SubData<Op> data) {
+			super.allocate(data);
+			this.previous = data.addDataPtr("previous");
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(0x042a0200 | FldKind.OBJ.code());
 		}
 
 		@Override
@@ -243,13 +248,6 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return getGenerator()
 					.externalFunction()
 					.link("o42a_obj_constructor_stub", OBJECT_CONSTRUCTOR);
-		}
-
-		@Override
-		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(
-					"_O42A_DEBUG_TYPE_o42a_fld_obj",
-					0x042a0200);
 		}
 
 	}

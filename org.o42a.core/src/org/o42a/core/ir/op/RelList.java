@@ -155,7 +155,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("o42a_rlist_t");
+			return factory.rawId("o42a_rlist_t");
 		}
 
 		@Override
@@ -166,7 +166,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo("_O42A_DEBUG_TYPE_o42a_rlist", 0x042a0001);
+			return externalTypeInfo(0x042a0001);
 		}
 
 	}

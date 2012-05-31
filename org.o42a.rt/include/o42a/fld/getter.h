@@ -36,6 +36,10 @@ typedef struct {
 } o42a_fld_getter;
 
 
+#ifndef NDEBUG
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_fld_getter;
+#endif /* NDEBUG */
+
 void o42a_fld_getter_propagate(o42a_obj_ctable_t*);
 
 void o42a_fld_getter_inherit(o42a_obj_ctable_t*);
