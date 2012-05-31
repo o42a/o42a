@@ -1078,3 +1078,43 @@ void o42a_obj_value_finish(o42a_obj_data_t *const data) {
 	O42A(o42a_obj_unlock(data));
 	O42A_RETURN;
 }
+
+void o42a_obj_use_static(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+
+	assert(!(data->flags & O42A_OBJ_RT) && "Object is not static");
+	if (!(data->flags & O42A_OBJ_RT)) {
+		O42A(o42a_gc_static(o42a_gc_blockof((char *) data + data->start)));
+	}
+
+	O42A_RETURN;
+}
+
+void o42a_obj_use(o42a_obj_use_t *const use, o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+
+	assert(
+			!use->data
+			&& "Object use instance already utilized by another object");
+
+	if (data->flags & O42A_OBJ_RT) {
+		use->data = data;
+		O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	} else {
+		O42A(o42a_obj_use_static(data));
+	}
+
+	O42A_RETURN;
+}
+
+void o42a_obj_unuse(o42a_obj_use_t *const use) {
+	O42A_ENTER(return);
+
+	if (use->data) {
+		O42A(o42a_gc_unuse(
+				o42a_gc_blockof((char *) use->data + use->data->start)));
+		use->data = NULL;
+	}
+
+	O42A_RETURN;
+}

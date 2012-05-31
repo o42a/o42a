@@ -541,8 +541,16 @@ void o42a_gc_signal() {
 void o42a_gc_static(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 
-	assert(!block->list && "Block is not static");
+	if (block->list == O42A_GC_LIST_STATIC) {
+		// Block already registered. Do nothing.
+		O42A_RETURN;
+	}
 	O42A(o42a_gc_lock());
+	if (block->list == O42A_GC_LIST_STATIC) {
+		// Second check after the memory barrier.
+		O42A_RETURN;
+	}
+	assert(!block->list && "Block is not static");
 	O42A(o42a_gc_list_add(block, O42A_GC_LIST_STATIC));
 	O42A(o42a_gc_unlock());
 

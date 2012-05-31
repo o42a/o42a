@@ -84,8 +84,8 @@ static void sweep_test_object(void *const data) {
 }
 
 static const o42a_gc_desc_t test_object_desc = {
-	mark: &mark_test_object,
-	sweep: &sweep_test_object
+	.mark = &mark_test_object,
+	.sweep = &sweep_test_object
 };
 
 static test_object_t *alloc_test_object(

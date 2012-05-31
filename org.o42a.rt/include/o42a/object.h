@@ -800,6 +800,64 @@ o42a_bool_t o42a_obj_value_start(o42a_val_t *, o42a_obj_data_t *);
 void o42a_obj_value_finish(o42a_obj_data_t *);
 
 
+/**
+ * An object use by current thread.
+ *
+ * Invoke o42a_obj_use to declare the object is used and o42a_obj_unuse when it
+ * no longer needed.
+ */
+typedef struct o42a_obj_use {
+
+	/**
+	 * Used object data pointer or NULL if no object use declared.
+	 *
+	 * This should be initialized to NULL initially.
+	 */
+	o42a_obj_data_t *data;
+
+} o42a_obj_use_t;
+
+
+/**
+ * Declares the static object is used.
+ *
+ * This function submits the static object to GC.
+ *
+ * The static objects does not require to be released, so no "unuse" function
+ * exists.
+ *
+ * This should only be called for static objects.
+ */
+void o42a_obj_use_static(o42a_obj_data_t *);
+
+/**
+ * Declare the object is used.
+ *
+ * This function informs GC the object can not be disposed.
+ *
+ * Invoke o42a_obj_unuse to release object.
+ *
+ * This can be invoked for static object too. Then o42a_obj_unuse won't do
+ * anything.
+ *
+ * It is an error to call this function multiple times with the same use
+ * structure.
+ */
+void o42a_obj_use(o42a_obj_use_t *, o42a_obj_data_t *);
+
+/**
+ * Releases the object previously used by o42a_obj_use.
+ *
+ * This function informs the GC the object is no longer needed an thus can be
+ * processed. The o42a_gc_signal function should be called to initiate the GC
+ * processing.
+ *
+ * This function can be invoked even if o42a_obj_use was never called for
+ * the given use. In this case the function does nothing.
+ */
+void o42a_obj_unuse(o42a_obj_use_t *);
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
