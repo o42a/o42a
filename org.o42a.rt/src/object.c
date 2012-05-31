@@ -246,7 +246,8 @@ const o42a_dbg_type_info3f_t _O42A_DEBUG_TYPE_o42a_obj_overrider = {
 			.data_type = O42A_TYPE_DATA_PTR,
 			.offset = offsetof(o42a_obj_overrider_t, field),
 			.name = "field",
-			.type_info = (o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_field,
 		},
 		{
 			.data_type = O42A_TYPE_DATA_PTR,
@@ -361,6 +362,21 @@ _O42A_DEBUG_TYPE_o42a_obj_ctable = {
 			.name = "to",
 			.type_info =
 					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_cside,
+		},
+	},
+};
+
+const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use = {
+	.type_code = 0x042a0123,
+	.field_num = 1,
+	.name = "o42a_obj_use_t",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_obj_use_t, data),
+			.name = "data",
+			.type_info =
+					(o42a_dbg_type_info_t *) &_O42A_DEBUG_TYPE_o42a_obj_data,
 		},
 	},
 };
