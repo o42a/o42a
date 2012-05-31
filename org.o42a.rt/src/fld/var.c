@@ -22,6 +22,36 @@
 #include "o42a/memory/gc.h"
 
 
+#ifndef NDEBUG
+const o42a_dbg_type_info4f_t _O42A_DEBUG_TYPE_o42a_fld_var = {
+	.type_code = 0x042a0202,
+	.field_num = 4,
+	.name = "o42a_fld_var",
+	.fields = {
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_var, object),
+			.name = "object",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_fld_var, constructor),
+			.name = "constructor",
+		},
+		{
+			.data_type = O42A_TYPE_DATA_PTR,
+			.offset = offsetof(o42a_fld_var, bound),
+			.name = "bound",
+		},
+		{
+			.data_type = O42A_TYPE_FUNC_PTR,
+			.offset = offsetof(o42a_fld_var, assigner_f),
+			.name = "assigner_f",
+		},
+	},
+};
+#endif /* NDEBUG */
+
 void o42a_fld_var_propagate(o42a_obj_ctable_t *const ctable) {
 	O42A_ENTER(return);
 

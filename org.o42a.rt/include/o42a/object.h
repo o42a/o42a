@@ -808,6 +808,8 @@ void o42a_obj_value_finish(o42a_obj_data_t *);
  */
 typedef struct o42a_obj_use {
 
+	O42A_HEADER
+
 	/**
 	 * Used object data pointer or NULL if no object use declared.
 	 *

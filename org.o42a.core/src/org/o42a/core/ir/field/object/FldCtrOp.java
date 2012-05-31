@@ -31,6 +31,7 @@ import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldOp;
 
 
@@ -110,6 +111,13 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 			this.next = data.addPtr("next", FLD_CTR_TYPE);
 			this.fld = data.addDataPtr("fld");
 			this.thread = data.addSystem("thread", THREAD_SYSTEM_TYPE);
+		}
+
+		@Override
+		protected DebugTypeInfo createTypeInfo() {
+			return externalTypeInfo(
+					"_O42A_DEBUG_TYPE_o42a_fld_ctr",
+					0x042a0300);
 		}
 
 	}
