@@ -850,6 +850,10 @@ typedef struct o42a_obj_use {
 } o42a_obj_use_t;
 
 
+#ifndef NDEBUG
+extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use;
+#endif /* NDEBUG */
+
 /**
  * Declares the static object is used.
  *
