@@ -20,6 +20,7 @@
 package org.o42a.core.ir;
 
 import static org.o42a.core.ir.op.CtrOp.CTR_TYPE;
+import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
@@ -37,6 +38,8 @@ import org.o42a.core.source.CompilerContext;
 
 
 public abstract class CodeBuilder {
+
+	private static final SignalGC SIGNAL_GC = new SignalGC();
 
 	public static CodeBuilder defaultBuilder(Function<?> function, Obj object) {
 		return new DefaultBuilder(function, object);
@@ -86,6 +89,7 @@ public abstract class CodeBuilder {
 
 	private final CompilerContext context;
 	private final Function<?> function;
+	private boolean signalGC;
 	private int nameSeq;
 
 	protected CodeBuilder(CompilerContext context, Function<?> function) {
@@ -139,6 +143,36 @@ public abstract class CodeBuilder {
 
 	public final ObjectOp objectAncestor(CodeDirs dirs, Obj object) {
 		return objectAncestor(dirs, host(), object);
+	}
+
+	public final void signalGC() {
+		if (this.signalGC) {
+			return;
+		}
+		this.signalGC = true;
+
+		final AllocationCode allocation =
+				getFunction().getAllocator().allocation();
+
+		allocation.addLastDisposal(SIGNAL_GC);
+	}
+
+	private static final class SignalGC implements Disposal {
+
+		@Override
+		public void dispose(Code code) {
+			code.getGenerator()
+			.externalFunction()
+			.link("o42a_gc_signal", NO_ARG)
+			.op(null, code)
+			.call(code);
+		}
+
+		@Override
+		public String toString() {
+			return "SignalGC";
+		}
+
 	}
 
 }

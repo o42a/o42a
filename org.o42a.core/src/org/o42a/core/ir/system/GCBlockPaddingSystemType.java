@@ -24,17 +24,17 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.data.SystemType;
 
 
-public final class GCBlockSystemType extends SystemType {
+public final class GCBlockPaddingSystemType extends SystemType {
 
-	public static final GCBlockSystemType GC_BLOCK_SYSTEM_TYPE =
-			new GCBlockSystemType();
+	public static final GCBlockPaddingSystemType GC_BLOCK_PADDING_SYSTEM_TYPE =
+			new GCBlockPaddingSystemType();
 
-	private GCBlockSystemType() {
+	private GCBlockPaddingSystemType() {
 	}
 
 	@Override
 	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("o42a_gc_block_t");
+		return factory.rawId("o42a_gc_block_padding_t");
 	}
 
 }

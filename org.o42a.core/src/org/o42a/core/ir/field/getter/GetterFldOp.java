@@ -52,6 +52,18 @@ public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
+	public ObjectOp target(CodeDirs dirs) {
+
+		final ObjectOp target = super.target(dirs);
+
+		if (dirs.code().exists()) {
+			target.use(dirs.code());
+		}
+
+		return target;
+	}
+
+	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
 	}

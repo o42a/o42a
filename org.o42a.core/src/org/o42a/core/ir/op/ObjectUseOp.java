@@ -58,14 +58,15 @@ public final class ObjectUseOp extends IROp {
 	private ObjectUseOp(CodeId id, AllocationCode code, ObjectOp object) {
 		super(object.getBuilder());
 		this.object = object;
-		if (object.getPrecision().isExact()) {
+		/*if (object.getPrecision().isExact()) {
 			this.ptr = null;
-		} else {
+		} else {*/
 			this.ptr = code.allocate(id, OBJECT_USE_TYPE);
 			ptr().objectData(null, code)
 			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
 			code.addDisposal(new UnuseObject(this));
-		}
+			getBuilder().signalGC();
+		//}
 	}
 
 	public final ObjectOp object() {
@@ -130,7 +131,7 @@ public final class ObjectUseOp extends IROp {
 		public final StructRecOp<ObjectIRData.Op> objectData(
 				CodeId id,
 				Code code) {
-			return writer().ptr(id, code, getType().objectData());
+			return ptr(id, code, getType().objectData());
 		}
 
 	}

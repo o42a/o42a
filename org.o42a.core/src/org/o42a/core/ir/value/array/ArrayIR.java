@@ -82,7 +82,7 @@ public class ArrayIR {
 		return this.val = new Val(
 				array.getValueStruct(),
 				VAL_CONDITION | VAL_EXTERNAL | VAL_STATIC
-				| (itemsLayout.getAlignmentShift() << 8),
+				| (itemsLayout.alignmentShift() << 8),
 				items.getItems().length,
 				itemsData.getPointer().toAny());
 	}
