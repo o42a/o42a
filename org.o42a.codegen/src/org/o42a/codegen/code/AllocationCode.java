@@ -32,6 +32,7 @@ public final class AllocationCode extends Inset {
 	public static final Disposal NO_DISPOSAL = new NoDisposal();
 
 	private final AllocationWriter writer;
+	private Disposal lastDisposal = NO_DISPOSAL;
 	private Disposal disposal = NO_DISPOSAL;
 
 	AllocationCode(Allocator allocator) {
@@ -46,6 +47,17 @@ public final class AllocationCode extends Inset {
 			this.disposal = disposal;
 		} else {
 			this.disposal = new CombinedDisposal(this.disposal, disposal);
+		}
+	}
+
+	public final void addLastDisposal(Disposal disposal) {
+		assert disposal != null :
+			"Disposal not specified";
+		if (this.lastDisposal == NO_DISPOSAL) {
+			this.lastDisposal = disposal;
+		} else {
+			this.lastDisposal =
+					new CombinedDisposal(disposal, this.lastDisposal);
 		}
 	}
 
@@ -96,6 +108,7 @@ public final class AllocationCode extends Inset {
 
 	final void dispose(Block code) {
 		this.disposal.dispose(code);
+		this.lastDisposal.dispose(code);
 		writer().dispose(code.writer());
 	}
 
