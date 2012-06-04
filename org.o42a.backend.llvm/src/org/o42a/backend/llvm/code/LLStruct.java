@@ -158,7 +158,7 @@ public class LLStruct<S extends StructOp<S>>
 				id,
 				getAllocClass(),
 				llvm.nextPtr(),
-				field(id, llvm, field),
+				typeAlloc.exists() ? field(id, llvm, field) : 0L,
 				typeAlloc);
 	}
 

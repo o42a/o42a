@@ -35,7 +35,7 @@
 using namespace llvm;
 
 
-extern o42a_layout_t o42a_layout(uint8_t, size_t size);
+extern o42a_layout_t o42a_layout(uint8_t, size_t);
 
 jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadLayout(
 		JNIEnv *,
@@ -55,10 +55,10 @@ jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCondLayout(
 	return O42A_LAYOUT(pthread_cond_t);
 }
 
-jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockLayout(
+jint Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockPadding(
 		JNIEnv *,
 		jclass) {
-	return O42A_LAYOUT(struct _o42a_gc_block);
+	return sizeof(struct _o42a_gc_block) - sizeof(o42a_gc_block_t);
 }
 
 jlong Java_org_o42a_backend_llvm_data_LLVMDataAllocator_binaryConstant(

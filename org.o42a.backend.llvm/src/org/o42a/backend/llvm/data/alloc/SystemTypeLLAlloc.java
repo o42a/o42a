@@ -55,6 +55,8 @@ public class SystemTypeLLAlloc extends LLDAlloc<SystemOp> {
 	}
 
 	public final long getTypePtr() {
+		assert exists() :
+			"System type " + this + " does not exist";
 		return this.typePtr;
 	}
 
@@ -66,6 +68,10 @@ public class SystemTypeLLAlloc extends LLDAlloc<SystemOp> {
 	@Override
 	public final DataLayout getLayout() {
 		return this.layout;
+	}
+
+	public final boolean exists() {
+		return this.typePtr != 0L;
 	}
 
 	@Override

@@ -33,10 +33,10 @@ JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_pthreadCon
 
 /*
  * Class:     org_o42a_backend_llvm_data_SystemTypeInfo
- * Method:    gcBlockLayout
+ * Method:    gcBlockPadding
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockLayout
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_SystemTypeInfo_gcBlockPadding
   (JNIEnv *, jclass);
 
 #ifdef __cplusplus

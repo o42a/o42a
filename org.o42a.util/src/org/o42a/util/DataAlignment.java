@@ -31,11 +31,11 @@ public enum DataAlignment {
 	ALIGN_64(64, 6),
 	ALIGN_128(128, 7);
 
-	public static DataAlignment alignmentByShift(byte shift) {
+	public static DataAlignment alignmentByShift(int shift) {
 		return Registry.byShift[shift];
 	}
 
-	public static DataAlignment alignmentByBytes(short bytes) {
+	public static DataAlignment alignmentByBytes(int bytes) {
 
 		final int diff = bytes - 4;
 

@@ -161,6 +161,11 @@ public class Debug {
 		}
 
 		final Type<?> type = typeData.getInstance();
+
+		if (!type.isDebuggable()) {
+			return;
+		}
+
 		final DebugTypeInfo typeInfo = type.createTypeInfo();
 
 		final DebugTypeInfo old =

@@ -310,7 +310,7 @@ public class LLVMDataAllocator implements DataAllocator {
 		final SystemTypeLLAlloc typeAlloc =
 				(SystemTypeLLAlloc) data.getSystemType().getAllocation();
 
-		if (allocate(enclosing)) {
+		if (typeAlloc.exists() && allocate(enclosing)) {
 			allocateStruct(
 					getModulePtr(),
 					typeDataPtr(enclosing),
@@ -518,7 +518,7 @@ public class LLVMDataAllocator implements DataAllocator {
 			long modulePtr,
 			long enclosingPtr,
 			int numBytes) {
-		if (ptrLayout().getAlignment().getBytes() != numBytes) {
+		if (ptrLayout().alignment().getBytes() != numBytes) {
 			return false;
 		}
 		allocatePtr(modulePtr, enclosingPtr);
@@ -538,18 +538,18 @@ public class LLVMDataAllocator implements DataAllocator {
 
 			switch (numBytes) {
 			case 8:
-				alignment = int64layout().getAlignment().getBytes();
+				alignment = int64layout().alignment().getBytes();
 				break;
 			case 4:
-				alignment = int32layout().getAlignment().getBytes();
+				alignment = int32layout().alignment().getBytes();
 				break;
 			case 2:
-				alignment = int16layout().getAlignment().getBytes();
+				alignment = int16layout().alignment().getBytes();
 				break;
 			default:
 				alignment =
 						new DataLayout(intLayout(modulePtr, numBytes << 3))
-						.getAlignment()
+						.alignment()
 						.getBytes();
 			}
 
@@ -569,19 +569,19 @@ public class LLVMDataAllocator implements DataAllocator {
 			int numBytes) {
 		switch (numBytes) {
 		case 8:
-			if (fp64layout().getAlignment().getBytes() != numBytes) {
+			if (fp64layout().alignment().getBytes() != numBytes) {
 				return false;
 			}
 			allocateFp64(modulePtr, enclosingPtr);
 			return true;
 		case 16:
-			if (fp128layout().getAlignment().getBytes() != numBytes) {
+			if (fp128layout().alignment().getBytes() != numBytes) {
 				return false;
 			}
 			allocateFp128(modulePtr, enclosingPtr);
 			return true;
 		case 4:
-			if (fp32layout().getAlignment().getBytes() != numBytes) {
+			if (fp32layout().alignment().getBytes() != numBytes) {
 				return false;
 			}
 			allocateFp32(modulePtr, enclosingPtr);
