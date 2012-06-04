@@ -34,8 +34,11 @@
  */
 enum o42a_gc_lists {
 
-	/** No list. This is only possible for newly created blocks. */
-	O42A_GC_LIST_NONE = 0,
+	/** Statically-allocated block does not belong to any list yet. */
+	O42A_GC_LIST_NEW_STATIC = 0,
+
+	/** Newly allocated block does not belong to any list yet. */
+	O42A_GC_LIST_NEW_ALLOCATED = 1,
 
 	/**
 	 * A "gray" list flag. The "gray" list is a list of data objects known to be
@@ -153,7 +156,7 @@ o42a_gc_block_t *o42a_gc_balloc(
 	}
 
 	block->lock = 0;
-	block->list = O42A_GC_LIST_NONE;
+	block->list = O42A_GC_LIST_NEW_ALLOCATED;
 	block->flags = 0;
 	block->use_count = 0;
 	block->desc = desc;
@@ -244,11 +247,17 @@ static inline void o42a_gc_list_add(
 		const uint8_t list_id) {
 	O42A_ENTER(return);
 
-	assert(!block->list && "Block already belongs to another GC list");
+	assert(
+			block->list < O42A_GC_LIST_MIN
+			&& "Block already belongs to another GC list");
 	assert(
 			list_id >= O42A_GC_LIST_MIN
 			&& list_id <= O42A_GC_LIST_MAX
 			&& "Wrong GC list identifier");
+	assert(
+			(list_id != O42A_GC_LIST_STATIC
+					|| block->list == O42A_GC_LIST_NEW_STATIC)
+			&& "Can not add a non-static block to the static list");
 
 	o42a_gc_list_t *const list = &gc_lists[list_id - O42A_GC_LIST_MIN];
 	o42a_gc_block_t *const last = list->last;
@@ -278,7 +287,7 @@ static inline void o42a_gc_list_remove(o42a_gc_block_t *const block) {
 	o42a_gc_block_t *const prev = block->prev;
 	o42a_gc_block_t *const next = block->next;
 
-	block->list = O42A_GC_LIST_NONE;
+	block->list = O42A_GC_LIST_NEW_ALLOCATED;
 	if (next) {
 		next->prev = prev;
 	} else {
@@ -551,7 +560,7 @@ void o42a_gc_static(o42a_gc_block_t *const block) {
 		O42A(o42a_gc_unlock());
 		O42A_RETURN;
 	}
-	assert(!block->list && "Block is not static");
+	assert(block->list == O42A_GC_LIST_NEW_STATIC && "Block is not static");
 	O42A(o42a_gc_list_add(block, O42A_GC_LIST_STATIC));
 	O42A(o42a_gc_unlock());
 
@@ -577,7 +586,12 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 	O42A(o42a_gc_lock_block(block));
 
 	switch (block->list) {
-	case O42A_GC_LIST_NONE:
+	case O42A_GC_LIST_NEW_STATIC:
+		// Static block not initialized yet. Add to static list.
+		O42A(o42a_gc_static(block));
+		O42A(o42a_gc_unlock_block(block));
+		O42A_RETURN;
+	case O42A_GC_LIST_NEW_ALLOCATED:
 		// Not initialized yet. Add to used list.
 		block->use_count = 1;
 
@@ -643,10 +657,24 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 void o42a_gc_mark(o42a_gc_block_t *block) {
 	O42A_ENTER(return);
 
-	o42a_bool_t mark;
-
 	O42A(o42a_gc_lock_block(block));
-	mark = O42A(o42a_gc_do_mark(block));
+
+	if (block->list < O42A_GC_LIST_MIN) {
+		// Block is not initialized yet.
+		if (block->list == O42A_GC_LIST_NEW_STATIC) {
+			// Add static block to static list.
+			O42A(o42a_gc_static(block));
+		} else {
+			// Add newly allocated block to the next oddity white list.
+			O42A(o42a_gc_lock());
+			O42A(o42a_gc_list_add(
+					block,
+					O42A_GC_LIST_WHITE_FLAG | gc_next_oddity));
+			O42A(o42a_gc_unlock());
+		}
+	}
+
+	o42a_bool_t mark = O42A(o42a_gc_do_mark(block));
 	O42A(o42a_gc_unlock_block(block));
 
 	// Mark the referenced data.
