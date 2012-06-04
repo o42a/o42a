@@ -36,7 +36,7 @@ public abstract class OpBE<U extends Op> extends InstrBE {
 	public OpBE(CodeId id, CCode<?> code) {
 		super(code);
 		assert id != null :
-			"Operation identifier not spoecified";
+			"Operation identifier not specified";
 		this.id = id;
 	}
 

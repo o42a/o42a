@@ -51,7 +51,7 @@ public abstract class DebugBlockBase extends OpBlockBase {
 
 		final Allocator code = block.allocator(id != null ? id : id("debug"));
 
-		code.allocation().addDisposal(TASK_DISPOSAL);
+		code.allocation().addLastDisposal(TASK_DISPOSAL);
 
 		final DebugStackFrameOp stackFrame = code.allocation().allocate(
 				code.id("task_stack_frame"),
