@@ -24,8 +24,6 @@
 
 #include "o42a/memory/gc.h"
 
-const struct o42a_dbg o42a_dbg;
-
 
 //////////////////// Test object definition
 
