@@ -25,7 +25,6 @@
 
 #include "o42a/error.h"
 #include "o42a/field.h"
-#include "o42a/memory/gc.h"
 
 
 #ifndef NDEBUG
@@ -788,10 +787,22 @@ static inline void fill_field_infos(
 #endif /* NDEBUG */
 
 
+struct obj_bodies {
+	O42A_HEADER
+	o42a_obj_body_t first_body;
+};
+
+static inline o42a_obj_data_t *o42a_obj_gc_data(void *const obj_data) {
+
+	struct obj_bodies *const bodies = obj_data;
+
+	return &O42A(o42a_obj_type(&bodies->first_body))->type.data;
+}
+
 static void o42a_obj_gc_marker(void *const obj_data) {
 	O42A_ENTER(return);
 
-	o42a_obj_data_t *const data = obj_data;
+	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
 
 	// Mark object value.
 	O42A(data->value_type->mark(data));
@@ -842,14 +853,14 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 static void o42a_obj_gc_sweeper(void *const obj_data) {
 	O42A_ENTER(return);
 
-	o42a_obj_data_t *const data = obj_data;
+	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
 
 	O42A(data->value_type->sweep(data));
 
 	O42A_RETURN;
 }
 
-static const o42a_gc_desc_t o42a_obj_gc_desc = {
+const o42a_gc_desc_t o42a_obj_gc_desc = {
 	.mark = &o42a_obj_gc_marker,
 	.sweep = &o42a_obj_gc_sweeper,
 };
