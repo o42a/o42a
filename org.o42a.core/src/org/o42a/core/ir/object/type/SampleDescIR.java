@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -29,6 +29,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.object.ObjectBodyIR;
 
 
 public final class SampleDescIR implements Content<SampleDescIR.Type> {
@@ -37,7 +38,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 	private final ObjectBodyIR bodyIR;
 
-	SampleDescIR(ObjectBodyIR bodyIR) {
+	public SampleDescIR(ObjectBodyIR bodyIR) {
 		this.bodyIR = bodyIR;
 	}
 

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.IRUtil.encodeMemberId;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -28,6 +28,7 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
@@ -36,13 +37,13 @@ import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
 
 
-final class AnonymousObjOp extends ObjectOp {
+public final class AnonymousObjOp extends ObjectOp {
 
 	private final DataOp ptr;
 	private final Obj wellKnownType;
 	private ValueOp value;
 
-	AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
+	public AnonymousObjOp(ObjectTypeOp data, DataOp ptr, Obj wellKnownType) {
 		super(data);
 		this.ptr = ptr;
 		assert wellKnownType != null :
@@ -50,7 +51,7 @@ final class AnonymousObjOp extends ObjectOp {
 		this.wellKnownType = wellKnownType;
 	}
 
-	AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
+	public AnonymousObjOp(CodeBuilder builder, DataOp ptr, Obj wellKnownType) {
 		super(builder, DERIVED);
 		this.ptr = ptr;
 		assert wellKnownType != null :

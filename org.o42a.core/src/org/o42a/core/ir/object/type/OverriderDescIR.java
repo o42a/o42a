@@ -17,60 +17,64 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
+import org.o42a.codegen.code.op.RelRecOp;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.field.Fld;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.object.Obj;
 
 
-public final class FieldDescIR implements Content<FieldDescIR.Type> {
+public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
-	public static final Type FIELD_DESC_IR = new Type();
+	public static final Type OVERRIDER_DESC_IR = new Type();
 
-	private final FldIR fld;
-	private Type instance;
+	private final Fld fld;
 
-	FieldDescIR(FldIR fld) {
+	public OverriderDescIR(Fld fld) {
 		this.fld = fld;
 	}
 
-	public final FldIR fld() {
+	public final Fld fld() {
 		return this.fld;
-	}
-
-	public final Type getInstance() {
-		return this.instance;
 	}
 
 	@Override
 	public void allocated(Type instance) {
-		this.instance = instance;
 	}
 
 	@Override
 	public void fill(Type instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectIR declaredInIR = this.fld.getDeclaredIn().ir(generator);
+		final ObjectIR declaredInIR =
+				this.fld.getDeclaredIn().ir(this.fld.getGenerator());
+		final FieldDescIR fieldDescIR =
+				declaredInIR.getTypeIR().fieldDescIR(
+						this.fld.getKey());
+		final Obj definedIn = this.fld.getDefinedIn();
+		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
 
-		instance.declaredIn().setConstant(true).setValue(
-				declaredInIR.getTypeIR().getObjectType()
-				.data(generator).getPointer());
-		instance.kind().setConstant(true).setValue(
-				this.fld.getKind().code());
-		instance.fld().setConstant(true).setValue(
-				this.fld.data(generator).getPointer()
-				.relativeTo(
-						this.fld.getBodyIR().data(generator).getPointer()));
+		instance.field().setConstant(true).setValue(
+				fieldDescIR.getInstance().pointer(generator));
+		instance.definedIn().setConstant(true).setValue(
+				definedInIR.getTypeIR().getObjectType().pointer(generator));
+		instance.body().setConstant(true).setValue(
+				this.fld.getBodyIR().pointer(generator).relativeTo(
+						instance.pointer(generator)));
 	}
 
 	@Override
@@ -89,16 +93,12 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> declaredIn(Code code) {
-			return ptr(null, code, getType().declaredIn());
-		}
-
-		public final Int32recOp kind(Code code) {
-			return int32(null, code, getType().kind());
+		public final StructRecOp<FieldDescIR.Op> field(Code code) {
+			return ptr(null, code, getType().field());
 		}
 
 		public final RelRecOp fld(Code code) {
-			return relPtr(null, code, getType().fld());
+			return relPtr(null, code, getType().body());
 		}
 
 	}
@@ -106,23 +106,23 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> declaredIn;
-		private Int32rec kind;
-		private RelRec fld;
+		private StructRec<FieldDescIR.Op> field;
+		private StructRec<ObjectIRType.Op> definedIn;
+		private RelRec body;
 
 		private Type() {
 		}
 
-		public final StructRec<ObjectIRType.Op> declaredIn() {
-			return this.declaredIn;
+		public final StructRec<FieldDescIR.Op> field() {
+			return this.field;
 		}
 
-		public final Int32rec kind() {
-			return this.kind;
+		public final StructRec<ObjectIRType.Op> definedIn() {
+			return this.definedIn;
 		}
 
-		public final RelRec fld() {
-			return this.fld;
+		public final RelRec body() {
+			return this.body;
 		}
 
 		@Override
@@ -132,19 +132,19 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_field_t");
+			return factory.rawId("o42a_obj_overrider_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
-			this.kind = data.addInt32("kind");
-			this.fld = data.addRelPtr("fld");
+			this.field = data.addPtr("field", FIELD_DESC_IR);
+			this.definedIn = data.addPtr("defined_in", OBJECT_TYPE);
+			this.body = data.addRelPtr("body");
 		}
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0112);
+			return externalTypeInfo(0x042a0113);
 		}
 
 	}

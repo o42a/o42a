@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl.value;
+package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;

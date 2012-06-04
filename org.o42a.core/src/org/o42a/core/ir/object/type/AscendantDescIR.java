@@ -17,9 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
-import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
@@ -32,22 +31,23 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.field.Fld;
-import org.o42a.core.object.Obj;
+import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRType;
 
 
-public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
+public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
-	public static final Type OVERRIDER_DESC_IR = new Type();
+	public static final Type ASCENDANT_DESC_IR = new Type();
 
-	private final Fld fld;
+	private final ObjectBodyIR bodyIR;
 
-	OverriderDescIR(Fld fld) {
-		this.fld = fld;
+	public AscendantDescIR(ObjectBodyIR bodyIR) {
+		this.bodyIR = bodyIR;
 	}
 
-	public final Fld fld() {
-		return this.fld;
+	public final ObjectBodyIR getBodyIR() {
+		return this.bodyIR;
 	}
 
 	@Override
@@ -55,29 +55,23 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	}
 
 	@Override
-	public void fill(Type instance) {
+	public void fill(final Type instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectIR declaredInIR =
-				this.fld.getDeclaredIn().ir(this.fld.getGenerator());
-		final FieldDescIR fieldDescIR =
-				declaredInIR.getTypeIR().fieldDescIR(
-						this.fld.getKey());
-		final Obj definedIn = this.fld.getDefinedIn();
-		final ObjectIR definedInIR = definedIn.ir(this.fld.getGenerator());
+		final ObjectIR ascendantIR =
+				this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
 
-		instance.field().setConstant(true).setValue(
-				fieldDescIR.getInstance().pointer(generator));
-		instance.definedIn().setConstant(true).setValue(
-				definedInIR.getTypeIR().getObjectType().pointer(generator));
+		instance.type().setConstant(true).setValue(
+				ascendantIR.getTypeIR().getObjectType()
+				.data(generator).getPointer());
 		instance.body().setConstant(true).setValue(
-				this.fld.getBodyIR().pointer(generator).relativeTo(
-						instance.pointer(generator)));
+				this.bodyIR.data(generator).getPointer().relativeTo(
+						instance.data(generator).getPointer()));
 	}
 
 	@Override
 	public String toString() {
-		return this.fld.toString();
+		return this.bodyIR.toString();
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -91,11 +85,11 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<FieldDescIR.Op> field(Code code) {
-			return ptr(null, code, getType().field());
+		public final StructRecOp<ObjectIRType.Op> type(Code code) {
+			return ptr(null, code, getType().type());
 		}
 
-		public final RelRecOp fld(Code code) {
+		public final RelRecOp body(Code code) {
 			return relPtr(null, code, getType().body());
 		}
 
@@ -104,19 +98,14 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<FieldDescIR.Op> field;
-		private StructRec<ObjectIRType.Op> definedIn;
+		private StructRec<ObjectIRType.Op> type;
 		private RelRec body;
 
 		private Type() {
 		}
 
-		public final StructRec<FieldDescIR.Op> field() {
-			return this.field;
-		}
-
-		public final StructRec<ObjectIRType.Op> definedIn() {
-			return this.definedIn;
+		public final StructRec<ObjectIRType.Op> type() {
+			return this.type;
 		}
 
 		public final RelRec body() {
@@ -130,19 +119,18 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_overrider_t");
+			return factory.rawId("o42a_obj_ascendant_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.field = data.addPtr("field", FIELD_DESC_IR);
-			this.definedIn = data.addPtr("defined_in", OBJECT_TYPE);
+			this.type = data.addPtr("type", OBJECT_TYPE);
 			this.body = data.addRelPtr("body");
 		}
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0113);
+			return externalTypeInfo(0x042a0110);
 		}
 
 	}

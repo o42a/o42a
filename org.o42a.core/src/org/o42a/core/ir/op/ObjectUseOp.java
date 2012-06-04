@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.op;
+package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.object.op.ObjectUnuseFunc.OBJECT_UNUSE;
-import static org.o42a.core.ir.object.op.ObjectUseFunc.OBJECT_USE;
+import static org.o42a.core.ir.op.ObjectDataFunc.OBJECT_DATA;
+import static org.o42a.core.ir.op.ObjectUnuseFunc.OBJECT_UNUSE;
+import static org.o42a.core.ir.op.ObjectUseFunc.OBJECT_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -36,7 +36,6 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.IROp;
 
 
 public final class ObjectUseOp extends IROp {
