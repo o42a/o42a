@@ -175,6 +175,13 @@ inline void *o42a_gc_alloc(
 
 inline void o42a_gc_free(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
+	O42A_DEBUG("Free: %p\n", (void *) block);
+	assert(
+			block->list != O42A_GC_LIST_NEW_STATIC
+			&& "Attempt to free a static memory block");
+	assert(
+			block->list != O42A_GC_LIST_STATIC
+			&& "Attempt to free a static memory block");
 	O42A(free(block));
 	O42A_RETURN;
 }
@@ -250,14 +257,16 @@ static inline void o42a_gc_list_add(
 	assert(
 			block->list < O42A_GC_LIST_MIN
 			&& "Block already belongs to another GC list");
-	assert(
-			list_id >= O42A_GC_LIST_MIN
-			&& list_id <= O42A_GC_LIST_MAX
-			&& "Wrong GC list identifier");
+	assert(list_id >= O42A_GC_LIST_MIN && "Wrong GC list identifier");
+	assert(list_id <= O42A_GC_LIST_MAX && "Wrong GC list identifier");
 	assert(
 			(list_id != O42A_GC_LIST_STATIC
 					|| block->list == O42A_GC_LIST_NEW_STATIC)
 			&& "Can not add a non-static block to the static list");
+	assert(
+			(list_id == O42A_GC_LIST_STATIC
+					|| block->list != O42A_GC_LIST_NEW_STATIC)
+			&& "Can not add the static block to a non-static list");
 
 	o42a_gc_list_t *const list = &gc_lists[list_id - O42A_GC_LIST_MIN];
 	o42a_gc_block_t *const last = list->last;

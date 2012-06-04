@@ -24,18 +24,16 @@ extern size_t o42a_layout_size(o42a_layout_t);
 
 extern uint8_t o42a_layout_ashift(o42a_layout_t);
 
-extern uint8_t o42a_layout_alignment(const o42a_layout_t layout);
+extern uint8_t o42a_layout_alignment(o42a_layout_t);
 
-extern size_t o42a_layout_offset(size_t start, o42a_layout_t layout);
+extern size_t o42a_layout_offset(size_t, o42a_layout_t);
 
-extern size_t o42a_layout_pad(size_t start, o42a_layout_t layout);
+extern size_t o42a_layout_pad(size_t, o42a_layout_t);
 
-extern size_t o42a_layout_array_size(o42a_layout_t layout, size_t num_elements);
+extern size_t o42a_layout_array_size(o42a_layout_t, size_t);
 
-extern o42a_layout_t o42a_layout_array(
-		o42a_layout_t layout,
-		size_t num_elements);
+extern o42a_layout_t o42a_layout_array(o42a_layout_t, size_t);
 
-extern o42a_layout_t o42a_layout(const uint8_t, const size_t);
+extern o42a_layout_t o42a_layout(uint8_t, size_t);
 
 extern o42a_layout_t o42a_layout_both(o42a_layout_t, o42a_layout_t);

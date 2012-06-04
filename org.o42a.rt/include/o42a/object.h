@@ -22,6 +22,7 @@
 
 #include <pthread.h>
 
+#include "o42a/memory/gc.h"
 #include "o42a/types.h"
 #include "o42a/value.h"
 
@@ -565,6 +566,10 @@ extern const struct _O42A_DEBUG_TYPE_o42a_obj_ctable {
 } _O42A_DEBUG_TYPE_o42a_obj_ctable;
 
 #endif /* NDEBUG */
+
+
+/** Garbage-collected object descriptor. */
+extern const o42a_gc_desc_t o42a_obj_gc_desc;
 
 /**
  * Retrieves object type from it's body.
