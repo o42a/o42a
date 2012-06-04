@@ -116,7 +116,7 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 
 #define O42A(exp) (exp)
 
-#define O42A_START_THREAD
+#define O42A_START_THREAD(_thread_name)
 
 #define O42A_ENTER(return_null)
 
@@ -151,8 +151,9 @@ typedef struct __attribute__ ((__packed__)) o42a_dbg_header {
 #define O42A(exp) (o42a_dbg_set_line(__LINE__), exp)
 
 
-#define O42A_START_THREAD \
+#define O42A_START_THREAD(_thread_name) \
 	struct o42a_dbg_env __thread_dbg_env__ = { \
+		.thread_name = (_thread_name), \
 		.stack_frame = NULL, \
 		.command = O42A_DBG_CMD_EXEC, \
 		.indent = 0, \

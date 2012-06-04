@@ -56,7 +56,11 @@ struct o42a_dbg_stack_frame {
 
 struct o42a_dbg_env {
 
+	const char *thread_name;
+
 	o42a_dbg_stack_frame_t *stack_frame;
+
+	FILE *output;
 
 	uint8_t command;
 
