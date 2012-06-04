@@ -548,6 +548,7 @@ void o42a_gc_static(o42a_gc_block_t *const block) {
 	O42A(o42a_gc_lock());
 	if (block->list == O42A_GC_LIST_STATIC) {
 		// Second check after the memory barrier.
+		O42A(o42a_gc_unlock());
 		O42A_RETURN;
 	}
 	assert(!block->list && "Block is not static");
