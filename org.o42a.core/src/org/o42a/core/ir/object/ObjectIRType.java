@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.object.FieldDescIR.FIELD_DESC_IR;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.object.OverriderDescIR.OVERRIDER_DESC_IR;
+import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
+import static org.o42a.core.ir.object.type.OverriderDescIR.OVERRIDER_DESC_IR;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -34,6 +34,8 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.object.type.FieldDescIR;
+import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
 
 

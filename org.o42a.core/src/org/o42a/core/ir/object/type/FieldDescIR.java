@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object;
+package org.o42a.core.ir.object.type;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
@@ -26,49 +26,58 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.RelRecOp;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRType;
 
 
-public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
+public final class FieldDescIR implements Content<FieldDescIR.Type> {
 
-	public static final Type ASCENDANT_DESC_IR = new Type();
+	public static final Type FIELD_DESC_IR = new Type();
 
-	private final ObjectBodyIR bodyIR;
+	private final FldIR fld;
+	private Type instance;
 
-	AscendantDescIR(ObjectBodyIR bodyIR) {
-		this.bodyIR = bodyIR;
+	public FieldDescIR(FldIR fld) {
+		this.fld = fld;
 	}
 
-	public final ObjectBodyIR getBodyIR() {
-		return this.bodyIR;
+	public final FldIR fld() {
+		return this.fld;
+	}
+
+	public final Type getInstance() {
+		return this.instance;
 	}
 
 	@Override
 	public void allocated(Type instance) {
+		this.instance = instance;
 	}
 
 	@Override
-	public void fill(final Type instance) {
+	public void fill(Type instance) {
 
 		final Generator generator = instance.getGenerator();
-		final ObjectIR ascendantIR =
-				this.bodyIR.getAscendant().ir(this.bodyIR.getGenerator());
+		final ObjectIR declaredInIR = this.fld.getDeclaredIn().ir(generator);
 
-		instance.type().setConstant(true).setValue(
-				ascendantIR.getTypeIR().getObjectType()
+		instance.declaredIn().setConstant(true).setValue(
+				declaredInIR.getTypeIR().getObjectType()
 				.data(generator).getPointer());
-		instance.body().setConstant(true).setValue(
-				this.bodyIR.data(generator).getPointer().relativeTo(
-						instance.data(generator).getPointer()));
+		instance.kind().setConstant(true).setValue(
+				this.fld.getKind().code());
+		instance.fld().setConstant(true).setValue(
+				this.fld.data(generator).getPointer()
+				.relativeTo(
+						this.fld.getBodyIR().data(generator).getPointer()));
 	}
 
 	@Override
 	public String toString() {
-		return this.bodyIR.toString();
+		return this.fld.toString();
 	}
 
 	public static final class Op extends StructOp<Op> {
@@ -82,12 +91,16 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> type(Code code) {
-			return ptr(null, code, getType().type());
+		public final StructRecOp<ObjectIRType.Op> declaredIn(Code code) {
+			return ptr(null, code, getType().declaredIn());
 		}
 
-		public final RelRecOp body(Code code) {
-			return relPtr(null, code, getType().body());
+		public final Int32recOp kind(Code code) {
+			return int32(null, code, getType().kind());
+		}
+
+		public final RelRecOp fld(Code code) {
+			return relPtr(null, code, getType().fld());
 		}
 
 	}
@@ -95,18 +108,23 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> type;
-		private RelRec body;
+		private StructRec<ObjectIRType.Op> declaredIn;
+		private Int32rec kind;
+		private RelRec fld;
 
 		private Type() {
 		}
 
-		public final StructRec<ObjectIRType.Op> type() {
-			return this.type;
+		public final StructRec<ObjectIRType.Op> declaredIn() {
+			return this.declaredIn;
 		}
 
-		public final RelRec body() {
-			return this.body;
+		public final Int32rec kind() {
+			return this.kind;
+		}
+
+		public final RelRec fld() {
+			return this.fld;
 		}
 
 		@Override
@@ -116,18 +134,19 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_ascendant_t");
+			return factory.rawId("o42a_obj_field_t");
 		}
 
 		@Override
 		protected void allocate(SubData<Op> data) {
-			this.type = data.addPtr("type", OBJECT_TYPE);
-			this.body = data.addRelPtr("body");
+			this.declaredIn = data.addPtr("declared_in", OBJECT_TYPE);
+			this.kind = data.addInt32("kind");
+			this.fld = data.addRelPtr("fld");
 		}
 
 		@Override
 		protected DebugTypeInfo createTypeInfo() {
-			return externalTypeInfo(0x042a0110);
+			return externalTypeInfo(0x042a0112);
 		}
 
 	}

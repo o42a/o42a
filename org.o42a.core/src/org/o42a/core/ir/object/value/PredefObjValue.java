@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl.value;
+package org.o42a.core.ir.object.value;
 
-import static org.o42a.core.ir.object.impl.value.PredefObjValues.predefObjValues;
+import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
 import static org.o42a.core.ir.op.PrintMessageFunc.PRINT_MESSAGE;
 import static org.o42a.core.value.Value.voidValue;
 

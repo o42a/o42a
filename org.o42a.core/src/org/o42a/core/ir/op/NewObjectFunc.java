@@ -24,8 +24,7 @@ import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.op.CtrOp;
-import org.o42a.core.ir.object.op.CtrOp.Op;
+import org.o42a.core.ir.op.CtrOp.Op;
 
 
 public class NewObjectFunc extends Func<NewObjectFunc> {

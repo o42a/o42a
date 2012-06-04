@@ -17,12 +17,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.impl.value;
+package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
-import static org.o42a.core.ir.object.impl.value.ObjectValueFunc.OBJECT_VALUE;
-import static org.o42a.core.ir.object.impl.value.PredefObjValue.*;
+import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;

@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.object.op;
+package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -28,28 +29,37 @@ import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.object.ObjectIRData;
 
 
-public final class ObjectDataFunc extends Func<ObjectDataFunc> {
+public final class ObjectUseFunc extends Func<ObjectUseFunc> {
 
-	public static final ObjectData OBJECT_DATA = new ObjectData();
+	public static final Signature OBJECT_USE = new Signature();
 
-	private ObjectDataFunc(FuncCaller<ObjectDataFunc> caller) {
+	private ObjectUseFunc(FuncCaller<ObjectUseFunc> caller) {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectIRData.Op data) {
-		invoke(null, code, OBJECT_DATA.result(), data);
+	public final void use(
+			Code code,
+			ObjectUseOp.Op use,
+			ObjectIRData.Op data) {
+		invoke(null, code, OBJECT_USE.result(), use, data);
 	}
 
-	public static final class ObjectData extends Signature<ObjectDataFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ObjectUseFunc> {
 
 		private Return<Void> result;
+		private Arg<ObjectUseOp.Op> use;
 		private Arg<ObjectIRData.Op> data;
 
-		private ObjectData() {
+		private Signature() {
 		}
 
 		public final Return<Void> result() {
 			return this.result;
+		}
+
+		public final Arg<ObjectUseOp.Op> use() {
+			return this.use;
 		}
 
 		public final Arg<ObjectIRData.Op> data() {
@@ -57,18 +67,19 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 		}
 
 		@Override
-		public final ObjectDataFunc op(FuncCaller<ObjectDataFunc> caller) {
-			return new ObjectDataFunc(caller);
+		public final ObjectUseFunc op(FuncCaller<ObjectUseFunc> caller) {
+			return new ObjectUseFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectDataF");
+			return factory.id("ObjectUseF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
+			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
 			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 		}
 

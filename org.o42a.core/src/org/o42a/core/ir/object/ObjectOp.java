@@ -33,6 +33,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.object.impl.AnonymousObjOp;
 import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueOp;
@@ -54,13 +55,13 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	private final ObjectPrecision precision;
 	private final ObjectTypeOp objectType;
 
-	ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
+	protected ObjectOp(CodeBuilder builder, ObjectPrecision precision) {
 		super(builder);
 		this.precision = precision;
 		this.objectType = null;
 	}
 
-	ObjectOp(ObjectTypeOp objectType) {
+	protected ObjectOp(ObjectTypeOp objectType) {
 		super(objectType.getBuilder());
 		this.objectType = objectType;
 		this.precision = objectType.getPrecision();
