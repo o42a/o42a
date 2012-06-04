@@ -498,7 +498,7 @@ void o42a_gc_run() {
 #endif /* NDEBUG */
 
 static void *o42a_gc_thread(void *data) {
-	O42A_START_THREAD;
+	O42A_START_THREAD("GC");
 	O42A_ENTER(return NULL);
 
 	while (1) {
