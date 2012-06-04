@@ -160,6 +160,8 @@ static void test_statically_referenced() {
 
 	test_object_t *const static_object = O42A(alloc_test_object("static", 1));
 
+	o42a_gc_blockof(static_object)->list = 0;// Mark it static.
+
 	O42A(o42a_gc_static(o42a_gc_blockof(static_object)));
 
 	test_object_t *const object = O42A(alloc_test_object("object", 0));
