@@ -22,6 +22,7 @@ package org.o42a.core.ir.object;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
+import static org.o42a.core.ir.op.ObjectUseOp.useObject;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
@@ -211,6 +212,10 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		value().assign(dirs, value.materialize(dirs));
+	}
+
+	public final void use(Code code) {
+		useObject(null, code, this);
 	}
 
 	@Override

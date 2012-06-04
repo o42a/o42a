@@ -84,12 +84,16 @@ public class CtrOp extends IROp {
 
 		result.isNull(null, code).go(code, subDirs.falseDir());
 
-		subDirs.done();
-
-		return anonymousObject(
+		final ObjectOp newObject = anonymousObject(
 				sample.getBuilder(),
 				result,
 				sample.getWellKnownType());
+
+		newObject.use(code);
+
+		subDirs.done();
+
+		return newObject;
 	}
 
 	private FuncPtr<NewObjectFunc> newFunc() {
