@@ -20,6 +20,7 @@
 package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMDataAllocator.*;
+import static org.o42a.codegen.data.DataLayout.paddingLayout;
 
 import java.util.HashMap;
 
@@ -34,8 +35,8 @@ enum SystemTypeInfo {
 	PTHREAD("pthread_t") {
 
 		@Override
-		protected int layout() {
-			return pthreadLayout();
+		protected DataLayout layout() {
+			return new DataLayout(pthreadLayout());
 		}
 
 	},
@@ -43,8 +44,8 @@ enum SystemTypeInfo {
 	PTHREAD_MUTEX("pthread_mutex_t") {
 
 		@Override
-		protected int layout() {
-			return pthreadMutexLayout();
+		protected DataLayout layout() {
+			return new DataLayout(pthreadMutexLayout());
 		}
 
 	},
@@ -52,17 +53,17 @@ enum SystemTypeInfo {
 	PTHREAD_COND("pthread_cond_t") {
 
 		@Override
-		protected int layout() {
-			return pthreadCondLayout();
+		protected DataLayout layout() {
+			return new DataLayout(pthreadCondLayout());
 		}
 
 	},
 
-	GC_BLOCK("o42a_gc_block_t") {
+	GC_BLOCK_PADDING("o42a_gc_block_padding_t") {
 
 		@Override
-		protected int layout() {
-			return gcBlockLayout();
+		protected DataLayout layout() {
+			return paddingLayout(gcBlockPadding());
 		}
 
 	};
@@ -93,7 +94,7 @@ enum SystemTypeInfo {
 		return this.id;
 	}
 
-	protected abstract int layout();
+	protected abstract DataLayout layout();
 
 	private final SystemTypeLLAlloc allocate(
 			final LLVMDataAllocator allocator,
@@ -101,7 +102,12 @@ enum SystemTypeInfo {
 
 		final LLVMModule module = allocator.getModule();
 		final long modulePtr = module.getNativePtr();
-		final DataLayout layout = new DataLayout(layout());
+		final DataLayout layout = layout();
+
+		if (layout.size() == 0) {
+			return new SystemTypeLLAlloc(module, systemType, layout, 0L);
+		}
+
 		final NativeBuffer ids = module.ids();
 		final long typePtr = createType(
 				modulePtr,
@@ -113,7 +119,7 @@ enum SystemTypeInfo {
 		refineType(
 				typePtr,
 				dataPtr,
-				layout.getAlignment() == DataAlignment.ALIGN_1);
+				layout.alignment() == DataAlignment.ALIGN_1);
 
 		assert assertLayoutCorrect(systemType, modulePtr, layout, typePtr);
 
@@ -142,8 +148,8 @@ enum SystemTypeInfo {
 			final long dataPtr,
 			final DataLayout layout) {
 
-		final short alignment = layout.getAlignment().getBytes();
-		int size = layout.getSize();
+		final short alignment = layout.alignment().getBytes();
+		int size = layout.size();
 
 		assert size >= alignment :
 			"Illegal data layout: " + layout;
@@ -184,6 +190,6 @@ enum SystemTypeInfo {
 
 	private static native int pthreadCondLayout();
 
-	private static native int gcBlockLayout();
+	private static native int gcBlockPadding();
 
 }

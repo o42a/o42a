@@ -27,6 +27,9 @@ public abstract class TypeDebugBase {
 	public abstract Type<?> getType();
 
 	public final DebugTypeInfo getTypeInfo() {
+		if (!getType().isDebuggable()) {
+			return null;
+		}
 
 		final Type<?> type = getType();
 		final Debug debug = type.getGenerator().getDebug();

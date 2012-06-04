@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.data;
 
+import static org.o42a.util.DataAlignment.*;
+
 import org.o42a.util.DataAlignment;
 
 
@@ -26,6 +28,30 @@ public final class DataLayout {
 
 	private static final int ALIGNMENT_MASK = 0xE0000000;
 	private static final int SIZE_MASK = 0x1FFFFFFF;
+
+	public static DataLayout paddingLayout(int padding) {
+		switch (padding) {
+		case 0:
+		case 1:
+		case 2:
+		case 4:
+		case 8:
+			return new DataLayout(padding, alignmentByBytes(padding));
+		case 3:
+			return new DataLayout(padding, ALIGN_2);
+		case 5:
+		case 6:
+		case 7:
+			return new DataLayout(padding, ALIGN_4);
+		}
+
+		if (padding >= 16) {
+			throw new IllegalArgumentException(
+					"Padding greater than 16 bytes is not supported");
+		}
+
+		return new DataLayout(padding, ALIGN_8);
+	}
 
 	private final int layout;
 
@@ -37,15 +63,15 @@ public final class DataLayout {
 		this.layout = binaryForm;
 	}
 
-	public final DataAlignment getAlignment() {
-		return DataAlignment.alignmentByShift(getAlignmentShift());
+	public final DataAlignment alignment() {
+		return alignmentByShift(alignmentShift());
 	}
 
-	public final int getSize() {
+	public final int size() {
 		return this.layout & SIZE_MASK;
 	}
 
-	public final byte getAlignmentShift() {
+	public final byte alignmentShift() {
 		return (byte) ((this.layout & ALIGNMENT_MASK) >>> 29);
 	}
 
@@ -77,8 +103,8 @@ public final class DataLayout {
 
 	@Override
 	public String toString() {
-		return "DataLayout[size=" + getSize()
-				+ ", alignment=" + getAlignment() + ']';
+		return "DataLayout[size=" + size()
+				+ ", alignment=" + alignment() + ']';
 	}
 
 }

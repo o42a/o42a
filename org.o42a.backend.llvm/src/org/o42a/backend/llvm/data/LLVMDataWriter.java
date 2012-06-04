@@ -199,10 +199,11 @@ public class LLVMDataWriter implements DataWriter {
 	public void writeSystem(DataAllocation<SystemOp> destination) {
 
 		final SystemLLDAlloc alloc = (SystemLLDAlloc) destination;
+		final SystemTypeLLAlloc typeAlloc = alloc.getTypeAlloc();
 
-		writeSystemStruct(
-				getStructPtr(),
-				alloc.getTypeAlloc().getTypePtr());
+		if (typeAlloc.exists()) {
+			writeSystemStruct(getStructPtr(), typeAlloc.getTypePtr());
+		}
 	}
 
 	public final void writeDataId(LLVMId llvmId) {

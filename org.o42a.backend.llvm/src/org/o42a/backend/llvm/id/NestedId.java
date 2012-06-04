@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm.id;
 
+import java.util.Arrays;
+
 import org.o42a.backend.llvm.data.LLVMModule;
 
 
@@ -56,7 +58,7 @@ final class NestedId extends LLVMId {
 		assert indices != null :
 			"Top-level native pointer missing: " + this;
 
-		return this.nativePtr = LLVMId.expression(
+		return this.nativePtr = expression(
 				module.getNativePtr(),
 				topLevel().expression(module),
 				indices);
@@ -73,7 +75,10 @@ final class NestedId extends LLVMId {
 		assert indices != null :
 			"Top-level native pointer missing: " + this;
 
-		return this.typePtr = LLVMId.expression(
+		if (toString().equals("getElementPtr(o42a_gc_block_t, 7)")) {
+			System.err.println("(!) " + this + ": " + Arrays.toString(indices));
+		}
+		return this.typePtr = expression(
 				module.getNativePtr(),
 				topLevel().typeExpression(module),
 				indices);
@@ -130,11 +135,11 @@ final class NestedId extends LLVMId {
 	@Override
 	int[] buildIndices(int len) {
 
-		final int[] indexes = this.enclosing.buildIndices(len + 1);
+		final int[] indices = this.enclosing.buildIndices(len + 1);
 
-		indexes[len] = this.index;
+		indices[len] = this.index;
 
-		return indexes;
+		return indices;
 	}
 
 }
