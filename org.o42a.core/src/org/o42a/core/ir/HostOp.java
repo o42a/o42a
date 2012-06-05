@@ -22,6 +22,7 @@ package org.o42a.core.ir;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
@@ -39,9 +40,9 @@ public interface HostOp {
 
 	HostOp field(CodeDirs dirs, MemberKey memberKey);
 
-	ObjectOp materialize(CodeDirs dirs);
+	ObjectOp materialize(CodeDirs dirs, ObjHolder holder);
 
-	ObjectOp dereference(CodeDirs dirs);
+	ObjectOp dereference(CodeDirs dirs, ObjHolder holder);
 
 	void assign(CodeDirs dirs, HostOp value);
 

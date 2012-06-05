@@ -25,7 +25,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.Function;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.object.Obj;
 
 

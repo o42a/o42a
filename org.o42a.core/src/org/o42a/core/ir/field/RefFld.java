@@ -25,6 +25,7 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import org.o42a.codegen.CodeId;
@@ -36,9 +37,10 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.*;
 import org.o42a.core.ir.field.object.FldCtrOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectFunc;
-import org.o42a.core.ir.op.ObjectSignature;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
@@ -173,7 +175,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			.returnValue(constructed);
 		}
 
-		final ObjectOp result = construct(builder, dirs);
+		final ObjHolder holder = tempObjHolder(code.getAllocator());
+		final ObjectOp result = construct(builder, dirs, holder);
 		final DataOp res = result.toData(null, code);
 
 		if (ctr != null) {
@@ -188,7 +191,10 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		res.returnValue(code);
 	}
 
-	protected final ObjectOp construct(ObjBuilder builder, CodeDirs dirs) {
+	protected final ObjectOp construct(
+			ObjBuilder builder,
+			CodeDirs dirs,
+			ObjHolder holder) {
 
 		final Obj object = getField().toObject();
 
@@ -197,12 +203,13 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			final ObjectValue objectValue = object.value();
 
 			if (objectValue.getValueType().isLink()) {
-				return constructLinkTarget(builder, dirs, objectValue);
+				return constructLinkTarget(builder, dirs, holder, objectValue);
 			}
 		}
 
 		return builder.newObject(
 				dirs,
+				holder,
 				builder.host(),
 				builder.objectAncestor(dirs, object),
 				object);
@@ -303,6 +310,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	private ObjectOp constructLinkTarget(
 			ObjBuilder builder,
 			CodeDirs dirs,
+			ObjHolder holder,
 			ObjectValue objectValue) {
 
 		final LinkValueStruct linkStruct =
@@ -324,7 +332,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		return target.getRef()
 				.op(builder.host())
 				.target(dirs)
-				.materialize(dirs)
+				.materialize(dirs, holder)
 				.cast(
 						null,
 						dirs,

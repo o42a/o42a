@@ -27,6 +27,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -83,12 +84,12 @@ public final class LocalOp implements HostOp {
 	}
 
 	@Override
-	public ObjOp materialize(CodeDirs dirs) {
+	public ObjOp materialize(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 

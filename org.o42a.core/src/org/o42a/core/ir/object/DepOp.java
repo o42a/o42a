@@ -20,12 +20,15 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
@@ -70,23 +73,27 @@ public class DepOp extends IROp implements HostOp {
 
 	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-		return materialize(dirs).field(dirs, memberKey);
+		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(CodeDirs dirs) {
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
-		return anonymousObject(
-				getBuilder(),
-				ptr().object(code).load(null, code),
-				getDep().getDepTarget());
+		return holder.hold(
+				code,
+				anonymousObject(
+						getBuilder(),
+						ptr().object(code).load(null, code),
+						getDep().getDepTarget()));
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return materialize(dirs).dereference(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
 	}
 
 	@Override
@@ -115,7 +122,9 @@ public class DepOp extends IROp implements HostOp {
 			final Ref depRef = getDep().getDepRef();
 			final HostOp refTarget = depRef.op(builder.host()).target(dirs);
 
-			return refTarget.materialize(dirs).toData(null, code);
+			return refTarget.materialize(
+					dirs,
+					tempObjHolder(dirs.getAllocator())).toData(null, code);
 		}
 
 		throw new IllegalStateException(

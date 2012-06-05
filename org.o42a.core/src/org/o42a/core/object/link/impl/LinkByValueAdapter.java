@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.link.impl;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.link.impl.TargetLink.linkByValue;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
@@ -118,9 +119,12 @@ public class LinkByValueAdapter extends ValueAdapter {
 			final ObjectOp target =
 					getRef().op(host)
 					.target(dirs.dirs())
-					.materialize(dirs.dirs());
+					.materialize(
+							dirs.dirs(),
+							tempObjHolder(dirs.getAllocator()));
 
-			dirs.returnValue(dirs.value().store(code, target.toAny(null, code)));
+			dirs.returnValue(
+					dirs.value().store(code, target.toAny(null, code)));
 		}
 
 		@Override

@@ -26,6 +26,7 @@ import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 
@@ -40,6 +41,7 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
@@ -68,12 +70,12 @@ public final class AssignerFldOp extends FldOp {
 	}
 
 	@Override
-	public ObjectOp materialize(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -81,7 +83,8 @@ public final class AssignerFldOp extends FldOp {
 	public void assign(CodeDirs dirs, HostOp value) {
 
 		final Block code = dirs.code();
-		final ObjectOp valueObject = value.materialize(dirs);
+		final ObjectOp valueObject =
+				value.materialize(dirs, tempObjHolder(code.getAllocator()));
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
 		final ObjectIRType.Op knownBound = boundRec.load(null, code, VOLATILE);
 
@@ -119,10 +122,11 @@ public final class AssignerFldOp extends FldOp {
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs).field(dirs, memberKey);
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
-	public ObjectOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 
 		final FldKind kind = fld().getKind();
 
@@ -144,9 +148,9 @@ public final class AssignerFldOp extends FldOp {
 				targetPtr,
 				fld().linkStruct().getTypeRef().typeObject(dummyUser()));
 
-		valDirs.done();
+		final Block resultCode = valDirs.done().code();
 
-		return target;
+		return holder.holdVolatile(resultCode, target);
 	}
 
 	void assignValue(Block code, ObjectOp object) {

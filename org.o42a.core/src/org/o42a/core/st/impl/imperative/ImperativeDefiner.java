@@ -20,6 +20,7 @@
 package org.o42a.core.st.impl.imperative;
 
 import static org.o42a.core.ir.local.InlineControl.inlineControl;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.core.Scope;
@@ -225,7 +226,9 @@ public final class ImperativeDefiner extends Definer {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ObjectOp ownerObject = host.materialize(dirs.dirs());
+			final ObjectOp ownerObject = host.materialize(
+					dirs.dirs(),
+					tempObjHolder(dirs.getAllocator()));
 			final LocalScope scope = getBlock().getScope().toLocal();
 			final Obj ownerType = scope.getOwner();
 			final ObjOp ownerBody =

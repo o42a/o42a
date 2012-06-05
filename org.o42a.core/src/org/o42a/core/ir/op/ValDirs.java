@@ -23,6 +23,7 @@ import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
@@ -60,6 +61,10 @@ public abstract class ValDirs {
 
 	public final boolean isDebug() {
 		return dirs().isDebug();
+	}
+
+	public final Allocator getAllocator() {
+		return dirs().getAllocator();
 	}
 
 	public final Block code() {

@@ -23,8 +23,9 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectRefFunc;
 
 
 public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
@@ -47,20 +48,13 @@ public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp target(CodeDirs dirs) {
-
-		final ObjectOp target = super.target(dirs);
-
-		if (dirs.code().exists()) {
-			target.use(dirs.code());
-		}
-
-		return target;
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
+		return super.target(dirs, holder.toVolatile());
 	}
 
 	@Override

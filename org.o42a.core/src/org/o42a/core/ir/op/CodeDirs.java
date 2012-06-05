@@ -65,6 +65,10 @@ public class CodeDirs {
 		return this.code.isDebug();
 	}
 
+	public final Allocator getAllocator() {
+		return code().getAllocator();
+	}
+
 	public final Block code() {
 		return this.code;
 	}

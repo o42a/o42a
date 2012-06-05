@@ -21,9 +21,7 @@ package org.o42a.core.ir.def;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
@@ -61,6 +59,10 @@ public class DefDirs {
 
 	public final boolean isDebug() {
 		return dirs().isDebug();
+	}
+
+	public final Allocator getAllocator() {
+		return valDirs().getAllocator();
 	}
 
 	public final ValueStruct<?, ?> getValueStruct() {

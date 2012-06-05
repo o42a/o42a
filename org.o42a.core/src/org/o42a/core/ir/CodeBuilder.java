@@ -19,7 +19,8 @@
 */
 package org.o42a.core.ir;
 
-import static org.o42a.core.ir.op.CtrOp.CTR_TYPE;
+import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
 import org.o42a.codegen.CodeId;
@@ -30,7 +31,9 @@ import org.o42a.core.ir.local.LocalBuilder;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectPrecision;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.object.op.*;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
@@ -84,7 +87,8 @@ public abstract class CodeBuilder {
 
 		final RefOp ancestor = ancestorType.op(host);
 
-		return ancestor.target(dirs).materialize(dirs);
+		return ancestor.target(dirs)
+				.materialize(dirs, tempObjHolder(dirs.getAllocator()));
 	}
 
 	private final CompilerContext context;
@@ -127,6 +131,7 @@ public abstract class CodeBuilder {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjHolder holder,
 			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
@@ -136,6 +141,7 @@ public abstract class CodeBuilder {
 
 		return ctr.op(this).newObject(
 				dirs,
+				holder,
 				owner,
 				ancestor,
 				sample.ir(getGenerator()).op(this, dirs.code()));

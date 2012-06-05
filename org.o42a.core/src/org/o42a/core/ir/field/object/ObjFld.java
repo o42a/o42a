@@ -24,6 +24,7 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRUCTOR;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -31,8 +32,8 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.codegen.code.op.DataRecOp;
-import org.o42a.codegen.data.DataRec;
+import org.o42a.codegen.code.op.StructRecOp;
+import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
@@ -114,14 +115,17 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			start.go(code.tail());
 		}
 
-		final DataOp previousPtr = fld.previous(null, code).load(null, code);
-
+		final ObjFldTargetHolder holder =
+				new ObjFldTargetHolder(code.getAllocator(), isOwn);
+		final Op previous = fld.previous(null, code).load(null, code);
 		final CondBlock construct =
-				previousPtr.isNull(null, code)
+				previous.isNull(null, code)
 				.branch(code, "construct", "delegate");
-		final DataOp result1 = construct(
-				builder,
-				builder.dirs(construct, dirs.falseDir()))
+		final DataOp result1 =
+				construct(
+						builder,
+						builder.dirs(construct, dirs.falseDir()),
+						holder)
 				.toData(null, construct);
 
 		construct.go(code.tail());
@@ -130,7 +134,8 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final DataOp result2 = delegate(
 				builder,
 				builder.dirs(delegate, dirs.falseDir()),
-				previousPtr).toData(null, delegate);
+				holder,
+				previous).toData(null, delegate);
 
 		delegate.go(code.tail());
 
@@ -152,13 +157,13 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	private ObjectOp delegate(
 			ObjBuilder builder,
 			CodeDirs dirs,
-			DataOp previousPtr) {
+			ObjFldTargetHolder holder,
+			Op previous) {
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 
-		code.dumpName("Delegate to ", previousPtr);
+		code.dumpName("Delegate to ", previous);
 
-		final Op previous = previousPtr.to(null, code, getType().getType());
 		final ObjectConstructorFunc constructor =
 				previous.constructor(null, code).load(null, code);
 		final DataOp ancestorPtr =
@@ -168,8 +173,13 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 				ancestorPtr,
 				getBodyIR().getAscendant());
 
+		// Ancestor object is marked used by previous constructor.
+		// Set it to a temporary holder, to automatically release.
+		tempObjHolder(dirs.getAllocator()).set(code, ancestor);
+
 		return builder.newObject(
 				dirs,
+				holder,
 				builder.host(),
 				ancestor,
 				getField().toObject());
@@ -186,7 +196,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final DataRecOp previous(CodeId id, Code code) {
+		public final StructRecOp<Op> previous(CodeId id, Code code) {
 			return ptr(id, code, getType().previous());
 		}
 
@@ -203,7 +213,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 	public static final class Type
 			extends RefFld.Type<Op, ObjectConstructorFunc> {
 
-		private DataRec previous;
+		private StructRec<Op> previous;
 
 		private Type() {
 		}
@@ -213,7 +223,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return false;
 		}
 
-		public final DataRec previous() {
+		public final StructRec<Op> previous() {
 			return this.previous;
 		}
 
@@ -230,7 +240,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		@Override
 		protected void allocate(SubData<Op> data) {
 			super.allocate(data);
-			this.previous = data.addDataPtr("previous");
+			this.previous = data.addPtr("previous", OBJ_FLD);
 		}
 
 		@Override

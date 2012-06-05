@@ -21,6 +21,7 @@ package org.o42a.core.ir.value.array;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.op.CodeDirs.codeDirs;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
@@ -122,7 +123,8 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 		final RefOp itemOp =
 				item.getValueRef().op(dirs.getBuilder().host());
 		final ObjectOp itemValue =
-				itemOp.target(dirs.dirs()).materialize(dirs.dirs());
+				itemOp.target(dirs.dirs())
+				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()));
 		final Code code = dirs.code();
 
 		data.store(code, itemValue.toAny(null, code));

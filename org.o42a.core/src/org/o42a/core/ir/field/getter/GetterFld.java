@@ -19,7 +19,7 @@
 */
 package org.o42a.core.ir.field.getter;
 
-import static org.o42a.core.ir.op.ObjectRefFunc.OBJECT_REF;
+import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -33,8 +33,8 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
-import org.o42a.core.ir.op.ObjectRefFunc;
-import org.o42a.core.ir.op.ObjectRefFunc.ObjectRef;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
+import org.o42a.core.ir.object.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 

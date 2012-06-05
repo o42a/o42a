@@ -29,7 +29,7 @@ import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.ObjectIRData.Op;
-import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
