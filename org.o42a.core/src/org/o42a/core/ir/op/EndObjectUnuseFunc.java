@@ -19,37 +19,31 @@
 */
 package org.o42a.core.ir.op;
 
-import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRData;
 
 
-public final class ObjectUseFunc extends Func<ObjectUseFunc> {
+public final class EndObjectUnuseFunc extends Func<EndObjectUnuseFunc> {
 
-	public static final Signature OBJECT_USE = new Signature();
+	public static final Signature END_OBJECT_UNUSE = new Signature();
 
-	private ObjectUseFunc(FuncCaller<ObjectUseFunc> caller) {
+	private EndObjectUnuseFunc(FuncCaller<EndObjectUnuseFunc> caller) {
 		super(caller);
 	}
 
-	public final void use(
-			Code code,
-			ObjectUseOp.Op use,
-			ObjectIRData.Op data) {
-		invoke(null, code, OBJECT_USE.result(), use, data);
+	public final void unuse(Code code, ObjectUseOp.Op use) {
+		invoke(null, code, END_OBJECT_UNUSE.result(), use);
 	}
 
 	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ObjectUseFunc> {
+			extends org.o42a.codegen.code.Signature<EndObjectUnuseFunc> {
 
 		private Return<Void> result;
 		private Arg<ObjectUseOp.Op> use;
-		private Arg<ObjectIRData.Op> data;
 
 		private Signature() {
 		}
@@ -62,25 +56,20 @@ public final class ObjectUseFunc extends Func<ObjectUseFunc> {
 			return this.use;
 		}
 
-		public final Arg<ObjectIRData.Op> data() {
-			return this.data;
-		}
-
 		@Override
-		public final ObjectUseFunc op(FuncCaller<ObjectUseFunc> caller) {
-			return new ObjectUseFunc(caller);
+		public final EndObjectUnuseFunc op(FuncCaller<EndObjectUnuseFunc> caller) {
+			return new EndObjectUnuseFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectUseF");
+			return factory.id("EndObjectUseF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
 			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
-			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 		}
 
 	}

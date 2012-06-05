@@ -1471,7 +1471,9 @@ void o42a_obj_use_static(o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
-void o42a_obj_use(o42a_obj_use_t *const use, o42a_obj_data_t *const data) {
+void o42a_obj_start_use(
+		o42a_obj_use_t *const use,
+		o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
 
 	assert(
@@ -1488,7 +1490,7 @@ void o42a_obj_use(o42a_obj_use_t *const use, o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
-void o42a_obj_unuse(o42a_obj_use_t *const use) {
+void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	O42A_ENTER(return);
 
 	if (use->data) {

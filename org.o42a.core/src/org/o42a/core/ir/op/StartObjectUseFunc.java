@@ -19,31 +19,37 @@
 */
 package org.o42a.core.ir.op;
 
+import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.core.ir.object.ObjectIRData;
 
 
-public final class ObjectUnuseFunc extends Func<ObjectUnuseFunc> {
+public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 
-	public static final Signature OBJECT_UNUSE = new Signature();
+	public static final Signature START_OBJECT_USE = new Signature();
 
-	private ObjectUnuseFunc(FuncCaller<ObjectUnuseFunc> caller) {
+	private StartObjectUseFunc(FuncCaller<StartObjectUseFunc> caller) {
 		super(caller);
 	}
 
-	public final void unuse(Code code, ObjectUseOp.Op use) {
-		invoke(null, code, OBJECT_UNUSE.result(), use);
+	public final void use(
+			Code code,
+			ObjectUseOp.Op use,
+			ObjectIRData.Op data) {
+		invoke(null, code, START_OBJECT_USE.result(), use, data);
 	}
 
 	public static final class Signature
-			extends org.o42a.codegen.code.Signature<ObjectUnuseFunc> {
+			extends org.o42a.codegen.code.Signature<StartObjectUseFunc> {
 
 		private Return<Void> result;
 		private Arg<ObjectUseOp.Op> use;
+		private Arg<ObjectIRData.Op> data;
 
 		private Signature() {
 		}
@@ -56,20 +62,26 @@ public final class ObjectUnuseFunc extends Func<ObjectUnuseFunc> {
 			return this.use;
 		}
 
+		public final Arg<ObjectIRData.Op> data() {
+			return this.data;
+		}
+
 		@Override
-		public final ObjectUnuseFunc op(FuncCaller<ObjectUnuseFunc> caller) {
-			return new ObjectUnuseFunc(caller);
+		public final StartObjectUseFunc op(
+				FuncCaller<StartObjectUseFunc> caller) {
+			return new StartObjectUseFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectUnuseF");
+			return factory.id("StartObjectUseF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnVoid();
 			this.use = builder.addPtr("use", OBJECT_USE_TYPE);
+			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 		}
 
 	}
