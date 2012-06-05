@@ -20,9 +20,9 @@
 package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
+import static org.o42a.core.ir.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.op.ObjectUnuseFunc.OBJECT_UNUSE;
-import static org.o42a.core.ir.op.ObjectUseFunc.OBJECT_USE;
+import static org.o42a.core.ir.op.StartObjectUseFunc.START_OBJECT_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -104,7 +104,7 @@ public final class ObjectUseOp extends IROp {
 
 		getGenerator()
 		.externalFunction()
-		.link("o42a_obj_use", OBJECT_USE)
+		.link("o42a_obj_start_use", START_OBJECT_USE)
 		.op(null, code)
 		.use(code, ptr(), data);
 	}
@@ -112,7 +112,7 @@ public final class ObjectUseOp extends IROp {
 	private void unuse(Code code) {
 		getGenerator()
 		.externalFunction()
-		.link("o42a_obj_unuse", OBJECT_UNUSE)
+		.link("o42a_obj_end_use", END_OBJECT_UNUSE)
 		.op(null, code)
 		.unuse(code, ptr());
 	}

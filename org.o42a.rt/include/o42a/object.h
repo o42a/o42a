@@ -838,8 +838,8 @@ void o42a_obj_value_finish(o42a_obj_data_t *);
 /**
  * An object use by current thread.
  *
- * Invoke o42a_obj_use to declare the object is used and o42a_obj_unuse when it
- * no longer needed.
+ * Invoke o42a_obj_start_use to declare the object is used and o42a_obj_end_use
+ * when it is no longer needed.
  */
 typedef struct o42a_obj_use {
 
@@ -876,27 +876,27 @@ void o42a_obj_use_static(o42a_obj_data_t *);
  *
  * This function informs GC the object can not be disposed.
  *
- * Invoke o42a_obj_unuse to release object.
+ * Invoke o42a_obj_end_use to release object.
  *
- * This can be invoked for static object too. Then o42a_obj_unuse won't do
+ * This can be invoked for static object too. Then o42a_obj_end_use won't do
  * anything.
  *
  * It is an error to call this function multiple times with the same use
  * structure.
  */
-void o42a_obj_use(o42a_obj_use_t *, o42a_obj_data_t *);
+void o42a_obj_start_use(o42a_obj_use_t *, o42a_obj_data_t *);
 
 /**
- * Releases the object previously used by o42a_obj_use.
+ * Releases the object previously used by o42a_obj_start_use.
  *
  * This function informs the GC the object is no longer needed an thus can be
  * processed. The o42a_gc_signal function should be called to initiate the GC
  * processing.
  *
- * This function can be invoked even if o42a_obj_use was never called for
+ * This function can be invoked even if o42a_obj_start_use was never called for
  * the given use. In this case the function does nothing.
  */
-void o42a_obj_unuse(o42a_obj_use_t *);
+void o42a_obj_end_use(o42a_obj_use_t *);
 
 
 #ifdef __cplusplus
