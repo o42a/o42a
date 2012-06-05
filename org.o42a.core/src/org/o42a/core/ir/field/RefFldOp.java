@@ -20,12 +20,14 @@
 package org.o42a.core.ir.field;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 
@@ -50,10 +52,11 @@ public abstract class RefFldOp<
 
 	@Override
 	public final FldOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs).field(dirs, memberKey);
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
-	public ObjectOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 		if (isOmitted()) {
 
 			final ObjectIR targetIR = fld().getTarget().ir(getGenerator());
@@ -85,12 +88,14 @@ public abstract class RefFldOp<
 					ObjectPrecision.EXACT);
 		}
 
-		return anonymousObject(getBuilder(), ptr, targetType);
+		return holder.hold(
+				code,
+				anonymousObject(getBuilder(), ptr, targetType));
 	}
 
 	@Override
-	public final ObjectOp materialize(CodeDirs dirs) {
-		return target(dirs);
+	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 }

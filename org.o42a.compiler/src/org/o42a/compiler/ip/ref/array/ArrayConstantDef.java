@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
@@ -171,7 +172,9 @@ final class ArrayConstantDef extends Def {
 			final ObjectOp array =
 					this.array.getPrefix()
 					.write(dirs.dirs(), host)
-					.materialize(dirs.dirs());
+					.materialize(
+							dirs.dirs(),
+							tempObjHolder(dirs.getAllocator()));
 			final ObjectValFunc constructor =
 					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
 

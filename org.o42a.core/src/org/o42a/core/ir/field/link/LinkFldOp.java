@@ -23,8 +23,9 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectRefFunc;
 
 
 public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
@@ -47,8 +48,8 @@ public class LinkFldOp extends RefFldOp<LinkFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override

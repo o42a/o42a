@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.local;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
@@ -164,7 +166,9 @@ public abstract class Dep extends Step {
 
 		@Override
 		public HostOp target(CodeDirs dirs) {
-			return start().materialize(dirs).dep(dirs, getStep());
+			return start()
+					.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+					.dep(dirs, getStep());
 		}
 
 	}

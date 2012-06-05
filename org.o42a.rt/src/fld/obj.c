@@ -81,8 +81,8 @@ void o42a_fld_obj_inherit(o42a_obj_ctable_t *const ctable) {
 			// The body overrider defined in isn't present in ancestor
 			// and thus not overridden there.
 			// Use definition from overrider.
-			to->constructor = O42A(o42a_fld_by_overrider(
-					overrider)->obj.constructor);
+			to->constructor =
+					O42A(o42a_fld_by_overrider(overrider))->obj.constructor;
 			// Store pointer to previous definition.
 			to->previous = from;
 			O42A_RETURN;

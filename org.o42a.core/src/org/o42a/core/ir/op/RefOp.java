@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ir.op;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -26,7 +28,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ref.Ref;
 
 
-public class RefOp {
+public final class RefOp {
 
 	private final HostOp host;
 	private final Ref ref;
@@ -52,18 +54,20 @@ public class RefOp {
 		return this.ref;
 	}
 
-	public ValOp writeValue(ValDirs dirs) {
+	public final ValOp writeValue(ValDirs dirs) {
 		return target(dirs.dirs())
-				.materialize(dirs.dirs())
+				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
 				.value()
 				.writeValue(dirs);
 	}
 
-	public void writeCond(CodeDirs dirs) {
-		target(dirs).materialize(dirs).value().writeCond(dirs);
+	public final void writeCond(CodeDirs dirs) {
+		target(dirs)
+		.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+		.value().writeCond(dirs);
 	}
 
-	public HostOp target(CodeDirs dirs) {
+	public final HostOp target(CodeDirs dirs) {
 		return getRef().getPath().op(dirs, host());
 	}
 

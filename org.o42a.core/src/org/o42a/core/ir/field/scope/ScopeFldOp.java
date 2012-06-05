@@ -20,13 +20,15 @@
 package org.o42a.core.ir.field.scope;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldFldOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.*;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
@@ -51,7 +53,7 @@ public class ScopeFldOp extends FieldFldOp {
 		return this.ptr;
 	}
 
-	public ObjectOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 		if (isOmitted()) {
 
 			final Obj target = fld().getField().toObject();
@@ -60,29 +62,33 @@ public class ScopeFldOp extends FieldFldOp {
 			return targetIR.op(getBuilder(), dirs.code());
 		}
 
-		final Code code = dirs.code();
+		final Block code = dirs.code();
 		final ObjectBodyIR target = fld().getTarget();
 		final DataOp targetPtr = ptr().object(code).load(null, code);
 
-		return anonymousObject(
-				getBuilder(),
-				targetPtr,
-				target.getAscendant());
+		return holder.hold(
+				code,
+				anonymousObject(
+						getBuilder(),
+						targetPtr,
+						target.getAscendant()));
 	}
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
-		return target(dirs).field(dirs, memberKey);
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs).dereference(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
 	}
 
 	@Override

@@ -17,20 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
-import org.o42a.codegen.code.Func;
-import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.codegen.code.Arg;
+import org.o42a.codegen.code.Signature;
+import org.o42a.codegen.code.op.DataOp;
 
 
-public abstract class ObjectFunc<F extends ObjectFunc<F>> extends Func<F> {
+public abstract class ObjectSignature<F extends ObjectFunc<F>>
+		extends Signature<F> {
 
-	public ObjectFunc(FuncCaller<F> caller) {
-		super(caller);
-	}
-
-	public final ObjectSignature<F> getObjectSignature() {
-		return (ObjectSignature<F>) getSignature();
-	}
+	public abstract Arg<DataOp> object();
 
 }

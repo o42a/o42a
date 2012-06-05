@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.op.GCBlockOp.GC_BLOCK_TYPE;
-import static org.o42a.core.ir.op.GCDescOp.GC_DESC_TYPE;
+import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
+import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -30,8 +30,8 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.op.GCBlockOp;
-import org.o42a.core.ir.op.GCBlockOp.Type;
+import org.o42a.core.ir.gc.GCBlockOp;
+import org.o42a.core.ir.gc.GCBlockOp.Type;
 
 
 public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {

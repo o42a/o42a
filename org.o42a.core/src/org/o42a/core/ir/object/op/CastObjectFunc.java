@@ -17,64 +17,76 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
+
+import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.core.ir.object.ObjectIRType.Op;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.ObjectTypeOp;
 
 
-public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
+public final class CastObjectFunc extends Func<CastObjectFunc> {
 
-	public static final ObjectRef OBJECT_REF = new ObjectRef();
+	public static final CastObject CAST_OBJECT = new CastObject();
 
-	ObjectRefFunc(FuncCaller<ObjectRefFunc> caller) {
+	CastObjectFunc(FuncCaller<CastObjectFunc> caller) {
 		super(caller);
 	}
 
-	public DataOp call(Code code, ObjectOp object) {
+	public DataOp cast(
+			CodeId id,
+			Code code,
+			ObjectOp object,
+			ObjectTypeOp type) {
 		return invoke(
-				null,
+				id,
 				code,
-				OBJECT_REF.result(),
-				object != null ? object.toData(null, code) : code.nullDataPtr());
+				CAST_OBJECT.result(),
+				object.toData(null, code), type.ptr());
 	}
 
-	public static final class ObjectRef
-			extends ObjectSignature<ObjectRefFunc> {
+	public static final class CastObject extends Signature<CastObjectFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
+		private Arg<Op> type;
 
-		private ObjectRef() {
+		private CastObject() {
 		}
 
 		public final Return<DataOp> result() {
 			return this.result;
 		}
 
-		@Override
 		public final Arg<DataOp> object() {
 			return this.object;
 		}
 
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectRefF");
+		public final Arg<Op> type() {
+			return this.type;
 		}
 
 		@Override
-		public ObjectRefFunc op(FuncCaller<ObjectRefFunc> caller) {
-			return new ObjectRefFunc(caller);
+		public CastObjectFunc op(FuncCaller<CastObjectFunc> caller) {
+			return new CastObjectFunc(caller);
+		}
+
+		@Override
+		protected CodeId buildCodeId(CodeIdFactory factory) {
+			return factory.id("ObjectCastF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
 			this.result = builder.returnData();
 			this.object = builder.addData("object");
+			this.type = builder.addPtr("type", OBJECT_TYPE);
 		}
 
 	}

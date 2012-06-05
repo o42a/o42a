@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
@@ -33,8 +34,9 @@ import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectRefFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectRefFunc;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -60,20 +62,13 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp target(CodeDirs dirs) {
-
-		final ObjectOp target = super.target(dirs);
-
-		if (dirs.code().exists()) {
-			target.use(dirs.code());
-		}
-
-		return target;
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
+		return super.target(dirs, holder.toVolatile());
 	}
 
 	@Override
@@ -88,7 +83,8 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		targetType = linkStruct.getTypeRef().typeObject(dummyUser());
 
 		final Block code = dirs.code();
-		final ObjectOp valueObject = value.materialize(dirs);
+		final ObjectOp valueObject =
+				value.materialize(dirs, tempObjHolder(code.getAllocator()));
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
 
 		code.acquireBarrier();
@@ -111,8 +107,10 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				targetType,
 				true);
 
-		ptr().object(null, boundKnown)
-		.store(boundKnown, castObject.toData(null, boundKnown), ACQUIRE_RELEASE);
+		ptr().object(null, boundKnown).store(
+				boundKnown,
+				castObject.toData(null, boundKnown),
+				ACQUIRE_RELEASE);
 		boundKnown.dump("Assigned: ", this);
 		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());

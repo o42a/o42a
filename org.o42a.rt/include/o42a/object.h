@@ -860,6 +860,13 @@ extern const o42a_dbg_type_info1f_t _O42A_DEBUG_TYPE_o42a_obj_use;
 #endif /* NDEBUG */
 
 /**
+ * Declares the object is used.
+ *
+ * This function invokes o42a_gc_use for object data block.
+ */
+void o42a_obj_use(o42a_obj_data_t *);
+
+/**
  * Declares the static object is used.
  *
  * This function submits the static object to GC.

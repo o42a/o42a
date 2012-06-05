@@ -19,11 +19,14 @@
 */
 package org.o42a.core.ir.op;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.ref.path.BoundPath;
@@ -89,17 +92,18 @@ public abstract class PathOp implements HostOp {
 
 	@Override
 	public HostOp field(CodeDirs dirs, MemberKey memberKey) {
-		return materialize(dirs).field(dirs, memberKey);
+		return materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(CodeDirs dirs) {
-		return target(dirs).materialize(dirs);
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs).materialize(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs).dereference(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs).dereference(dirs, holder);
 	}
 
 	@Override
@@ -108,11 +112,14 @@ public abstract class PathOp implements HostOp {
 	}
 
 	public void writeCond(CodeDirs dirs) {
-		materialize(dirs).value().writeCond(dirs);
+		materialize(dirs, tempObjHolder(dirs.getAllocator()))
+		.value()
+		.writeCond(dirs);
 	}
 
 	public ValOp writeValue(ValDirs dirs) {
-		return materialize(dirs.dirs()).value().writeValue(dirs);
+		return materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
+				.value().writeValue(dirs);
 	}
 
 	public abstract HostOp target(CodeDirs dirs);

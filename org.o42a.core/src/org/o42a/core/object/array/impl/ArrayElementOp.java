@@ -21,6 +21,7 @@ package org.o42a.core.object.array.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -123,7 +124,9 @@ final class ArrayElementOp extends PathOp {
 	private AnyRecOp itemRec(ValDirs dirs, Int64op index) {
 
 		final ValOp array =
-				host().materialize(dirs.dirs()).value().writeValue(dirs);
+				host()
+				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
+				.value().writeValue(dirs);
 
 		checkIndex(dirs.dirs(), index, array);
 
@@ -157,16 +160,18 @@ final class ArrayElementOp extends PathOp {
 		return anonymousObject(getBuilder(), item, itemAscendant);
 	}
 
-	private void assignItem(Int64op index, ValDirs arrayDirs, HostOp value) {
+	private void assignItem(Int64op index, ValDirs dirs, HostOp value) {
 
-		final AnyRecOp itemRec = itemRec(arrayDirs, index);
-		final Code code = arrayDirs.code();
+		final AnyRecOp itemRec = itemRec(dirs, index);
+		final Code code = dirs.code();
 
 		// TODO implement array element type checking.
 
 		itemRec.store(
 				code,
-				value.materialize(arrayDirs.dirs()).toAny(null, code));
+				value.materialize(
+						dirs.dirs(),
+						tempObjHolder(dirs.getAllocator())).toAny(null, code));
 	}
 
 }

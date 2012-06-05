@@ -24,6 +24,7 @@ import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSI
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.field.FldOp;
@@ -55,7 +56,9 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 		final Obj typeObject = typeRef.typeObject(dummyUser());
 		final RefOp boundRef = typeRef.op(builder.host());
 		final ObjectTypeOp bound =
-				boundRef.target(dirs).materialize(dirs).objectType(assigner);
+				boundRef.target(dirs)
+				.materialize(dirs, tempObjHolder(dirs.getAllocator()))
+				.objectType(assigner);
 
 		storeBound(assigner, fld, bound.ptr());
 

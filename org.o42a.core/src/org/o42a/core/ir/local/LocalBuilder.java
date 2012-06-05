@@ -26,8 +26,9 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.ObjectFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 
@@ -58,12 +59,13 @@ public class LocalBuilder extends CodeBuilder {
 	@Override
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjHolder holder,
 			ObjectOp owner,
 			ObjectOp ancestor,
 			Obj sample) {
 
 		final ObjectOp newObject =
-				super.newObject(dirs, owner, ancestor, sample);
+				super.newObject(dirs, holder, owner, ancestor, sample);
 
 		newObject.fillDeps(dirs, sample);
 

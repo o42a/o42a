@@ -30,8 +30,8 @@ import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.ObjectFunc;
-import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.object.op.ObjectFunc;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 

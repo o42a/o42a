@@ -21,8 +21,8 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
-import static org.o42a.core.ir.op.CastObjectFunc.CAST_OBJECT;
-import static org.o42a.core.ir.op.ObjectUseOp.useObject;
+import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
@@ -35,7 +35,11 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.impl.AnonymousObjOp;
-import org.o42a.core.ir.op.*;
+import org.o42a.core.ir.object.op.CastObjectFunc;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.IROp;
+import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
@@ -178,12 +182,12 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	public abstract DepOp dep(CodeDirs dirs, Dep dep);
 
 	@Override
-	public final ObjectOp materialize(CodeDirs dirs) {
-		return this;
+	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return holder.hold(dirs.code(), this);
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
 
 		final LinkValueStruct linkStruct =
 				getWellKnownType().value().getValueStruct().toLinkStruct();
@@ -201,21 +205,21 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				.load(null, code)
 				.toData(code.id("target"), code);
 
-		valDirs.done();
+		final Block resultCode = valDirs.done().code();
 
-		return anonymousObject(
-				getBuilder(),
-				ptr,
-				linkStruct.getTypeRef().typeObject(dummyUser()));
+		return holder.hold(
+				resultCode,
+				anonymousObject(
+						getBuilder(),
+						ptr,
+						linkStruct.getTypeRef().typeObject(dummyUser())));
 	}
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		value().assign(dirs, value.materialize(dirs));
-	}
-
-	public final void use(Code code) {
-		useObject(null, code, this);
+		value().assign(
+				dirs,
+				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
 	@Override

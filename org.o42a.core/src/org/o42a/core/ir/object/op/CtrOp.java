@@ -17,11 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.op.NewObjectFunc.NEW_OBJECT;
+import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -38,6 +38,8 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.core.ir.op.IROp;
 
 
 public class CtrOp extends IROp {
@@ -58,6 +60,7 @@ public class CtrOp extends IROp {
 
 	public ObjectOp newObject(
 			CodeDirs dirs,
+			ObjHolder holder,
 			ObjectOp owner,
 			ObjectOp ancestor,
 			ObjectOp sample) {
@@ -88,12 +91,9 @@ public class CtrOp extends IROp {
 				sample.getBuilder(),
 				result,
 				sample.getWellKnownType());
+		final Block resultCode = subDirs.done().code();
 
-		newObject.use(code);
-
-		subDirs.done();
-
-		return newObject;
+		return holder.hold(resultCode, newObject);
 	}
 
 	private FuncPtr<NewObjectFunc> newFunc() {

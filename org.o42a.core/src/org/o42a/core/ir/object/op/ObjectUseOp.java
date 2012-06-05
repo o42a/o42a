@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
-import static org.o42a.core.ir.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.op.StartObjectUseFunc.START_OBJECT_USE;
+import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
+import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -34,43 +33,26 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.op.IROp;
 
 
 public final class ObjectUseOp extends IROp {
 
 	public static final Type OBJECT_USE_TYPE = new Type();
 
-	public static ObjectUseOp useObject(CodeId id, Code code, ObjectOp object) {
-
-		final ObjectUseOp op =
-				new ObjectUseOp(id, code.getAllocator().allocation(), object);
-
-		op.use(code);
-
-		return op;
-	}
-
-	private final ObjectOp object;
 	private final Op ptr;
+	private final StructRecOp<ObjectIRData.Op> objectData;
 
-	private ObjectUseOp(CodeId id, AllocationCode code, ObjectOp object) {
-		super(object.getBuilder());
-		this.object = object;
-		/*if (object.getPrecision().isExact()) {
-			this.ptr = null;
-		} else {*/
-			this.ptr = code.allocate(id, OBJECT_USE_TYPE);
-			ptr().objectData(null, code)
-			.store(code, code.nullPtr(OBJECT_DATA_TYPE));
-			code.addDisposal(new UnuseObject(this));
-			getBuilder().signalGC();
-		//}
-	}
-
-	public final ObjectOp object() {
-		return this.object;
+	ObjectUseOp(CodeId id, CodeBuilder builder, AllocationCode code) {
+		super(builder);
+		this.ptr = code.allocate(id, OBJECT_USE_TYPE);
+		this.objectData = ptr().objectData(null, code);
+		this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
+		code.addDisposal(new UnuseObject(this));
+		getBuilder().signalGC();
 	}
 
 	@Override
@@ -80,27 +62,22 @@ public final class ObjectUseOp extends IROp {
 
 	@Override
 	public String toString() {
-		if (this.object == null) {
+		if (this.ptr == null) {
 			return super.toString();
 		}
-		if (this.ptr == null) {
-			return "StaticObjectUse[" + this.object + ']';
-		}
-		return "ObjectUse[" + this.object + ']';
+		return "ObjectUse[" + this.ptr + ']';
 	}
 
-	private void use(Code code) {
+	void setUsed(Code code, ObjectOp object) {
 
-		final ObjectIRData.Op data = object().objectType(code).ptr().data(code);
+		final ObjectIRData.Op data = object.objectType(code).ptr().data(code);
 
-		if (this.ptr == null) {
-			getGenerator()
-			.externalFunction()
-			.link("o42a_obj_use_static", OBJECT_DATA)
-			.op(null, code)
-			.call(code, data);
-			return;
-		}
+		this.objectData.store(code, data);
+	}
+
+	void startUse(Code code, ObjectOp object) {
+
+		final ObjectIRData.Op data = object.objectType(code).ptr().data(code);
 
 		getGenerator()
 		.externalFunction()
@@ -109,7 +86,7 @@ public final class ObjectUseOp extends IROp {
 		.use(code, ptr(), data);
 	}
 
-	private void unuse(Code code) {
+	private void endUse(Code code) {
 		getGenerator()
 		.externalFunction()
 		.link("o42a_obj_end_use", END_OBJECT_UNUSE)
@@ -175,7 +152,7 @@ public final class ObjectUseOp extends IROp {
 
 		@Override
 		public void dispose(Code code) {
-			this.op.unuse(code);
+			this.op.endUse(code);
 		}
 
 		@Override
@@ -183,7 +160,7 @@ public final class ObjectUseOp extends IROp {
 			if (this.op == null) {
 				return super.toString();
 			}
-			return "Unuse[" + this.op.object() + ']';
+			return "UnuseObject[" + this.op.ptr() + ']';
 		}
 
 	}

@@ -17,14 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.op.CtrOp.Op;
+import org.o42a.core.ir.object.op.CtrOp.Op;
 
 
 public class NewObjectFunc extends Func<NewObjectFunc> {

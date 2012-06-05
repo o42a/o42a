@@ -1460,6 +1460,12 @@ void o42a_obj_value_finish(o42a_obj_data_t *const data) {
 	O42A_RETURN;
 }
 
+void o42a_obj_use(o42a_obj_data_t *const data) {
+	O42A_ENTER(return);
+	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+	O42A_RETURN;
+}
+
 void o42a_obj_use_static(o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
 

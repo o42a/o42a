@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.array;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 
 import java.util.IdentityHashMap;
@@ -184,14 +185,16 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 			final ArrayValueTypeIR valueTypeIR =
 					valueType.ir(dirs.getGenerator());
 			final ArrayIR arrayIR = array.ir(valueTypeIR);
-			final ObjectOp arrayOp =
+			final ObjectOp arrayObject =
 					array.getPrefix()
 					.write(dirs.dirs(), host)
-					.materialize(dirs.dirs());
+					.materialize(
+							dirs.dirs(),
+							tempObjHolder(dirs.getAllocator()));
 			final ObjectValFunc constructor =
 					arrayIR.getConstructor().op(arrayIR.getId(), dirs.code());
 
-			constructor.call(dirs, arrayOp);
+			constructor.call(dirs, arrayObject);
 		}
 
 		@Override

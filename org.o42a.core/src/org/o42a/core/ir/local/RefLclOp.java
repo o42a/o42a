@@ -20,6 +20,7 @@
 package org.o42a.core.ir.local;
 
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -35,9 +36,11 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.core.value.ValueType;
 
 
 public final class RefLclOp extends LclOp {
@@ -66,27 +69,22 @@ public final class RefLclOp extends LclOp {
 
 	@Override
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
-
-		final Obj object = getObject().toObject();
-
-		if (object == null) {
-			return null;
-		}
-
-		return target(dirs).field(dirs, memberKey);
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.field(dirs, memberKey);
 	}
 
 	@Override
-	public ObjectOp materialize(CodeDirs dirs) {
-		return target(dirs);
+	public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs).dereference(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
 	}
 
-	public ObjectOp target(CodeDirs dirs) {
+	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
 
 		final Block code = dirs.code();
 		final Obj ascendant = getAscendant();
@@ -94,7 +92,17 @@ public final class RefLclOp extends LclOp {
 
 		objectPtr.isNull(null, code).go(code, dirs.falseDir());
 
-		return anonymousObject(getBuilder(), objectPtr, ascendant);
+		final ObjectOp target =
+				anonymousObject(getBuilder(), objectPtr, ascendant);
+		final ValueType<?> valueType =
+				getFieldIR().getField().toObject().value().getValueType();
+
+		if (valueType.isStateless()
+				|| valueType.isLink() && valueType.isVariable()) {
+			return holder.holdVolatile(code, target);
+		}
+
+		return holder.hold(code, target);
 	}
 
 	@Override
@@ -105,8 +113,11 @@ public final class RefLclOp extends LclOp {
 				control.getBuilder().dirs(code, control.falseDir());
 		final Obj object = getObject();
 
+		// New objects created for the whole duration of the function.
 		final ObjectOp newObject = getBuilder().newObject(
 				dirs,
+				tempObjHolder(
+						control.getBuilder().getFunction().getAllocator()),
 				null,
 				getBuilder().objectAncestor(dirs, object),
 				object);
@@ -119,7 +130,8 @@ public final class RefLclOp extends LclOp {
 	public void assign(CodeDirs dirs, HostOp value) {
 
 		final Code code = dirs.code();
-		final ObjectOp object = value.materialize(dirs);
+		final ObjectOp object =
+				value.materialize(dirs, tempObjHolder(code.getAllocator()));
 
 		ptr().object(code).store(code, object.toData(null, code));
 		object.value().writeCond(dirs);

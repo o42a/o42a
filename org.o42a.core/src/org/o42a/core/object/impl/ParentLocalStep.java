@@ -26,6 +26,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.ValDirs;
@@ -189,7 +190,7 @@ public final class ParentLocalStep extends Step implements ReversePath {
 		}
 
 		@Override
-		public ObjectOp materialize(CodeDirs dirs) {
+		public ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
 			throw new UnsupportedOperationException(
 					"Can not materialize " + this);
 		}

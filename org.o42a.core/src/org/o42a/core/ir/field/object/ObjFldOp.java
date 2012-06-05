@@ -19,10 +19,13 @@
 */
 package org.o42a.core.ir.field.object;
 
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 
 
@@ -46,13 +49,16 @@ public class ObjFldOp extends RefFldOp<ObjFld.Op, ObjectConstructorFunc> {
 	}
 
 	@Override
-	public ObjectOp dereference(CodeDirs dirs) {
-		return target(dirs).dereference(dirs);
+	public ObjectOp dereference(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, tempObjHolder(dirs.getAllocator()))
+				.dereference(dirs, holder);
 	}
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
-		materialize(dirs).assign(dirs, value.materialize(dirs));
+		materialize(dirs, tempObjHolder(dirs.getAllocator())).assign(
+				dirs,
+				value.materialize(dirs, tempObjHolder(dirs.getAllocator())));
 	}
 
 }

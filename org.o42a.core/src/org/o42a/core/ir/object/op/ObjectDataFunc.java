@@ -17,55 +17,39 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
 
 
-public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
+public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 
-	public static final ObjectValueStart OBJECT_VALUE_START =
-			new ObjectValueStart();
+	public static final ObjectData OBJECT_DATA = new ObjectData();
 
-	private ObjectValueStartFunc(FuncCaller<ObjectValueStartFunc> caller) {
+	private ObjectDataFunc(FuncCaller<ObjectDataFunc> caller) {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, ValOp value, ObjectIRData.Op data) {
-		return invoke(
-				null,
-				code,
-				OBJECT_VALUE_START.result(),
-				value.ptr(),
-				data);
+	public final void call(Code code, ObjectIRData.Op data) {
+		invoke(null, code, OBJECT_DATA.result(), data);
 	}
 
-	public static final class ObjectValueStart
-			extends Signature<ObjectValueStartFunc> {
+	public static final class ObjectData extends Signature<ObjectDataFunc> {
 
-		private Return<BoolOp> result;
-		private Arg<ValType.Op> value;
+		private Return<Void> result;
 		private Arg<ObjectIRData.Op> data;
 
-		private ObjectValueStart() {
+		private ObjectData() {
 		}
 
-		public final Return<BoolOp> result() {
+		public final Return<Void> result() {
 			return this.result;
-		}
-
-		public final Arg<ValType.Op> value() {
-			return this.value;
 		}
 
 		public final Arg<ObjectIRData.Op> data() {
@@ -73,20 +57,18 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 		}
 
 		@Override
-		public final ObjectValueStartFunc op(
-				FuncCaller<ObjectValueStartFunc> caller) {
-			return new ObjectValueStartFunc(caller);
+		public final ObjectDataFunc op(FuncCaller<ObjectDataFunc> caller) {
+			return new ObjectDataFunc(caller);
 		}
 
 		@Override
 		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectDataCondF");
+			return factory.id("ObjectDataF");
 		}
 
 		@Override
 		protected void build(SignatureBuilder builder) {
-			this.result = builder.returnBool();
-			this.value = builder.addPtr("value", VAL_TYPE);
+			this.result = builder.returnVoid();
 			this.data = builder.addPtr("data", OBJECT_DATA_TYPE);
 		}
 

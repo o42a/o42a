@@ -20,17 +20,17 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
+import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
+import static org.o42a.core.ir.object.op.ObjectValueStartFunc.OBJECT_VALUE_START;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
-import static org.o42a.core.ir.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.op.ObjectValueStartFunc.OBJECT_VALUE_START;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.op.ObjectDataFunc;
-import org.o42a.core.ir.op.ObjectValueStartFunc;
+import org.o42a.core.ir.object.op.ObjectDataFunc;
+import org.o42a.core.ir.object.op.ObjectValueStartFunc;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;

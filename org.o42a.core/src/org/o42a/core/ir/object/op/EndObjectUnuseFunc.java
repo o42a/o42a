@@ -17,9 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.op;
+package org.o42a.core.ir.object.op;
 
-import static org.o42a.core.ir.op.ObjectUseOp.OBJECT_USE_TYPE;
+import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;

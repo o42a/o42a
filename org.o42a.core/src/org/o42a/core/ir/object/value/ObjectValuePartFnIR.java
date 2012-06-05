@@ -31,7 +31,7 @@ import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.op.ObjectSignature;
+import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;

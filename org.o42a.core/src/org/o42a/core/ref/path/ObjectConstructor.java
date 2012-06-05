@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ir.CodeBuilder.objectAncestor;
+import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
@@ -184,7 +185,6 @@ public abstract class ObjectConstructor extends Placed {
 					RUNTIME_DERIVATION_USAGE)) {
 				return exactObject(dirs);
 			}
-
 			return newObject(dirs);
 		}
 
@@ -220,7 +220,9 @@ public abstract class ObjectConstructor extends Placed {
 				ancestorHost = local;
 			} else {
 
-				final ObjectOp ownerObject = host().materialize(dirs);
+				final ObjectOp ownerObject = host().materialize(
+						dirs,
+						tempObjHolder(dirs.getAllocator()));
 
 				if (ownerObject == null
 						|| ownerObject.getPrecision().isExact()) {
@@ -233,6 +235,7 @@ public abstract class ObjectConstructor extends Placed {
 
 			return getBuilder().newObject(
 					dirs,
+					tempObjHolder(dirs.getAllocator()),
 					owner,
 					objectAncestor(dirs, ancestorHost, getConstructed()),
 					getConstructed());
