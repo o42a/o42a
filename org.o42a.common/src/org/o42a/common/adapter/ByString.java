@@ -19,6 +19,8 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
@@ -131,8 +133,10 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs inputDirs =
-					dirs.dirs().nested().value(ValueStruct.STRING, "input");
+			final ValDirs inputDirs = dirs.dirs().nested().value(
+					"input",
+					ValueStruct.STRING,
+					TEMP_VAL_HOLDER);
 			final ValOp inputValue =
 					this.inputValue.writeValue(inputDirs, host);
 
@@ -173,8 +177,10 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs inputDirs =
-					dirs.dirs().nested().value(ValueStruct.STRING, "input");
+			final ValDirs inputDirs = dirs.dirs().nested().value(
+					"input",
+					ValueStruct.STRING,
+					TEMP_VAL_HOLDER);
 			final ValOp inputValue =
 					this.byString.input().op(host).writeValue(inputDirs);
 

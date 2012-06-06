@@ -22,6 +22,7 @@ package org.o42a.intrinsic.string;
 import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.VAL_ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
@@ -156,8 +157,10 @@ final class StringChar extends AnnotatedBuiltin {
 			InlineValue inlineString,
 			InlineValue inlineIndex) {
 
-		final ValDirs stringDirs =
-				dirs.dirs().nested().value(ValueStruct.STRING, "string");
+		final ValDirs stringDirs = dirs.dirs().nested().value(
+				"string",
+				ValueStruct.STRING,
+				TEMP_VAL_HOLDER);
 		final ValOp stringVal;
 
 		if (inlineString != null) {
@@ -166,8 +169,10 @@ final class StringChar extends AnnotatedBuiltin {
 			stringVal = string().op(host).writeValue(stringDirs);
 		}
 
-		final ValDirs indexDirs =
-				stringDirs.dirs().nested().value(ValueStruct.INTEGER, "index");
+		final ValDirs indexDirs = stringDirs.dirs().nested().value(
+				"index",
+				ValueStruct.INTEGER,
+				TEMP_VAL_HOLDER);
 		final ValOp indexVal;
 
 		if (inlineIndex != null) {

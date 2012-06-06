@@ -23,9 +23,7 @@ import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.code.AllocationCode;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -117,9 +115,16 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		public final ValOp op(
+				Allocator allocator,
 				CodeBuilder builder,
-				ValueStruct<?, ?> valueStruct) {
-			return new FinalValOp(builder, this, valueStruct);
+				ValueStruct<?, ?> valueStruct,
+				ValHolderFactory holderFactory) {
+			return new FinalValOp(
+					allocator,
+					builder,
+					this,
+					valueStruct,
+					holderFactory);
 		}
 
 		public final ValOp op(CodeBuilder builder, Val constant) {
@@ -161,7 +166,7 @@ public final class ValType extends Type<ValType.Op> {
 			super.allocated(code, enclosing);
 		}
 
-		public final void use(Code code) {
+		public final void useRefCounted(Code code) {
 
 			final FuncPtr<ValUseFunc> func =
 					code.getGenerator()
@@ -171,12 +176,32 @@ public final class ValType extends Type<ValType.Op> {
 			func.op(null, code).call(code, this);
 		}
 
-		public final void unuse(Code code) {
+		public final void unuseRefCounted(Code code) {
 
 			final FuncPtr<ValUseFunc> func =
 					code.getGenerator()
 					.externalFunction()
 					.link("o42a_val_unuse", VAL_USE);
+
+			func.op(null, code).call(code, this);
+		}
+
+		public final void useObjectPointer(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_obj_start_val_use", VAL_USE);
+
+			func.op(null, code).call(code, this);
+		}
+
+		public final void unuseObjectPointer(Code code) {
+
+			final FuncPtr<ValUseFunc> func =
+					code.getGenerator()
+					.externalFunction()
+					.link("o42a_obj_end_val_use", VAL_USE);
 
 			func.op(null, code).call(code, this);
 		}

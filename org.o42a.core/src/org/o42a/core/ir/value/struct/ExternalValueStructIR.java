@@ -30,6 +30,8 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.DataAlignment;
 
@@ -83,6 +85,21 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		this.valueCache.put(value, val);
 
 		return val;
+	}
+
+	@Override
+	public ValHolder tempValHolder(ValOp value) {
+		return new ExternValHolder(value, false);
+	}
+
+	@Override
+	public ValHolder volatileValHolder(ValOp value) {
+		return new ExternValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder valTrap(ValOp value) {
+		return new ExternValTrap(value);
 	}
 
 	protected abstract CodeId valueId(T value);

@@ -24,6 +24,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.*;
@@ -45,8 +46,7 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 		return new IR(generator, this);
 	}
 
-	private static final class IR
-			extends ValueStructIR<SingleValueStruct<Directive>, Directive> {
+	private static final class IR extends SingleValueStructIR<Directive> {
 
 		IR(Generator generator, DirectiveValueStruct valueStruct) {
 			super(generator, valueStruct);

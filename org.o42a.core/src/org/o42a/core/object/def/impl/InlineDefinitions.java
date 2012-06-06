@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.def.impl;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
@@ -49,7 +51,8 @@ public class InlineDefinitions extends InlineValue {
 	@Override
 	public void writeCond(CodeDirs dirs, HostOp host) {
 
-		final DefDirs defDirs = dirs.nested().value(this.valueStruct).def();
+		final DefDirs defDirs =
+				dirs.nested().value(this.valueStruct, TEMP_VAL_HOLDER).def();
 
 		this.claim.write(defDirs, host);
 		this.proposition.write(defDirs, host);

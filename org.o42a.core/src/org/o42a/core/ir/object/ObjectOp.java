@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
@@ -195,7 +196,8 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		assert linkStruct != null :
 			"Not a link: " + this;
 
-		final ValDirs valDirs = dirs.nested().value(linkStruct, "link");
+		final ValDirs valDirs =
+				dirs.nested().value("link", linkStruct, TEMP_VAL_HOLDER);
 		final ValOp value = value().writeValue(valDirs);
 		final Block code = valDirs.code();
 

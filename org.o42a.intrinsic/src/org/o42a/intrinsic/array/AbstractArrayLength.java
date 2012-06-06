@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.array;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.common.object.AnnotatedBuiltin;
@@ -121,7 +123,7 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 		final ValDirs arrayDirs =
 				dirs.dirs()
 				.nested()
-				.value(valueStruct(getScope()), "array_val");
+				.value("array_val", valueStruct(getScope()), TEMP_VAL_HOLDER);
 		final Block code = arrayDirs.code();
 
 		final ValOp arrayVal;

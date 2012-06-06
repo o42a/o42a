@@ -65,10 +65,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				object != null ? object.toData(null, dirs.code()) : null);
 	}
 
-	public final void call(
-			DefDirs dirs,
-			ObjectIRData.Op data,
-			DataOp object) {
+	public final void call(DefDirs dirs, ObjectIRData.Op data, DataOp object) {
 
 		final Block code = dirs.code();
 		final ValOp value = dirs.value();
@@ -82,6 +79,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				object != null ? object : code.nullDataPtr());
 
 		value.flags(code).condition(null, code).goUnless(code, dirs.falseDir());
+		value.valueSet(code);
 		dirs.returnValue(value);
 	}
 

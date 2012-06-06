@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.operator;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
@@ -142,8 +144,9 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
+					"operand",
 					this.unary.getOperandStruct(),
-					"operand");
+					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.operandValue.writeValue(operandDirs, host);
 
@@ -183,8 +186,9 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs operandDirs = dirs.dirs().nested().value(
+					"operand",
 					this.unary.getOperandStruct(),
-					"operand");
+					TEMP_VAL_HOLDER);
 			final ValOp operandVal =
 					this.unary.operand().op(host).writeValue(operandDirs);
 

@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.string;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
 
 import org.o42a.codegen.code.Block;
@@ -145,8 +146,10 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			InlineValue inlineWhat,
 			InlineValue inlineWith) {
 
-		final ValDirs whatDirs =
-				dirs.dirs().nested().value(ValueStruct.STRING, "what");
+		final ValDirs whatDirs = dirs.dirs().nested().value(
+				"what",
+				ValueStruct.STRING,
+				TEMP_VAL_HOLDER);
 		final ValOp whatVal;
 
 		if (inlineWhat != null) {
@@ -155,8 +158,10 @@ final class ConcatStrings extends AnnotatedBuiltin {
 			whatVal = what().op(host).writeValue(whatDirs);
 		}
 
-		final ValDirs withDirs =
-				whatDirs.dirs().nested().value(ValueStruct.STRING, "with");
+		final ValDirs withDirs = whatDirs.dirs().nested().value(
+				"with",
+				ValueStruct.STRING,
+				TEMP_VAL_HOLDER);
 		final ValOp withVal;
 
 		if (inlineWith != null) {

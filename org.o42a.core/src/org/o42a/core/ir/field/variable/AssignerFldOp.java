@@ -29,6 +29,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.Val.VAL_ASSIGN;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
+import static org.o42a.core.ir.value.ValHolderFactory.VOLATILE_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
@@ -134,7 +135,8 @@ public final class AssignerFldOp extends FldOp {
 		dirs.code().dumpName(kind + " host: ", host());
 
 		final ValDirs valDirs = dirs.nested().value(
-				host().getAscendant().value().getValueStruct());
+				host().getAscendant().value().getValueStruct(),
+				VOLATILE_VAL_HOLDER);
 		final Block code = valDirs.code();
 		final ValOp value = host().value().writeValue(valDirs);
 

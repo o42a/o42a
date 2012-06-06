@@ -1507,3 +1507,43 @@ void o42a_obj_end_use(o42a_obj_use_t *const use) {
 
 	O42A_RETURN;
 }
+
+void o42a_obj_start_val_use(o42a_val_t *const val) {
+	O42A_ENTER(return);
+
+	if (!(val->flags & O42A_VAL_CONDITION)) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_t *const obj = val->value.v_ptr;
+
+	if (!obj) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_data_t *const data = &O42A(o42a_obj_type(obj))->type.data;
+
+	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
+
+	O42A_RETURN;
+}
+
+void o42a_obj_end_val_use(o42a_val_t *const val) {
+	O42A_ENTER(return);
+
+	if (!(val->flags & O42A_VAL_CONDITION)) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_t *const obj = val->value.v_ptr;
+
+	if (!obj) {
+		O42A_RETURN;
+	}
+
+	o42a_obj_data_t *const data = &O42A(o42a_obj_type(obj))->type.data;
+
+	O42A(o42a_gc_unuse(o42a_gc_blockof((char *) data + data->start)));
+
+	O42A_RETURN;
+}

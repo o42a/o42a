@@ -17,40 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.link.impl;
+package org.o42a.core.ir.value.struct;
+
+import static org.o42a.core.ir.value.ValHolder.NO_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.core.value.SingleValueStruct;
 
 
-public class LinkValueStructIR extends AbstractLinkValueStructIR {
+public abstract class SingleValueStructIR<T>
+		extends ValueStructIR<SingleValueStruct<T>, T> {
 
-	public LinkValueStructIR(Generator generator, LinkValueStruct valueStruct) {
+	public SingleValueStructIR(
+			Generator generator,
+			SingleValueStruct<T> valueStruct) {
 		super(generator, valueStruct);
 	}
 
 	@Override
-	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
-	}
-
-	@Override
 	public ValHolder tempValHolder(ValOp value) {
-		return new LinkValHolder(value, false);
+		return NO_VAL_HOLDER;
 	}
 
 	@Override
 	public ValHolder volatileValHolder(ValOp value) {
-		return new LinkValHolder(value, true);
+		return NO_VAL_HOLDER;
 	}
 
 	@Override
 	public ValHolder valTrap(ValOp value) {
-		return new LinkValTrap(value);
+		return NO_VAL_HOLDER;
 	}
 
 }

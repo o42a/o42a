@@ -21,6 +21,8 @@ package org.o42a.core.object.link.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.value.ValHolder;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.object.link.LinkValueStruct;
 
@@ -36,6 +38,21 @@ public class VariableValueStructIR extends AbstractLinkValueStructIR {
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return new VariableIR(this, objectIR);
+	}
+
+	@Override
+	public ValHolder tempValHolder(ValOp value) {
+		return new LinkValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder volatileValHolder(ValOp value) {
+		return new LinkValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder valTrap(ValOp value) {
+		return new LinkValTrap(value);
 	}
 
 }

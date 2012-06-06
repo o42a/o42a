@@ -21,17 +21,21 @@ package org.o42a.core.ir.value.struct;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
-import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
+import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CodePos;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
-import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.ValFlagsOp;
+import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -76,7 +80,8 @@ public abstract class ValueOp {
 
 	public final void writeCond(CodeDirs dirs) {
 
-		final ValDirs valDirs = dirs.nested().value(getValueStruct());
+		final ValDirs valDirs =
+				dirs.nested().value(getValueStruct(), TEMP_VAL_HOLDER);
 
 		writeValue(valDirs);
 		valDirs.done();
@@ -114,7 +119,7 @@ public abstract class ValueOp {
 
 		definite.go(code.tail());
 
-		return value.op(getBuilder(), getValueStruct());
+		return value.op(null, getBuilder(), getValueStruct(), NO_VAL_HOLDER);
 	}
 
 	public abstract void init(Block code, ValOp value);
@@ -171,7 +176,7 @@ public abstract class ValueOp {
 
 		objectValueFlags.store(code, valueFlags);
 		if (valueStructIR.hasLength()) {
-			use(code, objectValue);
+			objectValue.useRefCounted(code);
 		}
 	}
 
@@ -192,26 +197,6 @@ public abstract class ValueOp {
 		defDirs.done();
 
 		return defDirs.result();
-	}
-
-	public static final void use(Code code, ValType.Op value) {
-
-		final FuncPtr<ValUseFunc> func =
-				code.getGenerator()
-				.externalFunction()
-				.link("o42a_val_use", VAL_USE);
-
-		func.op(null, code).call(code, value);
-	}
-
-	public static final void unuse(Code code, ValType.Op value) {
-
-		final FuncPtr<ValUseFunc> func =
-				code.getGenerator()
-				.externalFunction()
-				.link("o42a_val_unuse", VAL_USE);
-
-		func.op(null, code).call(code, value);
 	}
 
 }

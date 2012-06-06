@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.*;
@@ -77,7 +79,11 @@ public final class CompareFloats extends CompareNumbers<Double> {
 
 		final ValType.Op result = code.phi(null, result1, result2);
 
-		return result.op(dirs.getBuilder(), value().getValueStruct());
+		return result.op(
+				null,
+				dirs.getBuilder(),
+				value().getValueStruct(),
+				NO_VAL_HOLDER);
 	}
 
 }

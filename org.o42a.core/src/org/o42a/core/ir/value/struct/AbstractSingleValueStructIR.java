@@ -26,16 +26,18 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.SingleValueStruct;
 
 
-public abstract class AbstractValueStructIR<S extends ValueStruct<S, T>, T>
-		extends ValueStructIR<S, T> {
+public abstract class AbstractSingleValueStructIR<T>
+		extends SingleValueStructIR<T> {
 
 	private final HashMap<T, Ptr<ValType.Op>> constCache =
 			new HashMap<T, Ptr<ValType.Op>>();
 
-	public AbstractValueStructIR(Generator generator, S valueStruct) {
+	public AbstractSingleValueStructIR(
+			Generator generator,
+			SingleValueStruct<T> valueStruct) {
 		super(generator, valueStruct);
 	}
 

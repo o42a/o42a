@@ -20,6 +20,7 @@
 package org.o42a.core.ir.object.impl;
 
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
@@ -88,8 +89,10 @@ public final class LocalFnIR
 		final ValType.Op value =
 				this.function.arg(function, OBJECT_VAL.value());
 		final ValOp result = value.op(
+				function,
 				builder,
-				this.locals.getValueIR().getObject().value().getValueStruct());
+				this.locals.getValueIR().getObject().value().getValueStruct(),
+				VAL_TRAP);
 
 		build(builder, function, result);
 	}

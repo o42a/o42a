@@ -43,14 +43,20 @@ public abstract class ValOp extends IROp {
 
 	public static ValOp stackAllocatedVal(
 			String name,
-			AllocationCode code,
+			Allocator allocator,
 			CodeBuilder builder,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			ValHolderFactory holderFactory) {
 
 		final CodeId valId =
-				code.getId().setLocal(name != null ? name : "value");
+				allocator.getId().setLocal(name != null ? name : "value");
 
-		return new StackAllocatedValOp(valId, code, builder, valueStruct);
+		return new StackAllocatedValOp(
+				valId,
+				allocator,
+				builder,
+				valueStruct,
+				holderFactory);
 	}
 
 	private final ValueStruct<?, ?> valueStruct;
@@ -88,6 +94,8 @@ public abstract class ValOp extends IROp {
 	}
 
 	public abstract Val getConstant();
+
+	public abstract Allocator getAllocator();
 
 	@Override
 	public abstract ValType.Op ptr();
@@ -199,6 +207,8 @@ public abstract class ValOp extends IROp {
 			rawValue(null, code).store(code, code.int64(value.getValue()));
 		}
 
+		holder().hold(code);
+
 		return this;
 	}
 
@@ -226,6 +236,8 @@ public abstract class ValOp extends IROp {
 		}
 		rawValue(null, code)
 		.store(code, value.rawValue(null, code).load(null, code));
+
+		holder().hold(code);
 
 		return this;
 	}
@@ -273,6 +285,8 @@ public abstract class ValOp extends IROp {
 		value(null, code).toPtr(null, code).store(code, pointer);
 		flags(code).store(code, VAL_CONDITION);
 
+		holder().hold(code);
+
 		return this;
 	}
 
@@ -294,6 +308,13 @@ public abstract class ValOp extends IROp {
 		length(null, code).store(code, length);
 		value(null, code).toPtr(null, code).store(code, pointer);
 
+		holder().hold(code);
+
+		return this;
+	}
+
+	public final ValOp valueSet(Code code) {
+		holder().set(code);
 		return this;
 	}
 
@@ -319,12 +340,22 @@ public abstract class ValOp extends IROp {
 		flags(code).condition(null, code).goUnless(code, dirs.falseDir());
 	}
 
-	public final void use(Code code) {
-		ptr().use(code);
+	public final void useRefCounted(Code code) {
+		ptr().useRefCounted(code);
 	}
 
-	public final void unuse(Code code) {
-		ptr().unuse(code);
+	public final void unuseRefCounted(Code code) {
+		ptr().unuseRefCounted(code);
 	}
+
+	public final void useObjectPointer(Code code) {
+		ptr().useObjectPointer(code);
+	}
+
+	public final void unuseObjectPointer(Code code) {
+		ptr().unuseObjectPointer(code);
+	}
+
+	protected abstract ValHolder holder();
 
 }

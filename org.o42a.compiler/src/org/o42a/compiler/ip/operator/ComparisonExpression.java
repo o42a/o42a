@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.operator;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberId.fieldName;
 
 import org.o42a.ast.expression.BinaryNode;
@@ -165,8 +166,9 @@ public final class ComparisonExpression extends ObjectConstructor {
 
 		final ComparisonOperator operator = getOperator();
 		final ValDirs cmpDirs = dirs.dirs().nested().value(
+				"cmp",
 				operator.getValueStruct(),
-				"cmp");
+				TEMP_VAL_HOLDER);
 		final ValOp cmpVal;
 
 		if (inlineCmp != null) {

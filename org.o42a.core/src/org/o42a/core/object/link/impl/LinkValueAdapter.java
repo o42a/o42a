@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.link.impl;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.object.link.impl.LinkCopy.linkValue;
 
 import org.o42a.core.Scope;
@@ -125,8 +126,9 @@ public class LinkValueAdapter extends ValueAdapter {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs fromDirs =
-					dirs.dirs().nested().value(this.fromStruct);
+			final ValDirs fromDirs = dirs.dirs().nested().value(
+					this.fromStruct,
+					TEMP_VAL_HOLDER);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 
 			dirs.returnValue(from);

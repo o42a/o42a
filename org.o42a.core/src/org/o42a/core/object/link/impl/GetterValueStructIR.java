@@ -22,7 +22,7 @@ package org.o42a.core.object.link.impl;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.Val;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
@@ -52,6 +52,21 @@ public class GetterValueStructIR
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return new GetterIR(this, objectIR);
+	}
+
+	@Override
+	public ValHolder tempValHolder(ValOp value) {
+		return new LinkValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder volatileValHolder(ValOp value) {
+		return new LinkValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder valTrap(ValOp value) {
+		return new LinkValTrap(value);
 	}
 
 }
