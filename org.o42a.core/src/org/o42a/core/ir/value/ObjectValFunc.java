@@ -57,6 +57,7 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		final BoolOp condition = value.flags(code).condition(null, code);
 
 		condition.go(code, hasResult.head());
+		value.valueSet(hasResult);
 		dirs.returnValue(hasResult, value);
 
 		value.flags(code)

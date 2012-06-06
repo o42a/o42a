@@ -21,6 +21,7 @@ package org.o42a.lib.console;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.CodeBuilder.defaultBuilder;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.ref.path.Path.modulePath;
@@ -185,9 +186,10 @@ public class ConsoleModule extends AnnotatedModule {
 		final Block exit = main.addBlock("exit");
 		final ValOp result = stackAllocatedVal(
 				"result",
-				main.allocation(),
+				main,
 				builder,
-				ValueStruct.INTEGER);
+				ValueStruct.INTEGER,
+				TEMP_VAL_HOLDER);
 		final ValDirs dirs = builder.dirs(main, exit.head()).value(result);
 		final ValOp programResult;
 

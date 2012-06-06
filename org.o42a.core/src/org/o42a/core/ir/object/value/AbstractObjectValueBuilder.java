@@ -23,6 +23,8 @@ import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.object.op.ObjectValueStartFunc.OBJECT_VALUE_START;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
+import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
+import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
@@ -47,7 +49,7 @@ public abstract class AbstractObjectValueBuilder
 		final ObjBuilder builder = builder(function);
 		final ValOp result =
 				function.arg(function, OBJECT_VALUE.value())
-				.op(builder, getValueStruct());
+				.op(function, builder, getValueStruct(), VAL_TRAP);
 		final ObjOp host = builder.host();
 		final ValueOp value = host.value();
 
@@ -147,9 +149,10 @@ public abstract class AbstractObjectValueBuilder
 		if (failure.exists()) {
 			failure.debug("Failure");
 
+			// No need to hold a false value.
 			final ValOp result =
 					function.arg(failure, OBJECT_VALUE.value())
-					.op(builder, getValueStruct());
+					.op(function, builder, getValueStruct(), NO_VAL_HOLDER);
 
 			result.storeFalse(failure);
 			if (lock()) {

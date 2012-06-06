@@ -19,6 +19,7 @@
 */
 package org.o42a.lib.console.impl;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.lib.console.impl.PrintFunc.PRINT;
@@ -132,8 +133,10 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs textDirs =
-					dirs.dirs().nested().value(ValueStruct.STRING, "text");
+			final ValDirs textDirs = dirs.dirs().nested().value(
+					"text",
+					ValueStruct.STRING,
+					TEMP_VAL_HOLDER);
 			final Block code = textDirs.code();
 
 			final ValOp text = this.text.writeValue(textDirs, host);
@@ -174,8 +177,10 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
 
-			final ValDirs textDirs =
-					dirs.dirs().nested().value(ValueStruct.STRING, "text");
+			final ValDirs textDirs = dirs.dirs().nested().value(
+					"text",
+					ValueStruct.STRING,
+					TEMP_VAL_HOLDER);
 			final Block code = textDirs.code();
 
 			final ValOp text = this.print.text().op(host).writeValue(textDirs);

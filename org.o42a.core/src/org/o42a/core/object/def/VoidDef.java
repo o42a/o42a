@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.st.DefValue.defValue;
 
 import org.o42a.codegen.code.Block;
@@ -140,7 +141,7 @@ final class VoidDef extends Def {
 			final DefDirs defDirs =
 					dirs.dirs()
 					.nested()
-					.value(this.valueStruct)
+					.value(this.valueStruct, TEMP_VAL_HOLDER)
 					.def(trueVal.head());
 
 			this.def.write(defDirs, host);

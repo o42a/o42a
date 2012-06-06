@@ -19,10 +19,9 @@
 */
 package org.o42a.core.ir.value.impl;
 
+import org.o42a.codegen.code.Allocator;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.*;
 
 
 public final class ConstValOp extends ValOp {
@@ -42,6 +41,11 @@ public final class ConstValOp extends ValOp {
 	}
 
 	@Override
+	public final Allocator getAllocator() {
+		throw new IllegalStateException("Constant value is not allocated");
+	}
+
+	@Override
 	public final ValType.Op ptr() {
 		return this.ptr;
 	}
@@ -52,6 +56,11 @@ public final class ConstValOp extends ValOp {
 			return super.toString();
 		}
 		return this.constant.toString();
+	}
+
+	@Override
+	protected final ValHolder holder() {
+		throw new IllegalStateException("Constant value can not be held");
 	}
 
 }

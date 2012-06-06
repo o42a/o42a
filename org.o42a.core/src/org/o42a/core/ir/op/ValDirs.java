@@ -28,6 +28,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.DefDirs;
+import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -142,13 +143,17 @@ public abstract class ValDirs {
 
 		private final ValOp value;
 
-		TopLevelValDirs(CodeDirs dirs, ValueStruct<?, ?> valueStruct) {
+		TopLevelValDirs(
+				CodeDirs dirs,
+				ValueStruct<?, ?> valueStruct,
+				ValHolderFactory holderFactory) {
 			super(dirs, valueStruct);
 			this.value = stackAllocatedVal(
 					"value",
-					dirs.code().getAllocator().allocation(),
+					dirs.code().getAllocator(),
 					getBuilder(),
-					valueStruct);
+					valueStruct,
+					holderFactory);
 		}
 
 		TopLevelValDirs(CodeDirs dirs, ValOp value) {

@@ -22,10 +22,8 @@ package org.o42a.core.ir.value.array;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.ir.value.struct.ValueStructIR;
+import org.o42a.core.ir.value.*;
+import org.o42a.core.ir.value.struct.*;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
@@ -65,6 +63,21 @@ public final class ArrayValueStructIR
 	@Override
 	public ValueIR valueIR(ObjectIR objectIR) {
 		return defaultValueIR(objectIR);
+	}
+
+	@Override
+	public ValHolder tempValHolder(ValOp value) {
+		return new ExternValHolder(value, false);
+	}
+
+	@Override
+	public ValHolder volatileValHolder(ValOp value) {
+		return new ExternValHolder(value, true);
+	}
+
+	@Override
+	public ValHolder valTrap(ValOp value) {
+		return new ExternValTrap(value);
 	}
 
 }

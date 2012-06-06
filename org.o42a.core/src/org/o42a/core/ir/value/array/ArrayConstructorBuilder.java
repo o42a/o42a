@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.op.CodeDirs.codeDirs;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValAllocFunc.VAL_ALLOC;
+import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyRecOp;
@@ -65,7 +66,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				ownerIR.isExact() ? EXACT : DERIVED);
 		final ValOp value =
 				function.arg(function, OBJECT_VAL.value())
-				.op(builder, array.getValueStruct());
+				.op(function, builder, array.getValueStruct(), VAL_TRAP);
 
 		if (array.isEmpty()) {
 			value.storeNull(function);

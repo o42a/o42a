@@ -20,6 +20,7 @@
 package org.o42a.core.object.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
@@ -176,8 +177,9 @@ public final class ArrayValueAdapter extends ValueAdapter {
 
 			final ValueStruct<?, ?> fromValueStruct =
 					getRef().valueStruct(getRef().getScope());
-			final ValDirs fromDirs =
-					dirs.dirs().nested().value(fromValueStruct);
+			final ValDirs fromDirs = dirs.dirs().nested().value(
+					fromValueStruct,
+					TEMP_VAL_HOLDER);
 			final ValOp from = getRef().op(host).writeValue(fromDirs);
 			final FuncPtr<ValCopyFunc> func =
 					dirs.getGenerator()

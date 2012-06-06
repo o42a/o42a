@@ -19,6 +19,8 @@
 */
 package org.o42a.common.adapter;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
@@ -131,8 +133,9 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 			final Ref object = this.converter.object();
 			final ValDirs valueDirs = dirs.dirs().nested().value(
+					"value",
 					object.valueStruct(object.getScope()),
-					"value");
+					TEMP_VAL_HOLDER);
 			final ValOp value = this.value.writeValue(valueDirs, host);
 
 			final ValDirs targetDirs =
@@ -174,8 +177,9 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 
 			final Ref object = this.converter.object();
 			final ValDirs valueDirs = dirs.dirs().nested().value(
+					"value",
 					object.valueStruct(object.getScope()),
-					"value");
+					TEMP_VAL_HOLDER);
 			final ValOp value = object.op(host).writeValue(valueDirs);
 
 			final ValDirs targetDirs =

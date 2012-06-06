@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.operator;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.core.Scope;
@@ -133,10 +135,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
 	protected abstract T calculate(Resolver resolver, L left, R right);
 
-	protected abstract ValOp write(
-			ValDirs dirs,
-			ValOp leftVal,
-			ValOp rightVal);
+	protected abstract ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal);
 
 	private final Ref leftOperand() {
 		if (this.leftOperand != null) {
@@ -184,13 +183,15 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
+					"left",
 					this.binary.getLeftOperandStruct(),
-					"left");
+					TEMP_VAL_HOLDER);
 			final ValOp leftVal = this.leftValue.writeValue(leftDirs, host);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
+					"right",
 					this.binary.getRightOperandStruct(),
-					"right");
+					TEMP_VAL_HOLDER);
 			final ValOp rightVal = this.rightValue.writeValue(rightDirs, host);
 
 			final ValDirs resultDirs =
@@ -232,14 +233,16 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		public void write(DefDirs dirs, HostOp host) {
 
 			final ValDirs leftDirs = dirs.dirs().nested().value(
+					"left",
 					this.binary.getLeftOperandStruct(),
-					"left");
+					TEMP_VAL_HOLDER);
 			final ValOp leftVal =
 					this.binary.leftOperand().op(host).writeValue(leftDirs);
 
 			final ValDirs rightDirs = leftDirs.dirs().nested().value(
+					"right",
 					this.binary.getRightOperandStruct(),
-					"right");
+					TEMP_VAL_HOLDER);
 			final ValOp rightVal =
 					this.binary.rightOperand().op(host).writeValue(rightDirs);
 

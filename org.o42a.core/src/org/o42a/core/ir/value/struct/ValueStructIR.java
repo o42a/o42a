@@ -25,8 +25,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.ir.value.impl.DefaultValueIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -78,6 +77,12 @@ public abstract class ValueStructIR<S extends ValueStruct<S, T>, T> {
 	public abstract Ptr<ValType.Op> valPtr(T value);
 
 	public abstract ValueIR valueIR(ObjectIR objectIR);
+
+	public abstract ValHolder tempValHolder(ValOp value);
+
+	public abstract ValHolder volatileValHolder(ValOp value);
+
+	public abstract ValHolder valTrap(ValOp value);
 
 	@Override
 	public String toString() {

@@ -22,6 +22,7 @@ package org.o42a.core.object.array.impl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
@@ -55,11 +56,13 @@ final class ArrayElementOp extends PathOp {
 			value + " is immutable of type " + this.arrayStruct
 			+ ". Can not re-assign it`s element";
 
-		final ValDirs indexDirs = dirs.nested().value(ValueStruct.INTEGER);
+		final ValDirs indexDirs =
+				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs);
 
-		final ValDirs arrayDirs =
-				indexDirs.dirs().nested().value(this.arrayStruct);
+		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
+				this.arrayStruct,
+				TEMP_VAL_HOLDER);
 
 		assignItem(index, arrayDirs, value);
 
@@ -70,11 +73,13 @@ final class ArrayElementOp extends PathOp {
 	@Override
 	public HostOp target(CodeDirs dirs) {
 
-		final ValDirs indexDirs = dirs.nested().value(ValueStruct.INTEGER);
+		final ValDirs indexDirs =
+				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs);
 
-		final ValDirs arrayDirs =
-				indexDirs.dirs().nested().value(this.arrayStruct);
+		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
+				this.arrayStruct,
+				TEMP_VAL_HOLDER);
 		final ObjectOp itemObject = loadItem(arrayDirs, index);
 
 		arrayDirs.done();

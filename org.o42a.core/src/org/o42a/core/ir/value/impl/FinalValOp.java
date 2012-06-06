@@ -19,28 +19,38 @@
 */
 package org.o42a.core.ir.value.impl;
 
+import org.o42a.codegen.code.Allocator;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueStruct;
 
 
 public final class FinalValOp extends ValOp {
 
+	private final Allocator allocator;
 	private final ValType.Op ptr;
+	private final ValHolder holder;
 
 	public FinalValOp(
+			Allocator allocator,
 			CodeBuilder builder,
 			ValType.Op ptr,
-			ValueStruct<?, ?> valueStruct) {
+			ValueStruct<?, ?> valueStruct,
+			ValHolderFactory holderFactory) {
 		super(builder, valueStruct);
+		this.allocator = allocator;
 		this.ptr = ptr;
+		this.holder = holderFactory.createValHolder(this);
 	}
 
 	@Override
 	public final Val getConstant() {
 		return null;
+	}
+
+	@Override
+	public final Allocator getAllocator() {
+		return this.allocator;
 	}
 
 	@Override
@@ -58,6 +68,11 @@ public final class FinalValOp extends ValOp {
 		}
 
 		return "(" + valueStruct + ") " + ptr();
+	}
+
+	@Override
+	protected final ValHolder holder() {
+		return this.holder;
 	}
 
 }

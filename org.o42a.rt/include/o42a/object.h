@@ -879,7 +879,7 @@ void o42a_obj_use(o42a_obj_data_t *);
 void o42a_obj_use_static(o42a_obj_data_t *);
 
 /**
- * Declare the object is used.
+ * Declares the object is used.
  *
  * This function informs GC the object can not be disposed.
  *
@@ -905,10 +905,25 @@ void o42a_obj_start_use(o42a_obj_use_t *, o42a_obj_data_t *);
  */
 void o42a_obj_end_use(o42a_obj_use_t *);
 
+/**
+ * Declares the object stored in value is used.
+ *
+ * This function calls o42a_gc_use if the value condition is true and it
+ * contains a non-NULL object pointer.
+ */
+void o42a_obj_start_val_use(o42a_val_t *);
+
+/**
+ * Releases the object previously used by o42a_obj_start_val_use.
+ *
+ * This function calls o42a_gc_unuse if the value condition is true and it
+ * contains a non-NULL object pointer.
+ */
+void o42a_obj_end_val_use(o42a_val_t *);
+
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
-
 
 #endif /* O42A_OBJECT_H */

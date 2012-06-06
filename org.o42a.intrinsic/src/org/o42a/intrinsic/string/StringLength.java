@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.string;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.common.object.AnnotatedBuiltin;
@@ -113,8 +115,10 @@ final class StringLength extends AnnotatedBuiltin {
 
 	private void write(DefDirs dirs, HostOp host, InlineValue inlineString) {
 
-		final ValDirs stringDirs =
-				dirs.dirs().nested().value(ValueStruct.STRING, "string_val");
+		final ValDirs stringDirs = dirs.dirs().nested().value(
+				"string_val",
+				ValueStruct.STRING,
+				TEMP_VAL_HOLDER);
 		final Block code = stringDirs.code();
 
 		final ValOp stringVal;

@@ -17,40 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.link.impl;
+package org.o42a.core.ir.value.struct;
 
-import org.o42a.codegen.Generator;
-import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
-import org.o42a.core.ir.value.struct.ValueIR;
-import org.o42a.core.object.link.LinkValueStruct;
 
 
-public class LinkValueStructIR extends AbstractLinkValueStructIR {
+public class ExternValTrap extends ValHolder {
 
-	public LinkValueStructIR(Generator generator, LinkValueStruct valueStruct) {
-		super(generator, valueStruct);
+	private final ValOp value;
+
+	public ExternValTrap(ValOp value) {
+		this.value = value;
 	}
 
 	@Override
-	public ValueIR valueIR(ObjectIR objectIR) {
-		return defaultValueIR(objectIR);
+	public void set(Code code) {
 	}
 
 	@Override
-	public ValHolder tempValHolder(ValOp value) {
-		return new LinkValHolder(value, false);
+	public void hold(Code code) {
+		this.value.useRefCounted(code);
 	}
 
 	@Override
-	public ValHolder volatileValHolder(ValOp value) {
-		return new LinkValHolder(value, true);
-	}
-
-	@Override
-	public ValHolder valTrap(ValOp value) {
-		return new LinkValTrap(value);
+	public String toString() {
+		if (this.value == null) {
+			return super.toString();
+		}
+		return "ExternValTrap[" + this.value + ']';
 	}
 
 }

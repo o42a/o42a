@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.string;
 
+import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.intrinsic.string.SubStringFunc.SUB_STRING;
 
 import org.o42a.codegen.code.Block;
@@ -208,8 +209,10 @@ final class SubString extends AnnotatedBuiltin {
 			InlineValue inlineFrom,
 			InlineValue inlineTo) {
 
-		final ValDirs stringDirs =
-				dirs.dirs().nested().value(ValueStruct.STRING, "string");
+		final ValDirs stringDirs = dirs.dirs().nested().value(
+				"string",
+				ValueStruct.STRING,
+				TEMP_VAL_HOLDER);
 		final ValOp stringVal;
 
 		if (inlineString != null) {
@@ -218,8 +221,10 @@ final class SubString extends AnnotatedBuiltin {
 			stringVal = string().op(host).writeValue(stringDirs);
 		}
 
-		final ValDirs fromDirs =
-				stringDirs.dirs().nested().value(ValueStruct.INTEGER, "from");
+		final ValDirs fromDirs = stringDirs.dirs().nested().value(
+				"from",
+				ValueStruct.INTEGER,
+				TEMP_VAL_HOLDER);
 		final ValOp fromVal;
 
 		if (inlineFrom != null) {
@@ -228,8 +233,10 @@ final class SubString extends AnnotatedBuiltin {
 			fromVal = from().op(host).writeValue(fromDirs);
 		}
 
-		final ValDirs toDirs =
-				fromDirs.dirs().nested().value(ValueStruct.INTEGER, "to");
+		final ValDirs toDirs = fromDirs.dirs().nested().value(
+				"to",
+				ValueStruct.INTEGER,
+				TEMP_VAL_HOLDER);
 		final ValOp toVal;
 
 		if (inlineTo != null) {

@@ -28,6 +28,7 @@ import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
@@ -49,8 +50,7 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 		return new IR(generator, this);
 	}
 
-	private static final class IR
-			extends ValueStructIR<SingleValueStruct<Void>, Void> {
+	private static final class IR extends SingleValueStructIR<Void> {
 
 		private Ptr<ValType.Op> valPtr;
 

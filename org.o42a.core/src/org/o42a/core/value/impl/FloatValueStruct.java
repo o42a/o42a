@@ -23,7 +23,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
-import org.o42a.core.ir.value.struct.AbstractValueStructIR;
+import org.o42a.core.ir.value.struct.AbstractSingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
@@ -45,7 +45,7 @@ public class FloatValueStruct extends SingleValueStruct<Double> {
 	}
 
 	private static final class IR
-			extends AbstractValueStructIR<SingleValueStruct<Double>, Double> {
+			extends AbstractSingleValueStructIR<Double> {
 
 		private int constSeq;
 
