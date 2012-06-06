@@ -834,7 +834,7 @@ static void o42a_obj_gc_marker(void *const obj_data) {
 
 				O42A(desc->mark(fld));
 
-				if (--num_fields) {
+				if (!(--num_fields)) {
 					break;
 				}
 				++field;
