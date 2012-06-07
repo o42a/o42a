@@ -23,7 +23,6 @@ import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
-import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -84,11 +83,6 @@ public class GetterFld extends RefFld<ObjectRefFunc> {
 		@Override
 		public final Type getType() {
 			return (Type) super.getType();
-		}
-
-		@Override
-		public DataOp target(Block code, ObjOp host) {
-			return construct(code, host);
 		}
 
 		@Override

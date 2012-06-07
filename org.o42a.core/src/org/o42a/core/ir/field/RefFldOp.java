@@ -19,11 +19,14 @@
 */
 package org.o42a.core.ir.field;
 
+import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectFunc;
@@ -57,24 +60,72 @@ public abstract class RefFldOp<
 	}
 
 	public ObjectOp target(CodeDirs dirs, ObjHolder holder) {
+
+		final Block code = dirs.code();
+
 		if (isOmitted()) {
 
 			final ObjectIR targetIR = fld().getTarget().ir(getGenerator());
 
-			return targetIR.op(getBuilder(), dirs.code());
+			return holder.hold(code, targetIR.op(getBuilder(), dirs.code()));
 		}
 
-		final Block code = dirs.code();
 		final FldKind kind = fld().getKind();
 
 		code.dumpName(kind + " field: ", this);
 		code.dumpName(kind + " host: ", host());
 
-		final DataOp ptr = ptr().target(code, host());
+		return target(code, holder);
+	}
+
+	@Override
+	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
+		return target(dirs, holder);
+	}
+
+	protected ObjectOp target(Block code, ObjHolder holder) {
+
+		final DataRecOp objectRec = ptr().object(null, code);
+
+		code.acquireBarrier();
+
+		final DataOp object = objectRec.load(null, code, ATOMIC);
+		final CondBlock noTarget =
+				object.isNull(null, code)
+				.branch(code, "no_target", "has_target");
+		final Block hasTarget = noTarget.otherwise();
+
+		final DataOp ptr1 = hasTarget.phi(null, object);
+
+		if (fld().getKind().isVariable()) {
+			holder.hold(hasTarget, createObject(hasTarget, ptr1));
+		}
+		hasTarget.go(code.tail());
+
+		final DataOp ptr2 = ptr().construct(noTarget, host());
+
+		if (fld().getKind().isVariable()) {
+			// Object is trapped in variable constructor.
+			// Add it to holder to unuse it automatically.
+			holder.set(noTarget, createObject(noTarget, ptr2));
+		}
+		noTarget.go(code.tail());
+
+		final ObjectOp target = createObject(code, code.phi(null, ptr1, ptr2));
+
+		if (!fld().getKind().isVariable()) {
+			holder.hold(code, target);
+		}
+
+		return target;
+	}
+
+	protected ObjectOp createObject(Block code, DataOp ptr) {
+
 		final Obj hostAscendant = host().getAscendant();
 		final Obj targetType = fld().targetType(hostAscendant);
 
-		if (host().getPrecision().isExact()) {
+		if (!fld().isLink() && host().getPrecision().isExact()) {
 
 			final ObjectBodyIR.Op targetBodyPtr = ptr.to(
 					null,
@@ -88,14 +139,7 @@ public abstract class RefFldOp<
 					ObjectPrecision.EXACT);
 		}
 
-		return holder.hold(
-				code,
-				anonymousObject(getBuilder(), ptr, targetType));
-	}
-
-	@Override
-	public final ObjectOp materialize(CodeDirs dirs, ObjHolder holder) {
-		return target(dirs, holder);
+		return anonymousObject(getBuilder(), ptr, targetType);
 	}
 
 }

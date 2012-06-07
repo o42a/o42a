@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.getter;
 
+import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
@@ -60,6 +61,13 @@ public class GetterFldOp extends RefFldOp<GetterFld.Op, ObjectRefFunc> {
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ObjectOp target(Block code, ObjHolder holder) {
+		return holder.set(
+				code,
+				createObject(code, ptr().construct(code, host())));
 	}
 
 }
