@@ -25,6 +25,7 @@ import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
@@ -175,7 +176,16 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			.returnValue(constructed);
 		}
 
-		final ObjHolder holder = tempObjHolder(code.getAllocator());
+		final ObjHolder holder;
+
+		if (getKind().isVariable()) {
+			// Variables and getters should trap the object before returning
+			// to caller.
+			holder = objTrap();
+		} else {
+			holder = tempObjHolder(code.getAllocator());
+		}
+
 		final ObjectOp result = construct(builder, dirs, holder);
 		final DataOp res = result.toData(null, code);
 
@@ -362,30 +372,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			return func(id, code, getType().constructor());
 		}
 
-		public DataOp target(Block code, ObjOp host) {
-
-			final DataRecOp objectRec = object(null, code);
-
-			code.acquireBarrier();
-
-			final DataOp object = objectRec.load(null, code, ATOMIC);
-			final CondBlock noTarget =
-					object.isNull(null, code)
-					.branch(code, "no_target", "has_target");
-			final Block hasTarget = noTarget.otherwise();
-
-			final DataOp object1 = hasTarget.phi(null, object);
-
-			hasTarget.go(code.tail());
-
-			final DataOp object2 = construct(noTarget, host);
-
-			noTarget.go(code.tail());
-
-			return code.phi(null, object1, object2);
-		}
-
-		protected final DataOp construct(Code code, ObjOp host) {
+		public final DataOp construct(Code code, ObjOp host) {
 
 			final C constructor = constructor(null, code).load(null, code);
 
