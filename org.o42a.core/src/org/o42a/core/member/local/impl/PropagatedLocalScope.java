@@ -77,7 +77,11 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public Path member(PlaceInfo user, Accessor accessor, MemberId memberId, Obj declaredIn) {
+	public Path member(
+			PlaceInfo user,
+			Accessor accessor,
+			MemberId memberId,
+			Obj declaredIn) {
 		return this.explicit.member(user, accessor, memberId, declaredIn);
 	}
 

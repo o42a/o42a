@@ -489,7 +489,8 @@ public abstract class Obj
 	public final Path findMember(
 			PlaceInfo user,
 			Accessor accessor,
-			MemberId memberId, Obj declaredIn) {
+			MemberId memberId,
+			Obj declaredIn) {
 		return member(user, accessor, memberId, declaredIn);
 	}
 

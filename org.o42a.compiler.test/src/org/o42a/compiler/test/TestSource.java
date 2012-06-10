@@ -65,7 +65,9 @@ public class TestSource extends StringSource {
 		final int idx = shortName.indexOf('/');
 
 		if (idx < 0) {
-			this.subSources.put(name, new TestSource(shortName, name, string));
+			this.subSources.put(
+					shortName,
+					new TestSource(shortName, name, string));
 			return;
 		}
 
