@@ -69,7 +69,8 @@ public class MemberOf extends PlacedPathFragment {
 		final Path memberPath = container.member(
 				this,
 				accessorResolver.getAccessor(),
-				this.memberId, this.declaredIn != null
+				this.memberId,
+				this.declaredIn != null
 				? this.declaredIn.typeObject(dummyUser()) : null);
 
 		if (memberPath == null) {

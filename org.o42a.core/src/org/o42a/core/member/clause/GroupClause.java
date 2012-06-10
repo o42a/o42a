@@ -166,7 +166,8 @@ public abstract class GroupClause extends Clause implements Container {
 		return getEnclosingContainer().member(
 				user,
 				accessor,
-				memberId, declaredIn);
+				memberId,
+				declaredIn);
 	}
 
 	@Override

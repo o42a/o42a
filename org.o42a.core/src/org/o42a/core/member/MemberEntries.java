@@ -73,7 +73,6 @@ final class MemberEntries extends Chain<MemberEntry> {
 	}
 
 	void registerMembers(ContainerMembers members) {
-
 		for (;;) {
 			if (this.registering == null) {
 				// Registration is not in progress.

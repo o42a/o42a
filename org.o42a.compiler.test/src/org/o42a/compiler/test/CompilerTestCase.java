@@ -306,6 +306,10 @@ public abstract class CompilerTestCase {
 		return field(this.module, name, names);
 	}
 
+	public Field field(String name, Accessor accessor) {
+		return field(this.module, name, accessor);
+	}
+
 	protected void addSource(
 			String path,
 			String line,
