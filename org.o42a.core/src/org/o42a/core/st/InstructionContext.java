@@ -19,12 +19,11 @@
 */
 package org.o42a.core.st;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.sentence.Block;
 
 
-public interface InstructionContext extends UserInfo {
+public interface InstructionContext {
 
 	Resolver getResolver();
 

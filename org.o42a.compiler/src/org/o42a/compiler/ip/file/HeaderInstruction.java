@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.core.member.MemberRegistry.skipDeclarations;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Instruction;
@@ -46,11 +45,6 @@ final class HeaderInstruction implements Instruction, InstructionContext {
 	public void execute(InstructionContext context) {
 		this.context = context;
 		this.directive.apply(this.ref, this);
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return this.context.toUser();
 	}
 
 	@Override

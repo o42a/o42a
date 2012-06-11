@@ -19,11 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import java.util.List;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Instruction;
@@ -42,11 +39,6 @@ final class InstructionExecutor implements InstructionContext {
 	InstructionExecutor(Statements<?, ?> statements) {
 		this.statements = statements;
 		this.resolver = statements.getScope().resolver();
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return dummyUser();
 	}
 
 	@Override
