@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
@@ -227,9 +226,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		}
 
 		final OutcomeBuilder outcomeBuilder = new OutcomeBuilder(this.outcome);
-		final Resolver resolver = clause.getEnclosingScope().walkingResolver(
-				dummyUser(),
-				outcomeBuilder);
+		final Resolver resolver =
+				clause.getEnclosingScope().walkingResolver(outcomeBuilder);
 
 		if (!outcome.resolve(resolver).isResolved()) {
 			return Path.SELF_PATH;

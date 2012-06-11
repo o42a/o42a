@@ -100,12 +100,12 @@ final class ArrayElementStep extends Step {
 			this.arrayStruct = arrayStruct;
 		}
 
-		final Resolver indexResolver =
-				resolver.getPathStart().newResolver(resolver);
+		final Resolver indexResolver = resolver.getPathStart().resolver();
 		final Resolution indexResolution = indexRef.resolve(indexResolver);
 
 		if (resolver.isFullResolution()) {
-			indexRef.resolveAll(indexResolver.fullResolver(VALUE_REF_USAGE));
+			indexRef.resolveAll(
+					indexResolver.fullResolver(resolver, VALUE_REF_USAGE));
 		}
 
 		if (indexResolution.isError()) {

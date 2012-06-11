@@ -24,7 +24,6 @@ import static org.o42a.core.object.ConstructionMode.FULL_CONSTRUCTION;
 
 import java.util.Set;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.AbstractScope;
 import org.o42a.core.Container;
@@ -131,25 +130,18 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final Resolver dummyResolver() {
-		return this.resolverFactory.dummyResolver();
+	public final Resolver resolver() {
+		return this.resolverFactory.resolver();
 	}
 
 	@Override
-	public final Resolver newResolver(UserInfo user) {
-		return this.resolverFactory.newResolver(user);
+	public final Resolver walkingResolver(Resolver resolver) {
+		return walkingResolver(resolver.getWalker());
 	}
 
 	@Override
-	public final Resolver walkingResolver(Resolver user) {
-		return walkingResolver(user, user.getWalker());
-	}
-
-	@Override
-	public final Resolver walkingResolver(
-			UserInfo user,
-			PathWalker walker) {
-		return this.resolverFactory.walkingResolver(user, walker);
+	public final Resolver walkingResolver(PathWalker walker) {
+		return this.resolverFactory.walkingResolver(walker);
 	}
 
 	@Override

@@ -102,8 +102,8 @@ public final class Resolution implements ScopeInfo {
 			return null;
 		}
 
-		final Value<Directive> value = ValueStruct.DIRECTIVE.cast(
-				object.value().explicitUseBy(getResolver()).getValue());
+		final Value<Directive> value =
+				ValueStruct.DIRECTIVE.cast(object.value().getValue());
 
 		if (!value.getKnowledge().isKnown()) {
 			getResolver().getLogger().error(

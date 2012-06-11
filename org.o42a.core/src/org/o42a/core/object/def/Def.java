@@ -177,7 +177,7 @@ public abstract class Def implements SourceInfo {
 		if (!hasConstantValue()) {
 			return this.constantValue = RUNTIME_DEF_VALUE;
 		}
-		return this.constantValue = value(getScope().dummyResolver());
+		return this.constantValue = value(getScope().resolver());
 	}
 
 	public DefValue value(Resolver resolver) {

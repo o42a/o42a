@@ -45,7 +45,7 @@ public class PredictionWalker implements PathWalker {
 		if (start.isExact()) {
 
 			final Resolution resolution =
-					ref.resolve(start.getScope().dummyResolver());
+					ref.resolve(start.getScope().resolver());
 
 			if (resolution.isError()) {
 				return unpredicted(resolution.getScope());
@@ -56,7 +56,7 @@ public class PredictionWalker implements PathWalker {
 
 		final PredictionWalker walker = new PredictionWalker(start);
 		final Resolution resolution = ref.resolve(
-				start.getScope().walkingResolver(dummyUser(), walker));
+				start.getScope().walkingResolver(walker));
 
 		if (resolution.isError()) {
 			return unpredicted(resolution.getScope());
@@ -151,8 +151,7 @@ public class PredictionWalker implements PathWalker {
 
 		if (getPrediction().isExact()) {
 
-			final Resolution resolution =
-					dependency.resolve(local.dummyResolver());
+			final Resolution resolution = dependency.resolve(local.resolver());
 
 			if (resolution.isError()) {
 				set(unpredicted(resolution.getScope()));

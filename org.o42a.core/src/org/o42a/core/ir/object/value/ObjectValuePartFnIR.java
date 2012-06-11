@@ -153,8 +153,7 @@ public abstract class ObjectValuePartFnIR
 		if (!canStub()) {
 			return RUNTIME_DEF_VALUE;
 		}
-		return defs().value(
-				getObject().getScope().dummyResolver());
+		return defs().value(getObject().getScope().resolver());
 	}
 
 	@Override

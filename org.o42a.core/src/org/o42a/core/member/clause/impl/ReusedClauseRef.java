@@ -19,8 +19,6 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ReusedClause;
 import org.o42a.core.ref.Ref;
@@ -50,7 +48,7 @@ public final class ReusedClauseRef {
 		final ClauseReuser reuser =
 				new ClauseReuser(this.ref, this.reuseContents);
 		final Resolver resolver =
-				clause.getEnclosingScope().walkingResolver(dummyUser(), reuser);
+				clause.getEnclosingScope().walkingResolver(reuser);
 
 		if (!this.ref.resolve(resolver).isResolved()) {
 			return null;

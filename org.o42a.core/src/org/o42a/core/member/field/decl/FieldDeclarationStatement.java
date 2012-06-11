@@ -146,7 +146,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 			final Member member =
 					resolver.getLocal().member(
 							getDeclarationStatement().toMember().getKey());
-			final Obj object = member.toField().object(resolver);
+			final Obj object = member.toField().object(dummyUser());
 			final Condition condition =
 					object.value()
 					.getDefinitions()

@@ -45,8 +45,7 @@ final class LinkCopy extends KnownLink {
 		}
 
 		final Obj linkObject = linkResolution.toObject();
-		final Value<?> value =
-				linkObject.value().explicitUseBy(resolver).getValue();
+		final Value<?> value = linkObject.value().getValue();
 		final LinkValueStruct sourceStruct =
 				value.getValueStruct().toLinkStruct();
 		final LinkValueStruct resultStruct =

@@ -178,7 +178,7 @@ public final class ImperativeDefiner extends Definer {
 
 		getCommand().resolveAll(
 				local.walkingResolver(resolver.getResolver())
-				.fullResolver(resolver.getRefUsage()));
+				.fullResolver(resolver, resolver.getRefUsage()));
 	}
 
 	private static final class InlineLocal extends InlineEval {

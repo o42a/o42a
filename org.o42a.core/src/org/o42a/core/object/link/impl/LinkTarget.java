@@ -61,8 +61,7 @@ public class LinkTarget extends Obj {
 	@Override
 	protected Obj findWrapped() {
 
-		final Resolver resolver =
-				getScope().getEnclosingScope().dummyResolver();
+		final Resolver resolver = getScope().getEnclosingScope().resolver();
 
 		return this.linkData.getTargetRef().resolve(resolver).toObject();
 	}

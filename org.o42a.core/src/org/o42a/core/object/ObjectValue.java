@@ -90,15 +90,14 @@ public final class ObjectValue extends ObjectValueParts {
 
 	public final Value<?> getValue() {
 		if (this.value == null) {
-			this.value = getDefinitions().value(
-					getObject().getScope().dummyResolver());
+			this.value =
+					getDefinitions().value(getObject().getScope().resolver());
 		}
 		return this.value;
 	}
 
 	public Value<?> value(Resolver resolver) {
 		getObject().assertCompatible(resolver.getScope());
-		explicitUseBy(resolver);
 
 		final Value<?> result;
 
@@ -265,8 +264,8 @@ public final class ObjectValue extends ObjectValueParts {
 			object.fullyResolveDefinitions();
 			getValueStruct().resolveAll(
 					object.getScope()
-					.newResolver(uses())
-					.fullResolver(TYPE_REF_USAGE));
+					.resolver()
+					.fullResolver(uses(), TYPE_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}

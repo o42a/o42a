@@ -121,8 +121,7 @@ public final class ArrayValueAdapter extends ValueAdapter {
 		}
 
 		final Obj arrayObject = arrayResolution.toObject();
-		final Value<?> value =
-				arrayObject.value().explicitUseBy(resolver).getValue();
+		final Value<?> value = arrayObject.value().getValue();
 		final ArrayValueStruct sourceStruct =
 				(ArrayValueStruct) value.getValueStruct();
 

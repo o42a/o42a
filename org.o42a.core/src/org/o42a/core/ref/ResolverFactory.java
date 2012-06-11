@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
+import org.o42a.analysis.use.User;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.common.RoleResolver;
@@ -33,7 +33,7 @@ public abstract class ResolverFactory<
 		F extends FullResolver> {
 
 	private final Scope scope;
-	private R dummyResolver;
+	private R resolver;
 
 	public ResolverFactory(Scope scope) {
 		this.scope = scope;
@@ -43,31 +43,24 @@ public abstract class ResolverFactory<
 		return this.scope;
 	}
 
-	public final R dummyResolver() {
-		if (this.dummyResolver != null) {
-			return this.dummyResolver;
+	public final R resolver() {
+		if (this.resolver != null) {
+			return this.resolver;
 		}
-		return this.dummyResolver =
-				createResolver(dummyUser(), DUMMY_PATH_WALKER);
+		return this.resolver = createResolver(DUMMY_PATH_WALKER);
 	}
 
-	public final R newResolver(UserInfo user) {
-		if (user.toUser().isDummy()) {
-			return dummyResolver();
-		}
-		return createResolver(user, DUMMY_PATH_WALKER);
-	}
-
-	public final R walkingResolver(UserInfo user, PathWalker walker) {
+	public final R walkingResolver(PathWalker walker) {
 		if (walker == null || walker == DUMMY_PATH_WALKER) {
-			return newResolver(user);
+			return resolver();
 		}
-		return createResolver(user, walker);
+		return createResolver(walker);
 	}
 
 	public final F fullResolver(UserInfo user, RefUsage refUsage) {
 		return createFullResolver(
-				walkingResolver(user, new RoleResolver(refUsage.getRole())),
+				walkingResolver(new RoleResolver(refUsage.getRole())),
+				user.toUser(),
 				refUsage);
 	}
 
@@ -79,8 +72,11 @@ public abstract class ResolverFactory<
 		return "ResolverFactory[" + this.scope + ']';
 	}
 
-	protected abstract R createResolver(UserInfo user, PathWalker walker);
+	protected abstract R createResolver(PathWalker walker);
 
-	protected abstract F createFullResolver(R resolver, RefUsage refUsage);
+	protected abstract F createFullResolver(
+			R resolver,
+			User<?> user,
+			RefUsage refUsage);
 
 }

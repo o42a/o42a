@@ -107,7 +107,7 @@ public class Ref extends Statement {
 
 	public final ValueStruct<?, ?> valueStruct(Scope scope) {
 
-		final Resolution resolution = resolve(scope.dummyResolver());
+		final Resolution resolution = resolve(scope.resolver());
 		final ValueStruct<?, ?> valueStruct =
 				resolution.toObject().value().getValueStruct();
 
@@ -115,7 +115,7 @@ public class Ref extends Statement {
 	}
 
 	public final Resolution getResolution() {
-		return resolve(getScope().dummyResolver());
+		return resolve(getScope().resolver());
 	}
 
 	public final Ref dereference() {
@@ -147,14 +147,13 @@ public class Ref extends Statement {
 	}
 
 	public final Value<?> getValue() {
-		return value(getScope().dummyResolver());
+		return value(getScope().resolver());
 	}
 
 	public Value<?> value(Resolver resolver) {
 		return resolve(resolver)
 				.toObject()
 				.value()
-				.explicitUseBy(resolver)
 				.getValue()
 				.prefixWith(getPath().toPrefix(resolver.getScope()));
 	}

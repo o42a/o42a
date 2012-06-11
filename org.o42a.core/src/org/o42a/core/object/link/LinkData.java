@@ -104,7 +104,7 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 
 		final TargetRef targetRef = getTargetRef();
 		final Resolution resolution =
-				targetRef.resolve(targetRef.getScope().dummyResolver());
+				targetRef.resolve(targetRef.getScope().resolver());
 
 		if (resolution.isError() || !resolution.isResolved()) {
 			return FALSE_VALUE;

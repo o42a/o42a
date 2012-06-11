@@ -24,7 +24,6 @@ import static org.o42a.core.ref.impl.prediction.LocalPrediction.predictLocal;
 
 import java.util.Set;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.*;
 import org.o42a.core.ir.local.LocalIR;
@@ -169,25 +168,18 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final LocalResolver dummyResolver() {
-		return resolverFactory().dummyResolver();
-	}
-
-	@Override
-	public final LocalResolver newResolver(UserInfo user) {
-		return resolverFactory().newResolver(user);
+	public final LocalResolver resolver() {
+		return resolverFactory().resolver();
 	}
 
 	@Override
 	public final LocalResolver walkingResolver(Resolver user) {
-		return walkingResolver(user, user.getWalker());
+		return walkingResolver(user.getWalker());
 	}
 
 	@Override
-	public final LocalResolver walkingResolver(
-			UserInfo user,
-			PathWalker walker) {
-		return resolverFactory().walkingResolver(user, walker);
+	public final LocalResolver walkingResolver(PathWalker walker) {
+		return resolverFactory().walkingResolver(walker);
 	}
 
 	@Override

@@ -28,7 +28,6 @@ import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
@@ -231,23 +230,18 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
-	public final Resolver dummyResolver() {
-		return this.resolverFactory.dummyResolver();
-	}
-
-	@Override
-	public final Resolver newResolver(UserInfo user) {
-		return this.resolverFactory.newResolver(user);
+	public final Resolver resolver() {
+		return this.resolverFactory.resolver();
 	}
 
 	@Override
 	public final Resolver walkingResolver(Resolver user) {
-		return walkingResolver(user, user.getWalker());
+		return walkingResolver(user.getWalker());
 	}
 
 	@Override
-	public final Resolver walkingResolver(UserInfo user, PathWalker walker) {
-		return this.resolverFactory.walkingResolver(user, walker);
+	public final Resolver walkingResolver(PathWalker walker) {
+		return this.resolverFactory.walkingResolver(walker);
 	}
 
 	@Override

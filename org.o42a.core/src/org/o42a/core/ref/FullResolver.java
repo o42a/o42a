@@ -35,10 +35,15 @@ import org.o42a.util.log.Loggable;
 public class FullResolver implements UserInfo, LocationInfo {
 
 	private final Resolver resolver;
+	private final User<?> user;
 	private final RefUsage refUsage;
 
-	protected FullResolver(Resolver resolver, RefUsage refUsage) {
+	protected FullResolver(
+			Resolver resolver,
+			User<?> user,
+			RefUsage refUsage) {
 		this.resolver = resolver;
+		this.user = user;
 		this.refUsage = refUsage;
 	}
 
@@ -75,6 +80,7 @@ public class FullResolver implements UserInfo, LocationInfo {
 		}
 		return this.resolver.factory().createFullResolver(
 				getResolver(),
+				this.user,
 				refUsage);
 	}
 
@@ -84,7 +90,7 @@ public class FullResolver implements UserInfo, LocationInfo {
 
 	@Override
 	public final User<?> toUser() {
-		return getResolver().toUser();
+		return this.user;
 	}
 
 	public final PathResolver toPathResolver() {
@@ -93,7 +99,7 @@ public class FullResolver implements UserInfo, LocationInfo {
 
 	@Override
 	public String toString() {
-		if (this.resolver == null) {
+		if (this.user == null) {
 			return super.toString();
 		}
 		return "FullResolver[" + getScope()
