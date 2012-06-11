@@ -240,9 +240,17 @@ public class FieldDeclaration extends Placed implements Cloneable {
 
 		if (field.isOverride() != isOverride()) {
 			if (isOverride()) {
-				field.getLogger().cantOverrideDeclared(this, getDisplayName());
+				field.getLogger().error(
+						"cant_override_declared",
+						this,
+						"Can not override already declared field '%s'",
+						getDisplayName());
 			} else {
-				field.getLogger().cantDeclareOverridden(this, getDisplayName());
+				field.getLogger().error(
+						"cant_declare_overridden",
+						this,
+						"Can not declare already overridden field '%s'",
+						getDisplayName());
 			}
 			ok = false;
 		}

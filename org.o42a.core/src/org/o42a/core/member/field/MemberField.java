@@ -297,7 +297,11 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		}
 
 		if (overridden == null) {
-			getLogger().cantOverrideUnknown(this, getDisplayName());
+			getLogger().error(
+					"cant_override_unknown",
+					this,
+					"Can not override unknown field '%s'",
+					getDisplayName());
 		}
 
 		return overridden;
