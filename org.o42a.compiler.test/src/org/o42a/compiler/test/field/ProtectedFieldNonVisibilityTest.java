@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
 
 
-public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
+public class ProtectedFieldNonVisibilityTest extends CompilerTestCase {
 
 	@Test
 	public void inAnotherSource() {
@@ -33,7 +33,7 @@ public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
 				"a",
 				"A := void",
 				"=========",
-				":Foo := 36");
+				"::Foo := 36");
 		compile("B := a: foo");
 	}
 
@@ -52,35 +52,9 @@ public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
 				"=========");
 		addSource(
 				"a/b/foo",
-				":Foo := 64",
+				"::Foo := 64",
 				"=========");
 		compile("");
-	}
-
-	@Test
-	public void derive() {
-		expectError("compiler.unresolved");
-
-		compile(
-				"A := void (",
-				"  :Foo := 1",
-				")",
-				"B := a (",
-				"  Bar := foo",
-				")");
-	}
-
-	@Test
-	public void override() {
-		expectError("compiler.cant_override_unknown");
-
-		compile(
-				"A := void (",
-				"  :Foo := 1",
-				")",
-				"B := a (",
-				"  foo = 2",
-				")");
 	}
 
 }

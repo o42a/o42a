@@ -79,32 +79,8 @@ public class CompilerLogger implements Logger {
 		error("arithmetic_error", location, "Arithmetic error: %s", message);
 	}
 
-	public void cantDeclareOverridden(LogInfo location, String fieldName) {
-		error(
-				"cant_declare_overridden",
-				location,
-				"Can not declare already overridden field '%s'",
-				fieldName);
-	}
-
 	public void cantInherit(LogInfo location, Object target) {
 		error("cant_inherit", location, "%s can not be inherited", target);
-	}
-
-	public void cantOverrideDeclared(LogInfo location, String fieldName) {
-		error(
-				"cant_override_declared",
-				location,
-				"Can not override already declared field '%s'",
-				fieldName);
-	}
-
-	public void cantOverrideUnknown(LogInfo location, String fieldName) {
-		error(
-				"cant_override_unknown",
-				location,
-				"Can not override unknown field '%s'",
-				fieldName);
 	}
 
 	public void expectedClauseName(LogInfo location) {
