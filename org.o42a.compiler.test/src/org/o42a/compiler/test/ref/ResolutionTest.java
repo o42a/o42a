@@ -58,6 +58,7 @@ public class ResolutionTest extends CompilerTestCase {
 				"@Main := * ()");
 	}
 
+	@Test
 	public void referIncluded() {
 		addSource(
 				"a",
@@ -89,6 +90,18 @@ public class ResolutionTest extends CompilerTestCase {
 
 		assertThat(definiteValue(a, ValueType.INTEGER), is(24L));
 		assertThat(definiteValue(b, ValueType.INTEGER), is(44L));
+	}
+
+	@Test
+	public void fieldWithTheSameNameAsOwner() {
+		compile(
+				"A := integer (",
+				"  A := 2",
+				"  = 1",
+				"  B := a",
+				")");
+
+		assertThat(definiteValue(field("a", "b"), ValueType.INTEGER), is(2L));
 	}
 
 }

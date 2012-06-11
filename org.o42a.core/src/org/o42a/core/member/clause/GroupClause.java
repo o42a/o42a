@@ -159,7 +159,7 @@ public abstract class GroupClause extends Clause implements Container {
 			return getEnclosingContainer().member(
 					user,
 					accessor,
-					getDeclaration().getMemberId().append(memberId),
+					toMember().getId().append(memberId),
 					declaredIn);
 		}
 
@@ -185,11 +185,14 @@ public abstract class GroupClause extends Clause implements Container {
 			final Path foundInGroup = getEnclosingContainer().findMember(
 					user,
 					accessor,
-					getDeclaration().getMemberId().append(memberId),
+					toMember().getId().append(memberId),
 					declaredIn);
 
 			if (foundInGroup != null) {
 				return foundInGroup;
+			}
+			if (toMember().getId().equals(memberId)) {
+				return Path.SELF_PATH;
 			}
 		}
 

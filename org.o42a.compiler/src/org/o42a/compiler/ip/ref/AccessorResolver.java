@@ -132,9 +132,6 @@ final class AccessorResolver implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		this.owner = false;
-		this.declaration &=
-				object.getContext().declarationsVisibleFrom(
-						object.getContext());
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;
@@ -165,7 +162,7 @@ final class AccessorResolver implements PathWalker {
 		}
 		return this.declaration =
 				container.getContext().declarationsVisibleFrom(
-						container.getContext());
+						current.getContext());
 	}
 
 	private boolean updateEnclosed(Container current, Container container) {

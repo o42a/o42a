@@ -491,7 +491,26 @@ public abstract class Obj
 			Accessor accessor,
 			MemberId memberId,
 			Obj declaredIn) {
-		return member(user, accessor, memberId, declaredIn);
+
+		final Path found = member(user, accessor, memberId, declaredIn);
+
+		if (found != null) {
+			return found;
+		}
+		if (declaredIn != null) {
+			return null;
+		}
+
+		final Field field = getScope().toField();
+
+		if (field == null) {
+			return null;
+		}
+		if (field.getKey().getMemberId().equals(memberId)) {
+			return Path.SELF_PATH;
+		}
+
+		return null;
 	}
 
 	public Definitions overrideDefinitions(
