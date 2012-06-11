@@ -68,6 +68,18 @@ public abstract class ScopeUpgrade {
 
 	public abstract Resolver rescope(Resolver resolver);
 
+	public final FullResolver rescope(FullResolver fullResolver) {
+
+		final Resolver oldResolver = fullResolver.getResolver();
+		final Resolver newResolver = rescope(oldResolver);
+
+		if (oldResolver == newResolver) {
+			return fullResolver;
+		}
+
+		return newResolver.fullResolver(fullResolver.getRefUsage());
+	}
+
 	public abstract ScopeUpgrade and(ScopeUpgrade other);
 
 	public abstract PrefixPath toPrefix();
