@@ -28,9 +28,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.SingleValueType;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
@@ -89,7 +87,7 @@ final class ConstantValueAdapter<T> extends ValueAdapter {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 	}
 
 	private static final class ConstantEval implements Eval {

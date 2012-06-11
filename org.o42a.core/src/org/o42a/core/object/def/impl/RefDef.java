@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.def.impl;
 
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
@@ -106,8 +107,8 @@ public final class RefDef extends Def {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		this.ref.resolve(resolver).resolveValue();
+	protected void fullyResolve(FullResolver resolver) {
+		this.ref.resolveAll(resolver.setRefUsage(VALUE_REF_USAGE));
 	}
 
 }

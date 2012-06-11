@@ -1,0 +1,104 @@
+/*
+    Compiler Core
+    Copyright (C) 2012 Ruslan Lopatin
+
+    This file is part of o42a.
+
+    o42a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    o42a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+package org.o42a.core.ref;
+
+import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
+
+import org.o42a.analysis.use.User;
+import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.Container;
+import org.o42a.core.Scope;
+import org.o42a.core.ref.path.PathResolver;
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.Loggable;
+
+
+public class FullResolver implements UserInfo, LocationInfo {
+
+	private final Resolver resolver;
+	private final RefUsage refUsage;
+
+	protected FullResolver(Resolver resolver, RefUsage refUsage) {
+		this.resolver = resolver;
+		this.refUsage = refUsage;
+	}
+
+	@Override
+	public final Loggable getLoggable() {
+		return getResolver().getLoggable();
+	}
+
+	@Override
+	public final CompilerContext getContext() {
+		return getResolver().getContext();
+	}
+
+	public final Container getContainer() {
+		return getResolver().getContainer();
+	}
+
+	public final Scope getScope() {
+		return getResolver().getScope();
+	}
+
+	public final Resolver getResolver() {
+		return this.resolver;
+	}
+
+	public final RefUsage getRefUsage() {
+		return this.refUsage;
+	}
+
+	@SuppressWarnings("unchecked")
+	public FullResolver setRefUsage(RefUsage refUsage) {
+		if (getRefUsage() == refUsage) {
+			return this;
+		}
+		return this.resolver.factory().createFullResolver(
+				getResolver(),
+				refUsage);
+	}
+
+	public final CompilerLogger getLogger() {
+		return getResolver().getLogger();
+	}
+
+	@Override
+	public final User<?> toUser() {
+		return getResolver().toUser();
+	}
+
+	public final PathResolver toPathResolver() {
+		return fullPathResolver(getScope(), this, getRefUsage());
+	}
+
+	@Override
+	public String toString() {
+		if (this.resolver == null) {
+			return super.toString();
+		}
+		return "FullResolver[" + getScope()
+				+ " by " + toUser()
+				+ " for " + getRefUsage()  + ']';
+	}
+
+}

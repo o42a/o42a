@@ -41,9 +41,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -82,8 +80,8 @@ final class ComparisonResult extends BuiltinObject {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		this.cmp.resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		this.cmp.resolveAll(resolver);
 	}
 
 	@Override

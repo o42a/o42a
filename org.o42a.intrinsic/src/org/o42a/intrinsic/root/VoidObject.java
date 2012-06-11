@@ -38,6 +38,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.Path;
@@ -71,7 +72,7 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
+	public void resolveBuiltin(FullResolver resolver) {
 	}
 
 	@Override

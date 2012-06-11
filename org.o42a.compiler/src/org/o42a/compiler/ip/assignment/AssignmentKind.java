@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.assignment;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.Reproducer;
@@ -44,7 +44,7 @@ abstract class AssignmentKind {
 		return false;
 	}
 
-	public abstract void resolve(LocalResolver resolver);
+	public abstract void resolve(FullLocalResolver resolver);
 
 	public abstract AssignmentKind reproduce(
 			AssignmentStatement statement,

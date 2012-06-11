@@ -23,7 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.link.LinkValueStruct;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.st.Reproducer;
@@ -92,7 +92,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(FullResolver resolver) {
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	protected void resolveAll(Value<T> value, Resolver resolver) {
+	protected void resolveAll(Value<T> value, FullResolver resolver) {
 	}
 
 }

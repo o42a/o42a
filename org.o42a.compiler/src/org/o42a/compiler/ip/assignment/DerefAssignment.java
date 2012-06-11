@@ -20,11 +20,13 @@
 package org.o42a.compiler.ip.assignment;
 
 import static org.o42a.core.object.link.LinkValueType.VARIABLE;
+import static org.o42a.core.ref.RefUsage.ASSIGNEE_REF_USAGE;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -76,19 +78,19 @@ final class DerefAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(LocalResolver resolver) {
+	public void resolve(FullLocalResolver resolver) {
 
 		final Ref destination = getStatement().getDestination();
 		final Ref value = getStatement().getValue();
 
-		destination.resolve(resolver).resolveAssignee();
+		destination.resolveAll(resolver.setRefUsage(ASSIGNEE_REF_USAGE));
 
 		final Ref destTarget =
 				destination.getPath().target(destination.distribute());
-		final Resolution val =
-				value.resolve(resolver).resolveTarget();
-		final Resolution dest =
-				destTarget.resolve(resolver).resolveTarget();
+		final FullLocalResolver targetResolver =
+				resolver.setRefUsage(TARGET_REF_USAGE);
+		final Resolution val = value.resolveAll(targetResolver);
+		final Resolution dest = destTarget.resolveAll(targetResolver);
 
 		if (dest.isError() || val.isError()) {
 			return;

@@ -23,9 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.impl.RawValueAdapter;
 
 
@@ -51,7 +49,7 @@ public abstract class ValueAdapter {
 
 	public abstract Value<?> value(Resolver resolver);
 
-	public final void resolveAll(Resolver resolver) {
+	public final void resolveAll(FullResolver resolver) {
 		resolver.getContext().fullResolution().start();
 		try {
 			fullyResolve(resolver);
@@ -74,6 +72,6 @@ public abstract class ValueAdapter {
 		return this.adaptedRef.toString();
 	}
 
-	protected abstract void fullyResolve(Resolver resolver);
+	protected abstract void fullyResolve(FullResolver resolver);
 
 }

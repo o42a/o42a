@@ -130,7 +130,9 @@ public class DereferenceStep extends Step {
 		}
 
 		if (resolver.isFullResolution()) {
-			link.resolveAll(start.newResolver(resolver));
+			link.resolveAll(
+					start.newResolver(resolver)
+					.fullResolver(resolver.getUsage()));
 		}
 
 		walker.dereference(linkObject, this, link);

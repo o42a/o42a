@@ -19,12 +19,15 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
@@ -124,8 +127,8 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	protected void fullyResolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveCondition();
+	protected void fullyResolve(FullLocalResolver resolver) {
+		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	private static final class Inline extends InlineCmd {

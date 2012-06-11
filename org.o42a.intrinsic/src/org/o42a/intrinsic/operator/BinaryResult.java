@@ -34,9 +34,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -109,9 +107,9 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		leftOperand().resolve(resolver).resolveValue();
-		rightOperand().resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		leftOperand().resolveAll(resolver);
+		rightOperand().resolveAll(resolver);
 	}
 
 	@Override

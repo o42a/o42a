@@ -171,12 +171,14 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 
 		final LocalScope local =
 				getLocalPrefix().rescope(resolver.getScope()).toLocal();
 
-		getCommand().resolveAll(local.walkingResolver(resolver));
+		getCommand().resolveAll(
+				local.walkingResolver(resolver.getResolver())
+				.fullResolver(resolver.getRefUsage()));
 	}
 
 	private static final class InlineLocal extends InlineEval {

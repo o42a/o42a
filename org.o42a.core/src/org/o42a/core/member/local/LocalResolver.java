@@ -20,6 +20,7 @@
 package org.o42a.core.member.local;
 
 import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.PathWalker;
@@ -27,8 +28,12 @@ import org.o42a.core.ref.path.PathWalker;
 
 public class LocalResolver extends Resolver {
 
-	LocalResolver(LocalScope scope, UserInfo user, PathWalker walker) {
-		super(scope, user, walker);
+	LocalResolver(
+			LocalResolverFactory factory,
+			LocalScope scope,
+			UserInfo user,
+			PathWalker walker) {
+		super(factory, scope, user, walker);
 	}
 
 	public final LocalScope getLocal() {
@@ -36,8 +41,8 @@ public class LocalResolver extends Resolver {
 	}
 
 	@Override
-	public LocalResolver newResolver() {
-		return (LocalResolver) super.newResolver();
+	public final FullLocalResolver fullResolver(RefUsage usage) {
+		return (FullLocalResolver) super.fullResolver(usage);
 	}
 
 	@Override
@@ -51,9 +56,10 @@ public class LocalResolver extends Resolver {
 		return "LocalResolver[" + getScope() + " by " + toUser() + ']';
 	}
 
-	static final class Factory extends ResolverFactory<LocalResolver> {
+	static final class LocalResolverFactory
+			extends ResolverFactory<LocalResolver, FullLocalResolver> {
 
-		Factory(LocalScope scope) {
+		LocalResolverFactory(LocalScope scope) {
 			super(scope);
 		}
 
@@ -61,7 +67,14 @@ public class LocalResolver extends Resolver {
 		protected LocalResolver createResolver(
 				UserInfo user,
 				PathWalker walker) {
-			return new LocalResolver(getScope().toLocal(), user, walker);
+			return new LocalResolver(this, getScope().toLocal(), user, walker);
+		}
+
+		@Override
+		protected FullLocalResolver createFullResolver(
+				LocalResolver resolver,
+				RefUsage refUsage) {
+			return new FullLocalResolver(resolver, refUsage);
 		}
 
 	}

@@ -27,9 +27,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
@@ -74,8 +72,8 @@ final class LogicalResult extends BuiltinObject {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		operand().resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		operand().resolveAll(resolver);
 	}
 
 	@Override

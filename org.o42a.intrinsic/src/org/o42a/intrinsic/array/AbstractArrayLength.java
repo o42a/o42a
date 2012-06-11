@@ -36,9 +36,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
@@ -75,8 +73,8 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		array().resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		array().resolveAll(resolver);
 	}
 
 	@Override

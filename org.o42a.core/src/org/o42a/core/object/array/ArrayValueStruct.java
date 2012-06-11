@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.array;
 
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.Generator;
@@ -29,8 +30,8 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.array.impl.ArrayValueAdapter;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.LinkValueType;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -165,8 +166,8 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
-		getItemTypeRef().resolveAll(resolver);
+	public void resolveAll(FullResolver resolver) {
+		getItemTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
 	}
 
 	@Override
@@ -257,8 +258,8 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	protected void resolveAll(Value<Array> value, Resolver resolver) {
-		getItemTypeRef().resolveAll(resolver);
+	protected void resolveAll(Value<Array> value, FullResolver resolver) {
+		getItemTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
 		if (value.getKnowledge().hasCompilerValue()) {
 
 			final ArrayItem[] items =

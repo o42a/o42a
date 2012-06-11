@@ -32,9 +32,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.SingleValueType;
@@ -79,8 +77,8 @@ public abstract class BuiltinConverter<F, T> extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		object().resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		object().resolveAll(resolver);
 	}
 
 	@Override

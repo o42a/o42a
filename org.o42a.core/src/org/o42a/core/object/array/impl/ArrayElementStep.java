@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.array.impl;
 
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -104,7 +105,7 @@ final class ArrayElementStep extends Step {
 		final Resolution indexResolution = indexRef.resolve(indexResolver);
 
 		if (resolver.isFullResolution()) {
-			indexRef.resolve(indexResolver).resolveValue();
+			indexRef.resolveAll(indexResolver.fullResolver(VALUE_REF_USAGE));
 		}
 
 		if (indexResolution.isError()) {

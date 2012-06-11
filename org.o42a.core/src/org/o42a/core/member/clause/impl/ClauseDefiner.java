@@ -27,9 +27,7 @@ import org.o42a.core.member.DeclarationDefiner;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 
 
@@ -85,7 +83,7 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		definer().resolveAll(resolver);
 	}
 
@@ -183,7 +181,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		protected void fullyResolve(FullResolver resolver) {
 		}
 
 	}
@@ -236,7 +234,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		protected void fullyResolve(FullResolver resolver) {
 		}
 
 	}
@@ -292,7 +290,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		protected void fullyResolve(FullResolver resolver) {
 		}
 
 		private final ClauseDeclarationStatement declaration() {

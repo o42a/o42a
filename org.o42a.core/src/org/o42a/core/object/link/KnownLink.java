@@ -21,7 +21,7 @@ package org.o42a.core.object.link;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -76,7 +76,7 @@ public abstract class KnownLink extends Link {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(FullResolver resolver) {
 		this.data.resolveAll(resolver);
 	}
 

@@ -141,6 +141,11 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
+	public final Resolution resolveAll(FullResolver resolver) {
+		assertCompatible(resolver.getScope());
+		return resolve(resolver.getResolver()).resolveAll(resolver);
+	}
+
 	public final Value<?> getValue() {
 		return value(getScope().dummyResolver());
 	}

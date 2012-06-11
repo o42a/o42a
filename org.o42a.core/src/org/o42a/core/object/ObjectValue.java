@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_RUNTIME_VALUE_USAGE;
 import static org.o42a.core.object.value.ValueUsage.EXPLICIT_STATIC_VALUE_USAGE;
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
@@ -262,7 +263,10 @@ public final class ObjectValue extends ObjectValueParts {
 			object.resolveAll();
 			explicitUseBy(user);
 			object.fullyResolveDefinitions();
-			getValueStruct().resolveAll(object.getScope().newResolver(uses()));
+			getValueStruct().resolveAll(
+					object.getScope()
+					.newResolver(uses())
+					.fullResolver(TYPE_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}

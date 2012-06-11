@@ -95,7 +95,7 @@ public class BuiltinDef extends Def {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 
 		final Obj object = resolver.getContainer().toObject();
 		final Obj builtin = this.builtin.toObject();
@@ -105,7 +105,10 @@ public class BuiltinDef extends Def {
 		}
 		object.resolveAll();
 		this.builtin.resolveBuiltin(
-				object.value().part(isClaim()).resolver());
+				object.value()
+				.part(isClaim())
+				.resolver()
+				.fullResolver(resolver.getRefUsage()));
 	}
 
 }

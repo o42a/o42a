@@ -34,9 +34,7 @@ import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerContext;
@@ -336,11 +334,11 @@ public abstract class TypeRef implements ScopeInfo {
 		return prefixWith(scope.pathTo(getScope()));
 	}
 
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(FullResolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getRef().resolve(resolver).resolveType();
+			getRef().resolveAll(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}

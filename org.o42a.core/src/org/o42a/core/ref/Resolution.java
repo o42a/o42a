@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.RefUsage.*;
-
 import org.o42a.core.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
@@ -118,46 +116,6 @@ public final class Resolution implements ScopeInfo {
 		return value.getCompilerValue();
 	}
 
-	public final Resolution resolveContainer() {
-		return resolveAll(CONTAINER_REF_USAGE);
-	}
-
-	public final Resolution resolveTarget() {
-		return resolveAll(TARGET_REF_USAGE);
-	}
-
-	public final Resolution resolveAssignee() {
-		return resolveAll(ASSIGNEE_REF_USAGE);
-	}
-
-	public final Resolution resolveType() {
-		return resolveAll(TYPE_REF_USAGE);
-	}
-
-	public final Resolution resolveCondition() {
-		return resolveAll(CONDITION_REF_USAGE);
-	}
-
-	public final Resolution resolveValue() {
-		return resolveAll(VALUE_REF_USAGE);
-	}
-
-	public final Resolution resolveAll(RefUsage usage) {
-		getRef().refFullyResolved();
-
-		if ((this.flags & NO_VALUE) == 0) {
-
-			final Container resolved =
-					resolve(getResolver().toFullPathResolver(usage));
-
-			if (resolved != null) {
-				usage.fullyResolve(this, resolved);
-			}
-		}
-
-		return this;
-	}
-
 	@Override
 	public final void assertScopeIs(Scope scope) {
 		Scoped.assertScopeIs(this, scope);
@@ -184,6 +142,21 @@ public final class Resolution implements ScopeInfo {
 			return this.resolved.toString();
 		}
 		return "Resolution[" + this.ref + ']';
+	}
+
+	final Resolution resolveAll(FullResolver resolver) {
+		getRef().refFullyResolved();
+
+		if ((this.flags & NO_VALUE) == 0) {
+
+			final Container resolved = resolve(resolver.toPathResolver());
+
+			if (resolved != null) {
+				resolver.getRefUsage().fullyResolve(this, resolved);
+			}
+		}
+
+		return this;
 	}
 
 	private final Container getResolved() {

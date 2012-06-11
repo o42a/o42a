@@ -24,10 +24,13 @@ import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
+import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.PathWalker;
 
 
-public abstract class ResolverFactory<R extends Resolver> {
+public abstract class ResolverFactory<
+		R extends Resolver,
+		F extends FullResolver> {
 
 	private final Scope scope;
 	private R dummyResolver;
@@ -62,6 +65,12 @@ public abstract class ResolverFactory<R extends Resolver> {
 		return createResolver(user, walker);
 	}
 
+	public final F fullResolver(UserInfo user, RefUsage refUsage) {
+		return createFullResolver(
+				walkingResolver(user, new RoleResolver(refUsage.getRole())),
+				refUsage);
+	}
+
 	@Override
 	public String toString() {
 		if (this.scope == null) {
@@ -71,5 +80,7 @@ public abstract class ResolverFactory<R extends Resolver> {
 	}
 
 	protected abstract R createResolver(UserInfo user, PathWalker walker);
+
+	protected abstract F createFullResolver(R resolver, RefUsage refUsage);
 
 }

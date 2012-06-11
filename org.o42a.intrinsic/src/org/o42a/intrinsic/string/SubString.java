@@ -37,9 +37,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -130,10 +128,10 @@ final class SubString extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
-		string().resolve(resolver).resolveValue();
-		from().resolve(resolver).resolveValue();
-		to().resolve(resolver).resolveValue();
+	public void resolveBuiltin(FullResolver resolver) {
+		string().resolveAll(resolver);
+		from().resolveAll(resolver);
+		to().resolveAll(resolver);
 	}
 
 	@Override

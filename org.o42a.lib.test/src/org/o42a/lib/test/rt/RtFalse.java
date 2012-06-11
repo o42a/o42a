@@ -29,6 +29,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.member.MemberOwner;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.value.Value;
@@ -51,7 +52,7 @@ public class RtFalse extends AnnotatedBuiltin {
 	}
 
 	@Override
-	public void resolveBuiltin(Resolver resolver) {
+	public void resolveBuiltin(FullResolver resolver) {
 	}
 
 	@Override

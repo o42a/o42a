@@ -20,6 +20,7 @@
 package org.o42a.core.member.local.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.analysis.Analyzer;
@@ -117,10 +118,11 @@ public final class RefDep extends Dep {
 			uses().useBy(resolver, path, index);
 			if (index == path.length() - 1) {
 				// Resolve only the last value.
-				this.depRef.resolve(localResolver).resolveAll(
-						resolver.getUsage());
+				this.depRef.resolveAll(
+						localResolver.fullResolver(resolver.getUsage()));
 			} else {
-				this.depRef.resolve(localResolver).resolveContainer();
+				this.depRef.resolveAll(
+						localResolver.fullResolver(CONTAINER_REF_USAGE));
 			}
 		}
 

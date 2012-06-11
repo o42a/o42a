@@ -62,14 +62,15 @@ public abstract class LocalScope
 	private final Obj owner;
 	private final OwningLocal owningLocal = new OwningLocal(this);
 	private final Path ownerScopePath;
-	private final ResolverFactory<LocalResolver> resolverFactory;
+	private final
+	ResolverFactory<LocalResolver, FullLocalResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 
 	public LocalScope(MemberLocal member) {
 		this.member = member;
 		this.owner = member.getContainer().toObject();
 		this.ownerScopePath = new LocalOwnerStep(this).toPath();
-		this.resolverFactory = new LocalResolver.Factory(this);
+		this.resolverFactory = new LocalResolver.LocalResolverFactory(this);
 	}
 
 	public final Obj getOwner() {
@@ -332,7 +333,8 @@ public abstract class LocalScope
 		return this.member.toString();
 	}
 
-	protected final ResolverFactory<LocalResolver> resolverFactory() {
+	protected final
+	ResolverFactory<LocalResolver, FullLocalResolver> resolverFactory() {
 		return this.resolverFactory;
 	}
 

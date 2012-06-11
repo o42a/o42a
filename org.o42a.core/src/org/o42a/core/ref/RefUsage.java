@@ -23,6 +23,7 @@ import org.o42a.analysis.use.*;
 import org.o42a.core.Container;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.Role;
 
 
 public abstract class RefUsage extends Usage<RefUsage> {
@@ -35,15 +36,15 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	public static final RefUsage VALUE_REF_USAGE =
 			new ValueUsage("RefValue");
 	public static final RefUsage DEREF_USAGE =
-			new ResolutionUsage("DerefValue");
+			new ResolutionUsage("DerefValue", Role.INSTANCE);
 	public static final RefUsage TYPE_REF_USAGE =
-			new TypeUsage("RefType");
+			new TypeUsage("RefType", Role.PROTOTYPE);
 	public static final RefUsage CONTAINER_REF_USAGE =
-			new ResolutionUsage("RefContainer");
+			new ResolutionUsage("RefContainer", Role.INSTANCE);
 	public static final RefUsage TARGET_REF_USAGE =
-			new ResolutionUsage("RefTarget");
+			new ResolutionUsage("RefTarget", Role.INSTANCE);
 	public static final RefUsage ASSIGNEE_REF_USAGE =
-			new ResolutionUsage("RefAssignee");
+			new ResolutionUsage("RefAssignee", Role.INSTANCE);
 
 	public static final UseSelector<RefUsage> VALUE_REF_USAGES =
 			CONDITION_REF_USAGE.or(VALUE_REF_USAGE);
@@ -51,6 +52,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 			VALUE_REF_USAGES.not();
 	public static final UseSelector<RefUsage> NON_DEREF_USAGES =
 			DEREF_USAGE.not();
+
 
 	public static Uses<RefUsage> alwaysUsed() {
 		return ALL_REF_USAGES.alwaysUsed();
@@ -68,8 +70,15 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		return ALL_REF_USAGES.usable(name, used);
 	}
 
-	private RefUsage(String name) {
+	private final Role role;
+
+	private RefUsage(String name, Role role) {
 		super(ALL_REF_USAGES, name);
+		this.role = role;
+	}
+
+	public final Role getRole() {
+		return this.role;
 	}
 
 	public void fullyResolve(
@@ -83,7 +92,7 @@ public abstract class RefUsage extends Usage<RefUsage> {
 	private static final class ValueUsage extends RefUsage {
 
 		ValueUsage(String name) {
-			super(name);
+			super(name, Role.INSTANCE);
 		}
 
 		@Override
@@ -95,8 +104,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 
 	private static final class TypeUsage extends RefUsage {
 
-		TypeUsage(String name) {
-			super(name);
+		TypeUsage(String name, Role role) {
+			super(name, role);
 		}
 
 		@Override
@@ -108,8 +117,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 
 	private static final class ResolutionUsage extends RefUsage {
 
-		ResolutionUsage(String name) {
-			super(name);
+		ResolutionUsage(String name, Role role) {
+			super(name, role);
 		}
 
 		@Override

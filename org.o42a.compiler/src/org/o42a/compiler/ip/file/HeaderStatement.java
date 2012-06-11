@@ -144,7 +144,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		protected void fullyResolve(Resolver resolver) {
+		protected void fullyResolve(FullResolver resolver) {
 			throw new UnsupportedOperationException();
 		}
 

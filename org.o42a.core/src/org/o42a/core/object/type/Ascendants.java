@@ -20,6 +20,7 @@
 package org.o42a.core.object.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import java.util.Arrays;
 
@@ -31,7 +32,7 @@ import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
 import org.o42a.core.object.type.impl.MemberOverride;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -220,8 +221,11 @@ public class Ascendants
 
 		final UserInfo user = getObject().type();
 		final TypeRef ancestor = getExplicitAncestor();
-		final Resolver resolver =
-				getScope().getEnclosingScope().newResolver(user);
+		final FullResolver resolver =
+				getScope()
+				.getEnclosingScope()
+				.newResolver(user)
+				.fullResolver(TYPE_REF_USAGE);
 
 		if (ancestor != null) {
 			ancestor.resolveAll(resolver);
