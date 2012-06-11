@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.impl.cond;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.Block;
@@ -36,11 +35,6 @@ final class DirectiveContext implements InstructionContext {
 			InstructionContext context) {
 		this.applyDirective = applyDirective;
 		this.context = context;
-	}
-
-	@Override
-	public final User<?> toUser() {
-		return this.context.toUser();
 	}
 
 	@Override
