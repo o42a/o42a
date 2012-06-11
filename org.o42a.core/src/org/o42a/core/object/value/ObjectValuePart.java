@@ -24,13 +24,14 @@ import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_USAGE;
 import static org.o42a.core.object.value.ValueUsage.*;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.Defs;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 
 
 public final class ObjectValuePart implements UserInfo {
@@ -104,8 +105,11 @@ public final class ObjectValuePart implements UserInfo {
 		return ancestorDefsUpdatedBy();
 	}
 
-	public final Resolver resolver() {
-		return getObject().getScope().newResolver(uses());
+	public final FullResolver fullResolver() {
+		return getObject()
+				.getScope()
+				.newResolver(uses())
+				.fullResolver(VALUE_REF_USAGE);
 	}
 
 	public final void wrapBy(ObjectValuePart wrapPart) {

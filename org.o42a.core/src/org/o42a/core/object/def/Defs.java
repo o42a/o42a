@@ -371,7 +371,7 @@ public final class Defs {
 		final ObjectValue objectValue =
 				definitions.getScope().toObject().value();
 		final ObjectValuePart part = objectValue.part(isClaims());
-		final Resolver resolver = part.resolver();
+		final FullResolver resolver = part.fullResolver();
 
 		for (Def def : get()) {
 			def.resolveAll(resolver);

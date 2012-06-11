@@ -104,11 +104,7 @@ public class BuiltinDef extends Def {
 			builtin.value().resolveAll(resolver);
 		}
 		object.resolveAll();
-		this.builtin.resolveBuiltin(
-				object.value()
-				.part(isClaim())
-				.resolver()
-				.fullResolver(resolver.getRefUsage()));
+		this.builtin.resolveBuiltin(object.value().part(isClaim()).fullResolver());
 	}
 
 }

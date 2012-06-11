@@ -81,10 +81,8 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		return this.role;
 	}
 
-	public void fullyResolve(
-			Resolution resolution,
-			Container resolved) {
-		resolveObject(resolved.toObject(), resolution.getResolver());
+	public void fullyResolve(FullResolver resolver, Container resolved) {
+		resolveObject(resolved.toObject(), resolver);
 	}
 
 	protected abstract void resolveObject(Obj object, UserInfo user);
@@ -122,14 +120,14 @@ public abstract class RefUsage extends Usage<RefUsage> {
 		}
 
 		@Override
-		public void fullyResolve(Resolution resolution, Container resolved) {
+		public void fullyResolve(FullResolver resolver, Container resolved) {
 
 			final Clause clause = resolved.toClause();
 
 			if (clause != null) {
 				clause.resolveAll();
 			} else {
-				resolveObject(resolved.toObject(), resolution.getResolver());
+				resolveObject(resolved.toObject(), resolver);
 			}
 		}
 

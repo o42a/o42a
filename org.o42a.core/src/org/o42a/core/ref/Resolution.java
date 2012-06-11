@@ -152,7 +152,7 @@ public final class Resolution implements ScopeInfo {
 			final Container resolved = resolve(resolver.toPathResolver());
 
 			if (resolved != null) {
-				resolver.getRefUsage().fullyResolve(this, resolved);
+				resolver.getRefUsage().fullyResolve(resolver, resolved);
 			}
 		}
 
