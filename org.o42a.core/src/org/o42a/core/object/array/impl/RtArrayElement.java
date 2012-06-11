@@ -22,8 +22,8 @@ package org.o42a.core.object.array.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 
 
 public class RtArrayElement extends ArrayElement {
@@ -41,7 +41,7 @@ public class RtArrayElement extends ArrayElement {
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(FullResolver resolver) {
 		getTarget().resolveAll();
 	}
 

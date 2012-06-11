@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.link;
 
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
@@ -26,8 +28,8 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.object.link.impl.LinkValueAdapter;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -174,8 +176,8 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public void resolveAll(Resolver resolver) {
-		getTypeRef().resolveAll(resolver);
+	public void resolveAll(FullResolver resolver) {
+		getTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
 	}
 
 	@Override
@@ -271,8 +273,8 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected void resolveAll(Value<KnownLink> value, Resolver resolver) {
-		getTypeRef().resolveAll(resolver);
+	protected void resolveAll(Value<KnownLink> value, FullResolver resolver) {
+		getTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
 		if (value.getKnowledge().hasCompilerValue()) {
 			value.getCompilerValue().resolveAll(resolver);
 		}

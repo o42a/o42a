@@ -56,7 +56,7 @@ public final class RuntimeDef extends Def {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 	}
 
 	@Override

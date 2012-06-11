@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.link;
 
+import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.analysis.use.UserInfo;
@@ -26,9 +27,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -107,7 +106,7 @@ public final class TargetRef implements ScopeInfo {
 		return getRef().value(resolver);
 	}
 
-	public TargetRef prefixWith(PrefixPath prefix) {
+	public final TargetRef prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {
 			return this;
 		}
@@ -116,19 +115,19 @@ public final class TargetRef implements ScopeInfo {
 				getTypeRef().prefixWith(prefix));
 	}
 
-	public TargetRef upgradeScope(Scope toScope) {
+	public final TargetRef upgradeScope(Scope toScope) {
 		if (toScope == getScope()) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));
 	}
 
-	public void resolveAll(Resolver resolver) {
+	public final void resolveAll(FullResolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			getTypeRef().resolveAll(resolver);
-			getRef().resolve(resolver).resolveTarget();
+			getTypeRef().resolveAll(resolver.setRefUsage(TYPE_REF_USAGE));
+			getRef().resolveAll(resolver);
 		} finally {
 			getContext().fullResolution().end();
 		}

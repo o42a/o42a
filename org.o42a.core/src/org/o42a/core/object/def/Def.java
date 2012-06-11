@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.Definitions.NO_CLAIMS;
 import static org.o42a.core.object.def.Definitions.NO_PROPOSITIONS;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.RUNTIME_DEF_VALUE;
 import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
@@ -229,7 +230,10 @@ public abstract class Def implements SourceInfo {
 		this.allResolved = true;
 		getContext().fullResolution().start();
 		try {
-			fullyResolve(getScopeUpgrade().rescope(resolver));
+			fullyResolve(
+					getScopeUpgrade()
+					.rescope(resolver)
+					.fullResolver(VALUE_REF_USAGE));
 		} finally {
 			getContext().fullResolution().end();
 		}
@@ -299,7 +303,7 @@ public abstract class Def implements SourceInfo {
 	protected void resolveTarget(TargetResolver resolver) {
 	}
 
-	protected abstract void fullyResolve(Resolver resolver);
+	protected abstract void fullyResolve(FullResolver resolver);
 
 	protected final LocationInfo getLocation() {
 		return this.location;

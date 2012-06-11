@@ -119,7 +119,7 @@ final class VoidDef extends Def {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		this.def.fullyResolve(resolver);
 	}
 

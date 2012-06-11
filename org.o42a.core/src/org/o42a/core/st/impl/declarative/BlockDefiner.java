@@ -35,9 +35,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.*;
@@ -89,7 +87,7 @@ public final class BlockDefiner
 	}
 
 	static void resolveSentences(
-			Resolver resolver,
+			FullResolver resolver,
 			DeclarativeSentences sentences) {
 		for (DeclarativeSentence sentence : sentences.getSentences()) {
 			resolveSentence(resolver, sentence);
@@ -165,7 +163,7 @@ public final class BlockDefiner
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getDefTargets();
 		resolveSentences(resolver, this);
 	}
@@ -226,7 +224,7 @@ public final class BlockDefiner
 	}
 
 	private static void resolveSentence(
-			Resolver resolver,
+			FullResolver resolver,
 			DeclarativeSentence sentence) {
 
 		final DeclarativeSentence prerequisite = sentence.getPrerequisite();
@@ -240,7 +238,7 @@ public final class BlockDefiner
 	}
 
 	private static void resolveStatements(
-			Resolver resolver,
+			FullResolver resolver,
 			Declaratives statements) {
 		assert statements.assertInstructionsExecuted();
 		for (Definer definer : statements.getImplications()) {

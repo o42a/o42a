@@ -21,6 +21,7 @@ package org.o42a.core.object.array.impl;
 
 import static org.o42a.core.ir.value.ValCopyFunc.VAL_COPY;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.value.Value.falseValue;
 
 import org.o42a.codegen.code.FuncPtr;
@@ -97,8 +98,8 @@ public final class ArrayValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getAdaptedRef().resolve(resolver).resolveValue();
+	protected void fullyResolve(FullResolver resolver) {
+		getAdaptedRef().resolveAll(resolver.setRefUsage(VALUE_REF_USAGE));
 	}
 
 	private boolean fromConstToConst() {

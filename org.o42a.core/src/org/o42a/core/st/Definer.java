@@ -27,9 +27,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 
 
 public abstract class Definer extends Implication<Definer> {
@@ -53,7 +51,7 @@ public abstract class Definer extends Implication<Definer> {
 
 	public abstract DefValue value(Resolver resolver);
 
-	public final void resolveAll(Resolver resolver) {
+	public final void resolveAll(FullResolver resolver) {
 		getStatement().fullyResolved();
 		getContext().fullResolution().start();
 		try {
@@ -91,6 +89,6 @@ public abstract class Definer extends Implication<Definer> {
 		return new DefTargets(this, CLAUSE_MASK);
 	}
 
-	protected abstract void fullyResolve(Resolver resolver);
+	protected abstract void fullyResolve(FullResolver resolver);
 
 }

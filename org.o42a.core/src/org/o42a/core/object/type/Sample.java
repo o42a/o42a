@@ -27,7 +27,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -100,7 +100,7 @@ public abstract class Sample extends Scoped implements Derivative {
 		return object.overrideDefinitions(scope, definitions);
 	}
 
-	public void resolveAll(Resolver resolver) {
+	public void resolveAll(FullResolver resolver) {
 		getTypeRef().resolveAll(resolver);
 
 		final TypeRef ancestor = getAncestor();

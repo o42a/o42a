@@ -25,9 +25,7 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Resolver;
-import org.o42a.core.ref.RootNormalizer;
+import org.o42a.core.ref.*;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 
@@ -107,7 +105,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	protected abstract void includeInto(DeclarativeBlock block);
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		throw new UnsupportedOperationException();
 	}
 

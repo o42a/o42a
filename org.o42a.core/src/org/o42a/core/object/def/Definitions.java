@@ -21,6 +21,7 @@ package org.o42a.core.object.def;
 
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.wrapScope;
 
 import org.o42a.core.Scope;
@@ -356,9 +357,11 @@ public class Definitions extends Scoped {
 			final Ref targetRef = target().getRef();
 
 			if (targetRef != null) {
-				targetRef.resolve(
-						getScope().getEnclosingScope().dummyResolver())
-						.resolveTarget();
+				targetRef.resolveAll(
+						getScope()
+						.getEnclosingScope()
+						.dummyResolver()
+						.fullResolver(TARGET_REF_USAGE));
 			}
 		} finally {
 			getContext().fullResolution().end();

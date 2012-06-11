@@ -27,7 +27,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -160,7 +160,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 		return findLinkIn(scope);
 	}
 
-	public abstract void resolveAll(Resolver resolver);
+	public abstract void resolveAll(FullResolver resolver);
 
 	@Override
 	public final Distributor distribute() {

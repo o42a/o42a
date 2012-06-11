@@ -24,6 +24,7 @@ import static org.o42a.core.ir.CodeBuilder.defaultBuilder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
@@ -147,10 +148,12 @@ public class ConsoleModule extends AnnotatedModule {
 		super.fullyResolve();
 		if (this.main != null) {
 
-			final Resolver resolver =
-					this.main.getScope().newResolver(this.user);
+			final FullResolver resolver =
+					this.main.getScope()
+					.newResolver(this.user)
+					.fullResolver(VALUE_REF_USAGE);
 
-			this.main.resolve(resolver).resolveValue();
+			this.main.resolveAll(resolver);
 		}
 	}
 

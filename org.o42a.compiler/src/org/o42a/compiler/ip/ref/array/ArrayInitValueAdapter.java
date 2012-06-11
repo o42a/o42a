@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref.array;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
 
 import java.util.IdentityHashMap;
@@ -37,9 +38,7 @@ import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 
@@ -98,8 +97,9 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		value(resolver).resolveAll(resolver);
+	protected void fullyResolve(FullResolver resolver) {
+		value(resolver.getResolver())
+		.resolveAll(resolver.setRefUsage(VALUE_REF_USAGE));
 	}
 
 	private Value<Array> array(Scope scope) {

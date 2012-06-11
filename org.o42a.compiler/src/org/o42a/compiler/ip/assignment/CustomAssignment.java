@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.assignment;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.core.Scope;
@@ -28,7 +29,7 @@ import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.member.local.LocalResolver;
+import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Normalizer;
@@ -74,8 +75,8 @@ final class CustomAssignment extends AssignmentKind {
 	}
 
 	@Override
-	public void resolve(LocalResolver resolver) {
-		getRef().resolve(resolver).resolveCondition();
+	public void resolve(FullLocalResolver resolver) {
+		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.DefValue;
 
@@ -75,7 +75,7 @@ public abstract class Value<T> {
 
 	public abstract Ptr<ValType.Op> valPtr(Generator generator);
 
-	public final void resolveAll(Resolver resolver) {
+	public final void resolveAll(FullResolver resolver) {
 		getValueStruct().resolveAll(this, resolver);
 	}
 

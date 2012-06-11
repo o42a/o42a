@@ -29,8 +29,8 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
@@ -194,7 +194,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract S reproduce(Reproducer reproducer);
 
-	public abstract void resolveAll(Resolver resolver);
+	public abstract void resolveAll(FullResolver resolver);
 
 	public final boolean assertAssignableFrom(ValueStruct<?, ?> other) {
 		assert assignableFrom(other) :
@@ -262,7 +262,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			Value<T> value,
 			PrefixPath prefix);
 
-	protected abstract void resolveAll(Value<T> value, Resolver resolver);
+	protected abstract void resolveAll(Value<T> value, FullResolver resolver);
 
 	protected abstract ValueStructIR<S, T> createIR(Generator generator);
 

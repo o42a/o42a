@@ -185,7 +185,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		resolveSentences(resolver, this);
 	}
 

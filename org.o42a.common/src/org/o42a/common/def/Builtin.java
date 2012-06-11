@@ -23,6 +23,7 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
@@ -37,7 +38,7 @@ public interface Builtin extends LocationInfo {
 
 	Value<?> calculateBuiltin(Resolver resolver);
 
-	void resolveBuiltin(Resolver resolver);
+	void resolveBuiltin(FullResolver resolver);
 
 	InlineEval inlineBuiltin(Normalizer normalizer, Scope origin);
 

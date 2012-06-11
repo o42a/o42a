@@ -21,6 +21,7 @@ package org.o42a.core.object.link;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.falseRef;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.ValueKnowledge.*;
 
 import org.o42a.core.*;
@@ -29,8 +30,8 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.Role;
 import org.o42a.core.object.link.impl.LinkTarget;
 import org.o42a.core.object.link.impl.RtLinkTarget;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
 import org.o42a.core.source.CompilerContext;
@@ -158,8 +159,8 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 		return Placed.distributeIn(this, container);
 	}
 
-	public void resolveAll(Resolver resolver) {
-		getTargetRef().resolveAll(resolver);
+	public void resolveAll(FullResolver resolver) {
+		getTargetRef().resolveAll(resolver.setRefUsage(TARGET_REF_USAGE));
 	}
 
 	@Override

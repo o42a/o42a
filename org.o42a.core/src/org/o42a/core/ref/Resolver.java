@@ -19,14 +19,13 @@
 */
 package org.o42a.core.ref;
 
-import static org.o42a.core.ref.path.PathResolver.fullPathResolver;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
-import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 
 import org.o42a.analysis.use.User;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
+import org.o42a.core.ref.common.RoleResolver;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.source.CompilerContext;
@@ -37,15 +36,22 @@ import org.o42a.util.log.Loggable;
 
 public class Resolver implements UserInfo, LocationInfo {
 
-	public static ResolverFactory<Resolver> resolverFactory(Scope scope) {
-		return new Factory(scope);
+	public static ResolverFactory<Resolver, FullResolver> resolverFactory(
+			Scope scope) {
+		return new DefaultResolverFactory(scope);
 	}
 
+	private final ResolverFactory<?, ?> factory;
 	private final Scope scope;
 	private final User<?> user;
 	private final PathWalker walker;
 
-	protected Resolver(Scope scope, UserInfo user, PathWalker walker) {
+	protected Resolver(
+			ResolverFactory<?, ?> factory,
+			Scope scope,
+			UserInfo user,
+			PathWalker walker) {
+		this.factory = factory;
 		this.scope = scope;
 		this.user = user.toUser();
 		this.walker = walker;
@@ -82,19 +88,18 @@ public class Resolver implements UserInfo, LocationInfo {
 		return this.user;
 	}
 
-	public Resolver newResolver() {
-		if (this.walker == DUMMY_PATH_WALKER) {
-			return this;
-		}
-		return getScope().newResolver(this);
-	}
-
 	public final PathResolver toPathResolver() {
 		return pathResolver(getScope(), this);
 	}
 
-	public final PathResolver toFullPathResolver(RefUsage usage) {
-		return fullPathResolver(getScope(), this, usage);
+	@SuppressWarnings("unchecked")
+	public FullResolver fullResolver(RefUsage usage) {
+
+		final Resolver resolver = this.factory.walkingResolver(
+				this,
+				new RoleResolver(usage.getRole()));
+
+		return factory().createFullResolver(resolver, usage);
 	}
 
 	@Override
@@ -108,9 +113,15 @@ public class Resolver implements UserInfo, LocationInfo {
 		return "Resolver[" + this.scope + " by " + this.user + ']';
 	}
 
-	private static final class Factory extends ResolverFactory<Resolver> {
+	@SuppressWarnings("rawtypes")
+	final ResolverFactory factory() {
+		return this.factory;
+	}
 
-		Factory(Scope scope) {
+	private static final class DefaultResolverFactory
+			extends ResolverFactory<Resolver, FullResolver> {
+
+		DefaultResolverFactory(Scope scope) {
 			super(scope);
 		}
 
@@ -118,7 +129,14 @@ public class Resolver implements UserInfo, LocationInfo {
 		protected Resolver createResolver(
 				UserInfo user,
 				PathWalker walker) {
-			return new Resolver(getScope(), user, walker);
+			return new Resolver(this, getScope(), user, walker);
+		}
+
+		@Override
+		protected FullResolver createFullResolver(
+				Resolver resolver,
+				RefUsage refUsage) {
+			return new FullResolver(resolver, refUsage);
 		}
 
 	}

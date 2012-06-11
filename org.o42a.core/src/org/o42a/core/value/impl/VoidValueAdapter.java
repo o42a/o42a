@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.core.Scope;
@@ -30,9 +31,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
@@ -85,8 +84,8 @@ public class VoidValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getAdaptedRef().resolve(resolver).resolveCondition();
+	protected void fullyResolve(FullResolver resolver) {
+		getAdaptedRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	private static final class InlineToVoid extends InlineValue {

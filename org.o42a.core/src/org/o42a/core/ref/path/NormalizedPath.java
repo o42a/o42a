@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref.path;
 
+import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 
@@ -188,9 +189,10 @@ final class NormalizedPath implements NormalPath {
 
 		fullResolution.start();
 		try {
-			this.path.target(getOrigin().distribute())
-			.resolve(getOrigin().newResolver(user))
-			.resolveValue();
+			this.path.target(getOrigin().distribute()).resolveAll(
+					getOrigin()
+					.newResolver(user)
+					.fullResolver(VALUE_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}

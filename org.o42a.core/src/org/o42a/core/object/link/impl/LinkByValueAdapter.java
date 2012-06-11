@@ -21,6 +21,7 @@ package org.o42a.core.object.link.impl;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.link.impl.TargetLink.linkByValue;
+import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
 import org.o42a.codegen.code.Block;
@@ -32,9 +33,7 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.TargetResolver;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.Resolver;
+import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 
@@ -96,8 +95,8 @@ public class LinkByValueAdapter extends ValueAdapter {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getAdaptedRef().resolve(resolver).resolveTarget();
+	protected void fullyResolve(FullResolver resolver) {
+		getAdaptedRef().resolveAll(resolver.setRefUsage(TARGET_REF_USAGE));
 	}
 
 	private static final class LinkByValueEval implements Eval {

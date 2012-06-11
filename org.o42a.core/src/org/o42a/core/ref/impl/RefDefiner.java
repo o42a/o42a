@@ -127,7 +127,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
+	protected void fullyResolve(FullResolver resolver) {
 		getValueAdapter().resolveAll(resolver);
 	}
 

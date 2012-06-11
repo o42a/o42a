@@ -19,6 +19,8 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import static org.o42a.core.ref.RefUsage.CONDITION_REF_USAGE;
+
 import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -123,8 +125,8 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	protected void fullyResolve(Resolver resolver) {
-		getRef().resolve(resolver).resolveCondition();
+	protected void fullyResolve(FullResolver resolver) {
+		getRef().resolveAll(resolver.setRefUsage(CONDITION_REF_USAGE));
 	}
 
 	private static final class Inline extends InlineEval {

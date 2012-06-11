@@ -34,6 +34,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.ref.ResolverFactory;
 import org.o42a.core.ref.path.Path;
@@ -194,7 +195,7 @@ public abstract class AbstractScope implements Scope {
 		return pathToMember.append(member.getKey());
 	}
 
-	private final ResolverFactory<Resolver> resolverFactory;
+	private final ResolverFactory<Resolver, FullResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
 
 	public AbstractScope() {
