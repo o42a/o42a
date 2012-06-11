@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.clause.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
@@ -187,7 +186,7 @@ public final class DeclaredPlainClause extends PlainClause {
 		final Member member = enclosing.objectMember(
 				Accessor.INHERITANT,
 				getBuilder().getOverridden(),
-				declaredIn != null ? declaredIn.typeObject(dummyUser()) : null);
+				declaredIn != null ? declaredIn.typeObject() : null);
 
 		if (member == null) {
 			getLogger().error(

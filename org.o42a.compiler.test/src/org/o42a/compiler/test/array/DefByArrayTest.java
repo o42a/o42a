@@ -23,7 +23,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -51,7 +50,7 @@ public class DefByArrayTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(b.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(b);
@@ -84,7 +83,7 @@ public class DefByArrayTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(b.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(b);

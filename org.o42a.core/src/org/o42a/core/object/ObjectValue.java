@@ -319,7 +319,7 @@ public final class ObjectValue extends ObjectValueParts {
 			ancestorDefinitions = null;
 		} else {
 			ancestorDefinitions =
-					ancestor.typeObject(dummyUser()).value()
+					ancestor.typeObject().value()
 					.getDefinitions().upgradeScope(getObject().getScope());
 		}
 

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
@@ -108,7 +107,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	protected void fill() {
 		super.fill();
 
-		final Obj type = getTypeRef().typeObject(dummyUser());
+		final Obj type = getTypeRef().typeObject();
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		getInstance().bound().setValue(

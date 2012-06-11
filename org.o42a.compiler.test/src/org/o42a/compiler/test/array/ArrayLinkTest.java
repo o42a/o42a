@@ -23,7 +23,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -50,7 +49,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -82,7 +81,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -114,7 +113,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -140,7 +139,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(dummyUser()),
+				arraySruct.getItemTypeRef().typeObject(),
 				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(linkTarget(a));

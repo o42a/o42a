@@ -173,7 +173,7 @@ final class MainPhraseContext extends PhraseContext {
 		for (StaticTypeRef sample : getAscendants().getSamples()) {
 
 			final NextClause found = findClause(
-					sample.typeObject(dummyUser()),
+					sample.typeObject(),
 					location,
 					memberId,
 					what);
@@ -205,7 +205,7 @@ final class MainPhraseContext extends PhraseContext {
 		if (ancestor != null) {
 
 			final NextClause found = findClause(
-					ancestor.typeObject(dummyUser()),
+					ancestor.typeObject(),
 					location,
 					memberId,
 					what);
@@ -221,7 +221,7 @@ final class MainPhraseContext extends PhraseContext {
 			if (implicitAncestor != null) {
 
 				final NextClause found = findClause(
-						implicitAncestor.typeObject(dummyUser()),
+						implicitAncestor.typeObject(),
 						location,
 						memberId,
 						what);

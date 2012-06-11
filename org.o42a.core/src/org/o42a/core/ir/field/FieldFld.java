@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
@@ -82,7 +81,7 @@ public abstract class FieldFld extends Fld {
 
 		final ObjectType definedInType = definedIn.toObject().type();
 
-		if (definedInType.getAncestor().type(dummyUser()).derivedFrom(
+		if (definedInType.getAncestor().type().derivedFrom(
 				definedInType)) {
 			// Field overridden in ancestor.
 			return false;

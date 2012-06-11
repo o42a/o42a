@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -53,7 +52,7 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 
 		final F fld = op(assigner, builder.host());
 		final TypeRef typeRef = getTypeRef();
-		final Obj typeObject = typeRef.typeObject(dummyUser());
+		final Obj typeObject = typeRef.typeObject();
 		final RefOp boundRef = typeRef.op(builder.host());
 		final ObjectTypeOp bound =
 				boundRef.target(dirs)

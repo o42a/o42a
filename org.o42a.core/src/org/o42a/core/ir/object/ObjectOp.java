@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
@@ -214,7 +213,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				anonymousObject(
 						getBuilder(),
 						ptr,
-						linkStruct.getTypeRef().typeObject(dummyUser())));
+						linkStruct.getTypeRef().typeObject()));
 	}
 
 	@Override

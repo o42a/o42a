@@ -20,7 +20,6 @@
 package org.o42a.core.ir.object.value;
 
 import static org.o42a.analysis.use.SimpleUsage.ALL_SIMPLE_USAGES;
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
@@ -219,7 +218,7 @@ public abstract class ObjectValuePartFnIR
 		if (samples.length == 1) {
 
 			final ObjectType sampleType =
-					samples[0].getTypeRef().type(dummyUser());
+					samples[0].getTypeRef().type();
 
 			reuseFrom = sampleType.getLastDefinition();
 		} else {
@@ -235,7 +234,7 @@ public abstract class ObjectValuePartFnIR
 				return;
 			}
 
-			reuseFrom = ancestor.type(dummyUser()).getLastDefinition();
+			reuseFrom = ancestor.type().getLastDefinition();
 		}
 		if (defs().updatedSince(reuseFrom)) {
 			return;
@@ -317,7 +316,7 @@ public abstract class ObjectValuePartFnIR
 				return;
 			}
 
-			final Obj ancestorObject = ancestor.typeObject(dummyUser());
+			final Obj ancestorObject = ancestor.typeObject();
 			final ObjectOp ancestorBody = host.ancestor(code);
 			final ObjectTypeOp ancestorType =
 					ancestorObject.ir(getGenerator())

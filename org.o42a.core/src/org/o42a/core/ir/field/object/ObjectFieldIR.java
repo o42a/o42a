@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
@@ -94,7 +93,7 @@ public final class ObjectFieldIR extends FieldIR {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(dummyUser());
+				.typeObject();
 		final Obj target;
 		final DefTarget defTarget = object.value().getDefinitions().target();
 

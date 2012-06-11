@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.array.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
@@ -160,7 +159,7 @@ final class ArrayElementOp extends PathOp {
 		final Obj itemAscendant =
 				this.arrayStruct
 				.getItemTypeRef()
-				.typeObject(dummyUser());
+				.typeObject();
 
 		return anonymousObject(getBuilder(), item, itemAscendant);
 	}
