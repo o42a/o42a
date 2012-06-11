@@ -26,8 +26,8 @@ import org.o42a.compiler.test.CompilerTestCase;
 public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
 
 	@Test
-	public void notVisibleInAnotherSource() {
-		expectError("compiler.unresolved");
+	public void inAnotherSource() {
+		expectError("compiler.undefined_member");
 
 		addSource(
 				"a",
@@ -35,6 +35,26 @@ public class PrivateFieldNonVisibilityTest extends CompilerTestCase {
 				"=========",
 				":Foo := 36");
 		compile("B := a: foo");
+	}
+
+	@Test
+	public void deepInAnotherSource() {
+		expectError("compiler.undefined_member");
+
+		addSource(
+				"a",
+				"A := void",
+				"=========",
+				"C := b: foo");
+		addSource(
+				"a/b",
+				"B := void",
+				"=========");
+		addSource(
+				"a/b/foo",
+				":Foo := 64",
+				"=========");
+		compile("");
 	}
 
 }

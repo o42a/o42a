@@ -31,7 +31,7 @@ import org.o42a.core.value.ValueType;
 public class PrivateFieldVisibilityTest extends CompilerTestCase {
 
 	@Test
-	public void visibleByNameInSameSource() {
+	public void byNameInSameSource() {
 		compile(
 				":A := 1",
 				"B := a");
@@ -43,7 +43,7 @@ public class PrivateFieldVisibilityTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void visibleInSameSource() {
+	public void inSameSource() {
 		compile(
 				"A := void (:foo := 3)",
 				"B := void (bar := a: foo)");
@@ -52,7 +52,7 @@ public class PrivateFieldVisibilityTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void visibleByNameOwner() {
+	public void ownerByName() {
 		addSource(
 				"a",
 				":A := 2",
@@ -71,7 +71,7 @@ public class PrivateFieldVisibilityTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void visibleByNameEnclosing() {
+	public void enclosingByName() {
 		addSource(
 				"a",
 				":A := 1",
@@ -94,7 +94,7 @@ public class PrivateFieldVisibilityTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void visibleByNameFieldOfOwner() {
+	public void fieldOfOwnerByName() {
 		addSource(
 				"a",
 				"A := void",
