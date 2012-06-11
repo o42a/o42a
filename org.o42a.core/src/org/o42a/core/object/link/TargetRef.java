@@ -22,7 +22,6 @@ package org.o42a.core.object.link;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
@@ -91,7 +90,7 @@ public final class TargetRef implements ScopeInfo {
 				this.typeRef.toStatic());
 	}
 
-	public final Obj target(UserInfo user) {
+	public final Obj target() {
 
 		final Resolution resolution = resolve(getScope().resolver());
 

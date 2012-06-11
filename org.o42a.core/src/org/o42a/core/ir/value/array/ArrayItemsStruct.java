@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.value.array;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -78,7 +77,7 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 		final Array array = this.arrayIR.getArray();
 		final Obj itemAscendant =
-				array.getValueStruct().getItemTypeRef().typeObject(dummyUser());
+				array.getValueStruct().getItemTypeRef().typeObject();
 		final ArrayItem[] items = array.getItems();
 		final int length = items.length;
 

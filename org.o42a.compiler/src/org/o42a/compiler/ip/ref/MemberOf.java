@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.ref;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.common.resolution.CompoundPathWalker;
 import org.o42a.core.Distributor;
@@ -71,7 +70,7 @@ public class MemberOf extends PlacedPathFragment {
 				accessorResolver.getAccessor(),
 				this.memberId,
 				this.declaredIn != null
-				? this.declaredIn.typeObject(dummyUser()) : null);
+				? this.declaredIn.typeObject() : null);
 
 		if (memberPath == null) {
 			getLogger().error(

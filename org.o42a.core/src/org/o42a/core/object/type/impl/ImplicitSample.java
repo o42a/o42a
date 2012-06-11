@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.type.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
@@ -46,7 +45,7 @@ public final class ImplicitSample extends Sample {
 
 	@Override
 	public Obj getObject() {
-		return this.implicitAscendant.typeObject(dummyUser());
+		return this.implicitAscendant.typeObject();
 	}
 
 	@Override

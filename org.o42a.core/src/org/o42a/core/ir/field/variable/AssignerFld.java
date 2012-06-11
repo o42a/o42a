@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
@@ -133,7 +132,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		final ObjectType definedInType = definedIn.type();
 
-		if (definedInType.getAncestor().type(dummyUser()).derivedFrom(
+		if (definedInType.getAncestor().type().derivedFrom(
 				definedInType)) {
 			// Overridden in ancestor.
 			return false;
@@ -167,7 +166,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 	@Override
 	public void fill(Type instance) {
 
-		final Obj type = linkStruct().getTypeRef().typeObject(dummyUser());
+		final Obj type = linkStruct().getTypeRef().typeObject();
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		instance.bound().setValue(typeIR.getInstance().pointer(getGenerator()));
@@ -245,7 +244,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		final Obj ancestorDefinedIn =
-				definedIn(object.type().getAncestor().typeObject(dummyUser()));
+				definedIn(object.type().getAncestor().typeObject());
 
 		if (ancestorDefinedIn == null) {
 			return definedIn != null ? definedIn : object;

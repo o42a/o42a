@@ -298,7 +298,7 @@ public enum ClauseId {
 			"Clause adapter type not specified";
 
 		final Obj type = adapterTypeScope(
-				adapterType.typeObject(dummyUser())).toObject();
+				adapterType.typeObject()).toObject();
 
 		for (ClauseId clauseId : values()) {
 			if (!clauseId.hasAdapterType()) {

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
@@ -80,7 +79,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		final LinkValueStruct linkStruct =
 				objectValue.getValueStruct().toLinkStruct();
 
-		targetType = linkStruct.getTypeRef().typeObject(dummyUser());
+		targetType = linkStruct.getTypeRef().typeObject();
 
 		final Block code = dirs.code();
 		final ObjectOp valueObject =

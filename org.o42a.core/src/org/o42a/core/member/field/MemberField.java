@@ -271,7 +271,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 		if (declaredInRef != null) {
 
-			final Obj declaredIn = declaredInRef.typeObject(dummyUser());
+			final Obj declaredIn = declaredInRef.typeObject();
 
 			if (declaredIn == null) {
 				return null;
@@ -292,7 +292,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			if (ancestor != null) {
 				overridden = overridden(
 						overridden,
-						ancestor.typeObject(dummyUser()));
+						ancestor.typeObject());
 			}
 		}
 

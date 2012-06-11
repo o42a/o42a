@@ -53,17 +53,17 @@ public class InheritanceTest extends CompilerTestCase {
 	public void inheritance() {
 		assertThat(
 				this.b.type()
-				.getAncestor().typeObject(USE_CASE)
+				.getAncestor().typeObject()
 				.getScope().toField().getKey().getName(),
 				is("a"));
 		assertSame(
 				this.a,
-				this.b.type().getAncestor().typeObject(USE_CASE));
+				this.b.type().getAncestor().typeObject());
 		assertTrue(this.b.type().inherits(
 				this.a.type()));
 		assertSame(
 				this.b,
-				this.c.type().getAncestor().typeObject(USE_CASE));
+				this.c.type().getAncestor().typeObject());
 		assertTrue(this.c.type().inherits(this.a.type()));
 		assertTrue(this.c.type().inherits(this.b.type()));
 	}
@@ -84,7 +84,7 @@ public class InheritanceTest extends CompilerTestCase {
 		assertFalse(aFoo.isPropagated());
 		assertThat(
 				aFoo.toObject().type()
-				.getAncestor().typeObject(USE_CASE),
+				.getAncestor().typeObject(),
 				is(this.context.getIntrinsics().getInteger()));
 	}
 

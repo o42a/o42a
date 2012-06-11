@@ -225,7 +225,7 @@ public abstract class Member extends Placed {
 		if (containerAncestor != null) {
 
 			final Member ancestorMember =
-					containerAncestor.type(dummyUser())
+					containerAncestor.type()
 					.getObject().member(getKey());
 
 			if (ancestorMember != null) {

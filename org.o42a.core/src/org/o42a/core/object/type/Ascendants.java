@@ -367,7 +367,7 @@ public class Ascendants
 		if (ancestor != null) {
 
 			final Member overridden =
-					ancestor.typeObject(dummyUser()).member(member.getKey());
+					ancestor.typeObject().member(member.getKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);

@@ -90,7 +90,7 @@ public class MemberById extends PlacedPathFragment {
 		final Obj declaredIn;
 
 		if (this.declaredIn != null) {
-			declaredIn = this.declaredIn.typeObject(dummyUser());
+			declaredIn = this.declaredIn.typeObject();
 		} else {
 			declaredIn = null;
 		}

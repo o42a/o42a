@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
@@ -102,7 +101,7 @@ public final class AssignerFldOp extends FldOp {
 				boundKnown.id("cast_target"),
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
-				fld().linkStruct().getTypeRef().typeObject(dummyUser()),
+				fld().linkStruct().getTypeRef().typeObject(),
 				true);
 
 		assignValue(boundKnown, castObject);
@@ -148,7 +147,7 @@ public final class AssignerFldOp extends FldOp {
 		final ObjectOp target = anonymousObject(
 				getBuilder(),
 				targetPtr,
-				fld().linkStruct().getTypeRef().typeObject(dummyUser()));
+				fld().linkStruct().getTypeRef().typeObject());
 
 		final Block resultCode = valDirs.done().code();
 

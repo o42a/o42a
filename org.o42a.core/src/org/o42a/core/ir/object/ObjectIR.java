@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import java.util.Collection;
@@ -98,7 +97,7 @@ public class ObjectIR  {
 			return null;
 		}
 
-		final Obj ancestor = ancestorType.typeObject(dummyUser());
+		final Obj ancestor = ancestorType.typeObject();
 
 		if (ancestor == ancestor.getContext().getVoid()) {
 			return null;

@@ -23,7 +23,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.junit.Test;
 import org.o42a.compiler.test.CompilerTestCase;
@@ -125,7 +124,7 @@ public class LinkTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(dummyUser()),
+				.typeObject(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(
 				definiteValue(linkTarget(bTarget), ValueType.INTEGER),
@@ -139,7 +138,7 @@ public class LinkTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(dummyUser()),
+				.typeObject(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(
 				definiteValue(linkTarget(c), ValueType.INTEGER),

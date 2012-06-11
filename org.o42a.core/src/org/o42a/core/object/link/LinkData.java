@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.link;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.value.ValueKnowledge.*;
@@ -137,7 +136,7 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 			return new RtLinkTarget(getLink());
 		}
 
-		final Obj target = getTargetRef().target(dummyUser());
+		final Obj target = getTargetRef().target();
 
 		if (target == null) {
 			return getContext().getFalse();

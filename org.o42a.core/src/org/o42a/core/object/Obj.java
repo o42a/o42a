@@ -290,7 +290,7 @@ public abstract class Obj
 		final TypeRef ancestor = type().getAncestor();
 
 		if (ancestor != null) {
-			return ancestor.typeObject(dummyUser()).hasSubClauses();
+			return ancestor.typeObject().hasSubClauses();
 		}
 		for (Sample sample : type().getSamples()) {
 			if (sample.typeObject(dummyUser()).hasSubClauses()) {
@@ -326,7 +326,7 @@ public abstract class Obj
 		if (ancestor != null) {
 			implicitClauses = ArrayUtil.append(
 					implicitClauses,
-					ancestor.typeObject(dummyUser()).getImplicitClauses());
+					ancestor.typeObject().getImplicitClauses());
 		}
 
 		return this.implicitClauses = implicitClauses;
@@ -912,7 +912,7 @@ public abstract class Obj
 		final TypeRef ancestor = objectType.getAncestor();
 
 		if (ancestor != null) {
-			this.objectMembers.deriveMembers(ancestor.typeObject(dummyUser()));
+			this.objectMembers.deriveMembers(ancestor.typeObject());
 		}
 	}
 

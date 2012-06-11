@@ -19,13 +19,11 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.ConstructionMode.PROHIBITED_CONSTRUCTION;
 import static org.o42a.core.ref.path.PrefixPath.emptyPrefix;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.value.ValueStructFinder.DEFAULT_VALUE_STRUCT_FINDER;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.Scoped;
@@ -188,7 +186,7 @@ public abstract class TypeRef implements ScopeInfo {
 
 	public ConstructionMode getConstructionMode() {
 
-		final Obj object = typeObject(dummyUser());
+		final Obj object = typeObject();
 
 		if (object == null) {
 			return PROHIBITED_CONSTRUCTION;
@@ -209,12 +207,9 @@ public abstract class TypeRef implements ScopeInfo {
 		return getRef().value(resolver);
 	}
 
-	public ObjectType type(UserInfo user) {
+	public ObjectType type() {
 		if (this.type != null) {
-
-			final ObjectType type = this.type.get();
-
-			return type != null ? type.useBy(user) : null;
+			return this.type.get();
 		}
 
 		final Resolution resolution = resolve(getScope().resolver());
@@ -232,16 +227,16 @@ public abstract class TypeRef implements ScopeInfo {
 			return null;
 		}
 
-		final ObjectType result = object.type().useBy(user);
+		final ObjectType result = object.type();
 
 		this.type = new Holder<ObjectType>(result);
 
 		return result;
 	}
 
-	public final Obj typeObject(UserInfo user) {
+	public final Obj typeObject() {
 
-		final ObjectType type = type(user);
+		final ObjectType type = type();
 
 		return type != null ? type.getObject() : null;
 	}
@@ -272,7 +267,7 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public boolean validate() {
-		return type(dummyUser()) != null;
+		return type() != null;
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {

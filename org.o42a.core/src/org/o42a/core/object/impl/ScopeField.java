@@ -90,7 +90,7 @@ public final class ScopeField extends ObjectField {
 		final Obj newObject;
 		final Obj newOwner = getEnclosingContainer().toObject();
 		final ObjectType newOwnerType = newOwner.type();
-		final Obj ancestor = newOwnerType.getAncestor().typeObject(user);
+		final Obj ancestor = newOwnerType.getAncestor().typeObject();
 		final Member ancestorMember = ancestor.member(getKey());
 
 		if (ancestorMember != null) {

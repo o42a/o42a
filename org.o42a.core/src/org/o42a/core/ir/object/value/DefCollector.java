@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object.value;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
@@ -57,7 +56,7 @@ final class DefCollector {
 		if (ancestorRef == null) {
 			this.ancestor = null;
 		} else {
-			this.ancestor = ancestorRef.typeObject(dummyUser());
+			this.ancestor = ancestorRef.typeObject();
 		}
 	}
 

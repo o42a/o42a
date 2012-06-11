@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.analysis.use.User.dummyUser;
 
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.source.CompilerLogger;
@@ -48,9 +47,9 @@ final class StaticTypeRelation extends TypeRelation {
 		}
 
 		final ObjectType type1 =
-				of().type(dummyUser()).getLastDefinition().type();
+				of().type().getLastDefinition().type();
 		final ObjectType type2 =
-				to().type(dummyUser()).getLastDefinition().type();
+				to().type().getLastDefinition().type();
 
 		if (type1.getObject().getScope() == type2.getObject().getScope()) {
 			return Kind.SAME;

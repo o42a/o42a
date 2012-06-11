@@ -131,7 +131,7 @@ public final class ObjectType implements UserInfo {
 			return false;
 		}
 
-		return ancestor.type(dummyUser()).inherits(other);
+		return ancestor.type().inherits(other);
 	}
 
 	public final Map<Scope, Derivation> allAscendants() {
@@ -397,7 +397,7 @@ public final class ObjectType implements UserInfo {
 
 		if (ancestor != null) {
 
-			final ObjectType type = ancestor.type(dummyUser());
+			final ObjectType type = ancestor.type();
 
 			for (Scope scope : type.allAscendants().keySet()) {
 				allAscendants.put(scope, Derivation.INHERITANCE);
@@ -442,7 +442,7 @@ public final class ObjectType implements UserInfo {
 
 		if (ancestor != null) {
 
-			final ObjectType ancestorType = ancestor.type(dummyUser());
+			final ObjectType ancestorType = ancestor.type();
 
 			if (ancestorType != null) {
 				ancestorType.useAsAncestor(getObject());
@@ -454,7 +454,7 @@ public final class ObjectType implements UserInfo {
 		for (Sample sample : getSamples()) {
 
 			final ObjectType sampleType =
-					sample.getTypeRef().type(dummyUser());
+					sample.getTypeRef().type();
 
 			if (sampleType != null) {
 				sampleType.useAsSample(sample);
@@ -508,9 +508,9 @@ public final class ObjectType implements UserInfo {
 		}
 
 		final ObjectValue newAncestorValue =
-				newAncestor.typeObject(dummyUser()).value();
+				newAncestor.typeObject().value();
 		final Obj oldAncestorObject =
-				oldAncestor.typeObject(dummyUser());
+				oldAncestor.typeObject();
 
 		trackAncestorPartUpdates(
 				since,

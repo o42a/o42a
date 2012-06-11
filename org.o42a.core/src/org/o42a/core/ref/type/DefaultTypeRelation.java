@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.type;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.impl.ResolutionRootFinder.resolutionRoot;
 
 import org.o42a.core.Scope;
@@ -54,8 +53,8 @@ final class DefaultTypeRelation extends TypeRelation {
 		final Scope root1 = resolutionRoot(of());
 		final Scope root2 = resolutionRoot(to());
 
-		final ObjectType type1 = of().type(dummyUser());
-		final ObjectType type2 = to().type(dummyUser());
+		final ObjectType type1 = of().type();
+		final ObjectType type2 = to().type();
 
 		if (root1 == root2) {
 			if (type1.getObject().getScope() == type2.getObject().getScope()) {

@@ -415,7 +415,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			if (ancestorRef == null) {
 				ancestor = builder.getContext().getVoid();
 			} else {
-				ancestor = ancestorRef.typeObject(dummyUser());
+				ancestor = ancestorRef.typeObject();
 			}
 
 			final AnyOp ancestorBodyPtr =
