@@ -191,8 +191,8 @@ final class NormalizedPath implements NormalPath {
 		try {
 			this.path.target(getOrigin().distribute()).resolveAll(
 					getOrigin()
-					.newResolver(user)
-					.fullResolver(VALUE_REF_USAGE));
+					.resolver()
+					.fullResolver(user, VALUE_REF_USAGE));
 		} finally {
 			fullResolution.end();
 		}

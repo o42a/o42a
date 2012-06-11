@@ -150,8 +150,8 @@ public class ConsoleModule extends AnnotatedModule {
 
 			final FullResolver resolver =
 					this.main.getScope()
-					.newResolver(this.user)
-					.fullResolver(VALUE_REF_USAGE);
+					.resolver()
+					.fullResolver(this.user, VALUE_REF_USAGE);
 
 			this.main.resolveAll(resolver);
 		}

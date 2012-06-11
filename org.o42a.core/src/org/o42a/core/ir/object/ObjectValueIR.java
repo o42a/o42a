@@ -127,7 +127,7 @@ public class ObjectValueIR {
 	private Val initialValue() {
 
 		final Definitions definitions = definitions();
-		final Resolver resolver = definitions.getScope().dummyResolver();
+		final Resolver resolver = definitions.getScope().resolver();
 		final Value<?> value = definitions.value(resolver);
 
 		switch (value.getKnowledge().getCondition()) {

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.object.def;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.DefTarget.NO_DEF_TARGET;
 import static org.o42a.core.object.def.impl.DefTargetFinder.defTarget;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
@@ -360,8 +361,8 @@ public class Definitions extends Scoped {
 				targetRef.resolveAll(
 						getScope()
 						.getEnclosingScope()
-						.dummyResolver()
-						.fullResolver(TARGET_REF_USAGE));
+						.resolver()
+						.fullResolver(dummyUser(), TARGET_REF_USAGE));
 			}
 		} finally {
 			getContext().fullResolution().end();

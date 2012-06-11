@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.local.impl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
@@ -30,6 +29,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.*;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ObjectStepUses;
@@ -55,8 +55,7 @@ public final class RefDep extends Dep {
 		assert local != null :
 			object + " is not a local object";
 
-		this.target = this.depRef.resolve(
-				local.newResolver(dummyUser())).toObject();
+		this.target = this.depRef.resolve(local.resolver()).toObject();
 	}
 
 	@Override
@@ -111,19 +110,22 @@ public final class RefDep extends Dep {
 			LocalScope enclosingLocal,
 			PathWalker walker) {
 
-		final LocalResolver localResolver =
-				enclosingLocal.newResolver(resolver);
+		final LocalResolver localResolver = enclosingLocal.resolver();
 
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver, path, index);
+
+			final RefUsage usage;
+
 			if (index == path.length() - 1) {
 				// Resolve only the last value.
-				this.depRef.resolveAll(
-						localResolver.fullResolver(resolver.getUsage()));
+				usage = resolver.getUsage();
 			} else {
-				this.depRef.resolveAll(
-						localResolver.fullResolver(CONTAINER_REF_USAGE));
+				usage = CONTAINER_REF_USAGE;
 			}
+
+			this.depRef.resolveAll(
+					localResolver.fullResolver(resolver, usage));
 		}
 
 		final Resolution resolution = this.depRef.resolve(localResolver);

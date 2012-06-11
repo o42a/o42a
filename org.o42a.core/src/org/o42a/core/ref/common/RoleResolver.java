@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.common;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.Role.*;
 
 import org.o42a.core.Container;
@@ -44,8 +43,7 @@ public class RoleResolver implements PathWalker {
 		ref.assertCompatible(scope);
 
 		final RoleResolver roleResolver = new RoleResolver(expectedRole);
-		final Resolver resolver =
-				scope.walkingResolver(dummyUser(), roleResolver);
+		final Resolver resolver = scope.walkingResolver(roleResolver);
 		final Resolution resolution = ref.resolve(resolver);
 
 		if (!resolution.isResolved()) {
@@ -161,7 +159,7 @@ public class RoleResolver implements PathWalker {
 
 		final LocalScope local =
 				object.getScope().getEnclosingScope().toLocal();
-		final LocalResolver resolver = local.walkingResolver(dummyUser(), this);
+		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
 		return resolution.isResolved();

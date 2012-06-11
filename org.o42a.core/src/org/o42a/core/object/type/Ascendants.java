@@ -224,8 +224,8 @@ public class Ascendants
 		final FullResolver resolver =
 				getScope()
 				.getEnclosingScope()
-				.newResolver(user)
-				.fullResolver(TYPE_REF_USAGE);
+				.resolver()
+				.fullResolver(user, TYPE_REF_USAGE);
 
 		if (ancestor != null) {
 			ancestor.resolveAll(resolver);

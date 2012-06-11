@@ -57,7 +57,7 @@ public class UseNamespace extends DirectiveObject {
 		}
 
 		final Scope scope = directive.getResolution().getScope();
-		final Resolver resolver = scope.dummyResolver();
+		final Resolver resolver = scope.resolver();
 		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {

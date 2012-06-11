@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.clause.impl;
 
+import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.RefUsage.TARGET_REF_USAGE;
 import static org.o42a.core.st.DefinerEnv.defaultEnv;
 
@@ -224,7 +225,8 @@ public final class DeclaredGroupClause
 		validate();
 		if (isTopLevel()) {
 			this.definition.define(defaultEnv()).resolveAll(
-					getScope().dummyResolver().fullResolver(
+					getScope().resolver().fullResolver(
+							dummyUser(),
 							TARGET_REF_USAGE));
 		}
 	}

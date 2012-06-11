@@ -21,7 +21,6 @@ package org.o42a.core;
 
 import java.util.Set;
 
-import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.member.Member;
@@ -84,13 +83,11 @@ public interface Scope extends PlaceInfo {
 	 */
 	boolean isClone();
 
-    Resolver dummyResolver();
-
-    Resolver newResolver(UserInfo user);
+    Resolver resolver();
 
     Resolver walkingResolver(Resolver user);
 
-    Resolver walkingResolver(UserInfo user, PathWalker walker);
+    Resolver walkingResolver(PathWalker walker);
 
     Member toMember();
 

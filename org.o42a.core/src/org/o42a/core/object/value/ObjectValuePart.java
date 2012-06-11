@@ -108,8 +108,8 @@ public final class ObjectValuePart implements UserInfo {
 	public final FullResolver fullResolver() {
 		return getObject()
 				.getScope()
-				.newResolver(uses())
-				.fullResolver(VALUE_REF_USAGE);
+				.resolver()
+				.fullResolver(uses(), VALUE_REF_USAGE);
 	}
 
 	public final void wrapBy(ObjectValuePart wrapPart) {

@@ -93,7 +93,7 @@ public final class PrefixPath {
 	public Scope rescope(Scope scope) {
 
 		final PathResolution found = getBoundPath().resolve(
-				scope.dummyResolver().toPathResolver());
+				scope.resolver().toPathResolver());
 
 		return found.isResolved() ? found.getResult().getScope() : null;
 	}

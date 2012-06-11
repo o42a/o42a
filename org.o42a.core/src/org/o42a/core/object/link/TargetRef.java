@@ -93,7 +93,7 @@ public final class TargetRef implements ScopeInfo {
 
 	public final Obj target(UserInfo user) {
 
-		final Resolution resolution = resolve(getScope().newResolver(user));
+		final Resolution resolution = resolve(getScope().resolver());
 
 		return resolution.isError() ? null : resolution.toObject();
 	}

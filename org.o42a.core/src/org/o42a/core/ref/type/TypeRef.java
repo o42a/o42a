@@ -217,7 +217,7 @@ public abstract class TypeRef implements ScopeInfo {
 			return type != null ? type.useBy(user) : null;
 		}
 
-		final Resolution resolution = resolve(getScope().newResolver(user));
+		final Resolution resolution = resolve(getScope().resolver());
 
 		if (resolution.isError()) {
 			this.type = new Holder<ObjectType>(null);
