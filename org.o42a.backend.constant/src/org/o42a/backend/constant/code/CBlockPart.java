@@ -83,6 +83,21 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		return this.underlying = initUnderlying();
 	}
 
+	@Override
+	public boolean revealUpTo(OpRecord last) {
+		if (isJoined()) {
+
+			// Reveal the records of the part this one is joined to.
+			final CBlockPart joinedTo = join();
+
+			if (!joinedTo.isEmpty()) {
+				joinedTo.revealRecords();
+			}
+		}
+
+		return super.revealUpTo(last);
+	}
+
 	protected abstract CBlockPart newNextPart(int index);
 
 	protected abstract Block createUnderlying();
@@ -124,7 +139,8 @@ public abstract class CBlockPart extends CCodePart<Block> {
 	}
 
 	final void reveal() {
-		if (!isJoined()) {// Do not reveal a joint part explicitly.
+		// Do not reveal a joined part explicitly.
+		if (!isJoined()) {
 			revealPart();
 		}
 		if (this.nextPart != null) {
