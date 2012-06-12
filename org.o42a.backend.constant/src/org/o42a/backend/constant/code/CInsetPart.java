@@ -87,4 +87,10 @@ final class CInsetPart<C extends Code>
 		revealRecords();
 	}
 
+	@Override
+	public boolean revealUpTo(OpRecord last) {
+		part().revealUpTo(this);
+		return super.revealUpTo(last);
+	}
+
 }
