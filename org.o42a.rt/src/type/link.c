@@ -32,10 +32,14 @@ static void o42a_val_mark_link(o42a_obj_data_t *const data) {
 		O42A_RETURN;
 	}
 
-	void *const ptr = value->value.v_ptr;
+	o42a_obj_t *const object = value->value.v_ptr;
 
-	if (ptr) {
-		O42A(o42a_gc_mark(ptr));
+	if (object) {
+
+		o42a_obj_data_t *const obj_data = &o42a_obj_type(object)->type.data;
+
+		O42A(o42a_gc_mark(
+				o42a_gc_blockof((char *) obj_data + obj_data->start)));
 	}
 
 	O42A_RETURN;

@@ -93,7 +93,7 @@ public class CtrOp extends IROp {
 				sample.getWellKnownType());
 		final Block resultCode = subDirs.done().code();
 
-		return holder.hold(resultCode, newObject);
+		return holder.holdVolatile(resultCode, newObject);
 	}
 
 	private FuncPtr<NewObjectFunc> newFunc() {
