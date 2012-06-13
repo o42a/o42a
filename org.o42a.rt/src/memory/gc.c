@@ -175,7 +175,7 @@ inline void *o42a_gc_alloc(
 
 inline void o42a_gc_free(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
-	O42A_DEBUG("Free: %p\n", (void *) block);
+	O42A_DEBUG("Free: %#lx\n", (long) block);
 	assert(
 			block->list != O42A_GC_LIST_NEW_STATIC
 			&& "Attempt to free a static memory block");
@@ -189,6 +189,7 @@ inline void o42a_gc_free(o42a_gc_block_t *const block) {
 
 inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
+	O42A_DEBUG("Lock block: %#lx\n", (long) block);
 	while (__sync_lock_test_and_set(&block->lock, 1)) {
 		O42A(sched_yield());
 	}
@@ -198,6 +199,7 @@ inline void o42a_gc_lock_block(o42a_gc_block_t *const block) {
 inline void o42a_gc_unlock_block(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
 	__sync_lock_release(&block->lock);
+	O42A_DEBUG("Unlock block: %#lx\n", (long) block);
 	O42A_RETURN;
 }
 
@@ -373,6 +375,7 @@ static inline void o42a_gc_thread_mark_used() {
 			O42A(o42a_gc_lock());
 
 			// Remove the block from the used list.
+			O42A_DEBUG("Not used any more: %#lx\n", (long) block);
 			O42A(o42a_gc_list_remove(block));
 
 			const unsigned oddity = gc_next_oddity ^ 1;
@@ -495,7 +498,7 @@ static inline void o42a_gc_mark_and_sweep() {
 	O42A_RETURN;
 }
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || defined(O42A_GC_SYNC)
 void o42a_gc_run() {
 	O42A_ENTER(return);
 	O42A_DO("Mark and sweep");
@@ -513,7 +516,7 @@ void o42a_gc_run() {
 	O42A_DONE;
 	O42A_RETURN;
 }
-#endif /* NDEBUG */
+#endif /* !NDEBUG || O42A_GC_SYNC */
 
 static void *o42a_gc_thread(void *data) {
 	O42A_START_THREAD("GC");
@@ -535,7 +538,9 @@ static void *o42a_gc_thread(void *data) {
 
 void o42a_gc_signal() {
 	O42A_ENTER(return);
-
+#ifdef O42A_GC_SYNC
+	O42A_RETURN;
+#endif /* O42A_GC_SYNC */
 	if (!gc_has_white) {
 		// Nothing to report.
 		O42A_RETURN;
@@ -643,6 +648,7 @@ void o42a_gc_use(o42a_gc_block_t *const block) {
 
 void o42a_gc_unuse(o42a_gc_block_t *const block) {
 	O42A_ENTER(return);
+
 	if (block->list == O42A_GC_LIST_STATIC) {
 		// Skip static blocks.
 		O42A_RETURN;
@@ -659,6 +665,12 @@ void o42a_gc_unuse(o42a_gc_block_t *const block) {
 		gc_has_white = O42A_TRUE;
 	}
 	O42A(o42a_gc_unlock_block(block));
+
+#ifdef O42A_GC_SYNC
+	if (gc_has_white) {
+		O42A(o42a_gc_run());
+	}
+#endif /* O42A_GC_SYNC */
 
 	O42A_RETURN;
 }
