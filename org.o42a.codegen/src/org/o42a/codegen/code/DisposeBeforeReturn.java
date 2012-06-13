@@ -32,8 +32,8 @@ final class DisposeBeforeReturn implements BeforeReturn {
 
 	@Override
 	public void beforeReturn(Block code) {
-		this.beforeReturn.beforeReturn(code);
 		disposeAll(code);
+		this.beforeReturn.beforeReturn(code);
 	}
 
 	private static void disposeAll(Block code) {

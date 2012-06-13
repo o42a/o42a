@@ -156,11 +156,7 @@ public abstract class CodeBuilder {
 			return;
 		}
 		this.signalGC = true;
-
-		final AllocationCode allocation =
-				getFunction().getAllocator().allocation();
-
-		allocation.addLastDisposal(SIGNAL_GC);
+		getFunction().allocation().addLastDisposal(SIGNAL_GC);
 	}
 
 	private static final class SignalGC implements Disposal {
