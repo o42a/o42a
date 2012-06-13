@@ -61,6 +61,7 @@ include $(default_mk)
 
 includes += -I include
 CFLAGS += -Wall -Winline -W -Wwrite-strings -Wno-unused $(includes)
+CFLAGS += -UO42A_GC_SYNC
 
 objects = $(srcdir)/error.o
 objects += $(srcdir)/fields.o

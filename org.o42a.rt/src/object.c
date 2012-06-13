@@ -855,6 +855,7 @@ static void o42a_obj_gc_sweeper(void *const obj_data) {
 
 	o42a_obj_data_t *const data = O42A(o42a_obj_gc_data(obj_data));
 
+	o42a_debug_mem_name("Sweep object: ", (char *) data + data->start);
 	O42A(data->value_type->sweep(data));
 
 	O42A_RETURN;
@@ -1462,6 +1463,7 @@ void o42a_obj_value_finish(o42a_obj_data_t *const data) {
 
 void o42a_obj_use(o42a_obj_data_t *const data) {
 	O42A_ENTER(return);
+	o42a_debug_mem_name("Use object: ", (char *) data + data->start);
 	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
 	O42A_RETURN;
 }
@@ -1471,6 +1473,7 @@ void o42a_obj_use_static(o42a_obj_data_t *const data) {
 
 	assert(!(data->flags & O42A_OBJ_RT) && "Object is not static");
 	if (!(data->flags & O42A_OBJ_RT)) {
+		o42a_debug_mem_name("Static object: ", (char *) data + data->start);
 		O42A(o42a_gc_static(o42a_gc_blockof((char *) data + data->start)));
 	}
 
@@ -1488,6 +1491,7 @@ void o42a_obj_start_use(
 
 	if (data->flags & O42A_OBJ_RT) {
 		use->data = data;
+		o42a_debug_mem_name("Start object use: ", (char *) data + data->start);
 		O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
 	} else {
 		O42A(o42a_obj_use_static(data));
@@ -1500,6 +1504,9 @@ void o42a_obj_end_use(o42a_obj_use_t *const use) {
 	O42A_ENTER(return);
 
 	if (use->data) {
+		o42a_debug_mem_name(
+				"End object use: ",
+				(char *) use->data + use->data->start);
 		O42A(o42a_gc_unuse(
 				o42a_gc_blockof((char *) use->data + use->data->start)));
 		use->data = NULL;
@@ -1523,6 +1530,7 @@ void o42a_obj_start_val_use(o42a_val_t *const val) {
 
 	o42a_obj_data_t *const data = &O42A(o42a_obj_type(obj))->type.data;
 
+	o42a_debug_mem_name("Start link target use: ", (char *) data + data->start);
 	O42A(o42a_gc_use(o42a_gc_blockof((char *) data + data->start)));
 
 	O42A_RETURN;
@@ -1543,6 +1551,7 @@ void o42a_obj_end_val_use(o42a_val_t *const val) {
 
 	o42a_obj_data_t *const data = &O42A(o42a_obj_type(obj))->type.data;
 
+	o42a_debug_mem_name("End link target use: ", (char *) data + data->start);
 	O42A(o42a_gc_unuse(o42a_gc_blockof((char *) data + data->start)));
 
 	O42A_RETURN;
