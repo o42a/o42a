@@ -93,11 +93,16 @@ static void o42a_val_mark_array(o42a_obj_data_t *const data) {
 
 	for (uint32_t i = 0; i < length; ++i) {
 
-		void *const item = items[i];
+		o42a_obj_t *const item = items[i];
 
-		if (item) {
-			O42A(o42a_gc_mark(o42a_gc_blockof(item)));
+		if (!item) {
+			continue;
 		}
+
+		o42a_obj_data_t *const item_data = &o42a_obj_type(item)->type.data;
+
+		O42A(o42a_gc_mark(
+				o42a_gc_blockof((char *) item_data + item_data->start)));
 	}
 
 	O42A_RETURN;
