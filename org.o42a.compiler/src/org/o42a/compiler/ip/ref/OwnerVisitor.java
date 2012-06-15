@@ -28,6 +28,7 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
@@ -39,9 +40,17 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
+import org.o42a.util.string.Name;
 
 
 final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
+
+	private static final Name VOID_NAME =
+			CASE_INSENSITIVE.canonicalName("void");
+	private static final Name FALSE_NAME =
+			CASE_INSENSITIVE.canonicalName("false");
+	private static final Name OBJECT_NAME =
+			CASE_INSENSITIVE.canonicalName("object");
 
 	private final RefInterpreter ip;
 
@@ -99,7 +108,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 
 	@Override
 	public final Owner visitIntrinsicRef(IntrinsicRefNode ref, Distributor p) {
-		if ("object".equals(ref.getName().getName())) {
+		if (OBJECT_NAME.is(ref.getName().getName())) {
 			return owner(ip().objectIntrinsic(ref, p));
 		}
 		return super.visitIntrinsicRef(ref, p);
@@ -119,12 +128,12 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 
 				if (nameNode != null && isRootRef(ownerNode)) {
 
-					final String name = nameNode.getName();
+					final Name name = nameNode.getName();
 
-					if ("void".equals(name)) {
+					if (VOID_NAME.is(name)) {
 						return nonLinkOwner(voidRef(location(p, ref), p));
 					}
-					if ("false".equals(name)) {
+					if (FALSE_NAME.is(name)) {
 						return nonLinkOwner(falseRef(location(p, ref), p));
 					}
 				}

@@ -40,40 +40,37 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
+import org.o42a.util.string.Name;
 
 
 public class Module extends Obj {
 
 	private final ModuleCompiler compiler;
-	private final String moduleName;
+	private final Name moduleName;
 	private DeclarativeBlock definition;
 	private ObjectMemberRegistry memberRegistry;
 	private MainDefiner definer;
 
-	public Module(CompilerContext context, String moduleName) {
+	public Module(CompilerContext context, Name moduleName) {
 		this(context.compileModule(), moduleName);
 	}
 
-	public Module(ModuleCompiler compiler, String moduleName) {
+	public Module(ModuleCompiler compiler, Name moduleName) {
 		this(moduleScope(compiler), compiler, moduleName);
 	}
 
 	private Module(
 			ModuleScope scope,
 			ModuleCompiler compiler,
-			String moduleName) {
+			Name moduleName) {
 		super(scope);
 		this.compiler = compiler;
 		this.moduleName =
 				moduleName != null ? moduleName : compiler.getModuleName();
 	}
 
-	public final String getModuleName() {
+	public final Name getModuleName() {
 		return this.moduleName;
-	}
-
-	public final String getModuleId() {
-		return getCompiler().getModuleName();
 	}
 
 	public final ModuleCompiler getCompiler() {
@@ -85,7 +82,7 @@ public class Module extends Obj {
 		if (this.moduleName == null) {
 			return "Module";
 		}
-		return '<' + this.moduleName + '>';
+		return '<' + this.moduleName.toString() + '>';
 	}
 
 	@Override
@@ -166,7 +163,8 @@ public class Module extends Obj {
 
 		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
-			this.id = generator.id(scope.module().getModuleId());
+			this.id = generator.id(
+					scope.module().getModuleName().toUnderscopedString());
 		}
 
 		@Override

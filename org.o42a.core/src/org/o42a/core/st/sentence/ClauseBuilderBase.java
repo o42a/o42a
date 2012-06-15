@@ -20,12 +20,13 @@
 package org.o42a.core.st.sentence;
 
 import org.o42a.core.PlaceInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class ClauseBuilderBase implements PlaceInfo {
 
 	protected abstract Block<?, ?> parentheses(Group group);
 
-	protected abstract ImperativeBlock braces(Group group, String name);
+	protected abstract ImperativeBlock braces(Group group, Name name);
 
 }

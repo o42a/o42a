@@ -54,6 +54,11 @@ public final class EnclosingOwnerDep extends Dep implements ReversePath {
 	}
 
 	@Override
+	public String getName() {
+		return null;
+	}
+
+	@Override
 	public Object getDepKey() {
 		return null;
 	}

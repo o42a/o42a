@@ -24,21 +24,22 @@ import org.o42a.core.source.SectionTag;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.util.string.Name;
 
 
 public class ExplicitInclusion extends Inclusion {
 
-	private final String tag;
+	private final Name tag;
 
 	public ExplicitInclusion(
 			LocationInfo location,
 			Declaratives statements,
-			String tag) {
+			Name tag) {
 		super(location, statements);
 		this.tag = tag;
 	}
 
-	public final String getTag() {
+	public final Name getTag() {
 		return this.tag;
 	}
 

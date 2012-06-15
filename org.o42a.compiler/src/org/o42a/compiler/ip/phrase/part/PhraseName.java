@@ -24,18 +24,19 @@ import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
+import org.o42a.util.string.Name;
 
 
 public class PhraseName extends PhraseContinuation {
 
-	private final String name;
+	private final Name name;
 
-	PhraseName(LocationInfo location, PhrasePart prev, String name) {
+	PhraseName(LocationInfo location, PhrasePart prev, Name name) {
 		super(location, prev);
 		this.name = name;
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 
@@ -55,7 +56,10 @@ public class PhraseName extends PhraseContinuation {
 
 	@Override
 	public String toString() {
-		return this.name;
+		if (this.name == null) {
+			return super.toString();
+		}
+		return this.name.toString();
 	}
 
 }

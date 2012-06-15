@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class Inclusions {
@@ -39,9 +40,7 @@ public abstract class Inclusions {
 
 	public abstract boolean hasExplicitInclusions();
 
-	public abstract boolean include(
-			LocationInfo location,
-			String tag);
+	public abstract boolean include(LocationInfo location, Name tag);
 
 	private static final class NoDeclarations extends Inclusions {
 
@@ -56,7 +55,7 @@ public abstract class Inclusions {
 		}
 
 		@Override
-		public boolean include(LocationInfo location, String tag) {
+		public boolean include(LocationInfo location, Name tag) {
 			location.getContext().getLogger().prohibitedDeclaration(location);
 			return false;
 		}
@@ -81,7 +80,7 @@ public abstract class Inclusions {
 		}
 
 		@Override
-		public boolean include(LocationInfo location, String tag) {
+		public boolean include(LocationInfo location, Name tag) {
 			location.getContext().getLogger().error(
 					"prohibited_inclusion",
 					location,

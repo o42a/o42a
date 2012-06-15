@@ -32,6 +32,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public abstract class Clause implements PlaceInfo {
@@ -191,7 +192,7 @@ public abstract class Clause implements PlaceInfo {
 		return this.member.getKey();
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return getDeclaration().getName();
 	}
 

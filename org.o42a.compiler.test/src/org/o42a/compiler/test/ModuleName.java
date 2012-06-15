@@ -21,21 +21,22 @@ package org.o42a.compiler.test;
 
 import static java.lang.Character.charCount;
 import static java.lang.Character.isUpperCase;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.junit.rules.TestWatchman;
 import org.junit.runners.model.FrameworkMethod;
-import org.o42a.util.string.StringCodec;
+import org.o42a.util.string.Name;
 
 
 final class ModuleName extends TestWatchman {
 
-	private String moduleName;
+	private Name moduleName;
 
-	public final String getModuleName() {
+	public final Name getModuleName() {
 		return this.moduleName;
 	}
 
-	public final void setModuleName(String moduleName) {
+	public final void setModuleName(Name moduleName) {
 		this.moduleName = moduleName;
 	}
 
@@ -44,7 +45,7 @@ final class ModuleName extends TestWatchman {
 		setModuleName(toModuleName(method.getName()));
 	}
 
-	private static String toModuleName(String name) {
+	private static Name toModuleName(String name) {
 
 		final int length = name.length();
 		final StringBuilder moduleName = new StringBuilder(length);
@@ -68,7 +69,7 @@ final class ModuleName extends TestWatchman {
 			moduleName.appendCodePoint(Character.toLowerCase(c));
 		}
 
-		return StringCodec.canonicalName(moduleName.toString());
+		return CASE_SENSITIVE.name(moduleName.toString());
 	}
 
 }

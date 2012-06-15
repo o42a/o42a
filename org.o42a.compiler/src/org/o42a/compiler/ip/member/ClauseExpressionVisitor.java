@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.Interpreter.contentBuilder;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.ast.clause.AbstractClauseVisitor;
 import org.o42a.ast.clause.ClauseNode;
@@ -36,10 +37,13 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.string.Name;
 
 
 class ClauseExpressionVisitor
 		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
+
+	static final Name PREFIX_NAME = CASE_INSENSITIVE.canonicalName("prefix");
 
 	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
 			new ClauseExpressionVisitor();
@@ -53,7 +57,7 @@ class ClauseExpressionVisitor
 	public ClauseBuilder visitIntrinsicRef(
 			IntrinsicRefNode ref,
 			ClauseBuilder p) {
-		if ("prefix".equals(ref.getName().getName())) {
+		if (PREFIX_NAME.is(ref.getName().getName())) {
 			return p.setSubstitution(PREFIX_SUBSITUTION);
 		}
 		return super.visitIntrinsicRef(ref, p);

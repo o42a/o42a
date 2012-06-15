@@ -27,6 +27,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 public final class ImperativeGroupFactory extends ImperativeFactory {
@@ -51,7 +52,7 @@ public final class ImperativeGroupFactory extends ImperativeFactory {
 			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing,
-			String name) {
+			Name name) {
 		return nestedImperativeBlock(
 				location,
 				distributor,
@@ -66,7 +67,7 @@ public final class ImperativeGroupFactory extends ImperativeFactory {
 	public ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
-			String name,
+			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 		return nestedImperativeBlock(
 				group,

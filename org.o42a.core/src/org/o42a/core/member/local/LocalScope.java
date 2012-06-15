@@ -47,6 +47,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public abstract class LocalScope
@@ -76,7 +77,7 @@ public abstract class LocalScope
 		return this.owner;
 	}
 
-	public abstract String getName();
+	public abstract Name getName();
 
 	public final boolean isExplicit() {
 		return getOwner() == getSource();

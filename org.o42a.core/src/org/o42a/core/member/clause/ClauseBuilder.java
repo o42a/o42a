@@ -36,6 +36,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public final class ClauseBuilder extends ClauseBuilderBase {
@@ -323,7 +324,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	}
 
 	@Override
-	protected ImperativeBlock braces(Group group, String name) {
+	protected ImperativeBlock braces(Group group, Name name) {
 		assert getDeclaration().getKind() == ClauseKind.GROUP :
 			"Group declaration expected: " + getDeclaration();
 

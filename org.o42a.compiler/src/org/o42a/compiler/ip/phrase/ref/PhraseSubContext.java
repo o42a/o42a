@@ -37,6 +37,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.util.string.Name;
 
 
 class PhraseSubContext extends PhraseContext {
@@ -59,7 +60,7 @@ class PhraseSubContext extends PhraseContext {
 	}
 
 	@Override
-	public final NextClause clauseByName(LocationInfo location, String name) {
+	public final NextClause clauseByName(LocationInfo location, Name name) {
 		return findClause(
 				getClause().getClauseContainer(),
 				location,

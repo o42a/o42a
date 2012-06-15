@@ -22,6 +22,7 @@ package org.o42a.lib.test.run;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.lib.test.run.TestRunner.runTest;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.common.object.AnnotatedSources;
@@ -35,10 +36,14 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.st.sentence.*;
 import org.o42a.lib.test.TestModule;
+import org.o42a.util.string.Name;
 
 
 @SourcePath(relativeTo = TestModule.class, value = "run_tests.o42a")
 public class RunTests extends DirectiveObject {
+
+	private static final Name TESTS_NAME =
+			CASE_SENSITIVE.canonicalName("_tests_");
 
 	public RunTests(MemberOwner owner, AnnotatedSources sources) {
 		super(owner, sources);
@@ -67,7 +72,7 @@ public class RunTests extends DirectiveObject {
 		final ImperativeBlock braces =
 				definition.propose(definition)
 				.alternative(definition)
-				.braces(definition, "_tests_");
+				.braces(definition, TESTS_NAME);
 		final Imperatives statements =
 				braces.propose(definition).alternative(definition);
 		final UserInfo user = dummyUser();

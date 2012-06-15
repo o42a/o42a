@@ -33,6 +33,7 @@ import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.util.string.Name;
 
 
 public final class PropagatedLocalScope extends LocalScope {
@@ -52,7 +53,7 @@ public final class PropagatedLocalScope extends LocalScope {
 	}
 
 	@Override
-	public String getName() {
+	public Name getName() {
 		return explicit().getName();
 	}
 

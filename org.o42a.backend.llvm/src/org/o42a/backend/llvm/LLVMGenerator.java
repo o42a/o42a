@@ -31,6 +31,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.io.FileSource;
 import org.o42a.util.io.SourceFileName;
+import org.o42a.util.string.Name;
 
 
 public class LLVMGenerator extends AbstractGenerator {
@@ -128,11 +129,11 @@ public class LLVMGenerator extends AbstractGenerator {
 			return id(this.id);
 		}
 
-		final String name =
+		final Name name =
 				new SourceFileName(source.getName()).getFieldName();
 
 		if (name != null) {
-			return id(name);
+			return id(name.toUnderscopedString());
 		}
 
 		return id("module");

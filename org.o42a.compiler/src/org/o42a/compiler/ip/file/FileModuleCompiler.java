@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.file;
 
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarationTarget;
@@ -32,20 +34,21 @@ import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
+import org.o42a.util.string.Name;
 
 
 public final class FileModuleCompiler
 		extends AbstractObjectCompiler
 		implements ModuleCompiler {
 
-	private String moduleName;
+	private Name moduleName;
 
 	public FileModuleCompiler(ObjectSource source, FileNode node) {
 		super(source, node);
 	}
 
 	@Override
-	public String getModuleName() {
+	public Name getModuleName() {
 		if (this.moduleName == null) {
 			getSection();
 		}
@@ -125,7 +128,7 @@ public final class FileModuleCompiler
 		}
 	}
 
-	private String moduleName(SectionTitle title) {
+	private Name moduleName(SectionTitle title) {
 		if (title.isImplicit() || !title.isValid()) {
 			return nameByFile();
 		}
@@ -183,11 +186,15 @@ public final class FileModuleCompiler
 		return nameNode.getName();
 	}
 
-	private final String nameByFile() {
+	private final Name nameByFile() {
 
-		final String fieldName = getFileName().getFieldName();
+		final Name fieldName = getFileName().getFieldName();
 
-		return fieldName != null ? fieldName : "module";
+		if (fieldName != null) {
+			return fieldName;
+		}
+
+		return CASE_SENSITIVE.name("MODULE");
 	}
 
 	private void invalidDeclarable(LogInfo location) {

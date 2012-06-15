@@ -44,6 +44,7 @@ import org.o42a.util.io.StringSource;
 import org.o42a.util.log.LogReason;
 import org.o42a.util.log.Logger;
 import org.o42a.util.log.LoggerWithReason;
+import org.o42a.util.string.Name;
 
 
 public class Compiler implements SourceCompiler {
@@ -84,18 +85,18 @@ public class Compiler implements SourceCompiler {
 	@Override
 	public PathWithAlias compilePath(
 			Scope scope,
-			String moduleId,
+			Name moduleName,
 			LocationInfo location,
 			String string) {
 		if (string == null) {
 			return new PathWithAlias(
-					modulePath(moduleId)
+					modulePath(moduleName)
 					.bind(location, scope)
 					.target(scope.distribute()),
-					moduleId);
+					moduleName);
 		}
 
-		if (moduleId == null) {
+		if (moduleName == null) {
 
 			final RefNode node = parsePath(
 					ref(),
@@ -119,7 +120,7 @@ public class Compiler implements SourceCompiler {
 		final MemberRefNode ownerNode = new MemberRefNode(
 				null,
 				null,
-				new NameNode(pos, pos, moduleId),
+				new NameNode(pos, pos, moduleName),
 				null,
 				null);
 		final RefNode node;
@@ -144,7 +145,7 @@ public class Compiler implements SourceCompiler {
 		return pathWithAlias(
 				node,
 				node.accept(
-						insideModule(moduleId, scope)
+						insideModule(moduleName, scope)
 						? SAME_MODULE_REF_VISITOR : MODULE_REF_VISITOR,
 						scope.distribute()));
 	}
@@ -165,10 +166,10 @@ public class Compiler implements SourceCompiler {
 		return new PathWithAlias(path, null);
 	}
 
-	private static boolean insideModule(String moduleId, Scope scope) {
+	private static boolean insideModule(Name moduleName, Scope scope) {
 
 		final Obj module =
-				scope.getContext().getIntrinsics().getModule(moduleId);
+				scope.getContext().getIntrinsics().getModule(moduleName);
 
 		if (module == null) {
 			return false;

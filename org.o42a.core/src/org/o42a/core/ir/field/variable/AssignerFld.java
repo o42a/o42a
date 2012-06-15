@@ -23,6 +23,7 @@ import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.codegen.CodeId;
 import org.o42a.codegen.CodeIdFactory;
@@ -37,8 +38,8 @@ import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.link.LinkValueStruct;
@@ -50,16 +51,16 @@ import org.o42a.core.source.CompilerContext;
 public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 	public static final Type ASSIGNER_FLD = new Type();
+	private static final MemberName ASSIGNER_MEMBER =
+			fieldName(CASE_SENSITIVE.canonicalName("AS"));
 
 	public static MemberKey assignerKey(CompilerContext context) {
-		return ASSIGNER_ID.key(variableObject(context).getScope());
+		return ASSIGNER_MEMBER.key(variableObject(context).getScope());
 	}
 
 	private static Obj variableObject(CompilerContext context) {
 		return context.getIntrinsics().getVariable();
 	}
-
-	private static final MemberId ASSIGNER_ID = fieldName("AS");
 
 	private MemberKey key;
 	private CodeId id;
@@ -75,7 +76,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		if (this.key != null) {
 			return this.key;
 		}
-		return this.key = ASSIGNER_ID.key(getDeclaredIn().getScope());
+		return this.key = ASSIGNER_MEMBER.key(getDeclaredIn().getScope());
 	}
 
 	@Override

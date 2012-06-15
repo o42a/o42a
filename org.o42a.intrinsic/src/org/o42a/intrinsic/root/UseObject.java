@@ -20,6 +20,8 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
+import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
@@ -34,10 +36,15 @@ import org.o42a.core.source.PathWithAlias;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.Name;
 
 
 @SourcePath(relativeTo = Root.class, value = "use_object.o42a")
 public class UseObject extends DirectiveObject {
+
+	static final Name OBJECT = CASE_INSENSITIVE.canonicalName("object");
+	static final Name MODULE = CASE_INSENSITIVE.canonicalName("module");
+	static final Name ALIAS = CASE_INSENSITIVE.canonicalName("alias");
 
 	private Ref module;
 	private Ref object;
@@ -62,7 +69,7 @@ public class UseObject extends DirectiveObject {
 		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(directive, "module");
+			directive.getLogger().unresolvedValue(directive, "module");
 			return;
 		}
 
@@ -71,21 +78,30 @@ public class UseObject extends DirectiveObject {
 		final Value<?> objectValue = object().value(resolver);
 
 		if (!objectValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(directive, "object");
+			directive.getLogger().unresolvedValue(directive, "object");
 			return;
 		}
 
 		final String pathString = stringValue(objectValue);
+		final Name moduleName;
 
-		if (pathString == null && moduleId == null) {
-			getLogger().noModuleNoObject(directive);
+		if (moduleId != null) {
+			moduleName = caseInsensitiveName(moduleId);
+			if (!moduleName.isValid()) {
+				invalidModuleName(directive, moduleId);
+				return;
+			}
+		} else if (pathString == null) {
+			noModuleNoObject(directive);
 			return;
+		} else {
+			moduleName = null;
 		}
 
 		final Value<?> aliasValue = alias().value(resolver);
 
 		if (!aliasValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(directive, "alias");
+			directive.getLogger().unresolvedValue(directive, "alias");
 			return;
 		}
 
@@ -93,7 +109,7 @@ public class UseObject extends DirectiveObject {
 		final PathWithAlias path =
 				directive.getContext().getCompiler().compilePath(
 						directive.getScope(),
-						moduleId,
+						moduleName,
 						directive,
 						pathString);
 
@@ -101,10 +117,22 @@ public class UseObject extends DirectiveObject {
 			return;
 		}
 
-		final String alias;
+		final Name alias;
 
 		if (explicitAlias != null) {
-			alias = explicitAlias;
+
+			final Name aliasName = caseInsensitiveName(explicitAlias);
+
+			if (aliasName.isValid()) {
+				alias = aliasName;
+			} else {
+				alias = null;
+				directive.getLogger().error(
+						"invalid_object_alias",
+						directive,
+						"Invalid object alias: '%s'",
+						explicitAlias);
+			}
 		} else {
 			alias = path.getAlias();
 			if (alias == null) {
@@ -125,7 +153,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("module").key(getScope()).toPath().dereference();
+				fieldName(MODULE).key(getScope()).toPath().dereference();
 
 		return this.module = path.bind(this, getScope()).target(distribute());
 	}
@@ -136,7 +164,7 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("object").key(getScope()).toPath().dereference();
+				fieldName(OBJECT).key(getScope()).toPath().dereference();
 
 		return this.object = path.bind(this, getScope()).target(distribute());
 	}
@@ -147,12 +175,27 @@ public class UseObject extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("alias").key(getScope()).toPath().dereference();
+				fieldName(ALIAS).key(getScope()).toPath().dereference();
 
 		return this.alias = path.bind(this, getScope()).target(distribute());
 	}
 
-	private static String stringValue(Value<?> value) {
+	static void invalidModuleName(Ref location, String name) {
+		location.getLogger().error(
+				"invalid_module_name",
+				location,
+				"Invalid module name: '%s'",
+				name);
+	}
+
+	static void noModuleNoObject(Ref location) {
+		location.getLogger().error(
+				"no_module_no_object",
+				location,
+				"Either module or object should be specified");
+	}
+
+	static String stringValue(Value<?> value) {
 		if (value.getKnowledge().isFalse()) {
 			return null;
 		}

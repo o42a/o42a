@@ -20,8 +20,7 @@
 package org.o42a.ast.test.grammar.ref;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.parentRef;
 import static org.o42a.parser.Grammar.ref;
@@ -39,9 +38,9 @@ public class ParentRefTest extends GrammarTestCase {
 
 		final ParentRefNode ref = parse("foo :: /* */");
 
-		assertNotNull(ref);
+		assertThat(ref, notNullValue());
 		assertRange(0, 6, ref);
-		assertEquals("foo", ref.getName().getName());
+		assertThat(canonicalName(ref.getName()), is("foo"));
 		assertRange(0, 3, ref.getName());
 		assertRange(4, 6, ref.getQualifier());
 	}
@@ -52,11 +51,11 @@ public class ParentRefTest extends GrammarTestCase {
 		final MemberRefNode result =
 				to(MemberRefNode.class, parse(ref(), "foo::bar"));
 
-		assertThat(result.getName().getName(), is("bar"));
+		assertThat(canonicalName(result.getName()), is("bar"));
 
 		final ParentRefNode owner = to(ParentRefNode.class, result.getOwner());
 
-		assertThat(owner.getName().getName(), is("foo"));
+		assertThat(canonicalName(owner.getName()), is("foo"));
 	}
 
 	private ParentRefNode parse(String text) {

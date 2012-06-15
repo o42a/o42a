@@ -17,17 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.impl;
+package org.o42a.core.member;
 
-import org.o42a.core.member.AdapterId;
-import org.o42a.core.member.MemberId;
+import org.o42a.util.string.Name;
 
 
 public final class MemberName extends MemberId {
 
-	private final String name;
+	private final MemberKind kind;
+	private final Name name;
 
-	public MemberName(String name) {
+	MemberName(MemberKind kind, Name name) {
+		this.kind = kind;
 		this.name = name;
 	}
 
@@ -36,9 +37,17 @@ public final class MemberName extends MemberId {
 		return true;
 	}
 
-	@Override
-	public final String getName() {
+	public final MemberKind getKind() {
+		return this.kind;
+	}
+
+	public final Name getName() {
 		return this.name;
+	}
+
+	@Override
+	public final MemberName getMemberName() {
+		return this;
 	}
 
 	@Override
@@ -52,8 +61,8 @@ public final class MemberName extends MemberId {
 	}
 
 	@Override
-	public final String toName() {
-		return this.name;
+	public final MemberName toMemberName() {
+		return this;
 	}
 
 	@Override
@@ -63,7 +72,14 @@ public final class MemberName extends MemberId {
 
 	@Override
 	public int hashCode() {
-		return this.name.hashCode();
+
+		final int prime = 31;
+		int result = 1;
+
+		result = prime * result + this.kind.hashCode();
+		result = prime * result + this.name.hashCode();
+
+		return result;
 	}
 
 	@Override
@@ -80,12 +96,27 @@ public final class MemberName extends MemberId {
 
 		final MemberName other = (MemberName) obj;
 
+		if (this.kind != other.kind) {
+			return false;
+		}
+
 		return this.name.equals(other.name);
 	}
 
 	@Override
 	public String toString() {
-		return this.name;
+		if (this.name == null) {
+			return super.toString();
+		}
+		return this.name.toString();
+	}
+
+	public enum MemberKind {
+
+		FIELD,
+		CLAUSE,
+		LOCAL;
+
 	}
 
 }

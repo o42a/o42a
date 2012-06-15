@@ -212,7 +212,7 @@ public class FileTest extends GrammarTestCase {
 		final MemberRefNode tag = subTitle.getTag();
 
 		assertName("tag1", tag.getOwner());
-		assertThat(tag.getName().getName(), is("tag1-1"));
+		assertThat(canonicalName(tag.getName()), is("tag1-1"));
 
 		assertThat(subTitle.getPrefix().getType().getLength(), is(3));
 		assertThat(subTitle.getSuffix().getType().getLength(), is(2));

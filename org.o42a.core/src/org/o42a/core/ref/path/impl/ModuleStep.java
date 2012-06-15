@@ -36,14 +36,15 @@ import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.source.Module;
+import org.o42a.util.string.Name;
 
 
 public final class ModuleStep extends Step {
 
-	private final String moduleId;
+	private final Name moduleName;
 
-	public ModuleStep(String moduleId) {
-		this.moduleId = moduleId;
+	public ModuleStep(Name moduleName) {
+		this.moduleName = moduleName;
 	}
 
 	@Override
@@ -56,13 +57,13 @@ public final class ModuleStep extends Step {
 		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
-	public String getModuleId() {
-		return this.moduleId;
+	public Name getModuleName() {
+		return this.moduleName;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.moduleId.hashCode();
+		return this.moduleName.hashCode();
 	}
 
 	@Override
@@ -79,12 +80,12 @@ public final class ModuleStep extends Step {
 
 		final ModuleStep other = (ModuleStep) obj;
 
-		return this.moduleId.equals(other.moduleId);
+		return this.moduleName.equals(other.moduleName);
 	}
 
 	@Override
 	public String toString() {
-		return "<" + this.moduleId + '>';
+		return "<" + this.moduleName + '>';
 	}
 
 	@Override
@@ -103,14 +104,16 @@ public final class ModuleStep extends Step {
 			PathWalker walker) {
 
 		final CompilerContext context = start.getContext();
-		final Module module = context.getIntrinsics().getModule(this.moduleId);
+		final Module module =
+				context.getIntrinsics().getModule(this.moduleName);
 
 		if (module == null) {
+			context.getIntrinsics().getModule(this.moduleName);
 			context.getLogger().error(
 					"unresolved_module",
 					path,
 					"Module <%s> can not be resolved",
-					this.moduleId);
+					this.moduleName);
 			return null;
 		}
 		if (resolver.isFullResolution()) {
@@ -153,7 +156,7 @@ public final class ModuleStep extends Step {
 		public HostOp target(CodeDirs dirs) {
 
 			final Obj module = getContext().getIntrinsics().getModule(
-					getStep().getModuleId());
+					getStep().getModuleName());
 			final ObjectIR moduleIR = module.ir(getGenerator());
 
 			return moduleIR.op(getBuilder(), dirs.code());

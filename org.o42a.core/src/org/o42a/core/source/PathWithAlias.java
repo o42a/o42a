@@ -20,14 +20,15 @@
 package org.o42a.core.source;
 
 import org.o42a.core.ref.Ref;
+import org.o42a.util.string.Name;
 
 
 public final class PathWithAlias {
 
 	private final Ref path;
-	private final String alias;
+	private final Name alias;
 
-	public PathWithAlias(Ref path, String alias) {
+	public PathWithAlias(Ref path, Name alias) {
 		this.path = path;
 		this.alias = alias;
 	}
@@ -36,7 +37,7 @@ public final class PathWithAlias {
 		return this.path;
 	}
 
-	public final String getAlias() {
+	public final Name getAlias() {
 		return this.alias;
 	}
 

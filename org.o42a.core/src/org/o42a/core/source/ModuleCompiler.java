@@ -19,9 +19,11 @@
 */
 package org.o42a.core.source;
 
+import org.o42a.util.string.Name;
+
 
 public interface ModuleCompiler extends ObjectCompiler {
 
-	String getModuleName();
+	Name getModuleName();
 
 }

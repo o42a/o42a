@@ -25,6 +25,7 @@ import org.o42a.core.member.local.impl.ExplicitLocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.string.Name;
 
 
 public final class LocalFactory {
@@ -38,7 +39,7 @@ public final class LocalFactory {
 	public LocalScope newLocalScope(
 			LocationInfo location,
 			Distributor distributor,
-			String name) {
+			Name name) {
 
 		final Obj owner = owner(location);
 

@@ -65,8 +65,8 @@ public class MemberKey {
 		return getAdapterId() != null;
 	}
 
-	public final String getName() {
-		return getMemberId().getName();
+	public final MemberName getMemberName() {
+		return getMemberId().getMemberName();
 	}
 
 	public final AdapterId getAdapterId() {

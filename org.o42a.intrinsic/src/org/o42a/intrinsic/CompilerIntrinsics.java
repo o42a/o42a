@@ -24,7 +24,6 @@ import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.intrinsic.root.Root.createRoot;
 import static org.o42a.lib.console.ConsoleModule.consoleModule;
 import static org.o42a.lib.test.TestModule.testModule;
-import static org.o42a.util.string.StringCodec.canonicalName;
 
 import java.util.HashMap;
 
@@ -38,6 +37,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.source.*;
 import org.o42a.intrinsic.root.*;
 import org.o42a.lib.console.ConsoleModule;
+import org.o42a.util.string.Name;
 
 
 public class CompilerIntrinsics extends Intrinsics {
@@ -149,9 +149,10 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
-	public Module getModule(String moduleId) {
+	public Module getModule(Name moduleName) {
 
-		final ModuleUse module = this.modules.get(canonicalName(moduleId));
+		final ModuleUse module =
+				this.modules.get(moduleName.toCanonocal().toString());
 
 		if (module == null) {
 			return null;
@@ -166,18 +167,18 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void addModule(Module module) {
-		registerModule(module.getModuleId(), module);
+		registerModule(module);
 	}
 
 	public void removeModule(Module module) {
-		this.modules.remove(module.getModuleId());
+		this.modules.remove(moduleId(module));
 	}
 
 	public void setMainModule(Module module) {
 		if (this.mainModule != null) {
 			removeModule(this.mainModule.module);
 		}
-		this.mainModule = registerModule(module.getModuleId(), module);
+		this.mainModule = registerModule(module);
 		this.consoleModule.createMain(this.user);
 	}
 
@@ -208,17 +209,21 @@ public class CompilerIntrinsics extends Intrinsics {
 		}
 	}
 
-	private ModuleUse registerModule(String moduleId, Module module) {
+	private static String moduleId(Module module) {
+		return module.getModuleName().toCanonocal().toString();
+	}
+
+	private ModuleUse registerModule(Module module) {
 
 		final ModuleUse use = new ModuleUse(module);
 
-		this.modules.put(moduleId, use);
+		this.modules.put(moduleId(module), use);
 
 		return use;
 	}
 
 	private final boolean consoleUsed() {
-		return this.modules.get(this.consoleModule.getModuleId()).isUsed();
+		return this.modules.get(moduleId(this.consoleModule)).isUsed();
 	}
 
 	private void normalizeAll(Analyzer analyzer) {

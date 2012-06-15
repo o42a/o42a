@@ -19,8 +19,9 @@
 */
 package org.o42a.ast.test.grammar.ref;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
@@ -40,8 +41,8 @@ public class AdapterRefTest extends GrammarTestCase {
 		assertName("foo", ref.getOwner());
 		assertRange(3, 5, ref.getQualifier());
 		assertName("bar", ref.getType());
-		assertNull(ref.getRetention());
-		assertNull(ref.getDeclaredIn());
+		assertThat(ref.getRetention(), nullValue());
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	@Test
@@ -72,9 +73,10 @@ public class AdapterRefTest extends GrammarTestCase {
 		assertName("bar", owner.getType());
 
 		assertRange(8, 10, ref.getQualifier());
-		assertEquals(
-				"baz",
-				to(MemberRefNode.class, ref.getType()).getName().getName());
+		assertThat(
+				canonicalName(
+						to(MemberRefNode.class, ref.getType()).getName()),
+				is("baz"));
 		assertRange(13, 14, ref.getRetention());
 		assertName("type", ref.getDeclaredIn());
 	}
@@ -94,8 +96,8 @@ public class AdapterRefTest extends GrammarTestCase {
 		final AdapterRefNode ref = parse("foo@@\nbar");
 
 		assertName("foo", ref.getOwner());
-		assertNull("bar", ref.getType());
-		assertNull(ref.getDeclaredIn());
+		assertThat(ref.getType(), nullValue());
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	@Test
@@ -105,7 +107,7 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		assertName("foo", ref.getOwner());
 		assertName("bar", ref.getType());
-		assertNull(ref.getDeclaredIn());
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	@Test
@@ -116,7 +118,7 @@ public class AdapterRefTest extends GrammarTestCase {
 
 		assertName("foo", ref.getOwner());
 		assertName("bar", ref.getType());
-		assertNull(ref.getDeclaredIn());
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	private AdapterRefNode parse(String text) {

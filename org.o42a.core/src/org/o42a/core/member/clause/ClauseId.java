@@ -34,6 +34,7 @@ import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public enum ClauseId {
@@ -46,7 +47,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (memberId == null) {
 				return "<anonymous>";
 			}
@@ -63,11 +64,11 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "[]";
 			}
-			return '[' + name + ']';
+			return '[' + name.toString() + ']';
 		}
 
 	},
@@ -80,7 +81,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "[[]]";
 			}
@@ -97,11 +98,11 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "{}";
 			}
-			return '{' + name + '}';
+			return '{' + name.toString() + '}';
 		}
 
 	},
@@ -114,11 +115,11 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "''";
 			}
-			return '\'' + name + '\'';
+			return '\'' + name.toString() + '\'';
 		}
 
 	},
@@ -131,11 +132,11 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "+*";
 			}
-			return '+' + name;
+			return '+' + name.toString();
 		}
 
 	},
@@ -148,11 +149,11 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "-*";
 			}
-			return '-' + name;
+			return '-' + name.toString();
 		}
 
 	},
@@ -165,7 +166,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* + *";
 			}
@@ -182,7 +183,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* - *";
 			}
@@ -199,7 +200,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* * *";
 			}
@@ -216,7 +217,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* / *";
 			}
@@ -233,7 +234,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* == *";
 			}
@@ -250,7 +251,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* <compare> *";
 			}
@@ -267,7 +268,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "* = *";
 			}
@@ -284,7 +285,7 @@ public enum ClauseId {
 		}
 
 		@Override
-		public String toString(MemberId memberId, String name) {
+		public String toString(MemberId memberId, Name name) {
 			if (name == null) {
 				return "<operand>";
 			}
@@ -363,6 +364,6 @@ public enum ClauseId {
 		}
 	}
 
-	public abstract String toString(MemberId memberId, String name);
+	public abstract String toString(MemberId memberId, Name name);
 
 }

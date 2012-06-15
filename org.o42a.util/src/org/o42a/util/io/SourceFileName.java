@@ -19,21 +19,23 @@
 */
 package org.o42a.util.io;
 
-import static org.o42a.util.string.StringCodec.canonicalName;
+import static org.o42a.util.string.Name.caseInsensitiveName;
+
+import org.o42a.util.string.Name;
 
 
 public final class SourceFileName {
 
 	public static final String FILE_SUFFIX = ".o42a";
 
-	private static final String[] NO_PARTS = new String[0];
+	private static final Name[] NO_PARTS = new Name[0];
 
 	private final String fileName;
 	private final String name;
 	private final String extension;
-	private final String fieldName;
-	private final String[] adaptee;
-	private final String[] declaredIn;
+	private final Name fieldName;
+	private final Name[] adapterId;
+	private final Name[] declaredIn;
 	private final String comment;
 	private final boolean valid;
 
@@ -62,7 +64,7 @@ public final class SourceFileName {
 
 		if (meaningful.isEmpty()) {
 			this.fieldName = null;
-			this.adaptee = NO_PARTS;
+			this.adapterId = NO_PARTS;
 			this.declaredIn = NO_PARTS;
 			this.valid = false;
 			return;
@@ -73,7 +75,7 @@ public final class SourceFileName {
 
 		if (meaningful.length() > 1) {
 
-			final String[] declaredIn;
+			final Name[] declaredIn;
 			final int declaredInIdx = meaningful.indexOf('@', 1);
 
 			if (declaredInIdx > 0) {
@@ -84,7 +86,7 @@ public final class SourceFileName {
 				declaredIn = NO_PARTS;
 			}
 
-			valid = canonical(declaredIn) & valid;
+			valid = validNames(declaredIn) & valid;
 			this.declaredIn = declaredIn;
 		} else {
 			main = meaningful;
@@ -94,19 +96,15 @@ public final class SourceFileName {
 		if (meaningful.startsWith("@")) {
 
 			final String adapteeStr = main.substring(1);
-			final String[] adaptee = split(adapteeStr);
+			final Name[] adaptee = split(adapteeStr);
 
-			valid = canonical(adaptee) & valid;
+			valid = validNames(adaptee) & valid;
 			this.fieldName = null;
-			this.adaptee = adaptee;
+			this.adapterId = adaptee;
 		} else {
-
-			final StringBuilder name = new StringBuilder(main.length());
-
-			valid = canonicalName(main, name) & valid;
-
-			this.fieldName = name.toString();
-			this.adaptee = NO_PARTS;
+			this.fieldName = caseInsensitiveName(main);
+			valid &= this.fieldName.isValid();
+			this.adapterId = NO_PARTS;
 		}
 
 		this.valid = valid;
@@ -124,15 +122,15 @@ public final class SourceFileName {
 		return this.extension;
 	}
 
-	public final String getFieldName() {
+	public final Name getFieldName() {
 		return this.fieldName;
 	}
 
-	public final String[] getAdaptee() {
-		return this.adaptee;
+	public final Name[] getAdapterId() {
+		return this.adapterId;
 	}
 
-	public final String[] getDeclaredIn() {
+	public final Name[] getDeclaredIn() {
 		return this.declaredIn;
 	}
 
@@ -145,7 +143,7 @@ public final class SourceFileName {
 	}
 
 	public final boolean isAdapter() {
-		return this.adaptee.length != 0;
+		return this.adapterId.length != 0;
 	}
 
 	public final boolean isOverride() {
@@ -160,26 +158,29 @@ public final class SourceFileName {
 		return this.fileName;
 	}
 
-	private static String[] split(String name) {
-		return name.split("\\.");
+	private static Name[] split(String name) {
+
+		final String[] parts = name.split("\\.");
+		final Name[] names = new Name[parts.length];
+
+		for (int i = 0; i < parts.length; ++i) {
+			names[i] = caseInsensitiveName(parts[i]);
+		}
+
+		return names;
 	}
 
-	private static boolean canonical(String[] parts) {
+	private static boolean validNames(Name[] parts) {
 		if (parts == null || parts.length == 0) {
 			return true;
 		}
 
 		boolean valid = true;
-		final StringBuilder out = new StringBuilder(parts[0].length());
 
 		for (int i = 0; i < parts.length; ++i) {
-			out.setLength(0);
-			if (!canonicalName(parts[i], out)) {
-				valid = false;
-			} else if (out.length() == 0) {
+			if (!parts[i].isValid()) {
 				valid = false;
 			}
-			parts[i] = out.toString();
 		}
 
 		return valid;

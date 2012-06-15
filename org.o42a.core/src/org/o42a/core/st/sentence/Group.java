@@ -22,6 +22,7 @@ package org.o42a.core.st.sentence;
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public final class Group extends Placed {
@@ -53,7 +54,7 @@ public final class Group extends Placed {
 		return builder.parentheses(this);
 	}
 
-	public final ImperativeBlock braces(String name) {
+	public final ImperativeBlock braces(Name name) {
 
 		final ClauseBuilderBase builder = this.builder;
 

@@ -42,6 +42,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
@@ -49,6 +50,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class RefInterpreter {
@@ -138,7 +140,7 @@ public abstract class RefInterpreter {
 		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
 	}
 
-	private static boolean match(String name, Container container) {
+	private static boolean match(Name name, Container container) {
 
 		final Member member = container.toMember();
 
@@ -149,10 +151,16 @@ public abstract class RefInterpreter {
 			return true;
 		}
 
-		return name.equals(member.getKey().getName());
+		final MemberName memberName = member.getKey().getMemberName();
+
+		if (memberName == null) {
+			return false;
+		}
+
+		return name.is(memberName.getName());
 	}
 
-	private static void unresolvedParent(LocationInfo location, String name) {
+	private static void unresolvedParent(LocationInfo location, Name name) {
 		location.getContext().getLogger().error(
 				"unresolved_parent",
 				location,
@@ -186,7 +194,7 @@ public abstract class RefInterpreter {
 		return this.ownerVisitor;
 	}
 
-	public abstract MemberId memberName(String name);
+	public abstract MemberId memberName(Name name);
 
 	public final OwnerFactory ownerFactory() {
 		return this.ownerFactory;
@@ -218,7 +226,7 @@ public abstract class RefInterpreter {
 		return bodyRefVisitor();
 	}
 
-	public Path parentPath(LocationInfo location, String name, Container of) {
+	public Path parentPath(LocationInfo location, Name name, Container of) {
 
 		Path path = SELF_PATH;
 		Path parentPath = SELF_PATH;
@@ -296,7 +304,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public MemberId memberName(String name) {
+		public MemberId memberName(Name name) {
 			return fieldName(name);
 		}
 
@@ -314,7 +322,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public MemberId memberName(String name) {
+		public MemberId memberName(Name name) {
 			return fieldName(name);
 		}
 
@@ -353,7 +361,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public MemberId memberName(String name) {
+		public MemberId memberName(Name name) {
 			return fieldName(name);
 		}
 
@@ -376,7 +384,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public MemberId memberName(String name) {
+		public MemberId memberName(Name name) {
 			return clauseName(name);
 		}
 
@@ -394,7 +402,7 @@ public abstract class RefInterpreter {
 		}
 
 		@Override
-		public MemberId memberName(String name) {
+		public MemberId memberName(Name name) {
 			return fieldName(name);
 		}
 

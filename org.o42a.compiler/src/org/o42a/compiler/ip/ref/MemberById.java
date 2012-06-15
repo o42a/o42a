@@ -21,16 +21,19 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.object.Accessor;
@@ -44,6 +47,11 @@ import org.o42a.core.source.LocationInfo;
 
 
 public class MemberById extends PlacedPathFragment {
+
+	private static final MemberName VOID_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("void"));
+	private static final MemberName FALSE_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("false"));
 
 	public static boolean prototypeExpressionClause(Container container) {
 
@@ -124,16 +132,11 @@ public class MemberById extends PlacedPathFragment {
 
 		if (enclosing == null) {
 			if (declaredIn == null) {
-
-				final String name = this.memberId.toName();
-
-				if (name != null) {
-					if ("void".equals(name)) {
-						return VOID_PATH;
-					}
-					if ("false".equals(name)) {
-						return FALSE_PATH;
-					}
+				if (this.memberId.equals(VOID_MEMBER)) {
+					return VOID_PATH;
+				}
+				if (this.memberId.equals(FALSE_MEMBER)) {
+					return FALSE_PATH;
 				}
 			}
 

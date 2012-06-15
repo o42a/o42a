@@ -24,6 +24,7 @@ import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
 import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
+import org.o42a.util.string.Name;
 
 
 public class ImperativeIssueFactory extends ImperativeFactory {
@@ -36,7 +37,7 @@ public class ImperativeIssueFactory extends ImperativeFactory {
 			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing,
-			String name) {
+			Name name) {
 		prohibitedIssueBraces(enclosing.getLogger(), location);
 		return null;
 	}

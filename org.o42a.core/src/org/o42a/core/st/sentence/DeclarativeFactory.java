@@ -31,6 +31,7 @@ import org.o42a.core.st.impl.declarative.DeclarativeClaim;
 import org.o42a.core.st.impl.declarative.DeclarativeIssue;
 import org.o42a.core.st.impl.declarative.DeclarativeProposition;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 public class DeclarativeFactory extends SentenceFactory<
@@ -62,7 +63,7 @@ public class DeclarativeFactory extends SentenceFactory<
 	public ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
-			String name,
+			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 		return topLevelImperativeBlock(
 				group,
@@ -78,7 +79,7 @@ public class DeclarativeFactory extends SentenceFactory<
 			LocationInfo location,
 			Distributor distributor,
 			Declaratives enclosing,
-			String name) {
+			Name name) {
 		return topLevelImperativeBlock(
 				location,
 				distributor,

@@ -26,9 +26,7 @@ import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
-import org.o42a.core.member.AdapterId;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
@@ -46,10 +44,10 @@ public class IRUtil {
 			Generator generator,
 			MemberId memberId) {
 
-		final String name = memberId.getName();
+		final MemberName name = memberId.getMemberName();
 
 		if (name != null) {
-			return generator.id(name);
+			return generator.id(name.getName().toUnderscopedString());
 		}
 
 		final AdapterId adapterId = memberId.getAdapterId();
@@ -94,13 +92,13 @@ public class IRUtil {
 			CodeId prefix,
 			MemberId memberId) {
 
-		final String name = memberId.toName();
+		final MemberName name = memberId.toMemberName();
 
 		if (name != null) {
 			if (prefix == null) {
-				return generator.id(name);
+				return generator.id(name.getName().toUnderscopedString());
 			}
-			return prefix.sub(name);
+			return prefix.sub(name.getName().toUnderscopedString());
 		}
 
 		final AdapterId adapterId = memberId.toAdapterId();

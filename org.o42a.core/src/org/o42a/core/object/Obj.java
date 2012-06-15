@@ -23,7 +23,6 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.AbstractContainer.parentContainer;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberId.SCOPE_FIELD_ID;
-import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
@@ -350,14 +349,6 @@ public abstract class Obj
 	public final Member member(MemberKey memberKey) {
 		resolveMembers(memberKey.getMemberId().containsAdapterId());
 		return members().get(memberKey);
-	}
-
-	public final Member field(String name) {
-		return objectMember(Accessor.PUBLIC, fieldName(name), null);
-	}
-
-	public final Member field(String name, Accessor accessor) {
-		return objectMember(accessor, fieldName(name), null);
 	}
 
 	public final Member member(MemberId memberId) {

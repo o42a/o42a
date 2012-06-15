@@ -28,6 +28,7 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
+import org.o42a.util.string.Name;
 
 
 public abstract class PhrasePart extends Location {
@@ -54,7 +55,7 @@ public abstract class PhrasePart extends Location {
 		return this.following;
 	}
 
-	public final PhraseName name(LocationInfo location, String name) {
+	public final PhraseName name(LocationInfo location, Name name) {
 		return setFollowing(new PhraseName(location, this, name));
 	}
 

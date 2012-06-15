@@ -37,11 +37,12 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.Name;
 
 
 public final class ExplicitLocalScope extends LocalScope {
 
-	private final String name;
+	private final Name name;
 	private final HashMap<MemberId, Member> members =
 			new HashMap<MemberId, Member>();
 	private MemberClause[] implicitClauses;
@@ -54,7 +55,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			LocationInfo location,
 			Distributor distributor,
 			Obj owner,
-			String name) {
+			Name name) {
 		super(new ExplicitMemberLocal(
 				location,
 				distributor,
@@ -82,7 +83,7 @@ public final class ExplicitLocalScope extends LocalScope {
 	}
 
 	@Override
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 

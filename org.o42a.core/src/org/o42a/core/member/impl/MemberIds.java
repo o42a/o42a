@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
 import org.o42a.util.ArrayUtil;
 
 
@@ -47,8 +48,8 @@ public final class MemberIds extends MemberId {
 	}
 
 	@Override
-	public String getName() {
-		return lastId().getName();
+	public MemberName getMemberName() {
+		return lastId().getMemberName();
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public final class MemberIds extends MemberId {
 	}
 
 	@Override
-	public String toName() {
+	public MemberName toMemberName() {
 		return null;
 	}
 

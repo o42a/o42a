@@ -21,7 +21,7 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
-import static org.o42a.util.string.StringCodec.canonicalName;
+import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseVisitor;
@@ -37,6 +37,8 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.log.LogInfo;
+import org.o42a.util.string.Name;
 
 
 final class PhraseClauseKeyVisitor
@@ -89,7 +91,7 @@ final class PhraseClauseKeyVisitor
 			return super.visitText(text, p);
 		}
 
-		final String name = canonicalName(text.getText());
+		final Name name = clauseName(p.getContext(), text, text.getText());
 
 		return clauseDeclaration(
 				location(p, this.phrase),
@@ -106,7 +108,7 @@ final class PhraseClauseKeyVisitor
 		return null;
 	}
 
-	private static String extractName(
+	private static Name extractName(
 			CompilerContext context,
 			BracketsNode brackets) {
 
@@ -116,7 +118,7 @@ final class PhraseClauseKeyVisitor
 			return null;
 		}
 		if (arguments.length != 1) {
-			context.getLogger().expectedClauseName(brackets);
+			expectedClauseName(context, brackets);
 			return null;
 		}
 
@@ -149,7 +151,16 @@ final class PhraseClauseKeyVisitor
 		return value.accept(BRACKETS_EXTRACTOR, null);
 	}
 
-	private static String extractName(
+	private static void expectedClauseName(
+			CompilerContext context,
+			LogInfo location) {
+		context.getLogger().error(
+				"expected_clause_name",
+				location,
+				"Clause name expected here");
+	}
+
+	private static Name extractName(
 			CompilerContext context,
 			BlockNode<?> block) {
 
@@ -157,7 +168,7 @@ final class PhraseClauseKeyVisitor
 
 		if (sentences.length != 1) {
 			if (sentences.length != 0) {
-				context.getLogger().expectedClauseName(block);
+				expectedClauseName(context, block);
 			}
 			return null;
 		}
@@ -165,7 +176,7 @@ final class PhraseClauseKeyVisitor
 		final SentenceNode sentence = sentences[0];
 
 		if (sentence.getMark() != null) {
-			context.getLogger().expectedClauseName(block);
+			expectedClauseName(context, block);
 			return null;
 		}
 
@@ -173,7 +184,7 @@ final class PhraseClauseKeyVisitor
 
 		if (disjunction.length != 1) {
 			if (disjunction.length != 0) {
-				context.getLogger().expectedClauseName(block);
+				expectedClauseName(context, block);
 			}
 			return null;
 		}
@@ -182,7 +193,7 @@ final class PhraseClauseKeyVisitor
 
 		if (conjunction.length != 1) {
 			if (conjunction.length != 0) {
-				context.getLogger().expectedClauseName(block);
+				expectedClauseName(context, block);
 			}
 			return null;
 		}
@@ -196,24 +207,47 @@ final class PhraseClauseKeyVisitor
 		return statement.accept(NAME_EXTRACTOR, context);
 	}
 
+	private Name clauseName(
+			CompilerContext context,
+			LogInfo location,
+			String name) {
+		if (name == null) {
+			return null;
+		}
+
+		final Name clauseName = caseInsensitiveName(name);
+
+		if (clauseName.isValid()) {
+			return clauseName;
+		}
+
+		context.getLogger().error(
+				"invalid_clause_name",
+				location,
+				"Invalid clause name: %s",
+				name);
+
+		return null;
+	}
+
 	private static final class NameExtractor
-			extends AbstractStatementVisitor<String, CompilerContext> {
+			extends AbstractStatementVisitor<Name, CompilerContext> {
 
 		@Override
-		public String visitMemberRef(MemberRefNode ref, CompilerContext p) {
+		public Name visitMemberRef(MemberRefNode ref, CompilerContext p) {
 			if (ref.getDeclaredIn() != null) {
 				p.getLogger().prohibitedDeclaredIn(ref.getDeclaredIn());
 				return null;
 			}
 			if (ref.getOwner() != null) {
-				p.getLogger().expectedClauseName(ref);
+				expectedClauseName(p, ref);
 				return null;
 			}
 
 			final NameNode name = ref.getName();
 
 			if (name == null) {
-				p.getLogger().expectedClauseName(ref);
+				expectedClauseName(p, ref);
 				return null;
 			}
 
@@ -221,10 +255,10 @@ final class PhraseClauseKeyVisitor
 		}
 
 		@Override
-		protected String visitStatement(
+		protected Name visitStatement(
 				StatementNode statement,
 				CompilerContext p) {
-			p.getLogger().expectedClauseName(statement);
+			expectedClauseName(p, statement);
 			return null;
 		}
 

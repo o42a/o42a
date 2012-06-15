@@ -19,10 +19,16 @@
 */
 package org.o42a.ast.test.grammar;
 
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Rule;
 import org.o42a.ast.Node;
+import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.PhraseNode;
@@ -34,12 +40,13 @@ import org.o42a.ast.statement.StatementNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
+import org.o42a.util.string.Name;
 
 
 public class GrammarTestCase {
 
 	public static <T> T to(Class<? extends T> type, Object value) {
-		assertNotNull("Value is null", value);
+		assertThat("Value is null", value, notNullValue());
 		assertTrue(
 				value + " is of type " + value.getClass().getSimpleName()
 				+ ", but " + type.getSimpleName() + " expected",
@@ -48,18 +55,27 @@ public class GrammarTestCase {
 	}
 
 	public static void assertRange(long start, long end, Node node) {
-		assertEquals("Wrong range start", start, node.getStart().offset());
-		assertEquals("Wrong range end", end, node.getEnd().offset());
+		assertThat("Wrong range start", node.getStart().offset(), is(start));
+		assertThat("Wrong range end", node.getEnd().offset(), is(end));
+	}
+
+	public static String canonicalName(Name name) {
+		assertThat("No name", name, notNullValue());
+		return name.toCanonocal().toString();
+	}
+
+	public static String canonicalName(NameNode node) {
+		return canonicalName(node.getName());
 	}
 
 	public static void assertName(String name, Node node) {
 
 		final MemberRefNode ref = to(MemberRefNode.class, node);
 
-		assertNull("Unexpected field owner", ref.getOwner());
-		assertNull("Unexpected retention", ref.getDeclaredIn());
-		assertNotNull("No name", ref.getName());
-		assertEquals(name, ref.getName().getName());
+		assertThat("Unexpected field owner", ref.getOwner(), nullValue());
+		assertThat("Unexpected retention", ref.getDeclaredIn(), nullValue());
+		assertThat("No name", ref.getName(), notNullValue());
+		assertThat(canonicalName(ref.getName()), is(name));
 	}
 
 	public static <T extends StatementNode> T singleStatement(

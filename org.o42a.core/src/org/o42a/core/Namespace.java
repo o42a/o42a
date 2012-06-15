@@ -24,9 +24,7 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import java.util.ArrayList;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
-import org.o42a.core.member.MemberKey;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
@@ -37,6 +35,7 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public class Namespace extends AbstractContainer {
@@ -62,7 +61,7 @@ public class Namespace extends AbstractContainer {
 		this.uses.add(new NsUse(path));
 	}
 
-	public void useObject(Ref path, String alias) {
+	public void useObject(Ref path, Name alias) {
 		this.uses.add(new ObjUse(path, alias));
 	}
 
@@ -276,9 +275,9 @@ public class Namespace extends AbstractContainer {
 
 	private final class ObjUse extends NsUse {
 
-		private final String alias;
+		private final Name alias;
 
-		ObjUse(Ref ref, String alias) {
+		ObjUse(Ref ref, Name alias) {
 			super(ref);
 			this.alias = alias;
 		}
@@ -288,7 +287,7 @@ public class Namespace extends AbstractContainer {
 			return 2;
 		}
 
-		public String getAlias() {
+		public final Name getAlias() {
 			return this.alias;
 		}
 
@@ -301,9 +300,13 @@ public class Namespace extends AbstractContainer {
 			if (declaredIn != null) {
 				return null;
 			}
-			if (!getAlias().equals(memberId.getName())) {
+
+			final MemberName memberName = memberId.getMemberName();
+
+			if (memberName == null || !getAlias().is(memberName.getName())) {
 				return null;
 			}
+
 			return this.ref.getPath();
 		}
 

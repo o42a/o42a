@@ -75,7 +75,7 @@ public class AscendantRefTest extends GrammarTestCase {
 		final ParentRefNode overridden =
 				to(ParentRefNode.class, result.getOverridden());
 
-		assertThat(overridden.getName().getName(), is("foo"));
+		assertThat(canonicalName(overridden.getName()), is("foo"));
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class AscendantRefTest extends GrammarTestCase {
 		final ParentRefNode overridden =
 				to(ParentRefNode.class, result.getOverridden());
 
-		assertThat(overridden.getName().getName(), is("foo"));
+		assertThat(canonicalName(overridden.getName()), is("foo"));
 	}
 
 	private void assertScopeAscendant(ScopeType scopeType, String text) {

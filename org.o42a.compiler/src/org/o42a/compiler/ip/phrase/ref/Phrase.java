@@ -34,6 +34,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.util.string.Name;
 
 
 public class Phrase extends Placed {
@@ -103,7 +104,7 @@ public class Phrase extends Placed {
 		return getMainContext().getImplicitAscendants();
 	}
 
-	public final PhraseName name(LocationInfo location, String name) {
+	public final PhraseName name(LocationInfo location, Name name) {
 		return append(this.last.name(location, name));
 	}
 

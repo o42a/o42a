@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.DeclarativeBlock;
+import org.o42a.util.string.Name;
 
 
 public class Locals {
@@ -40,18 +41,19 @@ public class Locals {
 		return this.block;
 	}
 
-	public boolean declareBlock(LocationInfo location, String name) {
+	public boolean declareBlock(LocationInfo location, Name name) {
 		if (this.blocks == null) {
 			this.blocks = new HashMap<String, LocationInfo>();
 		}
 
-		final LocationInfo previousLocation = this.blocks.put(name, location);
+		final String id = name.toCanonocal().toString();
+		final LocationInfo previousLocation = this.blocks.put(id, location);
 
 		if (previousLocation == null) {
 			return true;
 		}
 
-		this.blocks.put(name, previousLocation);
+		this.blocks.put(id, previousLocation);
 		location.getContext().getLogger().error(
 				"duplicate_block_name",
 				logAnotherLocation(location.getLoggable(), previousLocation),

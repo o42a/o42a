@@ -20,6 +20,7 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.*;
+import org.o42a.util.string.Name;
 
 
 final class BracesControl extends Control {
@@ -27,7 +28,7 @@ final class BracesControl extends Control {
 	private final MainControl main;
 	private final Control parent;
 	private final BracesControl enclosing;
-	private final String name;
+	private final Name name;
 	private final CodePos done;
 	private final Block enclosingBlock;
 	private final Allocator allocator;
@@ -36,7 +37,7 @@ final class BracesControl extends Control {
 			Control parent,
 			Block enclosingBlock,
 			CodePos next,
-			String name) {
+			Name name) {
 		this.main = parent.main();
 		this.parent = parent;
 		this.enclosing = parent.braces();
@@ -50,7 +51,7 @@ final class BracesControl extends Control {
 		return this.enclosing;
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 

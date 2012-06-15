@@ -53,8 +53,15 @@ public class InheritanceTest extends CompilerTestCase {
 	public void inheritance() {
 		assertThat(
 				this.b.type()
-				.getAncestor().typeObject()
-				.getScope().toField().getKey().getName(),
+				.getAncestor()
+				.typeObject()
+				.getScope()
+				.toField()
+				.getKey()
+				.getMemberName()
+				.getName()
+				.toCanonocal()
+				.toString(),
 				is("a"));
 		assertSame(
 				this.a,

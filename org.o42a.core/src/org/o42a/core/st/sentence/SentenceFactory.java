@@ -28,6 +28,7 @@ import org.o42a.core.st.impl.declarative.DeclarativeIssueFactory;
 import org.o42a.core.st.impl.imperative.ImperativeGroupFactory;
 import org.o42a.core.st.impl.imperative.ImperativeIssueFactory;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 public abstract class SentenceFactory<
@@ -68,12 +69,12 @@ public abstract class SentenceFactory<
 			LocationInfo location,
 			Distributor distributor,
 			S enclosing,
-			String name);
+			Name name);
 
 	public abstract ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
-			String name,
+			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry);
 
 	public abstract T propose(LocationInfo location, B block);
@@ -82,9 +83,7 @@ public abstract class SentenceFactory<
 
 	public abstract T issue(LocationInfo location, B block);
 
-	public abstract S createAlternative(
-			LocationInfo location,
-			T sentence);
+	public abstract S createAlternative(LocationInfo location, T sentence);
 
 	public abstract DeclarativeFactory toDeclarativeFactory();
 

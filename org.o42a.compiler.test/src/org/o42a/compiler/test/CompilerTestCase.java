@@ -22,7 +22,9 @@ package org.o42a.compiler.test;
 import static org.junit.Assert.*;
 import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,6 +34,7 @@ import org.o42a.codegen.Generator;
 import org.o42a.compiler.Compiler;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
@@ -40,6 +43,7 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.*;
 import org.o42a.intrinsic.CompilerIntrinsics;
+import org.o42a.util.string.Name;
 
 
 public abstract class CompilerTestCase {
@@ -251,11 +255,13 @@ public abstract class CompilerTestCase {
 
 	public static Field field(Obj container, String name, Accessor accessor) {
 
-		final Member member = container.field(name, accessor);
+		final MemberName fieldName =
+				fieldName(CASE_INSENSITIVE.canonicalName(name));
+		final Member member = container.member(fieldName, accessor);
 
 		if (member == null) {
 
-			final Member m = container.field(name, Accessor.OWNER);
+			final Member m = container.member(fieldName, Accessor.OWNER);
 
 			if (m == null) {
 				fail("No such field: " + name);
@@ -285,11 +291,11 @@ public abstract class CompilerTestCase {
 			new TestCompilerContext(this, this.errors);
 	protected Module module;
 
-	public final String getModuleName() {
+	public final Name getModuleName() {
 		return this.moduleName.getModuleName();
 	}
 
-	public final void setModuleName(String moduleName) {
+	public final void setModuleName(Name moduleName) {
 		this.moduleName.setModuleName(moduleName);
 	}
 
@@ -331,7 +337,7 @@ public abstract class CompilerTestCase {
 	}
 
 	protected Analyzer createAnalyzer() {
-		return new Analyzer(getModuleName());
+		return new Analyzer(getModuleName().toString());
 	}
 
 	protected void generateCode(Generator generator) {

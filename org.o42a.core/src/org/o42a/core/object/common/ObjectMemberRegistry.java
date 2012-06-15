@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.common;
 
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+
 import java.util.ArrayList;
 
 import org.o42a.core.member.Inclusions;
@@ -30,6 +32,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.OwningObject;
+import org.o42a.util.string.Name;
 
 
 public class ObjectMemberRegistry extends MemberRegistry {
@@ -103,8 +106,9 @@ public class ObjectMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public String anonymousBlockName() {
-		return Integer.toString(++this.localScopeIndex);
+	public Name anonymousBlockName() {
+		return CASE_SENSITIVE.canonicalName(
+				Integer.toString(++this.localScopeIndex));
 	}
 
 	@Override

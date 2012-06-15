@@ -30,6 +30,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 final class GroupRegistry
@@ -79,7 +80,7 @@ final class GroupRegistry
 	}
 
 	@Override
-	public String anonymousBlockName() {
+	public Name anonymousBlockName() {
 		return this.registry.anonymousBlockName();
 	}
 

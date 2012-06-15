@@ -35,6 +35,7 @@ import org.o42a.core.st.*;
 import org.o42a.core.st.impl.declarative.ExplicitInclusion;
 import org.o42a.core.st.impl.imperative.BracesWithinDeclaratives;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.Name;
 
 
 public final class Declaratives extends Statements<Declaratives, Definer> {
@@ -114,13 +115,13 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 	}
 
 	@Override
-	public void ellipsis(LocationInfo location, String name) {
+	public void ellipsis(LocationInfo location, Name name) {
 		dropStatement();
 		getLogger().prohibitedDeclarativeEllipsis(location);
 	}
 
 	@Override
-	public void include(LocationInfo location, String tag) {
+	public void include(LocationInfo location, Name tag) {
 		if (!getMemberRegistry().inclusions().include(location, tag)) {
 			return;
 		}

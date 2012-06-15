@@ -19,6 +19,8 @@
 */
 package org.o42a.core.source;
 
+import org.o42a.util.string.Name;
+
 
 public final class SectionTag {
 
@@ -26,11 +28,13 @@ public final class SectionTag {
 			new SectionTag(null, null);
 
 	private final SectionTag parent;
-	private final String tag;
+	private final Name tag;
+	private final String tagId;
 
-	private SectionTag(SectionTag parent, String tag) {
+	private SectionTag(SectionTag parent, Name tag) {
 		this.parent = parent;
 		this.tag = tag;
+		this.tagId = tag != null ? tag.toCanonocal().toString() : null;
 	}
 
 	public final boolean isImplicit() {
@@ -41,11 +45,11 @@ public final class SectionTag {
 		return this.parent;
 	}
 
-	public final String getTag() {
+	public final Name getTag() {
 		return this.tag;
 	}
 
-	public final SectionTag append(String tag) {
+	public final SectionTag append(Name tag) {
 		assert tag != null :
 			"Section tag not specified";
 		return new SectionTag(this, tag);
@@ -62,7 +66,7 @@ public final class SectionTag {
 				+ ((this.parent == null) ? 0 : this.parent.hashCode());
 		result =
 				prime * result
-				+ ((this.tag == null) ? 0 : this.tag.hashCode());
+				+ ((this.tagId == null) ? 0 : this.tagId.hashCode());
 
 		return result;
 	}
@@ -88,11 +92,11 @@ public final class SectionTag {
 		} else if (!this.parent.equals(other.parent)) {
 			return false;
 		}
-		if (this.tag == null) {
-			if (other.tag != null) {
+		if (this.tagId == null) {
+			if (other.tagId != null) {
 				return false;
 			}
-		} else if (!this.tag.equals(other.tag)) {
+		} else if (!this.tagId.equals(other.tagId)) {
 			return false;
 		}
 

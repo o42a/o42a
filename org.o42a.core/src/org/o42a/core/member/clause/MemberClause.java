@@ -26,6 +26,7 @@ import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
+import org.o42a.util.string.Name;
 
 
 public abstract class MemberClause extends Member {
@@ -68,25 +69,23 @@ public abstract class MemberClause extends Member {
 			return this.aliasIds;
 		}
 
-		final String name = getDeclaration().getName();
+		final Name name = getDeclaration().getName();
 
 		if (name == null) {
 			return this.aliasIds = super.getAliasIds();
 		}
 
 		final MemberId id = getId();
-		final String memberName = id.getName();
+		final MemberName memberName = id.getMemberName();
 
 		if (memberName == null) {
 			return this.aliasIds = super.getAliasIds();
 		}
-
-		final MemberId aliasName = clauseName(name);
-
-		if (memberName.equals(aliasName.getName())) {
+		if (memberName.getName().is(name)) {
 			return this.aliasIds = super.getAliasIds();
 		}
 
+		final MemberId aliasName = clauseName(name);
 		final MemberId aliasId;
 		final MemberId enclosingId = id.getEnclosingId();
 

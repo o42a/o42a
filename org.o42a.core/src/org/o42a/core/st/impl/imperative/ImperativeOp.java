@@ -48,7 +48,7 @@ final class ImperativeOp {
 		if (block.isParentheses()) {
 			blockControl = control.parentheses(code, next.head());
 		} else {
-			blockControl = control.braces(code, next.head(), name);
+			blockControl = control.braces(code, next.head(), block.getName());
 		}
 
 		final List<ImperativeSentence> sentences = block.getSentences();

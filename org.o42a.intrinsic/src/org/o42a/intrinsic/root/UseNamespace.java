@@ -20,6 +20,8 @@
 package org.o42a.intrinsic.root;
 
 import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.intrinsic.root.UseObject.*;
+import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.DirectiveObject;
@@ -33,7 +35,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.PathWithAlias;
 import org.o42a.core.st.InstructionContext;
 import org.o42a.core.value.Value;
-import org.o42a.core.value.ValueType;
+import org.o42a.util.string.Name;
 
 
 @SourcePath(relativeTo = Root.class, value = "use_namespace.o42a")
@@ -52,7 +54,9 @@ public class UseNamespace extends DirectiveObject {
 		final Namespace namespace = directive.getContainer().toNamespace();
 
 		if (namespace == null) {
-			getLogger().prohibitedDirective(directive, "Use namespace");
+			directive.getLogger().prohibitedDirective(
+					directive,
+					"Use namespace");
 			return;
 		}
 
@@ -61,7 +65,7 @@ public class UseNamespace extends DirectiveObject {
 		final Value<?> moduleValue = module().value(resolver);
 
 		if (!moduleValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(directive, "module");
+			directive.getLogger().unresolvedValue(directive, "module");
 			return;
 		}
 
@@ -70,21 +74,30 @@ public class UseNamespace extends DirectiveObject {
 		final Value<?> objectValue = object().value(resolver);
 
 		if (!objectValue.getKnowledge().isKnown()) {
-			getLogger().unresolvedValue(directive, "object");
+			directive.getLogger().unresolvedValue(directive, "object");
 			return;
 		}
 
 		final String pathString = stringValue(objectValue);
+		final Name moduleName;
 
-		if (pathString == null && moduleId == null) {
-			getLogger().noModuleNoObject(directive);
+		if (moduleId != null) {
+			moduleName = caseInsensitiveName(moduleId);
+			if (!moduleName.isValid()) {
+				invalidModuleName(directive, moduleId);
+				return;
+			}
+		} else if (pathString == null) {
+			noModuleNoObject(directive);
 			return;
+		} else {
+			moduleName = null;
 		}
 
 		final PathWithAlias path =
 				directive.getContext().getCompiler().compilePath(
 						directive.getScope(),
-						moduleId,
+						moduleName,
 						directive,
 						pathString);
 
@@ -101,7 +114,7 @@ public class UseNamespace extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("module").key(getScope()).toPath().dereference();
+				fieldName(MODULE).key(getScope()).toPath().dereference();
 
 		return this.module = path.bind(this, getScope()).target(distribute());
 	}
@@ -112,24 +125,9 @@ public class UseNamespace extends DirectiveObject {
 		}
 
 		final Path path =
-				fieldName("object").key(getScope()).toPath().dereference();
+				fieldName(OBJECT).key(getScope()).toPath().dereference();
 
 		return this.object = path.bind(this, getScope()).target(distribute());
-	}
-
-	private static String stringValue(Value<?> value) {
-		if (value.getKnowledge().isFalse()) {
-			return null;
-		}
-
-		final String string =
-				ValueType.STRING.cast(value).getCompilerValue().trim();
-
-		if (string.isEmpty()) {
-			return null;
-		}
-
-		return string;
 	}
 
 }

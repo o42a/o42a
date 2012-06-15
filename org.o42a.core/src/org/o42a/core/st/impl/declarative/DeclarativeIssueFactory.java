@@ -27,6 +27,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 public class DeclarativeIssueFactory extends DeclarativeFactory {
@@ -45,7 +46,7 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 			LocationInfo location,
 			Distributor distributor,
 			Declaratives enclosing,
-			String name) {
+			Name name) {
 		prohibitedIssueBraces(enclosing.getLogger(), location);
 		return null;
 	}
@@ -54,7 +55,7 @@ public class DeclarativeIssueFactory extends DeclarativeFactory {
 	public ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
-			String name,
+			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 		group.getLogger().prohibitedClauseDeclaration(group);
 		return null;

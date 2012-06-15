@@ -19,11 +19,16 @@
 */
 package org.o42a.lib.test;
 
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
+
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.common.object.AnnotatedModule;
 import org.o42a.common.object.RelatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.source.CompilerContext;
@@ -34,6 +39,9 @@ import org.o42a.core.source.Module;
 @RelatedSources({"rt-float.o42a", "rt-integer.o42a", "rt-string.o42a"})
 public class TestModule extends AnnotatedModule {
 
+	private static final MemberName TEST_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("test"));
+
 	public static Module testModule(CompilerContext parentContext) {
 		return new TestModule(parentContext);
 	}
@@ -43,22 +51,22 @@ public class TestModule extends AnnotatedModule {
 	}
 
 	public ObjectType test(UserInfo user) {
-		return objectByName(user, "test").type().useBy(user);
+		return objectById(user, TEST_MEMBER).type().useBy(user);
 	}
 
-	private Obj objectByName(UserInfo user, String name) {
+	private Obj objectById(UserInfo user, MemberId memberId) {
 
-		final Member member = field(name);
+		final Member member = member(memberId);
 
 		if (member == null) {
-			getLogger().unresolved(this, toString() + ':' + name);
+			getLogger().unresolved(this, toString() + ':' + memberId);
 			return getContext().getFalse();
 		}
 
 		final Obj object = member.substance(user).toObject();
 
 		if (object == null) {
-			getLogger().notObject(this, toString() + ':' + name);
+			getLogger().notObject(this, toString() + ':' + memberId);
 			return getContext().getFalse();
 		}
 

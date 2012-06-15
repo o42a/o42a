@@ -192,12 +192,12 @@ public class PhraseTest extends GrammarTestCase {
 		final ArgumentNode[] arguments =
 				clause(BracketsNode.class, result, 0, 2).getArguments();
 
-		assertEquals(1, arguments.length);
+		assertThat(arguments.length, is(1));
 		assertName("bar", arguments[0].getValue());
 
 		final NameNode name = clause(NameNode.class, result, 1, 2);
 
-		assertEquals("baz", name.getName());
+		assertThat(canonicalName(name), is("baz"));
 	}
 
 	@Test
@@ -209,12 +209,12 @@ public class PhraseTest extends GrammarTestCase {
 
 		final NameNode name = clause(NameNode.class, result, 0, 2);
 
-		assertEquals("bar", name.getName());
+		assertThat(canonicalName(name), is("bar"));
 
 		final ArgumentNode[] arguments =
 				clause(BracketsNode.class, result, 1, 2).getArguments();
 
-		assertEquals(1, arguments.length);
+		assertThat(arguments.length, is(1));
 		assertName("baz", arguments[0].getValue());
 	}
 
@@ -227,11 +227,11 @@ public class PhraseTest extends GrammarTestCase {
 
 		final NameNode name1 = clause(NameNode.class, result, 0, 2);
 
-		assertEquals("bar", name1.getName());
+		assertThat(canonicalName(name1), is("bar"));
 
 		final NameNode name2 = clause(NameNode.class, result, 1, 2);
 
-		assertEquals("baz", name2.getName());
+		assertThat(canonicalName(name2), is("baz"));
 	}
 
 	@Test
