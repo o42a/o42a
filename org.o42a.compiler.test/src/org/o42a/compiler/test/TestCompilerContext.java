@@ -37,7 +37,7 @@ class TestCompilerContext extends CompilerContext {
 				CompilerTestCase.INTRINSICS,
 				logger);
 		this.test = test;
-		this.source = new EmptySource(test.getModuleName());
+		this.source = new EmptySource("empty");
 	}
 
 	@Override

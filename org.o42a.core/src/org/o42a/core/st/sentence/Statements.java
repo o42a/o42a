@@ -41,6 +41,7 @@ import org.o42a.core.st.impl.NextDistributor;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
+import org.o42a.util.string.Name;
 
 
 public abstract class Statements<
@@ -176,13 +177,13 @@ public abstract class Statements<
 		return braces(location, null, getContainer());
 	}
 
-	public final ImperativeBlock braces(LocationInfo location, String name) {
+	public final ImperativeBlock braces(LocationInfo location, Name name) {
 		return braces(location, name, getContainer());
 	}
 
 	public final ImperativeBlock braces(
 			LocationInfo location,
-			String name,
+			Name name,
 			Container container) {
 		if (name != null) {
 
@@ -210,9 +211,9 @@ public abstract class Statements<
 		return braces;
 	}
 
-	public abstract void ellipsis(LocationInfo location, String name);
+	public abstract void ellipsis(LocationInfo location, Name name);
 
-	public abstract void include(LocationInfo location, String name);
+	public abstract void include(LocationInfo location, Name name);
 
 	public final Distributor nextDistributor() {
 

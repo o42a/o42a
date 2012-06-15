@@ -19,9 +19,10 @@
 */
 package org.o42a.ast.test.grammar.atom;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.name;
 
 import org.junit.Test;
@@ -36,10 +37,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("abc");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 3, name);
-		assertEquals("abc", name.getName());
-		assertEquals(3, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("abc"));
+		assertThat(this.worker.position().offset(), is(3L));
 	}
 
 	@Test
@@ -47,10 +48,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a c");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 3, name);
-		assertEquals("a_c", name.getName());
-		assertEquals(3, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a c"));
+		assertThat(this.worker.position().offset(), is(3L));
 	}
 
 	@Test
@@ -58,10 +59,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a3b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 3, name);
-		assertEquals("a3b", name.getName());
-		assertEquals(3, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a3b"));
+		assertThat(this.worker.position().offset(), is(3L));
 	}
 
 	@Test
@@ -69,10 +70,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a3 4b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 5, name);
-		assertEquals("a3_4b", name.getName());
-		assertEquals(5, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a3 4b"));
+		assertThat(this.worker.position().offset(), is(5L));
 	}
 
 	@Test
@@ -80,8 +81,8 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("3a");
 
-		assertNull(name);
-		assertEquals(0, this.worker.position().offset());
+		assertThat(name, nullValue());
+		assertThat(this.worker.position().offset(), is(0L));
 	}
 
 	@Test
@@ -89,10 +90,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a-b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 3, name);
-		assertEquals("a-b", name.getName());
-		assertEquals(3, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a-b"));
+		assertThat(this.worker.position().offset(), is(3L));
 	}
 
 	@Test
@@ -100,10 +101,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a- b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 4, name);
-		assertEquals("a-b", name.getName());
-		assertEquals(4, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a-b"));
+		assertThat(this.worker.position().offset(), is(4L));
 	}
 
 	@Test
@@ -111,10 +112,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a\n b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 1, name);
-		assertEquals("a", name.getName());
-		assertEquals(1, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a"));
+		assertThat(this.worker.position().offset(), is(1L));
 	}
 
 	@Test
@@ -122,10 +123,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a\u2010 b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 4, name);
-		assertEquals("a-b", name.getName());
-		assertEquals(4, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a-b"));
+		assertThat(this.worker.position().offset(), is(4L));
 	}
 
 	@Test
@@ -134,10 +135,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a\u2011 b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 4, name);
-		assertEquals("a-b", name.getName());
-		assertEquals(4, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a-b"));
+		assertThat(this.worker.position().offset(), is(4L));
 	}
 
 	@Test
@@ -145,7 +146,7 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("-a");
 
-		assertNull(name);
+		assertThat(name, nullValue());
 	}
 
 	@Test
@@ -153,10 +154,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a-");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 1, name);
-		assertEquals("a", name.getName());
-		assertEquals(1, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a"));
+		assertThat(this.worker.position().offset(), is(1L));
 	}
 
 	@Test
@@ -164,10 +165,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a -");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 1, name);
-		assertEquals("a", name.getName());
-		assertEquals(1, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a"));
+		assertThat(this.worker.position().offset(), is(1L));
 	}
 
 	@Test
@@ -176,7 +177,7 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a \u2010 b");
 
-		assertEquals("a-b", name.getName());
+		assertThat(name.getName().toString(), is("a-b"));
 	}
 
 	@Test
@@ -185,7 +186,7 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a \u2011b");
 
-		assertEquals("a-b", name.getName());
+		assertThat(name.getName().toString(), is("a-b"));
 	}
 
 	@Test
@@ -193,10 +194,10 @@ public class NameTest extends GrammarTestCase {
 
 		final NameNode name = parse("a--b");
 
-		assertNotNull(name);
+		assertThat(name, notNullValue());
 		assertRange(0, 1, name);
-		assertEquals("a", name.getName());
-		assertEquals(1, this.worker.position().offset());
+		assertThat(name.getName().toString(), is("a"));
+		assertThat(this.worker.position().offset(), is(1L));
 	}
 
 	private NameNode parse(String text) {

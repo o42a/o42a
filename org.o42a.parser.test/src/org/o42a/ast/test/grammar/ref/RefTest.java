@@ -19,8 +19,10 @@
 */
 package org.o42a.ast.test.grammar.ref;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.ast.ref.*;
@@ -36,13 +38,12 @@ public class RefTest extends GrammarTestCase {
 		final MemberRefNode ref = to(MemberRefNode.class, parse("::foo"));
 		final ScopeRefNode owner = to(ScopeRefNode.class, ref.getOwner());
 
-		assertEquals("foo", ref.getName().getName());
-		assertNull(ref.getQualifier());
-		assertNull(ref.getDeclaredIn());
-		assertEquals(5, this.worker.position().offset());
+		assertThat(canonicalName(ref.getName()), is("foo"));
+		assertThat(ref.getQualifier(), nullValue());
+		assertThat(ref.getDeclaredIn(), nullValue());
+		assertThat(this.worker.position().offset(), is(5L));
 		assertRange(0, 5, ref);
-		assertNull(ref.getQualifier());
-		assertEquals(ScopeType.PARENT, owner.getType());
+		assertThat(owner.getType(), is(ScopeType.PARENT));
 		assertRange(0, 2, owner);
 	}
 
@@ -52,13 +53,12 @@ public class RefTest extends GrammarTestCase {
 		final MemberRefNode ref = to(MemberRefNode.class, parse("foo::bar"));
 		final ParentRefNode owner = to(ParentRefNode.class, ref.getOwner());
 
-		assertEquals("bar", ref.getName().getName());
-		assertNull(ref.getQualifier());
-		assertNull(ref.getDeclaredIn());
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(ref.getQualifier(), nullValue());
+		assertThat(ref.getDeclaredIn(), nullValue());
 		assertEquals(8, this.worker.position().offset());
 		assertRange(0, 8, ref);
-		assertNull(ref.getQualifier());
-		assertEquals("foo", owner.getName().getName());
+		assertThat(canonicalName(owner.getName()), is("foo"));
 		assertRange(0, 5, owner);
 		assertRange(3, 5, owner.getQualifier());
 	}

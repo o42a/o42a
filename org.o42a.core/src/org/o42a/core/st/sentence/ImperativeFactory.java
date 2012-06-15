@@ -30,6 +30,7 @@ import org.o42a.core.st.impl.imperative.ImperativeClaim;
 import org.o42a.core.st.impl.imperative.ImperativeIssue;
 import org.o42a.core.st.impl.imperative.ImperativeProposition;
 import org.o42a.util.fn.Lambda;
+import org.o42a.util.string.Name;
 
 
 public class ImperativeFactory extends SentenceFactory<
@@ -70,7 +71,7 @@ public class ImperativeFactory extends SentenceFactory<
 			LocationInfo location,
 			Distributor distributor,
 			Imperatives enclosing,
-			String name) {
+			Name name) {
 		return nestedImperativeBlock(
 				location,
 				distributor,
@@ -85,7 +86,7 @@ public class ImperativeFactory extends SentenceFactory<
 	public ImperativeBlock groupBraces(
 			Group group,
 			Distributor distributor,
-			String name,
+			Name name,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 		group.getLogger().prohibitedClauseDeclaration(group);
 		return null;

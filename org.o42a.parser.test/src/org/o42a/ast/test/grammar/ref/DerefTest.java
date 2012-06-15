@@ -55,7 +55,7 @@ public class DerefTest extends GrammarTestCase {
 		assertName("foo", deref.getOwner());
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
-		assertThat(memberRef.getName().getName(), is("bar"));
+		assertThat(canonicalName(memberRef.getName()), is("bar"));
 		assertThat(memberRef.getDeclaredIn(), nullValue());
 	}
 
@@ -70,7 +70,7 @@ public class DerefTest extends GrammarTestCase {
 		assertName("foo", deref.getOwner());
 		assertThat(deref.getSuffix().getType(), is(ARROW));
 
-		assertThat(memberRef.getName().getName(), is("bar"));
+		assertThat(canonicalName(memberRef.getName()), is("bar"));
 		assertName("baz", memberRef.getDeclaredIn());
 	}
 
@@ -110,7 +110,7 @@ public class DerefTest extends GrammarTestCase {
 		final MemberRefNode ref =
 				to(MemberRefNode.class, parse("foo: bar -> baz"));
 
-		assertThat(ref.getName().getName(), is("baz"));
+		assertThat(canonicalName(ref.getName()), is("baz"));
 		assertThat(ref.getDeclaredIn(), nullValue());
 
 		final DerefNode deref =
@@ -122,7 +122,7 @@ public class DerefTest extends GrammarTestCase {
 				to(MemberRefNode.class, deref.getOwner());
 
 		assertName("foo", memberRef.getOwner());
-		assertThat(memberRef.getName().getName(), is("bar"));
+		assertThat(canonicalName(memberRef.getName()), is("bar"));
 		assertThat(memberRef.getDeclaredIn(), nullValue());
 	}
 

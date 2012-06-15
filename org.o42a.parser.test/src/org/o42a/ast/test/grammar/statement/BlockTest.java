@@ -19,7 +19,9 @@
 */
 package org.o42a.ast.test.grammar.statement;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
@@ -43,7 +45,7 @@ public class BlockTest extends GrammarTestCase {
 				ParenthesesNode.class,
 				parse(DECLARATIVE.statement(), "(  )"));
 
-		assertEquals(0, result.getContent().length);
+		assertThat(result.getContent().length, is(0));
 	}
 
 	@Test
@@ -53,7 +55,7 @@ public class BlockTest extends GrammarTestCase {
 				BracesNode.class,
 				parse(DECLARATIVE.statement(), "{  }"));
 
-		assertEquals(0, result.getContent().length);
+		assertThat(result.getContent().length, is(0));
 	}
 
 	@Test
@@ -65,7 +67,9 @@ public class BlockTest extends GrammarTestCase {
 		final DeclaratorNode declarator =
 				singleStatement(DeclaratorNode.class, result);
 
-		assertEquals(DeclarationTarget.OVERRIDE_VALUE, declarator.getTarget());
+		assertThat(
+				declarator.getTarget(),
+				is(DeclarationTarget.OVERRIDE_VALUE));
 		assertName("foo", declarator.getDeclarable());
 		assertName("bar", declarator.getDefinition());
 	}
@@ -117,10 +121,10 @@ public class BlockTest extends GrammarTestCase {
 				NamedBlockNode.class,
 				parse(IMPERATIVE.statement(), "foo: {bar}"));
 
-		assertEquals("foo", result.getName().getName());
-		assertEquals(
-				NamedBlockNode.Separator.COLON,
-				result.getSeparator().getType());
+		assertThat(canonicalName(result.getName()), is("foo"));
+		assertThat(
+				result.getSeparator().getType(),
+				is(NamedBlockNode.Separator.COLON));
 		assertName(
 				"bar",
 				singleStatement(MemberRefNode.class, result.getBlock()));
@@ -133,11 +137,11 @@ public class BlockTest extends GrammarTestCase {
 				NamedBlockNode.class,
 				parse(IMPERATIVE.statement(), "foo: {}"));
 
-		assertEquals("foo", result.getName().getName());
-		assertEquals(
-				NamedBlockNode.Separator.COLON,
-				result.getSeparator().getType());
-		assertEquals(0, result.getBlock().getContent().length);
+		assertThat(canonicalName(result.getName()), is("foo"));
+		assertThat(
+				result.getSeparator().getType(),
+				is(NamedBlockNode.Separator.COLON));
+		assertThat(result.getBlock().getContent().length, is(0));
 	}
 
 }

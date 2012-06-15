@@ -21,13 +21,13 @@ package org.o42a.lib.test.run;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberKey;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
@@ -45,6 +45,9 @@ import org.o42a.lib.test.TestModule;
 
 
 final class TestRunner extends ConstructedObject {
+
+	private static final MemberName NAME_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("name"));
 
 	public static void runTest(
 			TestModule module,
@@ -110,7 +113,7 @@ final class TestRunner extends ConstructedObject {
 			Obj test) {
 
 		final Obj nameObject =
-				test.field("name").substance(dummyUser()).toObject();
+				test.member(NAME_MEMBER).substance(dummyUser()).toObject();
 		final Value<?> nameValue = nameObject.value().getValue();
 
 		if (!nameValue.getKnowledge().isKnown()) {

@@ -19,8 +19,9 @@
 */
 package org.o42a.ast.test.grammar.ref;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
@@ -38,7 +39,7 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo");
 
 		assertName("foo", ref);
-		assertEquals(3, this.worker.position().offset());
+		assertThat(this.worker.position().offset(), is(3L));
 		assertRange(0, 3, ref);
 	}
 
@@ -48,10 +49,10 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo:bar");
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
-		assertEquals("bar", ref.getName().getName());
-		assertEquals(Qualifier.MEMBER_NAME, ref.getQualifier().getType());
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
 		assertName("foo", owner);
-		assertEquals(7, this.worker.position().offset());
+		assertThat(this.worker.position().offset(), is(7L));
 		assertRange(0, 7, ref);
 		assertRange(3, 4, ref.getQualifier());
 		assertRange(4, 7, ref.getName());
@@ -65,10 +66,10 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode declaredIn =
 				to(MemberRefNode.class, ref.getDeclaredIn());
 
-		assertEquals("foo", ref.getName().getName());
-		assertNull(ref.getQualifier());
+		assertThat(canonicalName(ref.getName()), is("foo"));
+		assertThat(ref.getQualifier(), nullValue());
 		assertName("bar", declaredIn);
-		assertEquals(7, this.worker.position().offset());
+		assertThat(this.worker.position().offset(), is(7L));
 		assertRange(0, 7, ref);
 		assertRange(0, 3, ref.getName());
 		assertRange(3, 4, ref.getRetention());
@@ -97,8 +98,8 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo: bar\n@ baz");
 
 		assertName("foo", ref.getOwner());
-		assertEquals("bar", ref.getName().getName());
-		assertNull(ref.getRetention());
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(ref.getRetention(), nullValue());
 	}
 
 	@Test
@@ -108,8 +109,8 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo: bar @\nbaz");
 
 		assertName("foo", ref.getOwner());
-		assertEquals("bar", ref.getName().getName());
-		assertNull(ref.getDeclaredIn());
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	private MemberRefNode parse(String text) {

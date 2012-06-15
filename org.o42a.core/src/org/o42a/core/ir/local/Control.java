@@ -32,6 +32,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class Control {
@@ -80,7 +81,7 @@ public abstract class Control {
 		exitBraces(null, null);
 	}
 
-	public final void exitBraces(LocationInfo location, String name) {
+	public final void exitBraces(LocationInfo location, Name name) {
 
 		final BracesControl braces = enclosingBraces(name);
 
@@ -91,7 +92,7 @@ public abstract class Control {
 		}
 	}
 
-	public final void repeat(LocationInfo location, String name) {
+	public final void repeat(LocationInfo location, Name name) {
 
 		final BracesControl braces = enclosingBraces(name);
 
@@ -102,9 +103,9 @@ public abstract class Control {
 		}
 	}
 
-	public String name(String name) {
+	public String name(Name name) {
 		if (name != null) {
-			return name;
+			return name.toUnderscopedString();
 		}
 		return main().anonymousName();
 	}
@@ -117,7 +118,7 @@ public abstract class Control {
 		return code().addBlock(name);
 	}
 
-	public final Control braces(Block code, CodePos next, String name) {
+	public final Control braces(Block code, CodePos next, Name name) {
 		return new BracesControl(this, code, next, name);
 	}
 
@@ -165,7 +166,7 @@ public abstract class Control {
 
 	abstract CodePos returnDir();
 
-	private BracesControl enclosingBraces(String name) {
+	private BracesControl enclosingBraces(Name name) {
 		if (name == null) {
 			return braces();
 		}
@@ -173,7 +174,7 @@ public abstract class Control {
 		BracesControl braces = braces();
 
 		while (braces != null) {
-			if (name.equals(braces.getName())) {
+			if (name.is(braces.getName())) {
 				return braces;
 			}
 			braces = braces.getEnclosing();
@@ -182,7 +183,7 @@ public abstract class Control {
 		return null;
 	}
 
-	private void unresolvedBlock(LocationInfo location, String name) {
+	private void unresolvedBlock(LocationInfo location, Name name) {
 		location.getContext().getLogger().error(
 				"unresolved_block",
 				location,

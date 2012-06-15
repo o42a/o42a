@@ -63,7 +63,7 @@ final class OverriderDefinitionVisitor
 	public ClauseBuilder visitIntrinsicRef(
 			IntrinsicRefNode ref,
 			ClauseBuilder p) {
-		if ("prefix".equals(ref.getName().getName())) {
+		if (ClauseExpressionVisitor.PREFIX_NAME.is(ref.getName().getName())) {
 			return p.setSubstitution(PREFIX_SUBSITUTION);
 		}
 		return super.visitIntrinsicRef(ref, p);

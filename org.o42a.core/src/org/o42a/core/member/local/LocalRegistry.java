@@ -30,6 +30,7 @@ import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.Name;
 
 
 public class LocalRegistry extends MemberRegistry {
@@ -79,7 +80,7 @@ public class LocalRegistry extends MemberRegistry {
 	}
 
 	@Override
-	public String anonymousBlockName() {
+	public Name anonymousBlockName() {
 		return this.ownerRegistry.anonymousBlockName();
 	}
 

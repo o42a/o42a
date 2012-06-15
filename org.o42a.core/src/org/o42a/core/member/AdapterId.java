@@ -67,7 +67,7 @@ public final class AdapterId extends MemberId {
 	}
 
 	@Override
-	public final String getName() {
+	public final MemberName getMemberName() {
 		return null;
 	}
 
@@ -82,7 +82,7 @@ public final class AdapterId extends MemberId {
 	}
 
 	@Override
-	public String toName() {
+	public MemberName toMemberName() {
 		return null;
 	}
 

@@ -31,7 +31,7 @@ import org.o42a.intrinsic.root.Root;
 public final class AddIntegers extends BinaryInteger {
 
 	public AddIntegers(MemberOwner owner, AnnotatedSources sources) {
-		super(owner, sources, "left_operand", "right_operand");
+		super(owner, sources, "left operand", "right operand");
 	}
 
 	@Override

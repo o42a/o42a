@@ -20,9 +20,11 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import java.util.Arrays;
 
@@ -35,6 +37,7 @@ import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.Name;
 
 
 public final class Path {
@@ -55,7 +58,8 @@ public final class Path {
 
 		for (String field : fields) {
 
-			final Member member = object.field(field);
+			final Member member = object.member(
+					fieldName(CASE_INSENSITIVE.canonicalName(field)));
 
 			assert member != null :
 				"Field \"" + field + "\" not found in " + object;
@@ -67,12 +71,12 @@ public final class Path {
 		return path;
 	}
 
-	public static Path modulePath(String moduleId) {
+	public static Path modulePath(Name moduleName) {
 		return new Path(
 				ABSOLUTE_PATH,
 				NO_PATH_BINDINGS,
 				true,
-				new ModuleStep(moduleId));
+				new ModuleStep(moduleName));
 	}
 
 	private final PathKind kind;

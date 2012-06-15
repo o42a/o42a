@@ -19,9 +19,7 @@
 */
 package org.o42a.util.string;
 
-import static java.lang.Character.*;
-import static org.o42a.util.string.Characters.HYPHEN;
-import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
+import static java.lang.Character.charCount;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -32,109 +30,6 @@ import org.o42a.util.DataAlignment;
 public class StringCodec {
 
 	private static final char MAX_ASCII_CHAR = 0x7f;
-
-	public static boolean canonicalName(String in, StringBuilder out) {
-
-		final int len = in.length();
-		boolean prevDigit = false;
-		boolean prevLetter = false;
-		boolean prevHyphen = false;
-		boolean prevSeparator = false;
-		int i = 0;
-		boolean valid = true;
-
-		while (i < len) {
-
-			final int c = in.codePointAt(i);
-
-			i += Character.charCount(c);
-
-			final int type = Character.getType(c);
-			final boolean separator;
-
-			if (type == SPACE_SEPARATOR || c == '_') {
-				separator = true;
-			} else if (isWhitespace(c) || isISOControl(c)) {
-				separator = true;
-				valid = false;
-			} else {
-				separator = false;
-			}
-
-			if (separator) {
-				if (prevSeparator || prevHyphen) {
-					valid = false;
-					continue;
-				}
-				if (out.length() == 0) {
-					valid = false;
-					continue;
-				}
-				prevSeparator = true;
-				continue;
-			}
-			if (isDigit(c)) {
-				if (c < '0' || c > '9') {
-					valid = false;
-				}
-				if (prevSeparator) {
-					if (prevDigit) {
-						out.append('_');
-					}
-					prevSeparator = false;
-				}
-				prevDigit = true;
-				prevLetter = false;
-				prevHyphen = false;
-				out.appendCodePoint(c);
-				continue;
-			}
-			if (isLetter(c)) {
-				if (prevSeparator) {
-					if (prevLetter) {
-						out.append('_');
-					}
-					prevSeparator = false;
-				}
-				prevDigit = false;
-				prevLetter = true;
-				prevHyphen = false;
-				out.appendCodePoint(toLowerCase(c));
-				continue;
-			}
-			if (c == '-' || c == HYPHEN || c == NON_BREAKING_HYPHEN) {
-				if (prevSeparator || out.length() == 0) {
-					valid = false;
-				}
-				prevDigit = false;
-				prevLetter = false;
-				prevHyphen = true;
-				prevSeparator = false;
-				out.appendCodePoint('-');
-				continue;
-			}
-			valid = false;
-			prevDigit = false;
-			prevLetter = false;
-			prevHyphen = false;
-			prevSeparator = false;
-			out.appendCodePoint(toLowerCase(c));
-		}
-		if (!valid) {
-			return false;
-		}
-
-		return !prevHyphen && !prevSeparator;
-	}
-
-	public static String canonicalName(String name) {
-
-		final StringBuilder result = new StringBuilder(name.length());
-
-		canonicalName(name, result);
-
-		return result.toString();
-	}
 
 	public static String escapeControlChars(String string) {
 		return escapeControlChars(null, string).toString();

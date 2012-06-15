@@ -23,6 +23,8 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.VAL_ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
@@ -40,6 +42,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -52,6 +55,9 @@ import org.o42a.util.fn.Cancelable;
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "char.o42a")
 final class StringChar extends AnnotatedBuiltin {
+
+	private static final MemberName INDEX_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("index"));
 
 	private Ref string;
 	private Ref index;
@@ -141,7 +147,7 @@ final class StringChar extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("index", Accessor.DECLARATION)
+				member(INDEX_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();

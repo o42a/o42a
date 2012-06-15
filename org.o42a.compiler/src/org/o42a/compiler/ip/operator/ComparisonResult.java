@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.operator;
 
+import static org.o42a.compiler.ip.operator.ComparisonExpression.COMPARISON_MEMBER;
 import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -123,10 +124,7 @@ final class ComparisonResult extends BuiltinObject {
 		final Distributor distributor = distribute();
 		final Ref phrase = this.ref.phrase(distributor);
 		final FieldBuilder builder = memberRegistry.newField(
-				fieldDeclaration(
-						this,
-						distributor,
-						ComparisonExpression.COMPARISON)
+				fieldDeclaration(this, distributor, COMPARISON_MEMBER)
 				.setVisibility(Visibility.PRIVATE)
 				.setLinkType(LinkValueType.LINK),
 				phrase.toFieldDefinition());

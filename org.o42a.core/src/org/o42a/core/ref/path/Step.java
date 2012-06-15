@@ -52,10 +52,6 @@ public abstract class Step {
 
 	public abstract PathKind getPathKind();
 
-	public String getName() {
-		return null;
-	}
-
 	public abstract RefUsage getObjectUsage();
 
 	public ValueAdapter valueAdapter(

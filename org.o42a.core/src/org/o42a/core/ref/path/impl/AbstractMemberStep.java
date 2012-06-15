@@ -53,11 +53,6 @@ public abstract class AbstractMemberStep extends Step {
 		return PathKind.RELATIVE_PATH;
 	}
 
-	@Override
-	public final String getName() {
-		return this.memberKey.getName();
-	}
-
 	public final MemberKey getMemberKey() {
 		return this.memberKey;
 	}

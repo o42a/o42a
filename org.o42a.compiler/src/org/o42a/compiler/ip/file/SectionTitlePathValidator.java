@@ -24,14 +24,15 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ParentRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
+import org.o42a.util.string.Name;
 
 
 final class SectionTitlePathValidator
 		extends AbstractExpressionVisitor<Object, Integer> {
 
-	private final String[] path;
+	private final Name[] path;
 
-	SectionTitlePathValidator(String[] path) {
+	SectionTitlePathValidator(Name[] path) {
 		this.path = path;
 	}
 
@@ -48,7 +49,7 @@ final class SectionTitlePathValidator
 		if (p != 0) {
 			return null;
 		}
-		if (!this.path[p].equals(ref.getName().getName())) {
+		if (!this.path[p].is(ref.getName().getName())) {
 			return null;
 		}
 		return Boolean.TRUE;
@@ -59,7 +60,7 @@ final class SectionTitlePathValidator
 		if (p < 0) {
 			return null;
 		}
-		if (!this.path[p].equals(ref.getName().getName())) {
+		if (!this.path[p].is(ref.getName().getName())) {
 			return null;
 		}
 

@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.compiler.ip.Interpreter;
@@ -49,7 +50,8 @@ import org.o42a.core.value.ValueType;
 
 public final class ComparisonExpression extends ObjectConstructor {
 
-	static final MemberId COMPARISON = fieldName("_cmp");
+	static final MemberId COMPARISON_MEMBER =
+			fieldName(CASE_SENSITIVE.canonicalName("_cmp"));
 
 	private final Interpreter ip;
 	private final BinaryNode node;

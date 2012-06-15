@@ -25,11 +25,10 @@ import static org.o42a.core.member.clause.ClauseId.byAdapterType;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.member.AdapterId;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberId;
+import org.o42a.core.member.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public class ClauseDeclaration extends Placed implements Cloneable {
@@ -37,7 +36,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	public static ClauseDeclaration clauseDeclaration(
 			LocationInfo location,
 			Distributor distributor,
-			String name,
+			Name name,
 			ClauseId clauseId) {
 		return new ClauseDeclaration(
 				location,
@@ -50,7 +49,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	public static ClauseDeclaration clauseDeclaration(
 			LocationInfo location,
 			Distributor distributor,
-			String name,
+			Name name,
 			MemberId memberId) {
 		return new ClauseDeclaration(
 				location,
@@ -66,7 +65,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		return new ClauseDeclaration(location, distributor);
 	}
 
-	private String name;
+	private Name name;
 	private MemberId memberId;
 	private MemberId groupId;
 	private ClauseId clauseId;
@@ -78,7 +77,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private ClauseDeclaration(
 			LocationInfo location,
 			Distributor distributor,
-			String name,
+			Name name,
 			MemberId memberId,
 			ClauseId clauseId) {
 		super(location, distributor);
@@ -116,7 +115,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		return this.memberId == null && this.clauseId == ClauseId.NAME;
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 
@@ -138,7 +137,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		return this.memberId = this.groupId.append(adapterId(adapterType));
 	}
 
-	public final ClauseDeclaration setName(String name) {
+	public final ClauseDeclaration setName(Name name) {
 
 		final ClauseDeclaration clone = clone();
 
@@ -160,7 +159,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 
 		if (this.memberId != null) {
 
-			final String name = this.memberId.getName();
+			final MemberName name = this.memberId.getMemberName();
 
 			if (name != null) {
 				return this.clauseId = ClauseId.NAME;

@@ -26,6 +26,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.impl.imperative.BlockCommandEnv;
 import org.o42a.core.st.impl.imperative.EllipsisStatement;
+import org.o42a.util.string.Name;
 
 
 public final class Imperatives extends Statements<Imperatives, Command> {
@@ -67,7 +68,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 	}
 
 	@Override
-	public void ellipsis(LocationInfo location, String name) {
+	public void ellipsis(LocationInfo location, Name name) {
 		if (isInsideIssue()) {
 			getLogger().error(
 					"prohibited_issue_ellipsis",
@@ -86,7 +87,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 	}
 
 	@Override
-	public void include(LocationInfo location, String name) {
+	public void include(LocationInfo location, Name name) {
 		getLogger().error(
 				"prohibited_imperative_inclusion",
 				location,
@@ -106,7 +107,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		return statement.command(new BlockCommandEnv(this, initialEnv));
 	}
 
-	private ImperativeBlock blockByName(LocationInfo location, String name) {
+	private ImperativeBlock blockByName(LocationInfo location, Name name) {
 		if (name == null) {
 			return getSentence().getBlock();
 		}
@@ -114,7 +115,7 @@ public final class Imperatives extends Statements<Imperatives, Command> {
 		ImperativeBlock block = getSentence().getBlock();
 
 		for (;;) {
-			if (name.equals(block.getName())) {
+			if (name.is(block.getName())) {
 				return block;
 			}
 

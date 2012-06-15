@@ -39,6 +39,7 @@ import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.*;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public final class DeclaredGroupClause
@@ -137,7 +138,7 @@ public final class DeclaredGroupClause
 		return this.definition = definition;
 	}
 
-	public ImperativeBlock braces(Group group, String name) {
+	public ImperativeBlock braces(Group group, Name name) {
 
 		final Statements<?, ?> statements = group.getStatements();
 		final SentenceFactory<?, ?, ?, ?> sentenceFactory =

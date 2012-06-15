@@ -20,6 +20,7 @@
 package org.o42a.parser.grammar.atom;
 
 import static java.lang.Character.isLetter;
+import static java.lang.Character.isUpperCase;
 import static org.o42a.parser.Grammar.isDigit;
 import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.util.string.Characters.HYPHEN;
@@ -30,6 +31,7 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
+import org.o42a.util.string.Capitalization;
 
 
 public class NameParser implements Parser<NameNode> {
@@ -49,6 +51,7 @@ public class NameParser implements Parser<NameNode> {
 		final StringBuilder name = new StringBuilder();
 		SourcePosition whitespace = null;
 		int hyphen = 0;
+		Capitalization capitalization = Capitalization.CASE_INSENSITIVE;
 
 		for (;;) {
 
@@ -108,66 +111,121 @@ public class NameParser implements Parser<NameNode> {
 				break;
 			}
 
-			final CharSequence word = context.push(parser);
+			final Word word = context.push(parser);
 
 			if (word == null) {
 				break;
 			}
-			if (len != 0) {
+			if (len == 0) {
+				if (word.notFirstCapital()) {
+					// Preserve capital if the first word contains
+					// a capital letter not at the beginning.
+					// This is for abbreviations like "URL".
+					capitalization = Capitalization.PRESERVE_CAPITALS;
+				}
+			} else {
+				if (word.firstCapital() && !word.notFirstCapital()) {
+					// Preserve capital if a not first word starts with
+					// a capital letter and has no more capitals.
+					// This is for proper nouns like "John Smith".
+					capitalization = Capitalization.PRESERVE_CAPITALS;
+				}
 				if (hyphen != 0) {
 					name.append('-');
 					hyphen = 0;
 				} else if (isDigit(name.charAt(name.length() - 1))) {
 					if (parser == NUMBER) {
-						// separate numbers by underscope
-						name.append('_');
+						// Separate numbers by space.
+						name.append(' ');
 					}
-				} else {
-					if (parser != NUMBER) {
-						// separate words by underscope
-						name.append('_');
-					}
+				} else if (parser != NUMBER) {
+					// Separate words by space.
+					name.append(' ');
 				}
 			}
+
 			context.acceptAll();
-			name.append(word);
+			name.append(word.getWord());
 			if (context.isEOF()) {
 				break;
 			}
 		}
 
-		if (name.length() != 0) {
-			return new NameNode(
-					start,
-					context.firstUnaccepted().fix(),
-					name.toString());
+		if (name.length() == 0) {
+			return null;
 		}
 
-		return null;
+		return new NameNode(
+				start,
+				context.firstUnaccepted().fix(),
+				capitalization.name(name.toString()));
 	}
 
-	private static class WordParser implements Parser<CharSequence> {
+	private static final class Word {
+
+		private final CharSequence word;
+		private final boolean notFirstCapital;
+		private final boolean firstCapital;
+
+		Word(CharSequence word, boolean firstCapital, boolean notFirstCapital) {
+			this.word = word;
+			this.firstCapital = firstCapital;
+			this.notFirstCapital = notFirstCapital;
+		}
+
+		public final CharSequence getWord() {
+			return this.word;
+		}
+
+		public final boolean firstCapital() {
+			return this.firstCapital;
+		}
+
+		public final boolean notFirstCapital() {
+			return this.notFirstCapital;
+		}
 
 		@Override
-		public CharSequence parse(ParserContext context) {
+		public String toString() {
+			return String.valueOf(this.word);
+		}
+
+	}
+
+	private static class WordParser implements Parser<Word> {
+
+		@Override
+		public Word parse(ParserContext context) {
 
 			final StringBuilder word = new StringBuilder();
+			boolean firstCapital = false;
+			boolean notFirstCapital = false;
 
 			for (;;) {
 
 				final int c = context.next();
 
-				if (isNamePart(c)) {
-					word.append(Character.toLowerCase((char) c));
-					continue;
+				if (!isNamePart(c)) {
+					break;
 				}
-				if (word.length() == 0) {
-					return null;
+				if (word.length() != 0) {
+					firstCapital |= isUpperCase(c);
+				} else {
+					notFirstCapital |= isUpperCase(c);
 				}
-				context.acceptButLast();
-
-				return word.length() > 0 ? word : null;
+				word.appendCodePoint(c);
 			}
+
+			if (word.length() == 0) {
+				return null;
+			}
+			context.acceptButLast();
+
+			if (word.length() == 0) {
+				return null;
+			}
+
+			return new Word(word, firstCapital, notFirstCapital);
 		}
 
 		protected boolean isNamePart(int c) {

@@ -23,6 +23,7 @@ import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.value.Value.voidValue;
 import static org.o42a.lib.console.impl.PrintFunc.PRINT;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
@@ -37,6 +38,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.type.Ascendants;
@@ -48,6 +50,11 @@ import org.o42a.util.fn.Cancelable;
 
 
 public abstract class AbstractPrint extends AnnotatedBuiltin {
+
+	private static final MemberName PRINT_TO_CONSOLE_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("print to console"));
+	private static final MemberName TEXT_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("text"));
 
 	private final String funcName;
 	private Ref text;
@@ -92,7 +99,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 		final Path printToConsole =
-				fieldName("print_to_console").key(enclosingScope).toPath();
+				PRINT_TO_CONSOLE_MEMBER.key(enclosingScope).toPath();
 
 		return new Ascendants(this).setAncestor(
 				printToConsole.bind(this, enclosingScope)
@@ -105,7 +112,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("text", Accessor.DECLARATION)
+				member(TEXT_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();

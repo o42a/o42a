@@ -36,6 +36,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.Name;
 
 
 public abstract class PhraseContext {
@@ -89,9 +90,7 @@ public abstract class PhraseContext {
 		return this.instances;
 	}
 
-	public abstract NextClause clauseByName(
-			LocationInfo location,
-			String name);
+	public abstract NextClause clauseByName(LocationInfo location, Name name);
 
 	public abstract NextClause clauseById(
 			LocationInfo location,

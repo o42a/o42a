@@ -30,15 +30,18 @@ public class TestSource extends StringSource {
 	private final HashMap<String, TestSource> subSources;
 
 	public TestSource(CompilerTestCase test) {
-		this(test.getModuleName(), test.getModuleName(), "");
+		this(
+				test.getModuleName().toString(),
+				test.getModuleName().toString(),
+				"");
 	}
 
 	public TestSource(
 			CompilerTestCase test,
 			String string,
 			TestSource subSources) {
-		super(test.getModuleName(), string);
-		this.shortName = test.getModuleName();
+		super(test.getModuleName().toString(), string);
+		this.shortName = test.getModuleName().toString();
 		this.subSources = subSources.getSubSources();
 	}
 

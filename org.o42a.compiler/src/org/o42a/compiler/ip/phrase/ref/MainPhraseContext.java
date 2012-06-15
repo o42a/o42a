@@ -43,6 +43,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.TypeParameters;
+import org.o42a.util.string.Name;
 
 
 final class MainPhraseContext extends PhraseContext {
@@ -108,7 +109,7 @@ final class MainPhraseContext extends PhraseContext {
 	}
 
 	@Override
-	public NextClause clauseByName(LocationInfo location, String name) {
+	public NextClause clauseByName(LocationInfo location, Name name) {
 		return findObjectClause(location, clauseName(name), name);
 	}
 

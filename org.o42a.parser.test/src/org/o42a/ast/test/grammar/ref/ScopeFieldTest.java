@@ -19,7 +19,8 @@
 */
 package org.o42a.ast.test.grammar.ref;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.o42a.ast.ref.MemberRefNode;
@@ -36,10 +37,10 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("$foo");
 
-		assertEquals(
-				ScopeType.MODULE,
-				to(ScopeRefNode.class, ref.getOwner()).getType());
-		assertEquals("foo", ref.getName().getName());
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.MODULE));
+		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
 	@Test
@@ -47,10 +48,10 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("$$foo");
 
-		assertEquals(
-				ScopeType.ROOT,
-				to(ScopeRefNode.class, ref.getOwner()).getType());
-		assertEquals("foo", ref.getName().getName());
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.ROOT));
+		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
 	@Test
@@ -58,10 +59,10 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("::foo");
 
-		assertEquals(
-				ScopeType.PARENT,
-				to(ScopeRefNode.class, ref.getOwner()).getType());
-		assertEquals("foo", ref.getName().getName());
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.PARENT));
+		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
 	@Test
@@ -69,10 +70,10 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse("*foo");
 
-		assertEquals(
-				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, ref.getOwner()).getType());
-		assertEquals("foo", ref.getName().getName());
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.IMPLIED));
+		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
 	@Test
@@ -80,10 +81,10 @@ public class ScopeFieldTest extends GrammarTestCase {
 
 		final MemberRefNode ref = parse(":foo");
 
-		assertEquals(
-				ScopeType.SELF,
-				to(ScopeRefNode.class, ref.getOwner()).getType());
-		assertEquals("foo", ref.getName().getName());
+		assertThat(
+				to(ScopeRefNode.class, ref.getOwner()).getType(),
+				is(ScopeType.SELF));
+		assertThat(canonicalName(ref.getName()), is("foo"));
 	}
 
 	private MemberRefNode parse(String text) {

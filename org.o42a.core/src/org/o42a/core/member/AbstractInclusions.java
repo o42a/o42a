@@ -24,6 +24,7 @@ import static org.o42a.core.source.CompilerLogger.logAnotherLocation;
 import java.util.HashMap;
 
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.Name;
 
 
 public abstract class AbstractInclusions extends Inclusions {
@@ -41,19 +42,20 @@ public abstract class AbstractInclusions extends Inclusions {
 	}
 
 	@Override
-	public boolean include(LocationInfo location, String tag) {
+	public boolean include(LocationInfo location, Name tag) {
 		if (this.inclusions == null) {
 			this.inclusions = new HashMap<String, LocationInfo>();
 		}
 
+		final String id = tag.toCanonocal().toString();
 		final LocationInfo previousLocation =
-				this.inclusions.put(tag, location);
+				this.inclusions.put(id, location);
 
 		if (previousLocation == null) {
 			return true;
 		}
 
-		this.inclusions.put(tag, previousLocation);
+		this.inclusions.put(id, previousLocation);
 		location.getContext().getLogger().error(
 				"duplicate_inclusion",
 				logAnotherLocation(location, previousLocation),

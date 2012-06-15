@@ -39,6 +39,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Place.Trace;
 import org.o42a.util.fn.Lambda;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public final class ImperativeBlock extends Block<Imperatives, Command> {
@@ -47,7 +48,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 			LocationInfo location,
 			Distributor distributor,
 			Statements<?, ?> enclosing,
-			String name,
+			Name name,
 			ImperativeFactory sentenceFactory,
 			Lambda<MemberRegistry, LocalScope> memberRegistry) {
 
@@ -80,7 +81,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 			Distributor distributor,
 			Statements<?, ?> enclosing,
 			boolean parentheses,
-			String name,
+			Name name,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
 		return new ImperativeBlock(
@@ -94,7 +95,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	}
 
 	private final boolean parentheses;
-	private final String name;
+	private final Name name;
 	private final SentencesEnv sentencesEnv = new SentencesEnv();
 	private final boolean topLevel;
 	private final Trace trace;
@@ -134,7 +135,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 			Distributor distributor,
 			Statements<?, ?> enclosing,
 			boolean parentheses,
-			String name,
+			Name name,
 			MemberRegistry memberRegistry,
 			ImperativeFactory sentenceFactory) {
 		super(
@@ -174,7 +175,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return this.parentheses;
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 

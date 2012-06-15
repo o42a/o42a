@@ -20,8 +20,7 @@
 package org.o42a.ast.test.grammar.ref;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.ref;
 
@@ -39,9 +38,9 @@ public class IntrinsicRefTest extends GrammarTestCase {
 
 		final IntrinsicRefNode ref = parse("$ foo $ /* */");
 
-		assertNotNull(ref);
+		assertThat(ref, notNullValue());
 		assertRange(0, 7, ref);
-		assertEquals("foo", ref.getName().getName());
+		assertThat(canonicalName(ref.getName()), is("foo"));
 		assertRange(0, 1, ref.getPrefix());
 		assertRange(2, 5, ref.getName());
 		assertRange(6, 7, ref.getSuffix());
@@ -53,11 +52,12 @@ public class IntrinsicRefTest extends GrammarTestCase {
 		final MemberRefNode result =
 				to(MemberRefNode.class, parse(ref(), "$foo$ bar"));
 
-		assertThat(result.getName().getName(), is("bar"));
+		assertThat(canonicalName(result.getName()), is("bar"));
 
-		final IntrinsicRefNode owner = to(IntrinsicRefNode.class, result.getOwner());
+		final IntrinsicRefNode owner =
+				to(IntrinsicRefNode.class, result.getOwner());
 
-		assertThat(owner.getName().getName(), is("foo"));
+		assertThat(canonicalName(owner.getName()), is("foo"));
 	}
 
 	private IntrinsicRefNode parse(String text) {

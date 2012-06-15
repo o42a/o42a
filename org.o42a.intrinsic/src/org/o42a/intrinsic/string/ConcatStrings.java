@@ -20,7 +20,9 @@
 package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -35,6 +37,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -47,6 +50,11 @@ import org.o42a.util.fn.Cancelable;
 
 @SourcePath(relativeTo = Strings.class, value = "concat.o42a")
 final class ConcatStrings extends AnnotatedBuiltin {
+
+	private static final MemberName WHAT_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("what"));
+	private static final MemberName WITH_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("with"));
 
 	private Ref what;
 	private Ref with;
@@ -116,7 +124,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("what", Accessor.DECLARATION)
+				member(WHAT_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();
@@ -130,7 +138,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("with", Accessor.DECLARATION)
+				member(WITH_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();

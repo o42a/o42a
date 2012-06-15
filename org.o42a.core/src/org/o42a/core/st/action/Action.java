@@ -27,6 +27,7 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 public abstract class Action implements ScopeInfo {
@@ -89,8 +90,8 @@ public abstract class Action implements ScopeInfo {
 
 	static final boolean blockMatchesName(
 			ImperativeBlock block,
-			String blockName) {
-		return blockName == null || blockName.equals(block.getName());
+			Name blockName) {
+		return blockName == null || blockName.is(block.getName());
 	}
 
 }

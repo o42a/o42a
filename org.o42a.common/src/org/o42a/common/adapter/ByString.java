@@ -20,6 +20,8 @@
 package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -32,6 +34,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -43,6 +46,9 @@ import org.o42a.util.fn.Cancelable;
 
 
 public abstract class ByString<T> extends AnnotatedBuiltin {
+
+	private static final MemberName INPUT_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("input"));
 
 	private Ref input;
 
@@ -111,7 +117,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 			return this.input;
 		}
 
-		final Member member = field("input", Accessor.DECLARATION);
+		final Member member = member(INPUT_MEMBER, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath().dereference();
 
 		return this.input = path.bind(this, getScope()).target(distribute());

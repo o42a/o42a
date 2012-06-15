@@ -42,6 +42,7 @@ import org.o42a.core.source.Location;
 import org.o42a.util.io.SourceFileName;
 import org.o42a.util.log.LogInfo;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.Name;
 
 
 final class SectionTitle implements LogInfo {
@@ -157,7 +158,7 @@ final class SectionTitle implements LogInfo {
 
 	private FieldDeclaration implicitFieldDeclaration(Distributor distributor) {
 
-		final String fieldName = fieldNameByFileName();
+		final Name fieldName = fieldNameByFileName();
 
 		if (fieldName == null) {
 			return null;
@@ -181,7 +182,7 @@ final class SectionTitle implements LogInfo {
 		return validate(declarableNode.accept(visitor, distributor));
 	}
 
-	private String fieldNameByFileName() {
+	private Name fieldNameByFileName() {
 
 		final SourceFileName fileName = getSource().getFileName();
 
@@ -249,7 +250,7 @@ final class SectionTitle implements LogInfo {
 					adapterNode,
 					"Adapter declaration is not expected in file '%s'",
 					fileName);
-		} else if (!validatePath(adapteeNode, fileName.getAdaptee())) {
+		} else if (!validatePath(adapteeNode, fileName.getAdapterId())) {
 			getLogger().warning(
 					"unmatched_adaptee_section_title",
 					adapteeNode,
@@ -288,7 +289,7 @@ final class SectionTitle implements LogInfo {
 		return declaration;
 	}
 
-	private boolean validatePath(RefNode ref, String[] path) {
+	private boolean validatePath(RefNode ref, Name[] path) {
 
 		final SectionTitlePathValidator validator =
 				new SectionTitlePathValidator(path);

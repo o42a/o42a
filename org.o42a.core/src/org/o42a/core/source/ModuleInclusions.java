@@ -40,7 +40,7 @@ class ModuleInclusions extends AbstractInclusions {
 
 	@Override
 	protected String includedIntoName() {
-		return this.module.getModuleName();
+		return this.module.getModuleName().toString();
 	}
 
 }

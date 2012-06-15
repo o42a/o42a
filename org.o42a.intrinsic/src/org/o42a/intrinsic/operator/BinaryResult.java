@@ -20,6 +20,8 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -32,6 +34,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -43,10 +46,10 @@ import org.o42a.util.fn.Cancelable;
 
 public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 
-	private final String leftOperandName;
+	private final MemberName leftOperandId;
 	private final ValueStruct<?, L> leftOperandStruct;
 	private Ref leftOperand;
-	private final String rightOperandName;
+	private final MemberName rightOperandId;
 	private final ValueStruct<?, R> rightOperandStruct;
 	private Ref rightOperand;
 
@@ -58,9 +61,11 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 			String rightOperandName,
 			ValueStruct<?, R> rightOperandType) {
 		super(owner, sources);
-		this.leftOperandName = leftOperandName;
+		this.leftOperandId =
+				fieldName(CASE_INSENSITIVE.canonicalName(leftOperandName));
 		this.leftOperandStruct = leftOperandType;
-		this.rightOperandName = rightOperandName;
+		this.rightOperandId =
+				fieldName(CASE_INSENSITIVE.canonicalName(rightOperandName));
 		this.rightOperandStruct = rightOperandType;
 	}
 
@@ -141,7 +146,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		}
 
 		final Member member =
-				field(this.leftOperandName, Accessor.DECLARATION);
+				member(this.leftOperandId, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath().dereference();
 
 		return this.leftOperand =
@@ -154,7 +159,7 @@ public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
 		}
 
 		final Member member =
-				field(this.rightOperandName, Accessor.DECLARATION);
+				member(this.rightOperandId, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath().dereference();
 
 		return this.rightOperand =

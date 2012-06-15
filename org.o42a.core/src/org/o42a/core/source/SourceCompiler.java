@@ -20,6 +20,7 @@
 package org.o42a.core.source;
 
 import org.o42a.core.Scope;
+import org.o42a.util.string.Name;
 
 
 public interface SourceCompiler {
@@ -32,7 +33,7 @@ public interface SourceCompiler {
 
 	PathWithAlias compilePath(
 			Scope scope,
-			String moduleId,
+			Name moduleName,
 			LocationInfo location,
 			String string);
 

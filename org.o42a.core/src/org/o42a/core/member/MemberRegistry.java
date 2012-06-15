@@ -31,6 +31,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.util.string.Name;
 
 
 public abstract class MemberRegistry {
@@ -77,7 +78,7 @@ public abstract class MemberRegistry {
 	public LocalScope newLocalScope(
 			LocationInfo location,
 			Distributor distributor,
-			String name) {
+			Name name) {
 		return localFactory().newLocalScope(location, distributor, name);
 	}
 
@@ -89,7 +90,7 @@ public abstract class MemberRegistry {
 
 	public abstract void declareMember(Member member);
 
-	public abstract String anonymousBlockName();
+	public abstract Name anonymousBlockName();
 
 	public MemberRegistry prohibitDeclarations() {
 		return new ProhibitDeclarations(this);
@@ -144,7 +145,7 @@ public abstract class MemberRegistry {
 		}
 
 		@Override
-		public String anonymousBlockName() {
+		public Name anonymousBlockName() {
 			throw new UnsupportedOperationException();
 		}
 

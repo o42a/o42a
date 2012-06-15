@@ -20,7 +20,9 @@
 package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.intrinsic.string.SubStringFunc.SUB_STRING;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -35,6 +37,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -47,6 +50,11 @@ import org.o42a.util.fn.Cancelable;
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "substring.o42a")
 final class SubString extends AnnotatedBuiltin {
+
+	private static final MemberName FROM_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("from"));
+	private static final MemberName TO_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("to"));
 
 	private Ref string;
 	private Ref from;
@@ -178,7 +186,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("from", Accessor.DECLARATION)
+				member(FROM_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();
@@ -192,7 +200,7 @@ final class SubString extends AnnotatedBuiltin {
 		}
 
 		final Path path =
-				field("to", Accessor.DECLARATION)
+				member(TO_MEMBER, Accessor.DECLARATION)
 				.getKey()
 				.toPath()
 				.dereference();

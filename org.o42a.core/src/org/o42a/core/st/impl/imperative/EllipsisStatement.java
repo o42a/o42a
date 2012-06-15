@@ -23,17 +23,18 @@ import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.util.string.Name;
 
 
 public final class EllipsisStatement extends Statement {
 
-	private final String name;
+	private final Name name;
 	private final boolean exit;
 
 	public EllipsisStatement(
 			LocationInfo location,
 			Imperatives enclosing,
-			String name) {
+			Name name) {
 		super(location, enclosing.nextDistributor());
 		this.name = name;
 		this.exit = enclosing.getSentence().isClaim();
@@ -47,7 +48,7 @@ public final class EllipsisStatement extends Statement {
 		this.exit = prototype.exit;
 	}
 
-	public final String getName() {
+	public final Name getName() {
 		return this.name;
 	}
 

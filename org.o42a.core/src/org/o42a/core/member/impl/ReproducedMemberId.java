@@ -24,6 +24,7 @@ import java.util.Arrays;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberName;
 import org.o42a.util.ArrayUtil;
 
 
@@ -43,8 +44,8 @@ public final class ReproducedMemberId extends MemberId {
 	}
 
 	@Override
-	public String getName() {
-		return this.memberId.getName();
+	public MemberName getMemberName() {
+		return this.memberId.getMemberName();
 	}
 
 	@Override
@@ -63,8 +64,8 @@ public final class ReproducedMemberId extends MemberId {
 	}
 
 	@Override
-	public String toName() {
-		return this.memberId.toName();
+	public MemberName toMemberName() {
+		return this.memberId.toMemberName();
 	}
 
 	@Override

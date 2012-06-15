@@ -22,6 +22,7 @@ package org.o42a.core.source;
 import org.o42a.core.Container;
 import org.o42a.core.Namespace;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.Name;
 
 
 public abstract class Intrinsics {
@@ -56,7 +57,7 @@ public abstract class Intrinsics {
 
 	public abstract Obj getRow();
 
-	public abstract Module getModule(String moduleId);
+	public abstract Module getModule(Name moduleName);
 
 	public abstract Module getMainModule();
 

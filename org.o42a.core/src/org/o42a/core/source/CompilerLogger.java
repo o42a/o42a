@@ -83,10 +83,6 @@ public class CompilerLogger implements Logger {
 		error("cant_inherit", location, "%s can not be inherited", target);
 	}
 
-	public void expectedClauseName(LogInfo location) {
-		error("expected_clause_name", location, "Clause name expected here");
-	}
-
 	public void forbiddenAccess(LogInfo location, Object target) {
 		error(
 				"forbidden_access",
@@ -144,13 +140,6 @@ public class CompilerLogger implements Logger {
 
 	public void noDefinition(LogInfo location) {
 		error("no_definition", location, "Definition is missing");
-	}
-
-	public void noModuleNoObject(LogInfo location) {
-		error(
-				"no_module_no_object",
-				location,
-				"Either module or object should be specified");
 	}
 
 	public void notAbstract(LogInfo location) {

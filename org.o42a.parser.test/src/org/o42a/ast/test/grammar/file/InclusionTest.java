@@ -50,7 +50,7 @@ public class InclusionTest extends GrammarTestCase {
 
 		assertRange(0, 5, inclusion.getPrefix());
 		assertThat(inclusion.getPrefix().getType().getLength(), is(5));
-		assertThat(inclusion.getTag().getName(), is("label"));
+		assertThat(canonicalName(inclusion.getTag()), is("label"));
 		assertNull(inclusion.getSuffix());
 	}
 
@@ -61,7 +61,7 @@ public class InclusionTest extends GrammarTestCase {
 
 		assertRange(0, 5, inclusion.getPrefix());
 		assertThat(inclusion.getPrefix().getType().getLength(), is(5));
-		assertThat(inclusion.getTag().getName(), is("label"));
+		assertThat(canonicalName(inclusion.getTag()), is("label"));
 		assertThat(inclusion.getSuffix().getType().getLength(), is(2));
 	}
 

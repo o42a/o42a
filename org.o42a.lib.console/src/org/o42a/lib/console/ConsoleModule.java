@@ -24,12 +24,14 @@ import static org.o42a.core.ir.CodeBuilder.defaultBuilder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 import static org.o42a.core.member.AdapterId.adapterId;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.lib.console.DebugExecMainFunc.DEBUG_EXEC_MAIN;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 import static org.o42a.lib.console.MainFunc.MAIN;
 import static org.o42a.lib.console.impl.InitFunc.INIT;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.analysis.use.UserInfo;
@@ -43,6 +45,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.*;
@@ -55,6 +58,9 @@ import org.o42a.core.value.ValueStruct;
 @SourcePath("console.o42a")
 @RelatedSources("print_to_console.o42a")
 public class ConsoleModule extends AnnotatedModule {
+
+	private static final MemberName MAIN_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("main"));
 
 	public static ConsoleModule consoleModule(CompilerContext parentContext) {
 		return new ConsoleModule(
@@ -81,7 +87,8 @@ public class ConsoleModule extends AnnotatedModule {
 			return null;
 		}
 
-		final Obj mainObject = field("main").substance(dummyUser()).toObject();
+		final Obj mainObject =
+				member(MAIN_MEMBER).substance(dummyUser()).toObject();
 		final AdapterId mainAdapterId = adapterId(mainObject);
 		final Member mainMember = mainModule.member(mainAdapterId);
 
@@ -104,8 +111,7 @@ public class ConsoleModule extends AnnotatedModule {
 		final Path adapterPath =
 				mainAdapterId.key(mainModule.getScope()).toPath();
 		final Path mainPath =
-				modulePath(mainModule.getModuleId())
-				.append(adapterPath);
+				modulePath(mainModule.getModuleName()).append(adapterPath);
 
 		final Scope mainScope = mainModule.getScope();
 

@@ -23,18 +23,19 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Condition;
 import org.o42a.core.value.Value;
+import org.o42a.util.string.Name;
 
 
 public class ExitLoop extends ConditionAction {
 
-	private final String blockName;
+	private final Name blockName;
 
-	public ExitLoop(ScopeInfo statement, String blockName) {
+	public ExitLoop(ScopeInfo statement, Name blockName) {
 		super(statement);
 		this.blockName = blockName;
 	}
 
-	public final String getBlockName() {
+	public final Name getBlockName() {
 		return this.blockName;
 	}
 

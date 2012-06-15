@@ -20,6 +20,8 @@
 package org.o42a.intrinsic.operator;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
@@ -32,6 +34,7 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.ref.*;
@@ -43,7 +46,7 @@ import org.o42a.util.fn.Cancelable;
 
 public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 
-	private final String operandName;
+	private final MemberName operandId;
 	private final ValueStruct<?, O> operandStruct;
 	private Ref operand;
 
@@ -53,7 +56,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 			String operandName,
 			ValueStruct<?, O> operandStruct) {
 		super(owner, sources);
-		this.operandName = operandName;
+		this.operandId = fieldName(CASE_INSENSITIVE.canonicalName(operandName));
 		this.operandStruct = operandStruct;
 	}
 
@@ -121,7 +124,7 @@ public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
 		}
 
 		final Member member =
-				field(this.operandName, Accessor.DECLARATION);
+				member(this.operandId, Accessor.DECLARATION);
 		final Path path = member.getKey().toPath().dereference();
 
 		return this.operand = path.bind(this, getScope()).target(distribute());

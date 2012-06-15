@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+
 import org.o42a.core.member.MemberRegistry;
 
 
@@ -36,7 +38,9 @@ public final class ClauseFactory {
 			return createNewClause(declaration);
 		}
 		return createNewClause(
-				declaration.setName(Integer.toString(++this.clauseSeq)));
+				declaration.setName(
+						CASE_SENSITIVE.canonicalName(
+								Integer.toString(++this.clauseSeq))));
 	}
 
 	private final ClauseBuilder createNewClause(

@@ -21,8 +21,10 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.common.object.AnnotatedModule.moduleSources;
+import static org.o42a.core.member.MemberId.fieldName;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.RelatedSources;
@@ -31,6 +33,7 @@ import org.o42a.common.source.TreeCompilerContext;
 import org.o42a.common.source.URLSourceTree;
 import org.o42a.core.Namespace;
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberName;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -48,6 +51,25 @@ import org.o42a.util.io.URLSource;
 @SourcePath("root.o42a")
 @RelatedSources({"number.o42a", "abstract_array.o42a", "operators.o42a"})
 public class Root extends Obj {
+
+	private static final MemberName DIRECTIVE_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("directive"));
+	private static final MemberName INTEGER_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("integer"));
+	private static final MemberName FLOAT_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("float"));
+	private static final MemberName STRING_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("string"));
+	private static final MemberName LINK_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("link"));
+	private static final MemberName VARIABLE_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("variable"));
+	private static final MemberName GETTER_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("getter"));
+	private static final MemberName ARRAY_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("array"));
+	private static final MemberName ROW_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("row"));
 
 	public static Root createRoot(Scope topScope) {
 
@@ -94,7 +116,7 @@ public class Root extends Obj {
 			return this.directiveObject;
 		}
 		return this.directiveObject =
-				field("directive").substance(dummyUser()).toObject();
+				member(DIRECTIVE_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getInteger() {
@@ -102,7 +124,7 @@ public class Root extends Obj {
 			return this.integerObject;
 		}
 		return this.integerObject =
-				field("integer").substance(dummyUser()).toObject();
+				member(INTEGER_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getFloat() {
@@ -110,7 +132,7 @@ public class Root extends Obj {
 			return this.floatObject;
 		}
 		return this.floatObject =
-				field("float").substance(dummyUser()).toObject();
+				member(FLOAT_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getString() {
@@ -118,7 +140,7 @@ public class Root extends Obj {
 			return this.stringObject;
 		}
 		return this.stringObject =
-				field("string").substance(dummyUser()).toObject();
+				member(STRING_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getLink() {
@@ -126,7 +148,7 @@ public class Root extends Obj {
 			return this.linkObject;
 		}
 		return this.linkObject =
-				field("link").substance(dummyUser()).toObject();
+				member(LINK_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getVariable() {
@@ -134,7 +156,7 @@ public class Root extends Obj {
 			return this.variableObject;
 		}
 		return this.variableObject =
-				field("variable").substance(dummyUser()).toObject();
+				member(VARIABLE_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getGetter() {
@@ -142,7 +164,7 @@ public class Root extends Obj {
 			return this.getterObject;
 		}
 		return this.getterObject =
-				field("getter").substance(dummyUser()).toObject();
+				member(GETTER_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getArray() {
@@ -150,14 +172,15 @@ public class Root extends Obj {
 			return this.arrayObject;
 		}
 		return this.arrayObject =
-				field("array").substance(dummyUser()).toObject();
+				member(ARRAY_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getRow() {
 		if (this.rowObject != null) {
 			return this.rowObject;
 		}
-		return this.rowObject = field("row").substance(dummyUser()).toObject();
+		return this.rowObject =
+				member(ROW_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	@Override

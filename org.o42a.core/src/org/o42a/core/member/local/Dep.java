@@ -71,6 +71,8 @@ public abstract class Dep extends Step {
 		return this.object;
 	}
 
+	public abstract String getName();
+
 	public abstract Object getDepKey();
 
 	public abstract Obj getDepTarget();
