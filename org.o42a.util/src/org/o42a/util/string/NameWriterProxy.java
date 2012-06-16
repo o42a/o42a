@@ -31,8 +31,8 @@ public abstract class NameWriterProxy extends NameWriter {
 	}
 
 	@Override
-	public void extpandCapacity(int size) {
-		out().extpandCapacity(size);
+	public void expandCapacity(int size) {
+		out().expandCapacity(size);
 	}
 
 	@Override

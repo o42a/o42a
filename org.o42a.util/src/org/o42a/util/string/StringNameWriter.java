@@ -32,11 +32,11 @@ public class StringNameWriter extends NameWriter {
 	}
 
 	@Override
-	public void extpandCapacity(int size) {
+	public void expandCapacity(int size) {
 		if (this.out == null) {
 			this.out = new StringBuilder(size);
 		} else {
-			this.out.setLength(this.out.length() + size);
+			this.out.ensureCapacity(this.out.length() + size);
 		}
 	}
 
