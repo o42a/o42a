@@ -27,7 +27,7 @@ import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 
-public final class Name implements Comparable<Name> {
+public final class Name implements CharSequence, Comparable<Name> {
 
 	public static final Name caseInsensitiveName(String string) {
 		return newName(string, null);
@@ -165,6 +165,7 @@ public final class Name implements Comparable<Name> {
 
 	private final Capitalization capitalization;
 	private final String string;
+	private int hash;
 	private final boolean valid;
 	private final boolean canonical;
 
@@ -195,118 +196,47 @@ public final class Name implements Comparable<Name> {
 		return length() == 0;
 	}
 
+	@Override
 	public final int length() {
 		return this.string.length();
 	}
 
+	@Override
 	public final char charAt(int index) {
 		return this.string.charAt(index);
+	}
+
+	@Override
+	public final Name subSequence(int start, int end) {
+		if (isCanonical()) {
+			return new Name(
+					capitalization(),
+					toString().substring(start, end),
+					isValid(),
+					true);
+		}
+		if (start == 0) {
+			if (end == length()) {
+				return this;
+			}
+			return new Name(
+					capitalization(),
+					toString().substring(0, end),
+					isValid(),
+					isCanonical());
+		}
+		return caseInsensitiveName(toString().substring(start, end));
 	}
 
 	public final int codePointAt(int index) {
 		return this.string.codePointAt(index);
 	}
 
-	public Name decapitalize() {
+	public final String toUnderscoredString() {
 
-		final int length = length();
+		final StringNameWriter out = new StringNameWriter();
 
-		if (length < 2) {
-			if (length == 0) {
-				return this;
-			}
-
-			final int oldFirst = charAt(0);
-			final int newFirst = capitalization().decapitalizeFirst(oldFirst);
-
-			if (oldFirst == newFirst) {
-				return this;
-			}
-
-			return new Name(
-					capitalization(),
-					new String(toChars(newFirst)),
-					isValid(),
-					true);
-		}
-
-		final int oldFirst;
-		final int oldFirstLen;
-		final char c1 = charAt(0);
-		final char c2 = charAt(1);
-
-		if (isSurrogatePair(c1, c2)) {
-			oldFirst = toCodePoint(c1, c2);
-			oldFirstLen = 2;
-		} else {
-			oldFirst = c1;
-			oldFirstLen = 1;
-		}
-
-		final int newFirst = capitalization().decapitalizeFirst(oldFirst);
-
-		if (oldFirst == newFirst) {
-			return this;
-		}
-
-		final int restLen = length() - oldFirstLen;
-		final char[] newChars;
-		final int newFirstLen;
-
-		if (newFirst < MIN_SUPPLEMENTARY_CODE_POINT) {
-			newFirstLen = 1;
-			newChars = new char[newFirstLen + restLen];
-			newChars[0] = (char) newFirst;
-		} else {
-			newFirstLen = 2;
-			newChars = new char[newFirstLen + restLen];
-
-			final int offset = newFirst - MIN_SUPPLEMENTARY_CODE_POINT;
-
-			newChars[1] = (char) ((offset & 0x3ff) + MIN_LOW_SURROGATE);
-	        newChars[0] = (char) ((offset >>> 10) + MIN_HIGH_SURROGATE);
-		}
-
-		this.string.getChars(oldFirstLen, length(), newChars, newFirstLen);
-
-		return new Name(
-				capitalization(),
-				new String(newChars),
-				isValid(),
-				false);
-	}
-
-	public final Name toCanonocal() {
-		if (isCanonical()) {
-			return this;
-		}
-		return capitalization().canonicalName(this);
-	}
-
-	public final String toUnderscopedString() {
-
-		final String string = toCanonocal().toString();
-		final int length = string.length();
-		StringBuilder out = null;
-
-		for (int i = 0; i < length; ++i) {
-
-			final char c = string.charAt(i);
-
-			if (c == ' ') {
-				if (out == null) {
-					out = new StringBuilder(length);
-					out.append(string, 0, i);
-				}
-				out.append('_');
-			} else if (out != null) {
-				out.append(c);
-			}
-		}
-
-		if (out == null) {
-			return string;
-		}
+		out.underscored().canonical().write(this);
 
 		return out.toString();
 	}
@@ -320,21 +250,61 @@ public final class Name implements Comparable<Name> {
 
 	@Override
 	public int compareTo(Name o) {
-		if (capitalization().isCaseSensitive()) {
-			if (o.capitalization().isCaseSensitive()) {
-				return toString().compareTo(o.toString());
-			}
-		} else {
-			if (!o.capitalization().isCaseSensitive()) {
-				return toString().compareToIgnoreCase(o.toString());
-			}
+		if (isCanonical() && o.isCanonical()) {
+			return toString().compareTo(o.toString());
 		}
-		return toCanonocal().toString().compareTo(o.toCanonocal().toString());
+
+		final Capitalization cap1 = capitalization();
+		final Capitalization cap2 = o.capitalization();
+		final int len1 = length();
+		final int len2 = o.length();
+
+		int i1 = 0;
+		int i2 = 0;
+
+		while (i1 < len1 && i2 < len2) {
+
+			int c1 = cap1.canonical(codePointAt(i1));
+			int c2 = cap2.canonical(o.codePointAt(i2));
+
+			if (c1 != c2) {
+				return c1 - c2;
+			}
+
+			c1 += charCount(c1);
+			c2 += charCount(c2);
+		}
+
+		return len1 - len2;
 	}
 
 	@Override
 	public int hashCode() {
-		return toCanonocal().toString().hashCode();
+
+		final int len = length();
+
+		if (len == 0) {
+			return 0;
+		}
+
+		int hash = this.hash;
+
+		if (hash != 0) {
+			return hash;
+		}
+
+		int i = 0;
+		final Capitalization cap = capitalization();
+
+		do {
+
+			final int cp = cap.canonical(codePointAt(i));
+
+			hash = 31 * hash + cp;
+			i += charCount(cp);
+		} while (i < len);
+
+		return this.hash = hash;
 	}
 
 	@Override
@@ -356,17 +326,33 @@ public final class Name implements Comparable<Name> {
 		return this.string;
 	}
 
-	private final boolean nameIs(Name other) {
-		if (capitalization().isCaseSensitive()) {
-			if (other.capitalization().isCaseSensitive()) {
-				return toString().equals(other.toString());
-			}
-		} else {
-			if (!other.capitalization().isCaseSensitive()) {
-				return toString().equalsIgnoreCase(other.toString());
-			}
+	private final boolean nameIs(Name o) {
+		if (isCanonical() && o.isCanonical()) {
+			return toString().equals(o.toString());
 		}
-		return toCanonocal().toString().equals(other.toCanonocal().toString());
+
+		final Capitalization cap1 = capitalization();
+		final Capitalization cap2 = o.capitalization();
+		final int len1 = length();
+		final int len2 = o.length();
+
+		int i1 = 0;
+		int i2 = 0;
+
+		while (i1 < len1 && i2 < len2) {
+
+			int c1 = cap1.canonical(codePointAt(i1));
+			int c2 = cap2.canonical(o.codePointAt(i2));
+
+			if (c1 != c2) {
+				return false;
+			}
+
+			i1 += charCount(c1);
+			i2 += charCount(c2);
+		}
+
+		return len1 == len2;
 	}
 
 }

@@ -105,7 +105,7 @@ public abstract class Control {
 
 	public String name(Name name) {
 		if (name != null) {
-			return name.toUnderscopedString();
+			return name.toUnderscoredString();
 		}
 		return main().anonymousName();
 	}

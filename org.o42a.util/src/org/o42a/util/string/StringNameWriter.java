@@ -19,49 +19,45 @@
 */
 package org.o42a.util.string;
 
-import static java.lang.Character.toLowerCase;
 
+public class StringNameWriter extends NameWriter {
 
-public enum Capitalization {
+	private StringBuilder out;
 
-	CASE_INSENSITIVE() {
+	public StringNameWriter() {
+	}
 
-		@Override
-		public int decapitalizeFirst(int firstCodePoint) {
-			return toLowerCase(firstCodePoint);
+	public StringNameWriter(StringBuilder out) {
+		this.out = out;
+	}
+
+	@Override
+	public void extpandCapacity(int size) {
+		if (this.out == null) {
+			this.out = new StringBuilder(size);
+		} else {
+			this.out.setLength(this.out.length() + size);
 		}
+	}
 
-	},
-
-	CASE_SENSITIVE() {
-
-		@Override
-		public int canonical(int codePoint) {
-			return codePoint;
+	public final StringBuilder out() {
+		if (this.out != null) {
+			return this.out;
 		}
-
-	},
-
-	PRESERVE_CAPITALS;
-
-	public final boolean isCaseSensitive() {
-		return this == CASE_SENSITIVE;
+		return this.out = new StringBuilder();
 	}
 
-	public int decapitalizeFirst(int firstCodePoint) {
-		return firstCodePoint;
+	@Override
+	public String toString() {
+		if (this.out == null) {
+			return "";
+		}
+		return this.out.toString();
 	}
 
-	public int canonical(int codePoint) {
-		return Character.toLowerCase(codePoint);
-	}
-
-	public final Name name(String name) {
-		return new Name(this, name, true, isCaseSensitive());
-	}
-
-	public final Name canonicalName(String name) {
-		return new Name(this, name, true, true);
+	@Override
+	protected void writeCodePoint(int codePoint) {
+		out().appendCodePoint(codePoint);
 	}
 
 }

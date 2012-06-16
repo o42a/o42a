@@ -164,7 +164,7 @@ public class Module extends Obj {
 		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
 			this.id = generator.id(
-					scope.module().getModuleName().toUnderscopedString());
+					scope.module().getModuleName().toUnderscoredString());
 		}
 
 		@Override

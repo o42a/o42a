@@ -312,9 +312,9 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			final org.o42a.util.string.Name[] adaptee =
 					fileName.getAdapterId();
 
-			localName = "$" + adaptee[adaptee.length - 1].toUnderscopedString();
+			localName = "$" + adaptee[adaptee.length - 1].toUnderscoredString();
 		} else {
-			localName = fileName.getFieldName().toUnderscopedString();
+			localName = fileName.getFieldName().toUnderscoredString();
 		}
 
 		final String briefName;

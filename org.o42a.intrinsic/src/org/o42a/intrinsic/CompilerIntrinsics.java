@@ -52,8 +52,8 @@ public class CompilerIntrinsics extends Intrinsics {
 	private final Obj falseObject;
 	private final Root root;
 
-	private final HashMap<String, ModuleUse> modules =
-			new HashMap<String, ModuleUse>();
+	private final HashMap<Name, ModuleUse> modules =
+			new HashMap<Name, ModuleUse>();
 	private ModuleUse mainModule;
 	private ConsoleModule consoleModule;
 
@@ -151,8 +151,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	@Override
 	public Module getModule(Name moduleName) {
 
-		final ModuleUse module =
-				this.modules.get(moduleName.toCanonocal().toString());
+		final ModuleUse module = this.modules.get(moduleName);
 
 		if (module == null) {
 			return null;
@@ -171,7 +170,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	public void removeModule(Module module) {
-		this.modules.remove(moduleId(module));
+		this.modules.remove(module.getModuleName());
 	}
 
 	public void setMainModule(Module module) {
@@ -209,21 +208,17 @@ public class CompilerIntrinsics extends Intrinsics {
 		}
 	}
 
-	private static String moduleId(Module module) {
-		return module.getModuleName().toCanonocal().toString();
-	}
-
 	private ModuleUse registerModule(Module module) {
 
 		final ModuleUse use = new ModuleUse(module);
 
-		this.modules.put(moduleId(module), use);
+		this.modules.put(module.getModuleName(), use);
 
 		return use;
 	}
 
 	private final boolean consoleUsed() {
-		return this.modules.get(moduleId(this.consoleModule)).isUsed();
+		return this.modules.get(this.consoleModule.getModuleName()).isUsed();
 	}
 
 	private void normalizeAll(Analyzer analyzer) {

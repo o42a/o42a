@@ -41,6 +41,7 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 import org.o42a.util.string.Name;
+import org.o42a.util.string.StringNameWriter;
 
 
 public class GrammarTestCase {
@@ -61,7 +62,12 @@ public class GrammarTestCase {
 
 	public static String canonicalName(Name name) {
 		assertThat("No name", name, notNullValue());
-		return name.toCanonocal().toString();
+
+		final StringNameWriter out = new StringNameWriter();
+
+		out.canonical().write(name);
+
+		return out.toString();
 	}
 
 	public static String canonicalName(NameNode node) {
