@@ -39,7 +39,7 @@ public final class Name implements CharSequence, Comparable<Name> {
 
 	public static Name newName(String string, Capitalization capitalization) {
 
-		boolean preserveCapitals = capitalization != null;
+		boolean preserveCapital = capitalization != null;
 		final StringBuilder out = new StringBuilder(string.length());
 		final int len = string.length();
 		boolean prevDigit = false;
@@ -47,6 +47,8 @@ public final class Name implements CharSequence, Comparable<Name> {
 		boolean prevHyphen = false;
 		boolean prevSeparator = false;
 		boolean firstWord = true;
+		boolean wordCapital = false;
+		boolean wordAbbr = false;
 		int i = 0;
 		boolean valid = true;
 
@@ -74,7 +76,15 @@ public final class Name implements CharSequence, Comparable<Name> {
 				if (out.length() == 0) {
 					continue;
 				}
+				if (!preserveCapital
+						&& !firstWord
+						&& wordCapital
+						&& !wordAbbr) {
+					preserveCapital = true;
+				}
 				firstWord = false;
+				wordCapital = false;
+				wordAbbr = false;
 				prevSeparator = true;
 				continue;
 			}
@@ -89,7 +99,15 @@ public final class Name implements CharSequence, Comparable<Name> {
 					}
 					prevSeparator = false;
 				}
+				if (!preserveCapital
+						&& !firstWord
+						&& wordCapital
+						&& !wordAbbr) {
+					preserveCapital = true;
+				}
 				firstWord = false;
+				wordCapital = false;
+				wordAbbr = false;
 				prevDigit = true;
 				prevLetter = false;
 				prevHyphen = false;
@@ -97,24 +115,33 @@ public final class Name implements CharSequence, Comparable<Name> {
 				continue;
 			}
 			if (isLetter(c)) {
+				if (!preserveCapital) {
+					if (prevSeparator || !prevLetter) {
+						if (isUpperCase(c)) {
+							// Word starts with capital letter.
+							// Proper noun.
+							wordCapital = true;
+						} else if (firstWord) {
+							// First word starts with non-capital.
+							// Preserve it.
+							preserveCapital = true;
+						}
+					} else if (prevLetter && isUpperCase(c)) {
+						// Abbreviation.
+						if (firstWord) {
+							// First word is abbreviation.
+							// Preserve capital.
+							preserveCapital = true;
+						} else {
+							wordAbbr = true;
+						}
+					}
+				}
 				if (prevSeparator) {
 					if (prevLetter) {
 						out.append(' ');
 					}
 					prevSeparator = false;
-				}
-				if (!preserveCapitals) {
-					if (firstWord) {
-						if (prevLetter && isUpperCase(c)) {
-							// Abbreviation.
-							preserveCapitals = true;
-						}
-					} else {
-						if (!prevLetter && isUpperCase(c)) {
-							// Proper noun.
-							preserveCapitals = true;
-						}
-					}
 				}
 				prevDigit = false;
 				prevLetter = true;
@@ -136,7 +163,15 @@ public final class Name implements CharSequence, Comparable<Name> {
 					// Separator before hyphen.
 					valid = false;
 				}
+				if (!preserveCapital
+						&& !firstWord
+						&& wordCapital
+						&& !wordAbbr) {
+					preserveCapital = true;
+				}
 				firstWord = false;
+				wordCapital = false;
+				wordAbbr = false;
 				prevDigit = false;
 				prevLetter = false;
 				prevHyphen = true;
@@ -152,9 +187,19 @@ public final class Name implements CharSequence, Comparable<Name> {
 			out.appendCodePoint(c);
 		}
 
-		final Capitalization cap =
-				capitalization != null ? capitalization
-				: (preserveCapitals ? PRESERVE_CAPITALS : CASE_INSENSITIVE);
+		final Capitalization cap;
+
+		if (capitalization != null) {
+			cap = capitalization;
+		} else {
+			if (!preserveCapital
+					&& !firstWord
+					&& wordCapital
+					&& !wordAbbr) {
+				preserveCapital = true;
+			}
+			cap = preserveCapital ? PRESERVE_CAPITALS : CASE_INSENSITIVE;
+		}
 
 		return new Name(
 				cap,

@@ -19,33 +19,28 @@
 */
 package org.o42a.util.string;
 
+import org.o42a.util.string.ID.Separator;
+
 
 public abstract class NameWriter {
 
 	/**
 	 * Expands a writer capacity.
 	 *
-	 * @param size an estimated number of characters expected to be written.
+	 * @param size an estimated number of characters to be written.
 	 */
-	public void extpandCapacity(int size) {
+	public void expandCapacity(int size) {
 	}
 
 	public final NameWriter write(ID id) {
 
-		final ID prefix = id.getPrefix();
-		final NameWriter writer;
-		final NameWriter nextWriter;
+		final Separator[] lastSeparator = new Separator[] {Separator.NONE};
+		final NameWriter nextWriter = writeID(lastSeparator, id, true);
+		final Separator lastSep = lastSeparator[0];
 
-		if (prefix != null) {
-			nextWriter = write(prefix);
-			writer = nextWriter;
-		} else {
-			nextWriter = decapitalizer();
-			writer = this;
+		if (lastSep == Separator.TOP) {
+			nextWriter.writerSeparator(lastSep);
 		}
-
-		writer.writerSeparator(id.getSeparator());
-		writer.write(id.getName());
 
 		return nextWriter;
 	}
@@ -84,7 +79,7 @@ public abstract class NameWriter {
 			return this;
 		}
 
-		extpandCapacity(len);
+		expandCapacity(len);
 
 		int i = 0;
 
@@ -97,6 +92,59 @@ public abstract class NameWriter {
 		} while (i < len);
 
 		return this;
+	}
+
+	private NameWriter writeID(
+			Separator[] lastSeparator,
+			ID id,
+			boolean decapitalize) {
+
+		final ID prefix = id.getPrefix();
+		final NameWriter writer;
+		final NameWriter nextWriter;
+
+		if (prefix != null) {
+			nextWriter = writeID(lastSeparator, prefix, decapitalize);
+			writer = nextWriter;
+		} else if (decapitalize) {
+			nextWriter = decapitalizer();
+			writer = this;
+		} else {
+			nextWriter = this;
+			writer = this;
+		}
+
+		final Name name = id.getName();
+		final Separator prev = lastSeparator[0];
+		final Separator next = id.getSeparator();
+
+		if (name.isEmpty()) {
+			if (!prev.discardsNext(next)) {
+				if (!next.discardsPrev(prev)) {
+					writer.writerSeparator(prev);
+				}
+				lastSeparator[0] = next;
+			}
+		} else {
+			if (prev.discardsNext(next)) {
+				writer.writerSeparator(prev);
+			} else if (next.discardsPrev(prev)) {
+				writer.writerSeparator(next);
+			} else {
+				writer.writerSeparator(prev);
+				writer.writerSeparator(next);
+			}
+			lastSeparator[0] = Separator.NONE;
+			writer.write(name);
+		}
+
+		final ID suffix = id.getSuffix();
+
+		if (suffix != null) {
+			nextWriter.writeID(lastSeparator, suffix, false);
+		}
+
+		return nextWriter;
 	}
 
 }
