@@ -24,15 +24,9 @@ import static java.lang.Character.toLowerCase;
 
 public enum Capitalization {
 
-	CASE_INSENSITIVE() {
-
-		@Override
-		public int decapitalizeFirst(int firstCodePoint) {
-			return toLowerCase(firstCodePoint);
-		}
-
-	},
-
+	/**
+	 * Name is case sensitive.
+	 */
 	CASE_SENSITIVE() {
 
 		@Override
@@ -42,7 +36,28 @@ public enum Capitalization {
 
 	},
 
-	PRESERVE_CAPITALS;
+	/**
+	 * Name is case insensitive.
+	 *
+	 * <p>The first letter can be de-capitalized when the name is displayed.</p>
+	 */
+	CASE_INSENSITIVE() {
+
+		@Override
+		public int decapitalizeFirst(int firstCodePoint) {
+			return toLowerCase(firstCodePoint);
+		}
+
+	},
+
+	/**
+	 * Name is case-insensitive, but when the name is displayed the first
+	 * capital letter is preserved.
+	 *
+	 * <p>This is useful for abbreviations like "URL" and proper nouns like
+	 * "John Smith".</p>
+	 */
+	PRESERVE_CAPITAL;
 
 	public final boolean isCaseSensitive() {
 		return this == CASE_SENSITIVE;

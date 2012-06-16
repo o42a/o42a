@@ -22,21 +22,57 @@ package org.o42a.util.string;
 import static java.lang.Character.*;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
-import static org.o42a.util.string.Capitalization.PRESERVE_CAPITALS;
+import static org.o42a.util.string.Capitalization.PRESERVE_CAPITAL;
 import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 
 public final class Name implements CharSequence, Comparable<Name> {
 
+	/**
+	 * Creates a new case-sensitive name.
+	 *
+	 * <p>This method calls {@link #newName(String, Capitalization)} with
+	 * capitalization set to {@link Capitalization#CASE_SENSITIVE}.</p>
+	 *
+	 * @param string name string.
+	 *
+	 * @return new name, possibly invalid.
+	 */
 	public static final Name caseInsensitiveName(String string) {
 		return newName(string, null);
 	}
 
+	/**
+	 * Creates a new case-insensitive name.
+	 *
+	 * <p>The exact capitalization will be determined automatically.
+	 * This method calls {@link #newName(String, Capitalization)} with
+	 * capitalization set to <code>null</code>.</p>
+	 *
+	 * @param string name string.
+	 *
+	 * @return new name, possibly invalid.
+	 */
 	public static final Name caseSensitiveName(String string) {
 		return newName(string, CASE_SENSITIVE);
 	}
 
+	/**
+	 * Constructs a new name.
+	 *
+	 * <p>This method removes extra word separators and validates the name.</p>
+	 *
+	 * <p>If {@code capitalization} is omitted, then it is considered case
+	 * insensitive, i.e. either {@link Capitalization#CASE_INSENSITIVE} or
+	 * {@link Capitalization#PRESERVE_CAPITAL} depending on name.</p>
+	 *
+	 * @param string name string.
+	 * @param capitalization name capitalization or <code>null</code>
+	 * to determine it automatically.
+	 *
+	 * @return new name, possibly invalid.
+	 */
 	public static Name newName(String string, Capitalization capitalization) {
 
 		boolean preserveCapital = capitalization != null;
@@ -198,7 +234,7 @@ public final class Name implements CharSequence, Comparable<Name> {
 					&& !wordAbbr) {
 				preserveCapital = true;
 			}
-			cap = preserveCapital ? PRESERVE_CAPITALS : CASE_INSENSITIVE;
+			cap = preserveCapital ? PRESERVE_CAPITAL : CASE_INSENSITIVE;
 		}
 
 		return new Name(
