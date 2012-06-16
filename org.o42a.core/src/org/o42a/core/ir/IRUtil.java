@@ -47,10 +47,35 @@ public class IRUtil {
 		final MemberName name = memberId.getMemberName();
 
 		if (name != null) {
-			return generator.id(name.getName().toUnderscopedString());
+			return encodeMemberName(generator, name);
 		}
 
-		final AdapterId adapterId = memberId.getAdapterId();
+		return encodeAdapterId(generator, memberId.getAdapterId());
+	}
+
+	public static CodeId encodeMemberName(
+			Generator generator,
+			MemberName name) {
+
+		final String underscored = name.getName().toUnderscoredString();
+
+		switch (name.getKind()) {
+		case CLAUSE:
+			return generator.id('C' + underscored);
+		case LOCAL:
+			return generator.id('L' + underscored);
+		case FIELD :
+			return generator.id(underscored);
+		}
+
+		throw new IllegalArgumentException(
+				"Unsupported member kind: " + name.getKind());
+	}
+
+	public static CodeId encodeAdapterId(
+			Generator generator,
+			AdapterId adapterId) {
+
 		final ScopeIR adapterTypeIR =
 				adapterId.getAdapterTypeScope().ir(generator);
 
@@ -96,23 +121,18 @@ public class IRUtil {
 
 		if (name != null) {
 			if (prefix == null) {
-				return generator.id(name.getName().toUnderscopedString());
+				return encodeMemberName(generator, name);
 			}
-			return prefix.sub(name.getName().toUnderscopedString());
+			return prefix.sub(encodeMemberName(generator, name));
 		}
 
 		final AdapterId adapterId = memberId.toAdapterId();
 
 		if (adapterId != null) {
-
-			final ScopeIR adapterTypeIR =
-					adapterId.getAdapterTypeScope().ir(generator);
-
 			if (prefix == null) {
-				return generator.id().type(adapterTypeIR.getId());
+				return encodeAdapterId(generator, adapterId);
 			}
-
-			return prefix.type(adapterTypeIR.getId());
+			return prefix.type(encodeAdapterId(generator, adapterId));
 		}
 
 		final MemberId[] ids = memberId.toIds();

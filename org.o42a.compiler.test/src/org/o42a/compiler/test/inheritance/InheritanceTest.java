@@ -23,6 +23,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.o42a.core.object.type.Derivation.MEMBER_OVERRIDE;
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,10 +60,8 @@ public class InheritanceTest extends CompilerTestCase {
 				.toField()
 				.getKey()
 				.getMemberName()
-				.getName()
-				.toCanonocal()
-				.toString(),
-				is("a"));
+				.getName(),
+				is(CASE_INSENSITIVE.canonicalName("a")));
 		assertSame(
 				this.a,
 				this.b.type().getAncestor().typeObject());

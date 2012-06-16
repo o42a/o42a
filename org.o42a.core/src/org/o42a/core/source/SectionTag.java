@@ -29,12 +29,10 @@ public final class SectionTag {
 
 	private final SectionTag parent;
 	private final Name tag;
-	private final String tagId;
 
 	private SectionTag(SectionTag parent, Name tag) {
 		this.parent = parent;
 		this.tag = tag;
-		this.tagId = tag != null ? tag.toCanonocal().toString() : null;
 	}
 
 	public final boolean isImplicit() {
@@ -66,7 +64,7 @@ public final class SectionTag {
 				+ ((this.parent == null) ? 0 : this.parent.hashCode());
 		result =
 				prime * result
-				+ ((this.tagId == null) ? 0 : this.tagId.hashCode());
+				+ ((this.tag == null) ? 0 : this.tag.hashCode());
 
 		return result;
 	}
@@ -92,11 +90,11 @@ public final class SectionTag {
 		} else if (!this.parent.equals(other.parent)) {
 			return false;
 		}
-		if (this.tagId == null) {
-			if (other.tagId != null) {
+		if (this.tag == null) {
+			if (other.tag != null) {
 				return false;
 			}
-		} else if (!this.tagId.equals(other.tagId)) {
+		} else if (!this.tag.is(other.tag)) {
 			return false;
 		}
 

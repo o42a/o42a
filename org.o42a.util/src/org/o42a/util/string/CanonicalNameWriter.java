@@ -19,49 +19,37 @@
 */
 package org.o42a.util.string;
 
-import static java.lang.Character.toLowerCase;
+import org.o42a.util.string.ID.Separator;
 
 
-public enum Capitalization {
+final class CanonicalNameWriter extends NameWriterProxy {
 
-	CASE_INSENSITIVE() {
+	private Capitalization capitalization;
 
-		@Override
-		public int decapitalizeFirst(int firstCodePoint) {
-			return toLowerCase(firstCodePoint);
-		}
-
-	},
-
-	CASE_SENSITIVE() {
-
-		@Override
-		public int canonical(int codePoint) {
-			return codePoint;
-		}
-
-	},
-
-	PRESERVE_CAPITALS;
-
-	public final boolean isCaseSensitive() {
-		return this == CASE_SENSITIVE;
+	CanonicalNameWriter(NameWriter out) {
+		super(out);
 	}
 
-	public int decapitalizeFirst(int firstCodePoint) {
-		return firstCodePoint;
+	@Override
+	public NameWriter write(Name name) {
+		this.capitalization = name.capitalization();
+		return super.write(name);
 	}
 
-	public int canonical(int codePoint) {
-		return Character.toLowerCase(codePoint);
+	@Override
+	public NameWriter write(String string) {
+		out().write(string);
+		return this;
 	}
 
-	public final Name name(String name) {
-		return new Name(this, name, true, isCaseSensitive());
+	@Override
+	protected void writeCodePoint(int codePoint) {
+		out().writeCodePoint(this.capitalization.canonical(codePoint));
 	}
 
-	public final Name canonicalName(String name) {
-		return new Name(this, name, true, true);
+	@Override
+	protected void writerSeparator(Separator separator) {
+		out().writerSeparator(separator);
 	}
 
 }

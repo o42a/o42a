@@ -19,49 +19,34 @@
 */
 package org.o42a.util.string;
 
-import static java.lang.Character.toLowerCase;
 
+public abstract class NameWriterProxy extends NameWriter {
 
-public enum Capitalization {
+	private final NameWriter out;
 
-	CASE_INSENSITIVE() {
-
-		@Override
-		public int decapitalizeFirst(int firstCodePoint) {
-			return toLowerCase(firstCodePoint);
-		}
-
-	},
-
-	CASE_SENSITIVE() {
-
-		@Override
-		public int canonical(int codePoint) {
-			return codePoint;
-		}
-
-	},
-
-	PRESERVE_CAPITALS;
-
-	public final boolean isCaseSensitive() {
-		return this == CASE_SENSITIVE;
+	public NameWriterProxy(NameWriter out) {
+		assert out != null :
+			"Proxied name writer not specified";
+		this.out = out;
 	}
 
-	public int decapitalizeFirst(int firstCodePoint) {
-		return firstCodePoint;
+	@Override
+	public void extpandCapacity(int size) {
+		out().extpandCapacity(size);
 	}
 
-	public int canonical(int codePoint) {
-		return Character.toLowerCase(codePoint);
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.out + ']';
 	}
 
-	public final Name name(String name) {
-		return new Name(this, name, true, isCaseSensitive());
+	@Override
+	protected void writeCodePoint(int codePoint) {
+		out().writeCodePoint(codePoint);
 	}
 
-	public final Name canonicalName(String name) {
-		return new Name(this, name, true, true);
+	protected final NameWriter out() {
+		return this.out;
 	}
 
 }

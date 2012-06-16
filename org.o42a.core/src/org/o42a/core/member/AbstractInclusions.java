@@ -29,7 +29,7 @@ import org.o42a.util.string.Name;
 
 public abstract class AbstractInclusions extends Inclusions {
 
-	private HashMap<String, LocationInfo> inclusions;
+	private HashMap<Name, LocationInfo> inclusions;
 
 	@Override
 	public boolean implicitInclusionsSupported() {
@@ -44,18 +44,17 @@ public abstract class AbstractInclusions extends Inclusions {
 	@Override
 	public boolean include(LocationInfo location, Name tag) {
 		if (this.inclusions == null) {
-			this.inclusions = new HashMap<String, LocationInfo>();
+			this.inclusions = new HashMap<Name, LocationInfo>();
 		}
 
-		final String id = tag.toCanonocal().toString();
 		final LocationInfo previousLocation =
-				this.inclusions.put(id, location);
+				this.inclusions.put(tag, location);
 
 		if (previousLocation == null) {
 			return true;
 		}
 
-		this.inclusions.put(id, previousLocation);
+		this.inclusions.put(tag, previousLocation);
 		location.getContext().getLogger().error(
 				"duplicate_inclusion",
 				logAnotherLocation(location, previousLocation),

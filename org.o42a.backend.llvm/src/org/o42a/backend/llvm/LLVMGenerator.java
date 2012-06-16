@@ -133,7 +133,7 @@ public class LLVMGenerator extends AbstractGenerator {
 				new SourceFileName(source.getName()).getFieldName();
 
 		if (name != null) {
-			return id(name.toUnderscopedString());
+			return id(name.toUnderscoredString());
 		}
 
 		return id("module");
