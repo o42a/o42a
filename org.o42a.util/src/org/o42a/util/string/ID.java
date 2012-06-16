@@ -60,6 +60,7 @@ public final class ID {
 	private final Separator separator;
 	private final Name name;
 	private final ID suffix;
+	private ID local;
 	private final boolean raw;
 
 	private ID(
@@ -72,6 +73,7 @@ public final class ID {
 		this.separator = separator;
 		this.name = name;
 		this.suffix = suffix;
+		this.local = this;
 		this.raw = raw;
 	}
 
@@ -93,6 +95,49 @@ public final class ID {
 
 	public final boolean isRaw() {
 		return this.raw;
+	}
+
+	public final ID getLocal() {
+		return this.local;
+	}
+
+	public final ID setLocal(String local) {
+		assert local != null :
+			"Local not specified";
+		return setLocal(CASE_SENSITIVE.name(local));
+	}
+
+	public final ID setLocal(Name local) {
+		assert local != null :
+			"Local not specified";
+		return setLocal(new ID(null, Separator.SUB, local, null, false));
+	}
+
+	public final ID setLocal(ID local) {
+		assert local != null :
+			"Local not specified";
+
+		final ID result = sub(local);
+
+		if (result == local) {
+			return local.removeLocal();
+		}
+
+		result.local = local;
+
+		return result;
+	}
+
+	public final ID removeLocal() {
+		if (this.local == this) {
+			return this;
+		}
+		return new ID(
+				getPrefix(),
+				getSeparator(),
+				getName(),
+				getSuffix(),
+				isRaw());
 	}
 
 	public final ID sub(String name) {
