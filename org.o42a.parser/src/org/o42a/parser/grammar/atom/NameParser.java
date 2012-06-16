@@ -121,14 +121,14 @@ public class NameParser implements Parser<NameNode> {
 					// Preserve capital if the first word contains
 					// a capital letter not at the beginning.
 					// This is for abbreviations like "URL".
-					capitalization = Capitalization.PRESERVE_CAPITALS;
+					capitalization = Capitalization.PRESERVE_CAPITAL;
 				}
 			} else {
 				if (word.firstCapital() && !word.notFirstCapital()) {
 					// Preserve capital if a not first word starts with
 					// a capital letter and has no more capitals.
 					// This is for proper nouns like "John Smith".
-					capitalization = Capitalization.PRESERVE_CAPITALS;
+					capitalization = Capitalization.PRESERVE_CAPITAL;
 				}
 				if (hyphen != 0) {
 					name.append('-');
