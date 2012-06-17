@@ -19,7 +19,7 @@
 */
 package org.o42a.intrinsic.root;
 
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.intrinsic.root.UseObject.*;
 import static org.o42a.util.string.Name.caseInsensitiveName;
 

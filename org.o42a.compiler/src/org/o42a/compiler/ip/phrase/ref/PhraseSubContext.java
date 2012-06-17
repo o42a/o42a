@@ -20,7 +20,7 @@
 package org.o42a.compiler.ip.phrase.ref;
 
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.clauseName;
+import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.compiler.ip.phrase.part.NextClause;

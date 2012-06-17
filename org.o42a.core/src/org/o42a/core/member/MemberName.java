@@ -24,10 +24,28 @@ import org.o42a.util.string.Name;
 
 public final class MemberName extends MemberId {
 
+	public static MemberName fieldName(Name name) {
+		assert name != null :
+			"Field name not specified";
+		return new MemberName(MemberName.MemberKind.FIELD, name);
+	}
+
+	public static MemberName clauseName(Name name) {
+		assert name != null :
+			"Clause name not specified";
+		return new MemberName(MemberName.MemberKind.CLAUSE, name);
+	}
+
+	public static MemberName localName(Name name) {
+		assert name != null :
+			"Local name not specified";
+		return new MemberName(MemberName.MemberKind.LOCAL, name);
+	}
+
 	private final MemberKind kind;
 	private final Name name;
 
-	MemberName(MemberKind kind, Name name) {
+	private MemberName(MemberKind kind, Name name) {
 		this.kind = kind;
 		this.name = name;
 	}

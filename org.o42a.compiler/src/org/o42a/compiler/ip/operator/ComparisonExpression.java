@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.operator;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.binaryPhrase;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.ast.expression.BinaryNode;

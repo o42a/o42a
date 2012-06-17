@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.Interpreter.definitionLinkType;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.ast.atom.NameNode;

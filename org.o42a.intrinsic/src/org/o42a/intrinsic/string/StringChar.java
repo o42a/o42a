@@ -23,7 +23,7 @@ import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.VAL_ALIGNMENT_MASK;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.codegen.code.Block;

@@ -20,7 +20,7 @@
 package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.intrinsic.string.ConcatFunc.CONCAT;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
