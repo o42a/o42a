@@ -21,16 +21,15 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 
-	public static final ObjectData OBJECT_DATA = new ObjectData();
+	public static final Signature OBJECT_DATA = new Signature();
 
 	private ObjectDataFunc(FuncCaller<ObjectDataFunc> caller) {
 		super(caller);
@@ -40,12 +39,14 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 		invoke(null, code, OBJECT_DATA.result(), data);
 	}
 
-	public static final class ObjectData extends Signature<ObjectDataFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ObjectDataFunc> {
 
 		private Return<Void> result;
 		private Arg<ObjectIRData.Op> data;
 
-		private ObjectData() {
+		private Signature() {
+			super(ID.id("ObjectDataF"));
 		}
 
 		public final Return<Void> result() {
@@ -59,11 +60,6 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 		@Override
 		public final ObjectDataFunc op(FuncCaller<ObjectDataFunc> caller) {
 			return new ObjectDataFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectDataF");
 		}
 
 		@Override

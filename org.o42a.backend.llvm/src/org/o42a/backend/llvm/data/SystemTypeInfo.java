@@ -72,8 +72,7 @@ enum SystemTypeInfo {
 			LLVMDataAllocator allocator,
 			SystemType systemType) {
 
-		final String typeId =
-				systemType.codeId(allocator.getModule().getGenerator()).getId();
+		final String typeId = systemType.getId().toString();
 		final SystemTypeInfo systemTypeInfo = Registry.types.get(typeId);
 
 		if (systemTypeInfo == null) {
@@ -111,7 +110,7 @@ enum SystemTypeInfo {
 		final NativeBuffer ids = module.ids();
 		final long typePtr = createType(
 				modulePtr,
-				ids.writeCodeId(systemType.codeId(module.getGenerator())),
+				ids.write(systemType.getId()),
 				ids.length());
 		final long dataPtr = createTypeData(modulePtr);
 

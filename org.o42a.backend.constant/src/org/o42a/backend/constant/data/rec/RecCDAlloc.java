@@ -25,13 +25,13 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.DCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Rec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public abstract class RecCDAlloc<
@@ -81,7 +81,7 @@ public abstract class RecCDAlloc<
 	public abstract T underlyingValue(T value);
 
 	@Override
-	public final P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public final P op(ID id, AllocClass allocClass, CodeWriter writer) {
 		return op(
 				new OpBE<P>(id, cast(writer)) {
 					@Override
@@ -102,7 +102,7 @@ public abstract class RecCDAlloc<
 
 		final R underlying = allocateUnderlying(
 				container,
-				getData().getId().getLocal().getId());
+				getData().getId().getLocal().toString());
 
 		underlying.setAttributes(getData());
 		underlying.setValue(this);

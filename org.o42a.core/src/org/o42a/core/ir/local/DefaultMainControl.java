@@ -22,9 +22,12 @@ package org.o42a.core.ir.local;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.util.string.ID;
 
 
 final class DefaultMainControl extends MainControl {
+
+	private static final ID RETURN_ID = ID.id("return");
 
 	private final ValOp result;
 	private Block returnCode;
@@ -55,7 +58,7 @@ final class DefaultMainControl extends MainControl {
 			return this.returnCode.head();
 		}
 
-		this.returnCode = code().addBlock(code().id("return"));
+		this.returnCode = code().addBlock(RETURN_ID);
 		this.returnCode.returnVoid();
 
 		return this.returnCode.head();

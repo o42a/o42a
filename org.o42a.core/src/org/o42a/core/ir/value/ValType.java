@@ -21,8 +21,6 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -32,6 +30,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.impl.ConstValOp;
 import org.o42a.core.ir.value.impl.FinalValOp;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public final class ValType extends Type<ValType.Op> {
@@ -43,6 +42,7 @@ public final class ValType extends Type<ValType.Op> {
 	private Int64rec value;
 
 	private ValType() {
+		super(ID.rawId("o42a_val_t"));
 	}
 
 	public final Int32rec flags() {
@@ -82,11 +82,6 @@ public final class ValType extends Type<ValType.Op> {
 	@Override
 	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("o42a_val_t");
 	}
 
 	@Override
@@ -132,28 +127,18 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		public final ValFlagsOp flags(Code code, Atomicity atomicity) {
-			return flags((CodeId) null, code, atomicity);
+			return flags(null, code, atomicity);
 		}
 
-		public final ValFlagsOp flags(
-				String id,
-				Code code,
-				Atomicity atomicity) {
-			return flags(code.id(id), code, atomicity);
-		}
-
-		public final ValFlagsOp flags(
-				CodeId id,
-				Code code,
-				Atomicity atomicity) {
+		public final ValFlagsOp flags(ID id, Code code, Atomicity atomicity) {
 			return new ValFlagsOp(id, code, this, atomicity);
 		}
 
-		public final Int32recOp length(CodeId id, Code code) {
+		public final Int32recOp length(ID id, Code code) {
 			return int32(id, code, getType().length());
 		}
 
-		public final Int64recOp rawValue(CodeId id, Code code) {
+		public final Int64recOp rawValue(ID id, Code code) {
 			return int64(
 					id != null ? id : getId().sub("raw_value"),
 					code,

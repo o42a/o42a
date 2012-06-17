@@ -19,11 +19,11 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 final class GlobalInstanceData<S extends StructOp<S>>
@@ -59,7 +59,7 @@ final class GlobalInstanceData<S extends StructOp<S>>
 	}
 
 	@Override
-	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public S fieldOf(ID id, Code code, StructOp<?> struct) {
 		throw new UnsupportedOperationException();
 	}
 

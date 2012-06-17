@@ -19,8 +19,8 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
+import org.o42a.util.string.ID;
 
 
 public abstract class CBlockPart extends CCodePart<Block> {
@@ -45,7 +45,7 @@ public abstract class CBlockPart extends CCodePart<Block> {
 		this(block, block.getId(), 0);
 	}
 
-	CBlockPart(CBlock<?> block, CodeId id, int index) {
+	CBlockPart(CBlock<?> block, ID id, int index) {
 		super(block, id);
 		this.index = index;
 		this.head = new CCodePos(this);

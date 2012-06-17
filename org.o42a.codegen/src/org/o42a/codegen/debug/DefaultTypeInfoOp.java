@@ -19,17 +19,21 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 import static org.o42a.codegen.debug.DebugFieldInfo.DEBUG_FIELD_INFO_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
+
+	private static final ID TYPE_ID = DEBUG_ID.sub("type");
+	private static final ID TYPE_NAME_ID = DEBUG_ID.sub("type_name");
+	private static final ID FIELD_ID = ID.id("field");
 
 	private DefaultTypeInfoOp(StructWriter<DefaultTypeInfoOp> writer) {
 		super(writer);
@@ -44,6 +48,7 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 		private final DebugTypeInfo typeInfo;
 
 		Struct(DebugTypeInfo typeInfo) {
+			super(TYPE_ID.sub(typeInfo.getType().getId()));
 			this.typeInfo = typeInfo;
 		}
 
@@ -52,7 +57,7 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 			return true;
 		}
 
-		public final Type<?> getTarget() {
+		public final Type<?> getTargetType() {
 			return this.typeInfo.getType();
 		}
 
@@ -78,12 +83,6 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 		}
 
 		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("type")
-					.sub(getTarget().codeId(factory));
-		}
-
-		@Override
 		protected void allocate(SubData<DefaultTypeInfoOp> data) {
 			this.typeCode = data.addInt32("type_code");
 			this.fieldNum = data.addInt32("field_num");
@@ -94,16 +93,13 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 
 			typeCode().setValue(getCode());
 
-			final CodeId typeId = getTarget().codeId(generator);
+			final ID typeId = getTargetType().getId();
 
-			debug.setName(
-					name(),
-					generator.id("DEBUG").sub("type_name").sub(typeId),
-					typeId.toString());
+			debug.setName(name(), TYPE_NAME_ID.sub(typeId), typeId.toString());
 
 			int fieldNum = 0;
 
-			for (Data<?> field : getTarget().iterate(generator)) {
+			for (Data<?> field : getTargetType().iterate(generator)) {
 				if (addFieldInfo(data, field)) {
 					++fieldNum;
 				}
@@ -125,7 +121,7 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 			}
 
 			data.addInstance(
-					data.getGenerator().id("field").detail(field.getId()),
+					FIELD_ID.detail(field.getId()),
 					DEBUG_FIELD_INFO_TYPE,
 					new DebugFieldInfo(field));
 

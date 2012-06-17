@@ -77,7 +77,7 @@ public abstract class ObjectValuePartFnIR
 
 		if (!writeIfConstant(subDirs, finalValue)) {
 
-			final ObjectValFunc func = get(host).op(code.id(suffix()), code);
+			final ObjectValFunc func = get(host).op(suffix(), code);
 
 			func.call(subDirs, objectArg(code, host, body));
 		}

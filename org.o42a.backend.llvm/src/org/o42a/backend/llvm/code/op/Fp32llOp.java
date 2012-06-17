@@ -21,20 +21,20 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp32op;
+import org.o42a.util.string.ID;
 
 
 public final class Fp32llOp extends FpLLOp<Fp32op, Fp32llOp>
 		implements Fp32op {
 
-	public Fp32llOp(CodeId id, long blockPtr, long nativePtr) {
+	public Fp32llOp(ID id, long blockPtr, long nativePtr) {
 		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public Fp32llOp toFp32(CodeId id, Code code) {
+	public Fp32llOp toFp32(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -46,7 +46,7 @@ public final class Fp32llOp extends FpLLOp<Fp32op, Fp32llOp>
 	}
 
 	@Override
-	public Fp32llOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Fp32llOp create(ID id, long blockPtr, long nativePtr) {
 		return new Fp32llOp(id, blockPtr, nativePtr);
 	}
 

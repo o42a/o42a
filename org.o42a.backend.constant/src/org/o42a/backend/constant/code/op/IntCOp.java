@@ -22,10 +22,10 @@ package org.o42a.backend.constant.code.op;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.IntOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class IntCOp<U extends IntOp<U>, T extends Number>
@@ -36,7 +36,7 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 		super(backend);
 	}
 
-	public IntCOp(CodeId id, CCode<?> code, T constant) {
+	public IntCOp(ID id, CCode<?> code, T constant) {
 		super(id, code, constant);
 	}
 
@@ -45,11 +45,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U shl(final CodeId id, final Code code, final U numBits) {
+	public final U shl(final ID id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "shl", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, SHL_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -79,11 +79,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U shl(final CodeId id, final Code code, final int numBits) {
+	public final U shl(final ID id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "shl", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, SHL_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -110,11 +110,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U lshr(final CodeId id, final Code code, final U numBits) {
+	public final U lshr(final ID id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "lshr", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, LSHR_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -144,11 +144,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U lshr(final CodeId id, final Code code, final int numBits) {
+	public final U lshr(final ID id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "lshr", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, LSHR_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -175,11 +175,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U ashr(final CodeId id, final Code code, final U numBits) {
+	public final U ashr(final ID id, final Code code, final U numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "ashr", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, ASHR_ID, this, numBits);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> nb = (IntCOp<U, T>) numBits;
 
@@ -209,11 +209,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U ashr(final CodeId id, final Code code, final int numBits) {
+	public final U ashr(final ID id, final Code code, final int numBits) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "ashr", this, numBits);
+		final ID resultId =
+				code.getOpNames().binaryId(id, ASHR_ID, this, numBits);
 
 		if (isConstant()) {
 
@@ -240,11 +240,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U and(final CodeId id, final Code code, final U operand) {
+	public final U and(final ID id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "and", this, operand);
+		final ID resultId =
+				code.getOpNames().binaryId(id, AND_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -274,11 +274,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U or(final CodeId id, final Code code, final U operand) {
+	public final U or(final ID id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "or", this, operand);
+		final ID resultId =
+				code.getOpNames().binaryId(id, OR_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -308,11 +308,11 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U xor(final CodeId id, final Code code, final U operand) {
+	public final U xor(final ID id, final Code code, final U operand) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "xor", this, operand);
+		final ID resultId =
+				code.getOpNames().binaryId(id, XOR_ID, this, operand);
 		@SuppressWarnings("unchecked")
 		final IntCOp<U, T> op = (IntCOp<U, T>) operand;
 
@@ -342,10 +342,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U comp(final CodeId id, final Code code) {
+	public final U comp(final ID id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().unaryId(id, "comp", this);
+		final ID resultId = code.getOpNames().unaryId(id, COMP_ID, this);
 
 		if (isConstant()) {
 
@@ -371,11 +371,10 @@ public abstract class IntCOp<U extends IntOp<U>, T extends Number>
 	}
 
 	@Override
-	public final BoolOp lowestBit(final CodeId id, final Code code) {
+	public final BoolOp lowestBit(final ID id, final Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().castId(id, "bool", this);
+		final ID resultId = code.getOpNames().castId(id, BOOL_ID, this);
 
 		if (isConstant()) {
 

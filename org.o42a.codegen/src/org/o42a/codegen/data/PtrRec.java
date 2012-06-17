@@ -19,14 +19,14 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AllocPtrOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class PtrRec<P extends AllocPtrOp<P>, T extends Ptr<?>>
 		extends Rec<P, T> {
 
-	PtrRec(SubData<?> enclosing, CodeId id) {
+	PtrRec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 

@@ -21,17 +21,17 @@ package org.o42a.codegen.data;
 
 import static org.o42a.util.fn.Holder.holder;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int16recOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class Int16rec extends Rec<Int16recOp, Short> {
 
-	Int16rec(SubData<?> enclosing, CodeId id) {
+	Int16rec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -64,7 +64,7 @@ public final class Int16rec extends Rec<Int16recOp, Short> {
 	}
 
 	@Override
-	public Int16recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public Int16recOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.int16(id, code, this);
 	}
 

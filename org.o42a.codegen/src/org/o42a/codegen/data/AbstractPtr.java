@@ -19,24 +19,24 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractPtr {
 
-	private final CodeId id;
+	private final ID id;
 	private final boolean ptrToConstant;
 	private final boolean isNull;
 
-	public AbstractPtr(CodeId id, boolean ptrToConstant, boolean isNull) {
+	public AbstractPtr(ID id, boolean ptrToConstant, boolean isNull) {
 		this.id = id;
 		this.ptrToConstant = ptrToConstant;
 		this.isNull = isNull;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -50,7 +50,7 @@ public abstract class AbstractPtr {
 
 	public Ptr<AnyOp> toAny() {
 
-		final CodeId id = getId().type("any");
+		final ID id = getId().type("any");
 
 		return new Ptr<AnyOp>(id, isPtrToConstant(), isNull()) {
 			@Override

@@ -19,14 +19,16 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface RelOp extends Op {
 
-	AnyOp offset(CodeId id, Code code, DataPtrOp<?> from);
+	ID OFFSET_ID = ID.rawId("off");
 
-	Int32op toInt32(CodeId id, Code code);
+	AnyOp offset(ID id, Code code, DataPtrOp<?> from);
+
+	Int32op toInt32(ID id, Code code);
 
 }

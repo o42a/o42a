@@ -19,7 +19,7 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
+import org.o42a.util.string.ID;
 
 
 public final class FunctionSettings
@@ -45,7 +45,7 @@ public final class FunctionSettings
 	}
 
 	public <F extends Func<F>> Function<F> create(
-			CodeId id,
+			ID id,
 			Signature<F> signature) {
 
 		final Function<F> function =
@@ -57,7 +57,7 @@ public final class FunctionSettings
 	}
 
 	public <F extends Func<F>> Function<F> create(
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			FunctionBuilder<F> builder) {
 

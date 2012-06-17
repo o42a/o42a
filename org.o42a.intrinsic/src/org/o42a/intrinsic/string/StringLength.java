@@ -20,6 +20,7 @@
 package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
+import static org.o42a.intrinsic.string.StringChar.STR_LEN_ID;
 
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.Int32op;
@@ -127,7 +128,7 @@ final class StringLength extends AnnotatedBuiltin {
 			stringVal = string().op(host).writeValue(stringDirs);
 		}
 
-		final Int32op length = stringVal.loadLength(code.id("str_len"), code);
+		final Int32op length = stringVal.loadLength(STR_LEN_ID, code);
 		final ValOp result =
 				dirs.value().store(code, length.toInt64(null, code));
 

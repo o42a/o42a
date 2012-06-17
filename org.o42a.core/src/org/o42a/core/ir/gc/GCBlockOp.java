@@ -21,11 +21,10 @@ package org.o42a.core.ir.gc;
 
 import static org.o42a.core.ir.system.GCBlockPaddingSystemType.GC_BLOCK_PADDING_SYSTEM_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public final class GCBlockOp extends StructOp<GCBlockOp> {
@@ -48,6 +47,7 @@ public final class GCBlockOp extends StructOp<GCBlockOp> {
 		private StructRec<GCBlockOp> next;
 
 		private Type() {
+			super(ID.rawId("o42a_gc_block_t"));
 		}
 
 		@Override
@@ -86,11 +86,6 @@ public final class GCBlockOp extends StructOp<GCBlockOp> {
 		@Override
 		public GCBlockOp op(StructWriter<GCBlockOp> writer) {
 			return null;
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_gc_block_t");
 		}
 
 		@Override

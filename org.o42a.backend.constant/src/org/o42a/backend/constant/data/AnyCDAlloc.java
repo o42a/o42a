@@ -23,11 +23,11 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.op.AnyCOp;
 import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public final class AnyCDAlloc extends CDAlloc<AnyOp> {
@@ -40,7 +40,7 @@ public final class AnyCDAlloc extends CDAlloc<AnyOp> {
 	}
 
 	@Override
-	public AnyCOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public AnyCOp op(ID id, AllocClass allocClass, CodeWriter writer) {
 		return new AnyCOp(
 				new OpBE<AnyOp>(id, cast(writer)) {
 					@Override

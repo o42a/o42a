@@ -26,13 +26,13 @@ import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
@@ -41,7 +41,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	private final Signature<F> signature;
 
 	public LLFunc(
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			long blockPtr,
 			long nativePtr) {
@@ -55,12 +55,12 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public AnyLLOp toAny(CodeId id, Code code) {
+	public AnyLLOp toAny(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = code.getOpNames().castId(id, "any", this);
+		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
 
 		return new AnyLLOp(
 				castId,
@@ -69,13 +69,13 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				llvm.instr(toAny(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(castId),
+						ids.write(castId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public F create(CodeId id, long blockPtr, long nativePtr) {
+	public F create(ID id, long blockPtr, long nativePtr) {
 		return getSignature().op(
 				new LLFunc<F>(id, this.signature, blockPtr, getNativePtr()));
 	}
@@ -86,7 +86,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Int8op callInt8(CodeId id, Code code, Op... args) {
+	public Int8op callInt8(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -94,7 +94,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Int16op callInt16(CodeId id, Code code, Op... args) {
+	public Int16op callInt16(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -102,7 +102,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Int32op callInt32(CodeId id, Code code, Op... args) {
+	public Int32op callInt32(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -110,7 +110,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Int64op callInt64(CodeId id, Code code, Op... args) {
+	public Int64op callInt64(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -118,7 +118,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Fp32op callFp32(CodeId id, Code code, Op... args) {
+	public Fp32op callFp32(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -126,7 +126,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public Fp64op callFp64(CodeId id, Code code, Op... args) {
+	public Fp64op callFp64(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -134,7 +134,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public BoolOp callBool(CodeId id, Code code, Op... args) {
+	public BoolOp callBool(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -142,7 +142,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public AnyOp callAny(CodeId id, Code code, Op... args) {
+	public AnyOp callAny(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -150,7 +150,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 	}
 
 	@Override
-	public DataOp callData(CodeId id, Code code, Op... args) {
+	public DataOp callData(ID id, Code code, Op... args) {
 
 		final LLCode llvm = llvm(code);
 
@@ -159,7 +159,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 
 	@Override
 	public <S extends StructOp<S>> S callPtr(
-			CodeId id,
+			ID id,
 			Code code,
 			Type<S> type,
 			Op... args) {
@@ -174,7 +174,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 				call(id, llvm, args)));
 	}
 
-	private long call(CodeId id, LLCode code, Op[] args) {
+	private long call(ID id, LLCode code, Op[] args) {
 
 		final NativeBuffer ids = code.getModule().ids();
 		final long[] argPtrs = new long[args.length];
@@ -186,7 +186,7 @@ public class LLFunc<F extends Func<F>> extends PtrLLOp<F>
 		return code.instr(call(
 				code.nextPtr(),
 				code.nextInstr(),
-				ids.writeCodeId(id),
+				ids.write(id),
 				ids.length(),
 				getNativePtr(),
 				argPtrs));

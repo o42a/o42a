@@ -21,18 +21,17 @@ package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.util.string.ID;
 
 
 public class CompareFunc extends Func<CompareFunc> {
 
-	public static final Compare COMPARE = new Compare();
+	public static final Signature COMPARE = new Signature();
 
 	private CompareFunc(FuncCaller<CompareFunc> caller) {
 		super(caller);
@@ -42,13 +41,15 @@ public class CompareFunc extends Func<CompareFunc> {
 		return invoke(null, code, COMPARE.result(), what.ptr(), with.ptr());
 	}
 
-	public static final class Compare extends Signature<CompareFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<CompareFunc> {
 
 		private Return<Int64op> result;
 		private Arg<Op> what;
 		private Arg<Op> with;
 
-		private Compare() {
+		private Signature() {
+			super(ID.id("CompareF"));
 		}
 
 		public final Return<Int64op> result() {
@@ -66,11 +67,6 @@ public class CompareFunc extends Func<CompareFunc> {
 		@Override
 		public CompareFunc op(FuncCaller<CompareFunc> caller) {
 			return new CompareFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("CompareF");
 		}
 
 		@Override

@@ -24,12 +24,12 @@ import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.IntRecOp;
 import org.o42a.codegen.code.op.RMWKind;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
@@ -37,7 +37,7 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 		implements IntRecOp<R, O> {
 
 	public IntRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -45,14 +45,14 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 	}
 
 	@Override
-	public O atomicRMW(CodeId id, Code code, RMWKind kind, O operand) {
+	public O atomicRMW(ID id, Code code, RMWKind kind, O operand) {
 
 		final LLCode llvm = llvm(code);
 		final long nextPtr = llvm.nextPtr();
 		final NativeBuffer ids = llvm.getModule().ids();
-		final CodeId resultId = code.getOpNames().binaryId(
+		final ID resultId = code.getOpNames().binaryId(
 				id,
-				kind.name().toLowerCase(),
+				kind.getId(),
 				this,
 				operand);
 
@@ -62,7 +62,7 @@ public abstract class IntRecLLOp<R extends IntRecOp<R, O>, O extends IntOp<O>>
 				llvm.instr(atomicRMW(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						kind.code(),

@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.NumOp.MUL_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.common.object.AnnotatedSources;
@@ -41,7 +43,7 @@ public final class MultiplyFloats extends BinaryFloat {
 
 	@Override
 	protected Fp64op write(Code code, Fp64op left, Fp64op right) {
-		return left.mul(code.id("mul"), code, right);
+		return left.mul(MUL_ID, code, right);
 	}
 
 }

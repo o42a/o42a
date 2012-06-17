@@ -23,11 +23,11 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.AnyCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.RelPtr;
+import org.o42a.util.string.ID;
 
 
 public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
@@ -42,12 +42,12 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 
 	@Override
 	public final AnyCOp offset(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final DataPtrOp<?> from) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().offsetId(id, from, this);
+		final ID resultId = code.getOpNames().offsetId(id, from, this);
 
 		if (isConstant() && from.equals(getConstant().getRelativeTo())) {
 
@@ -93,9 +93,9 @@ public final class RelCOp extends AbstractCOp<RelOp, RelPtr> implements RelOp {
 	}
 
 	@Override
-	public final Int32cOp toInt32(CodeId id, Code code) {
+	public final Int32cOp toInt32(ID id, Code code) {
 
-		final CodeId resultId = code.getOpNames().castId(id, "int32", this);
+		final ID resultId = code.getOpNames().castId(id, INT32_ID, this);
 
 		return new Int32cOp(new OpBE<Int32op>(resultId, cast(code)) {
 			@Override

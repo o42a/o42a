@@ -21,8 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
@@ -33,14 +31,18 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
+
+	static final ID METHODS_ID = ID.id().detail("methods");
 
 	private final ObjectBodyIR bodyIR;
 	private StructRec<ObjectIRType.Op> objectType;
 
 	ObjectMethodsIR(ObjectBodyIR bodyIR) {
+		super(buildId(bodyIR));
 		this.bodyIR = bodyIR;
 	}
 
@@ -58,23 +60,6 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 	}
 
 	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-
-		final ObjectIR objectIR = this.bodyIR.getObjectIR();
-		final Obj ascendant = this.bodyIR.getAscendant();
-		final CodeId localId;
-
-		if (this.bodyIR.isMain()) {
-			localId = factory.id().detail("methods");
-		} else {
-			localId = factory.id().detail("methods").detail(
-					ascendant.ir(objectIR.getGenerator()).getId());
-		}
-
-		return objectIR.getId().setLocal(localId);
-	}
-
-	@Override
 	protected void allocate(SubData<Op> data) {
 		this.objectType = data.addPtr("object_type", OBJECT_TYPE);
 		allocateValueMethods(data);
@@ -89,6 +74,22 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		this.objectType.setConstant(true).setValue(
 				ascendantIR.getTypeIR().getObjectType()
 				.data(getGenerator()).getPointer());
+	}
+
+	private static ID buildId(ObjectBodyIR bodyIR) {
+
+		final ObjectIR objectIR = bodyIR.getObjectIR();
+		final Obj ascendant = bodyIR.getAscendant();
+		final ID localId;
+
+		if (bodyIR.isMain()) {
+			localId = METHODS_ID;
+		} else {
+			localId = METHODS_ID.detail(
+					ascendant.ir(objectIR.getGenerator()).getId());
+		}
+
+		return objectIR.getId().setLocal(localId);
 	}
 
 	private void allocateValueMethods(SubData<Op> data) {

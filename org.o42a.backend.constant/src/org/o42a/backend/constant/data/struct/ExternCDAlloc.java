@@ -27,10 +27,10 @@ import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.UnderAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public final class ExternCDAlloc<S extends StructOp<S>> extends CDAlloc<S> {
@@ -53,7 +53,7 @@ public final class ExternCDAlloc<S extends StructOp<S>> extends CDAlloc<S> {
 						.externalGlobal()
 						.set(attributes)
 						.link(
-								pointer.getId().getId(),
+								pointer.getId().toString(),
 								backend.underlying(type));
 			}
 		});
@@ -61,7 +61,7 @@ public final class ExternCDAlloc<S extends StructOp<S>> extends CDAlloc<S> {
 	}
 
 	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(ID id, AllocClass allocClass, CodeWriter writer) {
 
 		final CCode<?> ccode = cast(writer);
 

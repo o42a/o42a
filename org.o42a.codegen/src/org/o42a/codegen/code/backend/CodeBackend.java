@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public interface CodeBackend {
@@ -33,7 +33,7 @@ public interface CodeBackend {
 			BeforeReturn beforeReturn);
 
 	<F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
+			ID id,
 			FuncPtr<F> pointer);
 
 }

@@ -22,11 +22,11 @@ package org.o42a.codegen.code;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public abstract class Functions {
@@ -86,7 +86,7 @@ public abstract class Functions {
 	protected abstract BeforeReturn createBeforeReturn(Function<?> function);
 
 	protected abstract <F extends Func<F>> void addFunction(
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			FuncPtr<F> function);
 
@@ -106,7 +106,7 @@ public abstract class Functions {
 			return found;
 		}
 
-		final CodeId id = getGenerator().rawId(name);
+		final ID id = ID.rawId(name);
 		final ExternFuncPtr<F> extern =
 				new ExternFuncPtr<F>(id, allocate(signature), settings);
 

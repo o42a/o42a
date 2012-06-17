@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.Op.EQ_ID;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Block;
@@ -50,15 +51,13 @@ public final class IntegersEqual extends NumbersEqual<Long> {
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Block code = dirs.code();
-		final Int64recOp leftPtr =
-				leftVal.rawValue(code.id("left_int_ptr"), code);
-		final Int64op left = leftPtr.load(code.id("left"), code);
+		final Int64recOp leftPtr = leftVal.rawValue(LEFT_PTR_ID, code);
+		final Int64op left = leftPtr.load(LEFT_ID, code);
 
-		final Int64recOp rightPtr =
-				rightVal.rawValue(code.id("right_int_ptr"), code);
-		final Int64op right = rightPtr.load(code.id("right"), code);
+		final Int64recOp rightPtr = rightVal.rawValue(RIGHT_PTR_ID, code);
+		final Int64op right = rightPtr.load(RIGHT_ID, code);
 
-		final BoolOp equals = left.eq(code.id("eq"), code, right);
+		final BoolOp equals = left.eq(EQ_ID, code, right);
 
 		equals.goUnless(code, dirs.falseDir());
 

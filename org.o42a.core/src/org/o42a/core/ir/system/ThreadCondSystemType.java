@@ -19,9 +19,8 @@
 */
 package org.o42a.core.ir.system;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.string.ID;
 
 
 public class ThreadCondSystemType extends SystemType {
@@ -30,11 +29,7 @@ public class ThreadCondSystemType extends SystemType {
 			new ThreadCondSystemType();
 
 	private ThreadCondSystemType() {
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("pthread_cond_t");
+		super(ID.rawId("pthread_cond_t"));
 	}
 
 }

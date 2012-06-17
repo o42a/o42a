@@ -22,13 +22,13 @@ package org.o42a.codegen.data;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public abstract class Ptr<P extends PtrOp<P>>
@@ -38,7 +38,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 	private DataAllocation<P> allocation;
 	private DataAllocation<P> protoAllocation;
 
-	Ptr(CodeId id, boolean ptrToConstant, boolean isNull) {
+	Ptr(ID id, boolean ptrToConstant, boolean isNull) {
 		super(id, ptrToConstant, isNull);
 	}
 
@@ -64,7 +64,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 
 	public Ptr<DataOp> toData() {
 
-		final CodeId id = getId().type("data");
+		final ID id = getId().type("data");
 
 		return new Ptr<DataOp>(id, isPtrToConstant(), isNull()) {
 			@Override
@@ -78,7 +78,7 @@ public abstract class Ptr<P extends PtrOp<P>>
 		};
 	}
 
-	public final P op(CodeId id, Code code) {
+	public final P op(ID id, Code code) {
 
 		final CodeBase c = code;
 

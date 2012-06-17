@@ -19,61 +19,42 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
-
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.string.ID;
 
 
 public abstract class SystemType {
 
-	private CodeId id;
+	private final ID id;
 	private Generator generator;
 	private DataAllocation<SystemOp> allocation;
 	private Ptr<SystemOp> pointer;
 
-	public final CodeId getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-		return codeId(DEFAULT_CODE_ID_FACTORY);
+	public SystemType(ID id) {
+		this.id = id;
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final DataAllocation<SystemOp> getAllocation() {
 		return this.allocation;
 	}
 
-	public final CodeId codeId(Generator generator) {
-		return codeId(generator.getCodeIdFactory());
-	}
-
-	public final CodeId codeId(CodeIdFactory factory) {
-
-		final CodeId id = this.id;
-
-		if (id != null && id.compatibleWith(factory)) {
-			return id;
-		}
-
-		return this.id = buildCodeId(factory);
-	}
-
-	public final Ptr<SystemOp> pointer(Generator generator) {
+	public final Ptr<SystemOp> getPointer() {
 		if (this.pointer != null) {
 			return this.pointer;
 		}
-		return this.pointer = new SystemPtr(codeId(generator), this);
+		return this.pointer = new SystemPtr(this);
 	}
 
 	@Override
 	public String toString() {
 		return getId().toString();
 	}
-
-	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
 	final void allocate(Generator generator) {
 		if (this.allocation != null && this.generator == generator) {
@@ -88,8 +69,8 @@ public abstract class SystemType {
 
 		private final SystemType systemType;
 
-		SystemPtr(CodeId id, SystemType systemType) {
-			super(id, false, false);
+		SystemPtr(SystemType systemType) {
+			super(systemType.getId(), false, false);
 			this.systemType = systemType;
 		}
 

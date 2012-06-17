@@ -21,8 +21,6 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
@@ -31,11 +29,12 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 
-	public static final ObjectVal OBJECT_VAL = new ObjectVal();
+	public static final Signature OBJECT_VAL = new Signature();
 
 	private ObjectValFunc(FuncCaller<ObjectValFunc> caller) {
 		super(caller);
@@ -65,13 +64,14 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		.goUnless(code, dirs.falseDir());
 	}
 
-	public static final class ObjectVal extends ObjectSignature<ObjectValFunc> {
+	public static final class Signature extends ObjectSignature<ObjectValFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> value;
 		private Arg<DataOp> object;
 
-		private ObjectVal() {
+		private Signature() {
+			super(ID.id("ObjectValF"));
 		}
 
 		public final Return<Void> result() {
@@ -90,11 +90,6 @@ public final class ObjectValFunc extends ObjectFunc<ObjectValFunc> {
 		@Override
 		public ObjectValFunc op(FuncCaller<ObjectValFunc> caller) {
 			return new ObjectValFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectValF");
 		}
 
 		@Override

@@ -27,11 +27,11 @@ import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.ReturnBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
@@ -51,7 +51,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 		this.backend.init(this);
 	}
 
-	public BoolCOp(CodeId id, CCode<?> code, boolean constant) {
+	public BoolCOp(ID id, CCode<?> code, boolean constant) {
 		this(new BoolConstBE(id, code, constant), constant);
 	}
 
@@ -66,7 +66,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@Override
-	public CodeId getId() {
+	public ID getId() {
 		return backend().getId();
 	}
 
@@ -82,13 +82,13 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 	@Override
 	public <O extends Op> O select(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final O trueValue,
 			final O falseValue) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId selectId = id != null ? id : getId().sub("select");
+		final ID selectId = id != null ? id : getId().sub("select");
 
 		if (isConstant()) {
 			if (getConstant()) {
@@ -161,7 +161,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private <O extends Op> O create(CodeId id, CCode<?> code, O value) {
+	private <O extends Op> O create(ID id, CCode<?> code, O value) {
 
 		final COp val = cast(value);
 
@@ -176,7 +176,7 @@ public final class BoolCOp extends BoolOp implements COp<BoolOp, Boolean> {
 
 	private static final class BoolConstBE extends ConstBE<BoolOp, Boolean> {
 
-		BoolConstBE(CodeId id, CCode<?> code, boolean constant) {
+		BoolConstBE(ID id, CCode<?> code, boolean constant) {
 			super(id, code, constant);
 		}
 

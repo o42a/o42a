@@ -21,17 +21,17 @@ package org.o42a.codegen.data;
 
 import static org.o42a.util.fn.Holder.holder;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int8recOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class Int8rec extends Rec<Int8recOp, Byte> {
 
-	Int8rec(SubData<?> enclosing, CodeId id) {
+	Int8rec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -64,7 +64,7 @@ public final class Int8rec extends Rec<Int8recOp, Byte> {
 	}
 
 	@Override
-	public Int8recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public Int8recOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.int8(id, code, this);
 	}
 

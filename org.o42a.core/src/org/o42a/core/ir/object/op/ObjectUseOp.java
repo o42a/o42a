@@ -23,8 +23,6 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Disposal;
@@ -37,6 +35,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectUseOp extends IROp {
@@ -46,7 +45,7 @@ public final class ObjectUseOp extends IROp {
 	private final Op ptr;
 	private final StructRecOp<ObjectIRData.Op> objectData;
 
-	ObjectUseOp(CodeId id, CodeBuilder builder, AllocationCode code) {
+	ObjectUseOp(ID id, CodeBuilder builder, AllocationCode code) {
 		super(builder);
 		this.ptr = code.allocate(id, OBJECT_USE_TYPE);
 		this.objectData = ptr().objectData(null, code);
@@ -105,9 +104,7 @@ public final class ObjectUseOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRData.Op> objectData(
-				CodeId id,
-				Code code) {
+		public final StructRecOp<ObjectIRData.Op> objectData(ID id, Code code) {
 			return ptr(id, code, getType().objectData());
 		}
 
@@ -119,6 +116,7 @@ public final class ObjectUseOp extends IROp {
 		private StructRec<ObjectIRData.Op> objectData;
 
 		private Type() {
+			super(ID.rawId("o42a_obj_use_t"));
 		}
 
 		public final StructRec<ObjectIRData.Op> objectData() {
@@ -128,11 +126,6 @@ public final class ObjectUseOp extends IROp {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_use_t");
 		}
 
 		@Override

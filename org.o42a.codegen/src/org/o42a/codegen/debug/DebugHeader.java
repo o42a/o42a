@@ -19,17 +19,22 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public class DebugHeader implements Content<DebugHeader.HeaderType> {
+
+	private static final ID FIELD_NAME_ID = DEBUG_ID.sub("field_name");
+
+	private static final ID GLOBAL_NAME_ID = DEBUG_ID.sub("global_name");
 
 	public static final HeaderType DEBUG_HEADER_TYPE = new HeaderType();
 
@@ -60,17 +65,16 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 
 			debug.setName(
 					instance.name(),
-					generator.id("DEBUG").sub("global_name")
-					.sub(global.getId()),
+					GLOBAL_NAME_ID.sub(global.getId()),
 					global.getId().toString());
 			instance.enclosing().setNull();
 		} else {
 
-			final CodeId fieldName = data.getId();
+			final ID fieldName = data.getId();
 
 			debug.setName(
 					instance.name(),
-					generator.id("DEBUG").sub("field_name").sub(fieldName),
+					FIELD_NAME_ID.sub(fieldName),
 					fieldName.toString());
 			instance.enclosing().setValue(
 					data.getEnclosing().pointer(generator).relativeTo(
@@ -116,9 +120,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			super.allocated(code, enclosing);
 		}
 
-		private void fillAllocatedHeader(
-				Code code,
-				StructOp<?> enclosing) {
+		private void fillAllocatedHeader(Code code, StructOp<?> enclosing) {
 
 			final Generator generator = code.getGenerator();
 			final Debug debug = generator.getDebug();
@@ -130,13 +132,12 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 				typeInfo(code).store(code, code.nullPtr());
 			} else {
 
-				final CodeId fieldName = getType().codeId(generator);
+				final ID fieldName = getType().getId();
 
 				name(code).store(
 						code,
 						debug.allocateName(
-								generator.id("DEBUG").sub("field_name")
-								.sub(fieldName),
+								FIELD_NAME_ID.sub(fieldName),
 								fieldName.toString()).op(null, code));
 
 				final Type<?> enclosingType = enclosing.getType();
@@ -168,6 +169,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		private AnyRec typeInfo;
 
 		private HeaderType() {
+			super(DEBUG_ID.sub("Header"));
 		}
 
 		@Override
@@ -199,11 +201,6 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("Header");
 		}
 
 		@Override

@@ -23,7 +23,6 @@ import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_INDEFINITE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Ptr;
@@ -37,9 +36,12 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.string.ID;
 
 
 public abstract class ValOp extends IROp {
+
+	public static final ID VALUE_ID = ID.id("value");
 
 	public static ValOp stackAllocatedVal(
 			String name,
@@ -48,7 +50,7 @@ public abstract class ValOp extends IROp {
 			ValueStruct<?, ?> valueStruct,
 			ValHolderFactory holderFactory) {
 
-		final CodeId valId =
+		final ID valId =
 				allocator.getId().setLocal(name != null ? name : "value");
 
 		return new StackAllocatedValOp(
@@ -101,32 +103,28 @@ public abstract class ValOp extends IROp {
 	public abstract ValType.Op ptr();
 
 	public final ValFlagsOp flags(Code code) {
-		return flags((CodeId) null, code);
+		return flags(null, code);
 	}
 
-	public final ValFlagsOp flags(String name, Code code) {
-		return flags(code.id(name), code);
-	}
-
-	public final ValFlagsOp flags(CodeId id, Code code) {
+	public final ValFlagsOp flags(ID id, Code code) {
 		return ptr().flags(id, code, NOT_ATOMIC);
 	}
 
-	public final Int32recOp length(CodeId id, Code code) {
+	public final Int32recOp length(ID id, Code code) {
 		return ptr().length(id, code);
 	}
 
-	public Int32op loadLength(CodeId id, Code code) {
+	public Int32op loadLength(ID id, Code code) {
 		return length(null, code).load(id, code);
 	}
 
-	public final Int64recOp rawValue(CodeId id, Code code) {
+	public final Int64recOp rawValue(ID id, Code code) {
 		return ptr().rawValue(id, code);
 	}
 
-	public final AnyOp value(CodeId id, Code code) {
+	public final AnyOp value(ID id, Code code) {
 
-		final CodeId valueId;
+		final ID valueId;
 
 		if (id == null) {
 			valueId = getId().sub("value");
@@ -137,7 +135,7 @@ public abstract class ValOp extends IROp {
 		return rawValue(valueId.detail("raw"), code).toAny(valueId, code);
 	}
 
-	public final AnyOp loadData(CodeId id, Block code) {
+	public final AnyOp loadData(ID id, Block code) {
 
 		final AnyOp value =
 				value(id != null ? id.detail("value") : null, code);

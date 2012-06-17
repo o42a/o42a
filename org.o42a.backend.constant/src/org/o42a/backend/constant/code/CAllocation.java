@@ -29,7 +29,6 @@ import org.o42a.backend.constant.code.rec.AnyRecCOp;
 import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.AllocationWriter;
@@ -39,6 +38,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.string.ID;
 
 
 public final class CAllocation
@@ -50,7 +50,7 @@ public final class CAllocation
 	}
 
 	@Override
-	public final AnyRecCOp allocatePtr(CodeId id) {
+	public final AnyRecCOp allocatePtr(ID id) {
 		return new AnyRecCOp(
 				new OpBE<AnyRecOp>(id, this) {
 					@Override
@@ -72,7 +72,7 @@ public final class CAllocation
 
 	@Override
 	public final <S extends StructOp<S>> StructRecCOp<S> allocatePtr(
-			CodeId id,
+			ID id,
 			DataAllocation<S> typeAllocation) {
 
 		final ContainerCDAlloc<S> typeAlloc =
@@ -101,7 +101,7 @@ public final class CAllocation
 
 	@Override
 	public final <S extends StructOp<S>> S allocateStruct(
-			CodeId id,
+			ID id,
 			DataAllocation<S> typeAllocation) {
 
 		final ContainerCDAlloc<S> typeAlloc =

@@ -19,17 +19,17 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class RelRec extends Rec<RelRecOp, RelPtr> {
 
-	RelRec(SubData<?> enclosing, CodeId id) {
+	RelRec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -61,7 +61,7 @@ public final class RelRec extends Rec<RelRecOp, RelPtr> {
 	}
 
 	@Override
-	public RelRecOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public RelRecOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.relPtr(id, code, this);
 	}
 

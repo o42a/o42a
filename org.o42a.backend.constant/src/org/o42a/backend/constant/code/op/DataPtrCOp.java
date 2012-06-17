@@ -25,13 +25,13 @@ import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.STATIC_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public abstract class DataPtrCOp<P extends DataPtrOp<P>>
@@ -72,9 +72,9 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 	}
 
 	@Override
-	public AnyCOp toAny(CodeId id, Code code) {
+	public AnyCOp toAny(ID id, Code code) {
 
-		final CodeId resultId = code.getOpNames().castId(id, "any", this);
+		final ID resultId = code.getOpNames().castId(id, ANY_ID, this);
 
 		return new AnyCOp(
 				new OpBE<AnyOp>(resultId, cast(code)) {
@@ -94,10 +94,10 @@ public abstract class DataPtrCOp<P extends DataPtrOp<P>>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public final P offset(CodeId id, Code code, IntOp<?> index) {
+	public final P offset(ID id, Code code, IntOp<?> index) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().indexId(id, this, index);
+		final ID resultId = code.getOpNames().indexId(id, this, index);
 		final IntCOp<?, ?> idx = (IntCOp<?, ?>) index;
 
 		if (idx.isConstant() && idx.getConstant().intValue() == 0) {

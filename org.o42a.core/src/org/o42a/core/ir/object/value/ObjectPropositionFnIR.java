@@ -24,9 +24,12 @@ import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectPropositionFnIR extends ObjectValuePartFnIR {
+
+	private static final ID PROPOSITION_ID = ID.id("proposition");
 
 	public ObjectPropositionFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -38,8 +41,8 @@ public final class ObjectPropositionFnIR extends ObjectValuePartFnIR {
 	}
 
 	@Override
-	protected String suffix() {
-		return "proposition";
+	protected ID suffix() {
+		return PROPOSITION_ID;
 	}
 
 	@Override

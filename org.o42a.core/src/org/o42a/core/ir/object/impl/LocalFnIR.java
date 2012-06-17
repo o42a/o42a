@@ -22,7 +22,6 @@ package org.o42a.core.ir.object.impl;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValHolderFactory.VAL_TRAP;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.local.*;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.Command;
+import org.o42a.util.string.ID;
 
 
 public final class LocalFnIR
@@ -39,7 +39,7 @@ public final class LocalFnIR
 		implements FunctionBuilder<ObjectValFunc> {
 
 	private final LocalIR localIR;
-	private final CodeId id;
+	private final ID id;
 	private Function<ObjectValFunc> function;
 	private final ObjectIRLocals locals;
 	private Command command;
@@ -77,7 +77,7 @@ public final class LocalFnIR
 		return this.function;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 

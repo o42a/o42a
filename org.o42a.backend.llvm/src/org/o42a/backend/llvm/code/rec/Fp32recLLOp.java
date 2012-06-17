@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.op.Fp32llOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32op;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class Fp32recLLOp
@@ -31,7 +31,7 @@ public final class Fp32recLLOp
 		implements Fp32recOp {
 
 	public Fp32recLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -39,12 +39,12 @@ public final class Fp32recLLOp
 	}
 
 	@Override
-	public Fp32recLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Fp32recLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new Fp32recLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected Fp32op createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected Fp32op createLoaded(ID id, long blockPtr, long nativePtr) {
 		return new Fp32llOp(id, blockPtr, nativePtr);
 	}
 

@@ -38,21 +38,31 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectTypeIR implements Content<ObjectIRType> {
 
+	public static final ID OBJECT_TYPE_ID = ID.id("object_type");
+	public static final ID OBJECT_DATA_ID = ID.id("object_data");
+
 	private final ObjectIRStruct objectIRStruct;
 	private final HashMap<MemberKey, FieldDescIR> fieldDescs =
 			new HashMap<MemberKey, FieldDescIR>();
+	private final ID id;
 	private ObjectIRType instance;
 
 	ObjectTypeIR(ObjectIRStruct objectIRStruct) {
 		this.objectIRStruct = objectIRStruct;
+		this.id = objectIRStruct.getId().sub(OBJECT_DATA_ID);
 	}
 
 	public final Generator getGenerator() {
 		return getObjectIR().getGenerator();
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final ObjectIR getObjectIR() {
@@ -128,15 +138,14 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 
 	@Override
 	public String toString() {
-		return this.objectIRStruct.codeId(getGenerator())
-				.sub("object_data").toString();
+		if (this.id == null) {
+			return super.toString();
+		}
+		return this.id.toString();
 	}
 
 	void allocate(SubData<?> data) {
-		data.addInstance(
-				data.getGenerator().id("object_type"),
-				OBJECT_TYPE,
-				this);
+		data.addInstance(OBJECT_TYPE_ID, OBJECT_TYPE, this);
 
 		getObjectData().ascendants().addAll(
 				this.objectIRStruct.bodyIRs().values());

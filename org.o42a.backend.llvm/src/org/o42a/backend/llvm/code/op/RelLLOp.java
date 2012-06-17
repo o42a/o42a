@@ -24,26 +24,26 @@ import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.RelOp;
+import org.o42a.util.string.ID;
 
 
 public final class RelLLOp implements LLOp<RelOp>, RelOp {
 
-	private final CodeId id;
+	private final ID id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public RelLLOp(CodeId id, long blockPtr, long nativePtr) {
+	public RelLLOp(ID id, long blockPtr, long nativePtr) {
 		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -58,12 +58,12 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 	}
 
 	@Override
-	public AnyLLOp offset(CodeId id, Code code, DataPtrOp<?> from) {
+	public AnyLLOp offset(ID id, Code code, DataPtrOp<?> from) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().offsetId(id, from, this);
+		final ID resultId = code.getOpNames().offsetId(id, from, this);
 
 		return new AnyLLOp(
 				resultId,
@@ -72,22 +72,22 @@ public final class RelLLOp implements LLOp<RelOp>, RelOp {
 				llvm.instr(offsetBy(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						nativePtr(from),
 						getNativePtr())));
 	}
 
 	@Override
-	public Int32llOp toInt32(CodeId id, Code code) {
+	public Int32llOp toInt32(ID id, Code code) {
 		return new Int32llOp(
-				code.getOpNames().castId(id, "int32", this),
+				code.getOpNames().castId(id, INT32_ID, this),
 				getBlockPtr(),
 				getNativePtr());
 	}
 
 	@Override
-	public RelLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public RelLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new RelLLOp(id, blockPtr, nativePtr);
 	}
 

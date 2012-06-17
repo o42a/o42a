@@ -30,10 +30,10 @@ import org.o42a.backend.llvm.LLVMGenerator;
 import org.o42a.backend.llvm.code.LLSignature;
 import org.o42a.backend.llvm.code.LLVMCodeBackend;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class LLVMModule {
@@ -99,8 +99,8 @@ public final class LLVMModule {
 		}
 	}
 
-	public final void createModule(CodeId id) {
-		this.nativePtr = createModule(ids().writeCodeId(id), ids().length());
+	public final void createModule(ID id) {
+		this.nativePtr = createModule(ids().write(id), ids().length());
 		assert this.nativePtr != 0 :
 			"Failed to create LLVM module " + id;
 	}
@@ -135,10 +135,6 @@ public final class LLVMModule {
 
 	public final NativeBuffer ids() {
 		return this.ids;
-	}
-
-	public static final void writeCodeId(CodeId id, ByteBuffer out) {
-		id.write(out);
 	}
 
 	public final long voidType() {

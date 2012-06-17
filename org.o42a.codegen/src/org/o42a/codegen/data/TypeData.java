@@ -19,19 +19,19 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 final class TypeData<S extends StructOp<S>> extends AbstractTypeData<S> {
 
 	TypeData(Generator generator, Type<S> type) {
-		super(generator, type.codeId(generator).removeLocal(), type);
+		super(generator, type.getId().removeLocal(), type);
 	}
 
 	@Override
@@ -50,7 +50,7 @@ final class TypeData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	}
 
 	@Override
-	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public S fieldOf(ID id, Code code, StructOp<?> struct) {
 		throw new UnsupportedOperationException();
 	}
 

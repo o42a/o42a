@@ -19,17 +19,15 @@
 */
 package org.o42a.codegen.data;
 
-import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
 import static org.o42a.codegen.debug.DebugHeader.DEBUG_HEADER_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.debug.DebugHeader;
 import org.o42a.codegen.debug.TypeDebugBase;
+import org.o42a.util.string.ID;
 
 
 public abstract class Type<S extends StructOp<S>>
@@ -45,13 +43,14 @@ public abstract class Type<S extends StructOp<S>>
 		return (Content<T>) EMPTY_CONTENT;
 	}
 
-	private CodeId id;
+	private final ID id;
 	Type<S> type;
 	SubData<S> data;
 	private Generator allocated;
 	private Generator allocating;
 
-	public Type() {
+	public Type(ID id) {
+		this.id = id;
 		this.type = this;
 	}
 
@@ -59,11 +58,8 @@ public abstract class Type<S extends StructOp<S>>
 		return this.data.getGenerator();
 	}
 
-	public final CodeId getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-		return codeId(DEFAULT_CODE_ID_FACTORY);
+	public final ID getId() {
+		return this.id;
 	}
 
 	public boolean isPacked() {
@@ -89,21 +85,6 @@ public abstract class Type<S extends StructOp<S>>
 
 	public Type<?>[] getTypeDependencies() {
 		return NO_DEPENDENCIES;
-	}
-
-	public final CodeId codeId(Generator generator) {
-		return codeId(generator.getCodeIdFactory());
-	}
-
-	public final CodeId codeId(CodeIdFactory factory) {
-
-		final CodeId id = this.id;
-
-		if (id != null && id.compatibleWith(factory)) {
-			return id;
-		}
-
-		return this.id = buildCodeId(factory);
 	}
 
 	public final Ptr<S> pointer(Generator generator) {
@@ -134,8 +115,6 @@ public abstract class Type<S extends StructOp<S>>
 	public String toString() {
 		return getId().toString();
 	}
-
-	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
 	protected abstract void allocate(SubData<S> data);
 
@@ -169,11 +148,9 @@ public abstract class Type<S extends StructOp<S>>
 
 		final Generator generator = data.getGenerator();
 
-		codeId(generator);// Refine code id.
-
 		if (generator.isDebug() && isDebuggable()) {
 			data.addInstance(
-					generator.id("__o42a_dbg_header__"),
+					ID.id("__o42a_dbg_header__"),
 					DEBUG_HEADER_TYPE,
 					new DebugHeader(this));
 		}
@@ -192,7 +169,7 @@ public abstract class Type<S extends StructOp<S>>
 	@SuppressWarnings("unchecked")
 	final <I extends Type<S>> I instantiate(
 			SubData<?> enclosing,
-			CodeId id,
+			ID id,
 			I instance,
 			Content<I> content) {
 		ensureTypeAllocated(enclosing.getGenerator(), true);
@@ -234,7 +211,7 @@ public abstract class Type<S extends StructOp<S>>
 		return typeInstance;
 	}
 
-	final SubData<S> setStruct(SubData<?> enclosing, CodeId name) {
+	final SubData<S> setStruct(SubData<?> enclosing, ID name) {
 		return this.data = new StructData<S>(enclosing, this, name);
 	}
 
@@ -248,7 +225,7 @@ public abstract class Type<S extends StructOp<S>>
 		}
 		if (this.data.getGenerator() != generator) {
 			assert this.data instanceof TypeData :
-				"Wrong data type of " + codeId(generator) + ": "
+				"Wrong data type of " + getId() + ": "
 				+ this.data.getClass().getName();
 			initTypeData(generator);
 		}
@@ -281,7 +258,7 @@ public abstract class Type<S extends StructOp<S>>
 		this.data.allocateType(fully);
 		if (fully) {
 			assert isAllocated(generator) :
-				"Not allocated: " + codeId(generator);
+				"Not allocated: " + getId();
 		}
 	}
 

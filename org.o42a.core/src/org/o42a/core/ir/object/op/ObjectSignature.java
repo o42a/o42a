@@ -22,10 +22,15 @@ package org.o42a.core.ir.object.op;
 import org.o42a.codegen.code.Arg;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectSignature<F extends ObjectFunc<F>>
 		extends Signature<F> {
+
+	public ObjectSignature(ID id) {
+		super(id);
+	}
 
 	public abstract Arg<DataOp> object();
 

@@ -19,8 +19,6 @@
 */
 package org.o42a.codegen;
 
-import static org.o42a.codegen.CodeIdFactory.DEFAULT_CODE_ID_FACTORY;
-
 import java.util.HashMap;
 
 import org.o42a.analysis.Analyzer;
@@ -32,6 +30,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
+import org.o42a.util.string.ID;
 
 
 public abstract class Generator {
@@ -52,10 +51,6 @@ public abstract class Generator {
 	}
 
 	public abstract Analyzer getAnalyzer();
-
-	public CodeIdFactory getCodeIdFactory() {
-		return DEFAULT_CODE_ID_FACTORY;
-	}
 
 	public final Functions getFunctions() {
 		return this.functions;
@@ -85,22 +80,6 @@ public abstract class Generator {
 		return (T) this.features.put(featureType, feature);
 	}
 
-	public final CodeId id() {
-		return getCodeIdFactory().id();
-	}
-
-	public final CodeId topId() {
-		return getCodeIdFactory().topId();
-	}
-
-	public final CodeId id(String name) {
-		return getCodeIdFactory().id(name);
-	}
-
-	public final CodeId rawId(String id) {
-		return getCodeIdFactory().rawId(id);
-	}
-
 	public final FunctionSettings newFunction() {
 		return getFunctions().newFunction();
 	}
@@ -117,15 +96,12 @@ public abstract class Generator {
 		return getGlobals().externalGlobal();
 	}
 
-	public final Ptr<AnyOp> addBinary(
-			CodeId id,
-			boolean isContant,
-			byte[] data) {
+	public final Ptr<AnyOp> addBinary(ID id, boolean isContant, byte[] data) {
 		return getGlobals().addBinary(id, isContant, data);
 	}
 
 	public final Ptr<AnyOp> addBinary(
-			CodeId id,
+			ID id,
 			boolean isConstant,
 			byte[] data,
 			int start,
@@ -158,7 +134,7 @@ public abstract class Generator {
 	protected abstract DataWriter dataWriter();
 
 	protected <F extends Func<F>> void addFunction(
-			CodeId id,
+			ID id,
 			FuncPtr<F> functionPtr) {
 		getDebug().addFunction(id, functionPtr);
 	}

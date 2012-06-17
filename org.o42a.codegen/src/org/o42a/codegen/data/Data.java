@@ -19,7 +19,6 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
@@ -27,16 +26,17 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 
 	private final Generator generator;
-	private final CodeId id;
+	private final ID id;
 	private Ptr<P> pointer;
 	private Data<?> next;
 
-	Data(Generator generator, CodeId id) {
+	Data(Generator generator, ID id) {
 		assert generator != null :
 			"Code generator not specified";
 		assert id != null :
@@ -60,7 +60,7 @@ public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 
 	public abstract Type<?> getInstance();
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -77,7 +77,7 @@ public abstract class Data<P extends AllocPtrOp<P>> implements DataAttributes {
 		return getAllocation().getLayout();
 	}
 
-	public abstract P fieldOf(CodeId id, Code code, StructOp<?> struct);
+	public abstract P fieldOf(ID id, Code code, StructOp<?> struct);
 
 	@Override
 	public String toString() {

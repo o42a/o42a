@@ -39,21 +39,15 @@ public final class ID {
 	}
 
 	public static ID id(String name) {
-		return new ID(
-				null,
-				Separator.NONE,
-				CASE_SENSITIVE.canonicalName(name),
-				null,
-				false);
+		return CASE_SENSITIVE.name(name).toRawID();
 	}
 
 	public static ID rawId(String name) {
-		return new ID(
-				null,
-				Separator.NONE,
-				CASE_SENSITIVE.canonicalName(name),
-				null,
-				true);
+		return CASE_SENSITIVE.name(name).toRawID();
+	}
+
+	public static ID rawId(Name name) {
+		return new ID(null, Separator.NONE, name, null, true);
 	}
 
 	private final ID prefix;
@@ -63,7 +57,7 @@ public final class ID {
 	private ID local;
 	private final boolean raw;
 
-	private ID(
+	ID(
 			ID prefix,
 			Separator separator,
 			Name name,
@@ -162,6 +156,18 @@ public final class ID {
 		assert name != null :
 			"Identifier not specified";
 		return separate(Separator.SUB, name, true);
+	}
+
+	public final ID suffix(String suffix) {
+		assert suffix != null :
+			"Suffix not specified";
+		return separate(Separator.NONE, suffix, false);
+	}
+
+	public final ID suffix(Name suffix) {
+		assert suffix != null :
+			"Suffix not specified";
+		return separate(Separator.NONE, suffix, false);
 	}
 
 	public final ID sub(ID id) {
@@ -301,6 +307,7 @@ public final class ID {
 			}
 
 		},
+
 		SUB(":", ": "),
 		ANONYMOUS(":", ": "),
 		DETAIL("//", " // "),

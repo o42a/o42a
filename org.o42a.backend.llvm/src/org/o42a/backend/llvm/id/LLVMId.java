@@ -23,10 +23,10 @@ import org.o42a.backend.llvm.code.LLFunction;
 import org.o42a.backend.llvm.data.LLVMDataWriter;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.alloc.*;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.string.ID;
 
 
 public abstract class LLVMId {
@@ -44,12 +44,12 @@ public abstract class LLVMId {
 	}
 
 	public static LLVMId dataId(
-			CodeId globalId,
+			ID globalId,
 			ContainerLLDAlloc<?> globalContainer) {
 		return new GlobalLLVMId(globalId, globalContainer);
 	}
 
-	public static LLVMId dataId(CodeId id, long nativePtr) {
+	public static LLVMId dataId(ID id, long nativePtr) {
 		return new DataLLVMId(id, nativePtr);
 	}
 
@@ -57,19 +57,19 @@ public abstract class LLVMId {
 		return new FunctionLLVMId(function);
 	}
 
-	public static LLVMId extenFuncId(CodeId id, long nativePtr) {
+	public static LLVMId extenFuncId(ID id, long nativePtr) {
 		return new ExternFuncLLVMId(id, nativePtr);
 	}
 
-	private final CodeId globalId;
+	private final ID globalId;
 	final LLVMIdKind kind;
 
-	LLVMId(CodeId globalId, LLVMIdKind kind) {
+	LLVMId(ID globalId, LLVMIdKind kind) {
 		this.globalId = globalId;
 		this.kind = kind;
 	}
 
-	public CodeId getGlobalId() {
+	public ID getGlobalId() {
 		return this.globalId;
 	}
 

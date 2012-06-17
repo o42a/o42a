@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.NumOp.DIV_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.common.object.AnnotatedSources;
@@ -41,7 +43,7 @@ public final class DivideFloats extends BinaryFloat {
 
 	@Override
 	protected Fp64op write(Code code, Fp64op left, Fp64op right) {
-		return left.div(code.id("div"), code, right);
+		return left.div(DIV_ID, code, right);
 	}
 
 }

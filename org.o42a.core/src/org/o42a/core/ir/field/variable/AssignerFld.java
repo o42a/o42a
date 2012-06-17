@@ -25,8 +25,6 @@ import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -46,13 +44,21 @@ import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 
 
 public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
+	private static final Name ASSIGNER_NAME = CASE_SENSITIVE.name("AS");
+
 	public static final Type ASSIGNER_FLD = new Type();
-	private static final MemberName ASSIGNER_MEMBER =
-			fieldName(CASE_SENSITIVE.canonicalName("AS"));
+
+	static final ID CAST_TARGET_ID = ID.id("cast_target");
+
+	private static final MemberName ASSIGNER_MEMBER = fieldName(ASSIGNER_NAME);
+
+	private static final ID ASSIGNER_ID = ID.id("assigner");
 
 	public static MemberKey assignerKey(CompilerContext context) {
 		return ASSIGNER_MEMBER.key(variableObject(context).getScope());
@@ -62,13 +68,14 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		return context.getIntrinsics().getVariable();
 	}
 
+	private final ID id;
 	private MemberKey key;
-	private CodeId id;
 	private Obj definedIn;
 	private FuncPtr<VariableAssignerFunc> assigner;
 
 	public AssignerFld(ObjectBodyIR bodyIR) {
 		super(bodyIR);
+		this.id = ASSIGNER_NAME.toID();
 	}
 
 	@Override
@@ -80,11 +87,8 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 	}
 
 	@Override
-	public CodeId getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-		return this.id = getGenerator().id("AS");
+	public final ID getId() {
+		return this.id;
 	}
 
 	@Override
@@ -109,7 +113,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		return this.assigner = getGenerator().newFunction().create(
-				getObjectIR().getId().detail("assigner"),
+				getObjectIR().getId().detail(ASSIGNER_ID),
 				VARIABLE_ASSIGNER,
 				new AssignerBuilder(this)).getPointer();
 	}
@@ -282,13 +286,11 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> bound(CodeId id, Code code) {
+		public final StructRecOp<ObjectIRType.Op> bound(ID id, Code code) {
 			return ptr(id, code, getType().bound());
 		}
 
-		public final FuncOp<VariableAssignerFunc> assigner(
-				CodeId id,
-				Code code) {
+		public final FuncOp<VariableAssignerFunc> assigner(ID id, Code code) {
 			return func(id, code, getType().assigner());
 		}
 
@@ -300,6 +302,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		Type() {
+			super(ID.rawId("o42a_fld_assigner"));
 		}
 
 		public final StructRec<ObjectIRType.Op> bound() {
@@ -313,11 +316,6 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_assigner");
 		}
 
 		@Override

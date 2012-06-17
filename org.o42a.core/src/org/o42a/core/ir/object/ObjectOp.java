@@ -24,7 +24,6 @@ import static org.o42a.core.ir.object.op.CastObjectFunc.CAST_OBJECT;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.value.ValHolderFactory.TEMP_VAL_HOLDER;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -46,9 +45,15 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectOp extends IROp implements HostOp {
+
+	protected static final ID CAST_ID = ID.id("cast");
+	protected static final ID TARGET_ID = ID.id("target");
+	protected static final ID FIELD_HOST_ID = ID.id("field_host");
+	protected static final ID DEP_HOST_ID = ID.id("dep_host");
 
 	public static ObjectOp anonymousObject(
 			CodeBuilder builder,
@@ -94,17 +99,17 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		}
 	}
 
-	public abstract ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant);
+	public abstract ObjOp cast(ID id, CodeDirs dirs, Obj ascendant);
 
 	public ObjectOp dynamicCast(
-			CodeId id,
+			ID id,
 			CodeDirs dirs,
 			ObjectTypeOp type,
 			Obj wellKnownType,
 			boolean reportError) {
 
 		final CodeDirs subDirs = dirs.begin(
-				id != null ? id : dirs.id("cast"),
+				id != null ? id : CAST_ID,
 				"Dynamic cast " + this + " to " + wellKnownType);
 
 		final Block code = subDirs.code();
@@ -204,7 +209,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				value.value(null, code)
 				.toPtr(null, code)
 				.load(null, code)
-				.toData(code.id("target"), code);
+				.toData(TARGET_ID, code);
 
 		final Block resultCode = valDirs.done().code();
 
@@ -248,11 +253,11 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return out.toString();
 	}
 
-	protected ObjOp dynamicCast(CodeId id, CodeDirs dirs, Obj ascendant) {
+	protected ObjOp dynamicCast(ID id, CodeDirs dirs, Obj ascendant) {
 
 		final ObjectIR ascendantIR = ascendant.ir(getGenerator());
 		final CodeDirs subDirs = dirs.begin(
-				id != null ? id : dirs.id("cast"),
+				id != null ? id : CAST_ID,
 				"Dynamic cast " + this + " to " + ascendantIR.getId());
 
 		final Block code = subDirs.code();

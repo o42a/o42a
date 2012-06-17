@@ -19,8 +19,6 @@
 */
 package org.o42a.intrinsic.numeric;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
@@ -28,11 +26,12 @@ import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public class IntegerStringFunc extends Func<IntegerStringFunc> {
 
-	public static final IntegerString INTEGER_STRING = new IntegerString();
+	public static final Signature INTEGER_STRING = new Signature();
 
 	private IntegerStringFunc(FuncCaller<IntegerStringFunc> caller) {
 		super(caller);
@@ -54,14 +53,15 @@ public class IntegerStringFunc extends Func<IntegerStringFunc> {
 		return string;
 	}
 
-	public static final class IntegerString
-			extends Signature<IntegerStringFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<IntegerStringFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<ValType.Op> string;
 		private Arg<Int64op> value;
 
-		private IntegerString() {
+		private Signature() {
+			super(ID.id("IntegerStringF"));
 		}
 
 		public final Return<BoolOp> result() {
@@ -79,11 +79,6 @@ public class IntegerStringFunc extends Func<IntegerStringFunc> {
 		@Override
 		public IntegerStringFunc op(FuncCaller<IntegerStringFunc> caller) {
 			return new IntegerStringFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("IntegerStringF");
 		}
 
 		@Override

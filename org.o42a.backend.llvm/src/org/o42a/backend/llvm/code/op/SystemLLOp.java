@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.op;
 
 import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.string.ID;
 
 
 public class SystemLLOp extends AllocPtrLLOp<SystemOp> implements SystemOp {
@@ -31,7 +31,7 @@ public class SystemLLOp extends AllocPtrLLOp<SystemOp> implements SystemOp {
 	private final SystemTypeLLAlloc typeAlloc;
 
 	public SystemLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr,
@@ -41,7 +41,7 @@ public class SystemLLOp extends AllocPtrLLOp<SystemOp> implements SystemOp {
 	}
 
 	@Override
-	public SystemLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public SystemLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new SystemLLOp(id, null, blockPtr, nativePtr, this.typeAlloc);
 	}
 

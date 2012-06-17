@@ -22,8 +22,6 @@ package org.o42a.core.ir.object.type;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -36,6 +34,7 @@ import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
@@ -111,6 +110,7 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		private RelRec body;
 
 		private Type() {
+			super(ID.rawId("o42a_obj_overrider_t"));
 		}
 
 		public final StructRec<FieldDescIR.Op> field() {
@@ -128,11 +128,6 @@ public final class OverriderDescIR implements Content<OverriderDescIR.Type> {
 		@Override
 		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_overrider_t");
 		}
 
 		@Override

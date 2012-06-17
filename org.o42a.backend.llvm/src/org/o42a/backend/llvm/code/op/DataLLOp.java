@@ -21,16 +21,16 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class DataLLOp extends DataPtrLLOp<DataOp> implements DataOp {
 
 	public DataLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -38,12 +38,12 @@ public final class DataLLOp extends DataPtrLLOp<DataOp> implements DataOp {
 	}
 
 	@Override
-	public DataLLOp toData(CodeId id, Code code) {
+	public DataLLOp toData(ID id, Code code) {
 		return llvm(code).phi(id, this);
 	}
 
 	@Override
-	public DataLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public DataLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new DataLLOp(id, null, blockPtr, nativePtr);
 	}
 

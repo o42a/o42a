@@ -20,8 +20,8 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.FpOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class FpCOp<U extends FpOp<U>, T extends Number>
@@ -32,7 +32,7 @@ public abstract class FpCOp<U extends FpOp<U>, T extends Number>
 		super(backend);
 	}
 
-	public FpCOp(CodeId id, CCode<?> code, T constant) {
+	public FpCOp(ID id, CCode<?> code, T constant) {
 		super(id, code, constant);
 	}
 

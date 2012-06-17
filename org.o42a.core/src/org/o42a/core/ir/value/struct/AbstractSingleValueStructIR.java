@@ -19,14 +19,16 @@
 */
 package org.o42a.core.ir.value.struct;
 
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+
 import java.util.HashMap;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.SingleValueStruct;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractSingleValueStructIR<T>
@@ -51,11 +53,11 @@ public abstract class AbstractSingleValueStructIR<T>
 		}
 
 		final Global<ValType.Op, ValType> global =
-				getGenerator().newGlobal().setConstant().dontExport()
-				.newInstance(
-						constId(value),
-						ValType.VAL_TYPE,
-						val(value));
+				getGenerator()
+				.newGlobal()
+				.setConstant()
+				.dontExport()
+				.newInstance(constId(value), VAL_TYPE, val(value));
 		final Ptr<ValType.Op> result = global.getPointer();
 
 		this.constCache.put(value, result);
@@ -63,6 +65,6 @@ public abstract class AbstractSingleValueStructIR<T>
 		return result;
 	}
 
-	protected abstract CodeId constId(T value);
+	protected abstract ID constId(T value);
 
 }

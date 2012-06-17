@@ -46,6 +46,7 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "substring.o42a")
@@ -55,6 +56,9 @@ final class SubString extends AnnotatedBuiltin {
 			fieldName(CASE_INSENSITIVE.canonicalName("from"));
 	private static final MemberName TO_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("to"));
+
+	private static final ID FROM_ID = ID.id("from");
+	private static final ID TO_ID = ID.id("to");
 
 	private Ref string;
 	private Ref from;
@@ -264,8 +268,8 @@ final class SubString extends AnnotatedBuiltin {
 		func.substring(
 				substringDirs,
 				stringVal,
-				fromVal.rawValue(null, code).load(code.id("from"), code),
-				toVal.rawValue(null, code).load(code.id("to"), code));
+				fromVal.rawValue(null, code).load(FROM_ID, code),
+				toVal.rawValue(null, code).load(TO_ID, code));
 
 		substringDirs.done();
 		toDirs.done();

@@ -42,9 +42,15 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 public abstract class BinaryResult<T, L, R> extends AnnotatedBuiltin {
+
+	public static final ID LEFT_ID = ID.id("left");
+	public static final ID LEFT_PTR_ID = ID.id("left_ptr");
+	public static final ID RIGHT_ID = ID.id("right");
+	public static final ID RIGHT_PTR_ID = ID.id("right_ptr");
 
 	private final MemberName leftOperandId;
 	private final ValueStruct<?, L> leftOperandStruct;

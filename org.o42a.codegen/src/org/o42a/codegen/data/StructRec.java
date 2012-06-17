@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class StructRec<S extends StructOp<S>>
@@ -32,7 +32,7 @@ public final class StructRec<S extends StructOp<S>>
 
 	private final Type<S> type;
 
-	StructRec(SubData<?> enclosing, CodeId id, Type<S> type) {
+	StructRec(SubData<?> enclosing, ID id, Type<S> type) {
 		super(enclosing, id);
 		this.type = type;
 	}
@@ -70,7 +70,7 @@ public final class StructRec<S extends StructOp<S>>
 	}
 
 	@Override
-	public StructRecOp<S> fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public StructRecOp<S> fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.ptr(id, code, this);
 	}
 

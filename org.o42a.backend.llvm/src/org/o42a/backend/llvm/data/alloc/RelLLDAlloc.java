@@ -23,12 +23,12 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.op.RelLLOp;
 import org.o42a.backend.llvm.data.LLVMDataWriter;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.string.ID;
 
 
 public final class RelLLDAlloc implements RelAllocation {
@@ -52,7 +52,7 @@ public final class RelLLDAlloc implements RelAllocation {
 	}
 
 	@Override
-	public RelLLOp op(CodeId id, CodeWriter writer) {
+	public RelLLOp op(ID id, CodeWriter writer) {
 
 		final LLCode code = (LLCode) writer;
 

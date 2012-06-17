@@ -24,7 +24,6 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.code.op.RelCOp;
 import org.o42a.backend.constant.data.rec.RelRecCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.RelRecOp;
@@ -32,6 +31,7 @@ import org.o42a.codegen.data.RelPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.data.backend.RelAllocation;
+import org.o42a.util.string.ID;
 
 
 public final class RelCDAlloc implements RelAllocation {
@@ -83,7 +83,7 @@ public final class RelCDAlloc implements RelAllocation {
 	}
 
 	@Override
-	public RelOp op(CodeId id, CodeWriter writer) {
+	public RelOp op(ID id, CodeWriter writer) {
 		return new RelCOp(
 				new OpBE<RelOp>(id, cast(writer)) {
 					@Override

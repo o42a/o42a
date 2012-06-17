@@ -19,31 +19,31 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public interface AnyOp extends DataPtrOp<AnyOp> {
 
-	AnyRecOp toPtr(CodeId id, Code code);
+	AnyRecOp toPtr(ID id, Code code);
 
-	Int8recOp toInt8(CodeId id, Code code);
+	Int8recOp toInt8(ID id, Code code);
 
-	Int16recOp toInt16(CodeId id, Code code);
+	Int16recOp toInt16(ID id, Code code);
 
-	Int32recOp toInt32(CodeId id, Code code);
+	Int32recOp toInt32(ID id, Code code);
 
-	Int64recOp toInt64(CodeId id, Code code);
+	Int64recOp toInt64(ID id, Code code);
 
-	Fp32recOp toFp32(CodeId id, Code code);
+	Fp32recOp toFp32(ID id, Code code);
 
-	Fp64recOp toFp64(CodeId id, Code code);
+	Fp64recOp toFp64(ID id, Code code);
 
-	RelRecOp toRel(CodeId id, Code code);
+	RelRecOp toRel(ID id, Code code);
 
-	DataOp toData(CodeId id, Code code);
+	DataOp toData(ID id, Code code);
 
-	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
+	<S extends StructOp<S>> S to(ID id, Code code, Type<S> type);
 
 }

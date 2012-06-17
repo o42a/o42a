@@ -19,13 +19,13 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public interface DataOp extends DumpablePtrOp<DataOp> {
 
-	<S extends StructOp<S>> S to(CodeId id, Code code, Type<S> type);
+	<S extends StructOp<S>> S to(ID id, Code code, Type<S> type);
 
 }

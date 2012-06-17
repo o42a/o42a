@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.data.alloc;
 
 import org.o42a.backend.llvm.code.op.SystemLLOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.util.string.ID;
 
 
 public class SystemLLDAlloc extends SimpleLLDAlloc<SystemOp> {
@@ -48,7 +48,7 @@ public class SystemLLDAlloc extends SimpleLLDAlloc<SystemOp> {
 
 	@Override
 	protected SystemLLOp op(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {

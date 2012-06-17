@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.data.backend;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.RelPtr;
+import org.o42a.util.string.ID;
 
 
 public interface DataAllocation<P extends PtrOp<P>> {
@@ -37,7 +37,7 @@ public interface DataAllocation<P extends PtrOp<P>> {
 
 	RelAllocation relativeTo(RelPtr pointer, DataAllocation<?> allocation);
 
-	P op(CodeId id, AllocClass allocClass, CodeWriter writer);
+	P op(ID id, AllocClass allocClass, CodeWriter writer);
 
 	DataAllocation<AnyOp> toAny();
 

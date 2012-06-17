@@ -19,6 +19,8 @@
 */
 package org.o42a.codegen.code.op;
 
+import org.o42a.util.string.ID;
+
 
 public enum RMWKind {
 
@@ -31,9 +33,15 @@ public enum RMWKind {
 	R_NAND_W(6);
 
 	private final int code;
+	private final ID id;
 
 	RMWKind(int code) {
 		this.code = code;
+		this.id = ID.rawId(name().toLowerCase());
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final int code() {

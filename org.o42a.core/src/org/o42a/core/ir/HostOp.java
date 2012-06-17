@@ -26,9 +26,12 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.string.ID;
 
 
 public interface HostOp {
+
+	ID HOST_ID = ID.id("host");
 
 	Generator getGenerator();
 

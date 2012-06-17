@@ -20,6 +20,7 @@
 package org.o42a.codegen.data;
 
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class Struct<S extends StructOp<S>> extends Type<S> {
@@ -30,6 +31,10 @@ public abstract class Struct<S extends StructOp<S>> extends Type<S> {
 	@SuppressWarnings("unchecked")
 	public static final <S extends Struct<?>> Content<S> structContent() {
 		return (Content<S>) STRUCT_CONTENT;
+	}
+
+	public Struct(ID id) {
+		super(id);
 	}
 
 	protected abstract void fill();

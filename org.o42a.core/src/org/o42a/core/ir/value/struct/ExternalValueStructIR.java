@@ -25,7 +25,6 @@ import static org.o42a.core.ir.value.Val.VAL_STATIC;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
@@ -34,6 +33,7 @@ import org.o42a.core.ir.value.ValHolder;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.string.ID;
 
 
 public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
@@ -102,7 +102,7 @@ public abstract class ExternalValueStructIR<S extends ValueStruct<S, T>, T>
 		return new ExternValTrap(value);
 	}
 
-	protected abstract CodeId valueId(T value);
+	protected abstract ID valueId(T value);
 
 	protected abstract DataAlignment alignment(T value);
 

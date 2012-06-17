@@ -40,9 +40,12 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
 import org.o42a.core.object.array.ArrayItem;
+import org.o42a.util.string.ID;
 
 
 class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
+
+	private static final ID ITEMS_ID = ID.id("items");
 
 	private final ArrayIR arrayIR;
 
@@ -100,7 +103,7 @@ class ArrayConstructorBuilder implements FunctionBuilder<ObjectValFunc> {
 				.link("o42a_array_alloc", VAL_ALLOC);
 		AnyRecOp data = func.op(null, code)
 				.allocate(dirs, items.length)
-				.toPtr(code.id("items"), code);
+				.toPtr(ITEMS_ID, code);
 
 		allocateItem(dirs, data, items[0], 0);
 		for (int i = 1; i < items.length; ++i) {

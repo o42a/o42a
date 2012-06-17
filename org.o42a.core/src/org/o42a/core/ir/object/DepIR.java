@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -34,11 +32,14 @@ import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public class DepIR implements FldIR {
 
 	public static final Type DEP_IR = new Type();
+
+	private static final ID OWNER_DEP_ID = ID.id("O");
 
 	private final ObjectBodyIR bodyIR;
 	private final Dep dep;
@@ -64,7 +65,7 @@ public class DepIR implements FldIR {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return localId();
 	}
 
@@ -104,18 +105,18 @@ public class DepIR implements FldIR {
 
 	void allocate(SubData<?> data) {
 
-		final CodeId localId = localId();
+		final ID localId = localId();
 
 		this.instance = data.addInstance(localId, DEP_IR);
 		this.instance.object().setNull();
 	}
 
-	private CodeId localId() {
+	private ID localId() {
 		switch (getDep().getDepKind()) {
 		case ENCLOSING_OWNER_DEP:
-			return getGenerator().id("O");
+			return OWNER_DEP_ID;
 		case REF_DEP:
-			return getGenerator().id('D' + getDep().getName());
+			return ID.id('D' + getDep().getName());
 		}
 
 		throw new IllegalStateException(
@@ -127,6 +128,7 @@ public class DepIR implements FldIR {
 		private DataRec object;
 
 		private Type() {
+			super(ID.rawId("o42a_fld_dep"));
 		}
 
 		public final DataRec object() {
@@ -136,11 +138,6 @@ public class DepIR implements FldIR {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_dep");
 		}
 
 		@Override

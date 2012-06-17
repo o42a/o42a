@@ -21,19 +21,17 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValDirs;
+import org.o42a.util.string.ID;
 
 
 public final class ValAllocFunc extends Func<ValAllocFunc> {
 
-	public static final ValAllocSignature VAL_ALLOC =
-			new ValAllocSignature();
+	public static final Signature VAL_ALLOC = new Signature();
 
 	private ValAllocFunc(FuncCaller<ValAllocFunc> caller) {
 		super(caller);
@@ -58,14 +56,15 @@ public final class ValAllocFunc extends Func<ValAllocFunc> {
 		return result;
 	}
 
-	public static final class ValAllocSignature
-			extends Signature<ValAllocFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ValAllocFunc> {
 
 		private Return<AnyOp> result;
 		private Arg<ValType.Op> value;
 		private Arg<Int32op> size;
 
-		private ValAllocSignature() {
+		private Signature() {
+			super(ID.id("ValAllocF"));
 		}
 
 		public final Return<AnyOp> result() {
@@ -83,11 +82,6 @@ public final class ValAllocFunc extends Func<ValAllocFunc> {
 		@Override
 		public ValAllocFunc op(FuncCaller<ValAllocFunc> caller) {
 			return new ValAllocFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ValAllocF");
 		}
 
 		@Override

@@ -29,7 +29,6 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.rec.RecCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.Op;
@@ -37,6 +36,7 @@ import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Rec;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
@@ -80,16 +80,16 @@ public abstract class RecCOp<R extends RecOp<R, O>, O extends Op, T>
 	}
 
 	@Override
-	public final O load(CodeId id, Code code) {
+	public final O load(ID id, Code code) {
 		return load(id, code, NOT_ATOMIC);
 	}
 
 	public final O load(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Atomicity atomicity) {
 
-		final CodeId derefId = code.getOpNames().derefId(id, this);
+		final ID derefId = code.getOpNames().derefId(id, this);
 		final CCode<?> ccode = cast(code);
 		final T constant = getConstantValue();
 

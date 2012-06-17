@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.op.Int32llOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int32recOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class Int32recLLOp
@@ -31,7 +31,7 @@ public final class Int32recLLOp
 		implements Int32recOp {
 
 	public Int32recLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -39,12 +39,12 @@ public final class Int32recLLOp
 	}
 
 	@Override
-	public Int32recLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Int32recLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new Int32recLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected Int32op createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected Int32op createLoaded(ID id, long blockPtr, long nativePtr) {
 		return new Int32llOp(id, blockPtr, nativePtr);
 	}
 

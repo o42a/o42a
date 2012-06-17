@@ -23,10 +23,10 @@ import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class ContainerLLDAlloc<S extends StructOp<S>>
@@ -112,7 +112,7 @@ public abstract class ContainerLLDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(ID id, AllocClass allocClass, CodeWriter writer) {
 
 		final LLCode code = (LLCode) writer;
 

@@ -19,6 +19,7 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.VOID_VAL;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
@@ -75,11 +76,11 @@ public class VoidValueStruct extends SingleValueStruct<Void> {
 			}
 
 			final Global<ValType.Op, ValType> global =
-					getGenerator().newGlobal().setConstant()
-					.dontExport().newInstance(
-							getGenerator().id("CONST").sub("VOID"),
-							VAL_TYPE,
-							val(value));
+					getGenerator()
+					.newGlobal()
+					.setConstant()
+					.dontExport()
+					.newInstance(CONST_ID.sub("VOID"), VAL_TYPE, val(value));
 
 			return this.valPtr = global.getPointer();
 		}

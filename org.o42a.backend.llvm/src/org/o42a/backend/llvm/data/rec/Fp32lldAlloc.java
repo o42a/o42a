@@ -22,10 +22,10 @@ package org.o42a.backend.llvm.data.rec;
 import org.o42a.backend.llvm.code.rec.Fp32recLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
+import org.o42a.util.string.ID;
 
 
 public final class Fp32lldAlloc extends SimpleLLDAlloc<Fp32recOp> {
@@ -41,7 +41,7 @@ public final class Fp32lldAlloc extends SimpleLLDAlloc<Fp32recOp> {
 
 	@Override
 	protected Fp32recOp op(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {

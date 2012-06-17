@@ -22,18 +22,17 @@ package org.o42a.core.ir.field.object;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectIRData.Op;
+import org.o42a.util.string.ID;
 
 
 public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 
-	public static final FldCtrStart FLD_CTR_START = new FldCtrStart();
+	public static final Signature FLD_CTR_START = new Signature();
 
 	private FldCtrStartFunc(FuncCaller<FldCtrStartFunc> caller) {
 		super(caller);
@@ -43,13 +42,15 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 		return invoke(null, code, FLD_CTR_START.result(), data, ctr);
 	}
 
-	public static final class FldCtrStart extends Signature<FldCtrStartFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<FldCtrStartFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<Op> data;
 		private Arg<FldCtrOp> ctr;
 
-		private FldCtrStart() {
+		private Signature() {
+			super(ID.id("FldCtrStartF"));
 		}
 
 		public final Return<BoolOp> result() {
@@ -67,11 +68,6 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 		@Override
 		public final FldCtrStartFunc op(FuncCaller<FldCtrStartFunc> caller) {
 			return new FldCtrStartFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("FldCtrStartF");
 		}
 
 		@Override

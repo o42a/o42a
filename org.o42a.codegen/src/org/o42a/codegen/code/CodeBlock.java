@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.BlockWriter;
+import org.o42a.util.string.ID;
 
 
 class CodeBlock extends Block {
@@ -28,7 +28,7 @@ class CodeBlock extends Block {
 	private final Code enclosing;
 	BlockWriter writer;
 
-	CodeBlock(Code enclosing, CodeId name) {
+	CodeBlock(Code enclosing, ID name) {
 		super(enclosing, name);
 		this.enclosing = enclosing;
 	}

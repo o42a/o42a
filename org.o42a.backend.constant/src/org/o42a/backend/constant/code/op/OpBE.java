@@ -23,24 +23,24 @@ import org.o42a.analysis.use.SimpleUsage;
 import org.o42a.analysis.use.User;
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public abstract class OpBE<U extends Op> extends InstrBE {
 
-	private final CodeId id;
+	private final ID id;
 	private U underlying;
 	private COp<U, ?> op;
 
-	public OpBE(CodeId id, CCode<?> code) {
+	public OpBE(ID id, CCode<?> code) {
 		super(code);
 		assert id != null :
 			"Operation identifier not specified";
 		this.id = id;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 

@@ -19,7 +19,8 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.codegen.CodeId;
+import static org.o42a.core.ir.IRNames.CONST_ID;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.Val;
@@ -28,6 +29,7 @@ import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public class FloatValueStruct extends SingleValueStruct<Double> {
@@ -64,9 +66,8 @@ public class FloatValueStruct extends SingleValueStruct<Double> {
 		}
 
 		@Override
-		protected CodeId constId(Double value) {
-			return getGenerator().id("CONST").sub("FLOAT")
-					.anonymous(++this.constSeq);
+		protected ID constId(Double value) {
+			return CONST_ID.sub("FLOAT").anonymous(++this.constSeq);
 		}
 
 	}

@@ -19,22 +19,22 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.debug.DebugBlockBase;
+import org.o42a.util.string.ID;
 
 
 public abstract class Block extends DebugBlockBase {
 
 	private final Head head = new Head(this);
 
-	Block(Code enclosing, CodeId name) {
+	Block(Code enclosing, ID name) {
 		super(enclosing, name);
 	}
 
-	Block(Generator generator, CodeId id) {
+	Block(Generator generator, ID id) {
 		super(generator, id);
 	}
 
@@ -57,10 +57,10 @@ public abstract class Block extends DebugBlockBase {
 
 	public final Allocator allocator(String name) {
 		assert assertIncomplete();
-		return new AllocatorCode(this, id(name));
+		return new AllocatorCode(this, ID.id(name));
 	}
 
-	public final Allocator allocator(CodeId name) {
+	public final Allocator allocator(ID name) {
 		assert assertIncomplete();
 		return new AllocatorCode(this, name);
 	}
@@ -85,8 +85,8 @@ public abstract class Block extends DebugBlockBase {
 	@Override
 	protected final CondBlock choose(
 			BoolOp condition,
-			CodeId trueName,
-			CodeId falseName) {
+			ID trueName,
+			ID falseName) {
 		assert assertIncomplete();
 		return new CondBlock(this, condition, trueName, falseName);
 	}

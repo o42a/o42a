@@ -21,7 +21,6 @@ package org.o42a.core.ir.op;
 
 import static org.o42a.core.ir.value.ValOp.stackAllocatedVal;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public abstract class ValDirs {
@@ -72,19 +72,11 @@ public abstract class ValDirs {
 		return dirs().code();
 	}
 
-	public final CodeId id() {
-		return code().id();
-	}
-
-	public final CodeId id(String name) {
-		return code().id(name);
-	}
-
 	public final Block addBlock(String name) {
 		return dirs().addBlock(name);
 	}
 
-	public final Block addBlock(CodeId name) {
+	public final Block addBlock(ID name) {
 		return dirs().addBlock(name);
 	}
 
@@ -121,10 +113,10 @@ public abstract class ValDirs {
 	}
 
 	public final ValDirs begin(String id, String message) {
-		return begin(id != null ? id(id) : null, message);
+		return begin(id != null ? ID.id(id) : null, message);
 	}
 
-	public final ValDirs begin(CodeId id, String message) {
+	public final ValDirs begin(ID id, String message) {
 		return new NestedValDirs(dirs().begin(id, message), this);
 	}
 

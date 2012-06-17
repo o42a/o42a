@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ir;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
+import org.o42a.util.string.ID;
 
 
 public abstract class ScopeIR extends ObjectScopeIRBase {
@@ -46,9 +46,9 @@ public abstract class ScopeIR extends ObjectScopeIRBase {
 		return this.scope;
 	}
 
-	public abstract CodeId getId();
+	public abstract ID getId();
 
-	public CodeId nextAnonymousId() {
+	public final ID nextAnonymousId() {
 		return getId().anonymous(++this.anonymousSeq);
 	}
 

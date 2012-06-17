@@ -21,27 +21,27 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
 
-	private final CodeId id;
+	private final ID id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public BoolLLOp(CodeId id, long blockPtr, long nativePtr) {
+	public BoolLLOp(ID id, long blockPtr, long nativePtr) {
 		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -57,7 +57,7 @@ public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
 
 	@Override
 	public <O extends Op> O select(
-			CodeId id,
+			ID id,
 			Code code,
 			O trueValue,
 			O falseValue) {
@@ -70,7 +70,7 @@ public class BoolLLOp extends BoolOp implements LLOp<BoolOp> {
 	}
 
 	@Override
-	public BoolLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public BoolLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new BoolLLOp(id, blockPtr, nativePtr);
 	}
 

@@ -21,7 +21,6 @@ package org.o42a.intrinsic.root;
 
 import static org.o42a.core.value.Value.voidValue;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.def.BuiltinDef;
@@ -46,6 +45,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 public final class VoidObject extends BuiltinObject {
@@ -125,15 +125,15 @@ public final class VoidObject extends BuiltinObject {
 
 	private static final class IR extends ScopeIR {
 
-		private CodeId id;
+		private ID id;
 
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = generator.id("VOID");
+			this.id = ID.id("VOID");
 		}
 
 		@Override
-		public CodeId getId() {
+		public ID getId() {
 			return this.id;
 		}
 

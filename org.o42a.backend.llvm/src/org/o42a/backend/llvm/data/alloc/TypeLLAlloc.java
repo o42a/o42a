@@ -23,11 +23,11 @@ import static org.o42a.backend.llvm.id.LLVMId.typeId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class TypeLLAlloc<S extends StructOp<S>>
@@ -50,7 +50,7 @@ public final class TypeLLAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(ID id, AllocClass allocClass, CodeWriter writer) {
 		throw new UnsupportedOperationException();
 	}
 

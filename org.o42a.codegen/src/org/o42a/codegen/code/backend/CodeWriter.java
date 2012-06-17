@@ -19,13 +19,13 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public interface CodeWriter {
@@ -34,10 +34,10 @@ public interface CodeWriter {
 
 	boolean exists();
 
-	CodeId getId();
+	ID getId();
 
 	<F extends Func<F>> FuncCaller<F> caller(
-			CodeId id,
+			ID id,
 			FuncAllocation<F> allocation);
 
 	CodeWriter inset(Code code);
@@ -66,9 +66,9 @@ public interface CodeWriter {
 
 	<F extends Func<F>> FuncCaller<F> nullPtr(Signature<F> signature);
 
-	<O extends Op> O phi(CodeId id, O op);
+	<O extends Op> O phi(ID id, O op);
 
-	<O extends Op> O phi(CodeId id, O op1, O op2);
+	<O extends Op> O phi(ID id, O op1, O op2);
 
 	void acquireBarrier();
 

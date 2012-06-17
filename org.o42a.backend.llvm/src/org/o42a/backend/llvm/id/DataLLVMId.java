@@ -20,14 +20,14 @@
 package org.o42a.backend.llvm.id;
 
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.CodeId;
+import org.o42a.util.string.ID;
 
 
 final class DataLLVMId extends TopLevelLLVMId {
 
 	private long nativePtr;
 
-	DataLLVMId(CodeId id, long nativePtr) {
+	DataLLVMId(ID id, long nativePtr) {
 		super(id, LLVMIdKind.DATA);
 		this.nativePtr = nativePtr;
 	}

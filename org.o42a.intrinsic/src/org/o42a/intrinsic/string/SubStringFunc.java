@@ -21,19 +21,18 @@ package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.util.string.ID;
 
 
 final class SubStringFunc extends Func<SubStringFunc> {
 
-	public static final SubString SUB_STRING = new SubString();
+	public static final Signature SUB_STRING = new Signature();
 
 	private SubStringFunc(FuncCaller<SubStringFunc> caller) {
 		super(caller);
@@ -70,7 +69,8 @@ final class SubStringFunc extends Func<SubStringFunc> {
 				to);
 	}
 
-	static final class SubString extends Signature<SubStringFunc> {
+	static final class Signature
+			extends org.o42a.codegen.code.Signature<SubStringFunc> {
 
 		private Return<Void> result;
 		private Arg<Op> sub;
@@ -78,7 +78,8 @@ final class SubStringFunc extends Func<SubStringFunc> {
 		private Arg<Int64op> from;
 		private Arg<Int64op> to;
 
-		private SubString() {
+		private Signature() {
+			super(ID.id("SubStringF"));
 		}
 
 		public final Return<Void> result() {
@@ -104,11 +105,6 @@ final class SubStringFunc extends Func<SubStringFunc> {
 		@Override
 		public SubStringFunc op(FuncCaller<SubStringFunc> caller) {
 			return new SubStringFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("SubStringF");
 		}
 
 		@Override

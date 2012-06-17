@@ -19,14 +19,16 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface RecOp<R extends RecOp<R, O>, O extends Op>
 		extends AllocPtrOp<R> {
 
-	O load(CodeId id, Code code);
+	ID DEREF_ID = ID.rawId("deref");
+
+	O load(ID id, Code code);
 
 	void store(Code code, O value);
 

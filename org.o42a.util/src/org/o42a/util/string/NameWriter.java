@@ -71,6 +71,10 @@ public abstract class NameWriter {
 		writeString(separator.getDefaultSign());
 	}
 
+	protected void writeRaw(Name name) {
+		write(name);
+	}
+
 	private NameWriter writeString(String string) {
 
 		final int len = string.length();
@@ -135,7 +139,11 @@ public abstract class NameWriter {
 				writer.writeSeparator(next);
 			}
 			lastSeparator[0] = Separator.NONE;
-			writer.write(name);
+			if (id.isRaw()) {
+				writer.writeRaw(name);
+			} else {
+				writer.write(name);
+			}
 		}
 
 		final ID suffix = id.getSuffix();

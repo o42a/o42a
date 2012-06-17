@@ -19,7 +19,9 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.INDEFINITE_VAL;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
@@ -58,9 +60,12 @@ public final class RuntimeValue<T> extends Value<T> {
 		cachedGenerator = generator;
 
 		final Global<ValType.Op, ValType> global =
-				generator.newGlobal().setConstant().dontExport().newInstance(
-						generator.id("CONST").sub("INDEFINITE"),
-						ValType.VAL_TYPE,
+				generator.newGlobal()
+				.setConstant()
+				.dontExport()
+				.newInstance(
+						CONST_ID.sub("INDEFINITE"),
+						VAL_TYPE,
 						INDEFINITE_VAL);
 
 		return cachedPtr = global.getPointer();

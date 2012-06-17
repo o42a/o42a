@@ -29,7 +29,6 @@ import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataOp;
@@ -49,9 +48,12 @@ import org.o42a.core.object.ObjectValue;
 import org.o42a.core.object.def.DefTarget;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.util.string.ID;
 
 
 public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
+
+	public static final ID FLD_CTR_ID = ID.id("fld_ctr");
 
 	private final Obj target;
 	private Obj targetAscendant;
@@ -163,7 +165,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			ctr =
 					code.getAllocator()
 					.allocation()
-					.allocate(code.id("fld_ctr"), FLD_CTR_TYPE);
+					.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
 
 			final Block constructed = code.addBlock("constructed");
 
@@ -364,11 +366,11 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 			return (Type<S, C>) super.getType();
 		}
 
-		public final DataRecOp object(CodeId id, Code code) {
+		public final DataRecOp object(ID id, Code code) {
 			return ptr(id, code, getType().object());
 		}
 
-		public FuncOp<C> constructor(CodeId id, Code code) {
+		public FuncOp<C> constructor(ID id, Code code) {
 			return func(id, code, getType().constructor());
 		}
 
@@ -397,6 +399,9 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		private DataRec object;
 		private FuncRec<C> constructor;
 
+		public Type(ID id) {
+			super(id);
+		}
 
 		public abstract boolean isStateless();
 

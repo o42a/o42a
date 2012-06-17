@@ -21,8 +21,6 @@ package org.o42a.core.ir.field.link;
 
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -33,9 +31,9 @@ import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
-import org.o42a.core.ir.object.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public class LinkFld extends RefFld<ObjectRefFunc> {
@@ -93,6 +91,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
 		private Type() {
+			super(ID.rawId("o42a_fld_link"));
 		}
 
 		@Override
@@ -106,12 +105,7 @@ public class LinkFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_link");
-		}
-
-		@Override
-		protected ObjectRef getSignature() {
+		protected ObjectRefFunc.Signature getSignature() {
 			return OBJECT_REF;
 		}
 

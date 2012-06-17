@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.op.RelLLOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class RelRecLLOp
@@ -31,7 +31,7 @@ public final class RelRecLLOp
 		implements RelRecOp {
 
 	public RelRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -39,12 +39,12 @@ public final class RelRecLLOp
 	}
 
 	@Override
-	public RelRecLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public RelRecLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new RelRecLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected RelOp createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected RelOp createLoaded(ID id, long blockPtr, long nativePtr) {
 		return new RelLLOp(id, blockPtr, nativePtr);
 	}
 

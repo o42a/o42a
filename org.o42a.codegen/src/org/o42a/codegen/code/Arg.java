@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataType;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public abstract class Arg<O extends Op> {
@@ -32,14 +32,14 @@ public abstract class Arg<O extends Op> {
 	private final Signature<?> signature;
 	private final int index;
 	private final String name;
-	private final CodeId id;
+	private final ID id;
 	private final DataType dataType;
 
 	Arg(Signature<?> signature, int index, String name, DataType dataType) {
 		this.signature = signature;
 		this.index = index;
 		this.name = name;
-		this.id = signature.getGenerator().id(name);
+		this.id = ID.id(name);
 		this.dataType = dataType;
 	}
 
@@ -55,7 +55,7 @@ public abstract class Arg<O extends Op> {
 		return this.name;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 

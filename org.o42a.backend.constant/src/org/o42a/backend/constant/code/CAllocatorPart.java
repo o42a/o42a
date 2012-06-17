@@ -20,6 +20,7 @@
 package org.o42a.backend.constant.code;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.util.string.ID;
 
 
 final class CAllocatorPart extends CBlockPart {
@@ -55,7 +56,7 @@ final class CAllocatorPart extends CBlockPart {
 
 		final Block underlying = allocator.firstPart().underlying();
 
-		return underlying.addBlock(underlying.id().anonymous(index()));
+		return underlying.addBlock(ID.id().anonymous(index()));
 	}
 
 	private final CAllocatorCode allocator() {

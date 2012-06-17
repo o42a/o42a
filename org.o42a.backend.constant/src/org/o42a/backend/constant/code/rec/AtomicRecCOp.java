@@ -25,12 +25,12 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.op.InstrBE;
 import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AtomicRecOp;
 import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public abstract class AtomicRecCOp<
@@ -47,10 +47,10 @@ public abstract class AtomicRecCOp<
 	}
 
 	@Override
-	public O testAndSet(CodeId id, Code code, O expected, O value) {
+	public O testAndSet(ID id, Code code, O expected, O value) {
 
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "tns", this, value);
+		final ID resultId =
+				code.getOpNames().binaryId(id, TEST_AND_SET_ID, this, value);
 		final CCode<?> ccode = cast(code);
 		final COp<O, ?> cExpected = cast(expected);
 		final COp<O, ?> cValue = cast(value);

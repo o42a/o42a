@@ -21,17 +21,17 @@ package org.o42a.codegen.data;
 
 import static org.o42a.util.fn.Holder.holder;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp32recOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public class Fp32rec extends Rec<Fp32recOp, Float> {
 
-	Fp32rec(SubData<?> enclosing, CodeId id) {
+	Fp32rec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -64,7 +64,7 @@ public class Fp32rec extends Rec<Fp32recOp, Float> {
 	}
 
 	@Override
-	public Fp32recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public Fp32recOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.fp32(id, code, this);
 	}
 

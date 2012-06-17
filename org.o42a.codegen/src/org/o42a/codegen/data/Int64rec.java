@@ -21,7 +21,6 @@ package org.o42a.codegen.data;
 
 import static org.o42a.util.fn.Holder.holder;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int64recOp;
@@ -29,13 +28,14 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public final class Int64rec extends Rec<Int64recOp, Long> {
 
 	private Getter<Ptr<AnyOp>> nativePtr;
 
-	Int64rec(SubData<?> enclosing, CodeId id) {
+	Int64rec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -83,7 +83,7 @@ public final class Int64rec extends Rec<Int64recOp, Long> {
 	}
 
 	@Override
-	public Int64recOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public Int64recOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.int64(id, code, this);
 	}
 

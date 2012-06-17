@@ -29,7 +29,6 @@ import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SystemTypeLLAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -37,16 +36,19 @@ import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public class LLStruct<S extends StructOp<S>>
 		extends DataPtrLLOp<S>
 		implements StructWriter<S> {
 
+	private static final String ENCLOSING_ID = "enc";
+
 	private ContainerLLDAlloc<S> type;
 
 	public LLStruct(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			ContainerLLDAlloc<S> type,
 			long blockPtr,
@@ -56,7 +58,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	public LLStruct(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			Type<S> type,
 			long blockPtr,
@@ -76,7 +78,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int8recLLOp int8(CodeId id, Code code, Int8rec field) {
+	public Int8recLLOp int8(ID id, Code code, Int8rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -88,7 +90,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int16recLLOp int16(CodeId id, Code code, Int16rec field) {
+	public Int16recLLOp int16(ID id, Code code, Int16rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -100,7 +102,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int32recLLOp int32(CodeId id, Code code, Int32rec field) {
+	public Int32recLLOp int32(ID id, Code code, Int32rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -112,7 +114,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int64recLLOp int64(CodeId id, Code code, Int64rec field) {
+	public Int64recLLOp int64(ID id, Code code, Int64rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -124,7 +126,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Fp32recLLOp fp32(CodeId id, Code code, Fp32rec field) {
+	public Fp32recLLOp fp32(ID id, Code code, Fp32rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -136,7 +138,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Fp64recLLOp fp64(CodeId id, Code code, Fp64rec field) {
+	public Fp64recLLOp fp64(ID id, Code code, Fp64rec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -148,7 +150,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public SystemOp system(CodeId id, Code code, SystemData field) {
+	public SystemOp system(ID id, Code code, SystemData field) {
 
 		final LLCode llvm = llvm(code);
 		final SystemTypeLLAlloc typeAlloc =
@@ -163,7 +165,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public AnyRecLLOp ptr(CodeId id, Code code, AnyRec field) {
+	public AnyRecLLOp ptr(ID id, Code code, AnyRec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -175,7 +177,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public DataRecLLOp ptr(CodeId id, Code code, DataRec field) {
+	public DataRecLLOp ptr(ID id, Code code, DataRec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -188,7 +190,7 @@ public class LLStruct<S extends StructOp<S>>
 
 	@Override
 	public <SS extends StructOp<SS>> StructRecLLOp<SS> ptr(
-			CodeId id,
+			ID id,
 			Code code,
 			StructRec<SS> field) {
 
@@ -203,7 +205,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public RelRecLLOp relPtr(CodeId id, Code code, RelRec field) {
+	public RelRecLLOp relPtr(ID id, Code code, RelRec field) {
 
 		final LLCode llvm = llvm(code);
 
@@ -216,7 +218,7 @@ public class LLStruct<S extends StructOp<S>>
 
 	@Override
 	public <SS extends StructOp<SS>> SS struct(
-			CodeId id,
+			ID id,
 			Code code,
 			Type<SS> field) {
 
@@ -232,7 +234,7 @@ public class LLStruct<S extends StructOp<S>>
 
 	@Override
 	public <F extends Func<F>> FuncOp<F> func(
-			CodeId id,
+			ID id,
 			Code code,
 			FuncRec<F> field) {
 
@@ -247,7 +249,7 @@ public class LLStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public S create(CodeId id, long blockPtr, long nativePtr) {
+	public S create(ID id, long blockPtr, long nativePtr) {
 		return getType().op(new LLStruct<S>(
 				id,
 				null,
@@ -261,11 +263,11 @@ public class LLStruct<S extends StructOp<S>>
 		return "(" + this.type.getType().getId() + "*) " + getId();
 	}
 
-	private final long field(CodeId id, LLCode code, Data<?> field) {
+	private final long field(ID id, LLCode code, Data<?> field) {
 		return field(id, code, field.getPointer());
 	}
 
-	private final long field(CodeId id, LLCode code, Ptr<?> pointer) {
+	private final long field(ID id, LLCode code, Ptr<?> pointer) {
 
 		final LLDAlloc<?> allocation =
 				(LLDAlloc<?>) pointer.getAllocation();
@@ -277,7 +279,7 @@ public class LLStruct<S extends StructOp<S>>
 		return field;
 	}
 
-	private long field(CodeId id, LLCode code, LLDAlloc<?> allocation) {
+	private long field(ID id, LLCode code, LLDAlloc<?> allocation) {
 
 		final ContainerLLDAlloc<?> enclosing = allocation.getEnclosing();
 
@@ -291,14 +293,14 @@ public class LLStruct<S extends StructOp<S>>
 			return code.instr(field(
 					code.nextPtr(),
 					code.nextInstr(),
-					ids.writeCodeId(id),
+					ids.write(id),
 					ids.length(),
 					getNativePtr(),
 					allocation.llvmId().getIndex()));
 		}
 
-		final CodeId enclosingId =
-				id.detail("enc").detail(enclosing.getType().getId());
+		final ID enclosingId =
+				id.detail(ENCLOSING_ID).detail(enclosing.getType().getId());
 		final long enclosingField =
 				field(enclosingId, code, enclosing);
 
@@ -311,7 +313,7 @@ public class LLStruct<S extends StructOp<S>>
 		return code.instr(field(
 				code.nextPtr(),
 				code.nextInstr(),
-				ids.writeCodeId(enclosingId.anonymous(index)),
+				ids.write(enclosingId.anonymous(index)),
 				ids.length(),
 				enclosingField,
 				index));

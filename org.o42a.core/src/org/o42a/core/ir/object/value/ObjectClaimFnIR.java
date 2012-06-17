@@ -24,9 +24,12 @@ import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectValueIR;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.object.value.ObjectValuePart;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectClaimFnIR extends ObjectValuePartFnIR {
+
+	public static final ID CLAIM_ID = ID.id("claim");
 
 	public ObjectClaimFnIR(ObjectValueIR valueIR) {
 		super(valueIR);
@@ -38,8 +41,8 @@ public final class ObjectClaimFnIR extends ObjectValuePartFnIR {
 	}
 
 	@Override
-	protected String suffix() {
-		return "claim";
+	protected ID suffix() {
+		return CLAIM_ID;
 	}
 
 	@Override

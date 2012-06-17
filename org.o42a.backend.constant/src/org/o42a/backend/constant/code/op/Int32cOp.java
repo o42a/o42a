@@ -21,8 +21,8 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.util.string.ID;
 
 
 public final class Int32cOp
@@ -33,7 +33,7 @@ public final class Int32cOp
 		super(backend);
 	}
 
-	public Int32cOp(CodeId id, CCode<?> code, Integer constant) {
+	public Int32cOp(ID id, CCode<?> code, Integer constant) {
 		super(id, code, constant);
 	}
 

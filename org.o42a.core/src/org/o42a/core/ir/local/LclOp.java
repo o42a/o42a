@@ -26,6 +26,7 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FieldIR;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.util.string.ID;
 
 
 public abstract class LclOp extends IROp implements HostOp {
@@ -77,6 +78,10 @@ public abstract class LclOp extends IROp implements HostOp {
 
 	public static abstract class Type<S extends Op<S>>
 			extends org.o42a.codegen.data.Type<S> {
+
+		public Type(ID id) {
+			super(id);
+		}
 
 	}
 

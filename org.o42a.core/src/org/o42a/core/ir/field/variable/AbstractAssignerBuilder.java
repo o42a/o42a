@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.field.variable;
 
+import static org.o42a.core.ir.field.variable.AssignerFld.CAST_TARGET_ID;
 import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSIGNER;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -67,7 +68,7 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 				builder.getContext().getVoid());
 
 		final ObjectOp castObject = valueObject.dynamicCast(
-				assigner.id("cast_target"),
+				CAST_TARGET_ID,
 				dirs,
 				typeObject.ir(assigner.getGenerator())
 				.getTypeIR().op(builder, assigner),

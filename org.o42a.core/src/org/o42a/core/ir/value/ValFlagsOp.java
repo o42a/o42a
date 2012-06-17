@@ -22,12 +22,12 @@ package org.o42a.core.ir.value;
 import static java.lang.Integer.numberOfTrailingZeros;
 import static org.o42a.core.ir.value.Val.*;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CondBlock;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.util.string.ID;
 
 
 public final class ValFlagsOp {
@@ -37,7 +37,7 @@ public final class ValFlagsOp {
 	private final Code loadInset;
 	private Int32op flags;
 
-	ValFlagsOp(CodeId id, Code code, Op op, Atomicity atomicity) {
+	ValFlagsOp(ID id, Code code, Op op, Atomicity atomicity) {
 		this.ptr = op.int32(id, code, op.getType().flags());
 		this.loadInset = code.inset("load_flags");
 		this.atomicity = atomicity;
@@ -50,7 +50,7 @@ public final class ValFlagsOp {
 		this.flags = flags;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.ptr.getId();
 	}
 
@@ -65,31 +65,31 @@ public final class ValFlagsOp {
 		return this.flags = this.ptr.load(null, this.loadInset, this.atomicity);
 	}
 
-	public final BoolOp condition(CodeId id, Code code) {
+	public final BoolOp condition(ID id, Code code) {
 		return get().lowestBit(
 				id != null ? id : getId().sub("condition_flag"),
 				code);
 	}
 
-	public final BoolOp indefinite(CodeId id, Code code) {
+	public final BoolOp indefinite(ID id, Code code) {
 		return get(id, "indefinite", code, VAL_INDEFINITE);
 	}
 
-	public final BoolOp external(CodeId id, Code code) {
+	public final BoolOp external(ID id, Code code) {
 		return get(id, "external", code, VAL_EXTERNAL);
 	}
 
-	public final BoolOp staticStore(CodeId id, Code code) {
+	public final BoolOp staticStore(ID id, Code code) {
 		return get(id, "static", code, VAL_STATIC);
 	}
 
-	public final BoolOp assigning(CodeId id, Code code) {
+	public final BoolOp assigning(ID id, Code code) {
 		return get(id, "assigning", code, VAL_ASSIGN);
 	}
 
-	public final Int32op alignmentShift(CodeId id, Code code) {
+	public final Int32op alignmentShift(ID id, Code code) {
 
-		final CodeId ashiftId;
+		final ID ashiftId;
 
 		if (id == null) {
 			ashiftId = getId().sub("alignment_shift");
@@ -108,7 +108,7 @@ public final class ValFlagsOp {
 				numberOfTrailingZeros(VAL_ALIGNMENT_MASK));
 	}
 
-	public final Int32op alignment(CodeId id, Code code) {
+	public final Int32op alignment(ID id, Code code) {
 
 		final Int32op shift = alignmentShift(
 				id != null ? id.detail("shift") : null,
@@ -120,7 +120,7 @@ public final class ValFlagsOp {
 				shift);
 	}
 
-	public final Int32op charMask(CodeId id, Block code) {
+	public final Int32op charMask(ID id, Block code) {
 
 		final Int32op alignment =
 				alignment(id != null ? id.detail("alignment") : null, code);
@@ -162,7 +162,7 @@ public final class ValFlagsOp {
 	}
 
 	public final ValFlagsOp atomicRMW(
-			CodeId id,
+			ID id,
 			Code code,
 			RMWKind kind,
 			int operand) {
@@ -179,13 +179,9 @@ public final class ValFlagsOp {
 		return this.ptr.toString();
 	}
 
-	private final BoolOp get(
-			CodeId id,
-			String defaultId,
-			Code code,
-			int mask) {
+	private final BoolOp get(ID id, String defaultId, Code code, int mask) {
 
-		final CodeId flagId;
+		final ID flagId;
 
 		if (id == null) {
 			flagId = getId().sub(defaultId);

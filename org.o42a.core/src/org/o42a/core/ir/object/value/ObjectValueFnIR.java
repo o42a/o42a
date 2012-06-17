@@ -21,6 +21,7 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
+import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_DATA_ID;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.object.value.PredefObjValue.*;
 
@@ -30,8 +31,10 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.ObjectIRData.Op;
 import org.o42a.core.ir.object.op.ObjectSignature;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectValueFnIR
@@ -52,7 +55,7 @@ public final class ObjectValueFnIR
 
 		if (!writeIfConstant(subDirs, finalValue)) {
 
-			final ObjectValueFunc func = get(host).op(code.id(suffix()), code);
+			final ObjectValueFunc func = get(host).op(suffix(), code);
 
 			func.call(subDirs, getObjectIR().isExact() ? null : host);
 		}
@@ -61,8 +64,8 @@ public final class ObjectValueFnIR
 	}
 
 	@Override
-	protected String suffix() {
-		return "value";
+	protected ID suffix() {
+		return ValOp.VALUE_ID;
 	}
 
 	@Override
@@ -178,7 +181,7 @@ public final class ObjectValueFnIR
 					.getTypeIR()
 					.getObjectData()
 					.pointer(getGenerator())
-					.op(code.id("data"), code);
+					.op(OBJECT_DATA_ID, code);
 		}
 
 		@Override

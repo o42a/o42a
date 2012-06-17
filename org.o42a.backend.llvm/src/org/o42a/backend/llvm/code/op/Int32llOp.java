@@ -21,28 +21,28 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int32op;
+import org.o42a.util.string.ID;
 
 
 public final class Int32llOp extends IntLLOp<Int32op, Int32llOp>
 		implements Int32op {
 
-	public Int32llOp(CodeId id, long blockPtr, long nativePtr) {
+	public Int32llOp(ID id, long blockPtr, long nativePtr) {
 		super(id, 32, blockPtr, nativePtr);
 	}
 
 	@Override
-	public Int32op comp(CodeId id, Code code) {
+	public Int32op comp(ID id, Code code) {
 		return xor(
-				code.getOpNames().unaryId(id, "comp", this),
+				code.getOpNames().unaryId(id, COMP_ID, this),
 				code,
 				code.int32(-1));
 	}
 
 	@Override
-	public Int32llOp toInt32(CodeId id, Code code) {
+	public Int32llOp toInt32(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -54,7 +54,7 @@ public final class Int32llOp extends IntLLOp<Int32op, Int32llOp>
 	}
 
 	@Override
-	public Int32llOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Int32llOp create(ID id, long blockPtr, long nativePtr) {
 		return new Int32llOp(id, blockPtr, nativePtr);
 	}
 

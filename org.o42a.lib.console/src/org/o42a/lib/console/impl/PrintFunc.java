@@ -20,9 +20,8 @@
 package org.o42a.lib.console.impl;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
+import static org.o42a.lib.console.ConsoleModule.CONSOLE_ID;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValOp;
@@ -31,7 +30,7 @@ import org.o42a.core.ir.value.ValType;
 
 public final class PrintFunc extends Func<PrintFunc> {
 
-	public static final Print PRINT = new Print();
+	public static final Signature PRINT = new Signature();
 
 	private PrintFunc(FuncCaller<PrintFunc> caller) {
 		super(caller);
@@ -41,12 +40,14 @@ public final class PrintFunc extends Func<PrintFunc> {
 		invoke(null, code, PRINT.result(), text.ptr());
 	}
 
-	public static final class Print extends Signature<PrintFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<PrintFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> text;
 
-		private Print() {
+		private Signature() {
+			super(CONSOLE_ID.sub("PrintF"));
 		}
 
 		public final Return<Void> result() {
@@ -60,11 +61,6 @@ public final class PrintFunc extends Func<PrintFunc> {
 		@Override
 		public PrintFunc op(FuncCaller<PrintFunc> caller) {
 			return new PrintFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("PrintF");
 		}
 
 		@Override

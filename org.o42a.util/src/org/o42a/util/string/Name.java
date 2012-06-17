@@ -26,6 +26,8 @@ import static org.o42a.util.string.Capitalization.PRESERVE_CAPITAL;
 import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
+import org.o42a.util.string.ID.Separator;
+
 
 public final class Name implements CharSequence, Comparable<Name> {
 
@@ -400,6 +402,14 @@ public final class Name implements CharSequence, Comparable<Name> {
 		final Name other = (Name) obj;
 
 		return nameIs(other);
+	}
+
+	public final ID toID() {
+		return new ID(null, Separator.NONE, this, null, false);
+	}
+
+	public final ID toRawID() {
+		return new ID(null, Separator.NONE, this, null, true);
 	}
 
 	@Override

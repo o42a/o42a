@@ -19,13 +19,15 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface IntRecOp<R extends AtomicRecOp<R, O>, O extends IntOp<O>>
 		extends AtomicRecOp<R, O> {
 
-	O atomicRMW(CodeId id, Code code, RMWKind kind, O operand);
+	ID OLD_ID = ID.rawId("old");
+
+	O atomicRMW(ID id, Code code, RMWKind kind, O operand);
 
 }

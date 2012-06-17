@@ -47,11 +47,6 @@ public abstract class ProxyGenerator extends Generator {
 	}
 
 	@Override
-	public final CodeIdFactory getCodeIdFactory() {
-		return getProxiedGenerator().getCodeIdFactory();
-	}
-
-	@Override
 	public final Debug getDebug() {
 		return this.debug;
 	}

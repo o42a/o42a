@@ -19,7 +19,8 @@
 */
 package org.o42a.core.object.link.impl;
 
-import org.o42a.codegen.CodeId;
+import static org.o42a.core.ir.IRNames.CONST_ID;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectBodyIR;
@@ -29,10 +30,13 @@ import org.o42a.core.ir.value.struct.AbstractValueStructIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.KnownLink;
 import org.o42a.core.object.link.LinkValueStruct;
+import org.o42a.util.string.ID;
 
 
 abstract class AbstractLinkValueStructIR
 		extends AbstractValueStructIR<LinkValueStruct, KnownLink> {
+
+	private static final ID LINK_CONST_ID = CONST_ID.sub("LINK");
 
 	private int constSeq;
 
@@ -62,9 +66,8 @@ abstract class AbstractLinkValueStructIR
 	}
 
 	@Override
-	protected CodeId constId(KnownLink value) {
-		return getGenerator().id("CONST").sub("LINK")
-				.anonymous(++this.constSeq);
+	protected ID constId(KnownLink value) {
+		return LINK_CONST_ID.anonymous(++this.constSeq);
 	}
 
 }

@@ -34,9 +34,12 @@ import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
+import org.o42a.util.string.ID;
 
 
 public class DepOp extends IROp implements HostOp {
+
+	public static final ID DEP_ID = ID.id("dep");
 
 	private final ObjOp host;
 	private final DepIR depIR;

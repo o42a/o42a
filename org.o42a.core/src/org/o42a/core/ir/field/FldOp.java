@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
 import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.core.member.MemberKey;
+import org.o42a.util.string.ID;
 
 
 public abstract class FldOp extends IROp implements HostOp {
@@ -44,7 +44,7 @@ public abstract class FldOp extends IROp implements HostOp {
 	}
 
 	@Override
-	public CodeId getId() {
+	public ID getId() {
 		if (!isOmitted()) {
 			return super.getId();
 		}

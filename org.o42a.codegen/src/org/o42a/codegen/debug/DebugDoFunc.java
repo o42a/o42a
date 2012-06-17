@@ -19,11 +19,10 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 import static org.o42a.codegen.debug.DebugCodeBase.binaryMessage;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
@@ -31,7 +30,7 @@ import org.o42a.codegen.code.op.AnyOp;
 
 final class DebugDoFunc extends Func<DebugDoFunc> {
 
-	static final DebugDo DEBUG_DO = new DebugDo();
+	static final Signature DEBUG_DO = new Signature();
 
 	private DebugDoFunc(FuncCaller<DebugDoFunc> caller) {
 		super(caller);
@@ -49,13 +48,15 @@ final class DebugDoFunc extends Func<DebugDoFunc> {
 				binaryMessage(code.getGenerator(), comment).op(null, code));
 	}
 
-	static final class DebugDo extends Signature<DebugDoFunc> {
+	static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugDoFunc> {
 
 		private Return<Void> result;
 		private Arg<DebugStackFrameOp> stackFrame;
 		private Arg<AnyOp> comment;
 
-		private DebugDo() {
+		private Signature() {
+			super(DEBUG_ID.sub("DoF"));
 		}
 
 		@Override
@@ -78,11 +79,6 @@ final class DebugDoFunc extends Func<DebugDoFunc> {
 		@Override
 		public DebugDoFunc op(FuncCaller<DebugDoFunc> caller) {
 			return new DebugDoFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("DoF");
 		}
 
 		@Override

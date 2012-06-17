@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.field.variable;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
@@ -29,12 +27,13 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.op.CodeDirs;
+import org.o42a.util.string.ID;
 
 
 public class VariableAssignerFunc extends ObjectFunc<VariableAssignerFunc> {
 
-	public static final VariableAssigner VARIABLE_ASSIGNER =
-			new VariableAssigner();
+	public static final Signature VARIABLE_ASSIGNER =
+			new Signature();
 
 	private VariableAssignerFunc(FuncCaller<VariableAssignerFunc> caller) {
 		super(caller);
@@ -56,14 +55,15 @@ public class VariableAssignerFunc extends ObjectFunc<VariableAssignerFunc> {
 				value.toData(null, code));
 	}
 
-	public static final class VariableAssigner
+	public static final class Signature
 			extends ObjectSignature<VariableAssignerFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<DataOp> object;
 		private Arg<DataOp> value;
 
-		private VariableAssigner() {
+		private Signature() {
+			super(ID.id("VariableAssignerF"));
 		}
 
 		public final Return<BoolOp> result() {
@@ -83,11 +83,6 @@ public class VariableAssignerFunc extends ObjectFunc<VariableAssignerFunc> {
 		public VariableAssignerFunc op(
 				FuncCaller<VariableAssignerFunc> caller) {
 			return new VariableAssignerFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("VariableAssignerF");
 		}
 
 		@Override

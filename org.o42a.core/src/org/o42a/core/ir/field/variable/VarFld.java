@@ -24,8 +24,6 @@ import static org.o42a.core.ir.field.variable.VariableAssignerFunc.VARIABLE_ASSI
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.op.ObjectRefFunc.OBJECT_REF;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -41,11 +39,11 @@ import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
-import org.o42a.core.ir.object.op.ObjectRefFunc.ObjectRef;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.ref.type.TypeRelation;
+import org.o42a.util.string.ID;
 
 
 public class VarFld extends RefFld<ObjectRefFunc> {
@@ -165,13 +163,11 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> bound(CodeId id, Code code) {
+		public final StructRecOp<ObjectIRType.Op> bound(ID id, Code code) {
 			return ptr(id, code, getType().bound());
 		}
 
-		public final FuncOp<VariableAssignerFunc> assigner(
-				CodeId id,
-				Code code) {
+		public final FuncOp<VariableAssignerFunc> assigner(ID id, Code code) {
 			return func(id, code, getType().assigner());
 		}
 
@@ -191,6 +187,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		private Type() {
+			super(ID.rawId("o42a_fld_var"));
 		}
 
 		@Override
@@ -212,11 +209,6 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_var");
-		}
-
-		@Override
 		protected void allocate(SubData<Op> data) {
 			super.allocate(data);
 			this.bound = data.addPtr("bound", OBJECT_TYPE);
@@ -229,7 +221,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected ObjectRef getSignature() {
+		protected ObjectRefFunc.Signature getSignature() {
 			return OBJECT_REF;
 		}
 

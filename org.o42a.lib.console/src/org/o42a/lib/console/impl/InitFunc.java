@@ -19,15 +19,14 @@
 */
 package org.o42a.lib.console.impl;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.util.string.ID;
 
 
 public class InitFunc extends Func<InitFunc> {
 
-	public static final Init INIT = new Init();
+	public static final Signature INIT = new Signature();
 
 	private InitFunc(FuncCaller<InitFunc> caller) {
 		super(caller);
@@ -37,11 +36,13 @@ public class InitFunc extends Func<InitFunc> {
 		invoke(null, code, INIT.result());
 	}
 
-	public static final class Init extends Signature<InitFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<InitFunc> {
 
 		private Return<Void> result;
 
-		private Init() {
+		private Signature() {
+			super(ID.id("InitF"));
 		}
 
 		public final Return<Void> result() {
@@ -51,11 +52,6 @@ public class InitFunc extends Func<InitFunc> {
 		@Override
 		public InitFunc op(FuncCaller<InitFunc> caller) {
 			return new InitFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("InitF");
 		}
 
 		@Override

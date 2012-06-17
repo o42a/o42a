@@ -19,14 +19,14 @@
 */
 package org.o42a.core.ir.value.array;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
+import org.o42a.util.string.ID;
 
 
 public interface ArrayIRGenerator {
 
 	Generator getGenerator();
 
-	CodeId nextId();
+	ID nextId();
 
 }

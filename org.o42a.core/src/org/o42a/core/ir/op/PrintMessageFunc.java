@@ -19,16 +19,15 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
+import org.o42a.util.string.ID;
 
 
 public class PrintMessageFunc extends Func<PrintMessageFunc> {
 
-	public static final PrintMessage PRINT_MESSAGE = new PrintMessage();
+	public static final Signature PRINT_MESSAGE = new Signature();
 
 	private PrintMessageFunc(FuncCaller<PrintMessageFunc> caller) {
 		super(caller);
@@ -38,12 +37,14 @@ public class PrintMessageFunc extends Func<PrintMessageFunc> {
 		invoke(null, code, PRINT_MESSAGE.result(), message);
 	}
 
-	public static final class PrintMessage extends Signature<PrintMessageFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<PrintMessageFunc> {
 
 		private Return<Void> result;
 		private Arg<AnyOp> message;
 
-		private PrintMessage() {
+		private Signature() {
+			super(ID.id("PrintMessageF"));
 		}
 
 		public final Return<Void> result() {
@@ -57,11 +58,6 @@ public class PrintMessageFunc extends Func<PrintMessageFunc> {
 		@Override
 		public final PrintMessageFunc op(FuncCaller<PrintMessageFunc> caller) {
 			return new PrintMessageFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("PrintMessageF");
 		}
 
 		@Override

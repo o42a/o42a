@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.field.scope;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -35,6 +33,7 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
+import org.o42a.util.string.ID;
 
 
 public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
@@ -132,6 +131,7 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 		private DataRec object;
 
 		private Type() {
+			super(ID.rawId("o42a_fld_scope"));
 		}
 
 		public final DataRec object() {
@@ -141,11 +141,6 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_scope");
 		}
 
 		@Override

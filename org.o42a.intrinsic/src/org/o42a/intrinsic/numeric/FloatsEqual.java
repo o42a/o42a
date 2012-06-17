@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.Op.EQ_ID;
 import static org.o42a.core.value.Value.voidValue;
 
 import org.o42a.codegen.code.Block;
@@ -48,17 +49,15 @@ public final class FloatsEqual extends NumbersEqual<Double> {
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Block code = dirs.code();
-		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
-		final Fp64recOp leftPtr =
-				leftRec.toFp64(code.id("float_left_ptr"), code);
-		final Fp64op left = leftPtr.load(code.id("left"), code);
+		final AnyOp leftRec = leftVal.value(LEFT_PTR_ID, code);
+		final Fp64recOp leftPtr = leftRec.toFp64(null, code);
+		final Fp64op left = leftPtr.load(LEFT_ID, code);
 
-		final AnyOp rightRec = rightVal.value(code.id("right_ptr"), code);
-		final Fp64recOp rightPtr =
-				rightRec.toFp64(code.id("float_left_ptr"), code);
-		final Fp64op right = rightPtr.load(code.id("right"), code);
+		final AnyOp rightRec = rightVal.value(RIGHT_PTR_ID, code);
+		final Fp64recOp rightPtr = rightRec.toFp64(null, code);
+		final Fp64op right = rightPtr.load(RIGHT_ID, code);
 
-		final BoolOp equals = left.eq(code.id("eq"), code, right);
+		final BoolOp equals = left.eq(EQ_ID, code, right);
 
 		equals.goUnless(code, dirs.falseDir());
 

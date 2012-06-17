@@ -21,20 +21,20 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.util.string.ID;
 
 
 public final class Fp64llOp extends FpLLOp<Fp64op, Fp64llOp>
 		implements Fp64op {
 
-	public Fp64llOp(CodeId id, long blockPtr, long nativePtr) {
+	public Fp64llOp(ID id, long blockPtr, long nativePtr) {
 		super(id, blockPtr, nativePtr);
 	}
 
 	@Override
-	public Fp64llOp toFp64(CodeId id, Code code) {
+	public Fp64llOp toFp64(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -46,7 +46,7 @@ public final class Fp64llOp extends FpLLOp<Fp64op, Fp64llOp>
 	}
 
 	@Override
-	public Fp64llOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Fp64llOp create(ID id, long blockPtr, long nativePtr) {
 		return new Fp64llOp(id, blockPtr, nativePtr);
 	}
 

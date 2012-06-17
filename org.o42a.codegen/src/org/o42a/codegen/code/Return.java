@@ -19,11 +19,11 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.DataType;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public abstract class Return<O> {
@@ -56,12 +56,12 @@ public abstract class Return<O> {
 	}
 
 	protected abstract O call(
-			CodeId id,
+			ID id,
 			Code code,
 			FuncCaller<?> caller,
 			Op... args);
 
-	protected final CodeId callId(CodeId id, Code code, FuncCaller<?> caller) {
+	protected final ID callId(ID id, Code code, FuncCaller<?> caller) {
 		if (id != null) {
 			return code.opId(id);
 		}
@@ -81,7 +81,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Void call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -104,7 +104,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Int8op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -129,7 +129,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Int16op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -154,7 +154,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Int32op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -179,7 +179,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Int64op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -204,7 +204,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Fp32op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -229,7 +229,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected Fp64op call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -254,7 +254,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected BoolOp call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -279,7 +279,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected AnyOp call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -304,7 +304,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected DataOp call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {
@@ -337,7 +337,7 @@ public abstract class Return<O> {
 
 		@Override
 		protected S call(
-				CodeId id,
+				ID id,
 				Code code,
 				FuncCaller<?> caller,
 				Op... args) {

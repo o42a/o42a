@@ -23,9 +23,9 @@ import static org.o42a.backend.llvm.id.LLVMId.dataId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class GlobalLLDAlloc<S extends StructOp<S>>
@@ -37,7 +37,7 @@ public final class GlobalLLDAlloc<S extends StructOp<S>>
 			LLVMModule module,
 			long typePtr,
 			long typeDataPtr,
-			CodeId id,
+			ID id,
 			Type<S> type) {
 		super(module, typePtr, typeDataPtr, null, type);
 		this.llvmId = dataId(id, this);

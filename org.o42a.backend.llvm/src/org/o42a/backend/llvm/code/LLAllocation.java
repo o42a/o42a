@@ -25,12 +25,12 @@ import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
 import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.string.ID;
 
 
 final class LLAllocation extends LLInset implements AllocationWriter {
@@ -44,7 +44,7 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 
 	@Override
 	public <S extends StructOp<S>> S allocateStruct(
-			CodeId id,
+			ID id,
 			DataAllocation<S> allocation) {
 
 		final ContainerLLDAlloc<S> type =
@@ -60,13 +60,13 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 				instr(allocateStruct(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(id),
-						id.length(),
+						ids.write(id),
+						ids.length(),
 						type.getTypePtr()))));
 	}
 
 	@Override
-	public AnyRecLLOp allocatePtr(CodeId id) {
+	public AnyRecLLOp allocatePtr(ID id) {
 
 		final long nextPtr = nextPtr();
 		final NativeBuffer ids = getModule().ids();
@@ -78,13 +78,13 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 				instr(allocatePtr(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(id),
+						ids.write(id),
 						ids.length())));
 	}
 
 	@Override
 	public <S extends StructOp<S>> StructRecLLOp<S> allocatePtr(
-			CodeId id,
+			ID id,
 			DataAllocation<S> allocation) {
 
 		final ContainerLLDAlloc<S> alloc =
@@ -100,8 +100,8 @@ final class LLAllocation extends LLInset implements AllocationWriter {
 				instr(allocateStructPtr(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(id),
-						id.length(),
+						ids.write(id),
+						ids.length(),
 						alloc.getTypePtr())));
 	}
 

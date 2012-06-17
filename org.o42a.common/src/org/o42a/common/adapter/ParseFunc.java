@@ -21,18 +21,17 @@ package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public final class ParseFunc extends Func<ParseFunc> {
 
-	public static final Parse PARSE = new Parse();
+	public static final Signature PARSE = new Signature();
 
 	private ParseFunc(FuncCaller<ParseFunc> caller) {
 		super(caller);
@@ -53,13 +52,15 @@ public final class ParseFunc extends Func<ParseFunc> {
 		invoke(null, code, PARSE.result(), output.ptr(), input.ptr());
 	}
 
-	public static final class Parse extends Signature<ParseFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ParseFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> output;
 		private Arg<ValType.Op> input;
 
-		private Parse() {
+		private Signature() {
+			super(ID.id("ParseF"));
 		}
 
 		public final Return<Void> result() {
@@ -77,11 +78,6 @@ public final class ParseFunc extends Func<ParseFunc> {
 		@Override
 		public ParseFunc op(FuncCaller<ParseFunc> caller) {
 			return new ParseFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ParseF");
 		}
 
 		@Override

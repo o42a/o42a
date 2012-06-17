@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AnyRec;
@@ -44,6 +44,7 @@ final class ExternalTypeInfoOp extends StructOp<ExternalTypeInfoOp> {
 		private AnyRec name;
 
 		private Type() {
+			super(DEBUG_ID.sub("TypeInfo"));
 		}
 
 		@Override
@@ -66,11 +67,6 @@ final class ExternalTypeInfoOp extends StructOp<ExternalTypeInfoOp> {
 		@Override
 		public ExternalTypeInfoOp op(StructWriter<ExternalTypeInfoOp> writer) {
 			return new ExternalTypeInfoOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("TypeInfo");
 		}
 
 		@Override

@@ -51,10 +51,21 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 @SourcePath(relativeTo = StringValueTypeObject.class, value = "char.o42a")
 final class StringChar extends AnnotatedBuiltin {
+
+	private static final ID INDEX_ID = ID.id("index");
+	static final ID STR_LEN_ID = ID.id("str_len");
+	private static final ID CMASK_ID = ID.id("cmask");
+	private static final ID CSIZESHIFT_ID = ID.id("csizeshft");
+	private static final ID DATA_OFFSET_ID = ID.id("data_offset");
+	private static final ID STR_DATA_ID = ID.id("str_data");
+	private static final ID CHAR_PTR_ID = ID.id("char_ptr");
+	private static final ID CHAR_ID = ID.id("char");
+	private static final ID FLAGS_ID = ID.id("flags");
 
 	private static final MemberName INDEX_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("index"));
@@ -188,36 +199,36 @@ final class StringChar extends AnnotatedBuiltin {
 		final Block code = indexDirs.code();
 
 		final Int64op index =
-				indexVal.rawValue(code.id("index"), code)
+				indexVal.rawValue(INDEX_ID, code)
 				.load(null, code);
 
 		index.lt(null, code, code.int64(0L)).go(code, indexDirs.falseDir());
 
 		final Int64op length =
-				stringVal.loadLength(code.id("str_len"), code)
+				stringVal.loadLength(STR_LEN_ID, code)
 				.toInt64(null, code);
 
 		index.ge(null, code, length).go(code, indexDirs.falseDir());
 
 		final ValFlagsOp stringFlags = stringVal.flags(code);
-		final Int32op cmask = stringFlags.charMask(code.id("cmask"), code);
+		final Int32op cmask = stringFlags.charMask(CMASK_ID, code);
 		final Int32op csizeShift =
-				stringFlags.alignmentShift(code.id("csizeshft"), code);
+				stringFlags.alignmentShift(CSIZESHIFT_ID, code);
 		final Int32op dataOffset =
 				index.toInt32(null, code)
-				.shl(code.id("data_offset"), code, csizeShift);
+				.shl(DATA_OFFSET_ID, code, csizeShift);
 		final AnyOp begin =
-				stringVal.loadData(code.id("str_data"), code);
+				stringVal.loadData(STR_DATA_ID, code);
 		final AnyOp charPtr =
-				begin.offset(code.id("char_ptr"), code, dataOffset);
+				begin.offset(CHAR_PTR_ID, code, dataOffset);
 		final Int32op chr =
 				charPtr.toInt32(null, code)
 				.load(null, code)
-				.and(code.id("char"), code, cmask);
+				.and(CHAR_ID, code, cmask);
 
 		final ValOp result = dirs.value();
 		final Int32op flags = code.int32(VAL_CONDITION).or(
-				code.id("flags"),
+				FLAGS_ID,
 				code,
 				csizeShift.shl(
 						null,

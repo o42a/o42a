@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.AnyOp;
 
 final class DebugNameFunc extends Func<DebugNameFunc> {
 
-	public static final DebugName DEBUG_NAME = new DebugName();
+	public static final Signature DEBUG_NAME = new Signature();
 
 	private DebugNameFunc(FuncCaller<DebugNameFunc> caller) {
 		super(caller);
@@ -38,13 +38,15 @@ final class DebugNameFunc extends Func<DebugNameFunc> {
 		invoke(null, code, DEBUG_NAME.result(), message, data);
 	}
 
-	public static final class DebugName extends Signature<DebugNameFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugNameFunc> {
 
 		private Return<Void> result;
 		private Arg<AnyOp> message;
 		private Arg<AnyOp> data;
 
-		private DebugName() {
+		private Signature() {
+			super(DEBUG_ID.sub("NameF"));
 		}
 
 		public final Return<Void> result() {
@@ -62,11 +64,6 @@ final class DebugNameFunc extends Func<DebugNameFunc> {
 		@Override
 		public DebugNameFunc op(FuncCaller<DebugNameFunc> caller) {
 			return new DebugNameFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("NameF");
 		}
 
 		@Override

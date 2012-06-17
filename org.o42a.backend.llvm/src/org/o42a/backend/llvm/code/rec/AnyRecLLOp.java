@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.op.AnyLLOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class AnyRecLLOp
@@ -31,7 +31,7 @@ public final class AnyRecLLOp
 		implements AnyRecOp {
 
 	public AnyRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -39,12 +39,12 @@ public final class AnyRecLLOp
 	}
 
 	@Override
-	public AnyRecLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public AnyRecLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new AnyRecLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
-	protected AnyOp createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected AnyOp createLoaded(ID id, long blockPtr, long nativePtr) {
 		return new AnyLLOp(id, null, blockPtr, nativePtr);
 	}
 

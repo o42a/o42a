@@ -24,7 +24,6 @@ import static org.o42a.core.ir.def.InlineEval.falseInlineEval;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.value.Value.falseValue;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.common.def.BuiltinDef;
@@ -47,6 +46,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public final class False extends BuiltinObject {
@@ -128,15 +128,15 @@ public final class False extends BuiltinObject {
 
 	private static final class IR extends ScopeIR {
 
-		private CodeId id;
+		private ID id;
 
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = generator.id("FALSE");
+			this.id = ID.id("FALSE");
 		}
 
 		@Override
-		public CodeId getId() {
+		public ID getId() {
 			return this.id;
 		}
 

@@ -19,21 +19,21 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.util.string.ID;
 
 
 public final class Global<S extends StructOp<S>, T extends Type<S>>
 		implements GlobalAttributes {
 
 	private final GlobalSettings settings;
-	private final CodeId id;
+	private final ID id;
 	private final T instance;
 
 	Global(
 			GlobalSettings settings,
-			CodeId id,
+			ID id,
 			T type,
 			T instance,
 			Content<T> content) {
@@ -44,7 +44,7 @@ public final class Global<S extends StructOp<S>, T extends Type<S>>
 
 	Global(GlobalSettings settings, T struct) {
 		this.settings = settings;
-		this.id = struct.codeId(settings.getGenerator());
+		this.id = struct.getId();
 		this.instance = struct;
 	}
 
@@ -52,7 +52,7 @@ public final class Global<S extends StructOp<S>, T extends Type<S>>
 		return this.settings.getGenerator();
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -81,6 +81,9 @@ public final class Global<S extends StructOp<S>, T extends Type<S>>
 
 	@Override
 	public String toString() {
+		if (this.id == null) {
+			return super.toString();
+		}
 		return this.id.toString();
 	}
 

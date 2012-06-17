@@ -21,8 +21,6 @@ package org.o42a.core.ir.op;
 
 import java.util.ArrayList;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.Int32recOp;
@@ -30,6 +28,7 @@ import org.o42a.codegen.code.op.RelRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
+import org.o42a.util.string.ID;
 
 
 public abstract class RelList<T> implements Content<RelList.Type> {
@@ -41,10 +40,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 	private Type instance;
 
 	public RelList<T> allocate(SubData<?> data, String fieldName) {
-		data.addInstance(
-				data.getGenerator().id(fieldName),
-				REL_LIST_TYPE,
-				this);
+		data.addInstance(ID.id(fieldName), REL_LIST_TYPE, this);
 		return this;
 	}
 
@@ -138,6 +134,7 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		private Int32rec size;
 
 		private Type() {
+			super(ID.rawId("o42a_rlist_t"));
 		}
 
 		public final RelRec list() {
@@ -151,11 +148,6 @@ public abstract class RelList<T> implements Content<RelList.Type> {
 		@Override
 		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_rlist_t");
 		}
 
 		@Override

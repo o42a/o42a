@@ -19,15 +19,15 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
+import org.o42a.util.string.ID;
 
 
 final class InsetCode extends Inset {
 
 	private final CodeWriter writer;
 
-	public InsetCode(Code enclosing, CodeId name) {
+	public InsetCode(Code enclosing, ID name) {
 		super(enclosing, name);
 		this.writer = enclosing.writer().inset(this);
 	}

@@ -21,15 +21,14 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.util.string.ID;
 
 
 public final class ValUseFunc extends Func<ValUseFunc> {
 
-	public static final ValUse VAL_USE = new ValUse();
+	public static final Signature VAL_USE = new Signature();
 
 	private ValUseFunc(FuncCaller<ValUseFunc> caller) {
 		super(caller);
@@ -39,12 +38,14 @@ public final class ValUseFunc extends Func<ValUseFunc> {
 		invoke(null, code, VAL_USE.result(), val);
 	}
 
-	public static final class ValUse extends Signature<ValUseFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ValUseFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> val;
 
-		private ValUse() {
+		private Signature() {
+			super(ID.id("ValUseF"));
 		}
 
 		public final Return<Void> result() {
@@ -58,11 +59,6 @@ public final class ValUseFunc extends Func<ValUseFunc> {
 		@Override
 		public ValUseFunc op(FuncCaller<ValUseFunc> caller) {
 			return new ValUseFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ValUseF");
 		}
 
 		@Override

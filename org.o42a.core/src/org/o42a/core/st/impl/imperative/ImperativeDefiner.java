@@ -46,9 +46,12 @@ import org.o42a.core.st.impl.ExecuteInstructions;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.value.Value;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 public final class ImperativeDefiner extends Definer {
+
+	private static final ID OWNER_ID = ID.id("owner");
 
 	private final Command command;
 	private final PrefixPath localPrefix;
@@ -234,7 +237,7 @@ public final class ImperativeDefiner extends Definer {
 			final LocalScope scope = getBlock().getScope().toLocal();
 			final Obj ownerType = scope.getOwner();
 			final ObjOp ownerBody =
-					ownerObject.cast(dirs.id("owner"), dirs.dirs(), ownerType);
+					ownerObject.cast(OWNER_ID, dirs.dirs(), ownerType);
 			final LocalIR ir = scope.ir(host.getGenerator());
 
 			ir.write(dirs, ownerBody, null, this.command);

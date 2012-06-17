@@ -20,8 +20,6 @@
 package org.o42a.backend.constant.data.struct;
 
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.data.SystemType;
 
 
@@ -31,6 +29,7 @@ public final class CSystemType extends SystemType {
 	private final SystemType original;
 
 	public CSystemType(ConstBackend backend, SystemType original) {
+		super(original.getId());
 		this.backend = backend;
 		this.original = original;
 	}
@@ -41,11 +40,6 @@ public final class CSystemType extends SystemType {
 
 	public final SystemType getOriginal() {
 		return this.original;
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return getOriginal().codeId(factory);
 	}
 
 }
