@@ -19,16 +19,17 @@
 */
 package org.o42a.util.string;
 
+import static org.o42a.util.string.Capitalization.AS_IS;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 
 public final class ID {
 
-	private static final Name NO_NAME = CASE_SENSITIVE.canonicalName("");
+	private static final Name NO_NAME = AS_IS.name("");
 	private static final ID NO_ID =
-			new ID(null, Separator.NONE, NO_NAME, null, true);
+			new ID(null, Separator.NONE, NO_NAME, null);
 	private static final ID TOP_ID =
-			new ID(null, Separator.TOP, NO_NAME, null, true);
+			new ID(null, Separator.TOP, NO_NAME, null);
 
 	public static ID id() {
 		return NO_ID;
@@ -39,15 +40,11 @@ public final class ID {
 	}
 
 	public static ID id(String name) {
-		return CASE_SENSITIVE.name(name).toRawID();
+		return CASE_SENSITIVE.name(name).toID();
 	}
 
 	public static ID rawId(String name) {
-		return CASE_SENSITIVE.name(name).toRawID();
-	}
-
-	public static ID rawId(Name name) {
-		return new ID(null, Separator.NONE, name, null, true);
+		return AS_IS.name(name).toID();
 	}
 
 	private final ID prefix;
@@ -55,20 +52,13 @@ public final class ID {
 	private final Name name;
 	private final ID suffix;
 	private ID local;
-	private final boolean raw;
 
-	ID(
-			ID prefix,
-			Separator separator,
-			Name name,
-			ID suffix,
-			boolean raw) {
+	ID(ID prefix, Separator separator, Name name, ID suffix) {
 		this.prefix = prefix;
 		this.separator = separator;
 		this.name = name;
 		this.suffix = suffix;
 		this.local = this;
-		this.raw = raw;
 	}
 
 	public final ID getPrefix() {
@@ -87,10 +77,6 @@ public final class ID {
 		return this.suffix;
 	}
 
-	public final boolean isRaw() {
-		return this.raw;
-	}
-
 	public final ID getLocal() {
 		return this.local;
 	}
@@ -104,7 +90,7 @@ public final class ID {
 	public final ID setLocal(Name local) {
 		assert local != null :
 			"Local not specified";
-		return setLocal(new ID(null, Separator.SUB, local, null, false));
+		return setLocal(new ID(null, Separator.SUB, local, null));
 	}
 
 	public final ID setLocal(ID local) {
@@ -126,48 +112,31 @@ public final class ID {
 		if (this.local == this) {
 			return this;
 		}
-		return new ID(
-				getPrefix(),
-				getSeparator(),
-				getName(),
-				getSuffix(),
-				isRaw());
+		return new ID(getPrefix(), getSeparator(), getName(), getSuffix());
 	}
 
 	public final ID sub(String name) {
 		assert name != null :
 			"Identifier not specified";
-		return separate(Separator.SUB, name, false);
+		return separate(Separator.SUB, name);
 	}
 
 	public final ID sub(Name name) {
 		assert name != null :
 			"Identifier not specified";
-		return separate(Separator.SUB, name, false);
-	}
-
-	public final ID rawSub(String name) {
-		assert name != null :
-			"Identifier not specified";
-		return separate(Separator.SUB, name, true);
-	}
-
-	public final ID rawSub(Name name) {
-		assert name != null :
-			"Identifier not specified";
-		return separate(Separator.SUB, name, true);
+		return separate(Separator.SUB, name);
 	}
 
 	public final ID suffix(String suffix) {
 		assert suffix != null :
 			"Suffix not specified";
-		return separate(Separator.NONE, suffix, false);
+		return separate(Separator.NONE, suffix);
 	}
 
 	public final ID suffix(Name suffix) {
 		assert suffix != null :
 			"Suffix not specified";
-		return separate(Separator.NONE, suffix, false);
+		return separate(Separator.NONE, suffix);
 	}
 
 	public final ID sub(ID id) {
@@ -177,27 +146,27 @@ public final class ID {
 	}
 
 	public final ID anonymous(int index) {
-		return separate(Separator.ANONYMOUS, Integer.toString(index), true);
+		return separate(Separator.ANONYMOUS, Integer.toString(index));
 	}
 
 	public final ID anonymous(String name) {
-		return separate(Separator.ANONYMOUS, name, false);
+		return separate(Separator.ANONYMOUS, name);
 	}
 
 	public final ID anonymous(Name name) {
-		return separate(Separator.ANONYMOUS, name, false);
+		return separate(Separator.ANONYMOUS, name);
 	}
 
 	public final ID detail(String detail) {
 		assert detail != null :
 			"Identifier not specified";
-		return separate(Separator.DETAIL, detail, false);
+		return separate(Separator.DETAIL, detail);
 	}
 
 	public final ID detail(Name detail) {
 		assert detail != null :
 			"Identifier not specified";
-		return separate(Separator.DETAIL, detail, false);
+		return separate(Separator.DETAIL, detail);
 	}
 
 	public final ID detail(ID detail) {
@@ -215,13 +184,13 @@ public final class ID {
 	public final ID type(String type) {
 		assert type != null :
 			"Identifier not specified";
-		return separate(Separator.TYPE, type, false);
+		return separate(Separator.TYPE, type);
 	}
 
 	public final ID type(Name type) {
 		assert type != null :
 			"Identifier not specified";
-		return separate(Separator.TYPE, type, false);
+		return separate(Separator.TYPE, type);
 	}
 
 	public final ID in(ID in) {
@@ -249,22 +218,22 @@ public final class ID {
 					&& id.startsWith().discardsPrev(separator)) {
 				return id;
 			}
-			return new ID(getPrefix(), separator, NO_NAME, id, true);
+			return new ID(getPrefix(), separator, NO_NAME, id);
 		}
-		return new ID(this, separator, NO_NAME, id, true);
+		return new ID(this, separator, NO_NAME, id);
 	}
 
-	private final ID separate(Separator separator, String name, boolean raw) {
-		return separate(separator, CASE_SENSITIVE.name(name), raw);
+	private final ID separate(Separator separator, String name) {
+		return separate(separator, CASE_SENSITIVE.name(name));
 	}
 
-	private ID separate(Separator separator, Name name, boolean raw) {
+	private ID separate(Separator separator, Name name) {
 		if (getSuffix() == null
 				&& getName().isEmpty()
 				&& getSeparator().discardsNext(separator)) {
-			return new ID(getPrefix(), getSeparator(), name, null, raw);
+			return new ID(getPrefix(), getSeparator(), name, null);
 		}
-		return new ID(this, separator, name, null, raw);
+		return new ID(this, separator, name, null);
 	}
 
 	private final Separator startsWith() {

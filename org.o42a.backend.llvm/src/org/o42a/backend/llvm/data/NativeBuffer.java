@@ -133,6 +133,10 @@ public final class NativeBuffer {
 
 		@Override
 		public NameWriter write(Name name) {
+			if (name.capitalization().isRaw()) {
+				out().write(name);
+				return this;
+			}
 			reset();
 			return super.write(name);
 		}
@@ -195,11 +199,6 @@ public final class NativeBuffer {
 			}
 			throw new IllegalArgumentException(
 					"Unsupported separator: " + separator);
-		}
-
-		@Override
-		protected void writeRaw(Name name) {
-			out().write(name);
 		}
 
 		private void reset() {
