@@ -19,12 +19,12 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.impl.MemberIds;
 import org.o42a.core.member.impl.ReproducedMemberId;
-import org.o42a.util.string.Name;
 
 
 public abstract class MemberId {
@@ -33,27 +33,8 @@ public abstract class MemberId {
 
 	private static final Scope[] NOT_REPRODUCED = new Scope[0];
 
-	public static final MemberId SCOPE_FIELD_ID = new MemberName(
-			MemberName.MemberKind.FIELD,
-			CASE_SENSITIVE.canonicalName("S"));
-
-	public static MemberName fieldName(Name name) {
-		assert name != null :
-			"Field name not specified";
-		return new MemberName(MemberName.MemberKind.FIELD, name);
-	}
-
-	public static MemberName clauseName(Name name) {
-		assert name != null :
-			"Clause name not specified";
-		return new MemberName(MemberName.MemberKind.CLAUSE, name);
-	}
-
-	public static MemberName localName(Name name) {
-		assert name != null :
-			"Local name not specified";
-		return new MemberName(MemberName.MemberKind.LOCAL, name);
-	}
+	public static final MemberId SCOPE_FIELD_ID =
+			fieldName(CASE_SENSITIVE.name("S"));
 
 	public abstract boolean isValid();
 

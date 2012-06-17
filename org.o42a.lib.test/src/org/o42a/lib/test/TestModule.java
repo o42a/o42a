@@ -19,7 +19,7 @@
 */
 package org.o42a.lib.test;
 
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.analysis.use.UserInfo;

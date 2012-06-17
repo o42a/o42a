@@ -19,7 +19,7 @@
 */
 package org.o42a.core.member.local.impl;
 
-import static org.o42a.core.member.MemberId.localName;
+import static org.o42a.core.member.MemberName.localName;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.Member;

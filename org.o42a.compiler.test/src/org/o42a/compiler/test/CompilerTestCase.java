@@ -22,7 +22,7 @@ package org.o42a.compiler.test;
 import static org.junit.Assert.*;
 import static org.o42a.analysis.use.User.useCase;
 import static org.o42a.compiler.Compiler.compiler;
-import static org.o42a.core.member.MemberId.fieldName;
+import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.intrinsic.CompilerIntrinsics.intrinsics;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
