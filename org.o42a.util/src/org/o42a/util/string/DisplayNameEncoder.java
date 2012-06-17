@@ -19,45 +19,20 @@
 */
 package org.o42a.util.string;
 
+import org.o42a.util.string.ID.Separator;
 
-public class StringNameWriter extends NameWriter {
 
-	private StringBuilder out;
+final class DisplayNameEncoder extends NameEncoder {
 
-	public StringNameWriter() {
-	}
+	static final DisplayNameEncoder DISPLAY_NAME_ENCODER =
+			new DisplayNameEncoder();
 
-	public StringNameWriter(StringBuilder out) {
-		this.out = out;
-	}
-
-	@Override
-	public void expandCapacity(int size) {
-		if (this.out == null) {
-			this.out = new StringBuilder(size);
-		} else {
-			this.out.ensureCapacity(this.out.length() + size);
-		}
-	}
-
-	public final StringBuilder out() {
-		if (this.out != null) {
-			return this.out;
-		}
-		return this.out = new StringBuilder();
+	private DisplayNameEncoder() {
 	}
 
 	@Override
-	public String toString() {
-		if (this.out == null) {
-			return "";
-		}
-		return this.out.toString();
-	}
-
-	@Override
-	protected void writeCodePoint(int codePoint) {
-		out().appendCodePoint(codePoint);
+	protected void writeSeparator(CPWriter out, Separator separator) {
+		out.write(separator.getDisplaySign());
 	}
 
 }

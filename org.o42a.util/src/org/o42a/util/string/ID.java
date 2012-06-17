@@ -21,6 +21,7 @@ package org.o42a.util.string;
 
 import static org.o42a.util.string.Capitalization.AS_IS;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+import static org.o42a.util.string.DisplayNameEncoder.DISPLAY_NAME_ENCODER;
 
 
 public final class ID {
@@ -205,9 +206,9 @@ public final class ID {
 			return super.toString();
 		}
 
-		final StringNameWriter out = new StringNameWriter();
+		final StringCPWriter out = new StringCPWriter();
 
-		new DisplayNameWriter(out).write(this);
+		DISPLAY_NAME_ENCODER.write(out, this);
 
 		return out.toString();
 	}

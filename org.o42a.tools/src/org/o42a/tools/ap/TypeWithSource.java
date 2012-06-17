@@ -23,6 +23,7 @@ import static org.o42a.common.object.AnnotatedModule.SOURCES_DESCRIPTOR_SUFFIX;
 import static org.o42a.tools.ap.AnnotationArrayValueVisitor.annotationArrayValue;
 import static org.o42a.tools.ap.TypesWithSources.VALUE;
 import static org.o42a.tools.ap.TypesWithSources.nameAndRest;
+import static org.o42a.tools.ap.UnderscoredCPWriter.underscoredName;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -312,9 +313,9 @@ class TypeWithSource extends TypeSource implements RelTypeSources {
 			final org.o42a.util.string.Name[] adaptee =
 					fileName.getAdapterId();
 
-			localName = "$" + adaptee[adaptee.length - 1].toUnderscoredString();
+			localName = "$" + underscoredName(adaptee[adaptee.length - 1]);
 		} else {
-			localName = fileName.getFieldName().toUnderscoredString();
+			localName = underscoredName(fileName.getFieldName());
 		}
 
 		final String briefName;

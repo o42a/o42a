@@ -25,6 +25,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
 import org.junit.Rule;
 import org.o42a.ast.Node;
@@ -41,7 +42,7 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 import org.o42a.util.string.Name;
-import org.o42a.util.string.StringNameWriter;
+import org.o42a.util.string.StringCPWriter;
 
 
 public class GrammarTestCase {
@@ -63,9 +64,9 @@ public class GrammarTestCase {
 	public static String canonicalName(Name name) {
 		assertThat("No name", name, notNullValue());
 
-		final StringNameWriter out = new StringNameWriter();
+		final StringCPWriter out = new StringCPWriter();
 
-		out.canonical().write(name);
+		NAME_ENCODER.canonical().write(out, name);
 
 		return out.toString();
 	}

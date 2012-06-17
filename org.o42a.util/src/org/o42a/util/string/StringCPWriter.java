@@ -19,42 +19,45 @@
 */
 package org.o42a.util.string;
 
-import org.o42a.util.string.ID.Separator;
 
+public class StringCPWriter extends CPWriter {
 
-final class DecapitalizerNameWriter extends NameWriterProxy {
+	private StringBuilder out;
 
-	private Capitalization capital;
+	public StringCPWriter() {
+	}
 
-	DecapitalizerNameWriter(NameWriter out) {
-		super(out);
+	public StringCPWriter(StringBuilder out) {
+		this.out = out;
 	}
 
 	@Override
-	public NameWriter write(Name name) {
-		this.capital = name.capitalization();
-		return super.write(name);
-	}
-
-	@Override
-	public NameWriter write(String string) {
-		out().write(string);
-		return this;
-	}
-
-	@Override
-	protected void writeCodePoint(int codePoint) {
-		if (this.capital != null) {
-			out().writeCodePoint(this.capital.decapitalizeFirst(codePoint));
-			this.capital = null;
+	public void expandCapacity(int size) {
+		if (this.out == null) {
+			this.out = new StringBuilder(size);
 		} else {
-			out().writeCodePoint(codePoint);
+			this.out.ensureCapacity(this.out.length() + size);
 		}
 	}
-	@Override
-	protected void writeSeparator(Separator separator) {
-		out().writeSeparator(separator);
+
+	public final StringBuilder out() {
+		if (this.out != null) {
+			return this.out;
+		}
+		return this.out = new StringBuilder();
 	}
 
+	@Override
+	public String toString() {
+		if (this.out == null) {
+			return "";
+		}
+		return this.out.toString();
+	}
+
+	@Override
+	public void writeCodePoint(int codePoint) {
+		out().appendCodePoint(codePoint);
+	}
 
 }

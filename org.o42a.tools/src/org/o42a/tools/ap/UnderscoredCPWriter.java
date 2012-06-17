@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Build Tools
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,36 +17,35 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.tools.ap;
+
+import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
+
+import org.o42a.util.string.*;
 
 
-public abstract class NameWriterProxy extends NameWriter {
+final class UnderscoredCPWriter extends CPWriterProxy {
 
-	private final NameWriter out;
+	public static String underscoredName(Name name) {
 
-	public NameWriterProxy(NameWriter out) {
-		assert out != null :
-			"Proxied name writer not specified";
-		this.out = out;
+		final StringCPWriter out = new StringCPWriter();
+
+		NAME_ENCODER.canonical().write(new UnderscoredCPWriter(out), name);
+
+		return out.toString();
+	}
+
+	private UnderscoredCPWriter(CPWriter out) {
+		super(out);
 	}
 
 	@Override
-	public void expandCapacity(int size) {
-		out().expandCapacity(size);
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName() + '[' + this.out + ']';
-	}
-
-	@Override
-	protected void writeCodePoint(int codePoint) {
-		out().writeCodePoint(codePoint);
-	}
-
-	protected final NameWriter out() {
-		return this.out;
+	public void writeCodePoint(int codePoint) {
+		if (codePoint == ' ') {
+			super.writeCodePoint('_');
+		} else {
+			super.writeCodePoint(codePoint);
+		}
 	}
 
 }

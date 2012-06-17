@@ -73,6 +73,10 @@ public enum Capitalization {
 
 	};
 
+	public final boolean preservesCapital() {
+		return ordinal() >= PRESERVE_CAPITAL.ordinal();
+	}
+
 	public final boolean isCaseSensitive() {
 		return ordinal() >= CASE_SENSITIVE.ordinal();
 	}

@@ -1,5 +1,5 @@
 /*
-    Utilities
+    Compiler Tests
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,20 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.util.string;
+package org.o42a.compiler.test.util;
 
-import org.o42a.util.string.ID.Separator;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.o42a.util.string.Name.caseInsensitiveName;
+
+import org.junit.Test;
+import org.o42a.util.string.ID;
 
 
-final class DisplayNameWriter extends NameWriterProxy {
+public class IDTest {
 
-	DisplayNameWriter(NameWriter out) {
-		super(out);
-	}
+	@Test
+	public void decaptialization() {
 
-	@Override
-	protected void writeSeparator(Separator separator) {
-		write(separator.getDisplaySign());
+		final ID id =
+				caseInsensitiveName("Abc").toID()
+				.sub(caseInsensitiveName("Def"))
+				.sub(caseInsensitiveName("GHI"));
+
+		assertThat(id.toString(), is("Abc: def: GHI"));
 	}
 
 }

@@ -19,20 +19,36 @@
 */
 package org.o42a.util.string;
 
+import org.o42a.util.string.ID.Separator;
 
-final class UnderscoredNameWriter extends NameWriterProxy {
 
-	UnderscoredNameWriter(NameWriter out) {
-		super(out);
+public abstract class NameEncoderProxy extends NameEncoder {
+
+	private final NameEncoder out;
+
+	public NameEncoderProxy(NameEncoder out) {
+		assert out != null :
+			"Proxied name writer not specified";
+		this.out = out;
 	}
 
 	@Override
-	protected void writeCodePoint(int codePoint) {
-		if (codePoint == ' ') {
-			out().writeCodePoint('_');
-		} else {
-			out().writeCodePoint(codePoint);
-		}
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.out + ']';
+	}
+
+	protected final NameEncoder out() {
+		return this.out;
+	}
+
+	@Override
+	protected void writeName(CPWriter out, Name name) {
+		out().writeName(out, name);
+	}
+
+	@Override
+	protected void writeSeparator(CPWriter out, Separator separator) {
+		out().writeSeparator(out, separator);
 	}
 
 }
