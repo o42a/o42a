@@ -232,7 +232,7 @@ public final class ID {
 
 		final StringNameWriter out = new StringNameWriter();
 
-		out.write(this);
+		new DisplayNameWriter(out).write(this);
 
 		return out.toString();
 	}
@@ -279,7 +279,7 @@ public final class ID {
 
 	public enum Separator {
 
-		NONE("") {
+		NONE("", "") {
 
 			@Override
 			boolean discardsPrev(Separator prev) {
@@ -293,7 +293,7 @@ public final class ID {
 
 		},
 
-		TOP("$$") {
+		TOP("$$", "$$") {
 
 			@Override
 			boolean discardsPrev(Separator prev) {
@@ -301,24 +301,30 @@ public final class ID {
 			}
 
 		},
-		SUB(":"),
-		ANONYMOUS(":"),
-		DETAIL("/"),
-		TYPE("@@"),
-		IN("@");
+		SUB(":", ": "),
+		ANONYMOUS(":", ": "),
+		DETAIL("//", " // "),
+		TYPE("@@", " @@"),
+		IN("@", " @");
 
 		private final String defaultSign;
+		private final String displaySign;
 
-		Separator(String defaultSign) {
+		Separator(String defaultSign, String displaySign) {
 			this.defaultSign = defaultSign;
+			this.displaySign = displaySign;
 		}
 
 		public final boolean isNone() {
 			return this == NONE;
 		}
 
-		public String getDefaultSign() {
+		public final String getDefaultSign() {
 			return this.defaultSign;
+		}
+
+		public final String getDisplaySign() {
+			return this.displaySign;
 		}
 
 		boolean discardsPrev(Separator prev) {
