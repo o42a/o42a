@@ -405,11 +405,7 @@ public final class Name implements CharSequence, Comparable<Name> {
 	}
 
 	public final ID toID() {
-		return new ID(null, Separator.NONE, this, null, false);
-	}
-
-	public final ID toRawID() {
-		return new ID(null, Separator.NONE, this, null, true);
+		return new ID(null, Separator.NONE, this, null);
 	}
 
 	@Override
