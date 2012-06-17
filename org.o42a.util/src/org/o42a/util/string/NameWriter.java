@@ -39,7 +39,7 @@ public abstract class NameWriter {
 		final Separator lastSep = lastSeparator[0];
 
 		if (lastSep == Separator.TOP) {
-			nextWriter.writerSeparator(lastSep);
+			nextWriter.writeSeparator(lastSep);
 		}
 
 		return nextWriter;
@@ -67,7 +67,7 @@ public abstract class NameWriter {
 
 	protected abstract void writeCodePoint(int codePoint);
 
-	protected void writerSeparator(ID.Separator separator) {
+	protected void writeSeparator(ID.Separator separator) {
 		writeString(separator.getDefaultSign());
 	}
 
@@ -121,18 +121,18 @@ public abstract class NameWriter {
 		if (name.isEmpty()) {
 			if (!prev.discardsNext(next)) {
 				if (!next.discardsPrev(prev)) {
-					writer.writerSeparator(prev);
+					writer.writeSeparator(prev);
 				}
 				lastSeparator[0] = next;
 			}
 		} else {
 			if (prev.discardsNext(next)) {
-				writer.writerSeparator(prev);
+				writer.writeSeparator(prev);
 			} else if (next.discardsPrev(prev)) {
-				writer.writerSeparator(next);
+				writer.writeSeparator(next);
 			} else {
-				writer.writerSeparator(prev);
-				writer.writerSeparator(next);
+				writer.writeSeparator(prev);
+				writer.writeSeparator(next);
 			}
 			lastSeparator[0] = Separator.NONE;
 			writer.write(name);

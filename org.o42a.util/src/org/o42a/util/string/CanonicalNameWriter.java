@@ -48,8 +48,8 @@ final class CanonicalNameWriter extends NameWriterProxy {
 	}
 
 	@Override
-	protected void writerSeparator(Separator separator) {
-		out().writerSeparator(separator);
+	protected void writeSeparator(Separator separator) {
+		out().writeSeparator(separator);
 	}
 
 }

@@ -22,39 +22,15 @@ package org.o42a.util.string;
 import org.o42a.util.string.ID.Separator;
 
 
-final class DecapitalizerNameWriter extends NameWriterProxy {
+final class DisplayNameWriter extends NameWriterProxy {
 
-	private Capitalization capital;
-
-	DecapitalizerNameWriter(NameWriter out) {
+	DisplayNameWriter(NameWriter out) {
 		super(out);
 	}
 
 	@Override
-	public NameWriter write(Name name) {
-		this.capital = name.capitalization();
-		return super.write(name);
-	}
-
-	@Override
-	public NameWriter write(String string) {
-		out().write(string);
-		return this;
-	}
-
-	@Override
-	protected void writeCodePoint(int codePoint) {
-		if (this.capital != null) {
-			out().writeCodePoint(this.capital.decapitalizeFirst(codePoint));
-			this.capital = null;
-		} else {
-			out().writeCodePoint(codePoint);
-		}
-	}
-	@Override
 	protected void writeSeparator(Separator separator) {
-		out().writeSeparator(separator);
+		write(separator.getDisplaySign());
 	}
-
 
 }
