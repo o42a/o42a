@@ -22,92 +22,62 @@ package org.o42a.util.string;
 import org.o42a.util.string.ID.Separator;
 
 
-public abstract class NameWriter {
+public class NameEncoder {
 
-	/**
-	 * Expands a writer capacity.
-	 *
-	 * @param size an estimated number of characters to be written.
-	 */
-	public void expandCapacity(int size) {
+	public static final NameEncoder NAME_ENCODER = new NameEncoder();
+
+	protected NameEncoder() {
 	}
 
-	public final NameWriter write(ID id) {
+	public final NameEncoder write(CPWriter out, ID id) {
 
 		final Separator[] lastSeparator = new Separator[] {Separator.NONE};
-		final NameWriter nextWriter = writeID(lastSeparator, id, true);
+		final NameEncoder nextWriter = writeID(out, lastSeparator, id, true);
 		final Separator lastSep = lastSeparator[0];
 
 		if (lastSep == Separator.TOP) {
-			nextWriter.writeSeparator(lastSep);
+			nextWriter.writeSeparator(out, lastSep);
 		}
 
 		return nextWriter;
 	}
 
-	public NameWriter write(Name name) {
-		return writeString(name.toString());
-	}
-
-	public NameWriter write(String string) {
-		return writeString(string);
-	}
-
-	public final NameWriter canonical() {
-		return new CanonicalNameWriter(this);
-	}
-
-	public final NameWriter decapitalizer() {
-		return new DecapitalizerNameWriter(this);
-	}
-
-	public final NameWriter underscored() {
-		return new UnderscoredNameWriter(this);
-	}
-
-	protected abstract void writeCodePoint(int codePoint);
-
-	protected void writeSeparator(ID.Separator separator) {
-		writeString(separator.getDefaultSign());
-	}
-
-	private NameWriter writeString(String string) {
-
-		final int len = string.length();
-
-		if (len == 0) {
-			return this;
-		}
-
-		expandCapacity(len);
-
-		int i = 0;
-
-		do {
-
-			final int cp = string.codePointAt(i);
-
-			i += Character.charCount(cp);
-			writeCodePoint(cp);
-		} while (i < len);
-
+	public final NameEncoder write(CPWriter out, Name name) {
+		writeName(out, name);
 		return this;
 	}
 
-	private NameWriter writeID(
+	public final NameEncoder canonical() {
+		return new NameCanonicalizer(this);
+	}
+
+	public final NameEncoder decapitalized() {
+		return new NameDecapitalizer(this);
+	}
+
+	protected void writeName(CPWriter out, Name name) {
+		out.write(name.toString());
+	}
+
+	protected void writeSeparator(CPWriter out, ID.Separator separator) {
+		out.write(separator.getDefaultSign());
+	}
+
+	private NameEncoder writeID(
+			CPWriter out,
 			Separator[] lastSeparator,
 			ID id,
 			boolean decapitalize) {
 
 		final ID prefix = id.getPrefix();
-		final NameWriter writer;
-		final NameWriter nextWriter;
+		final NameEncoder writer;
+		final NameEncoder nextWriter;
 
 		if (prefix != null) {
-			nextWriter = writeID(lastSeparator, prefix, decapitalize);
+			nextWriter = writeID(out, lastSeparator, prefix, decapitalize);
 			writer = nextWriter;
 		} else if (decapitalize) {
-			nextWriter = decapitalizer();
+			nextWriter = decapitalized();
 			writer = this;
 		} else {
 			nextWriter = this;
@@ -121,27 +91,27 @@ public abstract class NameWriter {
 		if (name.isEmpty()) {
 			if (!prev.discardsNext(next)) {
 				if (!next.discardsPrev(prev)) {
-					writer.writeSeparator(prev);
+					writer.writeSeparator(out, prev);
 				}
 				lastSeparator[0] = next;
 			}
 		} else {
 			if (prev.discardsNext(next)) {
-				writer.writeSeparator(prev);
+				writer.writeSeparator(out, prev);
 			} else if (next.discardsPrev(prev)) {
-				writer.writeSeparator(next);
+				writer.writeSeparator(out, next);
 			} else {
-				writer.writeSeparator(prev);
-				writer.writeSeparator(next);
+				writer.writeSeparator(out, prev);
+				writer.writeSeparator(out, next);
 			}
 			lastSeparator[0] = Separator.NONE;
-			writer.write(name);
+			writer.write(out, name);
 		}
 
 		final ID suffix = id.getSuffix();
 
 		if (suffix != null) {
-			nextWriter.writeID(lastSeparator, suffix, false);
+			nextWriter.writeID(out, lastSeparator, suffix, false);
 		}
 
 		return nextWriter;

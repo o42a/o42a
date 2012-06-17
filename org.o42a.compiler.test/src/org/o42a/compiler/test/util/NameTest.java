@@ -22,10 +22,11 @@ package org.o42a.compiler.test.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.o42a.util.string.Name.caseInsensitiveName;
+import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
 import org.junit.Test;
 import org.o42a.util.string.Name;
-import org.o42a.util.string.StringNameWriter;
+import org.o42a.util.string.StringCPWriter;
 
 
 public class NameTest {
@@ -82,18 +83,18 @@ public class NameTest {
 
 	private static String canonical(Name name) {
 
-		final StringNameWriter out = new StringNameWriter();
+		final StringCPWriter out = new StringCPWriter();
 
-		out.canonical().write(name);
+		NAME_ENCODER.canonical().write(out, name);
 
 		return out.toString();
 	}
 
 	private static String decapitalized(Name name) {
 
-		final StringNameWriter out = new StringNameWriter();
+		final StringCPWriter out = new StringCPWriter();
 
-		out.decapitalizer().write(name);
+		NAME_ENCODER.decapitalized().write(out, name);
 
 		return out.toString();
 	}

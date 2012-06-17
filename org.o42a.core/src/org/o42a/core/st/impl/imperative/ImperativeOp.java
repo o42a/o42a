@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.impl.imperative;
 
+import static org.o42a.util.string.Capitalization.AS_IS;
+
 import java.util.List;
 
 import org.o42a.codegen.code.Block;
@@ -29,19 +31,22 @@ import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
 import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 
 
 final class ImperativeOp {
+
+	private static final Name BLK_SUFFIX = AS_IS.name("_blk");
+	private static final Name NEXT_SUFFIX = AS_IS.name("_next");
 
 	public static void writeSentences(
 			Control control,
 			ImperativeBlock block,
 			InlineImperativeBlock inline) {
 
-		final String name = control.name(block.getName()) + "_blk";
-
+		final ID name = control.name(block.getName()).suffix(BLK_SUFFIX);
 		final Block code = control.addBlock(name);
-		final Block next = control.addBlock(name + "_next");
+		final Block next = control.addBlock(name.suffix(NEXT_SUFFIX));
 		final Control blockControl;
 
 		if (block.isParentheses()) {

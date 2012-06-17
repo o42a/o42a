@@ -24,6 +24,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
+import org.o42a.util.string.ID;
 
 
 abstract class MainControl extends Control {
@@ -86,8 +87,8 @@ abstract class MainControl extends Control {
 		return null;
 	}
 
-	final String anonymousName() {
-		return Integer.toString(++this.seq);
+	final ID anonymousName() {
+		return ID.id(Integer.toString(++this.seq));
 	}
 
 	abstract void storeResult(Block code, ValOp value);

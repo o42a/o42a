@@ -103,9 +103,9 @@ public abstract class Control {
 		}
 	}
 
-	public String name(Name name) {
+	public ID name(Name name) {
 		if (name != null) {
-			return name.toUnderscoredString();
+			return name.toID();
 		}
 		return main().anonymousName();
 	}

@@ -19,37 +19,40 @@
 */
 package org.o42a.util.string;
 
-import org.o42a.util.string.ID.Separator;
 
+public abstract class CPWriter {
 
-final class CanonicalNameWriter extends NameWriterProxy {
-
-	private Capitalization capitalization;
-
-	CanonicalNameWriter(NameWriter out) {
-		super(out);
+	/**
+	 * Expands a writer capacity.
+	 *
+	 * @param size an estimated number of characters to be written.
+	 */
+	public void expandCapacity(int size) {
 	}
 
-	@Override
-	public NameWriter write(Name name) {
-		this.capitalization = name.capitalization();
-		return super.write(name);
-	}
+	public final CPWriter write(String string) {
 
-	@Override
-	public NameWriter write(String string) {
-		out().write(string);
+		final int len = string.length();
+
+		if (len == 0) {
+			return this;
+		}
+
+		expandCapacity(len);
+
+		int i = 0;
+
+		do {
+
+			final int cp = string.codePointAt(i);
+
+			i += Character.charCount(cp);
+			writeCodePoint(cp);
+		} while (i < len);
+
 		return this;
 	}
 
-	@Override
-	protected void writeCodePoint(int codePoint) {
-		out().writeCodePoint(this.capitalization.canonical(codePoint));
-	}
-
-	@Override
-	protected void writeSeparator(Separator separator) {
-		out().writeSeparator(separator);
-	}
+	public abstract void writeCodePoint(int codePoint);
 
 }

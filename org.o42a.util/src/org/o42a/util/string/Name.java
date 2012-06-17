@@ -315,15 +315,6 @@ public final class Name implements CharSequence, Comparable<Name> {
 		return this.string.codePointAt(index);
 	}
 
-	public final String toUnderscoredString() {
-
-		final StringNameWriter out = new StringNameWriter();
-
-		out.underscored().canonical().write(this);
-
-		return out.toString();
-	}
-
 	public final boolean is(Name other) {
 		if (other == null) {
 			return false;

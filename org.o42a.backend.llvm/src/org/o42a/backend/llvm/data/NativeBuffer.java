@@ -20,28 +20,20 @@
 package org.o42a.backend.llvm.data;
 
 import static org.o42a.backend.llvm.data.LLVMModule.bufferPtr;
+import static org.o42a.backend.llvm.data.NameLLVMEncoder.NAME_LLVM_ENCODER;
 
 import java.nio.ByteBuffer;
 
-import org.o42a.util.string.*;
-import org.o42a.util.string.ID.Separator;
+import org.o42a.util.string.CPWriter;
+import org.o42a.util.string.ID;
 
 
 public final class NativeBuffer {
 
-	private final static byte[] HEX_DIGITS = {
-		'0', '1', '2', '3',
-		'4', '5', '6', '7',
-		'8', '9', 'A', 'B',
-		'C', 'D', 'E', 'F',
-	};
-
-	private final NativeNameWriter writer;
-	private final NameWriter encoder;
+	private final NativeCPWriter writer;
 
 	public NativeBuffer(int capacity) {
-		this.writer = new NativeNameWriter(capacity);
-		this.encoder = new NameEncoder(this.writer).canonical();
+		this.writer = new NativeCPWriter(capacity);
 	}
 
 	public final int length() {
@@ -56,17 +48,17 @@ public final class NativeBuffer {
 		}
 		this.writer.buffer.clear();
 
-		this.encoder.write(id);
+		NAME_LLVM_ENCODER.write(this.writer, id);
 
 		return this.writer.nativePtr;
 	}
 
-	private static final class NativeNameWriter extends NameWriter {
+	private static final class NativeCPWriter extends CPWriter {
 
 		private ByteBuffer buffer;
 		private long nativePtr;
 
-		NativeNameWriter(int capacity) {
+		NativeCPWriter(int capacity) {
 			this.buffer = allocate(capacity);
 		}
 
@@ -102,11 +94,11 @@ public final class NativeBuffer {
 			if (this.buffer == null) {
 				return super.toString();
 			}
-			return "NetiveNameWriter[" + this.buffer + ']';
+			return "NativeCPWriter[" + this.buffer + ']';
 		}
 
 		@Override
-		protected void writeCodePoint(int codePoint) {
+		public void writeCodePoint(int codePoint) {
 			assert codePoint <= 127 :
 				"Not an ASCII char: '" + ((char) codePoint) + '\'';
 			this.buffer.put((byte) codePoint);
@@ -119,133 +111,6 @@ public final class NativeBuffer {
 			this.nativePtr = bufferPtr(buffer);
 
 			return buffer;
-		}
-
-	}
-
-	private static final class NameEncoder extends NameWriterProxy {
-
-		private boolean lastEncoded;
-
-		NameEncoder(NameWriter out) {
-			super(out);
-		}
-
-		@Override
-		public NameWriter write(Name name) {
-			if (name.capitalization().isRaw()) {
-				out().write(name);
-				return this;
-			}
-			reset();
-			return super.write(name);
-		}
-
-		@Override
-		public NameWriter write(String string) {
-			reset();
-			return super.write(string);
-		}
-
-		@Override
-		protected void writeCodePoint(int c) {
-			if (isSpecial(c)) {
-				appendSpecial(c);
-				this.lastEncoded = false;
-			} else if (isEncoded(c)) {
-				if (this.lastEncoded) {
-					closeEncoded();
-					this.lastEncoded = false;
-				}
-				super.writeCodePoint(c);
-			} else if (
-					(c >= 'a' && c <= 'z')
-					|| (c >= 'A' && c <= 'Z')
-					|| c == '_' || c == '-') {
-				super.writeCodePoint(c);
-				this.lastEncoded = false;
-			} else if (c == ' ') {
-				super.writeCodePoint('_');
-				this.lastEncoded = false;
-			} else {
-				appendEncoded(c);
-				this.lastEncoded = true;
-			}
-		}
-
-		@Override
-		protected void writeSeparator(Separator separator) {
-			switch (separator) {
-			case NONE:
-				return;
-			case TOP:
-				out().write(".");
-				return;
-			case SUB:
-				out().write(".");
-				return;
-			case ANONYMOUS:
-				out().write(".");
-				return;
-			case DETAIL:
-				out().write("$");
-				return;
-			case TYPE:
-				out().write("$$");
-				return;
-			case IN:
-				out().write(".$");
-				return;
-			}
-			throw new IllegalArgumentException(
-					"Unsupported separator: " + separator);
-		}
-
-		private void reset() {
-			this.lastEncoded = false;
-		}
-
-		private boolean isSpecial(int c) {
-			if (c == 'X') {
-				return true;
-			}
-			if (c == 'Z' && this.lastEncoded) {
-				return true;
-			}
-			return false;
-		}
-
-		private static boolean isEncoded(int c) {
-			return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F');
-		}
-
-		private void appendSpecial(int c) {
-			expandCapacity(2);
-			super.writeCodePoint('X');
-			super.writeCodePoint(c);
-		}
-
-		protected void appendEncoded(int c) {
-
-			int ch = c;
-			byte[] digits = new byte[32];
-			int i = 32;
-
-			do {
-			    digits[--i] = HEX_DIGITS[ch & 0xF];
-			    ch >>>= 4;
-			} while (ch != 0);
-
-			expandCapacity(32 + 1 - i);
-			super.writeCodePoint('X');
-			while (i < 32) {
-				super.writeCodePoint(digits[i++]);
-			}
-		}
-
-		protected void closeEncoded() {
-			expandCapacity(1);
-			super.writeCodePoint('Z');
 		}
 
 	}
