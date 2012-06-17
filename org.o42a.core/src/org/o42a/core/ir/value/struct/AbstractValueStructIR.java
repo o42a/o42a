@@ -21,12 +21,12 @@ package org.o42a.core.ir.value.struct;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractValueStructIR<S extends ValueStruct<S, T>, T>
@@ -61,6 +61,6 @@ public abstract class AbstractValueStructIR<S extends ValueStruct<S, T>, T>
 		return result;
 	}
 
-	protected abstract CodeId constId(T value);
+	protected abstract ID constId(T value);
 
 }

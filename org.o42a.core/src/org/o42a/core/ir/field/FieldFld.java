@@ -22,7 +22,6 @@ package org.o42a.core.ir.field;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
@@ -32,6 +31,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.util.string.ID;
 
 
 public abstract class FieldFld extends Fld {
@@ -57,7 +57,7 @@ public abstract class FieldFld extends Fld {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return getField().ir(getGenerator()).getId();
 	}
 

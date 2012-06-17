@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.AllocatorWriter;
+import org.o42a.util.string.ID;
 
 
 final class AllocatorCode extends Allocator {
@@ -28,7 +28,7 @@ final class AllocatorCode extends Allocator {
 	private final AllocatorWriter writer;
 	private final Allocator enclosingAllocator;
 
-	AllocatorCode(Block enclosing, CodeId name) {
+	AllocatorCode(Block enclosing, ID name) {
 		super(enclosing, name);
 		this.enclosingAllocator = enclosing.getAllocator();
 		this.writer = enclosing.writer().allocator(this);

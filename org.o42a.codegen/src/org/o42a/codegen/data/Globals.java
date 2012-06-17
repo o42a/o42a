@@ -22,7 +22,6 @@ package org.o42a.codegen.data;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
@@ -30,6 +29,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public abstract class Globals {
@@ -59,7 +59,7 @@ public abstract class Globals {
 			return this.nullPtr;
 		}
 
-		final CodeId id = getGenerator().id("any_null");
+		final ID id = ID.id("any_null");
 
 		return this.nullPtr = new Ptr<AnyOp>(id, true, true) {
 			@Override
@@ -78,7 +78,7 @@ public abstract class Globals {
 			return this.nullDataPtr;
 		}
 
-		final CodeId id = getGenerator().id("data_null");
+		final ID id = ID.id("data_null");
 
 		return this.nullDataPtr = new Ptr<DataOp>(id, true, true) {
 			@Override
@@ -124,14 +124,14 @@ public abstract class Globals {
 	}
 
 	public final Ptr<AnyOp> addBinary(
-			CodeId id,
+			ID id,
 			boolean isConstant,
 			byte[] data) {
 		return addBinary(id, isConstant, data, 0, data.length);
 	}
 
-	public Ptr<AnyOp> addBinary(
-			final CodeId id,
+	public final Ptr<AnyOp> addBinary(
+			final ID id,
 			final boolean isConstant,
 			final byte[] data,
 			final int start,
@@ -174,7 +174,7 @@ public abstract class Globals {
 
 	<S extends StructOp<S>, T extends Type<S>> Global<S, T> addGlobal(
 			GlobalSettings settings,
-			CodeId id,
+			ID id,
 			T type,
 			T instance,
 			Content<T> content) {
@@ -237,7 +237,7 @@ public abstract class Globals {
 		}
 
 		final Ptr<S> extern = new Ptr<S>(
-				getGenerator().rawId(name),
+				ID.rawId(name),
 				settings.isConstant(),
 				false) {
 			@Override

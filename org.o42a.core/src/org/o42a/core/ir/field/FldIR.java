@@ -19,16 +19,16 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Data;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public interface FldIR {
 
-	CodeId getId();
+	ID getId();
 
 	FldKind getKind();
 

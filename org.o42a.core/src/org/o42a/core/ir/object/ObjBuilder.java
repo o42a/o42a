@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ir.object;
 
+import static org.o42a.core.ir.HostOp.HOST_ID;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 
 import org.o42a.codegen.code.Block;
@@ -76,7 +77,7 @@ public final class ObjBuilder extends CodeBuilder {
 					getFunction().arg(code, getObjectSignature().object()),
 					hostType);
 
-			return host.cast(code.id("host"), dirs(code, exit), hostType);
+			return host.cast(HOST_ID, dirs(code, exit), hostType);
 		}
 
 		throw new IllegalArgumentException(

@@ -19,32 +19,40 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface IntOp<O extends IntOp<O>> extends NumOp<O> {
 
-	O shl(CodeId id, Code code, O numBits);
+	ID SHL_ID = ID.rawId("shl");
+	ID LSHR_ID = ID.rawId("lshr");
+	ID ASHR_ID = ID.rawId("ashr");
+	ID AND_ID = ID.rawId("and");
+	ID OR_ID = ID.rawId("or");
+	ID XOR_ID = ID.rawId("xor");
+	ID COMP_ID = ID.rawId("comp");
 
-	O shl(CodeId id, Code code, int numBits);
+	O shl(ID id, Code code, O numBits);
 
-	O lshr(CodeId id, Code code, O numBits);
+	O shl(ID id, Code code, int numBits);
 
-	O lshr(CodeId id, Code code, int numBits);
+	O lshr(ID id, Code code, O numBits);
 
-	O ashr(CodeId id, Code code, O numBits);
+	O lshr(ID id, Code code, int numBits);
 
-	O ashr(CodeId id, Code code, int numBits);
+	O ashr(ID id, Code code, O numBits);
 
-	O and(CodeId id, Code code, O operand);
+	O ashr(ID id, Code code, int numBits);
 
-	O or(CodeId id, Code code, O operand);
+	O and(ID id, Code code, O operand);
 
-	O xor(CodeId id, Code code, O operand);
+	O or(ID id, Code code, O operand);
 
-	O comp(CodeId id, Code code);
+	O xor(ID id, Code code, O operand);
 
-	BoolOp lowestBit(CodeId id, Code code);
+	O comp(ID id, Code code);
+
+	BoolOp lowestBit(ID id, Code code);
 
 }

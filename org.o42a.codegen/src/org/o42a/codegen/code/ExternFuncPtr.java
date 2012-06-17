@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
@@ -29,7 +29,7 @@ final class ExternFuncPtr<F extends Func<F>> extends FuncPtr<F> {
 	private FuncAllocation<F> allocation;
 
 	ExternFuncPtr(
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			ExternalFunctionSettings settings) {
 		super(id, signature, false);

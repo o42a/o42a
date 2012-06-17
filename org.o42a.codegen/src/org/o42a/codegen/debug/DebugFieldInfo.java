@@ -19,12 +19,13 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
@@ -59,11 +60,11 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 				fieldData.getPointer().relativeTo(
 						enclosing.pointer(generator)));
 
-		final CodeId fieldName = fieldData.getId();
+		final ID fieldName = fieldData.getId();
 
 		debug.setName(
 				instance.name(),
-				generator.id("DEBUG").sub("field_name").sub(fieldName),
+				DEBUG_ID.sub("field_name").sub(fieldName),
 				fieldName.toString());
 
 		final DebugTypeInfo typeInfo;
@@ -110,6 +111,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		private AnyRec typeInfo;
 
 		private FieldInfoType() {
+			super(DEBUG_ID.sub("FieldInfo"));
 		}
 
 		@Override
@@ -136,11 +138,6 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("FieldInfo");
 		}
 
 		@Override

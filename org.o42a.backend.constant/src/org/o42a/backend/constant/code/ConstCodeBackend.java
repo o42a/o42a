@@ -22,10 +22,10 @@ package org.o42a.backend.constant.code;
 import org.o42a.backend.constant.code.signature.CSignatureWriter;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.func.ExternCFAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.*;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public class ConstCodeBackend implements CodeBackend {
@@ -55,9 +55,9 @@ public class ConstCodeBackend implements CodeBackend {
 
 	@Override
 	public <F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
+			ID id,
 			FuncPtr<F> pointer) {
-		return new ExternCFAlloc<F>(getBackend(), pointer, id.getId());
+		return new ExternCFAlloc<F>(getBackend(), pointer, id.toString());
 	}
 
 }

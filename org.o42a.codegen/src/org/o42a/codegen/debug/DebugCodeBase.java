@@ -28,6 +28,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.CodeBase;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public abstract class DebugCodeBase extends CodeBase {
@@ -132,7 +133,7 @@ public abstract class DebugCodeBase extends CodeBase {
 		func.op(null, code).call(
 				code,
 				binaryMessage(getGenerator(), message).op(null, code),
-				data.toData(code.id("dump"), code),
+				data.toData(ID.id("dump"), code),
 				code.int32(depth));
 	}
 

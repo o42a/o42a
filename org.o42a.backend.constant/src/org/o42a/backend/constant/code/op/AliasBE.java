@@ -20,15 +20,15 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public final class AliasBE<U extends Op> extends OpBE<U> {
 
 	private final OpBE<U> aliased;
 
-	public AliasBE(CodeId id, CCode<?> code, OpBE<U> aliased) {
+	public AliasBE(ID id, CCode<?> code, OpBE<U> aliased) {
 		super(id != null ? id : aliased.getId(), code);
 		this.aliased = aliased;
 	}

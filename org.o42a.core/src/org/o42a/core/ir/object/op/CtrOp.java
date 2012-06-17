@@ -23,8 +23,6 @@ import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.NewObjectFunc.NEW_OBJECT;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -40,13 +38,17 @@ import org.o42a.core.ir.object.ObjectIRType;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
+import org.o42a.util.string.ID;
 
 
 public class CtrOp extends IROp {
 
 	public static final Type CTR_TYPE = new Type();
 
+	public static final ID CTR_ID = ID.id("ctr");
+
 	private final Op ptr;
+
 
 	private CtrOp(CodeBuilder builder, Op ptr) {
 		super(builder);
@@ -139,6 +141,7 @@ public class CtrOp extends IROp {
 		private StructRec<ObjectIRType.Op> type;
 
 		private Type() {
+			super(ID.rawId("o42a_obj_ctr_t"));
 		}
 
 		@Override
@@ -156,11 +159,6 @@ public class CtrOp extends IROp {
 
 		public final StructRec<ObjectIRType.Op> type() {
 			return this.type;
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_ctr_t");
 		}
 
 		@Override

@@ -19,22 +19,18 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
+import org.o42a.util.string.ID;
 
 
 public class CondBlock extends CodeBlock {
 
 	private final BoolOp condition;
-	private final CodeId falseName;
+	private final ID falseName;
 	private Block otherwise;
 
-	CondBlock(
-			Block enclosing,
-			BoolOp condition,
-			CodeId trueName,
-			CodeId falseName) {
+	CondBlock(Block enclosing, BoolOp condition, ID trueName, ID falseName) {
 		super(enclosing, trueName);
 		this.condition = condition;
 		this.falseName = falseName;

@@ -29,15 +29,21 @@ import static org.o42a.util.string.StringCodec.nullTermString;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
-import org.o42a.codegen.*;
+import org.o42a.codegen.AbstractGenerator;
+import org.o42a.codegen.Generator;
+import org.o42a.codegen.ProxyGenerator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public class Debug {
+
+	public static final ID DEBUG_ID = ID.id("DEBUG");
+	private static final ID FUNC_NAME_ID = DEBUG_ID.sub("func_name");
 
 	private static final BeforeReturn TRACE_BEFORE_RETURN =
 			new TraceBeforReturn();
@@ -84,9 +90,7 @@ public class Debug {
 		this.settings.setDebug(debug);
 	}
 
-	public <F extends Func<F>> void addFunction(
-			CodeId id,
-			FuncPtr<F> functionPtr) {
+	public <F extends Func<F>> void addFunction(ID id, FuncPtr<F> functionPtr) {
 		if (isProxied()) {
 			return;
 		}
@@ -107,15 +111,10 @@ public class Debug {
 		}
 
 		final Ptr<AnyOp> namePtr =
-				allocateName(
-						getGenerator()
-						.id("DEBUG")
-						.sub("func_name")
-						.sub(id),
-						id.getId());
+				allocateName(FUNC_NAME_ID.sub(id), id.toString());
 
 		final DebugStackFrameOp stackFrame = function.allocation().allocate(
-				function.id("func_stack_frame"),
+				ID.id("func_stack_frame"),
 				DEBUG_STACK_FRAME_TYPE);
 
 		stackFrame.name(function).store(function, namePtr.op(null, function));
@@ -175,7 +174,7 @@ public class Debug {
 			"Type info already exists: " + old;
 	}
 
-	final Ptr<AnyOp> allocateName(CodeId id, String value) {
+	final Ptr<AnyOp> allocateName(ID id, String value) {
 
 		final Ptr<AnyOp> found = this.names.get(value);
 
@@ -191,7 +190,7 @@ public class Debug {
 		return binary;
 	}
 
-	final Ptr<AnyOp> allocateMessage(CodeId id, String value) {
+	final Ptr<AnyOp> allocateMessage(ID id, String value) {
 
 		final Ptr<AnyOp> found = this.messages.get(value);
 
@@ -209,7 +208,7 @@ public class Debug {
 		return binary;
 	}
 
-	final void setName(AnyRec field, CodeId id, String value) {
+	final void setName(AnyRec field, ID id, String value) {
 		field.setValue(allocateName(id, value));
 	}
 
@@ -224,8 +223,8 @@ public class Debug {
 		return typeInfo;
 	}
 
-	final CodeId nextDebugId() {
-		return getGenerator().id("DEBUG_" + (this.debugSeq++));
+	final ID nextDebugId() {
+		return ID.id("DEBUG_" + (this.debugSeq++));
 	}
 
 	private FuncPtr<DebugEnterFunc> enterFunc() {

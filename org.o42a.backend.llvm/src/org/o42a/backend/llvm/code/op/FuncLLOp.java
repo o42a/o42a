@@ -24,12 +24,12 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.AtomicRecLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class FuncLLOp<F extends Func<F>>
@@ -39,7 +39,7 @@ public final class FuncLLOp<F extends Func<F>>
 	private final Signature<F> signature;
 
 	public FuncLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr,
@@ -55,7 +55,7 @@ public final class FuncLLOp<F extends Func<F>>
 
 	@Override
 	public <FF extends Func<FF>> FuncLLOp<FF> toFunc(
-			CodeId id,
+			ID id,
 			Code code,
 			Signature<FF> signature) {
 
@@ -70,7 +70,7 @@ public final class FuncLLOp<F extends Func<F>>
 				llvm.instr(castFuncTo(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(id),
+						ids.write(id),
 						ids.length(),
 						getNativePtr(),
 						llvm.getModule().nativePtr(signature))),
@@ -78,7 +78,7 @@ public final class FuncLLOp<F extends Func<F>>
 	}
 
 	@Override
-	protected F createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected F createLoaded(ID id, long blockPtr, long nativePtr) {
 		return getSignature().op(new LLFunc<F>(
 				id,
 				getSignature(),
@@ -87,7 +87,7 @@ public final class FuncLLOp<F extends Func<F>>
 	}
 
 	@Override
-	public FuncLLOp<F> create(CodeId id, long blockPtr, long nativePtr) {
+	public FuncLLOp<F> create(ID id, long blockPtr, long nativePtr) {
 		return new FuncLLOp<F>(id, null, blockPtr, nativePtr, getSignature());
 	}
 

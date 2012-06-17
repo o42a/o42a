@@ -25,8 +25,8 @@ import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import org.o42a.analysis.use.*;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
@@ -61,7 +61,7 @@ public abstract class AbstractCOp<U extends Op, T> implements COp<U, T> {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return backend().getId();
 	}
 

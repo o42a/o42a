@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
@@ -32,7 +32,7 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	private final Global<?, ?> global;
 	private final Type<?> enclosing;
 
-	StructData(SubData<?> enclosing, Type<S> instance, CodeId name) {
+	StructData(SubData<?> enclosing, Type<S> instance, ID name) {
 		super(enclosing.getGenerator(), name, instance);
 		this.global = enclosing.getGlobal();
 		this.enclosing = enclosing.getInstance();
@@ -54,7 +54,7 @@ final class StructData<S extends StructOp<S>> extends AbstractTypeData<S> {
 	}
 
 	@Override
-	public S fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public S fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.struct(id, code, getInstance());
 	}
 

@@ -19,12 +19,12 @@
 */
 package org.o42a.backend.llvm.id;
 
-import org.o42a.codegen.CodeId;
+import org.o42a.util.string.ID;
 
 
 abstract class TopLevelLLVMId extends LLVMId {
 
-	TopLevelLLVMId(CodeId globalId, LLVMIdKind kind) {
+	TopLevelLLVMId(ID globalId, LLVMIdKind kind) {
 		super(globalId, kind);
 	}
 

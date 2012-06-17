@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.debug.TaskBlock;
@@ -27,9 +26,12 @@ import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValHolderFactory;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public class CodeDirs {
+
+	private static final ID VALUE_ID = ID.id("value");
 
 	public static CodeDirs codeDirs(
 			CodeBuilder builder,
@@ -74,19 +76,11 @@ public class CodeDirs {
 		return this.code;
 	}
 
-	public final CodeId id() {
-		return this.code.id();
-	}
-
-	public final CodeId id(String string) {
-		return this.code.id(string);
-	}
-
 	public final Block addBlock(String name) {
 		return this.code.addBlock(name);
 	}
 
-	public final Block addBlock(CodeId name) {
+	public final Block addBlock(ID name) {
 		return this.code.addBlock(name);
 	}
 
@@ -99,10 +93,10 @@ public class CodeDirs {
 	}
 
 	public CodeDirs begin(String id, String message) {
-		return begin(id != null ? id(id) : null, message);
+		return begin(id != null ? ID.id(id) : null, message);
 	}
 
-	public CodeDirs begin(CodeId id, String message) {
+	public CodeDirs begin(ID id, String message) {
 		return new DebugCodeDirs(this, this.code.begin(id, message));
 	}
 
@@ -113,7 +107,7 @@ public class CodeDirs {
 	public final ValDirs value(
 			ValueStruct<?, ?> valueStruct,
 			ValHolderFactory holderFactory) {
-		return value(id("value"), valueStruct, holderFactory);
+		return value(VALUE_ID, valueStruct, holderFactory);
 	}
 
 	public final ValDirs value(
@@ -121,13 +115,13 @@ public class CodeDirs {
 			ValueStruct<?, ?> valueStruct,
 			ValHolderFactory holderFactory) {
 		return value(
-				name != null ? id (name) : id("value"),
+				name != null ? ID.id(name) : VALUE_ID,
 				valueStruct,
 				holderFactory);
 	}
 
 	public final ValDirs value(
-			CodeId name,
+			ID name,
 			ValueStruct<?, ?> valueStruct,
 			ValHolderFactory holderFactory) {
 

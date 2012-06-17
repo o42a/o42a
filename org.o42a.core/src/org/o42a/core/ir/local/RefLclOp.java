@@ -22,8 +22,6 @@ package org.o42a.core.ir.local;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -41,6 +39,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public final class RefLclOp extends LclOp {
@@ -164,6 +163,7 @@ public final class RefLclOp extends LclOp {
 		private DataRec object;
 
 		private Type() {
+			super(ID.id("RefLcl"));
 		}
 
 		public final DataRec object() {
@@ -173,11 +173,6 @@ public final class RefLclOp extends LclOp {
 		@Override
 		public Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("RefLcl");
 		}
 
 		@Override

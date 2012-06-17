@@ -27,12 +27,12 @@ import org.o42a.backend.constant.code.op.SystemCOp;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.DCDAlloc;
 import org.o42a.backend.constant.data.TopLevelCDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.data.SystemData;
+import org.o42a.util.string.ID;
 
 
 public final class SystemCDAlloc extends DCDAlloc<SystemOp, SystemData>  {
@@ -69,7 +69,7 @@ public final class SystemCDAlloc extends DCDAlloc<SystemOp, SystemData>  {
 	}
 
 	@Override
-	public SystemOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public SystemOp op(ID id, AllocClass allocClass, CodeWriter writer) {
 		return new SystemCOp(
 				new OpBE<SystemOp>(id, cast(writer)) {
 					@Override
@@ -90,7 +90,7 @@ public final class SystemCDAlloc extends DCDAlloc<SystemOp, SystemData>  {
 	protected SystemData allocateUnderlying(SubData<?> container) {
 
 		final SystemData underlying = container.addSystem(
-				getData().getId().getLocal().getId(),
+				getData().getId().getLocal().toString(),
 				getUnderlyingType());
 
 		underlying.setAttributes(getData());

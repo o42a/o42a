@@ -19,10 +19,9 @@
 */
 package org.o42a.lib.console;
 
+import static org.o42a.lib.console.ConsoleModule.CONSOLE_ID;
 import static org.o42a.lib.console.DebuggableMainFunc.DEBUGGABLE_MAIN;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
@@ -31,7 +30,7 @@ import org.o42a.codegen.code.op.Int32op;
 
 public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 
-	public static final DebugExecMain DEBUG_EXEC_MAIN = new DebugExecMain();
+	public static final Signature DEBUG_EXEC_MAIN = new Signature();
 
 	private DebugExecMainFunc(FuncCaller<DebugExecMainFunc> caller) {
 		super(caller);
@@ -45,15 +44,16 @@ public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 		return invoke(null, code, DEBUG_EXEC_MAIN.result(), main, argc, argv);
 	}
 
-	public static final class DebugExecMain
-			extends Signature<DebugExecMainFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugExecMainFunc> {
 
 		private Return<Int32op> result;
 		private Arg<DebuggableMainFunc> main;
 		private Arg<Int32op> argc;
 		private Arg<AnyOp> argv;
 
-		private DebugExecMain() {
+		private Signature() {
+			super(CONSOLE_ID.sub("DebugExecMainF"));
 		}
 
 		@Override
@@ -75,11 +75,6 @@ public final class DebugExecMainFunc extends Func<DebugExecMainFunc> {
 
 		public final Arg<AnyOp> argv() {
 			return this.argv;
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("console").sub("DebugExecMainF");
 		}
 
 		@Override

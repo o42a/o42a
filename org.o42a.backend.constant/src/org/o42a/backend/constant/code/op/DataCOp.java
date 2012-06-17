@@ -24,13 +24,13 @@ import static org.o42a.backend.constant.data.struct.StructStore.allocStructStore
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.data.struct.CStruct;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
@@ -47,18 +47,18 @@ public final class DataCOp extends DataPtrCOp<DataOp> implements DataOp {
 	}
 
 	@Override
-	public DataOp toData(CodeId id, Code code) {
+	public DataOp toData(ID id, Code code) {
 		return code.phi(id, this);
 	}
 
 	@Override
 	public <S extends StructOp<S>> S to(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Type<S> type) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.getOpNames().castId(id, type.getId(), this);
 
 		return type.op(new CStruct<S>(
 				new OpBE<S>(castId, ccode) {

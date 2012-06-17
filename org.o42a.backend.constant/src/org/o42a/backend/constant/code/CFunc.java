@@ -24,11 +24,11 @@ import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.data.struct.CStruct;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class CFunc<F extends Func<F>>
@@ -88,7 +88,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Int8cOp callInt8(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Int8cOp(new OpBE<Int8op>(id, cast(code)) {
@@ -113,7 +113,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Int16cOp callInt16(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Int16cOp(new OpBE<Int16op>(id, cast(code)) {
@@ -138,7 +138,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Int32cOp callInt32(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Int32cOp(new OpBE<Int32op>(id, cast(code)) {
@@ -163,7 +163,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Int64cOp callInt64(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Int64cOp(new OpBE<Int64op>(id, cast(code)) {
@@ -188,7 +188,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Fp32cOp callFp32(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Fp32cOp(new OpBE<Fp32op>(id, cast(code)) {
@@ -213,7 +213,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final Fp64cOp callFp64(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new Fp64cOp(new OpBE<Fp64op>(id, cast(code)) {
@@ -238,7 +238,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final BoolCOp callBool(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new BoolCOp(new OpBE<BoolOp>(id, cast(code)) {
@@ -263,7 +263,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final AnyCOp callAny(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new AnyCOp(
@@ -291,7 +291,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public final DataCOp callData(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Op... args) {
 		return new DataCOp(
@@ -319,7 +319,7 @@ public final class CFunc<F extends Func<F>>
 
 	@Override
 	public <S extends StructOp<S>> S callPtr(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Type<S> type,
 			final Op... args) {
@@ -349,9 +349,9 @@ public final class CFunc<F extends Func<F>>
 	}
 
 	@Override
-	public AnyCOp toAny(CodeId id, Code code) {
+	public AnyCOp toAny(ID id, Code code) {
 
-		final CodeId resultId = code.getOpNames().castId(id, "any", this);
+		final ID resultId = code.getOpNames().castId(id, ANY_ID, this);
 
 		return new AnyCOp(
 				new OpBE<AnyOp>(resultId, cast(code)) {

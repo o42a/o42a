@@ -19,17 +19,16 @@
 */
 package org.o42a.core.ir.object.op;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 
-	public static final ObjectRef OBJECT_REF = new ObjectRef();
+	public static final Signature OBJECT_REF = new Signature();
 
 	ObjectRefFunc(FuncCaller<ObjectRefFunc> caller) {
 		super(caller);
@@ -43,13 +42,14 @@ public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 				object != null ? object.toData(null, code) : code.nullDataPtr());
 	}
 
-	public static final class ObjectRef
+	public static final class Signature
 			extends ObjectSignature<ObjectRefFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
 
-		private ObjectRef() {
+		private Signature() {
+			super(ID.id("ObjectRefF"));
 		}
 
 		public final Return<DataOp> result() {
@@ -59,11 +59,6 @@ public final class ObjectRefFunc extends ObjectFunc<ObjectRefFunc> {
 		@Override
 		public final Arg<DataOp> object() {
 			return this.object;
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectRefF");
 		}
 
 		@Override

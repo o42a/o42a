@@ -24,10 +24,10 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.ReturnBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class NumCOp<U extends NumOp<U>, T extends Number>
@@ -38,7 +38,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 		super(backend);
 	}
 
-	public NumCOp(CodeId id, CCode<?> code, T constant) {
+	public NumCOp(ID id, CCode<?> code, T constant) {
 		super(new NumConstBE<U, T>(id, code, constant), constant);
 		((NumConstBE<?, ?>) backend()).init(this);
 	}
@@ -48,10 +48,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U neg(CodeId id, Code code) {
+	public final U neg(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().unaryId(id, "neg", this);
+		final ID resultId = code.getOpNames().unaryId(id, NEG_ID, this);
 
 		if (isConstant()) {
 
@@ -75,11 +75,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U add(CodeId id, Code code, U summand) {
+	public final U add(ID id, Code code, U summand) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "add", this, summand);
+		final ID resultId =
+				code.getOpNames().binaryId(id, ADD_ID, this, summand);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> s = (NumCOp<U, T>) summand;
 
@@ -107,11 +107,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U sub(CodeId id, Code code, U subtrahend) {
+	public final U sub(ID id, Code code, U subtrahend) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "sub", this, subtrahend);
+		final ID resultId =
+				code.getOpNames().binaryId(id, SUB_ID, this, subtrahend);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> s = (NumCOp<U, T>) subtrahend;
 
@@ -139,11 +139,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U mul(CodeId id, Code code, U multiplier) {
+	public final U mul(ID id, Code code, U multiplier) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "mul", this, multiplier);
+		final ID resultId =
+				code.getOpNames().binaryId(id, MUL_ID, this, multiplier);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> m = (NumCOp<U, T>) multiplier;
 
@@ -171,11 +171,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U div(CodeId id, Code code, U divisor) {
+	public final U div(ID id, Code code, U divisor) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "div", this, divisor);
+		final ID resultId =
+				code.getOpNames().binaryId(id, DIV_ID, this, divisor);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
@@ -203,12 +203,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final U rem(CodeId id, Code code, U divisor) {
+	public final U rem(ID id, Code code, U divisor) {
 
 		final CCode<?> ccode = cast(code);
-
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "rev", this, divisor);
+		final ID resultId =
+				code.getOpNames().binaryId(id, REM_ID, this, divisor);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> d = (NumCOp<U, T>) divisor;
 
@@ -236,11 +235,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final BoolOp eq(CodeId id, Code code, U other) {
+	public final BoolOp eq(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "eq", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, EQ_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -268,11 +267,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final BoolOp ne(CodeId id, Code code, U other) {
+	public final BoolOp ne(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "ne", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, NE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -300,11 +299,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final BoolOp gt(CodeId id, Code code, U other) {
+	public final BoolOp gt(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "gt", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, GT_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -332,11 +331,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public BoolOp ge(CodeId id, Code code, U other) {
+	public BoolOp ge(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "ge", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, GE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -364,11 +363,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public BoolOp lt(CodeId id, Code code, U other) {
+	public BoolOp lt(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "lt", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, LT_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -396,11 +395,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public BoolOp le(CodeId id, Code code, U other) {
+	public BoolOp le(ID id, Code code, U other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "le", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, LE_ID, this, other);
 		@SuppressWarnings("unchecked")
 		final NumCOp<U, T> o = (NumCOp<U, T>) other;
 
@@ -428,10 +427,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Int8op toInt8(CodeId id, Code code) {
+	public final Int8op toInt8(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "int8", this);
+		final ID resultId = code.getOpNames().castId(id, INT8_ID, this);
 
 		if (isConstant()) {
 			return new Int8cOp(resultId, ccode, getConstant().byteValue());
@@ -452,10 +451,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Int16op toInt16(CodeId id, Code code) {
+	public final Int16op toInt16(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "int16", this);
+		final ID resultId = code.getOpNames().castId(id, INT16_ID, this);
 
 		if (isConstant()) {
 			return new Int16cOp(resultId, ccode, getConstant().shortValue());
@@ -476,10 +475,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Int32op toInt32(CodeId id, Code code) {
+	public final Int32op toInt32(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "int32", this);
+		final ID resultId = code.getOpNames().castId(id, INT32_ID, this);
 
 		if (isConstant()) {
 			return new Int32cOp(resultId, ccode, getConstant().intValue());
@@ -500,10 +499,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Int64op toInt64(CodeId id, Code code) {
+	public final Int64op toInt64(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "int64", this);
+		final ID resultId = code.getOpNames().castId(id, INT64_ID, this);
 
 		if (isConstant()) {
 			return new Int64cOp(resultId, ccode, getConstant().longValue());
@@ -524,10 +523,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Fp32op toFp32(CodeId id, Code code) {
+	public final Fp32op toFp32(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "fp32", this);
+		final ID resultId = code.getOpNames().castId(id, FP32_ID, this);
 
 		if (isConstant()) {
 			return new Fp32cOp(resultId, ccode, getConstant().floatValue());
@@ -548,10 +547,10 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 	}
 
 	@Override
-	public final Fp64op toFp64(CodeId id, Code code) {
+	public final Fp64op toFp64(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().castId(id, "fp64", this);
+		final ID resultId = code.getOpNames().castId(id, FP64_ID, this);
 
 		if (isConstant()) {
 			return new Fp64cOp(resultId, ccode, getConstant().doubleValue());
@@ -601,7 +600,7 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 	protected abstract int cmp(T value1, T value2);
 
-	protected OpBE<U> constant(CodeId id, CCode<?> code, T constant) {
+	protected final OpBE<U> constant(ID id, CCode<?> code, T constant) {
 		return new NumConstBE<U, T>(id, code, constant, this);
 	}
 
@@ -612,11 +611,11 @@ public abstract class NumCOp<U extends NumOp<U>, T extends Number>
 
 		private NumCOp<U, T> op;
 
-		NumConstBE(CodeId id, CCode<?> code, T constant) {
+		NumConstBE(ID id, CCode<?> code, T constant) {
 			super(id, code, constant);
 		}
 
-		NumConstBE(CodeId id, CCode<?> code, T constant, NumCOp<U, T> op) {
+		NumConstBE(ID id, CCode<?> code, T constant, NumCOp<U, T> op) {
 			super(id, code, constant);
 			this.op = op;
 		}

@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
@@ -30,7 +30,7 @@ import org.o42a.codegen.code.op.Int32op;
 
 final class DebugDumpFunc extends Func<DebugDumpFunc> {
 
-	public static final DebugDump DEBUG_DUMP = new DebugDump();
+	public static final Signature DEBUG_DUMP = new Signature();
 
 	private DebugDumpFunc(FuncCaller<DebugDumpFunc> caller) {
 		super(caller);
@@ -40,14 +40,16 @@ final class DebugDumpFunc extends Func<DebugDumpFunc> {
 		invoke(null, code, DEBUG_DUMP.result(), prefix, data, depth);
 	}
 
-	public static final class DebugDump extends Signature<DebugDumpFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugDumpFunc> {
 
 		private Return<Void> result;
 		private Arg<AnyOp> prefix;
 		private Arg<DataOp> data;
 		private Arg<Int32op> depth;
 
-		private DebugDump() {
+		private Signature() {
+			super(DEBUG_ID.sub("DumpF"));
 		}
 
 		public final Return<Void> result() {
@@ -69,11 +71,6 @@ final class DebugDumpFunc extends Func<DebugDumpFunc> {
 		@Override
 		public DebugDumpFunc op(FuncCaller<DebugDumpFunc> caller) {
 			return new DebugDumpFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("DumpF");
 		}
 
 		@Override

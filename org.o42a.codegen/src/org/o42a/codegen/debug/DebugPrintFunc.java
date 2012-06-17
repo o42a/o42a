@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.AnyOp;
@@ -28,7 +28,7 @@ import org.o42a.codegen.code.op.AnyOp;
 
 public final class DebugPrintFunc extends Func<DebugPrintFunc> {
 
-	public static final DebugPrint DEBUG_PRINT = new DebugPrint();
+	public static final Signature DEBUG_PRINT = new Signature();
 
 	private DebugPrintFunc(FuncCaller<DebugPrintFunc> caller) {
 		super(caller);
@@ -38,12 +38,14 @@ public final class DebugPrintFunc extends Func<DebugPrintFunc> {
 		invoke(null, code, DEBUG_PRINT.result(), message);
 	}
 
-	public static final class DebugPrint extends Signature<DebugPrintFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugPrintFunc> {
 
 		private Return<Void> result;
 		private Arg<AnyOp> message;
 
-		private DebugPrint() {
+		private Signature() {
+			super(DEBUG_ID.sub("PrintF"));
 		}
 
 		public final Return<Void> result() {
@@ -57,11 +59,6 @@ public final class DebugPrintFunc extends Func<DebugPrintFunc> {
 		@Override
 		public DebugPrintFunc op(FuncCaller<DebugPrintFunc> caller) {
 			return new DebugPrintFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("PrintF");
 		}
 
 		@Override

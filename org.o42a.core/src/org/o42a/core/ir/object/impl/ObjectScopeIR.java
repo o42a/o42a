@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object.impl;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
@@ -29,11 +28,12 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectScopeIR extends ScopeIR {
 
-	private final CodeId id;
+	private final ID id;
 
 	public ObjectScopeIR(Generator generator, Obj object) {
 		super(generator, object.getScope());
@@ -47,7 +47,7 @@ public final class ObjectScopeIR extends ScopeIR {
 	}
 
 	@Override
-	public CodeId getId() {
+	public ID getId() {
 		return this.id;
 	}
 

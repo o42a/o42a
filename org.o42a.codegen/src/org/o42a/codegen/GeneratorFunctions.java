@@ -23,6 +23,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 final class GeneratorFunctions extends Functions {
@@ -48,7 +49,7 @@ final class GeneratorFunctions extends Functions {
 
 	@Override
 	protected <F extends Func<F>> void addFunction(
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			FuncPtr<F> function) {
 		getGenerator().addFunction(id, function);

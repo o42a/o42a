@@ -20,8 +20,6 @@
 package org.o42a.backend.constant.data.struct;
 
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
@@ -36,6 +34,7 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 	private Type<?>[] dependencies;
 
 	public CType(ConstBackend backend, Type<S> original) {
+		super(original.getId());
 		this.backend = backend;
 		this.original = original;
 	}
@@ -92,11 +91,6 @@ public final class CType<S extends StructOp<S>> extends Struct<S> {
 	@Override
 	public S op(StructWriter<S> writer) {
 		return getOriginal().op(writer);
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return getOriginal().codeId(factory);
 	}
 
 	@Override

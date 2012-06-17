@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.AllocationWriter;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class AllocationCode extends Inset {
@@ -36,7 +36,7 @@ public final class AllocationCode extends Inset {
 	private Disposal disposal = NO_DISPOSAL;
 
 	AllocationCode(Allocator allocator) {
-		super(allocator, allocator.id().detail("alloc"));
+		super(allocator, ID.id().detail("alloc"));
 		this.writer = allocator.writer().init(this);
 	}
 
@@ -61,12 +61,12 @@ public final class AllocationCode extends Inset {
 		}
 	}
 
-	public final AnyRecOp allocatePtr(CodeId id) {
+	public final AnyRecOp allocatePtr(ID id) {
 		assert assertIncomplete();
 		return writer().allocatePtr(opId(id));
 	}
 
-	public final AnyRecOp allocateNull(CodeId id) {
+	public final AnyRecOp allocateNull(ID id) {
 
 		final AnyRecOp result = allocatePtr(id);
 
@@ -75,7 +75,7 @@ public final class AllocationCode extends Inset {
 		return result;
 	}
 
-	public <S extends StructOp<S>> S allocate(CodeId id, Type<S> type) {
+	public final <S extends StructOp<S>> S allocate(ID id, Type<S> type) {
 		assert assertIncomplete();
 
 		final S result = writer().allocateStruct(
@@ -88,7 +88,7 @@ public final class AllocationCode extends Inset {
 	}
 
 	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
-			CodeId id,
+			ID id,
 			Type<S> type) {
 		assert assertIncomplete();
 

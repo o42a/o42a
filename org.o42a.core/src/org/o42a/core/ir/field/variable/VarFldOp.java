@@ -21,6 +21,7 @@ package org.o42a.core.ir.field.variable;
 
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
+import static org.o42a.core.ir.field.variable.AssignerFld.CAST_TARGET_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
@@ -100,7 +101,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
 		final ObjectOp castObject = valueObject.dynamicCast(
-				boundKnown.id("cast_target"),
+				CAST_TARGET_ID,
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
 				targetType,

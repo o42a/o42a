@@ -19,10 +19,9 @@
 */
 package org.o42a.codegen.debug;
 
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
@@ -30,7 +29,7 @@ import org.o42a.codegen.code.op.BoolOp;
 
 final class DebugEnterFunc extends Func<DebugEnterFunc> {
 
-	static final DebugEnter DEBUG_ENTER = new DebugEnter();
+	static final Signature DEBUG_ENTER = new Signature();
 
 	private DebugEnterFunc(FuncCaller<DebugEnterFunc> caller) {
 		super(caller);
@@ -40,12 +39,14 @@ final class DebugEnterFunc extends Func<DebugEnterFunc> {
 		return invoke(null, code, DEBUG_ENTER.result(), stackFrame);
 	}
 
-	static final class DebugEnter extends Signature<DebugEnterFunc> {
+	static final class Signature
+			extends org.o42a.codegen.code.Signature<DebugEnterFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<DebugStackFrameOp> stackFrame;
 
-		private DebugEnter() {
+		private Signature() {
+			super(DEBUG_ID.sub("EnterF"));
 		}
 
 		@Override
@@ -64,11 +65,6 @@ final class DebugEnterFunc extends Func<DebugEnterFunc> {
 		@Override
 		public DebugEnterFunc op(FuncCaller<DebugEnterFunc> caller) {
 			return new DebugEnterFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("EnterF");
 		}
 
 		@Override

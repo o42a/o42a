@@ -33,9 +33,13 @@ import org.o42a.core.ref.Resolution;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 abstract class CompareOperator extends ComparisonOperator {
+
+	private static final ID CMP_PTR_ID = ID.id("cmp_ptr");
+	private static final ID CMP_VALUE_ID = ID.id("cmp_value");
 
 	CompareOperator() {
 		super(ClauseId.COMPARE);
@@ -86,9 +90,9 @@ abstract class CompareOperator extends ComparisonOperator {
 
 		final Code code = dirs.code();
 		final Int64recOp comparisonPtr =
-				comparisonVal.rawValue(code.id("cmp_ptr"), code);
+				comparisonVal.rawValue(CMP_PTR_ID, code);
 		final Int64op comparisonValue =
-				comparisonPtr.load(code.id("cmp_value"), code);
+				comparisonPtr.load(CMP_VALUE_ID, code);
 
 		write(dirs.dirs(), comparisonValue);
 

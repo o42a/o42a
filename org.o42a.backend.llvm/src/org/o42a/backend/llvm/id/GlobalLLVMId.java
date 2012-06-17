@@ -21,7 +21,7 @@ package org.o42a.backend.llvm.id;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
-import org.o42a.codegen.CodeId;
+import org.o42a.util.string.ID;
 
 
 final class GlobalLLVMId extends TopLevelLLVMId {
@@ -30,7 +30,7 @@ final class GlobalLLVMId extends TopLevelLLVMId {
 	private long typePtr;
 
 	GlobalLLVMId(
-			CodeId globalId,
+			ID globalId,
 			ContainerLLDAlloc<?> globalAllocation) {
 		super(globalId, LLVMIdKind.DATA);
 		this.globalAllocation = globalAllocation;

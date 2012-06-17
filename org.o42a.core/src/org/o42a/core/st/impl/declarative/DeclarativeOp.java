@@ -21,7 +21,6 @@ package org.o42a.core.st.impl.declarative;
 
 import java.util.List;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
@@ -29,6 +28,7 @@ import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.st.Definer;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 import org.o42a.core.st.sentence.Declaratives;
+import org.o42a.util.string.ID;
 
 
 final class DeclarativeOp {
@@ -48,7 +48,7 @@ final class DeclarativeOp {
 
 		for (int i = 0; i < size; ++i) {
 			writeSentence(
-					dirs.id((i + 1) + "_sent"),
+					ID.id((i + 1) + "_sent"),
 					dirs,
 					host,
 					sentences.get(i),
@@ -57,7 +57,7 @@ final class DeclarativeOp {
 	}
 
 	private static void writeSentence(
-			CodeId prefix,
+			ID prefix,
 			DefDirs dirs,
 			HostOp host,
 			DeclarativeSentence sentence,

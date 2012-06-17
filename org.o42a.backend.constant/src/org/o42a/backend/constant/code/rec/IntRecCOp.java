@@ -25,12 +25,12 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.COp;
 import org.o42a.backend.constant.code.op.IntCOp;
 import org.o42a.backend.constant.code.op.OpBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.op.RMWKind;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.IntRecOp;
+import org.o42a.codegen.code.op.RMWKind;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public abstract class IntRecCOp<
@@ -50,17 +50,14 @@ public abstract class IntRecCOp<
 
 	@Override
 	public O atomicRMW(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final RMWKind kind,
 			final O operand) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().binaryId(
-				id,
-				kind.name().toLowerCase(),
-				this,
-				operand);
+		final ID resultId =
+				code.getOpNames().binaryId(id, kind.getId(), this, operand);
 		@SuppressWarnings("unchecked")
 		final COp<O, T> cOperand = (IntCOp<O, T>) operand;
 

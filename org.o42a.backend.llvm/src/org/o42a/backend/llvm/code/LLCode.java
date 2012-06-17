@@ -19,6 +19,7 @@
 */
 package org.o42a.backend.llvm.code;
 
+import static org.o42a.codegen.code.op.Op.PHI_ID;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
@@ -26,7 +27,6 @@ import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.backend.CodeWriter;
@@ -36,6 +36,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public abstract class LLCode implements CodeWriter {
@@ -127,7 +128,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.code.getId();
 	}
 
@@ -144,7 +145,7 @@ public abstract class LLCode implements CodeWriter {
 	})
 	@Override
 	public <F extends Func<F>> LLFunc<F> caller(
-			CodeId id,
+			ID id,
 			FuncAllocation<F> allocation) {
 
 		final LLFAlloc<?> alloc =
@@ -276,7 +277,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends Op> O phi(CodeId id, O op) {
+	public <O extends Op> O phi(ID id, O op) {
 
 		final LLOp<O> o = llvm(op);
 		final long nextPtr = nextPtr();
@@ -292,10 +293,10 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	@Override
-	public <O extends Op> O phi(CodeId id, O op1, O op2) {
+	public <O extends Op> O phi(ID id, O op1, O op2) {
 
-		final CodeId resultId =
-				code().getOpNames().binaryId(id, "phi", op1, op2);
+		final ID resultId =
+				code().getOpNames().binaryId(id, PHI_ID, op1, op2);
 		final long nextPtr = nextPtr();
 		final LLOp<O> o1 = llvm(op1);
 		final LLOp<O> o2 = llvm(op2);
@@ -307,7 +308,7 @@ public abstract class LLCode implements CodeWriter {
 				instr(phi2(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						o1.getBlockPtr(),
 						o1.getNativePtr(),
@@ -331,7 +332,7 @@ public abstract class LLCode implements CodeWriter {
 	}
 
 	public <O extends Op> O select(
-			CodeId id,
+			ID id,
 			BoolLLOp condition,
 			O trueValue,
 			O falseValue) {
@@ -339,7 +340,7 @@ public abstract class LLCode implements CodeWriter {
 		final LLOp<O> trueOp = llvm(trueValue);
 		final LLOp<O> falseOp = llvm(falseValue);
 		final long nextPtr = nextPtr();
-		final CodeId selectId =
+		final ID selectId =
 				id != null ? id : condition.getId().sub("select");
 		final NativeBuffer ids = getModule().ids();
 
@@ -349,7 +350,7 @@ public abstract class LLCode implements CodeWriter {
 				instr(select(
 						nextPtr,
 						nextInstr(),
-						ids.writeCodeId(selectId),
+						ids.write(selectId),
 						ids.length(),
 						condition.getNativePtr(),
 						trueOp.getNativePtr(),
@@ -388,13 +389,13 @@ public abstract class LLCode implements CodeWriter {
 		this.lastInset = inset;
 	}
 
-	static long createBlock(LLFunction<?> function, CodeId id) {
+	static long createBlock(LLFunction<?> function, ID id) {
 
 		final NativeBuffer ids = function.getModule().ids();
 
 		return createBlock(
 				function.getFunctionPtr(),
-				ids.writeCodeId(id),
+				ids.write(id),
 				ids.length());
 	}
 

@@ -20,10 +20,13 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.code.*;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
 final class BracesControl extends Control {
+
+	private static final ID BRACES_ID = ID.id("braces");
 
 	private final MainControl main;
 	private final Control parent;
@@ -42,7 +45,7 @@ final class BracesControl extends Control {
 		this.parent = parent;
 		this.enclosing = parent.braces();
 		this.enclosingBlock = enclosingBlock;
-		this.allocator = enclosingBlock.allocator(enclosingBlock.id("braces"));
+		this.allocator = enclosingBlock.allocator(BRACES_ID);
 		this.name = name;
 		this.done = next;
 	}

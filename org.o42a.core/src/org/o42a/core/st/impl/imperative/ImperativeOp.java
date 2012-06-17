@@ -21,8 +21,6 @@ package org.o42a.core.st.impl.imperative;
 
 import java.util.List;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.local.Control;
 import org.o42a.core.ir.local.InlineCmd;
@@ -30,6 +28,7 @@ import org.o42a.core.st.Command;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 import org.o42a.core.st.sentence.Imperatives;
+import org.o42a.util.string.ID;
 
 
 final class ImperativeOp {
@@ -121,8 +120,7 @@ final class ImperativeOp {
 
 		// code blocks for each alternative
 		final Block[] blocks = new Block[len];
-		final Generator generator = control.getGenerator();
-		final CodeId sentId = generator.id(index + "_sent");
+		final ID sentId = ID.id(index + "_sent");
 
 		for (int i = 0; i < len; ++i) {
 			blocks[i] = control.addBlock(sentId.sub(i + "_alt"));

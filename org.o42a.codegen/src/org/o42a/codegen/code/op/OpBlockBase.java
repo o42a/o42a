@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class OpBlockBase extends Code {
@@ -33,18 +33,18 @@ public abstract class OpBlockBase extends Code {
 		return ((Head) codePos).unwrap();
 	}
 
-	public OpBlockBase(Code enclosing, CodeId name) {
+	public OpBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
 	}
 
-	public OpBlockBase(Generator generator, CodeId id) {
+	public OpBlockBase(Generator generator, ID id) {
 		super(generator, id);
 	}
 
 	protected abstract CondBlock choose(
 			BoolOp condition,
-			CodeId trueName,
-			CodeId falseName);
+			ID trueName,
+			ID falseName);
 
 	protected boolean disposeUpTo(CodePos pos) {
 		return disposeFromTo(getAllocator(), pos);

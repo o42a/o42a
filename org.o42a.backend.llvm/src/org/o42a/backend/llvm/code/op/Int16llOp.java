@@ -21,28 +21,28 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int16op;
+import org.o42a.util.string.ID;
 
 
 public final class Int16llOp extends IntLLOp<Int16op, Int16llOp>
 		implements Int16op {
 
-	public Int16llOp(CodeId id, long blockPtr, long nativePtr) {
+	public Int16llOp(ID id, long blockPtr, long nativePtr) {
 		super(id, 16, blockPtr, nativePtr);
 	}
 
 	@Override
-	public Int16op comp(CodeId id, Code code) {
+	public Int16op comp(ID id, Code code) {
 		return xor(
-				code.getOpNames().unaryId(id, "comp", this),
+				code.getOpNames().unaryId(id, COMP_ID, this),
 				code,
 				code.int16((short) -1));
 	}
 
 	@Override
-	public Int16llOp toInt16(CodeId id, Code code) {
+	public Int16llOp toInt16(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -54,7 +54,7 @@ public final class Int16llOp extends IntLLOp<Int16op, Int16llOp>
 	}
 
 	@Override
-	public Int16llOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Int16llOp create(ID id, long blockPtr, long nativePtr) {
 		return new Int16llOp(id, blockPtr, nativePtr);
 	}
 

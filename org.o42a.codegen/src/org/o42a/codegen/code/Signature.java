@@ -19,24 +19,27 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.backend.SignatureAllocation;
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.ID;
 
 
 public abstract class Signature<F extends Func<F>> {
 
 	private static final Arg<?>[] NO_ARGS = new Arg<?>[0];
 
-	private CodeId codeId;
+	private final ID id;
 	private Generator generator;
 	private SignatureAllocation<F> allocation;
 	private Return<?> ret;
 	private Arg<?>[] args = NO_ARGS;
+
+	public Signature(ID id) {
+		this.id = id;
+	}
 
 	public boolean isDebuggable() {
 		return true;
@@ -47,22 +50,8 @@ public abstract class Signature<F extends Func<F>> {
 		return this.ret;
 	}
 
-	public final CodeId getId() {
-		if (this.codeId != null) {
-			return this.codeId;
-		}
-		return codeId(CodeIdFactory.DEFAULT_CODE_ID_FACTORY);
-	}
-
-	public final CodeId codeId(CodeIdFactory factory) {
-		if (this.codeId != null && this.codeId.compatibleWith(factory)) {
-			return this.codeId;
-		}
-		return this.codeId = buildCodeId(factory);
-	}
-
-	public final CodeId codeId(Generator generator) {
-		return codeId(generator.getCodeIdFactory());
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final Arg<?>[] args(Generator generator) {
@@ -103,8 +92,6 @@ public abstract class Signature<F extends Func<F>> {
 
 		return out.toString();
 	}
-
-	protected abstract CodeId buildCodeId(CodeIdFactory factory);
 
 	protected abstract void build(SignatureBuilder builder);
 

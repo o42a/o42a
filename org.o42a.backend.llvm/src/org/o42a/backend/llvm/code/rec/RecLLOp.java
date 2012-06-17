@@ -26,12 +26,12 @@ import static org.o42a.codegen.code.op.Atomicity.NOT_ATOMIC;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.op.AllocPtrLLOp;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Atomicity;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.code.op.RecOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
@@ -39,7 +39,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 		implements RecOp<R, O> {
 
 	public RecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -47,16 +47,16 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 	}
 
 	@Override
-	public final O load(CodeId id, Code code) {
+	public final O load(ID id, Code code) {
 		return load(id, code, NOT_ATOMIC);
 	}
 
-	public final O load(CodeId id, Code code, Atomicity atomicity) {
+	public final O load(ID id, Code code, Atomicity atomicity) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().derefId(id, this);
+		final ID resultId = code.getOpNames().derefId(id, this);
 
 		return createLoaded(
 				resultId,
@@ -64,7 +64,7 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 				llvm.instr(load(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						atomicity.code())));
@@ -87,6 +87,6 @@ public abstract class RecLLOp<R extends RecOp<R, O>, O extends Op>
 				atomicity.code()));
 	}
 
-	protected abstract O createLoaded(CodeId id, long blockPtr, long nativePtr);
+	protected abstract O createLoaded(ID id, long blockPtr, long nativePtr);
 
 }

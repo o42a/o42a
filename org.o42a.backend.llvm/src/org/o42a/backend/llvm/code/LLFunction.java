@@ -25,7 +25,6 @@ import org.o42a.backend.llvm.code.op.*;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
@@ -73,7 +72,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Int8op int8arg(Code code, Arg<Int8op> arg) {
 		return new Int8llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -81,7 +80,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Int16op int16arg(Code code, Arg<Int16op> arg) {
 		return new Int16llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -89,7 +88,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Int32op int32arg(Code code, Arg<Int32op> arg) {
 		return new Int32llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -97,7 +96,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Int64op int64arg(Code code, Arg<Int64op> arg) {
 		return new Int64llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -105,7 +104,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Fp32op fp32arg(Code code, Arg<Fp32op> arg) {
 		return new Fp32llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -113,7 +112,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public Fp64op fp64arg(Code code, Arg<Fp64op> arg) {
 		return new Fp64llOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -121,7 +120,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public BoolOp boolArg(Code code, Arg<BoolOp> arg) {
 		return new BoolLLOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -129,7 +128,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public RelOp relPtrArg(Code code, Arg<RelOp> arg) {
 		return new RelLLOp(
-				argId(arg),
+				arg.getId(),
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
 	}
@@ -137,7 +136,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public AnyOp ptrArg(Code code, Arg<AnyOp> arg) {
 		return new AnyLLOp(
-				argId(arg),
+				arg.getId(),
 				null,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
@@ -146,7 +145,7 @@ public final class LLFunction<F extends Func<F>>
 	@Override
 	public DataOp dataArg(Code code, Arg<DataOp> arg) {
 		return new DataLLOp(
-				argId(arg),
+				arg.getId(),
 				null,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex()));
@@ -158,7 +157,7 @@ public final class LLFunction<F extends Func<F>>
 			Arg<S> arg,
 			Type<S> type) {
 		return type.op(new LLStruct<S>(
-				argId(arg),
+				arg.getId(),
 				null,
 				type,
 				llvm(code).nextPtr(),
@@ -171,7 +170,7 @@ public final class LLFunction<F extends Func<F>>
 			Arg<FF> arg,
 			Signature<FF> signature) {
 		return signature.op(new LLFunc<FF>(
-				argId(arg),
+				arg.getId(),
 				signature,
 				llvm(code).nextPtr(),
 				arg(getFunctionPtr(), arg.getIndex())));
@@ -197,7 +196,7 @@ public final class LLFunction<F extends Func<F>>
 
 		this.functionPtr = createFunction(
 				getModule().getNativePtr(),
-				ids.writeCodeId(getId()),
+				ids.write(getId()),
 				ids.length(),
 				getModule().nativePtr(this.function.getSignature()),
 				this.function.isExported());
@@ -216,10 +215,6 @@ public final class LLFunction<F extends Func<F>>
 			int idLen,
 			long funcTypePtr,
 			boolean exported);
-
-	private final CodeId argId(Arg<?> arg) {
-		return arg.getId();
-	}
 
 	private static native long arg(long functionPtr, int index);
 

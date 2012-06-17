@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.def;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.CodeBuilder;
@@ -28,6 +27,7 @@ import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public class DefDirs {
@@ -109,19 +109,11 @@ public class DefDirs {
 		code.go(this.shared.returnDir);
 	}
 
-	public final CodeId id() {
-		return code().id();
-	}
-
-	public final CodeId id(String name) {
-		return code().id(name);
-	}
-
 	public final Block addBlock(String name) {
 		return valDirs().addBlock(name);
 	}
 
-	public final Block addBlock(CodeId name) {
+	public final Block addBlock(ID name) {
 		return valDirs().addBlock(name);
 	}
 
@@ -129,7 +121,7 @@ public class DefDirs {
 		return new DefDirs(this, valDirs().sub(code));
 	}
 
-	public final DefDirs begin(CodeId id, String message) {
+	public final DefDirs begin(ID id, String message) {
 		return new DefDirs(this, valDirs().begin(id, message));
 	}
 

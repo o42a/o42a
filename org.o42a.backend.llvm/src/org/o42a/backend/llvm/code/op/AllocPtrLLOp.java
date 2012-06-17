@@ -19,11 +19,11 @@
 */
 package org.o42a.backend.llvm.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public abstract class AllocPtrLLOp<P extends AllocPtrOp<P>>
@@ -31,7 +31,7 @@ public abstract class AllocPtrLLOp<P extends AllocPtrOp<P>>
 		implements AllocPtrOp<P> {
 
 	public AllocPtrLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {

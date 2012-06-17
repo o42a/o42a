@@ -22,12 +22,12 @@ package org.o42a.backend.constant.data.struct;
 import org.o42a.backend.constant.data.CDAlloc;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.UnderAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.string.ID;
 
 
 public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
@@ -40,7 +40,7 @@ public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
 	public SystemTypeCDAlloc(ConstBackend backend, SystemType systemType) {
 		super(
 				backend,
-				systemType.pointer(backend.getGenerator()),
+				systemType.getPointer(),
 				SYSTEM_UNDER_ALLOC);
 		this.underlyingType = new CSystemType(backend, systemType);
 	}
@@ -50,7 +50,7 @@ public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
 	}
 
 	@Override
-	public SystemOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public SystemOp op(ID id, AllocClass allocClass, CodeWriter writer) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -64,8 +64,7 @@ public class SystemTypeCDAlloc extends CDAlloc<SystemOp> {
 
 			final SystemTypeCDAlloc typeAlloc = (SystemTypeCDAlloc) alloc;
 			final Ptr<SystemOp> pointer =
-					typeAlloc.getUnderlyingType().pointer(
-							typeAlloc.getBackend().getUnderlyingGenerator());
+					typeAlloc.getUnderlyingType().getPointer();
 
 			return pointer;
 		}

@@ -21,26 +21,27 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.gc.GCBlockOp.GC_BLOCK_TYPE;
 import static org.o42a.core.ir.gc.GCDescOp.GC_DESC_TYPE;
+import static org.o42a.core.ir.object.ObjectIRStruct.OBJECT_ID;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.gc.GCBlockOp;
 import org.o42a.core.ir.gc.GCBlockOp.Type;
+import org.o42a.util.string.ID;
 
 
 public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 
 	private static final ObjectGCBlock OBJECT_GC_BLOCK = new ObjectGCBlock();
+	private static final ID GC_BLOCK_ID = ID.id("gc_block");
 
 	private final ObjectIRStruct struct;
 
 	public ObjectIRBlock(ObjectIR objectIR) {
+		super(objectIR.getId());
 		this.struct = new ObjectIRStruct(objectIR);
 	}
 
@@ -54,20 +55,9 @@ public class ObjectIRBlock extends Struct<ObjectIRBlock.Op> {
 	}
 
 	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-
-		final Scope scope = this.struct.getObject().getScope();
-
-		return scope.ir(this.struct.getObjectIR().getGenerator()).getId();
-	}
-
-	@Override
 	protected void allocate(SubData<Op> data) {
-		data.addInstance(
-				data.getGenerator().id("gc_block"),
-				GC_BLOCK_TYPE,
-				OBJECT_GC_BLOCK);
-		data.addStruct(data.getGenerator().id("object"), this.struct);
+		data.addInstance(GC_BLOCK_ID, GC_BLOCK_TYPE, OBJECT_GC_BLOCK);
+		data.addStruct(OBJECT_ID, this.struct);
 	}
 
 	@Override

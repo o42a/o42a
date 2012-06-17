@@ -22,20 +22,18 @@ package org.o42a.core.ir.object.op;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 
-	public static final ObjectValueStart OBJECT_VALUE_START =
-			new ObjectValueStart();
+	public static final Signature OBJECT_VALUE_START = new Signature();
 
 	private ObjectValueStartFunc(FuncCaller<ObjectValueStartFunc> caller) {
 		super(caller);
@@ -50,14 +48,15 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 				data);
 	}
 
-	public static final class ObjectValueStart
-			extends Signature<ObjectValueStartFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ObjectValueStartFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<ValType.Op> value;
 		private Arg<ObjectIRData.Op> data;
 
-		private ObjectValueStart() {
+		private Signature() {
+			super(ID.id("ObjectDataCondF"));
 		}
 
 		public final Return<BoolOp> result() {
@@ -76,11 +75,6 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 		public final ObjectValueStartFunc op(
 				FuncCaller<ObjectValueStartFunc> caller) {
 			return new ObjectValueStartFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectDataCondF");
 		}
 
 		@Override

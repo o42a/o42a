@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class SystemData extends Data<SystemOp> {
@@ -33,7 +33,7 @@ public final class SystemData extends Data<SystemOp> {
 	private final SystemType systemType;
 	private int flags;
 
-	SystemData(SubData<?> enclosing, CodeId id, SystemType systemType) {
+	SystemData(SubData<?> enclosing, ID id, SystemType systemType) {
 		super(enclosing.getGenerator(), id);
 		this.enclosing = enclosing;
 		this.systemType = systemType;
@@ -83,7 +83,7 @@ public final class SystemData extends Data<SystemOp> {
 	}
 
 	@Override
-	public SystemOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public SystemOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.system(id, code, this);
 	}
 

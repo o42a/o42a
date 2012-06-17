@@ -21,19 +21,18 @@ package org.o42a.common.adapter;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 
-	public static final ParseWithRadix PARSE_WITH_RADIX = new ParseWithRadix();
+	public static final Signature PARSE_WITH_RADIX = new Signature();
 
 	private ParseWithRadixFunc(FuncCaller<ParseWithRadixFunc> caller) {
 		super(caller);
@@ -60,15 +59,16 @@ public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 				code.int32(radix));
 	}
 
-	public static final class ParseWithRadix
-			extends Signature<ParseWithRadixFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ParseWithRadixFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> output;
 		private Arg<ValType.Op> input;
 		private Arg<Int32op> radix;
 
-		private ParseWithRadix() {
+		private Signature() {
+			super(ID.id("ParseWithRadixF"));
 		}
 
 		public final Return<Void> result() {
@@ -85,11 +85,6 @@ public final class ParseWithRadixFunc extends Func<ParseWithRadixFunc> {
 
 		public final Arg<Int32op> radix() {
 			return this.radix;
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ParseWithRadixF");
 		}
 
 		@Override

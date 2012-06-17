@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.NumOp.ADD_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Fp64op;
 import org.o42a.common.object.AnnotatedSources;
@@ -41,7 +43,7 @@ public final class AddFloats extends BinaryFloat {
 
 	@Override
 	protected Fp64op write(Code code, Fp64op left, Fp64op right) {
-		return left.add(code.id("add"), code, right);
+		return left.add(ADD_ID, code, right);
 	}
 
 }

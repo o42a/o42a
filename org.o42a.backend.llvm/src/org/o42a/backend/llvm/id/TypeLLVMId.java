@@ -29,10 +29,7 @@ final class TypeLLVMId extends TopLevelLLVMId {
 	private long nativePtr;
 
 	TypeLLVMId(TypeLLAlloc<?> typeAllocation) {
-		super(
-				typeAllocation.getType().codeId(
-						typeAllocation.getModule().getGenerator()),
-				LLVMIdKind.TYPE);
+		super(typeAllocation.getType().getId(), LLVMIdKind.TYPE);
 		this.typeAllocation = typeAllocation;
 	}
 

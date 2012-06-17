@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.core.ir.object.ObjOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class FieldFldOp extends FldOp {
@@ -30,7 +30,7 @@ public abstract class FieldFldOp extends FldOp {
 	}
 
 	@Override
-	public CodeId getId() {
+	public ID getId() {
 		if (!isOmitted()) {
 			return super.getId();
 		}

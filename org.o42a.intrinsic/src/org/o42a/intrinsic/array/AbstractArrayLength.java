@@ -41,9 +41,12 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 abstract class AbstractArrayLength extends AnnotatedBuiltin {
+
+	private static final ID ARRAY_LEN_ID = ID.id("array_len");
 
 	private Ref array;
 
@@ -132,7 +135,7 @@ abstract class AbstractArrayLength extends AnnotatedBuiltin {
 			arrayVal = array().op(host).writeValue(arrayDirs);
 		}
 
-		final Int32op length = arrayVal.loadLength(code.id("array_len"), code);
+		final Int32op length = arrayVal.loadLength(ARRAY_LEN_ID, code);
 		final ValOp result =
 				dirs.value().store(code, length.toInt64(null, code));
 

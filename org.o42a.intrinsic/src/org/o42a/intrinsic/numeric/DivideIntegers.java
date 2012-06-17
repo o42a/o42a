@@ -19,6 +19,8 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.NumOp.DIV_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int64op;
 import org.o42a.common.object.AnnotatedSources;
@@ -41,7 +43,7 @@ public final class DivideIntegers extends BinaryInteger {
 
 	@Override
 	protected Int64op write(Code code, Int64op left, Int64op right) {
-		return left.div(code.id("div"), code, right);
+		return left.div(DIV_ID, code, right);
 	}
 
 }

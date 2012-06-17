@@ -20,15 +20,15 @@
 package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public abstract class ConstBE<U extends Op, T> extends OpBE<U> {
 
 	private final T constant;
 
-	public ConstBE(CodeId id, CCode<?> code, T constant) {
+	public ConstBE(ID id, CCode<?> code, T constant) {
 		super(id, code);
 		this.constant = constant;
 	}

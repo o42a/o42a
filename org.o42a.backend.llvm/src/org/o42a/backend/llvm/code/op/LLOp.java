@@ -19,8 +19,8 @@
 */
 package org.o42a.backend.llvm.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public interface LLOp<O extends Op> extends Op {
@@ -29,6 +29,6 @@ public interface LLOp<O extends Op> extends Op {
 
 	long getNativePtr();
 
-	O create(CodeId id, long blockPtr, long nativePtr);
+	O create(ID id, long blockPtr, long nativePtr);
 
 }

@@ -28,11 +28,11 @@ import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class ContainerCDAlloc<S extends StructOp<S>>
@@ -126,7 +126,7 @@ public abstract class ContainerCDAlloc<S extends StructOp<S>>
 	}
 
 	@Override
-	public S op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public S op(ID id, AllocClass allocClass, CodeWriter writer) {
 
 		final CCode<?> ccode = cast(writer);
 		final Type<S> type;

@@ -22,7 +22,6 @@ package org.o42a.core.ir;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
@@ -36,58 +35,61 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.Name;
 
 
-public class IRUtil {
+public final class IRNames {
 
-	public static CodeId encodeMemberId(
-			Generator generator,
-			MemberId memberId) {
+	public static final ID CONST_ID = ID.id("CONST");
+	public static final ID DATA_ID = ID.id("DATA");
+	public static final ID ERROR_ID = ID.id("ERROR");
+
+	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
+	private static final ID LOCAL_PREFIX_ID = ID.id("L");
+
+	public static ID encodeMemberId(Generator generator, MemberId memberId) {
 
 		final MemberName name = memberId.getMemberName();
 
 		if (name != null) {
-			return encodeMemberName(generator, name);
+			return encodeMemberName(name);
 		}
 
 		return encodeAdapterId(generator, memberId.getAdapterId());
 	}
 
-	public static CodeId encodeMemberName(
-			Generator generator,
-			MemberName name) {
+	public static ID encodeMemberName(MemberName memberName) {
 
-		final String underscored = name.getName().toUnderscoredString();
+		final Name name = memberName.getName();
 
-		switch (name.getKind()) {
+		switch (memberName.getKind()) {
 		case CLAUSE:
-			return generator.id('C' + underscored);
+			return CLAUSE_PREFIX_ID.suffix(name);
 		case LOCAL:
-			return generator.id('L' + underscored);
+			return LOCAL_PREFIX_ID.suffix(name);
 		case FIELD :
-			return generator.id(underscored);
+			return name.toID();
 		}
 
 		throw new IllegalArgumentException(
-				"Unsupported member kind: " + name.getKind());
+				"Unsupported member kind: " + memberName.getKind());
 	}
 
-	public static CodeId encodeAdapterId(
-			Generator generator,
-			AdapterId adapterId) {
+	public static ID encodeAdapterId(Generator generator, AdapterId adapterId) {
 
 		final ScopeIR adapterTypeIR =
 				adapterId.getAdapterTypeScope().ir(generator);
 
-		return generator.id().type(adapterTypeIR.getId());
+		return ID.id().type(adapterTypeIR.getId());
 	}
 
-	public static CodeId encodeMemberId(ScopeIR enclosingIR, Member member) {
+	public static ID encodeMemberId(ScopeIR enclosingIR, Member member) {
 
 		final Generator generator = enclosingIR.getGenerator();
 		final MemberId memberId = member.getId();
 
-		CodeId localId = addMemberId(generator, null, memberId);
+		ID localId = addMemberId(generator, null, memberId);
 
 		for (Scope reproducedFrom : memberId.getReproducedFrom()) {
 			localId = addDeclaredIn(generator, localId, reproducedFrom);
@@ -97,10 +99,10 @@ public class IRUtil {
 		final Scope rootScope =
 				enclosingScope.getContext().getRoot().getScope();
 
-		CodeId id;
+		ID id;
 
 		if (enclosingScope == rootScope) {
-			id = generator.topId().setLocal(localId);
+			id = ID.topId().setLocal(localId);
 		} else {
 			id = enclosingIR.getId().setLocal(localId);
 		}
@@ -112,18 +114,18 @@ public class IRUtil {
 		return id;
 	}
 
-	private static CodeId addMemberId(
+	private static ID addMemberId(
 			Generator generator,
-			CodeId prefix,
+			ID prefix,
 			MemberId memberId) {
 
 		final MemberName name = memberId.toMemberName();
 
 		if (name != null) {
 			if (prefix == null) {
-				return encodeMemberName(generator, name);
+				return encodeMemberName(name);
 			}
-			return prefix.sub(encodeMemberName(generator, name));
+			return prefix.sub(encodeMemberName(name));
 		}
 
 		final AdapterId adapterId = memberId.toAdapterId();
@@ -139,7 +141,7 @@ public class IRUtil {
 
 		if (ids != null) {
 
-			CodeId result = prefix;
+			ID result = prefix;
 
 			for (MemberId id : ids) {
 				result = addMemberId(generator, result, id);
@@ -152,9 +154,9 @@ public class IRUtil {
 				"Can not generate IR identifier for " + memberId);
 	}
 
-	private static CodeId addDeclaredIn(
+	private static ID addDeclaredIn(
 			Generator generator,
-			CodeId prefix,
+			ID prefix,
 			Scope scope) {
 
 		final Clause clause = scope.getContainer().toClause();
@@ -165,10 +167,7 @@ public class IRUtil {
 
 		final Scope enclosingObjectScope =
 				clause.getEnclosingObject().getScope();
-		final CodeId id = addDeclaredIn(
-				generator,
-				prefix,
-				enclosingObjectScope);
+		final ID id = addDeclaredIn(generator, prefix, enclosingObjectScope);
 		final DeclaredInWriter writer = new DeclaredInWriter(generator, id);
 
 		clause.pathInObject().bind(scope, enclosingObjectScope).walk(
@@ -178,15 +177,15 @@ public class IRUtil {
 		return writer.id;
 	}
 
-	private IRUtil() {
+	private IRNames() {
 	}
 
 	private static final class DeclaredInWriter implements PathWalker {
 
 		private final Generator generator;
-		private CodeId id;
+		private ID id;
 
-		DeclaredInWriter(Generator generator, CodeId id) {
+		DeclaredInWriter(Generator generator, ID id) {
 			this.generator = generator;
 			this.id = id;
 		}

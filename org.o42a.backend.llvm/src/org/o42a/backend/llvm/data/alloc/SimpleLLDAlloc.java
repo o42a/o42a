@@ -22,10 +22,10 @@ package org.o42a.backend.llvm.data.alloc;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
@@ -51,7 +51,7 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 	}
 
 	@Override
-	public P op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public P op(ID id, AllocClass allocClass, CodeWriter writer) {
 
 		final LLCode code = (LLCode) writer;
 
@@ -63,7 +63,7 @@ public abstract class SimpleLLDAlloc<P extends PtrOp<P>> extends LLDAlloc<P> {
 	}
 
 	protected abstract P op(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr);

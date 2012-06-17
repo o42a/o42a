@@ -20,11 +20,11 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.LLStruct;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class StructRecLLOp<S extends StructOp<S>>
@@ -34,7 +34,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 	private final Type<S> type;
 
 	public StructRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			Type<S> type,
 			long blockPtr,
@@ -44,7 +44,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public StructRecLLOp<S> create(CodeId id, long blockPtr, long nativePtr) {
+	public StructRecLLOp<S> create(ID id, long blockPtr, long nativePtr) {
 		return new StructRecLLOp<S>(
 				id,
 				null,
@@ -54,7 +54,7 @@ public final class StructRecLLOp<S extends StructOp<S>>
 	}
 
 	@Override
-	protected S createLoaded(CodeId id, long blockPtr, long nativePtr) {
+	protected S createLoaded(ID id, long blockPtr, long nativePtr) {
 		return this.type.op(new LLStruct<S>(
 				id,
 				null,

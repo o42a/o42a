@@ -22,12 +22,12 @@ package org.o42a.backend.llvm.data.rec;
 import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
 import org.o42a.backend.llvm.data.alloc.SimpleLLDAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public final class StructRecLLDAlloc<S extends StructOp<S>>
@@ -49,7 +49,7 @@ public final class StructRecLLDAlloc<S extends StructOp<S>>
 
 	@Override
 	protected StructRecOp<S> op(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {

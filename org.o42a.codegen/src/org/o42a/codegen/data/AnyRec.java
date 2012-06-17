@@ -19,18 +19,18 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.AnyRecOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 
-	AnyRec(SubData<?> enclosing, CodeId id) {
+	AnyRec(SubData<?> enclosing, ID id) {
 		super(enclosing, id);
 	}
 
@@ -63,7 +63,7 @@ public final class AnyRec extends PtrRec<AnyRecOp, Ptr<AnyOp>> {
 	}
 
 	@Override
-	public AnyRecOp fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public AnyRecOp fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.ptr(id, code, this);
 	}
 

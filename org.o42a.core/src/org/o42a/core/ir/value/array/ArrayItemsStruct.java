@@ -20,8 +20,6 @@
 package org.o42a.core.ir.value.array;
 
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.DataRecOp;
@@ -42,6 +40,7 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 	private final DataRec[] items;
 
 	ArrayItemsStruct(ArrayIR arrayIR) {
+		super(arrayIR.getId());
 		this.arrayIR = arrayIR;
 		this.items = new DataRec[arrayIR.getArray().getItems().length];
 	}
@@ -58,11 +57,6 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 	@Override
 	public Op op(StructWriter<Op> writer) {
 		return new Op(writer);
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return this.arrayIR.getId();
 	}
 
 	@Override

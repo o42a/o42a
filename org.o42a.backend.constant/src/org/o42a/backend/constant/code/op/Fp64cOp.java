@@ -21,8 +21,8 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp64op;
+import org.o42a.util.string.ID;
 
 
 public final class Fp64cOp extends FpCOp<Fp64op, Double> implements Fp64op {
@@ -31,7 +31,7 @@ public final class Fp64cOp extends FpCOp<Fp64op, Double> implements Fp64op {
 		super(backend);
 	}
 
-	public Fp64cOp(CodeId id, CCode<?> code, Double constant) {
+	public Fp64cOp(ID id, CCode<?> code, Double constant) {
 		super(id, code, constant);
 	}
 

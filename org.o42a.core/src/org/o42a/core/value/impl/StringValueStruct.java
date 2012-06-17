@@ -19,11 +19,12 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
+import static org.o42a.core.ir.IRNames.DATA_ID;
 import static org.o42a.util.string.StringCodec.bytesPerChar;
 import static org.o42a.util.string.StringCodec.escapeControlChars;
 import static org.o42a.util.string.StringCodec.stringToBinary;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.value.struct.ExternalValueStructIR;
@@ -32,11 +33,15 @@ import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.value.SingleValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.DataAlignment;
+import org.o42a.util.string.ID;
 
 
 public class StringValueStruct extends SingleValueStruct<String> {
 
 	public static final StringValueStruct INSTANCE = new StringValueStruct();
+
+	private static final ID STRING_CONST_ID = CONST_ID.sub("STRING");
+	private static final ID STRING_DATA_ID = DATA_ID.sub("STRING");
 
 	private StringValueStruct() {
 		super(ValueType.STRING, String.class);
@@ -76,17 +81,13 @@ public class StringValueStruct extends SingleValueStruct<String> {
 		}
 
 		@Override
-		protected CodeId constId(String value) {
-			return getGenerator().id("CONST")
-					.sub("STRING")
-					.anonymous(++this.constSeq);
+		protected ID constId(String value) {
+			return STRING_CONST_ID.anonymous(++this.constSeq);
 		}
 
 		@Override
-		protected CodeId valueId(String value) {
-			return getGenerator().id("DATA")
-					.sub("STRING")
-					.anonymous(this.stringSeq++);
+		protected ID valueId(String value) {
+			return STRING_DATA_ID.anonymous(this.stringSeq++);
 		}
 
 		@Override

@@ -20,10 +20,10 @@
 package org.o42a.backend.llvm.code.rec;
 
 import org.o42a.backend.llvm.code.op.DataLLOp;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class DataRecLLOp
@@ -31,7 +31,7 @@ public final class DataRecLLOp
 		implements DataRecOp {
 
 	public DataRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -39,13 +39,13 @@ public final class DataRecLLOp
 	}
 
 	@Override
-	public DataRecLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public DataRecLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new DataRecLLOp(id, null, blockPtr, nativePtr);
 	}
 
 	@Override
 	protected DataOp createLoaded(
-			CodeId id,
+			ID id,
 			long blockPtr,
 			long nativePtr) {
 		return new DataLLOp(id, null, blockPtr, nativePtr);

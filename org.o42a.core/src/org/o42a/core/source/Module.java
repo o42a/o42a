@@ -23,7 +23,6 @@ import static org.o42a.core.Distributor.declarativeDistributor;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -40,6 +39,7 @@ import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
@@ -159,16 +159,15 @@ public class Module extends Obj {
 
 	private static final class ModuleIR extends ScopeIR {
 
-		private final CodeId id;
+		private final ID id;
 
 		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
-			this.id = generator.id(
-					scope.module().getModuleName().toUnderscoredString());
+			this.id = scope.module().getModuleName().toID();
 		}
 
 		@Override
-		public CodeId getId() {
+		public ID getId() {
 			return this.id;
 		}
 

@@ -19,6 +19,7 @@
 */
 package org.o42a.intrinsic.numeric;
 
+import static org.o42a.codegen.code.op.Op.EQ_ID;
 import static org.o42a.core.ir.value.ValHolderFactory.NO_VAL_HOLDER;
 
 import org.o42a.codegen.code.Block;
@@ -52,23 +53,21 @@ public final class CompareIntegers extends CompareNumbers<Long> {
 	protected ValOp write(ValDirs dirs, ValOp leftVal, ValOp rightVal) {
 
 		final Block code = dirs.code();
-		final Int64recOp leftPtr =
-				leftVal.rawValue(code.id("left_int_ptr"), code);
-		final Int64op left = leftPtr.load(code.id("left"), code);
+		final Int64recOp leftPtr = leftVal.rawValue(LEFT_PTR_ID, code);
+		final Int64op left = leftPtr.load(LEFT_ID, code);
 
-		final Int64recOp rightPtr =
-				rightVal.rawValue(code.id("right_int_ptr"), code);
-		final Int64op right = rightPtr.load(code.id("right"), code);
+		final Int64recOp rightPtr = rightVal.rawValue(RIGHT_PTR_ID, code);
+		final Int64op right = rightPtr.load(RIGHT_ID, code);
 
-		final BoolOp gt = left.gt(code.id("gt"), code, right);
-		final CondBlock greater = gt.branch(code, "greater", "not_greater");
+		final BoolOp gt = left.gt(GT_ID, code, right);
+		final CondBlock greater = gt.branch(code, GREATER_ID, NOT_GREATER_ID);
 		final Block notGreater = greater.otherwise();
 
 		final ValType.Op result1 = ONE.op(dirs.getBuilder(), greater).ptr();
 
 		greater.go(code.tail());
 
-		final BoolOp eq = left.eq(notGreater.id("eq"), notGreater, right);
+		final BoolOp eq = left.eq(EQ_ID, notGreater, right);
 		final ValType.Op result2 = eq.select(
 				null,
 				notGreater,

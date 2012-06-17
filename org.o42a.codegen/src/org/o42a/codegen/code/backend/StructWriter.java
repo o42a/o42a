@@ -19,11 +19,11 @@
 */
 package org.o42a.codegen.code.backend;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public interface StructWriter<S extends StructOp<S>>
@@ -31,35 +31,35 @@ public interface StructWriter<S extends StructOp<S>>
 
 	Type<S> getType();
 
-	Int8recOp int8(CodeId id, Code code, Int8rec field);
+	Int8recOp int8(ID id, Code code, Int8rec field);
 
-	Int16recOp int16(CodeId id, Code code, Int16rec field);
+	Int16recOp int16(ID id, Code code, Int16rec field);
 
-	Int32recOp int32(CodeId id, Code code, Int32rec field);
+	Int32recOp int32(ID id, Code code, Int32rec field);
 
-	Int64recOp int64(CodeId id, Code code, Int64rec field);
+	Int64recOp int64(ID id, Code code, Int64rec field);
 
-	Fp32recOp fp32(CodeId id, Code code, Fp32rec field);
+	Fp32recOp fp32(ID id, Code code, Fp32rec field);
 
-	Fp64recOp fp64(CodeId id, Code code, Fp64rec field);
+	Fp64recOp fp64(ID id, Code code, Fp64rec field);
 
-	SystemOp system(CodeId id, Code code, SystemData field);
+	SystemOp system(ID id, Code code, SystemData field);
 
-	AnyRecOp ptr(CodeId id, Code code, AnyRec field);
+	AnyRecOp ptr(ID id, Code code, AnyRec field);
 
-	DataRecOp ptr(CodeId id, Code code, DataRec field);
+	DataRecOp ptr(ID id, Code code, DataRec field);
 
 	<SS extends StructOp<SS>> StructRecOp<SS> ptr(
-			CodeId id,
+			ID id,
 			Code code,
 			StructRec<SS> field);
 
-	RelRecOp relPtr(CodeId id, Code code, RelRec field);
+	RelRecOp relPtr(ID id, Code code, RelRec field);
 
-	<SS extends StructOp<SS>> SS struct(CodeId id, Code code, Type<SS> field);
+	<SS extends StructOp<SS>> SS struct(ID id, Code code, Type<SS> field);
 
-	<F extends Func<F>> FuncOp<F> func(CodeId id, Code code, FuncRec<F> field);
+	<F extends Func<F>> FuncOp<F> func(ID id, Code code, FuncRec<F> field);
 
-	<SS extends StructOp<SS>> SS to(CodeId id, Code code, Type<SS> type);
+	<SS extends StructOp<SS>> SS to(ID id, Code code, Type<SS> type);
 
 }

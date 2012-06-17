@@ -29,12 +29,12 @@ import org.o42a.backend.constant.code.op.*;
 import org.o42a.backend.constant.code.rec.*;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.rec.*;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
+import org.o42a.util.string.ID;
 
 
 public final class CStruct<S extends StructOp<S>>
@@ -70,7 +70,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int8recCOp int8(CodeId id, Code code, Int8rec field) {
+	public Int8recCOp int8(ID id, Code code, Int8rec field) {
 
 		final Ptr<Int8recOp> pointer;
 
@@ -106,7 +106,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int16recCOp int16(CodeId id, Code code, Int16rec field) {
+	public Int16recCOp int16(ID id, Code code, Int16rec field) {
 
 		final Ptr<Int16recOp> pointer;
 
@@ -142,7 +142,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int32recCOp int32(CodeId id, Code code, Int32rec field) {
+	public Int32recCOp int32(ID id, Code code, Int32rec field) {
 
 		final Ptr<Int32recOp> pointer;
 
@@ -178,7 +178,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Int64recCOp int64(CodeId id, Code code, Int64rec field) {
+	public Int64recCOp int64(ID id, Code code, Int64rec field) {
 
 		final Ptr<Int64recOp> pointer;
 
@@ -214,7 +214,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Fp32recCOp fp32(CodeId id, Code code, Fp32rec field) {
+	public Fp32recCOp fp32(ID id, Code code, Fp32rec field) {
 
 		final Ptr<Fp32recOp> pointer;
 
@@ -250,7 +250,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public Fp64recCOp fp64(CodeId id, Code code, Fp64rec field) {
+	public Fp64recCOp fp64(ID id, Code code, Fp64rec field) {
 
 		final Ptr<Fp64recOp> pointer;
 
@@ -286,7 +286,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public SystemOp system(CodeId id, Code code, SystemData field) {
+	public SystemOp system(ID id, Code code, SystemData field) {
 
 		final Ptr<SystemOp> pointer;
 
@@ -323,7 +323,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public AnyRecCOp ptr(CodeId id, Code code, AnyRec field) {
+	public AnyRecCOp ptr(ID id, Code code, AnyRec field) {
 
 		final Ptr<AnyRecOp> pointer;
 
@@ -359,7 +359,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public DataRecCOp ptr(CodeId id, Code code, DataRec field) {
+	public DataRecCOp ptr(ID id, Code code, DataRec field) {
 
 		final Ptr<DataRecOp> pointer;
 
@@ -396,7 +396,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	@Override
 	public <SS extends StructOp<SS>> StructRecCOp<SS> ptr(
-			CodeId id,
+			ID id,
 			Code code,
 			StructRec<SS> field) {
 
@@ -436,7 +436,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public RelRecCOp relPtr(CodeId id, Code code, RelRec field) {
+	public RelRecCOp relPtr(ID id, Code code, RelRec field) {
 
 		final Ptr<RelRecOp> pointer;
 
@@ -474,7 +474,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	@Override
 	public <SS extends StructOp<SS>> SS struct(
-			CodeId id,
+			ID id,
 			Code code,
 			Type<SS> field) {
 
@@ -516,7 +516,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	@Override
 	public <F extends Func<F>> FuncCOp<F> func(
-			CodeId id,
+			ID id,
 			Code code,
 			FuncRec<F> field) {
 
@@ -555,7 +555,7 @@ public final class CStruct<S extends StructOp<S>>
 	}
 
 	@Override
-	public DataCOp toData(CodeId id, Code code) {
+	public DataCOp toData(ID id, Code code) {
 		return new DataCOp(
 				new OpBE<DataOp>(id, cast(code)) {
 					@Override
@@ -574,7 +574,7 @@ public final class CStruct<S extends StructOp<S>>
 
 	@Override
 	public <SS extends StructOp<SS>> SS to(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Type<SS> type) {
 

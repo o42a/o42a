@@ -23,12 +23,12 @@ import static org.o42a.backend.llvm.id.LLVMId.systemTypeId;
 
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeWriter;
 import org.o42a.codegen.code.op.SystemOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.string.ID;
 
 
 public class SystemTypeLLAlloc extends LLDAlloc<SystemOp> {
@@ -75,7 +75,7 @@ public class SystemTypeLLAlloc extends LLDAlloc<SystemOp> {
 	}
 
 	@Override
-	public SystemOp op(CodeId id, AllocClass allocClass, CodeWriter writer) {
+	public SystemOp op(ID id, AllocClass allocClass, CodeWriter writer) {
 		throw new UnsupportedOperationException();
 	}
 

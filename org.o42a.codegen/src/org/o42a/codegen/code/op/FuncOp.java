@@ -19,10 +19,10 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
+import org.o42a.util.string.ID;
 
 
 public interface FuncOp<F extends Func<F>> extends AtomicRecOp<FuncOp<F>, F> {
@@ -30,7 +30,7 @@ public interface FuncOp<F extends Func<F>> extends AtomicRecOp<FuncOp<F>, F> {
 	Signature<F> getSignature();
 
 	<FF extends Func<FF>> FuncOp<FF> toFunc(
-			CodeId id,
+			ID id,
 			Code code,
 			Signature<FF> signature);
 

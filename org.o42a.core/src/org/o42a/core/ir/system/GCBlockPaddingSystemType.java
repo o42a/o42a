@@ -19,9 +19,8 @@
 */
 package org.o42a.core.ir.system;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.data.SystemType;
+import org.o42a.util.string.ID;
 
 
 public final class GCBlockPaddingSystemType extends SystemType {
@@ -30,11 +29,7 @@ public final class GCBlockPaddingSystemType extends SystemType {
 			new GCBlockPaddingSystemType();
 
 	private GCBlockPaddingSystemType() {
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("o42a_gc_block_padding_t");
+		super(ID.rawId("o42a_gc_block_padding_t"));
 	}
 
 }

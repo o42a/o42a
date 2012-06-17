@@ -19,48 +19,59 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface NumOp<O extends NumOp<O>> extends Op {
 
-	O neg(CodeId id, Code code);
+	ID NEG_ID = ID.rawId("neg");
+	ID ADD_ID = ID.rawId("add");
+	ID SUB_ID = ID.rawId("sub");
+	ID MUL_ID = ID.rawId("mul");
+	ID DIV_ID = ID.rawId("div");
+	ID REM_ID = ID.rawId("rem");
+	ID GT_ID = ID.rawId("gt");
+	ID GE_ID = ID.rawId("ge");
+	ID LT_ID = ID.rawId("lt");
+	ID LE_ID = ID.rawId("le");
 
-	O add(CodeId id, Code code, O summand);
+	O neg(ID id, Code code);
 
-	O sub(CodeId id, Code code, O subtrahend);
+	O add(ID id, Code code, O summand);
 
-	O mul(CodeId id, Code code, O multiplier);
+	O sub(ID id, Code code, O subtrahend);
 
-	O div(CodeId id, Code code, O divisor);
+	O mul(ID id, Code code, O multiplier);
 
-	O rem(CodeId id, Code code, O divisor);
+	O div(ID id, Code code, O divisor);
 
-	BoolOp eq(CodeId id, Code code, O other);
+	O rem(ID id, Code code, O divisor);
 
-	BoolOp ne(CodeId id, Code code, O other);
+	BoolOp eq(ID id, Code code, O other);
 
-	BoolOp gt(CodeId id, Code code, O other);
+	BoolOp ne(ID id, Code code, O other);
 
-	BoolOp ge(CodeId id, Code code, O other);
+	BoolOp gt(ID id, Code code, O other);
 
-	BoolOp lt(CodeId id, Code code, O other);
+	BoolOp ge(ID id, Code code, O other);
 
-	BoolOp le(CodeId id, Code code, O other);
+	BoolOp lt(ID id, Code code, O other);
 
-	Int8op toInt8(CodeId id, Code code);
+	BoolOp le(ID id, Code code, O other);
 
-	Int16op toInt16(CodeId id, Code code);
+	Int8op toInt8(ID id, Code code);
 
-	Int32op toInt32(CodeId id, Code code);
+	Int16op toInt16(ID id, Code code);
 
-	Int64op toInt64(CodeId id, Code code);
+	Int32op toInt32(ID id, Code code);
 
-	Fp32op toFp32(CodeId id, Code code);
+	Int64op toInt64(ID id, Code code);
 
-	Fp64op toFp64(CodeId id, Code code);
+	Fp32op toFp32(ID id, Code code);
+
+	Fp64op toFp64(ID id, Code code);
 
 	void returnValue(Block code);
 

@@ -22,17 +22,16 @@ package org.o42a.core.ir.field.object;
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.object.ObjectIRData;
 import org.o42a.core.ir.object.ObjectIRData.Op;
+import org.o42a.util.string.ID;
 
 
 public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 
-	public static final FldCtrFinish FLD_CTR_FINISH = new FldCtrFinish();
+	public static final Signature FLD_CTR_FINISH = new Signature();
 
 	private FldCtrFinishFunc(FuncCaller<FldCtrFinishFunc> caller) {
 		super(caller);
@@ -42,13 +41,15 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 		invoke(null, code, FLD_CTR_FINISH.result(), data, ctr);
 	}
 
-	public static final class FldCtrFinish extends Signature<FldCtrFinishFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<FldCtrFinishFunc> {
 
 		private Return<Void> result;
 		private Arg<Op> data;
 		private Arg<FldCtrOp> ctr;
 
-		private FldCtrFinish() {
+		private Signature() {
+			super(ID.id("FldCtrFinishF"));
 		}
 
 		public final Return<Void> result() {
@@ -66,11 +67,6 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 		@Override
 		public final FldCtrFinishFunc op(FuncCaller<FldCtrFinishFunc> caller) {
 			return new FldCtrFinishFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("FldCtrFinishF");
 		}
 
 		@Override

@@ -27,13 +27,13 @@ import static org.o42a.codegen.data.AllocClass.DEFAULT_ALLOC_CLASS;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.LLStruct;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataPtrOp;
 import org.o42a.codegen.code.op.IntOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.Type;
+import org.o42a.util.string.ID;
 
 
 public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
@@ -43,7 +43,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 	private final AllocClass allocClass;
 
 	public DataPtrLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -57,12 +57,12 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 	}
 
 	@Override
-	public P offset(CodeId id, Code code, IntOp<?> index) {
+	public P offset(ID id, Code code, IntOp<?> index) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId offsetId = code.getOpNames().indexId(id, this, index);
+		final ID offsetId = code.getOpNames().indexId(id, this, index);
 
 		return create(
 				offsetId,
@@ -70,19 +70,19 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				llvm.instr(offset(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(offsetId),
+						ids.write(offsetId),
 						ids.length(),
 						getNativePtr(),
 						nativePtr(index))));
 	}
 
 	@Override
-	public AnyLLOp toAny(CodeId id, Code code) {
+	public AnyLLOp toAny(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = code.getOpNames().castId(id, "any", this);
+		final ID castId = code.getOpNames().castId(id, ANY_ID, this);
 
 		return new AnyLLOp(
 				castId,
@@ -91,17 +91,17 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				llvm.instr(toAny(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(castId),
+						ids.write(castId),
 						ids.length(),
 						getNativePtr())));
 	}
 
-	public DataLLOp toData(CodeId id, Code code) {
+	public DataLLOp toData(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = code.getOpNames().castId(id, "data", this);
+		final ID castId = code.getOpNames().castId(id, DATA_ID, this);
 
 		return new DataLLOp(
 				castId,
@@ -110,20 +110,20 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				llvm.instr(toAny(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(castId),
+						ids.write(castId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	public <SS extends StructOp<SS>> SS to(
-			CodeId id,
+			ID id,
 			Code code,
 			Type<SS> type) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId castId = code.getOpNames().castId(id, type.getId(), this);
+		final ID castId = code.getOpNames().castId(id, type.getId(), this);
 
 		return type.op(new LLStruct<SS>(
 				castId,
@@ -133,7 +133,7 @@ public abstract class DataPtrLLOp<P extends DataPtrOp<P>>
 				llvm.instr(castStructTo(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(castId),
+						ids.write(castId),
 						ids.length(),
 						getNativePtr(),
 						typePtr(type)))));

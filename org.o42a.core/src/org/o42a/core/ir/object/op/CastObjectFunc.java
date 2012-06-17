@@ -21,29 +21,24 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.object.ObjectIRType.Op;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
+import org.o42a.util.string.ID;
 
 
 public final class CastObjectFunc extends Func<CastObjectFunc> {
 
-	public static final CastObject CAST_OBJECT = new CastObject();
+	public static final Signature CAST_OBJECT = new Signature();
 
 	CastObjectFunc(FuncCaller<CastObjectFunc> caller) {
 		super(caller);
 	}
 
-	public DataOp cast(
-			CodeId id,
-			Code code,
-			ObjectOp object,
-			ObjectTypeOp type) {
+	public DataOp cast(ID id, Code code, ObjectOp object, ObjectTypeOp type) {
 		return invoke(
 				id,
 				code,
@@ -51,13 +46,15 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 				object.toData(null, code), type.ptr());
 	}
 
-	public static final class CastObject extends Signature<CastObjectFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<CastObjectFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
 		private Arg<Op> type;
 
-		private CastObject() {
+		private Signature() {
+			super(ID.id("ObjectCastF"));
 		}
 
 		public final Return<DataOp> result() {
@@ -75,11 +72,6 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 		@Override
 		public CastObjectFunc op(FuncCaller<CastObjectFunc> caller) {
 			return new CastObjectFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ObjectCastF");
 		}
 
 		@Override

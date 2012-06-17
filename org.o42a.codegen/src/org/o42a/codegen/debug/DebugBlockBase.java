@@ -23,25 +23,25 @@ import static org.o42a.codegen.debug.DebugDoFunc.DEBUG_DO;
 import static org.o42a.codegen.debug.DebugStackFrameOp.DEBUG_STACK_FRAME_TYPE;
 import static org.o42a.codegen.debug.TaskBlock.TASK_DISPOSAL;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.OpBlockBase;
+import org.o42a.util.string.ID;
 
 
 public abstract class DebugBlockBase extends OpBlockBase {
 
-	public DebugBlockBase(Code enclosing, CodeId name) {
+	public DebugBlockBase(Code enclosing, ID name) {
 		super(enclosing, name);
 	}
 
-	public DebugBlockBase(Generator generator, CodeId id) {
+	public DebugBlockBase(Generator generator, ID id) {
 		super(generator, id);
 	}
 
-	public final TaskBlock begin(CodeId id, String comment) {
+	public final TaskBlock begin(ID id, String comment) {
 
 		final Block block = block();
 
@@ -49,12 +49,13 @@ public abstract class DebugBlockBase extends OpBlockBase {
 			return new TaskBlock(block, block);
 		}
 
-		final Allocator code = block.allocator(id != null ? id : id("debug"));
+		final Allocator code =
+				block.allocator(id != null ? id : ID.id("debug"));
 
 		code.allocation().addLastDisposal(TASK_DISPOSAL);
 
 		final DebugStackFrameOp stackFrame = code.allocation().allocate(
-				code.id("task_stack_frame"),
+				ID.id("task_stack_frame"),
 				DEBUG_STACK_FRAME_TYPE);
 
 		stackFrame.comment(code).store(code, code.nullPtr());

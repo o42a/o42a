@@ -19,13 +19,13 @@
 */
 package org.o42a.core.ir.object.value;
 
+import static org.o42a.core.ir.IRNames.ERROR_ID;
 import static org.o42a.core.ir.object.value.PredefObjValues.predefObjValues;
 import static org.o42a.core.ir.op.PrintMessageFunc.PRINT_MESSAGE;
 import static org.o42a.core.value.Value.voidValue;
 
 import java.io.UnsupportedEncodingException;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.FuncPtr;
@@ -37,16 +37,12 @@ import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.PrintMessageFunc;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public enum PredefObjValue {
 
-	FALSE_OBJ_VALUE(false) {
-
-		@Override
-		public CodeId codeId(Generator generator) {
-			return generator.id("_o42a_obj_value_false");
-		}
+	FALSE_OBJ_VALUE(ID.id("_o42a_obj_value_false"), false) {
 
 		@Override
 		public void write(DefDirs dirs, ObjectIRData.Op data) {
@@ -55,12 +51,7 @@ public enum PredefObjValue {
 
 	},
 
-	VOID_OBJ_VALUE(false) {
-
-		@Override
-		public CodeId codeId(Generator generator) {
-			return generator.id("_o42a_obj_value_void");
-		}
+	VOID_OBJ_VALUE(ID.id("_o42a_obj_value_void"), false) {
 
 		@Override
 		public void write(DefDirs dirs, ObjectIRData.Op data) {
@@ -69,12 +60,7 @@ public enum PredefObjValue {
 
 	},
 
-	STUB_OBJ_VALUE(false) {
-
-		@Override
-		public CodeId codeId(Generator generator) {
-			return generator.id("_o42a_obj_value_stub");
-		}
+	STUB_OBJ_VALUE(ID.id("_o42a_obj_value_stub"), false) {
 
 		@Override
 		public void write(DefDirs dirs, ObjectIRData.Op data) {
@@ -84,7 +70,7 @@ public enum PredefObjValue {
 
 			try {
 				message = generator.addBinary(
-						generator.id("ERROR").sub("object_value_stub"),
+						ERROR_ID.sub("object_value_stub"),
 						true,
 						"Object value stub accessed".getBytes("ASCII"));
 			} catch (UnsupportedEncodingException e) {
@@ -104,12 +90,7 @@ public enum PredefObjValue {
 
 	},
 
-	DEFAULT_OBJ_VALUE(true) {
-
-		@Override
-		public CodeId codeId(Generator generator) {
-			return generator.id("_o42a_obj_value");
-		}
+	DEFAULT_OBJ_VALUE(ID.id("_o42a_obj_value"), true) {
 
 		@Override
 		public void write(DefDirs dirs, ObjectIRData.Op data) {
@@ -123,17 +104,21 @@ public enum PredefObjValue {
 
 	};
 
+	private final ID id;
 	private final boolean typeAware;
 
-	PredefObjValue(boolean typeAware) {
+	PredefObjValue(ID id, boolean typeAware) {
+		this.id = id;
 		this.typeAware = typeAware;
+	}
+
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final boolean isTypeAware() {
 		return this.typeAware;
 	}
-
-	public abstract CodeId codeId(Generator generator);
 
 	public final FuncPtr<ObjectValueFunc> get(
 			CompilerContext context,

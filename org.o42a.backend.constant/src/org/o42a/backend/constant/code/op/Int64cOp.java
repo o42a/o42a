@@ -21,8 +21,8 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int64op;
+import org.o42a.util.string.ID;
 
 
 public final class Int64cOp extends IntCOp<Int64op, Long> implements Int64op {
@@ -31,7 +31,7 @@ public final class Int64cOp extends IntCOp<Int64op, Long> implements Int64op {
 		super(backend);
 	}
 
-	public Int64cOp(CodeId id, CCode<?> code, Long constant) {
+	public Int64cOp(ID id, CCode<?> code, Long constant) {
 		super(id, code, constant);
 	}
 

@@ -19,7 +19,9 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.Val.FALSE_VAL;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Global;
@@ -59,8 +61,8 @@ public final class FalseValue<T> extends Value<T> {
 
 		final Global<ValType.Op, ValType> global =
 				generator.newGlobal().setConstant().dontExport().newInstance(
-						generator.id("CONST").sub("FALSE"),
-						ValType.VAL_TYPE,
+						CONST_ID.sub("FALSE"),
+						VAL_TYPE,
 						FALSE_VAL);
 
 		return cachedPtr = global.getPointer();

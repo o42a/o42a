@@ -22,9 +22,12 @@ package org.o42a.core.ir.object.op;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Block;
 import org.o42a.core.ir.object.ObjectOp;
+import org.o42a.util.string.ID;
 
 
 final class TempObjHolder extends ObjHolder {
+
+	private static final ID USE_ID = ID.id("use");
 
 	private final Allocator allocator;
 	private ObjectUseOp use;
@@ -43,7 +46,7 @@ final class TempObjHolder extends ObjHolder {
 
 	@Override
 	protected void setObject(Block code, ObjectOp object) {
-		use(code, object).setUsed(code, object);
+		use(object).setUsed(code, object);
 	}
 
 	@Override
@@ -52,15 +55,15 @@ final class TempObjHolder extends ObjHolder {
 
 	@Override
 	protected void holdVolatileObject(Block code, ObjectOp object) {
-		use(code, object).startUse(code, object);
+		use(object).startUse(code, object);
 	}
 
-	private ObjectUseOp use(Block code, ObjectOp object) {
+	private ObjectUseOp use(ObjectOp object) {
 		if (this.use != null) {
 			return this.use;
 		}
 		return this.use = new ObjectUseOp(
-				code.getGenerator().id("use").detail(object.getId()),
+				USE_ID.detail(object.getId()),
 				object.getBuilder(),
 				this.allocator.allocation());
 	}

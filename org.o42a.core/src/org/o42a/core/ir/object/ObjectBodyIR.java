@@ -21,13 +21,13 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectMethodsIR.METHODS_ID;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
+import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -47,9 +47,12 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
+
+	static final ID BODY_ID = ID.id("body");
 
 	private static final int KIND_MASK = 3;
 
@@ -70,11 +73,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private Int32rec flags;
 
 	ObjectBodyIR(ObjectIRStruct objectIRStruct) {
+		super(buildId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
 		this.ascendant = objectIRStruct.getObject();
 	}
 
 	private ObjectBodyIR(ObjectIR inheritantIR, Obj ascendant) {
+		super(buildId(ascendant.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
 		this.ascendant = ascendant;
 	}
@@ -169,15 +174,6 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-
-		final ObjectIR ascendantIR =
-				this.ascendant.ir(this.objectIRStruct.getGenerator());
-
-		return ascendantIR.getId().detail("body");
-	}
-
-	@Override
 	protected void allocate(SubData<Op> data) {
 		this.objectType = data.addRelPtr("object_type");
 		this.ancestorBody = data.addRelPtr("ancestor_body");
@@ -224,9 +220,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	void allocateMethodsIR(SubData<?> data) {
 		if (isMain()) {
 			this.methodsIR = new ObjectMethodsIR(this);
-
 			data.addStruct(
-					getGenerator().id("methods").detail(
+					METHODS_ID.detail(
 							getAscendant().ir(getGenerator()).getId()),
 					this.methodsIR);
 			return;
@@ -236,6 +231,10 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		final ObjectIR ascendantIR = getAscendant().ir(getGenerator());
 
 		this.methodsIR = ascendantIR.getMainBodyIR().getMethodsIR();
+	}
+
+	private static ID buildId(ObjectIR ascendantIR) {
+		return ascendantIR.getId().detail(BODY_ID);
 	}
 
 	private void allocateValueBody(SubData<Op> data) {
@@ -400,11 +399,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		public final ObjectIRType.Op loadObjectType(Code code) {
 			return objectType(code)
 					.load(null, code)
-					.offset(
-							code.id("object_type").type(code.id("any")),
-							code,
-							this)
-					.to(code.id("object_type"), code, OBJECT_TYPE);
+					.offset(null, code, this)
+					.to(OBJECT_TYPE_ID, code, OBJECT_TYPE);
 		}
 
 		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
@@ -438,12 +434,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 		@Override
 		public String toString() {
-			return "*" + getType().codeId(getType().getGenerator());
+			return "*" + getType().getId();
 		}
 
 		@Override
-		protected CodeId fieldId(Code code, CodeId local) {
-			return code.id("body").setLocal(local);
+		protected ID fieldId(Code code, ID local) {
+			return BODY_ID.setLocal(local);
 		}
 
 		final ObjOp op(

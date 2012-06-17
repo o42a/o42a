@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.util.string.ID;
 
 
 public final class GlobalSettings
@@ -48,7 +48,7 @@ public final class GlobalSettings
 	public final <
 			S extends StructOp<S>,
 			T extends Type<S>> Allocated<S, Global<S, T>> allocate(
-					CodeId id,
+					ID id,
 					T type) {
 
 		final Global<S, T> global =
@@ -64,10 +64,8 @@ public final class GlobalSettings
 				true);
 	}
 
-	public final <
-			S extends StructOp<S>,
-			T extends Type<S>> Allocated<S, Global<S, T>> allocateStruct(
-					T struct) {
+	public final <S extends StructOp<S>, T extends Type<S>>
+	Allocated<S, Global<S, T>> allocateStruct(T struct) {
 
 		final Global<S, T> global = new Global<S, T>(this, struct);
 		final SubData<S> instanceData = struct.setGlobal(global);
@@ -81,56 +79,37 @@ public final class GlobalSettings
 				false);
 	}
 
-	public final
-	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
-			CodeId id,
-			T type) {
+	public final <S extends StructOp<S>, T extends Type<S>> Global<S, T>
+	newInstance(ID id, T type) {
 		return newInstance(id, type, null);
 	}
 
-	public final
-	<S extends StructOp<S>, T extends Type<S>> Global<S, T> newInstance(
-			CodeId id,
-			T type,
-			Content<T> content) {
+	public final <S extends StructOp<S>, T extends Type<S>> Global<S, T>
+	newInstance(ID id, T type, Content<T> content) {
 		return globals().addGlobal(this, id, type, null, content);
 	}
 
-	public final
-	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> struct(
-			ST struct) {
+	public final <S extends StructOp<S>, ST extends Struct<S>>
+	Global<S, ST> struct(ST struct) {
 		return globals().addGlobal(this, struct);
 	}
 
-	public final
-	<S extends StructOp<S>, T extends Type<S>> Global<S, T> instance(
-			CodeId id,
-			T type,
-			T instance) {
+	public final <S extends StructOp<S>, T extends Type<S>>
+	Global<S, T> instance(ID id, T type, T instance) {
 		return instance(id, type, instance, null);
 	}
 
-	public final
-	<S extends StructOp<S>, T extends Type<S>> Global<S, T> instance(
-			CodeId id,
-			T type,
-			T instance,
-			Content<T> content) {
+	public final <S extends StructOp<S>, T extends Type<S>>
+	Global<S, T> instance(ID id, T type, T instance, Content<T> content) {
 		return globals().addGlobal(this, id, type, instance, content);
 	}
 
-	public final
-	<S extends StructOp<S>, ST extends Struct<S>> Global<S, ST> struct(
-			ST type,
-			ST instance) {
+	public final <S extends StructOp<S>, ST extends Struct<S>>
+	Global<S, ST> struct(ST type, ST instance) {
 
 		final Content<ST> content = Struct.structContent();
 
-		return instance(
-				instance.codeId(getGenerator()),
-				type,
-				instance,
-				content);
+		return instance(instance.getId(), type, instance, content);
 	}
 
 }

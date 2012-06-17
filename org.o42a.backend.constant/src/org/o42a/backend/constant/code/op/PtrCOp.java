@@ -23,12 +23,12 @@ import static org.o42a.backend.constant.data.ConstBackend.cast;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.ReturnBE;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.codegen.code.op.PtrOp;
 import org.o42a.codegen.data.AbstractPtr;
+import org.o42a.util.string.ID;
 
 
 public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
@@ -44,10 +44,10 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	}
 
 	@Override
-	public final BoolCOp isNull(CodeId id, Code code) {
+	public final BoolCOp isNull(ID id, Code code) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId = code.getOpNames().unaryId(id, "is_null", this);
+		final ID resultId = code.getOpNames().unaryId(id, IS_NULL_ID, this);
 
 		if (isConstant()) {
 			return new BoolCOp(resultId, ccode, getConstant().isNull());
@@ -68,11 +68,11 @@ public abstract class PtrCOp<P extends PtrOp<P>, PT extends AbstractPtr>
 	}
 
 	@Override
-	public final BoolCOp eq(CodeId id, Code code, P other) {
+	public final BoolCOp eq(ID id, Code code, P other) {
 
 		final CCode<?> ccode = cast(code);
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "eq", this, other);
+		final ID resultId =
+				code.getOpNames().binaryId(id, EQ_ID, this, other);
 		final COp<P, ?> o = cast(other);
 
 		if (isConstant() && o.isConstant()) {

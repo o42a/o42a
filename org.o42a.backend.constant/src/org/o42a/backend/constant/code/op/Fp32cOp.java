@@ -21,8 +21,8 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Fp32op;
+import org.o42a.util.string.ID;
 
 
 public final class Fp32cOp extends FpCOp<Fp32op, Float> implements Fp32op {
@@ -31,7 +31,7 @@ public final class Fp32cOp extends FpCOp<Fp32op, Float> implements Fp32op {
 		super(backend);
 	}
 
-	public Fp32cOp(CodeId id, CCode<?> code, Float constant) {
+	public Fp32cOp(ID id, CCode<?> code, Float constant) {
 		super(id, code, constant);
 	}
 

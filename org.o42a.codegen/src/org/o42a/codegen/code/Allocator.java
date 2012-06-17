@@ -19,20 +19,20 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.AllocatorWriter;
+import org.o42a.util.string.ID;
 
 
 public abstract class Allocator extends Block {
 
 	private AllocationCode allocation;
 
-	Allocator(Block enclosing, CodeId name) {
+	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
 	}
 
-	Allocator(Generator generator, CodeId id) {
+	Allocator(Generator generator, ID id) {
 		super(generator, id);
 	}
 

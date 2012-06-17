@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.field;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -31,9 +30,13 @@ import org.o42a.core.ir.object.ObjOp;
 import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public abstract class Fld implements FldIR {
+
+	public static final ID FIELD_ID = ID.id("field");
+	public static final ID FLD_ID = ID.id("fld");
 
 	private final ObjectBodyIR bodyIR;
 	private Type<?> instance;
@@ -58,9 +61,6 @@ public abstract class Fld implements FldIR {
 	}
 
 	public abstract MemberKey getKey();
-
-	@Override
-	public abstract CodeId getId();
 
 	public final boolean isOmitted() {
 		if (this.omitted != 0) {
@@ -101,7 +101,7 @@ public abstract class Fld implements FldIR {
 			return;
 		}
 		this.instance = data.addInstance(
-				getGenerator().id("fld").detail(getId().getLocal()),
+				FLD_ID.detail(getId().getLocal()),
 				(Type) getType(),
 				(Content) content());
 	}
@@ -125,6 +125,10 @@ public abstract class Fld implements FldIR {
 
 	public static abstract class Type<S extends Op<S>>
 			extends org.o42a.codegen.data.Type<S> {
+
+		public Type(ID id) {
+			super(id);
+		}
 
 	}
 

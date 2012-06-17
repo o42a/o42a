@@ -24,26 +24,26 @@ import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.PtrOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 
 	private final long blockPtr;
 	private final long nativePtr;
-	private final CodeId id;
+	private final ID id;
 
-	public PtrLLOp(CodeId id, long blockPtr, long nativePtr) {
+	public PtrLLOp(ID id, long blockPtr, long nativePtr) {
 		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -63,12 +63,12 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 	}
 
 	@Override
-	public BoolLLOp isNull(CodeId id, Code code) {
+	public BoolLLOp isNull(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().unaryId(id, "is_null", this);
+		final ID resultId = code.getOpNames().unaryId(id, IS_NULL_ID, this);
 
 		return new BoolLLOp(
 				resultId,
@@ -76,19 +76,18 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				llvm.instr(isNull(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public BoolLLOp eq(CodeId id, Code code, P other) {
+	public BoolLLOp eq(ID id, Code code, P other) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId =
-				 code.getOpNames().binaryId(id, "eq", this, other);
+		final ID resultId = code.getOpNames().binaryId(id, EQ_ID, this, other);
 
 		return new BoolLLOp(
 				resultId,
@@ -96,7 +95,7 @@ public abstract class PtrLLOp<P extends PtrOp<P>> implements LLOp<P>, PtrOp<P> {
 				llvm.instr(IntLLOp.eq(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						nativePtr(other))));

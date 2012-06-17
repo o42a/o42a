@@ -22,6 +22,7 @@ package org.o42a.core.ir.field.variable;
 import static org.o42a.codegen.code.op.Atomicity.ACQUIRE_RELEASE;
 import static org.o42a.codegen.code.op.Atomicity.ATOMIC;
 import static org.o42a.codegen.code.op.Atomicity.VOLATILE;
+import static org.o42a.codegen.code.op.IntRecOp.OLD_ID;
 import static org.o42a.codegen.code.op.RMWKind.R_OR_W;
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
@@ -48,6 +49,7 @@ import org.o42a.core.ir.value.ValFlagsOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.member.MemberKey;
+import org.o42a.util.string.ID;
 
 
 public final class AssignerFldOp extends FldOp {
@@ -98,7 +100,7 @@ public final class AssignerFldOp extends FldOp {
 
 		final CodeDirs boundKnownDirs = dirs.sub(boundKnown);
 		final ObjectOp castObject = valueObject.dynamicCast(
-				boundKnown.id("cast_target"),
+				ID.id("cast_target"),
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
 				fld().linkStruct().getTypeRef().typeObject(),
@@ -142,7 +144,7 @@ public final class AssignerFldOp extends FldOp {
 		final DataOp targetPtr =
 				value.value(null, code)
 				.toPtr(null, code)
-				.load(code.id("ptarget"), code)
+				.load(null, code)
 				.toData(null, code);
 		final ObjectOp target = anonymousObject(
 				getBuilder(),
@@ -164,7 +166,7 @@ public final class AssignerFldOp extends FldOp {
 		code.acquireBarrier();
 
 		final ValFlagsOp old =
-				flags.atomicRMW(code.id("old"), code, R_OR_W, VAL_ASSIGN);
+				flags.atomicRMW(OLD_ID, code, R_OR_W, VAL_ASSIGN);
 
 		old.assigning(null, code).go(code, skip.head());
 

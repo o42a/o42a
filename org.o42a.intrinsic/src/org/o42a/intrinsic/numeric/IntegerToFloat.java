@@ -58,8 +58,8 @@ public class IntegerToFloat extends BuiltinConverter<Long, Double> {
 
 		final Block code = targetDirs.code();
 		final Fp64op floatValue =
-				value.rawValue(code.id("pint"), code)
-				.load(code.id("int"), code)
+				value.rawValue(null, code)
+				.load(null, code)
 				.toFp64(null, code);
 		final ValOp targetValue = targetDirs.value();
 

@@ -22,11 +22,11 @@ package org.o42a.backend.llvm.data.alloc;
 import org.o42a.backend.llvm.code.op.DataLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.id.LLVMId;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.AllocClass;
 import org.o42a.codegen.data.DataLayout;
 import org.o42a.codegen.data.backend.DataAllocation;
+import org.o42a.util.string.ID;
 
 
 public final class DataLLDAlloc extends SimpleLLDAlloc<DataOp> {
@@ -50,7 +50,7 @@ public final class DataLLDAlloc extends SimpleLLDAlloc<DataOp> {
 
 	@Override
 	protected DataLLOp op(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {

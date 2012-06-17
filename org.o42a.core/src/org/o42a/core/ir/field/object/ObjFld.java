@@ -26,8 +26,6 @@ import static org.o42a.core.ir.field.object.ObjectConstructorFunc.OBJECT_CONSTRU
 import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.BoolOp;
@@ -38,10 +36,10 @@ import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.RefFld;
-import org.o42a.core.ir.field.object.ObjectConstructorFunc.ObjectConstructor;
 import org.o42a.core.ir.object.*;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.field.Field;
+import org.o42a.util.string.ID;
 
 
 public class ObjFld extends RefFld<ObjectConstructorFunc> {
@@ -95,7 +93,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		final FldCtrOp ctr =
 				code.getAllocator()
 				.allocation()
-				.allocate(code.id("fld_ctr"), FLD_CTR_TYPE);
+				.allocate(FLD_CTR_ID, FLD_CTR_TYPE);
 
 		final Block start = code.addBlock("start");
 
@@ -196,7 +194,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<Op> previous(CodeId id, Code code) {
+		public final StructRecOp<Op> previous(ID id, Code code) {
 			return ptr(id, code, getType().previous());
 		}
 
@@ -216,6 +214,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		private StructRec<Op> previous;
 
 		private Type() {
+			super(ID.rawId("o42a_fld_obj"));
 		}
 
 		@Override
@@ -233,11 +232,6 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_obj");
-		}
-
-		@Override
 		protected void allocate(SubData<Op> data) {
 			super.allocate(data);
 			this.previous = data.addPtr("previous", OBJ_FLD);
@@ -249,7 +243,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 		}
 
 		@Override
-		protected ObjectConstructor getSignature() {
+		protected ObjectConstructorFunc.Signature getSignature() {
 			return OBJECT_CONSTRUCTOR;
 		}
 

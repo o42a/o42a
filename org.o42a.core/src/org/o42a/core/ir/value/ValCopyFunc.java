@@ -21,18 +21,17 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValType.Op;
+import org.o42a.util.string.ID;
 
 
 public final class ValCopyFunc extends Func<ValCopyFunc> {
 
-	public static final ValCopySignature VAL_COPY = new ValCopySignature();
+	public static final Signature VAL_COPY = new Signature();
 
 	private ValCopyFunc(FuncCaller<ValCopyFunc> caller) {
 		super(caller);
@@ -55,13 +54,15 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 		dirs.returnValue(to);
 	}
 
-	public static final class ValCopySignature extends Signature<ValCopyFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ValCopyFunc> {
 
 		private Return<Void> result;
 		private Arg<Op> from;
 		private Arg<Op> to;
 
-		private ValCopySignature() {
+		private Signature() {
+			super(ID.id("ValCopyF"));
 		}
 
 		public final Return<Void> result() {
@@ -79,11 +80,6 @@ public final class ValCopyFunc extends Func<ValCopyFunc> {
 		@Override
 		public ValCopyFunc op(FuncCaller<ValCopyFunc> caller) {
 			return new ValCopyFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ValCopyF");
 		}
 
 		@Override

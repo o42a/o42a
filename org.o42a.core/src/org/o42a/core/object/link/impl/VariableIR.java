@@ -40,9 +40,12 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueOp;
+import org.o42a.util.string.ID;
 
 
 final class VariableIR extends ValueIR {
+
+	private static final ID OLD_ID = ID.id("old");
 
 	private ObjectBodyIR bodyIR;
 	private AssignerFld fld;
@@ -127,11 +130,8 @@ final class VariableIR extends ValueIR {
 
 			code.acquireBarrier();
 
-			final ValFlagsOp old = flags.atomicRMW(
-					code.id("old"),
-					code,
-					R_OR_W,
-					VAL_ASSIGN);
+			final ValFlagsOp old =
+					flags.atomicRMW(OLD_ID, code, R_OR_W, VAL_ASSIGN);
 
 			old.assigning(null, code).go(code, skip.head());
 

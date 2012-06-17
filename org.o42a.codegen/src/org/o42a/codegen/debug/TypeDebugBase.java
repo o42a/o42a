@@ -43,7 +43,7 @@ public abstract class TypeDebugBase {
 
 	protected final DebugTypeInfo externalTypeInfo(int code) {
 
-		final String id = getType().codeId(getType().getGenerator()).getId();
+		final String id = getType().getId().toString();
 		final String suffix;
 
 		if (id.endsWith("_t")) {

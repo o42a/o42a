@@ -19,23 +19,23 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Allocator;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 public final class StackAllocatedValOp extends ValOp {
 
-	private final CodeId id;
+	private final ID id;
 	private final Allocator allocator;
 	private final ValHolder holder;
 	private ValType.Op ptr;
 
 	public StackAllocatedValOp(
-			CodeId id,
+			ID id,
 			Allocator allocator,
 			CodeBuilder builder,
 			ValueStruct<?, ?> valueStruct,
@@ -47,7 +47,7 @@ public final class StackAllocatedValOp extends ValOp {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 

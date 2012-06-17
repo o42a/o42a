@@ -19,9 +19,8 @@
 */
 package org.o42a.core.ir.local;
 
-import static org.o42a.core.ir.IRUtil.encodeMemberId;
+import static org.o42a.core.ir.IRNames.encodeMemberId;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
@@ -29,15 +28,20 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.ir.object.ObjectLocalIR;
 import org.o42a.core.member.local.LocalScope;
+import org.o42a.util.string.ID;
 
 
 public final class LocalIR extends ObjectLocalIR {
 
-	private CodeId id;
+	private final ID id;
 
 	public LocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
 		scope.assertExplicit();
+
+		final ScopeIR ownerIR = scope.getOwner().getScope().ir(getGenerator());
+
+		this.id = encodeMemberId(ownerIR, scope.toMember());
 	}
 
 	@Override
@@ -46,15 +50,8 @@ public final class LocalIR extends ObjectLocalIR {
 	}
 
 	@Override
-	public CodeId getId() {
-		if (this.id != null) {
-			return this.id;
-		}
-
-		final LocalScope scope = getScope();
-		final ScopeIR ownerIR = scope.getOwner().getScope().ir(getGenerator());
-
-		return this.id = encodeMemberId(ownerIR, scope.toMember());
+	public final ID getId() {
+		return this.id;
 	}
 
 	public final ObjectIR getOwnerIR() {

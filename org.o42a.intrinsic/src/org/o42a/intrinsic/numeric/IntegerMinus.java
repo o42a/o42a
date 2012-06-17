@@ -52,16 +52,13 @@ public final class IntegerMinus extends UnaryResult<Long, Long> {
 
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
-		final ValFlagsOp resultFlagsRec = result.flags("unary_flags", code);
+		final ValFlagsOp resultFlagsRec = result.flags(null, code);
 
 		resultFlagsRec.store(code, VAL_CONDITION);
 
-		final Int64recOp operandPtr =
-				operand.rawValue(code.id("operand_ptr"), code);
-		final Int64op operandValue =
-				operandPtr.load(code.id("operand_value"), code);
-		final Int64recOp resultRec =
-				result.rawValue(code.id("unary_value_tr"), code);
+		final Int64recOp operandPtr = operand.rawValue(OPERAND_PTR_ID, code);
+		final Int64op operandValue = operandPtr.load(OPERAND_VALUE_ID, code);
+		final Int64recOp resultRec = result.rawValue(null, code);
 
 		resultRec.store(code, operandValue.neg(null, code));
 

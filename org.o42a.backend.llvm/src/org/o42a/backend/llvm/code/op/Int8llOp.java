@@ -21,28 +21,28 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.Int8op;
+import org.o42a.util.string.ID;
 
 
 public final class Int8llOp extends IntLLOp<Int8op, Int8llOp>
 		implements Int8op {
 
-	public Int8llOp(CodeId id, long blockPtr, long nativePtr) {
+	public Int8llOp(ID id, long blockPtr, long nativePtr) {
 		super(id, 8, blockPtr, nativePtr);
 	}
 
 	@Override
-	public Int8op comp(CodeId id, Code code) {
+	public Int8op comp(ID id, Code code) {
 		return xor(
-				code.getOpNames().unaryId(id, "comp", this),
+				code.getOpNames().unaryId(id, COMP_ID, this),
 				code,
 				code.int8((byte) -1));
 	}
 
 	@Override
-	public Int8llOp toInt8(CodeId id, Code code) {
+	public Int8llOp toInt8(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -54,7 +54,7 @@ public final class Int8llOp extends IntLLOp<Int8op, Int8llOp>
 	}
 
 	@Override
-	public Int8llOp create(CodeId id, long blockPtr, long nativePtr) {
+	public Int8llOp create(ID id, long blockPtr, long nativePtr) {
 		return new Int8llOp(id, blockPtr, nativePtr);
 	}
 

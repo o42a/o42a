@@ -52,16 +52,16 @@ public final class FloatMinus extends UnaryResult<Double, Double> {
 
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
-		final ValFlagsOp resultFlagsRec = result.flags("unary_flags", code);
+		final ValFlagsOp resultFlagsRec = result.flags(null, code);
 
 		resultFlagsRec.store(code, VAL_CONDITION);
 
 		final Fp64recOp operandPtr =
-				operand.value(code.id("operand_ptr"), code).toFp64(null, code);
+				operand.value(OPERAND_PTR_ID, code).toFp64(null, code);
 		final Fp64op operandValue =
-				operandPtr.load(code.id("operand_value"), code);
+				operandPtr.load(OPERAND_VALUE_ID, code);
 		final Fp64recOp resultRec =
-				result.value(code.id("unary_value_tr"), code).toFp64(null, code);
+				result.value(null, code).toFp64(null, code);
 
 		resultRec.store(code, operandValue.neg(null, code));
 

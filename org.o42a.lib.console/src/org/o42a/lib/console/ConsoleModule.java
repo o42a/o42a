@@ -53,11 +53,16 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 @SourcePath("console.o42a")
 @RelatedSources("print_to_console.o42a")
 public class ConsoleModule extends AnnotatedModule {
+
+	public static final ID CONSOLE_ID = ID.id("console");
+
+	private static final ID MAIN_ID = ID.rawId("main");
 
 	private static final MemberName MAIN_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("main"));
@@ -131,7 +136,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 		if (!generator.isDebug()) {
 			generator.newFunction().export().create(
-					generator.rawId("main"),
+					MAIN_ID,
 					DEBUGGABLE_MAIN,
 					new Main());
 			return;
@@ -139,12 +144,12 @@ public class ConsoleModule extends AnnotatedModule {
 
 		final Function<DebuggableMainFunc> main =
 				generator.newFunction().create(
-						generator.rawId("__o42a_main__"),
+						ID.rawId("__o42a_main__"),
 						DEBUGGABLE_MAIN,
 						new Main());
 
 		generator.newFunction().export().create(
-				generator.rawId("main"),
+				MAIN_ID,
 				MAIN,
 				new DebugMain(main));
 	}
@@ -227,7 +232,7 @@ public class ConsoleModule extends AnnotatedModule {
 
 			final ValOp result = callMain(function);
 
-			result.rawValue(function.id("execution_result_ptr"), function)
+			result.rawValue(ID.id("execution_result_ptr"), function)
 			.load(null, function)
 			.toInt32(null, function)
 			.returnValue(function);

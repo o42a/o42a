@@ -23,7 +23,6 @@ import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 
 import java.util.Collection;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.Data;
@@ -35,6 +34,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.string.ID;
 
 
 public class ObjectIR  {
@@ -60,7 +60,7 @@ public class ObjectIR  {
 		return this.object;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return getScopeIR().getId();
 	}
 

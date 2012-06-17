@@ -21,17 +21,16 @@ package org.o42a.intrinsic.string;
 
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public class ConcatFunc extends Func<ConcatFunc> {
 
-	public static final Concat CONCAT = new Concat();
+	public static final Signature CONCAT = new Signature();
 
 	private ConcatFunc(FuncCaller<ConcatFunc> caller) {
 		super(caller);
@@ -47,14 +46,16 @@ public class ConcatFunc extends Func<ConcatFunc> {
 				with.ptr());
 	}
 
-	public static final class Concat extends Signature<ConcatFunc> {
+	public static final class Signature
+			extends org.o42a.codegen.code.Signature<ConcatFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> output;
 		private Arg<ValType.Op> what;
 		private Arg<ValType.Op> with;
 
-		private Concat() {
+		private Signature() {
+			super(ID.id("ConcatF"));
 		}
 
 		public final Return<Void> result() {
@@ -76,11 +77,6 @@ public class ConcatFunc extends Func<ConcatFunc> {
 		@Override
 		public ConcatFunc op(FuncCaller<ConcatFunc> caller) {
 			return new ConcatFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("ConcatF");
 		}
 
 		@Override

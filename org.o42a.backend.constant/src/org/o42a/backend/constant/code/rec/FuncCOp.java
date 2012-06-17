@@ -25,10 +25,10 @@ import org.o42a.backend.constant.code.CCodePart;
 import org.o42a.backend.constant.code.CFunc;
 import org.o42a.backend.constant.code.op.OpBE;
 import org.o42a.backend.constant.data.func.CFAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.data.Ptr;
+import org.o42a.util.string.ID;
 
 
 public final class FuncCOp<F extends Func<F>>
@@ -61,7 +61,7 @@ public final class FuncCOp<F extends Func<F>>
 
 	@Override
 	public final <FF extends Func<FF>> FuncCOp<FF> toFunc(
-			final CodeId id,
+			final ID id,
 			final Code code,
 			final Signature<FF> signature) {
 		return new FuncCOp<FF>(

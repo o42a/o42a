@@ -26,10 +26,15 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.intrinsic.operator.BinaryResult;
+import org.o42a.util.string.ID;
 
 
 abstract class CompareNumbers<P extends Number>
 		extends BinaryResult<Long, P, P> {
+
+	static final ID GT_ID = ID.id("gt");
+	static final ID GREATER_ID = ID.id("greater");
+	static final ID NOT_GREATER_ID = ID.id("not_greater");
 
 	static final Value<Long> MINUS_ONE = ValueType.INTEGER.constantValue(-1L);
 	static final Value<Long> ZERO = ValueType.INTEGER.constantValue(0L);

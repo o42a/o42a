@@ -21,8 +21,8 @@ package org.o42a.backend.constant.code.op;
 
 import org.o42a.backend.constant.code.CCode;
 import org.o42a.backend.constant.code.CCodePart;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.Int16op;
+import org.o42a.util.string.ID;
 
 
 public final class Int16cOp extends IntCOp<Int16op, Short> implements Int16op {
@@ -31,7 +31,7 @@ public final class Int16cOp extends IntCOp<Int16op, Short> implements Int16op {
 		super(backend);
 	}
 
-	public Int16cOp(CodeId id, CCode<?> code, Short constant) {
+	public Int16cOp(ID id, CCode<?> code, Short constant) {
 		super(id, code, constant);
 	}
 

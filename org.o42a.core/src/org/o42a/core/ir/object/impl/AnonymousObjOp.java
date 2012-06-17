@@ -19,12 +19,12 @@
 */
 package org.o42a.core.ir.object.impl;
 
-import static org.o42a.core.ir.IRUtil.encodeMemberId;
+import static org.o42a.core.ir.IRNames.encodeMemberId;
+import static org.o42a.core.ir.field.Fld.FIELD_ID;
+import static org.o42a.core.ir.object.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.DERIVED;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.FldOp;
@@ -35,6 +35,7 @@ import org.o42a.core.ir.value.struct.ValueOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
+import org.o42a.util.string.ID;
 
 
 public final class AnonymousObjOp extends ObjectOp {
@@ -82,7 +83,7 @@ public final class AnonymousObjOp extends ObjectOp {
 	}
 
 	@Override
-	public ObjOp cast(CodeId id, CodeDirs dirs, Obj ascendant) {
+	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
 		getWellKnownType().assertDerivedFrom(ascendant);
 		if (ascendant == getContext().getVoid()) {
 			// Everything is compatible with void.
@@ -102,10 +103,9 @@ public final class AnonymousObjOp extends ObjectOp {
 	public FldOp field(CodeDirs dirs, MemberKey memberKey) {
 
 		final CodeDirs subDirs =
-				dirs.begin("field", "Field " + memberKey + " of " + this);
-		final Code code = subDirs.code();
-		final CodeId hostId =
-				code.id("field_host")
+				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
+		final ID hostId =
+				FIELD_HOST_ID
 				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
 		final ObjOp ascendant = cast(
 				hostId,
@@ -126,10 +126,9 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public DepOp dep(CodeDirs dirs, Dep dep) {
 
-		final CodeDirs subDirs = dirs.begin("dep", dep.toString());
-		final Code code = subDirs.code();
+		final CodeDirs subDirs = dirs.begin(DEP_ID, dep.toString());
 		final String depName = dep.getName();
-		final CodeId hostId = code.id("dep_host");
+		final ID hostId = DEP_HOST_ID;
 		final ObjOp ascendant = cast(
 				depName != null ? hostId.sub(depName) : hostId,
 				subDirs,

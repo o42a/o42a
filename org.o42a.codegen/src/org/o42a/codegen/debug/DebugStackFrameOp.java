@@ -19,8 +19,8 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -71,6 +71,7 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 		private Int32rec line;
 
 		private DebugStackFrameType() {
+			super(DEBUG_ID.sub("StackFrame"));
 		}
 
 		@Override
@@ -106,11 +107,6 @@ public final class DebugStackFrameOp extends StructOp<DebugStackFrameOp> {
 		@Override
 		public DebugStackFrameOp op(StructWriter<DebugStackFrameOp> writer) {
 			return new DebugStackFrameOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("StackFrame");
 		}
 
 		@Override

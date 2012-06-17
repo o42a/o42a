@@ -19,8 +19,8 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
+import org.o42a.util.string.ID;
 
 
 final class CCodeBlockPart extends CBlockPart {
@@ -45,8 +45,8 @@ final class CCodeBlockPart extends CBlockPart {
 	protected Block createUnderlying() {
 
 		final CCodeBlock block = codeBlock();
-		final CodeId localId = block.getId().getLocal();
-		final CodeId partName;
+		final ID localId = block.getId().getLocal();
+		final ID partName;
 
 		if (index() == 0) {
 			partName = localId;

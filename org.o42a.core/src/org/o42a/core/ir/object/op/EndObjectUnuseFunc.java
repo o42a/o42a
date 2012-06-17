@@ -21,10 +21,9 @@ package org.o42a.core.ir.object.op;
 
 import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
+import org.o42a.util.string.ID;
 
 
 public final class EndObjectUnuseFunc extends Func<EndObjectUnuseFunc> {
@@ -46,6 +45,7 @@ public final class EndObjectUnuseFunc extends Func<EndObjectUnuseFunc> {
 		private Arg<ObjectUseOp.Op> use;
 
 		private Signature() {
+			super(ID.id("EndObjectUseF"));
 		}
 
 		public final Return<Void> result() {
@@ -59,11 +59,6 @@ public final class EndObjectUnuseFunc extends Func<EndObjectUnuseFunc> {
 		@Override
 		public final EndObjectUnuseFunc op(FuncCaller<EndObjectUnuseFunc> caller) {
 			return new EndObjectUnuseFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("EndObjectUseF");
 		}
 
 		@Override

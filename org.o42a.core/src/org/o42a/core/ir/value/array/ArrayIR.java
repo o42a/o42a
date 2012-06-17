@@ -19,12 +19,13 @@
 */
 package org.o42a.core.ir.value.array;
 
+import static org.o42a.core.ir.IRNames.CONST_ID;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.Val.VAL_CONDITION;
 import static org.o42a.core.ir.value.Val.VAL_EXTERNAL;
 import static org.o42a.core.ir.value.Val.VAL_STATIC;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.data.*;
@@ -33,12 +34,13 @@ import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.core.ir.value.array.ArrayItemsStruct.Op;
 import org.o42a.core.object.array.Array;
+import org.o42a.util.string.ID;
 
 
 public class ArrayIR {
 
 	private final ArrayIRGenerator generator;
-	private final CodeId id;
+	private final ID id;
 	private final Array array;
 	private Val val;
 	private Ptr<ValType.Op> valPtr;
@@ -59,7 +61,7 @@ public class ArrayIR {
 		return this.array;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -93,11 +95,11 @@ public class ArrayIR {
 		}
 
 		final Global<ValType.Op, ValType> global =
-				getGenerator().newGlobal().setConstant().dontExport()
-				.newInstance(
-						getGenerator().id("CONST").sub(getId()),
-						ValType.VAL_TYPE,
-						getVal());
+				getGenerator()
+				.newGlobal()
+				.setConstant()
+				.dontExport()
+				.newInstance(CONST_ID.sub(getId()), VAL_TYPE, getVal());
 
 		return this.valPtr = global.getPointer();
 	}

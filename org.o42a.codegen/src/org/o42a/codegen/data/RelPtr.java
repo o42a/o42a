@@ -19,18 +19,18 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.RelOp;
 import org.o42a.codegen.data.backend.RelAllocation;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public final class RelPtr implements Getter<RelPtr> {
 
 	private final Ptr<?> pointer;
 	private final Ptr<?> relativeTo;
-	private final CodeId id;
+	private final ID id;
 	private RelAllocation allocation;
 
 	RelPtr(Ptr<?> pointer, Ptr<?> relativeTo) {
@@ -47,7 +47,7 @@ public final class RelPtr implements Getter<RelPtr> {
 		return this;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -68,7 +68,7 @@ public final class RelPtr implements Getter<RelPtr> {
 				getRelativeTo().getAllocation());
 	}
 
-	public RelOp op(CodeId id, Code code) {
+	public final RelOp op(ID id, Code code) {
 
 		final CodeBase c = code;
 

@@ -19,9 +19,9 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class Func<F extends Func<F>> implements PtrOp<F> {
@@ -33,7 +33,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.caller.getId();
 	}
 
@@ -51,17 +51,17 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	@Override
-	public final BoolOp isNull(CodeId id, Code code) {
+	public final BoolOp isNull(ID id, Code code) {
 		return this.caller.isNull(id, code);
 	}
 
 	@Override
-	public final BoolOp eq(CodeId id, Code code, F other) {
+	public final BoolOp eq(ID id, Code code, F other) {
 		return this.caller.eq(id, code, other);
 	}
 
 	@Override
-	public final AnyOp toAny(CodeId id, Code code) {
+	public final AnyOp toAny(ID id, Code code) {
 		return this.caller.toAny(id, code);
 	}
 
@@ -75,7 +75,7 @@ public abstract class Func<F extends Func<F>> implements PtrOp<F> {
 	}
 
 	protected final <O> O invoke(
-			CodeId id,
+			ID id,
 			Code code,
 			Return<O> ret,
 			Op... args) {

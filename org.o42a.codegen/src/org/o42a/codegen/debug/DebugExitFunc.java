@@ -19,15 +19,15 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
+import static org.o42a.codegen.debug.Debug.DEBUG_ID;
+
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 
 
 final class DebugExitFunc extends Func<DebugExitFunc> {
 
-	static final DebugExit DEBUG_EXIT = new DebugExit();
+	static final Signature DEBUG_EXIT = new Signature();
 
 	private DebugExitFunc(FuncCaller<DebugExitFunc> caller) {
 		super(caller);
@@ -37,11 +37,13 @@ final class DebugExitFunc extends Func<DebugExitFunc> {
 		invoke(null, code, DEBUG_EXIT.result());
 	}
 
-	static class DebugExit extends Signature<DebugExitFunc> {
+	static class Signature
+			extends org.o42a.codegen.code.Signature<DebugExitFunc> {
 
 		private Return<Void> result;
 
-		private DebugExit() {
+		private Signature() {
+			super(DEBUG_ID.sub("ExitF"));
 		}
 
 		@Override
@@ -56,11 +58,6 @@ final class DebugExitFunc extends Func<DebugExitFunc> {
 		@Override
 		public DebugExitFunc op(FuncCaller<DebugExitFunc> caller) {
 			return new DebugExitFunc(caller);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.id("DEBUG").sub("ExitF");
 		}
 
 		@Override

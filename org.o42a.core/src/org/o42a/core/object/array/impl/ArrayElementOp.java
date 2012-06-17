@@ -36,9 +36,18 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.string.ID;
 
 
 final class ArrayElementOp extends PathOp {
+
+	private static final ID IDX_ID = ID.id("idx");
+	private static final ID NEG_IDX_ID = ID.id("neg_idx");
+	private static final ID ARRAY_LEN_ID = ID.id("array_len");
+	private static final ID ITEM_ID = ID.id("item");
+	private static final ID ITEM_REC_ID = ID.id("item_rec");
+	private static final ID ITEMS_REC_ID = ID.id("items_rec");
+	private static final ID ITEMS_REC_PTR_ID = ID.id("items_rec_ptr");
 
 	private final ArrayValueStruct arrayStruct;
 	private final Ref indexRef;
@@ -102,12 +111,9 @@ final class ArrayElementOp extends PathOp {
 				this.indexRef.op(pathStart()).writeValue(dirs);
 		final Block code = dirs.code();
 		final Int64op index = indexVal.rawValue(
-				dirs.id("idx"),
+				IDX_ID,
 				dirs.code()).load(null, code);
-		final BoolOp negativeIndex = index.lt(
-				code.id("neg_idx"),
-				code,
-				code.int64(0));
+		final BoolOp negativeIndex = index.lt(NEG_IDX_ID, code, code.int64(0));
 
 		negativeIndex.go(code, dirs.falseDir());
 
@@ -117,8 +123,7 @@ final class ArrayElementOp extends PathOp {
 	private void checkIndex(CodeDirs dirs, Int64op index, ValOp array) {
 
 		final Block code = dirs.code();
-		final Int32op length =
-				array.loadLength(code.id("array_len"), code);
+		final Int32op length = array.loadLength(ARRAY_LEN_ID, code);
 
 		length.toInt64(null, code)
 		.le(null, code, index)
@@ -136,22 +141,19 @@ final class ArrayElementOp extends PathOp {
 
 		final Code code = dirs.code();
 		final AnyRecOp items =
-				array.value(code.id("items_rec_ptr"), code)
+				array.value(ITEMS_REC_PTR_ID, code)
 				.toPtr(null, code)
-				.load(code.id("items_rec"), code)
+				.load(ITEMS_REC_ID, code)
 				.toPtr(null, code);
 
-		return items.offset(
-				code.id("item_rec"),
-				code,
-				index.toInt32(null, code));
+		return items.offset(ITEM_REC_ID, code, index.toInt32(null, code));
 	}
 
 	private ObjectOp loadItem(ValDirs dirs, Int64op index) {
 
 		final Block code = dirs.code();
 		final AnyRecOp itemRec = itemRec(dirs, index);
-		final AnyOp itemPtr = itemRec.load(code.id("item"), code);
+		final AnyOp itemPtr = itemRec.load(ITEM_ID, code);
 
 		itemPtr.isNull(null, code).go(code, dirs.falseDir());
 

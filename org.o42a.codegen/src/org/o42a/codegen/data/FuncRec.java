@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.FuncOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public final class FuncRec<F extends Func<F>>
@@ -32,7 +32,7 @@ public final class FuncRec<F extends Func<F>>
 
 	private final Signature<F> signature;
 
-	FuncRec(SubData<?> enclosing, CodeId id, Signature<F> signature) {
+	FuncRec(SubData<?> enclosing, ID id, Signature<F> signature) {
 		super(enclosing, id);
 		this.signature = signature;
 	}
@@ -72,7 +72,7 @@ public final class FuncRec<F extends Func<F>>
 	}
 
 	@Override
-	public FuncOp<F> fieldOf(CodeId id, Code code, StructOp<?> struct) {
+	public FuncOp<F> fieldOf(ID id, Code code, StructOp<?> struct) {
 		return struct.func(id, code, this);
 	}
 

@@ -24,13 +24,13 @@ import static org.o42a.backend.llvm.id.LLVMId.dataId;
 
 import org.o42a.backend.llvm.data.alloc.*;
 import org.o42a.backend.llvm.data.rec.*;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.util.string.ID;
 
 
 public class LLVMDataAllocator implements DataAllocator {
@@ -66,11 +66,11 @@ public class LLVMDataAllocator implements DataAllocator {
 			int start,
 			int end) {
 
-		final CodeId id = pointer.getId();
+		final ID id = pointer.getId();
 		final NativeBuffer ids = getModule().ids();
 		final long nativePtr = binaryConstant(
 				getModulePtr(),
-				ids.writeCodeId(id),
+				ids.write(id),
 				ids.length(),
 				data,
 				start,
@@ -96,7 +96,7 @@ public class LLVMDataAllocator implements DataAllocator {
 				getModule(),
 				createType(
 						getModulePtr(),
-						ids.writeCodeId(type.codeId(type.getGenerator())),
+						ids.write(type.getId()),
 						ids.length()),
 				createTypeData(getModulePtr()),
 				type);
@@ -120,7 +120,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 			typePtr = createType(
 					getModulePtr(),
-					ids.writeCodeId(global.getId().detail("type")),
+					ids.write(global.getId().detail("type")),
 					ids.length());
 			typeDataPtr = createTypeData(getModulePtr());
 		}
@@ -151,7 +151,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 			typePtr = createType(
 					getModulePtr(),
-					ids.writeCodeId(data.getInstance().getId()),
+					ids.write(data.getInstance().getId()),
 					ids.length());
 			typeDataPtr = createTypeData(getModulePtr());
 		}
@@ -208,7 +208,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		allocation.setNativePtr(allocateGlobal(
 				getModulePtr(),
-				ids.writeCodeId(global.getId()),
+				ids.write(global.getId()),
 				ids.length(),
 				allocation.getTypePtr(),
 				global.isConstant(),
@@ -406,7 +406,7 @@ public class LLVMDataAllocator implements DataAllocator {
 
 		global.setNativePtr(externStruct(
 				getModulePtr(),
-				ids.writeCodeId(pointer.getId()),
+				ids.write(pointer.getId()),
 				ids.length(),
 				global.getTypePtr(),
 				attributes.isConstant()));

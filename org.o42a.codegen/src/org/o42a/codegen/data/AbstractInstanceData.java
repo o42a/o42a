@@ -21,9 +21,9 @@ package org.o42a.codegen.data;
 
 import static org.o42a.codegen.data.Type.emptyContent;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
+import org.o42a.util.string.ID;
 
 
 abstract class AbstractInstanceData<S extends StructOp<S>>
@@ -35,7 +35,7 @@ abstract class AbstractInstanceData<S extends StructOp<S>>
 
 	AbstractInstanceData(
 			Generator generator,
-			CodeId id,
+			ID id,
 			Type<S> instance,
 			Content<? extends Type<S>> content) {
 		super(generator, id, instance);

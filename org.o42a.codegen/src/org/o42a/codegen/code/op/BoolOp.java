@@ -21,14 +21,20 @@ package org.o42a.codegen.code.op;
 
 import static org.o42a.codegen.code.op.OpBlockBase.unwrapPos;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
+import org.o42a.util.string.ID;
 
 
 public abstract class BoolOp implements Op {
 
+	public static final ID TRUE_ID = ID.rawId("true");
+	public static final ID FALSE_ID = ID.rawId("false");
+	public static final ID NOT_ID = ID.rawId("not");
+
+	private static final ID TO_ID = ID.id().detail("to");
+
 	public abstract <O extends Op> O select(
-			CodeId id,
+			ID id,
 			Code code,
 			O trueValue,
 			O falseValue);
@@ -47,25 +53,19 @@ public abstract class BoolOp implements Op {
 			String falseName) {
 		return branch(
 				source,
-				trueName != null ? source.getGenerator().id(trueName) : null,
-				falseName != null ? source.getGenerator().id(falseName) : null);
+				trueName != null ? ID.id(trueName) : null,
+				falseName != null ? ID.id(falseName) : null);
 	}
 
-	public final CondBlock branch(
-			Block source,
-			CodeId trueName,
-			CodeId falseName) {
+	public final CondBlock branch(Block source, ID trueName, ID falseName) {
 
 		final OpBlockBase src = source;
 
 		return src.choose(
 				this,
-				trueName != null ? trueName : source.getGenerator().id("true"),
-				falseName != null
-				? falseName
-				: (trueName != null
-						? source.getGenerator().id("not_" + trueName)
-						: source.getGenerator().id("false")));
+				trueName != null ? trueName : TRUE_ID,
+				falseName != null ? falseName
+				: (trueName != null ? NOT_ID.sub(trueName) : FALSE_ID));
 	}
 
 	public final void go(Block source, CodePos truePos) {
@@ -165,10 +165,8 @@ public abstract class BoolOp implements Op {
 			}
 		}
 
-		final Block exitBlock = source.addBlock(
-				source.id()
-				.detail("to")
-				.detail(pos.code().getId()));
+		final Block exitBlock =
+				source.addBlock(TO_ID.detail(pos.code().getId()));
 
 		exitBlock.disposeFromTo(from, pos);
 

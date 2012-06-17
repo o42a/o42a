@@ -19,14 +19,14 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
+import org.o42a.util.string.ID;
 
 
 abstract class Inset extends Code {
 
 	private final Block block;
 
-	Inset(Code enclosing, CodeId name) {
+	Inset(Code enclosing, ID name) {
 		super(enclosing, name);
 		this.block = enclosing.getBlock();
 		setOpNames(new OpNames.InsetOpNames(this));

@@ -21,7 +21,6 @@ package org.o42a.core.ir.object.value;
 
 import static org.o42a.core.object.value.ValueUsage.ALL_VALUE_USAGES;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.codegen.data.FuncRec;
@@ -34,13 +33,14 @@ import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		extends ObjectFnIR {
 
 	private final ObjectValueIR valueIR;
-	private final CodeId id;
+	private final ID id;
 	private FuncPtr<F> funcPtr;
 	private FuncRec<F> func;
 	private byte reused;
@@ -51,14 +51,14 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		super(valueIR.getObjectIR());
 		this.valueIR = valueIR;
 		this.id = getObjectIR().getId().setLocal(
-				getGenerator().id().detail(suffix()));
+				ID.id().detail(suffix()));
 	}
 
 	public final ObjectValueIR getValueIR() {
 		return this.valueIR;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -153,7 +153,7 @@ public abstract class AbstractObjectValueFnIR<F extends ObjectFunc<F>>
 		return getId().toString();
 	}
 
-	protected abstract String suffix();
+	protected abstract ID suffix();
 
 	protected abstract DefValue determineConstant();
 

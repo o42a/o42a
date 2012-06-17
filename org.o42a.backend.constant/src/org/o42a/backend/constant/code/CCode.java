@@ -21,6 +21,7 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
+import static org.o42a.codegen.code.op.Op.PHI_ID;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
@@ -29,7 +30,6 @@ import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.func.CFAlloc;
 import org.o42a.backend.constant.data.struct.CStruct;
 import org.o42a.backend.constant.data.struct.CType;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
@@ -38,6 +38,7 @@ import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public abstract class CCode<C extends Code> implements CodeWriter {
@@ -69,13 +70,13 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	public abstract CCodePart<?> nextPart();
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return code().getId();
 	}
 
 	@Override
 	public final <F extends Func<F>> CFunc<F> caller(
-			CodeId id,
+			ID id,
 			FuncAllocation<F> allocation) {
 
 		final CFAlloc<F> alloc = cast(allocation);
@@ -231,7 +232,7 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public final <O extends Op> O phi(CodeId id, O op) {
+	public final <O extends Op> O phi(ID id, O op) {
 
 		final COp<O, ?> cop = cast(op);
 		@SuppressWarnings("rawtypes")
@@ -243,10 +244,10 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 	}
 
 	@Override
-	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
+	public final <O extends Op> O phi(ID id, O op1, O op2) {
 
-		final CodeId resultId =
-				code().getOpNames().binaryId(id, "phi", op1, op2);
+		final ID resultId =
+				code().getOpNames().binaryId(id, PHI_ID, op1, op2);
 		final COp<O, ?> cop1 = cast(op1);
 		final COp<O, ?> cop2 = cast(op2);
 

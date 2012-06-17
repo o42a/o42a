@@ -19,12 +19,12 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AbstractPtr;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.FuncAllocation;
 import org.o42a.util.fn.Getter;
+import org.o42a.util.string.ID;
 
 
 public abstract class FuncPtr<F extends Func<F>>
@@ -33,7 +33,7 @@ public abstract class FuncPtr<F extends Func<F>>
 
 	private final Signature<F> signature;
 
-	FuncPtr(CodeId id, Signature<F> signature, boolean isNull) {
+	FuncPtr(ID id, Signature<F> signature, boolean isNull) {
 		super(id, true, isNull);
 		this.signature = signature;
 	}
@@ -51,10 +51,10 @@ public abstract class FuncPtr<F extends Func<F>>
 
 	public abstract FuncAllocation<F> getAllocation();
 
-	public F op(CodeId id, Code code) {
+	public final F op(ID id, Code code) {
 		code.assertIncomplete();
 
-		final CodeId resultId;
+		final ID resultId;
 
 		if (id != null) {
 			resultId = code.opId(id);

@@ -19,7 +19,6 @@
 */
 package org.o42a.intrinsic.root;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
@@ -29,6 +28,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 final class RootScope extends StandaloneObjectScope {
@@ -49,15 +49,15 @@ final class RootScope extends StandaloneObjectScope {
 
 	private final class IR extends ScopeIR {
 
-		private final CodeId id;
+		private final ID id;
 
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = generator.id("ROOT");
+			this.id = ID.id("ROOT");
 		}
 
 		@Override
-		public CodeId getId() {
+		public ID getId() {
 			return this.id;
 		}
 

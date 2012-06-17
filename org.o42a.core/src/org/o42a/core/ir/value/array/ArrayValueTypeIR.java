@@ -19,12 +19,17 @@
 */
 package org.o42a.core.ir.value.array;
 
-import org.o42a.codegen.CodeId;
+import static org.o42a.core.ir.IRNames.DATA_ID;
+
 import org.o42a.codegen.Generator;
 import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.util.string.ID;
 
 
 public class ArrayValueTypeIR implements ArrayIRGenerator {
+
+	private static final ID ROW_DATA_ID = DATA_ID.sub("ROW");
+	private static final ID ARRAY_DATA_ID = DATA_ID.sub("ARRAY");
 
 	private final Generator generator;
 	private final ArrayValueType valueType;
@@ -45,17 +50,17 @@ public class ArrayValueTypeIR implements ArrayIRGenerator {
 	}
 
 	@Override
-	public CodeId nextId() {
+	public ID nextId() {
 
-		final String prefix;
+		final ID prefix;
 
 		if (!getValueType().isVariable()) {
-			prefix = "ROW";
+			prefix = ROW_DATA_ID;
 		} else {
-			prefix = "ARRAY";
+			prefix = ARRAY_DATA_ID;
 		}
 
-		return getGenerator().id("DATA").sub(prefix).anonymous(++this.idSeq);
+		return prefix.anonymous(++this.idSeq);
 	}
 
 	@Override

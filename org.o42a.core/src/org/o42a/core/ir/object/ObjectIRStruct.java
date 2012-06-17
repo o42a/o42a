@@ -20,27 +20,29 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ir.object.ObjectBodyIR.BODY_ID;
 import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.util.string.ID;
 
 
 final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
+
+	static final ID OBJECT_ID = ID.id("object");
+	private static final ID BODY_PREFIX_ID = ID.id().detail(BODY_ID);
 
 	private final ObjectIR objectIR;
 
@@ -52,6 +54,7 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	private final ObjectBodyIR mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {
+		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
 		this.mainBodyIR = new ObjectBodyIR(this);
 		this.typeIR = new ObjectTypeIR(this);
@@ -95,14 +98,6 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	@Override
 	protected void fill() {
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-
-		final Scope scope = getObject().getScope();
-
-		return scope.ir(getObjectIR().getGenerator()).getId().detail("object");
 	}
 
 	private void allocateBodyIRs(SubData<?> data) {
@@ -190,11 +185,11 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		}
 	}
 
-	private static CodeId bodyId(Generator generator, ObjectBodyIR bodyIR) {
+	private static ID bodyId(Generator generator, ObjectBodyIR bodyIR) {
 
 		final ObjectIR ascendantIR = bodyIR.getAscendant().ir(generator);
 
-		return generator.id().detail("body").detail(ascendantIR.getId());
+		return BODY_PREFIX_ID.detail(ascendantIR.getId());
 	}
 
 	public static final class Op extends StructOp<Op> {

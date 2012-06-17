@@ -19,11 +19,10 @@
 */
 package org.o42a.core.ir.gc;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.SubData;
+import org.o42a.util.string.ID;
 
 
 public final class GCDescOp extends StructOp<GCDescOp> {
@@ -38,6 +37,7 @@ public final class GCDescOp extends StructOp<GCDescOp> {
 			extends org.o42a.codegen.data.Type<GCDescOp> {
 
 		private Type() {
+			super(ID.rawId("o42a_gc_desc_t"));
 		}
 
 		@Override
@@ -48,11 +48,6 @@ public final class GCDescOp extends StructOp<GCDescOp> {
 		@Override
 		public GCDescOp op(StructWriter<GCDescOp> writer) {
 			return new GCDescOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_gc_desc_t");
 		}
 
 		@Override

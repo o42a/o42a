@@ -24,16 +24,16 @@ import static org.o42a.backend.llvm.code.LLCode.llvm;
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.code.rec.*;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 
 	public AnyLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -41,7 +41,7 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
-	public AnyLLOp toAny(CodeId id, Code code) {
+	public AnyLLOp toAny(ID id, Code code) {
 
 		final long nextPtr = llvm(code).nextPtr();
 
@@ -53,12 +53,12 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 	}
 
 	@Override
-	public AnyRecLLOp toPtr(CodeId id, Code code) {
+	public AnyRecLLOp toPtr(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "any", this);
+		final ID resultId = code.getOpNames().castId(id, ANY_ID, this);
 
 		return new AnyRecLLOp(
 				resultId,
@@ -67,18 +67,18 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toPtr(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public Int8recLLOp toInt8(CodeId id, Code code) {
+	public Int8recLLOp toInt8(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "int8", this);
+		final ID resultId = code.getOpNames().castId(id, INT8_ID, this);
 
 		return new Int8recLLOp(
 				resultId,
@@ -87,19 +87,19 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toInt(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						(byte) 8)));
 	}
 
 	@Override
-	public Int16recLLOp toInt16(CodeId id, Code code) {
+	public Int16recLLOp toInt16(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "int16", this);
+		final ID resultId = code.getOpNames().castId(id, INT16_ID, this);
 
 		return new Int16recLLOp(
 				resultId,
@@ -108,19 +108,19 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toInt(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						(byte) 16)));
 	}
 
 	@Override
-	public Int32recLLOp toInt32(CodeId id, Code code) {
+	public Int32recLLOp toInt32(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "int32", this);
+		final ID resultId = code.getOpNames().castId(id, INT32_ID, this);
 
 		return new Int32recLLOp(
 				resultId,
@@ -129,19 +129,19 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toInt(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						(byte) 32)));
 	}
 
 	@Override
-	public Int64recLLOp toInt64(CodeId id, Code code) {
+	public Int64recLLOp toInt64(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "int64", this);
+		final ID resultId = code.getOpNames().castId(id, INT64_ID, this);
 
 		return new Int64recLLOp(
 				resultId,
@@ -150,19 +150,19 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toInt(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						(byte) 64)));
 	}
 
 	@Override
-	public Fp32recLLOp toFp32(CodeId id, Code code) {
+	public Fp32recLLOp toFp32(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "fp32", this);
+		final ID resultId = code.getOpNames().castId(id, FP32_ID, this);
 
 		return new Fp32recLLOp(
 				resultId,
@@ -171,18 +171,18 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toFp32(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public Fp64recLLOp toFp64(CodeId id, Code code) {
+	public Fp64recLLOp toFp64(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "fp64", this);
+		final ID resultId = code.getOpNames().castId(id, FP64_ID, this);
 
 		return new Fp64recLLOp(
 				resultId,
@@ -191,18 +191,18 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toFp64(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public RelRecLLOp toRel(CodeId id, Code code) {
+	public RelRecLLOp toRel(ID id, Code code) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId = code.getOpNames().castId(id, "rel", this);
+		final ID resultId = code.getOpNames().castId(id, REL_ID, this);
 
 		return new RelRecLLOp(
 				resultId,
@@ -211,13 +211,13 @@ public final class AnyLLOp extends DataPtrLLOp<AnyOp> implements AnyOp {
 				llvm.instr(toRelPtr(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr())));
 	}
 
 	@Override
-	public AnyLLOp create(CodeId id, long blockPtr, long nativePtr) {
+	public AnyLLOp create(ID id, long blockPtr, long nativePtr) {
 		return new AnyLLOp(id, null, blockPtr, nativePtr);
 	}
 

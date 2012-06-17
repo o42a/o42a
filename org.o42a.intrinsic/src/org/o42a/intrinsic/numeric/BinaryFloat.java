@@ -71,13 +71,13 @@ abstract class BinaryFloat extends BinaryResult<Double, Double, Double> {
 
 		final Code code = dirs.code();
 		final ValOp result = dirs.value();
-		final AnyOp leftRec = leftVal.value(code.id("left_ptr"), code);
+		final AnyOp leftRec = leftVal.value(LEFT_PTR_ID, code);
 		final Fp64recOp leftPtr = leftRec.toFp64(null, code);
-		final Fp64op left = leftPtr.load(code.id("left"), code);
+		final Fp64op left = leftPtr.load(LEFT_ID, code);
 
-		final AnyOp rightRec = rightVal.value(code.id("right_ptr"), code);
+		final AnyOp rightRec = rightVal.value(RIGHT_PTR_ID, code);
 		final Fp64recOp rightPtr = rightRec.toFp64(null, code);
-		final Fp64op right = rightPtr.load(code.id("right"), code);
+		final Fp64op right = rightPtr.load(RIGHT_ID, code);
 
 		result.store(code, write(code, left, right));
 

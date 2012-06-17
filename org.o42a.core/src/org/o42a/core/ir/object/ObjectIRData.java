@@ -21,6 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
+import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
 import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
 import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
 import static org.o42a.core.ir.object.type.SampleDescIR.SAMPLE_DESC_IR;
@@ -30,9 +31,9 @@ import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadCondSystemType.THREAD_COND_SYSTEM_TYPE;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
+import static org.o42a.core.ir.value.ValOp.VALUE_ID;
+import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
@@ -48,6 +49,7 @@ import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.core.ir.value.ObjectValFunc;
 import org.o42a.core.ir.value.ValType;
+import org.o42a.util.string.ID;
 
 
 public final class ObjectIRData extends Type<ObjectIRData.Op> {
@@ -63,6 +65,11 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_TYPE};
 
+	private static final ID MAIN_BODY_ID = ID.id("main_body");
+	private static final ID OBJECT_START_ID = ID.id("object_start");
+	private static final ID ASCENDANT_PREFIX_ID = ID.id("ascendant");
+	private static final ID SAMPLE_PREFIX_ID = ID.id("sample");
+
 	private RelRec object;
 	private RelRec start;
 	private Int16rec flags;
@@ -75,6 +82,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private RelList<ObjectBodyIR> samples;
 
 	private ObjectIRData() {
+		super(ID.rawId("o42a_obj_data_t"));
 	}
 
 	@Override
@@ -128,15 +136,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	}
 
 	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return factory.rawId("o42a_obj_data_t");
-	}
-
-	@Override
 	protected void allocate(SubData<Op> data) {
-
-		final Generator generator = data.getGenerator();
-
 		this.object = data.addRelPtr("object");
 		this.start = data.addRelPtr("start");
 		this.flags = data.addInt16("flags");
@@ -145,7 +145,7 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		data.addSystem("value_thread", THREAD_SYSTEM_TYPE);
 		data.addSystem("mutex", MUTEX_SYSTEM_TYPE);
 		data.addSystem("thread_cond", THREAD_COND_SYSTEM_TYPE);
-		this.value = data.addInstance(generator.id("value"), ValType.VAL_TYPE);
+		this.value = data.addInstance(VALUE_ID, VAL_TYPE);
 		this.valueFunc = data.addFuncPtr("value_f", OBJECT_VALUE);
 		this.claimFunc = data.addFuncPtr("claim_f", OBJECT_VAL);
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
@@ -178,11 +178,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		public final DataOp loadObject(Code code) {
 			return object(code)
 					.load(null, code)
-					.offset(
-							code.id("main_body").type(code.id("any")),
-							code,
-							this)
-					.toData(code.id("main_body"), code);
+					.offset(null, code, this)
+					.toData(MAIN_BODY_ID, code);
 		}
 
 		public final RelRecOp start(Code code) {
@@ -192,11 +189,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		public final DataOp loadStart(Code code) {
 			return start(code)
 					.load(null, code)
-					.offset(
-							code.id("object_start").type(code.id("any")),
-							code,
-							this)
-					.toData(code.id("object_start"), code);
+					.offset(null, code, this)
+					.toData(OBJECT_START_ID, code);
 		}
 
 		public final ValType.Op value(Code code) {
@@ -271,8 +265,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		}
 
 		@Override
-		protected CodeId fieldId(Code code, CodeId local) {
-			return code.id("object_data").setLocal(local);
+		protected ID fieldId(Code code, ID local) {
+			return OBJECT_TYPE_ID.setLocal(local);
 		}
 
 	}
@@ -286,8 +280,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 				ObjectBodyIR item) {
 
 			final Generator generator = item.getGenerator();
-			final CodeId id =
-					generator.id("ascendant")
+			final ID id =
+					ASCENDANT_PREFIX_ID
 					.detail(item.getAscendant().ir(generator).getId());
 			final AscendantDescIR.Type desc = data.addInstance(
 					id,
@@ -308,8 +302,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 				ObjectBodyIR item) {
 
 			final Generator generator = item.getGenerator();
-			final CodeId id =
-					generator.id("sample")
+			final ID id =
+					SAMPLE_PREFIX_ID
 					.detail(item.getAscendant().ir(generator).getId());
 			final SampleDescIR.Type desc = data.addInstance(
 					id,

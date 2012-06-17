@@ -21,27 +21,27 @@ package org.o42a.backend.llvm.code.op;
 
 import static org.o42a.backend.llvm.code.LLCode.llvm;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.NumOp;
+import org.o42a.util.string.ID;
 
 
 public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 		implements LLOp<O>, NumOp<O> {
 
-	private final CodeId id;
+	private final ID id;
 	private final long blockPtr;
 	private final long nativePtr;
 
-	public NumLLOp(CodeId id, long blockPtr, long nativePtr) {
+	public NumLLOp(ID id, long blockPtr, long nativePtr) {
 		this.id = id;
 		this.blockPtr = blockPtr;
 		this.nativePtr = nativePtr;
 	}
 
 	@Override
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 
@@ -56,43 +56,43 @@ public abstract class NumLLOp<O extends NumOp<O>, T extends O>
 	}
 
 	@Override
-	public abstract T neg(CodeId id, Code code);
+	public abstract T neg(ID id, Code code);
 
 	@Override
-	public abstract T add(CodeId id, Code code, O summand);
+	public abstract T add(ID id, Code code, O summand);
 
 	@Override
-	public abstract T sub(CodeId id, Code code, O subtrahend);
+	public abstract T sub(ID id, Code code, O subtrahend);
 
 	@Override
-	public abstract T mul(CodeId id, Code code, O multiplier);
+	public abstract T mul(ID id, Code code, O multiplier);
 
 	@Override
-	public abstract T div(CodeId id, Code code, O divisor);
+	public abstract T div(ID id, Code code, O divisor);
 
 	@Override
-	public abstract T rem(CodeId id, Code code, O divisor);
+	public abstract T rem(ID id, Code code, O divisor);
 
 	@Override
-	public abstract Int8llOp toInt8(CodeId id, Code code);
+	public abstract Int8llOp toInt8(ID id, Code code);
 
 	@Override
-	public abstract Int16llOp toInt16(CodeId id, Code code);
+	public abstract Int16llOp toInt16(ID id, Code code);
 
 	@Override
-	public abstract Int32llOp toInt32(CodeId id, Code code);
+	public abstract Int32llOp toInt32(ID id, Code code);
 
 	@Override
-	public abstract Int64llOp toInt64(CodeId id, Code code);
+	public abstract Int64llOp toInt64(ID id, Code code);
 
 	@Override
-	public abstract Fp32llOp toFp32(CodeId id, Code code);
+	public abstract Fp32llOp toFp32(ID id, Code code);
 
 	@Override
-	public abstract Fp64llOp toFp64(CodeId id, Code code);
+	public abstract Fp64llOp toFp64(ID id, Code code);
 
 	@Override
-	public abstract T create(CodeId id, long blockPtr, long nativePtr);
+	public abstract T create(ID id, long blockPtr, long nativePtr);
 
 	@Override
 	public void returnValue(Block code) {

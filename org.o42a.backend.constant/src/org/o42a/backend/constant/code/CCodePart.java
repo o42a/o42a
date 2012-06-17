@@ -19,26 +19,26 @@
 */
 package org.o42a.backend.constant.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.util.Chain;
+import org.o42a.util.string.ID;
 
 
 public abstract class CCodePart<C extends Code> {
 
 	private final CCode<?> code;
-	private final CodeId id;
+	private final ID id;
 	private final OpRecords records = new OpRecords();
 	private OpRecord lastRevealed;
 	private boolean revealing;
 	private boolean hasRecords;
 
-	public CCodePart(CCode<?> code, CodeId id) {
+	public CCodePart(CCode<?> code, ID id) {
 		this.code = code;
 		this.id = id;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
 	}
 

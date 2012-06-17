@@ -24,7 +24,6 @@ import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 
 import java.util.HashMap;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
@@ -35,6 +34,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.string.ID;
 
 
 final class PredefObjValues {
@@ -78,7 +78,7 @@ final class PredefObjValues {
 			return cached;
 		}
 
-		final CodeId id = value.codeId(this.generator);
+		final ID id = value.getId();
 		final PredefValueBuilder builder =
 				new PredefValueBuilder(context, value, type);
 		final FuncPtr<ObjectValueFunc> function =

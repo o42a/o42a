@@ -19,17 +19,19 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface AtomicRecOp<R extends AtomicRecOp<R, O>, O extends Op>
 		extends RecOp<R, O> {
 
-	O load(CodeId id, Code code, Atomicity atomicity);
+	ID TEST_AND_SET_ID = ID.rawId("tns");
+
+	O load(ID id, Code code, Atomicity atomicity);
 
 	void store(Code code, O value, Atomicity atomicity);
 
-	O testAndSet(CodeId id, Code code, O expected, O value);
+	O testAndSet(ID id, Code code, O expected, O value);
 
 }

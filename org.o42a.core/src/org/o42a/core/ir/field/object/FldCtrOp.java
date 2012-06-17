@@ -23,8 +23,6 @@ import static org.o42a.core.ir.field.object.FldCtrFinishFunc.FLD_CTR_FINISH;
 import static org.o42a.core.ir.field.object.FldCtrStartFunc.FLD_CTR_START;
 import static org.o42a.core.ir.system.ThreadSystemType.THREAD_SYSTEM_TYPE;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -33,6 +31,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldOp;
+import org.o42a.util.string.ID;
 
 
 public final class FldCtrOp extends StructOp<FldCtrOp> {
@@ -77,6 +76,7 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		private SystemData thread;
 
 		private Type() {
+			super(ID.rawId("o42a_fld_ctr_t"));
 		}
 
 		public final StructRec<FldCtrOp> prev() {
@@ -98,11 +98,6 @@ public final class FldCtrOp extends StructOp<FldCtrOp> {
 		@Override
 		public final FldCtrOp op(StructWriter<FldCtrOp> writer) {
 			return new FldCtrOp(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_fld_ctr_t");
 		}
 
 		@Override

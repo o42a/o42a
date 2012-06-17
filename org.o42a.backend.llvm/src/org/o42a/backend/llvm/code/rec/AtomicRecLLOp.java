@@ -24,11 +24,11 @@ import static org.o42a.backend.llvm.code.LLCode.nativePtr;
 
 import org.o42a.backend.llvm.code.LLCode;
 import org.o42a.backend.llvm.data.NativeBuffer;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AtomicRecOp;
 import org.o42a.codegen.code.op.Op;
 import org.o42a.codegen.data.AllocClass;
+import org.o42a.util.string.ID;
 
 
 public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
@@ -36,7 +36,7 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 		implements AtomicRecOp<R, O> {
 
 	public AtomicRecLLOp(
-			CodeId id,
+			ID id,
 			AllocClass allocClass,
 			long blockPtr,
 			long nativePtr) {
@@ -44,13 +44,16 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 	}
 
 	@Override
-	public O testAndSet(CodeId id, Code code, O expected, O value) {
+	public O testAndSet(ID id, Code code, O expected, O value) {
 
 		final LLCode llvm = llvm(code);
 		final NativeBuffer ids = llvm.getModule().ids();
 		final long nextPtr = llvm.nextPtr();
-		final CodeId resultId =
-				code.getOpNames().binaryId(id, "tns", expected, value);
+		final ID resultId = code.getOpNames().binaryId(
+				id,
+				TEST_AND_SET_ID,
+				expected,
+				value);
 
 		return createLoaded(
 				resultId,
@@ -58,7 +61,7 @@ public abstract class AtomicRecLLOp<R extends AtomicRecOp<R, O>, O extends Op>
 				llvm.instr(testAndSet(
 						nextPtr,
 						llvm.nextInstr(),
-						ids.writeCodeId(resultId),
+						ids.write(resultId),
 						ids.length(),
 						getNativePtr(),
 						nativePtr(expected),

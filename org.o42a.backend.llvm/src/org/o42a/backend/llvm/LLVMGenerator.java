@@ -25,16 +25,18 @@ import java.io.FileNotFoundException;
 import org.o42a.analysis.Analyzer;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.codegen.AbstractGenerator;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.util.io.FileSource;
 import org.o42a.util.io.SourceFileName;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
 public class LLVMGenerator extends AbstractGenerator {
+
+	private static final ID MODULE_ID = ID.id("module");
 
 	public static LLVMGenerator newGenerator(
 			String id,
@@ -106,7 +108,7 @@ public class LLVMGenerator extends AbstractGenerator {
 	private LLVMModule initializedModule() {
 		if (this.module.getNativePtr() == 0L) {
 			this.module.createModule(
-					this.id != null ? id(this.id) : id("module"));
+					this.id != null ? ID.id(this.id) : MODULE_ID);
 		}
 		return this.module;
 	}
@@ -124,19 +126,19 @@ public class LLVMGenerator extends AbstractGenerator {
 		return new FileSource(file.getParentFile(), file.getName());
 	}
 
-	private CodeId moduleId(FileSource source) {
+	private ID moduleId(FileSource source) {
 		if (this.id != null) {
-			return id(this.id);
+			return ID.id(this.id);
 		}
 
 		final Name name =
 				new SourceFileName(source.getName()).getFieldName();
 
 		if (name != null) {
-			return id(name.toUnderscoredString());
+			return name.toID();
 		}
 
-		return id("module");
+		return MODULE_ID;
 	}
 
 }

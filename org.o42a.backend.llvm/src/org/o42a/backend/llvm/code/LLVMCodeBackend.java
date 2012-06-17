@@ -24,12 +24,12 @@ import static org.o42a.backend.llvm.id.LLVMId.extenFuncId;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.LLFAlloc;
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.code.backend.SignatureWriter;
 import org.o42a.codegen.data.backend.FuncAllocation;
+import org.o42a.util.string.ID;
 
 
 public class LLVMCodeBackend implements CodeBackend {
@@ -59,14 +59,14 @@ public class LLVMCodeBackend implements CodeBackend {
 
 	@Override
 	public <F extends Func<F>> FuncAllocation<F> externFunction(
-			CodeId id,
+			ID id,
 			FuncPtr<F> pointer) {
 
 		final Signature<F> signature = pointer.getSignature();
 		final NativeBuffer ids = this.module.ids();
 		final long functionPtr = LLFunction.externFunction(
 				this.module.getNativePtr(),
-				ids.writeCodeId(id),
+				ids.write(id),
 				ids.length(),
 				getModule().nativePtr(signature));
 

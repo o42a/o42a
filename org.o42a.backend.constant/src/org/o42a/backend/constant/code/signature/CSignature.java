@@ -20,8 +20,6 @@
 package org.o42a.backend.constant.code.signature;
 
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.SignatureBuilder;
@@ -36,6 +34,7 @@ public final class CSignature<F extends Func<F>>
 	private final CSignatureWriter<F> constWriter;
 
 	CSignature(CSignatureWriter<F> constWriter) {
+		super(constWriter.getOrignalSignature().getId());
 		this.constWriter = constWriter;
 	}
 
@@ -55,11 +54,6 @@ public final class CSignature<F extends Func<F>>
 	@Override
 	public F op(FuncCaller<F> caller) {
 		return getOriginal().op(caller);
-	}
-
-	@Override
-	protected CodeId buildCodeId(CodeIdFactory factory) {
-		return getOriginal().codeId(factory);
 	}
 
 	@Override

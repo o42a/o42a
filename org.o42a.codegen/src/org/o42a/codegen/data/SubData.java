@@ -23,13 +23,13 @@ import static org.o42a.codegen.data.Struct.structContent;
 
 import java.util.Iterator;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.Signature;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
+import org.o42a.util.string.ID;
 
 
 public abstract class SubData<S extends StructOp<S>>
@@ -41,7 +41,7 @@ public abstract class SubData<S extends StructOp<S>>
 	private int size;
 	private boolean allocationComplete;
 
-	SubData(Generator generator, CodeId id, Type<S> instance) {
+	SubData(Generator generator, ID id, Type<S> instance) {
 		super(generator, id);
 		this.instance = instance;
 	}
@@ -57,88 +57,76 @@ public abstract class SubData<S extends StructOp<S>>
 	}
 
 	public final Int8rec addInt8(String name) {
-		return add(new Int8rec(this, id(name)));
+		return add(new Int8rec(this, ID.id(name)));
 	}
 
 	public final Int16rec addInt16(String name) {
-		return add(new Int16rec(this, id(name)));
+		return add(new Int16rec(this, ID.id(name)));
 	}
 
 	public final Int32rec addInt32(String name) {
-		return add(new Int32rec(this, id(name)));
+		return add(new Int32rec(this, ID.id(name)));
 	}
 
 	public final Int64rec addInt64(String name) {
-		return add(new Int64rec(this, id(name)));
+		return add(new Int64rec(this, ID.id(name)));
 	}
 
 	public final Fp32rec addFp32(String name) {
-		return add(new Fp32rec(this, id(name)));
+		return add(new Fp32rec(this, ID.id(name)));
 	}
 
 	public final Fp64rec addFp64(String name) {
-		return add(new Fp64rec(this, id(name)));
+		return add(new Fp64rec(this, ID.id(name)));
 	}
 
-	public final SystemData addSystem(
-			String name,
-			SystemType systemType) {
+	public final SystemData addSystem(String name, SystemType systemType) {
 		systemType.allocate(getGenerator());
-		return add(new SystemData(this, id(name), systemType));
+		return add(new SystemData(this, ID.id(name), systemType));
 	}
 
-	public final <F extends Func<F>> FuncRec<F> addFuncPtr(
-			String name,
-			Signature<F> signature) {
+	public final <F extends Func<F>>
+	FuncRec<F> addFuncPtr(String name, Signature<F> signature) {
 		return add(new FuncRec<F>(
 				this,
-				id(name),
+				ID.id(name),
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
 	public final AnyRec addPtr(String name) {
-		return add(new AnyRec(this, id(name)));
+		return add(new AnyRec(this, ID.id(name)));
 	}
 
 	public final DataRec addDataPtr(String name) {
-		return add(new DataRec(this, id(name)));
+		return add(new DataRec(this, ID.id(name)));
 	}
 
-	public final <SS extends StructOp<SS>> StructRec<SS> addPtr(
-			String name,
-			Type<SS> type) {
-		return add(new StructRec<SS>(this, id(name), type));
+	public final <SS extends StructOp<SS>>
+	StructRec<SS> addPtr(String name, Type<SS> type) {
+		return add(new StructRec<SS>(this, ID.id(name), type));
 	}
 
 	public final RelRec addRelPtr(String name) {
-		return add(new RelRec(this, id(name)));
+		return add(new RelRec(this, ID.id(name)));
 	}
 
-	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
-			CodeId name,
-			T type) {
+	public final <SS extends StructOp<SS>, T extends Type<SS>>
+	T addInstance(ID name, T type) {
 		return addInstance(name, type, null, null);
 	}
 
-	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
-			CodeId name,
-			T type,
-			Content<T> content) {
+	public final <SS extends StructOp<SS>, T extends Type<SS>>
+	T addInstance(ID name, T type, Content<T> content) {
 		return addInstance(name, type, null, content);
 	}
 
-	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
-			CodeId name,
-			T type,
-			T instance) {
+	public final <SS extends StructOp<SS>, T extends Type<SS>>
+	T addInstance(ID name, T type, T instance) {
 		return addInstance(name, type, instance, null);
 	}
 
-	public final <SS extends StructOp<SS>, T extends Type<SS>> T addInstance(
-			CodeId name,
-			T type,
-			T instance,
-			Content<T> content) {
+	public final <SS extends StructOp<SS>, T extends Type<SS>>
+	T addInstance(ID name, T type, T instance, Content<T> content) {
 
 		final T typeInstance = type.instantiate(this, name, instance, content);
 		final SubData<?> data = typeInstance.getInstanceData();
@@ -148,17 +136,15 @@ public abstract class SubData<S extends StructOp<S>>
 		return typeInstance;
 	}
 
-	public final <SS extends StructOp<SS>, T extends Struct<SS>> T addStruct(
-			CodeId name,
-			T type,
-			T instance) {
+	public final <SS extends StructOp<SS>, T extends Struct<SS>>
+	T addStruct(ID name, T type, T instance) {
 
 		final Content<T> content = structContent();
 
 		return addInstance(name, type, instance, content);
 	}
 
-	public final <SS extends Struct<?>> SS addStruct(CodeId name, SS struct) {
+	public final <SS extends Struct<?>> SS addStruct(ID name, SS struct) {
 		add(struct.setStruct(this, name));
 		return struct;
 	}
@@ -166,7 +152,7 @@ public abstract class SubData<S extends StructOp<S>>
 	public final <
 			SS extends StructOp<SS>,
 			T extends Type<SS>> Allocated<SS, T> allocate(
-					CodeId name,
+					ID name,
 					T type) {
 
 		final T instance = type.instantiate(this, name, null, null);
@@ -179,11 +165,8 @@ public abstract class SubData<S extends StructOp<S>>
 		return new Allocated<SS, T>(instance, type, instanceData);
 	}
 
-	public final <
-			SS extends StructOp<SS>,
-			T extends Type<SS>> Allocated<SS, T> allocateStruct(
-					CodeId name,
-					T struct) {
+	public final <SS extends StructOp<SS>, T extends Type<SS>>
+	Allocated<SS, T> allocateStruct(ID name, T struct) {
 
 		final SubData<SS> instanceData =
 				add(struct.setStruct(this, name), false);
@@ -251,10 +234,6 @@ public abstract class SubData<S extends StructOp<S>>
 			data.write(writer);
 			data = data.getNext();
 		}
-	}
-
-	private CodeId id(String name) {
-		return getGenerator().id(name);
 	}
 
 }

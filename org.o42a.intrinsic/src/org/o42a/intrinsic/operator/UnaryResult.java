@@ -42,9 +42,13 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.fn.Cancelable;
+import org.o42a.util.string.ID;
 
 
 public abstract class UnaryResult<T, O> extends AnnotatedBuiltin {
+
+	public static final ID OPERAND_VALUE_ID = ID.id("operand_value");
+	public static final ID OPERAND_PTR_ID = ID.id("operand_ptr");
 
 	private final MemberName operandId;
 	private final ValueStruct<?, O> operandStruct;

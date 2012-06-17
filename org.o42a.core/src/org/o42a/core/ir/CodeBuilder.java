@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ir;
 
+import static org.o42a.core.ir.object.op.CtrOp.CTR_ID;
 import static org.o42a.core.ir.object.op.CtrOp.CTR_TYPE;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import static org.o42a.core.ir.op.NoArgFunc.NO_ARG;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.*;
 import org.o42a.core.Scope;
@@ -38,6 +38,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.util.string.ID;
 
 
 public abstract class CodeBuilder {
@@ -121,7 +122,7 @@ public abstract class CodeBuilder {
 
 	public abstract ObjectOp owner();
 
-	public final CodeId nextId() {
+	public final ID nextId() {
 		return getFunction().getId().anonymous(++this.nameSeq);
 	}
 
@@ -137,7 +138,7 @@ public abstract class CodeBuilder {
 			Obj sample) {
 
 		final AllocationCode alloc = dirs.code().getAllocator().allocation();
-		final CtrOp.Op ctr = alloc.allocate(alloc.id("ctr"), CTR_TYPE);
+		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
 
 		return ctr.op(this).newObject(
 				dirs,

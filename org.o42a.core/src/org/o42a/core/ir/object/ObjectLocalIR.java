@@ -30,16 +30,10 @@ import org.o42a.core.st.Command;
 
 public abstract class ObjectLocalIR extends ScopeIR {
 
-	private final LocalFnIR function;
+	private LocalFnIR function;
 
 	public ObjectLocalIR(Generator generator, LocalScope scope) {
 		super(generator, scope);
-
-		final LocalIR localIR = (LocalIR) this;
-		final ObjectValueIR ownerValueIR =
-				localIR.getOwnerIR().getObjectValueIR();
-
-		this.function = new LocalFnIR(localIR, ownerValueIR.getLocals());
 	}
 
 	public void write(
@@ -47,7 +41,18 @@ public abstract class ObjectLocalIR extends ScopeIR {
 			ObjOp owner,
 			ObjOp ownerBody,
 			Command command) {
-		this.function.call(dirs, owner, ownerBody, command);
+		function().call(dirs, owner, ownerBody, command);
 	}
 
+	private final LocalFnIR function() {
+		if (this.function != null) {
+			return this.function;
+		}
+
+		final LocalIR localIR = (LocalIR) this;
+		final ObjectValueIR ownerValueIR =
+				localIR.getOwnerIR().getObjectValueIR();
+
+		return this.function = new LocalFnIR(localIR, ownerValueIR.getLocals());
+	}
 }

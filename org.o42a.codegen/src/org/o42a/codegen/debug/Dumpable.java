@@ -19,16 +19,16 @@
 */
 package org.o42a.codegen.debug;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.util.string.ID;
 
 
 public interface Dumpable {
 
-	DataOp toData(CodeId id, Code code);
+	DataOp toData(ID id, Code code);
 
-	AnyOp toAny(CodeId id, Code code);
+	AnyOp toAny(ID id, Code code);
 
 }

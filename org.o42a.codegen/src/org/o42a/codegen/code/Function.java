@@ -21,10 +21,10 @@ package org.o42a.codegen.code;
 
 import static org.o42a.codegen.code.backend.BeforeReturn.NOTHING_BEFORE_RETURN;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.backend.BeforeReturn;
 import org.o42a.codegen.code.backend.FuncWriter;
 import org.o42a.codegen.code.op.Op;
+import org.o42a.util.string.ID;
 
 
 public final class Function<F extends Func<F>>
@@ -40,7 +40,7 @@ public final class Function<F extends Func<F>>
 
 	Function(
 			FunctionSettings settings,
-			CodeId id,
+			ID id,
 			Signature<F> signature,
 			FunctionBuilder<F> builder) {
 		super(settings.getGenerator(), id);

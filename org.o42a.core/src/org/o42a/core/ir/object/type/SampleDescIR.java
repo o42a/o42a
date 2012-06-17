@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.object.type;
 
-import org.o42a.codegen.CodeId;
-import org.o42a.codegen.CodeIdFactory;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.RelRecOp;
@@ -30,6 +28,7 @@ import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.util.string.ID;
 
 
 public final class SampleDescIR implements Content<SampleDescIR.Type> {
@@ -85,6 +84,7 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		private RelRec body;
 
 		private Type() {
+			super(ID.rawId("o42a_obj_sample_t"));
 		}
 
 		public final RelRec body() {
@@ -94,11 +94,6 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 		@Override
 		public final Op op(StructWriter<Op> writer) {
 			return new Op(writer);
-		}
-
-		@Override
-		protected CodeId buildCodeId(CodeIdFactory factory) {
-			return factory.rawId("o42a_obj_sample_t");
 		}
 
 		@Override

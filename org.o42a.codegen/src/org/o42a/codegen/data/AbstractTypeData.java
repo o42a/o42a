@@ -19,18 +19,18 @@
 */
 package org.o42a.codegen.data;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.backend.DataAllocation;
 import org.o42a.codegen.data.backend.DataAllocator;
+import org.o42a.util.string.ID;
 
 
 abstract class AbstractTypeData<S extends StructOp<S>> extends SubData<S> {
 
 	private boolean scheduled;
 
-	AbstractTypeData(Generator generator, CodeId id, Type<S> instance) {
+	AbstractTypeData(Generator generator, ID id, Type<S> instance) {
 		super(generator, id, instance);
 	}
 

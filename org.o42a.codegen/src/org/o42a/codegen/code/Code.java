@@ -19,24 +19,24 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.Type;
 import org.o42a.codegen.debug.DebugCodeBase;
+import org.o42a.util.string.ID;
 
 
 public abstract class Code extends DebugCodeBase {
 
-	private final CodeId id;
+	private final ID id;
 	private OpNames opNames = new OpNames(this);
 
-	public Code(Code enclosing, CodeId name) {
+	public Code(Code enclosing, ID name) {
 		super(enclosing);
 		this.id = enclosing.getOpNames().nestedId(name);
 	}
 
-	public Code(Generator generator, CodeId id) {
+	public Code(Generator generator, ID id) {
 		super(generator);
 		this.id = id;
 	}
@@ -53,33 +53,25 @@ public abstract class Code extends DebugCodeBase {
 		this.opNames = opNames;
 	}
 
-	public final CodeId getId() {
+	public final ID getId() {
 		return this.id;
-	}
-
-	public final CodeId id() {
-		return getGenerator().id();
-	}
-
-	public final CodeId id(String name) {
-		return getGenerator().id(name);
 	}
 
 	public final Code inset(String name) {
 		assert assertIncomplete();
-		return new InsetCode(this, id(name));
+		return new InsetCode(this, ID.id(name));
 	}
 
-	public final Code inset(CodeId name) {
+	public final Code inset(ID name) {
 		assert assertIncomplete();
 		return new InsetCode(this, name);
 	}
 
 	public final Block addBlock(String name) {
-		return new CodeBlock(this, getGenerator().id(name));
+		return addBlock(ID.id(name));
 	}
 
-	public final Block addBlock(CodeId name) {
+	public final Block addBlock(ID name) {
 		return new CodeBlock(this, name);
 	}
 
@@ -144,12 +136,12 @@ public abstract class Code extends DebugCodeBase {
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
-	public final <O extends Op> O phi(CodeId id, O op) {
+	public final <O extends Op> O phi(ID id, O op) {
 		assert assertIncomplete();
 		return writer().phi(id != null ? id : op.getId(), op);
 	}
 
-	public final <O extends Op> O phi(CodeId id, O op1, O op2) {
+	public final <O extends Op> O phi(ID id, O op1, O op2) {
 		assert assertIncomplete();
 		return writer().phi(opId(id), op1, op2);
 	}
@@ -178,7 +170,7 @@ public abstract class Code extends DebugCodeBase {
 		writer().fullBarrier();
 	}
 
-	public final CodeId opId(CodeId id) {
+	public final ID opId(ID id) {
 		return getOpNames().opId(id);
 	}
 

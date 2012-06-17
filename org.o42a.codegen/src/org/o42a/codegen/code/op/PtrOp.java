@@ -19,18 +19,20 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
+import org.o42a.util.string.ID;
 
 
 public interface PtrOp<P extends PtrOp<P>> extends Op {
 
-	BoolOp isNull(CodeId id, Code code);
+	ID IS_NULL_ID = ID.rawId("is_null");
 
-	BoolOp eq(CodeId id, Code code, P other);
+	BoolOp isNull(ID id, Code code);
 
-	AnyOp toAny(CodeId id, Code code);
+	BoolOp eq(ID id, Code code, P other);
+
+	AnyOp toAny(ID id, Code code);
 
 	void returnValue(Block code);
 

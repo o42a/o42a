@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.CodeId;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.ValDirs;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
@@ -114,7 +114,7 @@ public abstract class Control {
 		return code().addBlock(name);
 	}
 
-	public final Block addBlock(CodeId name) {
+	public final Block addBlock(ID name) {
 		return code().addBlock(name);
 	}
 
