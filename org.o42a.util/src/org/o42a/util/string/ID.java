@@ -56,10 +56,17 @@ public final class ID {
 
 	ID(ID prefix, Separator separator, Name name, ID suffix) {
 		this.prefix = prefix;
-		this.separator = separator;
 		this.name = name;
 		this.suffix = suffix;
 		this.local = this;
+		if (prefix == null
+				&& !separator.isTop()
+				&& !separator.isNone()
+				&& (!name.isEmpty() || suffix != null)) {
+			this.separator = Separator.NONE;
+		} else {
+			this.separator = separator;
+		}
 	}
 
 	public final ID getPrefix() {
@@ -91,7 +98,7 @@ public final class ID {
 	public final ID setLocal(Name local) {
 		assert local != null :
 			"Local not specified";
-		return setLocal(new ID(null, Separator.SUB, local, null));
+		return setLocal(new ID(null, Separator.NONE, local, null));
 	}
 
 	public final ID setLocal(ID local) {
@@ -215,11 +222,12 @@ public final class ID {
 
 	private ID separate(Separator separator, ID id) {
 		if (getSuffix() == null && getName().isEmpty()) {
-			if (getPrefix() == null
-					&& id.startsWith().discardsPrev(separator)) {
-				return id;
+			if (id.startsWith().discardsPrev(separator)) {
+				if (getPrefix() == null) {
+					return id;
+				}
+				return new ID(getPrefix(), separator, NO_NAME, id);
 			}
-			return new ID(getPrefix(), separator, NO_NAME, id);
 		}
 		return new ID(this, separator, NO_NAME, id);
 	}
@@ -229,10 +237,18 @@ public final class ID {
 	}
 
 	private ID separate(Separator separator, Name name) {
-		if (getSuffix() == null
-				&& getName().isEmpty()
-				&& getSeparator().discardsNext(separator)) {
-			return new ID(getPrefix(), getSeparator(), name, null);
+		if (getSuffix() == null && getName().isEmpty()) {
+			if (getPrefix() == null
+					&& getSeparator().isNone()
+					&& !separator.isTop()) {
+				return new ID(null, Separator.NONE, name, null);
+			}
+			if (separator.discardsPrev(getSeparator())) {
+				return new ID(getPrefix(), separator, name, null);
+			}
+			if (getSeparator().discardsNext(separator)) {
+				return new ID(getPrefix(), getSeparator(), name, null);
+			}
 		}
 		return new ID(this, separator, name, null);
 	}
@@ -296,6 +312,10 @@ public final class ID {
 			return this == NONE;
 		}
 
+		public final boolean isTop() {
+			return this == TOP;
+		}
+
 		public final String getDefaultSign() {
 			return this.defaultSign;
 		}
@@ -305,11 +325,11 @@ public final class ID {
 		}
 
 		boolean discardsPrev(Separator prev) {
-			return prev == NONE;
+			return prev.isNone();
 		}
 
 		boolean discardsNext(Separator next) {
-			return next == this || next != TOP;
+			return next == this || !next.isTop();
 		}
 
 	}
