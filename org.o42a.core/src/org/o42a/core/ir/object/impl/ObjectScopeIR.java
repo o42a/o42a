@@ -22,34 +22,19 @@ package org.o42a.core.ir.object.impl;
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
 
 
 public final class ObjectScopeIR extends ScopeIR {
 
-	private final ID id;
-
 	public ObjectScopeIR(Generator generator, Obj object) {
 		super(generator, object.getScope());
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-
-		assert !enclosingScope.isTopScope() :
-			"Can not build IR for " + object;
-
-		this.id = enclosingScope.ir(generator).nextAnonymousId();
 	}
 
-	@Override
-	public ID getId() {
-		return this.id;
-	}
 
 	@Override
 	public void allocate() {

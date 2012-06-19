@@ -19,10 +19,16 @@
 */
 package org.o42a.core.member;
 
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
 public final class MemberName extends MemberId {
+
+	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
+	private static final ID LOCAL_PREFIX_ID = ID.id("L");
+	private static final ID CLAUSE_DISPLAY_PREFIX_ID = ID.id("<clause> ");
+	private static final ID LOCAL_DISPLAY_PREFIX_ID = ID.id("<local> ");
 
 	public static MemberName fieldName(Name name) {
 		assert name != null :
@@ -89,6 +95,46 @@ public final class MemberName extends MemberId {
 	}
 
 	@Override
+	public ID toID() {
+
+		final Name name = getName();
+
+		switch (getKind()) {
+		case CLAUSE:
+			return CLAUSE_PREFIX_ID.suffix(name);
+		case LOCAL:
+			return LOCAL_PREFIX_ID.suffix(name);
+		case FIELD :
+			return name.toID();
+		}
+
+		throw new IllegalArgumentException(
+				"Unsupported member kind: " + getKind());
+	}
+
+	@Override
+	public ID toDisplayID() {
+
+		final Name name = getName();
+
+		if (name == null) {
+			return null;
+		}
+
+		switch (getKind()) {
+		case CLAUSE:
+			return CLAUSE_DISPLAY_PREFIX_ID.suffix(name);
+		case LOCAL:
+			return LOCAL_DISPLAY_PREFIX_ID.suffix(name);
+		case FIELD :
+			return name.toID();
+		}
+
+		throw new IllegalArgumentException(
+				"Unsupported member kind: " + getKind());
+	}
+
+	@Override
 	public int hashCode() {
 
 		final int prime = 31;
@@ -119,14 +165,6 @@ public final class MemberName extends MemberId {
 		}
 
 		return this.name.equals(other.name);
-	}
-
-	@Override
-	public String toString() {
-		if (this.name == null) {
-			return super.toString();
-		}
-		return this.name.toString();
 	}
 
 	public enum MemberKind {

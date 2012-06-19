@@ -108,8 +108,8 @@ public abstract class ContainerMembers {
 
 		final Member member = entry.getMember();
 
-		addEntry(member.getId(), entry);
-		for (MemberId aliasId : member.getAliasIds()) {
+		addEntry(member.getMemberId(), entry);
+		for (MemberId aliasId : member.getAliases()) {
 			addEntry(aliasId, entry);
 		}
 	}

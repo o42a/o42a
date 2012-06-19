@@ -26,6 +26,7 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.ID;
 
 
 public final class ReproducedMemberId extends MemberId {
@@ -108,6 +109,26 @@ public final class ReproducedMemberId extends MemberId {
 	}
 
 	@Override
+	public ID toID() {
+
+		ID id = this.memberId.toID();
+
+		for (Scope scope : getReproducedFrom()) {
+			id = id.in(scope.getId());
+		}
+
+		return id;
+	}
+
+	@Override
+	public ID toDisplayID() {
+		if (this.reproducedFrom == null) {
+			return null;
+		}
+		return toID();
+	}
+
+	@Override
 	public int hashCode() {
 
 		final int prime = 31;
@@ -143,22 +164,5 @@ public final class ReproducedMemberId extends MemberId {
 		return true;
 	}
 
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append(this.memberId);
-		out.append("[from: ");
-		out.append(this.reproducedFrom[0]);
-
-		for (int i = 1; i < this.reproducedFrom.length; ++i) {
-			out.append(", ").append(this.reproducedFrom[i]);
-		}
-
-		out.append(']');
-
-		return out.toString();
-	}
 
 }

@@ -46,17 +46,17 @@ public abstract class MemberClause extends Member {
 				addDeclaration(owner, propagatedFrom.getLastDefinition()),
 				propagatedFrom.distributeIn(owner.getContainer()),
 				owner);
-		this.key = propagatedFrom.getKey();
+		this.key = propagatedFrom.getMemberKey();
 		this.declaration = propagatedFrom.declaration.overrideBy(this);
 	}
 
 	@Override
-	public final MemberId getId() {
+	public final MemberId getMemberId() {
 		return this.declaration.getMemberId();
 	}
 
 	@Override
-	public final MemberKey getKey() {
+	public final MemberKey getMemberKey() {
 		if (this.key != null) {
 			return this.key;
 		}
@@ -64,7 +64,7 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public MemberId[] getAliasIds() {
+	public MemberId[] getAliases() {
 		if (this.aliasIds != null) {
 			return this.aliasIds;
 		}
@@ -72,17 +72,17 @@ public abstract class MemberClause extends Member {
 		final Name name = getDeclaration().getName();
 
 		if (name == null) {
-			return this.aliasIds = super.getAliasIds();
+			return this.aliasIds = super.getAliases();
 		}
 
-		final MemberId id = getId();
+		final MemberId id = getMemberId();
 		final MemberName memberName = id.getMemberName();
 
 		if (memberName == null) {
-			return this.aliasIds = super.getAliasIds();
+			return this.aliasIds = super.getAliases();
 		}
 		if (memberName.getName().is(name)) {
-			return this.aliasIds = super.getAliasIds();
+			return this.aliasIds = super.getAliases();
 		}
 
 		final MemberId aliasName = clauseName(name);
@@ -104,7 +104,7 @@ public abstract class MemberClause extends Member {
 			return this.aliasKeys;
 		}
 
-		final MemberId[] aliasIds = getAliasIds();
+		final MemberId[] aliasIds = getAliases();
 
 		if (aliasIds.length == 0) {
 			return this.aliasKeys = super.getAliasKeys();

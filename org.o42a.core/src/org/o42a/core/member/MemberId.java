@@ -25,9 +25,11 @@ import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 import org.o42a.core.Scope;
 import org.o42a.core.member.impl.MemberIds;
 import org.o42a.core.member.impl.ReproducedMemberId;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.SubID;
 
 
-public abstract class MemberId {
+public abstract class MemberId implements SubID {
 
 	public static final MemberId BROKEN_MEMBER_ID = new Broken();
 
@@ -92,7 +94,21 @@ public abstract class MemberId {
 		return new MemberKey(origin, this);
 	}
 
+	@Override
+	public String toString() {
+
+		final ID displayID = toDisplayID();
+
+		if (displayID == null) {
+			return super.toString();
+		}
+
+		return displayID.toString();
+	}
+
 	private static final class Broken extends MemberId {
+
+		private final ID id = ID.id("BROKEN");
 
 		@Override
 		public boolean isValid() {
@@ -132,6 +148,16 @@ public abstract class MemberId {
 		@Override
 		public MemberId reproduceFrom(Scope reproducedFrom) {
 			return this;
+		}
+
+		@Override
+		public ID toID() {
+			return this.id;
+		}
+
+		@Override
+		public ID toDisplayID() {
+			return this.id;
 		}
 
 		@Override

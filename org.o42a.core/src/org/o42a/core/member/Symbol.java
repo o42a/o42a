@@ -132,8 +132,8 @@ public final class Symbol {
 			return true;
 		}
 		if (old.isOverride()) {
-			if (member.getKey().getOrigin().derivedFrom(
-					old.getKey().getOrigin())) {
+			if (member.getMemberKey().getOrigin().derivedFrom(
+					old.getMemberKey().getOrigin())) {
 				return true;
 			}
 		}
@@ -155,7 +155,7 @@ public final class Symbol {
 			this.all.put(accessor, newMembers);
 		}
 
-		final Member old = newMembers.put(member.getKey().getOrigin(), member);
+		final Member old = newMembers.put(member.getMemberKey().getOrigin(), member);
 
 		assert old == null || old.isPropagated() :
 			old + " is not propagated, but replaced with " + member;

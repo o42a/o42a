@@ -269,7 +269,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 			}
 
 			final Field field =
-					object.member(declaredField.getKey())
+					object.member(declaredField.getMemberKey())
 					.toField()
 					.field(dummyUser());
 

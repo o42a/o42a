@@ -159,7 +159,7 @@ final class StringChar extends AnnotatedBuiltin {
 
 		final Path path =
 				member(INDEX_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 

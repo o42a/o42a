@@ -83,7 +83,7 @@ public final class EnclosingOwnerDep extends Dep implements ReversePath {
 
 		final LocalScope revertedLocal =
 				target.toObject()
-				.member(originalLocal.toMember().getKey())
+				.member(originalLocal.toMember().getMemberKey())
 				.toLocal()
 				.local();
 
@@ -154,7 +154,7 @@ public final class EnclosingOwnerDep extends Dep implements ReversePath {
 					@Override
 					public Scope revert(Scope target) {
 						return target.toObject()
-								.member(local.toMember().getKey())
+								.member(local.toMember().getMemberKey())
 								.toLocal()
 								.local();
 					}

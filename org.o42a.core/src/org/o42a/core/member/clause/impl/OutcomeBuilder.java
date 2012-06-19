@@ -106,8 +106,8 @@ public class OutcomeBuilder implements PathWalker {
 
 		if (containerClause != null) {
 
-			final MemberKey containerKey = containerClause.toMember().getKey();
-			final MemberKey key = member.getKey();
+			final MemberKey containerKey = containerClause.toMember().getMemberKey();
+			final MemberKey key = member.getMemberKey();
 
 			if (containerKey.startsWith(key)) {
 				return up(container, step, member.substance(dummyUser()), null);
@@ -137,7 +137,7 @@ public class OutcomeBuilder implements PathWalker {
 			return false;
 		}
 
-		this.outcome = this.outcome.append(field.getKey());
+		this.outcome = this.outcome.append(field.getMemberKey());
 
 		return true;
 	}

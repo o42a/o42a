@@ -23,14 +23,12 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectScopeIRBase;
-import org.o42a.util.string.ID;
 
 
 public abstract class ScopeIR extends ObjectScopeIRBase {
 
 	private final Generator generator;
 	private final Scope scope;
-	private int anonymousSeq;
 	private HostOp op;
 
 	public ScopeIR(Generator generator, Scope scope) {
@@ -44,12 +42,6 @@ public abstract class ScopeIR extends ObjectScopeIRBase {
 
 	public Scope getScope() {
 		return this.scope;
-	}
-
-	public abstract ID getId();
-
-	public final ID nextAnonymousId() {
-		return getId().anonymous(++this.anonymousSeq);
 	}
 
 	public HostOp op(CodeBuilder builder, Code code) {

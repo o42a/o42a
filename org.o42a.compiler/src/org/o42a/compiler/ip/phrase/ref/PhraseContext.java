@@ -208,7 +208,7 @@ public abstract class PhraseContext {
 			if (foundInImplicit.found()) {
 				return foundInImplicit.setImplicit(
 						nextClause(
-								implicit.getKey().getMemberId(),
+								implicit.getMemberKey().getMemberId(),
 								implicitClause,
 								container.toClause()));
 			}
@@ -245,7 +245,7 @@ public abstract class PhraseContext {
 
 				final MemberClause c = reusedClause.getClause();
 
-				if (c.getId().getLocalId().equals(memberId)) {
+				if (c.getMemberId().getLocalId().equals(memberId)) {
 					found = nextClause(memberId, c.clause());
 				} else {
 					found = clauseNotFound(what);

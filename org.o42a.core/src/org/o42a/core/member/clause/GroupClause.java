@@ -110,7 +110,7 @@ public abstract class GroupClause extends Clause implements Container {
 			if (clause == null) {
 				continue;
 			}
-			if (!key.equals(member.getKey().getEnclosingKey())) {
+			if (!key.equals(member.getMemberKey().getEnclosingKey())) {
 				continue;
 			}
 
@@ -159,7 +159,7 @@ public abstract class GroupClause extends Clause implements Container {
 			return getEnclosingContainer().member(
 					user,
 					accessor,
-					toMember().getId().append(memberId),
+					toMember().getMemberId().append(memberId),
 					declaredIn);
 		}
 
@@ -185,13 +185,13 @@ public abstract class GroupClause extends Clause implements Container {
 			final Path foundInGroup = getEnclosingContainer().findMember(
 					user,
 					accessor,
-					toMember().getId().append(memberId),
+					toMember().getMemberId().append(memberId),
 					declaredIn);
 
 			if (foundInGroup != null) {
 				return foundInGroup;
 			}
-			if (toMember().getId().equals(memberId)) {
+			if (toMember().getMemberId().equals(memberId)) {
 				return Path.SELF_PATH;
 			}
 		}
@@ -224,10 +224,10 @@ public abstract class GroupClause extends Clause implements Container {
 		if (enclosingClause == null) {
 			assert enclosingScope.toObject() != null :
 				this + " is not inside of object";
-			return member.getKey().toPath();
+			return member.getMemberKey().toPath();
 		}
 
-		return enclosingClause.pathInObject().append(member.getKey());
+		return enclosingClause.pathInObject().append(member.getMemberKey());
 	}
 
 	protected MemberClause groupClause(MemberId memberId, Obj declaredIn) {
@@ -249,7 +249,7 @@ public abstract class GroupClause extends Clause implements Container {
 		}
 
 		return clauseContainer.clause(
-				toMember().getId().append(memberId),
+				toMember().getMemberId().append(memberId),
 				declaredIn);
 	}
 

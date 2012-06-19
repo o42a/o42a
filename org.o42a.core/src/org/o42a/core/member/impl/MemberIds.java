@@ -25,6 +25,7 @@ import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.string.ID;
 
 
 public final class MemberIds extends MemberId {
@@ -48,22 +49,22 @@ public final class MemberIds extends MemberId {
 	}
 
 	@Override
-	public MemberName getMemberName() {
+	public final MemberName getMemberName() {
 		return lastId().getMemberName();
 	}
 
 	@Override
-	public AdapterId getAdapterId() {
+	public final AdapterId getAdapterId() {
 		return lastId().getAdapterId();
 	}
 
 	@Override
-	public MemberId[] getIds() {
+	public final MemberId[] getIds() {
 		return this.ids;
 	}
 
 	@Override
-	public MemberId getEnclosingId() {
+	public final MemberId getEnclosingId() {
 		if (this.ids.length == 2) {
 			return this.ids[0];
 		}
@@ -90,17 +91,17 @@ public final class MemberIds extends MemberId {
 	}
 
 	@Override
-	public MemberName toMemberName() {
+	public final MemberName toMemberName() {
 		return null;
 	}
 
 	@Override
-	public AdapterId toAdapterId() {
+	public final AdapterId toAdapterId() {
 		return null;
 	}
 
 	@Override
-	public MemberId[] toIds() {
+	public final MemberId[] toIds() {
 		return this.ids;
 	}
 
@@ -127,6 +128,26 @@ public final class MemberIds extends MemberId {
 	}
 
 	@Override
+	public ID toID() {
+
+		ID id = ID.id();
+
+		for (MemberId memberId : getIds()) {
+			id = id.sub(memberId);
+		}
+
+		return id;
+	}
+
+	@Override
+	public ID toDisplayID() {
+		if (this.ids == null) {
+			return null;
+		}
+		return toID();
+	}
+
+	@Override
 	public int hashCode() {
 		return Arrays.hashCode(this.ids);
 	}
@@ -146,21 +167,6 @@ public final class MemberIds extends MemberId {
 		final MemberIds other = (MemberIds) obj;
 
 		return Arrays.equals(this.ids, other.ids);
-	}
-
-	@Override
-	public String toString() {
-
-		final StringBuilder out = new StringBuilder();
-
-		for (MemberId id : this.ids) {
-			if (out.length() != 0) {
-				out.append(':');
-			}
-			out.append(id);
-		}
-
-		return out.toString();
 	}
 
 	private final MemberId lastId() {

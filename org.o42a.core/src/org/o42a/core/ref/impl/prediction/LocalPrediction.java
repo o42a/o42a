@@ -83,7 +83,7 @@ public class LocalPrediction extends Prediction {
 
 		public Itr(LocalPrediction prediction) {
 			this.bases = prediction.basePrediction.iterator();
-			this.key = prediction.getScope().toLocal().toMember().getKey();
+			this.key = prediction.getScope().toLocal().toMember().getMemberKey();
 		}
 
 		@Override

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRNames.encodeMemberId;
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
@@ -148,9 +147,7 @@ public final class ObjOp extends ObjectOp {
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
 		final Code code = subDirs.code();
 		final Fld fld = getObjectIR().fld(memberKey);
-		final ID hostId =
-				FIELD_HOST_ID
-				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
+		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
 		final ObjOp host = cast(
 				hostId,
 				subDirs,

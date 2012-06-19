@@ -108,8 +108,8 @@ final class ClauseReuser implements PathWalker {
 
 		if (containerClause != null) {
 
-			final MemberKey containerKey = containerClause.toMember().getKey();
-			final MemberKey key = member.getKey();
+			final MemberKey containerKey = containerClause.toMember().getMemberKey();
+			final MemberKey key = member.getMemberKey();
 
 			if (containerKey.startsWith(key)) {
 				return up(container, step, member.substance(dummyUser()), null);

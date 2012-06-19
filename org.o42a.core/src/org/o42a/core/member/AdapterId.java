@@ -19,11 +19,13 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.type.StaticTypeRef;
+import org.o42a.util.string.ID;
 
 
 public final class AdapterId extends MemberId {
@@ -137,6 +139,29 @@ public final class AdapterId extends MemberId {
 	}
 
 	@Override
+	public ID toID() {
+		if (this.invalid) {
+			return BROKEN_MEMBER_ID.toID();
+		}
+		return ID.id().type(getAdapterTypeScope().getId());
+	}
+
+	@Override
+	public ID toDisplayID() {
+		if (this.invalid) {
+			return BROKEN_MEMBER_ID.toID();
+		}
+		if (this.adapterTypeScope != null) {
+			return ID.id().type(getAdapterTypeScope().getId());
+		}
+		if (this.adapterType == null) {
+			return null;
+		}
+		return ID.id().type(
+				CASE_INSENSITIVE.name(this.adapterType.toString()));
+	}
+
+	@Override
 	public int hashCode() {
 
 		final Scope adapterTypeScope = getAdapterTypeScope();
@@ -159,25 +184,6 @@ public final class AdapterId extends MemberId {
 		final AdapterId other = (AdapterId) obj;
 
 		return getAdapterTypeScope() == other.getAdapterTypeScope();
-	}
-
-	@Override
-	public String toString() {
-		if (this.invalid) {
-			return "INVALID";
-		}
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append("@<");
-		if (this.adapterTypeScope != null) {
-			out.append(this.adapterTypeScope);
-		} else {
-			out.append(this.adapterType);
-		}
-		out.append('>');
-
-		return out.toString();
 	}
 
 }

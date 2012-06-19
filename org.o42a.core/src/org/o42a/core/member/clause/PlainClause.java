@@ -41,6 +41,7 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.util.string.ID;
 
 
 public abstract class PlainClause
@@ -52,6 +53,7 @@ public abstract class PlainClause
 	private Obj clauseObject;
 	private Path enclosingScopePath;
 	private Set<Scope> enclosingScopes;
+	private int anonymusSeq;
 
 	public PlainClause(MemberClause member) {
 		super(member);
@@ -73,6 +75,11 @@ public abstract class PlainClause
 			return null;
 		}
 		return this.enclosingScopePath = getObject().scopePath();
+	}
+
+	@Override
+	public ID getId() {
+		return toMember().getId();
 	}
 
 	@Override
@@ -162,7 +169,7 @@ public abstract class PlainClause
 			return clause;
 		}
 
-		final MemberKey key = toMember().getKey();
+		final MemberKey key = toMember().getMemberKey();
 		final PlainClause original =
 				key.getOrigin()
 				.getContainer()
@@ -171,7 +178,7 @@ public abstract class PlainClause
 				.clause()
 				.toPlainClause();
 
-		if (original.getObject().getScope() != clause.getKey().getOrigin()) {
+		if (original.getObject().getScope() != clause.getMemberKey().getOrigin()) {
 			return null;
 		}
 
@@ -281,8 +288,13 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public boolean contains(Scope other) {
+	public final boolean contains(Scope other) {
 		return AbstractScope.contains(this, other);
+	}
+
+	@Override
+	public final ID nextAnonymousId() {
+		return ID.id().anonymous(++this.anonymusSeq);
 	}
 
 	@Override

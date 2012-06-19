@@ -25,12 +25,21 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.object.impl.ObjectScopeIR;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public final class ObjScope extends StandaloneObjectScope {
 
+	private final ID id;
+
 	public ObjScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
+		this.id = enclosing.getScope().nextAnonymousId();
+	}
+
+	@Override
+	public final ID getId() {
+		return this.id;
 	}
 
 	@Override

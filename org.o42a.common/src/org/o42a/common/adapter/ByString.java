@@ -118,7 +118,7 @@ public abstract class ByString<T> extends AnnotatedBuiltin {
 		}
 
 		final Member member = member(INPUT_MEMBER, Accessor.DECLARATION);
-		final Path path = member.getKey().toPath().dereference();
+		final Path path = member.getMemberKey().toPath().dereference();
 
 		return this.input = path.bind(this, getScope()).target(distribute());
 	}

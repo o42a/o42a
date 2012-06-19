@@ -32,21 +32,12 @@ import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.util.string.ID;
 
 
 final class TopIR extends ScopeIR {
 
-	private final ID id;
-
 	TopIR(Generator generator, Top scope) {
 		super(generator, scope);
-		this.id = ID.id("TOP");
-	}
-
-	@Override
-	public ID getId() {
-		return this.id;
 	}
 
 	@Override

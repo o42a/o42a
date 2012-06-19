@@ -40,6 +40,7 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.string.ID;
 
 
 public abstract class AbstractScope implements Scope {
@@ -182,7 +183,7 @@ public abstract class AbstractScope implements Scope {
 		final Scope enclosingScope = enclosing.getScope();
 
 		if (enclosingScope == scope) {
-			return member.getKey().toPath();
+			return member.getMemberKey().toPath();
 		}
 
 		final Path pathToMember = pathToMember(scope, enclosingScope);
@@ -191,11 +192,12 @@ public abstract class AbstractScope implements Scope {
 			return null;
 		}
 
-		return pathToMember.append(member.getKey());
+		return pathToMember.append(member.getMemberKey());
 	}
 
 	private final ResolverFactory<Resolver, FullResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
+	private int anonymousSeq;
 
 	public AbstractScope() {
 		this.resolverFactory = Resolver.resolverFactory(this);
@@ -287,6 +289,11 @@ public abstract class AbstractScope implements Scope {
 	@Override
 	public boolean contains(Scope other) {
 		return contains(this, other);
+	}
+
+	@Override
+	public ID nextAnonymousId() {
+		return getId().anonymous(++this.anonymousSeq);
 	}
 
 	@Override

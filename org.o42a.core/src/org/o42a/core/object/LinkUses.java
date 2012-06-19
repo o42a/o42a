@@ -107,7 +107,7 @@ public class LinkUses {
 			return;
 		}
 		if (field.isClone()
-				&& field.getKey().getOrigin() == linkTypeObject.getScope()) {
+				&& field.getMemberKey().getOrigin() == linkTypeObject.getScope()) {
 			// Field is declared in link type object.
 			return;
 		}

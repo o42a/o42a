@@ -37,6 +37,7 @@ import org.o42a.core.object.ObjectScope;
 import org.o42a.core.ref.Prediction;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.ID;
 
 
 public abstract class Field extends ObjectScope {
@@ -70,6 +71,11 @@ public abstract class Field extends ObjectScope {
 		return this.member.getContainer();
 	}
 
+	@Override
+	public final ID getId() {
+		return this.member.getId();
+	}
+
 	public boolean isScopeField() {
 		return false;
 	}
@@ -83,7 +89,7 @@ public abstract class Field extends ObjectScope {
 	}
 
 	public final MemberKey getKey() {
-		return this.member.getKey();
+		return this.member.getMemberKey();
 	}
 
 	public final FieldAnalysis getAnalysis() {
@@ -233,6 +239,9 @@ public abstract class Field extends ObjectScope {
 
 	@Override
 	public String toString() {
+		if (this.member == null) {
+			return super.toString();
+		}
 		return this.member.toString();
 	}
 

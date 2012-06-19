@@ -34,7 +34,7 @@ public abstract class FieldFldOp extends FldOp {
 		if (!isOmitted()) {
 			return super.getId();
 		}
-		return fld().getField().ir(getGenerator()).getId();
+		return fld().getField().getId();
 	}
 
 	@Override

@@ -265,7 +265,7 @@ public abstract class Obj
 				continue;
 			}
 
-			final MemberKey key = member.getKey();
+			final MemberKey key = member.getMemberKey();
 
 			if (key.getOrigin() != origin) {
 				continue;
@@ -432,7 +432,7 @@ public abstract class Obj
 		final Member found = objectMember(accessor, memberId, declaredIn);
 
 		if (found != null) {
-			return found.getKey().toPath();
+			return found.getMemberKey().toPath();
 		}
 		if (declaredIn == null) {
 			return null;
@@ -444,7 +444,7 @@ public abstract class Obj
 			return null;
 		}
 
-		final Path adapterPath = adapter.getKey().toPath();
+		final Path adapterPath = adapter.getMemberKey().toPath();
 		final Obj adapterObject = adapter.substance(dummyUser()).toObject();
 
 		if (adapterObject != null) {
@@ -456,7 +456,7 @@ public abstract class Obj
 				return null;
 			}
 
-			return adapterPath.append(foundInAdapterObject.getKey());
+			return adapterPath.append(foundInAdapterObject.getMemberKey());
 		}
 
 		return null;
@@ -665,20 +665,13 @@ public abstract class Obj
 	@Override
 	public String toString() {
 
-		final StringBuilder out = new StringBuilder();
+		final Scope scope = getScope();
 
-		out.append(getClass().getSimpleName()).append('[');
-		out.append(getContext());
-
-		final Loggable loggable = getLoggable();
-
-		if (loggable != null) {
-			out.append("]:[");
-			loggable.print(out);
+		if (scope == null) {
+			return super.toString();
 		}
-		out.append(']');
 
-		return out.toString();
+		return scope.toString();
 	}
 
 	protected Obj findWrapped() {

@@ -58,7 +58,7 @@ public abstract class FieldFld extends Fld {
 
 	@Override
 	public final ID getId() {
-		return getField().ir(getGenerator()).getId();
+		return getField().getId();
 	}
 
 	@Override
