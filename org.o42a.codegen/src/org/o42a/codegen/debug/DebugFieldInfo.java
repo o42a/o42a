@@ -65,7 +65,7 @@ public class DebugFieldInfo implements Content<DebugFieldInfo.FieldInfoType> {
 		debug.setName(
 				instance.name(),
 				DEBUG_ID.sub("field_name").sub(fieldName),
-				fieldName.toString());
+				fieldName);
 
 		final DebugTypeInfo typeInfo;
 

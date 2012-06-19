@@ -66,7 +66,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			debug.setName(
 					instance.name(),
 					GLOBAL_NAME_ID.sub(global.getId()),
-					global.getId().toString());
+					global.getId());
 			instance.enclosing().setNull();
 		} else {
 
@@ -75,7 +75,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 			debug.setName(
 					instance.name(),
 					FIELD_NAME_ID.sub(fieldName),
-					fieldName.toString());
+					fieldName);
 			instance.enclosing().setValue(
 					data.getEnclosing().pointer(generator).relativeTo(
 							data.getPointer()));
@@ -138,7 +138,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 						code,
 						debug.allocateName(
 								FIELD_NAME_ID.sub(fieldName),
-								fieldName.toString()).op(null, code));
+								fieldName).op(null, code));
 
 				final Type<?> enclosingType = enclosing.getType();
 

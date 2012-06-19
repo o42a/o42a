@@ -110,8 +110,7 @@ public class Debug {
 			return;
 		}
 
-		final Ptr<AnyOp> namePtr =
-				allocateName(FUNC_NAME_ID.sub(id), id.toString());
+		final Ptr<AnyOp> namePtr = allocateName(FUNC_NAME_ID.sub(id), id);
 
 		final DebugStackFrameOp stackFrame = function.allocation().allocate(
 				ID.id("func_stack_frame"),
@@ -174,8 +173,9 @@ public class Debug {
 			"Type info already exists: " + old;
 	}
 
-	final Ptr<AnyOp> allocateName(ID id, String value) {
+	final Ptr<AnyOp> allocateName(ID id, ID name) {
 
+		final String value = getGenerator().nameEncoder().print(name);
 		final Ptr<AnyOp> found = this.names.get(value);
 
 		if (found != null) {
@@ -208,8 +208,8 @@ public class Debug {
 		return binary;
 	}
 
-	final void setName(AnyRec field, ID id, String value) {
-		field.setValue(allocateName(id, value));
+	final void setName(AnyRec field, ID id, ID name) {
+		field.setValue(allocateName(id, name));
 	}
 
 	DebugTypeInfo typeInfo(Type<?> instance) {

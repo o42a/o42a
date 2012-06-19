@@ -31,6 +31,7 @@ import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
 import org.o42a.util.string.ID;
+import org.o42a.util.string.NameEncoder;
 
 
 public abstract class Generator {
@@ -108,6 +109,8 @@ public abstract class Generator {
 			int end) {
 		return getGlobals().addBinary(id, isConstant, data, start, end);
 	}
+
+	public abstract NameEncoder nameEncoder();
 
 	public void write() {
 		for (;;) {
