@@ -26,7 +26,6 @@ import static org.o42a.util.string.NameEncoder.NAME_ENCODER;
 
 import org.junit.Test;
 import org.o42a.util.string.Name;
-import org.o42a.util.string.StringCPWriter;
 
 
 public class NameTest {
@@ -92,21 +91,11 @@ public class NameTest {
 	}
 
 	private static String canonical(Name name) {
-
-		final StringCPWriter out = new StringCPWriter();
-
-		NAME_ENCODER.canonical().write(out, name);
-
-		return out.toString();
+		return NAME_ENCODER.canonical().print(name);
 	}
 
 	private static String decapitalized(Name name) {
-
-		final StringCPWriter out = new StringCPWriter();
-
-		NAME_ENCODER.decapitalized().write(out, name);
-
-		return out.toString();
+		return NAME_ENCODER.decapitalized().print(name);
 	}
 
 }

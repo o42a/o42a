@@ -42,7 +42,6 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.StringSource;
 import org.o42a.util.string.Name;
-import org.o42a.util.string.StringCPWriter;
 
 
 public class GrammarTestCase {
@@ -63,12 +62,7 @@ public class GrammarTestCase {
 
 	public static String canonicalName(Name name) {
 		assertThat("No name", name, notNullValue());
-
-		final StringCPWriter out = new StringCPWriter();
-
-		NAME_ENCODER.canonical().write(out, name);
-
-		return out.toString();
+		return NAME_ENCODER.canonical().print(name);
 	}
 
 	public static String canonicalName(NameNode node) {
