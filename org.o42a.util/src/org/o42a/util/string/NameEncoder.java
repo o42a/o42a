@@ -20,7 +20,6 @@
 package org.o42a.util.string;
 
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.string.ID.Separator;
 
 
 public class NameEncoder {
@@ -32,7 +31,7 @@ public class NameEncoder {
 
 	public final NameEncoder write(CPWriter out, ID id) {
 
-		final LastSeparator lastSeparator = new LastSeparator(Separator.NONE);
+		final LastSeparator lastSeparator = new LastSeparator(IDSeparator.NONE);
 		final NameEncoder nextEncoder = writeID(out, lastSeparator, id, true);
 
 		if (lastSeparator.getSeparator().isTop()) {
@@ -64,13 +63,13 @@ public class NameEncoder {
 		out.write(name.toString());
 	}
 
-	protected void writeSeparator(CPWriter out, ID.Separator separator) {
+	protected void writeSeparator(CPWriter out, IDSeparator separator) {
 		out.write(separator.getDefaultSign());
 	}
 
 	/**
 	 * Ends the separator previously written with
-	 * {@link #writeSeparator(CPWriter, Separator)}.
+	 * {@link #writeSeparator(CPWriter, IDSeparator)}.
 	 *
 	 * <p>This method is called after the {@link ID#getName() name}
 	 * and {@link ID#getSuffix() suffix} written.
@@ -78,7 +77,11 @@ public class NameEncoder {
 	 * @param out code point writer.
 	 * @param separator ID separator.
 	 */
-	protected void endSeparator(CPWriter out, ID.Separator separator) {
+	protected void endSeparator(CPWriter out, IDSeparator separator) {
+	}
+
+	protected ID expandSubID(SubID subID) {
+		return subID.toID();
 	}
 
 	private NameEncoder writeID(
@@ -112,8 +115,8 @@ public class NameEncoder {
 		}
 
 		final LastSeparator nextSeparator;
-		final Separator prev = lastSeparator.getSeparator();
-		final Separator next = id.getSeparator();
+		final IDSeparator prev = lastSeparator.getSeparator();
+		final IDSeparator next = id.getSeparator();
 
 		if (name.isEmpty()) {
 			if (prev.discardsNext(next)) {
@@ -137,7 +140,7 @@ public class NameEncoder {
 		}
 
 		final NameEncoder finalEncoder;
-		final ID suffix = id.getSuffix();
+		final SubID suffix = id.getSuffix();
 
 		if (suffix == null) {
 			finalEncoder = nextEncoder;
@@ -145,7 +148,7 @@ public class NameEncoder {
 			finalEncoder = nextEncoder.writeID(
 					out,
 					nextSeparator,
-					suffix,
+					expandSubID(suffix),
 					decapitalizeSuffix);
 		}
 
@@ -160,19 +163,19 @@ public class NameEncoder {
 
 	private static final class LastSeparator {
 
-		private Separator separator;
-		private Separator[] written = new Separator[0];
+		private IDSeparator separator;
+		private IDSeparator[] written = new IDSeparator[0];
 		private boolean separatorWritten;
 
-		public LastSeparator(Separator separator) {
+		public LastSeparator(IDSeparator separator) {
 			this.separator = separator;
 		}
 
-		public final Separator getSeparator() {
+		public final IDSeparator getSeparator() {
 			return this.separator;
 		}
 
-		public final void replace(Separator separator) {
+		public final void replace(IDSeparator separator) {
 			this.separator = separator;
 			this.separatorWritten = false;
 		}
@@ -185,13 +188,13 @@ public class NameEncoder {
 			if (!this.separator.isNone()) {
 				this.written = ArrayUtil.prepend(this.separator, this.written);
 				encoder.writeSeparator(out, this.separator);
-				this.separator = Separator.NONE;
+				this.separator = IDSeparator.NONE;
 			}
 			return this;
 		}
 
 		public final boolean end(CPWriter out, NameEncoder encoder) {
-			for (Separator written : this.written) {
+			for (IDSeparator written : this.written) {
 				encoder.endSeparator(out, written);
 			}
 			return this.separatorWritten;

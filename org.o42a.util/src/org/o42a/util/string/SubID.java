@@ -20,28 +20,10 @@
 package org.o42a.util.string;
 
 
+public interface SubID {
 
-final class DisplayNameEncoder extends NameEncoder {
+	ID toID();
 
-	static final DisplayNameEncoder DISPLAY_NAME_ENCODER =
-			new DisplayNameEncoder();
-
-	private DisplayNameEncoder() {
-	}
-
-	@Override
-	protected void writeSeparator(CPWriter out, IDSeparator separator) {
-		out.write(separator.getDisplayBefore());
-	}
-
-	@Override
-	protected void endSeparator(CPWriter out, IDSeparator separator) {
-		out.write(separator.getDisplayAfter());
-	}
-
-	@Override
-	protected ID expandSubID(SubID subID) {
-		return subID.toDisplayID();
-	}
+	ID toDisplayID();
 
 }

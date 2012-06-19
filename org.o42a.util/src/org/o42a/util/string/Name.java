@@ -26,10 +26,9 @@ import static org.o42a.util.string.Capitalization.PRESERVE_CAPITAL;
 import static org.o42a.util.string.Characters.HYPHEN;
 import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
-import org.o42a.util.string.ID.Separator;
 
 
-public final class Name implements CharSequence, Comparable<Name> {
+public final class Name implements SubID, CharSequence, Comparable<Name> {
 
 	/**
 	 * Creates a new case-sensitive name.
@@ -395,8 +394,14 @@ public final class Name implements CharSequence, Comparable<Name> {
 		return nameIs(other);
 	}
 
+	@Override
 	public final ID toID() {
-		return new ID(null, Separator.NONE, this, null);
+		return new ID(null, IDSeparator.NONE, this, null);
+	}
+
+	@Override
+	public ID toDisplayID() {
+		return toID();
 	}
 
 	@Override
