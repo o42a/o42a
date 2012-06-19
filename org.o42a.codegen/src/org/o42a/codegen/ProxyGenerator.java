@@ -24,6 +24,7 @@ import org.o42a.codegen.code.backend.CodeBackend;
 import org.o42a.codegen.data.backend.DataAllocator;
 import org.o42a.codegen.data.backend.DataWriter;
 import org.o42a.codegen.debug.Debug;
+import org.o42a.util.string.NameEncoder;
 
 
 public abstract class ProxyGenerator extends Generator {
@@ -49,6 +50,11 @@ public abstract class ProxyGenerator extends Generator {
 	@Override
 	public final Debug getDebug() {
 		return this.debug;
+	}
+
+	@Override
+	public final NameEncoder nameEncoder() {
+		return getProxiedGenerator().nameEncoder();
 	}
 
 	protected final CodeBackend proxiedCodeBackend() {

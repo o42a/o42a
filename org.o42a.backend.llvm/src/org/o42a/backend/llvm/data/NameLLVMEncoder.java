@@ -22,9 +22,9 @@ package org.o42a.backend.llvm.data;
 import org.o42a.util.string.*;
 
 
-final class NameLLVMEncoder extends NameEncoder {
+public final class NameLLVMEncoder extends NameEncoder {
 
-	static final NameEncoder NAME_LLVM_ENCODER =
+	public static final NameEncoder NAME_LLVM_ENCODER =
 			new NameLLVMEncoder().canonical();
 
 	private final static byte[] HEX_DIGITS = {

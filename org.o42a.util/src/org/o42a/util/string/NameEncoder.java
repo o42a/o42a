@@ -29,6 +29,15 @@ public class NameEncoder {
 	protected NameEncoder() {
 	}
 
+	public final String print(ID id) {
+
+		final StringCPWriter out = new StringCPWriter();
+
+		write(out, id);
+
+		return out.toString();
+	}
+
 	public final NameEncoder write(CPWriter out, ID id) {
 
 		final LastSeparator lastSeparator = new LastSeparator(IDSeparator.NONE);

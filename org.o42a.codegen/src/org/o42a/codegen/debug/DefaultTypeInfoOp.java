@@ -95,7 +95,7 @@ final class DefaultTypeInfoOp extends StructOp<DefaultTypeInfoOp> {
 
 			final ID typeId = getTargetType().getId();
 
-			debug.setName(name(), TYPE_NAME_ID.sub(typeId), typeId.toString());
+			debug.setName(name(), TYPE_NAME_ID.sub(typeId), typeId);
 
 			int fieldNum = 0;
 

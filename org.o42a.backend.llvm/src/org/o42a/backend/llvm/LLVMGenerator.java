@@ -19,6 +19,8 @@
 */
 package org.o42a.backend.llvm;
 
+import static org.o42a.backend.llvm.data.NameLLVMEncoder.NAME_LLVM_ENCODER;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
@@ -32,6 +34,7 @@ import org.o42a.util.io.FileSource;
 import org.o42a.util.io.SourceFileName;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
+import org.o42a.util.string.NameEncoder;
 
 
 public class LLVMGenerator extends AbstractGenerator {
@@ -80,18 +83,8 @@ public class LLVMGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public DataAllocator dataAllocator() {
-		return initializedModule().dataAllocator();
-	}
-
-	@Override
-	public DataWriter dataWriter() {
-		return initializedModule().dataWriter();
-	}
-
-	@Override
-	public CodeBackend codeBackend() {
-		return initializedModule().codeBackend();
+	public final NameEncoder nameEncoder() {
+		return NAME_LLVM_ENCODER;
 	}
 
 	@Override
@@ -103,6 +96,21 @@ public class LLVMGenerator extends AbstractGenerator {
 	@Override
 	public void close() {
 		this.module.destroy();
+	}
+
+	@Override
+	protected DataAllocator dataAllocator() {
+		return initializedModule().dataAllocator();
+	}
+
+	@Override
+	protected DataWriter dataWriter() {
+		return initializedModule().dataWriter();
+	}
+
+	@Override
+	protected CodeBackend codeBackend() {
+		return initializedModule().codeBackend();
 	}
 
 	private LLVMModule initializedModule() {
