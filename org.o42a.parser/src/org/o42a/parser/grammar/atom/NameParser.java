@@ -117,14 +117,14 @@ public class NameParser implements Parser<NameNode> {
 				break;
 			}
 			if (len == 0) {
-				if (word.notFirstCapital()) {
+				if (word.abbreviation()) {
 					// Preserve capital if the first word contains
 					// a capital letter not at the beginning.
 					// This is for abbreviations like "URL".
 					capitalization = Capitalization.PRESERVE_CAPITAL;
 				}
 			} else {
-				if (word.firstCapital() && !word.notFirstCapital()) {
+				if (word.firstCapital() && !word.abbreviation()) {
 					// Preserve capital if a not first word starts with
 					// a capital letter and has no more capitals.
 					// This is for proper nouns like "John Smith".
@@ -164,13 +164,13 @@ public class NameParser implements Parser<NameNode> {
 	private static final class Word {
 
 		private final CharSequence word;
-		private final boolean notFirstCapital;
+		private final boolean abbreviation;
 		private final boolean firstCapital;
 
-		Word(CharSequence word, boolean firstCapital, boolean notFirstCapital) {
+		Word(CharSequence word, boolean firstCapital, boolean abbreviation) {
 			this.word = word;
 			this.firstCapital = firstCapital;
-			this.notFirstCapital = notFirstCapital;
+			this.abbreviation = abbreviation;
 		}
 
 		public final CharSequence getWord() {
@@ -181,8 +181,8 @@ public class NameParser implements Parser<NameNode> {
 			return this.firstCapital;
 		}
 
-		public final boolean notFirstCapital() {
-			return this.notFirstCapital;
+		public final boolean abbreviation() {
+			return this.abbreviation;
 		}
 
 		@Override
@@ -199,7 +199,7 @@ public class NameParser implements Parser<NameNode> {
 
 			final StringBuilder word = new StringBuilder();
 			boolean firstCapital = false;
-			boolean notFirstCapital = false;
+			boolean abbreviation = false;
 
 			for (;;) {
 
@@ -208,10 +208,10 @@ public class NameParser implements Parser<NameNode> {
 				if (!isNamePart(c)) {
 					break;
 				}
-				if (word.length() != 0) {
+				if (word.length() == 0) {
 					firstCapital |= isUpperCase(c);
 				} else {
-					notFirstCapital |= isUpperCase(c);
+					abbreviation |= isUpperCase(c);
 				}
 				word.appendCodePoint(c);
 			}
@@ -225,7 +225,7 @@ public class NameParser implements Parser<NameNode> {
 				return null;
 			}
 
-			return new Word(word, firstCapital, notFirstCapital);
+			return new Word(word, firstCapital, abbreviation);
 		}
 
 		protected boolean isNamePart(int c) {
