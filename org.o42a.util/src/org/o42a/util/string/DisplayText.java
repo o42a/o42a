@@ -19,29 +19,35 @@
 */
 package org.o42a.util.string;
 
+import static org.o42a.util.string.Capitalization.AS_IS;
 
 
-final class DisplayNameEncoder extends NameEncoder {
+final class DisplayText implements SubID {
 
-	static final DisplayNameEncoder DISPLAY_NAME_ENCODER =
-			new DisplayNameEncoder();
+	private final ID text;
 
-	private DisplayNameEncoder() {
+	DisplayText(String text) {
+		assert text != null :
+			"Text to display is not specified";
+		this.text = AS_IS.name(text).toID();
 	}
 
 	@Override
-	protected void writeSeparator(CPWriter out, IDSeparator separator) {
-		out.write(separator.getDisplayBefore());
+	public ID toDisplayID() {
+		return this.text;
 	}
 
 	@Override
-	protected void endSeparator(CPWriter out, IDSeparator separator) {
-		out.write(separator.getDisplayAfter());
+	public ID toID() {
+		return ID.id();
 	}
 
 	@Override
-	protected ID expandSubID(SubID subID) {
-		return subID.toDisplayID();
+	public String toString() {
+		if (this.text == null) {
+			return super.toString();
+		}
+		return this.text.toString();
 	}
 
 }

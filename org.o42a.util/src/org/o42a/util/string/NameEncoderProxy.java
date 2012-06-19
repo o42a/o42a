@@ -19,7 +19,6 @@
 */
 package org.o42a.util.string;
 
-import org.o42a.util.string.ID.Separator;
 
 
 public abstract class NameEncoderProxy extends NameEncoder {
@@ -47,13 +46,18 @@ public abstract class NameEncoderProxy extends NameEncoder {
 	}
 
 	@Override
-	protected void writeSeparator(CPWriter out, Separator separator) {
+	protected void writeSeparator(CPWriter out, IDSeparator separator) {
 		out().writeSeparator(out, separator);
 	}
 
 	@Override
-	protected void endSeparator(CPWriter out, Separator separator) {
+	protected void endSeparator(CPWriter out, IDSeparator separator) {
 		out().endSeparator(out, separator);
+	}
+
+	@Override
+	protected ID expandSubID(SubID subID) {
+		return out().expandSubID(subID);
 	}
 
 }
