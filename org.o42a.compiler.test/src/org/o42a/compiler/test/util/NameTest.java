@@ -34,6 +34,16 @@ public class NameTest {
 	@Test
 	public void caseInsensitive() {
 
+		final Name name = caseInsensitiveName("Integer");
+
+		assertThat(name.toString(), is("Integer"));
+		assertThat(decapitalized(name), is("integer"));
+		assertThat(canonical(name), is("integer"));
+	}
+
+	@Test
+	public void multiWordCaseInsensitive() {
+
 		final Name name = caseInsensitiveName("Some name");
 
 		assertThat(name.toString(), is("Some name"));

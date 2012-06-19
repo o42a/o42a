@@ -35,7 +35,7 @@ public class NameEncoder {
 		final NameEncoder nextWriter = writeID(out, lastSeparator, id, true);
 		final Separator lastSep = lastSeparator[0];
 
-		if (lastSep == Separator.TOP) {
+		if (lastSep.isTop()) {
 			nextWriter.writeSeparator(out, lastSep);
 		}
 
@@ -55,6 +55,11 @@ public class NameEncoder {
 		return new NameDecapitalizer(this);
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
 	protected void writeName(CPWriter out, Name name) {
 		out.write(name.toString());
 	}
@@ -72,19 +77,27 @@ public class NameEncoder {
 		final ID prefix = id.getPrefix();
 		final NameEncoder writer;
 		final NameEncoder nextWriter;
+		final Name name = id.getName();
+		final boolean decapSuffix;
 
 		if (prefix != null) {
 			nextWriter = writeID(out, lastSeparator, prefix, decapitalize);
 			writer = nextWriter;
-		} else if (decapitalize) {
-			nextWriter = decapitalized();
-			writer = this;
-		} else {
+			decapSuffix = decapitalize && this == nextWriter;
+		} else if (!decapitalize) {
 			nextWriter = this;
 			writer = this;
+			decapSuffix = false;
+		} else if (name.isEmpty()) {
+			nextWriter = this;
+			writer = this;
+			decapSuffix = true;
+		} else {
+			nextWriter = decapitalized();
+			writer = this;
+			decapSuffix = false;
 		}
 
-		final Name name = id.getName();
 		final Separator prev = lastSeparator[0];
 		final Separator next = id.getSeparator();
 
@@ -110,11 +123,11 @@ public class NameEncoder {
 
 		final ID suffix = id.getSuffix();
 
-		if (suffix != null) {
-			nextWriter.writeID(out, lastSeparator, suffix, false);
+		if (suffix == null) {
+			return nextWriter;
 		}
 
-		return nextWriter;
+		return nextWriter.writeID(out, lastSeparator, suffix, decapSuffix);
 	}
 
 }
