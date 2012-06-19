@@ -33,8 +33,16 @@ import org.o42a.util.string.ID;
 
 final class RootScope extends StandaloneObjectScope {
 
+	private final ID id;
+
 	RootScope(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
+		this.id = ID.id("ROOT");
+	}
+
+	@Override
+	public ID getId() {
+		return this.id;
 	}
 
 	@Override
@@ -49,16 +57,8 @@ final class RootScope extends StandaloneObjectScope {
 
 	private final class IR extends ScopeIR {
 
-		private final ID id;
-
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = ID.id("ROOT");
-		}
-
-		@Override
-		public ID getId() {
-			return this.id;
 		}
 
 		@Override

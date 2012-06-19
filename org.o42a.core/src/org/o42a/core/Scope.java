@@ -35,9 +35,12 @@ import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.source.CompilerLogger;
+import org.o42a.util.string.ID;
 
 
 public interface Scope extends PlaceInfo {
+
+	ID getId();
 
 	boolean isTopScope();
 
@@ -108,6 +111,8 @@ public interface Scope extends PlaceInfo {
 	PrefixPath pathTo(Scope targetScope);
 
 	boolean contains(Scope other);
+
+	ID nextAnonymousId();
 
 	ScopeIR ir(Generator generator);
 

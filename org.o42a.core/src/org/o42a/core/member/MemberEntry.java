@@ -49,7 +49,7 @@ final class MemberEntry {
 	}
 
 	public final MemberKey getKey() {
-		return this.member.getKey();
+		return this.member.getMemberKey();
 	}
 
 	public final boolean isPropagated() {
@@ -83,7 +83,7 @@ final class MemberEntry {
 		if (member == null) {
 			return;
 		}
-		members.registerSymbol(member.getId(), member);
+		members.registerSymbol(member.getMemberId(), member);
 
 		for (MemberKey aliasKey : member.getAliasKeys()) {
 			if (registerAlias(members, aliasKey, member)) {
@@ -146,7 +146,7 @@ final class MemberEntry {
 			ContainerMembers members,
 			MemberKey key,
 			Member existing) {
-		if (!existing.getKey().equals(key)) {
+		if (!existing.getMemberKey().equals(key)) {
 			reportAmbiguity();
 			return null;
 		}

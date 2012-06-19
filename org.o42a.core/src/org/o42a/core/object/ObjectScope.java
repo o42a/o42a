@@ -21,6 +21,7 @@ package org.o42a.core.object;
 
 import org.o42a.core.AbstractScope;
 import org.o42a.core.ref.path.Path;
+import org.o42a.util.string.ID;
 
 
 public abstract class ObjectScope extends AbstractScope {
@@ -46,10 +47,14 @@ public abstract class ObjectScope extends AbstractScope {
 
 	@Override
 	public String toString() {
-		if (this.object == null) {
+
+		final ID id = getId();
+
+		if (id == null) {
 			return super.toString();
 		}
-		return this.object.toString();
+
+		return id.toString();
 	}
 
 	protected final Obj setScopeObject(Obj object) {

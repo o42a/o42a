@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ir.object;
 
-import static org.o42a.core.ir.IRNames.encodeMemberId;
-
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
@@ -32,25 +30,15 @@ import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.local.LocalFieldIRBase;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
 
 
 public abstract class FieldIRBase extends LocalFieldIRBase {
 
-	private final ID id;
 	private Fld fld;
 	private boolean targetAllocated;
 
 	public FieldIRBase(Generator generator, Field field) {
 		super(generator, field);
-		this.id = encodeMemberId(
-				field.getEnclosingScope().ir(generator),
-				field.toMember());
-	}
-
-	@Override
-	public final ID getId() {
-		return this.id;
 	}
 
 	public FldOp field(Code code, ObjOp host) {

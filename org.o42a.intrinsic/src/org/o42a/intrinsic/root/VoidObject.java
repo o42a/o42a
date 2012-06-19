@@ -112,8 +112,16 @@ public final class VoidObject extends BuiltinObject {
 
 	private static final class VoidScope extends StandaloneObjectScope {
 
+		private final ID id;
+
 		VoidScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
+			this.id = ID.id("VOID");
+		}
+
+		@Override
+		public ID getId() {
+			return this.id;
 		}
 
 		@Override
@@ -125,16 +133,8 @@ public final class VoidObject extends BuiltinObject {
 
 	private static final class IR extends ScopeIR {
 
-		private ID id;
-
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = ID.id("VOID");
-		}
-
-		@Override
-		public ID getId() {
-			return this.id;
 		}
 
 		@Override

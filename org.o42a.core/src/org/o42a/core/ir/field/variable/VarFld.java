@@ -96,7 +96,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		this.assigner = getGenerator().newFunction().create(
-				getField().ir(getGenerator()).getId().detail("assigner"),
+				getField().getId().detail("assigner"),
 				VARIABLE_ASSIGNER,
 				new AssignerBuilder(this)).getPointer();
 	}

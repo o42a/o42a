@@ -191,7 +191,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final Path path =
 				member(FROM_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 
@@ -205,7 +205,7 @@ final class SubString extends AnnotatedBuiltin {
 
 		final Path path =
 				member(TO_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 

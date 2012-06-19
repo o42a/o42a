@@ -136,7 +136,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		}
 
 		this.constructor = getGenerator().newFunction().create(
-				getField().ir(getGenerator()).getId().detail("constructor"),
+				getField().getId().detail("constructor"),
 				getType().getSignature(),
 				new ConstructorBuilder()).getPointer();
 	}

@@ -110,12 +110,12 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		assertEquals(12L, definiteValue(bFoo));
 		assertThat(
 				bFoo.getKey(),
-				not(equalTo(this.b.member(aFoo.getKey()).getKey())));
+				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 
 		assertEquals(12L, definiteValue(cFoo));
 		assertThat(
 				cFoo.getKey(),
-				not(equalTo(this.c.member(aFoo.getKey()).getKey())));
+				not(equalTo(this.c.member(aFoo.getKey()).getMemberKey())));
 	}
 
 	@Test
@@ -137,14 +137,14 @@ public class FieldInheritanceTest extends CompilerTestCase {
 		assertEquals(321L, definiteValue(bFoo));
 		assertThat(
 				bFoo.getKey(),
-				not(equalTo(this.b.member(aFoo.getKey()).getKey())));
+				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 		assertThat(bFoo.getKey(), is(zFoo.getKey()));
 		assertTrue(bFoo.isPropagated());
 
 		assertEquals(321L, definiteValue(cFoo));
 		assertThat(
 				cFoo.getKey(),
-				not(equalTo(this.b.member(aFoo.getKey()).getKey())));
+				not(equalTo(this.b.member(aFoo.getKey()).getMemberKey())));
 		assertThat(cFoo.getKey(), is(zFoo.getKey()));
 		assertTrue(cFoo.isPropagated());
 

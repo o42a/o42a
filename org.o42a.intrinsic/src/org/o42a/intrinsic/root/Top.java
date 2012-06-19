@@ -36,15 +36,18 @@ import org.o42a.core.ref.Prediction;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.ID;
 
 
 public final class Top extends AbstractScope implements MemberContainer {
 
 	private final CompilerContext context;
+	private final ID id;
 	private TopIR ir;
 
 	public Top(CompilerContext context) {
 		this.context = context;
+		this.id = ID.id("TOP");
 	}
 
 	@Override
@@ -65,6 +68,11 @@ public final class Top extends AbstractScope implements MemberContainer {
 	@Override
 	public Container getParentContainer() {
 		return null;
+	}
+
+	@Override
+	public ID getId() {
+		return this.id;
 	}
 
 	@Override

@@ -339,7 +339,7 @@ public class Ascendants
 
 		Ascendants ascendants = this;
 		final Scope enclosingScope = getScope().getEnclosingScope();
-		final AdapterId adapterId = member.getId().getAdapterId();
+		final AdapterId adapterId = member.getMemberId().getAdapterId();
 
 		if (adapterId != null && !fieldAscendants.isLinkAscendants()) {
 			ascendants = ascendants.addExplicitSample(
@@ -367,7 +367,7 @@ public class Ascendants
 		if (ancestor != null) {
 
 			final Member overridden =
-					ancestor.typeObject().member(member.getKey());
+					ancestor.typeObject().member(member.getMemberKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);
@@ -380,7 +380,7 @@ public class Ascendants
 
 			final Member overridden =
 					containerSamples[i].type(dummyUser())
-					.getObject().member(member.getKey());
+					.getObject().member(member.getMemberKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);

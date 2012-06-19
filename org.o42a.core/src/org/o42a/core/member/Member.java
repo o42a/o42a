@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.impl.MemberPropagatedFromID.memberScopePrefix;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,16 +29,18 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
+import org.o42a.core.member.impl.MemberPropagatedFromID;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.string.ID;
 
 
 public abstract class Member extends Placed {
 
-	private static final MemberId[] NO_ALIAS_IDS = new MemberId[0];
+	private static final MemberId[] NO_ALIASES = new MemberId[0];
 	private static final MemberKey[] NO_ALIAS_KEYS = new MemberKey[0];
 	private static final Member[] NOTHING_OVERRIDDEN = new Member[0];
 
@@ -46,6 +49,7 @@ public abstract class Member extends Placed {
 	private Member firstDeclaration;
 	private Member lastDefinition;
 	private Member[] overridden;
+	private ID id;
 
 	public Member(
 			LocationInfo location,
@@ -55,16 +59,31 @@ public abstract class Member extends Placed {
 		this.owner = owner;
 	}
 
+	public final ID getId() {
+		if (this.id != null) {
+			return this.id;
+		}
+
+		final ID prefix = memberScopePrefix(this);
+
+		if (!isOverride()) {
+			return this.id = prefix.sub(getMemberId());
+		}
+
+		return this.id = prefix.sub(
+				ID.id(getMemberId()).suffix(new MemberPropagatedFromID(this)));
+	}
+
 	public final MemberOwner getMemberOwner() {
 		return this.owner;
 	}
 
-	public abstract MemberId getId();
+	public abstract MemberId getMemberId();
 
-	public abstract MemberKey getKey();
+	public abstract MemberKey getMemberKey();
 
-	public MemberId[] getAliasIds() {
-		return NO_ALIAS_IDS;
+	public MemberId[] getAliases() {
+		return NO_ALIASES;
 	}
 
 	public MemberKey[] getAliasKeys() {
@@ -72,30 +91,7 @@ public abstract class Member extends Placed {
 	}
 
 	public final String getDisplayName() {
-		return getId().toString();
-	}
-
-	public final String getDisplayPath() {
-
-		final StringBuilder out = new StringBuilder();
-		final Scope enclosingScope = getScope();
-
-		if (enclosingScope == getContext().getRoot().getScope()) {
-			out.append("$$");
-		} else {
-
-			final Member enclosingMember = enclosingScope.toMember();
-
-			if (enclosingMember == null) {
-				out.append(enclosingScope);
-			} else {
-				out.append(enclosingMember.getDisplayPath());
-			}
-			out.append(':');
-		}
-		out.append(getDisplayName());
-
-		return out.toString();
+		return getMemberId().toString();
 	}
 
 	public abstract MemberField toField();
@@ -135,7 +131,7 @@ public abstract class Member extends Placed {
 			return this.firstDeclaration = this;
 		}
 
-		final MemberKey memberKey = getKey();
+		final MemberKey memberKey = getMemberKey();
 		final Scope origin = memberKey.getOrigin();
 
 		return this.firstDeclaration = origin.getContainer().member(memberKey);
@@ -185,31 +181,10 @@ public abstract class Member extends Placed {
 
 	@Override
 	public String toString() {
-		if (!isOverride()) {
-			return getDisplayPath();
+		if (this.owner == null) {
+			return super.toString();
 		}
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append(getDisplayPath());
-		if (isPropagated()) {
-			out.append("{propagated from ");
-
-			boolean comma = false;
-
-			for (Member overridden : getOverridden()) {
-				if (!comma) {
-					comma = true;
-				} else {
-					out.append(", ");
-				}
-				out.append(overridden.getDisplayPath());
-			}
-
-			out.append('}');
-		}
-
-		return out.toString();
+		return getId().toString();
 	}
 
 	private Member[] overriddenMembers() {
@@ -226,7 +201,7 @@ public abstract class Member extends Placed {
 
 			final Member ancestorMember =
 					containerAncestor.type()
-					.getObject().member(getKey());
+					.getObject().member(getMemberKey());
 
 			if (ancestorMember != null) {
 				overridden = new ArrayList<Member>(containerSamples.length + 1);
@@ -241,7 +216,7 @@ public abstract class Member extends Placed {
 		for (Sample containerSample : containerSamples) {
 
 			final Member sampleMember =
-					containerSample.typeObject(dummyUser()).member(getKey());
+					containerSample.typeObject(dummyUser()).member(getMemberKey());
 
 			if (sampleMember == null) {
 				continue;

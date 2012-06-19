@@ -19,7 +19,6 @@
 */
 package org.o42a.core.member.clause.impl;
 
-
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
@@ -197,7 +196,7 @@ public final class DeclaredPlainClause extends PlainClause {
 			return null;
 		}
 
-		return member.getKey();
+		return member.getMemberKey();
 	}
 
 }

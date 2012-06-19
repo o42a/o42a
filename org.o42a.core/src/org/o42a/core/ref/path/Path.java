@@ -64,7 +64,7 @@ public final class Path {
 			assert member != null :
 				"Field \"" + field + "\" not found in " + object;
 
-			path = path.append(member.getKey());
+			path = path.append(member.getMemberKey());
 			object = member.substance(dummyUser()).toObject();
 		}
 

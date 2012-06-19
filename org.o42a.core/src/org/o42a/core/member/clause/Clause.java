@@ -67,7 +67,7 @@ public abstract class Clause implements PlaceInfo {
 			HashMap<MemberId, MemberClause> explicitClauses,
 			MemberClause clause) {
 
-		final MemberId memberId = clause.getKey().getMemberId().getLocalId();
+		final MemberId memberId = clause.getMemberKey().getMemberId().getLocalId();
 
 		if (!memberId.isValid()) {
 			return true;
@@ -189,7 +189,7 @@ public abstract class Clause implements PlaceInfo {
 	}
 
 	public final MemberKey getKey() {
-		return this.member.getKey();
+		return this.member.getMemberKey();
 	}
 
 	public final Name getName() {
@@ -335,10 +335,10 @@ public abstract class Clause implements PlaceInfo {
 		if (enclosingClause == null) {
 			assert enclosingScope.toObject() != null :
 				this + " is not inside of object";
-			return member.getKey().toPath();
+			return member.getMemberKey().toPath();
 		}
 
-		return enclosingClause.pathInObject().append(member.getKey());
+		return enclosingClause.pathInObject().append(member.getMemberKey());
 	}
 
 }

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ir.object.impl;
 
-import static org.o42a.core.ir.IRNames.encodeMemberId;
 import static org.o42a.core.ir.field.Fld.FIELD_ID;
 import static org.o42a.core.ir.object.DepOp.DEP_ID;
 import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
@@ -104,9 +103,7 @@ public final class AnonymousObjOp extends ObjectOp {
 
 		final CodeDirs subDirs =
 				dirs.begin(FIELD_ID, "Field " + memberKey + " of " + this);
-		final ID hostId =
-				FIELD_HOST_ID
-				.sub(encodeMemberId(getGenerator(), memberKey.getMemberId()));
+		final ID hostId = FIELD_HOST_ID.sub(memberKey.getMemberId());
 		final ObjOp ascendant = cast(
 				hostId,
 				subDirs,

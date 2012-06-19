@@ -125,7 +125,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final Path path =
 				member(WHAT_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 
@@ -139,7 +139,7 @@ final class ConcatStrings extends AnnotatedBuiltin {
 
 		final Path path =
 				member(WITH_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 

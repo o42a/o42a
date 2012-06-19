@@ -59,7 +59,7 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	@Override
 	public Scope revert(Scope target) {
 		return target.toObject().member(
-				this.local.toMember().getKey()).toLocal().local();
+				this.local.toMember().getMemberKey()).toLocal().local();
 	}
 
 	@Override

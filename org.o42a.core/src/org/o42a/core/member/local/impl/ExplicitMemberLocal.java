@@ -45,12 +45,12 @@ final class ExplicitMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public final MemberId getId() {
+	public final MemberId getMemberId() {
 		return this.id;
 	}
 
 	@Override
-	public final MemberKey getKey() {
+	public final MemberKey getMemberKey() {
 		return this.key;
 	}
 
@@ -72,7 +72,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 
 		if (member != null
 				&& member.getContainer().getScope() == getScope()) {
-			this.id = member.getId().append(localId);
+			this.id = member.getMemberId().append(localId);
 		} else {
 
 			assert getContainer().toObject() == local.getOwner() :
@@ -89,7 +89,7 @@ final class ExplicitMemberLocal extends MemberLocal {
 			LocalScope reproducedFrom) {
 		this.local = local;
 		this.id =
-				reproducedFrom.toMember().getKey().getMemberId()
+				reproducedFrom.toMember().getMemberKey().getMemberId()
 				.reproduceFrom(reproducedFrom);
 		this.key = this.id.key(getScope());
 	}

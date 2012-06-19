@@ -185,7 +185,7 @@ final class AccessorResolver implements PathWalker {
 				return true;
 			}
 			return this.enclosed =
-					oldMember.getKey().startsWith(newMember.getKey());
+					oldMember.getMemberKey().startsWith(newMember.getMemberKey());
 		}
 		if (newMember != null) {
 			return false;

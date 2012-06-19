@@ -48,7 +48,7 @@ public final class LocalFnIR
 		super(localIR.getOwnerIR());
 		this.localIR = localIR;
 		this.locals = locals;
-		this.id = localIR.getId().detail("value");
+		this.id = localIR.getScope().getId().detail("value");
 	}
 
 	public void call(DefDirs dirs, ObjOp owner, ObjOp body, Command command) {

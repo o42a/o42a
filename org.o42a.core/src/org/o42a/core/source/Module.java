@@ -56,7 +56,7 @@ public class Module extends Obj {
 	}
 
 	public Module(ModuleCompiler compiler, Name moduleName) {
-		this(moduleScope(compiler), compiler, moduleName);
+		this(moduleScope(compiler, moduleName), compiler, moduleName);
 	}
 
 	private Module(
@@ -126,7 +126,9 @@ public class Module extends Obj {
 				"Not an enclosing scope: " + enclosing);
 	}
 
-	private static ModuleScope moduleScope(ModuleCompiler compiler) {
+	private static ModuleScope moduleScope(
+			ModuleCompiler compiler,
+			Name moduleName) {
 
 		final Namespace moduleNamespace =
 				compiler.getContext().getIntrinsics().getModuleNamespace();
@@ -137,13 +139,27 @@ public class Module extends Obj {
 
 		compiler.encloseInto(enclosingBlock);
 
-		return new ModuleScope(compiler, distributor);
+		return new ModuleScope(
+				compiler,
+				distributor,
+				moduleName != null ? moduleName : compiler.getModuleName());
 	}
 
 	private static final class ModuleScope extends StandaloneObjectScope {
 
-		ModuleScope(LocationInfo location, Distributor distributor) {
+		private final ID id;
+
+		ModuleScope(
+				LocationInfo location,
+				Distributor distributor,
+				Name moduleName) {
 			super(location, distributor);
+			this.id = moduleName.toID();
+		}
+
+		@Override
+		public ID getId() {
+			return this.id;
 		}
 
 		@Override
@@ -151,24 +167,12 @@ public class Module extends Obj {
 			return new ModuleIR(generator, this);
 		}
 
-		final Module module() {
-			return (Module) getContainer();
-		}
-
 	}
 
 	private static final class ModuleIR extends ScopeIR {
 
-		private final ID id;
-
 		ModuleIR(Generator generator, ModuleScope scope) {
 			super(generator, scope);
-			this.id = scope.module().getModuleName().toID();
-		}
-
-		@Override
-		public ID getId() {
-			return this.id;
 		}
 
 		@Override

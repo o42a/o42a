@@ -197,7 +197,7 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 				continue;
 			}
 
-			final Fld fld = objectIR.findFld(field.getKey());
+			final Fld fld = objectIR.findFld(field.getMemberKey());
 
 			if (fld == null || fld.isOmitted() || !fld.isOverrider()) {
 				continue;

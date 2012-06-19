@@ -61,7 +61,7 @@ public class ObjectIR  {
 	}
 
 	public final ID getId() {
-		return getScopeIR().getId();
+		return getScopeIR().getScope().getId();
 	}
 
 	public final boolean isExact() {

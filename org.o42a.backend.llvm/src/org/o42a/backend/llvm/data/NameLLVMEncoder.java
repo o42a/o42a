@@ -20,7 +20,6 @@
 package org.o42a.backend.llvm.data;
 
 import org.o42a.util.string.*;
-import org.o42a.util.string.ID.Separator;
 
 
 final class NameLLVMEncoder extends NameEncoder {
@@ -48,7 +47,7 @@ final class NameLLVMEncoder extends NameEncoder {
 	}
 
 	@Override
-	protected void writeSeparator(CPWriter out, Separator separator) {
+	protected void writeSeparator(CPWriter out, IDSeparator separator) {
 		switch (separator) {
 		case NONE:
 			return;

@@ -47,6 +47,7 @@ import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.LocalScopeBase;
 import org.o42a.util.log.Loggable;
+import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
 
 
@@ -65,12 +66,22 @@ public abstract class LocalScope
 	private final
 	ResolverFactory<LocalResolver, FullLocalResolver> resolverFactory;
 	private Set<Scope> enclosingScopes;
+	private ID id;
+	private int anonymousSeq;
 
 	public LocalScope(MemberLocal member) {
 		this.member = member;
 		this.owner = member.getContainer().toObject();
 		this.ownerScopePath = new LocalOwnerStep(this).toPath();
 		this.resolverFactory = new LocalResolver.LocalResolverFactory(this);
+	}
+
+	@Override
+	public final ID getId() {
+		if (this.id != null) {
+			return this.id;
+		}
+		return toMember().getMemberKey().toID();
 	}
 
 	public final Obj getOwner() {
@@ -284,6 +295,11 @@ public abstract class LocalScope
 	}
 
 	public abstract void resolveAll();
+
+	@Override
+	public final ID nextAnonymousId() {
+		return getId().anonymous(++this.anonymousSeq);
+	}
 
 	@Override
 	public final void assertScopeIs(Scope scope) {

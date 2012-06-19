@@ -113,7 +113,7 @@ public final class ResolutionRootFinder implements PathWalker {
 			// Member access - root already reached.
 			return false;
 		}
-		if (oldMember.getKey().startsWith(member.getKey())) {
+		if (oldMember.getMemberKey().startsWith(member.getMemberKey())) {
 			// Enclosing member access - go up.
 			return up(container, step, substance, null);
 		}

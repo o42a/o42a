@@ -24,9 +24,11 @@ import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.impl.MemberStep;
+import org.o42a.util.string.ID;
+import org.o42a.util.string.SubID;
 
 
-public class MemberKey {
+public class MemberKey implements SubID {
 
 	private static final MemberKey BROKEN_MEMBER_KEY = new BrokenMemberKey();
 
@@ -36,6 +38,7 @@ public class MemberKey {
 
 	private final Scope origin;
 	private final MemberId memberId;
+	private ID id;
 
 	MemberKey(Scope origin, MemberId memberId) {
 		assert origin != null :
@@ -124,6 +127,22 @@ public class MemberKey {
 	}
 
 	@Override
+	public final ID toID() {
+		if (this.id != null) {
+			return this.id;
+		}
+		return this.id = this.origin.getId().sub(this.memberId);
+	}
+
+	@Override
+	public final ID toDisplayID() {
+		if (this.memberId == null) {
+			return null;
+		}
+		return toID();
+	}
+
+	@Override
 	public int hashCode() {
 
 		final int prime = 31;
@@ -165,7 +184,14 @@ public class MemberKey {
 
 	@Override
 	public String toString() {
-		return this.memberId + "@<" + this.origin + ">";
+
+		final ID id = toDisplayID();
+
+		if (id == null) {
+			return super.toString();
+		}
+
+		return id.toString();
 	}
 
 	private static final class BrokenMemberKey extends MemberKey {

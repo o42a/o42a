@@ -151,7 +151,7 @@ public abstract class RefInterpreter {
 			return true;
 		}
 
-		final MemberName memberName = member.getKey().getMemberName();
+		final MemberName memberName = member.getMemberKey().getMemberName();
 
 		if (memberName == null) {
 			return false;
@@ -264,7 +264,7 @@ public abstract class RefInterpreter {
 						== parentMember) {
 					parentPath = SELF_PATH;
 				} else {
-					parentPath = parentMember.getKey().toPath();
+					parentPath = parentMember.getMemberKey().toPath();
 				}
 				container = parent;
 				continue;

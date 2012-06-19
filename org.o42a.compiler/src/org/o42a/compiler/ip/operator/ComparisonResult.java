@@ -143,7 +143,7 @@ final class ComparisonResult extends BuiltinObject {
 
 		this.cmp = statement
 				.toMember()
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference()
 				.bind(this, getScope())

@@ -82,7 +82,7 @@ public final class Adapter extends PathFragment implements LocationInfo {
 			return null;
 		}
 
-		final MemberKey key = adapterMember.getKey();
+		final MemberKey key = adapterMember.getMemberKey();
 		final MemberField adapterField = adapterMember.toField();
 
 		if (adapterField == null) {

@@ -47,9 +47,9 @@ public final class ExplicitLocalScope extends LocalScope {
 			new HashMap<MemberId, Member>();
 	private MemberClause[] implicitClauses;
 	private ImperativeBlock block;
+	private LocalIR ir;
 	private byte hasSubClauses;
 	private boolean allResolved;
-	private LocalIR ir;
 
 	public ExplicitLocalScope(
 			LocationInfo location,
@@ -144,7 +144,7 @@ public final class ExplicitLocalScope extends LocalScope {
 		}
 		if (member.toClause() != null) {
 			// Clauses are available from outside the local scope.
-			return member.getKey().toPath();
+			return member.getMemberKey().toPath();
 		}
 
 		final LocalPlace userPlace = placeOf(user);
@@ -161,7 +161,7 @@ public final class ExplicitLocalScope extends LocalScope {
 			return null;
 		}
 
-		return member.getKey().toPath();
+		return member.getMemberKey().toPath();
 	}
 
 	@Override
@@ -243,7 +243,7 @@ public final class ExplicitLocalScope extends LocalScope {
 	@Override
 	protected boolean addMember(Member member) {
 
-		final MemberId memberId = member.getId();
+		final MemberId memberId = member.getMemberId();
 		final Member old = this.members.put(memberId, member);
 
 		if (old == null) {

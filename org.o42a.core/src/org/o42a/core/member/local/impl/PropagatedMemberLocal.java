@@ -36,13 +36,13 @@ public final class PropagatedMemberLocal extends MemberLocal {
 	}
 
 	@Override
-	public MemberId getId() {
-		return this.propagatedFrom.getId();
+	public MemberId getMemberId() {
+		return this.propagatedFrom.getMemberId();
 	}
 
 	@Override
-	public MemberKey getKey() {
-		return this.propagatedFrom.getKey();
+	public MemberKey getMemberKey() {
+		return this.propagatedFrom.getMemberKey();
 	}
 
 	@Override

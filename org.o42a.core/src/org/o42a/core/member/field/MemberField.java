@@ -62,7 +62,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		super(
 				location,
 				propagatedFrom.distributeIn(owner.getContainer()), owner);
-		this.key = propagatedFrom.getKey();
+		this.key = propagatedFrom.getMemberKey();
 		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
 				new FieldDeclaration(
@@ -73,7 +73,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public final MemberId getId() {
+	public final MemberId getMemberId() {
 		return getDeclaration().getMemberId();
 	}
 
@@ -83,7 +83,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public final Visibility getVisibility() {
-		getKey();
+		getMemberKey();
 		return this.visibility;
 	}
 
@@ -106,7 +106,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public MemberKey getKey() {
+	public MemberKey getMemberKey() {
 		if (this.key != null) {
 			return this.key;
 		}
@@ -200,49 +200,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		}
 	}
 
-	@Override
-	public String toString() {
-		if (!isOverride()) {
-			return getDisplayPath();
-		}
-
-		final StringBuilder out = new StringBuilder();
-
-		out.append(getDisplayPath());
-		out.append('{');
-
-		if (this.key != null) {
-			out.append(this.key.getOrigin());
-		} else {
-			out.append(getDeclaration().getDeclaredIn());
-		}
-
-		if (isPropagated()) {
-			out.append(", ");
-			if (isClone()) {
-				out.append("clone of ");
-				out.append(getLastDefinition().getDisplayPath());
-			} else {
-				out.append("propagated from ");
-
-				boolean comma = false;
-
-				for (Member overridden : getOverridden()) {
-					if (!comma) {
-						comma = true;
-					} else {
-						out.append(", ");
-					}
-					out.append(overridden.getDisplayPath());
-				}
-			}
-		}
-
-		out.append('}');
-
-		return out.toString();
-	}
-
 	protected final void setField(UserInfo user, Field field) {
 		this.field = field;
 		useBy(user);
@@ -256,7 +213,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 		if (overridden != null) {
 			this.visibility = overridden.getVisibility();
-			return overridden.getKey();
+			return overridden.getMemberKey();
 		}
 
 		this.visibility = Visibility.PRIVATE;
@@ -276,7 +233,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			if (declaredIn == null) {
 				return null;
 			}
-			overridden = declaredIn.member(getId(), Accessor.INHERITANT);
+			overridden = declaredIn.member(getMemberId(), Accessor.INHERITANT);
 		} else {
 
 			final ObjectType containerType = getContainer().toObject().type();
@@ -312,7 +269,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			return overridden;
 		}
 
-		final Member member = ascendant.member(getId(), Accessor.INHERITANT);
+		final Member member = ascendant.member(getMemberId(), Accessor.INHERITANT);
 
 		if (member == null) {
 			return overridden;
@@ -332,7 +289,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	private MemberKey declareNewField() {
 		this.visibility = getDeclaration().getVisibility();
-		return getId().key(getScope());
+		return getMemberId().key(getScope());
 	}
 
 	private void useBy(UserInfo user) {

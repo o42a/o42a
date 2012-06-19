@@ -113,7 +113,7 @@ public abstract class AbstractPrint extends AnnotatedBuiltin {
 
 		final Path path =
 				member(TEXT_MEMBER, Accessor.DECLARATION)
-				.getKey()
+				.getMemberKey()
 				.toPath()
 				.dereference();
 

@@ -115,8 +115,16 @@ public final class False extends BuiltinObject {
 
 	private static final class FalseScope extends StandaloneObjectScope {
 
+		private final ID id;
+
 		FalseScope(LocationInfo location, Distributor enclosing) {
 			super(location, enclosing);
+			this.id = ID.id("FALSE");
+		}
+
+		@Override
+		public ID getId() {
+			return this.id;
 		}
 
 		@Override
@@ -128,16 +136,8 @@ public final class False extends BuiltinObject {
 
 	private static final class IR extends ScopeIR {
 
-		private ID id;
-
 		IR(Generator generator, Scope scope) {
 			super(generator, scope);
-			this.id = ID.id("FALSE");
-		}
-
-		@Override
-		public ID getId() {
-			return this.id;
 		}
 
 		@Override
