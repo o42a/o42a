@@ -51,4 +51,9 @@ public abstract class NameEncoderProxy extends NameEncoder {
 		out().writeSeparator(out, separator);
 	}
 
+	@Override
+	protected void endSeparator(CPWriter out, Separator separator) {
+		out().endSeparator(out, separator);
+	}
+
 }

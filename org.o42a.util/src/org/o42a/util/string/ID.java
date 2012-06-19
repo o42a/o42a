@@ -216,6 +216,9 @@ public final class ID {
 		final StringCPWriter out = new StringCPWriter();
 
 		DISPLAY_NAME_ENCODER.write(out, this);
+		if (out.toString().contains("(: strings")) {
+			DISPLAY_NAME_ENCODER.write(new StringCPWriter(), this);
+		}
 
 		return out.toString();
 	}
@@ -271,7 +274,7 @@ public final class ID {
 
 	public enum Separator {
 
-		NONE("", "") {
+		NONE("", "", "") {
 
 			@Override
 			boolean discardsPrev(Separator prev) {
@@ -285,7 +288,7 @@ public final class ID {
 
 		},
 
-		TOP("$$", "$$") {
+		TOP("$$", "$$", "") {
 
 			@Override
 			boolean discardsPrev(Separator prev) {
@@ -294,18 +297,23 @@ public final class ID {
 
 		},
 
-		SUB(":", ": "),
-		ANONYMOUS(":", ": "),
-		DETAIL("//", " // "),
-		TYPE("@@", " @@"),
-		IN("@", " @");
+		SUB(":", ": ", ""),
+		ANONYMOUS(":", ": (", ")"),
+		DETAIL("//", " // ", ""),
+		TYPE("@@", " @@(", ")"),
+		IN("@", " @(", ")");
 
 		private final String defaultSign;
-		private final String displaySign;
+		private final String displayBefore;
+		private final String displayAfter;
 
-		Separator(String defaultSign, String displaySign) {
+		Separator(
+				String defaultSign,
+				String displayBefore,
+				String displayAfter) {
 			this.defaultSign = defaultSign;
-			this.displaySign = displaySign;
+			this.displayBefore = displayBefore;
+			this.displayAfter = displayAfter;
 		}
 
 		public final boolean isNone() {
@@ -320,12 +328,16 @@ public final class ID {
 			return this.defaultSign;
 		}
 
-		public final String getDisplaySign() {
-			return this.displaySign;
+		public final String getDisplayBefore() {
+			return this.displayBefore;
+		}
+
+		public final String getDisplayAfter() {
+			return this.displayAfter;
 		}
 
 		boolean discardsPrev(Separator prev) {
-			return prev.isNone();
+			return prev.isNone() || prev == this || prev == SUB;
 		}
 
 		boolean discardsNext(Separator next) {

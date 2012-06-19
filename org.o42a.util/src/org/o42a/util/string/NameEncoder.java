@@ -19,6 +19,7 @@
 */
 package org.o42a.util.string;
 
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID.Separator;
 
 
@@ -31,15 +32,14 @@ public class NameEncoder {
 
 	public final NameEncoder write(CPWriter out, ID id) {
 
-		final Separator[] lastSeparator = new Separator[] {Separator.NONE};
-		final NameEncoder nextWriter = writeID(out, lastSeparator, id, true);
-		final Separator lastSep = lastSeparator[0];
+		final LastSeparator lastSeparator = new LastSeparator(Separator.NONE);
+		final NameEncoder nextEncoder = writeID(out, lastSeparator, id, true);
 
-		if (lastSep.isTop()) {
-			nextWriter.writeSeparator(out, lastSep);
+		if (lastSeparator.getSeparator().isTop()) {
+			lastSeparator.write(out, nextEncoder);
 		}
 
-		return nextWriter;
+		return nextEncoder;
 	}
 
 	public final NameEncoder write(CPWriter out, Name name) {
@@ -68,66 +68,143 @@ public class NameEncoder {
 		out.write(separator.getDefaultSign());
 	}
 
+	/**
+	 * Ends the separator previously written with
+	 * {@link #writeSeparator(CPWriter, Separator)}.
+	 *
+	 * <p>This method is called after the {@link ID#getName() name}
+	 * and {@link ID#getSuffix() suffix} written.
+	 *
+	 * @param out code point writer.
+	 * @param separator ID separator.
+	 */
+	protected void endSeparator(CPWriter out, ID.Separator separator) {
+	}
+
 	private NameEncoder writeID(
 			CPWriter out,
-			Separator[] lastSeparator,
+			LastSeparator lastSeparator,
 			ID id,
 			boolean decapitalize) {
 
 		final ID prefix = id.getPrefix();
-		final NameEncoder writer;
-		final NameEncoder nextWriter;
+		final NameEncoder encoder;
+		final NameEncoder nextEncoder;
 		final Name name = id.getName();
-		final boolean decapSuffix;
+		final boolean decapitalizeSuffix;
 
 		if (prefix != null) {
-			nextWriter = writeID(out, lastSeparator, prefix, decapitalize);
-			writer = nextWriter;
-			decapSuffix = decapitalize && this == nextWriter;
+			nextEncoder = writeID(out, lastSeparator, prefix, decapitalize);
+			encoder = nextEncoder;
+			decapitalizeSuffix = decapitalize && this == nextEncoder;
 		} else if (!decapitalize) {
-			nextWriter = this;
-			writer = this;
-			decapSuffix = false;
+			nextEncoder = this;
+			encoder = this;
+			decapitalizeSuffix = false;
 		} else if (name.isEmpty()) {
-			nextWriter = this;
-			writer = this;
-			decapSuffix = true;
+			nextEncoder = this;
+			encoder = this;
+			decapitalizeSuffix = decapitalize;
 		} else {
-			nextWriter = decapitalized();
-			writer = this;
-			decapSuffix = false;
+			nextEncoder = decapitalized();
+			encoder = this;
+			decapitalizeSuffix = false;
 		}
 
-		final Separator prev = lastSeparator[0];
+		final LastSeparator nextSeparator;
+		final Separator prev = lastSeparator.getSeparator();
 		final Separator next = id.getSeparator();
 
 		if (name.isEmpty()) {
-			if (!prev.discardsNext(next)) {
-				if (!next.discardsPrev(prev)) {
-					writer.writeSeparator(out, prev);
-				}
-				lastSeparator[0] = next;
+			if (prev.discardsNext(next)) {
+				nextSeparator = lastSeparator;
+			} else if (next.discardsPrev(prev)) {
+				nextSeparator = new LastSeparator(next);
+			} else {
+				lastSeparator.write(out, encoder);
+				nextSeparator = new LastSeparator(next);
 			}
 		} else {
 			if (prev.discardsNext(next)) {
-				writer.writeSeparator(out, prev);
+				nextSeparator = lastSeparator.write(out, encoder);
 			} else if (next.discardsPrev(prev)) {
-				writer.writeSeparator(out, next);
+				nextSeparator = new LastSeparator(next).write(out, encoder);
 			} else {
-				writer.writeSeparator(out, prev);
-				writer.writeSeparator(out, next);
+				lastSeparator.write(out, encoder);
+				nextSeparator = new LastSeparator(next).write(out, encoder);
 			}
-			lastSeparator[0] = Separator.NONE;
-			writer.write(out, name);
+			encoder.write(out, name);
 		}
 
+		final NameEncoder finalEncoder;
 		final ID suffix = id.getSuffix();
 
 		if (suffix == null) {
-			return nextWriter;
+			finalEncoder = nextEncoder;
+		} else {
+			finalEncoder = nextEncoder.writeID(
+					out,
+					nextSeparator,
+					suffix,
+					decapitalizeSuffix);
 		}
 
-		return nextWriter.writeID(out, lastSeparator, suffix, decapSuffix);
+		if (nextSeparator != lastSeparator) {
+			if (!nextSeparator.end(out, encoder)) {
+				lastSeparator.replace(nextSeparator.getSeparator());
+			}
+		}
+
+		return finalEncoder;
+	}
+
+	private static final class LastSeparator {
+
+		private Separator separator;
+		private Separator[] written = new Separator[0];
+		private boolean separatorWritten;
+
+		public LastSeparator(Separator separator) {
+			this.separator = separator;
+		}
+
+		public final Separator getSeparator() {
+			return this.separator;
+		}
+
+		public final void replace(Separator separator) {
+			this.separator = separator;
+			this.separatorWritten = false;
+		}
+
+		public final LastSeparator write(CPWriter out, NameEncoder encoder) {
+			if (this.separatorWritten) {
+				return this;
+			}
+			this.separatorWritten = true;
+			if (!this.separator.isNone()) {
+				this.written = ArrayUtil.prepend(this.separator, this.written);
+				encoder.writeSeparator(out, this.separator);
+				this.separator = Separator.NONE;
+			}
+			return this;
+		}
+
+		public final boolean end(CPWriter out, NameEncoder encoder) {
+			for (Separator written : this.written) {
+				encoder.endSeparator(out, written);
+			}
+			return this.separatorWritten;
+		}
+
+		@Override
+		public String toString() {
+			if (this.separator == null) {
+				return super.toString();
+			}
+			return this.separator.toString();
+		}
+
 	}
 
 }
