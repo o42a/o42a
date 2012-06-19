@@ -32,7 +32,12 @@ final class DisplayNameEncoder extends NameEncoder {
 
 	@Override
 	protected void writeSeparator(CPWriter out, Separator separator) {
-		out.write(separator.getDisplaySign());
+		out.write(separator.getDisplayBefore());
+	}
+
+	@Override
+	protected void endSeparator(CPWriter out, Separator separator) {
+		out.write(separator.getDisplayAfter());
 	}
 
 }
