@@ -266,12 +266,7 @@ public final class ID implements SubID {
 		if (this.name == null) {
 			return super.toString();
 		}
-
-		final StringCPWriter out = new StringCPWriter();
-
-		DISPLAY_NAME_ENCODER.write(out, this);
-
-		return out.toString();
+		return DISPLAY_NAME_ENCODER.print(this);
 	}
 
 	private final ID separate(IDSeparator separator, String name) {
