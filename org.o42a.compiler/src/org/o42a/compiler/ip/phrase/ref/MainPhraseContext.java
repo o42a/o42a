@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.phrase.ref;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.compiler.ip.phrase.part.NextClause.clauseNotFound;
 import static org.o42a.core.member.MemberName.clauseName;
-import static org.o42a.core.source.CompilerLogger.logDeclaration;
+import static org.o42a.core.source.CompilerLogger.DECLARATION_LOG_DETAIL;
 
 import java.util.LinkedList;
 
@@ -284,7 +284,9 @@ final class MainPhraseContext extends PhraseContext {
 				if (clause != null && clause.requiresContinuation()) {
 					getLogger().error(
 							"incomplete_phrase",
-							logDeclaration(continuation, clause),
+							continuation.getLoggable().addDetail(
+									DECLARATION_LOG_DETAIL,
+									clause),
 							"Incomplete phrase");
 					break;
 				}

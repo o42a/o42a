@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.ref.ModuleRefVisitor.MODULE_REF_VISITOR;
 import static org.o42a.compiler.ip.ref.ModuleRefVisitor.SAME_MODULE_REF_VISITOR;
 import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.parser.Grammar.*;
+import static org.o42a.util.log.LogDetail.logDetail;
 
 import java.io.IOException;
 
@@ -41,15 +42,17 @@ import org.o42a.parser.ParserWorker;
 import org.o42a.util.io.Source;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.StringSource;
-import org.o42a.util.log.LogReason;
+import org.o42a.util.log.DetailedLogger;
+import org.o42a.util.log.LogDetail;
 import org.o42a.util.log.Logger;
-import org.o42a.util.log.LoggerWithReason;
 import org.o42a.util.string.Name;
 
 
 public class Compiler implements SourceCompiler {
 
 	private static final Compiler instance = new Compiler();
+	private static final LogDetail LOCATION_LOG_DETAIL =
+			logDetail("compiler.location", "Location");
 
 	public static Compiler compiler() {
 		return instance;
@@ -219,13 +222,10 @@ public class Compiler implements SourceCompiler {
 			CompilerLogger logger,
 			String string) {
 
-		final LoggerWithReason log = new LoggerWithReason(
-				logger,
-				new LogReason("compiler.location", "Location", location));
-		final RefNode node = parse(
-				parser,
-				log,
-				new StringSource(string, string));
+		final DetailedLogger log =
+				new DetailedLogger(logger, LOCATION_LOG_DETAIL, location);
+		final RefNode node =
+				parse(parser, log, new StringSource(string, string));
 
 		if (node == null) {
 			logger.invalidReference(location);

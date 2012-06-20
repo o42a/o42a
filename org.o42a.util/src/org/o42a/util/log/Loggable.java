@@ -22,36 +22,23 @@ package org.o42a.util.log;
 import java.util.Formattable;
 
 
-public abstract class Loggable implements LogInfo, Formattable, Cloneable {
+public abstract class Loggable implements LogInfo, Formattable {
 
-	private LogReason reason;
+	Loggable() {
+	}
 
 	@Override
 	public final Loggable getLoggable() {
 		return this;
 	}
 
-	public final LogReason getReason() {
-		return this.reason;
-	}
+	public abstract LogLocation getLocation();
 
-	public Loggable setReason(LogReason reason) {
-		if (reason == null) {
-			return this;
-		}
-
-		final Loggable clone = clone();
-
-		if (this.reason == null) {
-			clone.reason = reason;
-		} else {
-			clone.reason = this.reason.setNext(reason);
-		}
-
-		return clone;
-	}
+	public abstract LogDetails addDetail(LogDetail detail, LogInfo location);
 
 	public abstract void print(StringBuilder out);
+
+	public abstract LogDetails toDetails();
 
 	@Override
 	public String toString() {
@@ -61,15 +48,6 @@ public abstract class Loggable implements LogInfo, Formattable, Cloneable {
 		print(out);
 
 		return out.toString();
-	}
-
-	@Override
-	protected Loggable clone() {
-		try {
-			return (Loggable) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
 	}
 
 }
