@@ -34,6 +34,21 @@ public final class SourceRange extends LogLocation {
 		this.end = end;
 	}
 
+	@Override
+	public final Source getSource() {
+		return getStart().getSource();
+	}
+
+	@Override
+	public final SourcePosition getPosition() {
+		return getStart().getPosition();
+	}
+
+	@Override
+	public final SourceRange getRange() {
+		return this;
+	}
+
 	public final SourcePosition getStart() {
 		return this.start;
 	}
@@ -51,14 +66,14 @@ public final class SourceRange extends LogLocation {
 		formatter.format("%s..", this.start);
 		this.end.formatTo(
 				formatter,
-				!this.start.source().equals(this.end.source()));
+				!this.start.getSource().equals(this.end.getSource()));
 	}
 
 	@Override
 	public void print(StringBuilder out) {
 		this.start.print(out, true);
 		out.append("..");
-		this.end.print(out, !this.start.source().equals(this.end.source()));
+		this.end.print(out, !this.start.getSource().equals(this.end.getSource()));
 	}
 
 	@Override

@@ -32,8 +32,19 @@ final class LoggableSource extends LogLocation {
 		this.source = source;
 	}
 
+	@Override
 	public final Source getSource() {
 		return this.source;
+	}
+
+	@Override
+	public final SourcePosition getPosition() {
+		return null;
+	}
+
+	@Override
+	public final SourceRange getRange() {
+		return null;
 	}
 
 	@Override

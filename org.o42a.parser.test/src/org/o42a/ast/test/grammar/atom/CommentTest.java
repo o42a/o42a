@@ -36,8 +36,8 @@ public class CommentTest extends GrammarTestCase {
 
 		final CommentNode comment = parse("//comment\n");
 
-		assertEquals(0, comment.getStart().offset());
-		assertEquals(9, comment.getEnd().offset());
+		assertEquals(0, comment.getStart().getOffset());
+		assertEquals(9, comment.getEnd().getOffset());
 		assertEquals(10, this.worker.position().offset());
 		assertEquals("comment", comment.getText());
 		assertFalse(comment.isMultiline());
@@ -48,8 +48,8 @@ public class CommentTest extends GrammarTestCase {
 
 		final CommentNode comment = parse("//comment");
 
-		assertEquals(0, comment.getStart().offset());
-		assertEquals(9, comment.getEnd().offset());
+		assertEquals(0, comment.getStart().getOffset());
+		assertEquals(9, comment.getEnd().getOffset());
 		assertEquals(9, this.worker.position().offset());
 		assertEquals("comment", comment.getText());
 		assertFalse(comment.isMultiline());
@@ -60,8 +60,8 @@ public class CommentTest extends GrammarTestCase {
 
 		final CommentNode comment = parse("/*\ncomment\n*/");
 
-		assertEquals(0, comment.getStart().offset());
-		assertEquals(13, comment.getEnd().offset());
+		assertEquals(0, comment.getStart().getOffset());
+		assertEquals(13, comment.getEnd().getOffset());
 		assertEquals(13, this.worker.position().offset());
 		assertEquals("\ncomment\n", comment.getText());
 		assertTrue(comment.isMultiline());
