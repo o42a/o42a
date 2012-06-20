@@ -36,9 +36,9 @@ public abstract class Loggable implements LogInfo, Formattable {
 
 	public abstract LogDetails addDetail(LogDetail detail, LogInfo location);
 
-	public abstract void print(StringBuilder out);
-
 	public abstract LogDetails toDetails();
+
+	public abstract void print(StringBuilder out);
 
 	@Override
 	public String toString() {

@@ -49,20 +49,31 @@ public final class SourcePosition extends LogLocation {
 		this.offset = offset;
 	}
 
-	public final Source source() {
+	@Override
+	public final Source getSource() {
 		return this.source;
 	}
 
-	public final int line() {
+	public final int getLine() {
 		return this.line;
 	}
 
-	public final int column() {
+	public final int getColumn() {
 		return this.column;
 	}
 
-	public final long offset() {
+	public final long getOffset() {
 		return this.offset;
+	}
+
+	@Override
+	public final SourcePosition getPosition() {
+		return this;
+	}
+
+	@Override
+	public final SourceRange getRange() {
+		return null;
 	}
 
 	@Override
@@ -76,9 +87,9 @@ public final class SourcePosition extends LogLocation {
 
 	public void formatTo(Formatter formatter, boolean withFile) {
 		if (withFile) {
-			formatter.format("%s:", source().getName());
+			formatter.format("%s:", getSource().getName());
 		}
-		formatter.format("%d,%d(%d)", line(), column(), offset());
+		formatter.format("%d,%d(%d)", getLine(), getColumn(), getOffset());
 	}
 
 	@Override
@@ -89,15 +100,15 @@ public final class SourcePosition extends LogLocation {
 	public void print(StringBuilder out, boolean withFile) {
 		if (withFile) {
 
-			final Source source = source();
+			final Source source = getSource();
 
 			if (source != null) {
 				out.append(source.getName()).append(':');
 			}
 		}
 
-		out.append(line()).append(',').append(column());
-		out.append('(').append(offset()).append(')');
+		out.append(getLine()).append(',').append(getColumn());
+		out.append('(').append(getOffset()).append(')');
 	}
 
 	@Override

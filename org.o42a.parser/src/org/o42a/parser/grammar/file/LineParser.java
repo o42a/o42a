@@ -54,7 +54,7 @@ public abstract class LineParser<L extends LineType>
 			end = context.current().fix();
 		}
 
-		final int length = end.column() - start.column();
+		final int length = end.getColumn() - start.getColumn();
 
 		if (length < this.minLength) {
 			return null;

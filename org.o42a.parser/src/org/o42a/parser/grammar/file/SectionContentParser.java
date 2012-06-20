@@ -64,7 +64,7 @@ final class SectionContentParser implements Parser<ContentWithNextTitle> {
 			final SourcePosition sentenceEnd = sentence.getEnd();
 			final SentenceNode title;
 
-			if (context.current().line() - sentenceEnd.line() > 1) {
+			if (context.current().line() - sentenceEnd.getLine() > 1) {
 				// No empty or pure-comment lines between title
 				// and sub-title.
 				sentences.add(sentence);

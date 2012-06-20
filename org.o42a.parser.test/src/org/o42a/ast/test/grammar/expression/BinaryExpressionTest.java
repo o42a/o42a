@@ -98,12 +98,12 @@ public class BinaryExpressionTest extends GrammarTestCase {
 		assertEquals(operator, result.getOperator());
 		assertName("foo", result.getLeftOperand());
 		assertName("bar", result.getRightOperand());
-		assertEquals(0, result.getStart().offset());
-		assertEquals(8 + sign.length(), result.getEnd().offset());
-		assertEquals(4, result.getSign().getStart().offset());
+		assertEquals(0, result.getStart().getOffset());
+		assertEquals(8 + sign.length(), result.getEnd().getOffset());
+		assertEquals(4, result.getSign().getStart().getOffset());
 		assertEquals(
 				4 + sign.length(),
-				result.getSign().getEnd().offset());
+				result.getSign().getEnd().getOffset());
 	}
 
 	private BinaryNode parse(String text) {

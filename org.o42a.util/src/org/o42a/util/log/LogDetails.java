@@ -21,12 +21,10 @@ package org.o42a.util.log;
 
 import static java.util.Collections.singletonMap;
 
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
-public class LogDetails extends Loggable {
+public class LogDetails extends Loggable implements Iterable<LogDetail> {
 
 	private final LogLocation location;
 	private final Map<LogDetail, LogLocation> details;
@@ -76,6 +74,20 @@ public class LogDetails extends Loggable {
 		return new LogDetails(this.location, details);
 	}
 
+	public final LogLocation detail(LogDetail detail) {
+		return this.details.get(detail);
+	}
+
+	@Override
+	public final Iterator<LogDetail> iterator() {
+		return this.details.keySet().iterator();
+	}
+
+	@Override
+	public final LogDetails toDetails() {
+		return this;
+	}
+
 	@Override
 	public void print(StringBuilder out) {
 		getLocation().print(out);
@@ -94,11 +106,6 @@ public class LogDetails extends Loggable {
 		}
 
 		out.append(')');
-	}
-
-	@Override
-	public final LogDetails toDetails() {
-		return this;
 	}
 
 	@Override

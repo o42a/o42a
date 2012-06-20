@@ -21,6 +21,10 @@ package org.o42a.util.log;
 
 import static java.util.Collections.singletonMap;
 
+import org.o42a.util.io.Source;
+import org.o42a.util.io.SourcePosition;
+import org.o42a.util.io.SourceRange;
+
 
 public abstract class LogLocation extends Loggable {
 
@@ -28,6 +32,12 @@ public abstract class LogLocation extends Loggable {
 	public final LogLocation getLocation() {
 		return this;
 	}
+
+	public abstract Source getSource();
+
+	public abstract SourcePosition getPosition();
+
+	public abstract SourceRange getRange();
 
 	@Override
 	public final LogDetails addDetail(LogDetail detail, LogInfo location) {

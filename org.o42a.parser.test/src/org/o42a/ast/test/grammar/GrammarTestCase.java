@@ -56,8 +56,8 @@ public class GrammarTestCase {
 	}
 
 	public static void assertRange(long start, long end, Node node) {
-		assertThat("Wrong range start", node.getStart().offset(), is(start));
-		assertThat("Wrong range end", node.getEnd().offset(), is(end));
+		assertThat("Wrong range start", node.getStart().getOffset(), is(start));
+		assertThat("Wrong range end", node.getEnd().getOffset(), is(end));
 	}
 
 	public static String canonicalName(Name name) {
