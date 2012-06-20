@@ -67,6 +67,19 @@ final class FileSourceReader extends SourceReader {
 	}
 
 	@Override
+	public void seek(long offset) throws IOException {
+		if (offset < 0 || offset >= this.channel.size()) {
+			throw new IllegalArgumentException(
+					"Invalid file offset: " + offset);
+		}
+		this.channel.position(offset);
+		this.offset = offset;
+		this.bytes.position(0);
+		this.bytes.limit(0);
+		this.chars.clear();
+	}
+
+	@Override
 	public int read() throws IOException {
 
 		char highSurrogate = 0;
@@ -74,6 +87,7 @@ final class FileSourceReader extends SourceReader {
 		for (;;) {
 			if (this.bytes.remaining() == 0) {
 				// Read more bytes from file.
+				this.offset = this.channel.position();
 				this.bytes.clear();
 
 				final boolean eof = this.channel.read(this.bytes) < 0;

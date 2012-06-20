@@ -68,6 +68,18 @@ final class URLSourceReader extends SourceReader {
 	}
 
 	@Override
+	public void seek(long offset) throws IOException {
+		if (offset() != 0) {
+			throw new IllegalStateException(
+					"Source already read. Can't seek");
+		}
+		this.stream.skip(offset);
+		this.bytes.position(0);
+		this.bytes.limit(0);
+		this.chars.clear();
+	}
+
+	@Override
 	public int read() throws IOException {
 
 		char highSurrogate = 0;
@@ -75,10 +87,10 @@ final class URLSourceReader extends SourceReader {
 		for (;;) {
 			if (this.bytes.remaining() == 0) {
 				// Read more bytes from file.
+				this.offset += this.bytes.limit();
 				this.bytes.clear();
 
-				final int bytesRead =
-						this.stream.read(this.bytes.array());
+				final int bytesRead = this.stream.read(this.bytes.array());
 
 				if (bytesRead < 0) {
 					return -1;

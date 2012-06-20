@@ -23,7 +23,6 @@ import java.io.Closeable;
 import java.io.IOException;
 
 
-
 public abstract class SourceReader implements Closeable {
 
 	private final Source source;
@@ -39,6 +38,8 @@ public abstract class SourceReader implements Closeable {
 	}
 
 	public abstract long offset();
+
+	public abstract void seek(long offset) throws IOException;
 
 	public abstract int read() throws IOException;
 
