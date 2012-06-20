@@ -42,6 +42,14 @@ final class StringSourceReader extends SourceReader {
 	}
 
 	@Override
+	public void seek(long offset) throws IOException {
+		if (offset < 0 || offset >= this.string.length()) {
+			throw new IllegalArgumentException("Invalid offset: " + offset);
+		}
+		this.offset = (int) offset;
+	}
+
+	@Override
 	public int read() throws IOException {
 
 		char highSurrogate = 0;
