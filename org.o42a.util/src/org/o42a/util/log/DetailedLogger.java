@@ -20,14 +20,22 @@
 package org.o42a.util.log;
 
 
-public final class LoggerWithReason implements Logger {
+public final class DetailedLogger implements Logger {
 
 	private final Logger logger;
-	private final LogReason reason;
+	private final LogDetail detail;
+	private final LogInfo location;
 
-	public LoggerWithReason(Logger logger, LogReason reason) {
+	public DetailedLogger(Logger logger, LogDetail detail, LogInfo location) {
+		assert logger != null :
+			"Logger not specified";
+		assert detail != null :
+			"Detail not specified";
+		assert location != null :
+			"Location not specified";
 		this.logger = logger;
-		this.reason = reason;
+		this.detail = detail;
+		this.location = location;
 	}
 
 	@Override
@@ -36,7 +44,7 @@ public final class LoggerWithReason implements Logger {
 				record.getSeverity(),
 				record.getCode(),
 				record.getMessage(),
-				record.getLoggable().setReason(this.reason),
+				record.getLoggable().addDetail(this.detail, this.location),
 				record.getArgs()));
 	}
 

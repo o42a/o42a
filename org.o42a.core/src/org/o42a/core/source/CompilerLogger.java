@@ -19,29 +19,19 @@
 */
 package org.o42a.core.source;
 
+import static org.o42a.util.log.LogDetail.logDetail;
+
 import org.o42a.core.member.Visibility;
 import org.o42a.util.log.*;
 
 
 public class CompilerLogger implements Logger {
 
-	public static Loggable logAnotherLocation(
-			LogInfo location,
-			LogInfo another) {
-		return location.getLoggable().setReason(new LogReason(
-				"compiler.another",
-				"Another declaration",
-				another));
-	}
+	public static final LogDetail ANOTHER_LOG_DETAIL =
+			logDetail("compiler.another", "Another location");
 
-	public static Loggable logDeclaration(
-			LogInfo location,
-			LogInfo declaration) {
-		return location.getLoggable().setReason(new LogReason(
-				"compiler.declaration",
-				"Declaration",
-				declaration));
-	}
+	public static final LogDetail DECLARATION_LOG_DETAIL =
+			logDetail("compiler.declration", "Declaration");
 
 	private final Logger logger;
 	private final Object source;

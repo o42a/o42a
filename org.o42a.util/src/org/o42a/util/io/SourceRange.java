@@ -21,10 +21,10 @@ package org.o42a.util.io;
 
 import java.util.Formatter;
 
-import org.o42a.util.log.Loggable;
+import org.o42a.util.log.LogLocation;
 
 
-public final class SourceRange extends Loggable {
+public final class SourceRange extends LogLocation {
 
 	private final SourcePosition start;
 	private final SourcePosition end;
