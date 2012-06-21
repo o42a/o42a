@@ -19,17 +19,17 @@
 */
 package org.o42a.parser.grammar.expression;
 
-import static org.o42a.ast.expression.BracketsNode.Bracket.CLOSING_BRACKET;
-import static org.o42a.ast.expression.BracketsNode.Bracket.OPENING_BRACKET;
+import static org.o42a.ast.atom.BracketSign.CLOSING_BRACKET;
+import static org.o42a.ast.atom.BracketSign.OPENING_BRACKET;
 import static org.o42a.parser.Grammar.expression;
 
 import java.util.ArrayList;
 
+import org.o42a.ast.atom.BracketSign;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.expression.ArgumentNode.Separator;
-import org.o42a.ast.expression.BracketsNode.Bracket;
 import org.o42a.parser.Expectations;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -49,9 +49,9 @@ public final class BracketsParser implements Parser<BracketsNode> {
 			return null;
 		}
 
-		final SignNode<Bracket> opening = opening(context);
+		final SignNode<BracketSign> opening = opening(context);
 		final ArrayList<ArgumentNode> arguments = new ArrayList<ArgumentNode>();
-		SignNode<Bracket> closing = null;
+		SignNode<BracketSign> closing = null;
 		SignNode<Separator> separator = null;
 		SeparatorNodes prevSeparators = null;
 
@@ -84,7 +84,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 				context.acceptAll();
 
-				closing = new SignNode<Bracket>(
+				closing = new SignNode<BracketSign>(
 						closingStart,
 						context.current().fix(),
 						CLOSING_BRACKET);
@@ -132,7 +132,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 						closing));
 	}
 
-	private SignNode<Bracket> opening(ParserContext context) {
+	private SignNode<BracketSign> opening(ParserContext context) {
 
 		final SourcePosition start = context.current().fix();
 
@@ -140,7 +140,7 @@ public final class BracketsParser implements Parser<BracketsNode> {
 
 		return context.acceptComments(
 				true,
-				new SignNode<Bracket>(
+				new SignNode<BracketSign>(
 						start,
 						context.current().fix(),
 						OPENING_BRACKET));

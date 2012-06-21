@@ -21,16 +21,16 @@ package org.o42a.ast.type;
 
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
+import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
 
 
 public class InterfaceNode extends AbstractNode {
 
-	private final SignNode<Parenthesis> opening;
+	private final SignNode<ParenthesisSign> opening;
 	private final SignNode<DefinitionKind> kind;
 	private final TypeNode type;
-	private final SignNode<Parenthesis> closing;
+	private final SignNode<ParenthesisSign> closing;
 
 	public InterfaceNode(SignNode<DefinitionKind> kind) {
 		super(kind.getStart(), kind.getEnd());
@@ -41,10 +41,10 @@ public class InterfaceNode extends AbstractNode {
 	}
 
 	public InterfaceNode(
-			SignNode<Parenthesis> opening,
+			SignNode<ParenthesisSign> opening,
 			SignNode<DefinitionKind> kind,
 			TypeNode declaredType,
-			SignNode<Parenthesis> closing) {
+			SignNode<ParenthesisSign> closing) {
 		super(opening.getStart(), closing.getEnd());
 		this.opening = opening;
 		this.kind = kind;
@@ -52,7 +52,7 @@ public class InterfaceNode extends AbstractNode {
 		this.closing = closing;
 	}
 
-	public SignNode<Parenthesis> getOpening() {
+	public SignNode<ParenthesisSign> getOpening() {
 		return this.opening;
 	}
 
@@ -64,7 +64,7 @@ public class InterfaceNode extends AbstractNode {
 		return this.type;
 	}
 
-	public SignNode<Parenthesis> getClosing() {
+	public SignNode<ParenthesisSign> getClosing() {
 		return this.closing;
 	}
 

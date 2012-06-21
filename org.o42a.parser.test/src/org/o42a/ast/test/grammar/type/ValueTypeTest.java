@@ -26,7 +26,7 @@ import static org.junit.Assert.assertThat;
 import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.junit.Test;
-import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
+import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 import org.o42a.ast.type.AscendantNode.Separator;
 import org.o42a.ast.type.*;
@@ -46,10 +46,10 @@ public class ValueTypeTest extends GrammarTestCase {
 				is(DefinitionKind.LINK));
 		assertThat(
 				result.getValueType().getOpening().getType(),
-				is(Parenthesis.OPENING_PARENTHESIS));
+				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
 				result.getValueType().getClosing().getType(),
-				is(Parenthesis.CLOSING_PARENTHESIS));
+				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
@@ -64,10 +64,10 @@ public class ValueTypeTest extends GrammarTestCase {
 				is(DefinitionKind.VARIABLE));
 		assertThat(
 				result.getValueType().getOpening().getType(),
-				is(Parenthesis.OPENING_PARENTHESIS));
+				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
 				result.getValueType().getClosing().getType(),
-				is(Parenthesis.CLOSING_PARENTHESIS));
+				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
@@ -89,10 +89,10 @@ public class ValueTypeTest extends GrammarTestCase {
 				is(DefinitionKind.LINK));
 		assertThat(
 				result.getValueType().getOpening().getType(),
-				is(Parenthesis.OPENING_PARENTHESIS));
+				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
 				result.getValueType().getClosing().getType(),
-				is(Parenthesis.CLOSING_PARENTHESIS));
+				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	@Test
@@ -118,10 +118,10 @@ public class ValueTypeTest extends GrammarTestCase {
 				is(DefinitionKind.VARIABLE));
 		assertThat(
 				result.getValueType().getOpening().getType(),
-				is(Parenthesis.OPENING_PARENTHESIS));
+				is(ParenthesisSign.OPENING_PARENTHESIS));
 		assertThat(
 				result.getValueType().getClosing().getType(),
-				is(Parenthesis.CLOSING_PARENTHESIS));
+				is(ParenthesisSign.CLOSING_PARENTHESIS));
 	}
 
 	private ValueTypeNode parse(String text) {

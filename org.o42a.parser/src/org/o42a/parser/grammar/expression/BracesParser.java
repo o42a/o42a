@@ -21,19 +21,19 @@ package org.o42a.parser.grammar.expression;
 
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
+import org.o42a.ast.atom.BraceSign;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.BracesNode;
-import org.o42a.ast.expression.BracesNode.Brace;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Parser;
 
 
-public class BracesParser extends AbstractBlockParser<BracesNode, Brace> {
+public class BracesParser extends AbstractBlockParser<BracesNode, BraceSign> {
 
 	public static final Parser<BracesNode> BRACES = new BracesParser();
 
 	private BracesParser() {
-		super(Brace.OPENING_BRACE, Brace.CLOSING_BRACE);
+		super(BraceSign.OPENING_BRACE, BraceSign.CLOSING_BRACE);
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public class BracesParser extends AbstractBlockParser<BracesNode, Brace> {
 
 	@Override
 	protected BracesNode createBlock(
-			SignNode<Brace> opening,
+			SignNode<BraceSign> opening,
 			SentenceNode[] content,
-			SignNode<Brace> closing) {
+			SignNode<BraceSign> closing) {
 		return new BracesNode(opening, content, closing);
 	}
 
