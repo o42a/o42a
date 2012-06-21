@@ -143,13 +143,13 @@ public class ConsoleLogger implements Logger {
 		}
 
 		// Indent for column.
-		final int spaces = Math.min(0, position.getColumn() - 1 - firstColumn);
+		final int spaces = position.getColumn() - 1 - firstColumn;
 
 		printChars(formatter, indent + spaces, ' ');
 
 		final int colsLeft = sourceLineCols(indent) - spaces;
 
-		if (lastColumn <= 0 || colsLeft <= 0) {
+		if (lastColumn <= 0) {
 			// Print a single position.
 			formatter.format("^ %d\n", position.getColumn());
 		}
@@ -157,25 +157,34 @@ public class ConsoleLogger implements Logger {
 		// Print the range.
 		final String startStr = Integer.toString(position.getColumn());
 		final int colsForStart = startStr.length() + 3;
-
-		formatter.format("^ %s ", startStr);
-
 		final int colsForRest = colsLeft - colsForStart;
 		final int colsToEnd =
-				lastColumn - 1 - firstColumn - (spaces + colsForStart);
+				lastColumn - 2 - firstColumn - (spaces + colsForStart);
 
 		if (colsToEnd <= 0) {
 			if (colsToEnd == 0) {
 				// Short range.
 				// Format: ^ <start column> ^ <end column>
-				formatter.format("^ %d\n", lastColumn);
-			} else {
-				// Very short range.
-				// Format: ^ <start column> - <end column>
-				formatter.format("- %d\n", lastColumn);
+				formatter.format("^ %s ^ %d\n", startStr, lastColumn);
+				return;
 			}
+
+			final int colsToEnd2 =
+					lastColumn - 2 - firstColumn - (spaces + 1);
+
+			// Very short range.
+			// Format: ^_^ <start column> - <end column>
+			// or    : ^ <start column> - <end column>
+			formatter.format("^");
+			if (colsToEnd2 >= 0) {
+				printChars(formatter, colsToEnd2, '_');
+				formatter.format("^");
+			}
+			formatter.format(" %s - %d\n", startStr, lastColumn);
 			return;
 		}
+
+		formatter.format("^ %s ", startStr);
 		if (colsToEnd >= colsForRest) {
 			// The end column can not be displayed.
 			// Fill the rest of the line with underscores.
@@ -187,14 +196,18 @@ public class ConsoleLogger implements Logger {
 
 		// Print the range tail.
 		final String endStr = Integer.toString(lastColumn);
-		final int colsForEnd = endStr.length() + 3;
+		final int colsForEnd = endStr.length() + 1;
 		final int underscores = colsToEnd - colsForEnd;
 
 		if (underscores >= 0) {
 			// Print the end column number before the '^' sign.
 			// Format: ^ <start column> _____ <end column> ^
-			printChars(formatter, underscores, '_');
-			formatter.format(" %s ^\n", endStr);
+			printChars(formatter, underscores - 1, '_');
+			if (underscores > 0) {
+				formatter.format(" %s ^\n", endStr);
+			} else {
+				formatter.format("%s ^\n", endStr);
+			}
 			return;
 		}
 
@@ -250,7 +263,7 @@ public class ConsoleLogger implements Logger {
 			}
 
 			// Move to the offset and fill the line.
-			while (offset < in.offset()) {
+			while (offset > in.offset()) {
 
 				final int c = in.read();
 
@@ -262,11 +275,10 @@ public class ConsoleLogger implements Logger {
 					column = 0;
 					continue;
 				}
-				++column;
 				if (column >= line.length) {
 					line = Arrays.copyOf(line, line.length + lineCols);
 				}
-				line[column] = c;
+				line[column++] = c;
 			}
 
 			// Fill the rest of the line.
@@ -285,20 +297,20 @@ public class ConsoleLogger implements Logger {
 				if (c < 0 || c == '\n') {
 					break;
 				}
-				++column;
 				if (column >= maxLen) {
 					break;
 				}
 				if (column >= line.length) {
 					line = Arrays.copyOf(line, line.length + lineCols);
 				}
+				line[column++] = c;
 			}
 		} finally {
 			in.close();
 		}
 
 		// Remove redundant leading chars and convert to string.
-		final int redundantChars = line.length - lineCols;
+		final int redundantChars = column - lineCols;
 		final int firstColumn;
 		final StringBuilder out;
 
@@ -306,11 +318,11 @@ public class ConsoleLogger implements Logger {
 			out = new StringBuilder(lineCols);
 			firstColumn = redundantChars;
 		} else {
-			out = new StringBuilder(line.length);
+			out = new StringBuilder(column);
 			firstColumn = 0;
 		}
 
-		for (int i = firstColumn; i < line.length; ++i) {
+		for (int i = firstColumn; i < column; ++i) {
 			out.appendCodePoint(line[i]);
 		}
 
