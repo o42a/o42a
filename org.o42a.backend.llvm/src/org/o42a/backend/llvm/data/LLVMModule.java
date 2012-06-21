@@ -245,6 +245,8 @@ public final class LLVMModule {
 		destroy();
 	}
 
+	public static native int stderrColumns();
+
 	static native long bufferPtr(ByteBuffer buffer);
 
 	private static native void parseArgs(byte[][] args);

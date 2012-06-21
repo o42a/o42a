@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     org_o42a_backend_llvm_data_LLVMModule
+ * Method:    stderrColumns
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_org_o42a_backend_llvm_data_LLVMModule_stderrColumns
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     org_o42a_backend_llvm_data_LLVMModule
  * Method:    bufferPtr
  * Signature: (Ljava/nio/ByteBuffer;)J
  */
