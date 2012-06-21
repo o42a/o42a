@@ -19,11 +19,13 @@
 */
 package org.o42a.parser.grammar.field;
 
+import static org.o42a.ast.ref.MembershipSign.DECLARED_IN;
 import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.MembershipSign;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
@@ -48,11 +50,10 @@ public class DeclarableAdapterParser implements Parser<DeclarableAdapterNode> {
 
 		context.skip();
 
-		final SignNode<DeclarableAdapterNode.Prefix> prefix =
-				new SignNode<DeclarableAdapterNode.Prefix>(
-						start,
-						context.current().fix(),
-						DeclarableAdapterNode.Prefix.ADAPTER);
+		final SignNode<MembershipSign> prefix = new SignNode<MembershipSign>(
+				start,
+				context.current().fix(),
+				DECLARED_IN);
 
 		context.skipComments(false, prefix);
 

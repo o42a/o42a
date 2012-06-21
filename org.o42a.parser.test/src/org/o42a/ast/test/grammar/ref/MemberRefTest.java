@@ -22,12 +22,14 @@ package org.o42a.ast.test.grammar.ref;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.o42a.ast.atom.ParenthesisSign.CLOSING_PARENTHESIS;
+import static org.o42a.ast.atom.ParenthesisSign.OPENING_PARENTHESIS;
+import static org.o42a.ast.ref.MembershipSign.DECLARED_IN;
 import static org.o42a.parser.Grammar.ref;
 
 import org.junit.Test;
-import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.*;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
-import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -49,9 +51,9 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode ref = parse("foo:bar");
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
-		assertThat(canonicalName(ref.getName()), is("bar"));
-		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
 		assertName("foo", owner);
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
+		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(this.worker.position().offset(), is(7L));
 		assertRange(0, 7, ref);
 		assertRange(3, 4, ref.getQualifier());
@@ -72,8 +74,24 @@ public class MemberRefTest extends GrammarTestCase {
 		assertThat(this.worker.position().offset(), is(7L));
 		assertRange(0, 7, ref);
 		assertRange(0, 3, ref.getName());
-		assertRange(3, 4, ref.getRetention());
+		assertRange(3, 4, ref.getMembership().getPrefix());
 		assertRange(4, 7, declaredIn.getName());
+	}
+
+	@Test
+	public void membership() {
+
+		final MemberRefNode ref = parse("foo: bar @(\n baz \n)");
+		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
+		final MembershipNode membership = ref.getMembership();
+
+		assertName("foo", owner);
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(membership.getPrefix().getType(), is(DECLARED_IN));
+		assertThat(membership.getOpening().getType(), is(OPENING_PARENTHESIS));
+		assertName("baz", membership.getDeclaredIn());
+		assertThat(membership.getClosing().getType(), is(CLOSING_PARENTHESIS));
 	}
 
 	@Test
@@ -99,12 +117,12 @@ public class MemberRefTest extends GrammarTestCase {
 
 		assertName("foo", ref.getOwner());
 		assertThat(canonicalName(ref.getName()), is("bar"));
-		assertThat(ref.getRetention(), nullValue());
+		assertThat(ref.getMembership(), nullValue());
 	}
 
 	@Test
 	public void nlAfterRetention() {
-		expectError("missing_declared_in");
+		expectError("missing_type");
 
 		final MemberRefNode ref = parse("foo: bar @\nbaz");
 

@@ -45,7 +45,7 @@ public class TypeParser implements Parser<TypeNode> {
 		if (context.next() == '&') {
 			ancestor = context.parse(samples());
 			if (ancestor == null) {
-				context.getLogger().missingType(context.current());
+				missingInterface(context);
 				return null;
 			}
 		} else {
@@ -53,7 +53,7 @@ public class TypeParser implements Parser<TypeNode> {
 			final RefNode ref = context.parse(ref());
 
 			if (ref == null) {
-				context.getLogger().missingType(context.current());
+				missingInterface(context);
 				return null;
 			}
 
@@ -65,6 +65,13 @@ public class TypeParser implements Parser<TypeNode> {
 		}
 
 		return ancestor;
+	}
+
+	private void missingInterface(ParserContext context) {
+		context.getLogger().error(
+				"missing_interface",
+				context.current(),
+				"Interface reference is missing");
 	}
 
 }

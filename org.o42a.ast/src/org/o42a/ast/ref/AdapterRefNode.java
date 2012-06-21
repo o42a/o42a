@@ -19,53 +19,43 @@
 */
 package org.o42a.ast.ref;
 
-import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.expression.ExpressionNode;
 
 
 public class AdapterRefNode extends AbstractRefNode {
 
 	private final ExpressionNode owner;
-	private final SignNode<Qualifier> qualifier;
-	private final RefNode type;
-	private final SignNode<MemberRetention> retention;
-	private final RefNode declaredIn;
+	private final AdapterIdNode adapterId;
+	private final MembershipNode membership;
 
 	public AdapterRefNode(
 			ExpressionNode owner,
-			SignNode<Qualifier> qualifier,
-			RefNode type,
-			SignNode<MemberRetention> retention,
-			RefNode declaredIn) {
-		super(
-				owner.getStart(),
-				end(qualifier, type, retention, declaredIn));
+			AdapterIdNode adapterId,
+			MembershipNode membership) {
+		super(owner.getStart(), end(adapterId, membership));
 		this.owner = owner;
-		this.type = type;
-		this.qualifier = qualifier;
-		this.declaredIn = declaredIn;
-		this.retention = retention;
+		this.adapterId = adapterId;
+		this.membership = membership;
 	}
 
-	public ExpressionNode getOwner() {
+	public final ExpressionNode getOwner() {
 		return this.owner;
 	}
 
-	public RefNode getType() {
-		return this.type;
+	public final AdapterIdNode getAdapterId() {
+		return this.adapterId;
 	}
 
-	public SignNode<Qualifier> getQualifier() {
-		return this.qualifier;
+	public final RefNode getType() {
+		return this.adapterId.getType();
 	}
 
-	public RefNode getDeclaredIn() {
-		return this.declaredIn;
+	public final MembershipNode getMembership() {
+		return this.membership;
 	}
 
-	public SignNode<MemberRetention> getRetention() {
-		return this.retention;
+	public final RefNode getDeclaredIn() {
+		return this.membership != null ? this.membership.getDeclaredIn() : null;
 	}
 
 	@Override
@@ -76,27 +66,10 @@ public class AdapterRefNode extends AbstractRefNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.owner.printContent(out);
-		this.qualifier.printContent(out);
-		if (this.type != null) {
-			this.type.printContent(out);
+		this.adapterId.printContent(out);
+		if (this.membership != null) {
+			this.membership.printContent(out);
 		}
-		if (this.retention != null) {
-			this.retention.printContent(out);
-		}
-		if (this.declaredIn != null) {
-			this.declaredIn.printContent(out);
-		}
-	}
-
-	public enum Qualifier implements SignType {
-
-		FIELD_NAME;
-
-		@Override
-		public String getSign() {
-			return "@@";
-		}
-
 	}
 
 }

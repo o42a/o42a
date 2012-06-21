@@ -19,20 +19,16 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.grammar.ref.AdapterIdParser.ADAPTER_ID;
+import static org.o42a.parser.grammar.ref.MembershipParser.MEMBERSHIP;
 
-import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
-import org.o42a.ast.ref.AdapterRefNode.Qualifier;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
-import org.o42a.util.io.SourcePosition;
 
 
 public class AdapterRefParser implements Parser<AdapterRefNode> {
-
-	private static final QualifierParser QUALIFIER = new QualifierParser();
 
 	private final ExpressionNode owner;
 
@@ -43,83 +39,72 @@ public class AdapterRefParser implements Parser<AdapterRefNode> {
 	@Override
 	public AdapterRefNode parse(ParserContext context) {
 
-		final SignNode<Qualifier> qualifier = context.parse(QUALIFIER);
+		final AdapterIdNode adapterId = context.parse(ADAPTER_ID);
 
-		if (qualifier == null) {
+		if (adapterId == null) {
 			return null;
 		}
 
-		final RefNode ref = context.parse(ref());
+		final RefNode type = adapterId.getType();
 
-		if (ref == null) {
-			context.getLogger().missingType(qualifier);
-			return new AdapterRefNode(this.owner, qualifier, null, null, null);
+		if (type == null) {
+			return new AdapterRefNode(this.owner, adapterId, null);
+		}
+		if (adapterId.getOpening() != null) {
+
+			final MembershipNode membership = context.parse(MEMBERSHIP);
+
+			return new AdapterRefNode(this.owner, adapterId, membership);
 		}
 
-		if (ref instanceof MemberRefNode) {
+		if (type instanceof MemberRefNode) {
 
-			final MemberRefNode fieldRef = (MemberRefNode) ref;
+			final MemberRefNode fieldRef = (MemberRefNode) type;
 
-			if (fieldRef.getRetention() != null) {
+			if (fieldRef.getMembership() != null) {
 
-				final MemberRefNode type = new MemberRefNode(
+				final MemberRefNode newType = new MemberRefNode(
 						fieldRef.getOwner(),
 						fieldRef.getQualifier(),
 						fieldRef.getName(),
-						null,
 						null);
+				final AdapterIdNode newAdapterId = new AdapterIdNode(
+						adapterId.getPrefix(),
+						null,
+						newType,
+						null);
+
+				newAdapterId.addComments(adapterId.getComments());
 
 				return new AdapterRefNode(
 						this.owner,
-						qualifier,
-						type,
-						fieldRef.getRetention(),
-						fieldRef.getDeclaredIn());
+						newAdapterId,
+						fieldRef.getMembership());
 			}
-		} else if (ref instanceof AdapterRefNode) {
+		} else if (type instanceof AdapterRefNode) {
 
-			final AdapterRefNode adapterRef = (AdapterRefNode) ref;
+			final AdapterRefNode adapterRef = (AdapterRefNode) type;
 
 			return new AdapterRefNode(
 					new AdapterRefNode(
 							this.owner,
-							qualifier,
-							(RefNode) adapterRef.getOwner(),
-							null,
+							new AdapterIdNode(
+									adapterId.getPrefix(),
+									null,
+									(RefNode) adapterRef.getOwner(),
+									null),
 							null),
-					adapterRef.getQualifier(),
-					adapterRef.getType(),
-					adapterRef.getRetention(),
-					adapterRef.getDeclaredIn());
+					new AdapterIdNode(
+							adapterRef.getAdapterId().getPrefix(),
+							adapterRef.getAdapterId().getOpening(),
+							adapterRef.getType(),
+							adapterRef.getAdapterId().getClosing()),
+					adapterRef.getMembership());
 		}
 
-		return new AdapterRefNode(this.owner, qualifier, ref, null, null);
-	}
+		final MembershipNode membership = context.parse(MEMBERSHIP);
 
-	private static final class QualifierParser
-			implements Parser<SignNode<Qualifier>> {
-
-		@Override
-		public SignNode<Qualifier> parse(ParserContext context) {
-			if (context.next() != '@') {
-				return null;
-			}
-
-			final SourcePosition start = context.current().fix();
-
-			if (context.next() != '@') {
-				return null;
-			}
-			context.acceptAll();
-
-			return context.acceptComments(
-					false,
-					new SignNode<Qualifier>(
-							start,
-							context.current().fix(),
-							Qualifier.FIELD_NAME));
-		}
-
+		return new AdapterRefNode(this.owner, adapterId, membership);
 	}
 
 }

@@ -20,13 +20,14 @@
 package org.o42a.parser.grammar.ref;
 
 import static org.o42a.parser.grammar.atom.NameParser.NAME;
-import static org.o42a.parser.grammar.ref.RefParser.REF;
+import static org.o42a.parser.grammar.ref.MembershipParser.MEMBERSHIP;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.ref.*;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MemberRefNode.Qualifier;
+import org.o42a.ast.ref.MembershipNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
@@ -36,8 +37,6 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 
 	private static final QualifierParser QUALIFIER =
 			new QualifierParser();
-	private static final RetentionParser RETENTION =
-			new RetentionParser();
 
 	private final ExpressionNode owner;
 	private final boolean qualifierExpected;
@@ -68,24 +67,9 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 		}
 		context.acceptComments(false, name);
 
-		final SignNode<MemberRetention> retention = context.parse(RETENTION);
-		final RefNode declaredIn;
+		final MembershipNode membership = context.parse(MEMBERSHIP);
 
-		if (retention == null) {
-			declaredIn = null;
-		} else {
-			declaredIn = context.parse(REF);
-			if (declaredIn == null) {
-				context.getLogger().missingDeclaredIn(retention);
-			}
-		}
-
-		return new MemberRefNode(
-				this.owner,
-				qualifier,
-				name,
-				retention,
-				declaredIn);
+		return new MemberRefNode(this.owner, qualifier, name, membership);
 	}
 
 	private static final class QualifierParser
@@ -107,34 +91,6 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 							start,
 							context.current().fix(),
 							Qualifier.MEMBER_NAME));
-		}
-
-	}
-
-	private static final class RetentionParser
-			implements Parser<SignNode<MemberRetention>> {
-
-		@Override
-		public SignNode<MemberRetention> parse(ParserContext context) {
-			if (context.next() != '@') {
-				return null;
-			}
-
-			final SourcePosition start = context.current().fix();
-
-			if (context.next() == '@') {
-				// adapter reference
-				return null;
-			}
-
-			context.acceptButLast();
-
-			return context.acceptComments(
-					false,
-					new SignNode<MemberRetention>(
-							start,
-							context.current().fix(),
-							MemberRetention.DECLARED_IN));
 		}
 
 	}

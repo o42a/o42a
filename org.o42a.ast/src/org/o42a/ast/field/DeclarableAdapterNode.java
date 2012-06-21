@@ -22,27 +22,27 @@ package org.o42a.ast.field;
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseKeyNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.ref.MembershipSign;
 
 
 public class DeclarableAdapterNode
 		extends AbstractNode
 		implements DeclarableNode {
 
-	private final SignNode<Prefix> prefix;
+	private final SignNode<MembershipSign> prefix;
 	private final MemberRefNode member;
 
 	public DeclarableAdapterNode(
-			SignNode<Prefix> prefix,
+			SignNode<MembershipSign> prefix,
 			MemberRefNode member) {
 		super(prefix.getStart(), member.getEnd());
 		this.prefix = prefix;
 		this.member = member;
 	}
 
-	public final SignNode<Prefix> getPrefix() {
+	public final SignNode<MembershipSign> getPrefix() {
 		return this.prefix;
 	}
 
@@ -69,19 +69,6 @@ public class DeclarableAdapterNode
 	public void printContent(StringBuilder out) {
 		this.prefix.printContent(out);
 		this.member.printContent(out);
-	}
-
-	public enum Prefix implements SignType {
-
-		ADAPTER() {
-
-			@Override
-			public String getSign() {
-				return "@";
-			}
-
-		}
-
 	}
 
 }

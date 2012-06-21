@@ -22,13 +22,13 @@ package org.o42a.ast.ref;
 import org.o42a.ast.atom.SignType;
 
 
-public enum MemberRetention implements SignType {
+public enum MembershipSign implements SignType {
 
 	DECLARED_IN("@");
 
 	private final String sign;
 
-	MemberRetention(String sign) {
+	MembershipSign(String sign) {
 		this.sign = sign;
 	}
 
