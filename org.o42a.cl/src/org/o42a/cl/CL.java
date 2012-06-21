@@ -35,15 +35,13 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Module;
 import org.o42a.intrinsic.CompilerIntrinsics;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Logger;
 
 
 public class CL {
 
-	private static final int COMPILE_ERROR = 1;
-	private static final int COMPILATION_FAILED = 2;
-	private static final int INVALID_INPUT = 3;
+	public static final int COMPILE_ERROR = 1;
+	public static final int COMPILATION_FAILED = 2;
+	public static final int INVALID_INPUT = 3;
 
 	private final Generator generator;
 
@@ -56,7 +54,7 @@ public class CL {
 		final Compiler compiler = compiler();
 		final CompilerIntrinsics intrinsics = intrinsics(compiler);
 		final CompilerContext rootContext = intrinsics.getRoot().getContext();
-		final Log logger = new Log();
+		final CLLogger logger = new CLLogger();
 		final CompilerContext context = sourceTree.context(rootContext, logger);
 		final Module module = new Module(context, null);
 
@@ -105,30 +103,6 @@ public class CL {
 			System.err.println(e.getMessage());
 			System.exit(INVALID_INPUT);
 			return null;
-		}
-	}
-
-	private static final class Log implements Logger {
-
-		private boolean hasErrors;
-		private boolean abortOnError;
-
-		@Override
-		public void log(LogRecord record) {
-			DEFAULT_LOGGER.log(record);
-			if (record.getSeverity().isError()) {
-				if (this.abortOnError) {
-					System.exit(COMPILE_ERROR);
-				}
-				this.hasErrors = true;
-			}
-		}
-
-		public void abortOnError() {
-			if (this.hasErrors) {
-				System.exit(COMPILE_ERROR);
-			}
-			this.abortOnError = true;
 		}
 	}
 
