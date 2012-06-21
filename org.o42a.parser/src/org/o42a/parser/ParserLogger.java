@@ -102,13 +102,6 @@ public abstract class ParserLogger implements Logger {
 				"Clause reference is missing");
 	}
 
-	public void missingDeclaredIn(LogInfo location) {
-		error(
-				"missing_declared_in",
-				location,
-				"Declaration reference is missing");
-	}
-
 	public void missingInclusionTag(LogInfo location) {
 		error(
 				"missing_inclusion_tag",
@@ -130,10 +123,6 @@ public abstract class ParserLogger implements Logger {
 				location,
 				"Right operand of operator '%s' is missing",
 				operator);
-	}
-
-	public void missingType(LogInfo location) {
-		error("missing_type", location, "Type is missing");
 	}
 
 	public void missingValue(LogInfo location) {

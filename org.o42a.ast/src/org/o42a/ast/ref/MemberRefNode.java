@@ -33,43 +33,40 @@ public class MemberRefNode extends AbstractRefNode implements DeclarableNode {
 	private final ExpressionNode owner;
 	private final SignNode<Qualifier> qualifier;
 	private final NameNode name;
-	private final SignNode<MemberRetention> retention;
-	private final RefNode declaredIn;
+	private final MembershipNode membership;
 
 	public MemberRefNode(
 			ExpressionNode owner,
 			SignNode<Qualifier> qualifier,
 			NameNode name,
-			SignNode<MemberRetention> retention,
-			RefNode declaredIn) {
+			MembershipNode membership) {
 		super(
 				start(owner, name),
-				end(qualifier, name, retention, declaredIn));
+				end(qualifier, name, membership));
 		this.owner = owner;
 		this.name = name;
 		this.qualifier = qualifier;
-		this.declaredIn = declaredIn;
-		this.retention = retention;
+		this.membership = membership;
 	}
 
-	public ExpressionNode getOwner() {
+	public final ExpressionNode getOwner() {
 		return this.owner;
 	}
 
-	public NameNode getName() {
+	public final NameNode getName() {
 		return this.name;
 	}
 
-	public SignNode<Qualifier> getQualifier() {
+	public final SignNode<Qualifier> getQualifier() {
 		return this.qualifier;
 	}
 
-	public RefNode getDeclaredIn() {
-		return this.declaredIn;
+	public final MembershipNode getMembership() {
+		return this.membership;
 	}
 
-	public SignNode<MemberRetention> getRetention() {
-		return this.retention;
+	public final RefNode getDeclaredIn() {
+		return this.membership != null ? this.membership.getDeclaredIn() : null;
 	}
 
 	@Override
@@ -98,11 +95,8 @@ public class MemberRefNode extends AbstractRefNode implements DeclarableNode {
 		if (this.name != null) {
 			this.name.printContent(out);
 		}
-		if (this.retention != null) {
-			this.retention.printContent(out);
-		}
-		if (this.declaredIn != null) {
-			this.declaredIn.printContent(out);
+		if (this.membership != null) {
+			this.membership.printContent(out);
 		}
 	}
 

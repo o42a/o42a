@@ -124,7 +124,6 @@ public class Compiler implements SourceCompiler {
 				null,
 				null,
 				new NameNode(pos, pos, moduleName),
-				null,
 				null);
 		final RefNode node;
 

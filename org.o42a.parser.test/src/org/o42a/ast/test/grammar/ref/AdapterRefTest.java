@@ -39,10 +39,9 @@ public class AdapterRefTest extends GrammarTestCase {
 		final AdapterRefNode ref = parse("foo@@bar");
 
 		assertName("foo", ref.getOwner());
-		assertRange(3, 5, ref.getQualifier());
+		assertRange(3, 5, ref.getAdapterId().getPrefix());
 		assertName("bar", ref.getType());
-		assertThat(ref.getRetention(), nullValue());
-		assertThat(ref.getDeclaredIn(), nullValue());
+		assertThat(ref.getMembership(), nullValue());
 	}
 
 	@Test
@@ -51,13 +50,13 @@ public class AdapterRefTest extends GrammarTestCase {
 		final AdapterRefNode ref = parse("foo@@bar@baz");
 
 		assertName("foo", ref.getOwner());
-		assertRange(3, 5, ref.getQualifier());
+		assertRange(3, 5, ref.getAdapterId().getPrefix());
 
 		final MemberRefNode type = to(MemberRefNode.class, ref.getType());
 
 		assertName("bar", type);
 
-		assertRange(8, 9, ref.getRetention());
+		assertRange(8, 9, ref.getMembership().getPrefix());
 		assertName("baz", ref.getDeclaredIn());
 	}
 
@@ -68,17 +67,41 @@ public class AdapterRefTest extends GrammarTestCase {
 		final AdapterRefNode owner = to(AdapterRefNode.class, ref.getOwner());
 
 		assertName("foo", owner.getOwner());
-		assertRange(3, 5, owner.getQualifier());
+		assertRange(3, 5, owner.getAdapterId().getPrefix());
 
 		assertName("bar", owner.getType());
 
-		assertRange(8, 10, ref.getQualifier());
+		assertRange(8, 10, ref.getAdapterId().getPrefix());
 		assertThat(
 				canonicalName(
 						to(MemberRefNode.class, ref.getType()).getName()),
 				is("baz"));
-		assertRange(13, 14, ref.getRetention());
+		assertRange(13, 14, ref.getMembership().getPrefix());
 		assertName("type", ref.getDeclaredIn());
+	}
+
+	@Test
+	public void parentheses() {
+
+		final AdapterRefNode ref = parse("foo@@(bar)@(type)");
+		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
+
+		assertThat(canonicalName(owner.getName()), is("foo"));
+		assertName("bar", ref.getAdapterId().getType());
+		assertName("type", ref.getDeclaredIn());
+	}
+
+	@Test
+	public void qualifiedType() {
+
+		final AdapterRefNode ref = parse("foo@@(bar@type)");
+		final MemberRefNode type =
+				to(MemberRefNode.class, ref.getAdapterId().getType());
+
+		assertName("foo", ref.getOwner());
+		assertThat(canonicalName(type.getName()), is("bar"));
+		assertName("type", type.getDeclaredIn());
+		assertThat(ref.getDeclaredIn(), nullValue());
 	}
 
 	@Test
@@ -112,7 +135,7 @@ public class AdapterRefTest extends GrammarTestCase {
 
 	@Test
 	public void nlAfterRetention() {
-		expectError("missing_declared_in");
+		expectError("missing_type");
 
 		final AdapterRefNode ref = parse("foo @@bar @\nbaz");
 

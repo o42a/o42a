@@ -26,6 +26,7 @@ import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
+import org.o42a.ast.ref.TypeRefNode;
 import org.o42a.ast.sentence.AlternativeNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.ast.sentence.SerialNode;
@@ -58,6 +59,10 @@ public abstract class NodeVisitor<R, P>
 	@Override
 	public R visitStringLiteral(StringNode string, P p) {
 		return visitAtom(string, p);
+	}
+
+	public R visitTypeRef(TypeRefNode<?> typeRef, P p) {
+		return visitPart(typeRef, p);
 	}
 
 	public R visitArgument(ArgumentNode argument, P p) {
