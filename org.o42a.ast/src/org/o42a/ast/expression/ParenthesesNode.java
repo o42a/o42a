@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.clause.ClauseNodeVisitor;
 import org.o42a.ast.sentence.SentenceNode;
@@ -29,16 +29,16 @@ import org.o42a.util.io.SourcePosition;
 
 public class ParenthesesNode
 		extends AbstractExpressionNode
-		implements BlockNode<ParenthesesNode.Parenthesis>, ClauseNode {
+		implements BlockNode<ParenthesisSign>, ClauseNode {
 
-	private final SignNode<Parenthesis> opening;
+	private final SignNode<ParenthesisSign> opening;
 	private final SentenceNode[] content;
-	private final SignNode<Parenthesis> closing;
+	private final SignNode<ParenthesisSign> closing;
 
 	public ParenthesesNode(
-			SignNode<Parenthesis> opening,
+			SignNode<ParenthesisSign> opening,
 			SentenceNode[] content,
-			SignNode<Parenthesis> closing) {
+			SignNode<ParenthesisSign> closing) {
 		super(opening, firstNode(content), lastNode(content), closing);
 		this.opening = opening;
 		this.content = content;
@@ -53,7 +53,7 @@ public class ParenthesesNode
 	}
 
 	@Override
-	public SignNode<Parenthesis> getOpening() {
+	public SignNode<ParenthesisSign> getOpening() {
 		return this.opening;
 	}
 
@@ -63,7 +63,7 @@ public class ParenthesesNode
 	}
 
 	@Override
-	public SignNode<Parenthesis> getClosing() {
+	public SignNode<ParenthesisSign> getClosing() {
 		return this.closing;
 	}
 
@@ -94,27 +94,6 @@ public class ParenthesesNode
 			out.append('\n');
 		}
 		out.append(')');
-	}
-
-	public enum Parenthesis implements SignType {
-
-		OPENING_PARENTHESIS() {
-
-			@Override
-			public String getSign() {
-				return "(";
-			}
-
-		},
-		CLOSING_PARENTHESIS() {
-
-			@Override
-			public String getSign() {
-				return ")";
-			}
-
-		}
-
 	}
 
 }

@@ -20,17 +20,24 @@
 package org.o42a.ast.atom;
 
 
+public enum BraceSign implements SignType {
 
-public interface AtomNodeVisitor<R, P> {
+	OPENING_BRACE() {
 
-	<S extends SignType> R visitSign(SignNode<S> sign, P p);
+		@Override
+		public String getSign() {
+			return "{";
+		}
 
-	R visitComment(CommentNode comment, P p);
+	},
 
-	R visitName(NameNode name, P p);
+	CLOSING_BRACE() {
 
-	R visitDecimal(DecimalNode decimal, P p);
+		@Override
+		public String getSign() {
+			return "}";
+		}
 
-	R visitStringLiteral(StringNode string, P p);
+	}
 
 }

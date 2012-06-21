@@ -19,8 +19,8 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.atom.BraceSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.clause.ClauseNodeVisitor;
 import org.o42a.ast.sentence.SentenceNode;
@@ -30,16 +30,16 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 
 public class BracesNode
 		extends AbstractStatementNode
-		implements BlockNode<BracesNode.Brace>, ClauseNode {
+		implements BlockNode<BraceSign>, ClauseNode {
 
-	private final SignNode<Brace> opening;
+	private final SignNode<BraceSign> opening;
 	private final SentenceNode[] content;
-	private final SignNode<Brace> closing;
+	private final SignNode<BraceSign> closing;
 
 	public BracesNode(
-			SignNode<Brace> opening,
+			SignNode<BraceSign> opening,
 			SentenceNode[] content,
-			SignNode<Brace> closing) {
+			SignNode<BraceSign> closing) {
 		super(opening, firstNode(content), lastNode(content), closing);
 		this.opening = opening;
 		this.content = content;
@@ -47,7 +47,7 @@ public class BracesNode
 	}
 
 	@Override
-	public SignNode<Brace> getOpening() {
+	public SignNode<BraceSign> getOpening() {
 		return this.opening;
 	}
 
@@ -57,7 +57,7 @@ public class BracesNode
 	}
 
 	@Override
-	public SignNode<Brace> getClosing() {
+	public SignNode<BraceSign> getClosing() {
 		return this.closing;
 	}
 
@@ -88,28 +88,6 @@ public class BracesNode
 			out.append('\n');
 		}
 		out.append('}');
-	}
-
-	public enum Brace implements SignType {
-
-		OPENING_BRACE() {
-
-			@Override
-			public String getSign() {
-				return "{";
-			}
-
-		},
-
-		CLOSING_BRACE() {
-
-			@Override
-			public String getSign() {
-				return "}";
-			}
-
-		}
-
 	}
 
 }

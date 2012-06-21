@@ -19,21 +19,21 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import org.o42a.ast.atom.ParenthesisSign;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ParenthesesNode;
-import org.o42a.ast.expression.ParenthesesNode.Parenthesis;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.parser.Grammar;
 import org.o42a.parser.Parser;
 
 
 public class ParenthesesParser
-		extends AbstractBlockParser<ParenthesesNode, Parenthesis> {
+		extends AbstractBlockParser<ParenthesesNode, ParenthesisSign> {
 
 	private final Grammar grammar;
 
 	public ParenthesesParser(Grammar grammar) {
-		super(Parenthesis.OPENING_PARENTHESIS, Parenthesis.CLOSING_PARENTHESIS);
+		super(ParenthesisSign.OPENING_PARENTHESIS, ParenthesisSign.CLOSING_PARENTHESIS);
 		this.grammar = grammar;
 	}
 
@@ -44,9 +44,9 @@ public class ParenthesesParser
 
 	@Override
 	protected ParenthesesNode createBlock(
-			SignNode<Parenthesis> opening,
+			SignNode<ParenthesisSign> opening,
 			SentenceNode[] content,
-			SignNode<Parenthesis> closing) {
+			SignNode<ParenthesisSign> closing) {
 		return new ParenthesesNode(opening, content, closing);
 	}
 

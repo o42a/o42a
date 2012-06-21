@@ -19,22 +19,22 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.atom.BracketSign;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.atom.SignType;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.clause.ClauseNodeVisitor;
 
 
 public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 
-	private final SignNode<Bracket> opening;
+	private final SignNode<BracketSign> opening;
 	private final ArgumentNode[] arguments;
-	private final SignNode<Bracket> closing;
+	private final SignNode<BracketSign> closing;
 
 	public BracketsNode(
-			SignNode<Bracket> opening,
+			SignNode<BracketSign> opening,
 			ArgumentNode[] arguments,
-			SignNode<Bracket> closing) {
+			SignNode<BracketSign> closing) {
 		super(
 				opening.getStart(),
 				end(opening, lastNode(arguments), closing));
@@ -43,7 +43,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 		this.closing = closing;
 	}
 
-	public final SignNode<Bracket> getOpening() {
+	public final SignNode<BracketSign> getOpening() {
 		return this.opening;
 	}
 
@@ -51,7 +51,7 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 		return this.arguments;
 	}
 
-	public final SignNode<Bracket> getClosing() {
+	public final SignNode<BracketSign> getClosing() {
 		return this.closing;
 	}
 
@@ -72,28 +72,6 @@ public class BracketsNode extends AbstractExpressionNode implements ClauseNode {
 			argument.printContent(out);
 		}
 		out.append(']');
-	}
-
-	public enum Bracket implements SignType {
-
-		OPENING_BRACKET() {
-
-			@Override
-			public String getSign() {
-				return "[";
-			}
-
-		},
-
-		CLOSING_BRACKET() {
-
-			@Override
-			public String getSign() {
-				return "]";
-			}
-
-		}
-
 	}
 
 }
