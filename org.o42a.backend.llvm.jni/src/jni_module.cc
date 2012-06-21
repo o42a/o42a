@@ -29,8 +29,29 @@
 #include "llvm/Module.h"
 #include "llvm/Support/CommandLine.h"
 
+#include <sys/ioctl.h>
+
 using namespace llvm;
 
+
+jint Java_org_o42a_backend_llvm_data_LLVMModule_stderrColumns(
+		JNIEnv *,
+		jclass) {
+#ifdef TIOCGWINSZ
+
+	struct winsize wsize;
+
+	if (ioctl(STDERR_FILENO, TIOCGWINSZ, (char *) &wsize)) {
+		return 0;
+	}
+
+	errs() << wsize.ws_col << "\n";
+
+	return wsize.ws_col;
+#else /* TIOCGWINSZ */
+	return 0;
+#endif /* TIOCGWINSZ */
+}
 
 jlong Java_org_o42a_backend_llvm_data_LLVMModule_bufferPtr(
 		JNIEnv *env,
