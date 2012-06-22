@@ -105,7 +105,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 	protected void fill() {
 		super.fill();
 
-		final Obj type = getTypeRef().typeObject();
+		final Obj type = getTypeRef().getType();
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		getInstance().bound().setValue(

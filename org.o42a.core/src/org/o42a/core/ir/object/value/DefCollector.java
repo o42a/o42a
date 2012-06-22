@@ -56,7 +56,7 @@ final class DefCollector {
 		if (ancestorRef == null) {
 			this.ancestor = null;
 		} else {
-			this.ancestor = ancestorRef.typeObject();
+			this.ancestor = ancestorRef.getType();
 		}
 	}
 

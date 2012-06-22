@@ -218,7 +218,7 @@ public abstract class ObjectValuePartFnIR
 		if (samples.length == 1) {
 
 			final ObjectType sampleType =
-					samples[0].getTypeRef().type();
+					samples[0].getTypeRef().getType().type();
 
 			reuseFrom = sampleType.getLastDefinition();
 		} else {
@@ -234,7 +234,7 @@ public abstract class ObjectValuePartFnIR
 				return;
 			}
 
-			reuseFrom = ancestor.type().getLastDefinition();
+			reuseFrom = ancestor.getType().type().getLastDefinition();
 		}
 		if (defs().updatedSince(reuseFrom)) {
 			return;
@@ -316,7 +316,7 @@ public abstract class ObjectValuePartFnIR
 				return;
 			}
 
-			final Obj ancestorObject = ancestor.typeObject();
+			final Obj ancestorObject = ancestor.getType();
 			final ObjectOp ancestorBody = host.ancestor(code);
 			final ObjectTypeOp ancestorType =
 					ancestorObject.ir(getGenerator())

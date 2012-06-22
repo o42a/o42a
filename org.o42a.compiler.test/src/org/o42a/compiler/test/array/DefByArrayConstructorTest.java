@@ -49,7 +49,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(a);
@@ -81,7 +81,7 @@ public class DefByArrayConstructorTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getString()));
 
 		final Array array = definiteValue(a);

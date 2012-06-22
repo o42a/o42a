@@ -46,7 +46,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -75,7 +75,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -104,7 +104,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(a);
@@ -127,7 +127,7 @@ public class ArrayConstructorTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(a);

@@ -227,13 +227,12 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		final StaticTypeRef declaredInRef = getDeclaration().getDeclaredIn();
 
 		if (declaredInRef != null) {
-
-			final Obj declaredIn = declaredInRef.typeObject();
-
-			if (declaredIn == null) {
+			if (!declaredInRef.isValid()) {
 				return null;
 			}
-			overridden = declaredIn.member(getMemberId(), Accessor.INHERITANT);
+			overridden = declaredInRef.getType().member(
+					getMemberId(),
+					Accessor.INHERITANT);
 		} else {
 
 			final ObjectType containerType = getContainer().toObject().type();
@@ -247,9 +246,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			final TypeRef ancestor = containerType.getAncestor();
 
 			if (ancestor != null) {
-				overridden = overridden(
-						overridden,
-						ancestor.typeObject());
+				overridden = overridden(overridden, ancestor.getType());
 			}
 		}
 

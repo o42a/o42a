@@ -124,7 +124,7 @@ public class LinkTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(),
+				.getType(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(
 				definiteValue(linkTarget(bTarget), ValueType.INTEGER),
@@ -138,7 +138,7 @@ public class LinkTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(),
+				.getType(),
 				is(this.context.getIntrinsics().getInteger()));
 		assertThat(
 				definiteValue(linkTarget(c), ValueType.INTEGER),

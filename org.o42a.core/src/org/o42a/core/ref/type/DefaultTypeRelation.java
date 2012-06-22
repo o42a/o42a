@@ -43,18 +43,18 @@ final class DefaultTypeRelation extends TypeRelation {
 	protected Kind relationKind(
 			CompilerLogger logger,
 			boolean checkDerivationOnly) {
-		if (!to().validate()) {
+		if (!to().isValid()) {
 			return Kind.PREFERRED;
 		}
-		if (!of().validate()) {
+		if (!of().isValid()) {
 			return Kind.INVALID;
 		}
 
 		final Scope root1 = resolutionRoot(of());
 		final Scope root2 = resolutionRoot(to());
 
-		final ObjectType type1 = of().type();
-		final ObjectType type2 = to().type();
+		final ObjectType type1 = of().getType().type();
+		final ObjectType type2 = to().getType().type();
 
 		if (root1 == root2) {
 			if (type1.getObject().getScope() == type2.getObject().getScope()) {

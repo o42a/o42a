@@ -68,7 +68,7 @@ public final class Adapter extends PathFragment implements LocationInfo {
 
 		final ObjectType objectType = start.toObject().type();
 
-		if (objectType.derivedFrom(this.adapterType.type())) {
+		if (objectType.derivedFrom(this.adapterType.getType().type())) {
 			return Path.SELF_PATH;
 		}
 

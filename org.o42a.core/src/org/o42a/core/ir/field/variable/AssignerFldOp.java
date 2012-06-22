@@ -103,7 +103,7 @@ public final class AssignerFldOp extends FldOp {
 				ID.id("cast_target"),
 				boundKnownDirs,
 				knownBound.op(getBuilder(), DERIVED),
-				fld().linkStruct().getTypeRef().typeObject(),
+				fld().linkStruct().getTypeRef().getType(),
 				true);
 
 		assignValue(boundKnown, castObject);
@@ -149,7 +149,7 @@ public final class AssignerFldOp extends FldOp {
 		final ObjectOp target = anonymousObject(
 				getBuilder(),
 				targetPtr,
-				fld().linkStruct().getTypeRef().typeObject());
+				fld().linkStruct().getTypeRef().getType());
 
 		final Block resultCode = valDirs.done().code();
 

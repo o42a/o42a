@@ -39,17 +39,17 @@ final class StaticTypeRelation extends TypeRelation {
 	protected Kind relationKind(
 			CompilerLogger logger,
 			boolean checkDerivationOnly) {
-		if (!to().validate()) {
+		if (!to().isValid()) {
 			return Kind.PREFERRED;
 		}
-		if (!of().validate()) {
+		if (!of().isValid()) {
 			return Kind.INVALID;
 		}
 
 		final ObjectType type1 =
-				of().type().getLastDefinition().type();
+				of().getType().type().getLastDefinition().type();
 		final ObjectType type2 =
-				to().type().getLastDefinition().type();
+				to().getType().type().getLastDefinition().type();
 
 		if (type1.getObject().getScope() == type2.getObject().getScope()) {
 			return Kind.SAME;

@@ -67,7 +67,7 @@ public class PropagationTest extends CompilerTestCase {
 				Derivation.PROPAGATION));
 		assertTrue(
 				bBar.type()
-				.getAncestor().type().derivedFrom(
+				.getAncestor().getType().type().derivedFrom(
 						aFoo.type(),
 						Derivation.MEMBER_OVERRIDE));
 		assertTrue(bBar.type().inherits(

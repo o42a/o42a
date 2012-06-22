@@ -185,7 +185,7 @@ public final class DeclaredPlainClause extends PlainClause {
 		final Member member = enclosing.objectMember(
 				Accessor.INHERITANT,
 				getBuilder().getOverridden(),
-				declaredIn != null ? declaredIn.typeObject() : null);
+				declaredIn != null ? declaredIn.getType() : null);
 
 		if (member == null) {
 			getLogger().error(

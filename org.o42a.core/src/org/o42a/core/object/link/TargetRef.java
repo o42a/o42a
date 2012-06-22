@@ -80,6 +80,13 @@ public final class TargetRef implements ScopeInfo {
 		return getRef().isStatic();
 	}
 
+	public final Obj getTarget() {
+
+		final Resolution resolution = resolve(getScope().resolver());
+
+		return resolution.isError() ? null : resolution.toObject();
+	}
+
 	public final TypeRef toTypeRef() {
 		return getRef().toTypeRef();
 	}
@@ -88,13 +95,6 @@ public final class TargetRef implements ScopeInfo {
 		return new TargetRef(
 				getRef().toStatic(),
 				this.typeRef.toStatic());
-	}
-
-	public final Obj target() {
-
-		final Resolution resolution = resolve(getScope().resolver());
-
-		return resolution.isError() ? null : resolution.toObject();
 	}
 
 	public final Resolution resolve(Resolver resolver) {

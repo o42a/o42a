@@ -31,7 +31,6 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.RefOp;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PrefixPath;
@@ -39,7 +38,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.*;
-import org.o42a.util.fn.Holder;
 import org.o42a.util.log.Loggable;
 
 
@@ -99,7 +97,7 @@ public abstract class TypeRef implements ScopeInfo {
 	private Ref ref;
 	private ValueStruct<?, ?> valueStruct;
 	private TypeRef ancestor;
-	private Holder<ObjectType> type;
+	private TypeHolder type;
 	private boolean allResolved;
 
 	public TypeRef(
@@ -174,6 +172,10 @@ public abstract class TypeRef implements ScopeInfo {
 		return path;
 	}
 
+	public final boolean isValid() {
+		return get().isValid();
+	}
+
 	public final TypeRef getAncestor() {
 		if (this.ancestor != null) {
 			return this.ancestor;
@@ -184,15 +186,15 @@ public abstract class TypeRef implements ScopeInfo {
 		return this.ancestor = ancestor.prefixWith(getPrefix());
 	}
 
-	public ConstructionMode getConstructionMode() {
+	public final ConstructionMode getConstructionMode() {
 
-		final Obj object = typeObject();
+		final TypeHolder holder = get();
 
-		if (object == null) {
+		if (holder == null) {
 			return PROHIBITED_CONSTRUCTION;
 		}
 
-		return object.getConstructionMode();
+		return holder.getObject().getConstructionMode();
 	}
 
 	public final CompilerLogger getLogger() {
@@ -207,38 +209,8 @@ public abstract class TypeRef implements ScopeInfo {
 		return getRef().value(resolver);
 	}
 
-	public ObjectType type() {
-		if (this.type != null) {
-			return this.type.get();
-		}
-
-		final Resolution resolution = resolve(getScope().resolver());
-
-		if (resolution.isError()) {
-			this.type = new Holder<ObjectType>(null);
-			return null;
-		}
-
-		final Obj object = resolution.toObject();
-
-		if (object == null) {
-			getScope().getLogger().notTypeRef(this);
-			this.type = new Holder<ObjectType>(null);
-			return null;
-		}
-
-		final ObjectType result = object.type();
-
-		this.type = new Holder<ObjectType>(result);
-
-		return result;
-	}
-
-	public final Obj typeObject() {
-
-		final ObjectType type = type();
-
-		return type != null ? type.getObject() : null;
+	public final Obj getType() {
+		return get().getObject();
 	}
 
 	public final ValueType<?> getValueType() {
@@ -264,10 +236,6 @@ public abstract class TypeRef implements ScopeInfo {
 				getPrefix(),
 				vsFinder,
 				valueStruct);
-	}
-
-	public boolean validate() {
-		return type() != null;
 	}
 
 	public final TypeRelation relationTo(TypeRef other) {
@@ -438,5 +406,60 @@ public abstract class TypeRef implements ScopeInfo {
 			PrefixPath prefix,
 			ValueStructFinder valueStructFinder,
 			ValueStruct<?, ?> valueStruct);
+
+	private TypeHolder get() {
+		if (this.type != null) {
+			return this.type;
+		}
+
+		final Resolution resolution = resolve(getScope().resolver());
+
+		if (resolution.isError()) {
+			return this.type = new TypeHolder(getContext().getFalse(), false);
+		}
+
+		final Obj object = resolution.toObject();
+
+		if (object == null) {
+			getScope().getLogger().error(
+					"not_type_ref",
+					this,
+					"Not a valid type reference");
+			return this.type = new TypeHolder(getContext().getFalse(), false);
+		}
+
+		return this.type = new TypeHolder(object, true);
+	}
+
+	private static final class TypeHolder {
+
+		private final Obj object;
+		private final boolean valid;
+
+		TypeHolder(Obj object, boolean valid) {
+			this.object = object;
+			this.valid = valid;
+		}
+
+		public final Obj getObject() {
+			return this.object;
+		}
+
+		public final boolean isValid() {
+			return this.valid;
+		}
+
+		@Override
+		public String toString() {
+			if (this.object == null) {
+				return super.toString();
+			}
+			if (this.valid) {
+				return this.object.toString();
+			}
+			return "INVALID";
+		}
+
+	}
 
 }

@@ -200,8 +200,7 @@ public abstract class Member extends Placed {
 		if (containerAncestor != null) {
 
 			final Member ancestorMember =
-					containerAncestor.type()
-					.getObject().member(getMemberKey());
+					containerAncestor.getType().member(getMemberKey());
 
 			if (ancestorMember != null) {
 				overridden = new ArrayList<Member>(containerSamples.length + 1);

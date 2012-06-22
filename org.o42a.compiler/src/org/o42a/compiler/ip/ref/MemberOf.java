@@ -70,7 +70,7 @@ public class MemberOf extends PlacedPathFragment {
 				accessorResolver.getAccessor(),
 				this.memberId,
 				this.declaredIn != null
-				? this.declaredIn.typeObject() : null);
+				? this.declaredIn.getType() : null);
 
 		if (memberPath == null) {
 			getLogger().error(

@@ -158,10 +158,7 @@ final class ArrayElementOp extends PathOp {
 		itemPtr.isNull(null, code).go(code, dirs.falseDir());
 
 		final DataOp item = itemPtr.toData(null, code);
-		final Obj itemAscendant =
-				this.arrayStruct
-				.getItemTypeRef()
-				.typeObject();
+		final Obj itemAscendant = this.arrayStruct.getItemTypeRef().getType();
 
 		return anonymousObject(getBuilder(), item, itemAscendant);
 	}

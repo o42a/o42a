@@ -81,7 +81,7 @@ public abstract class FieldFld extends Fld {
 
 		final ObjectType definedInType = definedIn.toObject().type();
 
-		if (definedInType.getAncestor().type().derivedFrom(
+		if (definedInType.getAncestor().getType().type().derivedFrom(
 				definedInType)) {
 			// Field overridden in ancestor.
 			return false;
