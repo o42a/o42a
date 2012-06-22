@@ -27,7 +27,6 @@ import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathResolution;
@@ -298,8 +297,7 @@ public enum ClauseId {
 		assert adapterType != null :
 			"Clause adapter type not specified";
 
-		final Obj type = adapterTypeScope(
-				adapterType.typeObject()).toObject();
+		final Scope typeScope = adapterTypeScope(adapterType.getType());
 
 		for (ClauseId clauseId : values()) {
 			if (!clauseId.hasAdapterType()) {
@@ -313,7 +311,7 @@ public enum ClauseId {
 			final PathResolution adapterResolution =
 					adapterPath.resolve(pathResolver(start, dummyUser()));
 
-			if (type == adapterResolution.getObject().toObject()) {
+			if (typeScope == adapterResolution.getObject().getScope()) {
 				return clauseId;
 			}
 		}

@@ -47,7 +47,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(b);
@@ -80,7 +80,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(bField);
@@ -115,7 +115,7 @@ public class ArrayDerivationTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(bField.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(bField);

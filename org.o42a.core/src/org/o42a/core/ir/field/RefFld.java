@@ -240,7 +240,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 					object.value().getValueStruct().toLinkStruct();
 
 			if (linkStruct != null) {
-				return linkStruct.getTypeRef().typeObject();
+				return linkStruct.getTypeRef().getType();
 			}
 		}
 
@@ -345,10 +345,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 				.op(builder.host())
 				.target(dirs)
 				.materialize(dirs, holder)
-				.cast(
-						null,
-						dirs,
-						linkStruct.getTypeRef().typeObject());
+				.cast(null, dirs, linkStruct.getTypeRef().getType());
 	}
 
 	public static abstract class Op<

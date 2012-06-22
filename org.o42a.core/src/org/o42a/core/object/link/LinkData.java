@@ -136,7 +136,7 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 			return new RtLinkTarget(getLink());
 		}
 
-		final Obj target = getTargetRef().target();
+		final Obj target = getTargetRef().getTarget();
 
 		if (target == null) {
 			return getContext().getFalse();

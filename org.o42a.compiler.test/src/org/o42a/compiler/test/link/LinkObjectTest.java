@@ -50,7 +50,7 @@ public class LinkObjectTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(),
+				.getType(),
 				is(b.getContext().getIntrinsics().getVoid()));
 		assertTrue(bTarget.value().getValueType().isVoid());
 		assertThat(bTarget.getWrapped(), sameInstance(a));
@@ -72,7 +72,7 @@ public class LinkObjectTest extends CompilerTestCase {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject(),
+				.getType(),
 				is(b.getContext().getIntrinsics().getInteger()));
 		assertEquals(ValueType.INTEGER, bTarget.value().getValueType());
 		assertThat(definiteValue(bTarget, ValueType.INTEGER), is(1L));

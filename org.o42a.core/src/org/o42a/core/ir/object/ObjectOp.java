@@ -218,7 +218,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 				anonymousObject(
 						getBuilder(),
 						ptr,
-						linkStruct.getTypeRef().typeObject()));
+						linkStruct.getTypeRef().getType()));
 	}
 
 	@Override

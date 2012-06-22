@@ -137,7 +137,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		final ObjectType definedInType = definedIn.type();
 
-		if (definedInType.getAncestor().type().derivedFrom(
+		if (definedInType.getAncestor().getType().type().derivedFrom(
 				definedInType)) {
 			// Overridden in ancestor.
 			return false;
@@ -171,7 +171,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 	@Override
 	public void fill(Type instance) {
 
-		final Obj type = linkStruct().getTypeRef().typeObject();
+		final Obj type = linkStruct().getTypeRef().getType();
 		final ObjectTypeIR typeIR = type.ir(getGenerator()).getStaticTypeIR();
 
 		instance.bound().setValue(typeIR.getInstance().pointer(getGenerator()));
@@ -249,7 +249,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		final Obj ancestorDefinedIn =
-				definedIn(object.type().getAncestor().typeObject());
+				definedIn(object.type().getAncestor().getType());
 
 		if (ancestorDefinedIn == null) {
 			return definedIn != null ? definedIn : object;

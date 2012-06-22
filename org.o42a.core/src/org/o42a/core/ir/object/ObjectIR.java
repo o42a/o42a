@@ -97,9 +97,9 @@ public class ObjectIR  {
 			return null;
 		}
 
-		final Obj ancestor = ancestorType.typeObject();
+		final Obj ancestor = ancestorType.getType();
 
-		if (ancestor == ancestor.getContext().getVoid()) {
+		if (ancestor.getScope() == ancestor.getContext().getVoid().getScope()) {
 			return null;
 		}
 

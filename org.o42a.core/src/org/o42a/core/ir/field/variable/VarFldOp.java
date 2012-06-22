@@ -74,13 +74,11 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
 
-		final Obj targetType;
 		final Obj object = fld().getField().toObject();
 		final ObjectValue objectValue = object.value();
 		final LinkValueStruct linkStruct =
 				objectValue.getValueStruct().toLinkStruct();
-
-		targetType = linkStruct.getTypeRef().typeObject();
+		final Obj targetType = linkStruct.getTypeRef().getType();
 
 		final Block code = dirs.code();
 		final ObjectOp valueObject =

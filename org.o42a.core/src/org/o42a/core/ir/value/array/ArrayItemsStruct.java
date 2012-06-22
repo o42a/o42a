@@ -71,7 +71,7 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 
 		final Array array = this.arrayIR.getArray();
 		final Obj itemAscendant =
-				array.getValueStruct().getItemTypeRef().typeObject();
+				array.getValueStruct().getItemTypeRef().getType();
 		final ArrayItem[] items = array.getItems();
 		final int length = items.length;
 

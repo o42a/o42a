@@ -44,7 +44,7 @@ public final class ExplicitSample extends Sample {
 
 	@Override
 	public Obj getObject() {
-		return this.explicitAscendant.typeObject();
+		return this.explicitAscendant.getType();
 	}
 
 	@Override

@@ -49,7 +49,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -81,7 +81,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertFalse(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -113,7 +113,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getInteger()));
 
 		final Array array = definiteValue(linkTarget(a));
@@ -139,7 +139,7 @@ public class ArrayLinkTest extends CompilerTestCase {
 
 		assertTrue(arraySruct.isVariable());
 		assertThat(
-				arraySruct.getItemTypeRef().typeObject(),
+				arraySruct.getItemTypeRef().getType(),
 				is(a.getContext().getIntrinsics().getVoid()));
 
 		final Array array = definiteValue(linkTarget(a));

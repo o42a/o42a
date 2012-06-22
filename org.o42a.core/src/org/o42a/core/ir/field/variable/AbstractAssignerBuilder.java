@@ -53,7 +53,7 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 
 		final F fld = op(assigner, builder.host());
 		final TypeRef typeRef = getTypeRef();
-		final Obj typeObject = typeRef.typeObject();
+		final Obj typeObject = typeRef.getType();
 		final RefOp boundRef = typeRef.op(builder.host());
 		final ObjectTypeOp bound =
 				boundRef.target(dirs)

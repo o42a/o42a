@@ -252,7 +252,7 @@ public class Ascendants
 		}
 		this.validated = true;
 		if (this.explicitAncestor != null) {
-			if (!this.explicitAncestor.validate()) {
+			if (!this.explicitAncestor.isValid()) {
 				this.explicitAncestor = null;
 			} else if (!validateUse(this.explicitAncestor)) {
 				this.explicitAncestor = null;
@@ -367,7 +367,7 @@ public class Ascendants
 		if (ancestor != null) {
 
 			final Member overridden =
-					ancestor.typeObject().member(member.getMemberKey());
+					ancestor.getType().member(member.getMemberKey());
 
 			if (overridden != null) {
 				ascendants = ascendants.addMemberOverride(overridden);
@@ -424,7 +424,7 @@ public class Ascendants
 	}
 
 	private boolean validateSample(Sample sample, int index) {
-		if (!sample.getTypeRef().validate()) {
+		if (!sample.getTypeRef().isValid()) {
 			return false;
 		}
 
@@ -459,7 +459,7 @@ public class Ascendants
 
 		final TypeRef sampleAncestor = sample.getAncestor();
 
-		if (!sampleAncestor.validate()) {
+		if (!sampleAncestor.isValid()) {
 			return false;
 		}
 

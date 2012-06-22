@@ -93,7 +93,7 @@ public final class ObjectFieldIR extends FieldIR {
 				.getValueStruct()
 				.toLinkStruct()
 				.getTypeRef()
-				.typeObject();
+				.getType();
 		final Obj target;
 		final DefTarget defTarget = object.value().getDefinitions().target();
 

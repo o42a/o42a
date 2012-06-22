@@ -176,10 +176,6 @@ public class CompilerLogger implements Logger {
 		error("not_object", location, "%s is not an object", target);
 	}
 
-	public void notTypeRef(LogInfo location) {
-		error("not_type_ref", location, "Not a valid type reference");
-	}
-
 	public void prohibitedAbstract(LogInfo location, String fieldName) {
 		error(
 				"prohibited_abstract",
