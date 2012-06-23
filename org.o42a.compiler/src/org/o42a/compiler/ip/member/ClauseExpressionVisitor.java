@@ -21,17 +21,15 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.contentBuilder;
-import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
+import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
+import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
-import org.o42a.ast.clause.AbstractClauseVisitor;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
 import org.o42a.ast.ref.IntrinsicRefNode;
-import org.o42a.ast.ref.ScopeRefNode;
-import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -43,15 +41,11 @@ import org.o42a.util.string.Name;
 class ClauseExpressionVisitor
 		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
 
-	static final Name PREFIX_NAME = CASE_INSENSITIVE.canonicalName("prefix");
-
 	static final ClauseExpressionVisitor CLAUSE_EXPRESSION_VISITOR =
 			new ClauseExpressionVisitor();
 
-	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
-			new PhrasePrefixVisitor();
-	static final PhraseDeclarationsVisitor PHRASE_DECLARATIONS_VISITOR =
-			new PhraseDeclarationsVisitor();
+	private static final Name PREFIX_NAME =
+			CASE_INSENSITIVE.canonicalName("prefix");
 
 	@Override
 	public ClauseBuilder visitIntrinsicRef(
@@ -79,23 +73,33 @@ class ClauseExpressionVisitor
 	}
 
 	@Override
-	public ClauseBuilder visitPhrase(PhraseNode node, ClauseBuilder p) {
+	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
 
-		final ClauseNode[] clauses = node.getClauses();
+		final boolean hasValue = p.getDeclaration().getClauseId().hasValue();
+		final ClauseNode[] clauses = phrase.getClauses();
 
-		if (clauses.length != 1) {
-			p.getContext().getLogger().invalidClauseContent(node);
+		if (clauses.length == 1) {
+
+			final ParenthesesNode parentheses = extractParentheses(clauses[0]);
+
+			if (parentheses != null) {
+
+				final ClauseBuilder prefixed =
+						phrase.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
+
+				return prefixed.setDeclarations(contentBuilder(
+						new ClauseStatementVisitor(p.getContext()),
+						parentheses));
+			} else if (hasValue) {
+				p.getContext().getLogger().invalidClauseContent(phrase);
+				return null;
+			}
+		} else if (hasValue) {
+			p.getContext().getLogger().invalidClauseContent(phrase);
 			return null;
 		}
 
-		final ClauseBuilder prefixed =
-				node.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
-
-		if (prefixed == null) {
-			return null;
-		}
-
-		return clauses[0].accept(PHRASE_DECLARATIONS_VISITOR, prefixed);
+		return visitExpression(phrase, p);
 	}
 
 	@Override
@@ -103,98 +107,17 @@ class ClauseExpressionVisitor
 			ExpressionNode expression,
 			ClauseBuilder p) {
 
+		final Distributor distributor = p.distribute();
 		final Ref ref = expression.accept(
 				CLAUSE_DEF_IP.targetExVisitor(),
-				p.distribute());
+				distributor);
 
 		if (ref == null) {
 			return null;
 		}
 
 		return p.setAscendants(
-				new AscendantsDefinition(
-						location(p, expression),
-						p.distribute(),
-						ref.toTypeRef()));
-	}
-
-	private static final class PhrasePrefixVisitor
-			extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
-
-		@Override
-		public ClauseBuilder visitScopeRef(ScopeRefNode ref, ClauseBuilder p) {
-			if (ref.getType() != ScopeType.IMPLIED) {
-				return super.visitScopeRef(ref, p);
-			}
-
-			return p.setAscendants(new AscendantsDefinition(
-					location(p, ref),
-					p.distribute()));
-		}
-
-		@Override
-		public ClauseBuilder visitAscendants(
-				AscendantsNode ascendants,
-				ClauseBuilder p) {
-
-			final Distributor distributor = p.distribute();
-			final AscendantsDefinition ascendantsDefinition =
-					parseAscendants(CLAUSE_DEF_IP, ascendants, distributor);
-
-			if (ascendantsDefinition == null) {
-				return p.setAscendants(new AscendantsDefinition(
-						location(p, ascendants),
-						distributor));
-			}
-
-			return p.setAscendants(ascendantsDefinition);
-		}
-
-		@Override
-		protected ClauseBuilder visitExpression(
-				ExpressionNode expression,
-				ClauseBuilder p) {
-
-			final Distributor distributor = p.distribute();
-			final Ref ancestor = expression.accept(
-					CLAUSE_DEF_IP.targetExVisitor(),
-					distributor);
-
-			if (ancestor == null) {
-				return p.setAscendants(new AscendantsDefinition(
-						location(p, expression),
-						distributor));
-			}
-
-			return p.setAscendants(
-					new AscendantsDefinition(
-							ancestor,
-							distributor,
-							ancestor.toTypeRef()));
-		}
-
-	}
-
-	private static final class PhraseDeclarationsVisitor
-			extends AbstractClauseVisitor<ClauseBuilder, ClauseBuilder> {
-
-		@Override
-		public ClauseBuilder visitParentheses(
-				ParenthesesNode parentheses,
-				ClauseBuilder p) {
-			return p.setDeclarations(contentBuilder(
-					new ClauseStatementVisitor(p.getContext()),
-					parentheses));
-		}
-
-		@Override
-		protected ClauseBuilder visitClause(
-				ClauseNode clause,
-				ClauseBuilder p) {
-			p.getContext().getLogger().invalidClauseContent(clause);
-			return null;
-		}
-
+				new AscendantsDefinition(ref, distributor, ref.toTypeRef()));
 	}
 
 }

@@ -19,28 +19,18 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
-import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_DECLARATIONS_VISITOR;
-import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.PHRASE_PREFIX_VISITOR;
-import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
-import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.expression.*;
-import org.o42a.ast.ref.IntrinsicRefNode;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
-import org.o42a.ast.type.AscendantsNode;
-import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.field.AscendantsDefinition;
-import org.o42a.core.ref.Ref;
 
 
 final class OverriderDefinitionVisitor
-		extends AbstractExpressionVisitor<ClauseBuilder, ClauseBuilder> {
+		extends ClauseExpressionVisitor {
 
 	static final OverriderDefinitionVisitor OVERRIDER_DEFINITION_VISITOR =
 			new OverriderDefinitionVisitor();
@@ -53,55 +43,9 @@ final class OverriderDefinitionVisitor
 		if (ref.getType() != ScopeType.IMPLIED) {
 			return super.visitScopeRef(ref, p);
 		}
-
 		return p.setAscendants(new AscendantsDefinition(
 				location(p, ref),
 				p.distribute()));
-	}
-
-	@Override
-	public ClauseBuilder visitIntrinsicRef(
-			IntrinsicRefNode ref,
-			ClauseBuilder p) {
-		if (ClauseExpressionVisitor.PREFIX_NAME.is(ref.getName().getName())) {
-			return p.setSubstitution(PREFIX_SUBSITUTION);
-		}
-		return super.visitIntrinsicRef(ref, p);
-	}
-
-	@Override
-	public ClauseBuilder visitAscendants(
-			AscendantsNode ascendants,
-			ClauseBuilder p) {
-
-		final AscendantsDefinition ascendantsDefinition =
-				parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
-
-		if (ascendantsDefinition == null) {
-			return null;
-		}
-
-		return p.setAscendants(ascendantsDefinition);
-	}
-
-	@Override
-	public ClauseBuilder visitPhrase(PhraseNode node, ClauseBuilder p) {
-
-		final ClauseNode[] clauses = node.getClauses();
-
-		if (clauses.length != 1) {
-			p.getContext().getLogger().invalidClauseContent(node);
-			return null;
-		}
-
-		final ClauseBuilder prefixed =
-				node.getPrefix().accept(PHRASE_PREFIX_VISITOR, p);
-
-		if (prefixed == null) {
-			return null;
-		}
-
-		return clauses[0].accept(PHRASE_DECLARATIONS_VISITOR, prefixed);
 	}
 
 	@Override
@@ -112,24 +56,6 @@ final class OverriderDefinitionVisitor
 			return p.setSubstitution(VALUE_SUBSTITUTION);
 		}
 		return super.visitParentheses(parentheses, p);
-	}
-
-	@Override
-	protected ClauseBuilder visitExpression(
-			ExpressionNode expression,
-			ClauseBuilder p) {
-
-		final Distributor distributor = p.distribute();
-		final Ref ref = expression.accept(
-				CLAUSE_DEF_IP.targetExVisitor(),
-				distributor);
-
-		if (ref == null) {
-			return null;
-		}
-
-		return p.setAscendants(
-				new AscendantsDefinition(ref, distributor, ref.toTypeRef()));
 	}
 
 }
