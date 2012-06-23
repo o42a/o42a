@@ -49,9 +49,7 @@ Fail :=> void (
       <*[]> Text = ()
       <*''> Text = ()
     )
-    Print error (
-      Text = "\n"
-    )
+    Print error _nl
   }
 )
 

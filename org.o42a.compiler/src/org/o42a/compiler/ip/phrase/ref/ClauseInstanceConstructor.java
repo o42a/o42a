@@ -36,7 +36,9 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 	private final ClauseInstance instance;
 	private AscendantsDefinition ascendants;
 
-	ClauseInstanceConstructor(ClauseInstance instance, Distributor distributor) {
+	ClauseInstanceConstructor(
+			ClauseInstance instance,
+			Distributor distributor) {
 		super(
 				new Location(distributor.getContext(), instance.getLocation()),
 				distributor);
@@ -75,7 +77,7 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 		assertCompatible(reproducer.getReproducingScope());
 
 		final AscendantsDefinition ascendants =
-				this.ascendants.reproduce(reproducer.getReproducer());
+				getAscendants().reproduce(reproducer.getReproducer());
 
 		if (ascendants == null) {
 			return null;
