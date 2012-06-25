@@ -21,14 +21,20 @@ package org.o42a.core.member;
 
 import org.o42a.util.string.ID;
 import org.o42a.util.string.Name;
+import org.o42a.util.string.SubID;
 
 
 public final class MemberName extends MemberId {
 
 	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
 	private static final ID LOCAL_PREFIX_ID = ID.id("L");
-	private static final ID CLAUSE_DISPLAY_PREFIX_ID = ID.id("<clause> ");
-	private static final ID LOCAL_DISPLAY_PREFIX_ID = ID.id("<local> ");
+
+	private static final ID CLAUSE_DISPLAY_PREFIX =
+			ID.id(ID.displayText("Clause \""));
+	private static final ID LOCAL_DISPLAY_PREFIX =
+			ID.id(ID.displayText("Block \""));
+	private static final SubID DISPLAY_SUFFIX =
+			ID.displayText("\"");
 
 	public static MemberName fieldName(Name name) {
 		assert name != null :
@@ -123,9 +129,9 @@ public final class MemberName extends MemberId {
 
 		switch (getKind()) {
 		case CLAUSE:
-			return CLAUSE_DISPLAY_PREFIX_ID.suffix(name);
+			return CLAUSE_DISPLAY_PREFIX.suffix(name).suffix(DISPLAY_SUFFIX);
 		case LOCAL:
-			return LOCAL_DISPLAY_PREFIX_ID.suffix(name);
+			return LOCAL_DISPLAY_PREFIX.suffix(name).suffix(DISPLAY_SUFFIX);
 		case FIELD :
 			return name.toID();
 		}

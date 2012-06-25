@@ -171,6 +171,11 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
+	public final Alias toAlias() {
+		return null;
+	}
+
+	@Override
 	public final Obj substance(UserInfo user) {
 		return field(user).toObject();
 	}

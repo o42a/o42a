@@ -107,15 +107,9 @@ public abstract class ContainerMembers {
 	private void addEntry(MemberEntry entry) {
 
 		final Member member = entry.getMember();
+		final MemberId memberId = member.getMemberId();
 
-		addEntry(member.getMemberId(), entry);
-		for (MemberId aliasId : member.getAliases()) {
-			addEntry(aliasId, entry);
-		}
-	}
-
-	private void addEntry(MemberId id, MemberEntry entry) {
-		if (id.getAdapterId() != null) {
+		if (memberId.getAdapterId() != null) {
 			this.adapters.add(entry);
 		} else {
 			this.members.add(entry);

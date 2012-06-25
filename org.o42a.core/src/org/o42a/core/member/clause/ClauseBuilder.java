@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.clause;
 
+import static org.o42a.core.member.MemberName.clauseName;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
 import static org.o42a.util.ArrayUtil.append;
@@ -268,7 +269,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 		final DeclaredPlainClause clause = plainClause(this);
 
-		this.memberRegistry.declareMember(clause.toMember());
+		getMemberRegistry().declareMember(clause.toMember());
+		declareAlias(clause);
 
 		return new ClauseDeclarationStatement(this, clause, null);
 	}
@@ -315,7 +317,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			return null;
 		}
 
-		this.memberRegistry.declareMember(clause.toMember());
+		getMemberRegistry().declareMember(clause.toMember());
+		declareAlias(clause);
 
 		group.getStatements().statement(
 				new ClauseDeclarationStatement(this, clause, definition));
@@ -335,7 +338,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 			return null;
 		}
 
-		this.memberRegistry.declareMember(clause.toMember());
+		getMemberRegistry().declareMember(clause.toMember());
+		declareAlias(clause);
 
 		group.getStatements().statement(
 				new ClauseDeclarationStatement(this, clause, definition));
@@ -356,6 +360,36 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 				"Can not provide the declarations for a value substitution";
 		}
 		return true;
+	}
+
+	private void declareAlias(Clause clause) {
+
+		final Name name = getDeclaration().getName();
+
+		if (name == null) {
+			return;
+		}
+
+		final MemberId id = clause.toMember().getMemberId();
+		final MemberName memberName = id.getMemberName();
+
+		if (memberName != null && memberName.getName().is(name)) {
+			return;
+		}
+
+		final MemberId aliasName = clauseName(name);
+		final MemberId aliasId;
+		final MemberId enclosingId = id.getEnclosingId();
+
+		if (enclosingId != null) {
+			aliasId = enclosingId.append(aliasName);
+		} else {
+			aliasId = aliasName;
+		}
+
+		final ClauseAlias alias = new ClauseAlias(aliasId, clause.toMember());
+
+		getMemberRegistry().declareMember(alias);
 	}
 
 }

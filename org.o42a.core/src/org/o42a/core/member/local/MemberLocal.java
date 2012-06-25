@@ -21,9 +21,7 @@ package org.o42a.core.member.local;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Distributor;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.Visibility;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.impl.PropagatedMemberLocal;
@@ -69,6 +67,11 @@ public abstract class MemberLocal extends Member {
 	@Override
 	public final MemberLocal toLocal() {
 		return this;
+	}
+
+	@Override
+	public final Alias toAlias() {
+		return null;
 	}
 
 	public abstract LocalScope local();

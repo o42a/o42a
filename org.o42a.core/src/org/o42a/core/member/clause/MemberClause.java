@@ -19,22 +19,17 @@
 */
 package org.o42a.core.member.clause;
 
-import static org.o42a.core.member.MemberName.clauseName;
-
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Container;
 import org.o42a.core.member.*;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.util.string.Name;
 
 
 public abstract class MemberClause extends Member {
 
 	private final ClauseDeclaration declaration;
 	private MemberKey key;
-	private MemberId[] aliasIds;
-	private MemberKey[] aliasKeys;
 
 	public MemberClause(MemberOwner owner, ClauseDeclaration declaration) {
 		super(declaration, declaration.distribute(), owner);
@@ -63,62 +58,6 @@ public abstract class MemberClause extends Member {
 		return this.key = getDeclaration().getMemberId().key(getScope());
 	}
 
-	@Override
-	public MemberId[] getAliases() {
-		if (this.aliasIds != null) {
-			return this.aliasIds;
-		}
-
-		final Name name = getDeclaration().getName();
-
-		if (name == null) {
-			return this.aliasIds = super.getAliases();
-		}
-
-		final MemberId id = getMemberId();
-		final MemberName memberName = id.getMemberName();
-
-		if (memberName == null) {
-			return this.aliasIds = super.getAliases();
-		}
-		if (memberName.getName().is(name)) {
-			return this.aliasIds = super.getAliases();
-		}
-
-		final MemberId aliasName = clauseName(name);
-		final MemberId aliasId;
-		final MemberId enclosingId = id.getEnclosingId();
-
-		if (enclosingId != null) {
-			aliasId = enclosingId.append(aliasName);
-		} else {
-			aliasId = aliasName;
-		}
-
-		return this.aliasIds = new MemberId[] {aliasId};
-	}
-
-	@Override
-	public MemberKey[] getAliasKeys() {
-		if (this.aliasKeys != null) {
-			return this.aliasKeys;
-		}
-
-		final MemberId[] aliasIds = getAliases();
-
-		if (aliasIds.length == 0) {
-			return this.aliasKeys = super.getAliasKeys();
-		}
-
-		final MemberKey[] aliasKeys = new MemberKey[aliasIds.length];
-
-		for (int i = 0; i < aliasIds.length; ++i) {
-			aliasKeys[i] = aliasIds[i].key(getScope());
-		}
-
-		return this.aliasKeys = aliasKeys;
-	}
-
 	public final ClauseDeclaration getDeclaration() {
 		return this.declaration;
 	}
@@ -145,6 +84,11 @@ public abstract class MemberClause extends Member {
 
 	@Override
 	public final MemberLocal toLocal() {
+		return null;
+	}
+
+	@Override
+	public final Alias toAlias() {
 		return null;
 	}
 

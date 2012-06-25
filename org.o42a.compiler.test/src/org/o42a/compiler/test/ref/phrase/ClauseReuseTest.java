@@ -33,7 +33,7 @@ public class ClauseReuseTest extends CompilerTestCase {
 	@Test
 	public void reuseObject() {
 		compile(
-				"A := string(",
+				"A := string (",
 				"  Foo := 1",
 				"  <*[foo value] | $object$> foo = *",
 				"  <bar> (<*'value'> ())",
@@ -50,9 +50,9 @@ public class ClauseReuseTest extends CompilerTestCase {
 	@Test
 	public void reuseGroup() {
 		compile(
-				"A := string(",
+				"A := string (",
 				"  Foo := 1",
-				"  <*[foo value] | group> foo = *",
+				"  <*[foo value] | group> Foo = *",
 				"  <*group> (",
 				"    <bar> (<*'value'> ())",
 				"  )",
@@ -89,7 +89,7 @@ public class ClauseReuseTest extends CompilerTestCase {
 	@Test
 	public void reuseParent() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
 				"  <*Group> (",
@@ -105,6 +105,38 @@ public class ClauseReuseTest extends CompilerTestCase {
 
 		assertThat(definiteValue(foo, ValueType.STRING), is("c"));
 		assertThat(definiteValue(bar, ValueType.STRING), is("d"));
+	}
+
+	@Test
+	public void reuseAliased() {
+		compile(
+				"A := void (",
+				"  Foo := \"a\"",
+				"  Bar := \"b\"",
+				"  <*[Foo] | bar> Foo = ()",
+				"  <*'Bar'> Bar = ()",
+				")",
+				"B := a [\"c\"] 'd'");
+
+		assertThat(definiteValue(field("b", "foo"), ValueType.STRING), is("c"));
+		assertThat(definiteValue(field("b", "bar"), ValueType.STRING), is("d"));
+	}
+
+	@Test
+	public void reuseAliasedInsideGroup() {
+		compile(
+				"A := void (",
+				"  Foo := \"a\"",
+				"  Bar := \"b\"",
+				"  <*Group> (",
+				"    <*[Foo] | bar> Foo = ()",
+				"  )",
+				"  <*'Bar'> Bar = ()",
+				")",
+				"B := a [\"c\", 'd']");
+
+		assertThat(definiteValue(field("b", "foo"), ValueType.STRING), is("c"));
+		assertThat(definiteValue(field("b", "bar"), ValueType.STRING), is("d"));
 	}
 
 }
