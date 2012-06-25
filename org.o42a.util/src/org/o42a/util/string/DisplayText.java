@@ -19,7 +19,7 @@
 */
 package org.o42a.util.string;
 
-import static org.o42a.util.string.Capitalization.AS_IS;
+import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 
 final class DisplayText implements SubID {
@@ -29,7 +29,7 @@ final class DisplayText implements SubID {
 	DisplayText(String text) {
 		assert text != null :
 			"Text to display is not specified";
-		this.text = AS_IS.name(text).toID();
+		this.text = CASE_SENSITIVE.name(text).toID();
 	}
 
 	@Override
