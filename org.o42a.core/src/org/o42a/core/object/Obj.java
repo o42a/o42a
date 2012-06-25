@@ -258,6 +258,9 @@ public abstract class Obj
 		final Scope origin = getScope();
 
 		for (Member member : getMembers()) {
+			if (member.toAlias() != null) {
+				continue;
+			}
 
 			final MemberClause clause = member.toClause();
 

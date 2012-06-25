@@ -20,7 +20,6 @@
 package org.o42a.core.member;
 
 
-
 final class MemberEntry {
 
 	private final Member member;
@@ -84,12 +83,6 @@ final class MemberEntry {
 			return;
 		}
 		members.registerSymbol(member.getMemberId(), member);
-
-		for (MemberKey aliasKey : member.getAliasKeys()) {
-			if (registerAlias(members, aliasKey, member)) {
-				members.registerSymbol(aliasKey.getMemberId(), member);
-			}
-		}
 	}
 
 	@Override
@@ -193,91 +186,6 @@ final class MemberEntry {
 		// Otherwise, leave it as is.
 		// The member should take care of merging the definitions.
 		return null;
-	}
-
-	private boolean registerAlias(
-			ContainerMembers members,
-			MemberKey key,
-			Member member) {
-		if (!key.isValid()) {
-			return false;
-		}
-
-		final Member existing = members.members().get(key);
-
-		if (existing == null) {
-			members.register(key, member);
-			return true;
-		}
-		if (!isOverride()) {
-			return mergeNewAlias(members, key, member, existing);
-		}
-
-		return mergeOverriddenAlias(members, key, member, existing);
-	}
-
-	private boolean mergeNewAlias(
-			ContainerMembers members,
-			MemberKey key,
-			Member member,
-			Member existing) {
-		if (existing.isOverride()) {
-			members.register(key, member);
-			return true;
-		}
-
-		member.getLogger().ambiguousMember(
-				member,
-				key.getMemberId().toString());
-
-		return false;
-	}
-
-	private boolean mergeOverriddenAlias(
-			ContainerMembers members,
-			MemberKey key,
-			Member member,
-			Member existing) {
-		if (!existing.isPropagated()) {
-			// Existing member is explicit.
-			if (isPropagated()) {
-				// Explicit member takes precedence over propagated one.
-				return false;
-			}
-
-			member.getLogger().ambiguousMember(
-					member,
-					key.getMemberId().toString());
-
-			return false;
-		}
-
-		// Existing member is propagated.
-		if (!isPropagated()) {
-			// Explicit member takes precedence over propagated one.
-			members.register(key, member);
-			return true;
-		}
-
-		// Both members are propagated.
-		// Determine the one defined last.
-		final Member propagatedFrom = existing.getPropagatedFrom();
-
-		if (propagatedFrom.definedAfter(getMember())) {
-			// Already registered member is defined after the new one.
-			// Leave it in registry.
-			return false;
-		}
-		if (getMember().definedAfter(propagatedFrom)) {
-			// New member is defined after the already registered one.
-			// Update the registry with the new member.
-			members.register(key, member);
-			return true;
-		}
-
-		// Otherwise, leave it as is.
-		// The member should take care of issuing an error.
-		return false;
 	}
 
 }
