@@ -75,7 +75,6 @@ class ClauseExpressionVisitor
 	@Override
 	public ClauseBuilder visitPhrase(PhraseNode phrase, ClauseBuilder p) {
 
-		final boolean hasValue = p.getDeclaration().getClauseId().hasValue();
 		final ClauseNode[] clauses = phrase.getClauses();
 
 		if (clauses.length == 1) {
@@ -90,13 +89,7 @@ class ClauseExpressionVisitor
 				return prefixed.setDeclarations(contentBuilder(
 						new ClauseStatementVisitor(p.getContext()),
 						parentheses));
-			} else if (hasValue) {
-				p.getContext().getLogger().invalidClauseContent(phrase);
-				return null;
 			}
-		} else if (hasValue) {
-			p.getContext().getLogger().invalidClauseContent(phrase);
-			return null;
 		}
 
 		return visitExpression(phrase, p);
