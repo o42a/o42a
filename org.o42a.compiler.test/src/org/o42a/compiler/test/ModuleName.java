@@ -23,12 +23,12 @@ import static java.lang.Character.charCount;
 import static java.lang.Character.isUpperCase;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.o42a.util.string.Name;
 
 
-final class ModuleName extends TestWatchman {
+final class ModuleName extends TestWatcher {
 
 	private Name moduleName;
 
@@ -41,8 +41,8 @@ final class ModuleName extends TestWatchman {
 	}
 
 	@Override
-	public void starting(FrameworkMethod method) {
-		setModuleName(toModuleName(method.getName()));
+	protected void starting(Description description) {
+		setModuleName(toModuleName(description.getMethodName()));
 	}
 
 	private static Name toModuleName(String name) {
