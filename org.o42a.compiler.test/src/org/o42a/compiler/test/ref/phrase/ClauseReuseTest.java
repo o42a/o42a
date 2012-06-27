@@ -35,10 +35,10 @@ public class ClauseReuseTest extends CompilerTestCase {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <*[foo value] | $object$> foo = *",
-				"  <bar> (<*'value'> ())",
+				"  <* [Foo value] | $object$> foo = *",
+				"  <Bar> (<*'Value'> ())",
 				")",
-				"B := a[2]bar'b'");
+				"B := a[2] bar 'b'");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -48,16 +48,52 @@ public class ClauseReuseTest extends CompilerTestCase {
 	}
 
 	@Test
-	public void reuseGroup() {
+	public void reuseNamedGroup() {
 		compile(
 				"A := string (",
 				"  Foo := 1",
-				"  <*[foo value] | group> Foo = *",
-				"  <*group> (",
-				"    <bar> (<*'value'> ())",
+				"  <* [Foo value] | bar> foo = *",
+				"  <Bar> (<*'Value'> ())",
+				")",
+				"B := a[2] bar 'b'");
+
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
+
+		assertThat(definiteValue(b, ValueType.STRING), is("b"));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void reuseImplicitGroup() {
+		compile(
+				"A := string (",
+				"  Foo := 1",
+				"  <*[Foo value] | group> Foo = *",
+				"  <*Group> (",
+				"    <Bar> (<*'Value'> ())",
 				"  )",
 				")",
-				"B := a[2]bar'b'");
+				"B := a [2] bar 'b'");
+
+		final Field b = field("b");
+		final Field foo = field(b, "foo");
+
+		assertThat(definiteValue(b, ValueType.STRING), is("b"));
+		assertThat(definiteValue(foo, ValueType.INTEGER), is(2L));
+	}
+
+	@Test
+	public void reuseInternalGroup() {
+		compile(
+				"A := string (",
+				"  Foo := 1",
+				"  <*[Foo value] | internal group> Foo = *",
+				"  <:Internal group> (",
+				"    <Bar> (<*'Value'> ())",
+				"  )",
+				")",
+				"B := a [2] bar 'b'");
 
 		final Field b = field("b");
 		final Field foo = field(b, "foo");
@@ -69,12 +105,12 @@ public class ClauseReuseTest extends CompilerTestCase {
 	@Test
 	public void reusePrecedence() {
 		compile(
-				"A := void(",
+				"A := void (",
 				"  Foo := \"a\"",
 				"  Bar := \"b\"",
-				"  <Foo group> (<*''> Foo = ())",
-				"  <Bar group> (<*''> Bar = ())",
-				" <Set | foo group* | bar group*> ()",
+				"  <:Foo group> (<*''> Foo = ())",
+				"  <:Bar group> (<*''> Bar = ())",
+				" <Set | foo group | bar group> ()",
 				")",
 				"B := a () set 'c'");
 

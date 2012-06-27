@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.clause;
 
+import org.o42a.core.member.Visibility;
+
 
 public final class ReusedClause {
 
@@ -76,7 +78,7 @@ public final class ReusedClause {
 	}
 
 	private boolean validateContentReuse(boolean reuseContents) {
-		if (this.clause.isImplicit()) {
+		if (this.clause.getVisibility() == Visibility.PRIVATE) {
 			return true;
 		}
 		if (reuseContents && !this.clause.clause().hasContinuation()) {

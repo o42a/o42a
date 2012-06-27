@@ -20,6 +20,9 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.location;
+import static org.o42a.compiler.ip.member.ClauseVisibility.IMPLICIT_CLAUSE;
+import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByName;
+import static org.o42a.compiler.ip.member.ClauseVisibility.clauseVisibilityByPrefix;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.clauseName;
@@ -30,7 +33,6 @@ import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseKeyVisitor;
 import org.o42a.ast.clause.ClauseKeyNode;
 import org.o42a.ast.clause.ClauseNode;
-import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
@@ -47,9 +49,6 @@ final class ClauseKeyVisitor
 
 	public static final ClauseKeyVisitor CLAUSE_KEY_VISITOR =
 			new ClauseKeyVisitor();
-
-	private static final ImpliedScopeChecker IMPLIED_SCOPE_CHECKER =
-			new ImpliedScopeChecker();
 
 	private ClauseKeyVisitor() {
 	}
@@ -70,17 +69,11 @@ final class ClauseKeyVisitor
 			p.getLogger().prohibitedDeclaredIn(ref.getDeclaredIn());
 		}
 
-		final boolean implicit;
-		final ExpressionNode owner = ref.getOwner();
+		final ClauseVisibility visibility = clauseVisibilityByName(ref);
 
-		if (owner == null) {
-			implicit = false;
-		} else {
-			implicit = owner.accept(IMPLIED_SCOPE_CHECKER, null);
-			if (!implicit) {
-				p.getLogger().invalidDeclaration(ref);
-				return null;
-			}
+		if (visibility == null) {
+			p.getLogger().invalidDeclaration(ref);
+			return null;
 		}
 
 		final NameNode name = ref.getName();
@@ -98,11 +91,7 @@ final class ClauseKeyVisitor
 					clauseName(name.getName()));
 		}
 
-		if (!implicit) {
-			return declaration;
-		}
-
-		return declaration.implicit();
+		return visibility.applyTo(declaration);
 	}
 
 	@Override
@@ -133,7 +122,7 @@ final class ClauseKeyVisitor
 		if (prefix == null) {
 			return super.visitPhrase(phrase, p);
 		}
-		if (!prefix.accept(IMPLIED_SCOPE_CHECKER, null)) {
+		if (clauseVisibilityByPrefix(prefix) != IMPLICIT_CLAUSE) {
 			p.getContext().getLogger().invalidDeclaration(phrase);
 			return null;
 		}
@@ -153,21 +142,6 @@ final class ClauseKeyVisitor
 			Distributor p) {
 		p.getLogger().invalidDeclaration(clauseKey);
 		return null;
-	}
-
-	private static final class ImpliedScopeChecker
-			extends AbstractExpressionVisitor<Boolean, Void> {
-
-		@Override
-		public Boolean visitScopeRef(ScopeRefNode ref, Void p) {
-			return ref.getType() == ScopeType.IMPLIED;
-		}
-
-		@Override
-		protected Boolean visitExpression(ExpressionNode expression, Void p) {
-			return Boolean.FALSE;
-		}
-
 	}
 
 }
