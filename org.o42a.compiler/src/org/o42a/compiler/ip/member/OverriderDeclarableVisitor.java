@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
+import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseContent;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
@@ -84,7 +85,7 @@ final class OverriderDeclarableVisitor
 	protected ClauseBuilder visitDeclarable(
 			DeclarableNode declarable,
 			ClauseBuilder p) {
-		p.getLogger().invalidClauseContent(declarable);
+		invalidClauseContent(p.getLogger(), declarable);
 		return null;
 	}
 

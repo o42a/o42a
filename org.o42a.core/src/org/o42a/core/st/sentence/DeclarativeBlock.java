@@ -78,6 +78,19 @@ public final class DeclarativeBlock extends Block<Declaratives, Definer> {
 				false);
 	}
 
+	public DeclarativeBlock(
+			Group group,
+			Distributor distributor,
+			MemberRegistry memberRegistry) {
+		this(
+				group,
+				distributor,
+				(Declaratives) group.getStatements(),
+				memberRegistry,
+				DECLARATIVE_FACTORY,
+				false);
+	}
+
 	private DeclarativeBlock(
 			LocationInfo location,
 			Distributor distributor,

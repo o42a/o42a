@@ -32,7 +32,6 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.Statement;
 import org.o42a.core.st.sentence.Statements;
 
 
@@ -58,17 +57,9 @@ final class ClauseStatementVisitor extends DefaultStatementVisitor {
 		final ClauseBuilder builder =
 				buildOverrider(declaration, declarator, p);
 
-		if (builder == null) {
-			return null;
+		if (builder != null) {
+			builder.mandatory().build();
 		}
-
-		final Statement statement = builder.mandatory().build();
-
-		if (statement == null) {
-			return null;
-		}
-
-		p.statement(statement);
 
 		return null;
 	}

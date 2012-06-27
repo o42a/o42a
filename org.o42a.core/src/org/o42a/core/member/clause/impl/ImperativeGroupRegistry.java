@@ -28,6 +28,7 @@ import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.st.sentence.Group;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.fn.Lambda;
 
 
@@ -41,7 +42,9 @@ final class ImperativeGroupRegistry extends LocalRegistry {
 	}
 
 	@Override
-	public ClauseBuilder newClause(ClauseDeclaration declaration) {
+	public ClauseBuilder newClause(
+			Statements<?, ?> statements,
+			ClauseDeclaration declaration) {
 		if (this.group.getBuilder().getDeclaration().isTerminator()) {
 			prohibitedContinuation(declaration);
 			return null;
@@ -53,7 +56,7 @@ final class ImperativeGroupRegistry extends LocalRegistry {
 					"Overrider clause is prohibited here");
 			return null;
 		}
-		return clauseFactory().newClause(declaration);
+		return clauseFactory().newClause(statements, declaration);
 	}
 
 	static final class Builder implements Lambda<MemberRegistry, LocalScope> {

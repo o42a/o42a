@@ -21,67 +21,50 @@ package org.o42a.core.member.clause.impl;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
-import org.o42a.core.member.*;
+import org.o42a.core.member.MemberId;
+import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.ProxyMemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.object.Obj;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.fn.Lambda;
-import org.o42a.util.string.Name;
 
 
 final class GroupRegistry
-		extends MemberRegistry
+		extends ProxyMemberRegistry
 		implements Lambda<MemberRegistry, LocalScope> {
 
 	private final DeclaredGroupClause group;
-	private final MemberRegistry registry;
 
 	GroupRegistry(DeclaredGroupClause group, MemberRegistry registry) {
-		super(noInclusions());
+		super(noInclusions(), registry);
 		this.group = group;
-		this.registry = registry;
-	}
-
-	@Override
-	public MemberOwner getMemberOwner() {
-		return this.registry.getMemberOwner();
-	}
-
-	@Override
-	public Obj getOwner() {
-		return this.registry.getOwner();
 	}
 
 	@Override
 	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		return this.registry.newField(
+		return registry().newField(
 				declaration.inGroup(getGroupId()),
 				definition);
 	}
 
 	@Override
-	public ClauseBuilder newClause(ClauseDeclaration declaration) {
+	public ClauseBuilder newClause(
+			Statements<?, ?> statements,
+			ClauseDeclaration declaration) {
 		if (this.group.isTerminator()) {
 			prohibitedContinuation(declaration);
 			return null;
 		}
-		return this.registry.newClause(declaration.inGroup(getGroupId()));
-	}
-
-	@Override
-	public void declareMember(Member member) {
-		this.registry.declareMember(member);
-	}
-
-	@Override
-	public Name anonymousBlockName() {
-		return this.registry.anonymousBlockName();
+		return registry().newClause(
+				statements,
+				declaration.inGroup(getGroupId()));
 	}
 
 	@Override

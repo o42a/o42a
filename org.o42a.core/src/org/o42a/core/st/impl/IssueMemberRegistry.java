@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,43 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.clause;
+package org.o42a.core.st.impl;
 
-import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
 
 import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.ProxyMemberRegistry;
+import org.o42a.core.member.clause.ClauseBuilder;
+import org.o42a.core.member.clause.ClauseDeclaration;
+import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.st.sentence.Statements;
 
 
-public final class ClauseFactory {
+public class IssueMemberRegistry extends ProxyMemberRegistry {
 
-	private final MemberRegistry memberRegistry;
-	private int clauseSeq;
-
-	public ClauseFactory(MemberRegistry memberRegistry) {
-		this.memberRegistry = memberRegistry;
+	public IssueMemberRegistry(MemberRegistry registry) {
+		super(noInclusions(), registry);
 	}
 
+	@Override
 	public ClauseBuilder newClause(
 			Statements<?, ?> statements,
 			ClauseDeclaration declaration) {
-		if (!declaration.isAnonymous()) {
-			return createNewClause(statements, declaration);
+		if (statements.getContainer().toClause() == null) {
+			SentenceErrors.prohibitedIssueClause(declaration);
+			return null;
 		}
-		return createNewClause(
-				statements,
-				declaration.setName(
-						CASE_SENSITIVE.canonicalName(
-								Integer.toString(++this.clauseSeq))));
-	}
-
-	private final ClauseBuilder createNewClause(
-			Statements<?, ?> statements,
-			ClauseDeclaration declaration) {
-		return new ClauseBuilder(
-				statements,
-				this.memberRegistry,
-				declaration);
+		if (declaration.getKind() == ClauseKind.OVERRIDER) {
+			prohibitedIssueField(declaration);
+			return null;
+		}
+		return registry().newClause(statements, declaration);
 	}
 
 }

@@ -192,7 +192,7 @@ final class ClauseDefinition extends Obj {
 		}
 
 		@Override
-		public ClauseBuilder newClause(ClauseDeclaration declaration) {
+		public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
 			prohibitedContinuation(declaration);
 			return null;
 		}

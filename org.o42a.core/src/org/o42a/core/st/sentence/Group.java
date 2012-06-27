@@ -19,6 +19,8 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
+
 import org.o42a.core.Placed;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.source.LocationInfo;
@@ -55,6 +57,11 @@ public final class Group extends Placed {
 	}
 
 	public final ImperativeBlock braces(Name name) {
+		if (this.statements.isInsideIssue()) {
+			prohibitedIssueBraces(this);
+			this.statements.dropStatement();
+			return null;
+		}
 
 		final ClauseBuilderBase builder = this.builder;
 

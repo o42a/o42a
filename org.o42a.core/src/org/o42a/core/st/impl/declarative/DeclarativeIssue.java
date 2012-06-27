@@ -23,6 +23,7 @@ import static org.o42a.core.st.sentence.SentenceFactory.DECLARATIVE_ISSUE_FACTOR
 
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.impl.IssueMemberRegistry;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.DeclarativeSentence;
 
@@ -36,7 +37,7 @@ public final class DeclarativeIssue extends DeclarativeSentence {
 			DeclarativeBlock block) {
 		super(location, block, DECLARATIVE_ISSUE_FACTORY);
 		this.memberRegistry =
-				block.getMemberRegistry().prohibitDeclarations();
+				new IssueMemberRegistry(block.getMemberRegistry());
 	}
 
 	@Override

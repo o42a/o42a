@@ -71,9 +71,13 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 		return new ImperativeBlock(
 				location,
-				scope,
+				new BlockDistributor(location, scope),
+				enclosing,
+				false,
+				scope.getName(),
 				registry,
-				sentenceFactory);
+				sentenceFactory,
+				true);
 	}
 
 	public static ImperativeBlock nestedImperativeBlock(
@@ -91,7 +95,8 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 				parentheses,
 				name,
 				memberRegistry,
-				sentenceFactory);
+				sentenceFactory,
+				false);
 	}
 
 	private final boolean parentheses;
@@ -102,16 +107,25 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private Locals locals;
 	private ImplicationEnv initialEnv;
 
-	public ImperativeBlock(
+	private ImperativeBlock(
 			LocationInfo location,
-			LocalScope scope,
+			Distributor distributor,
+			Statements<?, ?> enclosing,
+			boolean parentheses,
+			Name name,
 			MemberRegistry memberRegistry,
-			ImperativeFactory sentenceFactory) {
-		this(
+			ImperativeFactory sentenceFactory,
+			boolean topLevel) {
+		super(
 				location,
-				new BlockDistributor(location, scope),
+				distributor,
+				enclosing,
 				memberRegistry,
 				sentenceFactory);
+		this.parentheses = parentheses;
+		this.name = name;
+		this.topLevel = topLevel;
+		this.trace = getPlace().nestedTrace();
 	}
 
 	private ImperativeBlock(
@@ -128,26 +142,6 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		final LocalScopeBase scope = getScope();
 
 		scope.setBlock(this);
-	}
-
-	private ImperativeBlock(
-			LocationInfo location,
-			Distributor distributor,
-			Statements<?, ?> enclosing,
-			boolean parentheses,
-			Name name,
-			MemberRegistry memberRegistry,
-			ImperativeFactory sentenceFactory) {
-		super(
-				location,
-				distributor,
-				enclosing,
-				memberRegistry,
-				sentenceFactory);
-		this.parentheses = parentheses;
-		this.name = name;
-		this.topLevel = false;
-		this.trace = getPlace().nestedTrace();
 	}
 
 	public final boolean isTopLevel() {
