@@ -23,6 +23,7 @@ import static org.o42a.core.st.sentence.SentenceFactory.IMPERATIVE_ISSUE_FACTORY
 
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.impl.IssueMemberRegistry;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.ImperativeSentence;
 
@@ -34,7 +35,7 @@ public class ImperativeIssue extends ImperativeSentence {
 	public ImperativeIssue(LocationInfo location, ImperativeBlock block) {
 		super(location, block, IMPERATIVE_ISSUE_FACTORY);
 		this.memberRegistry =
-				block.getMemberRegistry().prohibitDeclarations();
+				new IssueMemberRegistry(block.getMemberRegistry());
 	}
 
 	@Override

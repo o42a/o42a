@@ -41,11 +41,21 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.st.Statement;
+import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.st.sentence.Statements;
+import org.o42a.util.log.LogInfo;
 
 
 public class ClauseInterpreter {
+
+	public static void invalidClauseContent(
+			CompilerLogger logger,
+			LogInfo location) {
+		logger.error(
+				"invalid_clause_content",
+				location,
+				"Invalid clause content");
+	}
 
 	public static void clause(
 			CompilerContext context,
@@ -70,11 +80,10 @@ public class ClauseInterpreter {
 			declaration = declaration.terminator();
 		}
 
-		final Statement result;
 		final StatementNode content = declarator.getContent();
 
 		if (content != null) {
-			result = content.accept(
+			content.accept(
 					new ClauseContentVisitor(declaration, declarator),
 					statements);
 		} else {
@@ -85,13 +94,9 @@ public class ClauseInterpreter {
 				return;
 			}
 
-			result = declare(
+			declare(
 					builder.setSubstitution(VALUE_SUBSTITUTION),
 					declarator).build();
-		}
-
-		if (result != null) {
-			statements.statement(result);
 		}
 	}
 
@@ -103,7 +108,8 @@ public class ClauseInterpreter {
 		final DeclarationTarget target = declarator.getTarget();
 
 		if (!target.isOverride() || target.isAbstract()) {
-			p.getLogger().invalidClauseContent(
+			invalidClauseContent(
+					p.getLogger(),
 					declarator.getDefinitionAssignment());
 			return null;
 		}

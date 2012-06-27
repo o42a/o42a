@@ -25,12 +25,7 @@ import org.o42a.util.string.Name;
 
 public abstract class Inclusions {
 
-	private static final Inclusions NO_DECLARATIONS = new NoDeclarations();
 	private static final Inclusions NO_INCLUSIONS = new NoInclusions();
-
-	public static Inclusions noDeclarations() {
-		return NO_DECLARATIONS;
-	}
 
 	public static Inclusions noInclusions() {
 		return NO_INCLUSIONS;
@@ -41,31 +36,6 @@ public abstract class Inclusions {
 	public abstract boolean hasExplicitInclusions();
 
 	public abstract boolean include(LocationInfo location, Name tag);
-
-	private static final class NoDeclarations extends Inclusions {
-
-		@Override
-		public boolean implicitInclusionsSupported() {
-			return false;
-		}
-
-		@Override
-		public boolean hasExplicitInclusions() {
-			return false;
-		}
-
-		@Override
-		public boolean include(LocationInfo location, Name tag) {
-			location.getContext().getLogger().prohibitedDeclaration(location);
-			return false;
-		}
-
-		@Override
-		public String toString() {
-			return "NoDeclarations";
-		}
-
-	}
 
 	private static final class NoInclusions extends Inclusions {
 

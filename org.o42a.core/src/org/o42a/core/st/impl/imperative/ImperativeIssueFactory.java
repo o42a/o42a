@@ -19,52 +19,19 @@
 */
 package org.o42a.core.st.impl.imperative;
 
-import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
-
-import org.o42a.core.Distributor;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.core.st.sentence.*;
-import org.o42a.util.string.Name;
+import org.o42a.core.st.sentence.ImperativeBlock;
+import org.o42a.core.st.sentence.ImperativeFactory;
+import org.o42a.core.st.sentence.ImperativeSentence;
 
 
 public class ImperativeIssueFactory extends ImperativeFactory {
-
-	public ImperativeIssueFactory() {
-	}
-
-	@Override
-	public ImperativeBlock createBraces(
-			LocationInfo location,
-			Distributor distributor,
-			Imperatives enclosing,
-			Name name) {
-		prohibitedIssueBraces(enclosing.getLogger(), location);
-		return null;
-	}
 
 	@Override
 	public ImperativeSentence propose(
 			LocationInfo location,
 			ImperativeBlock block) {
 		return new ImperativeIssue(location, block);
-	}
-
-	@Override
-	public ImperativeSentence claim(
-			LocationInfo location,
-			ImperativeBlock block) {
-		block.getLogger().error(
-				"prohibited_issue_exit",
-				location,
-				"Can not exit the loop from inside an issue");
-		return null;
-	}
-
-	@Override
-	public Imperatives createAlternative(
-			LocationInfo location,
-			ImperativeSentence sentence) {
-		return super.createAlternative(location, sentence);
 	}
 
 }

@@ -20,8 +20,10 @@
 package org.o42a.core.member.clause;
 
 import static org.o42a.core.member.MemberName.clauseName;
+import static org.o42a.core.member.clause.ClauseSubstitution.NO_SUBSTITUTION;
 import static org.o42a.core.member.clause.impl.DeclaredGroupClause.declaredGroupClause;
 import static org.o42a.core.member.clause.impl.DeclaredPlainClause.plainClause;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
 import static org.o42a.util.ArrayUtil.append;
 
 import org.o42a.core.*;
@@ -44,6 +46,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 
 	static final ReusedClauseRef[] NOTHING_REUSED = new ReusedClauseRef[0];
 
+	private final Statements<?, ?> statements;
 	private final MemberRegistry memberRegistry;
 	private final ClauseDeclaration declaration;
 
@@ -56,14 +59,19 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	private boolean mandatory;
 	private boolean prototype;
 	private boolean assignment;
-	private ClauseSubstitution substitution =
-			ClauseSubstitution.NO_SUBSTITUTION;
+	private ClauseSubstitution substitution = NO_SUBSTITUTION;
 
 	ClauseBuilder(
+			Statements<?, ?> statements,
 			MemberRegistry memberRegistry,
 			ClauseDeclaration declaration) {
+		this.statements = statements;
 		this.memberRegistry = memberRegistry;
 		this.declaration = declaration;
+	}
+
+	public final Statements<?, ?> getStatements() {
+		return this.statements;
 	}
 
 	public final MemberOwner getMemberOwner() {
@@ -161,6 +169,10 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 	public final ClauseBuilder assignment() {
 		assert getDeclaration().getKind() == ClauseKind.EXPRESSION :
 			"Only expressioncan be assigned";
+		if (isAssignment() && getStatements().isInsideIssue()) {
+			prohibitedIssueAssignment(getDeclaration());
+			return null;
+		}
 		this.assignment = true;
 		return this;
 	}
@@ -263,7 +275,7 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return ArrayUtil.clip(reused, idx);
 	}
 
-	public DeclarationStatement build() {
+	public void build() {
 		assert getDeclaration().getKind().isPlain() :
 			"Plain clause declaration expected: " + getDeclaration();
 
@@ -272,7 +284,8 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		getMemberRegistry().declareMember(clause.toMember());
 		declareAlias(clause);
 
-		return new ClauseDeclarationStatement(this, clause, null);
+		getStatements().statement(
+				new ClauseDeclarationStatement(this, clause, null));
 	}
 
 	@Override

@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member;
 
+import static org.o42a.core.member.Inclusions.noInclusions;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
@@ -31,6 +33,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
 
@@ -39,7 +42,6 @@ public abstract class MemberRegistry {
 	private static final NoDeclarations NO_DECLARATIONS = new NoDeclarations();
 	private static final SkipDeclarations SKIP_DECLARATIONS =
 			new SkipDeclarations();
-
 
 	public static MemberRegistry noDeclarations() {
 		return NO_DECLARATIONS;
@@ -71,8 +73,10 @@ public abstract class MemberRegistry {
 			FieldDeclaration declaration,
 			FieldDefinition definition);
 
-	public ClauseBuilder newClause(ClauseDeclaration declaration) {
-		return clauseFactory().newClause(declaration);
+	public ClauseBuilder newClause(
+			Statements<?, ?> statements,
+			ClauseDeclaration declaration) {
+		return clauseFactory().newClause(statements, declaration);
 	}
 
 	public LocalScope newLocalScope(
@@ -92,10 +96,6 @@ public abstract class MemberRegistry {
 
 	public abstract Name anonymousBlockName();
 
-	public MemberRegistry prohibitDeclarations() {
-		return new ProhibitDeclarations(this);
-	}
-
 	protected final ClauseFactory clauseFactory() {
 		return this.clauseFactory;
 	}
@@ -107,7 +107,7 @@ public abstract class MemberRegistry {
 	private static class NoDeclarations extends MemberRegistry {
 
 		NoDeclarations() {
-			super(Inclusions.noDeclarations());
+			super(noInclusions());
 		}
 
 		@Override
@@ -129,12 +129,7 @@ public abstract class MemberRegistry {
 		}
 
 		@Override
-		public MemberRegistry prohibitDeclarations() {
-			return this;
-		}
-
-		@Override
-		public ClauseBuilder newClause(ClauseDeclaration declaration) {
+		public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
 			reportDeclaration(declaration);
 			return null;
 		}
@@ -155,8 +150,10 @@ public abstract class MemberRegistry {
 		}
 
 		protected void reportDeclaration(LocationInfo location) {
-			location.getContext().getLogger().prohibitedDeclaration(
-					location);
+			location.getContext().getLogger().error(
+					"prohibited_declaration",
+					location,
+					"Declarations prohibited here");
 		}
 
 	}
@@ -165,27 +162,6 @@ public abstract class MemberRegistry {
 
 		@Override
 		protected void reportDeclaration(LocationInfo location) {
-		}
-
-	}
-
-	private static final class ProhibitDeclarations
-			extends NoDeclarations {
-
-		private final MemberRegistry registry;
-
-		ProhibitDeclarations(MemberRegistry registry) {
-			this.registry = registry;
-		}
-
-		@Override
-		public Obj getOwner() {
-			return this.registry.getOwner();
-		}
-
-		@Override
-		public String toString() {
-			return "ProhibitDeclarations[" + this.registry + ']';
 		}
 
 	}

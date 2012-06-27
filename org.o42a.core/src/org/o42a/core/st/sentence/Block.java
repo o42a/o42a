@@ -111,6 +111,21 @@ public abstract class Block<
 	}
 
 	public Sentence<S, L> claim(LocationInfo location) {
+		if (isInsideIssue()) {
+			if (getSentenceFactory().isDeclarative()) {
+				getLogger().error(
+						"prohibited_issue_claim",
+						location,
+						"A claim can not be placed inside an issue");
+			} else {
+				getLogger().error(
+						"prohibited_issue_exit",
+						location,
+						"Can not exit the loop from inside an issue");
+			}
+			dropSentence();
+			return null;
+		}
 
 		@SuppressWarnings("rawtypes")
 		final SentenceFactory sentenceFactory = getSentenceFactory();
@@ -198,13 +213,7 @@ public abstract class Block<
 
 	private Sentence<S, L> addSentence(Sentence<S, L> sentence) {
 		if (sentence == null) {
-
-			final Statements<?, ?> enclosing = getEnclosing();
-
-			if (enclosing != null) {
-				enclosing.dropStatement();
-			}
-
+			dropSentence();
 			return null;
 		}
 
@@ -225,6 +234,15 @@ public abstract class Block<
 		this.sentences.add(sentence);
 
 		return sentence;
+	}
+
+	private void dropSentence() {
+
+		final Statements<?, ?> enclosing = getEnclosing();
+
+		if (enclosing != null) {
+			enclosing.dropStatement();
+		}
 	}
 
 }

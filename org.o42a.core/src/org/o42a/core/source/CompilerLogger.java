@@ -104,10 +104,6 @@ public class CompilerLogger implements Logger {
 		error("invalid_clause", location, "Invalid clause");
 	}
 
-	public void invalidClauseContent(LogInfo location) {
-		error("invalid_clause_content", location, "Invalid clause content");
-	}
-
 	public void invalidDeclaration(LogInfo location) {
 		error("invalid_declaration", location, "Invalid declaration");
 	}
@@ -190,13 +186,6 @@ public class CompilerLogger implements Logger {
 				"prohibited_clause_declaration",
 				location,
 				"Clause declarations prohibited here");
-	}
-
-	public void prohibitedDeclaration(LogInfo location) {
-		error(
-				"prohibited_declaration",
-				location,
-				"Declarations prohibited here");
 	}
 
 	public void prohibitedDeclaredIn(LogInfo location) {

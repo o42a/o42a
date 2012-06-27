@@ -47,4 +47,17 @@ public class ComplexPhraseTest extends CompilerTestCase {
 		assertThat(definiteValue(field("a"), ValueType.STRING), is("b"));
 	}
 
+	@Test
+	public void issueClause() {
+		compile(
+				"Is :=> string (",
+				"  <*Check> (<*[Condition]>? = \"true\". = \"false\")",
+				")",
+				"A := is [1 > 0]",
+				"B := is [1 < 0]");
+
+		assertThat(definiteValue(field("a"), ValueType.STRING), is("true"));
+		assertThat(definiteValue(field("b"), ValueType.STRING), is("false"));
+	}
+
 }

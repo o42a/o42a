@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,13 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.local;
+package org.o42a.core.member;
 
-import static org.o42a.core.member.Inclusions.noInclusions;
-
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
@@ -34,55 +29,63 @@ import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.string.Name;
 
 
-public class LocalRegistry extends MemberRegistry {
+public abstract class ProxyMemberRegistry extends MemberRegistry {
 
-	private final LocalScope scope;
-	private final MemberRegistry ownerRegistry;
+	private final MemberRegistry registry;
 
-	public LocalRegistry(LocalScope scope, MemberRegistry ownerRegistry) {
-		super(noInclusions());
-		this.scope = scope;
-		this.ownerRegistry = ownerRegistry;
+	public ProxyMemberRegistry(MemberRegistry registry) {
+		super(registry.inclusions());
+		this.registry = registry;
+	}
+
+	public ProxyMemberRegistry(
+			Inclusions inclusions,
+			MemberRegistry registry) {
+		super(inclusions);
+		this.registry = registry;
 	}
 
 	@Override
-	public final MemberOwner getMemberOwner() {
-		return this.scope.toOwner();
+	public MemberOwner getMemberOwner() {
+		return registry().getMemberOwner();
 	}
 
 	@Override
-	public final Obj getOwner() {
-		return null;
-	}
-
-	public final LocalScope getScope() {
-		return this.scope;
+	public Obj getOwner() {
+		return registry().getOwner();
 	}
 
 	@Override
 	public FieldBuilder newField(
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
-		assert declaration.getPlace().isImperative() :
-			"Imperative field declaration expected: " + declaration;
-		return new FieldBuilder(this, declaration, definition);
+		return registry().newField(declaration, definition);
 	}
 
 	@Override
-	public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
-		declaration.getLogger().prohibitedClauseDeclaration(declaration);
-		return null;
+	public ClauseBuilder newClause(
+			Statements<?, ?> statements,
+			ClauseDeclaration declaration) {
+		return registry().newClause(statements, declaration);
 	}
 
 	@Override
 	public void declareMember(Member member) {
-		member.assertScopeIs(this.scope);
-		this.scope.addMember(member);
+		registry().declareMember(member);
 	}
 
 	@Override
 	public Name anonymousBlockName() {
-		return this.ownerRegistry.anonymousBlockName();
+		return registry().anonymousBlockName();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + '[' + this.registry + ']';
+	}
+
+	protected final MemberRegistry registry() {
+		return this.registry;
 	}
 
 }

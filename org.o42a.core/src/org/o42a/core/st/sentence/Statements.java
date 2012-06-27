@@ -19,6 +19,9 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,7 @@ import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
+import org.o42a.core.st.impl.SentenceErrors;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
@@ -100,11 +104,8 @@ public abstract class Statements<
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
 		if (isInsideIssue()) {
+			SentenceErrors.prohibitedIssueAssignment(location);
 			dropStatement();
-			getLogger().error(
-					"prohibited_issue_assignment",
-					location,
-					"Assignment is prohibited within issue");
 			return;
 		}
 		statement(value.rescope(getScope()));
@@ -114,10 +115,7 @@ public abstract class Statements<
 			FieldDeclaration declaration,
 			FieldDefinition definition) {
 		if (isInsideIssue()) {
-			getLogger().error(
-					"prohibited_issue_field",
-					declaration,
-					"Field can not be declared inside issue");
+			prohibitedIssueField(declaration);
 			dropStatement();
 			return null;
 		}
@@ -138,7 +136,7 @@ public abstract class Statements<
 			"Plain clause declaration expected: " + declaration;
 
 		final ClauseBuilder clause =
-				getMemberRegistry().newClause(declaration);
+				getMemberRegistry().newClause(this, declaration);
 
 		if (clause == null) {
 			dropStatement();
@@ -152,7 +150,7 @@ public abstract class Statements<
 			"Group declaration expected: " + declaration;
 
 		final ClauseBuilder builder =
-				getMemberRegistry().newClause(declaration);
+				getMemberRegistry().newClause(this, declaration);
 
 		if (builder == null) {
 			dropStatement();
@@ -185,6 +183,11 @@ public abstract class Statements<
 			LocationInfo location,
 			Name name,
 			Container container) {
+		if (isInsideIssue()) {
+			prohibitedIssueBraces(location);
+			dropStatement();
+			return null;
+		}
 		if (name != null) {
 
 			final Locals locals = getSentence().getBlock().getLocals();
