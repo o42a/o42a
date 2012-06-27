@@ -23,29 +23,29 @@ Float :=> $$number
 <*Minus> Floats: minus (<@Operators: minus> Operand = $prefix$)
 
 <*Addition> Floats: add (
-  <@Operators: add | summand*> Left operand = $prefix$
-  <Summand> (
+  <@Operators: add | summand> Left operand = $prefix$
+  <:Summand> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Subtraction> Floats: subtract (
-  <@Operators: subtract | subtrahend*> Left operand = $prefix$
-  <Subtrahend> (
+  <@Operators: subtract | subtrahend> Left operand = $prefix$
+  <:Subtrahend> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Multiplication> Floats: multiply (
-  <@Operators: multiply | multiplier*> Left operand = $prefix$
-  <Multiplier> (
+  <@Operators: multiply | multiplier> Left operand = $prefix$
+  <:Multiplier> (
     <@Operators: operand> Right operand = ()
   )
 )
 
 <*Division> Floats: divide (
-  <@Operators: divide | divisor*> Left operand = $prefix$
-  <Divisor> (
+  <@Operators: divide | divisor> Left operand = $prefix$
+  <:Divisor> (
     <@Operators: operand> Right operand = ()
   )
 )
@@ -58,8 +58,8 @@ Float :=> $$number
 )
 
 <*Comparison> Floats: compare (
-  <@Operators: compare | compare with*> What = $prefix$
-  <Compare with> (
+  <@Operators: compare | compare with> What = $prefix$
+  <:Compare with> (
     <@Operators: operand> With = ()
   )
 )
