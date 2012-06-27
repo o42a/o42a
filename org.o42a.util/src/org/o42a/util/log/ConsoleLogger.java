@@ -50,11 +50,14 @@ public class ConsoleLogger implements Logger {
 
 		final Formatter formatter = new Formatter();
 
-		formatter.format(record.getMessage(), record.getArgs());
-		formatLocation(formatter, record.getLoggable().getLocation());
-		formatDetails(formatter, record);
-
-		System.err.print(formatter.toString());
+		try {
+			formatter.format(record.getMessage(), record.getArgs());
+			formatLocation(formatter, record.getLoggable().getLocation());
+			formatDetails(formatter, record);
+			System.err.print(formatter.toString());
+		} finally {
+			formatter.close();
+		}
 	}
 
 	@Override

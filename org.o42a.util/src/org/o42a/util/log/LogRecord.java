@@ -84,7 +84,11 @@ public class LogRecord implements Formattable {
 		final StringBuilder out = new StringBuilder();
 		final Formatter formatter = new Formatter(out);
 
-		formatter.format("%s", this);
+		try {
+			formatter.format("%s", this);
+		} finally {
+			formatter.close();
+		}
 
 		return out.toString();
 	}

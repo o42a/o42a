@@ -32,7 +32,11 @@ final class DefaultLogger implements Logger {
 
 		final Formatter f = new Formatter();
 
-		f.format("%s", record);
+		try {
+			f.format("%s", record);
+		} finally {
+			f.close();
+		}
 
 		getAnonymousLogger().log(level(record.getSeverity()), f.toString());
 	}
