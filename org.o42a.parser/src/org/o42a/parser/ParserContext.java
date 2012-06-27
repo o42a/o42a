@@ -148,6 +148,7 @@ public final class ParserContext {
 
 				try {
 
+					@SuppressWarnings("resource")
 					final SourceReader in = this.worker.in();
 
 					charCode = in.read();
