@@ -94,6 +94,9 @@ public abstract class MemberClause extends Member {
 
 	@Override
 	public final Visibility getVisibility() {
+		if (getDeclaration().isImplicit() || getDeclaration().isInternal()) {
+			return Visibility.PRIVATE;
+		}
 		return Visibility.PUBLIC;
 	}
 

@@ -73,6 +73,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 	private boolean requiresContinuation;
 	private boolean terminator;
 	private boolean implicit;
+	private boolean internal;
 
 	private ClauseDeclaration(
 			LocationInfo location,
@@ -238,6 +239,19 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		final ClauseDeclaration clone = clone();
 
 		clone.implicit = true;
+
+		return clone;
+	}
+
+	public final boolean isInternal() {
+		return this.internal;
+	}
+
+	public final ClauseDeclaration internal() {
+
+		final ClauseDeclaration clone = clone();
+
+		clone.internal = true;
 
 		return clone;
 	}
