@@ -19,19 +19,19 @@
 */
 package org.o42a.compiler.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TestErrors extends TestWatchman implements Logger {
+final class TestErrors extends TestWatcher implements Logger {
 
 	private final LinkedList<String> expectedErrors =
 			new LinkedList<String>();
@@ -46,22 +46,10 @@ final class TestErrors extends TestWatchman implements Logger {
 			fail("Error occurred: " + record);
 		}
 
-		assertEquals(
+		assertThat(
 				"Unexpected error occurred: " + record,
 				expected,
-				code);
-	}
-
-	@Override
-	public void starting(FrameworkMethod method) {
-		this.expectedErrors.clear();
-	}
-
-	@Override
-	public void succeeded(FrameworkMethod method) {
-		assertTrue(
-				"Errors expected, but not logged: " + this,
-				this.expectedErrors.isEmpty());
+				is(code));
 	}
 
 	public final void expectError(String code) {
@@ -71,6 +59,19 @@ final class TestErrors extends TestWatchman implements Logger {
 	@Override
 	public String toString() {
 		return this.expectedErrors.toString();
+	}
+
+	@Override
+	protected void succeeded(Description description) {
+		assertThat(
+				"Errors expected, but not logged: " + this,
+				this.expectedErrors.isEmpty(),
+				is(true));
+	}
+
+	@Override
+	protected void starting(Description description) {
+		this.expectedErrors.clear();
 	}
 
 }

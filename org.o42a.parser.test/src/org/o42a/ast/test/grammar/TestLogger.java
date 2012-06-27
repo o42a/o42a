@@ -19,29 +19,25 @@
 */
 package org.o42a.ast.test.grammar;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Logger;
 
 
-final class TestLogger extends TestWatchman implements Logger {
+final class TestLogger extends TestWatcher implements Logger {
 
 	private final LinkedList<String> expectedErrors = new LinkedList<String>();
 
 	public void expectError(String code) {
 		this.expectedErrors.addLast("parser." + code);
-	}
-
-	@Override
-	public void starting(FrameworkMethod method) {
-		this.expectedErrors.clear();
 	}
 
 	@Override
@@ -61,10 +57,16 @@ final class TestLogger extends TestWatchman implements Logger {
 	}
 
 	@Override
-	public void succeeded(FrameworkMethod method) {
-		assertTrue(
+	protected void succeeded(Description description) {
+		assertThat(
 				"Errors expected, but not logged: " + this.expectedErrors,
-				this.expectedErrors.isEmpty());
+				this.expectedErrors.isEmpty(),
+				is(true));
+	}
+
+	@Override
+	protected void starting(Description description) {
+		this.expectedErrors.clear();
 	}
 
 }
