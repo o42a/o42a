@@ -139,7 +139,11 @@ public class ConsoleLogger implements Logger {
 					+ (message != null ? message : e.toString());
 		}
 
-		formatter.format(" at %s\n    %s: %s\n", position, lineStr, sourceLine);
+		formatter.format(
+				" at %s\n    %s: %s\n",
+				position.getSource(),
+				lineStr,
+				sourceLine);
 
 		if (firstColumn < 0) {
 			return;
