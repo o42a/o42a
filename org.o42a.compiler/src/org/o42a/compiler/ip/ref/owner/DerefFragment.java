@@ -55,6 +55,7 @@ final class DerefFragment extends PathFragment {
 					"cant_deref",
 					this.location,
 					"Can not dereference");
+			return SELF_PATH;
 		}
 		return SELF_PATH.dereference();
 	}
