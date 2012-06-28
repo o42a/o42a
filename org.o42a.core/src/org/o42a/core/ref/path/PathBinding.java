@@ -30,6 +30,6 @@ public interface PathBinding<B> {
 
 	PathBinding<B> prefixWith(PrefixPath prefix);
 
-	public abstract PathBinding<B> reproduce(Reproducer reproducer);
+	PathBinding<B> reproduce(Reproducer reproducer);
 
 }

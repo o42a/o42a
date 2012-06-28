@@ -19,12 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Scope;
-
 
 public interface PathModifier {
-
-	Scope getScope();
 
 	BoundPath modifyPath(BoundPath path);
 

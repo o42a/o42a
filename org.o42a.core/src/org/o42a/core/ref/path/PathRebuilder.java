@@ -23,6 +23,7 @@ import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 
 import java.util.Arrays;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -50,21 +51,25 @@ public final class PathRebuilder implements LocationInfo {
 		this.rebuiltIdx = 0;
 	}
 
+	public final BoundPath getPath() {
+		return this.path;
+	}
+
 	@Override
 	public final Loggable getLoggable() {
-		return this.path.getLoggable();
+		return getPath().getLoggable();
 	}
 
 	@Override
 	public final CompilerContext getContext() {
-		return this.path.getContext();
+		return getPath().getContext();
 	}
 
 	public final boolean isStatic() {
-		return this.path.isStatic();
+		return getPath().isStatic();
 	}
 
-	public final Path restPath() {
+	public final BoundPath restPath(Scope newOrigin) {
 		return new Path(
 				this.path.getKind(),
 				NO_PATH_BINDINGS,
@@ -72,7 +77,8 @@ public final class PathRebuilder implements LocationInfo {
 				Arrays.copyOfRange(
 						this.steps,
 						this.nextIdx,
-						this.steps.length));
+						this.steps.length))
+				.bind(this, newOrigin);
 	}
 
 	public final void combineWithLocalOwner(Obj owner) {
@@ -91,6 +97,14 @@ public final class PathRebuilder implements LocationInfo {
 	public final void replaceRest(Step rebuilt) {
 		this.rebuiltSteps[this.rebuiltIdx] = this.previousStep = rebuilt;
 		this.replacement = 2;
+	}
+
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return super.toString();
+		}
+		return "PathRebuilder[" + this.path + ']';
 	}
 
 	Step[] rebuild() {
