@@ -20,21 +20,22 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
+import org.o42a.analysis.use.User;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberContainer;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.clause.*;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.PathWalker;
-import org.o42a.core.ref.path.Step;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 
@@ -156,7 +157,22 @@ final class ClauseReuser implements PathWalker {
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return invalidClauseReused();
+
+		final LocalScope enclosing =
+				object.getScope().getEnclosingScope().toLocal();
+
+		assert enclosing != null :
+			"Enclosing scope is not local: " + enclosing;
+
+		if (!up(object, step, enclosing, null)) {
+			return false;
+		}
+
+		final PathResolution resolution = dependency.getPath().walk(
+				pathResolver(enclosing, User.dummyUser()),
+				this);
+
+		return resolution.isResolved();
 	}
 
 	@Override
@@ -175,9 +191,9 @@ final class ClauseReuser implements PathWalker {
 	@Override
 	public boolean done(Container result) {
 		if (this.reused != null) {
-			assert this.reused.getClause() == result.toMember() :
+			/*assert this.reused.getClause() == result.toMember() :
 				"Wrong path resolution: " + result + ", but "
-				+ this.reused + " expected";
+				+ this.reused + " expected";*/
 			return true;
 		}
 

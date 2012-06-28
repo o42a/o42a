@@ -52,8 +52,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 		return this.path;
 	}
 
-	@Override
-	public Scope getScope() {
+	public final Scope getScope() {
 		return this.scope;
 	}
 
