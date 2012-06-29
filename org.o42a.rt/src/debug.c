@@ -82,7 +82,11 @@ static void program_error_signal(int sig) {
 	}
 	program_error_in_progress = 1;
 
-	fprintf(dbg_env->output, "Program error (%i) occurred at:\n", sig);
+	fprintf(
+			dbg_env->output,
+			"Program error (%i) occurred at thread \"%s\":\n",
+			sig,
+			dbg_env->thread_name);
 	o42a_dbg_print_stack_trace(dbg_env->stack_frame);
 
 	signal(sig, SIG_DFL);
