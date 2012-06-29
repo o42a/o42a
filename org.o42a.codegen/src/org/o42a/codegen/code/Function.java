@@ -36,6 +36,7 @@ public final class Function<F extends Func<F>>
 	private final FunctionBuilder<F> builder;
 	private final FuncPtr<F> pointer;
 	private FuncWriter<F> writer;
+	private Disposal disposal;
 	private boolean done;
 
 	Function(
@@ -119,6 +120,11 @@ public final class Function<F extends Func<F>>
 		}
 
 		this.writer = functions.codeBackend().addFunction(this, beforeReturn);
+		if (getGenerator().isProxied()) {
+			this.disposal = NO_DISPOSAL;
+		} else {
+			this.disposal = this.writer.startAllocation();
+		}
 		allocation();
 
 		return this.writer;
@@ -139,6 +145,14 @@ public final class Function<F extends Func<F>>
 	@Override
 	public String toString() {
 		return getSignature().toString(getId().toString());
+	}
+
+	@Override
+	protected Disposal disposal() {
+		if (this.disposal == null) {
+			writer();
+		}
+		return this.disposal;
 	}
 
 	final void build() {

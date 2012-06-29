@@ -19,7 +19,9 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.Func;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.data.*;
 import org.o42a.util.string.ID;
@@ -53,7 +55,7 @@ public abstract class StructOp<S extends StructOp<S>>
 	}
 
 	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 		for (Data<?> field : getType().iterate(getType().getGenerator())) {
 
 			final ID fieldId = fieldId(null, code, field);

@@ -22,7 +22,6 @@ package org.o42a.codegen.debug;
 import static org.o42a.codegen.debug.Debug.DEBUG_ID;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
@@ -115,7 +114,7 @@ public class DebugHeader implements Content<DebugHeader.HeaderType> {
 		}
 
 		@Override
-		public void allocated(AllocationCode code, StructOp<?> enclosing) {
+		public void allocated(Code code, StructOp<?> enclosing) {
 			fillAllocatedHeader(code, enclosing);
 			super.allocated(code, enclosing);
 		}

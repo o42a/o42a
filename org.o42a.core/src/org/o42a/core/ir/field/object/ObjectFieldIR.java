@@ -22,7 +22,6 @@ package org.o42a.core.ir.field.object;
 import static org.o42a.core.ir.local.RefLclOp.REF_LCL;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
@@ -124,7 +123,7 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefLclOp allocateLocal(CodeBuilder builder, AllocationCode code) {
+	protected RefLclOp allocateLocal(CodeBuilder builder, Code code) {
 		return code.allocate(null, REF_LCL).op(builder, this);
 	}
 

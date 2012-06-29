@@ -19,20 +19,23 @@
 */
 package org.o42a.codegen.code;
 
-import org.o42a.codegen.code.backend.AllocatorWriter;
+import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.util.string.ID;
 
 
 final class AllocatorCode extends Allocator {
 
-	private final AllocatorWriter writer;
 	private final Allocator enclosingAllocator;
+	private final BlockWriter writer;
+	private final Disposal disposal;
 
 	AllocatorCode(Block enclosing, ID name) {
 		super(enclosing, name);
 		this.enclosingAllocator = enclosing.getAllocator();
-		this.writer = enclosing.writer().allocator(this);
+		this.writer = enclosing.writer().block(this);
+		this.disposal = enclosing.writer().startAllocation();
 		allocation();
+		enclosing.writer().go(unwrapPos(head()));
 	}
 
 	@Override
@@ -41,7 +44,7 @@ final class AllocatorCode extends Allocator {
 	}
 
 	@Override
-	public boolean created() {
+	public final boolean created() {
 		return writer().created();
 	}
 
@@ -51,8 +54,13 @@ final class AllocatorCode extends Allocator {
 	}
 
 	@Override
-	public final AllocatorWriter writer() {
+	public final BlockWriter writer() {
 		return this.writer;
+	}
+
+	@Override
+	protected Disposal disposal() {
+		return this.disposal;
 	}
 
 }

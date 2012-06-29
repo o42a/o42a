@@ -21,9 +21,7 @@ package org.o42a.backend.llvm.code;
 
 import org.o42a.backend.llvm.code.op.LLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 
@@ -105,8 +103,11 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	}
 
 	@Override
-	public LLAllocator allocator(Allocator allocator) {
-		return new LLAllocatorCode(this, allocator);
+	public Disposal startAllocation() {
+
+		final long stackPtr = instr(stackSave(nextPtr(), nextInstr()));
+
+		return new StackRestore(stackPtr);
 	}
 
 	@Override
@@ -190,6 +191,27 @@ public abstract class LLBlock extends LLCode implements BlockWriter {
 	private final void endBlock() {
 		this.blockPtr = 0;
 		this.tail = null;
+	}
+
+	private static final class StackRestore implements Disposal {
+
+		private final long stackPtr;
+
+		StackRestore(long stackPtr) {
+			this.stackPtr = stackPtr;
+		}
+
+		@Override
+		public void dispose(Code code) {
+
+			final LLCode llvm = llvm(code);
+
+			llvm.instr(stackRestore(
+					llvm.nextPtr(),
+					llvm.nextInstr(),
+					this.stackPtr));
+		}
+
 	}
 
 }

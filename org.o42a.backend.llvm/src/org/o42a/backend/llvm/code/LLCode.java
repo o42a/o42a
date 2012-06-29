@@ -20,9 +20,12 @@
 package org.o42a.backend.llvm.code;
 
 import static org.o42a.codegen.code.op.Op.PHI_ID;
+import static org.o42a.codegen.data.AllocClass.AUTO_ALLOC_CLASS;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.llvm.code.op.*;
+import org.o42a.backend.llvm.code.rec.AnyRecLLOp;
+import org.o42a.backend.llvm.code.rec.StructRecLLOp;
 import org.o42a.backend.llvm.data.LLVMModule;
 import org.o42a.backend.llvm.data.NativeBuffer;
 import org.o42a.backend.llvm.data.alloc.ContainerLLDAlloc;
@@ -274,6 +277,69 @@ public abstract class LLCode implements CodeWriter {
 				signature,
 				nextPtr(),
 				nullFuncPtr(allocation.getNativePtr()));
+	}
+
+	@Override
+	public <S extends StructOp<S>> S allocateStruct(
+			ID id,
+			DataAllocation<S> allocation) {
+
+		final ContainerLLDAlloc<S> type =
+				(ContainerLLDAlloc<S>) allocation;
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return type.getType().op(new LLStruct<S>(
+				id,
+				AUTO_ALLOC_CLASS,
+				type,
+				nextPtr,
+				instr(allocateStruct(
+						nextPtr,
+						nextInstr(),
+						ids.write(id),
+						ids.length(),
+						type.getTypePtr()))));
+	}
+
+	@Override
+	public AnyRecLLOp allocatePtr(ID id) {
+
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return new AnyRecLLOp(
+				id,
+				AUTO_ALLOC_CLASS,
+				nextPtr,
+				instr(allocatePtr(
+						nextPtr,
+						nextInstr(),
+						ids.write(id),
+						ids.length())));
+	}
+
+	@Override
+	public <S extends StructOp<S>> StructRecLLOp<S> allocatePtr(
+			ID id,
+			DataAllocation<S> allocation) {
+
+		final ContainerLLDAlloc<S> alloc =
+				(ContainerLLDAlloc<S>) allocation;
+		final long nextPtr = nextPtr();
+		final NativeBuffer ids = getModule().ids();
+
+		return new StructRecLLOp<S>(
+				id,
+				AUTO_ALLOC_CLASS,
+				alloc.getType(),
+				nextPtr,
+				instr(allocateStructPtr(
+						nextPtr,
+						nextInstr(),
+						ids.write(id),
+						ids.length(),
+						alloc.getTypePtr())));
 	}
 
 	@Override

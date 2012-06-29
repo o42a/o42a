@@ -20,13 +20,16 @@
 package org.o42a.codegen.code;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.backend.AllocatorWriter;
 import org.o42a.util.string.ID;
 
 
 public abstract class Allocator extends Block {
 
-	private AllocationCode allocation;
+	static final Disposal NO_DISPOSAL = new NoDisposal();
+
+	private Code allocation;
+	private Disposal lastDisposal = NO_DISPOSAL;
+	private Disposal disposal = NO_DISPOSAL;
 
 	Allocator(Block enclosing, ID name) {
 		super(enclosing, name);
@@ -36,6 +39,27 @@ public abstract class Allocator extends Block {
 		super(generator, id);
 	}
 
+	public final void addDisposal(Disposal disposal) {
+		assert disposal != null :
+			"Disposal not specified";
+		if (this.disposal == NO_DISPOSAL) {
+			this.disposal = disposal;
+		} else {
+			this.disposal = new CombinedDisposal(this.disposal, disposal);
+		}
+	}
+
+	public final void addLastDisposal(Disposal disposal) {
+		assert disposal != null :
+			"Disposal not specified";
+		if (this.lastDisposal == NO_DISPOSAL) {
+			this.lastDisposal = disposal;
+		} else {
+			this.lastDisposal =
+					new CombinedDisposal(disposal, this.lastDisposal);
+		}
+	}
+
 	@Override
 	public final Allocator getAllocator() {
 		return this;
@@ -43,14 +67,58 @@ public abstract class Allocator extends Block {
 
 	public abstract Allocator getEnclosingAllocator();
 
-	public final AllocationCode allocation() {
+	public final Code allocation() {
 		if (this.allocation != null) {
 			return this.allocation;
 		}
-		return this.allocation = new AllocationCode(this);
+		return this.allocation = inset("alloc");
 	}
 
-	@Override
-	public abstract AllocatorWriter writer();
+	protected abstract Disposal disposal();
+
+	final void dispose(Block code) {
+		this.disposal.dispose(code);
+		this.lastDisposal.dispose(code);
+		disposal().dispose(code);
+	}
+
+	private static final class NoDisposal implements Disposal {
+
+		@Override
+		public void dispose(Code code) {
+		}
+
+		@Override
+		public String toString() {
+			return "_";
+		}
+
+	}
+
+	private static final class CombinedDisposal implements Disposal {
+
+		private final Disposal first;
+		private final Disposal second;
+
+		CombinedDisposal(Disposal first, Disposal second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		@Override
+		public void dispose(Code code) {
+			this.first.dispose(code);
+			this.second.dispose(code);
+		}
+
+		@Override
+		public String toString() {
+			if (this.second == null) {
+				return super.toString();
+			}
+			return this.first + ", " + this.second;
+		}
+
+	}
 
 }

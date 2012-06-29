@@ -64,7 +64,7 @@ final class BracesControl extends Control {
 	}
 
 	@Override
-	public final AllocationCode allocation() {
+	public final Code allocation() {
 		return this.allocator.allocation();
 	}
 

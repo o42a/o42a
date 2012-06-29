@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.llvm.code.op;
 
-import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
@@ -39,7 +39,7 @@ public abstract class AllocPtrLLOp<P extends AllocPtrOp<P>>
 	}
 
 	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 }

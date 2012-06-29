@@ -23,7 +23,7 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import static org.o42a.core.ir.object.op.EndObjectUnuseFunc.END_OBJECT_UNUSE;
 import static org.o42a.core.ir.object.op.StartObjectUseFunc.START_OBJECT_USE;
 
-import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Allocator;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.Disposal;
 import org.o42a.codegen.code.backend.StructWriter;
@@ -45,12 +45,15 @@ public final class ObjectUseOp extends IROp {
 	private final Op ptr;
 	private final StructRecOp<ObjectIRData.Op> objectData;
 
-	ObjectUseOp(ID id, CodeBuilder builder, AllocationCode code) {
+	ObjectUseOp(ID id, CodeBuilder builder, Allocator allocator) {
 		super(builder);
+
+		final Code code = allocator.allocation();
+
 		this.ptr = code.allocate(id, OBJECT_USE_TYPE);
 		this.objectData = ptr().objectData(null, code);
 		this.objectData.store(code, code.nullPtr(OBJECT_DATA_TYPE));
-		code.addDisposal(new UnuseObject(this));
+		allocator.addDisposal(new UnuseObject(this));
 		getBuilder().signalGC();
 	}
 

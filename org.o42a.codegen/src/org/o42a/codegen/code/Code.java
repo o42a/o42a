@@ -136,6 +136,46 @@ public abstract class Code extends DebugCodeBase {
 				getGenerator().getFunctions().allocate(signature)));
 	}
 
+	public final AnyRecOp allocatePtr(ID id) {
+		assert assertIncomplete();
+		return writer().allocatePtr(opId(id));
+	}
+
+	public final AnyRecOp allocateNull(ID id) {
+
+		final AnyRecOp result = allocatePtr(id);
+
+		result.store(this, nullPtr());
+
+		return result;
+	}
+
+	public final <S extends StructOp<S>> S allocate(ID id, Type<S> type) {
+		assert assertIncomplete();
+
+		final S result = writer().allocateStruct(
+				opId(id),
+				type.data(getGenerator()).getPointer().getAllocation());
+
+		result.allocated(this, null);
+
+		return result;
+	}
+
+	public <S extends StructOp<S>> StructRecOp<S> allocatePtr(
+			ID id,
+			Type<S> type) {
+		assert assertIncomplete();
+
+		final StructRecOp<S> result = writer().allocatePtr(
+				opId(id),
+				type.data(getGenerator()).getPointer().getAllocation());
+
+		result.allocated(this, null);
+
+		return result;
+	}
+
 	public final <O extends Op> O phi(ID id, O op) {
 		assert assertIncomplete();
 		return writer().phi(id != null ? id : op.getId(), op);

@@ -101,6 +101,7 @@ public final class NativeBuffer {
 		public void writeCodePoint(int codePoint) {
 			assert codePoint <= 127 :
 				"Not an ASCII char: '" + ((char) codePoint) + '\'';
+			expandCapacity(1);
 			this.buffer.put((byte) codePoint);
 		}
 

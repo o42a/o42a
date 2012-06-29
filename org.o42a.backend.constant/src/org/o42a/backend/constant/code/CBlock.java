@@ -21,12 +21,10 @@ package org.o42a.backend.constant.code;
 
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 
+import org.o42a.backend.constant.code.op.BaseInstrBE;
 import org.o42a.backend.constant.code.op.BoolCOp;
 import org.o42a.backend.constant.data.ConstBackend;
-import org.o42a.codegen.code.Allocator;
-import org.o42a.codegen.code.Block;
-import org.o42a.codegen.code.CodePos;
-import org.o42a.codegen.code.backend.AllocatorWriter;
+import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.BlockWriter;
 import org.o42a.codegen.code.op.BoolOp;
 import org.o42a.util.Chain;
@@ -106,8 +104,26 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 	}
 
 	@Override
-	public AllocatorWriter allocator(Allocator allocator) {
-		return this.subBlocks.add(new CAllocatorCode(this, allocator));
+	public Disposal startAllocation() {
+
+		final StartAllocation startAllocation = new StartAllocation(this);
+
+		return new Disposal() {
+			@Override
+			public void dispose(Code code) {
+				new BaseInstrBE(cast(code)) {
+					@Override
+					public void prepare() {
+						alwaysEmit();
+					}
+					@Override
+					protected void emit() {
+						startAllocation.getDisposal().dispose(
+								part().underlying());
+					}
+				};
+			}
+		};
 	}
 
 	@Override
@@ -246,6 +262,39 @@ public abstract class CBlock<B extends Block> extends CCode<B>
 		@Override
 		protected void setNext(CBlock<?> prev, CBlock<?> next) {
 			prev.nextBlock = next;
+		}
+
+	}
+
+	private static final class StartAllocation extends BaseInstrBE {
+
+		private Disposal disposal;
+
+		StartAllocation(CCode<?> code) {
+			super(code);
+		}
+
+		@Override
+		public void prepare() {
+			alwaysEmit();
+		}
+
+		@Override
+		protected void emit() {
+
+			final CBlockPart part = (CBlockPart) part();
+
+			this.disposal = part.underlying().writer().startAllocation();
+		}
+
+		Disposal getDisposal() {
+			if (this.disposal != null) {
+				return this.disposal;
+			}
+			part().revealUpTo(this);
+			assert this.disposal != null :
+				"Can not reveal the allocation start";
+			return this.disposal;
 		}
 
 	}

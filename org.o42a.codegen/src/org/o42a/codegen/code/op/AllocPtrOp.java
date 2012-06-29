@@ -19,11 +19,11 @@
 */
 package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Code;
 
 
 public interface AllocPtrOp<P extends AllocPtrOp<P>> extends DataPtrOp<P> {
 
-	void allocated(AllocationCode code, StructOp<?> enclosing);
+	void allocated(Code code, StructOp<?> enclosing);
 
 }

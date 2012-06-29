@@ -21,7 +21,9 @@ package org.o42a.core.ir.value;
 
 import static org.o42a.core.ir.value.ValUseFunc.VAL_USE;
 
-import org.o42a.codegen.code.*;
+import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
 import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
@@ -146,7 +148,7 @@ public final class ValType extends Type<ValType.Op> {
 		}
 
 		@Override
-		public void allocated(AllocationCode code, StructOp<?> enclosing) {
+		public void allocated(Code code, StructOp<?> enclosing) {
 			this.allocatedOnStack = true;
 			super.allocated(code, enclosing);
 		}

@@ -65,7 +65,7 @@ final class TempObjHolder extends ObjHolder {
 		return this.use = new ObjectUseOp(
 				USE_ID.detail(object.getId()),
 				object.getBuilder(),
-				this.allocator.allocation());
+				this.allocator);
 	}
 
 }

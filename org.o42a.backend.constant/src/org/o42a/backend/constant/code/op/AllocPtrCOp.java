@@ -19,7 +19,7 @@
 */
 package org.o42a.backend.constant.code.op;
 
-import org.o42a.codegen.code.AllocationCode;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.AllocPtrOp;
 import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.AllocClass;
@@ -34,12 +34,15 @@ public abstract class AllocPtrCOp<P extends AllocPtrOp<P>>
 		super(backend, allocClass);
 	}
 
-	public AllocPtrCOp(OpBE<P> backend, AllocClass allocClass, Ptr<P> constant) {
+	public AllocPtrCOp(
+			OpBE<P> backend,
+			AllocClass allocClass,
+			Ptr<P> constant) {
 		super(backend, allocClass, constant);
 	}
 
 	@Override
-	public void allocated(AllocationCode code, StructOp<?> enclosing) {
+	public void allocated(Code code, StructOp<?> enclosing) {
 	}
 
 }

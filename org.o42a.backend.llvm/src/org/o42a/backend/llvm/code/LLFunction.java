@@ -33,7 +33,7 @@ import org.o42a.codegen.data.Type;
 
 
 public final class LLFunction<F extends Func<F>>
-		extends LLAllocator
+		extends LLBlock
 		implements FuncWriter<F> {
 
 	private final Function<F> function;

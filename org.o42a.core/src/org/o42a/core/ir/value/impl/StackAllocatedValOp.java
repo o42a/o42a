@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.value.impl;
 
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Allocator;
+import org.o42a.codegen.code.Code;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.*;
 import org.o42a.core.value.ValueStruct;
@@ -72,7 +72,7 @@ public final class StackAllocatedValOp extends ValOp {
 			return this.ptr;
 		}
 
-		final AllocationCode code = this.allocator.allocation();
+		final Code code = this.allocator.allocation();
 
 		this.ptr = code.allocate(this.id.getLocal(), ValType.VAL_TYPE);
 		storeIndefinite(code);

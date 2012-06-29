@@ -25,7 +25,6 @@ import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import org.o42a.analysis.use.UserInfo;
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
@@ -150,9 +149,7 @@ public final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected LclOp allocateLocal(
-				CodeBuilder builder,
-				AllocationCode code) {
+		protected LclOp allocateLocal(CodeBuilder builder, Code code) {
 			throw new UnsupportedOperationException();
 		}
 
