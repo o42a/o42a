@@ -20,8 +20,8 @@
 package org.o42a.core.ir.local;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
@@ -60,7 +60,7 @@ public abstract class Control {
 		return main().mainResult();
 	}
 
-	public abstract AllocationCode allocation();
+	public abstract Code allocation();
 
 	public abstract Block code();
 

@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 
 
@@ -30,7 +30,7 @@ abstract class NestedControl extends Control {
 	private final Control parent;
 	private final Block code;
 	private final BracesControl braces;
-	private AllocationCode allocation;
+	private Code allocation;
 	private final CodePos exit;
 	private final CodePos falseDir;
 
@@ -49,7 +49,7 @@ abstract class NestedControl extends Control {
 	}
 
 	@Override
-	public final AllocationCode allocation() {
+	public final Code allocation() {
 		if (this.allocation != null) {
 			return this.allocation;
 		}

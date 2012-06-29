@@ -64,7 +64,7 @@ final class LinkValHolder extends ValHolder {
 	private void addDisposal() {
 		if (this.disposal == null) {
 			this.disposal = new UnuseLinkVal(this.value);
-			this.value.getAllocator().allocation().addDisposal(this.disposal);
+			this.value.getAllocator().addDisposal(this.disposal);
 		}
 	}
 

@@ -41,7 +41,7 @@ final class DisposeBeforeReturn implements BeforeReturn {
 		Allocator allocator = code.getAllocator();
 
 		do {
-			allocator.allocation().dispose(code);
+			allocator.dispose(code);
 			allocator = allocator.getEnclosingAllocator();
 		} while (allocator != null);
 	}

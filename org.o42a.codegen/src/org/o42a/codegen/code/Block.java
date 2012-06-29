@@ -92,8 +92,8 @@ public abstract class Block extends DebugBlockBase {
 	}
 
 	@Override
-	protected void disposeBy(AllocationCode allocation) {
-		allocation.dispose(this);
+	protected void disposeBy(Allocator allocator) {
+		allocator.dispose(this);
 	}
 
 }

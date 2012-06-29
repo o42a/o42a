@@ -73,6 +73,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 	@Override
 	public void assign(CodeDirs dirs, HostOp value) {
+		dirs.code().dump("(!) Assign to: ", ptr());
 
 		final Obj object = fld().getField().toObject();
 		final ObjectValue objectValue = object.value();
@@ -86,6 +87,7 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
 
 		code.acquireBarrier();
+		code.dumpName("(!) Value: ", valueObject);
 
 		final ObjectIRType.Op knownBound = boundRec.load(null, code, ATOMIC);
 
@@ -114,8 +116,10 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 		boundKnown.go(code.tail());
 
 		// Bound is not known yet.
+		boundUnknown.debug("(!) Bound unknown");
 		final VariableAssignerFunc assigner =
 				ptr().assigner(null, boundUnknown).load(null, boundUnknown);
+		boundUnknown.dumpName("(!) Assigner: ", assigner);
 		final BoolOp assigned =
 				assigner.assign(boundUnknown, host(), valueObject);
 

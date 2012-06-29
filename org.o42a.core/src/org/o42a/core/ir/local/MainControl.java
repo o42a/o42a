@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ir.local;
 
-import org.o42a.codegen.code.AllocationCode;
 import org.o42a.codegen.code.Block;
+import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.CodePos;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.value.ValOp;
@@ -52,7 +52,7 @@ abstract class MainControl extends Control {
 	}
 
 	@Override
-	public AllocationCode allocation() {
+	public Code allocation() {
 		throw new UnsupportedOperationException(
 				"Main control does not support stack allocations");
 	}

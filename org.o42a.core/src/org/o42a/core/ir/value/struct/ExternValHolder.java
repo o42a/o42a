@@ -61,7 +61,7 @@ public final class ExternValHolder extends ValHolder {
 	private void addDisposal() {
 		if (this.disposal == null) {
 			this.disposal = new UnuseExternVal(this.value);
-			this.value.getAllocator().allocation().addDisposal(this.disposal);
+			this.value.getAllocator().addDisposal(this.disposal);
 		}
 	}
 

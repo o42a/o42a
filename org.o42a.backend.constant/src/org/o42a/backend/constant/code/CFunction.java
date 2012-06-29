@@ -36,7 +36,7 @@ import org.o42a.codegen.data.Type;
 
 
 public class CFunction<F extends Func<F>>
-		extends CAllocator<Function<F>>
+		extends CBlock<Function<F>>
 		implements FuncWriter<F> {
 
 	private final BeforeReturn beforeReturn;

@@ -137,7 +137,7 @@ public abstract class CodeBuilder {
 			ObjectOp ancestor,
 			Obj sample) {
 
-		final AllocationCode alloc = dirs.code().getAllocator().allocation();
+		final Code alloc = dirs.code().getAllocator().allocation();
 		final CtrOp.Op ctr = alloc.allocate(CTR_ID, CTR_TYPE);
 
 		return ctr.op(this).newObject(
@@ -157,7 +157,7 @@ public abstract class CodeBuilder {
 			return;
 		}
 		this.signalGC = true;
-		getFunction().allocation().addLastDisposal(SIGNAL_GC);
+		getFunction().addLastDisposal(SIGNAL_GC);
 	}
 
 	private static final class SignalGC implements Disposal {

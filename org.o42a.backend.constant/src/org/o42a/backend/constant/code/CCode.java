@@ -19,12 +19,15 @@
 */
 package org.o42a.backend.constant.code;
 
+import static org.o42a.backend.constant.code.rec.RecStore.autoRecStore;
 import static org.o42a.backend.constant.data.ConstBackend.cast;
 import static org.o42a.backend.constant.data.struct.StructStore.autoStructStore;
 import static org.o42a.codegen.code.op.Op.PHI_ID;
 import static org.o42a.codegen.data.AllocClass.CONSTANT_ALLOC_CLASS;
 
 import org.o42a.backend.constant.code.op.*;
+import org.o42a.backend.constant.code.rec.AnyRecCOp;
+import org.o42a.backend.constant.code.rec.StructRecCOp;
 import org.o42a.backend.constant.data.ConstBackend;
 import org.o42a.backend.constant.data.ContainerCDAlloc;
 import org.o42a.backend.constant.data.func.CFAlloc;
@@ -228,6 +231,73 @@ public abstract class CCode<C extends Code> implements CodeWriter {
 				.getGenerator()
 				.getFunctions()
 				.nullPtr(signature));
+	}
+
+	@Override
+	public final AnyRecCOp allocatePtr(ID id) {
+		return new AnyRecCOp(
+				new OpBE<AnyRecOp>(id, this) {
+					@Override
+					public void prepare() {
+					}
+					@Override
+					protected AnyRecOp write() {
+						return part()
+								.underlying()
+								.writer()
+								.allocatePtr(getId());
+					}
+				},
+				autoRecStore());
+	}
+
+	@Override
+	public final <S extends StructOp<S>> StructRecCOp<S> allocatePtr(
+			ID id,
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+
+		return new StructRecCOp<S>(
+				new OpBE<StructRecOp<S>>(id, this) {
+					@Override
+					public void prepare() {
+					}
+					@Override
+					protected StructRecOp<S> write() {
+						return part().underlying().writer().allocatePtr(
+								getId(),
+								typeAlloc.getUnderlyingPtr().getAllocation());
+					}
+				},
+				autoRecStore(),
+				typeAlloc.getType());
+	}
+
+	@Override
+	public final <S extends StructOp<S>> S allocateStruct(
+			ID id,
+			DataAllocation<S> typeAllocation) {
+
+		final ContainerCDAlloc<S> typeAlloc =
+				(ContainerCDAlloc<S>) typeAllocation;
+		final Type<S> type = typeAlloc.getType();
+
+		return type.op(new CStruct<S>(
+				new OpBE<S>(id, this) {
+					@Override
+					public void prepare() {
+					}
+					@Override
+					protected S write() {
+						return part().underlying().writer().allocateStruct(
+								getId(),
+								typeAlloc.getUnderlyingPtr().getAllocation());
+					}
+				},
+				autoStructStore(),
+				type));
 	}
 
 	@Override
