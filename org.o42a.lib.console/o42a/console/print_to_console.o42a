@@ -20,14 +20,12 @@
 Print to console :=> void
 ==========================
 
-<*Printer> Void (
-  <*Content> {
-    <*Invoker> Print to console (
-      <*[] | content> Text = ()
-      <*'' | content> Text = ()
-    )
-    <Nl | content> Print to console (Text = "\n")
-  }
-)
-
 Text :=< `string
+
+<*Printer> Void (
+  <*Content> Print to console (
+    <*[] | *> Text = ()
+    <*'' | *> Text = ()
+    <NL | *> Text = "\n"
+  )
+)
