@@ -67,6 +67,7 @@
 			resolveexecutable="true"
 			taskname="debug"
 			failonerror="true">
+			<env key="O42A_THREAD_LOG_GC" value="GC.log"/>
 		</exec>
 	</target>
 	
