@@ -96,10 +96,13 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 			ClauseDeclaration prototype) {
 		super(location, distributor);
 		this.name = prototype.name;
-		this.memberId = prototype.memberId;
-		this.clauseId = prototype.clauseId;
+		this.memberId = prototype.getMemberId();
+		this.clauseId = prototype.getClauseId();
 		this.kind = prototype.kind;
 		this.requiresContinuation = prototype.requiresContinuation;
+		this.terminator = prototype.terminator;
+		this.implicit = prototype.implicit;
+		this.internal = prototype.internal;
 	}
 
 	private ClauseDeclaration(

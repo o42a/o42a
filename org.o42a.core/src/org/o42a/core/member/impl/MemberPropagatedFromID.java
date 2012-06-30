@@ -65,7 +65,7 @@ public class MemberPropagatedFromID implements SubID {
 			return ID.id(CLONE_OF).suffix(
 					memberScopePrefix(lastDefinition)
 					.sub(lastDefinition.getMemberId())
-					.suffix(COMMA));
+					.suffix(SUFFIX));
 		}
 
 		boolean comma = false;
