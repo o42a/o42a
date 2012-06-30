@@ -107,7 +107,14 @@ public final class MemberIds extends MemberId {
 
 	@Override
 	public MemberId append(MemberId memberId) {
-		return new MemberIds(ArrayUtil.append(this.ids, memberId));
+
+		final MemberId[] ids = memberId.toIds();
+
+		if (ids == null) {
+			return new MemberIds(ArrayUtil.append(this.ids, memberId));
+		}
+
+		return new MemberIds(ArrayUtil.append(this.ids, ids));
 	}
 
 	@Override
