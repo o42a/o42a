@@ -20,9 +20,9 @@
 package org.o42a.core.member.clause.impl;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.clause.ReusedClause.REUSE_OBJECT;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
-import org.o42a.analysis.use.User;
 import org.o42a.core.Container;
 import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
@@ -169,7 +169,7 @@ final class ClauseReuser implements PathWalker {
 		}
 
 		final PathResolution resolution = dependency.getPath().walk(
-				pathResolver(enclosing, User.dummyUser()),
+				pathResolver(enclosing, dummyUser()),
 				this);
 
 		return resolution.isResolved();
@@ -191,9 +191,6 @@ final class ClauseReuser implements PathWalker {
 	@Override
 	public boolean done(Container result) {
 		if (this.reused != null) {
-			/*assert this.reused.getClause() == result.toMember() :
-				"Wrong path resolution: " + result + ", but "
-				+ this.reused + " expected";*/
 			return true;
 		}
 
@@ -209,7 +206,7 @@ final class ClauseReuser implements PathWalker {
 		} else {
 			assert result.toObject() != null :
 				"Object expected: " + result;
-			this.reused = new ReusedClause();
+			this.reused = REUSE_OBJECT;
 		}
 
 		return true;

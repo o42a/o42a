@@ -219,11 +219,6 @@ public final class ClauseBuilder extends ClauseBuilderBase {
 		return this;
 	}
 
-	public final ClauseBuilder reuseObject() {
-		this.reusedClauses = append(this.reusedClauses, new ReusedClauseRef());
-		return this;
-	}
-
 	public final Path outcome(Clause clause) {
 
 		final Ref outcome = getOutcome();

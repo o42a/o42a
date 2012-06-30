@@ -24,11 +24,13 @@ import org.o42a.core.member.Visibility;
 
 public final class ReusedClause {
 
+	public static final ReusedClause REUSE_OBJECT = new ReusedClause();
+
 	private final Clause container;
 	private final MemberClause clause;
 	private final boolean reuseContents;
 
-	public ReusedClause() {
+	private ReusedClause() {
 		this.container = null;
 		this.clause = null;
 		this.reuseContents = true;
