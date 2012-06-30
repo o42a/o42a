@@ -30,20 +30,12 @@ public final class ReusedClauseRef {
 	private final Ref ref;
 	private boolean reuseContents;
 
-	public ReusedClauseRef() {
-		this.ref = null;
-		this.reuseContents = true;
-	}
-
 	public ReusedClauseRef(Ref ref, boolean reuseContents) {
 		this.ref = ref;
 		this.reuseContents = reuseContents;
 	}
 
 	public ReusedClause reuse(Clause clause) {
-		if (this.ref == null) {
-			return new ReusedClause();
-		}
 
 		final ClauseReuser reuser =
 				new ClauseReuser(this.ref, this.reuseContents);
@@ -60,12 +52,12 @@ public final class ReusedClauseRef {
 	@Override
 	public String toString() {
 		if (this.ref == null) {
-			return "*";
+			return super.toString();
 		}
 		if (!this.reuseContents) {
 			return this.ref.toString();
 		}
-		return this.ref + "*";
+		return this.ref.toString() + '*';
 	}
 
 }

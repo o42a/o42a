@@ -21,9 +21,11 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
+import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
+import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
 import static org.o42a.core.member.clause.ClauseSubstitution.VALUE_SUBSTITUTION;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -36,12 +38,12 @@ import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.statement.StatementNode;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
-import org.o42a.core.member.clause.ClauseBuilder;
-import org.o42a.core.member.clause.ClauseDeclaration;
-import org.o42a.core.member.clause.ClauseKind;
+import org.o42a.core.Scope;
+import org.o42a.core.member.clause.*;
+import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.*;
 import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
@@ -55,6 +57,82 @@ public class ClauseInterpreter {
 				"invalid_clause_content",
 				location,
 				"Invalid clause content");
+	}
+
+	public static Path clauseObjectPath(LocationInfo location, Scope of) {
+
+		Scope scope = of;
+		Path path = Path.SELF_PATH;
+
+		for (;;) {
+
+			final Clause clause = scope.getContainer().toClause();
+
+			if (clause == null) {
+
+				final Obj object = scope.toObject();
+
+				if (object == null) {
+					location.getContext().getLogger().error(
+							"unresolved_object_intrinsic",
+							location,
+							"Enclosing object not found");
+					return null;
+				}
+
+				return path;
+			}
+
+			final Scope enclosingScope = scope.getEnclosingScope();
+
+			if (enclosingScope == null) {
+				return null;
+			}
+
+			path = path.append(scope.getEnclosingScopePath());
+			scope = enclosingScope;
+		}
+	}
+
+	public static Path topClausePath(LocationInfo location, Scope of) {
+
+		final Clause ofClause = of.getContainer().toClause();
+
+		if (ofClause == null) {
+
+			final Obj object = of.toObject();
+
+			if (object == null) {
+				location.getContext().getLogger().error(
+						"unresolved_object_intrinsic",
+						location,
+						"Enclosing object not found");
+				return null;
+			}
+
+			return Path.SELF_PATH;
+		}
+
+		Scope scope = of;
+		Path path = Path.SELF_PATH;
+
+		for (;;) {
+
+			final Scope enclosingScope = scope.getEnclosingScope();
+
+			if (enclosingScope == null) {
+				return null;
+			}
+
+			final Clause clause = scope.getContainer().toClause();
+
+			if (clause.isTopLevel() && clause.getKind() == EXPRESSION) {
+				return path;
+			}
+
+			path = path.append(scope.getEnclosingScopePath());
+			scope = enclosingScope;
+		}
 	}
 
 	public static void clause(
@@ -188,7 +266,19 @@ public class ClauseInterpreter {
 
 			if (clauseNode == null) {
 				if (reusedNode.getReuseContents() != null) {
-					builder.reuseObject();
+
+					final Location location = location(builder, reusedNode);
+					final Path objectPath =
+							topClausePath(location, builder.getScope());
+
+					if (objectPath == null) {
+						continue;
+					}
+
+					builder.reuseClause(
+							objectPath.bind(location, builder.getScope())
+							.target(builder.distribute()),
+							true);
 				}
 				continue;
 			}

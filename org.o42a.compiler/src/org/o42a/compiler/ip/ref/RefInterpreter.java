@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.*;
+import static org.o42a.compiler.ip.member.ClauseInterpreter.clauseObjectPath;
 import static org.o42a.compiler.ip.ref.MemberById.prototypeExpressionClause;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.DEFAULT_OWNER_FACTORY;
 import static org.o42a.compiler.ip.ref.owner.OwnerFactory.NON_LINK_OWNER_FACTORY;
@@ -43,8 +44,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberName;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -98,41 +97,6 @@ public abstract class RefInterpreter {
 			}
 
 			container = enclosing;
-		}
-	}
-
-	public static Path clauseObjectPath(LocationInfo location, Scope of) {
-
-		Scope scope = of;
-		Path path = Path.SELF_PATH;
-
-		for (;;) {
-
-			final Clause clause = scope.getContainer().toClause();
-
-			if (clause == null) {
-
-				final Obj object = scope.toObject();
-
-				if (object == null) {
-					location.getContext().getLogger().error(
-							"unresolved_object_intrinsic",
-							location,
-							"Enclosing object not found");
-					return null;
-				}
-
-				return path;
-			}
-
-			final Scope enclosingScope = scope.getEnclosingScope();
-
-			if (enclosingScope == null) {
-				return null;
-			}
-
-			path = path.append(scope.getEnclosingScopePath());
-			scope = enclosingScope;
 		}
 	}
 
