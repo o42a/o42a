@@ -25,6 +25,7 @@ import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 import org.o42a.core.Scope;
 import org.o42a.core.member.impl.MemberIds;
 import org.o42a.core.member.impl.ReproducedMemberId;
+import org.o42a.util.ArrayUtil;
 import org.o42a.util.string.ID;
 import org.o42a.util.string.SubID;
 
@@ -75,7 +76,14 @@ public abstract class MemberId implements SubID {
 	public MemberId append(MemberId memberId) {
 		assert memberId != null :
 			"Member identifier not specified";
-		return new MemberIds(this, memberId);
+
+		final MemberId[] ids = memberId.toIds();
+
+		if (ids == null) {
+			return new MemberIds(this, memberId);
+		}
+
+		return new MemberIds(ArrayUtil.prepend(this, ids));
 	}
 
 	public Scope[] getReproducedFrom() {
