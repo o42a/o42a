@@ -137,7 +137,12 @@ public class PredictionWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
 		// Array elements not predictable yet.
 		return set(unpredicted(element.getScope()));
 	}

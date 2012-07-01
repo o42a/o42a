@@ -43,7 +43,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.array.impl.ArrayIndex;
+import org.o42a.core.object.array.impl.ArrayIndexStep;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -58,6 +58,12 @@ import org.o42a.util.ArrayUtil;
 
 
 public class BoundPath extends Location {
+
+	public static BoundPath arrayIndex(Ref array, Ref index) {
+		return new ArrayIndexStep(array, index)
+		.toPath()
+		.bind(index, array.getScope());
+	}
 
 	private final Scope origin;
 	private final Path rawPath;
@@ -193,10 +199,6 @@ public class BoundPath extends Location {
 
 	public final BoundPath dereference() {
 		return getRawPath().dereference().bind(this, getOrigin());
-	}
-
-	public final BoundPath arrayItem(Ref indexRef) {
-		return new ArrayIndex(indexRef).appendToPath(this);
 	}
 
 	public final BoundPath newObject(ObjectConstructor constructor) {

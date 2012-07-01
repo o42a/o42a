@@ -126,7 +126,12 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
 		return appendIfExist(step);
 	}
 

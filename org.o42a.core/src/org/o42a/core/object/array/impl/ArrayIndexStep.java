@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -39,14 +39,24 @@ import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueType;
 
 
-final class ArrayElementStep extends Step {
+public class ArrayIndexStep extends Step {
 
-	private final PathBinding<Ref> index;
-	private ArrayValueStruct arrayStruct;
+	private final Ref array;
+	private final Ref index;
 	private boolean error;
 
-	ArrayElementStep(PathBinding<Ref> index) {
+	public ArrayIndexStep(Ref array, Ref index) {
+		this.array = array;
 		this.index = index;
+		index.assertSameScope(array);
+	}
+
+	public final Ref getArray() {
+		return this.array;
+	}
+
+	public final Ref getIndex() {
+		return this.index;
 	}
 
 	@Override
@@ -56,7 +66,7 @@ final class ArrayElementStep extends Step {
 
 	@Override
 	public RefUsage getObjectUsage() {
-		return RefUsage.VALUE_REF_USAGE;
+		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
 	@Override
@@ -64,7 +74,7 @@ final class ArrayElementStep extends Step {
 		if (this.index == null) {
 			return super.toString();
 		}
-		return "[" + this.index + ']';
+		return this.array.toString() + '[' + this.index + ']';
 	}
 
 	@Override
@@ -85,8 +95,15 @@ final class ArrayElementStep extends Step {
 			return null;
 		}
 
-		final Ref indexRef = indexRef(path);
-		final Obj array = start.toObject();
+		final Resolver arrayResolver = start.resolver();
+		final Resolution arrayResolution = this.array.resolve(arrayResolver);
+
+		if (arrayResolution.isError()) {
+			this.error = true;
+			return null;
+		}
+
+		final Obj array = arrayResolution.toObject();
 		final ObjectValue arrayValue = array.value().explicitUseBy(resolver);
 
 		if (resolver.isFullResolution()) {
@@ -95,17 +112,15 @@ final class ArrayElementStep extends Step {
 
 		final ArrayValueStruct arrayStruct =
 				ArrayValueStruct.class.cast(arrayValue.getValueStruct());
-
-		if (this.arrayStruct == null) {
-			this.arrayStruct = arrayStruct;
-		}
-
-		final Resolver indexResolver = resolver.getPathStart().resolver();
-		final Resolution indexResolution = indexRef.resolve(indexResolver);
+		final Resolution indexResolution = this.index.resolve(arrayResolver);
 
 		if (resolver.isFullResolution()) {
-			indexRef.resolveAll(
-					indexResolver.fullResolver(resolver, VALUE_REF_USAGE));
+
+			final FullResolver fullResolver =
+					arrayResolver.fullResolver(resolver, VALUE_REF_USAGE);
+
+			this.array.resolveAll(fullResolver);
+			this.index.resolveAll(fullResolver);
 		}
 
 		if (indexResolution.isError()) {
@@ -119,7 +134,7 @@ final class ArrayElementStep extends Step {
 			this.error = true;
 			path.getLogger().error(
 					"non_integer_array_index",
-					indexRef,
+					this.index,
 					"Array index should be integer");
 			return null;
 		}
@@ -138,7 +153,7 @@ final class ArrayElementStep extends Step {
 				this.error = true;
 				path.getLogger().error(
 						"negative_array_index",
-						indexRef,
+						this.index,
 						"Negative array index");
 				return null;
 			}
@@ -152,13 +167,13 @@ final class ArrayElementStep extends Step {
 				}
 
 				final ArrayItem[] items =
-						arrayVal.getCompilerValue().items(start);
+						arrayVal.getCompilerValue().items(array.getScope());
 
 				if (itemIdx >= items.length) {
 					this.error = true;
 					path.getLogger().error(
 							"invalid_array_index",
-							indexRef,
+							this.index,
 							"Array index %d is too big."
 							+ " Array has only %d elements",
 							itemIdx,
@@ -168,15 +183,17 @@ final class ArrayElementStep extends Step {
 
 				final ArrayItem item = items[(int) itemIdx];
 
-				walker.arrayElement(array, this, item);
+				walker.arrayIndex(start, this, this.array, this.index, item);
 
 				return item.getTarget();
 			}
 		}
 
-		final RtArrayElement element = rtElement(resolver, path, start);
+		final RtArrayElement element = new RtArrayElement(
+				array.getScope(),
+				this.index.upgradeScope(start));
 
-		walker.arrayElement(array, this, element);
+		walker.arrayIndex(start, this, this.array, this.index, element);
 
 		return element.getTarget();
 	}
@@ -198,13 +215,19 @@ final class ArrayElementStep extends Step {
 			LocationInfo location,
 			PathReproducer reproducer) {
 
-		final PathBinding<Ref> index = reproducer.reproduce(this.index);
+		final Ref array = this.array.reproduce(reproducer.getReproducer());
+
+		if (array == null) {
+			return null;
+		}
+
+		final Ref index = this.index.reproduce(reproducer.getReproducer());
 
 		if (index == null) {
 			return null;
 		}
 
-		final ArrayElementStep step = new ArrayElementStep(index);
+		final ArrayIndexStep step = new ArrayIndexStep(array, index);
 
 		step.error = this.error;
 
@@ -213,25 +236,7 @@ final class ArrayElementStep extends Step {
 
 	@Override
 	protected PathOp op(PathOp start) {
-		return new ArrayElementOp(
-				start,
-				this.arrayStruct,
-				indexRef(start.getPath()));
-	}
-
-	private final Ref indexRef(BoundPath path) {
-		return path.getBindings().boundOf(this.index);
-	}
-
-	private RtArrayElement rtElement(
-			PathResolver resolver,
-			BoundPath path,
-			Scope start) {
-
-		final Ref indexRef =
-				indexRef(path).upgradeScope(resolver.getPathStart());
-
-		return new RtArrayElement(start, indexRef);
+		return new ArrayIndexOp(start, this);
 	}
 
 }

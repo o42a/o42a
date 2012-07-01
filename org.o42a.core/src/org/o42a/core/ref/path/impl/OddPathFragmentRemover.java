@@ -97,8 +97,13 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return enter(array.getScope());
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
+		return skip();
 	}
 
 	@Override

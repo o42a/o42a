@@ -135,12 +135,19 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.arrayElement(array, step, element) & proceed;
+			proceed =
+					walker.arrayIndex(start, step, array, index, element)
+					& proceed;
 		}
 
 		return proceed;
