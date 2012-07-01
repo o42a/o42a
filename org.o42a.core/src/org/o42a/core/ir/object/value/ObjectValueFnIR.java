@@ -29,7 +29,6 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.data.FuncRec;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.*;
-import org.o42a.core.ir.object.ObjectIRData.Op;
 import org.o42a.core.ir.object.op.ObjectSignature;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.st.DefValue;
@@ -173,7 +172,7 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected Op data(Code code, Function<ObjectValueFunc> function) {
+		protected ObjectIRDataOp data(Code code, Function<ObjectValueFunc> function) {
 			if (!getObjectIR().isExact()) {
 				return function.arg(code, OBJECT_VALUE.data());
 			}
@@ -185,7 +184,7 @@ public final class ObjectValueFnIR
 		}
 
 		@Override
-		protected void writeValue(DefDirs dirs, ObjOp host, Op data) {
+		protected void writeValue(DefDirs dirs, ObjOp host, ObjectIRDataOp data) {
 			if (!getObjectIR().isExact()) {
 				dirs.code().debug("Exact host: " + getObjectIR().getId());
 			} else {

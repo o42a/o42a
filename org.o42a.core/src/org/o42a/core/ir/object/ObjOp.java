@@ -43,13 +43,13 @@ import org.o42a.util.string.ID;
 public final class ObjOp extends ObjectOp {
 
 	private final ObjectIR objectIR;
-	private final ObjectBodyIR.Op ptr;
+	private final ObjectIRBodyOp ptr;
 	private final Obj ascendant;
 	private ValueOp value;
 
 	ObjOp(
 			ObjectIR objectIR,
-			ObjectBodyIR.Op ptr,
+			ObjectIRBodyOp ptr,
 			Obj ascendant,
 			ObjectTypeOp data) {
 		super(data);
@@ -68,7 +68,7 @@ public final class ObjOp extends ObjectOp {
 	ObjOp(
 			CodeBuilder builder,
 			ObjectIR objectIR,
-			ObjectBodyIR.Op ptr,
+			ObjectIRBodyOp ptr,
 			Obj ascendant,
 			ObjectPrecision precision) {
 		super(builder, precision);
@@ -84,7 +84,7 @@ public final class ObjOp extends ObjectOp {
 					ascendant + " is not a clone of " + ptr.getAscendant();
 	}
 
-	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectBodyIR.Op ptr) {
+	ObjOp(CodeBuilder builder, ObjectIR objectIR, ObjectIRBodyOp ptr) {
 		super(builder, ObjectPrecision.EXACT);
 		this.ptr = ptr;
 		this.ascendant = objectIR.getObject();
@@ -101,7 +101,7 @@ public final class ObjOp extends ObjectOp {
 	}
 
 	@Override
-	public final ObjectBodyIR.Op ptr() {
+	public final ObjectIRBodyOp ptr() {
 		return this.ptr;
 	}
 
@@ -192,9 +192,9 @@ public final class ObjOp extends ObjectOp {
 
 	private ObjOp staticCast(Code code, Obj ascendant) {
 
-		final ObjectBodyIR ascendantBodyIR =
+		final ObjectIRBody ascendantBodyIR =
 				getObjectIR().bodyIR(ascendant);
-		final ObjectBodyIR.Op ascendantBody =
+		final ObjectIRBodyOp ascendantBody =
 				ascendantBodyIR.pointer(getGenerator()).op(null, code);
 
 		final ObjectTypeOp cachedData = cachedData();

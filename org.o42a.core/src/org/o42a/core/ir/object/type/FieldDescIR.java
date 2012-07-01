@@ -29,7 +29,7 @@ import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.field.FldIR;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.util.string.ID;
 
 
@@ -90,7 +90,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> declaredIn(Code code) {
+		public final StructRecOp<ObjectIRTypeOp> declaredIn(Code code) {
 			return ptr(null, code, getType().declaredIn());
 		}
 
@@ -107,7 +107,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> declaredIn;
+		private StructRec<ObjectIRTypeOp> declaredIn;
 		private Int32rec kind;
 		private RelRec fld;
 
@@ -115,7 +115,7 @@ public final class FieldDescIR implements Content<FieldDescIR.Type> {
 			super(ID.rawId("o42a_obj_field_t"));
 		}
 
-		public final StructRec<ObjectIRType.Op> declaredIn() {
+		public final StructRec<ObjectIRTypeOp> declaredIn() {
 			return this.declaredIn;
 		}
 

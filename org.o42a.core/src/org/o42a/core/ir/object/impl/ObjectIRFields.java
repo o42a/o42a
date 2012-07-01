@@ -17,25 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.object.impl;
 
-import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Data;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.object.Obj;
+import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
+
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
+import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.object.type.FieldDescIR;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public interface FldIR {
+public final class ObjectIRFields extends RelList<FieldDescIR> {
 
-	ID getId();
+	private static final ID PREFIX_ID = ID.id("field");
 
-	FldKind getKind();
+	@Override
+	protected Ptr<?> allocateItem(
+			SubData<?> data,
+			int index,
+			FieldDescIR item) {
 
-	Obj getDeclaredIn();
+		final FldIR fld = item.fld();
+		final ID id = PREFIX_ID.detail(fld.getId().getLocal());
+		final FieldDescIR.Type desc =
+				data.addInstance(id, FIELD_DESC_IR, item);
 
-	ObjectIRBody getBodyIR();
-
-	Data<?> data(Generator generator);
+		return desc.data(data.getGenerator()).getPointer();
+	}
 
 }

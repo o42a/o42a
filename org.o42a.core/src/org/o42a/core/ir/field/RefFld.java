@@ -65,7 +65,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	private FuncPtr<C> constructor;
 
-	public RefFld(ObjectBodyIR bodyIR, Field field, Obj target) {
+	public RefFld(ObjectIRBody bodyIR, Field field, Obj target) {
 		super(bodyIR, field);
 		this.targetIRAllocated = isOmitted();
 		this.target = target;
@@ -258,7 +258,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		}
 
 		final ObjectIR targetIR = getTarget().ir(getGenerator());
-		final ObjectBodyIR targetBodyIR =
+		final ObjectIRBody targetBodyIR =
 				targetIR.bodyIR(getTargetAscendant());
 		final Ptr<DataOp> targetPtr =
 				targetBodyIR.pointer(getGenerator()).toData();

@@ -1,6 +1,6 @@
 /*
-    Compiler Core
-    Copyright (C) 2012 Ruslan Lopatin
+    Compiler Code Generator
+    Copyright (C) 2010-2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,25 +17,32 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.codegen.code.op;
 
-import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Data;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
 
 
-public interface FldIR {
+public interface CodeOp {
+
+	ID BOOL_ID = ID.rawId("bool");
+
+	ID INT8_ID = ID.rawId("int8");
+	ID INT16_ID = ID.rawId("int16");
+	ID INT32_ID = ID.rawId("int32");
+	ID INT64_ID = ID.rawId("int64");
+
+	ID FP32_ID = ID.rawId("fp32");
+	ID FP64_ID = ID.rawId("fp64");
+
+	ID ANY_ID = ID.rawId("any");
+	ID DATA_ID = ID.rawId("data");
+	ID REL_ID = ID.rawId("rel");
+
+	ID PHI_ID = ID.rawId("phi");
+
+	ID EQ_ID = ID.rawId("eq");
+	ID NE_ID = ID.rawId("ne");
 
 	ID getId();
-
-	FldKind getKind();
-
-	Obj getDeclaredIn();
-
-	ObjectIRBody getBodyIR();
-
-	Data<?> data(Generator generator);
 
 }

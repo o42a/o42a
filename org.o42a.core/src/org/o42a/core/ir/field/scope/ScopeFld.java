@@ -30,7 +30,7 @@ import org.o42a.core.ir.field.FieldFld;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.member.field.Field;
 import org.o42a.util.string.ID;
@@ -40,9 +40,9 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 
 	public static final Type SCOPE_FLD = new Type();
 
-	private ObjectBodyIR target;
+	private ObjectIRBody target;
 
-	public ScopeFld(ObjectBodyIR bodyIR, Field field) {
+	public ScopeFld(ObjectIRBody bodyIR, Field field) {
 		super(bodyIR, field);
 	}
 
@@ -61,7 +61,7 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 		return (Type) super.getInstance();
 	}
 
-	public final ObjectBodyIR getTarget() {
+	public final ObjectIRBody getTarget() {
 		return this.target;
 	}
 
@@ -73,7 +73,7 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 				isOmitted() ? null : host.ptr().field(code, getInstance()));
 	}
 
-	public final void declare(SubData<?> data, ObjectBodyIR target) {
+	public final void declare(SubData<?> data, ObjectIRBody target) {
 		this.target = target;
 		allocate(data);
 	}

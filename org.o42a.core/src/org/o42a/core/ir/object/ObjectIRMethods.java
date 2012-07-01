@@ -21,10 +21,7 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
@@ -34,14 +31,14 @@ import org.o42a.core.value.ValueType;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
+public final class ObjectIRMethods extends Struct<ObjectIRMethodsOp> {
 
 	static final ID METHODS_ID = ID.id().detail("methods");
 
-	private final ObjectBodyIR bodyIR;
-	private StructRec<ObjectIRType.Op> objectType;
+	private final ObjectIRBody bodyIR;
+	private StructRec<ObjectIRTypeOp> objectType;
 
-	ObjectMethodsIR(ObjectBodyIR bodyIR) {
+	ObjectIRMethods(ObjectIRBody bodyIR) {
 		super(buildId(bodyIR));
 		this.bodyIR = bodyIR;
 	}
@@ -50,17 +47,21 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		return this.bodyIR.getObjectIR();
 	}
 
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 
-	@Override
-	public final Op op(StructWriter<Op> writer) {
-		return new Op(writer);
+	public final StructRec<ObjectIRTypeOp> objectType() {
+		return this.objectType;
 	}
 
 	@Override
-	protected void allocate(SubData<Op> data) {
+	public final ObjectIRMethodsOp op(StructWriter<ObjectIRMethodsOp> writer) {
+		return new ObjectIRMethodsOp(writer);
+	}
+
+	@Override
+	protected void allocate(SubData<ObjectIRMethodsOp> data) {
 		this.objectType = data.addPtr("object_type", OBJECT_TYPE);
 		allocateValueMethods(data);
 	}
@@ -76,7 +77,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 				.data(getGenerator()).getPointer());
 	}
 
-	private static ID buildId(ObjectBodyIR bodyIR) {
+	private static ID buildId(ObjectIRBody bodyIR) {
 
 		final ObjectIR objectIR = bodyIR.getObjectIR();
 		final Obj ascendant = bodyIR.getAscendant();
@@ -92,7 +93,7 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		return objectIR.getId().setLocal(localId);
 	}
 
-	private void allocateValueMethods(SubData<Op> data) {
+	private void allocateValueMethods(SubData<ObjectIRMethodsOp> data) {
 
 		final Obj ascendant = getBodyIR().getAscendant();
 		final ValueStruct<?, ?> valueStruct =
@@ -104,23 +105,6 @@ public final class ObjectMethodsIR extends Struct<ObjectMethodsIR.Op> {
 		if (ascendant == typeObject) {
 			getObjectIR().getValueIR().allocateMethods(this, data);
 		}
-	}
-
-	public static final class Op extends StructOp<Op> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final ObjectMethodsIR getType() {
-			return (ObjectMethodsIR) super.getType();
-		}
-
-		public final StructRecOp<ObjectIRType.Op> objectType(Code code) {
-			return ptr(null, code, getType().objectType);
-		}
-
 	}
 
 }

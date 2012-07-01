@@ -23,7 +23,7 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.util.string.ID;
 
 
@@ -35,7 +35,7 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectIRData.Op data) {
+	public final void call(Code code, ObjectIRDataOp data) {
 		invoke(null, code, OBJECT_DATA.result(), data);
 	}
 
@@ -43,7 +43,7 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 			extends org.o42a.codegen.code.Signature<ObjectDataFunc> {
 
 		private Return<Void> result;
-		private Arg<ObjectIRData.Op> data;
+		private Arg<ObjectIRDataOp> data;
 
 		private Signature() {
 			super(ID.id("ObjectDataF"));
@@ -53,7 +53,7 @@ public final class ObjectDataFunc extends Func<ObjectDataFunc> {
 			return this.result;
 		}
 
-		public final Arg<ObjectIRData.Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

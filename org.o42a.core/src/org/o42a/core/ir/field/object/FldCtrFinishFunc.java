@@ -24,8 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectIRData.Op;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.util.string.ID;
 
 
@@ -37,7 +36,7 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 		super(caller);
 	}
 
-	public final void call(Code code, ObjectIRData.Op data, FldCtrOp ctr) {
+	public final void call(Code code, ObjectIRDataOp data, FldCtrOp ctr) {
 		invoke(null, code, FLD_CTR_FINISH.result(), data, ctr);
 	}
 
@@ -45,7 +44,7 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 			extends org.o42a.codegen.code.Signature<FldCtrFinishFunc> {
 
 		private Return<Void> result;
-		private Arg<Op> data;
+		private Arg<ObjectIRDataOp> data;
 		private Arg<FldCtrOp> ctr;
 
 		private Signature() {
@@ -56,7 +55,7 @@ public final class FldCtrFinishFunc extends Func<FldCtrFinishFunc> {
 			return this.result;
 		}
 
-		public final Arg<Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

@@ -20,31 +20,25 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
-import static org.o42a.core.ir.object.type.FieldDescIR.FIELD_DESC_IR;
-import static org.o42a.core.ir.object.type.OverriderDescIR.OVERRIDER_DESC_IR;
 
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.StructOp;
-import org.o42a.codegen.data.*;
+import org.o42a.codegen.data.Int32rec;
+import org.o42a.codegen.data.SubData;
+import org.o42a.codegen.data.Type;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.field.FldIR;
+import org.o42a.core.ir.object.impl.ObjectIRFields;
+import org.o42a.core.ir.object.impl.ObjectIROverriders;
 import org.o42a.core.ir.object.type.FieldDescIR;
 import org.o42a.core.ir.object.type.OverriderDescIR;
 import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public class ObjectIRType extends Type<ObjectIRType.Op> {
+public class ObjectIRType extends Type<ObjectIRTypeOp> {
 
 	public static final ObjectIRType OBJECT_TYPE = new ObjectIRType();
 
 	private static final ID DATA_ID = ID.id("data");
-	private static final ID FIELD_PREFIX_ID = ID.id("field");
-	private static final ID OVERRIDER_PREFIX_ID = ID.id("overrider");
 
 	private ObjectIRData data;
 	private RelList<FieldDescIR> fields;
@@ -72,86 +66,21 @@ public class ObjectIRType extends Type<ObjectIRType.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter<Op> writer) {
-		return new Op(writer);
+	public ObjectIRTypeOp op(StructWriter<ObjectIRTypeOp> writer) {
+		return new ObjectIRTypeOp(writer);
 	}
 
 	@Override
-	protected void allocate(SubData<Op> data) {
+	protected void allocate(SubData<ObjectIRTypeOp> data) {
 		this.data = data.addInstance(DATA_ID, OBJECT_DATA_TYPE);
-		this.fields = new Fields().allocate(data, "fields");
-		this.overriders = new Overriders().allocate(data, "overriders");
+		this.fields = new ObjectIRFields().allocate(data, "fields");
+		this.overriders = new ObjectIROverriders().allocate(data, "overriders");
 		this.mainBodyLayout = data.addInt32("main_body_layout");
 	}
 
 	@Override
 	protected DebugTypeInfo createTypeInfo() {
 		return externalTypeInfo(0x042a0101);
-	}
-
-	public static final class Op extends StructOp<Op> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final ObjectIRType getType() {
-			return (ObjectIRType) super.getType();
-		}
-
-		public final ObjectIRData.Op data(Code code) {
-			return struct(null, code, getType().data());
-		}
-
-		public final ObjectTypeOp op(
-				CodeBuilder builder,
-				ObjectPrecision precision) {
-			return new ObjectTypeOp(builder, this, precision);
-		}
-
-		@Override
-		protected ID fieldId(Code code, ID local) {
-			return OBJECT_TYPE_ID.setLocal(local);
-		}
-
-	}
-
-	private static final class Fields extends RelList<FieldDescIR> {
-
-
-		@Override
-		protected Ptr<?> allocateItem(
-				SubData<?> data,
-				int index,
-				FieldDescIR item) {
-
-			final FldIR fld = item.fld();
-			final ID id = FIELD_PREFIX_ID.detail(fld.getId().getLocal());
-			final FieldDescIR.Type desc =
-					data.addInstance(id, FIELD_DESC_IR, item);
-
-			return desc.data(data.getGenerator()).getPointer();
-		}
-
-	}
-
-	private static final class Overriders extends RelList<OverriderDescIR> {
-
-		@Override
-		protected Ptr<?> allocateItem(
-				SubData<?> data,
-				int index,
-				OverriderDescIR item) {
-
-			final Fld fld = item.fld();
-			final ID id = OVERRIDER_PREFIX_ID.detail(fld.getId());
-			final OverriderDescIR.Type desc =
-					data.addInstance(id, OVERRIDER_DESC_IR, item);
-
-			return desc.data(data.getGenerator()).getPointer();
-		}
-
 	}
 
 }

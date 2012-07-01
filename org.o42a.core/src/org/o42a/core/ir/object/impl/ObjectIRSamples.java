@@ -17,25 +17,38 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.object.impl;
+
+import static org.o42a.core.ir.object.type.SampleDescIR.SAMPLE_DESC_IR;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Data;
+import org.o42a.codegen.data.Ptr;
+import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.object.Obj;
+import org.o42a.core.ir.object.type.SampleDescIR;
+import org.o42a.core.ir.op.RelList;
 import org.o42a.util.string.ID;
 
 
-public interface FldIR {
+public final class ObjectIRSamples extends RelList<ObjectIRBody> {
 
-	ID getId();
+	private static final ID PREFIX_ID = ID.id("sample");
 
-	FldKind getKind();
+	@Override
+	protected Ptr<?> allocateItem(
+			SubData<?> data,
+			int index,
+			ObjectIRBody item) {
 
-	Obj getDeclaredIn();
+		final Generator generator = item.getGenerator();
+		final ID id =
+				PREFIX_ID.detail(item.getAscendant().ir(generator).getId());
+		final SampleDescIR.Type desc = data.addInstance(
+				id,
+				SAMPLE_DESC_IR,
+				new SampleDescIR(item));
 
-	ObjectIRBody getBodyIR();
-
-	Data<?> data(Generator generator);
+		return desc.data(data.getGenerator()).getPointer();
+	}
 
 }

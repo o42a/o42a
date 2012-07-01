@@ -32,7 +32,7 @@ import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.PrintMessageFunc;
 import org.o42a.core.source.CompilerContext;
@@ -45,7 +45,7 @@ public enum PredefObjValue {
 	FALSE_OBJ_VALUE(ID.id("_o42a_obj_value_false"), false) {
 
 		@Override
-		public void write(DefDirs dirs, ObjectIRData.Op data) {
+		public void write(DefDirs dirs, ObjectIRDataOp data) {
 			dirs.code().go(dirs.falseDir());
 		}
 
@@ -54,7 +54,7 @@ public enum PredefObjValue {
 	VOID_OBJ_VALUE(ID.id("_o42a_obj_value_void"), false) {
 
 		@Override
-		public void write(DefDirs dirs, ObjectIRData.Op data) {
+		public void write(DefDirs dirs, ObjectIRDataOp data) {
 			dirs.returnValue(voidValue().op(dirs.getBuilder(), dirs.code()));
 		}
 
@@ -63,7 +63,7 @@ public enum PredefObjValue {
 	STUB_OBJ_VALUE(ID.id("_o42a_obj_value_stub"), false) {
 
 		@Override
-		public void write(DefDirs dirs, ObjectIRData.Op data) {
+		public void write(DefDirs dirs, ObjectIRDataOp data) {
 
 			final Generator generator = dirs.getGenerator();
 			final Ptr<AnyOp> message;
@@ -93,7 +93,7 @@ public enum PredefObjValue {
 	DEFAULT_OBJ_VALUE(ID.id("_o42a_obj_value"), true) {
 
 		@Override
-		public void write(DefDirs dirs, ObjectIRData.Op data) {
+		public void write(DefDirs dirs, ObjectIRDataOp data) {
 
 			final Block code = dirs.code();
 			final ObjectOp owner = dirs.getBuilder().owner();
@@ -127,6 +127,6 @@ public enum PredefObjValue {
 		return predefObjValues(generator).get(context, this, valueType);
 	}
 
-	public abstract void write(DefDirs dirs, ObjectIRData.Op data);
+	public abstract void write(DefDirs dirs, ObjectIRDataOp data);
 
 }

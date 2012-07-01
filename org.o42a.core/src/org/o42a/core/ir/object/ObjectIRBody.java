@@ -20,22 +20,15 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectMethodsIR.METHODS_ID;
-import static org.o42a.core.ir.object.ObjectOp.anonymousObject;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
+import static org.o42a.core.ir.object.ObjectIRMethods.METHODS_ID;
 import static org.o42a.core.member.field.FieldUsage.ALL_FIELD_USAGES;
 
 import java.util.*;
 
 import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
-import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.field.Fld;
-import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
@@ -43,14 +36,13 @@ import org.o42a.core.member.field.FieldAnalysis;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 import org.o42a.util.fn.Getter;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
+public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 
 	static final ID BODY_ID = ID.id("body");
 
@@ -59,7 +51,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private final ObjectIRStruct objectIRStruct;
 	private final Obj ascendant;
 
-	private ObjectMethodsIR methodsIR;
+	private ObjectIRMethods methodsIR;
 
 	private final ArrayList<Fld> fieldList = new ArrayList<Fld>();
 	private final HashMap<MemberKey, Fld> fieldMap =
@@ -72,13 +64,13 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	private DataRec methods;
 	private Int32rec flags;
 
-	ObjectBodyIR(ObjectIRStruct objectIRStruct) {
+	ObjectIRBody(ObjectIRStruct objectIRStruct) {
 		super(buildId(objectIRStruct.getObjectIR()));
 		this.objectIRStruct = objectIRStruct;
 		this.ascendant = objectIRStruct.getObject();
 	}
 
-	private ObjectBodyIR(ObjectIR inheritantIR, Obj ascendant) {
+	private ObjectIRBody(ObjectIR inheritantIR, Obj ascendant) {
 		super(buildId(ascendant.ir(inheritantIR.getGenerator())));
 		this.objectIRStruct = inheritantIR.getStruct();
 		this.ascendant = ascendant;
@@ -120,7 +112,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return Kind.values()[value.get().intValue() & KIND_MASK];
 	}
 
-	public ObjectMethodsIR getMethodsIR() {
+	public ObjectIRMethods getMethodsIR() {
 		return this.methodsIR;
 	}
 
@@ -140,8 +132,8 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return this.flags;
 	}
 
-	public final ObjectBodyIR derive(ObjectIR inheritantIR) {
-		return new ObjectBodyIR(inheritantIR, getAscendant());
+	public final ObjectIRBody derive(ObjectIR inheritantIR) {
+		return new ObjectIRBody(inheritantIR, getAscendant());
 	}
 
 	public final Fld fld(MemberKey memberKey) {
@@ -169,12 +161,12 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 	}
 
 	@Override
-	public Op op(StructWriter<Op> writer) {
-		return new Op(writer);
+	public ObjectIRBodyOp op(StructWriter<ObjectIRBodyOp> writer) {
+		return new ObjectIRBodyOp(writer);
 	}
 
 	@Override
-	protected void allocate(SubData<Op> data) {
+	protected void allocate(SubData<ObjectIRBodyOp> data) {
 		this.objectType = data.addRelPtr("object_type");
 		this.ancestorBody = data.addRelPtr("ancestor_body");
 		this.methods = data.addDataPtr("methods");
@@ -195,7 +187,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				objectType.data(generator).getPointer().relativeTo(
 						data(generator).getPointer()));
 
-		final ObjectBodyIR ancestorBodyIR = getObjectIR().getAncestorBodyIR();
+		final ObjectIRBody ancestorBodyIR = getObjectIR().getAncestorBodyIR();
 
 		if (ancestorBodyIR != null) {
 			this.ancestorBody.setConstant(true).setValue(
@@ -219,7 +211,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 
 	void allocateMethodsIR(SubData<?> data) {
 		if (isMain()) {
-			this.methodsIR = new ObjectMethodsIR(this);
+			this.methodsIR = new ObjectIRMethods(this);
 			data.addStruct(
 					METHODS_ID.detail(
 							getAscendant().ir(getGenerator()).getId()),
@@ -237,7 +229,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return ascendantIR.getId().detail(BODY_ID);
 	}
 
-	private void allocateValueBody(SubData<Op> data) {
+	private void allocateValueBody(SubData<ObjectIRBodyOp> data) {
 
 		final Obj ascendant = getAscendant();
 		final ValueStruct<?, ?> valueStruct =
@@ -251,7 +243,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		}
 	}
 
-	private final void allocateFields(SubData<Op> data) {
+	private final void allocateFields(SubData<ObjectIRBodyOp> data) {
 
 		final Obj ascendant = getAscendant();
 		final Generator generator = getGenerator();
@@ -305,7 +297,7 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 		return true;
 	}
 
-	private final void allocateDeps(SubData<Op> data) {
+	private final void allocateDeps(SubData<ObjectIRBodyOp> data) {
 
 		final Obj ascendant = getAscendant();
 
@@ -346,137 +338,6 @@ public final class ObjectBodyIR extends Struct<ObjectBodyIR.Op> {
 				analysis.reasonNotFound(getGenerator().getAnalyzer()));
 
 		return out.toString();
-	}
-
-	public static final class Op extends StructOp<Op> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final ObjectBodyIR getType() {
-			return (ObjectBodyIR) super.getType();
-		}
-
-		public final Obj getAscendant() {
-			return getType().getAscendant();
-		}
-
-		public final RelRecOp objectType(Code code) {
-			return relPtr(null, code, getType().objectType());
-		}
-
-		public final RelRecOp ancestorBody(Code code) {
-			return relPtr(null, code, getType().ancestorBody());
-		}
-
-		public final DataRecOp methods(Code code) {
-			return ptr(null, code, getType().methods());
-		}
-
-		public final Int32recOp flags(Code code) {
-			return int32(null, code, getType().flags());
-		}
-
-		public final <O extends Fld.Op<O>> O field(
-				Code code,
-				Fld.Type<O> instance) {
-			return struct(null, code, instance);
-		}
-
-		public final DepIR.Op dep(Code code, DepIR.Type instance) {
-			return struct(null, code, instance);
-		}
-
-		public final ObjOp op(
-				CodeBuilder builder,
-				Obj ascendant,
-				ObjectPrecision precision) {
-			return op(builder, null, ascendant, precision);
-		}
-
-		public final ObjectIRType.Op loadObjectType(Code code) {
-			return objectType(code)
-					.load(null, code)
-					.offset(null, code, this)
-					.to(OBJECT_TYPE_ID, code, OBJECT_TYPE);
-		}
-
-		public final ObjectOp loadAncestor(CodeBuilder builder, Code code) {
-
-			final TypeRef ancestorRef = getAscendant().type().getAncestor();
-			final Obj ancestor;
-
-			if (ancestorRef == null) {
-				ancestor = builder.getContext().getVoid();
-			} else {
-				ancestor = ancestorRef.getType();
-			}
-
-			final AnyOp ancestorBodyPtr =
-					ancestorBody(code)
-					.load(null, code)
-					.offset(null, code, this);
-
-			return anonymousObject(
-					builder,
-					ancestorBodyPtr.toData(null, code),
-					ancestor);
-		}
-
-		public final ObjectMethodsIR.Op loadMethods(Code code) {
-
-			final DataOp methodsPtr = methods(code).load(null, code);
-
-			return methodsPtr.to(null, code, getType().getMethodsIR());
-		}
-
-		@Override
-		public String toString() {
-			return "*" + getType().getId();
-		}
-
-		@Override
-		protected ID fieldId(Code code, ID local) {
-			return BODY_ID.setLocal(local);
-		}
-
-		final ObjOp op(
-				CodeBuilder builder,
-				ObjectIR objectIR,
-				Obj ascendant,
-				ObjectPrecision precision) {
-			return new ObjOp(
-					builder,
-					objectIR != null ? objectIR : getType().getObjectIR(),
-					this,
-					ascendant,
-					precision);
-		}
-
-		final ObjOp op(ObjectIR objectIR, ObjectTypeOp data, Obj ascendant) {
-			return new ObjOp(
-					objectIR != null ? objectIR : getType().getObjectIR(),
-					this,
-					ascendant,
-					data);
-		}
-
-		final ObjOp op(CodeBuilder builder, ObjectIR objectIR) {
-			return new ObjOp(builder, objectIR, this);
-		}
-
-		FldOp declaredField(Code code, ObjOp host, MemberKey memberKey) {
-
-			final Fld declared = getType().fld(memberKey);
-
-			assert declared != null :
-				memberKey + " is not declared in " + this;
-
-			return declared.op(code, host);
-		}
-
 	}
 
 	public enum Kind {

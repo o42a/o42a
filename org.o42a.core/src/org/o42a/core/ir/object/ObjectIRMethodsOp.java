@@ -17,25 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ir.field;
+package org.o42a.core.ir.object;
 
-import org.o42a.codegen.Generator;
-import org.o42a.codegen.data.Data;
-import org.o42a.core.ir.object.ObjectIRBody;
-import org.o42a.core.object.Obj;
-import org.o42a.util.string.ID;
+import org.o42a.codegen.code.Code;
+import org.o42a.codegen.code.backend.StructWriter;
+import org.o42a.codegen.code.op.StructOp;
+import org.o42a.codegen.code.op.StructRecOp;
 
 
-public interface FldIR {
+public final class ObjectIRMethodsOp extends StructOp<ObjectIRMethodsOp> {
 
-	ID getId();
+	ObjectIRMethodsOp(StructWriter<ObjectIRMethodsOp> writer) {
+		super(writer);
+	}
 
-	FldKind getKind();
+	@Override
+	public final ObjectIRMethods getType() {
+		return (ObjectIRMethods) super.getType();
+	}
 
-	Obj getDeclaredIn();
-
-	ObjectIRBody getBodyIR();
-
-	Data<?> data(Generator generator);
+	public final StructRecOp<ObjectIRTypeOp> objectType(Code code) {
+		return ptr(null, code, getType().objectType());
+	}
 
 }

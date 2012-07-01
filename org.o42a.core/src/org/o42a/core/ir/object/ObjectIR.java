@@ -74,22 +74,22 @@ public class ObjectIR  {
 		return getObject().getScope().ir(getGenerator());
 	}
 
-	public final ObjectBodyIR getBodyType() {
+	public final ObjectIRBody getBodyType() {
 
 		final Obj lastDefinition = getObject().type().getLastDefinition();
 
 		return lastDefinition.ir(getGenerator()).getMainBodyIR();
 	}
 
-	public final ObjectBodyIR getMainBodyIR() {
+	public final ObjectIRBody getMainBodyIR() {
 		return getStruct().mainBodyIR();
 	}
 
-	public final Collection<? extends ObjectBodyIR> getBodyIRs() {
+	public final Collection<? extends ObjectIRBody> getBodyIRs() {
 		return getStruct().bodyIRs().values();
 	}
 
-	public ObjectBodyIR getAncestorBodyIR() {
+	public ObjectIRBody getAncestorBodyIR() {
 
 		final TypeRef ancestorType = getObject().type().getAncestor();
 
@@ -142,9 +142,9 @@ public class ObjectIR  {
 				.getPointer().op(null, code).op(builder, this);
 	}
 
-	public final ObjectBodyIR bodyIR(Obj ascendant) {
+	public final ObjectIRBody bodyIR(Obj ascendant) {
 
-		final ObjectBodyIR bodyIR = findBodyIR(ascendant);
+		final ObjectIRBody bodyIR = findBodyIR(ascendant);
 
 		assert bodyIR != null :
 			"Can not find ascendant body for " + ascendant + " in " + this;
@@ -152,7 +152,7 @@ public class ObjectIR  {
 		return bodyIR;
 	}
 
-	public final ObjectBodyIR findBodyIR(Obj ascendant) {
+	public final ObjectIRBody findBodyIR(Obj ascendant) {
 		if (ascendant == ascendant.getContext().getVoid()) {
 			return getMainBodyIR();
 		}
@@ -162,7 +162,7 @@ public class ObjectIR  {
 	public final Fld fld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
-		final ObjectBodyIR bodyIR = bodyIR(origin);
+		final ObjectIRBody bodyIR = bodyIR(origin);
 
 		return bodyIR.fld(memberKey);
 	}
@@ -170,7 +170,7 @@ public class ObjectIR  {
 	public final Fld findFld(MemberKey memberKey) {
 
 		final Obj origin = memberKey.getOrigin().toObject();
-		final ObjectBodyIR bodyIR = findBodyIR(origin);
+		final ObjectIRBody bodyIR = findBodyIR(origin);
 
 		return bodyIR.findFld(memberKey);
 	}

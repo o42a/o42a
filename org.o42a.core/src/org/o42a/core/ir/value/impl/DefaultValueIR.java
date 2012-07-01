@@ -36,12 +36,12 @@ public final class DefaultValueIR extends ValueIR {
 	}
 
 	@Override
-	public Fld allocateBody(ObjectBodyIR bodyIR, SubData<?> data) {
+	public Fld allocateBody(ObjectIRBody bodyIR, SubData<?> data) {
 		return null;
 	}
 
 	@Override
-	public void allocateMethods(ObjectMethodsIR methodsIR, SubData<?> data) {
+	public void allocateMethods(ObjectIRMethods methodsIR, SubData<?> data) {
 	}
 
 	@Override

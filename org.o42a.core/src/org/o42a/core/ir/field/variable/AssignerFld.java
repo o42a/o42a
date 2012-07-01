@@ -73,7 +73,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 	private Obj definedIn;
 	private FuncPtr<VariableAssignerFunc> assigner;
 
-	public AssignerFld(ObjectBodyIR bodyIR) {
+	public AssignerFld(ObjectIRBody bodyIR) {
 		super(bodyIR);
 		this.id = ASSIGNER_NAME.toID();
 	}
@@ -286,7 +286,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> bound(ID id, Code code) {
+		public final StructRecOp<ObjectIRTypeOp> bound(ID id, Code code) {
 			return ptr(id, code, getType().bound());
 		}
 
@@ -298,14 +298,14 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 	public static final class Type extends Fld.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> bound;
+		private StructRec<ObjectIRTypeOp> bound;
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		Type() {
 			super(ID.rawId("o42a_fld_assigner"));
 		}
 
-		public final StructRec<ObjectIRType.Op> bound() {
+		public final StructRec<ObjectIRTypeOp> bound() {
 			return this.bound;
 		}
 
@@ -348,7 +348,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		}
 
 		@Override
-		protected ObjectBodyIR getBodyIR() {
+		protected ObjectIRBody getBodyIR() {
 			return this.fld.getBodyIR();
 		}
 
@@ -361,7 +361,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		protected void storeBound(
 				Code code,
 				AssignerFldOp fld,
-				ObjectIRType.Op bound) {
+				ObjectIRTypeOp bound) {
 			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
 		}
 

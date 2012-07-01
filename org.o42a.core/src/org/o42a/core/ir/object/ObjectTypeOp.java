@@ -34,11 +34,11 @@ import org.o42a.core.object.Obj;
 public final class ObjectTypeOp extends IROp {
 
 	private final ObjectPrecision precision;
-	private final ObjectIRType.Op ptr;
+	private final ObjectIRTypeOp ptr;
 
 	ObjectTypeOp(
 			CodeBuilder builder,
-			ObjectIRType.Op ptr,
+			ObjectIRTypeOp ptr,
 			ObjectPrecision precision) {
 		super(builder);
 		this.ptr = ptr;
@@ -50,7 +50,7 @@ public final class ObjectTypeOp extends IROp {
 	}
 
 	@Override
-	public final ObjectIRType.Op ptr() {
+	public final ObjectIRTypeOp ptr() {
 		return this.ptr;
 	}
 
@@ -78,7 +78,7 @@ public final class ObjectTypeOp extends IROp {
 		final Code code = dirs.code();
 		final ObjectValueFunc function =
 				ptr().data(code).valueFunc(code).load(null, code);
-		final ObjectIRData.Op data = ptr().data(code);
+		final ObjectIRDataOp data = ptr().data(code);
 
 		function.call(dirs, data, data.loadObject(code));
 	}

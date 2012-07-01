@@ -46,7 +46,7 @@ public class ObjFld extends RefFld<ObjectConstructorFunc> {
 
 	public static final Type OBJ_FLD = new Type();
 
-	public ObjFld(ObjectBodyIR bodyIR, Field field) {
+	public ObjFld(ObjectIRBody bodyIR, Field field) {
 		super(bodyIR, field, field.toObject());
 	}
 

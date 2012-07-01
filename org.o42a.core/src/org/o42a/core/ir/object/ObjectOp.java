@@ -177,7 +177,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 		return body(code).loadAncestor(getBuilder(), code);
 	}
 
-	public final ObjectMethodsIR.Op methods(Code code) {
+	public final ObjectIRMethodsOp methods(Code code) {
 		return body(code).loadMethods(code);
 	}
 
@@ -302,7 +302,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 						CAST_OBJECT);
 	}
 
-	private final ObjectBodyIR.Op body(Code code) {
+	private final ObjectIRBodyOp body(Code code) {
 		return ptr().toAny(null, code).to(
 				null,
 				code,

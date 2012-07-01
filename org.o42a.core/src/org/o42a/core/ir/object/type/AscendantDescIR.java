@@ -29,9 +29,9 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIR;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.util.string.ID;
 
 
@@ -39,13 +39,13 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 
 	public static final Type ASCENDANT_DESC_IR = new Type();
 
-	private final ObjectBodyIR bodyIR;
+	private final ObjectIRBody bodyIR;
 
-	public AscendantDescIR(ObjectBodyIR bodyIR) {
+	public AscendantDescIR(ObjectIRBody bodyIR) {
 		this.bodyIR = bodyIR;
 	}
 
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 
@@ -84,7 +84,7 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> type(Code code) {
+		public final StructRecOp<ObjectIRTypeOp> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
@@ -97,14 +97,14 @@ public final class AscendantDescIR implements Content<AscendantDescIR.Type> {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> type;
+		private StructRec<ObjectIRTypeOp> type;
 		private RelRec body;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ascendant_t"));
 		}
 
-		public final StructRec<ObjectIRType.Op> type() {
+		public final StructRec<ObjectIRTypeOp> type() {
 			return this.type;
 		}
 

@@ -37,7 +37,7 @@ public final class ObjBuilder extends CodeBuilder {
 	public ObjBuilder(
 			Function<? extends ObjectFunc<?>> function,
 			CodePos exit,
-			ObjectBodyIR hostIR,
+			ObjectIRBody hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		super(hostIR.getAscendant().getContext(), function);
@@ -57,7 +57,7 @@ public final class ObjBuilder extends CodeBuilder {
 	private ObjOp host(
 			Block code,
 			CodePos exit,
-			ObjectBodyIR hostIR,
+			ObjectIRBody hostIR,
 			Obj hostType,
 			ObjectPrecision hostPrecision) {
 		switch (hostPrecision) {

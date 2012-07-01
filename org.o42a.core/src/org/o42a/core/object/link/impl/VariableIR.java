@@ -47,19 +47,19 @@ final class VariableIR extends ValueIR {
 
 	private static final ID OLD_ID = ID.id("old");
 
-	private ObjectBodyIR bodyIR;
+	private ObjectIRBody bodyIR;
 	private AssignerFld fld;
 
 	VariableIR(VariableValueStructIR valueStructIR, ObjectIR objectIR) {
 		super(valueStructIR, objectIR);
 	}
 
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 
 	@Override
-	public Fld allocateBody(ObjectBodyIR bodyIR, SubData<?> data) {
+	public Fld allocateBody(ObjectIRBody bodyIR, SubData<?> data) {
 		this.bodyIR = bodyIR;
 		this.fld = new AssignerFld(bodyIR);
 		this.fld.declare(data);
@@ -67,7 +67,7 @@ final class VariableIR extends ValueIR {
 	}
 
 	@Override
-	public void allocateMethods(ObjectMethodsIR methodsIR, SubData<?> data) {
+	public void allocateMethods(ObjectIRMethods methodsIR, SubData<?> data) {
 	}
 
 	@Override

@@ -127,7 +127,7 @@ public abstract class RefFldOp<
 
 		if (!fld().isLink() && host().getPrecision().isExact()) {
 
-			final ObjectBodyIR.Op targetBodyPtr = ptr.to(
+			final ObjectIRBodyOp targetBodyPtr = ptr.to(
 					null,
 					code,
 					fld().getTargetAscendant()

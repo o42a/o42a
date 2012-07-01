@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.op.ObjectUseOp.OBJECT_USE_TYPE;
 
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.util.string.ID;
 
 
@@ -36,7 +36,7 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 		super(caller);
 	}
 
-	public final void use(Code code, ObjectUseOp.Op use, ObjectIRData.Op data) {
+	public final void use(Code code, ObjectUseOp.Op use, ObjectIRDataOp data) {
 		invoke(null, code, START_OBJECT_USE.result(), use, data);
 	}
 
@@ -45,7 +45,7 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 
 		private Return<Void> result;
 		private Arg<ObjectUseOp.Op> use;
-		private Arg<ObjectIRData.Op> data;
+		private Arg<ObjectIRDataOp> data;
 
 		private Signature() {
 			super(ID.id("StartObjectUseF"));
@@ -59,7 +59,7 @@ public final class StartObjectUseFunc extends Func<StartObjectUseFunc> {
 			return this.use;
 		}
 
-		public final Arg<ObjectIRData.Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

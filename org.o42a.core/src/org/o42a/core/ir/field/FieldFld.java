@@ -25,7 +25,7 @@ import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldAnalysis;
@@ -38,7 +38,7 @@ public abstract class FieldFld extends Fld {
 
 	private Field field;
 
-	public FieldFld(ObjectBodyIR bodyIR, Field field) {
+	public FieldFld(ObjectIRBody bodyIR, Field field) {
 		super(bodyIR);
 		this.field = field;
 

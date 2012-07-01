@@ -33,7 +33,7 @@ import org.o42a.core.ir.field.scope.ScopeFld;
 import org.o42a.core.ir.field.scope.ScopeFldOp;
 import org.o42a.core.ir.local.LclOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.Visibility;
@@ -137,7 +137,7 @@ public final class ScopeField extends ObjectField {
 		}
 
 		@Override
-		protected ScopeFld declare(SubData<?> data, ObjectBodyIR bodyIR) {
+		protected ScopeFld declare(SubData<?> data, ObjectIRBody bodyIR) {
 
 			final ScopeFld fld = new ScopeFld(bodyIR, getField());
 

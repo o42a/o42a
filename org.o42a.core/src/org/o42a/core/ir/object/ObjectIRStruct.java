@@ -20,7 +20,7 @@
 package org.o42a.core.ir.object;
 
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.ir.object.ObjectBodyIR.BODY_ID;
+import static org.o42a.core.ir.object.ObjectIRBody.BODY_ID;
 import static org.o42a.core.object.type.Derivation.IMPLICIT_PROPAGATION;
 
 import java.util.ArrayList;
@@ -47,16 +47,16 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 	private final ObjectIR objectIR;
 
 	private final ObjectTypeIR typeIR;
-	private final LinkedHashMap<Obj, ObjectBodyIR> bodyIRs =
-			new LinkedHashMap<Obj, ObjectBodyIR>();
-	private final ArrayList<ObjectBodyIR> sampleBodyIRs =
-			new ArrayList<ObjectBodyIR>();
-	private final ObjectBodyIR mainBodyIR;
+	private final LinkedHashMap<Obj, ObjectIRBody> bodyIRs =
+			new LinkedHashMap<Obj, ObjectIRBody>();
+	private final ArrayList<ObjectIRBody> sampleBodyIRs =
+			new ArrayList<ObjectIRBody>();
+	private final ObjectIRBody mainBodyIR;
 
 	public ObjectIRStruct(ObjectIR objectIR) {
 		super(objectIR.getId().detail(OBJECT_ID));
 		this.objectIR = objectIR;
-		this.mainBodyIR = new ObjectBodyIR(this);
+		this.mainBodyIR = new ObjectIRBody(this);
 		this.typeIR = new ObjectTypeIR(this);
 	}
 
@@ -72,15 +72,15 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		return this.typeIR;
 	}
 
-	public final ObjectBodyIR mainBodyIR() {
+	public final ObjectIRBody mainBodyIR() {
 		return this.mainBodyIR;
 	}
 
-	public final LinkedHashMap<Obj, ObjectBodyIR> bodyIRs() {
+	public final LinkedHashMap<Obj, ObjectIRBody> bodyIRs() {
 		return this.bodyIRs;
 	}
 
-	public final ArrayList<ObjectBodyIR> sampleBodyIRs() {
+	public final ArrayList<ObjectIRBody> sampleBodyIRs() {
 		return this.sampleBodyIRs;
 	}
 
@@ -129,16 +129,16 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 			Obj ascendant,
 			boolean inherited) {
 
-		final Collection<? extends ObjectBodyIR> ascendantBodyIRs =
+		final Collection<? extends ObjectIRBody> ascendantBodyIRs =
 				ascendant.ir(getGenerator()).getBodyIRs();
 
-		for (ObjectBodyIR ascendantBodyIR : ascendantBodyIRs) {
+		for (ObjectIRBody ascendantBodyIR : ascendantBodyIRs) {
 			if (this.bodyIRs.containsKey(ascendantBodyIR.getAscendant())) {
 				// body for the given ascendant already present
 				continue;
 			}
 
-			final ObjectBodyIR bodyIR = ascendantBodyIR.derive(getObjectIR());
+			final ObjectIRBody bodyIR = ascendantBodyIR.derive(getObjectIR());
 
 			allocateBodyIR(data, bodyIR, ascendantBodyIR, inherited);
 			if (!inherited) {
@@ -149,8 +149,8 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 
 	private void allocateBodyIR(
 			SubData<?> data,
-			ObjectBodyIR bodyIR,
-			ObjectBodyIR derivedFrom,
+			ObjectIRBody bodyIR,
+			ObjectIRBody derivedFrom,
 			boolean inherited) {
 
 		final Obj ascendant = bodyIR.getAscendant();
@@ -168,25 +168,25 @@ final class ObjectIRStruct extends Struct<ObjectIRStruct.Op> {
 		}
 
 		if (inherited) {
-			bodyIR.setKind(ObjectBodyIR.Kind.INHERITED);
+			bodyIR.setKind(ObjectIRBody.Kind.INHERITED);
 		} else if (bodyIR.isMain()) {
-			bodyIR.setKind(ObjectBodyIR.Kind.MAIN);
+			bodyIR.setKind(ObjectIRBody.Kind.MAIN);
 		} else if (getObject().type().derivedFrom(
 				bodyIR.getAscendant().type(),
 				IMPLICIT_PROPAGATION)) {
-			bodyIR.setKind(ObjectBodyIR.Kind.PROPAGATED);
+			bodyIR.setKind(ObjectIRBody.Kind.PROPAGATED);
 		} else {
-			bodyIR.setKind(ObjectBodyIR.Kind.EXPLICIT);
+			bodyIR.setKind(ObjectIRBody.Kind.EXPLICIT);
 		}
 	}
 
 	private void allocateMethodsIRs(SubData<?> data) {
-		for (ObjectBodyIR bodyIR : bodyIRs().values()) {
+		for (ObjectIRBody bodyIR : bodyIRs().values()) {
 			bodyIR.allocateMethodsIR(data);
 		}
 	}
 
-	private static ID bodyId(Generator generator, ObjectBodyIR bodyIR) {
+	private static ID bodyId(Generator generator, ObjectIRBody bodyIR) {
 
 		final ObjectIR ascendantIR = bodyIR.getAscendant().ir(generator);
 

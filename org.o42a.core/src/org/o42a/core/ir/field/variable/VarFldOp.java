@@ -32,7 +32,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.RefFldOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.object.op.ObjectRefFunc;
@@ -86,11 +86,11 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 
 		final ObjectOp valueObject =
 				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
+		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
 
 		code.acquireBarrier();
 
-		final ObjectIRType.Op knownBound = boundRec.load(null, code, ATOMIC);
+		final ObjectIRTypeOp knownBound = boundRec.load(null, code, ATOMIC);
 
 		// Bound is already known.
 		final CondBlock boundUnknown =
