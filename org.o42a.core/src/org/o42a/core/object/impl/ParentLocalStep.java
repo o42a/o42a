@@ -107,19 +107,6 @@ public final class ParentLocalStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected void combineWithLocalOwner(
-			PathRebuilder rebuilder,
-			Obj owner) {
-		if (rebuilder.isStatic()) {
-			return;
-		}
-		if (rebuilder.getPath().getBindings().isEmpty()) {
-			return;
-		}
-		rebuilder.replace(object().addEnclosingOwnerDep(owner));
-	}
-
-	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {

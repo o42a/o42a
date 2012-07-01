@@ -21,7 +21,6 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -45,9 +44,9 @@ public final class Path {
 	public static final Path ROOT_PATH = ABSOLUTE_PATH.emptyPath();
 	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
 	public static final Path VOID_PATH =
-			new Path(ABSOLUTE_PATH, NO_PATH_BINDINGS, true, new VoidStep());
+			new Path(ABSOLUTE_PATH, true, new VoidStep());
 	public static final Path FALSE_PATH =
-			new Path(ABSOLUTE_PATH, NO_PATH_BINDINGS, true, new FalseStep());
+			new Path(ABSOLUTE_PATH, true, new FalseStep());
 
 	public static Path absolutePath(
 			CompilerContext context,
@@ -74,23 +73,16 @@ public final class Path {
 	public static Path modulePath(Name moduleName) {
 		return new Path(
 				ABSOLUTE_PATH,
-				NO_PATH_BINDINGS,
 				true,
 				new ModuleStep(moduleName));
 	}
 
 	private final PathKind kind;
 	private final Step[] steps;
-	private final PathBindings bindings;
 	private final boolean isStatic;
 
-	Path(
-			PathKind kind,
-			PathBindings bindings,
-			boolean isStatic,
-			Step... steps) {
+	Path(PathKind kind, boolean isStatic, Step... steps) {
 		this.kind = kind;
-		this.bindings = bindings;
 		this.isStatic = kind.isAbsolute() ? true : isStatic;
 		this.steps = steps;
 		assert assertStepsNotNull(steps);
@@ -112,10 +104,6 @@ public final class Path {
 		return this.steps.length == 0 && !isStatic();
 	}
 
-	public final PathBindings getBindings() {
-		return this.bindings;
-	}
-
 	public final Step[] getSteps() {
 		return this.steps;
 	}
@@ -127,12 +115,12 @@ public final class Path {
 		final PathKind pathKind = step.getPathKind();
 
 		if (pathKind.isAbsolute()) {
-			return new Path(pathKind, NO_PATH_BINDINGS, true, step);
+			return new Path(pathKind, true, step);
 		}
 
 		final Step[] newSteps = ArrayUtil.append(this.steps, step);
 
-		return new Path(getKind(), getBindings(), isStatic(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public final Path append(MemberKey memberKey) {
@@ -163,15 +151,9 @@ public final class Path {
 			return path;
 		}
 
-		assert path.assertNoBindings();
-
 		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
 
-		return new Path(
-				getKind(),
-				getBindings(),
-				isStatic() || path.isStatic(),
-				newSteps);
+		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
 	}
 
 	public final Path cut(int stepsToCut) {
@@ -179,7 +161,7 @@ public final class Path {
 		final Step[] newSteps =
 				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
 
-		return new Path(getKind(), getBindings(), isStatic(), newSteps);
+		return new Path(getKind(), isStatic(), newSteps);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -194,11 +176,7 @@ public final class Path {
 		final Step[] steps =
 				ArrayUtil.prepend(new StaticStep(origin), getSteps());
 
-		return new Path(
-				getKind(),
-				getBindings(),
-				true,
-				steps).bind(location, origin);
+		return new Path(getKind(), true, steps).bind(location, origin);
 	}
 
 	public final PrefixPath toPrefix(Scope start) {
@@ -238,36 +216,11 @@ public final class Path {
 		return toString(null, length);
 	}
 
-	final boolean assertNoBindings() {
-		assert getBindings().isEmpty() :
-			"Bindings present in " + this + ": " + getBindings();
-		return true;
-	}
-
-	final Path addBinding(PathBinding<?> binding) {
-		return new Path(
-				getKind(),
-				getBindings().addBinding(binding),
-				isStatic(),
-				getSteps());
-	}
-
 	Path prefixWith(PrefixPath prefix) {
 		if (prefix.isEmpty()) {
 			return this;
 		}
-		if (getBindings().isEmpty()) {
-			return prefix.getBoundPath()
-					.getRawPath()
-					.append(this);
-		}
-
-		final PathBindings newBindings =
-				getBindings().prefixWith(prefix);
-
-		return prefix.getBoundPath()
-				.getRawPath()
-				.append(this, newBindings);
+		return prefix.getBoundPath().getRawPath().append(this);
 	}
 
 	String toString(Object origin, int length) {
@@ -304,27 +257,6 @@ public final class Path {
 				"Path step is null";
 		}
 		return true;
-	}
-
-	private final Path append(Path path, PathBindings bindings) {
-		assert path != null :
-			"Path to append not specified";
-
-		final PathKind kind;
-
-		if (path.isAbsolute()) {
-			kind = ABSOLUTE_PATH;
-		} else {
-			kind = getKind();
-		}
-
-		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
-
-		return new Path(
-				kind,
-				bindings,
-				isStatic() || path.isStatic(),
-				newSteps);
 	}
 
 }

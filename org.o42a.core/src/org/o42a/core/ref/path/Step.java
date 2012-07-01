@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
 
 import org.o42a.analysis.Analyzer;
@@ -28,7 +27,6 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
@@ -65,7 +63,7 @@ public abstract class Step {
 	}
 
 	public Path toPath() {
-		return new Path(getPathKind(), NO_PATH_BINDINGS, false, this);
+		return new Path(getPathKind(), false, this);
 	}
 
 	@Override
@@ -100,21 +98,6 @@ public abstract class Step {
 	 * @param next the next step to combine this one with.
 	 */
 	protected void combineWith(PathRebuilder rebuilder, Step next) {
-	}
-
-	/**
-	 * Combines the current step with a preceding local owner step.
-	 *
-	 * <p>This method is called during the bound path rebuild when the preceding
-	 * step is a local owner one. The combining may replace the preceding step
-	 * or path fragment.</p>
-	 *
-	 * @param rebuilder path rebuilder
-	 * @param owner local owner.
-	 */
-	protected void combineWithLocalOwner(
-			PathRebuilder rebuilder,
-			Obj owner) {
 	}
 
 	/**

@@ -24,7 +24,6 @@ import static java.util.Arrays.copyOfRange;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
@@ -68,7 +67,7 @@ public enum PathKind {
 	private final Path emptyPath;
 
 	PathKind(boolean isStatic) {
-		this.emptyPath = new Path(this, NO_PATH_BINDINGS, isStatic);
+		this.emptyPath = new Path(this, isStatic);
 	}
 
 	public final boolean isAbsolute() {
@@ -127,15 +126,10 @@ public enum PathKind {
 			if (reproduction.isOutOfClause()) {
 				return outOfClausePath(
 						reproduced,
-						reproduction.getExternalPath().append(
-								new Path(
-										RELATIVE_PATH,
-										NO_PATH_BINDINGS,
-										path.isStatic(),
-										copyOfRange(
-												steps,
-												i + 1,
-												steps.length))));
+						reproduction.getExternalPath().append(new Path(
+								RELATIVE_PATH,
+								path.isStatic(),
+								copyOfRange(steps, i + 1, steps.length))));
 			}
 
 			toScope = resolution.getResult().getScope();
@@ -201,7 +195,6 @@ public enum PathKind {
 
 		return reproducedPath(new Path(
 				RELATIVE_PATH,
-				NO_PATH_BINDINGS,
 				path.isStatic(),
 				newSteps));
 	}

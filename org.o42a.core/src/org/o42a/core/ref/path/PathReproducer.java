@@ -19,8 +19,6 @@
 */
 package org.o42a.core.ref.path;
 
-import java.util.HashMap;
-
 import org.o42a.core.Container;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
@@ -32,30 +30,15 @@ public final class PathReproducer {
 
 	private final Reproducer reproducer;
 	private final BoundPath reproducingPath;
-	private final PathBindings reproducing;
-	private final HashMap<PathBinding<?>, PathBinding<?>> reproduced;
-	private final HashMap<PathBinding<?>, PathBinding<?>> newBindings;
 
 	PathReproducer(Reproducer reproducer, BoundPath reproducingPath) {
 		this.reproducer = reproducer;
 		this.reproducingPath = reproducingPath;
-		this.reproducing = reproducingPath.getBindings();
-
-		final int size = this.reproducing.size();
-
-		this.reproduced = new HashMap<PathBinding<?>, PathBinding<?>>(size);
-		this.newBindings = new HashMap<PathBinding<?>, PathBinding<?>>(size);
-		if (!this.reproducing.isEmpty()) {
-			this.newBindings.putAll(this.reproducing.bindings());
-		}
 	}
 
 	PathReproducer(Reproducer reproducer, PathReproducer prototype) {
 		this.reproducer = reproducer;
 		this.reproducingPath = prototype.reproducingPath;
-		this.reproducing = prototype.reproducing;
-		this.reproduced = prototype.reproduced;
-		this.newBindings = prototype.newBindings;
 	}
 
 	public final BoundPath getReproducingPath() {
@@ -92,46 +75,6 @@ public final class PathReproducer {
 
 	public final PathReproduction reproducePath() {
 		return getReproducingPath().getKind().reproduce(this);
-	}
-
-	public final <B> PathBinding<B> reproduce(PathBinding<B> binding) {
-
-		@SuppressWarnings("unchecked")
-		final PathBinding<B> cached =
-				(PathBinding<B>) this.reproduced.get(binding);
-
-		if (cached != null) {
-			return cached;
-		}
-
-		final PathBinding<B> reproduction = binding.reproduce(getReproducer());
-
-		this.reproduced.put(binding, reproduction);
-		this.newBindings.remove(binding);
-
-		return reproduction;
-	}
-
-	public Path reproduceBindings(Path path) {
-		if (this.newBindings.isEmpty()) {
-			return path;
-		}
-		for (PathBinding<?> binding : this.reproduced.values()) {
-			this.newBindings.put(binding, binding);
-		}
-
-		final PathBindings bindings = path.getBindings();
-
-		if (!bindings.isEmpty()) {
-			this.newBindings.putAll(bindings.bindings());
-		}
-
-		return new Path(
-				path.getKind(),
-				new PathBindings(this.newBindings),
-				path.isStatic(),
-				path.getSteps());
-
 	}
 
 }
