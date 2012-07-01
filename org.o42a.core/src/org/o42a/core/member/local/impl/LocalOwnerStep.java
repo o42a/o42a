@@ -68,11 +68,6 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected void rebuild(PathRebuilder rebuilder) {
-		rebuilder.combineWithLocalOwner(this.local.getOwner());
-	}
-
-	@Override
 	protected FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {

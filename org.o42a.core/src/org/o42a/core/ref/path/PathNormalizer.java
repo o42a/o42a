@@ -318,9 +318,6 @@ public final class PathNormalizer {
 	}
 
 	NormalPath normalize() {
-		if (!getPath().getBindings().isEmpty()) {
-			return unnormalized();
-		}
 		new Cancel(getNormalizer());
 		if (isStatic()) {
 			return normalizeStatic();

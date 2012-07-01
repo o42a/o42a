@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.Prediction.exactPrediction;
-import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
@@ -72,7 +71,7 @@ final class StaticStep extends Step {
 
 	@Override
 	public Path toPath() {
-		return new Path(getPathKind(), NO_PATH_BINDINGS, true, this);
+		return new Path(getPathKind(), true, this);
 	}
 
 	@Override

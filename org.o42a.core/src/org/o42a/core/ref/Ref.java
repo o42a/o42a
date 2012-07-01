@@ -226,15 +226,13 @@ public class Ref extends Statement {
 		if (!pathReproduction.isOutOfClause()) {
 			return reproducePart(
 					reproducer,
-					pathReproducer.reproduceBindings(
-							pathReproduction.getReproducedPath()));
+					pathReproduction.getReproducedPath());
 		}
 
 		return startWithPrefix(
 				reproducer,
 				pathReproduction,
-				pathReproducer.reproduceBindings(
-						pathReproduction.getReproducedPath())
+				pathReproduction.getReproducedPath()
 				.bind(this, reproducer.getScope())
 				.append(reproducer.getPhrasePrefix().getPath()));
 	}

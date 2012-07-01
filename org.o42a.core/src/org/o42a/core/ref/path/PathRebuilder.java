@@ -19,12 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.path.PathBindings.NO_PATH_BINDINGS;
-
 import java.util.Arrays;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
@@ -72,17 +69,12 @@ public final class PathRebuilder implements LocationInfo {
 	public final BoundPath restPath(Scope newOrigin) {
 		return new Path(
 				this.path.getKind(),
-				NO_PATH_BINDINGS,
 				this.path.isStatic(),
 				Arrays.copyOfRange(
 						this.steps,
 						this.nextIdx,
 						this.steps.length))
 				.bind(this, newOrigin);
-	}
-
-	public final void combineWithLocalOwner(Obj owner) {
-		this.previousStep.combineWithLocalOwner(this, owner);
 	}
 
 	public final Step getPreviousStep() {

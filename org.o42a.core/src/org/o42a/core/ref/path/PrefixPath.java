@@ -61,7 +61,7 @@ public final class PrefixPath {
 	}
 
 	public final boolean isEmpty() {
-		return getPrefix().isSelf() && getPrefix().getBindings().isEmpty();
+		return getPrefix().isSelf();
 	}
 
 	public final boolean emptyFor(ScopeInfo scoped) {
@@ -137,8 +137,7 @@ public final class PrefixPath {
 			return startWithPrefix(reproducer, pathReproduction);
 		}
 
-		final Path reproducedPart = pathReproducer.reproduceBindings(
-				pathReproduction.getReproducedPath());
+		final Path reproducedPart = pathReproduction.getReproducedPath();
 
 		return startWithPrefix(reproducer, pathReproduction)
 				.append(reproducedPart);
@@ -200,10 +199,6 @@ public final class PrefixPath {
 			return super.toString();
 		}
 		return this.prefix.toString(this.start, this.prefix.getSteps().length);
-	}
-
-	final PathBindings getBindings() {
-		return getBoundPath().getBindings();
 	}
 
 	final BoundPath getBoundPath() {
