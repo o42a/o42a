@@ -25,8 +25,7 @@ import static org.o42a.core.ir.object.ObjectIRData.OBJECT_DATA_TYPE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.core.ir.object.ObjectIRData;
-import org.o42a.core.ir.object.ObjectIRData.Op;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.util.string.ID;
 
 
@@ -38,7 +37,7 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, ObjectIRData.Op data, FldCtrOp ctr) {
+	public final BoolOp call(Code code, ObjectIRDataOp data, FldCtrOp ctr) {
 		return invoke(null, code, FLD_CTR_START.result(), data, ctr);
 	}
 
@@ -46,7 +45,7 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 			extends org.o42a.codegen.code.Signature<FldCtrStartFunc> {
 
 		private Return<BoolOp> result;
-		private Arg<Op> data;
+		private Arg<ObjectIRDataOp> data;
 		private Arg<FldCtrOp> ctr;
 
 		private Signature() {
@@ -57,7 +56,7 @@ public final class FldCtrStartFunc extends Func<FldCtrStartFunc> {
 			return this.result;
 		}
 
-		public final Arg<Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

@@ -27,7 +27,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.Data;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.util.string.ID;
@@ -38,11 +38,11 @@ public abstract class Fld implements FldIR {
 	public static final ID FIELD_ID = ID.id("field");
 	public static final ID FLD_ID = ID.id("fld");
 
-	private final ObjectBodyIR bodyIR;
+	private final ObjectIRBody bodyIR;
 	private Type<?> instance;
 	private byte omitted;
 
-	public Fld(ObjectBodyIR bodyIR) {
+	public Fld(ObjectIRBody bodyIR) {
 		this.bodyIR = bodyIR;
 	}
 
@@ -51,7 +51,7 @@ public abstract class Fld implements FldIR {
 	}
 
 	@Override
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 

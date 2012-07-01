@@ -24,7 +24,7 @@ import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
-import org.o42a.core.ir.object.ObjectIRType.Op;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.ObjectTypeOp;
 import org.o42a.util.string.ID;
@@ -51,7 +51,7 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 
 		private Return<DataOp> result;
 		private Arg<DataOp> object;
-		private Arg<Op> type;
+		private Arg<ObjectIRTypeOp> type;
 
 		private Signature() {
 			super(ID.id("ObjectCastF"));
@@ -65,7 +65,7 @@ public final class CastObjectFunc extends Func<CastObjectFunc> {
 			return this.object;
 		}
 
-		public final Arg<Op> type() {
+		public final Arg<ObjectIRTypeOp> type() {
 			return this.type;
 		}
 

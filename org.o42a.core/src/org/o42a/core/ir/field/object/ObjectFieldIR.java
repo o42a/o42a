@@ -32,7 +32,7 @@ import org.o42a.core.ir.field.getter.GetterFld;
 import org.o42a.core.ir.field.link.LinkFld;
 import org.o42a.core.ir.field.variable.VarFld;
 import org.o42a.core.ir.local.RefLclOp;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.object.LinkUses;
 import org.o42a.core.object.Obj;
@@ -55,7 +55,7 @@ public final class ObjectFieldIR extends FieldIR {
 	}
 
 	@Override
-	protected RefFld<?> declare(SubData<?> data, ObjectBodyIR bodyIR) {
+	protected RefFld<?> declare(SubData<?> data, ObjectIRBody bodyIR) {
 
 		final RefFld<?> linkFld = declareLink(data, bodyIR);
 
@@ -70,7 +70,7 @@ public final class ObjectFieldIR extends FieldIR {
 		return fld;
 	}
 
-	private RefFld<?> declareLink(SubData<?> data, ObjectBodyIR bodyIR) {
+	private RefFld<?> declareLink(SubData<?> data, ObjectIRBody bodyIR) {
 
 		final Field field = getField();
 		final Obj object = field.toObject();

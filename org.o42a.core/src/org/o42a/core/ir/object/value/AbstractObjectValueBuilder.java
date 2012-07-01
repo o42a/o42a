@@ -30,7 +30,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.op.ObjectDataFunc;
 import org.o42a.core.ir.object.op.ObjectValueStartFunc;
 import org.o42a.core.ir.value.ValFlagsOp;
@@ -56,7 +56,7 @@ public abstract class AbstractObjectValueBuilder
 		assert getValueStruct().getValueType() == value.getValueType() :
 			"Wrong value type";
 
-		final ObjectIRData.Op data = data(function, function);
+		final ObjectIRDataOp data = data(function, function);
 		final ObjectDataFunc finishOp;
 
 		if (!lock()) {
@@ -132,14 +132,14 @@ public abstract class AbstractObjectValueBuilder
 			Function<ObjectValueFunc> function,
 			CodePos failureDir);
 
-	protected abstract ObjectIRData.Op data(
+	protected abstract ObjectIRDataOp data(
 			Code code,
 			Function<ObjectValueFunc> function);
 
 	protected abstract void writeValue(
 			DefDirs dirs,
 			ObjOp host,
-			ObjectIRData.Op data);
+			ObjectIRDataOp data);
 
 	private ObjBuilder builder(Function<ObjectValueFunc> function) {
 

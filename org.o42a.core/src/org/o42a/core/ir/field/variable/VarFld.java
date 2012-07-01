@@ -52,7 +52,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	private FuncPtr<VariableAssignerFunc> assigner;
 
-	public VarFld(ObjectBodyIR bodyIR, Field field, Obj target) {
+	public VarFld(ObjectIRBody bodyIR, Field field, Obj target) {
 		super(bodyIR, field, target);
 	}
 
@@ -163,7 +163,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> bound(ID id, Code code) {
+		public final StructRecOp<ObjectIRTypeOp> bound(ID id, Code code) {
 			return ptr(id, code, getType().bound());
 		}
 
@@ -183,7 +183,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 
 	public static final class Type extends RefFld.Type<Op, ObjectRefFunc> {
 
-		private StructRec<ObjectIRType.Op> bound;
+		private StructRec<ObjectIRTypeOp> bound;
 		private FuncRec<VariableAssignerFunc> assigner;
 
 		private Type() {
@@ -195,7 +195,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 			return false;
 		}
 
-		public final StructRec<ObjectIRType.Op> bound() {
+		public final StructRec<ObjectIRTypeOp> bound() {
 			return this.bound;
 		}
 
@@ -249,7 +249,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		}
 
 		@Override
-		protected ObjectBodyIR getBodyIR() {
+		protected ObjectIRBody getBodyIR() {
 			return this.fld.getBodyIR();
 		}
 
@@ -262,7 +262,7 @@ public class VarFld extends RefFld<ObjectRefFunc> {
 		protected void storeBound(
 				Code code,
 				VarFldOp fld,
-				ObjectIRType.Op bound) {
+				ObjectIRTypeOp bound) {
 			fld.ptr().bound(null, code).store(code, bound, VOLATILE);
 		}
 

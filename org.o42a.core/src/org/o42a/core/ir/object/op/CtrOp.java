@@ -34,7 +34,7 @@ import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.IROp;
@@ -116,15 +116,15 @@ public class CtrOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRType.Op> ownerType(Code code) {
+		public final StructRecOp<ObjectIRTypeOp> ownerType(Code code) {
 			return ptr(null, code, getType().ownerType());
 		}
 
-		public final StructRecOp<ObjectIRType.Op> ancestorType(Code code) {
+		public final StructRecOp<ObjectIRTypeOp> ancestorType(Code code) {
 			return ptr(null, code, getType().ancestorType());
 		}
 
-		public final StructRecOp<ObjectIRType.Op> type(Code code) {
+		public final StructRecOp<ObjectIRTypeOp> type(Code code) {
 			return ptr(null, code, getType().type());
 		}
 
@@ -136,9 +136,9 @@ public class CtrOp extends IROp {
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRType.Op> ownerType;
-		private StructRec<ObjectIRType.Op> ancestorType;
-		private StructRec<ObjectIRType.Op> type;
+		private StructRec<ObjectIRTypeOp> ownerType;
+		private StructRec<ObjectIRTypeOp> ancestorType;
+		private StructRec<ObjectIRTypeOp> type;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_ctr_t"));
@@ -149,15 +149,15 @@ public class CtrOp extends IROp {
 			return new Op(writer);
 		}
 
-		public final StructRec<ObjectIRType.Op> ownerType() {
+		public final StructRec<ObjectIRTypeOp> ownerType() {
 			return this.ownerType;
 		}
 
-		public final StructRec<ObjectIRType.Op> ancestorType() {
+		public final StructRec<ObjectIRTypeOp> ancestorType() {
 			return this.ancestorType;
 		}
 
-		public final StructRec<ObjectIRType.Op> type() {
+		public final StructRec<ObjectIRTypeOp> type() {
 			return this.type;
 		}
 

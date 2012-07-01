@@ -58,11 +58,11 @@ public abstract class ValueIR {
 	}
 
 	public abstract Fld allocateBody(
-			ObjectBodyIR bodyIR,
+			ObjectIRBody bodyIR,
 			SubData<?> data);
 
 	public abstract void allocateMethods(
-			ObjectMethodsIR methodsIR,
+			ObjectIRMethods methodsIR,
 			SubData<?> data);
 
 	public abstract ValueOp op(ObjectOp object);

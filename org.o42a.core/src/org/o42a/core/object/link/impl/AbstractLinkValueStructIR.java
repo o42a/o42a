@@ -23,8 +23,8 @@ import static org.o42a.core.ir.IRNames.CONST_ID;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
-import org.o42a.core.ir.object.ObjectBodyIR;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBodyOp;
 import org.o42a.core.ir.value.Val;
 import org.o42a.core.ir.value.struct.AbstractValueStructIR;
 import org.o42a.core.object.Obj;
@@ -55,7 +55,7 @@ abstract class AbstractLinkValueStructIR
 				.getResolution()
 				.toObject();
 		final ObjectIR targetIR = target.ir(getGenerator());
-		final Ptr<ObjectBodyIR.Op> mainBodyPtr =
+		final Ptr<ObjectIRBodyOp> mainBodyPtr =
 				targetIR.getMainBodyIR().pointer(getGenerator());
 
 		return new Val(

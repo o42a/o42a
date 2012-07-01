@@ -25,7 +25,7 @@ import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.BoolOp;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
@@ -39,7 +39,7 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 		super(caller);
 	}
 
-	public final BoolOp call(Code code, ValOp value, ObjectIRData.Op data) {
+	public final BoolOp call(Code code, ValOp value, ObjectIRDataOp data) {
 		return invoke(
 				null,
 				code,
@@ -53,7 +53,7 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 
 		private Return<BoolOp> result;
 		private Arg<ValType.Op> value;
-		private Arg<ObjectIRData.Op> data;
+		private Arg<ObjectIRDataOp> data;
 
 		private Signature() {
 			super(ID.id("ObjectDataCondF"));
@@ -67,7 +67,7 @@ public final class ObjectValueStartFunc extends Func<ObjectValueStartFunc> {
 			return this.value;
 		}
 
-		public final Arg<ObjectIRData.Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

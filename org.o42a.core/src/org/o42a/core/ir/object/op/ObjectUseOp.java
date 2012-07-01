@@ -32,7 +32,7 @@ import org.o42a.codegen.code.op.StructRecOp;
 import org.o42a.codegen.data.StructRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.core.ir.CodeBuilder;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.op.IROp;
 import org.o42a.util.string.ID;
@@ -43,7 +43,7 @@ public final class ObjectUseOp extends IROp {
 	public static final Type OBJECT_USE_TYPE = new Type();
 
 	private final Op ptr;
-	private final StructRecOp<ObjectIRData.Op> objectData;
+	private final StructRecOp<ObjectIRDataOp> objectData;
 
 	ObjectUseOp(ID id, CodeBuilder builder, Allocator allocator) {
 		super(builder);
@@ -72,14 +72,14 @@ public final class ObjectUseOp extends IROp {
 
 	void setUsed(Code code, ObjectOp object) {
 
-		final ObjectIRData.Op data = object.objectType(code).ptr().data(code);
+		final ObjectIRDataOp data = object.objectType(code).ptr().data(code);
 
 		this.objectData.store(code, data);
 	}
 
 	void startUse(Code code, ObjectOp object) {
 
-		final ObjectIRData.Op data = object.objectType(code).ptr().data(code);
+		final ObjectIRDataOp data = object.objectType(code).ptr().data(code);
 
 		getGenerator()
 		.externalFunction()
@@ -107,7 +107,7 @@ public final class ObjectUseOp extends IROp {
 			return (Type) super.getType();
 		}
 
-		public final StructRecOp<ObjectIRData.Op> objectData(ID id, Code code) {
+		public final StructRecOp<ObjectIRDataOp> objectData(ID id, Code code) {
 			return ptr(id, code, getType().objectData());
 		}
 
@@ -116,13 +116,13 @@ public final class ObjectUseOp extends IROp {
 	public static final class Type
 			extends org.o42a.codegen.data.Type<Op> {
 
-		private StructRec<ObjectIRData.Op> objectData;
+		private StructRec<ObjectIRDataOp> objectData;
 
 		private Type() {
 			super(ID.rawId("o42a_obj_use_t"));
 		}
 
-		public final StructRec<ObjectIRData.Op> objectData() {
+		public final StructRec<ObjectIRDataOp> objectData() {
 			return this.objectData;
 		}
 

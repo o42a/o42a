@@ -21,10 +21,6 @@ package org.o42a.core.ir.object;
 
 import static org.o42a.core.ir.field.object.FldCtrOp.FLD_CTR_TYPE;
 import static org.o42a.core.ir.object.ObjectIRType.OBJECT_TYPE;
-import static org.o42a.core.ir.object.ObjectTypeIR.OBJECT_TYPE_ID;
-import static org.o42a.core.ir.object.op.ObjectDataFunc.OBJECT_DATA;
-import static org.o42a.core.ir.object.type.AscendantDescIR.ASCENDANT_DESC_IR;
-import static org.o42a.core.ir.object.type.SampleDescIR.SAMPLE_DESC_IR;
 import static org.o42a.core.ir.object.type.ValueTypeDescOp.VALUE_TYPE_DESC_TYPE;
 import static org.o42a.core.ir.object.value.ObjectValueFunc.OBJECT_VALUE;
 import static org.o42a.core.ir.system.MutexSystemType.MUTEX_SYSTEM_TYPE;
@@ -34,16 +30,11 @@ import static org.o42a.core.ir.value.ObjectValFunc.OBJECT_VAL;
 import static org.o42a.core.ir.value.ValOp.VALUE_ID;
 import static org.o42a.core.ir.value.ValType.VAL_TYPE;
 
-import org.o42a.codegen.Generator;
-import org.o42a.codegen.code.Code;
-import org.o42a.codegen.code.FuncPtr;
 import org.o42a.codegen.code.backend.StructWriter;
-import org.o42a.codegen.code.op.*;
 import org.o42a.codegen.data.*;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.op.ObjectDataFunc;
-import org.o42a.core.ir.object.type.AscendantDescIR;
-import org.o42a.core.ir.object.type.SampleDescIR;
+import org.o42a.core.ir.object.impl.ObjectIRAscendants;
+import org.o42a.core.ir.object.impl.ObjectIRSamples;
 import org.o42a.core.ir.object.type.ValueTypeDescOp;
 import org.o42a.core.ir.object.value.ObjectValueFunc;
 import org.o42a.core.ir.op.RelList;
@@ -52,7 +43,7 @@ import org.o42a.core.ir.value.ValType;
 import org.o42a.util.string.ID;
 
 
-public final class ObjectIRData extends Type<ObjectIRData.Op> {
+public final class ObjectIRData extends Type<ObjectIRDataOp> {
 
 	public static final short OBJ_FLAG_RT = 0x1;
 	public static final short OBJ_FLAG_ABSTRACT = 0x2;
@@ -65,11 +56,6 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private static final Type<?>[] TYPE_DEPENDENCIES =
 			new Type<?>[] {OBJECT_TYPE};
 
-	private static final ID MAIN_BODY_ID = ID.id("main_body");
-	private static final ID OBJECT_START_ID = ID.id("object_start");
-	private static final ID ASCENDANT_PREFIX_ID = ID.id("ascendant");
-	private static final ID SAMPLE_PREFIX_ID = ID.id("sample");
-
 	private RelRec object;
 	private RelRec start;
 	private Int16rec flags;
@@ -78,8 +64,8 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 	private FuncRec<ObjectValFunc> claimFunc;
 	private FuncRec<ObjectValFunc> propositionFunc;
 	private StructRec<ValueTypeDescOp> valueType;
-	private RelList<ObjectBodyIR> ascendants;
-	private RelList<ObjectBodyIR> samples;
+	private RelList<ObjectIRBody> ascendants;
+	private RelList<ObjectIRBody> samples;
 
 	private ObjectIRData() {
 		super(ID.rawId("o42a_obj_data_t"));
@@ -122,21 +108,21 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		return this.valueType;
 	}
 
-	public final RelList<ObjectBodyIR> ascendants() {
+	public final RelList<ObjectIRBody> ascendants() {
 		return this.ascendants;
 	}
 
-	public final RelList<ObjectBodyIR> samples() {
+	public final RelList<ObjectIRBody> samples() {
 		return this.samples;
 	}
 
 	@Override
-	public Op op(StructWriter<Op> writer) {
-		return new Op(writer);
+	public ObjectIRDataOp op(StructWriter<ObjectIRDataOp> writer) {
+		return new ObjectIRDataOp(writer);
 	}
 
 	@Override
-	protected void allocate(SubData<Op> data) {
+	protected void allocate(SubData<ObjectIRDataOp> data) {
 		this.object = data.addRelPtr("object");
 		this.start = data.addRelPtr("start");
 		this.flags = data.addInt16("flags");
@@ -151,168 +137,13 @@ public final class ObjectIRData extends Type<ObjectIRData.Op> {
 		this.propositionFunc = data.addFuncPtr("proposition_f", OBJECT_VAL);
 		this.valueType = data.addPtr("value_type", VALUE_TYPE_DESC_TYPE);
 		data.addPtr("fld_ctrs", FLD_CTR_TYPE).setNull();
-		this.ascendants = new Ascendants().allocate(data, "ascendants");
-		this.samples = new Samples().allocate(data, "samples");
+		this.ascendants = new ObjectIRAscendants().allocate(data, "ascendants");
+		this.samples = new ObjectIRSamples().allocate(data, "samples");
 	}
 
 	@Override
 	protected DebugTypeInfo createTypeInfo() {
 		return externalTypeInfo(0x042a0100);
-	}
-
-	public static final class Op extends StructOp<Op> {
-
-		private Op(StructWriter<Op> writer) {
-			super(writer);
-		}
-
-		@Override
-		public final ObjectIRData getType() {
-			return (ObjectIRData) super.getType();
-		}
-
-		public final RelRecOp object(Code code) {
-			return relPtr(null, code, getType().object());
-		}
-
-		public final DataOp loadObject(Code code) {
-			return object(code)
-					.load(null, code)
-					.offset(null, code, this)
-					.toData(MAIN_BODY_ID, code);
-		}
-
-		public final RelRecOp start(Code code) {
-			return relPtr(null, code, getType().start());
-		}
-
-		public final DataOp loadStart(Code code) {
-			return start(code)
-					.load(null, code)
-					.offset(null, code, this)
-					.toData(OBJECT_START_ID, code);
-		}
-
-		public final ValType.Op value(Code code) {
-			return struct(null, code, getType().value());
-		}
-
-		public final FuncOp<ObjectValueFunc> valueFunc(Code code) {
-			return func(null, code, getType().valueFunc());
-		}
-
-		public final FuncOp<ObjectValFunc> claimFunc(Code code) {
-			return func(null, code, getType().claimFunc());
-		}
-
-		public final FuncOp<ObjectValFunc> propositionFunc(Code code) {
-			return func(null, code, getType().propositionFunc());
-		}
-
-		public final void lock(Code code) {
-
-			final FuncPtr<ObjectDataFunc> fn =
-					code.getGenerator().externalFunction().link(
-							"o42a_obj_lock",
-							OBJECT_DATA);
-
-			fn.op(null, code).call(code, this);
-		}
-
-		public final void unlock(Code code) {
-
-			final FuncPtr<ObjectDataFunc> fn =
-					code.getGenerator().externalFunction().link(
-							"o42a_obj_unlock",
-							OBJECT_DATA);
-
-			fn.op(null, code).call(code, this);
-		}
-
-		public final void wait(Code code) {
-
-			final FuncPtr<ObjectDataFunc> fn =
-					code.getGenerator().externalFunction().link(
-							"o42a_obj_wait",
-							OBJECT_DATA);
-
-			fn.op(null, code).call(code, this);
-		}
-
-		public final void signal(Code code) {
-
-			final FuncPtr<ObjectDataFunc> fn =
-					code.getGenerator().externalFunction().link(
-							"o42a_obj_signal",
-							OBJECT_DATA);
-
-			fn.op(null, code).call(code, this);
-		}
-
-		public final void broadcast(Code code) {
-
-			final FuncPtr<ObjectDataFunc> fn =
-					code.getGenerator().externalFunction().link(
-							"o42a_obj_broadcast",
-							OBJECT_DATA);
-
-			fn.op(null, code).call(code, this);
-		}
-
-		@Override
-		public String toString() {
-			return getType() + " data";
-		}
-
-		@Override
-		protected ID fieldId(Code code, ID local) {
-			return OBJECT_TYPE_ID.setLocal(local);
-		}
-
-	}
-
-	private static final class Ascendants extends RelList<ObjectBodyIR> {
-
-		@Override
-		protected Ptr<?> allocateItem(
-				SubData<?> data,
-				int index,
-				ObjectBodyIR item) {
-
-			final Generator generator = item.getGenerator();
-			final ID id =
-					ASCENDANT_PREFIX_ID
-					.detail(item.getAscendant().ir(generator).getId());
-			final AscendantDescIR.Type desc = data.addInstance(
-					id,
-					ASCENDANT_DESC_IR,
-					new AscendantDescIR(item));
-
-			return desc.data(data.getGenerator()).getPointer();
-		}
-
-	}
-
-	private static final class Samples extends RelList<ObjectBodyIR> {
-
-		@Override
-		protected Ptr<?> allocateItem(
-				SubData<?> data,
-				int index,
-				ObjectBodyIR item) {
-
-			final Generator generator = item.getGenerator();
-			final ID id =
-					SAMPLE_PREFIX_ID
-					.detail(item.getAscendant().ir(generator).getId());
-			final SampleDescIR.Type desc = data.addInstance(
-					id,
-					SAMPLE_DESC_IR,
-					new SampleDescIR(item));
-
-			return desc.data(data.getGenerator()).getPointer();
-		}
-
 	}
 
 }

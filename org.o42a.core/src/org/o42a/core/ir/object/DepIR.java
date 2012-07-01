@@ -39,12 +39,12 @@ public class DepIR implements FldIR {
 
 	public static final Type DEP_IR = new Type();
 
-	private final ObjectBodyIR bodyIR;
+	private final ObjectIRBody bodyIR;
 	private final Dep dep;
 	private final ID id;
 	private Type instance;
 
-	public DepIR(ObjectBodyIR bodyIR, Dep dep) {
+	public DepIR(ObjectIRBody bodyIR, Dep dep) {
 		assert !dep.isDisabled() :
 			dep + " is disabled";
 		this.bodyIR = bodyIR;
@@ -80,7 +80,7 @@ public class DepIR implements FldIR {
 	}
 
 	@Override
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 

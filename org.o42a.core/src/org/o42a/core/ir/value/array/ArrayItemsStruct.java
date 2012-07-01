@@ -27,7 +27,7 @@ import org.o42a.codegen.code.op.StructOp;
 import org.o42a.codegen.data.DataRec;
 import org.o42a.codegen.data.Struct;
 import org.o42a.codegen.data.SubData;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.Array;
@@ -83,7 +83,7 @@ final class ArrayItemsStruct extends Struct<ArrayItemsStruct.Op> {
 					.resolve(array.getOwner().getScope().resolver())
 					.toObject();
 			final ObjectIR itemValueIR = itemValue.ir(getGenerator());
-			final ObjectBodyIR itemBodyIR = itemValueIR.bodyIR(itemAscendant);
+			final ObjectIRBody itemBodyIR = itemValueIR.bodyIR(itemAscendant);
 
 			this.items[i].setValue(itemBodyIR.pointer(getGenerator()).toData());
 		}

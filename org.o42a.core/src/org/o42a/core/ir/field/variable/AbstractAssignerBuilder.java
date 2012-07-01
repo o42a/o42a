@@ -98,11 +98,11 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 
 	protected abstract TypeRef getTypeRef();
 
-	protected abstract ObjectBodyIR getBodyIR();
+	protected abstract ObjectIRBody getBodyIR();
 
 	protected abstract F op(Code code, ObjOp host);
 
-	protected abstract void storeBound(Code code, F fld, ObjectIRType.Op bound);
+	protected abstract void storeBound(Code code, F fld, ObjectIRTypeOp bound);
 
 	protected abstract void storeObject(Block code, F fld, ObjectOp object);
 

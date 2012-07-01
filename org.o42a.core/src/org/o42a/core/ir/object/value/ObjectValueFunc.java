@@ -26,7 +26,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.codegen.code.backend.FuncCaller;
 import org.o42a.codegen.code.op.DataOp;
 import org.o42a.core.ir.def.DefDirs;
-import org.o42a.core.ir.object.ObjectIRData;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjectFunc;
 import org.o42a.core.ir.object.op.ObjectSignature;
@@ -56,7 +56,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 
 	public final void call(
 			DefDirs dirs,
-			ObjectIRData.Op data,
+			ObjectIRDataOp data,
 			ObjectOp object) {
 		call(
 				dirs,
@@ -64,7 +64,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 				object != null ? object.toData(null, dirs.code()) : null);
 	}
 
-	public final void call(DefDirs dirs, ObjectIRData.Op data, DataOp object) {
+	public final void call(DefDirs dirs, ObjectIRDataOp data, DataOp object) {
 
 		final Block code = dirs.code();
 		final ValOp value = dirs.value();
@@ -87,7 +87,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 
 		private Return<Void> result;
 		private Arg<ValType.Op> value;
-		private Arg<ObjectIRData.Op> data;
+		private Arg<ObjectIRDataOp> data;
 		private Arg<DataOp> object;
 
 		private Signature() {
@@ -102,7 +102,7 @@ public final class ObjectValueFunc extends ObjectFunc<ObjectValueFunc> {
 			return this.value;
 		}
 
-		public final Arg<ObjectIRData.Op> data() {
+		public final Arg<ObjectIRDataOp> data() {
 			return this.data;
 		}
 

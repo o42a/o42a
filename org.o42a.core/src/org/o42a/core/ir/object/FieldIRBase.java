@@ -68,7 +68,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		}
 	}
 
-	protected abstract Fld declare(SubData<?> data, ObjectBodyIR bodyIR);
+	protected abstract Fld declare(SubData<?> data, ObjectIRBody bodyIR);
 
 	@Override
 	protected HostOp createOp(CodeBuilder builder, Code code) {
@@ -80,7 +80,7 @@ public abstract class FieldIRBase extends LocalFieldIRBase {
 		return this.fld.op(code, host);
 	}
 
-	Fld allocate(SubData<?> data, ObjectBodyIR bodyIR) {
+	Fld allocate(SubData<?> data, ObjectIRBody bodyIR) {
 		assertNotLocal();
 
 		final Fld fld = declare(data, bodyIR);

@@ -29,7 +29,7 @@ import org.o42a.codegen.code.*;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.object.ObjBuilder;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRData.Op;
+import org.o42a.core.ir.object.ObjectIRDataOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.ValueStruct;
@@ -150,12 +150,12 @@ final class PredefObjValues {
 		}
 
 		@Override
-		protected Op data(Code code, Function<ObjectValueFunc> function) {
+		protected ObjectIRDataOp data(Code code, Function<ObjectValueFunc> function) {
 			return function.arg(code, OBJECT_VALUE.data());
 		}
 
 		@Override
-		protected void writeValue(DefDirs dirs, ObjOp host, Op data) {
+		protected void writeValue(DefDirs dirs, ObjOp host, ObjectIRDataOp data) {
 			this.value.write(dirs, data);
 		}
 

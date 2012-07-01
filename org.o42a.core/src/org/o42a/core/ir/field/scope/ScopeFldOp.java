@@ -63,7 +63,7 @@ public class ScopeFldOp extends FieldFldOp {
 		}
 
 		final Block code = dirs.code();
-		final ObjectBodyIR target = fld().getTarget();
+		final ObjectIRBody target = fld().getTarget();
 		final DataOp targetPtr = ptr().object(code).load(null, code);
 
 		return holder.hold(

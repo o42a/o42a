@@ -27,7 +27,7 @@ import org.o42a.codegen.data.Content;
 import org.o42a.codegen.data.RelRec;
 import org.o42a.codegen.data.SubData;
 import org.o42a.codegen.debug.DebugTypeInfo;
-import org.o42a.core.ir.object.ObjectBodyIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.util.string.ID;
 
 
@@ -35,13 +35,13 @@ public final class SampleDescIR implements Content<SampleDescIR.Type> {
 
 	public static final Type SAMPLE_DESC_IR = new Type();
 
-	private final ObjectBodyIR bodyIR;
+	private final ObjectIRBody bodyIR;
 
-	public SampleDescIR(ObjectBodyIR bodyIR) {
+	public SampleDescIR(ObjectIRBody bodyIR) {
 		this.bodyIR = bodyIR;
 	}
 
-	public final ObjectBodyIR getBodyIR() {
+	public final ObjectIRBody getBodyIR() {
 		return this.bodyIR;
 	}
 

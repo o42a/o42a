@@ -40,7 +40,7 @@ import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.field.FldOp;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRType;
+import org.o42a.core.ir.object.ObjectIRTypeOp;
 import org.o42a.core.ir.object.ObjectOp;
 import org.o42a.core.ir.object.op.ObjHolder;
 import org.o42a.core.ir.op.CodeDirs;
@@ -87,8 +87,8 @@ public final class AssignerFldOp extends FldOp {
 		final Block code = dirs.code();
 		final ObjectOp valueObject =
 				value.materialize(dirs, tempObjHolder(code.getAllocator()));
-		final StructRecOp<ObjectIRType.Op> boundRec = ptr().bound(null, code);
-		final ObjectIRType.Op knownBound = boundRec.load(null, code, VOLATILE);
+		final StructRecOp<ObjectIRTypeOp> boundRec = ptr().bound(null, code);
+		final ObjectIRTypeOp knownBound = boundRec.load(null, code, VOLATILE);
 
 		// Bound is already known.
 		final CondBlock boundUnknown =
