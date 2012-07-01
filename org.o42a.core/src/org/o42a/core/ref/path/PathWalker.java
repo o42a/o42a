@@ -52,7 +52,12 @@ public interface PathWalker {
 
 	boolean dereference(Obj linkObject, Step step, Link link);
 
-	boolean arrayElement(Obj array, Step step, ArrayElement element);
+	boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element);
 
 	boolean refDep(Obj object, Step step, Ref dependency);
 

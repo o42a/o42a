@@ -69,8 +69,13 @@ public class SimplePathTracker extends PathTracker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return walk(walker().arrayElement(array, step, element));
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
+		return walk(walker().arrayIndex(start, step, array, index, element));
 	}
 
 	@Override

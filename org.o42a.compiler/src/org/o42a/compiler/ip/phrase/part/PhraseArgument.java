@@ -20,6 +20,7 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import static org.o42a.compiler.ip.phrase.part.NextClause.terminatePhrase;
+import static org.o42a.core.ref.path.BoundPath.arrayIndex;
 
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
@@ -28,7 +29,6 @@ import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -145,11 +145,7 @@ public class PhraseArgument extends PhraseContinuation {
 
 		@Override
 		public Ref terminate(Ref prefix) {
-
-			final BoundPath itemPath =
-					prefix.getPath().arrayItem(PhraseArgument.this.value);
-
-			return itemPath.target(prefix.distribute());
+			return arrayIndex(prefix, getValue()).target(prefix.distribute());
 		}
 
 		@Override

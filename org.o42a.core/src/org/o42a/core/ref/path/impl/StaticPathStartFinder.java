@@ -93,7 +93,7 @@ public final class StaticPathStartFinder implements PathWalker {
 		final MemberField field = member.toField();
 
 		if (field == null) {
-			return skip();
+			return abort();// Not a field - not an object.
 		}
 
 		return set(
@@ -103,17 +103,22 @@ public final class StaticPathStartFinder implements PathWalker {
 
 	@Override
 	public boolean dereference(Obj linkObject, Step step, Link link) {
-		return skip();
+		return abort();// Dereferenced object can not be used as static start.
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return skip();
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
+		return abort();// Can not use an array element as static start.
 	}
 
 	@Override
 	public boolean refDep(Obj object, Step step, Ref dependency) {
-		return skip();
+		return abort();// Dependency can not be a part of static path.
 	}
 
 	@Override
@@ -148,7 +153,7 @@ public final class StaticPathStartFinder implements PathWalker {
 		return true;
 	}
 
-	private final boolean skip() {
+	private final boolean abort() {
 		++this.index;
 		return false;
 	}

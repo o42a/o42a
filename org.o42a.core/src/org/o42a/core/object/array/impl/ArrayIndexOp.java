@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -28,18 +28,16 @@ import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.*;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
-import org.o42a.core.ir.op.CodeDirs;
-import org.o42a.core.ir.op.PathOp;
-import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.object.op.ObjHolder;
+import org.o42a.core.ir.op.*;
 import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueStruct;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.util.string.ID;
 
 
-final class ArrayElementOp extends PathOp {
+final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 
 	private static final ID IDX_ID = ID.id("idx");
 	private static final ID NEG_IDX_ID = ID.id("neg_idx");
@@ -49,66 +47,76 @@ final class ArrayElementOp extends PathOp {
 	private static final ID ITEMS_REC_ID = ID.id("items_rec");
 	private static final ID ITEMS_REC_PTR_ID = ID.id("items_rec_ptr");
 
-	private final ArrayValueStruct arrayStruct;
-	private final Ref indexRef;
-
-	ArrayElementOp(PathOp start, ArrayValueStruct arrayStruct, Ref indexRef) {
-		super(start);
-		this.arrayStruct = arrayStruct;
-		this.indexRef = indexRef;
-	}
-
-	@Override
-	public void assign(CodeDirs dirs, HostOp value) {
-		assert this.arrayStruct.isVariable() :
-			value + " is immutable of type " + this.arrayStruct
-			+ ". Can not re-assign it`s element";
-
-		final ValDirs indexDirs =
-				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
-		final Int64op index = loadIndex(indexDirs);
-
-		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
-				this.arrayStruct,
-				TEMP_VAL_HOLDER);
-
-		assignItem(index, arrayDirs, value);
-
-		arrayDirs.done();
-		indexDirs.done();
+	ArrayIndexOp(PathOp start, ArrayIndexStep step) {
+		super(start, step);
 	}
 
 	@Override
 	public HostOp target(CodeDirs dirs) {
 
+		final ArrayValueStruct arrayStruct = getArrayStruct();
+		final ObjectOp array =
+				loadArray(dirs, tempObjHolder(dirs.getAllocator()));
 		final ValDirs indexDirs =
 				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
 		final Int64op index = loadIndex(indexDirs);
 
-		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
-				this.arrayStruct,
+		final ValDirs itemsDirs = indexDirs.dirs().nested().value(
+				arrayStruct,
 				TEMP_VAL_HOLDER);
-		final ObjectOp itemObject = loadItem(arrayDirs, index);
+		final ObjectOp itemObject = loadItem(itemsDirs, array, index);
 
-		arrayDirs.done();
+		itemsDirs.done();
 		indexDirs.done();
 
 		return itemObject;
 	}
 
 	@Override
-	public String toString() {
-		if (this.indexRef == null) {
-			return super.toString();
-		}
-		return this.arrayStruct.toString()
-				+ '[' + this.indexRef.toString() + ']';
+	public void assign(CodeDirs dirs, HostOp value) {
+
+		final ArrayValueStruct arrayStruct = getArrayStruct();
+
+		assert arrayStruct.isVariable() :
+			value + " is immutable of type " + arrayStruct
+			+ ". Can not re-assign it`s element";
+
+		final ObjectOp array = loadArray(
+				dirs,
+				tempObjHolder(dirs.getAllocator()).toVolatile());
+		final ValDirs indexDirs =
+				dirs.nested().value(ValueStruct.INTEGER, TEMP_VAL_HOLDER);
+		final Int64op index = loadIndex(indexDirs);
+
+		final ValDirs arrayDirs = indexDirs.dirs().nested().value(
+				arrayStruct,
+				TEMP_VAL_HOLDER);
+
+		assignItem(arrayDirs, array, index, value);
+
+		arrayDirs.done();
+		indexDirs.done();
+	}
+
+	private ArrayValueStruct getArrayStruct() {
+		return getStep()
+				.getArray()
+				.valueStruct(getStep().getArray().getScope())
+				.toArrayStruct();
+	}
+
+	private ObjectOp loadArray(CodeDirs dirs, ObjHolder holder) {
+		return getStep()
+				.getArray()
+				.op(host())
+				.target(dirs)
+				.materialize(dirs, holder);
 	}
 
 	private Int64op loadIndex(ValDirs dirs) {
 
 		final ValOp indexVal =
-				this.indexRef.op(pathStart()).writeValue(dirs);
+				getStep().getIndex().op(pathStart()).writeValue(dirs);
 		final Block code = dirs.code();
 		final Int64op index = indexVal.rawValue(
 				IDX_ID,
@@ -130,18 +138,15 @@ final class ArrayElementOp extends PathOp {
 		.go(code, dirs.falseDir());
 	}
 
-	private AnyRecOp itemRec(ValDirs dirs, Int64op index) {
+	private AnyRecOp itemRec(ValDirs dirs, ObjectOp array, Int64op index) {
 
-		final ValOp array =
-				host()
-				.materialize(dirs.dirs(), tempObjHolder(dirs.getAllocator()))
-				.value().writeValue(dirs);
+		final ValOp arrayVal = array.value().writeValue(dirs);
 
-		checkIndex(dirs.dirs(), index, array);
+		checkIndex(dirs.dirs(), index, arrayVal);
 
 		final Code code = dirs.code();
 		final AnyRecOp items =
-				array.value(ITEMS_REC_PTR_ID, code)
+				arrayVal.value(ITEMS_REC_PTR_ID, code)
 				.toPtr(null, code)
 				.load(ITEMS_REC_ID, code)
 				.toPtr(null, code);
@@ -149,23 +154,31 @@ final class ArrayElementOp extends PathOp {
 		return items.offset(ITEM_REC_ID, code, index.toInt32(null, code));
 	}
 
-	private ObjectOp loadItem(ValDirs dirs, Int64op index) {
+	private ObjectOp loadItem(ValDirs dirs, ObjectOp array, Int64op index) {
 
 		final Block code = dirs.code();
-		final AnyRecOp itemRec = itemRec(dirs, index);
+		final AnyRecOp itemRec = itemRec(dirs, array, index);
 		final AnyOp itemPtr = itemRec.load(ITEM_ID, code);
 
 		itemPtr.isNull(null, code).go(code, dirs.falseDir());
 
 		final DataOp item = itemPtr.toData(null, code);
-		final Obj itemAscendant = this.arrayStruct.getItemTypeRef().getType();
+		final Obj itemAscendant =
+				dirs.getValueStruct()
+				.toArrayStruct()
+				.getItemTypeRef()
+				.getType();
 
 		return anonymousObject(getBuilder(), item, itemAscendant);
 	}
 
-	private void assignItem(Int64op index, ValDirs dirs, HostOp value) {
+	private void assignItem(
+			ValDirs dirs,
+			ObjectOp array,
+			Int64op index,
+			HostOp value) {
 
-		final AnyRecOp itemRec = itemRec(dirs, index);
+		final AnyRecOp itemRec = itemRec(dirs, array, index);
 		final Code code = dirs.code();
 
 		// TODO implement array element type checking.

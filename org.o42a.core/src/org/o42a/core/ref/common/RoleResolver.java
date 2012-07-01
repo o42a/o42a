@@ -147,8 +147,29 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		return mayProceedInsidePrototype();
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
+		if (!mayProceedInsidePrototype()) {
+			return false;
+		}
+
+		final Resolver resolver = start.walkingResolver(this);
+		final Resolution resolution = array.resolve(resolver);
+
+		if (!resolution.isResolved() || resolution.isError()) {
+			return false;
+		}
+		if (this.insidePrototype || !this.role.atLeast(INSTANCE)) {
+			this.insidePrototype = false;
+			// An attempt to access an element of prototype.
+			return updateRole(Role.NONE);
+		}
+
+		return true;
 	}
 
 	@Override
@@ -162,7 +183,7 @@ public class RoleResolver implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution.isResolved();
+		return resolution.isResolved() && !resolution.isError();
 	}
 
 	@Override

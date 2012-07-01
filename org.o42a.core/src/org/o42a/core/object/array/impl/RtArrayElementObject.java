@@ -19,9 +19,7 @@
 */
 package org.o42a.core.object.array.impl;
 
-import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
-import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
@@ -50,6 +48,11 @@ final class RtArrayElementObject extends Obj {
 	}
 
 	@Override
+	protected Obj findWrapped() {
+		return this.element.getArrayStruct().getItemTypeRef().getType();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(this.element.getTypeRef());
 	}
@@ -69,11 +72,6 @@ final class RtArrayElementObject extends Obj {
 		final Link link = this.element.findLinkIn(enclosing);
 
 		return link.getTarget();
-	}
-
-	@Override
-	protected ObjectIR createIR(Generator generator) {
-		throw new UnsupportedOperationException();
 	}
 
 }

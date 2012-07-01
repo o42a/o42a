@@ -128,8 +128,14 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean arrayElement(Obj array, Step step, ArrayElement element) {
-		this.root = array;
+	public boolean arrayIndex(
+			Scope start,
+			Step step,
+			Ref array,
+			Ref index,
+			ArrayElement element) {
+		this.root = start.getContainer();
+		array.resolve(start.walkingResolver(this));
 		return false;
 	}
 
@@ -144,7 +150,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution.isResolved();
+		return resolution.isResolved() && !resolution.isError();
 	}
 
 	@Override
@@ -161,7 +167,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final Resolution ancestorResolution =
 				ancestor.getRef().resolve(ancestorResolver);
 
-		return ancestorResolution.isResolved();
+		return ancestorResolution.isResolved() && !ancestorResolution.isError();
 	}
 
 	@Override
