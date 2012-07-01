@@ -42,8 +42,6 @@ import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.field.MemberField;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
-import org.o42a.core.member.local.impl.EnclosingOwnerDep;
-import org.o42a.core.member.local.impl.RefDep;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
 import org.o42a.core.object.link.Link;
@@ -789,31 +787,11 @@ public abstract class Obj
 	protected abstract Obj findObjectIn(Scope enclosing);
 
 	@Override
-	protected Dep addEnclosingOwnerDep(Obj owner) {
-		assert getContext().fullResolution().assertIncomplete();
-
-		final Dep found = this.deps.get(null);
-
-		if (found != null) {
-			return found;
-		}
-
-		final LocalScope enclosingLocal =
-				getScope().getEnclosingContainer().toLocal();
-
-		assert enclosingLocal.getOwner() == owner :
-			owner + " is not owner of " + this
-			+ " enclosing local scope " + enclosingLocal;
-
-		return addDep(new EnclosingOwnerDep(this));
-	}
-
-	@Override
-	protected Dep addRefDep(Ref ref) {
+	protected Dep addDep(Ref ref) {
 		assert getContext().fullResolution().assertIncomplete();
 
 		final int newDepId = this.depNameSeq + 1;
-		final RefDep newDep = new RefDep(
+		final Dep newDep = new Dep(
 				this,
 				ref,
 				Integer.toString(newDepId));

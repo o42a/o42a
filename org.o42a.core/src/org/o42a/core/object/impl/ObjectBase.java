@@ -22,7 +22,6 @@ package org.o42a.core.object.impl;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.local.Dep;
-import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -42,8 +41,6 @@ public abstract class ObjectBase extends Placed {
 		super(location, distributor);
 	}
 
-	protected abstract Dep addEnclosingOwnerDep(Obj owner);
-
-	protected abstract Dep addRefDep(Ref ref);
+	protected abstract Dep addDep(Ref ref);
 
 }
