@@ -20,29 +20,47 @@
 package org.o42a.core.member.local;
 
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.ref.RefUsage.CONTAINER_REF_USAGE;
+import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
+import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
+import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.RefUsage;
-import org.o42a.core.ref.ReversePath;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.impl.ObjectStepUses;
+import org.o42a.core.source.LocationInfo;
 
 
-public abstract class Dep extends Step {
+public final class Dep extends Step {
 
 	private final Obj object;
-	private final DepKind kind;
+	private final String name;
+	private final Ref depRef;
+	private final Obj target;
+	private ObjectStepUses uses;
 	private boolean disabled;
 
-	public Dep(Obj object, DepKind kind) {
+	public Dep(Obj object, Ref depRef, String name) {
 		this.object = object;
-		this.kind = kind;
+		this.depRef = depRef;
+		this.name = name;
+
+		final Container container =
+				object.getScope().getEnclosingContainer();
+		final LocalScope local = container.toLocal();
+
+		assert local != null :
+			object + " is not a local object";
+
+		this.target = this.depRef.resolve(local.resolver()).toObject();
 	}
 
 	public final boolean isDisabled() {
@@ -63,21 +81,48 @@ public abstract class Dep extends Step {
 		return RefUsage.CONTAINER_REF_USAGE;
 	}
 
-	public final DepKind getDepKind() {
-		return this.kind;
-	}
-
 	public final Obj getObject() {
 		return this.object;
 	}
 
-	public abstract String getName();
+	public final String getName() {
+		return this.name;
+	}
 
-	public abstract Object getDepKey();
+	public final Object getDepKey() {
+		return this.depRef.getPath().getPath();
+	}
 
-	public abstract Obj getDepTarget();
+	public final Obj getDepTarget() {
+		return this.target;
+	}
 
-	public abstract Ref getDepRef();
+	public final Ref getDepRef() {
+		return this.depRef;
+	}
+
+	@Override
+	public String toString() {
+		if (this.depRef == null) {
+			return super.toString();
+		}
+		return "Dep[" + this.depRef + " of " + getObject() + ']';
+	}
+
+	@Override
+	protected FieldDefinition fieldDefinition(
+			BoundPath path,
+			Distributor distributor) {
+
+		final PrefixPath prefix =
+				path.cut(1)
+				.append(getObject().getScope().getEnclosingScopePath())
+				.toPrefix(distributor.getScope());
+
+		return getDepRef().toFieldDefinition()
+				.prefixWith(prefix)
+				.upgradeScope(distributor.getScope());
+	}
 
 	@Override
 	protected Container resolve(
@@ -100,22 +145,30 @@ public abstract class Dep extends Step {
 			object + " is inside " + object.getScope().getEnclosingContainer()
 			+ ", which is not a local scope";
 
-		return resolveDep(
-				resolver,
-				path,
-				index,
-				object,
-				enclosingLocal,
-				walker);
+		final LocalResolver localResolver = enclosingLocal.resolver();
+		
+		if (resolver.isFullResolution()) {
+			uses().useBy(resolver, path, index);
+		
+			final RefUsage usage;
+		
+			if (index == path.length() - 1) {
+				// Resolve only the last value.
+				usage = resolver.getUsage();
+			} else {
+				usage = CONTAINER_REF_USAGE;
+			}
+		
+			this.depRef.resolveAll(
+					localResolver.fullResolver(resolver, usage));
+		}
+		
+		final Resolution resolution = this.depRef.resolve(localResolver);
+		
+		walker.refDep(object, this, this.depRef);
+		
+		return resolution.toObject();
 	}
-
-	protected abstract Container resolveDep(
-			PathResolver resolver,
-			BoundPath path,
-			int index,
-			Obj object,
-			LocalScope enclosingLocal,
-			PathWalker walker);
 
 	@Override
 	protected final void normalize(PathNormalizer normalizer) {
@@ -137,7 +190,10 @@ public abstract class Dep extends Step {
 			return;
 		}
 
-		normalizeDep(normalizer, enclosingLocal);
+		normalizer.skip(normalizer.lastPrediction(), new DepDisabler());
+		normalizer.append(
+				getDepRef().getPath(),
+				uses().nestedNormalizer(normalizer));
 	}
 
 	@Override
@@ -147,17 +203,64 @@ public abstract class Dep extends Step {
 	}
 
 	@Override
-	protected abstract Path nonNormalizedRemainder(PathNormalizer normalizer);
+	protected Path nonNormalizedRemainder(PathNormalizer normalizer) {
+		return getDepRef().getPath().getPath();
+	}
 
-	protected abstract void normalizeDep(
-			PathNormalizer normalizer,
-			LocalScope local);
+	@Override
+	protected void normalizeStep(Analyzer analyzer) {
+		getDepRef().normalize(analyzer);
+	}
+
+	@Override
+	protected PathReproduction reproduce(
+			LocationInfo location,
+			PathReproducer reproducer) {
+		return reproducedPath(
+				new Dep(
+						reproducer.getScope().toObject(),
+						getDepRef(),
+						this.name)
+				.toPath());
+	}
 
 	@Override
 	protected final PathOp op(PathOp start) {
 		assert !isDisabled() :
 			this + " is disabled";
 		return new Op(start, this);
+	}
+
+	private final ObjectStepUses uses() {
+		if (this.uses != null) {
+			return this.uses;
+		}
+		return this.uses = new ObjectStepUses(this);
+	}
+
+	private final class DepDisabler extends NormalAppender {
+
+		@Override
+		public Path appendTo(Path path) {
+			ignore();
+			return path;
+		}
+
+		@Override
+		public void ignore() {
+			setDisabled(true);
+		}
+
+		@Override
+		public void cancel() {
+			setDisabled(false);
+		}
+
+		@Override
+		public String toString() {
+			return "-";
+		}
+
 	}
 
 	private static final class Op extends StepOp<Dep> {

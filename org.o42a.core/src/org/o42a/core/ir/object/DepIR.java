@@ -39,10 +39,9 @@ public class DepIR implements FldIR {
 
 	public static final Type DEP_IR = new Type();
 
-	private static final ID OWNER_DEP_ID = ID.id("O");
-
 	private final ObjectBodyIR bodyIR;
 	private final Dep dep;
+	private final ID id;
 	private Type instance;
 
 	public DepIR(ObjectBodyIR bodyIR, Dep dep) {
@@ -50,6 +49,7 @@ public class DepIR implements FldIR {
 			dep + " is disabled";
 		this.bodyIR = bodyIR;
 		this.dep = dep;
+		this.id = ID.id('D' + dep.getName());
 	}
 
 	public final Generator getGenerator() {
@@ -66,7 +66,7 @@ public class DepIR implements FldIR {
 
 	@Override
 	public final ID getId() {
-		return localId();
+		return this.id;
 	}
 
 	@Override
@@ -104,23 +104,8 @@ public class DepIR implements FldIR {
 	}
 
 	void allocate(SubData<?> data) {
-
-		final ID localId = localId();
-
-		this.instance = data.addInstance(localId, DEP_IR);
+		this.instance = data.addInstance(getId(), DEP_IR);
 		this.instance.object().setNull();
-	}
-
-	private ID localId() {
-		switch (getDep().getDepKind()) {
-		case ENCLOSING_OWNER_DEP:
-			return OWNER_DEP_ID;
-		case REF_DEP:
-			return ID.id('D' + getDep().getName());
-		}
-
-		throw new IllegalStateException(
-				"Dependency of unsupported kind: " + getDep());
 	}
 
 	public static final class Type extends org.o42a.codegen.data.Type<Op> {
