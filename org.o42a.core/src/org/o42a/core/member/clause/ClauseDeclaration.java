@@ -105,9 +105,7 @@ public class ClauseDeclaration extends Placed implements Cloneable {
 		this.internal = prototype.internal;
 	}
 
-	private ClauseDeclaration(
-			LocationInfo location,
-			Distributor distributor) {
+	private ClauseDeclaration(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 		this.name = null;
 		this.memberId = null;

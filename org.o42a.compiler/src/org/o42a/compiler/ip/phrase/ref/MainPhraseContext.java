@@ -31,7 +31,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
-import org.o42a.core.member.clause.ClauseKind;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
@@ -410,8 +409,7 @@ final class MainPhraseContext extends PhraseContext {
 
 			stack.pop();
 
-			if (topClause != null
-					&& topClause.getKind() == ClauseKind.EXPRESSION) {
+			if (topClause != null) {
 				top.incompleteInstance().complete();
 			}
 		}
