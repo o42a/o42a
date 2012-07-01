@@ -25,6 +25,7 @@ import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
 import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.Code;
 import org.o42a.codegen.code.op.DataOp;
+import org.o42a.codegen.code.op.DataRecOp;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
@@ -106,11 +107,28 @@ public class DepOp extends IROp implements HostOp {
 
 	public void fill(CodeBuilder builder, CodeDirs dirs) {
 
-		final DataOp object = object(builder, dirs);
-		final Code code = dirs.code();
+		final DataRecOp objectRec = ptr().object(dirs.code());
+		final Block noDep = dirs.addBlock("no_dep");
+		final CodeDirs depDirs = builder.dirs(dirs.code(), noDep.head());
 
-		ptr().object(code).store(code, object);
+		final DataOp object = object(builder, depDirs);
+		final Block code = depDirs.code();
+
+		objectRec.store(code, object);
 		code.dump(getDep() + ": ", this);
+
+		if (noDep.exists()) {
+
+			final ObjectIR falseIR =
+					getContext().getFalse().ir(getGenerator());
+
+			objectRec.store(
+					noDep,
+					falseIR.op(getBuilder(), noDep).toData(null, noDep));
+			noDep.go(code.tail());
+		}
+
+		depDirs.done();
 	}
 
 	private DataOp object(CodeBuilder builder, CodeDirs dirs) {
