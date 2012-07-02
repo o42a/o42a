@@ -34,9 +34,10 @@ Development Status
 A prototype of compiler is under development. This compiler is written in
 Java and uses [LLVM](http://llvm.org/) for executable code generation.
 
-Implementation status is draft. The majority of the language features are
-already in place. Development is currently focused on compiler stability,
-testing and implementation of the missing features.
+All documented language features are implemented. The development currently
+focused on core libraries implementation, compiler stability and implementation
+of additional language features, necessary to make the libraries handy and
+efficient.
 
 >>>>>>>>>>>> See the detailed [development](http://o42a.org/devel/)
 status and plan.
