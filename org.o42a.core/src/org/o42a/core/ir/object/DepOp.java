@@ -119,12 +119,12 @@ public class DepOp extends IROp implements HostOp {
 
 		if (noDep.exists()) {
 
-			final ObjectIR falseIR =
-					getContext().getFalse().ir(getGenerator());
+			final ObjectIR noneIR =
+					getContext().getNone().ir(getGenerator());
 
 			objectRec.store(
 					noDep,
-					falseIR.op(getBuilder(), noDep).toData(null, noDep));
+					noneIR.op(getBuilder(), noDep).toData(null, noDep));
 			noDep.go(code.tail());
 		}
 

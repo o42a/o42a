@@ -87,8 +87,16 @@ enum o42a_obj_type_flags {
 	/** Object is a VOID special object. */
 	O42A_OBJ_VOID = 0x8000,
 
-	/** Object is a FALSE special object. */
-	O42A_OBJ_FALSE = 0x4000,
+	/**
+	 * Object is a NONE special object.
+	 *
+	 * NONE is a placeholder for non-existing objects. E.g. when the link target
+	 * can not be evaluated the NONE object is used instead.
+	 *
+	 * This object's value is always false of type VOID. It also can not be
+	 * inherited and is not intended for other normal operations.
+	 */
+	O42A_OBJ_NONE = 0x4000,
 
 	/** Type flags mask inherited when constructing new instance. */
 	O42A_OBJ_INHERIT_MASK = 0xFF,

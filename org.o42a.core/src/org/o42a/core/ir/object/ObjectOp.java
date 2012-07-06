@@ -140,15 +140,16 @@ public abstract class ObjectOp extends IROp implements HostOp {
 			}
 		} else {
 
-			final DataOp falsePtr = getContext()
-					.getFalse()
+			final DataOp nonePtr =
+					getContext()
+					.getNone()
 					.ir(getGenerator())
 					.op(getBuilder(), code)
 					.toData(null, code);
 
 			resultPtr =
 					castResult.isNull(null, code)
-					.select(null, code, falsePtr, castResult);
+					.select(null, code, nonePtr, castResult);
 		}
 
 		final ObjectOp result =

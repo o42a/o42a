@@ -415,7 +415,7 @@ public abstract class TypeRef implements ScopeInfo {
 		final Resolution resolution = resolve(getScope().resolver());
 
 		if (resolution.isError()) {
-			return this.type = new TypeHolder(getContext().getFalse(), false);
+			return this.type = new TypeHolder(getContext().getNone(), false);
 		}
 
 		final Obj object = resolution.toObject();
@@ -425,7 +425,7 @@ public abstract class TypeRef implements ScopeInfo {
 					"not_type_ref",
 					this,
 					"Not a valid type reference");
-			return this.type = new TypeHolder(getContext().getFalse(), false);
+			return this.type = new TypeHolder(getContext().getNone(), false);
 		}
 
 		return this.type = new TypeHolder(object, true);

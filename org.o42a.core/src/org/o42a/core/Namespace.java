@@ -144,10 +144,10 @@ public class Namespace extends AbstractContainer {
 
 		if (container == null) {
 			getContext().getLogger().notObject(ref, resolution);
-			return getContext().getFalse();
+			return getContext().getNone();
 		}
 		if (!Role.INSTANCE.checkUseBy(ref, ref)) {
-			return getContext().getFalse();
+			return getContext().getNone();
 		}
 
 		return container;
@@ -233,7 +233,7 @@ public class Namespace extends AbstractContainer {
 
 			this.ref.getLogger().notPath(this.ref);
 
-			this.container = this.ref.getContext().getFalse();
+			this.container = this.ref.getContext().getNone();
 
 			return null;
 		}

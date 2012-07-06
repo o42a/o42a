@@ -79,8 +79,11 @@ public final class Resolution implements ScopeInfo {
 		return checkFlags(ABSENT) == 0;
 	}
 
-	public final boolean isFalse() {
-		return toObject().is(getContext().getFalse());
+	public final boolean isNone() {
+
+		final Obj object = toObject();
+
+		return object != null && object.isNone();
 	}
 
 	public final Clause toClause() {
@@ -180,7 +183,7 @@ public final class Resolution implements ScopeInfo {
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
 				this.flags = ERROR;
-				return this.resolved = getContext().getFalse();
+				return this.resolved = getContext().getNone();
 			}
 			this.flags = ABSENT;
 			return null;

@@ -1110,7 +1110,7 @@ o42a_obj_t *o42a_obj_new(const o42a_obj_ctr_t *const ctr) {
 
 	const o42a_obj_data_t *const adata = atype ? &atype->type.data : NULL;
 
-	if (adata && (adata->flags & O42A_OBJ_FALSE)) {
+	if (adata && (adata->flags & O42A_OBJ_NONE)) {
 		O42A_RETURN NULL;
 	}
 

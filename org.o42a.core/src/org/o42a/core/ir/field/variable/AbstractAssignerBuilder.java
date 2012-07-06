@@ -80,17 +80,17 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 
 		if (failure.exists()) {
 
-			final ObjectIR falseIR =
-					builder.getContext().getFalse().ir(assigner.getGenerator());
+			final ObjectIR noneIR =
+					builder.getContext().getNone().ir(assigner.getGenerator());
 
 			storeBound(
 					failure,
 					fld,
-					falseIR.getTypeIR()
+					noneIR.getTypeIR()
 					.getInstance()
 					.pointer(assigner.getGenerator())
 					.op(null, failure));
-			storeObject(failure, fld, falseIR.op(builder, failure));
+			storeObject(failure, fld, noneIR.op(builder, failure));
 
 			failure.bool(false).returnValue(failure);
 		}

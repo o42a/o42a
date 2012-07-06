@@ -85,6 +85,10 @@ public abstract class CompilerContext implements LocationInfo {
 		return getIntrinsics().getFalse();
 	}
 
+	public final Obj getNone() {
+		return getIntrinsics().getNone();
+	}
+
 	public final Obj getRoot() {
 		return getIntrinsics().getRoot();
 	}

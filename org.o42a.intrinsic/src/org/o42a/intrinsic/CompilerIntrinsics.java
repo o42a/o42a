@@ -50,6 +50,7 @@ public class CompilerIntrinsics extends Intrinsics {
 	private final ModuleNamespace moduleNamespace;
 	private final Obj voidObject;
 	private final Obj falseObject;
+	private final Obj none;
 	private final Root root;
 
 	private final HashMap<Name, ModuleUse> modules =
@@ -67,7 +68,8 @@ public class CompilerIntrinsics extends Intrinsics {
 		this.top = new Top(this.topContext);
 		this.moduleNamespace = new ModuleNamespace(this);
 		this.voidObject = new VoidObject(this.top);
-		this.falseObject = new False(this.top);
+		this.falseObject = new FalseObject(this.top);
+		this.none = new NoneObject(this.top);
 		this.root = createRoot(this.top);
 		this.consoleModule = consoleModule(this.root.getContext());
 		addModule(this.consoleModule);
@@ -96,6 +98,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	@Override
 	public Obj getFalse() {
 		return this.falseObject;
+	}
+
+	@Override
+	public Obj getNone() {
+		return this.none;
 	}
 
 	@Override
@@ -189,6 +196,7 @@ public class CompilerIntrinsics extends Intrinsics {
 
 		fullResolution.start();
 		try {
+			this.none.resolveAll();
 			this.root.resolveAll();
 			for (ModuleUse module : this.modules.values()) {
 				module.resolveAll();
