@@ -59,7 +59,7 @@ public interface PathWalker {
 			Ref index,
 			ArrayElement element);
 
-	boolean refDep(Obj object, Step step, Ref dependency);
+	boolean dep(Obj object, Step step, Ref dependency);
 
 	boolean object(Step step, Obj object);
 

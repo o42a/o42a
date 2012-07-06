@@ -89,7 +89,7 @@ public final class DummyPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		return true;
 	}
 

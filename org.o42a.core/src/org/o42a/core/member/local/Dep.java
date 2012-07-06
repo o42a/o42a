@@ -165,7 +165,7 @@ public final class Dep extends Step {
 		
 		final Resolution resolution = this.depRef.resolve(localResolver);
 		
-		walker.refDep(object, this, this.depRef);
+		walker.dep(object, this, this.depRef);
 		
 		return resolution.toObject();
 	}

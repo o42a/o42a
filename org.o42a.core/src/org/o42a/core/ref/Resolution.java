@@ -32,16 +32,10 @@ import org.o42a.util.log.Loggable;
 
 public final class Resolution implements ScopeInfo {
 
-	private static final byte RESOLVED = 0x01;
-	private static final byte ABSENT = 0x20;
-	private static final byte ERROR = 0x40;
-
-	private static final byte NO_VALUE = ERROR | ABSENT;
-
 	private final Ref ref;
 	private final Resolver resolver;
 	private Container resolved;
-	private byte flags;
+	private boolean error;
 
 	Resolution(Ref ref, Resolver resolver) {
 		this.ref = ref;
@@ -72,11 +66,14 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	public final boolean isError() {
-		return checkFlags(ERROR) != 0;
+		return this.error;
 	}
 
 	public final boolean isResolved() {
-		return checkFlags(ABSENT) == 0;
+
+		final Obj object = toObject();
+
+		return object == null || !object.isNone();
 	}
 
 	public final boolean isNone() {
@@ -150,28 +147,20 @@ public final class Resolution implements ScopeInfo {
 	final Resolution resolveAll(FullResolver resolver) {
 		getRef().refFullyResolved();
 
-		if ((this.flags & NO_VALUE) == 0) {
+		final Container resolved = resolve(resolver.toPathResolver());
 
-			final Container resolved = resolve(resolver.toPathResolver());
-
-			if (resolved != null) {
-				resolver.getRefUsage().fullyResolve(resolver, resolved);
-			}
+		if (resolved != null) {
+			resolver.getRefUsage().fullyResolve(resolver, resolved);
 		}
 
 		return this;
 	}
 
 	private final Container getResolved() {
-		if (this.flags != 0) {
+		if (this.resolved != null) {
 			return this.resolved;
 		}
-		return resolve(getResolver().toPathResolver());
-	}
-
-	private final int checkFlags(byte flag) {
-		getResolved();
-		return this.flags & flag;
+		return this.resolved = resolve(getResolver().toPathResolver());
 	}
 
 	private final Container resolve(PathResolver pathResolver) {
@@ -182,16 +171,12 @@ public final class Resolution implements ScopeInfo {
 
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
-				this.flags = ERROR;
-				return this.resolved = getContext().getNone();
+				this.error = true;
 			}
-			this.flags = ABSENT;
-			return null;
+			return getContext().getNone();
 		}
 
-		this.flags = RESOLVED;
-
-		return this.resolved = pathResolution.getResult();
+		return pathResolution.getResult();
 	}
 
 }

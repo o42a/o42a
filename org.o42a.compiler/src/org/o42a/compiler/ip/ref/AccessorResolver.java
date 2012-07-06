@@ -126,7 +126,7 @@ final class AccessorResolver implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		this.owner = false;
 		this.enclosed = false;
 		this.inheritant = false;

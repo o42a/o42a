@@ -136,7 +136,7 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		return appendIfExist(step);
 	}
 

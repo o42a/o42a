@@ -161,7 +161,7 @@ final class ClauseReuser implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope enclosing =
 				object.getScope().getEnclosingScope().toLocal();

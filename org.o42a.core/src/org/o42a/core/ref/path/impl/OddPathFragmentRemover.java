@@ -107,7 +107,7 @@ public class OddPathFragmentRemover implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		return skip();
 	}
 
