@@ -74,7 +74,7 @@ public abstract class FieldFld extends Fld {
 		final Scope definedIn = field.getDefinedIn();
 		final Scope enclosingScope = field.getEnclosingScope();
 
-		if (enclosingScope == definedIn) {
+		if (enclosingScope.is(definedIn)) {
 			// Explicit field override.
 			return true;
 		}

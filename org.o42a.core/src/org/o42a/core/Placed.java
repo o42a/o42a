@@ -45,7 +45,7 @@ public class Placed extends Scoped implements PlaceInfo {
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 		if (this.container != null) {
-			assert this.container.getScope() == getScope() :
+			assert this.container.getScope().is(getScope()) :
 				this.container + " should be in scope " + getScope();
 		}
 	}
@@ -58,7 +58,7 @@ public class Placed extends Scoped implements PlaceInfo {
 		this.place = distributor.getPlace();
 		this.container = distributor.getContainer();
 		if (this.container != null) {
-			assert this.container.getScope() == getScope() :
+			assert this.container.getScope().is(getScope()) :
 				this.container + " should be in scope " + getScope();
 		}
 	}

@@ -148,10 +148,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	}
 
 	public final Link findIn(Scope scope) {
-
-		final Scope linkScope = getScope();
-
-		if (linkScope == scope) {
+		if (getScope().is(scope)) {
 			return this;
 		}
 

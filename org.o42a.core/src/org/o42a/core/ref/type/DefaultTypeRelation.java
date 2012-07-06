@@ -56,8 +56,8 @@ final class DefaultTypeRelation extends TypeRelation {
 		final ObjectType type1 = of().getType().type();
 		final ObjectType type2 = to().getType().type();
 
-		if (root1 == root2) {
-			if (type1.getObject().getScope() == type2.getObject().getScope()) {
+		if (root1.is(root2)) {
+			if (type1.getObject().is(type2.getObject())) {
 
 				final TypeRelation.Kind structRelation =
 						of().getValueStruct().relationTo(to().getValueStruct());

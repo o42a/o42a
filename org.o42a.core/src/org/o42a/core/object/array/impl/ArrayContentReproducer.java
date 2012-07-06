@@ -64,7 +64,7 @@ public final class ArrayContentReproducer extends Reproducer {
 
 	@Override
 	public Reproducer reproducerOf(Scope reproducingScope) {
-		if (reproducingScope == getReproducingScope()) {
+		if (reproducingScope.is(getReproducingScope())) {
 			return this;
 		}
 		return this.arrayReproducer.reproducerOf(reproducingScope);

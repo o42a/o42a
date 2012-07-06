@@ -238,7 +238,7 @@ public final class ObjectIRBody extends Struct<ObjectIRBodyOp> {
 		final Obj typeObject =
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 
-		if (ascendant == typeObject) {
+		if (ascendant.is(typeObject)) {
 			addFld(getObjectIR().getValueIR().allocateBody(this, data));
 		}
 	}

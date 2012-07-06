@@ -159,7 +159,7 @@ public final class Array extends Placed {
 	}
 
 	public final Array upgradeScope(Scope toScope) {
-		if (toScope == getScope()) {
+		if (toScope.is(getScope())) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));

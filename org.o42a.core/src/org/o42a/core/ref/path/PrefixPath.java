@@ -65,12 +65,12 @@ public final class PrefixPath {
 	}
 
 	public final boolean emptyFor(ScopeInfo scoped) {
-		return isEmpty() && getStart() == scoped.getScope();
+		return isEmpty() && getStart().is(scoped.getScope());
 	}
 
 	public final PrefixPath and(PrefixPath other) {
 		if (other.isEmpty()) {
-			if (other.getStart() == getStart()) {
+			if (other.getStart().is(getStart())) {
 				return this;
 			}
 			getStart().assertCompatible(other.getStart());

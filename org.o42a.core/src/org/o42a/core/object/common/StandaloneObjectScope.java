@@ -118,7 +118,7 @@ public abstract class StandaloneObjectScope extends ObjectScope {
 
 	@Override
 	public boolean derivedFrom(Scope other) {
-		if (this == other) {
+		if (is(other)) {
 			return true;
 		}
 

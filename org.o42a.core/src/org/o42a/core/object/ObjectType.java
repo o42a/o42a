@@ -121,7 +121,7 @@ public final class ObjectType implements UserInfo {
 	}
 
 	public boolean inherits(ObjectType other) {
-		if (getObject() == other.getObject()) {
+		if (getObject().is(other.getObject())) {
 			return true;
 		}
 

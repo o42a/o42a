@@ -93,7 +93,7 @@ public class PredictionWalker implements PathWalker {
 
 	@Override
 	public boolean start(BoundPath path, Scope start) {
-		assert this.prediction == null || this.prediction.getScope() == start :
+		assert this.prediction == null || this.prediction.getScope().is(start) :
 			"Wrong start of the path: " + start + ", but "
 			+ this.prediction.getScope() + " expected";
 		if (this.prediction == null) {

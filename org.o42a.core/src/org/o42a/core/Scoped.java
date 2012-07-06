@@ -29,7 +29,7 @@ import org.o42a.util.log.Loggable;
 public class Scoped extends Location implements ScopeInfo {
 
 	public static final void assertScopeIs(ScopeInfo scoped, Scope scope) {
-		assert scoped.getScope() == scope :
+		assert scoped.getScope().is(scope) :
 			scoped + " has scope " + scoped.getScope()
 			+ ", but " + scope + " expected";
 	}
@@ -43,7 +43,7 @@ public class Scoped extends Location implements ScopeInfo {
 	public static final void assertSameScope(
 			ScopeInfo scoped,
 			ScopeInfo other) {
-		assert scoped.getScope() == other.getScope() :
+		assert scoped.getScope().is(other.getScope()) :
 			scoped + " has scope " + scoped.getScope()
 			+ ", which differs from scope " + other.getScope()
 			+ " of " + other;

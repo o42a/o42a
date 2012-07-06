@@ -72,7 +72,7 @@ public abstract class Distributor implements PlaceInfo {
 		final Scope scope = getScope();
 		final ScopePlace place = getPlace();
 
-		if (scope == place.getAppearedIn()) {
+		if (scope.is(place.getAppearedIn())) {
 			return "Distributor[" + place + ']';
 		}
 

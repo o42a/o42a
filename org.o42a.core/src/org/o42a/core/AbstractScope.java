@@ -45,9 +45,10 @@ import org.o42a.util.string.ID;
 
 public abstract class AbstractScope implements Scope {
 
-	public static void assertDerivedFrom(Scope scope, Scope other) {
+	public static boolean assertDerivedFrom(Scope scope, Scope other) {
 		assert scope.derivedFrom(other) :
 			scope + " is not derived from " + other;
+		return true;
 	}
 
 	public static Scope enclosingScope(Scope scope) {
@@ -111,7 +112,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	public static PrefixPath pathTo(Scope fromScope, Scope toScope) {
-		if (fromScope == toScope) {
+		if (fromScope.is(toScope)) {
 			return Path.SELF_PATH.toPrefix(fromScope);
 		}
 
@@ -130,7 +131,7 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	public static boolean contains(Scope scope, Scope other) {
-		if (other == scope) {
+		if (other.is(scope)) {
 			return true;
 		}
 		return other.getEnclosingScopes().contains(scope);
@@ -142,7 +143,7 @@ public abstract class AbstractScope implements Scope {
 		Path enclosingPath = scope.getEnclosingScopePath();
 
 		while (enclosing != null) {
-			if (enclosing.getScope() == targetScope) {
+			if (enclosing.getScope().is(targetScope)) {
 				return enclosingPath;
 			}
 
@@ -182,7 +183,7 @@ public abstract class AbstractScope implements Scope {
 
 		final Scope enclosingScope = enclosing.getScope();
 
-		if (enclosingScope == scope) {
+		if (scope.is(enclosingScope)) {
 			return member.getMemberKey().toPath();
 		}
 
@@ -287,18 +288,23 @@ public abstract class AbstractScope implements Scope {
 	}
 
 	@Override
+	public final boolean is(Scope scope) {
+		return this == scope;
+	}
+
+	@Override
 	public boolean contains(Scope other) {
 		return contains(this, other);
 	}
 
 	@Override
-	public ID nextAnonymousId() {
+	public final ID nextAnonymousId() {
 		return getId().anonymous(++this.anonymousSeq);
 	}
 
 	@Override
-	public final void assertDerivedFrom(Scope other) {
-		assertDerivedFrom(this, other);
+	public final boolean assertDerivedFrom(Scope other) {
+		return assertDerivedFrom(this, other);
 	}
 
 	@Override

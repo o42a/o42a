@@ -219,7 +219,7 @@ public abstract class RefInterpreter {
 				return null;
 			}
 
-			if (scope == parent.getScope()) {
+			if (scope.is(parent.getScope())) {
 
 				final Member parentMember = parent.toMember();
 

@@ -136,11 +136,11 @@ public abstract class Def implements SourceInfo {
 	public abstract boolean unconditional();
 
 	public final boolean isExplicit() {
-		return getSource() == sourceOf(getScope().toObject());
+		return getSource().is(sourceOf(getScope().toObject()));
 	}
 
 	public final Def upgradeScope(Scope toScope) {
-		if (toScope == getScope()) {
+		if (toScope.is(getScope())) {
 			return this;
 		}
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, toScope));

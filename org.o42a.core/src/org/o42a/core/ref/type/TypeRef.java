@@ -284,14 +284,14 @@ public abstract class TypeRef implements ScopeInfo {
 	}
 
 	public TypeRef upgradeScope(Scope toScope) {
-		if (toScope == getScope()) {
+		if (getScope().is(toScope)) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));
 	}
 
 	public TypeRef rescope(Scope scope) {
-		if (getScope() == scope) {
+		if (getScope().is(scope)) {
 			return this;
 		}
 		return prefixWith(scope.pathTo(getScope()));

@@ -218,9 +218,9 @@ public final class ObjectTypeIR implements Content<ObjectIRType> {
 		if (object.isPrototype()) {
 			flags |= OBJ_FLAG_PROTOTYPE;
 		}
-		if (object == object.getContext().getFalse()) {
+		if (object.is(object.getContext().getFalse())) {
 			flags |= OBJ_FLAG_FALSE;
-		} else if (object == object.getContext().getVoid()) {
+		} else if (object.is(object.getContext().getVoid())) {
 			flags |= OBJ_FLAG_VOID;
 		}
 

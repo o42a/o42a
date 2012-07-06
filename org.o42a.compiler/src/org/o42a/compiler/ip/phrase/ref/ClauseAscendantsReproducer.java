@@ -115,7 +115,7 @@ final class ClauseAscendantsReproducer extends Reproducer {
 
 	@Override
 	public Reproducer reproducerOf(Scope reproducingScope) {
-		if (reproducingScope == getReproducingScope()) {
+		if (reproducingScope.is(getReproducingScope())) {
 			return this;
 		}
 		return null;

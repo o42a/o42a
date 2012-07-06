@@ -163,7 +163,7 @@ public class MemberById extends PlacedPathFragment {
 
 		final Scope enclosingScope = enclosing.getScope();
 
-		if (enclosingScope == container.getScope()) {
+		if (enclosingScope.is(container.getScope())) {
 			return found;
 		}
 
@@ -174,7 +174,7 @@ public class MemberById extends PlacedPathFragment {
 		if (!pathResolution.isResolved()) {
 			return null;
 		}
-		if (pathResolution.getResult().getScope() == container.getScope()) {
+		if (pathResolution.getResult().getScope().is(container.getScope())) {
 			return SELF_PATH;
 		}
 
@@ -191,7 +191,7 @@ public class MemberById extends PlacedPathFragment {
 
 		final Accessor accessor;
 
-		if (getScope() == container.getScope()) {
+		if (getScope().is(container.getScope())) {
 			accessor = Accessor.OWNER;
 		} else if (container.getContext().declarationsVisibleFrom(
 				getContext())) {

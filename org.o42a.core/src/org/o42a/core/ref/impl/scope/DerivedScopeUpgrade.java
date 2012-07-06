@@ -47,7 +47,7 @@ public class DerivedScopeUpgrade extends ScopeUpgrade {
 	@Override
 	public ScopeUpgrade and(ScopeUpgrade other) {
 		if (!other.isUpgrade()) {
-			if (other.getFinalScope() == getFinalScope()) {
+			if (other.getFinalScope().is(getFinalScope())) {
 				return this;
 			}
 			return upgradeScope(getFinalScope(), other.getFinalScope());

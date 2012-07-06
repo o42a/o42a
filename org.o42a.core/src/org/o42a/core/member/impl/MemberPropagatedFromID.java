@@ -31,7 +31,7 @@ public class MemberPropagatedFromID implements SubID {
 
 		final Scope scope = member.getScope();
 
-		if (scope == member.getContext().getRoot().getScope()) {
+		if (scope.is(member.getContext().getRoot().getScope())) {
 			return ID.topId();
 		}
 

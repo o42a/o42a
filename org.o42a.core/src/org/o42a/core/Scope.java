@@ -110,13 +110,14 @@ public interface Scope extends PlaceInfo {
 
 	PrefixPath pathTo(Scope targetScope);
 
+	boolean is(Scope scope);
+
 	boolean contains(Scope other);
 
 	ID nextAnonymousId();
 
 	ScopeIR ir(Generator generator);
 
-	void assertDerivedFrom(Scope other);
-
+	boolean assertDerivedFrom(Scope other);
 
 }

@@ -102,7 +102,7 @@ public final class ObjectIRMethods extends Struct<ObjectIRMethodsOp> {
 		final Obj typeObject =
 				valueType.typeObject(ascendant.getContext().getIntrinsics());
 
-		if (ascendant == typeObject) {
+		if (ascendant.is(typeObject)) {
 			getObjectIR().getValueIR().allocateMethods(this, data);
 		}
 	}
