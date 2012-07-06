@@ -277,14 +277,14 @@ public class Ref extends Statement {
 	}
 
 	public final Ref upgradeScope(Scope toScope) {
-		if (getScope() == toScope) {
+		if (getScope().is(toScope)) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));
 	}
 
 	public final Ref rescope(Scope toScope) {
-		if (getScope() == toScope) {
+		if (getScope().is(toScope)) {
 			return this;
 		}
 		return prefixWith(toScope.pathTo(getScope()));

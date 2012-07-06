@@ -102,12 +102,13 @@ public class LinkUses {
 				.getValueType()
 				.typeObject(getObject().getContext().getIntrinsics());
 
-		if (getObject() == linkTypeObject) {
+		if (getObject().is(linkTypeObject)) {
 			// Link type object.
 			return;
 		}
 		if (field.isClone()
-				&& field.getMemberKey().getOrigin() == linkTypeObject.getScope()) {
+				&& field.getMemberKey().getOrigin().is(
+						linkTypeObject.getScope())) {
 			// Field is declared in link type object.
 			return;
 		}

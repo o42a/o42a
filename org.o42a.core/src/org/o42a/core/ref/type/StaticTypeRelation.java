@@ -51,7 +51,7 @@ final class StaticTypeRelation extends TypeRelation {
 		final ObjectType type2 =
 				to().getType().type().getLastDefinition().type();
 
-		if (type1.getObject().getScope() == type2.getObject().getScope()) {
+		if (type1.getObject().getScope().is(type2.getObject().getScope())) {
 			return Kind.SAME;
 		}
 		if (type2.derivedFrom(type1)) {

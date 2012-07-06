@@ -236,7 +236,7 @@ public enum PathKind {
 
 		@Override
 		public Reproducer reproducerOf(Scope reproducingScope) {
-			if (reproducingScope == getReproducingScope()) {
+			if (reproducingScope.is(getReproducingScope())) {
 				return this;
 			}
 			return this.reproducer.reproducerOf(reproducingScope);

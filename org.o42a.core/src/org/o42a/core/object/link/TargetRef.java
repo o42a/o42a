@@ -115,7 +115,7 @@ public final class TargetRef implements ScopeInfo {
 	}
 
 	public final TargetRef upgradeScope(Scope toScope) {
-		if (toScope == getScope()) {
+		if (toScope.is(getScope())) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));

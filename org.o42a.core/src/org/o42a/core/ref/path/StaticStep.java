@@ -79,7 +79,7 @@ final class StaticStep extends Step {
 		if (this.finalScope == null) {
 			return super.toString();
 		}
-		if (this.expectedScope == this.finalScope) {
+		if (this.expectedScope.is(this.finalScope)) {
 			return '<' + this.finalScope.toString() + '>';
 		}
 		return ('<' + this.expectedScope.toString() + "--"

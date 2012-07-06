@@ -80,7 +80,7 @@ public final class Resolution implements ScopeInfo {
 	}
 
 	public final boolean isFalse() {
-		return toObject() == getContext().getFalse();
+		return toObject().is(getContext().getFalse());
 	}
 
 	public final Clause toClause() {

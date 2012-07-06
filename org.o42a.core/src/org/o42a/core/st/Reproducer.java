@@ -53,7 +53,7 @@ public abstract class Reproducer {
 	}
 
 	public final boolean isTopLevel() {
-		return getScope() == getPhrasePrefix().getScope();
+		return getScope().is(getPhrasePrefix().getScope());
 	}
 
 	public abstract Ref getPhrasePrefix();
@@ -139,7 +139,7 @@ public abstract class Reproducer {
 
 		@Override
 		public Reproducer reproducerOf(Scope reproducingScope) {
-			if (getReproducingScope() == reproducingScope) {
+			if (getReproducingScope().is(reproducingScope)) {
 				return this;
 			}
 			return this.reproducer.reproducerOf(reproducingScope);

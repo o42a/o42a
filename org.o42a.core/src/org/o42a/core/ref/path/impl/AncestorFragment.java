@@ -58,7 +58,7 @@ public class AncestorFragment extends PathFragment {
 		final Obj valueTypeObject =
 				object.value().getValueType().typeObject(intrinsics);
 
-		if (valueTypeObject.getScope() == start) {
+		if (valueTypeObject.getScope().is(start)) {
 			// Ancestor of value type object is a reference to this object.
 			return SELF_PATH;
 		}

@@ -147,7 +147,7 @@ public final class ArrayValueStruct
 
 	@Override
 	public ArrayValueStruct upgradeScope(Scope toScope) {
-		if (toScoped().getScope() == toScope) {
+		if (toScoped().getScope().is(toScope)) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(toScoped(), toScope));

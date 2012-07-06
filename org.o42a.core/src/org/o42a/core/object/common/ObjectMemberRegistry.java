@@ -78,7 +78,7 @@ public class ObjectMemberRegistry extends MemberRegistry {
 			return null;
 		}
 
-		assert getOwner() == declaration.getContainer().toObject() :
+		assert getOwner().is(declaration.getContainer().toObject()) :
 			"Wrong container " + declaration.getContainer()
 			+ ", but " + getOwner() + " expected";
 

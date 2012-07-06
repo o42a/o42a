@@ -71,11 +71,11 @@ final class ExplicitMemberLocal extends MemberLocal {
 		final Member member = getContainer().toMember();
 
 		if (member != null
-				&& member.getContainer().getScope() == getScope()) {
+				&& member.getContainer().getScope().is(getScope())) {
 			this.id = member.getMemberId().append(localId);
 		} else {
 
-			assert getContainer().toObject() == local.getOwner() :
+			assert getContainer().toObject().is(local.getOwner()) :
 				"Wrong local scope container: " + getContainer();
 
 			this.id = localId;

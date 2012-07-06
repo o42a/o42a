@@ -124,10 +124,10 @@ public final class ObjOp extends ObjectOp {
 	@Override
 	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
 		getObjectIR().getObject().assertDerivedFrom(ascendant);
-		if (ascendant == getAscendant()) {
+		if (ascendant.is(getAscendant())) {
 			return this;
 		}
-		if (ascendant == getContext().getVoid()) {
+		if (ascendant.is(getContext().getVoid())) {
 			return this;
 		}
 		if (getPrecision().isExact()) {

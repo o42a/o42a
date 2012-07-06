@@ -123,14 +123,14 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		final Obj object = getObject();
 
-		if (object == getDeclaredIn()) {
+		if (object.is(getDeclaredIn())) {
 			// Declaration in variable object.
 			return false;
 		}
 
 		final Obj definedIn = getDefinedIn();
 
-		if (getObject() == definedIn) {
+		if (object.is(definedIn)) {
 			// Explicit field override.
 			return true;
 		}
@@ -254,7 +254,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 		if (ancestorDefinedIn == null) {
 			return definedIn != null ? definedIn : object;
 		}
-		if (definedIn == null || definedIn == ancestorDefinedIn) {
+		if (definedIn == null || definedIn.is(ancestorDefinedIn)) {
 			return ancestorDefinedIn;
 		}
 
@@ -265,7 +265,7 @@ public class AssignerFld extends Fld implements Content<AssignerFld.Type> {
 
 		final Obj definedIn = getDefinedIn();
 
-		if (definedIn == getObject()) {
+		if (getObject().is(definedIn)) {
 			return null;
 		}
 

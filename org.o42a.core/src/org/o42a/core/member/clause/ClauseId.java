@@ -311,7 +311,7 @@ public enum ClauseId {
 			final PathResolution adapterResolution =
 					adapterPath.resolve(pathResolver(start, dummyUser()));
 
-			if (typeScope == adapterResolution.getObject().getScope()) {
+			if (typeScope.is(adapterResolution.getObject().getScope())) {
 				return clauseId;
 			}
 		}

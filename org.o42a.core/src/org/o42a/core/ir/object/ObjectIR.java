@@ -99,7 +99,7 @@ public class ObjectIR  {
 
 		final Obj ancestor = ancestorType.getType();
 
-		if (ancestor.getScope() == ancestor.getContext().getVoid().getScope()) {
+		if (ancestor.is(ancestor.getContext().getVoid())) {
 			return null;
 		}
 
@@ -153,7 +153,7 @@ public class ObjectIR  {
 	}
 
 	public final ObjectIRBody findBodyIR(Obj ascendant) {
-		if (ascendant == ascendant.getContext().getVoid()) {
+		if (ascendant.is(ascendant.getContext().getVoid())) {
 			return getMainBodyIR();
 		}
 		return getStruct().bodyIRs().get(ascendant);

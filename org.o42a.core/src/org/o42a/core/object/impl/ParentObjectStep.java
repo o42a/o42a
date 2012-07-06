@@ -74,7 +74,7 @@ public final class ParentObjectStep
 
 			final Scope self = getMemberKey().getOrigin();
 
-			if (start == self) {
+			if (start.is(self)) {
 
 				final Container result = self.getEnclosingContainer();
 

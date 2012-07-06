@@ -103,7 +103,7 @@ final class ArrayInitValueAdapter extends ValueAdapter {
 	}
 
 	private Value<Array> array(Scope scope) {
-		if (scope == getAdaptedRef().getScope()) {
+		if (scope.is(getAdaptedRef().getScope())) {
 			if (this.value != null) {
 				return this.value;
 			}

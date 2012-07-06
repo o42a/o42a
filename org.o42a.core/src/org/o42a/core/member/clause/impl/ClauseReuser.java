@@ -118,7 +118,7 @@ final class ClauseReuser implements PathWalker {
 
 			final Scope memberScope = member.getScope();
 
-			if (this.container.getScope() == memberScope) {
+			if (this.container.getScope().is(memberScope)) {
 				// Clause in the same scope.
 				// Enclosing scope as a topmost container.
 

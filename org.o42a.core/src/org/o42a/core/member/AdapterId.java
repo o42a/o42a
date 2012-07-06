@@ -116,7 +116,7 @@ public final class AdapterId extends MemberId {
 
 	public StaticTypeRef adapterType(Scope scope) {
 		if (this.adapterType != null) {
-			if (this.adapterType.getScope() == scope) {
+			if (this.adapterType.getScope().is(scope)) {
 				return this.adapterType;
 			}
 		}
@@ -181,7 +181,7 @@ public final class AdapterId extends MemberId {
 
 		final AdapterId other = (AdapterId) obj;
 
-		return getAdapterTypeScope() == other.getAdapterTypeScope();
+		return getAdapterTypeScope().is(other.getAdapterTypeScope());
 	}
 
 }

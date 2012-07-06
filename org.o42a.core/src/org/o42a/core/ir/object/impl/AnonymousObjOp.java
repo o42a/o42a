@@ -84,7 +84,7 @@ public final class AnonymousObjOp extends ObjectOp {
 	@Override
 	public ObjOp cast(ID id, CodeDirs dirs, Obj ascendant) {
 		getWellKnownType().assertDerivedFrom(ascendant);
-		if (ascendant == getContext().getVoid()) {
+		if (ascendant.is(getContext().getVoid())) {
 			// Everything is compatible with void.
 
 			final ObjectIR ir = getWellKnownType().ir(getGenerator());

@@ -218,7 +218,7 @@ public class BoundPath extends Location {
 		final Path oldPath = getRawPath();
 
 		if (oldPath.isAbsolute()) {
-			if (prefix.getStart() == getOrigin()) {
+			if (prefix.getStart().is(getOrigin())) {
 				return this;
 			}
 			return oldPath.bind(this, prefix.getStart());
@@ -329,7 +329,7 @@ public class BoundPath extends Location {
 
 	public final PrefixPath toPrefix(Scope start) {
 		start.assertCompatible(start);
-		if (start == getOrigin()) {
+		if (start.is(getOrigin())) {
 			return new PrefixPath(start, getRawPath(), this);
 		}
 		return getRawPath().toPrefix(start);

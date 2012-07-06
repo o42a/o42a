@@ -253,7 +253,7 @@ public abstract class PlainClause
 
 	@Override
 	public boolean derivedFrom(Scope other) {
-		if (this == other) {
+		if (is(other)) {
 			return true;
 		}
 
@@ -278,13 +278,13 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final ScopeIR ir(Generator generator) {
-		throw new UnsupportedOperationException();
+	public final PrefixPath pathTo(Scope targetScope) {
+		return AbstractScope.pathTo(this, targetScope);
 	}
 
 	@Override
-	public final PrefixPath pathTo(Scope targetScope) {
-		return AbstractScope.pathTo(this, targetScope);
+	public final boolean is(Scope scope) {
+		return this == scope;
 	}
 
 	@Override
@@ -298,8 +298,13 @@ public abstract class PlainClause
 	}
 
 	@Override
-	public final void assertDerivedFrom(Scope other) {
-		AbstractScope.assertDerivedFrom(this, other);
+	public final ScopeIR ir(Generator generator) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public final boolean assertDerivedFrom(Scope other) {
+		return AbstractScope.assertDerivedFrom(this, other);
 	}
 
 	protected Obj getClauseObject() {

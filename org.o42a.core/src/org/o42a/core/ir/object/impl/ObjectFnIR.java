@@ -65,7 +65,7 @@ public abstract class ObjectFnIR {
 		assert body == null :
 			"Attempt to invoke " + this + " for object different from "
 			+ getObject() + ", while this object is exact";
-		assert host.getAscendant() == objectIR.getObject() :
+		assert host.getAscendant().is(objectIR.getObject()) :
 			"Attempt to invoke " + this + " for object " + host.getAscendant()
 			+ ", while " + getObject() + " expected";
 

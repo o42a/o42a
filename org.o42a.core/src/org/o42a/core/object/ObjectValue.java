@@ -101,7 +101,7 @@ public final class ObjectValue extends ObjectValueParts {
 
 		final Value<?> result;
 
-		if (resolver.getScope() == getObject().getScope()) {
+		if (resolver.getScope().is(getObject().getScope())) {
 			result = getValue();
 		} else {
 			result = getDefinitions().value(resolver);
@@ -196,7 +196,7 @@ public final class ObjectValue extends ObjectValueParts {
 
 		final ObjectType type;
 
-		if (scope == object.getScope()) {
+		if (scope.is(object.getScope())) {
 			type = object.type().useBy(dummyUser());
 		} else {
 			type = object.type().useBy(scope.toObject().value().uses());

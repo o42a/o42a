@@ -115,7 +115,7 @@ public abstract class FieldDefinition extends Placed {
 	}
 
 	public final FieldDefinition upgradeScope(Scope toScope) {
-		if (toScope == getScope()) {
+		if (toScope.is(getScope())) {
 			return this;
 		}
 		return prefixWith(upgradePrefix(this, toScope));

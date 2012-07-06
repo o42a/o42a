@@ -375,8 +375,12 @@ public abstract class Obj
 		return found.member(declaredIn, accessor);
 	}
 
+	public final boolean is(Obj object) {
+		return getScope().is(object.getScope());
+	}
+
 	public final boolean cloneOf(Obj other) {
-		if (other == this) {
+		if (is(other)) {
 			return true;
 		}
 
@@ -553,7 +557,7 @@ public abstract class Obj
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
-		if (enclosingScope == enclosing) {
+		if (enclosingScope.is(enclosing)) {
 			return this;
 		}
 
@@ -691,7 +695,7 @@ public abstract class Obj
 
 		final Obj enclosingWrapped = enclosingObject.getWrapped();
 
-		if (enclosingWrapped == enclosingObject) {
+		if (enclosingWrapped.is(enclosingObject)) {
 			return this;
 		}
 

@@ -91,7 +91,7 @@ public abstract class LocalScope
 	public abstract Name getName();
 
 	public final boolean isExplicit() {
-		return getOwner() == getSource();
+		return getOwner().is(getSource());
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public abstract class LocalScope
 
 	@Override
 	public final boolean isClone() {
-		return explicit() == this;
+		return explicit().is(this);
 	}
 
 	public abstract ImperativeBlock getBlock();
@@ -223,7 +223,7 @@ public abstract class LocalScope
 
 		Scope scope = other.getScope();
 
-		if (scope == this) {
+		if (is(scope)) {
 			return other.getPlace().toLocal();
 		}
 		for (;;) {
@@ -236,14 +236,14 @@ public abstract class LocalScope
 
 			final Scope enclosingScope = enclosingContainer.getScope();
 
-			if (enclosingScope == this) {
+			if (is(enclosingScope)) {
 
 				final LocalPlace result = scope.getPlace().toLocal();
 
 				assert result != null :
 					scope.getPlace()
 					+ " is not local place, despite it belongs to " + this;
-				assert result.getAppearedIn() == this :
+				assert is(result.getAppearedIn()) :
 					scope + " belongs to local place " + this
 					+ ", but it's place appeared in " + result.getAppearedIn();
 
@@ -261,7 +261,7 @@ public abstract class LocalScope
 
 	@Override
 	public boolean derivedFrom(Scope other) {
-		if (this == other) {
+		if (is(other)) {
 			return true;
 		}
 
@@ -277,6 +277,11 @@ public abstract class LocalScope
 	@Override
 	public final PrefixPath pathTo(Scope targetScope) {
 		return AbstractScope.pathTo(this, targetScope);
+	}
+
+	@Override
+	public final boolean is(Scope scope) {
+		return this == scope;
 	}
 
 	@Override
@@ -322,8 +327,8 @@ public abstract class LocalScope
 	}
 
 	@Override
-	public final void assertDerivedFrom(Scope other) {
-		AbstractScope.assertDerivedFrom(this, other);
+	public final boolean assertDerivedFrom(Scope other) {
+		return AbstractScope.assertDerivedFrom(this, other);
 	}
 
 	@Override

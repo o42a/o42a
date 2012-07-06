@@ -68,7 +68,7 @@ public abstract class ObjectConstructor extends Placed {
 	public abstract TypeRef ancestor(LocationInfo location);
 
 	public final Obj resolve(Scope scope) {
-		if (scope == getScope()) {
+		if (scope.is(getScope())) {
 			return getConstructed();
 		}
 		return propagate(scope);

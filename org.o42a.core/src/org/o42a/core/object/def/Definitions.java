@@ -275,7 +275,7 @@ public class Definitions extends Scoped {
 	}
 
 	public final Definitions upgradeScope(Scope scope) {
-		if (scope == getScope()) {
+		if (scope.is(getScope())) {
 			return this;
 		}
 		return upgradeScope(ScopeUpgrade.upgradeScope(this, scope));
@@ -467,7 +467,7 @@ public class Definitions extends Scoped {
 				? valueStruct.prefixWith(scopeUpgrade.toPrefix())
 				: null;
 
-		if (resultScope == getScope()
+		if (resultScope.is(getScope())
 				// This may fail when there is no definitions.
 				&& valueStruct == newValueStruct
 				&& claims == newClaims
@@ -498,7 +498,7 @@ public class Definitions extends Scoped {
 			return this.target = NO_DEF_TARGET;
 		}
 
-		assert targetPath.getOrigin() == getScope().getEnclosingScope() :
+		assert targetPath.getOrigin().is(getScope().getEnclosingScope()) :
 			"Wrong target scope: " + targetPath.getOrigin()
 			+ ", but " + getScope().getEnclosingScope() + " expected";
 

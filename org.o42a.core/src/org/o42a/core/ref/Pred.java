@@ -52,7 +52,7 @@ public abstract class Pred {
 		if (!isPredicted()) {
 			return this;
 		}
-		if (scope == getScope()) {
+		if (scope.is(getScope())) {
 			return this;
 		}
 		scope.assertDerivedFrom(getScope());

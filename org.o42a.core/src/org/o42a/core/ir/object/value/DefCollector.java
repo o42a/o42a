@@ -34,7 +34,7 @@ final class DefCollector {
 
 		final Obj source = sourceInfo.getSource();
 
-		if (source == object) {
+		if (source.is(object)) {
 			return true;
 		}
 

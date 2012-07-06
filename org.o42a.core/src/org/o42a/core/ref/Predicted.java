@@ -28,7 +28,7 @@ public enum Predicted {
 
 		@Override
 		boolean assertEnclosingPrediction(Prediction enclosing, Scope scope) {
-			assert enclosing.getScope() == scope.getEnclosingScope() :
+			assert enclosing.getScope().is(scope.getEnclosingScope()) :
 				enclosing + " is not an enclosing prediction of " + scope;
 			return true;
 		}

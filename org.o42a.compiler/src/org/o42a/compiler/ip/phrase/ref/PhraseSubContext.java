@@ -81,7 +81,7 @@ class PhraseSubContext extends PhraseContext {
 
 	@Override
 	public Path pathToObject(Scope scope) {
-		if (getClause().getScope() == getClause().toMember().getScope()) {
+		if (getClause().getScope().is(getClause().toMember().getScope())) {
 			// Clause is in the same scope as enclosing one.
 			return getEnclosing().pathToObject(scope);
 		}
@@ -332,7 +332,7 @@ class PhraseSubContext extends PhraseContext {
 
 		@Override
 		public Reproducer reproducerOf(Scope reproducingScope) {
-			if (getReproducingScope() == reproducingScope) {
+			if (getReproducingScope().is(reproducingScope)) {
 				return this;
 			}
 			return null;
