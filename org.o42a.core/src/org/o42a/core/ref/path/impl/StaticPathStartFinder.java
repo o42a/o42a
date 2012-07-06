@@ -117,7 +117,7 @@ public final class StaticPathStartFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		return abort();// Dependency can not be a part of static path.
 	}
 

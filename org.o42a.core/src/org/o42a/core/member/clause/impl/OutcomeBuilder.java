@@ -162,7 +162,7 @@ public class OutcomeBuilder implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		return invalidOutcome();
 	}
 

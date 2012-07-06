@@ -145,14 +145,14 @@ public class PathRecorder extends PathTracker {
 	}
 
 	@Override
-	public boolean refDep(
+	public boolean dep(
 			final Obj object,
 			final Step step,
 			final Ref dependency) {
 		return record(new Record() {
 			@Override
 			public boolean replay(PathWalker walker) {
-				return walker.refDep(object, step, dependency);
+				return walker.dep(object, step, dependency);
 			}
 		});
 	}

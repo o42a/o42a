@@ -154,12 +154,12 @@ public class CompoundPathWalker implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 
 		boolean proceed = true;
 
 		for (PathWalker walker : getWalkers()) {
-			proceed = walker.refDep(object, step, dependency) & proceed;
+			proceed = walker.dep(object, step, dependency) & proceed;
 		}
 
 		return proceed;

@@ -160,7 +160,7 @@ public class RoleResolver implements PathWalker {
 		final Resolver resolver = start.walkingResolver(this);
 		final Resolution resolution = array.resolve(resolver);
 
-		if (!resolution.isResolved() || resolution.isError()) {
+		if (!resolution.isResolved()) {
 			return false;
 		}
 		if (this.insidePrototype || !this.role.atLeast(INSTANCE)) {
@@ -173,7 +173,7 @@ public class RoleResolver implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 		if (!mayProceedInsidePrototype()) {
 			return false;
 		}

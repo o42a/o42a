@@ -140,7 +140,7 @@ public final class ResolutionRootFinder implements PathWalker {
 	}
 
 	@Override
-	public boolean refDep(Obj object, Step step, Ref dependency) {
+	public boolean dep(Obj object, Step step, Ref dependency) {
 
 		final LocalScope local =
 				object.getScope().getEnclosingScope().toLocal();
@@ -150,7 +150,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final LocalResolver resolver = local.walkingResolver(this);
 		final Resolution resolution = dependency.resolve(resolver);
 
-		return resolution.isResolved() && !resolution.isError();
+		return !resolution.isNone();
 	}
 
 	@Override
@@ -167,7 +167,7 @@ public final class ResolutionRootFinder implements PathWalker {
 		final Resolution ancestorResolution =
 				ancestor.getRef().resolve(ancestorResolver);
 
-		return ancestorResolution.isResolved() && !ancestorResolution.isError();
+		return !ancestorResolution.isNone();
 	}
 
 	@Override
