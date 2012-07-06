@@ -33,6 +33,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getFalse();
 
+	public abstract Obj getNone();
+
 	public abstract Container getTop();
 
 	public abstract Namespace getModuleNamespace();

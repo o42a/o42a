@@ -336,7 +336,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 		if (target.isUnknown()) {
 			dirs.code().go(dirs.falseDir());
 			return builder.getContext()
-					.getFalse()
+					.getNone()
 					.ir(getGenerator())
 					.op(builder, dirs.code());
 		}

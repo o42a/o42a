@@ -47,6 +47,8 @@ public final class Path {
 			new Path(ABSOLUTE_PATH, true, new VoidStep());
 	public static final Path FALSE_PATH =
 			new Path(ABSOLUTE_PATH, true, new FalseStep());
+	public static final Path NONE_PATH =
+			new Path(ABSOLUTE_PATH, true, new NoneStep());
 
 	public static Path absolutePath(
 			CompilerContext context,

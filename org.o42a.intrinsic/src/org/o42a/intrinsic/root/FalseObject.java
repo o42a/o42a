@@ -49,10 +49,14 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.string.ID;
 
 
-public final class False extends BuiltinObject {
+public class FalseObject extends BuiltinObject {
 
-	public False(Scope topScope) {
-		super(falseScope(topScope), ValueStruct.VOID);
+	public FalseObject(Scope topScope) {
+		this(topScope, ID.id("FALSE"));
+	}
+
+	protected FalseObject(Scope topScope, ID id) {
+		super(falseScope(topScope, id), ValueStruct.VOID);
 	}
 
 	@Override
@@ -109,17 +113,20 @@ public final class False extends BuiltinObject {
 				"Not an enclosing scope: " + enclosing);
 	}
 
-	private static FalseScope falseScope(Scope topScope) {
-		return new FalseScope(topScope.getContext(), topScope.distribute());
+	private static FalseScope falseScope(Scope topScope, ID id) {
+		return new FalseScope(
+				topScope.getContext(),
+				topScope.distribute(),
+				id);
 	}
 
 	private static final class FalseScope extends StandaloneObjectScope {
 
 		private final ID id;
 
-		FalseScope(LocationInfo location, Distributor enclosing) {
+		FalseScope(LocationInfo location, Distributor enclosing, ID id) {
 			super(location, enclosing);
-			this.id = ID.id("FALSE");
+			this.id = id;
 		}
 
 		@Override
@@ -129,14 +136,14 @@ public final class False extends BuiltinObject {
 
 		@Override
 		protected ScopeIR createIR(Generator generator) {
-			return new IR(generator, this);
+			return new FalseIR(generator, this);
 		}
 
 	}
 
-	private static final class IR extends ScopeIR {
+	private static final class FalseIR extends ScopeIR {
 
-		IR(Generator generator, Scope scope) {
+		FalseIR(Generator generator, Scope scope) {
 			super(generator, scope);
 		}
 

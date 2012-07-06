@@ -77,10 +77,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	public Obj toObject() {
 		if (getScopeObject() == null) {
 			if (!getKey().isValid()) {
-
-				final Obj falseObject = getContext().getFalse();
-
-				setScopeObject(falseObject);
+				setScopeObject(getContext().getNone());
 			} else {
 				setScopeObject(new DeclaredObject(this));
 			}

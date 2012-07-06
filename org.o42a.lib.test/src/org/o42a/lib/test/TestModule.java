@@ -60,14 +60,14 @@ public class TestModule extends AnnotatedModule {
 
 		if (member == null) {
 			getLogger().unresolved(this, toString() + ':' + memberId);
-			return getContext().getFalse();
+			return getContext().getNone();
 		}
 
 		final Obj object = member.substance(user).toObject();
 
 		if (object == null) {
 			getLogger().notObject(this, toString() + ':' + memberId);
-			return getContext().getFalse();
+			return getContext().getNone();
 		}
 
 		return object;

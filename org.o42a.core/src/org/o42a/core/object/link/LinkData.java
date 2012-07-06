@@ -139,7 +139,7 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 		final Obj target = getTargetRef().getTarget();
 
 		if (target == null) {
-			return getContext().getFalse();
+			return getContext().getNone();
 		}
 		if (target.getConstructionMode().isRuntime()) {
 			return new RtLinkTarget(getLink());

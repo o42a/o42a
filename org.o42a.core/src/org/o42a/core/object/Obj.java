@@ -125,6 +125,10 @@ public abstract class Obj
 		this(new ObjScope(sample, enclosing), sample);
 	}
 
+	public final boolean isNone() {
+		return is(getContext().getNone());
+	}
+
 	@Override
 	public Obj getContainer() {
 		return this;
