@@ -17,12 +17,14 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.object.directive.impl;
 
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.Intrinsics;
-import org.o42a.core.value.*;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.SingleValueType;
 
 
 public final class DirectiveValueType extends SingleValueType<Directive> {
@@ -40,7 +42,7 @@ public final class DirectiveValueType extends SingleValueType<Directive> {
 
 	@Override
 	public SingleValueStruct<Directive> struct() {
-		return ValueStruct.DIRECTIVE;
+		return DirectiveValueStruct.INSTANCE;
 	}
 
 	@Override

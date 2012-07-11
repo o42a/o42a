@@ -27,6 +27,8 @@ import org.o42a.core.ScopeInfo;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.directive.Directive;
+import org.o42a.core.object.directive.impl.DirectiveValueStruct;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.object.macro.Macro;
