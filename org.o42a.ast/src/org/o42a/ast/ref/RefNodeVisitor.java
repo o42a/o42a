@@ -38,4 +38,6 @@ public interface RefNodeVisitor<R, P> {
 
 	R visitAscendantRef(AscendantRefNode ref, P p);
 
+	R visitMacroSubstitution(MacroSubstitutionNode substitution, P p);
+
 }
