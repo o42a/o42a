@@ -22,6 +22,7 @@ package org.o42a.core.ref;
 import org.o42a.core.*;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathResolver;
