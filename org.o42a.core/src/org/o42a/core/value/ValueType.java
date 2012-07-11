@@ -23,6 +23,8 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.object.link.LinkValueType;
+import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.impl.MacroValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.source.Intrinsics;
@@ -42,6 +44,8 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			StringValueType.INSTANCE;
 	public static final SingleValueType<Directive> DIRECTIVE =
 			DirectiveValueType.INSTANCE;
+	public static final SingleValueType<Macro> MACRO =
+			MacroValueType.INSTANCE;
 
 	public static final SingleValueType<java.lang.Void> NONE =
 			NoneValueType.INSTANCE;
