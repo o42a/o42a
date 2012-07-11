@@ -19,9 +19,10 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import static org.o42a.parser.Grammar.*;
+import static org.o42a.parser.Grammar.intrinsicRef;
+import static org.o42a.parser.Grammar.parentRef;
+import static org.o42a.parser.Grammar.scopeRef;
 
-import org.o42a.ast.ref.AscendantRefNode;
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
@@ -45,23 +46,20 @@ public class RefParser implements Parser<RefNode> {
 			owner = context.parse(scopeRef());
 			break;
 		case ':':
-			owner = parseAscendantRef(context, context.parse(scopeRef()));
-			break;
-		case '^':
-			owner = context.parse(ascendantRef());
+			owner = context.parse(scopeRef());
 			break;
 		case '$':
 
 			final IntrinsicRefNode intrinsicRef = context.parse(intrinsicRef());
 
 			if (intrinsicRef != null) {
-				owner = parseAscendantRef(context, intrinsicRef);
+				owner = intrinsicRef;
 			} else {
-				owner = parseAscendantRef(context, context.parse(scopeRef()));
+				owner = context.parse(scopeRef());
 			}
 			break;
 		default:
-			owner = parseAscendantRef(context, context.parse(parentRef()));
+			owner = context.parse(parentRef());
 		}
 		if (context.isEOF()) {
 			return owner;
@@ -70,26 +68,6 @@ public class RefParser implements Parser<RefNode> {
 		final RefNode ref = context.parse(new SubRefParser(owner, false));
 
 		return ref != null ? ref : owner;
-	}
-
-	private static RefNode parseAscendantRef(
-			ParserContext context,
-			RefNode owner) {
-		if (owner == null) {
-			return null;
-		}
-		if (context.next() != '^') {
-			return owner;
-		}
-
-		final AscendantRefNode ascendantRef =
-				context.parse(ascendantRef(owner));
-
-		if (ascendantRef != null) {
-			return ascendantRef;
-		}
-
-		return owner;
 	}
 
 }
