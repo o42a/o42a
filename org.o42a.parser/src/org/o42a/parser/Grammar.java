@@ -122,14 +122,6 @@ public class Grammar {
 		return new DerefParser(owner);
 	}
 
-	public static Parser<AscendantRefNode> ascendantRef() {
-		return AscendantRefParser.ASCENDANT_REF;
-	}
-
-	public static Parser<AscendantRefNode> ascendantRef(RefNode overridden) {
-		return new AscendantRefParser(overridden);
-	}
-
 	public static Parser<MacroSubstitutionNode> macroSbstitution() {
 		return MacroSubstitutionParser.MACRO_SUBSTITUTION_PARSER;
 	}

@@ -58,11 +58,6 @@ public abstract class AbstractRefVisitor<R, P> implements RefNodeVisitor<R, P> {
 	}
 
 	@Override
-	public R visitAscendantRef(AscendantRefNode ref, P p) {
-		return visitRef(ref, p);
-	}
-
-	@Override
 	public R visitMacroSubstitution(MacroSubstitutionNode substitution, P p) {
 		return visitRef(substitution, p);
 	}

@@ -36,8 +36,6 @@ public interface RefNodeVisitor<R, P> {
 
 	R visitDeref(DerefNode ref, P p);
 
-	R visitAscendantRef(AscendantRefNode ref, P p);
-
 	R visitMacroSubstitution(MacroSubstitutionNode substitution, P p);
 
 }

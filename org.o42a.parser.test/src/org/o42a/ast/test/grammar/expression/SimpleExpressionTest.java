@@ -57,7 +57,6 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(AdapterRefNode.class, parse("::@@bar"));
 		to(AdapterRefNode.class, parse("$@@bar"));
 		to(AdapterRefNode.class, parse("$$@@bar"));
-		to(AdapterRefNode.class, parse("^@@bar"));
 	}
 
 	@Test
@@ -97,25 +96,6 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	@Test
 	public void intrinsicRef() {
 		to(IntrinsicRefNode.class, parse("$foo$"));
-	}
-
-	@Test
-	public void ascendantRef() {
-		to(AscendantRefNode.class, parse("^"));
-		to(AscendantRefNode.class, parse(":^"));
-		to(AscendantRefNode.class, parse("::^"));
-		to(AscendantRefNode.class, parse("$^"));
-		to(AscendantRefNode.class, parse("$$^"));
-		to(AscendantRefNode.class, parse("$foo$^"));
-		to(AscendantRefNode.class, parse("foo::^"));
-
-		to(AscendantRefNode.class, parse("^foo^"));
-		to(AscendantRefNode.class, parse(":^foo^"));
-		to(AscendantRefNode.class, parse("::^foo^"));
-		to(AscendantRefNode.class, parse("$^foo^"));
-		to(AscendantRefNode.class, parse("$$^foo^"));
-		to(AscendantRefNode.class, parse("$foo$^foo^"));
-		to(AscendantRefNode.class, parse("foo::^bar^"));
 	}
 
 	@Test
