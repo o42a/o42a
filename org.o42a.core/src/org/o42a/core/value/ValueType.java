@@ -22,6 +22,8 @@ package org.o42a.core.value;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayValueType;
+import org.o42a.core.object.directive.Directive;
+import org.o42a.core.object.directive.impl.DirectiveValueType;
 import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.StaticTypeRef;

@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.object.directive.impl;
 
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
@@ -27,7 +27,9 @@ import org.o42a.core.ir.value.ValType.Op;
 import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
-import org.o42a.core.value.*;
+import org.o42a.core.object.directive.Directive;
+import org.o42a.core.value.SingleValueStruct;
+import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.Void;
 
 
@@ -37,7 +39,7 @@ public class DirectiveValueStruct extends SingleValueStruct<Directive> {
 			new DirectiveValueStruct();
 
 	private DirectiveValueStruct() {
-		super(ValueType.DIRECTIVE, Directive.class);
+		super(DirectiveValueType.INSTANCE, Directive.class);
 	}
 
 	@Override
