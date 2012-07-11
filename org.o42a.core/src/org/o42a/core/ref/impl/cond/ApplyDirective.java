@@ -19,11 +19,11 @@
 */
 package org.o42a.core.ref.impl.cond;
 
+import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.st.Instruction;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.value.Directive;
 
 
 final class ApplyDirective implements Instruction {

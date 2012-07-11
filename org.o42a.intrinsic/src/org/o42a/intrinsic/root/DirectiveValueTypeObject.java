@@ -25,9 +25,9 @@ import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.directive.Directive;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.st.InstructionContext;
-import org.o42a.core.value.Directive;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
