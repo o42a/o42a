@@ -29,6 +29,8 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
+import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.impl.MacroValueStruct;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -52,6 +54,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			StringValueStruct.INSTANCE;
 	public static final SingleValueStruct<Directive> DIRECTIVE =
 			DirectiveValueStruct.INSTANCE;
+	public static final SingleValueStruct<Macro> MACRO =
+			MacroValueStruct.INSTANCE;
 
 	public static final SingleValueStruct<java.lang.Void> NONE =
 			NoneValueStruct.INSTANCE;
