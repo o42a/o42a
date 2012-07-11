@@ -130,6 +130,10 @@ public class Grammar {
 		return new AscendantRefParser(overridden);
 	}
 
+	public static Parser<MacroSubstitutionNode> macroSbstitution() {
+		return MacroSubstitutionParser.MACRO_SUBSTITUTION_PARSER;
+	}
+
 	public static Parser<RefNode> ref() {
 		return RefParser.REF;
 	}

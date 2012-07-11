@@ -50,6 +50,9 @@ public class RefParser implements Parser<RefNode> {
 		case '^':
 			owner = context.parse(ascendantRef());
 			break;
+		case '#':
+			owner = context.parse(macroSbstitution());
+			break;
 		case '$':
 
 			final IntrinsicRefNode intrinsicRef = context.parse(intrinsicRef());

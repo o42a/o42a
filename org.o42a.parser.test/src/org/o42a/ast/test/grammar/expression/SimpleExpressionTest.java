@@ -119,6 +119,12 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void macroSubstitution() {
+		to(MacroSubstitutionNode.class, parse("#foo: bar"));
+		to(MacroSubstitutionNode.class, parse("# $$"));
+	}
+
+	@Test
 	public void unaryExpression() {
 		to(UnaryNode.class, parse("+foo"));
 		to(UnaryNode.class, parse("-foo"));
