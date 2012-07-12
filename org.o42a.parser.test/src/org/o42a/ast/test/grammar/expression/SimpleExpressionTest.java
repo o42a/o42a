@@ -99,9 +99,9 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void macroSubstitution() {
-		to(MacroSubstitutionNode.class, parse("#foo: bar"));
-		to(MacroSubstitutionNode.class, parse("# $$"));
+	public void metaRef() {
+		to(MetaRefNode.class, parse("#foo: bar"));
+		to(MetaRefNode.class, parse("# ::"));
 	}
 
 	@Test

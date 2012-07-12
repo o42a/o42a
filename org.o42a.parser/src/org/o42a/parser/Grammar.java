@@ -122,8 +122,8 @@ public class Grammar {
 		return new DerefParser(owner);
 	}
 
-	public static Parser<MacroSubstitutionNode> macroSbstitution() {
-		return MacroSubstitutionParser.MACRO_SUBSTITUTION_PARSER;
+	public static Parser<MetaRefNode> metaRef() {
+		return MetaRefParser.META_REF;
 	}
 
 	public static Parser<RefNode> ref() {

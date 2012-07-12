@@ -22,24 +22,23 @@ package org.o42a.parser.grammar.ref;
 import static org.o42a.parser.Grammar.ref;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.ref.MacroSubstitutionNode;
-import org.o42a.ast.ref.MacroSubstitutionNode.Prefix;
+import org.o42a.ast.ref.MetaRefNode;
+import org.o42a.ast.ref.MetaRefNode.Prefix;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class MacroSubstitutionParser implements Parser<MacroSubstitutionNode> {
+public class MetaRefParser implements Parser<MetaRefNode> {
 
-	public static final MacroSubstitutionParser MACRO_SUBSTITUTION_PARSER =
-			new MacroSubstitutionParser();
+	public static final MetaRefParser META_REF = new MetaRefParser();
 
-	private MacroSubstitutionParser() {
+	private MetaRefParser() {
 	}
 
 	@Override
-	public MacroSubstitutionNode parse(ParserContext context) {
+	public MetaRefNode parse(ParserContext context) {
 		if (context.next() != '#') {
 			return null;
 		}
@@ -50,10 +49,10 @@ public class MacroSubstitutionParser implements Parser<MacroSubstitutionNode> {
 
 		final SignNode<Prefix> prefix = context.acceptComments(
 				false,
-				new SignNode<MacroSubstitutionNode.Prefix>(
+				new SignNode<MetaRefNode.Prefix>(
 						start,
 						context.current().fix(),
-						MacroSubstitutionNode.Prefix.HASH));
+						MetaRefNode.Prefix.HASH));
 
 		final RefNode macro = context.parse(ref());
 
@@ -64,7 +63,7 @@ public class MacroSubstitutionParser implements Parser<MacroSubstitutionNode> {
 					"Missing macro reference to substitute");
 		}
 
-		return new MacroSubstitutionNode(prefix, macro);
+		return new MetaRefNode(prefix, macro);
 	}
 
 }
