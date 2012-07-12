@@ -23,12 +23,12 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 
 
-public class MacroSubstitutionNode extends AbstractRefNode {
+public class MetaRefNode extends AbstractRefNode {
 
 	private final SignNode<Prefix> prefix;
 	private final RefNode macro;
 
-	public MacroSubstitutionNode(SignNode<Prefix> prefix, RefNode macro) {
+	public MetaRefNode(SignNode<Prefix> prefix, RefNode macro) {
 		super(prefix.getStart(), end(prefix, macro));
 		this.prefix = prefix;
 		this.macro = macro;
@@ -44,8 +44,7 @@ public class MacroSubstitutionNode extends AbstractRefNode {
 
 	@Override
 	public <R, P> R accept(RefNodeVisitor<R, P> visitor, P p) {
-		// TODO Auto-generated method stub
-		return null;
+		return visitor.visitMetaRef(this, p);
 	}
 
 	@Override

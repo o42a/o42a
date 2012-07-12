@@ -47,7 +47,7 @@ public class RefParser implements Parser<RefNode> {
 			owner = context.parse(scopeRef());
 			break;
 		case '#':
-			owner = context.parse(macroSbstitution());
+			owner = context.parse(metaRef());
 			break;
 		case '$':
 
