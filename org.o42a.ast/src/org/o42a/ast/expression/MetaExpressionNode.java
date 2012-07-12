@@ -17,18 +17,18 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.ref;
+package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 
 
-public class MetaRefNode extends AbstractRefNode {
+public class MetaExpressionNode extends AbstractExpressionNode {
 
 	private final SignNode<Prefix> prefix;
-	private final RefNode macro;
+	private final ExpressionNode macro;
 
-	public MetaRefNode(SignNode<Prefix> prefix, RefNode macro) {
+	public MetaExpressionNode(SignNode<Prefix> prefix, ExpressionNode macro) {
 		super(prefix.getStart(), end(prefix, macro));
 		this.prefix = prefix;
 		this.macro = macro;
@@ -38,13 +38,13 @@ public class MetaRefNode extends AbstractRefNode {
 		return this.prefix;
 	}
 
-	public final RefNode getMacro() {
+	public final ExpressionNode getMacro() {
 		return this.macro;
 	}
 
 	@Override
-	public <R, P> R accept(RefNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitMetaRef(this, p);
+	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitMetaExpression(this, p);
 	}
 
 	@Override
