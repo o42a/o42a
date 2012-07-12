@@ -17,28 +17,29 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.parser.grammar.ref;
+package org.o42a.parser.grammar.expression;
 
-import static org.o42a.parser.Grammar.ref;
+import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.ref.MetaRefNode;
-import org.o42a.ast.ref.MetaRefNode.Prefix;
-import org.o42a.ast.ref.RefNode;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.MetaExpressionNode;
+import org.o42a.ast.expression.MetaExpressionNode.Prefix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class MetaRefParser implements Parser<MetaRefNode> {
+public class MetaExpressionParser implements Parser<MetaExpressionNode> {
 
-	public static final MetaRefParser META_REF = new MetaRefParser();
+	public static final MetaExpressionParser META_EXPRESSION =
+			new MetaExpressionParser();
 
-	private MetaRefParser() {
+	private MetaExpressionParser() {
 	}
 
 	@Override
-	public MetaRefNode parse(ParserContext context) {
+	public MetaExpressionNode parse(ParserContext context) {
 		if (context.next() != '#') {
 			return null;
 		}
@@ -49,21 +50,21 @@ public class MetaRefParser implements Parser<MetaRefNode> {
 
 		final SignNode<Prefix> prefix = context.acceptComments(
 				false,
-				new SignNode<MetaRefNode.Prefix>(
+				new SignNode<MetaExpressionNode.Prefix>(
 						start,
 						context.current().fix(),
-						MetaRefNode.Prefix.HASH));
+						MetaExpressionNode.Prefix.HASH));
 
-		final RefNode macro = context.parse(ref());
+		final ExpressionNode macro = context.parse(simpleExpression());
 
 		if (macro == null) {
 			context.getLogger().error(
 					"missing_macro",
 					prefix,
-					"Missing macro reference to substitute");
+					"Missing macro expression to substitute");
 		}
 
-		return new MetaRefNode(prefix, macro);
+		return new MetaExpressionNode(prefix, macro);
 	}
 
 }

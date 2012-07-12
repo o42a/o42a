@@ -76,6 +76,11 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
+	public R visitMetaExpression(MetaExpressionNode meta, P p) {
+		return visitExpression(meta, p);
+	}
+
+	@Override
 	protected R visitRef(RefNode ref, P p) {
 		return visitExpression(ref, p);
 	}

@@ -122,10 +122,6 @@ public class Grammar {
 		return new DerefParser(owner);
 	}
 
-	public static Parser<MetaRefNode> metaRef() {
-		return MetaRefParser.META_REF;
-	}
-
 	public static Parser<RefNode> ref() {
 		return RefParser.REF;
 	}
@@ -165,6 +161,10 @@ public class Grammar {
 
 	public static Parser<InclusionNode> inclusion() {
 		return InclusionParser.INCLUSION;
+	}
+
+	public static Parser<MetaExpressionNode> metaExpression() {
+		return MetaExpressionParser.META_EXPRESSION;
 	}
 
 	public static final Parser<ExpressionNode> expression() {

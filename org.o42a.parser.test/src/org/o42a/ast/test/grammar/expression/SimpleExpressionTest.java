@@ -99,9 +99,11 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void metaRef() {
-		to(MetaRefNode.class, parse("#foo: bar"));
-		to(MetaRefNode.class, parse("# ::"));
+	public void metaExpression() {
+		to(MetaExpressionNode.class, parse("#foo: bar"));
+		to(MetaExpressionNode.class, parse("# ::"));
+		to(MetaExpressionNode.class, parse("#(abc)"));
+		to(MetaExpressionNode.class, parse("# abc ()"));
 	}
 
 	@Test

@@ -19,7 +19,9 @@
 */
 package org.o42a.parser.grammar.ref;
 
-import static org.o42a.parser.Grammar.*;
+import static org.o42a.parser.Grammar.intrinsicRef;
+import static org.o42a.parser.Grammar.parentRef;
+import static org.o42a.parser.Grammar.scopeRef;
 
 import org.o42a.ast.ref.IntrinsicRefNode;
 import org.o42a.ast.ref.RefNode;
@@ -45,9 +47,6 @@ public class RefParser implements Parser<RefNode> {
 			break;
 		case ':':
 			owner = context.parse(scopeRef());
-			break;
-		case '#':
-			owner = context.parse(metaRef());
 			break;
 		case '$':
 

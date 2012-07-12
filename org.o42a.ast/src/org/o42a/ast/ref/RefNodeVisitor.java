@@ -20,6 +20,7 @@
 package org.o42a.ast.ref;
 
 
+
 public interface RefNodeVisitor<R, P> {
 
 	R visitScopeRef(ScopeRefNode ref, P p);
@@ -35,7 +36,5 @@ public interface RefNodeVisitor<R, P> {
 	R visitBodyRef(BodyRefNode ref, P p);
 
 	R visitDeref(DerefNode ref, P p);
-
-	R visitMetaRef(MetaRefNode ref, P p);
 
 }
