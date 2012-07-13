@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,16 +17,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.object.macro;
 
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogRecord;
 
 
-public interface PathExpander {
+public interface MacroExpander extends LocationInfo {
 
-	BoundPath getPath();
-
-	boolean replay(PathWalker pathWalker);
+	CompilerLogger getLogger();
 
 	void error(LogRecord message);
 

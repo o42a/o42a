@@ -45,4 +45,6 @@ public interface ExpressionNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 
 	R visitPhrase(PhraseNode phrase, P p);
 
+	R visitMacroExpansion(MacroExpansionNode expansion, P p);
+
 }

@@ -54,6 +54,8 @@ public class Root extends Obj {
 
 	private static final MemberName DIRECTIVE_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("directive"));
+	private static final MemberName MACRO_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("macro"));
 	private static final MemberName INTEGER_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("integer"));
 	private static final MemberName FLOAT_MEMBER =
@@ -84,6 +86,7 @@ public class Root extends Obj {
 	private final AnnotatedSources sources;
 
 	private Obj directiveObject;
+	private Obj macroObject;
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
@@ -117,6 +120,14 @@ public class Root extends Obj {
 		}
 		return this.directiveObject =
 				member(DIRECTIVE_MEMBER).substance(dummyUser()).toObject();
+	}
+
+	public final Obj getMacro() {
+		if (this.macroObject != null) {
+			return this.macroObject;
+		}
+		return this.macroObject =
+				member(MACRO_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getInteger() {

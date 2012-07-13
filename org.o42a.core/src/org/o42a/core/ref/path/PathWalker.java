@@ -28,6 +28,7 @@ import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.impl.DummyPathWalker;
+import org.o42a.util.log.LogRecord;
 
 
 public interface PathWalker {
@@ -62,6 +63,20 @@ public interface PathWalker {
 	boolean dep(Obj object, Step step, Ref dependency);
 
 	boolean object(Step step, Obj object);
+
+	/**
+	 * Path step may invoke this when the path can not be resolved.
+	 *
+	 * <p>The error message will present in
+	 * {@link PathResolution#getErrorMessage() path resolution}. It is up to the
+	 * caller to decide what to do with it.</p>
+	 *
+	 * <p>When error message is omitted this generally means that error already
+	 * logged.</>
+	 *
+	 * @param message error message or <code>null</code>.
+	 */
+	void error(LogRecord message);
 
 	/**
 	 * Informs walker about path trimming.

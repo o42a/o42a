@@ -21,6 +21,7 @@ package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ref.path.*;
+import org.o42a.util.log.LogRecord;
 
 
 public abstract class PathTracker implements PathWalker, PathExpander {
@@ -28,9 +29,14 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 	private final BoundPath path;
 	protected final PathResolver initialResolver;
 	private final PathWalker walker;
+	private LogRecord errorMessage;
 	private boolean aborted;
+	private boolean error;
 
-	public PathTracker(BoundPath path, PathResolver resolver, PathWalker walker) {
+	public PathTracker(
+			BoundPath path,
+			PathResolver resolver,
+			PathWalker walker) {
 		this.path = path;
 		this.initialResolver = resolver;
 		this.walker = walker;
@@ -49,6 +55,14 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 		return this.aborted;
 	}
 
+	public final boolean isError() {
+		return this.error;
+	}
+
+	public final LogRecord getErrorMessage() {
+		return this.errorMessage;
+	}
+
 	@Override
 	public boolean replay(PathWalker walker) {
 		throw new IllegalStateException();
@@ -56,17 +70,25 @@ public abstract class PathTracker implements PathWalker, PathExpander {
 
 	@Override
 	public final boolean root(BoundPath path, Scope root) {
-		throw new UnsupportedOperationException();
+		return walk(walker().root(path, root));
 	}
 
 	@Override
 	public final boolean start(BoundPath path, Scope start) {
-		throw new UnsupportedOperationException();
+		return walk(walker().start(path, start));
 	}
 
 	@Override
 	public void pathTrimmed(BoundPath path, Scope root) {
 		walker().pathTrimmed(path, root);
+	}
+
+	@Override
+	public void error(LogRecord message) {
+		walker().error(message);
+		this.errorMessage = message;
+		this.error = true;
+		this.aborted = true;
 	}
 
 	@Override

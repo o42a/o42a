@@ -116,6 +116,11 @@ public class CompilerIntrinsics extends Intrinsics {
 	}
 
 	@Override
+	public Obj getMacro() {
+		return this.root.getMacro();
+	}
+
+	@Override
 	public Obj getInteger() {
 		return this.root.getInteger();
 	}
