@@ -23,23 +23,23 @@ import static org.o42a.parser.Grammar.simpleExpression;
 
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.MetaExpressionNode;
-import org.o42a.ast.expression.MetaExpressionNode.Prefix;
+import org.o42a.ast.expression.MacroExpansionNode;
+import org.o42a.ast.expression.MacroExpansionNode.Prefix;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 
 
-public class MetaExpressionParser implements Parser<MetaExpressionNode> {
+public class MacroExpansionParser implements Parser<MacroExpansionNode> {
 
-	public static final MetaExpressionParser META_EXPRESSION =
-			new MetaExpressionParser();
+	public static final MacroExpansionParser MACRO_EXPANSION =
+			new MacroExpansionParser();
 
-	private MetaExpressionParser() {
+	private MacroExpansionParser() {
 	}
 
 	@Override
-	public MetaExpressionNode parse(ParserContext context) {
+	public MacroExpansionNode parse(ParserContext context) {
 		if (context.next() != '#') {
 			return null;
 		}
@@ -50,10 +50,10 @@ public class MetaExpressionParser implements Parser<MetaExpressionNode> {
 
 		final SignNode<Prefix> prefix = context.acceptComments(
 				false,
-				new SignNode<MetaExpressionNode.Prefix>(
+				new SignNode<MacroExpansionNode.Prefix>(
 						start,
 						context.current().fix(),
-						MetaExpressionNode.Prefix.HASH));
+						MacroExpansionNode.Prefix.HASH));
 
 		final ExpressionNode macro = context.parse(simpleExpression());
 
@@ -64,7 +64,7 @@ public class MetaExpressionParser implements Parser<MetaExpressionNode> {
 					"Missing macro expression to substitute");
 		}
 
-		return new MetaExpressionNode(prefix, macro);
+		return new MacroExpansionNode(prefix, macro);
 	}
 
 }

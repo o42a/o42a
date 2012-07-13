@@ -163,8 +163,8 @@ public class Grammar {
 		return InclusionParser.INCLUSION;
 	}
 
-	public static Parser<MetaExpressionNode> metaExpression() {
-		return MetaExpressionParser.META_EXPRESSION;
+	public static Parser<MacroExpansionNode> macroExpansion() {
+		return MacroExpansionParser.MACRO_EXPANSION;
 	}
 
 	public static final Parser<ExpressionNode> expression() {
