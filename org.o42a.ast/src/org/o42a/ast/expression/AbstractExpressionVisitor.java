@@ -76,6 +76,11 @@ public abstract class AbstractExpressionVisitor<R, P>
 	}
 
 	@Override
+	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
+		return visitExpression(expansion, p);
+	}
+
+	@Override
 	protected R visitRef(RefNode ref, P p) {
 		return visitExpression(ref, p);
 	}
