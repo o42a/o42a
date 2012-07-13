@@ -19,40 +19,24 @@
 */
 package org.o42a.core.object.macro.impl;
 
-import org.o42a.core.object.macro.MacroExpander;
+import org.o42a.core.Scope;
+import org.o42a.core.object.macro.MacroInitializer;
 import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.util.log.LogRecord;
-import org.o42a.util.log.Loggable;
 
 
-public class MacroExpanderImpl implements MacroExpander {
+final class MacroInitializerImpl
+		extends AbstractMacroExpander
+		implements MacroInitializer {
 
-	private final PathExpander pathExpander;
-
-	public MacroExpanderImpl(PathExpander pathExpander) {
-		this.pathExpander = pathExpander;
+	MacroInitializerImpl(
+			MacroExpansionFragment expansion,
+			PathExpander pathExpander) {
+		super(expansion, pathExpander);
 	}
 
 	@Override
-	public final CompilerContext getContext() {
-		return this.pathExpander.getPath().getContext();
-	}
-
-	@Override
-	public final Loggable getLoggable() {
-		return this.pathExpander.getPath().getLoggable();
-	}
-
-	@Override
-	public final CompilerLogger getLogger() {
-		return getContext().getLogger();
-	}
-
-	@Override
-	public void error(LogRecord message) {
-		this.pathExpander.error(message);
+	public final Scope getStart() {
+		return getOrigin();
 	}
 
 }
