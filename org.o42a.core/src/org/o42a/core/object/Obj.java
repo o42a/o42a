@@ -27,7 +27,9 @@ import static org.o42a.core.member.clause.Clause.validateImplicitSubClauses;
 import static org.o42a.core.object.impl.ObjectResolution.MEMBERS_RESOLVED;
 import static org.o42a.core.object.impl.ObjectResolution.RESOLVING_MEMBERS;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.codegen.Generator;
@@ -40,7 +42,6 @@ import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldUses;
 import org.o42a.core.member.field.MemberField;
-import org.o42a.core.member.local.Dep;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
@@ -63,7 +64,7 @@ import org.o42a.util.log.Loggable;
 
 
 public abstract class Obj
-		extends ObjectBase
+		extends Placed
 		implements MemberContainer, ClauseContainer {
 
 	private final OwningObject owningObject = new OwningObject(this);
@@ -78,14 +79,12 @@ public abstract class Obj
 	private Obj wrapped;
 	private ObjectType type;
 	private ObjectValue value;
-	private int depNameSeq;
+	private Deps deps;
 
 	private final HashMap<MemberKey, Member> members =
 			new HashMap<MemberKey, Member>();
 	private final HashMap<MemberId, Symbol> symbols =
 			new HashMap<MemberId, Symbol>();
-	private final LinkedHashMap<Object, Dep> deps =
-			new LinkedHashMap<Object, Dep>();
 
 	private ObjectMembers objectMembers;
 	private MemberClause[] explicitClauses;
@@ -94,6 +93,7 @@ public abstract class Obj
 	private FieldUses fieldUses;
 
 	private ObjectIR ir;
+
 
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
@@ -336,8 +336,11 @@ public abstract class Obj
 		return this.implicitClauses = implicitClauses;
 	}
 
-	public Collection<? extends Dep> getDeps() {
-		return this.deps.values();
+	public final Deps deps() {
+		if (this.deps != null) {
+			return this.deps;
+		}
+		return this.deps = new Deps(this);
 	}
 
 	@Override
@@ -794,24 +797,6 @@ public abstract class Obj
 
 	protected abstract Obj findObjectIn(Scope enclosing);
 
-	@Override
-	protected Dep addDep(Ref ref) {
-		assert getContext().fullResolution().assertIncomplete();
-
-		final int newDepId = this.depNameSeq + 1;
-		final Dep newDep = new Dep(
-				this,
-				ref,
-				Integer.toString(newDepId));
-		final Dep dep = addDep(newDep);
-
-		if (dep == newDep) {
-			this.depNameSeq = newDepId;
-		}
-
-		return dep;
-	}
-
 	protected void fullyResolve() {
 
 		final Obj wrapped = getWrapped();
@@ -980,21 +965,6 @@ public abstract class Obj
 	private Symbol memberById(MemberId memberId) {
 		resolveMembers(memberId.containsAdapterId());
 		return this.symbols.get(memberId);
-	}
-
-	private Dep addDep(Dep dep) {
-
-		final Object key = dep.getDepKey();
-		final Dep found = this.deps.put(key, dep);
-
-		if (found == null) {
-			return dep;
-		}
-
-		this.deps.put(key, found);
-		found.setDisabled(false);
-
-		return found;
 	}
 
 	private boolean assertImplicitSamples(Sample[] samples) {

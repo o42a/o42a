@@ -19,27 +19,11 @@
 */
 package org.o42a.core.object.impl;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Placed;
 import org.o42a.core.member.local.Dep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogInfo;
 
 
-public abstract class ObjectBase extends Placed {
-
-	public ObjectBase(
-			CompilerContext context,
-			LogInfo location,
-			Distributor distributor) {
-		super(context, location, distributor);
-	}
-
-	public ObjectBase(LocationInfo location, Distributor distributor) {
-		super(location, distributor);
-	}
+public abstract class ObjectDeps {
 
 	protected abstract Dep addDep(Ref ref);
 

@@ -89,7 +89,7 @@ public abstract class ObjectOp extends IROp implements HostOp {
 	}
 
 	public void fillDeps(CodeDirs dirs, Obj sample) {
-		for (Dep dep : sample.getDeps()) {
+		for (Dep dep : sample.deps()) {
 			if (dep.isDisabled()) {
 				continue;
 			}
