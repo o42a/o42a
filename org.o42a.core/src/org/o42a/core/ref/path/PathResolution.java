@@ -21,36 +21,45 @@ package org.o42a.core.ref.path;
 
 import org.o42a.core.Container;
 import org.o42a.core.object.Obj;
+import org.o42a.util.log.LogRecord;
 
 
 public final class PathResolution {
 
-	static final PathResolution PATH_RESOLUTION_ERROR =
-			new PathResolution(true);
-	static final PathResolution NO_PATH_RESOLUTION =
-			new PathResolution(false);
-
 	static PathResolution pathResolution(BoundPath path, Container result) {
-		if (result == null) {
-			return PATH_RESOLUTION_ERROR;
-		}
 		return new PathResolution(path, result);
+	}
+
+	static PathResolution pathResolutionError(
+			BoundPath path,
+			LogRecord message) {
+		return new PathResolution(path, message, true);
+	}
+
+	static PathResolution noPathResolutionError(BoundPath path) {
+		return new PathResolution(path, null, false);
 	}
 
 	private final BoundPath path;
 	private final Container result;
+	private final LogRecord errorMessage;
 	private final boolean error;
 
-	private PathResolution(boolean error) {
-		this.path = null;
+	private PathResolution(
+			BoundPath path,
+			LogRecord errorMessage,
+			boolean error) {
+		this.path = path;
 		this.result = null;
 		this.error = error;
+		this.errorMessage = errorMessage;
 	}
 
 	private PathResolution(BoundPath path, Container result) {
 		this.path = path;
 		this.result = result;
 		this.error = false;
+		this.errorMessage = null;
 	}
 
 	public final boolean isError() {
@@ -76,6 +85,10 @@ public final class PathResolution {
 			"Path " + this.path + " should lead to object";
 
 		return object;
+	}
+
+	public LogRecord getErrorMessage() {
+		return this.errorMessage;
 	}
 
 	@Override

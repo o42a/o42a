@@ -65,6 +65,9 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	final Ascendants getAscendants() {
+		if (this.targetRef == null) {
+			return this.ascendants;
+		}
 		return this.ascendants.setAncestor(
 				ancestor(this.targetRef.getTypeRef()));
 	}
