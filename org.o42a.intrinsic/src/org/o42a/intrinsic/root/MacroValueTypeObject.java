@@ -26,7 +26,9 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
@@ -53,6 +55,15 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 		}
 
 		return ascendantDefinitions.override(explicitDefinitions);
+	}
+
+	@Override
+	public Path expand(MacroExpander expander) {
+		expander.error(expander.getLogger().errorRecord(
+				"no_macro_expansion",
+				expander,
+				"Macro can not be expanded"));
+		return null;
 	}
 
 	@Override

@@ -19,11 +19,15 @@
 */
 package org.o42a.core.object.macro;
 
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.source.CompilerLogger;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogRecord;
 
 
-public interface Macro {
+public interface MacroExpander extends LocationInfo {
 
-	Path expand(MacroExpander expander);
+	CompilerLogger getLogger();
+
+	void error(LogRecord message);
 
 }
