@@ -103,7 +103,7 @@ public final class ParentLocalStep extends Step implements ReversePath {
 				rebuilder.restPath(enclosingContainer.getScope())
 				.target(this.object.distributeIn(enclosingContainer));
 
-		rebuilder.replaceRest(object().addDep(ref));
+		rebuilder.replaceRest(deps().addDep(ref));
 	}
 
 	@Override
@@ -163,8 +163,8 @@ public final class ParentLocalStep extends Step implements ReversePath {
 		return new OpaqueLocalOp(start);
 	}
 
-	private final ObjectBase object() {
-		return this.object;
+	private final ObjectDeps deps() {
+		return this.object.deps();
 	}
 
 	private static final class OpaqueLocalOp extends PathOp {
