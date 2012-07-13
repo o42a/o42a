@@ -94,7 +94,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '[':
 			return context.parse(brackets());
 		case '#':
-			return context.parse(metaExpression());
+			return context.parse(macroExpansion());
 		default:
 			if (isDigit(c)) {
 				return context.parse(decimal());

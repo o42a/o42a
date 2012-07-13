@@ -23,12 +23,12 @@ import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 
 
-public class MetaExpressionNode extends AbstractExpressionNode {
+public class MacroExpansionNode extends AbstractExpressionNode {
 
 	private final SignNode<Prefix> prefix;
 	private final ExpressionNode macro;
 
-	public MetaExpressionNode(SignNode<Prefix> prefix, ExpressionNode macro) {
+	public MacroExpansionNode(SignNode<Prefix> prefix, ExpressionNode macro) {
 		super(prefix.getStart(), end(prefix, macro));
 		this.prefix = prefix;
 		this.macro = macro;
@@ -44,7 +44,7 @@ public class MetaExpressionNode extends AbstractExpressionNode {
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitMetaExpression(this, p);
+		return visitor.visitMacroExpansion(this, p);
 	}
 
 	@Override

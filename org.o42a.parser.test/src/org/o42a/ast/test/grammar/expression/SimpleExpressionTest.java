@@ -99,11 +99,11 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void metaExpression() {
-		to(MetaExpressionNode.class, parse("#foo: bar"));
-		to(MetaExpressionNode.class, parse("# ::"));
-		to(MetaExpressionNode.class, parse("#(abc)"));
-		to(MetaExpressionNode.class, parse("# abc ()"));
+	public void macroExpansion() {
+		to(MacroExpansionNode.class, parse("#foo: bar"));
+		to(MacroExpansionNode.class, parse("# ::"));
+		to(MacroExpansionNode.class, parse("#(abc)"));
+		to(MacroExpansionNode.class, parse("# abc ()"));
 	}
 
 	@Test
