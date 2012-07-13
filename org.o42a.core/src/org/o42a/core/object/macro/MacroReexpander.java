@@ -19,13 +19,7 @@
 */
 package org.o42a.core.object.macro;
 
-import org.o42a.core.ref.path.Path;
 
-
-public interface Macro {
-
-	Path init(MacroInitializer initializer);
-
-	Path reexpand(MacroReexpander reexpander);
+public interface MacroReexpander extends MacroExpander {
 
 }

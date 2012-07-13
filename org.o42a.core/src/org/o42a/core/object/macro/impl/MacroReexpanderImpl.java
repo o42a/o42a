@@ -17,15 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.macro;
+package org.o42a.core.object.macro.impl;
 
-import org.o42a.core.ref.path.Path;
+import org.o42a.core.Scope;
+import org.o42a.core.object.macro.MacroReexpander;
+import org.o42a.core.ref.path.PathExpander;
 
 
-public interface Macro {
+final class MacroReexpanderImpl
+		extends AbstractMacroExpander
+		implements MacroReexpander {
 
-	Path init(MacroInitializer initializer);
+	private final Scope start;
 
-	Path reexpand(MacroReexpander reexpander);
+	MacroReexpanderImpl(
+			MacroExpansionFragment expansion,
+			PathExpander pathExpander,
+			Scope start) {
+		super(expansion, pathExpander);
+		this.start = start;
+	}
+
+	@Override
+	public final Scope getStart() {
+		return this.start;
+	}
 
 }

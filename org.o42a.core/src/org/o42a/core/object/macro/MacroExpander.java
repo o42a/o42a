@@ -19,12 +19,20 @@
 */
 package org.o42a.core.object.macro;
 
+import org.o42a.core.Scope;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.log.LogRecord;
 
 
 public interface MacroExpander extends LocationInfo {
+
+	Scope getOrigin();
+
+	BoundPath getPath();
+
+	Scope getStart();
 
 	CompilerLogger getLogger();
 

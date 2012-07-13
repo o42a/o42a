@@ -42,6 +42,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
+import org.o42a.core.object.macro.impl.MacroExpansionFragment;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -193,6 +194,13 @@ public class BoundPath extends Location {
 
 	public final BoundPath newObject(ObjectConstructor constructor) {
 		return getRawPath().newObject(constructor).bind(this, getOrigin());
+	}
+
+	public final BoundPath expandMacro() {
+
+		final MacroExpansionFragment expansion = new MacroExpansionFragment();
+
+		return expansion.init(append(expansion));
 	}
 
 	public final BoundPath append(Path path) {
