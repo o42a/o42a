@@ -20,10 +20,11 @@
 package org.o42a.core.object;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.macro.impl.MacroMeta;
 import org.o42a.core.object.meta.Nesting;
 
 
-public final class Meta {
+public final class Meta extends MacroMeta {
 
 	private final Obj object;
 	private Nesting nesting;
