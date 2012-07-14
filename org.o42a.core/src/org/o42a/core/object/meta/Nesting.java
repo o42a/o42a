@@ -17,39 +17,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.object.meta;
 
-import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.meta.impl.NoNesting;
 
 
-public abstract class ConstructedObject extends Obj {
+public abstract class Nesting {
 
-	private final ObjectConstructor constructor;
+	public static final Nesting NO_NESTING = NoNesting.INSTANCE;
 
-	public ConstructedObject(
-			ObjectConstructor constructor,
-			Distributor enclosing) {
-		super(constructor, enclosing);
-		this.constructor = constructor;
-	}
-
-	public final ObjectConstructor getConstructor() {
-		return this.constructor;
-	}
-
-	@Override
-	public String toString() {
-		if (this.constructor == null) {
-			return super.toString();
-		}
-		return this.constructor.toString();
-	}
-
-	@Override
-	protected final Nesting createNesting() {
-		return getConstructor().getNesting();
-	}
+	public abstract Obj findObjectIn(Scope enclosing);
 
 }

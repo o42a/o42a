@@ -17,39 +17,51 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.object;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.object.Obj;
+import org.o42a.core.Scope;
 import org.o42a.core.object.meta.Nesting;
 
 
-public abstract class ConstructedObject extends Obj {
+public final class Meta {
 
-	private final ObjectConstructor constructor;
+	private final Obj object;
+	private Nesting nesting;
 
-	public ConstructedObject(
-			ObjectConstructor constructor,
-			Distributor enclosing) {
-		super(constructor, enclosing);
-		this.constructor = constructor;
+	Meta(Obj object) {
+		this.object = object;
 	}
 
-	public final ObjectConstructor getConstructor() {
-		return this.constructor;
+	public final Obj getObject() {
+		return this.object;
+	}
+
+	public final Obj findIn(Scope enclosing) {
+
+		final Scope enclosingScope = getObject().getScope().getEnclosingScope();
+
+		if (enclosingScope.is(enclosing)) {
+			return getObject();
+		}
+
+		enclosing.assertDerivedFrom(enclosingScope);
+
+		return getNesting().findObjectIn(enclosing);
+	}
+
+	public final Nesting getNesting() {
+		if (this.nesting != null) {
+			return this.nesting;
+		}
+		return this.nesting = getObject().createNesting();
 	}
 
 	@Override
 	public String toString() {
-		if (this.constructor == null) {
+		if (this.object == null) {
 			return super.toString();
 		}
-		return this.constructor.toString();
-	}
-
-	@Override
-	protected final Nesting createNesting() {
-		return getConstructor().getNesting();
+		return "Meta[" + this.object + ']';
 	}
 
 }
