@@ -39,6 +39,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
@@ -205,6 +206,11 @@ public class Root extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return Nesting.NO_NESTING;
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(voidRef(
 				this,
@@ -242,12 +248,6 @@ public class Root extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.createDefinitions();
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
 	}
 
 }

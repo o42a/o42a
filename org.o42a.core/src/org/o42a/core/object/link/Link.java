@@ -27,6 +27,7 @@ import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.type.TypeRef;
@@ -37,6 +38,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	private final Container enclosing;
 	private final ScopePlace place;
+	private final LinkTargetNesting targetNesting = new LinkTargetNesting(this);
 	private LinkValueStruct valueStruct;
 	private Obj target;
 
@@ -64,6 +66,10 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	@Override
 	public final Container getContainer() {
 		return this;
+	}
+
+	public final Nesting getTargetNesting() {
+		return this.targetNesting;
 	}
 
 	public abstract LinkValueType getValueType();
@@ -172,5 +178,28 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	protected abstract Obj createTarget();
 
 	protected abstract Link findLinkIn(Scope enclosing);
+
+	private static final class LinkTargetNesting extends Nesting {
+
+		private final Link link;
+
+		LinkTargetNesting(Link link) {
+			this.link = link;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+			return this.link.findIn(enclosing).getTarget();
+		}
+
+		@Override
+		public String toString() {
+			if (this.link == null) {
+				return super.toString();
+			}
+			return this.link.toString();
+		}
+
+	}
 
 }

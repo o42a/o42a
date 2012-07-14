@@ -39,6 +39,7 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.ObjectConstructorStep;
@@ -51,11 +52,16 @@ import org.o42a.core.value.ValueStruct;
 
 public abstract class ObjectConstructor extends Placed {
 
+	private final Construction construction = new Construction(this);
 	private Obj constructed;
 	private IdentityHashMap<Scope, Obj> propagated;
 
 	public ObjectConstructor(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
+	}
+
+	public final Nesting getNesting() {
+		return this.construction;
 	}
 
 	public final Obj getConstructed() {
@@ -129,6 +135,29 @@ public abstract class ObjectConstructor extends Placed {
 		return propagated;
 	}
 
+	private static final class Construction extends Nesting {
+
+		private final ObjectConstructor constructor;
+
+		Construction(ObjectConstructor constructor) {
+			this.constructor = constructor;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+			return this.constructor.propagate(enclosing);
+		}
+
+		@Override
+		public String toString() {
+			if (this.constructor == null) {
+				return super.toString();
+			}
+			return this.constructor.toString();
+		}
+
+	}
+
 	private static final class Propagated extends Obj {
 
 		private final ObjectConstructor constructor;
@@ -152,6 +181,11 @@ public abstract class ObjectConstructor extends Placed {
 		}
 
 		@Override
+		protected Nesting createNesting() {
+			return this.constructor.getNesting();
+		}
+
+		@Override
 		protected Ascendants buildAscendants() {
 			return new Ascendants(this).addImplicitSample(this.propagatedFrom);
 		}
@@ -163,11 +197,6 @@ public abstract class ObjectConstructor extends Placed {
 		@Override
 		protected Definitions explicitDefinitions() {
 			return emptyDefinitions(this, getScope());
-		}
-
-		@Override
-		protected Obj findObjectIn(Scope enclosing) {
-			return this.constructor.propagate(enclosing);
 		}
 
 	}

@@ -146,27 +146,27 @@ public final class Dep extends Step {
 			+ ", which is not a local scope";
 
 		final LocalResolver localResolver = enclosingLocal.resolver();
-		
+
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver, path, index);
-		
+
 			final RefUsage usage;
-		
+
 			if (index == path.length() - 1) {
 				// Resolve only the last value.
 				usage = resolver.getUsage();
 			} else {
 				usage = CONTAINER_REF_USAGE;
 			}
-		
+
 			this.depRef.resolveAll(
 					localResolver.fullResolver(resolver, usage));
 		}
-		
+
 		final Resolution resolution = this.depRef.resolve(localResolver);
-		
+
 		walker.dep(object, this, this.depRef);
-		
+
 		return resolution.toObject();
 	}
 
@@ -184,7 +184,7 @@ public final class Dep extends Step {
 				new ReversePath() {
 					@Override
 					public Scope revert(Scope target) {
-						return object.findIn(target).getScope();
+						return object.meta().findIn(target).getScope();
 					}
 				})) {
 			return;

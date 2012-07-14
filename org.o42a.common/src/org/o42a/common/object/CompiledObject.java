@@ -19,7 +19,6 @@
 */
 package org.o42a.common.object;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.Inclusions.noInclusions;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
@@ -31,11 +30,11 @@ import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.FieldDeclaration;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
@@ -108,6 +107,11 @@ public class CompiledObject extends Obj {
 	}
 
 	@Override
+	protected final Nesting createNesting() {
+		return getField().toMember().getNesting();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return getCompiler().buildAscendants(new Ascendants(this));
 	}
@@ -140,15 +144,6 @@ public class CompiledObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.createDefinitions();
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-
-		final MemberField field =
-				enclosing.getContainer().member(getField().getKey()).toField();
-
-		return field.object(dummyUser());
 	}
 
 	protected final boolean reportError(Resolver resolver) {

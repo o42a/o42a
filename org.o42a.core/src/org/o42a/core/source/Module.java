@@ -27,7 +27,6 @@ import org.o42a.codegen.Generator;
 import org.o42a.codegen.code.Code;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.ScopeIR;
@@ -36,6 +35,7 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
@@ -86,6 +86,11 @@ public class Module extends Obj {
 	}
 
 	@Override
+	protected final Nesting createNesting() {
+		return Nesting.NO_NESTING;
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return getCompiler().buildAscendants(new Ascendants(this));
 	}
@@ -118,12 +123,6 @@ public class Module extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.createDefinitions();
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
 	}
 
 	private static ModuleScope moduleScope(
