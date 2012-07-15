@@ -203,10 +203,20 @@ public abstract class Field extends ObjectScope {
 			return true;
 		}
 
-		// Object update creates an object.
 		final Obj object = getScopeObject();
 
-		return object != null && object.meta().isUpdated();
+		if (object != null) {
+			return object.meta().isUpdated();
+		}
+
+		final Obj owner = toMember().getMemberOwner().getOwner();
+
+		if (!owner.meta().isUpdated()) {
+			// Field can not be updated without owner to be updated also.
+			return false;
+		}
+
+		return objectAlreadyUpdated();
 	}
 
 	@Override
@@ -262,6 +272,14 @@ public abstract class Field extends ObjectScope {
 
 	protected FieldIR createIR(Generator generator) {
 		return new ObjectFieldIR(generator, this);
+	}
+
+	final boolean objectAlreadyUpdated() {
+
+		// Only instantiated object can be updated.
+		final Obj object = getScopeObject();
+
+		return object != null && object.meta().isUpdated();
 	}
 
 	private Field[] overriddenFields() {
