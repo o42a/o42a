@@ -27,7 +27,9 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PathResolver;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.value.*;
+import org.o42a.core.value.Value;
+import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 import org.o42a.util.log.Loggable;
 
 
@@ -99,7 +101,7 @@ public final class Resolution implements ScopeInfo {
 		if (object == null) {
 			return null;
 		}
-		if (object.value().getValueType() != ValueType.DIRECTIVE) {
+		if (!object.value().getValueType().is(ValueType.DIRECTIVE)) {
 			return null;
 		}
 

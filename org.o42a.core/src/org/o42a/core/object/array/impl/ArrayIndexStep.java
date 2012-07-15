@@ -130,7 +130,7 @@ public class ArrayIndexStep extends Step {
 		final ObjectValue indexValue =
 				indexResolution.toObject().value().explicitUseBy(resolver);
 
-		if (indexValue.getValueType() != ValueType.INTEGER) {
+		if (!indexValue.getValueType().is(ValueType.INTEGER)) {
 			this.error = true;
 			path.getLogger().error(
 					"non_integer_array_index",
