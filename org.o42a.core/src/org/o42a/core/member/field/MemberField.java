@@ -119,8 +119,19 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		if (!isClone()) {
 			return true;
 		}
-		// Object update creates both field and it's object.
-		return this.field != null && this.field.isUpdated();
+		if (this.field != null) {
+			return this.field.isUpdated();
+		}
+
+		final Obj owner = getMemberOwner().getOwner();
+
+		if (!owner.meta().isUpdated()) {
+			// Field can not be updated without owner to be updated also.
+			return false;
+		}
+
+		// Only instantiated field can be updated.
+		return this.field != null && this.field.objectAlreadyUpdated();
 	}
 
 	@Override
