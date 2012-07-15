@@ -91,6 +91,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return NONE.is(this);
 	}
 
+	public final boolean isMacro() {
+		return MACRO.is(this);
+	}
+
 	public final boolean isLink() {
 		return getValueType().isLink();
 	}

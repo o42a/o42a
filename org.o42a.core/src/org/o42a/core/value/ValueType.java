@@ -70,6 +70,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 		return is(NONE);
 	}
 
+	public final boolean isMacro() {
+		return is(MACRO);
+	}
+
 	public final boolean isLink() {
 		return toLinkType() != null;
 	}

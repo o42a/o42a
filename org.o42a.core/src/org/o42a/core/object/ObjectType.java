@@ -43,6 +43,7 @@ import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueType;
 
 
 public final class ObjectType implements UserInfo {
@@ -182,7 +183,10 @@ public final class ObjectType implements UserInfo {
 		if (this.linkUses != null) {
 			return this.linkUses;
 		}
-		if (!getObject().value().getValueType().isLink()) {
+
+		final ValueType<?> valueType = getObject().value().getValueType();
+
+		if (!valueType.isLink() && !valueType.isMacro()) {
 			return null;
 		}
 
