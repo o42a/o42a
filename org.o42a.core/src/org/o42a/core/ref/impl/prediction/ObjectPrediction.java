@@ -130,7 +130,8 @@ public class ObjectPrediction extends Prediction {
 						this.basePrediction,
 						nextBase,
 						new DerivativesIterator(
-								this.object.findIn(nextBase.getScope())));
+								this.object.meta().findIn(
+										nextBase.getScope())));
 			} while (this.overriders == null || !this.overriders.hasNext());
 			return true;
 		}

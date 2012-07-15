@@ -46,6 +46,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
 import org.o42a.core.object.link.Link;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -77,6 +78,7 @@ public abstract class Obj
 	private byte fullResolution;
 
 	private Obj wrapped;
+	private Meta meta;
 	private ObjectType type;
 	private ObjectValue value;
 	private Deps deps;
@@ -227,6 +229,13 @@ public abstract class Obj
 		return this.wrapped = findWrapped();
 	}
 
+	public final Meta meta() {
+		if (this.meta != null) {
+			return this.meta;
+		}
+		return this.meta = new Meta(this);
+	}
+
 	public final ObjectType type() {
 		if (this.type != null) {
 			return this.type;
@@ -239,6 +248,13 @@ public abstract class Obj
 			return this.value;
 		}
 		return this.value = new ObjectValue(this);
+	}
+
+	public final Deps deps() {
+		if (this.deps != null) {
+			return this.deps;
+		}
+		return this.deps = new Deps(this);
 	}
 
 	public final boolean membersResolved() {
@@ -334,13 +350,6 @@ public abstract class Obj
 		}
 
 		return this.implicitClauses = implicitClauses;
-	}
-
-	public final Deps deps() {
-		if (this.deps != null) {
-			return this.deps;
-		}
-		return this.deps = new Deps(this);
 	}
 
 	@Override
@@ -560,19 +569,6 @@ public abstract class Obj
 		return scopePathStep.toPath();
 	}
 
-	public final Obj findIn(Scope enclosing) {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-
-		if (enclosingScope.is(enclosing)) {
-			return this;
-		}
-
-		enclosing.assertDerivedFrom(enclosingScope);
-
-		return findObjectIn(enclosing);
-	}
-
 	public final Ref staticRef(Scope scope) {
 
 		final BoundPath path =
@@ -686,6 +682,8 @@ public abstract class Obj
 		return scope.toString();
 	}
 
+	protected abstract Nesting createNesting();
+
 	protected Obj findWrapped() {
 
 		final Field field = getScope().toField();
@@ -794,8 +792,6 @@ public abstract class Obj
 
 		return cloneOf;
 	}
-
-	protected abstract Obj findObjectIn(Scope enclosing);
 
 	protected void fullyResolve() {
 

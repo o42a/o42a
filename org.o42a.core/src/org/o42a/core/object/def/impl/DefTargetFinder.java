@@ -32,6 +32,7 @@ import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
+import org.o42a.util.log.LogRecord;
 
 
 public class DefTargetFinder implements PathWalker, PathModifier {
@@ -143,6 +144,10 @@ public class DefTargetFinder implements PathWalker, PathModifier {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return appendIfExist(step);
+	}
+
+	@Override
+	public void error(LogRecord message) {
 	}
 
 	@Override

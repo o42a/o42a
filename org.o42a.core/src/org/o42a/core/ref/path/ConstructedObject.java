@@ -20,8 +20,8 @@
 package org.o42a.core.ref.path;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.Nesting;
 
 
 public abstract class ConstructedObject extends Obj {
@@ -48,8 +48,8 @@ public abstract class ConstructedObject extends Obj {
 	}
 
 	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		return getConstructor().propagate(enclosing);
+	protected final Nesting createNesting() {
+		return getConstructor().getNesting();
 	}
 
 }

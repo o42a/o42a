@@ -84,6 +84,10 @@ public final class Root__SRC implements AnnotatedSources {
 					owner,
 					new org.o42a.intrinsic.link.LinkValueTypeObject__SRC(this))
 			.getScope().toField(),
+			new org.o42a.intrinsic.root.MacroValueTypeObject(
+					owner,
+					new org.o42a.intrinsic.root.MacroValueTypeObject__SRC(this))
+			.getScope().toField(),
 			new org.o42a.intrinsic.array.RowValueTypeObject(
 					owner,
 					new org.o42a.intrinsic.array.RowValueTypeObject__SRC(this))

@@ -21,13 +21,13 @@ package org.o42a.core.object.link.impl;
 
 import static org.o42a.core.object.ConstructionMode.STRICT_CONSTRUCTION;
 
-import org.o42a.core.Scope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.object.link.LinkData;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Resolver;
 
@@ -59,6 +59,11 @@ public class LinkTarget extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return getDereferencedLink().getTargetNesting();
+	}
+
+	@Override
 	protected Obj findWrapped() {
 
 		final Resolver resolver = getScope().getEnclosingScope().resolver();
@@ -78,11 +83,6 @@ public class LinkTarget extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return null;
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		return getDereferencedLink().findIn(enclosing).getTarget();
 	}
 
 }
