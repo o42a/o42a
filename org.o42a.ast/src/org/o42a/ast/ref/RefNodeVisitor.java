@@ -20,6 +20,7 @@
 package org.o42a.ast.ref;
 
 
+
 public interface RefNodeVisitor<R, P> {
 
 	R visitScopeRef(ScopeRefNode ref, P p);

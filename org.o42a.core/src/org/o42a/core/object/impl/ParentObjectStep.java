@@ -55,7 +55,7 @@ public final class ParentObjectStep
 
 	@Override
 	public Scope revert(Scope target) {
-		return this.object.findIn(target).getScope();
+		return this.object.meta().findIn(target).getScope();
 	}
 
 	@Override

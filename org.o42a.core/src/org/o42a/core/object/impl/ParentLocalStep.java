@@ -83,7 +83,7 @@ public final class ParentLocalStep extends Step implements ReversePath {
 
 	@Override
 	public Scope revert(Scope target) {
-		return this.object.findIn(target).getScope();
+		return this.object.meta().findIn(target).getScope();
 	}
 
 	@Override

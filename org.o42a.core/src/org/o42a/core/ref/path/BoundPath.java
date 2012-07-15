@@ -22,9 +22,9 @@ package org.o42a.core.ref.path;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
-import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
-import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
+import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
+import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
@@ -42,6 +42,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
+import org.o42a.core.object.macro.impl.MacroExpansionFragment;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -193,6 +194,13 @@ public class BoundPath extends Location {
 
 	public final BoundPath newObject(ObjectConstructor constructor) {
 		return getRawPath().newObject(constructor).bind(this, getOrigin());
+	}
+
+	public final BoundPath expandMacro() {
+
+		final MacroExpansionFragment expansion = new MacroExpansionFragment();
+
+		return expansion.init(append(expansion));
 	}
 
 	public final BoundPath append(Path path) {
@@ -427,9 +435,6 @@ public class BoundPath extends Location {
 
 		if (isAbsolute()) {
 			start = root();
-			if (!walker.root(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -446,12 +451,12 @@ public class BoundPath extends Location {
 						walker,
 						startIndex());
 			}
+			if (!tracker.root(this, start)) {
+				return noResolution(tracker, null, null);
+			}
 		} else {
 			start = resolver.getPathStart();
 			start.assertDerivedFrom(getOrigin());
-			if (!walker.start(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -467,6 +472,9 @@ public class BoundPath extends Location {
 						resolver,
 						walker,
 						startIndex());
+			}
+			if (!tracker.start(this, start)) {
+				return noResolution(tracker, null, null);
 			}
 		}
 
@@ -502,7 +510,7 @@ public class BoundPath extends Location {
 							this.path.isStatic(),
 							steps);
 					tracker.abortedAt(prev, step);
-					return null;
+					return noResolution(tracker, null, null);
 				}
 
 				final Step[] replacementSteps = replacement.getSteps();
@@ -546,21 +554,37 @@ public class BoundPath extends Location {
 					prev,
 					tracker);
 			if (tracker.isAborted()) {
-				return NO_PATH_RESOLUTION;
+				return noResolution(tracker, prev, step);
 			}
 			if (result == null) {
 				tracker.abortedAt(prev, step);
-				return PATH_RESOLUTION_ERROR;
+				return pathResolutionError(this, tracker.getErrorMessage());
 			}
 			++i;
 			prev = result.getScope();
 		}
 
 		if (!tracker.done(result)) {
-			return NO_PATH_RESOLUTION;
+			return noResolution(tracker, null, null);
+		}
+		if (result != null) {
+			return pathResolution(this, result);
 		}
 
-		return pathResolution(this, result);
+		return pathResolutionError(this, tracker.getErrorMessage());
+	}
+
+	private PathResolution noResolution(
+			PathTracker tracker,
+			Scope last,
+			Step brokenStep) {
+		if (tracker.isError()) {
+			if (brokenStep != null) {
+				tracker.abortedAt(last, brokenStep);
+			}
+			return pathResolutionError(this, tracker.getErrorMessage());
+		}
+		return noPathResolutionError(this);
 	}
 
 	private void findStart() {

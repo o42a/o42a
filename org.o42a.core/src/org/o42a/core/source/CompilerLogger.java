@@ -306,7 +306,7 @@ public class CompilerLogger implements Logger {
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
-		log(Severity.ERROR, code, defaultMessage, location, args);
+		log(errorRecord(code, location, defaultMessage, args));
 	}
 
 	public final void warning(
@@ -314,7 +314,37 @@ public class CompilerLogger implements Logger {
 			LogInfo location,
 			String defaultMessage,
 			Object... args) {
-		log(Severity.WARNING, code, defaultMessage, location, args);
+		log(warningRecord(code, location, defaultMessage, args));
+	}
+
+	public final LogRecord errorRecord(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		return record(Severity.ERROR, code, location, defaultMessage, args);
+	}
+
+	public final LogRecord warningRecord(
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		return record(Severity.WARNING, code, location, defaultMessage, args);
+	}
+
+	public final LogRecord record(
+			Severity severity,
+			String code,
+			LogInfo location,
+			String defaultMessage,
+			Object... args) {
+		return new LogRecord(
+				severity,
+				"compiler." + code,
+				defaultMessage,
+				location.getLoggable(),
+				args);
 	}
 
 	@Override
@@ -328,20 +358,6 @@ public class CompilerLogger implements Logger {
 
 	protected Object getSource() {
 		return this.source;
-	}
-
-	private final void log(
-			Severity severity,
-			String code,
-			String defaultMessage,
-			LogInfo location,
-			Object... args) {
-		log(new LogRecord(
-				severity,
-				"compiler." + code,
-				defaultMessage,
-				location.getLoggable(),
-				args));
 	}
 
 }

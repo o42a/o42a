@@ -121,6 +121,13 @@ public class ExpressionTest extends GrammarTestCase {
 				parse("- --foo"));
 	}
 
+	@Test
+	public void binaryMetaExpression() {
+		to(BinaryNode.class, parse("#a + b"));
+		to(BinaryNode.class, parse("a + #b"));
+		to(BinaryNode.class, parse("#a + #b"));
+	}
+
 	private static void assertUnaries(
 			UnaryOperator first,
 			UnaryOperator second,

@@ -36,6 +36,7 @@ import org.o42a.core.object.impl.ParentLocalStep;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.*;
+import org.o42a.util.log.LogRecord;
 
 
 public class PredictionWalker implements PathWalker {
@@ -184,6 +185,10 @@ public class PredictionWalker implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return set(object.getScope().predict(getPrediction()));
+	}
+
+	@Override
+	public void error(LogRecord message) {
 	}
 
 	@Override

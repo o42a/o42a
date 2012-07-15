@@ -20,11 +20,11 @@
 package org.o42a.core.ref.common;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
@@ -131,6 +131,11 @@ public class Call extends ObjectConstructor {
 		}
 
 		@Override
+		protected Nesting createNesting() {
+			return this.call.getNesting();
+		}
+
+		@Override
 		protected Ascendants buildAscendants() {
 			return this.call.ascendants.updateAscendants(new Ascendants(this));
 		}
@@ -138,11 +143,6 @@ public class Call extends ObjectConstructor {
 		@Override
 		protected void buildDefinition(DeclarativeBlock definition) {
 			this.call.definitions.buildBlock(definition);
-		}
-
-		@Override
-		protected Obj findObjectIn(Scope enclosing) {
-			return this.call.resolve(enclosing);
 		}
 
 	}
