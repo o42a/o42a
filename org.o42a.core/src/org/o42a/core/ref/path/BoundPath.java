@@ -42,7 +42,6 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
-import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -246,11 +245,12 @@ public class BoundPath extends Location {
 		return walk(resolver, DUMMY_PATH_WALKER);
 	}
 
-	public PathResolution walk(PathResolver resolver, PathWalker walker) {
+	public final PathResolution walk(PathResolver resolver, PathWalker walker) {
 		return walkPath(getPath(), resolver, walker, false);
 	}
 
-	public final void consume(Consumer consumer) {
+	public void consume(Consumer consumer) {
+		consumer.init(this);
 
 		final Step[] rawSteps = getRawSteps();
 		final int length = rawSteps.length;
@@ -265,7 +265,7 @@ public class BoundPath extends Location {
 			return;
 		}
 
-		fragment.consume(this, consumer);
+		fragment.consume(consumer);
 	}
 
 	public final Ref target(Distributor distributor) {
