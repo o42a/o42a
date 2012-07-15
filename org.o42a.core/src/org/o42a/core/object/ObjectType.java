@@ -153,7 +153,7 @@ public final class ObjectType implements UserInfo {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
 					user,
-					getObject().isClone()
+					!getObject().meta().isUpdated()
 					? RUNTIME_TYPE_USAGE : STATIC_TYPE_USAGE);
 		}
 		return this;
@@ -227,12 +227,12 @@ public final class ObjectType implements UserInfo {
 	protected void useAsAncestor(Obj derived) {
 		derivationUses().useBy(
 				derived.content(),
-				derived.isClone()
+				!derived.meta().isUpdated()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!derived.isClone()) {
+		if (derived.meta().isUpdated()) {
 			trackAscendantDefsUsage(derived);
 
 			final LinkUses linkUses = linkUses();
@@ -241,8 +241,7 @@ public final class ObjectType implements UserInfo {
 				linkUses.useAsAncestor(derived);
 			}
 			if (derived.getWrapped() == null) {
-				registerDerivative(
-						new Inheritor(derived));
+				registerDerivative(new Inheritor(derived));
 			}
 		}
 	}
@@ -253,12 +252,12 @@ public final class ObjectType implements UserInfo {
 
 		derivationUses().useBy(
 				derived.content(),
-				derived.isClone()
+				!derived.meta().isUpdated()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!derived.isClone()) {
+		if (derived.meta().isUpdated()) {
 			trackAscendantDefsUsage(derived);
 			trackAncestorDefsUpdates(derived);
 
@@ -546,7 +545,7 @@ public final class ObjectType implements UserInfo {
 			this.allDerivatives = new ArrayList<Derivative>();
 		}
 		this.allDerivatives.add(derivative);
-		if (getObject().isClone()) {
+		if (!getObject().meta().isUpdated()) {
 			// Clone is explicitly derived.
 			// Update the derivation tree.
 			final Sample[] samples = getSamples();

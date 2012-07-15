@@ -102,7 +102,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().isAdapter();
 	}
 
-	@Override
 	public final boolean isAbstract() {
 		return getDeclaration().isAbstract();
 	}
@@ -114,6 +113,14 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public final boolean isOverride() {
 		return getDeclaration().isOverride();
+	}
+
+	public final boolean isUpdated() {
+		if (!isClone()) {
+			return true;
+		}
+		// Object update creates both field and it's object.
+		return this.field != null && this.field.isUpdated();
 	}
 
 	@Override
@@ -211,7 +218,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 		getAnalysis().registerObject(object);
 		object.resolveAll();
-		if (isOverride() && !isClone()) {
+		if (isOverride() && isUpdated()) {
 			registerAsReplacement();
 		}
 	}
@@ -323,7 +330,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			this.allReplacements = new ArrayList<FieldReplacement>();
 		}
 		this.allReplacements.add(replacement);
-		if (isClone()) {
+		if (!isUpdated()) {
 			// Clone replaced by explicit field.
 			// Register this clone as a replacement too.
 			registerAsReplacement();

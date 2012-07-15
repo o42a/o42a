@@ -198,6 +198,17 @@ public abstract class Field extends ObjectScope {
 		return this.member.isOverride();
 	}
 
+	public final boolean isUpdated() {
+		if (!isClone()) {
+			return true;
+		}
+
+		// Object update creates an object.
+		final Obj object = getScopeObject();
+
+		return object != null && object.meta().isUpdated();
+	}
+
 	@Override
 	public final Prediction predict(Prediction enclosing) {
 		return predictField(enclosing, this);

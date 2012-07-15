@@ -42,7 +42,7 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
-import org.o42a.core.object.macro.impl.MacroExpansionFragment;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
@@ -197,10 +197,7 @@ public class BoundPath extends Location {
 	}
 
 	public final BoundPath expandMacro() {
-
-		final MacroExpansionFragment expansion = new MacroExpansionFragment();
-
-		return expansion.init(append(expansion));
+		return getRawPath().expandMacro().bind(this, getOrigin());
 	}
 
 	public final BoundPath append(Path path) {
@@ -251,6 +248,24 @@ public class BoundPath extends Location {
 
 	public PathResolution walk(PathResolver resolver, PathWalker walker) {
 		return walkPath(getPath(), resolver, walker, false);
+	}
+
+	public final void consume(Consumer consumer) {
+
+		final Step[] rawSteps = getRawSteps();
+		final int length = rawSteps.length;
+
+		if (length == 0) {
+			return;
+		}
+
+		final PathFragment fragment = rawSteps[length - 1].getPathFragment();
+
+		if (fragment == null) {
+			return;
+		}
+
+		fragment.consume(this, consumer);
 	}
 
 	public final Ref target(Distributor distributor) {

@@ -41,14 +41,6 @@ public class CompilerLogger implements Logger {
 		this.source = source;
 	}
 
-	public void abstractNotOverridden(LogInfo locaion, String fieldName) {
-		error(
-				"abstract_not_overridden",
-				locaion,
-				"Abstract field '%s' not overridden",
-				fieldName);
-	}
-
 	public void ambiguousClause(LogInfo location, String clauseName) {
 		error(
 				"ambiguous_clause",
