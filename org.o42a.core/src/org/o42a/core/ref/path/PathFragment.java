@@ -22,11 +22,26 @@ package org.o42a.core.ref.path;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFragmentStep;
 
 
 public abstract class PathFragment {
+
+	/**
+	 * This is ivoked by {@link BoundPath#consume(Consumer)} to inform the
+	 * fragment about the way the path is consumed.
+	 *
+	 * <p>Such information is not always available, but it's necessary e.g. for
+	 * macro expansion. It is a fragment's responsibility to log an error if
+	 * this method is never called.</p>
+	 *
+	 * @param path consumed path.
+	 * @param consumer path consumer.
+	 */
+	public void consume(BoundPath path, Consumer consumer) {
+	}
 
 	public abstract Path expand(PathExpander expander, int index, Scope start);
 

@@ -22,6 +22,7 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -31,6 +32,7 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansionFragment extends PathFragment {
 
 	private BoundPath path;
+	private Consumer consumer;
 	private Scope origin;
 	private Path initialExpansion;
 	private byte init;
@@ -38,12 +40,12 @@ public class MacroExpansionFragment extends PathFragment {
 	public MacroExpansionFragment() {
 	}
 
-	public final BoundPath init(BoundPath path) {
-		return this.path = path;
-	}
-
 	public final BoundPath getPath() {
 		return this.path;
+	}
+
+	public final Consumer getConsumer() {
+		return this.consumer;
 	}
 
 	public final Scope getOrigin() {
@@ -51,7 +53,16 @@ public class MacroExpansionFragment extends PathFragment {
 	}
 
 	@Override
+	public void consume(BoundPath path, Consumer consumer) {
+		this.path = path;
+		this.consumer = consumer;
+	}
+
+	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
+		if (this.path == null) {
+			return prohibitedExpansion(expander);
+		}
 
 		final Macro macro = macro(expander, start);
 
@@ -136,6 +147,14 @@ public class MacroExpansionFragment extends PathFragment {
 		}
 
 		return macroValue.getCompilerValue();
+	}
+
+	private Path prohibitedExpansion(PathExpander expander) {
+		expander.getPath().getLogger().error(
+				"prohibited_macro_expansion",
+				expander.getPath(),
+				"Macro expansion is not allowed here");
+		return null;
 	}
 
 	private Macro notMacro(PathExpander expander) {

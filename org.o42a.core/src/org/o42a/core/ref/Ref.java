@@ -141,6 +141,10 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
+	public final void consume(Consumer consumer) {
+		getPath().consume(consumer);
+	}
+
 	public final Resolution resolveAll(FullResolver resolver) {
 		assertCompatible(resolver.getScope());
 		return resolve(resolver.getResolver()).resolveAll(resolver);

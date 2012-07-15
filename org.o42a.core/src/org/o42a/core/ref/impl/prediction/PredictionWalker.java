@@ -55,8 +55,16 @@ public class PredictionWalker implements PathWalker {
 		}
 
 		final PredictionWalker walker = new PredictionWalker(start);
-		final Resolution resolution = ref.resolve(
-				start.getScope().walkingResolver(walker));
+		final Scope startFrom;
+
+		if (start.getScope().derivedFrom(ref.getScope())) {
+			startFrom = start.getScope();
+		} else {
+			startFrom = ref.getScope();
+		}
+
+		final Resolution resolution =
+				ref.resolve(startFrom.walkingResolver(walker));
 
 		if (resolution.isError()) {
 			return unpredicted(resolution.getScope());

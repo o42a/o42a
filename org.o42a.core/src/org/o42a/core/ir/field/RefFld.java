@@ -301,7 +301,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	}
 
 	private FuncPtr<C> reusedConstructor() {
-		if (!getField().isClone()) {
+		if (getField().isUpdated()) {
 			return null;
 		}
 
@@ -453,7 +453,7 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 			final boolean fillTarget;
 
-			if (!fld().targetIRAllocated && fld().getField().isClone()) {
+			if (!fld().targetIRAllocated && !fld().getField().isUpdated()) {
 				// field is a clone - do not fill the target
 				fillTarget = false;
 			} else {

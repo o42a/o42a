@@ -89,11 +89,6 @@ public final class ClauseAlias extends Alias {
 	}
 
 	@Override
-	public boolean isAbstract() {
-		return false;
-	}
-
-	@Override
 	public ClauseAlias getPropagatedFrom() {
 		return this.propagatedFrom;
 	}

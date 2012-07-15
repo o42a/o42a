@@ -32,6 +32,7 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.impl.DereferenceStep;
+import org.o42a.core.object.macro.impl.MacroExpansionFragment;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -143,6 +144,10 @@ public final class Path {
 
 	public final Path newObject(ObjectConstructor constructor) {
 		return append(constructor.toStep());
+	}
+
+	public final Path expandMacro() {
+		return append(new MacroExpansionFragment());
 	}
 
 	public Path append(Path path) {
