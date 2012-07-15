@@ -58,7 +58,7 @@ public abstract class Value<T> {
 	}
 
 	public final boolean isVoid() {
-		return getValueType() == ValueType.VOID;
+		return getValueType().isVoid();
 	}
 
 	public final ValueKnowledge getKnowledge() {

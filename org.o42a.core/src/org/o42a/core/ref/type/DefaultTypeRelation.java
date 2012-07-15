@@ -25,7 +25,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueType;
 
 
 final class DefaultTypeRelation extends TypeRelation {
@@ -146,7 +145,7 @@ final class DefaultTypeRelation extends TypeRelation {
 		if (destValueStruct.assignableFrom(value.getValueStruct())) {
 			return true;
 		}
-		if (destValueStruct.getValueType() == ValueType.VOID) {
+		if (destValueStruct.isVoid()) {
 			return true;
 		}
 
