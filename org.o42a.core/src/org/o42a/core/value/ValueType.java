@@ -63,11 +63,11 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	}
 
 	public final boolean isVoid() {
-		return this == VOID;
+		return is(VOID);
 	}
 
 	public final boolean isNone() {
-		return this == NONE;
+		return is(NONE);
 	}
 
 	public final boolean isLink() {
@@ -83,6 +83,10 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 	public abstract boolean isStateless();
 
 	public abstract boolean isRuntimeConstructed();
+
+	public final boolean is(ValueType<?> valueType) {
+		return this == valueType;
+	}
 
 	public abstract Obj typeObject(Intrinsics intrinsics);
 

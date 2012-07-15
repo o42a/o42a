@@ -61,7 +61,7 @@ abstract class CompareOperator extends ComparisonOperator {
 
 		final ValueType<?> valueType = phrase.getValueType();
 
-		if (valueType == ValueType.INTEGER) {
+		if (valueType.is(ValueType.INTEGER)) {
 			return false;
 		}
 
