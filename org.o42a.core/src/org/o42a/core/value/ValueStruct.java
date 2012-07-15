@@ -80,11 +80,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	}
 
 	public final boolean isVoid() {
-		return ((ValueStruct<?, ?>) this) == VOID;
+		return VOID.is(this);
 	}
 
 	public final boolean isNone() {
-		return ((ValueStruct<?, ?>) this) == NONE;
+		return NONE.is(this);
 	}
 
 	public final boolean isLink() {

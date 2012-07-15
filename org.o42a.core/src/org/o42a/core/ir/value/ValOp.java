@@ -241,7 +241,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp store(Code code, Int64op value) {
-		assert getValueType() == ValueType.INTEGER :
+		assert getValueType().is(ValueType.INTEGER) :
 			"Can not store integer in " + getValueStruct() + " value";
 
 		rawValue(null, code).store(code, value);
@@ -251,7 +251,7 @@ public abstract class ValOp extends IROp {
 	}
 
 	public final ValOp store(Code code, Fp64op value) {
-		assert getValueType() == ValueType.FLOAT :
+		assert getValueType().is(ValueType.FLOAT) :
 			"Can not store floating-point number in "
 			+ getValueStruct() + " value";
 

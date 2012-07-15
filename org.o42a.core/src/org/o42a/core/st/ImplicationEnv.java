@@ -28,7 +28,7 @@ public abstract class ImplicationEnv {
 
 	public final ValueStruct<?, ?> getExpectedValueStruct() {
 		if (this.expectedStruct != null) {
-			if (this.expectedStruct == ValueStruct.NONE) {
+			if (this.expectedStruct.isNone()) {
 				return null;
 			}
 			return this.expectedStruct;

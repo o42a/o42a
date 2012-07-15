@@ -48,6 +48,10 @@ public abstract class SingleValueStruct<T>
 		return 0;
 	}
 
+	public final boolean is(ValueStruct<?, ?> valueStruct) {
+		return this == valueStruct;
+	}
+
 	@Override
 	public TypeRelation.Kind relationTo(ValueStruct<?, ?> other) {
 		if (getValueType() == other.getValueType()) {
