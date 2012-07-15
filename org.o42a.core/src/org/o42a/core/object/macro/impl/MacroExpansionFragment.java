@@ -22,7 +22,6 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
-import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -31,7 +30,6 @@ import org.o42a.core.value.ValueType;
 
 public class MacroExpansionFragment extends PathFragment {
 
-	private BoundPath path;
 	private Consumer consumer;
 	private Scope origin;
 	private Path initialExpansion;
@@ -41,7 +39,7 @@ public class MacroExpansionFragment extends PathFragment {
 	}
 
 	public final BoundPath getPath() {
-		return this.path;
+		return getConsumer().getPath();
 	}
 
 	public final Consumer getConsumer() {
@@ -53,14 +51,13 @@ public class MacroExpansionFragment extends PathFragment {
 	}
 
 	@Override
-	public void consume(BoundPath path, Consumer consumer) {
-		this.path = path;
+	public void consume(Consumer consumer) {
 		this.consumer = consumer;
 	}
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-		if (this.path == null) {
+		if (this.consumer == null) {
 			return prohibitedExpansion(expander);
 		}
 
@@ -79,7 +76,7 @@ public class MacroExpansionFragment extends PathFragment {
 			if (expander.getPath() == getPath()) {
 				// Initiate the expansion.
 				this.init = -1;
-				this.path.rebuild();
+				getPath().rebuild();
 				if (start.is(getOrigin())) {
 					// This expansion is the same as initial one.
 					return this.initialExpansion;
@@ -121,10 +118,10 @@ public class MacroExpansionFragment extends PathFragment {
 
 	@Override
 	public String toString() {
-		if (this.path == null) {
+		if (this.consumer == null) {
 			return super.toString();
 		}
-		return '#' + this.path.toString();
+		return '#' + this.consumer.getPath().toString();
 	}
 
 	private Macro macro(PathExpander expander, Scope start) {

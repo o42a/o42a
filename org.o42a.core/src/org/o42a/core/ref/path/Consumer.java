@@ -17,9 +17,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.ref.path;
 
+public abstract class Consumer {
 
-public interface Consumer {
+	private BoundPath path;
+
+	public final BoundPath getPath() {
+		return this.path;
+	}
+
+	@Override
+	public String toString() {
+		if (this.path == null) {
+			return getClass().getSimpleName();
+		}
+		return getClass().getSimpleName() + this.path;
+	}
+
+	final void init(BoundPath path) {
+		this.path = path;
+	}
 
 }
