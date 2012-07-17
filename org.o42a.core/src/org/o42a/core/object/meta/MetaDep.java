@@ -45,17 +45,26 @@ public final class MetaDep {
 		return this.update;
 	}
 
-	public boolean updated(Meta meta) {
+	public boolean update(Meta meta) {
 
-		final Meta top = topMeta(meta);
+		final ObjectMeta top = topMeta(meta);
 
 		if (top == null) {
 			return false;
 		}
 
-		final ObjectMeta objectMeta = top;
+		final UpdatedMeta updated = updatedMeta(meta);
+		final int triggerIsTripped =
+				top.triggerIsTripped(getTrigger(), updated.getMeta());
 
-		return objectMeta.triggerIsTripped(getTrigger(), innermostMeta(meta));
+		switch (triggerIsTripped) {
+		case 0:
+			return false;
+		case 1:
+			return true;
+		}
+
+		return updated.update();
 	}
 
 	@Override
@@ -90,7 +99,7 @@ public final class MetaDep {
 			final Meta parentMeta = currentUpdate.parentMeta(currentMeta);
 
 			if (parentMeta == null) {
-				// Put of the scope. Trigger can no longer trip.
+				// Out of the scope. Trigger can no longer trip.
 				return null;
 			}
 
@@ -99,7 +108,7 @@ public final class MetaDep {
 		}
 	}
 
-	private Meta innermostMeta(Meta meta) {
+	private UpdatedMeta updatedMeta(Meta meta) {
 
 		Meta currentMeta = meta;
 		MetaUpdate currentUpdate = getUpdate();
@@ -109,12 +118,32 @@ public final class MetaDep {
 			final MetaUpdate nestedUpdate = currentUpdate.nestedUpdate();
 
 			if (nestedUpdate == null) {
-				return currentMeta;
+				return new UpdatedMeta(currentMeta, currentUpdate);
 			}
 
 			currentMeta = currentUpdate.nestedMeta(currentMeta);
 			currentUpdate = nestedUpdate;
 		}
+	}
+
+	private static final class UpdatedMeta {
+
+		private final Meta meta;
+		private final MetaUpdate update;
+
+		UpdatedMeta(Meta meta, MetaUpdate update) {
+			this.meta = meta;
+			this.update = update;
+		}
+
+		public final Meta getMeta() {
+			return this.meta;
+		}
+
+		public final boolean update() {
+			return this.update.update(getMeta());
+		}
+
 	}
 
 }

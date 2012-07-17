@@ -22,8 +22,8 @@ package org.o42a.core.object.meta;
 import org.o42a.core.object.Meta;
 
 
-public abstract class MetaTrigger {
+public interface MetaTrigger {
 
-	protected abstract boolean tripped(Meta meta);
+	boolean tripped(Meta meta);
 
 }
