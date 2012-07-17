@@ -22,14 +22,16 @@ package org.o42a.core.object.meta;
 import org.o42a.core.object.Meta;
 
 
-public abstract class MetaUpdate {
+public interface MetaUpdate {
 
-	public abstract MetaUpdate parentUpdate();
+	MetaUpdate parentUpdate();
 
-	public abstract MetaUpdate nestedUpdate();
+	MetaUpdate nestedUpdate();
 
-	public abstract Meta parentMeta(Meta meta);
+	Meta parentMeta(Meta meta);
 
-	public abstract Meta nestedMeta(Meta meta);
+	Meta nestedMeta(Meta meta);
+
+	boolean update(Meta meta);
 
 }

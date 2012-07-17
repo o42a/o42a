@@ -20,8 +20,11 @@
 package org.o42a.core.object.meta;
 
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
+import org.o42a.core.object.Obj;
 
 
 public abstract class ObjectMeta {
@@ -32,7 +35,8 @@ public abstract class ObjectMeta {
 
 	private IdentityHashMap<MetaTrigger, Boolean> tripped;
 	private MetaDeps deps;
-	private MetaDep checked;
+	private Iterator<Scope> checkedAscendants;
+	private MetaDep checkedDep;
 	private byte updated;
 
 	public boolean isUpdated() {
@@ -58,7 +62,7 @@ public abstract class ObjectMeta {
 		this.deps.add(dep);
 	}
 
-	boolean triggerIsTripped(MetaTrigger trigger, Meta meta) {
+	int triggerIsTripped(MetaTrigger trigger, Meta meta) {
 		if (this.tripped == null) {
 			this.tripped = new IdentityHashMap<MetaTrigger, Boolean>();
 		} else {
@@ -66,7 +70,7 @@ public abstract class ObjectMeta {
 			final Boolean cached = this.tripped.get(trigger);
 
 			if (cached != null) {
-				return cached.booleanValue();
+				return cached.booleanValue() ? 1 : 0;
 			}
 		}
 
@@ -74,7 +78,7 @@ public abstract class ObjectMeta {
 
 		this.tripped.put(trigger, Boolean.valueOf(tripped));
 
-		return tripped;
+		return tripped ? 2 : 0;
 	}
 
 	private final Meta meta() {
@@ -82,28 +86,70 @@ public abstract class ObjectMeta {
 	}
 
 	private boolean hasUpdates() {
-		if (this.deps == null) {
-			return false;
-		}
 
+		boolean hasUpdates = false;
 		final Meta meta = meta();
+		final Obj object = meta.getObject();
 
-		if (this.checked == null) {
-			this.checked = this.deps.getFirst();
-		} else {
-			this.checked = this.checked.getNext();
+		if (this.checkedAscendants == null) {
+			this.checkedAscendants =
+					object.type().allAscendants().keySet().iterator();
 		}
 
 		for (;;) {
-			if (this.checked == null) {
-				return false;
+
+			final MetaDep dep = nextDep();
+
+			if (dep == null) {
+				this.checkedAscendants = null;
+				return hasUpdates;
 			}
-			if (this.checked.updated(meta)) {
-				this.checked = null;
-				return true;
+			if (dep.update(meta)) {
+				hasUpdates = true;
 			}
-			this.checked = this.checked.getNext();
 		}
+	}
+
+	private MetaDep nextDep() {
+		if (this.checkedDep != null) {
+			this.checkedDep = this.checkedDep.getNext();
+			if (this.checkedDep != null) {
+				return this.checkedDep;
+			}
+		}
+
+		for (;;) {
+
+			final ObjectMeta nextMeta = nextMeta();
+
+			if (nextMeta == null) {
+				return null;
+			}
+			if (nextMeta.deps == null) {
+				continue;
+			}
+
+			this.checkedDep = nextMeta.deps.getFirst();
+			if (this.checkedDep != null) {
+				return this.checkedDep;
+			}
+		}
+	}
+
+	private ObjectMeta nextMeta() {
+		while (this.checkedAscendants.hasNext()) {
+
+			final Scope nextAscendant = this.checkedAscendants.next();
+
+			if (nextAscendant.is(meta().getObject().getScope())) {
+				// No need to check an explicit dependencies.
+				continue;
+			}
+
+			return nextAscendant.toObject().meta();
+		}
+
+		return null;
 	}
 
 }
