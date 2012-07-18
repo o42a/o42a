@@ -27,7 +27,8 @@ public enum UnaryOperator implements SignType {
 	MINUS("-"),
 	PLUS("+"),
 	NOT("--"),
-	IS_TRUE("++");
+	IS_TRUE("++"),
+	MACRO_EXPANSION("#");
 
 	private final String sign;
 

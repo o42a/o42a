@@ -99,14 +99,6 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void macroExpansion() {
-		to(MacroExpansionNode.class, parse("#foo: bar"));
-		to(MacroExpansionNode.class, parse("# ::"));
-		to(MacroExpansionNode.class, parse("#(abc)"));
-		to(MacroExpansionNode.class, parse("# abc ()"));
-	}
-
-	@Test
 	public void unaryExpression() {
 		to(UnaryNode.class, parse("+foo"));
 		to(UnaryNode.class, parse("-foo"));
@@ -115,6 +107,10 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(UnaryNode.class, parse("--foo"));
 		to(UnaryNode.class, parse("+-foo"));
 		to(UnaryNode.class, parse("-+foo"));
+		to(UnaryNode.class, parse("#foo: bar"));
+		to(UnaryNode.class, parse("# ::"));
+		to(UnaryNode.class, parse("#(abc)"));
+		to(UnaryNode.class, parse("# abc ()"));
 	}
 
 	@Test

@@ -74,6 +74,13 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitUnary(UnaryNode expression, Distributor p) {
+
+		final ExpressionNode operandNode = expression.getOperand();
+
+		if (operandNode == null) {
+			return null;
+		}
+
 		switch (expression.getOperator()) {
 		case PLUS:
 		case MINUS:
@@ -92,6 +99,15 @@ public final class ExpressionVisitor
 					p.getContext(),
 					expression,
 					p).toRef();
+		case MACRO_EXPANSION:
+
+			final Ref operand = operandNode.accept(ip().targetExVisitor(), p);
+
+			if (operand == null) {
+				return null;
+			}
+
+			return operand.getPath().expandMacro().target(p);
 		}
 
 		return super.visitUnary(expression, p);
