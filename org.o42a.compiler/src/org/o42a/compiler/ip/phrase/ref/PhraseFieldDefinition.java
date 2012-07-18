@@ -19,9 +19,7 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -61,6 +59,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		getDefinition().defineLink(definer);
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
+		getDefinition().defineMacro(definer);
 	}
 
 	@Override

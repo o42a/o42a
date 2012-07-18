@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,14 +17,36 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.member.field;
+package org.o42a.core.member.field.decl;
 
+import org.o42a.core.member.field.MacroDefiner;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 
 
-public interface LinkDefiner extends FieldDefiner {
+final class MacroDefinerImpl implements MacroDefiner {
 
-	void setTargetRef(Ref targetRef, TypeRef defaultType);
+	private final DeclaredField field;
+
+	MacroDefinerImpl(DeclaredField field) {
+		this.field = field;
+	}
+
+	@Override
+	public DeclaredField getField() {
+		return this.field;
+	}
+
+	@Override
+	public void setRef(Ref ref) {
+		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
+	}
+
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return "MacroDefiner[" + this.field + ']';
+	}
 
 }
