@@ -29,7 +29,7 @@ import org.o42a.ast.statement.StatementNodeVisitor;
 public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	private final SignNode<Parenthesis> opening;
-	private final ClauseKeyNode clauseKey;
+	private final ClauseIdNode clauseId;
 	private final OutcomeNode outcome;
 	private final ReusedClauseNode[] reused;
 	private final SignNode<Requirement> requirement;
@@ -38,7 +38,7 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 
 	public ClauseDeclaratorNode(
 			SignNode<Parenthesis> opening,
-			ClauseKeyNode clauseKey,
+			ClauseIdNode clauseId,
 			OutcomeNode outcome,
 			ReusedClauseNode[] reused,
 			SignNode<Requirement> requirement,
@@ -48,14 +48,14 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 				opening.getStart(),
 				end(
 						opening,
-						clauseKey,
+						clauseId,
 						outcome,
 						lastNode(reused),
 						requirement,
 						closing,
 						content));
 		this.opening = opening;
-		this.clauseKey = clauseKey;
+		this.clauseId = clauseId;
 		this.outcome = outcome;
 		this.reused = reused;
 		this.requirement = requirement;
@@ -67,8 +67,8 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 		return this.opening;
 	}
 
-	public final ClauseKeyNode getClauseKey() {
-		return this.clauseKey;
+	public final ClauseIdNode getClauseId() {
+		return this.clauseId;
 	}
 
 	public final OutcomeNode getOutcome() {
@@ -113,8 +113,8 @@ public class ClauseDeclaratorNode extends AbstractStatementNode {
 	@Override
 	public void printContent(StringBuilder out) {
 		this.opening.printContent(out);
-		if (this.clauseKey != null) {
-			this.clauseKey.printContent(out);
+		if (this.clauseId != null) {
+			this.clauseId.printContent(out);
 		}
 		for (ReusedClauseNode reused : this.reused) {
 			reused.printContent(out);

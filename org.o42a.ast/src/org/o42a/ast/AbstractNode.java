@@ -19,7 +19,6 @@
 */
 package org.o42a.ast;
 
-
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SeparatorNodes;
 import org.o42a.util.io.SourcePosition;
@@ -159,14 +158,5 @@ public abstract class AbstractNode implements Node {
 
 	@Override
 	public abstract void printContent(StringBuilder out);
-
-	@Override
-	protected AbstractNode clone() {
-		try {
-			return (AbstractNode) super.clone();
-		} catch (CloneNotSupportedException e) {
-			return null;
-		}
-	}
 
 }

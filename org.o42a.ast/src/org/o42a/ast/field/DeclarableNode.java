@@ -19,10 +19,10 @@
 */
 package org.o42a.ast.field;
 
-import org.o42a.ast.clause.ClauseKeyNode;
+import org.o42a.ast.Node;
 
 
-public interface DeclarableNode extends ClauseKeyNode {
+public interface DeclarableNode extends Node {
 
 	<R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p);
 

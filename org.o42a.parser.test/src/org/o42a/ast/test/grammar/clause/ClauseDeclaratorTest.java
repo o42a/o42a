@@ -42,21 +42,21 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo> bar");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseKey());
+		assertName("foo", result.getClauseId());
 		assertName("bar", result.getContent());
 		assertNothingReused(result);
 		checkParentheses(result);
 	}
 
 	@Test
-	public void adapterKey() {
+	public void adapterId() {
 
 		final ClauseDeclaratorNode result = parse("<@foo> bar");
 
 		assertFalse(result.requiresContinuation());
 		assertName(
 				"foo",
-				to(DeclarableAdapterNode.class, result.getClauseKey())
+				to(DeclarableAdapterNode.class, result.getClauseId())
 				.getMember());
 		assertName("bar", result.getContent());
 		assertNothingReused(result);
@@ -64,10 +64,10 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void phraseKey() {
+	public void phraseId() {
 
 		final ClauseDeclaratorNode result = parse("<*[foo]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
+		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
 
 		assertFalse(result.requiresContinuation());
 		assertEquals(
@@ -83,14 +83,14 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void impliedKey() {
+	public void impliedId() {
 
 		final ClauseDeclaratorNode result = parse("<*> foo");
 
 		assertFalse(result.requiresContinuation());
 		assertEquals(
 				ScopeType.IMPLIED,
-				to(ScopeRefNode.class, result.getClauseKey()).getType());
+				to(ScopeRefNode.class, result.getClauseId()).getType());
 		assertName("foo", result.getContent());
 		assertNothingReused(result);
 		checkParentheses(result);
@@ -100,7 +100,7 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	public void noContent() {
 
 		final ClauseDeclaratorNode result = parse("<*'foo'>");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
+		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
 
 		assertFalse(result.requiresContinuation());
 		assertEquals(
@@ -112,10 +112,10 @@ public class ClauseDeclaratorTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void rowKey() {
+	public void rowId() {
 
 		final ClauseDeclaratorNode result = parse("<*[[foo]]> bar");
-		final PhraseNode phrase = to(PhraseNode.class, result.getClauseKey());
+		final PhraseNode phrase = to(PhraseNode.class, result.getClauseId());
 
 		assertFalse(result.requiresContinuation());
 		assertEquals(
