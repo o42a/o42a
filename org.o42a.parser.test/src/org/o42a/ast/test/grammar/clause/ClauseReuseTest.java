@@ -38,7 +38,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo|bar|baz> val");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseKey());
+		assertName("foo", result.getClauseId());
 		assertName("val", result.getContent());
 
 		final ReusedClauseNode[] reused = result.getReused();
@@ -81,7 +81,7 @@ public class ClauseReuseTest extends GrammarTestCase {
 		final ClauseDeclaratorNode result = parse("<foo | bar* | baz> val");
 
 		assertFalse(result.requiresContinuation());
-		assertName("foo", result.getClauseKey());
+		assertName("foo", result.getClauseId());
 		assertName("val", result.getContent());
 
 		final ReusedClauseNode[] reused = result.getReused();

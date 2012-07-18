@@ -41,7 +41,7 @@ import org.o42a.util.log.LogInfo;
 import org.o42a.util.string.Name;
 
 
-final class PhraseClauseKeyVisitor
+final class PhraseClauseIdVisitor
 		extends AbstractClauseVisitor<ClauseDeclaration, Distributor> {
 
 	private static final NameExtractor NAME_EXTRACTOR = new NameExtractor();
@@ -50,7 +50,7 @@ final class PhraseClauseKeyVisitor
 
 	private final PhraseNode phrase;
 
-	PhraseClauseKeyVisitor(PhraseNode phrase) {
+	PhraseClauseIdVisitor(PhraseNode phrase) {
 		this.phrase = phrase;
 	}
 

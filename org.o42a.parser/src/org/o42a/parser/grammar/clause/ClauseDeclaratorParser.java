@@ -56,9 +56,9 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		final SignNode<ClauseDeclaratorNode.Parenthesis> opening =
 				opening(context);
 
-		final ClauseKeyNode clauseKey = clauseKey(context);
+		final ClauseIdNode clauseId = clauseId(context);
 
-		if (clauseKey == null) {
+		if (clauseId == null) {
 			return null;
 		}
 
@@ -72,7 +72,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 
 		return new ClauseDeclaratorNode(
 				opening,
-				clauseKey,
+				clauseId,
 				outcome,
 				reused,
 				requirement,
@@ -96,7 +96,7 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 		return context.skipComments(true, opening);
 	}
 
-	private ClauseKeyNode clauseKey(ParserContext context) {
+	private ClauseIdNode clauseId(ParserContext context) {
 		if (context.next() == '@') {
 			return context.parse(declarableAdapter());
 		}
@@ -113,8 +113,8 @@ public class ClauseDeclaratorParser implements Parser<ClauseDeclaratorNode> {
 			return phrase;
 		}
 
-		if (ref instanceof ClauseKeyNode) {
-			return (ClauseKeyNode) ref;
+		if (ref instanceof ClauseIdNode) {
+			return (ClauseIdNode) ref;
 		}
 
 		return null;
