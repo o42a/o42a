@@ -41,11 +41,11 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	}
 
 	private final MemberId memberId;
-
 	private Visibility visibility = Visibility.PUBLIC;
-	private boolean prototype;
-	private boolean isAbstract;
+	private boolean macro;
 	private boolean override;
+	private boolean isAbstract;
+	private boolean prototype;
 	private LinkValueType linkType;
 	private TypeRef type;
 	private StaticTypeRef declaredIn;
@@ -72,13 +72,14 @@ public class FieldDeclaration extends Placed implements Cloneable {
 			MemberId memberId) {
 		super(location, distributor);
 		this.memberId = memberId;
-		this.visibility = sample.visibility;
-		this.override = sample.override;
+		this.visibility = sample.getVisibility();
+		this.macro = sample.isMacro();
+		this.override = sample.isOverride();
 		this.isAbstract = sample.isAbstract();
-		this.linkType = sample.linkType;
 		this.prototype = sample.isPrototype();
-		this.type = sample.type;
-		this.declaredIn = sample.declaredIn;
+		this.linkType = sample.getLinkType();
+		this.type = sample.getType();
+		this.declaredIn = sample.getDeclaredIn();
 	}
 
 	public final MemberId getMemberId() {
@@ -119,6 +120,32 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		return clone;
 	}
 
+	public final boolean isMacro() {
+		return this.macro;
+	}
+
+	public final FieldDeclaration macro() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.macro = true;
+
+		return clone;
+	}
+
+	public final boolean isOverride() {
+		return this.override;
+	}
+
+	public final FieldDeclaration override() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.override = true;
+
+		return clone;
+	}
+
 	public final boolean isAbstract() {
 		return this.isAbstract;
 	}
@@ -141,19 +168,6 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		final FieldDeclaration clone = clone();
 
 		clone.prototype = true;
-
-		return clone;
-	}
-
-	public final boolean isOverride() {
-		return this.override;
-	}
-
-	public final FieldDeclaration override() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.override = true;
 
 		return clone;
 	}
