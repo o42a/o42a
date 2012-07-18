@@ -64,7 +64,7 @@ public class DeclaratorNode extends AbstractStatementNode {
 		return this.definitionAssignment.getType();
 	}
 
-	public InterfaceNode getInterface() {
+	public final InterfaceNode getInterface() {
 		return this.iface;
 	}
 
