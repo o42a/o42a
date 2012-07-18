@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.field;
 
+import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.ref.MemberRefNode;
 
 
@@ -27,5 +28,7 @@ public interface DeclarableNodeVisitor<R, P> {
 	R visitMemberRef(MemberRefNode ref, P p);
 
 	R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p);
+
+	R visitUnary(UnaryNode unary, P p);
 
 }

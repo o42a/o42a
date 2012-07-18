@@ -22,8 +22,7 @@ package org.o42a.parser.grammar.statement;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.expression.*;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -180,22 +179,36 @@ public class StatementParser implements Parser<StatementNode> {
 	private StatementNode startWithDeclarable(
 			ParserContext context,
 			ExpressionNode expression) {
-		if (expression instanceof DeclarableNode) {
+		if (!(expression instanceof DeclarableNode)) {
+			return expression;
+		}
 
-			final DeclarableNode declarable = (DeclarableNode) expression;
-			final NamedBlockNode namedBlock =
-					parseNamedBlock(context, declarable);
+		final DeclarableNode declarable = (DeclarableNode) expression;
+		final NamedBlockNode namedBlock =
+				parseNamedBlock(context, declarable);
 
-			if (namedBlock != null) {
-				return namedBlock;
+		if (namedBlock != null) {
+			return namedBlock;
+		}
+		if (declarable instanceof UnaryNode) {
+			if (this.grammar.isImperative()) {
+				return expression;
 			}
 
-			final DeclaratorNode declarator =
-					context.parse(declarator(declarable));
+			final UnaryNode unary = (UnaryNode) declarable;
 
-			if (declarator != null) {
-				return declarator;
+			if (unary.getOperator() != UnaryOperator.MACRO_EXPANSION) {
+				return expression;
 			}
+			if (!(unary.getOperand() instanceof MemberRefNode)) {
+				return expression;
+			}
+		}
+
+		final DeclaratorNode declarator = context.parse(declarator(declarable));
+
+		if (declarator != null) {
+			return declarator;
 		}
 
 		return expression;

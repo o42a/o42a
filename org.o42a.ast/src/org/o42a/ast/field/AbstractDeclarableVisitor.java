@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.field;
 
+import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.ref.MemberRefNode;
 
 
@@ -33,6 +34,11 @@ public abstract class AbstractDeclarableVisitor<R, P>
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);
+	}
+
+	@Override
+	public R visitUnary(UnaryNode unary, P p) {
+		return visitDeclarable(unary, p);
 	}
 
 	protected abstract R visitDeclarable(DeclarableNode declarable, P p);
