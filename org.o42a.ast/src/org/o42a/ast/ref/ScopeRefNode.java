@@ -21,8 +21,8 @@ package org.o42a.ast.ref;
 
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.clause.ClauseKeyNode;
-import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.statement.StatementNodeVisitor;
 import org.o42a.ast.type.TypeNodeVisitor;
@@ -30,7 +30,7 @@ import org.o42a.util.io.SourcePosition;
 
 
 public class ScopeRefNode extends SignNode<ScopeType>
-		implements RefNode, ClauseKeyNode {
+		implements RefNode, ClauseIdNode {
 
 	public ScopeRefNode(
 			SourcePosition start,
@@ -41,12 +41,12 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
 	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
@@ -56,16 +56,16 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
 	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
-	public <R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitScopeRef(this, p);
 	}
 

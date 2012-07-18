@@ -30,8 +30,8 @@ import static org.o42a.core.member.clause.ClauseDeclaration.anonymousClauseDecla
 import static org.o42a.core.member.clause.ClauseDeclaration.clauseDeclaration;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.AbstractClauseKeyVisitor;
-import org.o42a.ast.clause.ClauseKeyNode;
+import org.o42a.ast.clause.AbstractClauseIdVisitor;
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.PhraseNode;
@@ -44,13 +44,13 @@ import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.ref.Ref;
 
 
-final class ClauseKeyVisitor
-		extends AbstractClauseKeyVisitor<ClauseDeclaration, Distributor> {
+final class ClauseIdVisitor
+		extends AbstractClauseIdVisitor<ClauseDeclaration, Distributor> {
 
-	public static final ClauseKeyVisitor CLAUSE_KEY_VISITOR =
-			new ClauseKeyVisitor();
+	public static final ClauseIdVisitor CLAUSE_ID_VISITOR =
+			new ClauseIdVisitor();
 
-	private ClauseKeyVisitor() {
+	private ClauseIdVisitor() {
 	}
 
 	@Override
@@ -133,14 +133,14 @@ final class ClauseKeyVisitor
 			return super.visitPhrase(phrase, p);
 		}
 
-		return clauses[0].accept(new PhraseClauseKeyVisitor(phrase), p);
+		return clauses[0].accept(new PhraseClauseIdVisitor(phrase), p);
 	}
 
 	@Override
-	protected ClauseDeclaration visitClauseKey(
-			ClauseKeyNode clauseKey,
+	protected ClauseDeclaration visitClauseId(
+			ClauseIdNode clauseId,
 			Distributor p) {
-		p.getLogger().invalidDeclaration(clauseKey);
+		p.getLogger().invalidDeclaration(clauseId);
 		return null;
 	}
 

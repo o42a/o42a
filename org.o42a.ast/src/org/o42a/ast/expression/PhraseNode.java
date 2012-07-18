@@ -20,14 +20,14 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.clause.ClauseKeyNode;
-import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.clause.ClauseNode;
 
 
 public class PhraseNode
 		extends AbstractExpressionNode
-		implements ClauseKeyNode {
+		implements ClauseIdNode {
 
 	private final ExpressionNode prefix;
 	private final ClauseNode[] clauses;
@@ -71,12 +71,12 @@ public class PhraseNode
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitPhrase(this, p);
 	}
 
 	@Override
-	public final <R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitPhrase(this, p);
 	}
 

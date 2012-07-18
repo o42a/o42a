@@ -22,13 +22,16 @@ package org.o42a.ast.ref;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
-import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ClauseIdNode;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
 
 
-public class MemberRefNode extends AbstractRefNode implements DeclarableNode {
+public class MemberRefNode
+		extends AbstractRefNode
+		implements DeclarableNode, ClauseIdNode {
 
 	private final ExpressionNode owner;
 	private final SignNode<Qualifier> qualifier;
@@ -70,17 +73,17 @@ public class MemberRefNode extends AbstractRefNode implements DeclarableNode {
 	}
 
 	@Override
-	public <R, P> R accept(RefNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(RefNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitMemberRef(this, p);
 	}
 
 	@Override
-	public final <R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p) {
-		return accept((DeclarableNodeVisitor<R, P>) visitor, p);
+	public final <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitMemberRef(this, p);
 	}
 
 	@Override
-	public <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitMemberRef(this, p);
 	}
 
