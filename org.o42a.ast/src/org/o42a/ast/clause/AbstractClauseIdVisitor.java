@@ -20,14 +20,23 @@
 package org.o42a.ast.clause;
 
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.field.AbstractDeclarableVisitor;
-import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 
 
 public abstract class AbstractClauseIdVisitor<R, P>
-		extends AbstractDeclarableVisitor<R, P>
 		implements ClauseIdNodeVisitor<R, P> {
+
+	@Override
+	public R visitMemberRef(MemberRefNode ref, P p) {
+		return visitClauseId(ref, p);
+	}
+
+	@Override
+	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
+		return visitClauseId(adapter, p);
+	}
 
 	@Override
 	public R visitScopeRef(ScopeRefNode ref, P p) {
@@ -37,11 +46,6 @@ public abstract class AbstractClauseIdVisitor<R, P>
 	@Override
 	public R visitPhrase(PhraseNode phrase, P p) {
 		return visitClauseId(phrase, p);
-	}
-
-	@Override
-	protected R visitDeclarable(DeclarableNode declarable, P p) {
-		return visitClauseId(declarable, p);
 	}
 
 	protected abstract R visitClauseId(ClauseIdNode clauseId, P p);
