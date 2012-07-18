@@ -22,7 +22,7 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DECL_IP;
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.member.ClauseKeyVisitor.CLAUSE_KEY_VISITOR;
+import static org.o42a.compiler.ip.member.ClauseIdVisitor.CLAUSE_ID_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDeclarableVisitor.OVERRIDER_DECLARABLE_VISITOR;
 import static org.o42a.compiler.ip.member.OverriderDefinitionVisitor.OVERRIDER_DEFINITION_VISITOR;
 import static org.o42a.core.member.clause.ClauseKind.EXPRESSION;
@@ -144,8 +144,8 @@ public class ClauseInterpreter {
 				new Placed(context, declarator, statements.nextDistributor())
 				.distribute();
 		ClauseDeclaration declaration =
-				declarator.getClauseKey().accept(
-						CLAUSE_KEY_VISITOR,
+				declarator.getClauseId().accept(
+						CLAUSE_ID_VISITOR,
 						distributor);
 
 		if (declaration == null) {

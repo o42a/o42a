@@ -20,15 +20,30 @@
 package org.o42a.ast.clause;
 
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.field.DeclarableNodeVisitor;
+import org.o42a.ast.field.AbstractDeclarableVisitor;
+import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.ref.ScopeRefNode;
 
 
-public interface ClauseKeyNodeVisitor<R, P>
-		extends DeclarableNodeVisitor<R, P> {
+public abstract class AbstractClauseIdVisitor<R, P>
+		extends AbstractDeclarableVisitor<R, P>
+		implements ClauseIdNodeVisitor<R, P> {
 
-	R visitScopeRef(ScopeRefNode ref, P p);
+	@Override
+	public R visitScopeRef(ScopeRefNode ref, P p) {
+		return visitClauseId(ref, p);
+	}
 
-	R visitPhrase(PhraseNode phrase, P p);
+	@Override
+	public R visitPhrase(PhraseNode phrase, P p) {
+		return visitClauseId(phrase, p);
+	}
+
+	@Override
+	protected R visitDeclarable(DeclarableNode declarable, P p) {
+		return visitClauseId(declarable, p);
+	}
+
+	protected abstract R visitClauseId(ClauseIdNode clauseId, P p);
 
 }

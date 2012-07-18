@@ -22,8 +22,8 @@ package org.o42a.ast.clause;
 import org.o42a.ast.Node;
 
 
-public interface ClauseKeyNode extends Node {
+public interface ClauseIdNode extends Node {
 
-	<R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p);
+	<R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p);
 
 }

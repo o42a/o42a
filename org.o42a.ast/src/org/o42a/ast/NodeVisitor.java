@@ -39,7 +39,7 @@ public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
 		implements TypeNodeVisitor<R, P>,
 				AtomNodeVisitor<R, P>,
-				ClauseKeyNodeVisitor<R, P> {
+				ClauseIdNodeVisitor<R, P> {
 
 	@Override
 	public <S extends SignType> R visitSign(SignNode<S> sign, P p) {
@@ -128,11 +128,11 @@ public abstract class NodeVisitor<R, P>
 	}
 
 	protected R visitDeclarable(DeclarableNode declarable, P p) {
-		return visitClauseKey(declarable, p);
+		return visitClauseId(declarable, p);
 	}
 
-	protected R visitClauseKey(ClauseKeyNode clauseKey, P p) {
-		return visitAny(clauseKey, p);
+	protected R visitClauseId(ClauseIdNode clauseId, P p) {
+		return visitAny(clauseId, p);
 	}
 
 	protected abstract R visitAny(Node any, P p);

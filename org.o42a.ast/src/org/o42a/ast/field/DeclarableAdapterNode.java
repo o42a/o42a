@@ -22,7 +22,7 @@ package org.o42a.ast.field;
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.clause.ClauseKeyNodeVisitor;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MembershipSign;
 
@@ -51,7 +51,7 @@ public class DeclarableAdapterNode
 	}
 
 	@Override
-	public final <R, P> R accept(ClauseKeyNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return accept((DeclarableNodeVisitor<R, P>) visitor, p);
 	}
 
