@@ -20,9 +20,7 @@
 package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
 
@@ -62,6 +60,11 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		getDefinition().defineLink(definer);
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
+		getDefinition().defineMacro(definer);
 	}
 
 	@Override

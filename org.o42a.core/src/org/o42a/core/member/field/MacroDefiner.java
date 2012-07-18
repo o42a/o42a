@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,11 +20,10 @@
 package org.o42a.core.member.field;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 
 
-public interface LinkDefiner extends FieldDefiner {
+public interface MacroDefiner extends FieldDefiner {
 
-	void setTargetRef(Ref targetRef, TypeRef defaultType);
+	void setRef(Ref ref);
 
 }

@@ -88,4 +88,12 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 		definitions.buildBlock(this.field.getContent());
 	}
 
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return "ObjectDefiner[" + this.field + ']';
+	}
+
 }
