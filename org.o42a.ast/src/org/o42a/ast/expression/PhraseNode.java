@@ -71,7 +71,7 @@ public class PhraseNode
 	}
 
 	@Override
-	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitPhrase(this, p);
 	}
 

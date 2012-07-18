@@ -22,6 +22,7 @@ package org.o42a.ast.field;
 import org.o42a.ast.AbstractNode;
 import org.o42a.ast.NodeVisitor;
 import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.clause.ClauseIdNode;
 import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.MembershipSign;
@@ -29,7 +30,7 @@ import org.o42a.ast.ref.MembershipSign;
 
 public class DeclarableAdapterNode
 		extends AbstractNode
-		implements DeclarableNode {
+		implements DeclarableNode, ClauseIdNode {
 
 	private final SignNode<MembershipSign> prefix;
 	private final MemberRefNode member;
@@ -52,17 +53,17 @@ public class DeclarableAdapterNode
 
 	@Override
 	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
-		return accept((DeclarableNodeVisitor<R, P>) visitor, p);
+		return visitor.visitDeclarableAdapter(this, p);
 	}
 
 	@Override
-	public <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitDeclarableAdapter(this, p);
 	}
 
 	@Override
 	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return accept((DeclarableNodeVisitor<R, P>) visitor, p);
+		return visitor.visitDeclarableAdapter(this, p);
 	}
 
 	@Override

@@ -41,12 +41,12 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final <R, P> R accept(NodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
 	public final <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
@@ -56,16 +56,16 @@ public class ScopeRefNode extends SignNode<ScopeType>
 
 	@Override
 	public final <R, P> R accept(StatementNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
 	public final <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
-		return accept((RefNodeVisitor<R, P>) visitor, p);
+		return visitor.visitScopeRef(this, p);
 	}
 
 	@Override
-	public <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
+	public final <R, P> R accept(ClauseIdNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitScopeRef(this, p);
 	}
 

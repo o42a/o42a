@@ -20,12 +20,16 @@
 package org.o42a.ast.clause;
 
 import org.o42a.ast.expression.PhraseNode;
-import org.o42a.ast.field.DeclarableNodeVisitor;
+import org.o42a.ast.field.DeclarableAdapterNode;
+import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 
 
-public interface ClauseIdNodeVisitor<R, P>
-		extends DeclarableNodeVisitor<R, P> {
+public interface ClauseIdNodeVisitor<R, P> {
+
+	R visitMemberRef(MemberRefNode ref, P p);
+
+	R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p);
 
 	R visitScopeRef(ScopeRefNode ref, P p);
 

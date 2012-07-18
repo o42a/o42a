@@ -20,10 +20,13 @@
 package org.o42a.ast;
 
 import org.o42a.ast.atom.*;
-import org.o42a.ast.clause.*;
+import org.o42a.ast.clause.ClauseIdNodeVisitor;
+import org.o42a.ast.clause.OutcomeNode;
+import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ArgumentNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableNodeVisitor;
 import org.o42a.ast.file.FileNode;
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.ref.TypeRefNode;
@@ -39,6 +42,7 @@ public abstract class NodeVisitor<R, P>
 		extends AbstractStatementVisitor<R, P>
 		implements TypeNodeVisitor<R, P>,
 				AtomNodeVisitor<R, P>,
+				DeclarableNodeVisitor<R, P>,
 				ClauseIdNodeVisitor<R, P> {
 
 	@Override
@@ -128,11 +132,7 @@ public abstract class NodeVisitor<R, P>
 	}
 
 	protected R visitDeclarable(DeclarableNode declarable, P p) {
-		return visitClauseId(declarable, p);
-	}
-
-	protected R visitClauseId(ClauseIdNode clauseId, P p) {
-		return visitAny(clauseId, p);
+		return visitAny(declarable, p);
 	}
 
 	protected abstract R visitAny(Node any, P p);
