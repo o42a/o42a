@@ -82,6 +82,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '+':
 		case '-':
 		case MINUS:
+		case '#':
 			return context.parse(unaryExpression());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
@@ -93,8 +94,6 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 			return context.parse(text());
 		case '[':
 			return context.parse(brackets());
-		case '#':
-			return context.parse(macroExpansion());
 		default:
 			if (isDigit(c)) {
 				return context.parse(decimal());

@@ -69,6 +69,10 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 				context.acceptButLast();
 			}
 			break;
+		case '#':
+			operator = UnaryOperator.MACRO_EXPANSION;
+			context.acceptAll();
+			break;
 		default:
 			return null;
 		}
