@@ -29,7 +29,7 @@ import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
-import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.field.*;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
@@ -125,9 +125,11 @@ public final class FieldDeclarableVisitor
 	}
 
 	@Override
-	public FieldDeclaration visitUnary(UnaryNode unary, Distributor p) {
+	public FieldDeclaration visitMacroExpansion(
+			MacroExpansionNode expansion,
+			Distributor p) {
 
-		final ExpressionNode operand = unary.getOperand();
+		final ExpressionNode operand = expansion.getOperand();
 
 		if (operand == null) {
 			return null;
