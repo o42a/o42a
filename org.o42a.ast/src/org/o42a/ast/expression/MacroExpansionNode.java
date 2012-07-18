@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,30 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.ast.field;
+package org.o42a.ast.expression;
 
-import org.o42a.ast.expression.MacroExpansionNode;
-import org.o42a.ast.ref.MemberRefNode;
+import org.o42a.ast.atom.SignNode;
+import org.o42a.ast.field.DeclarableNode;
+import org.o42a.ast.field.DeclarableNodeVisitor;
 
 
-public abstract class AbstractDeclarableVisitor<R, P>
-		implements DeclarableNodeVisitor<R, P> {
+public class MacroExpansionNode extends UnaryNode implements DeclarableNode {
 
-	@Override
-	public R visitMemberRef(MemberRefNode ref, P p) {
-		return visitDeclarable(ref, p);
+	MacroExpansionNode(
+			SignNode<UnaryOperator> sign,
+			ExpressionNode operand) {
+		super(sign, operand);
 	}
 
 	@Override
-	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
-		return visitDeclarable(adapter, p);
+	public <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitMacroExpansion(this, p);
 	}
-
-	@Override
-	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
-		return visitDeclarable(expansion, p);
-	}
-
-	protected abstract R visitDeclarable(DeclarableNode declarable, P p);
 
 }

@@ -26,7 +26,7 @@ import static org.o42a.parser.Grammar.DECLARATIVE;
 import static org.o42a.parser.Grammar.IMPERATIVE;
 
 import org.junit.Test;
-import org.o42a.ast.expression.UnaryNode;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.expression.UnaryOperator;
 import org.o42a.ast.field.DeclarationTarget;
 import org.o42a.ast.field.DeclaratorNode;
@@ -43,8 +43,8 @@ public class MacroDeclarationTest extends GrammarTestCase {
 				parse(
 						DECLARATIVE.statement(),
 						"#foo := bar"));
-		final UnaryNode declarable =
-				to(UnaryNode.class, declarator.getDeclarable());
+		final MacroExpansionNode declarable =
+				to(MacroExpansionNode.class, declarator.getDeclarable());
 
 		assertThat(declarable.getOperator(), is(UnaryOperator.MACRO_EXPANSION));
 		assertName("foo", declarable.getOperand());
@@ -61,8 +61,8 @@ public class MacroDeclarationTest extends GrammarTestCase {
 				parse(
 						DECLARATIVE.statement(),
 						"#foo = bar"));
-		final UnaryNode declarable =
-				to(UnaryNode.class, declarator.getDeclarable());
+		final MacroExpansionNode declarable =
+				to(MacroExpansionNode.class, declarator.getDeclarable());
 
 		assertThat(declarable.getOperator(), is(UnaryOperator.MACRO_EXPANSION));
 		assertName("foo", declarable.getOperand());
@@ -77,14 +77,22 @@ public class MacroDeclarationTest extends GrammarTestCase {
 	public void invalidMacroDeclaration() {
 		expectError("syntax_error");
 
-		to(UnaryNode.class, parse(DECLARATIVE.statement(), "#(foo) := bar"));
+		to(
+				MacroExpansionNode.class,
+				parse(
+						DECLARATIVE.statement(),
+						"#(foo) := bar"));
 	}
 
 	@Test
 	public void imperativeMacroNotSupported() {
 		expectError("syntax_error");
 
-		to(UnaryNode.class, parse(IMPERATIVE.statement(), "#foo := bar"));
+		to(
+				MacroExpansionNode.class,
+				parse(
+						IMPERATIVE.statement(),
+						"#foo := bar"));
 	}
 
 }

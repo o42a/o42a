@@ -20,18 +20,20 @@
 package org.o42a.ast.expression;
 
 import org.o42a.ast.atom.SignNode;
-import org.o42a.ast.field.DeclarableNode;
-import org.o42a.ast.field.DeclarableNodeVisitor;
 
 
-public class UnaryNode
-		extends AbstractExpressionNode
-		implements DeclarableNode {
+public class UnaryNode extends AbstractExpressionNode {
+
+	public static UnaryNode unaryNode(
+			SignNode<UnaryOperator> sign,
+			ExpressionNode operand) {
+		return sign.getType().unaryNode(sign, operand);
+	}
 
 	private final SignNode<UnaryOperator> sign;
 	private final ExpressionNode operand;
 
-	public UnaryNode(SignNode<UnaryOperator> sign, ExpressionNode operand) {
+	UnaryNode(SignNode<UnaryOperator> sign, ExpressionNode operand) {
 		super(sign.getStart(), end(sign, operand));
 		this.sign = sign;
 		this.operand = operand;
@@ -51,11 +53,6 @@ public class UnaryNode
 
 	@Override
 	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
-		return visitor.visitUnary(this, p);
-	}
-
-	@Override
-	public <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitUnary(this, p);
 	}
 

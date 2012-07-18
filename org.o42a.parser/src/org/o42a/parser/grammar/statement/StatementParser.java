@@ -22,7 +22,9 @@ package org.o42a.parser.grammar.statement;
 import static org.o42a.parser.Grammar.*;
 
 import org.o42a.ast.atom.NameNode;
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.MacroExpansionNode;
+import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclaratorNode;
@@ -190,17 +192,15 @@ public class StatementParser implements Parser<StatementNode> {
 		if (namedBlock != null) {
 			return namedBlock;
 		}
-		if (declarable instanceof UnaryNode) {
+		if (declarable instanceof MacroExpansionNode) {
 			if (this.grammar.isImperative()) {
 				return expression;
 			}
 
-			final UnaryNode unary = (UnaryNode) declarable;
+			final MacroExpansionNode expansion =
+					(MacroExpansionNode) declarable;
 
-			if (unary.getOperator() != UnaryOperator.MACRO_EXPANSION) {
-				return expression;
-			}
-			if (!(unary.getOperand() instanceof MemberRefNode)) {
+			if (!(expansion.getOperand() instanceof MemberRefNode)) {
 				return expression;
 			}
 		}

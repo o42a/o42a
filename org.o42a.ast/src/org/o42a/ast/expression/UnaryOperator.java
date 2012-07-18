@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.expression;
 
+import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.atom.SignType;
 
 
@@ -28,7 +29,16 @@ public enum UnaryOperator implements SignType {
 	PLUS("+"),
 	NOT("--"),
 	IS_TRUE("++"),
-	MACRO_EXPANSION("#");
+	MACRO_EXPANSION("#") {
+
+		@Override
+		protected UnaryNode unaryNode(
+				SignNode<UnaryOperator> sign,
+				ExpressionNode operand) {
+			return new MacroExpansionNode(sign, operand);
+		}
+
+	};
 
 	private final String sign;
 
@@ -44,6 +54,12 @@ public enum UnaryOperator implements SignType {
 	@Override
 	public String toString() {
 		return this.sign;
+	}
+
+	protected UnaryNode unaryNode(
+			SignNode<UnaryOperator> sign,
+			ExpressionNode operand) {
+		return new UnaryNode(sign, operand);
 	}
 
 }
