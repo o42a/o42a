@@ -21,6 +21,7 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberName.fieldName;
+import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_EXPANSION_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -32,7 +33,6 @@ import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.impl.DereferenceStep;
-import org.o42a.core.object.macro.impl.MacroExpansionFragment;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -147,7 +147,7 @@ public final class Path {
 	}
 
 	public final Path expandMacro() {
-		return append(new MacroExpansionFragment());
+		return append(MACRO_EXPANSION_STEP);
 	}
 
 	public Path append(Path path) {
@@ -216,7 +216,7 @@ public final class Path {
 
 	@Override
 	public String toString() {
-		return toString(this.steps.length);
+		return toString(0);
 	}
 
 	public String toString(int length) {
@@ -232,6 +232,14 @@ public final class Path {
 
 	String toString(Object origin, int length) {
 
+		final int len;
+
+		if (length <= 0) {
+			len = this.steps.length - length;
+		} else {
+			len = length;
+		}
+
 		final StringBuilder out = new StringBuilder();
 
 		if (isAbsolute()) {
@@ -243,7 +251,7 @@ public final class Path {
 			out.append('[').append(origin).append("] ");
 		}
 
-		for (int i = 0; i < length; ++i) {
+		for (int i = 0; i < len; ++i) {
 
 			final Step step = this.steps[i];
 

@@ -17,28 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.macro;
-
-import org.o42a.core.Scope;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.source.CompilerLogger;
-import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogRecord;
+package org.o42a.core.ref;
 
 
-public interface MacroExpander extends LocationInfo {
+public interface Consumer {
 
-	Ref getConsumedRef();
-
-	Scope getOrigin();
-
-	BoundPath getPath();
-
-	Scope getStart();
-
-	CompilerLogger getLogger();
-
-	void error(LogRecord message);
+	Ref consume(Ref ref);
 
 }
