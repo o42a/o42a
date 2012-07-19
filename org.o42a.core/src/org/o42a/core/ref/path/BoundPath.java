@@ -42,20 +42,18 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
-public class BoundPath extends Location {
+public class BoundPath extends RefPath {
 
 	public static BoundPath arrayIndex(Ref array, Ref index) {
 		return new ArrayIndexStep(array, index)
@@ -249,25 +247,6 @@ public class BoundPath extends Location {
 		return walkPath(getPath(), resolver, walker, false);
 	}
 
-	public void consume(Consumer consumer) {
-		consumer.init(this);
-
-		final Step[] rawSteps = getRawSteps();
-		final int length = rawSteps.length;
-
-		if (length == 0) {
-			return;
-		}
-
-		final PathFragment fragment = rawSteps[length - 1].getPathFragment();
-
-		if (fragment == null) {
-			return;
-		}
-
-		fragment.consume(consumer);
-	}
-
 	public final Ref target(Distributor distributor) {
 		return target(this, distributor);
 	}
@@ -385,7 +364,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getRawSteps().length);
+		return toString(0);
 	}
 
 	public String toString(int length) {
@@ -393,6 +372,25 @@ public class BoundPath extends Location {
 			return super.toString();
 		}
 		return getRawPath().toString(this.origin, length);
+	}
+
+	@Override
+	protected Ref consume(Ref ref, Consumer consumer) {
+
+		final Step[] rawSteps = getRawSteps();
+		final int length = rawSteps.length;
+
+		if (length == 0) {
+			return ref;
+		}
+
+		final Ref consumption = rawSteps[length - 1].consume(ref, consumer);
+
+		if (consumption != null) {
+			consumption.assertSameScope(ref);
+		}
+
+		return consumption;
 	}
 
 	final Path getRawPath() {

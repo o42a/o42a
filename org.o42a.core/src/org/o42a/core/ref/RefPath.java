@@ -17,26 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.core.ref;
 
-public abstract class Consumer {
+import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.Location;
+import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogInfo;
 
-	private BoundPath path;
 
-	public final BoundPath getPath() {
-		return this.path;
+public abstract class RefPath extends Location {
+
+	public RefPath(LocationInfo location) {
+		super(location);
 	}
 
-	@Override
-	public String toString() {
-		if (this.path == null) {
-			return getClass().getSimpleName();
-		}
-		return getClass().getSimpleName() + this.path;
+	public RefPath(CompilerContext context, LogInfo logInfo) {
+		super(context, logInfo);
 	}
 
-	final void init(BoundPath path) {
-		this.path = path;
-	}
+	protected abstract Ref consume(Ref ref, Consumer consumer);
 
 }

@@ -21,6 +21,7 @@ package org.o42a.core.object.macro.impl;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.macro.MacroExpander;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerContext;
@@ -49,6 +50,11 @@ abstract class AbstractMacroExpander implements MacroExpander {
 	@Override
 	public final Loggable getLoggable() {
 		return this.pathExpander.getPath().getLoggable();
+	}
+
+	@Override
+	public final Ref getConsumedRef() {
+		return this.expansion.getConsumedRef();
 	}
 
 	@Override

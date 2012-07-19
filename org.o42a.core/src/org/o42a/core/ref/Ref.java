@@ -141,8 +141,11 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
-	public final void consume(Consumer consumer) {
-		getPath().consume(consumer);
+	public final Ref consume(Consumer consumer) {
+
+		final RefPath path = getPath();
+
+		return path.consume(this, consumer);
 	}
 
 	public final Resolution resolveAll(FullResolver resolver) {

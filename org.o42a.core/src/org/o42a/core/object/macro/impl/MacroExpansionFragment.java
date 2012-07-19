@@ -22,6 +22,8 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
+import org.o42a.core.ref.Consumer;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -30,20 +32,28 @@ import org.o42a.core.value.ValueType;
 
 public class MacroExpansionFragment extends PathFragment {
 
-	private Consumer consumer;
+	private final Ref consumedRef;
+	private final Consumer consumer;
 	private Scope origin;
 	private Path initialExpansion;
 	private byte init;
+	private BoundPath path;
 
-	public MacroExpansionFragment() {
+	public MacroExpansionFragment(Ref consumedRef, Consumer consumer) {
+		this.consumedRef = consumedRef;
+		this.consumer = consumer;
 	}
 
-	public final BoundPath getPath() {
-		return getConsumer().getPath();
+	public final Ref getConsumedRef() {
+		return this.consumedRef;
 	}
 
 	public final Consumer getConsumer() {
 		return this.consumer;
+	}
+
+	public final BoundPath getPath() {
+		return this.path;
 	}
 
 	public final Scope getOrigin() {
@@ -51,15 +61,7 @@ public class MacroExpansionFragment extends PathFragment {
 	}
 
 	@Override
-	public void consume(Consumer consumer) {
-		this.consumer = consumer;
-	}
-
-	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-		if (this.consumer == null) {
-			return prohibitedExpansion(expander);
-		}
 
 		final Macro macro = macro(expander, start);
 
@@ -100,6 +102,10 @@ public class MacroExpansionFragment extends PathFragment {
 		return initialExpansion;
 	}
 
+	final void init(BoundPath path) {
+		this.path = path;
+	}
+
 	private Path init(PathExpander expander, Macro macro) {
 
 		final MacroInitializerImpl initializer =
@@ -118,10 +124,13 @@ public class MacroExpansionFragment extends PathFragment {
 
 	@Override
 	public String toString() {
-		if (this.consumer == null) {
+		if (this.consumedRef == null) {
 			return super.toString();
 		}
-		return '#' + this.consumer.getPath().toString();
+
+		final BoundPath path = this.consumedRef.getPath();
+
+		return '#' + path.toString(-1);
 	}
 
 	private Macro macro(PathExpander expander, Scope start) {
@@ -144,14 +153,6 @@ public class MacroExpansionFragment extends PathFragment {
 		}
 
 		return macroValue.getCompilerValue();
-	}
-
-	private Path prohibitedExpansion(PathExpander expander) {
-		expander.getPath().getLogger().error(
-				"prohibited_macro_expansion",
-				expander.getPath(),
-				"Macro expansion is not allowed here");
-		return null;
 	}
 
 	private Macro notMacro(PathExpander expander) {
