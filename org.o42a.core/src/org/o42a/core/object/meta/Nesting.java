@@ -24,10 +24,10 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.impl.NoNesting;
 
 
-public abstract class Nesting {
+public interface Nesting {
 
-	public static final Nesting NO_NESTING = NoNesting.INSTANCE;
+	Nesting NO_NESTING = NoNesting.INSTANCE;
 
-	public abstract Obj findObjectIn(Scope enclosing);
+	Obj findObjectIn(Scope enclosing);
 
 }

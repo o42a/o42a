@@ -123,7 +123,7 @@ public abstract class ObjectMeta {
 		return this;
 	}
 
-	private void importParentDeps(final ObjectMeta parentMeta) {
+	private void importParentDeps(ObjectMeta parentMeta) {
 		if (parentMeta.deps == null) {
 			return;
 		}
@@ -131,16 +131,24 @@ public abstract class ObjectMeta {
 		for (Map.Entry<MetaKey, MetaDep> e : parentMeta.deps.entrySet()) {
 
 			final MetaDep parentDep = e.getValue();
+			final MetaKey key = e.getKey();
+
+			if (this.deps != null && this.deps.containsKey(key)) {
+				continue;
+			}
+
 			final MetaDep dep = parentDep.nestedDep();
 
 			if (dep == null) {
 				continue;
 			}
+			if (!parentDep.nestedMeta(parentMeta.meta()).is(meta())) {
+				continue;
+			}
 			if (this.deps == null) {
 				this.deps = new HashMap<MetaKey, MetaDep>();
 			}
-
-			this.deps.put(e.getKey(), dep);
+			this.deps.put(key, dep);
 		}
 	}
 

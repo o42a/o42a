@@ -179,7 +179,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 
 	protected abstract Link findLinkIn(Scope enclosing);
 
-	private static final class LinkTargetNesting extends Nesting {
+	private static final class LinkTargetNesting implements Nesting {
 
 		private final Link link;
 

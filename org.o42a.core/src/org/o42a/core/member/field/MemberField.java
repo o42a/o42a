@@ -348,7 +348,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		}
 	}
 
-	private static final class FieldNesting extends Nesting {
+	private static final class FieldNesting implements Nesting {
 
 		private final MemberKey fieldKey;
 

@@ -135,7 +135,7 @@ public abstract class ObjectConstructor extends Placed {
 		return propagated;
 	}
 
-	private static final class Construction extends Nesting {
+	private static final class Construction implements Nesting {
 
 		private final ObjectConstructor constructor;
 
