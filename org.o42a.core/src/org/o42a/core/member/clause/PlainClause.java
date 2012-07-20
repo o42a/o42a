@@ -332,7 +332,7 @@ public abstract class PlainClause
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
 
-	private static final class ClauseDefinitionNesting extends Nesting {
+	private static final class ClauseDefinitionNesting implements Nesting {
 
 		private final MemberKey clauseKey;
 

@@ -77,6 +77,10 @@ public final class Meta extends ObjectMeta {
 		return getNesting().findObjectIn(enclosing);
 	}
 
+	public final boolean is(Meta meta) {
+		return this == meta;
+	}
+
 	@Override
 	public String toString() {
 		if (this.object == null) {

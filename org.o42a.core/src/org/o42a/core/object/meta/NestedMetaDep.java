@@ -17,24 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.meta.impl;
+package org.o42a.core.object.meta;
 
-import org.o42a.core.Scope;
-import org.o42a.core.object.Obj;
-import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.Meta;
 
 
-public class NoNesting implements Nesting {
+public abstract class NestedMetaDep extends MetaDep {
 
-	public static final NoNesting INSTANCE = new NoNesting();
+	private final MetaDep parent;
 
-	private NoNesting() {
+	public NestedMetaDep(MetaDep parent, Meta declaredIn) {
+		super(declaredIn, parent.getKey());
+		this.parent = parent;
 	}
 
 	@Override
-	public Obj findObjectIn(Scope enclosing) {
-		throw new IllegalStateException(
-				"Nesting is impossible inside " + enclosing);
+	public final MetaDep parentDep() {
+		return this.parent;
+	}
+
+	@Override
+	public final Meta parentMeta(Meta meta) {
+		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
+		return meta.getParentMeta();
+	}
+
+	@Override
+	protected final boolean updateMeta(Meta meta) {
+		return parentDep().updateMeta(parentMeta(meta));
 	}
 
 }

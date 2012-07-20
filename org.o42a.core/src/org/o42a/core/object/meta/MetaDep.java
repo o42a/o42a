@@ -24,7 +24,26 @@ import org.o42a.core.object.Meta;
 
 public abstract class MetaDep {
 
-	public abstract MetaKey getKey();
+	private final MetaKey key;
+	private final Meta declaredIn;
+
+	public MetaDep(Meta declaredIn, MetaKey key) {
+		assert declaredIn != null :
+			"Meta the dependency declared in is not specified";
+		assert key != null :
+			"Meta key not specified";
+		this.declaredIn = declaredIn;
+		this.key = key;
+		declaredIn.addDep(this);
+	}
+
+	public final MetaKey getKey() {
+		return this.key;
+	}
+
+	public final Meta getDeclaredIn() {
+		return this.declaredIn;
+	}
 
 	public boolean update(Meta meta) {
 
@@ -44,6 +63,14 @@ public abstract class MetaDep {
 	public abstract Meta parentMeta(Meta meta);
 
 	public abstract Meta nestedMeta(Meta meta);
+
+	@Override
+	public String toString() {
+		if (this.key == null) {
+			return super.toString();
+		}
+		return this.key.toString();
+	}
 
 	protected abstract boolean triggered(Meta meta);
 
