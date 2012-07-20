@@ -53,8 +53,8 @@ abstract class AbstractMacroExpander implements MacroExpander {
 	}
 
 	@Override
-	public final Ref getConsumedRef() {
-		return this.expansion.getConsumedRef();
+	public final Ref getMacroRef() {
+		return this.expansion.getMacroRef();
 	}
 
 	@Override

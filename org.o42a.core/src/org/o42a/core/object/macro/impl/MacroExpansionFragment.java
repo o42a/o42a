@@ -24,6 +24,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -32,20 +33,20 @@ import org.o42a.core.value.ValueType;
 
 public class MacroExpansionFragment extends PathFragment {
 
-	private final Ref consumedRef;
+	private final Ref macroRef;
 	private final Consumer consumer;
 	private Scope origin;
 	private Path initialExpansion;
 	private byte init;
 	private BoundPath path;
 
-	public MacroExpansionFragment(Ref consumedRef, Consumer consumer) {
-		this.consumedRef = consumedRef;
+	public MacroExpansionFragment(Ref macroRef, Consumer consumer) {
+		this.macroRef = macroRef;
 		this.consumer = consumer;
 	}
 
-	public final Ref getConsumedRef() {
-		return this.consumedRef;
+	public final Ref getMacroRef() {
+		return this.macroRef;
 	}
 
 	public final Consumer getConsumer() {
@@ -124,18 +125,24 @@ public class MacroExpansionFragment extends PathFragment {
 
 	@Override
 	public String toString() {
-		if (this.consumedRef == null) {
+		if (this.macroRef == null) {
 			return super.toString();
 		}
-
-		final BoundPath path = this.consumedRef.getPath();
-
-		return '#' + path.toString(-1);
+		return '#' + this.macroRef.toString();
 	}
 
 	private Macro macro(PathExpander expander, Scope start) {
 
-		final Obj object = start.toObject();
+		final Resolution resolution = getMacroRef().resolve(start.resolver());
+
+		if (!resolution.isResolved()) {
+			if (resolution.isError()) {
+				return null;
+			}
+			return notMacro(expander);
+		}
+
+		final Obj object = resolution.toObject();
 
 		if (object == null) {
 			return notMacro(expander);
@@ -158,7 +165,7 @@ public class MacroExpansionFragment extends PathFragment {
 	private Macro notMacro(PathExpander expander) {
 		expander.getPath().getLogger().error(
 				"not_macro",
-				expander.getPath(),
+				getMacroRef(),
 				"Not a macro");
 		return null;
 	}
@@ -166,7 +173,7 @@ public class MacroExpansionFragment extends PathFragment {
 	private Macro unresolvedMacro(PathExpander expander) {
 		expander.error(expander.getPath().getLogger().errorRecord(
 				"unresolved_macro",
-				expander.getPath(),
+				getMacroRef(),
 				"Macro can not be resolved"));
 		return null;
 	}

@@ -29,7 +29,7 @@ import org.o42a.util.log.LogRecord;
 
 public interface MacroExpander extends LocationInfo {
 
-	Ref getConsumedRef();
+	Ref getMacroRef();
 
 	Scope getOrigin();
 
