@@ -22,81 +22,47 @@ package org.o42a.core.object.meta;
 import org.o42a.core.object.Meta;
 
 
-public final class MetaDep {
+public abstract class MetaDep {
 
-	private final MetaTrigger trigger;
-	private final MetaUpdate update;
-	private MetaDep next;
-
-	MetaDep(MetaTrigger trigger, MetaUpdate update) {
-		assert trigger != null :
-			"Meta trigger not specified";
-		assert update != null :
-			"Meta update not specified";
-		this.trigger = trigger;
-		this.update = update;
-	}
-
-	public final MetaTrigger getTrigger() {
-		return this.trigger;
-	}
-
-	public final MetaUpdate getUpdate() {
-		return this.update;
-	}
+	public abstract MetaKey getKey();
 
 	public boolean update(Meta meta) {
 
-		final ObjectMeta top = topMeta(meta);
+		final UpdatedMeta top = topMeta(meta);
 
 		if (top == null) {
 			return false;
 		}
 
-		final UpdatedMeta updated = updatedMeta(meta);
-		final int triggerIsTripped =
-				top.triggerIsTripped(getTrigger(), updated.getMeta());
-
-		switch (triggerIsTripped) {
-		case 0:
-			return false;
-		case 1:
-			return true;
-		}
-
-		return updated.update();
+		return top.checkUpdated();
 	}
 
-	@Override
-	public String toString() {
-		if (this.update == null) {
-			return super.toString();
-		}
-		return "MetaDep[update " + this.update + " on " + this.trigger +']';
-	}
+	public abstract MetaDep parentDep();
 
-	final MetaDep getNext() {
-		return this.next;
-	}
+	public abstract MetaDep nestedDep();
 
-	final void setNext(MetaDep next) {
-		this.next = next;
-	}
+	public abstract Meta parentMeta(Meta meta);
 
-	private Meta topMeta(Meta meta) {
+	public abstract Meta nestedMeta(Meta meta);
+
+	protected abstract boolean triggered(Meta meta);
+
+	protected abstract boolean updateMeta(Meta meta);
+
+	private UpdatedMeta topMeta(Meta meta) {
 
 		Meta currentMeta = meta;
-		MetaUpdate currentUpdate = getUpdate();
+		MetaDep currentDep = this;
 
 		for (;;) {
 
-			final MetaUpdate parentUpdate = currentUpdate.parentUpdate();
+			final MetaDep parentDep = currentDep.parentDep();
 
-			if (parentUpdate == null) {
-				return currentMeta;
+			if (parentDep == null) {
+				return new UpdatedMeta(currentMeta, currentDep);
 			}
 
-			final Meta parentMeta = currentUpdate.parentMeta(currentMeta);
+			final Meta parentMeta = currentDep.parentMeta(currentMeta);
 
 			if (parentMeta == null) {
 				// Out of the scope. Trigger can no longer trip.
@@ -104,44 +70,25 @@ public final class MetaDep {
 			}
 
 			currentMeta = parentMeta;
-			currentUpdate = parentUpdate;
-		}
-	}
-
-	private UpdatedMeta updatedMeta(Meta meta) {
-
-		Meta currentMeta = meta;
-		MetaUpdate currentUpdate = getUpdate();
-
-		for (;;) {
-
-			final MetaUpdate nestedUpdate = currentUpdate.nestedUpdate();
-
-			if (nestedUpdate == null) {
-				return new UpdatedMeta(currentMeta, currentUpdate);
-			}
-
-			currentMeta = currentUpdate.nestedMeta(currentMeta);
-			currentUpdate = nestedUpdate;
+			currentDep = parentDep;
 		}
 	}
 
 	private static final class UpdatedMeta {
 
 		private final Meta meta;
-		private final MetaUpdate update;
+		private final MetaDep dep;
 
-		UpdatedMeta(Meta meta, MetaUpdate update) {
+		UpdatedMeta(Meta meta, MetaDep dep) {
 			this.meta = meta;
-			this.update = update;
+			this.dep = dep;
 		}
 
-		public final Meta getMeta() {
-			return this.meta;
-		}
+		public final boolean checkUpdated() {
 
-		public final boolean update() {
-			return this.update.update(getMeta());
+			final ObjectMeta meta = this.meta;
+
+			return meta.checkUpdated(this.dep);
 		}
 
 	}

@@ -20,11 +20,12 @@
 package org.o42a.core.object;
 
 import org.o42a.core.Scope;
-import org.o42a.core.object.macro.impl.MacroMeta;
+import org.o42a.core.member.Member;
 import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.object.meta.ObjectMeta;
 
 
-public final class Meta extends MacroMeta {
+public final class Meta extends ObjectMeta {
 
 	private final Obj object;
 	private Nesting nesting;
@@ -35,6 +36,32 @@ public final class Meta extends MacroMeta {
 
 	public final Obj getObject() {
 		return this.object;
+	}
+
+	public final Meta getParentMeta() {
+
+		final Scope enclosingScope =
+				getObject().getScope().getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			return enclosingObject.meta();
+		}
+
+		final Member enclosingMember = enclosingScope.toMember();
+
+		if (enclosingMember != null) {
+			return enclosingMember.getMemberOwner().getOwner().meta();
+		}
+
+		return null;
+	}
+
+	public final Nesting getNesting() {
+		if (this.nesting != null) {
+			return this.nesting;
+		}
+		return this.nesting = getObject().createNesting();
 	}
 
 	public final Obj findIn(Scope enclosing) {
@@ -48,13 +75,6 @@ public final class Meta extends MacroMeta {
 		enclosing.assertDerivedFrom(enclosingScope);
 
 		return getNesting().findObjectIn(enclosing);
-	}
-
-	public final Nesting getNesting() {
-		if (this.nesting != null) {
-			return this.nesting;
-		}
-		return this.nesting = getObject().createNesting();
 	}
 
 	@Override
