@@ -19,19 +19,8 @@
 */
 package org.o42a.core.object.meta;
 
-import org.o42a.core.object.Meta;
 
 
-public interface MetaUpdate {
-
-	MetaUpdate parentUpdate();
-
-	MetaUpdate nestedUpdate();
-
-	Meta parentMeta(Meta meta);
-
-	Meta nestedMeta(Meta meta);
-
-	boolean update(Meta meta);
+public interface MetaKey {
 
 }

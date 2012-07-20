@@ -19,8 +19,7 @@
 */
 package org.o42a.core.object.meta;
 
-import java.util.IdentityHashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
@@ -29,14 +28,11 @@ import org.o42a.core.object.Obj;
 
 public abstract class ObjectMeta {
 
-	protected static MetaDep createDep(MetaTrigger trigger, MetaUpdate update) {
-		return new MetaDep(trigger, update);
-	}
-
-	private IdentityHashMap<MetaTrigger, Boolean> tripped;
-	private MetaDeps deps;
+	private IdentityHashMap<MetaKey, Boolean> tripped;
+	private HashMap<MetaKey, MetaDep> deps;
 	private Iterator<Scope> checkedAscendants;
-	private MetaDep checkedDep;
+	private Iterator<MetaDep> checkedDeps;
+	private boolean initialized;
 	private byte updated;
 
 	public boolean isUpdated() {
@@ -55,30 +51,97 @@ public abstract class ObjectMeta {
 		return false;
 	}
 
-	protected void addDep(MetaDep dep) {
+	public void addDep(MetaDep dep) {
 		if (this.deps == null) {
-			this.deps = new MetaDeps();
+			this.deps = new HashMap<MetaKey, MetaDep>();
 		}
-		this.deps.add(dep);
+
+		final MetaKey key = dep.getKey();
+
+		MetaDep currentDep = dep;
+		Meta currentMeta = meta();
+
+		for (;;) {
+
+			final ObjectMeta objectMeta = currentMeta;
+
+			objectMeta.deps.put(key, currentDep);
+
+			final MetaDep parentDep = currentDep.parentDep();
+
+			if (parentDep == null) {
+				return;
+			}
+
+			currentMeta = currentDep.parentMeta(currentMeta);
+			currentDep = parentDep;
+		}
 	}
 
-	int triggerIsTripped(MetaTrigger trigger, Meta meta) {
+	boolean checkUpdated(MetaDep dep) {
+
+		final Meta meta = meta();
+		final MetaKey key = dep.getKey();
+
 		if (this.tripped == null) {
-			this.tripped = new IdentityHashMap<MetaTrigger, Boolean>();
+			this.tripped = new IdentityHashMap<MetaKey, Boolean>();
 		} else {
 
-			final Boolean cached = this.tripped.get(trigger);
+			final Boolean cached = this.tripped.get(key);
 
 			if (cached != null) {
-				return cached.booleanValue() ? 1 : 0;
+				return cached.booleanValue();
 			}
 		}
 
-		final boolean tripped = trigger.tripped(meta);
+		final boolean triggered = dep.triggered(meta);
 
-		this.tripped.put(trigger, Boolean.valueOf(tripped));
+		if (triggered && dep.updateMeta(meta)) {
+			this.tripped.put(key, Boolean.TRUE);
+			return true;
+		}
 
-		return tripped ? 2 : 0;
+		this.tripped.put(key, Boolean.FALSE);
+
+		return false;
+	}
+
+	private ObjectMeta init() {
+
+		final ObjectMeta parentMeta = meta().getParentMeta();
+
+		if (this.initialized) {
+			return this;
+		}
+		this.initialized = true;
+
+		if (parentMeta != null) {
+			parentMeta.init();
+			importParentDeps(parentMeta);
+		}
+
+		return this;
+	}
+
+	private void importParentDeps(final ObjectMeta parentMeta) {
+		if (parentMeta.deps == null) {
+			return;
+		}
+
+		for (Map.Entry<MetaKey, MetaDep> e : parentMeta.deps.entrySet()) {
+
+			final MetaDep parentDep = e.getValue();
+			final MetaDep dep = parentDep.nestedDep();
+
+			if (dep == null) {
+				continue;
+			}
+			if (this.deps == null) {
+				this.deps = new HashMap<MetaKey, MetaDep>();
+			}
+
+			this.deps.put(e.getKey(), dep);
+		}
 	}
 
 	private final Meta meta() {
@@ -111,14 +174,13 @@ public abstract class ObjectMeta {
 	}
 
 	private MetaDep nextDep() {
-		if (this.checkedDep != null) {
-			this.checkedDep = this.checkedDep.getNext();
-			if (this.checkedDep != null) {
-				return this.checkedDep;
-			}
-		}
-
 		for (;;) {
+			if (this.checkedDeps != null) {
+				if (this.checkedDeps.hasNext()) {
+					return this.checkedDeps.next();
+				}
+				this.checkedDeps = null;
+			}
 
 			final ObjectMeta nextMeta = nextMeta();
 
@@ -129,10 +191,7 @@ public abstract class ObjectMeta {
 				continue;
 			}
 
-			this.checkedDep = nextMeta.deps.getFirst();
-			if (this.checkedDep != null) {
-				return this.checkedDep;
-			}
+			this.checkedDeps = nextMeta.deps.values().iterator();
 		}
 	}
 
@@ -146,7 +205,9 @@ public abstract class ObjectMeta {
 				continue;
 			}
 
-			return nextAscendant.toObject().meta();
+			final ObjectMeta nextMeta = nextAscendant.toObject().meta();
+
+			return nextMeta.init();
 		}
 
 		return null;
