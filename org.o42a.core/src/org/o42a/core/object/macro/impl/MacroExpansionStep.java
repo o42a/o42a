@@ -69,7 +69,7 @@ public class MacroExpansionStep extends Step {
 	@Override
 	protected Ref consume(Ref ref, Consumer consumer) {
 
-		final Ref consumption = consumer.consume(ref);
+		final Ref consumption = consumer.expandMacro(ref);
 
 		if (consumption == null) {
 			return null;
@@ -77,8 +77,9 @@ public class MacroExpansionStep extends Step {
 
 		consumption.assertSameScope(ref);
 
+		final Ref macroRef = ref.getPath().cut(1).target(ref.distribute());
 		final MacroExpansionFragment expansion =
-				new MacroExpansionFragment(ref, consumer);
+				new MacroExpansionFragment(macroRef, consumer);
 		final BoundPath newPath = consumption.getPath().append(expansion);
 
 		expansion.init(newPath);

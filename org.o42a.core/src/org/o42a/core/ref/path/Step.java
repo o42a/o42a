@@ -74,8 +74,7 @@ public abstract class Step {
 
 	/**
 	 * This is ivoked by {@link Ref#consume(Consumer)} for the last step
-	 * of the path to optionally {@link Consumer#consume(Ref) consume}
-	 * the reference.
+	 * of the path to optionally {@link Consumer consume} the reference.
 	 *
 	 * <p>This method's call is optional. But it is required e.g. for macro
 	 * expansion. It is a step's responsibility to report the required call
