@@ -116,9 +116,26 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 
 	@Override
 	public boolean object(Step step, Obj object) {
-		if (object.getScope().getEnclosingScope().toObject() == null) {
-			return invalidMacroRef();
+		if (this.depPath == null) {
+			// The dependency path is not started yet.
+			final Scope enclosingScope = object.getScope().getEnclosingScope();
+
+			if (enclosingScope.toObject() == null) {
+				// Enclosing scope is a (local) member of some object.
+				// The dependency affects the member owner.
+				final Member topMember = enclosingScope.toMember();
+
+				appendParentMeta(
+						topMember
+						.getMemberOwner()
+						.getOwner()
+						.getScope());
+
+				// The dependency path starts with this member access.
+				this.depPath = topMember.getMemberKey().toPath();
+			}
 		}
+
 		return appendDepStep(step);
 	}
 
