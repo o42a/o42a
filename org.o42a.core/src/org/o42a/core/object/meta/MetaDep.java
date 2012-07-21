@@ -19,13 +19,21 @@
 */
 package org.o42a.core.object.meta;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+
+import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
+import org.o42a.core.object.Obj;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolution;
 
 
 public abstract class MetaDep {
 
 	private final MetaKey key;
 	private final Meta declaredIn;
+	private BoundPath parentPath;
 
 	public MetaDep(Meta declaredIn, MetaKey key) {
 		assert declaredIn != null :
@@ -59,7 +67,27 @@ public abstract class MetaDep {
 
 	public abstract MetaDep nestedDep();
 
-	public abstract Meta parentMeta(Meta meta);
+	public final Meta parentMeta(Meta meta) {
+
+		final BoundPath parentPath = parentPath();
+
+		if (parentPath == null) {
+			return null;
+		}
+
+		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
+
+		final PathResolution parentResolution = parentPath.resolve(
+				pathResolver(meta.getObject().getScope(), dummyUser()));
+		final Meta parentMeta = parentResolution.getObject().meta();
+
+		if (!meta.getParentMeta().is(parentMeta)) {
+			// Out of scope.
+			return null;
+		}
+
+		return parentMeta;
+	}
 
 	public abstract Meta nestedMeta(Meta meta);
 
@@ -74,6 +102,33 @@ public abstract class MetaDep {
 	protected abstract boolean triggered(Meta meta);
 
 	protected abstract boolean updateMeta(Meta meta);
+
+	private final BoundPath parentPath() {
+		if (this.parentPath != null) {
+			return this.parentPath;
+		}
+
+		final MetaDep parentDep = parentDep();
+
+		if (parentDep == null) {
+			return null;
+		}
+
+		final Scope scope = getDeclaredIn().getObject().getScope();
+		final Scope enclosingScope = scope.getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			return scope.getEnclosingScopePath().bind(scope, scope);
+		}
+
+		assert enclosingScope.toMember() != null :
+			"Wrong enclosing scope: " + enclosingScope;
+
+		return scope.getEnclosingScopePath()
+				.append(enclosingScope.getEnclosingScopePath())
+				.bind(scope, scope);
+	}
 
 	private UpdatedMeta topMeta(Meta meta) {
 
