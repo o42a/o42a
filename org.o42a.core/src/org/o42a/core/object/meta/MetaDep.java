@@ -34,7 +34,6 @@ public abstract class MetaDep {
 			"Meta key not specified";
 		this.declaredIn = declaredIn;
 		this.key = key;
-		declaredIn.addDep(this);
 	}
 
 	public final MetaKey getKey() {

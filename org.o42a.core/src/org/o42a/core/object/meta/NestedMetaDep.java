@@ -19,16 +19,27 @@
 */
 package org.o42a.core.object.meta;
 
+import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.ref.path.PathResolver.pathResolver;
+
+import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
+import org.o42a.core.object.Obj;
+import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.path.PathResolution;
 
 
 public abstract class NestedMetaDep extends MetaDep {
 
 	private final MetaDep parent;
+	private final BoundPath parentPath;
 
 	public NestedMetaDep(MetaDep parent, Meta declaredIn) {
 		super(declaredIn, parent.getKey());
+		assert parent.getDeclaredIn().is(declaredIn.getParentMeta()) :
+			parent.getDeclaredIn() + " is not a parent of " + declaredIn;
 		this.parent = parent;
+		this.parentPath = parentPath();
 	}
 
 	@Override
@@ -39,12 +50,45 @@ public abstract class NestedMetaDep extends MetaDep {
 	@Override
 	public final Meta parentMeta(Meta meta) {
 		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
-		return meta.getParentMeta();
+
+		final PathResolution parentResolution = this.parentPath.resolve(
+				pathResolver(meta.getObject().getScope(), dummyUser()));
+		final Meta parentMeta = parentResolution.getObject().meta();
+
+		if (!meta.getParentMeta().is(parentMeta)) {
+			// Out of scope.
+			return null;
+		}
+
+		return parentMeta;
 	}
 
 	@Override
-	protected final boolean updateMeta(Meta meta) {
+	protected boolean triggered(Meta meta) {
+		return parentDep().triggered(parentMeta(meta));
+	}
+
+	@Override
+	protected boolean updateMeta(Meta meta) {
 		return parentDep().updateMeta(parentMeta(meta));
+	}
+
+	private final BoundPath parentPath() {
+
+		final Scope scope = getDeclaredIn().getObject().getScope();
+		final Scope enclosingScope = scope.getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			return scope.getEnclosingScopePath().bind(scope, scope);
+		}
+
+		assert enclosingScope.toMember() != null :
+			"Wrong enclosing scope: " + enclosingScope;
+
+		return scope.getEnclosingScopePath()
+				.append(enclosingScope.getEnclosingScopePath())
+				.bind(scope, scope);
 	}
 
 }

@@ -50,6 +50,11 @@ public abstract class ParentMetaDep extends MetaDep {
 	}
 
 	@Override
+	protected boolean triggered(Meta meta) {
+		return nestedDep().triggered(nestedMeta(meta));
+	}
+
+	@Override
 	protected boolean updateMeta(Meta meta) {
 		return nestedDep().updateMeta(nestedMeta(meta));
 	}
