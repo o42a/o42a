@@ -17,36 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.meta;
+package org.o42a.core.object.macro;
 
+import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
+import org.o42a.core.object.macro.impl.MacroDepBuilder;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 
 
-public abstract class NestedMetaDep extends MetaDep {
+public abstract class MacroDep<D extends MetaDep> {
 
-	private final MetaDep parent;
-
-	public NestedMetaDep(MetaDep parent, Meta declaredIn) {
-		super(declaredIn, parent.getKey());
-		assert parent.getDeclaredIn().is(declaredIn.getParentMeta()) :
-			parent.getDeclaredIn() + " is not a parent of " + declaredIn;
-		this.parent = parent;
+	public final D buildDep(Ref ref) {
+		return buildDep(ref.getPath(), ref.getScope());
 	}
 
-	@Override
-	public final MetaDep parentDep() {
-		return this.parent;
+	public final D buildDep(BoundPath path, Scope start) {
+		if (path.isStatic()) {
+			return null;
+		}
+
+		final MacroDepBuilder<D> walker = new MacroDepBuilder<D>(this);
+
+		return walker.buildDep(path, start);
 	}
 
-	@Override
-	protected boolean triggered(Meta meta) {
-		return parentDep().triggered(parentMeta(meta));
-	}
+	public abstract D newDep(Meta meta);
 
-	@Override
-	protected boolean updateMeta(Meta meta) {
-		return parentDep().updateMeta(parentMeta(meta));
-	}
-
+	public abstract void setParentDep(D dep, MetaDep parentDep);
 
 }
