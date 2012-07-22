@@ -25,7 +25,8 @@ import org.o42a.common.object.ValueTypeObject;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberOwner;
 import org.o42a.core.object.def.Definitions;
-import org.o42a.core.object.macro.*;
+import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.value.ValueStruct;
@@ -57,13 +58,8 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	}
 
 	@Override
-	public Path init(MacroInitializer initializer) {
-		return cantExpand(initializer);
-	}
-
-	@Override
-	public Path reexpand(MacroReexpander reexpander) {
-		return cantExpand(reexpander);
+	public Path expand(MacroExpander expander) {
+		return cantExpand(expander);
 	}
 
 	@Override
