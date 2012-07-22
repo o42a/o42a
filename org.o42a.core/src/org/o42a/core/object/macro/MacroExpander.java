@@ -35,8 +35,6 @@ public interface MacroExpander extends LocationInfo {
 
 	BoundPath getPath();
 
-	Scope getStart();
-
 	CompilerLogger getLogger();
 
 	void error(LogRecord message);

@@ -70,32 +70,26 @@ public class MacroExpansionFragment extends PathFragment {
 			return null;
 		}
 		if (this.init > 0) {
-			// Initial expansion already complete.
-			// Perform the re-expansion.
-			return reexpand(expander, start, macro);
+			// Expansion already done.
+			return this.initialExpansion;
 		}
 		if (this.init == 0) {
-			// Initial expansion not initiated yet.
-			if (expander.getPath() == getPath()) {
-				// Initiate the expansion.
+			// Expansion not initiated yet.
+			if (expander.getPath() != getPath()) {
+				// Initiate the expansion in the original scope.
 				this.init = -1;
 				getPath().rebuild();
-				if (start.is(getOrigin())) {
-					// This expansion is the same as initial one.
-					return this.initialExpansion;
-				}
 				// This may be not updated due to resolution errors.
 				this.init = 1;
-				// Re-expand in the current scope.
-				return reexpand(expander, start, macro);
+				return this.initialExpansion;
 			}
-			// Current expansion will be an initial one.
+			// Current expansion is in the right scope.
 			this.init = -1;
 		}
 
 		this.origin = start;
 
-		final Path initialExpansion = init(expander, macro);
+		final Path initialExpansion = expand(expander, macro);
 
 		this.init = 1;
 		this.initialExpansion = initialExpansion;
@@ -107,20 +101,12 @@ public class MacroExpansionFragment extends PathFragment {
 		this.path = path;
 	}
 
-	private Path init(PathExpander expander, Macro macro) {
+	private Path expand(PathExpander expander, Macro macro) {
 
-		final MacroInitializerImpl initializer =
-				new MacroInitializerImpl(this, expander);
+		final MacroExpanderImpl macroExpander =
+				new MacroExpanderImpl(this, expander);
 
-		return macro.init(initializer);
-	}
-
-	private Path reexpand(PathExpander expander, Scope start, Macro macro) {
-
-		final MacroReexpanderImpl reexpander =
-				new MacroReexpanderImpl(this, expander, start);
-
-		return macro.reexpand(reexpander);
+		return macro.expand(macroExpander);
 	}
 
 	@Override

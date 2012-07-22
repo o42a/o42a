@@ -71,6 +71,9 @@ public class MacroExpansionStep extends Step {
 
 		final Ref consumption = consumer.expandMacro(ref);
 
+		if (consumption == ref) {
+			return ref;
+		}
 		if (consumption == null) {
 			return null;
 		}

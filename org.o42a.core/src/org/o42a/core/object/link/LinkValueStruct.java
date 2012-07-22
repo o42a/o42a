@@ -19,7 +19,9 @@
 */
 package org.o42a.core.object.link;
 
+import static org.o42a.core.object.link.LinkValueType.LINK;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.value.TypeParameters.typeMutability;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -80,6 +82,17 @@ public final class LinkValueStruct
 		}
 		return this.linkDepth =
 				1 + getTypeRef().getValueStruct().getLinkDepth();
+	}
+
+	@Override
+	public TypeParameters getTypeParameters() {
+
+		final TypeRef typeRef = getTypeRef();
+
+		return typeMutability(
+				typeRef,
+				typeRef.getRef().distribute(),
+				LINK).setTypeRef(typeRef);
 	}
 
 	@Override
@@ -186,8 +199,7 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	protected LinkValueStruct applyParameters(
-			TypeParameters parameters) {
+	protected LinkValueStruct applyParameters(TypeParameters parameters) {
 		if (parameters.getLinkType() != LinkValueType.LINK) {
 			parameters.getLogger().error(
 					"prohibited_type_mutability",

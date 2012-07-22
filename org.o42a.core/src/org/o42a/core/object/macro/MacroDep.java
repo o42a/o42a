@@ -19,31 +19,22 @@
 */
 package org.o42a.core.object.macro;
 
-import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.macro.impl.MacroDepBuilder;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
 
 
 public abstract class MacroDep<D extends MetaDep> {
 
 	public final D buildDep(Ref ref) {
-		return buildDep(ref.getPath(), ref.getScope());
-	}
-
-	public final D buildDep(BoundPath path, Scope start) {
-		if (path.isStatic()) {
+		if (ref.isStatic()) {
 			return null;
 		}
-
-		final MacroDepBuilder<D> walker = new MacroDepBuilder<D>(this);
-
-		return walker.buildDep(path, start);
+		return new MacroDepBuilder<D>(this, ref).buildDep();
 	}
 
-	public abstract D newDep(Meta meta);
+	public abstract D newDep(Meta meta, Ref ref);
 
 	public abstract void setParentDep(D dep, MetaDep parentDep);
 
