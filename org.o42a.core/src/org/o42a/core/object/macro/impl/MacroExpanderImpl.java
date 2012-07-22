@@ -30,12 +30,12 @@ import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Loggable;
 
 
-abstract class AbstractMacroExpander implements MacroExpander {
+final class MacroExpanderImpl implements MacroExpander {
 
 	private final MacroExpansionFragment expansion;
 	private final PathExpander pathExpander;
 
-	public AbstractMacroExpander(
+	MacroExpanderImpl(
 			MacroExpansionFragment expansion,
 			PathExpander pathExpander) {
 		this.expansion = expansion;

@@ -24,8 +24,6 @@ import org.o42a.core.ref.path.Path;
 
 public interface Macro {
 
-	Path init(MacroInitializer initializer);
-
-	Path reexpand(MacroReexpander reexpander);
+	Path expand(MacroExpander expander);
 
 }

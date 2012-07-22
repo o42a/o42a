@@ -48,6 +48,11 @@ public abstract class SingleValueStruct<T>
 		return 0;
 	}
 
+	@Override
+	public final TypeParameters getTypeParameters() {
+		return null;
+	}
+
 	public final boolean is(ValueStruct<?, ?> valueStruct) {
 		return this == valueStruct;
 	}

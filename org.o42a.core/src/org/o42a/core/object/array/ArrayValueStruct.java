@@ -19,8 +19,10 @@
 */
 package org.o42a.core.object.array;
 
+import static org.o42a.core.object.link.LinkValueType.LINK;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.value.TypeParameters.typeMutability;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -72,6 +74,17 @@ public final class ArrayValueStruct
 	@Override
 	public final int getLinkDepth() {
 		return 0;
+	}
+
+	@Override
+	public TypeParameters getTypeParameters() {
+
+		final TypeRef itemTypeRef = getItemTypeRef();
+
+		return typeMutability(
+				itemTypeRef,
+				itemTypeRef.getRef().distribute(),
+				LINK).setTypeRef(itemTypeRef);
 	}
 
 	public final TypeRef getItemTypeRef() {
@@ -187,8 +200,7 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	protected ValueStruct<ArrayValueStruct, Array> applyParameters(
-			TypeParameters parameters) {
+	protected ArrayValueStruct applyParameters(TypeParameters parameters) {
 		if (parameters.getLinkType() != LinkValueType.LINK) {
 			parameters.getLogger().error(
 					"prohibited_type_mutability",

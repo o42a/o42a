@@ -42,12 +42,13 @@ import org.o42a.util.log.LogRecord;
 public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 
 	private final MacroDep<D> builder;
-	private BoundPath path;
+	private final Ref ref;
 	private Meta[] parentMeta;
 	private Path depPath;
 
-	public MacroDepBuilder(MacroDep<D> builder) {
+	public MacroDepBuilder(MacroDep<D> builder, Ref ref) {
 		this.builder = builder;
+		this.ref = ref;
 	}
 
 	@Override
@@ -60,7 +61,6 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		if (path.isStatic()) {
 			return false;
 		}
-		this.path = path;
 		return appendParentMeta(start);
 	}
 
@@ -156,8 +156,10 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		return true;
 	}
 
-	public final D buildDep(BoundPath path, Scope start) {
+	public final D buildDep() {
 
+		final BoundPath path = this.ref.getPath();
+		final Scope start = this.ref.getScope();
 		final PathResolution resolution =
 				path.walk(PathResolver.pathResolver(start, dummyUser()), this);
 
@@ -173,7 +175,7 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			return null;
 		}
 
-		final D dep = this.builder.newDep(this.parentMeta[0]);
+		final D dep = newDep();
 
 		addParentDeps(dep);
 
@@ -181,11 +183,35 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 	}
 
 	private final boolean invalidMacroRef() {
-		this.path.getLogger().error(
+		this.ref.getLogger().error(
 				"invalid_macro_ref",
-				this.path,
+				this.ref,
 				"Invalid macro reference");
 		return false;
+	}
+
+	private D newDep() {
+
+		final Ref ref;
+		final Meta meta = this.parentMeta[0];
+		final Scope scope = this.ref.getScope();
+
+		if (scope.toObject() != null) {
+			ref = this.ref;
+		} else {
+
+			final Scope metaScope = meta.getObject().getScope();
+
+			ref =
+					scope.toMember()
+					.getMemberKey()
+					.toPath()
+					.bind(this.ref, metaScope)
+					.append(this.ref.getPath())
+					.target(this.ref.distributeIn(metaScope.getContainer()));
+		}
+
+		return this.builder.newDep(meta, ref);
 	}
 
 	private boolean appendParentMeta(Scope scope) {
@@ -269,7 +295,7 @@ public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 			depPath = this.depPath;
 		}
 
-		return depPath.bind(this.path, topMeta.getObject().getScope());
+		return depPath.bind(this.ref, topMeta.getObject().getScope());
 	}
 
 	private static final class IntermediateMacroDep extends ParentMetaDep {
