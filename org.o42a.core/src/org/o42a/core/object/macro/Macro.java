@@ -19,11 +19,50 @@
 */
 package org.o42a.core.object.macro;
 
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.ref.Consumer;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 
 
+/**
+ * Macro value representation.
+ */
 public interface Macro {
 
+	/**
+	 * Expands the macro.
+	 *
+	 * <p>This is called when whe path contains a {@link Path#expandMacro()
+	 * macro expansion} and a macro expansion {@link Consumer#expandMacro(Ref)
+	 * requested by consumer}.</p>
+	 *
+	 * <p>This method should register the {@link MetaDep meta-dependencies}
+	 * apart from dependency on the macro itself.<p>
+	 *
+	 * @param expander macro expander.
+	 *
+	 * @return expanded path.
+	 */
 	Path expand(MacroExpander expander);
+
+	/**
+	 * Re-expands the macro.
+	 *
+	 * <p>This is called when whe path contains a {@link Path#reexpandMacro()
+	 * macro re-expansion} and a macro expansion
+	 * {@link Consumer#expandMacro(Ref) requested again} for already expanded
+	 * macro, but in another scope. The re-expansion may lead to a different
+	 * results.</p>
+	 *
+	 * <p>In contrast to {@link #expand(MacroExpander)} method, this one should
+	 * not register any new dependencies, as they should be registered already
+	 * by the former.<p>
+	 *
+	 * @param expander macro expander.
+	 *
+	 * @return re-expanded path.
+	 */
+	Path reexpand(MacroExpander expander);
 
 }

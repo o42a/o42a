@@ -63,6 +63,11 @@ public class MacroValueTypeObject extends ValueTypeObject implements Macro {
 	}
 
 	@Override
+	public Path reexpand(MacroExpander expander) {
+		return cantExpand(expander);
+	}
+
+	@Override
 	protected Definitions explicitDefinitions() {
 
 		final Ref ref =

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,29 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.value.impl;
+package org.o42a.core.object.value.impl;
 
-import org.o42a.core.value.ValueStruct;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.object.Meta;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.object.meta.NestedMetaDep;
 
 
-public final class DefaultValueStructFinder implements ValueStructFinder {
+public class ValueStructUpdate extends NestedMetaDep {
 
-	public static final DefaultValueStructFinder INSTANCE =
-			new DefaultValueStructFinder();
-
-	private DefaultValueStructFinder() {
+	ValueStructUpdate(TypeParamMetaDep parent, Meta declaredIn) {
+		super(parent, declaredIn);
 	}
 
 	@Override
-	public ValueStruct<?, ?> valueStructBy(
-			ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct;
-	}
-
-	@Override
-	public ValueStruct<?, ?> toValueStruct() {
+	public MetaDep nestedDep() {
 		return null;
+	}
+
+	@Override
+	protected boolean updateMeta(Meta meta) {
+
+		final TypeParamMetaDep parent =
+				(TypeParamMetaDep) parentDep();
+
+		return parent.updateTypeParam(meta);
 	}
 
 }

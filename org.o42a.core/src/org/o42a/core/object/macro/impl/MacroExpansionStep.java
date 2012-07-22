@@ -39,7 +39,9 @@ import org.o42a.util.log.LogInfo;
 public class MacroExpansionStep extends Step {
 
 	public static final MacroExpansionStep MACRO_EXPANSION_STEP =
-			new MacroExpansionStep();
+			new MacroExpansionStep(false);
+	public static final MacroExpansionStep MACRO_REEXPANSION_STEP =
+			new MacroExpansionStep(true);
 
 	static void prohibitedExpansion(CompilerLogger logger, LogInfo location) {
 		logger.error(
@@ -48,7 +50,10 @@ public class MacroExpansionStep extends Step {
 				"Macro expansion is not allowed here");
 	}
 
-	private MacroExpansionStep() {
+	private final boolean reexpansion;
+
+	private MacroExpansionStep(boolean reexpansion) {
+		this.reexpansion = reexpansion;
 	}
 
 	@Override
@@ -82,7 +87,7 @@ public class MacroExpansionStep extends Step {
 
 		final Ref macroRef = ref.getPath().cut(1).target(ref.distribute());
 		final MacroExpansionFragment expansion =
-				new MacroExpansionFragment(macroRef, consumer);
+				new MacroExpansionFragment(macroRef, this.reexpansion);
 		final BoundPath newPath = consumption.getPath().append(expansion);
 
 		expansion.init(newPath);
