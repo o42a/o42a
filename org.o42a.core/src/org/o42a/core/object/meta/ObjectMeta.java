@@ -51,7 +51,7 @@ public abstract class ObjectMeta {
 		return false;
 	}
 
-	public void addDep(MetaDep dep) {
+	final void addDep(MetaDep dep) {
 		if (this.deps == null) {
 			this.deps = new HashMap<MetaKey, MetaDep>();
 		}

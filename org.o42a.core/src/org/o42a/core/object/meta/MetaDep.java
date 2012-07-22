@@ -23,6 +23,7 @@ import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 
 import org.o42a.core.Scope;
+import org.o42a.core.member.MemberKey;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.path.BoundPath;
@@ -34,6 +35,7 @@ public abstract class MetaDep {
 	private final MetaKey key;
 	private final Meta declaredIn;
 	private BoundPath parentPath;
+	private Nesting nesting;
 
 	public MetaDep(Meta declaredIn, MetaKey key) {
 		assert declaredIn != null :
@@ -68,14 +70,13 @@ public abstract class MetaDep {
 	public abstract MetaDep nestedDep();
 
 	public final Meta parentMeta(Meta meta) {
+		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
 
 		final BoundPath parentPath = parentPath();
 
 		if (parentPath == null) {
 			return null;
 		}
-
-		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
 
 		final PathResolution parentResolution = parentPath.resolve(
 				pathResolver(meta.getObject().getScope(), dummyUser()));
@@ -89,7 +90,24 @@ public abstract class MetaDep {
 		return parentMeta;
 	}
 
-	public abstract Meta nestedMeta(Meta meta);
+	public final Meta nestedMeta(Meta meta) {
+		meta.getObject().assertDerivedFrom(getDeclaredIn().getObject());
+
+		final Nesting nesting = nesting();
+
+		if (nesting == null) {
+			return null;
+		}
+
+		return nesting.findObjectIn(meta.getObject().getScope()).meta();
+	}
+
+	public final void register() {
+
+		final ObjectMeta declaredIn = getDeclaredIn();
+
+		declaredIn.addDep(this);
+	}
 
 	@Override
 	public String toString() {
@@ -119,15 +137,47 @@ public abstract class MetaDep {
 		final Obj enclosingObject = enclosingScope.toObject();
 
 		if (enclosingObject != null) {
-			return scope.getEnclosingScopePath().bind(scope, scope);
+			return this.parentPath =
+					scope.getEnclosingScopePath().bind(scope, scope);
 		}
 
 		assert enclosingScope.toMember() != null :
 			"Wrong enclosing scope: " + enclosingScope;
 
-		return scope.getEnclosingScopePath()
+		return this.parentPath =
+				scope.getEnclosingScopePath()
 				.append(enclosingScope.getEnclosingScopePath())
 				.bind(scope, scope);
+	}
+
+	private final Nesting nesting() {
+		if (this.nesting != null) {
+			return this.nesting;
+		}
+
+		final MetaDep nestedDep = nestedDep();
+
+		if (nestedDep == null) {
+			return null;
+		}
+
+		final Meta nestedMeta = nestedDep.getDeclaredIn();
+		final Scope enclosingScope =
+				nestedMeta.getObject()
+				.getScope()
+				.getEnclosingScope();
+		final Obj enclosingObject = enclosingScope.toObject();
+
+		if (enclosingObject != null) {
+			assert enclosingObject.meta().is(getDeclaredIn()) :
+				"Wrong enclosing object: " + enclosingObject
+				+ ", but expected " + getDeclaredIn().getObject();
+			return this.nesting = nestedMeta.getNesting();
+		}
+
+		return this.nesting = new MemberObjectNesting(
+				enclosingScope.toMember().getMemberKey(),
+				nestedMeta.getNesting());
 	}
 
 	private UpdatedMeta topMeta(Meta meta) {
@@ -170,6 +220,35 @@ public abstract class MetaDep {
 			final ObjectMeta meta = this.meta;
 
 			return meta.checkUpdated(this.dep);
+		}
+
+	}
+
+	private static final class MemberObjectNesting implements Nesting {
+
+		private final MemberKey memberKey;
+		private final Nesting nesting;
+
+		MemberObjectNesting(MemberKey memberKey, Nesting nesting) {
+			this.memberKey = memberKey;
+			this.nesting = nesting;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+			return this.nesting.findObjectIn(
+					enclosing.getContainer()
+					.member(this.memberKey)
+					.substance(dummyUser())
+					.getScope());
+		}
+
+		@Override
+		public String toString() {
+			if (this.nesting == null) {
+				return super.toString();
+			}
+			return "Nesting[" + this.memberKey + '/' + this.nesting + ']';
 		}
 
 	}
