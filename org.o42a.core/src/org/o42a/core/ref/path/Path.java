@@ -24,6 +24,7 @@ import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_EXPANSION_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
+import static org.o42a.core.ref.path.PathLabels.NO_LABELS;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import java.util.Arrays;
@@ -45,11 +46,11 @@ public final class Path {
 	public static final Path ROOT_PATH = ABSOLUTE_PATH.emptyPath();
 	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
 	public static final Path VOID_PATH =
-			new Path(ABSOLUTE_PATH, true, new VoidStep());
+			new Path(ABSOLUTE_PATH, true, NO_LABELS, new VoidStep());
 	public static final Path FALSE_PATH =
-			new Path(ABSOLUTE_PATH, true, new FalseStep());
+			new Path(ABSOLUTE_PATH, true, NO_LABELS, new FalseStep());
 	public static final Path NONE_PATH =
-			new Path(ABSOLUTE_PATH, true, new NoneStep());
+			new Path(ABSOLUTE_PATH, true, NO_LABELS, new NoneStep());
 
 	public static Path absolutePath(
 			CompilerContext context,
@@ -77,15 +78,22 @@ public final class Path {
 		return new Path(
 				ABSOLUTE_PATH,
 				true,
+				NO_LABELS,
 				new ModuleStep(moduleName));
 	}
 
 	private final PathKind kind;
+	private final PathLabels labels;
 	private final Step[] steps;
 	private final boolean isStatic;
 
-	Path(PathKind kind, boolean isStatic, Step... steps) {
+	Path(
+			PathKind kind,
+			boolean isStatic,
+			PathLabels labels,
+			Step... steps) {
 		this.kind = kind;
+		this.labels = labels;
 		this.isStatic = kind.isAbsolute() ? true : isStatic;
 		this.steps = steps;
 		assert assertStepsNotNull(steps);
@@ -107,8 +115,24 @@ public final class Path {
 		return this.steps.length == 0 && !isStatic();
 	}
 
+	public final PathLabels getLabels() {
+		return this.labels;
+	}
+
 	public final Step[] getSteps() {
 		return this.steps;
+	}
+
+	public final boolean hasLabel(PathLabel label) {
+		return getLabels().hasLabel(label);
+	}
+
+	public final Path label(PathLabel label) {
+		return new Path(
+				getKind(),
+				isStatic(),
+				getLabels().add(label),
+				getSteps());
 	}
 
 	public Path append(Step step) {
@@ -118,12 +142,12 @@ public final class Path {
 		final PathKind pathKind = step.getPathKind();
 
 		if (pathKind.isAbsolute()) {
-			return new Path(pathKind, true, step);
+			return new Path(pathKind, true, this.labels, step);
 		}
 
 		final Step[] newSteps = ArrayUtil.append(this.steps, step);
 
-		return new Path(getKind(), isStatic(), newSteps);
+		return new Path(getKind(), isStatic(), this.labels, newSteps);
 	}
 
 	public final Path append(MemberKey memberKey) {
@@ -160,7 +184,11 @@ public final class Path {
 
 		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
 
-		return new Path(getKind(), isStatic() || path.isStatic(), newSteps);
+		return new Path(
+				getKind(),
+				isStatic() || path.isStatic(),
+				getLabels().addAll(path.getLabels()),
+				newSteps);
 	}
 
 	public final Path cut(int stepsToCut) {
@@ -168,7 +196,7 @@ public final class Path {
 		final Step[] newSteps =
 				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
 
-		return new Path(getKind(), isStatic(), newSteps);
+		return new Path(getKind(), isStatic(), this.labels, newSteps);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -182,8 +210,9 @@ public final class Path {
 
 		final Step[] steps =
 				ArrayUtil.prepend(new StaticStep(origin), getSteps());
+		final Path staticPath = new Path(getKind(), true, this.labels, steps);
 
-		return new Path(getKind(), true, steps).bind(location, origin);
+		return staticPath.bind(location, origin);
 	}
 
 	public final PrefixPath toPrefix(Scope start) {
