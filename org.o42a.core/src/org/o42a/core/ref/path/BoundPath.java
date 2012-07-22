@@ -84,6 +84,13 @@ public class BoundPath extends RefPath {
 		this.path = prototype.path;
 	}
 
+	private BoundPath(BoundPath prototype, Path rawPath, Path path) {
+		super(prototype);
+		this.origin = prototype.origin;
+		this.rawPath = rawPath;
+		this.path = path;
+	}
+
 	public final Scope getOrigin() {
 		return this.origin;
 	}
@@ -117,6 +124,10 @@ public class BoundPath extends RefPath {
 
 	public final Step[] getSteps() {
 		return getPath().getSteps();
+	}
+
+	public final PathLabels getLabels() {
+		return getPath().getLabels();
 	}
 
 	public final int length() {
@@ -171,6 +182,23 @@ public class BoundPath extends RefPath {
 		final Step lastStep = steps[steps.length - 1];
 
 		return lastStep.ancestor(this, location, distributor);
+	}
+
+	public final boolean hasLabel(PathLabel label) {
+		return getLabels().hasLabel(label);
+	}
+
+	public final BoundPath label(PathLabel label) {
+		if (this.path != null) {
+			return new BoundPath(
+					this,
+					this.rawPath,
+					this.path.label(label));
+		}
+		return new BoundPath(
+				this,
+				this.rawPath.label(label),
+				null);
 	}
 
 	public final BoundPath append(Step step) {
@@ -521,6 +549,7 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic(),
+							this.path.getLabels(),
 							steps);
 					tracker.abortedAt(prev, step);
 					return noResolution(tracker, null, null);
@@ -539,6 +568,7 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
+							this.path.getLabels().addAll(replacement.getLabels()),
 							steps);
 					// Continue from the ROOT.
 					prev = root();
@@ -555,6 +585,8 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
+							this.path.getLabels()
+							.addAll(replacement.getLabels()),
 							steps);
 				}
 				// Do not change the current index.
@@ -623,7 +655,7 @@ public class BoundPath extends RefPath {
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), steps);
+			return new Path(getKind(), isStatic(), getLabels(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -632,7 +664,7 @@ public class BoundPath extends RefPath {
 			return rawPath;
 		}
 
-		return new Path(getKind(), isStatic(), rebuilt);
+		return new Path(getKind(), isStatic(), getLabels(), rebuilt);
 	}
 
 	private Step[] removeOddFragments() {
