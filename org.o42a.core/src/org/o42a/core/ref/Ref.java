@@ -141,6 +141,20 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
+	public final Ref expandMacro() {
+
+		final BoundPath path = getPath();
+
+		return path.expandMacro().target(distribute());
+	}
+
+	public final Ref reexpandMacro() {
+
+		final BoundPath path = getPath();
+
+		return path.reexpandMacro().target(distribute());
+	}
+
 	public final Ref consume(Consumer consumer) {
 
 		final RefPath path = getPath();

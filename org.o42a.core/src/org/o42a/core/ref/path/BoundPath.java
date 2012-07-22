@@ -225,6 +225,10 @@ public class BoundPath extends RefPath {
 		return getRawPath().expandMacro().bind(this, getOrigin());
 	}
 
+	public final BoundPath reexpandMacro() {
+		return getRawPath().reexpandMacro().bind(this, getOrigin());
+	}
+
 	public final BoundPath append(Path path) {
 		return getRawPath().append(path).bind(this, getOrigin());
 	}

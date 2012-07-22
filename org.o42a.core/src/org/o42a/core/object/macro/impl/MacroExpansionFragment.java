@@ -22,7 +22,6 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
-import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -34,23 +33,19 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansionFragment extends PathFragment {
 
 	private final Ref macroRef;
-	private final Consumer consumer;
+	private final boolean reexpansion;
 	private Scope origin;
 	private Path initialExpansion;
 	private byte init;
 	private BoundPath path;
 
-	public MacroExpansionFragment(Ref macroRef, Consumer consumer) {
+	public MacroExpansionFragment(Ref macroRef, boolean reexpansion) {
 		this.macroRef = macroRef;
-		this.consumer = consumer;
+		this.reexpansion = reexpansion;
 	}
 
 	public final Ref getMacroRef() {
 		return this.macroRef;
-	}
-
-	public final Consumer getConsumer() {
-		return this.consumer;
 	}
 
 	public final BoundPath getPath() {
@@ -106,7 +101,11 @@ public class MacroExpansionFragment extends PathFragment {
 		final MacroExpanderImpl macroExpander =
 				new MacroExpanderImpl(this, expander);
 
-		return macro.expand(macroExpander);
+		if (!this.reexpansion) {
+			return macro.expand(macroExpander);
+		}
+
+		return macro.reexpand(macroExpander);
 	}
 
 	@Override

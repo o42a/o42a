@@ -107,7 +107,7 @@ public final class ExpressionVisitor
 				return null;
 			}
 
-			return operand.getPath().expandMacro().target(p);
+			return operand.expandMacro();
 		}
 
 		return super.visitUnary(expression, p);

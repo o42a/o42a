@@ -105,7 +105,16 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return getValueType().isVariable();
 	}
 
-	public abstract TypeParameters getTypeParameters();
+	public abstract TypeParameters getParameters();
+
+	public ValueStruct<S,T> setParameters(TypeParameters parameters) {
+		parameters.getLogger().error(
+				"unsupported_type_parameters",
+				parameters,
+				"Type parameters not supported by %s",
+				this);
+		return this;
+	}
 
 	public final Value<T> compilerValue(T value) {
 
@@ -188,7 +197,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract S upgradeScope(Scope toScope);
 
 	@Override
-	public final S valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct) {
+	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return toValueStruct();
 	}
 
@@ -233,15 +242,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		}
 
 		return this.ir = createIR(generator);
-	}
-
-	protected ValueStruct<S,T> applyParameters(TypeParameters parameters) {
-		parameters.getLogger().error(
-				"unsupported_type_parameters",
-				parameters,
-				"Type parameters not supported by %s",
-				this);
-		return this;
 	}
 
 	protected ValueAdapter defaultAdapter(

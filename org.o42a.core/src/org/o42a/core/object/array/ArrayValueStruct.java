@@ -77,7 +77,7 @@ public final class ArrayValueStruct
 	}
 
 	@Override
-	public TypeParameters getTypeParameters() {
+	public TypeParameters getParameters() {
 
 		final TypeRef itemTypeRef = getItemTypeRef();
 
@@ -85,6 +85,28 @@ public final class ArrayValueStruct
 				itemTypeRef,
 				itemTypeRef.getRef().distribute(),
 				LINK).setTypeRef(itemTypeRef);
+	}
+
+	@Override
+	public ArrayValueStruct setParameters(TypeParameters parameters) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newItemTypeRef = parameters.getTypeRef();
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+
+		if (!newItemTypeRef.relationTo(oldItemTypeRef)
+				.checkDerived(parameters.getLogger())) {
+			return this;
+		}
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	public final TypeRef getItemTypeRef() {
@@ -197,28 +219,6 @@ public final class ArrayValueStruct
 		out.append(this.itemTypeRef).append(')');
 
 		return out.toString();
-	}
-
-	@Override
-	protected ArrayValueStruct applyParameters(TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
-		parameters.assertSameScope(toScoped());
-
-		final TypeRef newItemTypeRef = parameters.getTypeRef();
-		final TypeRef oldItemTypeRef = getItemTypeRef();
-
-		if (!newItemTypeRef.relationTo(oldItemTypeRef)
-				.checkDerived(parameters.getLogger())) {
-			return this;
-		}
-
-		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override

@@ -85,7 +85,7 @@ public final class LinkValueStruct
 	}
 
 	@Override
-	public TypeParameters getTypeParameters() {
+	public TypeParameters getParameters() {
 
 		final TypeRef typeRef = getTypeRef();
 
@@ -93,6 +93,28 @@ public final class LinkValueStruct
 				typeRef,
 				typeRef.getRef().distribute(),
 				LINK).setTypeRef(typeRef);
+	}
+
+	@Override
+	public LinkValueStruct setParameters(TypeParameters parameters) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newTypeRef = parameters.getTypeRef();
+		final TypeRef oldTypeRef = getTypeRef();
+
+		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
+				parameters.getLogger())) {
+			return this;
+		}
+
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -196,28 +218,6 @@ public final class LinkValueStruct
 	@Override
 	public String toString() {
 		return getValueType() + "(`" + this.typeRef + ')';
-	}
-
-	@Override
-	protected LinkValueStruct applyParameters(TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
-		parameters.assertSameScope(toScoped());
-
-		final TypeRef newTypeRef = parameters.getTypeRef();
-		final TypeRef oldTypeRef = getTypeRef();
-
-		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
-				parameters.getLogger())) {
-			return this;
-		}
-
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override

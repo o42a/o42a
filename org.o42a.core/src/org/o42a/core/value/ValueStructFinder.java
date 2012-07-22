@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.ref.Ref;
 import org.o42a.core.value.impl.DefaultValueStructFinder;
 
 
@@ -28,7 +27,7 @@ public interface ValueStructFinder {
 	ValueStructFinder DEFAULT_VALUE_STRUCT_FINDER =
 			DefaultValueStructFinder.INSTANCE;
 
-	ValueStruct<?, ?> valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct);
+	ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct);
 
 	ValueStruct<?, ?> toValueStruct();
 
