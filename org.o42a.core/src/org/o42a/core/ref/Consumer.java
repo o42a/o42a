@@ -22,6 +22,6 @@ package org.o42a.core.ref;
 
 public interface Consumer {
 
-	Ref expandMacro(Ref ref);
+	Ref expandMacro(Ref macroRef, Ref macroExpansion);
 
 }

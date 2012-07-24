@@ -45,17 +45,17 @@ public class TypeParamConsumer implements Consumer {
 	}
 
 	@Override
-	public Ref expandMacro(Ref ref) {
+	public Ref expandMacro(Ref macroRef, Ref macroExpansion) {
 
-		final TypeParamMetaDep dep = this.macroDep.buildDep(ref);
+		final TypeParamMetaDep dep = this.macroDep.buildDep(macroRef);
 
 		if (dep == null) {
-			return ref;
+			return macroExpansion;
 		}
 
 		dep.register();
 
-		return dep.expandMacro(ref);
+		return dep.expandMacro(macroRef, macroExpansion);
 	}
 
 }

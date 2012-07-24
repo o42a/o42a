@@ -29,7 +29,6 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
@@ -77,11 +76,9 @@ public class TypeParamMetaDep extends MetaDep implements Label, Consumer {
 	}
 
 	@Override
-	public Ref expandMacro(Ref ref) {
-		return Path.SELF_PATH
-				.label(this)// Label the path to recognize it.
-				.bind(ref, ref.getScope())
-				.target(ref.distribute());
+	public Ref expandMacro(Ref macroRef, Ref macroExpansion) {
+		// Label the expansion to recognize it.
+		return macroExpansion.label(this);
 	}
 
 	@Override
