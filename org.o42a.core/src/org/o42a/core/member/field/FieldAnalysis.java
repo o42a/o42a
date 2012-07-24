@@ -173,9 +173,10 @@ public class FieldAnalysis {
 				owner.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
 
-		final MemberField lastDefinition = member.getLastDefinition();
+		if (!member.isUpdated()) {
 
-		if (lastDefinition != member) {
+			final MemberField lastDefinition = member.getLastDefinition();
+
 			lastDefinition.getAnalysis().derivationUses().useBy(
 					this.derivationUses.usageUser(RUNTIME_DERIVATION_USAGE),
 					RUNTIME_DERIVATION_USAGE);

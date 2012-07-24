@@ -336,13 +336,12 @@ public final class ObjectType implements UserInfo {
 		}
 
 		final Obj object = getObject();
-		final Obj cloneOf = object.getCloneOf();
 
-		if (cloneOf != null) {
-			this.derivationUses = cloneOf.type().derivationUses();
+		if (!object.meta().isUpdated()) {
+			this.derivationUses = object.getCloneOf().type().derivationUses();
 		} else {
 			this.derivationUses =
-					DerivationUsage.usable("DerivationOf", getObject());
+					DerivationUsage.usable("DerivationOf", object);
 		}
 
 		final Member member = object.toMember();
@@ -379,7 +378,8 @@ public final class ObjectType implements UserInfo {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
-			if (getObject().getConstructionMode().isRuntime()) {
+			if (object.getConstructionMode().isRuntime()
+					|| !object.meta().isUpdated()) {
 				this.derivationUses.useBy(
 						getObject().content(),
 						RUNTIME_DERIVATION_USAGE);
