@@ -51,6 +51,8 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Label;
+import org.o42a.util.Labels;
 
 
 public class BoundPath extends RefPath {
@@ -126,7 +128,7 @@ public class BoundPath extends RefPath {
 		return getPath().getSteps();
 	}
 
-	public final PathLabels getLabels() {
+	public final Labels getLabels() {
 		return getPath().getLabels();
 	}
 
@@ -184,11 +186,11 @@ public class BoundPath extends RefPath {
 		return lastStep.ancestor(this, location, distributor);
 	}
 
-	public final boolean hasLabel(PathLabel label) {
-		return getLabels().hasLabel(label);
+	public final boolean hasLabel(Label label) {
+		return getLabels().has(label);
 	}
 
-	public final BoundPath label(PathLabel label) {
+	public final BoundPath label(Label label) {
 		if (this.path != null) {
 			return new BoundPath(
 					this,

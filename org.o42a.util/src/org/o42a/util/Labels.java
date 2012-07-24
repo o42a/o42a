@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Utilities
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,26 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref.path;
+package org.o42a.util;
 
 import java.util.Arrays;
 
-import org.o42a.util.ArrayUtil;
 
+public final class Labels {
 
-public final class PathLabels {
+	public static final Labels NO_LABELS = new Labels(new Label[0]);
 
-	public static final PathLabels NO_LABELS =
-			new PathLabels(new PathLabel[0]);
+	private final Label[] labels;
 
-	private final PathLabel[] labels;
-
-	private PathLabels(PathLabel[] labels) {
+	private Labels(Label[] labels) {
 		this.labels = labels;
 	}
 
-	public final boolean hasLabel(PathLabel label) {
-		for (PathLabel l : this.labels) {
+	public final boolean has(Label label) {
+		for (Label l : this.labels) {
 			if (l.equals(label)) {
 				return true;
 			}
@@ -44,16 +41,16 @@ public final class PathLabels {
 		return false;
 	}
 
-	public final PathLabels add(PathLabel label) {
+	public final Labels add(Label label) {
 		assert label != null :
-			"Path label not specified";
-		return new PathLabels(ArrayUtil.append(this.labels, label));
+			"Label not specified";
+		return new Labels(ArrayUtil.append(this.labels, label));
 	}
 
-	public final PathLabels addAll(PathLabels labels) {
+	public final Labels addAll(Labels labels) {
 		assert labels != null :
-			"Path labels not specified";
-		return new PathLabels(ArrayUtil.append(this.labels, labels.labels));
+			"Labels not specified";
+		return new Labels(ArrayUtil.append(this.labels, labels.labels));
 	}
 
 	@Override
@@ -61,7 +58,7 @@ public final class PathLabels {
 		if (this.labels == null) {
 			return super.toString();
 		}
-		return "PathLabels" + Arrays.toString(this.labels);
+		return "Labels" + Arrays.toString(this.labels);
 	}
 
 }

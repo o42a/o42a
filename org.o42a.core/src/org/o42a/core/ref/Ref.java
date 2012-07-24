@@ -46,6 +46,7 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.*;
+import org.o42a.util.Label;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -141,18 +142,20 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
+	public final boolean hasLabel(Label label) {
+		return getPath().hasLabel(label);
+	}
+
+	public final Ref label(Label label) {
+		return getPath().label(label).target(distribute());
+	}
+
 	public final Ref expandMacro() {
-
-		final BoundPath path = getPath();
-
-		return path.expandMacro().target(distribute());
+		return getPath().expandMacro().target(distribute());
 	}
 
 	public final Ref reexpandMacro() {
-
-		final BoundPath path = getPath();
-
-		return path.reexpandMacro().target(distribute());
+		return getPath().reexpandMacro().target(distribute());
 	}
 
 	public final Ref consume(Consumer consumer) {
