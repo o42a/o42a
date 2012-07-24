@@ -159,14 +159,13 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		if (this.analysis != null) {
 			return this.analysis;
 		}
+		if (isUpdated()) {
+			return this.analysis = new FieldAnalysis(this);
+		}
 
 		final MemberField lastDefinition = getLastDefinition();
 
-		if (lastDefinition != this) {
-			return this.analysis = lastDefinition.getAnalysis();
-		}
-
-		return this.analysis = new FieldAnalysis(this);
+		return this.analysis = lastDefinition.getAnalysis();
 	}
 
 	public final Field field(UserInfo user) {

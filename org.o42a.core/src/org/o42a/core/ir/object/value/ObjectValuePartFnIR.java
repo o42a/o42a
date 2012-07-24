@@ -106,7 +106,7 @@ public abstract class ObjectValuePartFnIR
 				.def(done.head());
 		final ObjOp host = builder.host();
 
-		if (!getObjectIR().isExact()) {
+		if (getObjectIR().isExact()) {
 			dirs.code().debug("Exact host: " + getObjectIR().getId());
 		} else {
 			dirs.code().dumpName("Host: ", host);

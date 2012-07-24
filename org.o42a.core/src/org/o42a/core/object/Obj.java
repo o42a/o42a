@@ -96,7 +96,6 @@ public abstract class Obj
 
 	private ObjectIR ir;
 
-
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
 		this.propagatedFrom = null;
@@ -598,13 +597,9 @@ public abstract class Obj
 		if (this.content != null) {
 			return this.content;
 		}
-
-		final Obj cloneOf = getCloneOf();
-
-		if (cloneOf != null) {
-			return this.content = cloneOf.clonesContent();
+		if (!meta().isUpdated()) {
+			return this.content = getCloneOf().clonesContent();
 		}
-
 		return this.content = new ObjectContent(this, false);
 	}
 
@@ -612,13 +607,9 @@ public abstract class Obj
 		if (this.clonesContent != null) {
 			return this.clonesContent;
 		}
-
-		final Obj cloneOf = getCloneOf();
-
-		if (cloneOf != null) {
-			return this.clonesContent = cloneOf.clonesContent();
+		if (!meta().isUpdated()) {
+			return this.clonesContent = getCloneOf().clonesContent();
 		}
-
 		return this.clonesContent = new ObjectContent(this, true);
 	}
 
@@ -797,7 +788,7 @@ public abstract class Obj
 
 		final Obj wrapped = getWrapped();
 
-		if (wrapped != this) {
+		if (wrapped.is(this)) {
 			wrapped.type().wrapBy(type());
 			wrapped.resolveAll();
 		}
