@@ -30,14 +30,14 @@ import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PathLabel;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.util.Label;
 
 
-public class TypeParamMetaDep extends MetaDep implements PathLabel, Consumer {
+public class TypeParamMetaDep extends MetaDep implements Label, Consumer {
 
 	private final Ref macroRef;
 	private MetaDep parentDep;

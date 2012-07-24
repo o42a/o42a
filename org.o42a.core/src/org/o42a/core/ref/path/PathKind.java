@@ -24,12 +24,12 @@ import static java.util.Arrays.copyOfRange;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberRegistry.noDeclarations;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
-import static org.o42a.core.ref.path.PathLabels.NO_LABELS;
 import static org.o42a.core.ref.path.PathReproduction.outOfClausePath;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.util.Labels.NO_LABELS;
 
 import java.util.Arrays;
 

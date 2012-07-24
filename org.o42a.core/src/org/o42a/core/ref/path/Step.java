@@ -19,8 +19,8 @@
 */
 package org.o42a.core.ref.path;
 
-import static org.o42a.core.ref.path.PathLabels.NO_LABELS;
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
+import static org.o42a.util.Labels.NO_LABELS;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;

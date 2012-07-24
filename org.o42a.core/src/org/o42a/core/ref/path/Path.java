@@ -25,7 +25,7 @@ import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_EXPANSION
 import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_REEXPANSION_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
-import static org.o42a.core.ref.path.PathLabels.NO_LABELS;
+import static org.o42a.util.Labels.NO_LABELS;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import java.util.Arrays;
@@ -39,6 +39,8 @@ import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Label;
+import org.o42a.util.Labels;
 import org.o42a.util.string.Name;
 
 
@@ -84,14 +86,14 @@ public final class Path {
 	}
 
 	private final PathKind kind;
-	private final PathLabels labels;
+	private final Labels labels;
 	private final Step[] steps;
 	private final boolean isStatic;
 
 	Path(
 			PathKind kind,
 			boolean isStatic,
-			PathLabels labels,
+			Labels labels,
 			Step... steps) {
 		this.kind = kind;
 		this.labels = labels;
@@ -116,7 +118,7 @@ public final class Path {
 		return this.steps.length == 0 && !isStatic();
 	}
 
-	public final PathLabels getLabels() {
+	public final Labels getLabels() {
 		return this.labels;
 	}
 
@@ -124,11 +126,11 @@ public final class Path {
 		return this.steps;
 	}
 
-	public final boolean hasLabel(PathLabel label) {
-		return getLabels().hasLabel(label);
+	public final boolean hasLabel(Label label) {
+		return getLabels().has(label);
 	}
 
-	public final Path label(PathLabel label) {
+	public final Path label(Label label) {
 		return new Path(
 				getKind(),
 				isStatic(),
