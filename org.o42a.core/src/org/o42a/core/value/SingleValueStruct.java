@@ -122,9 +122,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	protected final Value<T> prefixValueWith(
-			Value<T> value,
-			PrefixPath prefix) {
+	protected Value<T> prefixValueWith(Value<T> value, PrefixPath prefix) {
 		return value;
 	}
 

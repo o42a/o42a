@@ -28,8 +28,8 @@ import org.o42a.core.ir.value.struct.SingleValueStructIR;
 import org.o42a.core.ir.value.struct.ValueIR;
 import org.o42a.core.ir.value.struct.ValueStructIR;
 import org.o42a.core.object.macro.Macro;
-import org.o42a.core.value.SingleValueStruct;
-import org.o42a.core.value.ValueStruct;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.value.*;
 import org.o42a.core.value.Void;
 
 
@@ -39,6 +39,24 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 
 	private MacroValueStruct() {
 		super(MacroValueType.INSTANCE, Macro.class);
+	}
+
+	@Override
+	protected Value<Macro> prefixValueWith(
+			Value<Macro> value,
+			PrefixPath prefix) {
+		if (!value.getKnowledge().hasCompilerValue()) {
+			return value;
+		}
+
+		final Macro oldMacro = value.getCompilerValue();
+		final Macro newMacro = oldMacro.prefixWith(prefix);
+
+		if (oldMacro == newMacro) {
+			return value;
+		}
+
+		return compilerValue(newMacro);
 	}
 
 	@Override
