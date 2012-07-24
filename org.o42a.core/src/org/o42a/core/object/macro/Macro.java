@@ -23,6 +23,7 @@ import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PrefixPath;
 
 
 /**
@@ -64,5 +65,14 @@ public interface Macro {
 	 * @return re-expanded path.
 	 */
 	Path reexpand(MacroExpander expander);
+
+	/**
+	 * Prefixes the reference(s) this macro contains with the given prefix.
+	 *
+	 * @param prefix prefix.
+	 *
+	 * @return a prefixed macro.
+	 */
+	Macro prefixWith(PrefixPath prefix);
 
 }

@@ -174,6 +174,11 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			}
 			return new VoidValueAdapter(ref);
 		}
+		if (expectedStruct.isMacro()) {
+			if (isMacro()) {
+				return rawValueAdapter(ref);
+			}
+		}
 		return defaultAdapter(ref, expectedStruct, adapt);
 	}
 
