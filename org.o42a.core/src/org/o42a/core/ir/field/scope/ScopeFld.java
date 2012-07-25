@@ -30,8 +30,8 @@ import org.o42a.core.ir.field.FieldFld;
 import org.o42a.core.ir.field.Fld;
 import org.o42a.core.ir.field.FldKind;
 import org.o42a.core.ir.object.ObjOp;
-import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.ir.object.ObjectIR;
+import org.o42a.core.ir.object.ObjectIRBody;
 import org.o42a.core.member.field.Field;
 import org.o42a.util.string.ID;
 
@@ -99,7 +99,8 @@ public final class ScopeFld extends FieldFld implements Content<ScopeFld.Type> {
 			return true;
 		}
 
-		final ObjectIR scopeIR = getField().toObject().ir(getGenerator());
+		final ObjectIR scopeIR =
+				getField().getFirstDeclaration().toObject().ir(getGenerator());
 
 		return scopeIR.isExact();
 	}
