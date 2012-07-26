@@ -110,9 +110,7 @@ public class FieldAnalysis {
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
 
 		if (object.getConstructionMode().isRuntime() || object.isClone()) {
-			derivationUses().useBy(
-					object.content(),
-					RUNTIME_DERIVATION_USAGE);
+			derivationUses().useBy(object.content(), RUNTIME_DERIVATION_USAGE);
 		}
 	}
 

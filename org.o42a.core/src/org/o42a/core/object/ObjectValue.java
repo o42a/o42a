@@ -234,7 +234,8 @@ public final class ObjectValue extends ObjectValueParts {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
 					user,
-					getObject().isClone()
+					getObject().getConstructionMode().isRuntime()
+					|| getObject().isClone()
 					? EXPLICIT_RUNTIME_VALUE_USAGE
 					: EXPLICIT_STATIC_VALUE_USAGE);
 		}
