@@ -111,9 +111,7 @@ public class FieldAnalysis {
 
 		if (object.getConstructionMode().isRuntime()
 				|| !object.meta().isUpdated()) {
-			derivationUses().useBy(
-					object.content(),
-					RUNTIME_DERIVATION_USAGE);
+			derivationUses().useBy(object.content(), RUNTIME_DERIVATION_USAGE);
 		}
 	}
 
