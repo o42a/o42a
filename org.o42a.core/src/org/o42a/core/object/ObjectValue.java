@@ -243,7 +243,8 @@ public final class ObjectValue extends ObjectValueParts {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
 					user,
-					!getObject().meta().isUpdated()
+					getObject().getConstructionMode().isRuntime()
+					|| !getObject().meta().isUpdated()
 					? EXPLICIT_RUNTIME_VALUE_USAGE
 					: EXPLICIT_STATIC_VALUE_USAGE);
 		}

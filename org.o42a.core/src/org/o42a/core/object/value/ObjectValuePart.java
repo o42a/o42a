@@ -23,7 +23,8 @@ import static org.o42a.analysis.use.SimpleUsage.SIMPLE_USAGE;
 import static org.o42a.analysis.use.SimpleUsage.simpleUsable;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_ACCESS;
 import static org.o42a.core.object.value.ValuePartUsage.VALUE_PART_USAGE;
-import static org.o42a.core.object.value.ValueUsage.*;
+import static org.o42a.core.object.value.ValueUsage.RUNTIME_VALUE_USAGE;
+import static org.o42a.core.object.value.ValueUsage.STATIC_VALUE_USAGE;
 import static org.o42a.core.ref.RefUsage.VALUE_REF_USAGE;
 
 import org.o42a.analysis.Analyzer;
@@ -145,14 +146,10 @@ public final class ObjectValuePart implements UserInfo {
 
 		valueUses.useBy(
 				this.uses,
-				!object.meta().isUpdated()
+				object.getConstructionMode().isRuntime()
+				|| !object.meta().isUpdated()
 				? RUNTIME_VALUE_USAGE : STATIC_VALUE_USAGE);
-		this.uses.useBy(
-				valueUses.usageUser(
-						!object.meta().isUpdated()
-						? EXPLICIT_RUNTIME_VALUE_USAGE
-						: EXPLICIT_STATIC_VALUE_USAGE),
-				VALUE_PART_USAGE);
+		this.uses.useBy(valueUses, VALUE_PART_USAGE);
 
 		return this.uses;
 	}

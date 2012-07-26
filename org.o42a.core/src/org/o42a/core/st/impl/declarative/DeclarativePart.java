@@ -162,7 +162,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 		final StringBuilder out = new StringBuilder();
 
 		out.append(this.sentences.get(0));
-		for (int i = 0; i < len; ++i) {
+		for (int i = 1; i < len; ++i) {
 			out.append(' ').append(this.sentences.get(i));
 		}
 

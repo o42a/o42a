@@ -27,6 +27,7 @@ import static org.o42a.core.ir.object.ObjectPrecision.COMPATIBLE;
 import static org.o42a.core.ir.object.ObjectPrecision.EXACT;
 import static org.o42a.core.ir.object.op.ObjHolder.objTrap;
 import static org.o42a.core.ir.object.op.ObjHolder.tempObjHolder;
+import static org.o42a.core.object.type.DerivationUsage.ALL_DERIVATION_USAGES;
 import static org.o42a.core.object.type.DerivationUsage.RUNTIME_DERIVATION_USAGE;
 
 import org.o42a.codegen.code.*;
@@ -67,8 +68,8 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 
 	public RefFld(ObjectIRBody bodyIR, Field field, Obj target) {
 		super(bodyIR, field);
-		this.targetIRAllocated = isOmitted();
 		this.target = target;
+		this.targetIRAllocated = isOmitted();
 	}
 
 	public final boolean isLink() {
@@ -110,10 +111,23 @@ public abstract class RefFld<C extends ObjectFunc<C>> extends FieldFld {
 	}
 
 	@Override
+	public abstract RefFldOp<?, C> op(Code code, ObjOp host);
+
+	@Override
 	protected abstract Type<?, C> getType();
 
 	@Override
-	public abstract RefFldOp<?, C> op(Code code, ObjOp host);
+	protected boolean mayOmit() {
+		if (!super.mayOmit()) {
+			return false;
+		}
+		if (!isLink()) {
+			return true;
+		}
+		return !getTarget().type().derivation().isUsed(
+				getGenerator().getAnalyzer(),
+				ALL_DERIVATION_USAGES);
+	}
 
 	protected void allocateMethods() {
 
