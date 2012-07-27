@@ -25,8 +25,16 @@ import org.o42a.util.Place;
 
 public class LocalPlace extends ScopePlace {
 
-	LocalPlace(LocalScope appearedIn, Place place) {
-		super(appearedIn, place);
+	private final ImperativePlace appearedIn;
+
+	LocalPlace(ImperativePlace appearedIn, Place place) {
+		super(appearedIn.getLocalScope(), place);
+		this.appearedIn = appearedIn;
+	}
+
+	@Override
+	public boolean isInsideLoop() {
+		return this.appearedIn.isInsideLoop();
 	}
 
 	@Override
@@ -37,6 +45,14 @@ public class LocalPlace extends ScopePlace {
 	@Override
 	public LocalPlace toLocal() {
 		return this;
+	}
+
+	public interface ImperativePlace {
+
+		LocalScope getLocalScope();
+
+		boolean isInsideLoop();
+
 	}
 
 }

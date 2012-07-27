@@ -75,6 +75,10 @@ abstract class AbstractAssignerBuilder<F extends FldOp>
 				typeObject,
 				true);
 
+		// Evaluate the condition prior to assigning to the target
+		// to prevent infinite looping in situations like this:
+		// I := I + 1
+		castObject.value().writeCond(dirs);
 		storeObject(assigner, fld, castObject);
 		assigner.bool(true).returnValue(assigner);
 
