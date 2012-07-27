@@ -377,8 +377,7 @@ public final class ObjectType implements UserInfo {
 					"No enclosing object of non-top-level object " + object;
 			}
 			if (getObject().getConstructionMode().isRuntime()
-					|| getObject().getScope()
-					.getEnclosingScope().toLocal() != null) {
+					|| getObject().getPlace().isInsideLoop()) {
 				this.derivationUses.useBy(
 						getObject().content(),
 						RUNTIME_DERIVATION_USAGE);

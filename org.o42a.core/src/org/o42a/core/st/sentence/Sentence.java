@@ -31,7 +31,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
-import org.o42a.util.Place.Trace;
 import org.o42a.util.log.Loggable;
 
 
@@ -211,12 +210,14 @@ public abstract class Sentence<
 			this.location = location;
 			this.block = block;
 
-			final Trace trace = this.block.getTrace();
+			final ImperativeBlock imperativeBlock = this.block.toImperativeBlock();
 
-			if (trace == null) {
+			if (imperativeBlock == null) {
 				this.place = scopePlace(getScope());
 			} else {
-				this.place = localPlace(getScope().toLocal(), trace.next());
+				this.place = localPlace(
+						imperativeBlock,
+						imperativeBlock.getTrace().next());
 			}
 		}
 
