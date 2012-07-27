@@ -45,7 +45,9 @@ public final class StatementsDistributor extends Distributor {
 		if (trace == null) {
 			this.place = scopePlace(getScope());
 		} else {
-			this.place = localPlace(getScope().toLocal(), trace.next());
+			this.place = localPlace(
+					sentence.getBlock().toImperativeBlock(),
+					trace.next());
 		}
 	}
 
