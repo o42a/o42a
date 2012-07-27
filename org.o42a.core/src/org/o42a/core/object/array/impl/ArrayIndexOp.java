@@ -183,11 +183,15 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 
 		// TODO implement array element type checking.
 
-		itemRec.store(
-				code,
-				value.materialize(
-						dirs.dirs(),
-						tempObjHolder(dirs.getAllocator())).toAny(null, code));
+		final ObjectOp object = value.materialize(
+				dirs.dirs(),
+				tempObjHolder(dirs.getAllocator()));
+
+		// Evaluate the condition prior to assigning to the target
+		// to prevent infinite looping in situations like this:
+		// I := I + 1
+		object.value().writeCond(dirs.dirs());
+		itemRec.store(code, object.toAny(null, code));
 	}
 
 }

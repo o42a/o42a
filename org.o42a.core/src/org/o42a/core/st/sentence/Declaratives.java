@@ -23,12 +23,11 @@ import static org.o42a.core.st.DefValue.TRUE_DEF_VALUE;
 import static org.o42a.core.st.Definer.noDefs;
 import static org.o42a.core.st.impl.SentenceErrors.declarationNotAlone;
 
-import java.util.List;
-
 import org.o42a.core.Container;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
@@ -42,19 +41,19 @@ public final class Declaratives extends Statements<Declaratives, Definer> {
 
 	private final DeclarativesEnv env = new DeclarativesEnv(this);
 	private DefTargets targets;
-	private int index;
 
 	Declaratives(LocationInfo location, DeclarativeSentence sentence) {
 		super(location, sentence);
-
-		final List<Declaratives> alternatives = sentence.getAlternatives();
-		final int index = alternatives.size();
-
-		this.index = index;
 	}
 
-	public final boolean isInhibit() {
-		return this.index + 1 < getSentence().getAlternatives().size();
+	@Override
+	public final LocalScope getLocalScope() {
+		return null;
+	}
+
+	@Override
+	public final boolean isInsideLoop() {
+		return false;
 	}
 
 	public final boolean isInsideClaim() {

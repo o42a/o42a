@@ -25,9 +25,8 @@ import static org.o42a.util.Place.FIRST_PLACE;
 
 import java.util.List;
 
-import org.o42a.core.Container;
-import org.o42a.core.Distributor;
-import org.o42a.core.ScopePlace;
+import org.o42a.core.*;
+import org.o42a.core.LocalPlace.ImperativePlace;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.local.LocalRegistry;
 import org.o42a.core.member.local.LocalScope;
@@ -42,7 +41,9 @@ import org.o42a.util.log.Loggable;
 import org.o42a.util.string.Name;
 
 
-public final class ImperativeBlock extends Block<Imperatives, Command> {
+public final class ImperativeBlock
+		extends Block<Imperatives, Command>
+		implements ImperativePlace {
 
 	public static ImperativeBlock topLevelImperativeBlock(
 			LocationInfo location,
@@ -106,6 +107,7 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 	private final Trace trace;
 	private Locals locals;
 	private ImplicationEnv initialEnv;
+	private boolean loop;
 
 	private ImperativeBlock(
 			LocationInfo location,
@@ -146,6 +148,23 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	public final boolean isTopLevel() {
 		return this.topLevel;
+	}
+
+	@Override
+	public final LocalScope getLocalScope() {
+		return getScope();
+	}
+
+	@Override
+	public final boolean isInsideLoop() {
+
+		final Statements<?, ?> enclosing = getEnclosing();
+
+		return !isTopLevel() && enclosing != null && enclosing.isInsideLoop();
+	}
+
+	public final boolean isLoop() {
+		return this.loop;
 	}
 
 	@Override
@@ -260,6 +279,10 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		return this.sentencesEnv;
 	}
 
+	final void loop() {
+		this.loop = true;
+	}
+
 	private final ImplicationEnv getInitialEnv() {
 		return this.initialEnv;
 	}
@@ -277,7 +300,9 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 
 	}
 
-	public static final class BlockDistributor extends Distributor {
+	public static final class BlockDistributor
+			extends Distributor
+			implements ImperativePlace {
 
 		private final LocationInfo location;
 		private final LocalScope scope;
@@ -308,8 +333,18 @@ public final class ImperativeBlock extends Block<Imperatives, Command> {
 		}
 
 		@Override
+		public final LocalScope getLocalScope() {
+			return this.scope;
+		}
+
+		@Override
+		public boolean isInsideLoop() {
+			return this.scope.getBlock().isInsideLoop();
+		}
+
+		@Override
 		public ScopePlace getPlace() {
-			return localPlace(getScope(), FIRST_PLACE);
+			return localPlace(this, FIRST_PLACE);
 		}
 
 	}
