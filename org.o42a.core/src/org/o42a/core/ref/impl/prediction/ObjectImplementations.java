@@ -164,7 +164,7 @@ final class ObjectImplementations extends Prediction {
 				}
 
 				final Obj object = object();
-				final Obj nextObject = object.findIn(base);
+				final Obj nextObject = object.meta().findIn(base);
 
 				this.next = this.object.setScope(nextObject.getScope());
 				this.objectReported |= nextObject.is(object);

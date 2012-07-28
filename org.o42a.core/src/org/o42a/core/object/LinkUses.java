@@ -106,7 +106,7 @@ public class LinkUses {
 			// Link type object.
 			return;
 		}
-		if (field.isClone()
+		if (!field.isUpdated()
 				&& field.getMemberKey().getOrigin().is(
 						linkTypeObject.getScope())) {
 			// Field is declared in link type object.

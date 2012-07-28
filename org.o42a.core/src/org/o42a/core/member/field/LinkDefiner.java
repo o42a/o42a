@@ -19,16 +19,11 @@
 */
 package org.o42a.core.member.field;
 
-import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
 public interface LinkDefiner extends FieldDefiner {
-
-	TypeRef getTypeRef();
-
-	TargetRef getTargetRef();
 
 	void setTargetRef(Ref targetRef, TypeRef defaultType);
 

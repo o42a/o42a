@@ -154,7 +154,6 @@ public abstract class TypeRef implements ScopeInfo {
 				getUnprefixedRef().valueStruct(getUnprefixedRef().getScope());
 		final ValueStruct<?, ?> valueStruct =
 				this.valueStructFinder.valueStructBy(
-						getUnprefixedRef(),
 						defaultValueStruct);
 
 		assert defaultValueStruct.assertAssignableFrom(valueStruct);

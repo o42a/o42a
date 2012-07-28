@@ -20,9 +20,7 @@
 package org.o42a.core.member.field.impl;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.source.LocationInfo;
 
@@ -59,6 +57,10 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
 	}
 
 	@Override

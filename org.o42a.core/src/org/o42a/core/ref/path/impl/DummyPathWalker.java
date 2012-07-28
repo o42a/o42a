@@ -30,6 +30,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
+import org.o42a.util.log.LogRecord;
 
 
 public final class DummyPathWalker implements PathWalker {
@@ -96,6 +97,10 @@ public final class DummyPathWalker implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return true;
+	}
+
+	@Override
+	public void error(LogRecord message) {
 	}
 
 	@Override

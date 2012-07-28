@@ -29,13 +29,21 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogRecord;
 
 
 public class ErrorStep extends Step {
 
 	public static final ErrorStep ERROR_STEP = new ErrorStep();
 
+	private final LogRecord message;
+
 	private ErrorStep() {
+		this.message = null;
+	}
+
+	public ErrorStep(LogRecord message) {
+		this.message = message;
 	}
 
 	@Override
@@ -50,7 +58,10 @@ public class ErrorStep extends Step {
 
 	@Override
 	public String toString() {
-		return "ERROR";
+		if (this.message == null) {
+			return "ERROR";
+		}
+		return this.message.toString();
 	}
 
 	@Override
@@ -67,7 +78,7 @@ public class ErrorStep extends Step {
 			int index,
 			Scope start,
 			PathWalker walker) {
-		// Error could not be resolved.
+		walker.error(this.message);
 		return null;
 	}
 

@@ -19,7 +19,6 @@
 */
 package org.o42a.core.value.impl;
 
-import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
@@ -34,7 +33,6 @@ public final class DefaultValueStructFinder implements ValueStructFinder {
 
 	@Override
 	public ValueStruct<?, ?> valueStructBy(
-			Ref ref,
 			ValueStruct<?, ?> defaultStruct) {
 		return defaultStruct;
 	}

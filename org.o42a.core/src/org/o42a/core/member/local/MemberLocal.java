@@ -95,11 +95,6 @@ public abstract class MemberLocal extends Member {
 	}
 
 	@Override
-	public final boolean isAbstract() {
-		return false;
-	}
-
-	@Override
 	public final MemberLocal propagateTo(MemberOwner owner) {
 
 		final Obj ownerObject = owner.getContainer().toObject();

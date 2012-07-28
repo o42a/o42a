@@ -26,7 +26,7 @@ import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.ir.op.InlineValue;
-import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -36,12 +36,12 @@ import org.o42a.util.fn.Cancelable;
 
 final class LogicalResult extends BuiltinObject {
 
-	private final LogicalExpression ref;
+	private final LogicalExpression logical;
 	private Ref operand;
 
-	LogicalResult(LogicalExpression ref) {
-		super(ref, ref.distributeIn(ref.getContainer()), ValueStruct.VOID);
-		this.ref = ref;
+	LogicalResult(LogicalExpression logical) {
+		super(logical, logical.distributeIn(logical.getContainer()), ValueStruct.VOID);
+		this.logical = logical;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ final class LogicalResult extends BuiltinObject {
 			return ValueType.VOID.runtimeValue();
 		}
 
-		switch (this.ref.getNode().getOperator()) {
+		switch (this.logical.getNode().getOperator()) {
 		case NOT:
 			if (value.getKnowledge().isFalse()) {
 				return Value.voidValue();
@@ -67,7 +67,7 @@ final class LogicalResult extends BuiltinObject {
 		default:
 			throw new IllegalStateException(
 					"Unsupported logical operator: "
-					+ this.ref.getNode().getOperator().getSign());
+					+ this.logical.getNode().getOperator().getSign());
 		}
 	}
 
@@ -85,7 +85,7 @@ final class LogicalResult extends BuiltinObject {
 			return null;
 		}
 
-		return new InlineLogical(this.ref, operand);
+		return new InlineLogical(this.logical, operand);
 	}
 
 	@Override
@@ -95,19 +95,19 @@ final class LogicalResult extends BuiltinObject {
 
 	@Override
 	public String toString() {
-		return this.ref != null ? this.ref.toString() : "LogicalOp";
+		return this.logical != null ? this.logical.toString() : "LogicalOp";
 	}
 
 	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		return this.ref.resolve(enclosing);
+	protected Nesting createNesting() {
+		return this.logical.getNesting();
 	}
 
 	private final Ref operand() {
 		if (this.operand != null) {
 			return this.operand;
 		}
-		return this.operand = this.ref.operand().rescope(getScope());
+		return this.operand = this.logical.operand().rescope(getScope());
 	}
 
 	private static final class InlineLogical extends InlineEval {
@@ -155,7 +155,7 @@ final class LogicalResult extends BuiltinObject {
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			dirs.returnValue(this.ref.ref.write(
+			dirs.returnValue(this.ref.logical.write(
 					dirs.valDirs(),
 					host,
 					this.ref.operand().op(host),
