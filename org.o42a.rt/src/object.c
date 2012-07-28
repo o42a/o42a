@@ -1363,6 +1363,9 @@ void o42a_obj_lock(o42a_obj_data_t *const data) {
 				|| O42A(pthread_cond_init(&data->thread_cond, NULL))) {
 			o42a_error_print("Failed to initialize an object mutex");
 		}
+		if (!(data->flags & O42A_OBJ_RT)) {
+			O42A(o42a_obj_use_static(data));
+		}
 
 		__sync_synchronize();
 		*init = 1;
