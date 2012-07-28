@@ -132,10 +132,6 @@ public final class RefLclOp extends LclOp {
 		final ObjectOp object =
 				value.materialize(dirs, tempObjHolder(code.getAllocator()));
 
-		// Evaluate the condition prior to assigning to the target
-		// to prevent infinite looping in situations like this:
-		// I := I + 1
-		object.value().writeCond(dirs);
 		ptr().object(code).store(code, object.toData(null, code));
 	}
 

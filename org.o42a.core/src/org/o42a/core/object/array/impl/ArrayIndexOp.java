@@ -187,10 +187,6 @@ final class ArrayIndexOp extends StepOp<ArrayIndexStep> {
 				dirs.dirs(),
 				tempObjHolder(dirs.getAllocator()));
 
-		// Evaluate the condition prior to assigning to the target
-		// to prevent infinite looping in situations like this:
-		// I := I + 1
-		object.value().writeCond(dirs.dirs());
 		itemRec.store(code, object.toAny(null, code));
 	}
 

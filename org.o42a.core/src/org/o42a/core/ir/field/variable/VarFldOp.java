@@ -108,10 +108,6 @@ public class VarFldOp extends RefFldOp<VarFld.Op, ObjectRefFunc> {
 				targetType,
 				true);
 
-		// Evaluate the condition prior to assigning to the target
-		// to prevent infinite looping in situations like this:
-		// I := I + 1
-		castObject.value().writeCond(boundKnownDirs);
 		ptr().object(null, boundKnown).store(
 				boundKnown,
 				castObject.toData(null, boundKnown),

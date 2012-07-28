@@ -109,7 +109,6 @@ public final class AssignerFldOp extends FldOp {
 		assignValue(boundKnown, castObject);
 
 		boundKnown.dump("Assigned: ", this);
-		castObject.value().writeCond(boundKnownDirs);
 		boundKnown.go(code.tail());
 
 		// Bound is not known yet.
