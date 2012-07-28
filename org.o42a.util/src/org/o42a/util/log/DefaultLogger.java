@@ -34,11 +34,10 @@ final class DefaultLogger implements Logger {
 
 		try {
 			f.format("%s", record);
+			getAnonymousLogger().log(level(record.getSeverity()), f.toString());
 		} finally {
 			f.close();
 		}
-
-		getAnonymousLogger().log(level(record.getSeverity()), f.toString());
 	}
 
 	static Level level(Severity severity) {

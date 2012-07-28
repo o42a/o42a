@@ -28,12 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.analysis.use.UserInfo;
+import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
 import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectType;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
@@ -43,6 +45,7 @@ import org.o42a.core.source.LocationInfo;
 public abstract class MemberField extends Member implements FieldReplacement {
 
 	private final FieldDeclaration declaration;
+	private Nesting nesting;
 	private Field field;
 	private MemberKey key;
 	private Visibility visibility;
@@ -62,6 +65,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		super(
 				location,
 				propagatedFrom.distributeIn(owner.getContainer()), owner);
+		this.nesting = propagatedFrom.getNesting();
 		this.key = propagatedFrom.getMemberKey();
 		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
@@ -75,6 +79,13 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public final MemberId getMemberId() {
 		return getDeclaration().getMemberId();
+	}
+
+	public final Nesting getNesting() {
+		if (this.nesting != null) {
+			return this.nesting;
+		}
+		return this.nesting = new FieldNesting(getMemberKey());
 	}
 
 	public final FieldDeclaration getDeclaration() {
@@ -91,7 +102,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().isAdapter();
 	}
 
-	@Override
 	public final boolean isAbstract() {
 		return getDeclaration().isAbstract();
 	}
@@ -103,6 +113,25 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	@Override
 	public final boolean isOverride() {
 		return getDeclaration().isOverride();
+	}
+
+	public final boolean isUpdated() {
+		if (!isClone()) {
+			return true;
+		}
+		if (this.field != null) {
+			return this.field.isUpdated();
+		}
+
+		final Obj owner = getMemberOwner().getOwner();
+
+		if (!owner.meta().isUpdated()) {
+			// Field can not be updated without owner to be updated also.
+			return false;
+		}
+
+		// Only instantiated field can be updated.
+		return this.field != null && this.field.objectAlreadyUpdated();
 	}
 
 	@Override
@@ -130,14 +159,13 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		if (this.analysis != null) {
 			return this.analysis;
 		}
+		if (isUpdated()) {
+			return this.analysis = new FieldAnalysis(this);
+		}
 
 		final MemberField lastDefinition = getLastDefinition();
 
-		if (lastDefinition != this) {
-			return this.analysis = lastDefinition.getAnalysis();
-		}
-
-		return this.analysis = new FieldAnalysis(this);
+		return this.analysis = lastDefinition.getAnalysis();
 	}
 
 	public final Field field(UserInfo user) {
@@ -200,7 +228,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 		getAnalysis().registerObject(object);
 		object.resolveAll();
-		if (isOverride() && !isClone()) {
+		if (isOverride() && isUpdated()) {
 			registerAsReplacement();
 		}
 	}
@@ -312,11 +340,38 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			this.allReplacements = new ArrayList<FieldReplacement>();
 		}
 		this.allReplacements.add(replacement);
-		if (isClone()) {
+		if (!isUpdated()) {
 			// Clone replaced by explicit field.
 			// Register this clone as a replacement too.
 			registerAsReplacement();
 		}
+	}
+
+	private static final class FieldNesting implements Nesting {
+
+		private final MemberKey fieldKey;
+
+		FieldNesting(MemberKey fieldKey) {
+			this.fieldKey = fieldKey;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+
+			final MemberField field =
+					enclosing.getContainer().member(this.fieldKey).toField();
+
+			return field.object(dummyUser());
+		}
+
+		@Override
+		public String toString() {
+			if (this.fieldKey == null) {
+				return super.toString();
+			}
+			return this.fieldKey.toString();
+		}
+
 	}
 
 }

@@ -76,6 +76,11 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
+	public void defineMacro(MacroDefiner definer) {
+		definer.setRef(getValue());
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder out = new StringBuilder();

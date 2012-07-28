@@ -107,6 +107,8 @@ public abstract class FieldDefinition extends Placed {
 
 	public abstract void defineLink(LinkDefiner definer);
 
+	public abstract void defineMacro(MacroDefiner definer);
+
 	public FieldDefinition prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {
 			return this;

@@ -23,9 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -85,6 +83,11 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
 		throw new UnsupportedOperationException();
 	}
 

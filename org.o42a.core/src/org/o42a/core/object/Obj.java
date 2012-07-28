@@ -46,6 +46,7 @@ import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.impl.*;
 import org.o42a.core.object.link.Link;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -77,6 +78,7 @@ public abstract class Obj
 	private byte fullResolution;
 
 	private Obj wrapped;
+	private Meta meta;
 	private ObjectType type;
 	private ObjectValue value;
 	private Deps deps;
@@ -93,7 +95,6 @@ public abstract class Obj
 	private FieldUses fieldUses;
 
 	private ObjectIR ir;
-
 
 	public Obj(Scope scope) {
 		super(scope, new ObjectDistributor(scope, scope));
@@ -227,6 +228,13 @@ public abstract class Obj
 		return this.wrapped = findWrapped();
 	}
 
+	public final Meta meta() {
+		if (this.meta != null) {
+			return this.meta;
+		}
+		return this.meta = new Meta(this);
+	}
+
 	public final ObjectType type() {
 		if (this.type != null) {
 			return this.type;
@@ -239,6 +247,13 @@ public abstract class Obj
 			return this.value;
 		}
 		return this.value = new ObjectValue(this);
+	}
+
+	public final Deps deps() {
+		if (this.deps != null) {
+			return this.deps;
+		}
+		return this.deps = new Deps(this);
 	}
 
 	public final boolean membersResolved() {
@@ -334,13 +349,6 @@ public abstract class Obj
 		}
 
 		return this.implicitClauses = implicitClauses;
-	}
-
-	public final Deps deps() {
-		if (this.deps != null) {
-			return this.deps;
-		}
-		return this.deps = new Deps(this);
 	}
 
 	@Override
@@ -560,19 +568,6 @@ public abstract class Obj
 		return scopePathStep.toPath();
 	}
 
-	public final Obj findIn(Scope enclosing) {
-
-		final Scope enclosingScope = getScope().getEnclosingScope();
-
-		if (enclosingScope.is(enclosing)) {
-			return this;
-		}
-
-		enclosing.assertDerivedFrom(enclosingScope);
-
-		return findObjectIn(enclosing);
-	}
-
 	public final Ref staticRef(Scope scope) {
 
 		final BoundPath path =
@@ -602,13 +597,9 @@ public abstract class Obj
 		if (this.content != null) {
 			return this.content;
 		}
-
-		final Obj cloneOf = getCloneOf();
-
-		if (cloneOf != null) {
-			return this.content = cloneOf.clonesContent();
+		if (!meta().isUpdated()) {
+			return this.content = getCloneOf().clonesContent();
 		}
-
 		return this.content = new ObjectContent(this, false);
 	}
 
@@ -616,13 +607,9 @@ public abstract class Obj
 		if (this.clonesContent != null) {
 			return this.clonesContent;
 		}
-
-		final Obj cloneOf = getCloneOf();
-
-		if (cloneOf != null) {
-			return this.clonesContent = cloneOf.clonesContent();
+		if (!meta().isUpdated()) {
+			return this.clonesContent = getCloneOf().clonesContent();
 		}
-
 		return this.clonesContent = new ObjectContent(this, true);
 	}
 
@@ -664,7 +651,7 @@ public abstract class Obj
 
 	public final boolean assertFullyResolved() {
 		assert this.fullResolution > 0
-			|| (isClone() && getCloneOf().fullResolution > 0):
+			|| (!meta().isUpdated() && getCloneOf().fullResolution > 0):
 				this + " is not fully resolved";
 		return true;
 	}
@@ -685,6 +672,8 @@ public abstract class Obj
 
 		return scope.toString();
 	}
+
+	protected abstract Nesting createNesting();
 
 	protected Obj findWrapped() {
 
@@ -795,18 +784,17 @@ public abstract class Obj
 		return cloneOf;
 	}
 
-	protected abstract Obj findObjectIn(Scope enclosing);
-
 	protected void fullyResolve() {
 
 		final Obj wrapped = getWrapped();
 
-		if (wrapped != this) {
+		if (wrapped.is(this)) {
 			wrapped.type().wrapBy(type());
 			wrapped.resolveAll();
 		}
 		type().resolveAll();
 		if (isClone()) {
+			resolveUpdatedFields();
 			return;
 		}
 		resolveAllMembers();
@@ -910,11 +898,6 @@ public abstract class Obj
 		final boolean abstractAllowed = abstractAllowed();
 
 		for (Member member : getMembers()) {
-			if (!abstractAllowed && member.isAbstract()) {
-				getLogger().abstractNotOverridden(
-						this,
-						member.getDisplayName());
-			}
 
 			final MemberField field = member.toField();
 
@@ -923,11 +906,48 @@ public abstract class Obj
 					// Only field clones require full resolution.
 					continue;
 				}
-			} else if (linkUses != null) {
-				linkUses.fieldChanged(field);
+			} else {
+				if (linkUses != null) {
+					linkUses.fieldChanged(field);
+				}
+				if (!abstractAllowed && field.isAbstract()) {
+					abstractNotOverridden(field);
+				}
 			}
+
 			member.resolveAll();
 		}
+	}
+
+	private void resolveUpdatedFields() {
+		if (!meta().isUpdated()) {
+			// Non-updated object can not contain an updated fields.
+			return;
+		}
+
+		final LinkUses linkUses = type().linkUses();
+
+		for (Member member : getMembers()) {
+
+			final MemberField field = member.toField();
+
+			if (field == null || field.isUpdated()) {
+				continue;
+			}
+			if (linkUses != null) {
+				linkUses.fieldChanged(field);
+			}
+
+			field.resolveAll();
+		}
+	}
+
+	private void abstractNotOverridden(MemberField member) {
+		getLogger().error(
+				"abstract_not_overridden",
+				this,
+				"Abstract field '%s' not overridden",
+				member.getDisplayName());
 	}
 
 	private boolean abstractAllowed() {

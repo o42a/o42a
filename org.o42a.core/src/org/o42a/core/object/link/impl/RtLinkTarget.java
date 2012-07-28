@@ -25,13 +25,13 @@ import static org.o42a.core.object.link.TargetResolver.wrapTargetTypeBy;
 import static org.o42a.core.object.link.TargetResolver.wrapTargetValueBy;
 
 import org.o42a.codegen.Generator;
-import org.o42a.core.Scope;
 import org.o42a.core.ir.object.ObjectIR;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.link.Link;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -60,6 +60,11 @@ public final class RtLinkTarget extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return getDereferencedLink().getTargetNesting();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(this.link.getTypeRef());
 	}
@@ -71,11 +76,6 @@ public final class RtLinkTarget extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		return getDereferencedLink().findIn(enclosing).getTarget();
 	}
 
 	@Override

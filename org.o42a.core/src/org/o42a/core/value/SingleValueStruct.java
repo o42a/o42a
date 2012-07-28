@@ -48,6 +48,11 @@ public abstract class SingleValueStruct<T>
 		return 0;
 	}
 
+	@Override
+	public final TypeParameters getParameters() {
+		return null;
+	}
+
 	public final boolean is(ValueStruct<?, ?> valueStruct) {
 		return this == valueStruct;
 	}
@@ -117,9 +122,7 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
-	protected final Value<T> prefixValueWith(
-			Value<T> value,
-			PrefixPath prefix) {
+	protected Value<T> prefixValueWith(Value<T> value, PrefixPath prefix) {
 		return value;
 	}
 

@@ -39,6 +39,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.source.ModuleCompiler;
@@ -54,6 +55,8 @@ public class Root extends Obj {
 
 	private static final MemberName DIRECTIVE_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("directive"));
+	private static final MemberName MACRO_MEMBER =
+			fieldName(CASE_INSENSITIVE.canonicalName("macro"));
 	private static final MemberName INTEGER_MEMBER =
 			fieldName(CASE_INSENSITIVE.canonicalName("integer"));
 	private static final MemberName FLOAT_MEMBER =
@@ -84,6 +87,7 @@ public class Root extends Obj {
 	private final AnnotatedSources sources;
 
 	private Obj directiveObject;
+	private Obj macroObject;
 	private Obj integerObject;
 	private Obj floatObject;
 	private Obj stringObject;
@@ -117,6 +121,14 @@ public class Root extends Obj {
 		}
 		return this.directiveObject =
 				member(DIRECTIVE_MEMBER).substance(dummyUser()).toObject();
+	}
+
+	public final Obj getMacro() {
+		if (this.macroObject != null) {
+			return this.macroObject;
+		}
+		return this.macroObject =
+				member(MACRO_MEMBER).substance(dummyUser()).toObject();
 	}
 
 	public final Obj getInteger() {
@@ -194,6 +206,11 @@ public class Root extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return Nesting.NO_NESTING;
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).setAncestor(voidRef(
 				this,
@@ -231,12 +248,6 @@ public class Root extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.definer.createDefinitions();
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
 	}
 
 }

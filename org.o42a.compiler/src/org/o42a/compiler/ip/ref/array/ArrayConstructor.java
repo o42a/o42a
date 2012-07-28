@@ -187,7 +187,6 @@ public class ArrayConstructor extends ObjectConstructor {
 
 		@Override
 		public ValueStruct<?, ?> valueStructBy(
-				Ref ref,
 				ValueStruct<?, ?> defaultStruct) {
 			return this.arrayRef.valueStruct(this.arrayRef.getScope());
 		}

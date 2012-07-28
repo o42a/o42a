@@ -220,6 +220,13 @@ final class SectionTitle implements LogInfo {
 	}
 
 	private FieldDeclaration validateField(FieldDeclaration declaration) {
+		if (declaration.isMacro()) {
+			getLogger().error(
+					"prohibited_macro_section_title",
+					this.declaratorNode.getDeclarable(),
+					"Macro declaration is prohibited within section title");
+			return declaration;
+		}
 
 		final SourceFileName fileName = getSource().getFileName();
 		final MemberRefNode fieldNode =
