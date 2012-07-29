@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.value.impl;
+package org.o42a.compiler.ip.type;
 
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 
@@ -36,14 +36,14 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Label;
 
 
-public class TypeParamMetaDep extends MetaDep implements Label, Consumer {
+final class TypeParamMetaDep extends MetaDep implements Label, Consumer {
 
 	private final Ref macroRef;
 	private MetaDep parentDep;
 	private MetaDep nestedDep;
 	private TypeParamMacroDep macroDep;
 
-	public TypeParamMetaDep(
+	TypeParamMetaDep(
 			Meta declaredIn,
 			TypeParamMacroDep macroDep,
 			Ref macroRef) {

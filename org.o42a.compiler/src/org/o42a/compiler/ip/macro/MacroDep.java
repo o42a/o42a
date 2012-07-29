@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,31 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.value.impl;
+package org.o42a.compiler.ip.macro;
 
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.NestedMetaDep;
+import org.o42a.core.ref.Ref;
 
 
-public class ValueStructUpdate extends NestedMetaDep {
+public abstract class MacroDep<D extends MetaDep> {
 
-	ValueStructUpdate(TypeParamMetaDep parent, Meta declaredIn) {
-		super(parent, declaredIn);
+	public final D buildDep(Ref ref) {
+		if (ref.isStatic()) {
+			return null;
+		}
+		return new MacroDepBuilder<D>(this, ref).buildDep();
 	}
 
-	@Override
-	public MetaDep nestedDep() {
-		return null;
-	}
+	public abstract D newDep(Meta meta, Ref ref);
 
-	@Override
-	protected boolean updateMeta(Meta meta) {
-
-		final TypeParamMetaDep parent =
-				(TypeParamMetaDep) parentDep();
-
-		return parent.updateTypeParam(meta);
-	}
+	public abstract void setParentDep(D dep, MetaDep parentDep);
 
 }
