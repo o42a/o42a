@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip;
+package org.o42a.compiler.ip.type;
 
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
@@ -25,18 +25,20 @@ import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import org.o42a.ast.Node;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
+import org.o42a.compiler.ip.AncestorTypeRef;
+import org.o42a.compiler.ip.Interpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
 
-final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
+public final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
 	private final ValueStructFinder valueStructFinder;
 
-	TypeVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
+	public TypeVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
 	}

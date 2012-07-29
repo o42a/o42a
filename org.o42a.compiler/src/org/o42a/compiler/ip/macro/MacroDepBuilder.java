@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.macro.impl;
+package org.o42a.compiler.ip.macro;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
@@ -29,7 +29,6 @@ import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.ArrayElement;
 import org.o42a.core.object.link.Link;
-import org.o42a.core.object.macro.MacroDep;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.ParentMetaDep;
 import org.o42a.core.ref.Ref;
@@ -39,14 +38,14 @@ import org.o42a.util.ArrayUtil;
 import org.o42a.util.log.LogRecord;
 
 
-public final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
+final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 
 	private final MacroDep<D> builder;
 	private final Ref ref;
 	private Meta[] parentMeta;
 	private Path depPath;
 
-	public MacroDepBuilder(MacroDep<D> builder, Ref ref) {
+	MacroDepBuilder(MacroDep<D> builder, Ref ref) {
 		this.builder = builder;
 		this.ref = ref;
 	}

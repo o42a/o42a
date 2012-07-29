@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,24 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.value.impl;
+package org.o42a.compiler.ip.type;
 
+import org.o42a.compiler.ip.macro.MacroDep;
 import org.o42a.core.object.Meta;
-import org.o42a.core.object.macro.MacroDep;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
 
 
-public final class TypeParamMacroDep
+final class TypeParamMacroDep
 		extends MacroDep<TypeParamMetaDep>
 		implements MetaKey {
 
 	private final Nesting nesting;
 	private final int depth;
 
-	public TypeParamMacroDep(Nesting nesting, int depth) {
+	TypeParamMacroDep(Nesting nesting, int depth) {
 		this.nesting = nesting;
 		this.depth = depth;
 	}

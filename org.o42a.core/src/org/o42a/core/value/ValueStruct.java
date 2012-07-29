@@ -32,6 +32,7 @@ import org.o42a.core.object.directive.impl.DirectiveValueStruct;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
 import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.impl.MacroValueAdapter;
 import org.o42a.core.object.macro.impl.MacroValueStruct;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
@@ -178,6 +179,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			if (isMacro()) {
 				return rawValueAdapter(ref);
 			}
+			return new MacroValueAdapter(ref);
 		}
 		return defaultAdapter(ref, expectedStruct, adapt);
 	}

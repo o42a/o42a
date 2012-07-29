@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,11 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.value;
+package org.o42a.compiler.ip.type;
 
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.object.value.impl.TypeParamMacroDep;
-import org.o42a.core.object.value.impl.TypeParamMetaDep;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 

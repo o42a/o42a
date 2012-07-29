@@ -40,6 +40,7 @@ import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
