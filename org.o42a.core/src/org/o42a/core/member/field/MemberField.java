@@ -21,34 +21,24 @@ package org.o42a.core.member.field;
 
 import static java.util.Collections.emptyList;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.o42a.analysis.use.UserInfo;
-import org.o42a.core.Scope;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 
 
 public abstract class MemberField extends Member implements FieldReplacement {
 
 	private final FieldDeclaration declaration;
-	private Nesting nesting;
 	private Field field;
-	private MemberKey key;
-	private Visibility visibility;
 
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
@@ -65,9 +55,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		super(
 				location,
 				propagatedFrom.distributeIn(owner.getContainer()), owner);
-		this.nesting = propagatedFrom.getNesting();
-		this.key = propagatedFrom.getMemberKey();
-		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
 				new FieldDeclaration(
 						propagatedFrom,
@@ -81,11 +68,12 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().getMemberId();
 	}
 
+	public final FieldKey getFieldKey() {
+		return getDeclaration().getFieldKey();
+	}
+
 	public final Nesting getNesting() {
-		if (this.nesting != null) {
-			return this.nesting;
-		}
-		return this.nesting = new FieldNesting(getMemberKey());
+		return getFieldKey();
 	}
 
 	public final FieldDeclaration getDeclaration() {
@@ -94,8 +82,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	@Override
 	public final Visibility getVisibility() {
-		getMemberKey();
-		return this.visibility;
+		return getFieldKey().getVisibility();
 	}
 
 	public final boolean isAdapter() {
@@ -135,14 +122,8 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	@Override
-	public MemberKey getMemberKey() {
-		if (this.key != null) {
-			return this.key;
-		}
-		if (getDeclaration().isOverride()) {
-			return this.key = overrideField();
-		}
-		return this.key = declareNewField();
+	public final MemberKey getMemberKey() {
+		return getFieldKey().getMemberKey();
 	}
 
 	@Override
@@ -240,88 +221,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	protected abstract Field createField();
 
-	private MemberKey overrideField() {
-
-		final Member overridden = overridden();
-
-		if (overridden != null) {
-			this.visibility = overridden.getVisibility();
-			return overridden.getMemberKey();
-		}
-
-		this.visibility = Visibility.PRIVATE;
-
-		return brokenMemberKey();
-	}
-
-	private Member overridden() {
-
-		Member overridden = null;
-		final StaticTypeRef declaredInRef = getDeclaration().getDeclaredIn();
-
-		if (declaredInRef != null) {
-			if (!declaredInRef.isValid()) {
-				return null;
-			}
-			overridden = declaredInRef.getType().member(
-					getMemberId(),
-					Accessor.INHERITANT);
-		} else {
-
-			final ObjectType containerType = getContainer().toObject().type();
-
-			for (Sample sample : containerType.getSamples()) {
-				overridden = overridden(
-						overridden,
-						sample.typeObject(dummyUser()));
-			}
-
-			final TypeRef ancestor = containerType.getAncestor();
-
-			if (ancestor != null) {
-				overridden = overridden(overridden, ancestor.getType());
-			}
-		}
-
-		if (overridden == null) {
-			getLogger().error(
-					"cant_override_unknown",
-					this,
-					"Can not override unknown field '%s'",
-					getDisplayName());
-		}
-
-		return overridden;
-	}
-
-	private Member overridden(Member overridden, Obj ascendant) {
-		if (ascendant == null) {
-			return overridden;
-		}
-
-		final Member member = ascendant.member(getMemberId(), Accessor.INHERITANT);
-
-		if (member == null) {
-			return overridden;
-		}
-		if (overridden == null) {
-			return member;
-		}
-		if (overridden.definedAfter(member)) {
-			return overridden;
-		}
-		if (member.definedAfter(overridden)) {
-			return member;
-		}
-
-		return overridden;
-	}
-
-	private MemberKey declareNewField() {
-		this.visibility = getDeclaration().getVisibility();
-		return getMemberId().key(getScope());
-	}
-
 	private void useBy(UserInfo user) {
 		if (user.toUser().isDummy()) {
 			return;
@@ -345,33 +244,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			// Register this clone as a replacement too.
 			registerAsReplacement();
 		}
-	}
-
-	private static final class FieldNesting implements Nesting {
-
-		private final MemberKey fieldKey;
-
-		FieldNesting(MemberKey fieldKey) {
-			this.fieldKey = fieldKey;
-		}
-
-		@Override
-		public Obj findObjectIn(Scope enclosing) {
-
-			final MemberField field =
-					enclosing.getContainer().member(this.fieldKey).toField();
-
-			return field.object(dummyUser());
-		}
-
-		@Override
-		public String toString() {
-			if (this.fieldKey == null) {
-				return super.toString();
-			}
-			return this.fieldKey.toString();
-		}
-
 	}
 
 }

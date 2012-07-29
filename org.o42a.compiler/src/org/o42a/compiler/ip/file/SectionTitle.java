@@ -20,7 +20,6 @@
 package org.o42a.compiler.ip.file;
 
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.file.SectionAscendantsVisitor.SECTION_ASCENDANTS_VISITOR;
 import static org.o42a.core.member.MemberName.fieldName;
 
 import org.o42a.ast.expression.ExpressionNode;
@@ -33,6 +32,7 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.member.FieldDeclarableVisitor;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -107,7 +107,9 @@ final class SectionTitle implements LogInfo {
 		return explicitFieldDeclaration(distributor);
 	}
 
-	public AscendantsDefinition ascendants(Distributor distributor) {
+	public AscendantsDefinition ascendants(
+			Distributor distributor,
+			TypeConsumer consumer) {
 		if (isImplicit()) {
 			return new AscendantsDefinition(
 					new Location(distributor.getContext(), this),
@@ -122,7 +124,9 @@ final class SectionTitle implements LogInfo {
 					distributor);
 		}
 
-		return definition.accept(SECTION_ASCENDANTS_VISITOR, distributor);
+		return definition.accept(
+				new SectionAscendantsVisitor(consumer),
+				distributor);
 	}
 
 	@Override

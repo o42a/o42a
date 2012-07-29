@@ -20,55 +20,27 @@
 package org.o42a.compiler.ip.type;
 
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
 
-final class TypeParamConsumer extends TypeConsumer implements Consumer {
+final class DefaultTypeConsumer extends TypeConsumer {
 
-	private final TypeParamMacroDep macroDep;
+	private final Nesting nesting;
 
-	TypeParamConsumer(Nesting nesting) {
-		this.macroDep = new TypeParamMacroDep(nesting, 0);
-	}
-
-	private TypeParamConsumer(TypeParamMacroDep macroDep) {
-		this.macroDep = macroDep;
+	public DefaultTypeConsumer(Nesting nesting) {
+		this.nesting = nesting;
 	}
 
 	@Override
-	public final TypeParamConsumer paramConsumer() {
-		return new TypeParamConsumer(new TypeParamMacroDep(
-				this.macroDep.getNesting(),
-				this.macroDep.getDepth() + 1));
+	public TypeParamConsumer paramConsumer() {
+		return new TypeParamConsumer(this.nesting);
 	}
 
 	@Override
 	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
-
-		final Ref consumption = ref.consume(this);
-
-		if (consumption == null) {
-			return null;
-		}
-
-		return consumption.toTypeRef(valueStruct);
-	}
-
-	@Override
-	public Ref expandMacro(Ref macroRef, Ref macroExpansion) {
-
-		final TypeParamMetaDep dep = this.macroDep.buildDep(macroRef);
-
-		if (dep == null) {
-			return macroExpansion;
-		}
-
-		dep.register();
-
-		return dep.expandMacro(macroRef, macroExpansion);
+		return ref.toTypeRef(valueStruct);
 	}
 
 }
