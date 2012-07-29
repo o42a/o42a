@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.type;
 
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.ref.RefNode;
@@ -33,14 +34,20 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
 
-public final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor> {
+public final class TypeVisitor
+		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
 	private final ValueStructFinder valueStructFinder;
+	private final TypeConsumer consumer;
 
-	public TypeVisitor(Interpreter ip, ValueStructFinder valueStructFinder) {
+	public TypeVisitor(
+			Interpreter ip,
+			ValueStructFinder valueStructFinder,
+			TypeConsumer consumer) {
 		this.ip = ip;
 		this.valueStructFinder = valueStructFinder;
+		this.consumer = consumer;
 	}
 
 	public final Interpreter ip() {
@@ -86,13 +93,18 @@ public final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor>
 					"Redundant value type");
 			vsFinder = this.valueStructFinder;
 		} else {
-			vsFinder = ip().typeParameters(ifaceNode, p);
+			vsFinder = ip().typeParameters(
+					ifaceNode,
+					p,
+					this.consumer.paramConsumer());
 			if (vsFinder == null) {
 				return null;
 			}
 		}
 
-		return ascendantNode.accept(new TypeVisitor(ip(), vsFinder), p);
+		return ascendantNode.accept(
+				new TypeVisitor(ip(), vsFinder, NO_TYPE_CONSUMER),
+				p);
 	}
 
 	@Override
@@ -104,7 +116,7 @@ public final class TypeVisitor extends AbstractTypeVisitor<TypeRef, Distributor>
 			return null;
 		}
 
-		return ref.toTypeRef(this.valueStructFinder);
+		return this.consumer.consumeType(ref, this.valueStructFinder);
 	}
 
 	@Override

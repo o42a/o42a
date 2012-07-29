@@ -213,14 +213,15 @@ public final class FieldDeclarableVisitor
 		}
 
 		FieldDeclaration result;
-		final TypeNode node = declarator.getDefinitionType();
+		final TypeNode typeNode = declarator.getDefinitionType();
 
-		if (node == null) {
+		if (typeNode == null) {
 			result = declaration;
 		} else {
 
-			final TypeRef type = node.accept(
-					this.ip.typeVisitor(),
+			final TypeRef type = typeNode.accept(
+					this.ip.typeVisitor(
+							new FieldNesting(declaration).toTypeConsumer()),
 					declaration.distribute());
 
 			if (type != null) {

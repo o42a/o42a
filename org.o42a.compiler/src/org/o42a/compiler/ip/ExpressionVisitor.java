@@ -24,6 +24,7 @@ import static org.o42a.compiler.ip.Interpreter.integer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
 import static org.o42a.compiler.ip.phrase.PhraseInterpreter.*;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.value.ValueType.STRING;
 
@@ -36,6 +37,7 @@ import org.o42a.compiler.ip.operator.LogicalExpression;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
@@ -45,10 +47,21 @@ public final class ExpressionVisitor
 
 	private final Interpreter ip;
 	private final Referral referral;
+	private final TypeConsumer typeConsumer;
 
-	protected ExpressionVisitor(Interpreter ip, Referral referral) {
+	ExpressionVisitor(Interpreter ip, Referral referral) {
 		this.ip = ip;
 		this.referral = referral;
+		this.typeConsumer = NO_TYPE_CONSUMER;
+	}
+
+	ExpressionVisitor(
+			Interpreter ip,
+			Referral referral,
+			TypeConsumer typeConsumer) {
+		this.ip = ip;
+		this.referral = referral;
+		this.typeConsumer = typeConsumer;
 	}
 
 	public final Interpreter ip() {
@@ -159,7 +172,7 @@ public final class ExpressionVisitor
 	@Override
 	public Ref visitValueType(ValueTypeNode valueType, Distributor p) {
 
-		final Phrase phrase = ascendants(ip(), valueType, p);
+		final Phrase phrase = ascendants(ip(), valueType, p, this.typeConsumer);
 
 		if (phrase == null) {
 			return super.visitValueType(valueType, p);
@@ -170,7 +183,7 @@ public final class ExpressionVisitor
 
 	@Override
 	public Ref visitPhrase(PhraseNode phrase, Distributor p) {
-		return phrase(ip(), phrase, p).toRef();
+		return phrase(ip(), phrase, p, this.typeConsumer).toRef();
 	}
 
 	@Override

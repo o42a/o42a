@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.value.TypeParameters.typeMutability;
 import static org.o42a.core.value.ValueType.INTEGER;
 
@@ -40,6 +41,7 @@ import org.o42a.ast.type.TypeNodeVisitor;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.TypeVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
@@ -81,25 +83,26 @@ public enum Interpreter {
 	private final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor;
 	private final ExpressionVisitor bodyExVisitor;
 	private final ExpressionNodeVisitor<
-			FieldDefinition,
-			FieldDeclaration> definitionVisitor;
-	private final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> ancestorVisitor;
 	private final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> staticAncestorVisitor;
-	private final TypeNodeVisitor<TypeRef, Distributor> typeVisitor;
 
 	Interpreter(RefInterpreter refInterpreter) {
 		this.refInterpreter = refInterpreter;
 		this.targetExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
 		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
-		this.definitionVisitor = new DefinitionVisitor(this);
-		this.ancestorVisitor = new AncestorVisitor(this, null, TARGET_REFERRAL);
-		this.staticAncestorVisitor =
-				new StaticAncestorVisitor(this, null, TARGET_REFERRAL);
-		this.typeVisitor = new TypeVisitor(this, null);
+		this.ancestorVisitor = new AncestorVisitor(
+				this,
+				null,
+				TARGET_REFERRAL,
+				NO_TYPE_CONSUMER);
+		this.staticAncestorVisitor = new StaticAncestorVisitor(
+				this,
+				null,
+				TARGET_REFERRAL,
+				NO_TYPE_CONSUMER);
 	}
 
 	public final RefInterpreter refIp() {
@@ -118,40 +121,71 @@ public enum Interpreter {
 		return this.targetExVisitor;
 	}
 
+	public final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor(
+			TypeConsumer typeConsumer) {
+		if (typeConsumer == NO_TYPE_CONSUMER) {
+			return targetExVisitor();
+		}
+		return new ExpressionVisitor(this, TARGET_REFERRAL, typeConsumer);
+	}
+
 	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor() {
 		return this.bodyExVisitor;
 	}
 
+	public final ExpressionNodeVisitor<Ref, Distributor> bodyExVisitor(
+			TypeConsumer typeConsumer) {
+		if (typeConsumer == NO_TYPE_CONSUMER) {
+			return bodyExVisitor();
+		}
+		return new ExpressionVisitor(this, BODY_REFERRAL, typeConsumer);
+	}
+
 	public final ExpressionNodeVisitor<
 			FieldDefinition,
-			FieldDeclaration> definitionVisitor() {
-		return this.definitionVisitor;
+			FieldDeclaration> definitionVisitor(TypeConsumer typeConsumer) {
+		return new DefinitionVisitor(this, typeConsumer);
 	}
 
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> ancestorVisitor(
-					ValueStructFinder valueStructFinder,
-					Referral referral) {
-		if (valueStructFinder == null && referral == TARGET_REFERRAL) {
+					ValueStructFinder valueStruct,
+					Referral referral,
+					TypeConsumer typeConsumer) {
+		if (valueStruct == null
+				&& referral == TARGET_REFERRAL
+				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.ancestorVisitor;
 		}
-		return new AncestorVisitor(this, valueStructFinder, referral);
+		return new AncestorVisitor(
+				this,
+				valueStruct,
+				referral,
+				typeConsumer);
 	}
 
 	public final ExpressionNodeVisitor<
 			AncestorTypeRef,
 			Distributor> staticAncestorVisitor(
-					ValueStructFinder valueStructFinder,
-					Referral referral) {
-		if (valueStructFinder == null && referral == TARGET_REFERRAL) {
+					ValueStructFinder valueStruct,
+					Referral referral,
+					TypeConsumer typeConsumer) {
+		if (valueStruct == null
+				&& referral == TARGET_REFERRAL
+				&& typeConsumer == NO_TYPE_CONSUMER) {
 			return this.staticAncestorVisitor;
 		}
-		return new StaticAncestorVisitor(this, valueStructFinder, referral);
+		return new StaticAncestorVisitor(
+				this,
+				valueStruct,
+				referral,
+				typeConsumer);
 	}
 
-	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor() {
-		return this.typeVisitor;
+	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(
+			TypeConsumer consumer) {
+		return new TypeVisitor(this, null, consumer);
 	}
 
 	public static LinkValueType definitionLinkType(
@@ -170,10 +204,11 @@ public enum Interpreter {
 
 	public final TypeParameters typeParameters(
 			InterfaceNode ifaceNode,
-			Distributor p) {
+			Distributor p,
+			TypeConsumer consumer) {
 
 		final TypeRef paramTypeRef =
-				ifaceNode.getType().accept(typeVisitor(), p);
+				ifaceNode.getType().accept(typeVisitor(consumer), p);
 
 		if (paramTypeRef == null) {
 			return null;

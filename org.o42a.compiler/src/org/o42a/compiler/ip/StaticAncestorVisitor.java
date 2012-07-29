@@ -23,6 +23,7 @@ import static org.o42a.compiler.ip.AncestorTypeRef.ancestorTypeRef;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
@@ -33,8 +34,9 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 	StaticAncestorVisitor(
 			Interpreter ip,
 			ValueStructFinder valueStructFinder,
-			Referral referral) {
-		super(ip, valueStructFinder, referral);
+			Referral referral,
+			TypeConsumer typeConsumer) {
+		super(ip, valueStructFinder, referral, typeConsumer);
 	}
 
 	@Override
@@ -43,14 +45,14 @@ final class StaticAncestorVisitor extends AncestorVisitor {
 			Distributor p) {
 
 		final Ref result = expression.accept(
-				referral().expressionVisitor(ip()),
+				referral().expressionVisitor(ip(), typeConsumer()),
 				p);
 
 		if (result == null) {
 			return null;
 		}
 
-		return ancestorTypeRef(result.toStaticTypeRef(getValueStructFinder()));
+		return ancestorTypeRef(result.toStaticTypeRef(valueStruct()));
 	}
 
 }

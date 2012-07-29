@@ -29,6 +29,7 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.TypeParameters;
 
@@ -36,17 +37,17 @@ import org.o42a.core.value.TypeParameters;
 final class PhrasePrefixVisitor
 		extends AbstractExpressionVisitor<Phrase, Phrase> {
 
-	static final PhrasePrefixVisitor PHRASE_PREFIX_VISITOR =
-			new PhrasePrefixVisitor();
-
 	private final TypeParameters typeParameters;
+	private final TypeConsumer typeConsumer;
 
-	private PhrasePrefixVisitor() {
+	PhrasePrefixVisitor(TypeConsumer typeConsumer) {
+		this.typeConsumer = typeConsumer;
 		this.typeParameters = null;
 	}
 
 	PhrasePrefixVisitor(TypeParameters typeParameters) {
 		this.typeParameters = typeParameters;
+		this.typeConsumer = TypeConsumer.NO_TYPE_CONSUMER;
 	}
 
 	@Override
@@ -63,7 +64,8 @@ final class PhrasePrefixVisitor
 						p.ip().ancestorVisitor(
 								this.typeParameters,
 								this.typeParameters == null
-								? TARGET_REFERRAL : BODY_REFERRAL),
+								? TARGET_REFERRAL : BODY_REFERRAL,
+								this.typeConsumer),
 						distributor);
 
 		if (ancestor == null || ancestor.isImplied()) {
