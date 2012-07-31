@@ -22,9 +22,13 @@ package org.o42a.ast.expression;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
+import org.o42a.ast.type.TypeNode;
+import org.o42a.ast.type.TypeNodeVisitor;
 
 
-public class MacroExpansionNode extends UnaryNode implements DeclarableNode {
+public class MacroExpansionNode
+		extends UnaryNode
+		implements DeclarableNode, TypeNode {
 
 	MacroExpansionNode(
 			SignNode<UnaryOperator> sign,
@@ -34,6 +38,11 @@ public class MacroExpansionNode extends UnaryNode implements DeclarableNode {
 
 	@Override
 	public <R, P> R accept(DeclarableNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitMacroExpansion(this, p);
+	}
+
+	@Override
+	public <R, P> R accept(TypeNodeVisitor<R, P> visitor, P p) {
 		return visitor.visitMacroExpansion(this, p);
 	}
 

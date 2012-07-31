@@ -19,6 +19,7 @@
 */
 package org.o42a.ast.type;
 
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNodeVisitor;
 
 
@@ -27,5 +28,7 @@ public interface TypeNodeVisitor<R, P> extends RefNodeVisitor<R, P> {
 	R visitAscendants(AscendantsNode ascendants, P p);
 
 	R visitValueType(ValueTypeNode valueType, P p);
+
+	R visitMacroExpansion(MacroExpansionNode expansion, P p);
 
 }
