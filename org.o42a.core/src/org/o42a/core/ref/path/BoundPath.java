@@ -124,6 +124,13 @@ public class BoundPath extends RefPath {
 		return this.path = rebuildPath();
 	}
 
+	public final Path getRawPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.rawPath;
+	}
+
 	public final Step[] getSteps() {
 		return getPath().getSteps();
 	}
@@ -425,13 +432,6 @@ public class BoundPath extends RefPath {
 		}
 
 		return consumption;
-	}
-
-	final Path getRawPath() {
-		if (this.path != null) {
-			return this.path;
-		}
-		return this.rawPath;
 	}
 
 	final PathNormalizationDoubt doubt(Analyzer analyzer) {
