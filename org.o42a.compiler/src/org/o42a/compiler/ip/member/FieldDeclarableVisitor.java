@@ -221,7 +221,9 @@ public final class FieldDeclarableVisitor
 
 			final TypeRef type = typeNode.accept(
 					this.ip.typeVisitor(
-							new FieldNesting(declaration).toTypeConsumer()),
+							new FieldNesting(declaration)
+							.toTypeConsumer()
+							.paramConsumer()),
 					declaration.distribute());
 
 			if (type != null) {

@@ -24,6 +24,8 @@ import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.expression.ExpressionNode;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
 import org.o42a.compiler.ip.AncestorTypeRef;
@@ -38,15 +40,21 @@ public final class TypeVisitor
 		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final ValueStructFinder valueStructFinder;
 	private final TypeConsumer consumer;
+	private final ValueStructFinder valueStruct;
 
-	public TypeVisitor(
-			Interpreter ip,
-			ValueStructFinder valueStructFinder,
-			TypeConsumer consumer) {
+	public TypeVisitor(Interpreter ip, TypeConsumer consumer) {
 		this.ip = ip;
-		this.valueStructFinder = valueStructFinder;
+		this.valueStruct = null;
+		this.consumer = consumer;
+	}
+
+	private TypeVisitor(
+			Interpreter ip,
+			TypeConsumer consumer,
+			ValueStructFinder valueStruct) {
+		this.ip = ip;
+		this.valueStruct = valueStruct;
 		this.consumer = consumer;
 	}
 
@@ -64,7 +72,7 @@ public final class TypeVisitor
 				ip(),
 				p,
 				ascendants.getAncestor(),
-				this.valueStructFinder,
+				this.valueStruct,
 				BODY_REFERRAL);
 
 		if (ancestor.isImplied()) {
@@ -86,12 +94,12 @@ public final class TypeVisitor
 		final ValueStructFinder vsFinder;
 		final InterfaceNode ifaceNode = valueType.getValueType();
 
-		if (this.valueStructFinder != null) {
+		if (this.valueStruct != null) {
 			p.getLogger().error(
 					"redundant_value_type",
 					ifaceNode,
 					"Redundant value type");
-			vsFinder = this.valueStructFinder;
+			vsFinder = this.valueStruct;
 		} else {
 			vsFinder = ip().typeParameters(
 					ifaceNode,
@@ -103,8 +111,30 @@ public final class TypeVisitor
 		}
 
 		return ascendantNode.accept(
-				new TypeVisitor(ip(), vsFinder, NO_TYPE_CONSUMER),
+				new TypeVisitor(ip(), NO_TYPE_CONSUMER, vsFinder),
 				p);
+	}
+
+	@Override
+	public TypeRef visitMacroExpansion(
+			MacroExpansionNode expansion,
+			Distributor p) {
+
+		final ExpressionNode operandNode = expansion.getOperand();
+
+		if (operandNode == null) {
+			return null;
+		}
+
+		final Ref macroRef = operandNode.accept(ip().bodyExVisitor(), p);
+
+		if (macroRef == null) {
+			return null;
+		}
+
+		return this.consumer.consumeType(
+				macroRef.expandMacro(),
+				this.valueStruct);
 	}
 
 	@Override
@@ -116,7 +146,7 @@ public final class TypeVisitor
 			return null;
 		}
 
-		return this.consumer.consumeType(ref, this.valueStructFinder);
+		return this.consumer.consumeType(ref, this.valueStruct);
 	}
 
 	@Override

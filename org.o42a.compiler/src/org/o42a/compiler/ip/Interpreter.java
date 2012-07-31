@@ -185,7 +185,7 @@ public enum Interpreter {
 
 	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(
 			TypeConsumer consumer) {
-		return new TypeVisitor(this, null, consumer);
+		return new TypeVisitor(this, consumer);
 	}
 
 	public static LinkValueType definitionLinkType(
