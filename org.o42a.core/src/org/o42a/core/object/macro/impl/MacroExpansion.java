@@ -22,6 +22,7 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -30,7 +31,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
 
 
-public class MacroExpansionFragment extends PathFragment {
+public class MacroExpansion extends PathFragment {
 
 	private final Ref macroRef;
 	private final boolean reexpansion;
@@ -39,9 +40,10 @@ public class MacroExpansionFragment extends PathFragment {
 	private byte init;
 	private BoundPath path;
 
-	public MacroExpansionFragment(Ref macroRef, boolean reexpansion) {
+	public MacroExpansion(Ref macroRef, boolean reexpansion) {
 		this.macroRef = macroRef;
 		this.reexpansion = reexpansion;
+		this.path = toPath().bind(macroRef, macroRef.getScope());
 	}
 
 	public final Ref getMacroRef() {
@@ -92,8 +94,32 @@ public class MacroExpansionFragment extends PathFragment {
 		return initialExpansion;
 	}
 
+	@Override
+	public String toString() {
+		if (this.macroRef == null) {
+			return super.toString();
+		}
+		return '#' + this.macroRef.toString();
+	}
+
 	final void init(BoundPath path) {
 		this.path = path;
+	}
+
+	final Ref expandMacro(Consumer consumer) {
+
+		final Ref macroRef = getMacroRef();
+		final Ref macroExpansion = getPath().target(macroRef.distribute());
+		final Ref consumption =
+				consumer.expandMacro(macroRef, macroExpansion);
+
+		if (consumption == null) {
+			return null;
+		}
+
+		consumption.assertSameScope(macroRef);
+
+		return consumption;
 	}
 
 	private Path expand(PathExpander expander, Macro macro) {
@@ -106,14 +132,6 @@ public class MacroExpansionFragment extends PathFragment {
 		}
 
 		return macro.reexpand(macroExpander);
-	}
-
-	@Override
-	public String toString() {
-		if (this.macroRef == null) {
-			return super.toString();
-		}
-		return '#' + this.macroRef.toString();
 	}
 
 	private Macro macro(PathExpander expander, Scope start) {
@@ -137,7 +155,8 @@ public class MacroExpansionFragment extends PathFragment {
 		}
 
 		final Value<Macro> macroValue = ValueStruct.MACRO.cast(
-				object.value().getDefinitions().value(start.resolver()));
+				object.value().getDefinitions().value(
+						object.getScope().resolver()));
 
 		if (!macroValue.getKnowledge().isKnown()
 				|| macroValue.getKnowledge().isFalse()) {

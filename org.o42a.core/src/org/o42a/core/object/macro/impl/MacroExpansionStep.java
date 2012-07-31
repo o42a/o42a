@@ -75,26 +75,20 @@ public class MacroExpansionStep extends Step {
 	protected Ref consume(Ref ref, Consumer consumer) {
 
 		final Ref macroRef = ref.getPath().cut(1).target(ref.distribute());
-		final MacroExpansionFragment expansionFragment =
-				new MacroExpansionFragment(macroRef, this.reexpansion);
-		final BoundPath expansionPath =
-				expansionFragment.toPath().bind(ref, ref.getScope());
+		final MacroExpansion expansion =
+				new MacroExpansion(macroRef, this.reexpansion);
 
-		// Preliminary initialization in order the consumer
-		// to be able to resolve the expansion.
-		expansionFragment.init(expansionPath);
+		if (!this.reexpansion) {
+			return new InitMacroExpansion(expansion, consumer).toRef();
+		}
 
-		final Ref macroExpansion = expansionPath.target(ref.distribute());
-		final Ref consumption = consumer.expandMacro(macroRef, macroExpansion);
+		final Ref consumption = expansion.expandMacro(consumer);
 
 		if (consumption == null) {
 			return null;
 		}
 
-		consumption.assertSameScope(ref);
-		// Real initialization to make the expansion resolution possible
-		// if not resolved yet.
-		expansionFragment.init(consumption.getPath());
+		expansion.init(consumption.getPath());
 
 		return consumption;
 	}

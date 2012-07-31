@@ -51,4 +51,30 @@ public class MacroDeclarationTest extends CompilerTestCase {
 		assertThat(b.value().getValueType().isMacro(), is(true));
 	}
 
+	@Test
+	public void macroDeclarationByMacroValue() {
+		compile(
+				"#A := 123",
+				"#B := a");
+
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
+
+		assertThat(a.value().getValueType().isMacro(), is(true));
+		assertThat(b.value().getValueType().isMacro(), is(true));
+	}
+
+	@Test
+	public void macroObjectByMacroValue() {
+		compile(
+				"#A := 123",
+				"B := macro(= A)");
+
+		final Obj a = field("a").toObject();
+		final Obj b = field("b").toObject();
+
+		assertThat(a.value().getValueType().isMacro(), is(true));
+		assertThat(b.value().getValueType().isMacro(), is(true));
+	}
+
 }
