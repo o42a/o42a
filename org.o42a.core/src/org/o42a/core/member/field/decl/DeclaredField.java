@@ -216,7 +216,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		}
 
 		return implicitAscendants.setAncestor(
-				ValueType.MACRO.typeRef(getDeclaration(), this));
+				ValueType.MACRO.typeRef(getDeclaration(), getEnclosingScope()));
 	}
 
 	private Ascendants objectAscendants(Ascendants implicitAscendants) {
