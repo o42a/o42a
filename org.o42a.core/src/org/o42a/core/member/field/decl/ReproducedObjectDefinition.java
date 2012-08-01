@@ -49,8 +49,8 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return this.field.getDefinition().getLinkDepth();
+	public DefinitionTarget getDefinitionTarget() {
+		return this.field.getDefinition().getDefinitionTarget();
 	}
 
 	@Override

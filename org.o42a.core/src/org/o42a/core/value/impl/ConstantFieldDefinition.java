@@ -19,7 +19,10 @@
 */
 package org.o42a.core.value.impl;
 
+import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
+
 import org.o42a.core.Distributor;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
@@ -43,8 +46,8 @@ final class ConstantFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return 0;
+	public DefinitionTarget getDefinitionTarget() {
+		return definitionTarget(this.constant.getValueType().struct());
 	}
 
 	@Override

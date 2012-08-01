@@ -39,11 +39,11 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
+	public DefinitionTarget getDefinitionTarget() {
 
 		final MainPhraseContext mainContext = this.phrase.getMainContext();
 
-		return mainContext.getAscendants().getLinkDepth();
+		return mainContext.getAscendants().getDefinitionTarget();
 	}
 
 	@Override

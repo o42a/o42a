@@ -19,7 +19,10 @@
 */
 package org.o42a.core.ref.common;
 
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
+
 import org.o42a.core.Distributor;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
@@ -32,8 +35,8 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return 0;
+	public DefinitionTarget getDefinitionTarget() {
+		return objectDefinition();
 	}
 
 	@Override

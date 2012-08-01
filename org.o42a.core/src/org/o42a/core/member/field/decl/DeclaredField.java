@@ -66,7 +66,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	@Override
 	public boolean isLinkAscendants() {
-		return getDefinition().getLinkDepth() > 0;
+		return getDefinition().getDefinitionTarget().isLink();
 	}
 
 	@Override

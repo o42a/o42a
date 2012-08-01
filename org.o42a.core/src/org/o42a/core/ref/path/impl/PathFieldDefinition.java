@@ -20,6 +20,7 @@
 package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Distributor;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.Obj;
@@ -37,8 +38,8 @@ public final class PathFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return pathLinkDepth(path());
+	public DefinitionTarget getDefinitionTarget() {
+		return pathDefinitionTarget(path());
 	}
 
 	@Override
