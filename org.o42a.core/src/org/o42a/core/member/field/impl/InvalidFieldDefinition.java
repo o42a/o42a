@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field.impl;
 
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
@@ -43,8 +45,8 @@ public final class InvalidFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return 0;
+	public DefinitionTarget getDefinitionTarget() {
+		return objectDefinition();
 	}
 
 	@Override

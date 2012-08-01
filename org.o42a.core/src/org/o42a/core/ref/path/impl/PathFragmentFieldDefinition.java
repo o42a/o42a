@@ -43,8 +43,8 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return getDefinition().getLinkDepth();
+	public DefinitionTarget getDefinitionTarget() {
+		return getDefinition().getDefinitionTarget();
 	}
 
 	@Override

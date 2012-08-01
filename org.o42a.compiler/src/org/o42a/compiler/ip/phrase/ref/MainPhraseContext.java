@@ -241,13 +241,13 @@ final class MainPhraseContext extends PhraseContext {
 			// Search for clauses there.
 			return this.implicitAscendants;
 		}
-		if (getAscendants().getLinkDepth()
-				== this.implicitAscendants.getLinkDepth()) {
-			// Declaring link with link expression.
+		if (getAscendants().getDefinitionTarget().is(
+				this.implicitAscendants.getDefinitionTarget())) {
+			// Declaring with object constructor expression.
 			// Implicit ascendants will be searched for clauses.
 			return this.implicitAscendants;
 		}
-		// Declaring link by value.
+		// Declaring link or macro by value.
 		// Clauses should be looked for in the link target,
 		// but not in the link body
 		return null;
