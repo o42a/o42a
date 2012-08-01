@@ -788,7 +788,7 @@ public abstract class Obj
 
 		final Obj wrapped = getWrapped();
 
-		if (wrapped.is(this)) {
+		if (!wrapped.is(this)) {
 			wrapped.type().wrapBy(type());
 			wrapped.resolveAll();
 		}
