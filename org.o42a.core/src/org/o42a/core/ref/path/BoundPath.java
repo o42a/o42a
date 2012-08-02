@@ -193,11 +193,7 @@ public class BoundPath extends RefPath {
 		return lastStep.ancestor(this, location, distributor);
 	}
 
-	public final boolean hasLabel(Label label) {
-		return getLabels().has(label);
-	}
-
-	public final BoundPath label(Label label) {
+	public final BoundPath label(Label<?> label) {
 		if (this.path != null) {
 			return new BoundPath(
 					this,
@@ -207,6 +203,19 @@ public class BoundPath extends RefPath {
 		return new BoundPath(
 				this,
 				this.rawPath.label(label),
+				null);
+	}
+
+	public final <L extends Label<T>, T> BoundPath label(L label, T value) {
+		if (this.path != null) {
+			return new BoundPath(
+					this,
+					this.rawPath,
+					this.path.label(label, value));
+		}
+		return new BoundPath(
+				this,
+				this.rawPath.label(label, value),
 				null);
 	}
 

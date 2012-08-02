@@ -142,12 +142,12 @@ public class Ref extends Statement {
 		return new Resolution(this, resolver);
 	}
 
-	public final boolean hasLabel(Label label) {
-		return getPath().hasLabel(label);
+	public final Ref label(Label<?> label) {
+		return getPath().label(label).target(distribute());
 	}
 
-	public final Ref label(Label label) {
-		return getPath().label(label).target(distribute());
+	public final <L extends Label<T>, T> Ref label(L label, T value) {
+		return getPath().label(label, value).target(distribute());
 	}
 
 	public final Ref expandMacro() {

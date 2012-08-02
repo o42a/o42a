@@ -36,7 +36,7 @@ import org.o42a.core.value.ValueStruct;
 import org.o42a.util.Label;
 
 
-final class TypeParamMetaDep extends MetaDep implements Label, Consumer {
+final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 
 	private final Ref macroRef;
 	private MetaDep parentDep;
@@ -149,7 +149,7 @@ final class TypeParamMetaDep extends MetaDep implements Label, Consumer {
 					subTypeParams.setTypeRef(newSubTypeRef));
 		}
 
-		if (!typeRef.getPath().hasLabel(this)) {
+		if (!typeRef.getPath().getLabels().has(this)) {
 			// The value struct does not depend on the same macro expansion
 			// any more (it was overridden).
 			return null;

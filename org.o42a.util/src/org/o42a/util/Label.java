@@ -20,6 +20,6 @@
 package org.o42a.util;
 
 
-public interface Label {
+public interface Label<T> {
 
 }

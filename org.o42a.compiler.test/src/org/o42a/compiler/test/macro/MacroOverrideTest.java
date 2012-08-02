@@ -28,28 +28,26 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
-public class MacroExpansionTest extends CompilerTestCase {
+public class MacroOverrideTest extends CompilerTestCase {
 
 	@Test
-	public void linkInterface() {
+	public void overrideMacro() {
 		compile(
-				"#A := integer",
-				"B := (`#a) 123");
+				"A := void (",
+				"  #T := void",
+				"  F := (`#t) 1",
+				")",
+				"B := a (",
+				"  T = integer",
+				")");
 
-		final Obj b = field("b").toObject();
+		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj bfTarget = linkTarget(field("b", "f"));
 
-		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(123L));
-	}
-
-	@Test
-	public void linkObject() {
-		compile(
-				"#A := integer",
-				"B := link (`#a) 123");
-
-		final Obj b = field("b").toObject();
-
-		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(123L));
+		assertThat(
+				definiteValue(afTarget, ValueType.VOID),
+				is(org.o42a.core.value.Void.VOID));
+		assertThat(definiteValue(bfTarget, ValueType.INTEGER), is(1L));
 	}
 
 }
