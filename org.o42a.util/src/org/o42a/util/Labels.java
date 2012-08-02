@@ -24,41 +24,120 @@ import java.util.Arrays;
 
 public final class Labels {
 
-	public static final Labels NO_LABELS = new Labels(new Label[0]);
+	public static final Labels NO_LABELS = new Labels(new Entry[0]);
 
-	private final Label[] labels;
+	private final Entry[] entries;
 
-	private Labels(Label[] labels) {
-		this.labels = labels;
+	private Labels(Entry[] entries) {
+		this.entries = entries;
 	}
 
-	public final boolean has(Label label) {
-		for (Label l : this.labels) {
-			if (l.equals(label)) {
+	public final boolean has(Label<?> label) {
+		for (Entry entry : this.entries) {
+			if (entry.getLabel().equals(label)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public final Labels add(Label label) {
+	public final Labels add(Label<?> label) {
+		return put(label, null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public final <L extends Label<T>, T> T get(L label) {
+		for (Entry entry : this.entries) {
+			if (entry.getLabel().equals(label)) {
+				return (T) entry.getValue();
+			}
+		}
+		return null;
+	}
+
+	public final <L extends Label<T>, T> Labels put(L label, T value) {
 		assert label != null :
 			"Label not specified";
-		return new Labels(ArrayUtil.append(this.labels, label));
+		return addEntry(new Entry(label, value));
 	}
 
 	public final Labels addAll(Labels labels) {
 		assert labels != null :
 			"Labels not specified";
-		return new Labels(ArrayUtil.append(this.labels, labels.labels));
+		if (this.entries.length == 0) {
+			return labels;
+		}
+		if (labels.entries.length == 0) {
+			return this;
+		}
+
+		Labels result = this;
+
+		for (Entry entry : labels.entries) {
+			result = result.addEntry(entry);
+		}
+
+		return result;
 	}
 
 	@Override
 	public String toString() {
-		if (this.labels == null) {
+		if (this.entries == null) {
 			return super.toString();
 		}
-		return "Labels" + Arrays.toString(this.labels);
+		return "Labels" + Arrays.toString(this.entries);
+	}
+
+	private Labels addEntry(final Entry newEntry) {
+
+		final Label<?> label = newEntry.getLabel();
+
+		for (int i = 0; i < this.entries.length; ++i) {
+
+			final Entry entry = this.entries[i];
+
+			if (entry.getLabel().equals(label)) {
+
+				final Entry[] newEntries = this.entries.clone();
+
+				newEntries[i] = newEntry;
+
+				return new Labels(newEntries);
+			}
+		}
+
+		return new Labels(ArrayUtil.append(this.entries, newEntry));
+	}
+
+	private static final class Entry {
+
+		private final Label<?> label;
+		private final Object value;
+
+		Entry(Label<?> label, Object value) {
+			this.label = label;
+			this.value = value;
+		}
+
+		public final Label<?> getLabel() {
+			return this.label;
+		}
+
+		public final Object getValue() {
+			return this.value;
+		}
+
+		@Override
+		public String toString() {
+			if (this.value == null) {
+				if (this.label == null) {
+					return super.toString();
+				}
+				return this.label.toString();
+			}
+			return this.label + "=" + this.value;
+		}
+
 	}
 
 }

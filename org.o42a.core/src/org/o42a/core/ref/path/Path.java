@@ -126,15 +126,19 @@ public final class Path {
 		return this.steps;
 	}
 
-	public final boolean hasLabel(Label label) {
-		return getLabels().has(label);
-	}
-
-	public final Path label(Label label) {
+	public final Path label(Label<?> label) {
 		return new Path(
 				getKind(),
 				isStatic(),
 				getLabels().add(label),
+				getSteps());
+	}
+
+	public final <L extends Label<T>, T> Path label(L label, T value) {
+		return new Path(
+				getKind(),
+				isStatic(),
+				getLabels().put(label, value),
 				getSteps());
 	}
 
