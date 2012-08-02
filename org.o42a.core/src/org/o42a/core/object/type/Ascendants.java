@@ -20,6 +20,7 @@
 package org.o42a.core.object.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
@@ -162,6 +163,9 @@ public class Ascendants
 	}
 
 	public final DefinitionTarget getDefinitionTarget() {
+		if (isEmpty()) {
+			return defaultDefinition();
+		}
 
 		final TypeRef ancestor = getExplicitAncestor();
 

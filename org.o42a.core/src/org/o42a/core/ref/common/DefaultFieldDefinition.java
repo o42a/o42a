@@ -48,10 +48,14 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		if (definerTarget(definer).is(getDefinitionTarget())) {
+
+		final DefinitionTarget target = getDefinitionTarget();
+
+		if (target.isDefault() || target.is(definerTarget(definer))) {
 			defineObject(definer);
 			return;
 		}
+
 		pathAsValue(definer);
 	}
 

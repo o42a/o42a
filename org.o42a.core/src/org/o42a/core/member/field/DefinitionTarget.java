@@ -24,6 +24,8 @@ import org.o42a.core.value.ValueStruct;
 
 public final class DefinitionTarget {
 
+	private static final DefinitionTarget DEFAULT_DEFINITION =
+			new DefinitionTarget();
 	private static final DefinitionTarget OBJECT_DEFINITION =
 			new DefinitionTarget(0, false);
 	private static final DefinitionTarget MACRO_DEFINITION =
@@ -32,6 +34,10 @@ public final class DefinitionTarget {
 			new DefinitionTarget(1, false);
 	private static final DefinitionTarget LINK_TO_LINK_DEFINITION =
 			new DefinitionTarget(2, false);
+
+	public static DefinitionTarget defaultDefinition() {
+		return DEFAULT_DEFINITION;
+	}
 
 	public static DefinitionTarget objectDefinition() {
 		return OBJECT_DEFINITION;
@@ -70,10 +76,22 @@ public final class DefinitionTarget {
 
 	private final int linkDepth;
 	private final boolean macro;
+	private final boolean isDefault;
+
+	private DefinitionTarget() {
+		this.linkDepth = 0;
+		this.macro = false;
+		this.isDefault = true;
+	}
 
 	private DefinitionTarget(int linkDepth, boolean macro) {
 		this.linkDepth = linkDepth;
 		this.macro = macro;
+		this.isDefault = false;
+	}
+
+	public final boolean isDefault() {
+		return this.isDefault;
 	}
 
 	public final boolean isMacro() {
@@ -95,15 +113,20 @@ public final class DefinitionTarget {
 		if (this.macro != other.macro) {
 			return false;
 		}
+		if (this.isDefault != other.isDefault) {
+			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public int hashCode() {
+
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + this.linkDepth;
 		result = prime * result + (this.macro ? 1231 : 1237);
+
 		return result;
 	}
 
@@ -126,16 +149,19 @@ public final class DefinitionTarget {
 
 	@Override
 	public String toString() {
+		if (this.linkDepth != 0) {
+			if (this.linkDepth == 1) {
+				return "LinkDefinition";
+			}
+			return "LinkDefinition[depth=" + this.linkDepth + ']';
+		}
 		if (this.macro) {
 			return "MacroDefinition";
 		}
-		if (this.linkDepth == 0) {
-			return "ObjectDefinition";
+		if (this.isDefault) {
+			return "DefaultDefinition";
 		}
-		if (this.linkDepth == 1) {
-			return "LinkDefinition";
-		}
-		return "LinkDefinition[depth=" + this.linkDepth + ']';
+		return "ObjectDefinition";
 	}
 
 }
