@@ -19,6 +19,7 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
@@ -67,6 +68,9 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 	}
 
 	public final DefinitionTarget getDefinitionTarget() {
+		if (isEmpty()) {
+			return defaultDefinition();
+		}
 
 		final TypeRef ancestor = getAncestor();
 

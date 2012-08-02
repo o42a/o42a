@@ -32,6 +32,7 @@ import org.o42a.core.member.MemberId;
 import org.o42a.core.member.clause.Clause;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.member.field.AscendantsDefinition;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.Sample;
 import org.o42a.core.ref.Ref;
@@ -236,17 +237,22 @@ final class MainPhraseContext extends PhraseContext {
 		if (this.implicitAscendants == null) {
 			return null;
 		}
-		if (getAscendants().isEmpty()) {
-			// Only implicit ascendants is known.
+
+		final DefinitionTarget definitionTarget =
+				getAscendants().getDefinitionTarget();
+
+		if (definitionTarget.isDefault()) {
+			// Only implicit ascendants are known.
 			// Search for clauses there.
 			return this.implicitAscendants;
 		}
-		if (getAscendants().getDefinitionTarget().is(
+		if (definitionTarget.is(
 				this.implicitAscendants.getDefinitionTarget())) {
 			// Declaring with object constructor expression.
 			// Implicit ascendants will be searched for clauses.
 			return this.implicitAscendants;
 		}
+
 		// Declaring link or macro by value.
 		// Clauses should be looked for in the link target,
 		// but not in the link body
