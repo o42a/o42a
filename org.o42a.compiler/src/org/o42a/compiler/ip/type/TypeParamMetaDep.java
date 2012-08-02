@@ -178,7 +178,10 @@ final class TypeParamMetaDep extends MetaDep implements Label, Consumer {
 		if (this.macroDep.getNesting() == null) {
 			prefix = upgradePrefix(this.macroRef, scope);
 		} else {
-			final Scope delcaredIn = getDeclaredIn().getObject().getScope();
+
+			final Scope delcaredIn =
+					nestedDep().getDeclaredIn().getObject().getScope();
+
 			prefix = delcaredIn.getEnclosingScopePath().toPrefix(scope);
 		}
 
