@@ -58,8 +58,12 @@ final class InitMacroExpansion extends PathFragment {
 	}
 
 	final Ref toRef() {
-		return this.expansion.getPath().target(
-				this.expansion.getMacroRef().distribute());
+
+		final Ref macroRef = this.expansion.getMacroRef();
+
+		return toPath()
+				.bind(macroRef, macroRef.getScope())
+				.target(macroRef.distribute());
 	}
 
 }
