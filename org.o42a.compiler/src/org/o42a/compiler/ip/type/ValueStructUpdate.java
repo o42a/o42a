@@ -36,12 +36,12 @@ final class ValueStructUpdate extends NestedMetaDep {
 	}
 
 	@Override
-	protected boolean updateMeta(Meta meta) {
+	protected boolean changed(Meta meta) {
 
 		final TypeParamMetaDep parent =
 				(TypeParamMetaDep) parentDep();
 
-		return parent.updateTypeParam(meta);
+		return parent.typeParamChanged(meta);
 	}
 
 }

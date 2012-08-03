@@ -96,7 +96,7 @@ public abstract class ObjectMeta {
 
 		final boolean triggered = dep.triggered(meta);
 
-		if (triggered && dep.updateMeta(meta)) {
+		if (triggered && dep.changed(meta)) {
 			this.tripped.put(key, Boolean.TRUE);
 			return true;
 		}
@@ -175,7 +175,7 @@ public abstract class ObjectMeta {
 				this.checkedAscendants = null;
 				return hasUpdates;
 			}
-			if (dep.update(meta)) {
+			if (dep.updated(meta)) {
 				hasUpdates = true;
 			}
 		}

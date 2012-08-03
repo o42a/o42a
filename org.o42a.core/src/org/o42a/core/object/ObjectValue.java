@@ -73,15 +73,6 @@ public final class ObjectValue extends ObjectValueParts {
 		return this.valueStruct;
 	}
 
-	public final void setValueStruct(ValueStruct<?, ?> valueStruct) {
-		if (valueStruct != null) {
-			this.valueStruct = valueStruct;
-			if (valueStruct.isScoped()) {
-				valueStruct.toScoped().assertSameScope(getObject());
-			}
-		}
-	}
-
 	public final UseFlag selectUse(
 			Analyzer analyzer,
 			UseSelector<ValueUsage> selector) {
@@ -309,6 +300,15 @@ public final class ObjectValue extends ObjectValueParts {
 		getObject().content().useBy(this.uses);
 
 		return this.uses;
+	}
+
+	final void setValueStruct(ValueStruct<?, ?> valueStruct) {
+		if (valueStruct != null) {
+			this.valueStruct = valueStruct;
+			if (valueStruct.isScoped()) {
+				valueStruct.toScoped().assertSameScope(getObject());
+			}
+		}
 	}
 
 	private Definitions getAncestorDefinitions() {
