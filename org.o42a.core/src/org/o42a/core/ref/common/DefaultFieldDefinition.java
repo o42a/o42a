@@ -22,9 +22,7 @@ package org.o42a.core.ref.common;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.BoundPath;
 
@@ -50,16 +48,25 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		if (definerLinkDepth(definer) == getLinkDepth()) {
+
+		final DefinitionTarget target = getDefinitionTarget();
+
+		if (target.isDefault() || target.is(definerTarget(definer))) {
 			defineObject(definer);
 			return;
 		}
+
 		pathAsValue(definer);
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		definer.setTargetRef(path().target(distribute()), null);
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
+		definer.setRef(path().target(distribute()));
 	}
 
 	@Override

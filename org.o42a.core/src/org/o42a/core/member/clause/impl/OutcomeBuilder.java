@@ -37,6 +37,7 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.util.log.LogRecord;
 
 
 public class OutcomeBuilder implements PathWalker {
@@ -169,6 +170,10 @@ public class OutcomeBuilder implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return invalidOutcome();
+	}
+
+	@Override
+	public void error(LogRecord message) {
 	}
 
 	@Override

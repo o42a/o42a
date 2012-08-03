@@ -132,7 +132,6 @@ public class ArrayUtil {
 				array.getClass().getComponentType(),
 				array.length - (to - from) + replacement.length);
 
-
 		arraycopy(array, 0, newArray, 0, from);
 		arraycopy(replacement, 0, newArray, from, replacement.length);
 		arraycopy(

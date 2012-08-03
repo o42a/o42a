@@ -19,7 +19,9 @@
 */
 package org.o42a.core.object.link;
 
+import static org.o42a.core.object.link.LinkValueType.LINK;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
+import static org.o42a.core.value.TypeParameters.typeMutability;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -80,6 +82,39 @@ public final class LinkValueStruct
 		}
 		return this.linkDepth =
 				1 + getTypeRef().getValueStruct().getLinkDepth();
+	}
+
+	@Override
+	public TypeParameters getParameters() {
+
+		final TypeRef typeRef = getTypeRef();
+
+		return typeMutability(
+				typeRef,
+				typeRef.getRef().distribute(),
+				LINK).setTypeRef(typeRef);
+	}
+
+	@Override
+	public LinkValueStruct setParameters(TypeParameters parameters) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newTypeRef = parameters.getTypeRef();
+		final TypeRef oldTypeRef = getTypeRef();
+
+		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
+				parameters.getLogger())) {
+			return this;
+		}
+
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override
@@ -183,29 +218,6 @@ public final class LinkValueStruct
 	@Override
 	public String toString() {
 		return getValueType() + "(`" + this.typeRef + ')';
-	}
-
-	@Override
-	protected LinkValueStruct applyParameters(
-			TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
-		parameters.assertSameScope(toScoped());
-
-		final TypeRef newTypeRef = parameters.getTypeRef();
-		final TypeRef oldTypeRef = getTypeRef();
-
-		if (!newTypeRef.relationTo(oldTypeRef).checkDerived(
-				parameters.getLogger())) {
-			return this;
-		}
-
-		return new LinkValueStruct(this, getValueType(), newTypeRef);
 	}
 
 	@Override

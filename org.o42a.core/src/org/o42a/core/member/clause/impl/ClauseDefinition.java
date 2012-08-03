@@ -26,7 +26,6 @@ import static org.o42a.core.member.clause.impl.GroupRegistry.prohibitedContinuat
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 
 import org.o42a.core.Container;
-import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
 import org.o42a.core.member.MemberId;
 import org.o42a.core.member.MemberKey;
@@ -37,6 +36,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -91,6 +91,11 @@ final class ClauseDefinition extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return toClause().getDefinitionNesting();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 
 		final MemberKey overridden = toClause().getOverridden();
@@ -138,15 +143,6 @@ final class ClauseDefinition extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-
-		final MemberClause clause =
-				enclosing.getContainer().member(toClause().getKey()).toClause();
-
-		return clause.clause().toPlainClause().toObject();
 	}
 
 	void define(Reproducer reproducer) {

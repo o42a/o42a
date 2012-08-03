@@ -102,8 +102,6 @@ public abstract class Member extends Placed {
 		return getPropagatedFrom() != null;
 	}
 
-	public abstract boolean isAbstract();
-
 	/**
 	 * The scope this members's definition were assigned in.
 	 *

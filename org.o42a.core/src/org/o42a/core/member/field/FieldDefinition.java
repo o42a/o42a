@@ -20,6 +20,8 @@
 package org.o42a.core.member.field;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
@@ -54,7 +56,7 @@ public abstract class FieldDefinition extends Placed {
 				emptyBlock(location));
 	}
 
-	public static int definerLinkDepth(ObjectDefiner definer) {
+	public static DefinitionTarget definerTarget(ObjectDefiner definer) {
 
 		final Field[] allOverridden = definer.getField().getOverridden();
 
@@ -64,29 +66,29 @@ public abstract class FieldDefinition extends Placed {
 					overridden.toObject().value().getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return valueStruct.getLinkDepth();
+				return definitionTarget(valueStruct);
 			}
 		}
 
-		return 0;
+		return objectDefinition();
 	}
 
-	public static int pathLinkDepth(BoundPath path) {
+	public static DefinitionTarget pathDefinitionTarget(BoundPath path) {
 
 		final PathResolution resolution = path.resolve(
 				pathResolver(path.getOrigin(), dummyUser()));
 
 		if (resolution.isError()) {
-			return 0;
+			return objectDefinition();
 		}
 
-		final Obj object = resolution.getObject().toObject();
+		final Obj object = resolution.getObject();
 
 		if (object == null) {
-			return 0;
+			return objectDefinition();
 		}
 
-		return object.value().getValueStruct().getLinkDepth();
+		return definitionTarget(object.value().getValueStruct());
 	}
 
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
@@ -99,13 +101,15 @@ public abstract class FieldDefinition extends Placed {
 		return true;
 	}
 
-	public abstract int getLinkDepth();
+	public abstract DefinitionTarget getDefinitionTarget();
 
 	public abstract void defineObject(ObjectDefiner definer);
 
 	public abstract void overrideObject(ObjectDefiner definer);
 
 	public abstract void defineLink(LinkDefiner definer);
+
+	public abstract void defineMacro(MacroDefiner definer);
 
 	public FieldDefinition prefixWith(PrefixPath prefix) {
 		if (prefix.emptyFor(this)) {

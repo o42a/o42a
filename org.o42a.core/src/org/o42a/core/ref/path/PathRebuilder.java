@@ -70,6 +70,7 @@ public final class PathRebuilder implements LocationInfo {
 		return new Path(
 				this.path.getKind(),
 				this.path.isStatic(),
+				this.path.getLabels(),
 				Arrays.copyOfRange(
 						this.steps,
 						this.nextIdx,

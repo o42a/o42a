@@ -21,7 +21,6 @@ package org.o42a.core.member.field;
 
 import static java.util.Collections.emptyList;
 import static org.o42a.analysis.use.User.dummyUser;
-import static org.o42a.core.member.MemberKey.brokenMemberKey;
 import static org.o42a.core.member.field.FieldUsage.FIELD_ACCESS;
 
 import java.util.ArrayList;
@@ -31,12 +30,8 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.member.*;
 import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.local.MemberLocal;
-import org.o42a.core.object.Accessor;
 import org.o42a.core.object.Obj;
-import org.o42a.core.object.ObjectType;
-import org.o42a.core.object.type.Sample;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.source.LocationInfo;
 
 
@@ -44,8 +39,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 	private final FieldDeclaration declaration;
 	private Field field;
-	private MemberKey key;
-	private Visibility visibility;
 
 	private FieldAnalysis analysis;
 	private ArrayList<FieldReplacement> allReplacements;
@@ -62,8 +55,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		super(
 				location,
 				propagatedFrom.distributeIn(owner.getContainer()), owner);
-		this.key = propagatedFrom.getMemberKey();
-		this.visibility = propagatedFrom.getVisibility();
 		this.declaration =
 				new FieldDeclaration(
 						propagatedFrom,
@@ -77,21 +68,27 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().getMemberId();
 	}
 
+	public final FieldKey getFieldKey() {
+		return getDeclaration().getFieldKey();
+	}
+
+	public final Nesting getNesting() {
+		return getFieldKey();
+	}
+
 	public final FieldDeclaration getDeclaration() {
 		return this.declaration;
 	}
 
 	@Override
 	public final Visibility getVisibility() {
-		getMemberKey();
-		return this.visibility;
+		return getFieldKey().getVisibility();
 	}
 
 	public final boolean isAdapter() {
 		return getDeclaration().isAdapter();
 	}
 
-	@Override
 	public final boolean isAbstract() {
 		return getDeclaration().isAbstract();
 	}
@@ -105,15 +102,28 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		return getDeclaration().isOverride();
 	}
 
+	public final boolean isUpdated() {
+		if (!isClone()) {
+			return true;
+		}
+		if (this.field != null) {
+			return this.field.isUpdated();
+		}
+
+		final Obj owner = getMemberOwner().getOwner();
+
+		if (!owner.meta().isUpdated()) {
+			// Field can not be updated without owner to be updated also.
+			return false;
+		}
+
+		// Only instantiated field can be updated.
+		return this.field != null && this.field.objectAlreadyUpdated();
+	}
+
 	@Override
-	public MemberKey getMemberKey() {
-		if (this.key != null) {
-			return this.key;
-		}
-		if (getDeclaration().isOverride()) {
-			return this.key = overrideField();
-		}
-		return this.key = declareNewField();
+	public final MemberKey getMemberKey() {
+		return getFieldKey().getMemberKey();
 	}
 
 	@Override
@@ -130,14 +140,13 @@ public abstract class MemberField extends Member implements FieldReplacement {
 		if (this.analysis != null) {
 			return this.analysis;
 		}
+		if (isUpdated()) {
+			return this.analysis = new FieldAnalysis(this);
+		}
 
 		final MemberField lastDefinition = getLastDefinition();
 
-		if (lastDefinition != this) {
-			return this.analysis = lastDefinition.getAnalysis();
-		}
-
-		return this.analysis = new FieldAnalysis(this);
+		return this.analysis = lastDefinition.getAnalysis();
 	}
 
 	public final Field field(UserInfo user) {
@@ -200,7 +209,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 
 		getAnalysis().registerObject(object);
 		object.resolveAll();
-		if (isOverride() && !isClone()) {
+		if (isOverride() && isUpdated()) {
 			registerAsReplacement();
 		}
 	}
@@ -211,88 +220,6 @@ public abstract class MemberField extends Member implements FieldReplacement {
 	}
 
 	protected abstract Field createField();
-
-	private MemberKey overrideField() {
-
-		final Member overridden = overridden();
-
-		if (overridden != null) {
-			this.visibility = overridden.getVisibility();
-			return overridden.getMemberKey();
-		}
-
-		this.visibility = Visibility.PRIVATE;
-
-		return brokenMemberKey();
-	}
-
-	private Member overridden() {
-
-		Member overridden = null;
-		final StaticTypeRef declaredInRef = getDeclaration().getDeclaredIn();
-
-		if (declaredInRef != null) {
-			if (!declaredInRef.isValid()) {
-				return null;
-			}
-			overridden = declaredInRef.getType().member(
-					getMemberId(),
-					Accessor.INHERITANT);
-		} else {
-
-			final ObjectType containerType = getContainer().toObject().type();
-
-			for (Sample sample : containerType.getSamples()) {
-				overridden = overridden(
-						overridden,
-						sample.typeObject(dummyUser()));
-			}
-
-			final TypeRef ancestor = containerType.getAncestor();
-
-			if (ancestor != null) {
-				overridden = overridden(overridden, ancestor.getType());
-			}
-		}
-
-		if (overridden == null) {
-			getLogger().error(
-					"cant_override_unknown",
-					this,
-					"Can not override unknown field '%s'",
-					getDisplayName());
-		}
-
-		return overridden;
-	}
-
-	private Member overridden(Member overridden, Obj ascendant) {
-		if (ascendant == null) {
-			return overridden;
-		}
-
-		final Member member = ascendant.member(getMemberId(), Accessor.INHERITANT);
-
-		if (member == null) {
-			return overridden;
-		}
-		if (overridden == null) {
-			return member;
-		}
-		if (overridden.definedAfter(member)) {
-			return overridden;
-		}
-		if (member.definedAfter(overridden)) {
-			return member;
-		}
-
-		return overridden;
-	}
-
-	private MemberKey declareNewField() {
-		this.visibility = getDeclaration().getVisibility();
-		return getMemberId().key(getScope());
-	}
 
 	private void useBy(UserInfo user) {
 		if (user.toUser().isDummy()) {
@@ -312,7 +239,7 @@ public abstract class MemberField extends Member implements FieldReplacement {
 			this.allReplacements = new ArrayList<FieldReplacement>();
 		}
 		this.allReplacements.add(replacement);
-		if (isClone()) {
+		if (!isUpdated()) {
 			// Clone replaced by explicit field.
 			// Register this clone as a replacement too.
 			registerAsReplacement();

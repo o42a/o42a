@@ -43,6 +43,7 @@ import org.o42a.core.object.type.*;
 import org.o42a.core.object.value.ObjectValuePart;
 import org.o42a.core.object.value.ValueUsage;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueType;
 
 
 public final class ObjectType implements UserInfo {
@@ -152,7 +153,7 @@ public final class ObjectType implements UserInfo {
 		if (!user.toUser().isDummy()) {
 			uses().useBy(
 					user,
-					getObject().isClone()
+					!getObject().meta().isUpdated()
 					? RUNTIME_TYPE_USAGE : STATIC_TYPE_USAGE);
 		}
 		return this;
@@ -182,7 +183,10 @@ public final class ObjectType implements UserInfo {
 		if (this.linkUses != null) {
 			return this.linkUses;
 		}
-		if (!getObject().value().getValueType().isLink()) {
+
+		final ValueType<?> valueType = getObject().value().getValueType();
+
+		if (!valueType.isLink() && !valueType.isMacro()) {
 			return null;
 		}
 
@@ -223,12 +227,12 @@ public final class ObjectType implements UserInfo {
 	protected void useAsAncestor(Obj derived) {
 		derivationUses().useBy(
 				derived.content(),
-				derived.isClone()
+				!derived.meta().isUpdated()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!derived.isClone()) {
+		if (derived.meta().isUpdated()) {
 			trackAscendantDefsUsage(derived);
 
 			final LinkUses linkUses = linkUses();
@@ -237,8 +241,7 @@ public final class ObjectType implements UserInfo {
 				linkUses.useAsAncestor(derived);
 			}
 			if (derived.getWrapped() == null) {
-				registerDerivative(
-						new Inheritor(derived));
+				registerDerivative(new Inheritor(derived));
 			}
 		}
 	}
@@ -249,12 +252,12 @@ public final class ObjectType implements UserInfo {
 
 		derivationUses().useBy(
 				derived.content(),
-				derived.isClone()
+				!derived.meta().isUpdated()
 				? RUNTIME_DERIVATION_USAGE : STATIC_DERIVATION_USAGE);
 		derivationUses().useBy(
 				derived.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
-		if (!derived.isClone()) {
+		if (derived.meta().isUpdated()) {
 			trackAscendantDefsUsage(derived);
 			trackAncestorDefsUpdates(derived);
 
@@ -333,13 +336,12 @@ public final class ObjectType implements UserInfo {
 		}
 
 		final Obj object = getObject();
-		final Obj cloneOf = object.getCloneOf();
 
-		if (cloneOf != null) {
-			this.derivationUses = cloneOf.type().derivationUses();
+		if (!object.meta().isUpdated()) {
+			this.derivationUses = object.getCloneOf().type().derivationUses();
 		} else {
 			this.derivationUses =
-					DerivationUsage.usable("DerivationOf", getObject());
+					DerivationUsage.usable("DerivationOf", object);
 		}
 
 		final Member member = object.toMember();
@@ -376,8 +378,9 @@ public final class ObjectType implements UserInfo {
 				assert enclosingScope.isTopScope() :
 					"No enclosing object of non-top-level object " + object;
 			}
-			if (getObject().getConstructionMode().isRuntime()
-					|| getObject().getPlace().isInsideLoop()) {
+			if (object.getConstructionMode().isRuntime()
+					|| object.getPlace().isInsideLoop()
+					|| !object.meta().isUpdated()) {
 				this.derivationUses.useBy(
 						getObject().content(),
 						RUNTIME_DERIVATION_USAGE);
@@ -543,7 +546,7 @@ public final class ObjectType implements UserInfo {
 			this.allDerivatives = new ArrayList<Derivative>();
 		}
 		this.allDerivatives.add(derivative);
-		if (getObject().isClone()) {
+		if (!getObject().meta().isUpdated()) {
 			// Clone is explicitly derived.
 			// Update the derivation tree.
 			final Sample[] samples = getSamples();

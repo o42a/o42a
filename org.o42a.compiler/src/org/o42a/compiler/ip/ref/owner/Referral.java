@@ -23,6 +23,7 @@ import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.RefInterpreter;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 
@@ -40,7 +41,8 @@ public abstract class Referral {
 			RefInterpreter ip);
 
 	public abstract ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
-			Interpreter ip);
+			Interpreter ip,
+			TypeConsumer typeConsumer);
 
 	public abstract Ref refer(Owner owner);
 
@@ -58,8 +60,9 @@ public abstract class Referral {
 
 		@Override
 		public ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
-				Interpreter ip) {
-			return ip.targetExVisitor();
+				Interpreter ip,
+				TypeConsumer typeConsumer) {
+			return ip.targetExVisitor(typeConsumer);
 		}
 
 		@Override
@@ -78,8 +81,9 @@ public abstract class Referral {
 
 		@Override
 		public ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
-				Interpreter ip) {
-			return ip.bodyExVisitor();
+				Interpreter ip,
+				TypeConsumer typeConsumer) {
+			return ip.bodyExVisitor(typeConsumer);
 		}
 
 		@Override

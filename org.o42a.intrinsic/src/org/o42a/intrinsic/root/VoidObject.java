@@ -33,9 +33,9 @@ import org.o42a.core.ir.ScopeIR;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.StandaloneObjectScope;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Normalizer;
@@ -91,6 +91,11 @@ public final class VoidObject extends BuiltinObject {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return Nesting.NO_NESTING;
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this);
 	}
@@ -98,12 +103,6 @@ public final class VoidObject extends BuiltinObject {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return new BuiltinDef(this).toDefinitions(ValueStruct.VOID);
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		throw new IllegalArgumentException(
-				"Not an enclosing scope: " + enclosing);
 	}
 
 	private static VoidScope voidScope(Scope topScope) {

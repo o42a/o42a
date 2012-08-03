@@ -21,6 +21,7 @@ package org.o42a.compiler.ip;
 
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
+import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
@@ -60,11 +61,15 @@ public final class AncestorSpecVisitor
 		final RefNodeVisitor<AncestorTypeRef, Distributor> ancestorVisitor;
 
 		if (ascendantNode.getSeparator() == null) {
-			ancestorVisitor =
-					ip.ancestorVisitor(arrayStructFinder, referral);
+			ancestorVisitor = ip.ancestorVisitor(
+					arrayStructFinder,
+					referral,
+					NO_TYPE_CONSUMER);
 		} else {
-			ancestorVisitor =
-					ip.staticAncestorVisitor(arrayStructFinder, referral);
+			ancestorVisitor = ip.staticAncestorVisitor(
+					arrayStructFinder,
+					referral,
+					NO_TYPE_CONSUMER);
 		}
 
 		final AncestorSpecVisitor specVisitor =

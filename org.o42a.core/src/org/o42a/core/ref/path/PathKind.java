@@ -29,6 +29,7 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
+import static org.o42a.util.Labels.NO_LABELS;
 
 import java.util.Arrays;
 
@@ -67,7 +68,7 @@ public enum PathKind {
 	private final Path emptyPath;
 
 	PathKind(boolean isStatic) {
-		this.emptyPath = new Path(this, isStatic);
+		this.emptyPath = new Path(this, isStatic, NO_LABELS);
 	}
 
 	public final boolean isAbsolute() {
@@ -129,6 +130,7 @@ public enum PathKind {
 						reproduction.getExternalPath().append(new Path(
 								RELATIVE_PATH,
 								path.isStatic(),
+								NO_LABELS,
 								copyOfRange(steps, i + 1, steps.length))));
 			}
 
@@ -196,6 +198,7 @@ public enum PathKind {
 		return reproducedPath(new Path(
 				RELATIVE_PATH,
 				path.isStatic(),
+				path.getLabels(),
 				newSteps));
 	}
 

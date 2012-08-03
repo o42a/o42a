@@ -109,7 +109,8 @@ public class FieldAnalysis {
 		uses.useBy(object.content().toUser(), SUBSTANCE_USAGE);
 		uses.useBy(object.fieldUses(), NESTED_USAGE);
 
-		if (object.getConstructionMode().isRuntime() || object.isClone()) {
+		if (object.getConstructionMode().isRuntime()
+				|| !object.meta().isUpdated()) {
 			derivationUses().useBy(object.content(), RUNTIME_DERIVATION_USAGE);
 		}
 	}
@@ -170,9 +171,10 @@ public class FieldAnalysis {
 				owner.type().rtDerivation(),
 				RUNTIME_DERIVATION_USAGE);
 
-		final MemberField lastDefinition = member.getLastDefinition();
+		if (!member.isUpdated()) {
 
-		if (lastDefinition != member) {
+			final MemberField lastDefinition = member.getLastDefinition();
+
 			lastDefinition.getAnalysis().derivationUses().useBy(
 					this.derivationUses.usageUser(RUNTIME_DERIVATION_USAGE),
 					RUNTIME_DERIVATION_USAGE);

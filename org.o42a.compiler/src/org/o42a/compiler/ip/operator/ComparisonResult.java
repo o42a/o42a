@@ -38,10 +38,10 @@ import org.o42a.core.ir.op.InlineValue;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
-import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.link.LinkValueType;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
@@ -51,19 +51,19 @@ import org.o42a.util.fn.Cancelable;
 
 final class ComparisonResult extends BuiltinObject {
 
-	private final ComparisonExpression ref;
+	private final ComparisonExpression comparison;
 	private Ref cmp;
 
-	ComparisonResult(ComparisonExpression ref) {
-		super(ref, ref.distribute(), ValueStruct.VOID);
-		this.ref = ref;
+	ComparisonResult(ComparisonExpression comparison) {
+		super(comparison, comparison.distribute(), ValueStruct.VOID);
+		this.comparison = comparison;
 	}
 
 	@Override
 	public Value<?> calculateBuiltin(Resolver resolver) {
 		resolveMembers(false);// Initialize comparisonKey.
 
-		if (this.ref.hasError()) {
+		if (this.comparison.hasError()) {
 			return falseValue();
 		}
 
@@ -75,7 +75,7 @@ final class ComparisonResult extends BuiltinObject {
 			return ValueType.VOID.runtimeValue();
 		}
 
-		final boolean result = this.ref.getOperator().result(value);
+		final boolean result = this.comparison.getOperator().result(value);
 
 		return result ? voidValue() : falseValue();
 	}
@@ -87,7 +87,7 @@ final class ComparisonResult extends BuiltinObject {
 
 	@Override
 	public InlineEval inlineBuiltin(Normalizer normalizer, Scope origin) {
-		if (this.ref.hasError()) {
+		if (this.comparison.hasError()) {
 			return falseInlineEval();
 		}
 
@@ -97,23 +97,28 @@ final class ComparisonResult extends BuiltinObject {
 			return null;
 		}
 
-		return new InlineComparison(this.ref, cmpValue);
+		return new InlineComparison(this.comparison, cmpValue);
 	}
 
 	@Override
 	public Eval evalBuiltin() {
-		if (this.ref.hasError()) {
+		if (this.comparison.hasError()) {
 			return Eval.FALSE_EVAL;
 		}
-		return new ComparisonEval(this.ref, this.cmp);
+		return new ComparisonEval(this.comparison, this.cmp);
 	}
 
 	@Override
 	public String toString() {
-		if (this.ref == null) {
+		if (this.comparison == null) {
 			return "ComparisonResult";
 		}
-		return this.ref.toString();
+		return this.comparison.toString();
+	}
+
+	@Override
+	protected Nesting createNesting() {
+		return this.comparison.getNesting();
 	}
 
 	@Override
@@ -122,7 +127,7 @@ final class ComparisonResult extends BuiltinObject {
 		final ObjectMemberRegistry memberRegistry =
 				new ObjectMemberRegistry(noInclusions(), this);
 		final Distributor distributor = distribute();
-		final Ref phrase = this.ref.phrase(distributor);
+		final Ref phrase = this.comparison.phrase(distributor);
 		final FieldBuilder builder = memberRegistry.newField(
 				fieldDeclaration(this, distributor, COMPARISON_MEMBER)
 				.setVisibility(Visibility.PRIVATE)
@@ -150,11 +155,6 @@ final class ComparisonResult extends BuiltinObject {
 				.target(distribute());
 
 		memberRegistry.registerMembers(members);
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-		return this.ref.resolve(enclosing);
 	}
 
 	private static final class InlineComparison extends InlineEval {

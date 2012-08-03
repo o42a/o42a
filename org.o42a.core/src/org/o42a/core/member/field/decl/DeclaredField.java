@@ -34,10 +34,12 @@ import org.o42a.core.object.common.ObjectMemberRegistry;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.object.type.FieldAscendants;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.st.DefinerEnv;
 import org.o42a.core.st.sentence.DeclarativeBlock;
 import org.o42a.core.st.sentence.MainDefiner;
 import org.o42a.core.value.ValueStruct;
+import org.o42a.core.value.ValueType;
 
 
 public final class DeclaredField extends Field implements FieldAscendants {
@@ -64,7 +66,7 @@ public final class DeclaredField extends Field implements FieldAscendants {
 
 	@Override
 	public boolean isLinkAscendants() {
-		return getDefinition().getLinkDepth() > 0;
+		return getDefinition().getDefinitionTarget().isLink();
 	}
 
 	@Override
@@ -169,20 +171,70 @@ public final class DeclaredField extends Field implements FieldAscendants {
 	}
 
 	private Ascendants buildAscendants(Ascendants implicitAscendants) {
-		if (getDeclaration().getLinkType() == null) {
+		if (getDeclaration().isMacro()) {
 
-			final ObjectDefinerImpl definer =
-					new ObjectDefinerImpl(this, implicitAscendants);
+			final Ascendants macroAscendants =
+					macroAscendants(implicitAscendants);
 
-			getDefinition().setImplicitAscendants(implicitAscendants);
-			if (isOverride()) {
-				getDefinition().overrideObject(definer);
-			} else {
-				getDefinition().defineObject(definer);
+			if (macroAscendants != null) {
+				return this.ascendants = macroAscendants;
 			}
-
-			return this.ascendants = definer.getAscendants();
 		}
+
+		if (getDeclaration().getLinkType() == null) {
+			return this.ascendants = objectAscendants(implicitAscendants);
+		}
+
+		return this.ascendants = linkAscendants(implicitAscendants);
+	}
+
+	private Ascendants macroAscendants(Ascendants implicitAscendants) {
+
+		final boolean needAncestor;
+		final TypeRef ancestor = implicitAscendants.getAncestor();
+
+		if (ancestor == null) {
+			needAncestor = true;
+		} else {
+			if (!ancestor.getValueType().isMacro()) {
+				getLogger().error(
+						"not_macro_field",
+						getDeclaration(),
+						"Not a macro field");
+				invalid();
+				return null;
+			}
+			needAncestor = false;
+		}
+
+		final MacroDefinerImpl definer = new MacroDefinerImpl(this);
+
+		getDefinition().defineMacro(definer);
+
+		if (!needAncestor) {
+			return implicitAscendants;
+		}
+
+		return implicitAscendants.setAncestor(
+				ValueType.MACRO.typeRef(getDeclaration(), getEnclosingScope()));
+	}
+
+	private Ascendants objectAscendants(Ascendants implicitAscendants) {
+
+		final ObjectDefinerImpl definer =
+				new ObjectDefinerImpl(this, implicitAscendants);
+
+		getDefinition().setImplicitAscendants(implicitAscendants);
+		if (isOverride()) {
+			getDefinition().overrideObject(definer);
+		} else {
+			getDefinition().defineObject(definer);
+		}
+
+		return definer.getAscendants();
+	}
+
+	private Ascendants linkAscendants(Ascendants implicitAscendants) {
 
 		final LinkDefinerImpl definer =
 				new LinkDefinerImpl(this, implicitAscendants);
