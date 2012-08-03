@@ -54,7 +54,7 @@ public abstract class MetaDep {
 		return this.declaredIn;
 	}
 
-	public boolean update(Meta meta) {
+	public final boolean updated(Meta meta) {
 
 		final UpdatedMeta top = topMeta(meta);
 
@@ -119,7 +119,7 @@ public abstract class MetaDep {
 
 	protected abstract boolean triggered(Meta meta);
 
-	protected abstract boolean updateMeta(Meta meta);
+	protected abstract boolean changed(Meta meta);
 
 	private final BoundPath parentPath() {
 		if (this.parentPath != null) {

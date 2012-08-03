@@ -44,9 +44,8 @@ public abstract class NestedMetaDep extends MetaDep {
 	}
 
 	@Override
-	protected boolean updateMeta(Meta meta) {
-		return parentDep().updateMeta(parentMeta(meta));
+	protected boolean changed(Meta meta) {
+		return parentDep().changed(parentMeta(meta));
 	}
-
 
 }

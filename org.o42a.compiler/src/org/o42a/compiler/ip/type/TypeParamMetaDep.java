@@ -95,64 +95,46 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 	}
 
 	@Override
-	protected boolean updateMeta(Meta meta) {
+	protected boolean changed(Meta meta) {
 
 		final Meta nestedMeta = nestedMeta(meta);
 
 		if (nestedMeta != null) {
-			return updateTypeParam(nestedMeta);
+			return typeParamChanged(nestedMeta);
 		}
 
-		return updateTypeParam(meta);
+		return typeParamChanged(meta);
 	}
 
 	final void setParentDep(MetaDep parentDep) {
 		this.parentDep = parentDep;
 	}
 
-	final boolean updateTypeParam(Meta meta) {
+	final boolean typeParamChanged(Meta meta) {
 
 		final ValueStruct<?, ?> oldValueStruct =
 				meta.getObject().value().getValueStruct();
 		final TypeParameters oldParams =
 				oldValueStruct.getParameters();
 		final TypeRef oldTypeRef = oldParams.getTypeRef();
-		final TypeRef newTypeRef =
-				updateTypeParam(meta, oldTypeRef, this.macroDep.getDepth());
 
-		if (newTypeRef == null) {
-			return false;
-		}
-
-		meta.getObject().value().setValueStruct(
-				oldValueStruct.setParameters(oldParams.setTypeRef(newTypeRef)));
-
-		return true;
+		return typeParamChanged(meta, oldTypeRef, this.macroDep.getDepth());
 	}
 
-	private TypeRef updateTypeParam(Meta meta, TypeRef typeRef, int depth) {
+	private boolean typeParamChanged(Meta meta, TypeRef typeRef, int depth) {
 		if (depth > 0) {
 
 			final TypeParameters subTypeParams =
 					typeRef.getValueStruct().getParameters();
 			final TypeRef oldSubTypeRef = subTypeParams.getTypeRef();
-			final TypeRef newSubTypeRef = updateTypeParam(
-					meta,
-					oldSubTypeRef,
-					depth - 1);
 
-			if (newSubTypeRef == null) {
-				return null;
-			}
-
-			return typeRef.setValueStruct(
-					subTypeParams.setTypeRef(newSubTypeRef));
+			return typeParamChanged(meta, oldSubTypeRef, depth - 1);
 		}
 
 		if (!typeRef.getPath().getLabels().have(this)) {
 			// The value struct does not depend on the same macro expansion
 			// any more (it was overridden).
-			return null;
+			return false;
 		}
 
 		// Re-expand the macro in the new scope.
@@ -160,14 +142,11 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 
 		if (newRef == null) {
 			// Error.
-			return null;
-		}
-		if (newRef.getPath().getPath().equals(typeRef.getPath().getPath())) {
-			// Path didn't change.
-			return null;
+			return false;
 		}
 
-		return newRef.toTypeRef();
+		// Path changed?
+		return !newRef.getPath().getPath().equals(typeRef.getPath().getPath());
 	}
 
 	private Ref macroRef(Meta meta) {
