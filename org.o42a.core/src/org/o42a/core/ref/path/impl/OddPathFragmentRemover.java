@@ -42,8 +42,8 @@ public class OddPathFragmentRemover implements PathWalker {
 
 	private final ArrayList<Entry> entries;
 
-	public OddPathFragmentRemover(BoundPath path) {
-		this.entries = new ArrayList<Entry>(path.rawLength());
+	public OddPathFragmentRemover(int length) {
+		this.entries = new ArrayList<Entry>(length);
 	}
 
 	@Override

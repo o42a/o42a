@@ -273,7 +273,7 @@ public class BoundPath extends RefPath {
 
 		final Path oldPath = getRawPath();
 
-		if (oldPath.isAbsolute()) {
+		if (oldPath.isAbsolute() && oldPath.getTemplate() == null) {
 			if (prefix.getStart().is(getOrigin())) {
 				return this;
 			}
@@ -283,7 +283,9 @@ public class BoundPath extends RefPath {
 		final Path newPath = oldPath.prefixWith(prefix);
 
 		if (oldPath == newPath) {
-			return this;
+			if (prefix.getStart().is(getOrigin())) {
+				return this;
+			}
 		}
 
 		return newPath.bind(this, prefix.getStart());
@@ -669,14 +671,22 @@ public class BoundPath extends RefPath {
 
 	private Path rebuildPath() {
 
-		final Path rawPath = getRawPath();
+		final Path rawPath;
+		final Path template = getTemplate();
+
+		if (template != null) {
+			rawPath = template;
+		} else {
+			rawPath = getRawPath();
+		}
+
 		final Step[] rawSteps = rawPath.getSteps();
 
 		if (rawSteps.length == 0) {
 			return rawPath;
 		}
 
-		final Step[] steps = removeOddFragments();
+		final Step[] steps = removeOddFragments(rawPath);
 
 		if (steps.length <= 1) {
 			return new Path(
@@ -701,13 +711,13 @@ public class BoundPath extends RefPath {
 				rebuilt);
 	}
 
-	private Step[] removeOddFragments() {
+	private Step[] removeOddFragments(Path rawPath) {
 
 		final OddPathFragmentRemover remover =
-				new OddPathFragmentRemover(this);
+				new OddPathFragmentRemover(rawPath.getSteps().length);
 
 		walkPath(
-				getRawPath(),
+				rawPath,
 				pathResolver(getOrigin(), dummyUser()),
 				remover,
 				true);

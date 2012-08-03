@@ -160,7 +160,7 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		final BoundPath path = this.ref.getPath();
 		final Scope start = this.ref.getScope();
 		final PathResolution resolution =
-				path.walk(PathResolver.pathResolver(start, dummyUser()), this);
+				path.walk(pathResolver(start, dummyUser()), this);
 
 		if (!resolution.isResolved()) {
 			return null;
