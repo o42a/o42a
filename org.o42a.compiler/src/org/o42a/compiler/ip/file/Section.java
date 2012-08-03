@@ -31,6 +31,8 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.OtherContextDistributor;
+import org.o42a.compiler.ip.member.FieldNesting;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;
@@ -133,7 +135,7 @@ final class Section implements LogInfo {
 		addHeader(enclosingBlock);
 	}
 
-	public AscendantsDefinition ascendants() {
+	public AscendantsDefinition ascendants(TypeConsumer consumer) {
 
 		final Distributor ascendantsDistributor =
 				new OtherContextDistributor(
@@ -144,7 +146,7 @@ final class Section implements LogInfo {
 		if (title != null) {
 
 			final AscendantsDefinition ascendants =
-					title.ascendants(ascendantsDistributor);
+					title.ascendants(ascendantsDistributor, consumer);
 
 			if (ascendants != null) {
 				return ascendants;
@@ -190,9 +192,11 @@ final class Section implements LogInfo {
 			return;
 		}
 
-		final FieldDefinition fieldDefinition = ascendants().fieldDefinition(
-				getLocation(),
-				new SectionDefinition(this));
+		final FieldDefinition fieldDefinition =
+				ascendants(new FieldNesting(fieldDeclaration).toTypeConsumer())
+				.fieldDefinition(
+						getLocation(),
+						new SectionDefinition(this));
 
 		final FieldBuilder fieldBuilder =
 				statements.field(fieldDeclaration, fieldDefinition);

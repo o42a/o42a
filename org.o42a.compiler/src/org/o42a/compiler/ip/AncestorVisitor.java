@@ -29,6 +29,7 @@ import org.o42a.ast.expression.ParenthesesNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.ref.owner.Referral;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
@@ -38,28 +39,35 @@ public class AncestorVisitor
 		extends AbstractExpressionVisitor<AncestorTypeRef, Distributor> {
 
 	private final Interpreter ip;
-	private final ValueStructFinder valueStructFinder;
+	private final ValueStructFinder valueStruct;
 	private final Referral referral;
+	private final TypeConsumer typeConsumer;
 
 	AncestorVisitor(
 			Interpreter ip,
-			ValueStructFinder valueStructFinder,
-			Referral referral) {
+			ValueStructFinder valueStruct,
+			Referral referral,
+			TypeConsumer typeConsumer) {
 		this.ip = ip;
-		this.valueStructFinder = valueStructFinder;
+		this.valueStruct = valueStruct;
 		this.referral = referral;
+		this.typeConsumer = typeConsumer;
 	}
 
 	public final Interpreter ip() {
 		return this.ip;
 	}
 
+	public final ValueStructFinder valueStruct() {
+		return this.valueStruct;
+	}
+
 	public final Referral referral() {
 		return this.referral;
 	}
 
-	public final ValueStructFinder getValueStructFinder() {
-		return this.valueStructFinder;
+	public final TypeConsumer typeConsumer() {
+		return this.typeConsumer;
 	}
 
 	@Override
@@ -89,14 +97,15 @@ public class AncestorVisitor
 			ExpressionNode expression,
 			Distributor p) {
 
-		final Ref ref =
-				expression.accept(this.referral.expressionVisitor(ip()), p);
+		final Ref ref = expression.accept(
+				referral().expressionVisitor(ip(), this.typeConsumer),
+				p);
 
 		if (ref == null) {
 			return null;
 		}
 
-		return ancestorTypeRef(ref.toTypeRef(getValueStructFinder()));
+		return ancestorTypeRef(ref.toTypeRef(valueStruct()));
 	}
 
 }

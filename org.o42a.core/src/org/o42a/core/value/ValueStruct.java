@@ -31,6 +31,9 @@ import org.o42a.core.object.directive.Directive;
 import org.o42a.core.object.directive.impl.DirectiveValueStruct;
 import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.object.link.impl.LinkByValueAdapter;
+import org.o42a.core.object.macro.Macro;
+import org.o42a.core.object.macro.impl.MacroValueAdapter;
+import org.o42a.core.object.macro.impl.MacroValueStruct;
 import org.o42a.core.ref.FullResolver;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -54,6 +57,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			StringValueStruct.INSTANCE;
 	public static final SingleValueStruct<Directive> DIRECTIVE =
 			DirectiveValueStruct.INSTANCE;
+	public static final SingleValueStruct<Macro> MACRO =
+			MacroValueStruct.INSTANCE;
 
 	public static final SingleValueStruct<java.lang.Void> NONE =
 			NoneValueStruct.INSTANCE;
@@ -87,6 +92,10 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return NONE.is(this);
 	}
 
+	public final boolean isMacro() {
+		return MACRO.is(this);
+	}
+
 	public final boolean isLink() {
 		return getValueType().isLink();
 	}
@@ -95,6 +104,17 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public final boolean isVariable() {
 		return getValueType().isVariable();
+	}
+
+	public abstract TypeParameters getParameters();
+
+	public ValueStruct<S,T> setParameters(TypeParameters parameters) {
+		parameters.getLogger().error(
+				"unsupported_type_parameters",
+				parameters,
+				"Type parameters not supported by %s",
+				this);
+		return this;
 	}
 
 	public final Value<T> compilerValue(T value) {
@@ -155,6 +175,12 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 			}
 			return new VoidValueAdapter(ref);
 		}
+		if (expectedStruct.isMacro()) {
+			if (isMacro()) {
+				return rawValueAdapter(ref);
+			}
+			return new MacroValueAdapter(ref);
+		}
 		return defaultAdapter(ref, expectedStruct, adapt);
 	}
 
@@ -178,7 +204,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract S upgradeScope(Scope toScope);
 
 	@Override
-	public final S valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct) {
+	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return toValueStruct();
 	}
 
@@ -223,15 +249,6 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		}
 
 		return this.ir = createIR(generator);
-	}
-
-	protected ValueStruct<S,T> applyParameters(TypeParameters parameters) {
-		parameters.getLogger().error(
-				"unsupported_type_parameters",
-				parameters,
-				"Type parameters not supported by %s",
-				this);
-		return this;
 	}
 
 	protected ValueAdapter defaultAdapter(

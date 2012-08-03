@@ -188,6 +188,7 @@ public class Definitions extends Scoped {
 	}
 
 	public Value<?> value(Resolver resolver) {
+		assertCompatible(resolver.getScope());
 
 		final DefValue claim = claims().value(resolver);
 

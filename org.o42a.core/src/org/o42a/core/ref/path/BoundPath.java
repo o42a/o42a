@@ -22,9 +22,9 @@ package org.o42a.core.ref.path;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
-import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
-import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
+import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
+import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
@@ -42,20 +42,20 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
+import org.o42a.util.Label;
+import org.o42a.util.Labels;
 
 
-public class BoundPath extends Location {
+public class BoundPath extends RefPath {
 
 	public static BoundPath arrayIndex(Ref array, Ref index) {
 		return new ArrayIndexStep(array, index)
@@ -84,6 +84,13 @@ public class BoundPath extends Location {
 		this.origin = prototype.origin;
 		this.rawPath = prototype.rawPath;
 		this.path = prototype.path;
+	}
+
+	private BoundPath(BoundPath prototype, Path rawPath, Path path) {
+		super(prototype);
+		this.origin = prototype.origin;
+		this.rawPath = rawPath;
+		this.path = path;
 	}
 
 	public final Scope getOrigin() {
@@ -117,8 +124,19 @@ public class BoundPath extends Location {
 		return this.path = rebuildPath();
 	}
 
+	public final Path getRawPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.rawPath;
+	}
+
 	public final Step[] getSteps() {
 		return getPath().getSteps();
+	}
+
+	public final Labels getLabels() {
+		return getPath().getLabels();
 	}
 
 	public final int length() {
@@ -175,6 +193,32 @@ public class BoundPath extends Location {
 		return lastStep.ancestor(this, location, distributor);
 	}
 
+	public final BoundPath label(Label<?> label) {
+		if (this.path != null) {
+			return new BoundPath(
+					this,
+					this.rawPath,
+					this.path.label(label));
+		}
+		return new BoundPath(
+				this,
+				this.rawPath.label(label),
+				null);
+	}
+
+	public final <L extends Label<T>, T> BoundPath label(L label, T value) {
+		if (this.path != null) {
+			return new BoundPath(
+					this,
+					this.rawPath,
+					this.path.label(label, value));
+		}
+		return new BoundPath(
+				this,
+				this.rawPath.label(label, value),
+				null);
+	}
+
 	public final BoundPath append(Step step) {
 		return getRawPath().append(step).bind(this, getOrigin());
 	}
@@ -193,6 +237,14 @@ public class BoundPath extends Location {
 
 	public final BoundPath newObject(ObjectConstructor constructor) {
 		return getRawPath().newObject(constructor).bind(this, getOrigin());
+	}
+
+	public final BoundPath expandMacro() {
+		return getRawPath().expandMacro().bind(this, getOrigin());
+	}
+
+	public final BoundPath reexpandMacro() {
+		return getRawPath().reexpandMacro().bind(this, getOrigin());
 	}
 
 	public final BoundPath append(Path path) {
@@ -241,7 +293,7 @@ public class BoundPath extends Location {
 		return walk(resolver, DUMMY_PATH_WALKER);
 	}
 
-	public PathResolution walk(PathResolver resolver, PathWalker walker) {
+	public final PathResolution walk(PathResolver resolver, PathWalker walker) {
 		return walkPath(getPath(), resolver, walker, false);
 	}
 
@@ -362,7 +414,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getRawSteps().length);
+		return toString(0);
 	}
 
 	public String toString(int length) {
@@ -372,11 +424,23 @@ public class BoundPath extends Location {
 		return getRawPath().toString(this.origin, length);
 	}
 
-	final Path getRawPath() {
-		if (this.path != null) {
-			return this.path;
+	@Override
+	protected Ref consume(Ref ref, Consumer consumer) {
+
+		final Step[] rawSteps = getRawSteps();
+		final int length = rawSteps.length;
+
+		if (length == 0) {
+			return ref;
 		}
-		return this.rawPath;
+
+		final Ref consumption = rawSteps[length - 1].consume(ref, consumer);
+
+		if (consumption != null) {
+			consumption.assertSameScope(ref);
+		}
+
+		return consumption;
 	}
 
 	final PathNormalizationDoubt doubt(Analyzer analyzer) {
@@ -427,9 +491,6 @@ public class BoundPath extends Location {
 
 		if (isAbsolute()) {
 			start = root();
-			if (!walker.root(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -446,12 +507,12 @@ public class BoundPath extends Location {
 						walker,
 						startIndex());
 			}
+			if (!tracker.root(this, start)) {
+				return noResolution(tracker, null, null);
+			}
 		} else {
 			start = resolver.getPathStart();
 			start.assertDerivedFrom(getOrigin());
-			if (!walker.start(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -467,6 +528,9 @@ public class BoundPath extends Location {
 						resolver,
 						walker,
 						startIndex());
+			}
+			if (!tracker.start(this, start)) {
+				return noResolution(tracker, null, null);
 			}
 		}
 
@@ -500,9 +564,10 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic(),
+							this.path.getLabels(),
 							steps);
 					tracker.abortedAt(prev, step);
-					return null;
+					return noResolution(tracker, null, null);
 				}
 
 				final Step[] replacementSteps = replacement.getSteps();
@@ -518,6 +583,7 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
+							this.path.getLabels().addAll(replacement.getLabels()),
 							steps);
 					// Continue from the ROOT.
 					prev = root();
@@ -534,6 +600,8 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
+							this.path.getLabels()
+							.addAll(replacement.getLabels()),
 							steps);
 				}
 				// Do not change the current index.
@@ -546,21 +614,37 @@ public class BoundPath extends Location {
 					prev,
 					tracker);
 			if (tracker.isAborted()) {
-				return NO_PATH_RESOLUTION;
+				return noResolution(tracker, prev, step);
 			}
 			if (result == null) {
 				tracker.abortedAt(prev, step);
-				return PATH_RESOLUTION_ERROR;
+				return pathResolutionError(this, tracker.getErrorMessage());
 			}
 			++i;
 			prev = result.getScope();
 		}
 
 		if (!tracker.done(result)) {
-			return NO_PATH_RESOLUTION;
+			return noResolution(tracker, null, null);
+		}
+		if (result != null) {
+			return pathResolution(this, result);
 		}
 
-		return pathResolution(this, result);
+		return pathResolutionError(this, tracker.getErrorMessage());
+	}
+
+	private PathResolution noResolution(
+			PathTracker tracker,
+			Scope last,
+			Step brokenStep) {
+		if (tracker.isError()) {
+			if (brokenStep != null) {
+				tracker.abortedAt(last, brokenStep);
+			}
+			return pathResolutionError(this, tracker.getErrorMessage());
+		}
+		return noPathResolutionError(this);
 	}
 
 	private void findStart() {
@@ -586,7 +670,7 @@ public class BoundPath extends Location {
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), steps);
+			return new Path(getKind(), isStatic(), getLabels(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -595,7 +679,7 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(getKind(), isStatic(), rebuilt);
+		return new Path(getKind(), isStatic(), getLabels(), rebuilt);
 	}
 
 	private Step[] removeOddFragments() {

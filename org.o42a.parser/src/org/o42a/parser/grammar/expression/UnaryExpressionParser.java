@@ -19,6 +19,7 @@
 */
 package org.o42a.parser.grammar.expression;
 
+import static org.o42a.ast.expression.UnaryNode.unaryNode;
 import static org.o42a.parser.Grammar.simpleExpression;
 import static org.o42a.util.string.Characters.MINUS;
 
@@ -69,6 +70,10 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 				context.acceptButLast();
 			}
 			break;
+		case '#':
+			operator = UnaryOperator.MACRO_EXPANSION;
+			context.acceptAll();
+			break;
 		default:
 			return null;
 		}
@@ -88,7 +93,7 @@ public class UnaryExpressionParser implements Parser<UnaryNode> {
 					operator.getSign());
 		}
 
-		return new UnaryNode(sign, parameter);
+		return unaryNode(sign, parameter);
 	}
 
 }

@@ -185,7 +185,7 @@ public final class ObjectValueFnIR
 
 		@Override
 		protected void writeValue(DefDirs dirs, ObjOp host, ObjectIRDataOp data) {
-			if (!getObjectIR().isExact()) {
+			if (getObjectIR().isExact()) {
 				dirs.code().debug("Exact host: " + getObjectIR().getId());
 			} else {
 				dirs.code().dumpName("Host: ", host);

@@ -20,6 +20,9 @@
 package org.o42a.core.object.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
+import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import java.util.Arrays;
@@ -28,6 +31,7 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
@@ -158,7 +162,10 @@ public class Ascendants
 		return getSamples().length == 0;
 	}
 
-	public final int getLinkDepth() {
+	public final DefinitionTarget getDefinitionTarget() {
+		if (isEmpty()) {
+			return defaultDefinition();
+		}
 
 		final TypeRef ancestor = getExplicitAncestor();
 
@@ -167,7 +174,7 @@ public class Ascendants
 			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return ancestor.getValueStruct().getLinkDepth();
+				return definitionTarget(ancestor.getValueStruct());
 			}
 		}
 
@@ -177,11 +184,11 @@ public class Ascendants
 					sample.getObject().value().getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return valueStruct.getLinkDepth();
+				return definitionTarget(valueStruct);
 			}
 		}
 
-		return 0;
+		return objectDefinition();
 	}
 
 	@Override

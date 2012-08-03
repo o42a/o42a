@@ -21,7 +21,6 @@ package org.o42a.core.value;
 
 import org.o42a.core.*;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
@@ -50,6 +49,14 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	public final TypeRef getTypeRef() {
 		return this.typeRef;
+	}
+
+	public final TypeParameters setTypeRef(TypeRef typeRef) {
+		return typeMutability(
+				typeRef,
+				typeRef.getRef().distribute(),
+				getLinkType())
+				.setTypeRef(typeRef);
 	}
 
 	public final LinkValueType getLinkType() {
@@ -91,9 +98,8 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	@Override
 	public final ValueStruct<?, ?> valueStructBy(
-			Ref ref,
 			ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct.applyParameters(this);
+		return defaultStruct.setParameters(this);
 	}
 
 	@Override

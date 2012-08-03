@@ -37,6 +37,7 @@ import org.o42a.core.member.field.Field;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.ConstructionMode;
 import org.o42a.core.object.Obj;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathWalker;
@@ -50,6 +51,7 @@ public abstract class PlainClause
 
 	private final ResolverFactory<Resolver, FullResolver> resolverFactory =
 			Resolver.resolverFactory(this);
+	private Nesting definitionNesting;
 	private Obj clauseObject;
 	private Path enclosingScopePath;
 	private Set<Scope> enclosingScopes;
@@ -63,6 +65,7 @@ public abstract class PlainClause
 
 	protected PlainClause(MemberClause member, PlainClause propagatedFrom) {
 		super(member);
+		this.definitionNesting = propagatedFrom.getDefinitionNesting();
 		setClauseObject(propagateClauseObject(propagatedFrom));
 	}
 
@@ -90,6 +93,13 @@ public abstract class PlainClause
 	@Override
 	public final boolean isTopScope() {
 		return false;
+	}
+
+	public final Nesting getDefinitionNesting() {
+		if (this.definitionNesting != null) {
+			return this.definitionNesting;
+		}
+		return this.definitionNesting = new ClauseDefinitionNesting(getKey());
 	}
 
 	public abstract Obj getObject();
@@ -321,5 +331,31 @@ public abstract class PlainClause
 	}
 
 	protected abstract Obj propagateClauseObject(PlainClause overridden);
+
+	private static final class ClauseDefinitionNesting implements Nesting {
+
+		private final MemberKey clauseKey;
+
+		ClauseDefinitionNesting(MemberKey clauseKey) {
+			this.clauseKey = clauseKey;
+		}
+
+		@Override
+		public Obj findObjectIn(Scope enclosing) {
+
+			final MemberClause clause =
+					enclosing.getContainer().member(this.clauseKey).toClause();
+
+			return clause.clause().toPlainClause().toObject();
+		}
+
+		@Override
+		public String toString() {
+			if (this.clauseKey == null) {
+				return super.toString();
+			}
+			return this.clauseKey.toString();
+		}
+	}
 
 }
