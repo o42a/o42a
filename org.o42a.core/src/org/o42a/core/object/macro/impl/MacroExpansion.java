@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.macro.impl;
 
+import java.util.IdentityHashMap;
+
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
@@ -34,11 +36,12 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansion extends PathFragment {
 
 	private final Ref macroRef;
-	private final boolean reexpansion;
+	private final BoundPath path;
 	private Scope origin;
 	private Path initialExpansion;
+	private IdentityHashMap<Scope, Path> expansions;
+	private final boolean reexpansion;
 	private byte init;
-	private BoundPath path;
 
 	public MacroExpansion(Ref macroRef, boolean reexpansion) {
 		this.macroRef = macroRef;
@@ -55,43 +58,43 @@ public class MacroExpansion extends PathFragment {
 	}
 
 	public final Scope getOrigin() {
+		if (this.origin == null) {
+			// Initiate the expansion in the original scope.
+			this.init = -1;
+			getPath().rebuild();
+			// This may be not updated due to resolution errors.
+			this.init = 1;
+		}
 		return this.origin;
 	}
 
 	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
-
-		final Macro macro = macro(expander, start);
-
-		if (macro == null) {
-			return null;
-		}
 		if (this.init > 0) {
-			// Expansion already done.
-			return this.initialExpansion;
+			// Initially expanded.
+			return expandInScope(expander, start);
 		}
 		if (this.init == 0) {
 			// Expansion not initiated yet.
 			if (expander.getPath() != getPath()) {
-				// Initiate the expansion in the original scope.
-				this.init = -1;
-				getPath().rebuild();
-				// This may be not updated due to resolution errors.
-				this.init = 1;
-				return this.initialExpansion;
+				// Build an initial expansion
+				// and return the (re-)expansion in the given one.
+				return expandInScope(expander, start);
 			}
-			// Current expansion is in the right scope.
 			this.init = -1;
 		}
 
+		// Expansion in the original scope.
 		this.origin = start;
 
-		final Path initialExpansion = expand(expander, macro);
+		final Macro macro = macro(expander, start);
 
+		if (macro != null) {
+			this.initialExpansion = expand(expander, macro);
+		}
 		this.init = 1;
-		this.initialExpansion = initialExpansion;
 
-		return initialExpansion;
+		return this.initialExpansion;
 	}
 
 	@Override
@@ -102,16 +105,11 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
-	final void init(BoundPath path) {
-		this.path = path;
-	}
-
 	final Ref expandMacro(Consumer consumer) {
 
 		final Ref macroRef = getMacroRef();
 		final Ref macroExpansion = getPath().target(macroRef.distribute());
-		final Ref consumption =
-				consumer.expandMacro(macroRef, macroExpansion);
+		final Ref consumption = consumer.expandMacro(macroRef, macroExpansion);
 
 		if (consumption == null) {
 			return null;
@@ -122,14 +120,56 @@ public class MacroExpansion extends PathFragment {
 		return consumption;
 	}
 
+	private Path expandInScope(PathExpander expander, Scope start) {
+
+		final Scope origin = getOrigin();
+
+		if (start.is(origin) || origin == null) {
+			return this.initialExpansion;
+		}
+		if (this.initialExpansion == null) {
+			// Initial expansion error.
+			return null;
+		}
+
+		// Find a cached expansion.
+		if (this.expansions == null) {
+			this.expansions = new IdentityHashMap<Scope, Path>(4);
+		} else if (this.expansions.containsKey(start)) {
+			return this.expansions.get(start);
+		}
+
+		final Path reexpansion;
+		final Macro macro = macro(expander, start);
+
+		if (macro == null) {
+			// Macro not found.
+			reexpansion = null;
+		} else {
+			// Re-expand the macro in the given scope.
+			reexpansion = reexpand(expander, macro);
+		}
+
+		this.expansions.put(start, reexpansion);
+
+		return reexpansion;
+	}
+
 	private Path expand(PathExpander expander, Macro macro) {
+		if (this.reexpansion) {
+			return reexpand(expander, macro);
+		}
 
 		final MacroExpanderImpl macroExpander =
 				new MacroExpanderImpl(this, expander);
 
-		if (!this.reexpansion) {
-			return macro.expand(macroExpander);
-		}
+		return macro.expand(macroExpander);
+	}
+
+	private Path reexpand(PathExpander expander, Macro macro) {
+
+		final MacroExpanderImpl macroExpander =
+				new MacroExpanderImpl(this, expander);
 
 		return macro.reexpand(macroExpander);
 	}

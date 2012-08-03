@@ -19,10 +19,8 @@
 */
 package org.o42a.core.object.macro.impl;
 
-import org.o42a.core.Scope;
 import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -55,16 +53,6 @@ final class MacroExpanderImpl implements MacroExpander {
 	@Override
 	public final Ref getMacroRef() {
 		return this.expansion.getMacroRef();
-	}
-
-	@Override
-	public final Scope getOrigin() {
-		return this.expansion.getOrigin();
-	}
-
-	@Override
-	public final BoundPath getPath() {
-		return this.expansion.getPath();
 	}
 
 	@Override
