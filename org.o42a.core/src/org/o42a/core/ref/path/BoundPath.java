@@ -131,6 +131,10 @@ public class BoundPath extends RefPath {
 		return this.rawPath;
 	}
 
+	public final Path getTemplate() {
+		return getRawPath().getTemplate();
+	}
+
 	public final Step[] getSteps() {
 		return getPath().getSteps();
 	}
@@ -564,6 +568,7 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic(),
+							this.path.getTemplate(),
 							this.path.getLabels(),
 							steps);
 					tracker.abortedAt(prev, step);
@@ -583,13 +588,16 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
-							this.path.getLabels().addAll(replacement.getLabels()),
+							this.path.getTemplate(),
+							this.path.getLabels().addAll(
+									replacement.getLabels()),
 							steps);
 					// Continue from the ROOT.
 					prev = root();
 					i = 0;
 					tracker.pathTrimmed(this, prev);
 				} else {
+
 					// Replacement is a relative path.
 					// Replace the current step.
 					steps = ArrayUtil.replace(
@@ -600,6 +608,7 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
+							this.path.getTemplate(),
 							this.path.getLabels()
 							.addAll(replacement.getLabels()),
 							steps);
@@ -670,7 +679,12 @@ public class BoundPath extends RefPath {
 		final Step[] steps = removeOddFragments();
 
 		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), getLabels(), steps);
+			return new Path(
+					getKind(),
+					isStatic(),
+					getTemplate(),
+					getLabels(),
+					steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -679,7 +693,12 @@ public class BoundPath extends RefPath {
 			return rawPath;
 		}
 
-		return new Path(getKind(), isStatic(), getLabels(), rebuilt);
+		return new Path(
+				getKind(),
+				isStatic(),
+				getTemplate(),
+				getLabels(),
+				rebuilt);
 	}
 
 	private Step[] removeOddFragments() {

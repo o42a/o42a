@@ -30,6 +30,20 @@ public abstract class PathFragment {
 
 	public abstract Path expand(PathExpander expander, int index, Scope start);
 
+	/**
+	 * Whether this fragment is a template.
+	 *
+	 * <p>The template fragment may be expanded multiple times in different
+	 * scopes. The expansions may differ, unlike the non-template fragment.
+	 * This is particularly useful for macro expansion.</p>
+	 *
+	 * @return <code>true</code> to form a {@link Path#isTemplate() template
+	 * path}, or <code>false</code> otherwise.
+	 */
+	public boolean isTemplate() {
+		return false;
+	}
+
 	public FieldDefinition fieldDefinition(
 			BoundPath path,
 			Distributor distributor) {

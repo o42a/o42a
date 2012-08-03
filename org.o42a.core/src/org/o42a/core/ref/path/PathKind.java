@@ -68,7 +68,7 @@ public enum PathKind {
 	private final Path emptyPath;
 
 	PathKind(boolean isStatic) {
-		this.emptyPath = new Path(this, isStatic, NO_LABELS);
+		this.emptyPath = new Path(this, isStatic, null, NO_LABELS);
 	}
 
 	public final boolean isAbsolute() {
@@ -130,6 +130,7 @@ public enum PathKind {
 						reproduction.getExternalPath().append(new Path(
 								RELATIVE_PATH,
 								path.isStatic(),
+								null,
 								NO_LABELS,
 								copyOfRange(steps, i + 1, steps.length))));
 			}
@@ -198,6 +199,7 @@ public enum PathKind {
 		return reproducedPath(new Path(
 				RELATIVE_PATH,
 				path.isStatic(),
+				null,
 				path.getLabels(),
 				newSteps));
 	}

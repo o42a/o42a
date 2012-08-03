@@ -27,14 +27,19 @@ import org.o42a.core.ref.path.PathExpander;
 import org.o42a.core.ref.path.PathFragment;
 
 
-final class InitMacroExpansion extends PathFragment {
+final class MacroExpansionTemplate extends PathFragment {
 
 	private final MacroExpansion expansion;
 	private final Consumer consumer;
 
-	InitMacroExpansion(MacroExpansion expansion, Consumer consumer) {
+	MacroExpansionTemplate(MacroExpansion expansion, Consumer consumer) {
 		this.expansion = expansion;
 		this.consumer = consumer;
+	}
+
+	@Override
+	public boolean isTemplate() {
+		return true;
 	}
 
 	@Override

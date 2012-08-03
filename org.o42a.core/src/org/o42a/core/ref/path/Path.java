@@ -49,11 +49,11 @@ public final class Path {
 	public static final Path ROOT_PATH = ABSOLUTE_PATH.emptyPath();
 	public static final Path SELF_PATH = RELATIVE_PATH.emptyPath();
 	public static final Path VOID_PATH =
-			new Path(ABSOLUTE_PATH, true, NO_LABELS, new VoidStep());
+			new Path(ABSOLUTE_PATH, true, null, NO_LABELS, new VoidStep());
 	public static final Path FALSE_PATH =
-			new Path(ABSOLUTE_PATH, true, NO_LABELS, new FalseStep());
+			new Path(ABSOLUTE_PATH, true, null, NO_LABELS, new FalseStep());
 	public static final Path NONE_PATH =
-			new Path(ABSOLUTE_PATH, true, NO_LABELS, new NoneStep());
+			new Path(ABSOLUTE_PATH, true, null, NO_LABELS, new NoneStep());
 
 	public static Path absolutePath(
 			CompilerContext context,
@@ -81,11 +81,13 @@ public final class Path {
 		return new Path(
 				ABSOLUTE_PATH,
 				true,
+				null,
 				NO_LABELS,
 				new ModuleStep(moduleName));
 	}
 
 	private final PathKind kind;
+	private final Path template;
 	private final Labels labels;
 	private final Step[] steps;
 	private final boolean isStatic;
@@ -93,9 +95,11 @@ public final class Path {
 	Path(
 			PathKind kind,
 			boolean isStatic,
+			Path template,
 			Labels labels,
 			Step... steps) {
 		this.kind = kind;
+		this.template = template;
 		this.labels = labels;
 		this.isStatic = kind.isAbsolute() ? true : isStatic;
 		this.steps = steps;
@@ -118,6 +122,45 @@ public final class Path {
 		return this.steps.length == 0 && !isStatic();
 	}
 
+	/**
+	 * Whether the path is a template.
+	 *
+	 * <p>The last step of template path is a {@link PathFragment#isTemplate()
+	 * template fragment}.</p>
+	 *
+	 * @return <code>true</code> if this path is a template,
+	 * or <code>false</code> otherwise.
+	 */
+	public final boolean isTemplate() {
+
+		final int len = this.steps.length;
+
+		if (len == 0) {
+			return false;
+		}
+
+		final PathFragment fragment = this.steps[len - 1].getPathFragment();
+
+		return fragment != null && fragment.isTemplate();
+	}
+
+	/**
+	 * The template this path is based on.
+	 *
+	 * @return the path template, the path itself if it is a {@link
+	 * #isTemplate() template}, or <code>null</code> if this path has no
+	 * template.
+	 */
+	public final Path getTemplate() {
+		if (this.template != null) {
+			return this.template;
+		}
+		if (isTemplate()) {
+			return this;
+		}
+		return null;
+	}
+
 	public final Labels getLabels() {
 		return this.labels;
 	}
@@ -130,6 +173,7 @@ public final class Path {
 		return new Path(
 				getKind(),
 				isStatic(),
+				getTemplate(),
 				getLabels().add(label),
 				getSteps());
 	}
@@ -138,6 +182,7 @@ public final class Path {
 		return new Path(
 				getKind(),
 				isStatic(),
+				getTemplate(),
 				getLabels().put(label, value),
 				getSteps());
 	}
@@ -145,16 +190,18 @@ public final class Path {
 	public Path append(Step step) {
 		assert step != null :
 			"Path step not specified";
+		assert getTemplate() == null :
+			"Can not append to template-based path";
 
 		final PathKind pathKind = step.getPathKind();
 
 		if (pathKind.isAbsolute()) {
-			return new Path(pathKind, true, this.labels, step);
+			return new Path(pathKind, true, null, this.labels, step);
 		}
 
 		final Step[] newSteps = ArrayUtil.append(this.steps, step);
 
-		return new Path(getKind(), isStatic(), this.labels, newSteps);
+		return new Path(getKind(), isStatic(), null, this.labels, newSteps);
 	}
 
 	public final Path append(MemberKey memberKey) {
@@ -188,18 +235,28 @@ public final class Path {
 	public Path append(Path path) {
 		assert path != null :
 			"Path to append not specified";
+		assert getTemplate() == null :
+			"Can not append to template-based path";
 
 		if (path.isAbsolute()) {
 			return path;
 		}
 
-		final Step[] newSteps = ArrayUtil.append(getSteps(), path.getSteps());
+		final Path oldTemplate = path.getTemplate();
+		final Path newTemplate;
+
+		if (oldTemplate == null || path.isTemplate()) {
+			newTemplate = null;
+		} else {
+			newTemplate = path.append(oldTemplate);
+		}
 
 		return new Path(
 				getKind(),
 				isStatic() || path.isStatic(),
+				newTemplate,
 				getLabels().addAll(path.getLabels()),
-				newSteps);
+				ArrayUtil.append(getSteps(), path.getSteps()));
 	}
 
 	public final Path cut(int stepsToCut) {
@@ -207,7 +264,7 @@ public final class Path {
 		final Step[] newSteps =
 				Arrays.copyOf(this.steps, this.steps.length - stepsToCut);
 
-		return new Path(getKind(), isStatic(), this.labels, newSteps);
+		return new Path(getKind(), isStatic(), null, getLabels(), newSteps);
 	}
 
 	public final BoundPath bind(LocationInfo location, Scope origin) {
@@ -219,9 +276,13 @@ public final class Path {
 			return bind(location, origin);
 		}
 
-		final Step[] steps =
-				ArrayUtil.prepend(new StaticStep(origin), getSteps());
-		final Path staticPath = new Path(getKind(), true, this.labels, steps);
+		final StaticStep prefix = new StaticStep(origin);
+		final Path staticPath = new Path(
+				getKind(),
+				true,
+				getTemplate(),
+				getLabels(),
+				ArrayUtil.prepend(prefix, getSteps()));
 
 		return staticPath.bind(location, origin);
 	}
