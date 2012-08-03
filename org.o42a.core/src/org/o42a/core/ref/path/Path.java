@@ -238,17 +238,25 @@ public final class Path {
 		assert getTemplate() == null :
 			"Can not append to template-based path";
 
-		if (path.isAbsolute()) {
-			return path;
-		}
-
 		final Path oldTemplate = path.getTemplate();
 		final Path newTemplate;
 
 		if (oldTemplate == null || path.isTemplate()) {
 			newTemplate = null;
 		} else {
-			newTemplate = path.append(oldTemplate);
+			newTemplate = append(oldTemplate);
+		}
+
+		if (path.isAbsolute()) {
+			if (oldTemplate == newTemplate && path.getLabels().isEmpty()) {
+				return path;
+			}
+			return new Path(
+					getKind(),
+					true,
+					newTemplate,
+					getLabels().addAll(path.getLabels()),
+					path.getSteps());
 		}
 
 		return new Path(
