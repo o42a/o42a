@@ -187,19 +187,18 @@ public abstract class Member extends Placed {
 		final ObjectType containerType = getContainer().toObject().type();
 		final Sample[] containerSamples = containerType.getSamples();
 		final ArrayList<Member> overridden;
+
 		final TypeRef containerAncestor = containerType.getAncestor();
+		final Member ancestorMember;
 
 		if (containerAncestor != null) {
+			ancestorMember = containerAncestor.getType().member(getMemberKey());
+		} else {
+			ancestorMember = null;
+		}
 
-			final Member ancestorMember =
-					containerAncestor.getType().member(getMemberKey());
-
-			if (ancestorMember != null) {
-				overridden = new ArrayList<Member>(containerSamples.length + 1);
-				overridden.add(ancestorMember);
-			} else {
-				overridden = new ArrayList<Member>(containerSamples.length);
-			}
+		if (ancestorMember != null) {
+			overridden = new ArrayList<Member>(containerSamples.length + 1);
 		} else {
 			overridden = new ArrayList<Member>(containerSamples.length);
 		}
@@ -213,6 +212,10 @@ public abstract class Member extends Placed {
 				continue;
 			}
 			addMember(overridden, sampleMember);
+		}
+
+		if (ancestorMember != null) {
+			addMember(overridden, ancestorMember);
 		}
 
 		return overridden.toArray(new Member[overridden.size()]);
