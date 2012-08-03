@@ -79,7 +79,7 @@ public class MacroExpansionStep extends Step {
 				new MacroExpansion(macroRef, this.reexpansion);
 
 		if (!this.reexpansion) {
-			return new InitMacroExpansion(expansion, consumer).toRef();
+			return new MacroExpansionTemplate(expansion, consumer).toRef();
 		}
 
 		final Ref consumption = expansion.expandMacro(consumer);

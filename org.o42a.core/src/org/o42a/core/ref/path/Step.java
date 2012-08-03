@@ -65,7 +65,7 @@ public abstract class Step {
 	}
 
 	public Path toPath() {
-		return new Path(getPathKind(), false, NO_LABELS, this);
+		return new Path(getPathKind(), false, null, NO_LABELS, this);
 	}
 
 	@Override
