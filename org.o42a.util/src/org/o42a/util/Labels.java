@@ -32,6 +32,10 @@ public final class Labels {
 		this.entries = entries;
 	}
 
+	public final boolean isEmpty() {
+		return this.entries.length == 0;
+	}
+
 	public final boolean have(Label<?> label) {
 		for (Entry entry : this.entries) {
 			if (entry.getLabel().equals(label)) {
