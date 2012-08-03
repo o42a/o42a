@@ -149,7 +149,7 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 					subTypeParams.setTypeRef(newSubTypeRef));
 		}
 
-		if (!typeRef.getPath().getLabels().has(this)) {
+		if (!typeRef.getPath().getLabels().have(this)) {
 			// The value struct does not depend on the same macro expansion
 			// any more (it was overridden).
 			return null;

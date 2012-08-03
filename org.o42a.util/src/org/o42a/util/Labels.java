@@ -32,7 +32,7 @@ public final class Labels {
 		this.entries = entries;
 	}
 
-	public final boolean has(Label<?> label) {
+	public final boolean have(Label<?> label) {
 		for (Entry entry : this.entries) {
 			if (entry.getLabel().equals(label)) {
 				return true;
@@ -78,6 +78,25 @@ public final class Labels {
 		}
 
 		return result;
+	}
+
+	public final Labels remove(Label<?> label) {
+		assert label != null :
+			"Label not specified";
+
+		for (int i = 0; i < this.entries.length; ++i) {
+
+			final Entry entry = this.entries[i];
+
+			if (entry.getLabel().equals(label)) {
+				if (this.entries.length == 0) {
+					return NO_LABELS;
+				}
+				return new Labels(ArrayUtil.remove(this.entries, i));
+			}
+		}
+
+		return this;
 	}
 
 	@Override
