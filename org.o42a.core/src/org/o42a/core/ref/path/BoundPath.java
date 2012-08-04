@@ -51,8 +51,6 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.Label;
-import org.o42a.util.Labels;
 
 
 public class BoundPath extends RefPath {
@@ -143,10 +141,6 @@ public class BoundPath extends RefPath {
 		return getPath().getSteps();
 	}
 
-	public final Labels getLabels() {
-		return getPath().getLabels();
-	}
-
 	public final int length() {
 		return getSteps().length;
 	}
@@ -201,32 +195,6 @@ public class BoundPath extends RefPath {
 		return lastStep.ancestor(this, location, distributor);
 	}
 
-	public final BoundPath label(Label<?> label) {
-		if (this.path != null) {
-			return new BoundPath(
-					this,
-					this.rawPath,
-					this.path.label(label));
-		}
-		return new BoundPath(
-				this,
-				this.rawPath.label(label),
-				null);
-	}
-
-	public final <L extends Label<T>, T> BoundPath label(L label, T value) {
-		if (this.path != null) {
-			return new BoundPath(
-					this,
-					this.rawPath,
-					this.path.label(label, value));
-		}
-		return new BoundPath(
-				this,
-				this.rawPath.label(label, value),
-				null);
-	}
-
 	public final BoundPath append(Step step) {
 		return getRawPath().append(step).bind(this, getOrigin());
 	}
@@ -277,9 +245,7 @@ public class BoundPath extends RefPath {
 
 		final Path oldPath = getRawPath();
 
-		if (oldPath.isAbsolute()
-				&& oldPath.getTemplate() == null
-				&& prefix.getBoundPath().getRawPath().getLabels().isEmpty()) {
+		if (oldPath.isAbsolute() && oldPath.getTemplate() == null) {
 			if (prefix.getStart().is(getOrigin())) {
 				return this;
 			}
@@ -588,7 +554,6 @@ public class BoundPath extends RefPath {
 							this.path.getKind(),
 							this.path.isStatic(),
 							this.path.getTemplate(),
-							this.path.getLabels(),
 							steps);
 					tracker.abortedAt(prev, step);
 					return noResolution(tracker, null, null);
@@ -608,8 +573,6 @@ public class BoundPath extends RefPath {
 							PathKind.ABSOLUTE_PATH,
 							true,
 							this.path.getTemplate(),
-							this.path.getLabels().addAll(
-									replacement.getLabels()),
 							steps);
 					// Continue from the ROOT.
 					prev = root();
@@ -628,8 +591,6 @@ public class BoundPath extends RefPath {
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
 							this.path.getTemplate(),
-							this.path.getLabels()
-							.addAll(replacement.getLabels()),
 							steps);
 				}
 				// Do not change the current index.
@@ -706,12 +667,7 @@ public class BoundPath extends RefPath {
 		final Step[] steps = removeOddFragments(rawPath);
 
 		if (steps.length <= 1) {
-			return new Path(
-					getKind(),
-					isStatic(),
-					getTemplate(),
-					getLabels(),
-					steps);
+			return new Path(getKind(), isStatic(), getTemplate(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -720,12 +676,7 @@ public class BoundPath extends RefPath {
 			return rawPath;
 		}
 
-		return new Path(
-				getKind(),
-				isStatic(),
-				getTemplate(),
-				getLabels(),
-				rebuilt);
+		return new Path(getKind(), isStatic(), getTemplate(), rebuilt);
 	}
 
 	private Step[] removeOddFragments(Path rawPath) {

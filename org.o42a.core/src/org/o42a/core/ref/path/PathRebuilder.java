@@ -71,7 +71,6 @@ public final class PathRebuilder implements LocationInfo {
 				this.path.getKind(),
 				this.path.isStatic(),
 				this.path.getPath().getTemplate(),
-				this.path.getLabels(),
 				Arrays.copyOfRange(
 						this.steps,
 						this.nextIdx,
