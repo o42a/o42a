@@ -19,6 +19,8 @@
 */
 package org.o42a.core.value.impl;
 
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
@@ -32,14 +34,19 @@ public final class DefaultValueStructFinder implements ValueStructFinder {
 	}
 
 	@Override
+	public ValueStructFinder prefixWith(PrefixPath prefix) {
+		return this;
+	}
+
+	@Override
 	public ValueStruct<?, ?> valueStructBy(
 			ValueStruct<?, ?> defaultStruct) {
 		return defaultStruct;
 	}
 
 	@Override
-	public ValueStruct<?, ?> toValueStruct() {
-		return null;
+	public ValueStructFinder reproduce(Reproducer reproducer) {
+		return this;
 	}
 
 }

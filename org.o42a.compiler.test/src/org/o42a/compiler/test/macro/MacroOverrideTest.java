@@ -44,9 +44,7 @@ public class MacroOverrideTest extends CompilerTestCase {
 		final Obj afTarget = linkTarget(field("a", "f"));
 		final Obj bfTarget = linkTarget(field("b", "f"));
 
-		assertThat(
-				definiteValue(afTarget, ValueType.VOID),
-				is(org.o42a.core.value.Void.VOID));
+		assertTrueVoid(afTarget);
 		assertThat(definiteValue(bfTarget, ValueType.INTEGER), is(1L));
 	}
 
