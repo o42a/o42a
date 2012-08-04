@@ -71,12 +71,12 @@ public final class ParentObjectStep
 		if (resolver.isFullResolution()) {
 			uses().useBy(resolver, path, index);
 		} else if (!object.membersResolved()) {
-
-			final Scope self = getMemberKey().getOrigin();
-
-			if (start.is(self)) {
-
-				final Container result = self.getEnclosingContainer();
+			// Members not resolved yet.
+			if (start.getEnclosingScopePath().getSteps()[0].equals(this)) {
+				// Workaround to access the enclosing scope
+				// before the scope field created.
+				final Container result =
+						start.getEnclosingScope().getContainer();
 
 				walker.up(object, this, result, this);
 

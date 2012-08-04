@@ -162,15 +162,20 @@ public abstract class ObjectConstructor extends Placed {
 
 		private final ObjectConstructor constructor;
 		private final StaticTypeRef propagatedFrom;
+		private final TypeRef overriddenAncestor;
 
 		Propagated(Scope scope, ObjectConstructor constructor, Obj sample) {
 			super(
 					constructor.distributeIn(scope.getContainer()),
 					sample);
 			this.constructor = constructor;
-			this.propagatedFrom =
-					constructor.toRef()
-					.toStaticTypeRef()
+
+			final Ref ref = constructor.toRef();
+
+			this.propagatedFrom = ref.toStaticTypeRef().upgradeScope(scope);
+			this.overriddenAncestor =
+					ref.rebuildIn(sample.getScope().getEnclosingScope())
+					.ancestor(sample.getScope().getEnclosingScope())
 					.upgradeScope(scope);
 		}
 
@@ -187,7 +192,9 @@ public abstract class ObjectConstructor extends Placed {
 
 		@Override
 		protected Ascendants buildAscendants() {
-			return new Ascendants(this).addImplicitSample(this.propagatedFrom);
+			return new Ascendants(this).addImplicitSample(
+					this.propagatedFrom,
+					this.overriddenAncestor);
 		}
 
 		@Override

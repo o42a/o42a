@@ -44,7 +44,7 @@ public final class MemberOverride extends Sample {
 	public MemberOverride(Member overriddenMember, Ascendants ascendants) {
 		super(overriddenMember, ascendants);
 		this.overriddenMember = overriddenMember;
-		this.ancestor = ancestor();
+		this.ancestor = ancestor().upgradeScope(getScope());
 
 		final StaticTypeRef typeRef =
 				getObject().staticRef(getScope()).toStaticTypeRef();
@@ -60,6 +60,14 @@ public final class MemberOverride extends Sample {
 	@Override
 	public TypeRef getAncestor() {
 		return this.ancestor;
+	}
+
+	@Override
+	public TypeRef overriddenAncestor() {
+
+		final TypeRef ancestor = ancestor();
+
+		return ancestor.rebuildIn(ancestor.getScope()).upgradeScope(getScope());
 	}
 
 	@Override
@@ -100,10 +108,12 @@ public final class MemberOverride extends Sample {
 		final TypeRef ancestor = object.type().getAncestor();
 
 		if (ancestor == null) {
-			return ValueType.VOID.typeRef(this, getScope());
+			return ValueType.VOID.typeRef(
+					this,
+					object.getScope().getEnclosingScope());
 		}
 
-		return ancestor.setValueStruct(valueStruct()).upgradeScope(getScope());
+		return ancestor.setValueStruct(valueStruct());
 	}
 
 	private ValueStruct<?, ?> valueStruct() {

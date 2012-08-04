@@ -184,6 +184,19 @@ public final class LinkValueStruct
 	}
 
 	@Override
+	public LinkValueStruct rebuildIn(Scope scope) {
+
+		final TypeRef oldTypeRef = getTypeRef();
+		final TypeRef newTypeRef = oldTypeRef.rebuildIn(scope);
+
+		if (oldTypeRef == newTypeRef) {
+			return this;
+		}
+
+		return new LinkValueStruct(this, getValueType(), newTypeRef);
+	}
+
+	@Override
 	public final ScopeInfo toScoped() {
 		return getTypeRef();
 	}

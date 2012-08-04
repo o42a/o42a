@@ -296,6 +296,14 @@ public abstract class TypeRef implements ScopeInfo {
 		return prefixWith(scope.pathTo(getScope()));
 	}
 
+	public final TypeRef rebuildIn(Scope scope) {
+
+		final TypeRef typeRef = upgradeScope(scope);
+		final Ref ref = typeRef.getRef().rebuildIn(scope);
+
+		return ref.toTypeRef(getValueStruct().rebuildIn(scope));
+	}
+
 	public void resolveAll(FullResolver resolver) {
 		this.allResolved = true;
 		getContext().fullResolution().start();

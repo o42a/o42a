@@ -19,8 +19,6 @@
 */
 package org.o42a.core.object.macro.impl;
 
-import static org.o42a.core.ref.ScopeUpgrade.upgradeScope;
-
 import org.o42a.core.Scope;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -48,15 +46,14 @@ final class MacroExpansionTemplate extends PathFragment {
 	public Path expand(PathExpander expander, int index, Scope start) {
 		this.expansion.getMacroRef().assertCompatible(start);
 
-		final Ref consumption = this.expansion.expandMacro(this.consumer);
+		final Ref consumption =
+				this.expansion.expandMacro(this.consumer, start);
 
 		if (consumption == null) {
 			return null;
 		}
 
-		return consumption.getPath()
-				.prefixWith(upgradeScope(consumption, start).toPrefix())
-				.getRawPath();
+		return consumption.getPath().getRawPath();
 	}
 
 	@Override

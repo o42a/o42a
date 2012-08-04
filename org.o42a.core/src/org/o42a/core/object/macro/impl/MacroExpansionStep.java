@@ -82,7 +82,7 @@ public class MacroExpansionStep extends Step {
 			return new MacroExpansionTemplate(expansion, consumer).toRef();
 		}
 
-		return expansion.expandMacro(consumer);
+		return expansion.expandMacro(consumer, ref.getScope());
 	}
 
 	@Override

@@ -96,6 +96,11 @@ public abstract class SingleValueStruct<T>
 	}
 
 	@Override
+	public final SingleValueStruct<T> rebuildIn(Scope scope) {
+		return this;
+	}
+
+	@Override
 	public SingleValueStruct<T> reproduce(Reproducer reproducer) {
 		return this;
 	}
