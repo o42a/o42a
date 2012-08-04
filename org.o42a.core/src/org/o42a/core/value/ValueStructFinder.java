@@ -19,7 +19,8 @@
 */
 package org.o42a.core.value;
 
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.impl.DefaultValueStructFinder;
 
 
@@ -28,8 +29,10 @@ public interface ValueStructFinder {
 	ValueStructFinder DEFAULT_VALUE_STRUCT_FINDER =
 			DefaultValueStructFinder.INSTANCE;
 
-	ValueStruct<?, ?> valueStructBy(Ref ref, ValueStruct<?, ?> defaultStruct);
+	ValueStructFinder prefixWith(PrefixPath prefix);
 
-	ValueStruct<?, ?> toValueStruct();
+	ValueStruct<?, ?> valueStructBy(ValueStruct<?, ?> defaultStruct);
+
+	ValueStructFinder reproduce(Reproducer reproducer);
 
 }

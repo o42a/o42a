@@ -51,8 +51,8 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return this.ascendants.getLinkDepth();
+	public DefinitionTarget getDefinitionTarget() {
+		return this.ascendants.getDefinitionTarget();
 	}
 
 	@Override
@@ -63,16 +63,25 @@ public final class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		if (definerLinkDepth(definer) == getLinkDepth()) {
+
+		final DefinitionTarget target = getDefinitionTarget();
+
+		if (target.isDefault() || target.is(definerTarget(definer))) {
 			defineObject(definer);
 			return;
 		}
+
 		definer.define(valueBlock(getValue()));
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		definer.setTargetRef(getValue(), this.ascendants.getAncestor());
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
+		definer.setRef(getValue());
 	}
 
 	@Override

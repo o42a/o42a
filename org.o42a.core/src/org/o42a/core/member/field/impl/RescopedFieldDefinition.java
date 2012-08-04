@@ -21,7 +21,6 @@ package org.o42a.core.member.field.impl;
 
 import org.o42a.core.member.Member;
 import org.o42a.core.member.field.*;
-import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
@@ -52,8 +51,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public int getLinkDepth() {
-		return this.definition.getLinkDepth();
+	public DefinitionTarget getDefinitionTarget() {
+		return this.definition.getDefinitionTarget();
 	}
 
 	@Override
@@ -69,6 +68,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	@Override
 	public void defineLink(LinkDefiner definer) {
 		this.definition.defineLink(new RescopedLinkDefiner(definer));
+	}
+
+	@Override
+	public void defineMacro(MacroDefiner definer) {
+		this.definition.defineMacro(new RescopedMacroDefiner(definer));
 	}
 
 	@Override
@@ -134,9 +138,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 
 		@Override
 		public ObjectDefiner addImplicitSample(
-				StaticTypeRef implicitAscendant) {
+				StaticTypeRef implicitAscendant,
+				TypeRef overriddenAncestor) {
 			this.definer.addImplicitSample(
-					implicitAscendant.prefixWith(getPrefix()));
+					implicitAscendant.prefixWith(getPrefix()),
+					overriddenAncestor.prefixWith(getPrefix()));
 			return this;
 		}
 
@@ -153,6 +159,9 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 
 		@Override
 		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
 			return this.definer.toString();
 		}
 
@@ -172,16 +181,6 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
-		public TypeRef getTypeRef() {
-			return this.definer.getTypeRef();
-		}
-
-		@Override
-		public TargetRef getTargetRef() {
-			return this.definer.getTargetRef();
-		}
-
-		@Override
 		public void setTargetRef(Ref targetRef, TypeRef defaultType) {
 			this.definer.setTargetRef(
 					targetRef.prefixWith(getPrefix()),
@@ -191,8 +190,40 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 
 		@Override
 		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
 			return this.definer.toString();
 		}
 
 	}
+
+	private final class RescopedMacroDefiner implements MacroDefiner {
+
+		private final MacroDefiner definer;
+
+		RescopedMacroDefiner(MacroDefiner definer) {
+			this.definer = definer;
+		}
+
+		@Override
+		public Field getField() {
+			return this.definer.getField();
+		}
+
+		@Override
+		public void setRef(Ref ref) {
+			this.definer.setRef(ref.prefixWith(getPrefix()));
+		}
+
+		@Override
+		public String toString() {
+			if (this.definer == null) {
+				return super.toString();
+			}
+			return this.definer.toString();
+		}
+
+	}
+
 }

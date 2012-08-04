@@ -22,9 +22,9 @@ package org.o42a.core.ref.path;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.ir.op.PathOp.hostPathOp;
 import static org.o42a.core.ref.path.PathNormalizer.pathNormalizer;
-import static org.o42a.core.ref.path.PathResolution.NO_PATH_RESOLUTION;
-import static org.o42a.core.ref.path.PathResolution.PATH_RESOLUTION_ERROR;
+import static org.o42a.core.ref.path.PathResolution.noPathResolutionError;
 import static org.o42a.core.ref.path.PathResolution.pathResolution;
+import static org.o42a.core.ref.path.PathResolution.pathResolutionError;
 import static org.o42a.core.ref.path.PathResolver.pathResolver;
 import static org.o42a.core.ref.path.PathWalker.DUMMY_PATH_WALKER;
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
@@ -42,20 +42,18 @@ import org.o42a.core.member.MemberKey;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
-import org.o42a.core.ref.Normalizer;
-import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.*;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
 
-public class BoundPath extends Location {
+public class BoundPath extends RefPath {
 
 	public static BoundPath arrayIndex(Ref array, Ref index) {
 		return new ArrayIndexStep(array, index)
@@ -84,6 +82,13 @@ public class BoundPath extends Location {
 		this.origin = prototype.origin;
 		this.rawPath = prototype.rawPath;
 		this.path = prototype.path;
+	}
+
+	private BoundPath(BoundPath prototype, Path rawPath, Path path) {
+		super(prototype);
+		this.origin = prototype.origin;
+		this.rawPath = rawPath;
+		this.path = path;
 	}
 
 	public final Scope getOrigin() {
@@ -115,6 +120,21 @@ public class BoundPath extends Location {
 			return this.path;
 		}
 		return this.path = rebuildPath();
+	}
+
+	public final Path getRawPath() {
+		if (this.path != null) {
+			return this.path;
+		}
+		return this.rawPath;
+	}
+
+	public final Path getTemplate() {
+		return getRawPath().getTemplate();
+	}
+
+	public final boolean hasTemplate(PathTemplate template) {
+		return getTemplate().hasTemplate(template);
 	}
 
 	public final Step[] getSteps() {
@@ -195,6 +215,14 @@ public class BoundPath extends Location {
 		return getRawPath().newObject(constructor).bind(this, getOrigin());
 	}
 
+	public final BoundPath expandMacro() {
+		return getRawPath().expandMacro().bind(this, getOrigin());
+	}
+
+	public final BoundPath reexpandMacro() {
+		return getRawPath().reexpandMacro().bind(this, getOrigin());
+	}
+
 	public final BoundPath append(Path path) {
 		return getRawPath().append(path).bind(this, getOrigin());
 	}
@@ -217,7 +245,7 @@ public class BoundPath extends Location {
 
 		final Path oldPath = getRawPath();
 
-		if (oldPath.isAbsolute()) {
+		if (oldPath.isAbsolute() && oldPath.getTemplate() == null) {
 			if (prefix.getStart().is(getOrigin())) {
 				return this;
 			}
@@ -227,10 +255,23 @@ public class BoundPath extends Location {
 		final Path newPath = oldPath.prefixWith(prefix);
 
 		if (oldPath == newPath) {
-			return this;
+			if (prefix.getStart().is(getOrigin())) {
+				return this;
+			}
 		}
 
 		return newPath.bind(this, prefix.getStart());
+	}
+
+	public final BoundPath upgradeScope(Scope toScope) {
+		if (toScope.is(getOrigin())) {
+			return this;
+		}
+		return getRawPath().bind(this, toScope);
+	}
+
+	public final BoundPath rebuildIn(Scope scope) {
+		return upgradeScope(scope).getPath().removeTemplate().bind(this, scope);
 	}
 
 	public final BoundPath cut(int stepsToCut) {
@@ -241,7 +282,7 @@ public class BoundPath extends Location {
 		return walk(resolver, DUMMY_PATH_WALKER);
 	}
 
-	public PathResolution walk(PathResolver resolver, PathWalker walker) {
+	public final PathResolution walk(PathResolver resolver, PathWalker walker) {
 		return walkPath(getPath(), resolver, walker, false);
 	}
 
@@ -362,7 +403,7 @@ public class BoundPath extends Location {
 
 	@Override
 	public String toString() {
-		return toString(getRawSteps().length);
+		return toString(0);
 	}
 
 	public String toString(int length) {
@@ -372,11 +413,23 @@ public class BoundPath extends Location {
 		return getRawPath().toString(this.origin, length);
 	}
 
-	final Path getRawPath() {
-		if (this.path != null) {
-			return this.path;
+	@Override
+	protected Ref consume(Ref ref, Consumer consumer) {
+
+		final Step[] rawSteps = getRawSteps();
+		final int length = rawSteps.length;
+
+		if (length == 0) {
+			return ref;
 		}
-		return this.rawPath;
+
+		final Ref consumption = rawSteps[length - 1].consume(ref, consumer);
+
+		if (consumption != null) {
+			consumption.assertSameScope(ref);
+		}
+
+		return consumption;
 	}
 
 	final PathNormalizationDoubt doubt(Analyzer analyzer) {
@@ -427,9 +480,6 @@ public class BoundPath extends Location {
 
 		if (isAbsolute()) {
 			start = root();
-			if (!walker.root(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -446,12 +496,12 @@ public class BoundPath extends Location {
 						walker,
 						startIndex());
 			}
+			if (!tracker.root(this, start)) {
+				return noResolution(tracker, null, null);
+			}
 		} else {
 			start = resolver.getPathStart();
 			start.assertDerivedFrom(getOrigin());
-			if (!walker.start(this, start)) {
-				return NO_PATH_RESOLUTION;
-			}
 			if (expand) {
 				tracker = new PathRecorder(
 						this,
@@ -468,6 +518,9 @@ public class BoundPath extends Location {
 						walker,
 						startIndex());
 			}
+			if (!tracker.start(this, start)) {
+				return noResolution(tracker, null, null);
+			}
 		}
 
 		return walkFrom(start, tracker);
@@ -483,7 +536,7 @@ public class BoundPath extends Location {
 		while (i < steps.length) {
 
 			final Step step = steps[i];
-			final PathFragment fragment = step.getPathFragment();
+			final AbstractPathFragment fragment = step.getPathFragment();
 
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.
@@ -500,9 +553,10 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic(),
+							this.path.getTemplate(),
 							steps);
 					tracker.abortedAt(prev, step);
-					return null;
+					return noResolution(tracker, null, null);
 				}
 
 				final Step[] replacementSteps = replacement.getSteps();
@@ -518,12 +572,14 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
+							this.path.getTemplate(),
 							steps);
 					// Continue from the ROOT.
 					prev = root();
 					i = 0;
 					tracker.pathTrimmed(this, prev);
 				} else {
+
 					// Replacement is a relative path.
 					// Replace the current step.
 					steps = ArrayUtil.replace(
@@ -534,6 +590,7 @@ public class BoundPath extends Location {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
+							this.path.getTemplate(),
 							steps);
 				}
 				// Do not change the current index.
@@ -546,21 +603,37 @@ public class BoundPath extends Location {
 					prev,
 					tracker);
 			if (tracker.isAborted()) {
-				return NO_PATH_RESOLUTION;
+				return noResolution(tracker, prev, step);
 			}
 			if (result == null) {
 				tracker.abortedAt(prev, step);
-				return PATH_RESOLUTION_ERROR;
+				return pathResolutionError(this, tracker.getErrorMessage());
 			}
 			++i;
 			prev = result.getScope();
 		}
 
 		if (!tracker.done(result)) {
-			return NO_PATH_RESOLUTION;
+			return noResolution(tracker, null, null);
+		}
+		if (result != null) {
+			return pathResolution(this, result);
 		}
 
-		return pathResolution(this, result);
+		return pathResolutionError(this, tracker.getErrorMessage());
+	}
+
+	private PathResolution noResolution(
+			PathTracker tracker,
+			Scope last,
+			Step brokenStep) {
+		if (tracker.isError()) {
+			if (brokenStep != null) {
+				tracker.abortedAt(last, brokenStep);
+			}
+			return pathResolutionError(this, tracker.getErrorMessage());
+		}
+		return noPathResolutionError(this);
 	}
 
 	private void findStart() {
@@ -576,17 +649,25 @@ public class BoundPath extends Location {
 
 	private Path rebuildPath() {
 
-		final Path rawPath = getRawPath();
+		final Path rawPath;
+		final Path template = getTemplate();
+
+		if (template != null) {
+			rawPath = template;
+		} else {
+			rawPath = getRawPath();
+		}
+
 		final Step[] rawSteps = rawPath.getSteps();
 
 		if (rawSteps.length == 0) {
 			return rawPath;
 		}
 
-		final Step[] steps = removeOddFragments();
+		final Step[] steps = removeOddFragments(rawPath);
 
 		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), steps);
+			return new Path(getKind(), isStatic(), getTemplate(), steps);
 		}
 
 		final Step[] rebuilt = rebuild(steps);
@@ -595,16 +676,16 @@ public class BoundPath extends Location {
 			return rawPath;
 		}
 
-		return new Path(getKind(), isStatic(), rebuilt);
+		return new Path(getKind(), isStatic(), getTemplate(), rebuilt);
 	}
 
-	private Step[] removeOddFragments() {
+	private Step[] removeOddFragments(Path rawPath) {
 
 		final OddPathFragmentRemover remover =
-				new OddPathFragmentRemover(this);
+				new OddPathFragmentRemover(rawPath.getSteps().length);
 
 		walkPath(
-				getRawPath(),
+				rawPath,
 				pathResolver(getOrigin(), dummyUser()),
 				remover,
 				true);

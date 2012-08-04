@@ -146,7 +146,8 @@ public final class ObjectValuePart implements UserInfo {
 
 		valueUses.useBy(
 				this.uses,
-				object.getConstructionMode().isRuntime() || object.isClone()
+				object.getConstructionMode().isRuntime()
+				|| !object.meta().isUpdated()
 				? RUNTIME_VALUE_USAGE : STATIC_VALUE_USAGE);
 		this.uses.useBy(valueUses, VALUE_PART_USAGE);
 

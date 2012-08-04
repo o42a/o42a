@@ -22,14 +22,12 @@ package org.o42a.core.member.clause.impl;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
-import org.o42a.core.Scope;
 import org.o42a.core.member.Member;
-import org.o42a.core.member.clause.Clause;
-import org.o42a.core.member.clause.MemberClause;
 import org.o42a.core.member.clause.PlainClause;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -48,7 +46,7 @@ final class PropagatedClauseDefinition extends Obj {
 	}
 
 	@Override
-	public final Clause toClause() {
+	public final PlainClause toClause() {
 		return this.clause;
 	}
 
@@ -59,7 +57,15 @@ final class PropagatedClauseDefinition extends Obj {
 
 	@Override
 	public String toString() {
-		return this.clause != null ? this.clause.toString() : super.toString();
+		if (this.clause != null) {
+			return super.toString();
+		}
+		return this.clause.toString();
+	}
+
+	@Override
+	protected Nesting createNesting() {
+		return toClause().getDefinitionNesting();
 	}
 
 	@Override
@@ -74,15 +80,6 @@ final class PropagatedClauseDefinition extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-
-		final MemberClause clause =
-				enclosing.getContainer().member(toClause().getKey()).toClause();
-
-		return clause.clause().toPlainClause().toObject();
 	}
 
 }

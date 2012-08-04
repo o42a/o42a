@@ -19,13 +19,10 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.analysis.use.User.dummyUser;
-
-import org.o42a.core.Scope;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -49,6 +46,11 @@ class DeclaredObject extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return this.field.toMember().getNesting();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		this.field.initDefinitions(this);
 		return new Ascendants(this).declareField(this.field);
@@ -67,15 +69,6 @@ class DeclaredObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return this.field.createDefinitions();
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-
-		final MemberField field =
-				enclosing.getContainer().member(this.field.getKey()).toField();
-
-		return field.object(dummyUser());
 	}
 
 }

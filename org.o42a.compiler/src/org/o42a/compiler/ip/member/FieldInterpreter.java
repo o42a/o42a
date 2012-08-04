@@ -66,7 +66,8 @@ public class FieldInterpreter {
 		}
 
 		final FieldDefinition definition = definitionNode.accept(
-				ip.definitionVisitor(),
+				ip.definitionVisitor(
+						new FieldNesting(declaration).toTypeConsumer()),
 				declaration);
 
 		if (definition != null) {

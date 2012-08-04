@@ -110,6 +110,14 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void macroExpansion() {
+		to(MacroExpansionNode.class, parse("#foo: bar"));
+		to(MacroExpansionNode.class, parse("# ::"));
+		to(MacroExpansionNode.class, parse("#(abc)"));
+		to(MacroExpansionNode.class, parse("# abc ()"));
+	}
+
+	@Test
 	public void parentheses() {
 		to(ParenthesesNode.class, parse("(foo)"));
 	}

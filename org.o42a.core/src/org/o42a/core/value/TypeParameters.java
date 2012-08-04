@@ -21,12 +21,12 @@ package org.o42a.core.value;
 
 import org.o42a.core.*;
 import org.o42a.core.object.link.LinkValueType;
-import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Reproducer;
 import org.o42a.util.log.Loggable;
 
 
@@ -50,6 +50,14 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	public final TypeRef getTypeRef() {
 		return this.typeRef;
+	}
+
+	public final TypeParameters setTypeRef(TypeRef typeRef) {
+		return typeMutability(
+				typeRef,
+				typeRef.getRef().distribute(),
+				getLinkType())
+				.setTypeRef(typeRef);
 	}
 
 	public final LinkValueType getLinkType() {
@@ -91,16 +99,11 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 
 	@Override
 	public final ValueStruct<?, ?> valueStructBy(
-			Ref ref,
 			ValueStruct<?, ?> defaultStruct) {
-		return defaultStruct.applyParameters(this);
+		return defaultStruct.setParameters(this);
 	}
 
 	@Override
-	public final ValueStruct<?, ?> toValueStruct() {
-		return null;
-	}
-
 	public final TypeParameters prefixWith(PrefixPath prefix) {
 
 		final TypeRef oldTypeRef = getTypeRef();
@@ -110,7 +113,9 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 			return this;
 		}
 
-		return new TypeParameters(newTypeRef, getMutability());
+		return new TypeParameters(
+				newTypeRef,
+				getMutability().toScope(prefix.getStart()));
 	}
 
 	@Override
@@ -121,6 +126,21 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 	@Override
 	public final Distributor distributeIn(Container container) {
 		return Placed.distributeIn(this, container);
+	}
+
+	@Override
+	public ValueStructFinder reproduce(Reproducer reproducer) {
+		assertCompatible(reproducer.getReproducingScope());
+
+		final TypeRef typeRef = getTypeRef().reproduce(reproducer);
+
+		if (typeRef == null) {
+			return null;
+		}
+
+		return new TypeParameters(
+				typeRef,
+				getMutability().toScope(reproducer.getScope()));
 	}
 
 	@Override
@@ -163,6 +183,11 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 			this.linkType = linkType;
 		}
 
+		private Mutability(Scope scope, Mutability prototype) {
+			super(prototype, prototype.distributeIn(scope.getContainer()));
+			this.linkType = prototype.linkType;
+		}
+
 		public final LinkValueType getLinkType() {
 			return this.linkType;
 		}
@@ -185,6 +210,10 @@ public final class TypeParameters implements ValueStructFinder, PlaceInfo {
 				return "```";
 			}
 			return super.toString();
+		}
+
+		private final Mutability toScope(Scope scope) {
+			return new Mutability(scope, this);
 		}
 
 	}

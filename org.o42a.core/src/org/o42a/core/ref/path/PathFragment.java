@@ -19,29 +19,12 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
-import org.o42a.core.ref.path.impl.PathFragmentStep;
 
+public abstract class PathFragment extends AbstractPathFragment {
 
-public abstract class PathFragment {
-
-	public abstract Path expand(PathExpander expander, int index, Scope start);
-
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new PathFragmentFieldDefinition(path, distributor);
-	}
-
-	public final Step toStep() {
-		return new PathFragmentStep(this);
-	}
-
-	public final Path toPath() {
-		return toStep().toPath();
+	@Override
+	public final boolean isTemplate() {
+		return false;
 	}
 
 }

@@ -106,11 +106,6 @@ public abstract class MemberClause extends Member {
 	}
 
 	@Override
-	public final boolean isAbstract() {
-		return false;
-	}
-
-	@Override
 	public final Container substance(UserInfo user) {
 		return clause().getContainer();
 	}

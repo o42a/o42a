@@ -23,7 +23,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.st.Reproducer;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
 
@@ -31,15 +30,9 @@ public final class StaticTypeRef extends TypeRef {
 
 	private final Ref intactRef;
 
-	StaticTypeRef(
-			Ref unprefixedRef,
-			Ref intactRef,
-			PrefixPath prefix,
-			ValueStructFinder valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		super(unprefixedRef, prefix, valueStructFinder, valueStruct);
+	StaticTypeRef(Ref intactRef, Ref ref, ValueStructFinder valueStructFinder) {
+		super(ref, valueStructFinder);
 		this.intactRef = intactRef;
-		unprefixedRef.assertSameScope(intactRef);
 	}
 
 	@Override
@@ -79,7 +72,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public StaticTypeRef reproduce(Reproducer reproducer) {
+	public final StaticTypeRef reproduce(Reproducer reproducer) {
 		return (StaticTypeRef) super.reproduce(reproducer);
 	}
 
@@ -88,18 +81,11 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	protected StaticTypeRef create(
-			Ref unprefixedRef,
+	protected TypeRef create(
 			Ref intactRef,
-			PrefixPath prefix,
-			ValueStructFinder valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		return new StaticTypeRef(
-				unprefixedRef,
-				intactRef,
-				prefix,
-				valueStructFinder,
-				valueStruct);
+			Ref ref,
+			ValueStructFinder valueStructFinder) {
+		return new StaticTypeRef(intactRef, ref, valueStructFinder);
 	}
 
 }

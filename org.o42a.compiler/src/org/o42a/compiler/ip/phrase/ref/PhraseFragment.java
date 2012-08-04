@@ -23,9 +23,7 @@ import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
 import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
-import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.member.field.LinkDefiner;
-import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
@@ -113,8 +111,8 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
-		public int getLinkDepth() {
-			return this.definition.getLinkDepth();
+		public DefinitionTarget getDefinitionTarget() {
+			return this.definition.getDefinitionTarget();
 		}
 
 		@Override
@@ -134,6 +132,11 @@ class PhraseFragment extends PathFragment {
 		@Override
 		public void defineLink(LinkDefiner definer) {
 			this.definition.defineLink(definer);
+		}
+
+		@Override
+		public void defineMacro(MacroDefiner definer) {
+			this.definition.defineMacro(definer);
 		}
 
 		@Override

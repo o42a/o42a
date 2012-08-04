@@ -19,8 +19,10 @@
 */
 package org.o42a.core.object.array;
 
+import static org.o42a.core.object.link.LinkValueType.LINK;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
+import static org.o42a.core.value.TypeParameters.typeMutability;
 
 import org.o42a.codegen.Generator;
 import org.o42a.core.Scope;
@@ -72,6 +74,39 @@ public final class ArrayValueStruct
 	@Override
 	public final int getLinkDepth() {
 		return 0;
+	}
+
+	@Override
+	public TypeParameters getParameters() {
+
+		final TypeRef itemTypeRef = getItemTypeRef();
+
+		return typeMutability(
+				itemTypeRef,
+				itemTypeRef.getRef().distribute(),
+				LINK).setTypeRef(itemTypeRef);
+	}
+
+	@Override
+	public ArrayValueStruct setParameters(TypeParameters parameters) {
+		if (parameters.getLinkType() != LinkValueType.LINK) {
+			parameters.getLogger().error(
+					"prohibited_type_mutability",
+					parameters.getMutability(),
+					"Mutability flag prohibited here. Use a single backquote");
+		}
+
+		parameters.assertSameScope(toScoped());
+
+		final TypeRef newItemTypeRef = parameters.getTypeRef();
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+
+		if (!newItemTypeRef.relationTo(oldItemTypeRef)
+				.checkDerived(parameters.getLogger())) {
+			return this;
+		}
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	public final TypeRef getItemTypeRef() {
@@ -137,20 +172,33 @@ public final class ArrayValueStruct
 
 	@Override
 	public ArrayValueStruct prefixWith(PrefixPath prefix) {
-		if (prefix.emptyFor(toScoped())) {
+
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+		final TypeRef newItemTypeRef = oldItemTypeRef.prefixWith(prefix);
+
+		if (oldItemTypeRef == newItemTypeRef) {
 			return this;
 		}
-		return new ArrayValueStruct(
-				getValueType(),
-				getItemTypeRef().prefixWith(prefix));
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override
 	public ArrayValueStruct upgradeScope(Scope toScope) {
-		if (toScoped().getScope().is(toScope)) {
+		return prefixWith(upgradePrefix(toScoped(), toScope));
+	}
+
+	@Override
+	public ArrayValueStruct rebuildIn(Scope scope) {
+
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+		final TypeRef newItemTypeRef = oldItemTypeRef.rebuildIn(scope);
+
+		if (oldItemTypeRef == newItemTypeRef) {
 			return this;
 		}
-		return prefixWith(upgradePrefix(toScoped(), toScope));
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override
@@ -184,29 +232,6 @@ public final class ArrayValueStruct
 		out.append(this.itemTypeRef).append(')');
 
 		return out.toString();
-	}
-
-	@Override
-	protected ValueStruct<ArrayValueStruct, Array> applyParameters(
-			TypeParameters parameters) {
-		if (parameters.getLinkType() != LinkValueType.LINK) {
-			parameters.getLogger().error(
-					"prohibited_type_mutability",
-					parameters.getMutability(),
-					"Mutability flag prohibited here. Use a single backquote");
-		}
-
-		parameters.assertSameScope(toScoped());
-
-		final TypeRef newItemTypeRef = parameters.getTypeRef();
-		final TypeRef oldItemTypeRef = getItemTypeRef();
-
-		if (!newItemTypeRef.relationTo(oldItemTypeRef)
-				.checkDerived(parameters.getLogger())) {
-			return this;
-		}
-
-		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override

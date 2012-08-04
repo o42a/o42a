@@ -82,6 +82,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '+':
 		case '-':
 		case MINUS:
+		case '#':
 			return context.parse(unaryExpression());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());

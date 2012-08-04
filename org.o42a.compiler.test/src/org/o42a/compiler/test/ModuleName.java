@@ -19,9 +19,8 @@
 */
 package org.o42a.compiler.test;
 
-import static java.lang.Character.charCount;
-import static java.lang.Character.isUpperCase;
-import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
+import static java.lang.Character.*;
+import static org.o42a.util.string.Name.caseInsensitiveName;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -59,17 +58,21 @@ final class ModuleName extends TestWatcher {
 
 			if (!isUpperCase(c)) {
 				prevLower = true;
-				moduleName.appendCodePoint(c);
+				if (moduleName.length() == 0) {
+					moduleName.appendCodePoint(toUpperCase(c));
+				} else {
+					moduleName.appendCodePoint(c);
+				}
 				continue;
 			}
 			if (prevLower) {
-				moduleName.append('_');
+				moduleName.append(' ');
 				prevLower = false;
 			}
-			moduleName.appendCodePoint(Character.toLowerCase(c));
+			moduleName.appendCodePoint(toLowerCase(c));
 		}
 
-		return CASE_SENSITIVE.name(moduleName.toString());
+		return caseInsensitiveName(moduleName.toString());
 	}
 
 }

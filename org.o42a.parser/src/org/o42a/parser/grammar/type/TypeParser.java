@@ -19,10 +19,9 @@
 */
 package org.o42a.parser.grammar.type;
 
-import static org.o42a.parser.Grammar.ascendants;
-import static org.o42a.parser.Grammar.ref;
-import static org.o42a.parser.Grammar.samples;
+import static org.o42a.parser.Grammar.*;
 
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
@@ -41,14 +40,23 @@ public class TypeParser implements Parser<TypeNode> {
 	public TypeNode parse(ParserContext context) {
 
 		final TypeNode ancestor;
+		final int c = context.next();
 
-		if (context.next() == '&') {
+		switch (c) {
+		case '&':
 			ancestor = context.parse(samples());
 			if (ancestor == null) {
 				missingInterface(context);
 				return null;
 			}
-		} else {
+			break;
+		case '#':
+			ancestor = (MacroExpansionNode) context.parse(unaryExpression());
+			if (ancestor == null) {
+				return null;
+			}
+			break;
+		default:
 
 			final RefNode ref = context.parse(ref());
 

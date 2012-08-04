@@ -19,7 +19,6 @@
 */
 package org.o42a.core.object.type.impl;
 
-
 import org.o42a.core.member.Member;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
@@ -33,14 +32,18 @@ import org.o42a.core.st.Reproducer;
 public final class ImplicitSample extends Sample {
 
 	private final StaticTypeRef implicitAscendant;
+	private final TypeRef overriddenAncestor;
 	private TypeRef ancestor;
 
 	public ImplicitSample(
+			Ascendants ascendants,
 			StaticTypeRef implicitAscendant,
-			Ascendants ascendants) {
+			TypeRef overriddenAncestor) {
 		super(implicitAscendant, ascendants);
 		this.implicitAscendant = implicitAscendant;
+		this.overriddenAncestor = overriddenAncestor;
 		assertSameScope(implicitAscendant);
+		assertSameScope(overriddenAncestor);
 	}
 
 	@Override
@@ -54,6 +57,11 @@ public final class ImplicitSample extends Sample {
 			return this.ancestor;
 		}
 		return this.ancestor = this.implicitAscendant.getAncestor();
+	}
+
+	@Override
+	public TypeRef overriddenAncestor() {
+		return this.overriddenAncestor;
 	}
 
 	@Override

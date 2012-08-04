@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.member.field.FieldKey.fieldKey;
+
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.member.MemberId;
@@ -31,7 +33,7 @@ import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
 
 
-public class FieldDeclaration extends Placed implements Cloneable {
+public final class FieldDeclaration extends Placed implements Cloneable {
 
 	public static FieldDeclaration fieldDeclaration(
 			LocationInfo location,
@@ -41,20 +43,22 @@ public class FieldDeclaration extends Placed implements Cloneable {
 	}
 
 	private final MemberId memberId;
-
+	private FieldKey fieldKey;
 	private Visibility visibility = Visibility.PUBLIC;
-	private boolean prototype;
-	private boolean isAbstract;
+	private boolean macro;
 	private boolean override;
+	private boolean isAbstract;
+	private boolean prototype;
 	private LinkValueType linkType;
 	private TypeRef type;
 	private StaticTypeRef declaredIn;
 
-	public FieldDeclaration(
+	FieldDeclaration(
 			LocationInfo location,
 			Distributor distributor,
 			FieldDeclaration sample) {
 		this(location, distributor, sample, sample.getMemberId());
+		this.fieldKey = sample.getFieldKey();
 	}
 
 	private FieldDeclaration(
@@ -72,13 +76,14 @@ public class FieldDeclaration extends Placed implements Cloneable {
 			MemberId memberId) {
 		super(location, distributor);
 		this.memberId = memberId;
-		this.visibility = sample.visibility;
-		this.override = sample.override;
+		this.visibility = sample.getVisibility();
+		this.macro = sample.isMacro();
+		this.override = sample.isOverride();
 		this.isAbstract = sample.isAbstract();
-		this.linkType = sample.linkType;
 		this.prototype = sample.isPrototype();
-		this.type = sample.type;
-		this.declaredIn = sample.declaredIn;
+		this.linkType = sample.getLinkType();
+		this.type = sample.getType();
+		this.declaredIn = sample.getDeclaredIn();
 	}
 
 	public final MemberId getMemberId() {
@@ -87,6 +92,13 @@ public class FieldDeclaration extends Placed implements Cloneable {
 
 	public final String getDisplayName() {
 		return this.memberId.toString();
+	}
+
+	public FieldKey getFieldKey() {
+		if (this.fieldKey != null) {
+			return this.fieldKey;
+		}
+		return fieldKey(this);
 	}
 
 	public final StaticTypeRef getDeclaredIn() {
@@ -119,6 +131,32 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		return clone;
 	}
 
+	public final boolean isMacro() {
+		return this.macro;
+	}
+
+	public final FieldDeclaration macro() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.macro = true;
+
+		return clone;
+	}
+
+	public final boolean isOverride() {
+		return this.override;
+	}
+
+	public final FieldDeclaration override() {
+
+		final FieldDeclaration clone = clone();
+
+		clone.override = true;
+
+		return clone;
+	}
+
 	public final boolean isAbstract() {
 		return this.isAbstract;
 	}
@@ -141,19 +179,6 @@ public class FieldDeclaration extends Placed implements Cloneable {
 		final FieldDeclaration clone = clone();
 
 		clone.prototype = true;
-
-		return clone;
-	}
-
-	public final boolean isOverride() {
-		return this.override;
-	}
-
-	public final FieldDeclaration override() {
-
-		final FieldDeclaration clone = clone();
-
-		clone.override = true;
 
 		return clone;
 	}
