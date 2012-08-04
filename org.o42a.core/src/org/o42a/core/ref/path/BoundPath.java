@@ -135,6 +135,10 @@ public class BoundPath extends RefPath {
 		return getRawPath().getTemplate();
 	}
 
+	public final boolean hasTemplate(PathTemplate template) {
+		return getTemplate().hasTemplate(template);
+	}
+
 	public final Step[] getSteps() {
 		return getPath().getSteps();
 	}
@@ -566,7 +570,7 @@ public class BoundPath extends RefPath {
 		while (i < steps.length) {
 
 			final Step step = steps[i];
-			final PathFragment fragment = step.getPathFragment();
+			final AbstractPathFragment fragment = step.getPathFragment();
 
 			if (fragment != null) {
 				// Build path fragment and replace current step with it.

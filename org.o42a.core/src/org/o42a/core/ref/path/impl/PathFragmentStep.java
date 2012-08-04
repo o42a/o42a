@@ -31,9 +31,9 @@ import org.o42a.core.source.LocationInfo;
 
 public final class PathFragmentStep extends Step {
 
-	private final PathFragment fragment;
+	private final AbstractPathFragment fragment;
 
-	public PathFragmentStep(PathFragment fragment) {
+	public PathFragmentStep(AbstractPathFragment fragment) {
 		this.fragment = fragment;
 	}
 
@@ -56,7 +56,7 @@ public final class PathFragmentStep extends Step {
 	}
 
 	@Override
-	protected PathFragment getPathFragment() {
+	protected AbstractPathFragment getPathFragment() {
 		return this.fragment;
 	}
 

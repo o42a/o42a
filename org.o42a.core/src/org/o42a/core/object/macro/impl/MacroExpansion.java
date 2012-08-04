@@ -99,11 +99,15 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
-	final Ref expandMacro(Consumer consumer, Scope scope) {
+	final Ref expandMacro(
+			Consumer consumer,
+			Scope scope,
+			PathTemplate template) {
 
 		final Ref macroRef = getMacroRef();
 		final Ref macroExpansion = path(scope).target(macroRef.distribute());
-		final Ref consumption = consumer.expandMacro(macroRef, macroExpansion);
+		final Ref consumption =
+				consumer.expandMacro(macroRef, macroExpansion, template);
 
 		if (consumption == null) {
 			return null;

@@ -19,9 +19,6 @@
 */
 package org.o42a.compiler.ip.type;
 
-import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
-
-import org.o42a.core.Scope;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.MetaDep;
@@ -29,7 +26,7 @@ import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
-import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
@@ -39,17 +36,20 @@ import org.o42a.util.Label;
 final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 
 	private final Ref macroRef;
+	private final TypeParamMacroDep macroDep;
+	private final PathTemplate template;
 	private MetaDep parentDep;
 	private MetaDep nestedDep;
-	private TypeParamMacroDep macroDep;
 
 	TypeParamMetaDep(
 			Meta declaredIn,
 			TypeParamMacroDep macroDep,
-			Ref macroRef) {
+			Ref macroRef,
+			PathTemplate template) {
 		super(declaredIn, macroDep);
 		this.macroDep = macroDep;
 		this.macroRef = macroRef;
+		this.template = template;
 	}
 
 	@Override
@@ -76,7 +76,10 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 	}
 
 	@Override
-	public Ref expandMacro(Ref macroRef, Ref macroExpansion) {
+	public Ref expandMacro(
+			Ref macroRef,
+			Ref macroExpansion,
+			PathTemplate template) {
 		// Label the expansion to recognize it.
 		return macroExpansion.label(this);
 	}
@@ -112,13 +115,13 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 
 	final boolean typeParamChanged(Meta meta) {
 
-		final ValueStruct<?, ?> oldValueStruct =
+		final ValueStruct<?, ?> valueStruct =
 				meta.getObject().value().getValueStruct();
-		final TypeParameters oldParams =
-				oldValueStruct.getParameters();
-		final TypeRef oldTypeRef = oldParams.getTypeRef();
+		final TypeParameters typeParams =
+				valueStruct.getParameters();
+		final TypeRef typeRef = typeParams.getTypeRef();
 
-		return typeParamChanged(meta, oldTypeRef, this.macroDep.getDepth());
+		return typeParamChanged(meta, typeRef, this.macroDep.getDepth());
 	}
 
 	private boolean typeParamChanged(Meta meta, TypeRef typeRef, int depth) {
@@ -126,45 +129,18 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 
 			final TypeParameters subTypeParams =
 					typeRef.getValueStruct().getParameters();
-			final TypeRef oldSubTypeRef = subTypeParams.getTypeRef();
+			final TypeRef subTypeRef = subTypeParams.getTypeRef();
 
-			return typeParamChanged(meta, oldSubTypeRef, depth - 1);
+			return typeParamChanged(meta, subTypeRef, depth - 1);
 		}
 
-		if (!typeRef.getPath().getLabels().have(this)) {
+		if (!typeRef.getPath().hasTemplate(this.template)) {
 			// The value struct does not depend on the same macro expansion
 			// any more (it was overridden).
 			return false;
 		}
 
-		// Re-expand the macro in the new scope.
-		final Ref newRef = macroRef(meta).reexpandMacro().consume(this);
-
-		if (newRef == null) {
-			// Error.
-			return false;
-		}
-
-		// Path changed?
-		return !newRef.getPath().getPath().equals(typeRef.getPath().getPath());
-	}
-
-	private Ref macroRef(Meta meta) {
-
-		final Scope scope = meta.getObject().getScope();
-		final PrefixPath prefix;
-
-		if (this.macroDep.getNesting() == null) {
-			prefix = upgradePrefix(this.macroRef, scope);
-		} else {
-
-			final Scope delcaredIn =
-					nestedDep().getDeclaredIn().getObject().getScope();
-
-			prefix = delcaredIn.getEnclosingScopePath().toPrefix(scope);
-		}
-
-		return this.macroRef.prefixWith(prefix);
+		return true;
 	}
 
 }

@@ -1,6 +1,6 @@
 /*
     Compiler Core
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,11 +20,11 @@
 package org.o42a.core.ref.path;
 
 
-public abstract class PathFragment extends AbstractPathFragment {
+public abstract class PathTemplate extends AbstractPathFragment {
 
 	@Override
 	public final boolean isTemplate() {
-		return false;
+		return true;
 	}
 
 }
