@@ -72,7 +72,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 		dep.register();
 
-		return dep.expandMacro(macroRef, macroExpansion, template);
+		return macroExpansion;
 	}
 
 }
