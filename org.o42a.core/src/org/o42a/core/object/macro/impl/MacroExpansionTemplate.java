@@ -24,10 +24,10 @@ import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
 import org.o42a.core.ref.path.PathExpander;
-import org.o42a.core.ref.path.PathFragment;
+import org.o42a.core.ref.path.PathTemplate;
 
 
-final class MacroExpansionTemplate extends PathFragment {
+final class MacroExpansionTemplate extends PathTemplate {
 
 	private final MacroExpansion expansion;
 	private final Consumer consumer;
@@ -38,16 +38,11 @@ final class MacroExpansionTemplate extends PathFragment {
 	}
 
 	@Override
-	public boolean isTemplate() {
-		return true;
-	}
-
-	@Override
 	public Path expand(PathExpander expander, int index, Scope start) {
 		this.expansion.getMacroRef().assertCompatible(start);
 
 		final Ref consumption =
-				this.expansion.expandMacro(this.consumer, start);
+				this.expansion.expandMacro(this.consumer, start, this);
 
 		if (consumption == null) {
 			return null;

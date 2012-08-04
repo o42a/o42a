@@ -22,6 +22,7 @@ package org.o42a.compiler.ip.type;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
@@ -58,9 +59,12 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public Ref expandMacro(Ref macroRef, Ref macroExpansion) {
+	public Ref expandMacro(
+			Ref macroRef,
+			Ref macroExpansion,
+			PathTemplate template) {
 
-		final TypeParamMetaDep dep = this.macroDep.buildDep(macroRef);
+		final TypeParamMetaDep dep = this.macroDep.buildDep(macroRef, template);
 
 		if (dep == null) {
 			return macroExpansion;
@@ -68,7 +72,7 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 
 		dep.register();
 
-		return dep.expandMacro(macroRef, macroExpansion);
+		return dep.expandMacro(macroRef, macroExpansion, template);
 	}
 
 }

@@ -22,18 +22,23 @@ package org.o42a.compiler.ip.macro;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 
 
 public abstract class MacroDep<D extends MetaDep> {
 
-	public final D buildDep(Ref ref) {
-		if (ref.isStatic()) {
+	public final D buildDep(Ref macroRef, PathTemplate template) {
+		if (macroRef.isStatic()) {
 			return null;
 		}
-		return new MacroDepBuilder<D>(this, ref).buildDep();
+
+		final MacroDepBuilder<D> builder =
+				new MacroDepBuilder<D>(this, macroRef, template);
+
+		return builder.buildDep();
 	}
 
-	public abstract D newDep(Meta meta, Ref ref);
+	public abstract D newDep(Meta meta, Ref ref, PathTemplate template);
 
 	public abstract void setParentDep(D dep, MetaDep parentDep);
 

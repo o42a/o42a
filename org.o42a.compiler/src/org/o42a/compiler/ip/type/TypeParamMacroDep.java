@@ -25,6 +25,7 @@ import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 
 
 final class TypeParamMacroDep
@@ -48,8 +49,8 @@ final class TypeParamMacroDep
 	}
 
 	@Override
-	public TypeParamMetaDep newDep(Meta meta, Ref ref) {
-		return new TypeParamMetaDep(meta, this, ref);
+	public TypeParamMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
+		return new TypeParamMetaDep(meta, this, ref, template);
 	}
 
 	@Override

@@ -91,7 +91,7 @@ public abstract class Step {
 		return ref;
 	}
 
-	protected PathFragment getPathFragment() {
+	protected AbstractPathFragment getPathFragment() {
 		return null;
 	}
 

@@ -19,9 +19,11 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.core.ref.path.PathTemplate;
+
 
 public interface Consumer {
 
-	Ref expandMacro(Ref macroRef, Ref macroExpansion);
+	Ref expandMacro(Ref macroRef, Ref macroExpansion, PathTemplate template);
 
 }

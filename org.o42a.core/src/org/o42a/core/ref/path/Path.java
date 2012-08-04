@@ -139,7 +139,8 @@ public final class Path {
 			return false;
 		}
 
-		final PathFragment fragment = this.steps[len - 1].getPathFragment();
+		final AbstractPathFragment fragment =
+				this.steps[len - 1].getPathFragment();
 
 		return fragment != null && fragment.isTemplate();
 	}
@@ -159,6 +160,26 @@ public final class Path {
 			return this;
 		}
 		return null;
+	}
+
+	public final boolean hasTemplate(PathTemplate template) {
+
+		final Path templatePath = getTemplate();
+
+		if (template == null) {
+			return false;
+		}
+
+		final int len = templatePath.steps.length;
+
+		if (len == 0) {
+			return false;
+		}
+
+		final AbstractPathFragment fragment =
+				templatePath.steps[len - 1].getPathFragment();
+
+		return fragment == template;
 	}
 
 	public final Labels getLabels() {
