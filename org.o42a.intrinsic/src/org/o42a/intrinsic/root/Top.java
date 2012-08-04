@@ -165,7 +165,7 @@ public final class Top extends AbstractScope implements MemberContainer {
 
 	@Override
 	public boolean derivedFrom(Scope other) {
-		return this == other;
+		return is(other);
 	}
 
 	@Override

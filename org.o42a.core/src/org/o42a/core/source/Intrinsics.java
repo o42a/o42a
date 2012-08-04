@@ -43,6 +43,8 @@ public abstract class Intrinsics {
 
 	public abstract Obj getDirective();
 
+	public abstract Obj getMacro();
+
 	public abstract Obj getInteger();
 
 	public abstract Obj getFloat();

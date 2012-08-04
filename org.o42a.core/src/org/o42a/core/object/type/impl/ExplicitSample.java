@@ -53,6 +53,11 @@ public final class ExplicitSample extends Sample {
 	}
 
 	@Override
+	public TypeRef overriddenAncestor() {
+		return this.explicitAscendant.getAncestor();
+	}
+
+	@Override
 	public StaticTypeRef getTypeRef() {
 		return this.explicitAscendant;
 	}

@@ -27,6 +27,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
@@ -63,7 +64,7 @@ public abstract class Step {
 	}
 
 	public Path toPath() {
-		return new Path(getPathKind(), false, this);
+		return new Path(getPathKind(), false, null, this);
 	}
 
 	@Override
@@ -71,7 +72,25 @@ public abstract class Step {
 		return getClass().getSimpleName();
 	}
 
-	protected PathFragment getPathFragment() {
+	/**
+	 * This is ivoked by {@link Ref#consume(Consumer)} for the last step
+	 * of the path to optionally {@link Consumer consume} the reference.
+	 *
+	 * <p>This method's call is optional. But it is required e.g. for macro
+	 * expansion. It is a step's responsibility to report the required call
+	 * is missing.</p>
+	 *
+	 * @param ref the reference this step belongs to.
+	 * @param consumer the path consumer.
+	 *
+	 * @return the reference consumption result or the {@code ref} itself if
+	 * consumption is not required.
+	 */
+	protected Ref consume(Ref ref, Consumer consumer) {
+		return ref;
+	}
+
+	protected AbstractPathFragment getPathFragment() {
 		return null;
 	}
 

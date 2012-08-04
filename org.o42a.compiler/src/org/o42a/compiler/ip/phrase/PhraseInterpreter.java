@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.phrase;
 import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ClauseVisitor.CLAUSE_VISITOR;
-import static org.o42a.compiler.ip.phrase.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.ast.clause.ClauseNode;
@@ -35,6 +34,7 @@ import org.o42a.compiler.ip.SampleSpecVisitor;
 import org.o42a.compiler.ip.operator.ComparisonExpression;
 import org.o42a.compiler.ip.phrase.part.BinaryPhrasePart;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.StaticTypeRef;
@@ -46,12 +46,14 @@ public final class PhraseInterpreter {
 	public static Phrase phrase(
 			Interpreter ip,
 			PhraseNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
 		final Phrase phrase =
 				new Phrase(ip, location(distributor, node), distributor);
-		final Phrase prefixed =
-				node.getPrefix().accept(PHRASE_PREFIX_VISITOR, phrase);
+		final Phrase prefixed = node.getPrefix().accept(
+				new PhrasePrefixVisitor(typeConsumer),
+				phrase);
 
 		return addClauses(prefixed, node);
 	}
@@ -71,10 +73,13 @@ public final class PhraseInterpreter {
 	public static Phrase ascendants(
 			Interpreter ip,
 			ValueTypeNode node,
-			Distributor distributor) {
+			Distributor distributor,
+			TypeConsumer typeConsumer) {
 
-		final TypeParameters typeParams =
-				ip.typeParameters(node.getValueType(), distributor);
+		final TypeParameters typeParams = ip.typeParameters(
+				node.getValueType(),
+				distributor,
+				typeConsumer.paramConsumer());
 		final Phrase phrase =
 				new Phrase(ip, location(distributor, node), distributor);
 

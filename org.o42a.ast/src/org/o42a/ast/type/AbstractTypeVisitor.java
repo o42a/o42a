@@ -20,6 +20,7 @@
 package org.o42a.ast.type;
 
 import org.o42a.ast.Node;
+import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.AbstractRefVisitor;
 import org.o42a.ast.ref.RefNode;
 
@@ -36,6 +37,11 @@ public abstract class AbstractTypeVisitor<R, P>
 	@Override
 	public R visitValueType(ValueTypeNode valueType, P p) {
 		return visitType(valueType, p);
+	}
+
+	@Override
+	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
+		return visitType(expansion, p);
 	}
 
 	@Override

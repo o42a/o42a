@@ -19,16 +19,15 @@
 */
 package org.o42a.core.member.field.decl;
 
-import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.object.def.Definitions.emptyDefinitions;
 import static org.o42a.core.object.type.FieldAscendants.NO_FIELD_ASCENDANTS;
 
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.Field;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
+import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
 
 
@@ -51,6 +50,11 @@ public final class PropagatedObject extends Obj {
 	}
 
 	@Override
+	protected Nesting createNesting() {
+		return getScope().toField().toMember().getNesting();
+	}
+
+	@Override
 	protected Ascendants buildAscendants() {
 		return new Ascendants(this).declareField(NO_FIELD_ASCENDANTS);
 	}
@@ -62,15 +66,6 @@ public final class PropagatedObject extends Obj {
 	@Override
 	protected Definitions explicitDefinitions() {
 		return emptyDefinitions(this, getScope());
-	}
-
-	@Override
-	protected Obj findObjectIn(Scope enclosing) {
-
-		final MemberField field = enclosing.getContainer().member(
-				getScope().toField().getKey()).toField();
-
-		return field.object(dummyUser());
 	}
 
 }

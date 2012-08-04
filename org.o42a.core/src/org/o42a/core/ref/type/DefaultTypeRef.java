@@ -20,19 +20,13 @@
 package org.o42a.core.ref.type;
 
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
 
 final class DefaultTypeRef extends TypeRef {
 
-	DefaultTypeRef(
-			Ref unprefixedRef,
-			PrefixPath prefix,
-			ValueStructFinder valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		super(unprefixedRef, prefix, valueStructFinder, valueStruct);
+	DefaultTypeRef(Ref ref, ValueStructFinder valueStructFinder) {
+		super(ref, valueStructFinder);
 	}
 
 	@Override
@@ -42,23 +36,17 @@ final class DefaultTypeRef extends TypeRef {
 
 	@Override
 	public final Ref getIntactRef() {
-		return getUnprefixedRef();
+		return getRef();
 	}
 
 	@Override
-	protected DefaultTypeRef create(
-			Ref unprefixedRef,
+	protected TypeRef create(
 			Ref intactRef,
-			PrefixPath prefix,
-			ValueStructFinder valueStructFinder,
-			ValueStruct<?, ?> valueStruct) {
-		assert unprefixedRef == intactRef :
-			unprefixedRef + " should be the same as " + intactRef;
-		return new DefaultTypeRef(
-				unprefixedRef,
-				prefix,
-				valueStructFinder,
-				valueStruct);
+			Ref ref,
+			ValueStructFinder valueStructFinder) {
+		assert intactRef == ref :
+			intactRef + " should be the same as " + intactRef;
+		return new DefaultTypeRef(ref, valueStructFinder);
 	}
 
 }

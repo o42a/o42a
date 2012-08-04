@@ -72,8 +72,12 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner addImplicitSample(StaticTypeRef implicitAscendant) {
-		this.ascendants = this.ascendants.addImplicitSample(implicitAscendant);
+	public ObjectDefiner addImplicitSample(
+			StaticTypeRef implicitAscendant,
+			TypeRef overriddenAncestor) {
+		this.ascendants = this.ascendants.addImplicitSample(
+				implicitAscendant,
+				overriddenAncestor);
 		return this;
 	}
 
@@ -86,6 +90,14 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	@Override
 	public void define(BlockBuilder definitions) {
 		definitions.buildBlock(this.field.getContent());
+	}
+
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return "ObjectDefiner[" + this.field + ']';
 	}
 
 }

@@ -19,6 +19,9 @@
 */
 package org.o42a.core.member.field;
 
+import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
+import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.st.sentence.BlockBuilder.emptyBlock;
 
 import org.o42a.core.Distributor;
@@ -64,7 +67,10 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 		return this.ancestor == null && this.samples.length == 0;
 	}
 
-	public final int getLinkDepth() {
+	public final DefinitionTarget getDefinitionTarget() {
+		if (isEmpty()) {
+			return defaultDefinition();
+		}
 
 		final TypeRef ancestor = getAncestor();
 
@@ -72,8 +78,8 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 
 			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
-			if (!valueStruct.isVoid()) {
-				return valueStruct.getLinkDepth();
+			if (valueStruct.isVoid()) {
+				return definitionTarget(valueStruct);
 			}
 		}
 
@@ -82,11 +88,12 @@ public class AscendantsDefinition extends Placed implements Cloneable {
 			final ValueStruct<?, ?> valueStruct = sample.getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return valueStruct.getLinkDepth();
+				return definitionTarget(valueStruct);
 			}
 		}
 
-		return 0;
+		return objectDefinition();
+
 	}
 
 	public final TypeRef getAncestor() {

@@ -71,7 +71,7 @@ final class StaticStep extends Step {
 
 	@Override
 	public Path toPath() {
-		return new Path(getPathKind(), true, this);
+		return new Path(getPathKind(), true, null, this);
 	}
 
 	@Override

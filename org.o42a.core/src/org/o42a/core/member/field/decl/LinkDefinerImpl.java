@@ -45,16 +45,6 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	@Override
-	public TypeRef getTypeRef() {
-		return this.field.getDeclaration().getType();
-	}
-
-	@Override
-	public TargetRef getTargetRef() {
-		return this.targetRef;
-	}
-
-	@Override
 	public void setTargetRef(Ref ref, TypeRef defaultType) {
 
 		final TypeRef explicitTypeRef = explicitTypeRef();
@@ -64,7 +54,18 @@ final class LinkDefinerImpl implements LinkDefiner {
 		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
 	}
 
+	@Override
+	public String toString() {
+		if (this.field == null) {
+			return super.toString();
+		}
+		return "LinkDefiner[" + this.field + ']';
+	}
+
 	final Ascendants getAscendants() {
+		if (this.targetRef == null) {
+			return this.ascendants;
+		}
 		return this.ascendants.setAncestor(
 				ancestor(this.targetRef.getTypeRef()));
 	}
@@ -78,18 +79,12 @@ final class LinkDefinerImpl implements LinkDefiner {
 
 			final TypeRef ancestor = this.ascendants.getAncestor();
 
-			if (ancestor != null
-					&& ancestor.getValueType().isLink()) {
+			if (ancestor != null && ancestor.getValueType().isLink()) {
 
 				final LinkValueType linkType =
 						ancestor.getValueType().toLinkType();
 				final TypeRef newAncestor = ancestor.setValueStruct(
 						linkType.linkStruct(targetType));
-
-				if (!newAncestor.relationTo(ancestor).checkDerived(
-						this.field.getLogger())) {
-					getField().invalid();
-				}
 
 				return newAncestor;
 			}

@@ -22,7 +22,6 @@ package org.o42a.core.ref;
 import static org.o42a.core.object.link.TargetRef.targetRef;
 import static org.o42a.core.ref.path.Path.FALSE_PATH;
 import static org.o42a.core.ref.path.Path.VOID_PATH;
-import static org.o42a.core.ref.path.PrefixPath.upgradePrefix;
 import static org.o42a.core.ref.type.TypeRef.staticTypeRef;
 import static org.o42a.core.ref.type.TypeRef.typeRef;
 
@@ -139,6 +138,21 @@ public class Ref extends Statement {
 	public final Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return new Resolution(this, resolver);
+	}
+
+	public final Ref expandMacro() {
+		return getPath().expandMacro().target(distribute());
+	}
+
+	public final Ref reexpandMacro() {
+		return getPath().reexpandMacro().target(distribute());
+	}
+
+	public final Ref consume(Consumer consumer) {
+
+		final RefPath path = getPath();
+
+		return path.consume(this, consumer);
 	}
 
 	public final Resolution resolveAll(FullResolver resolver) {
@@ -277,10 +291,15 @@ public class Ref extends Statement {
 	}
 
 	public final Ref upgradeScope(Scope toScope) {
-		if (getScope().is(toScope)) {
+
+		final BoundPath oldPath = getPath();
+		final BoundPath newPath = oldPath.upgradeScope(toScope);
+
+		if (oldPath == newPath) {
 			return this;
 		}
-		return prefixWith(upgradePrefix(this, toScope));
+
+		return newPath.target(distributeIn(toScope.getContainer()));
 	}
 
 	public final Ref rescope(Scope toScope) {
@@ -288,6 +307,10 @@ public class Ref extends Statement {
 			return this;
 		}
 		return prefixWith(toScope.pathTo(getScope()));
+	}
+
+	public final Ref rebuildIn(Scope scope) {
+		return getPath().rebuildIn(scope).target(distribute());
 	}
 
 	public final TypeRef toTypeRef() {

@@ -30,9 +30,7 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.BoundPath;
-import org.o42a.core.ref.path.ObjectConstructor;
-import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -186,15 +184,33 @@ public class ArrayConstructor extends ObjectConstructor {
 		}
 
 		@Override
+		public ValueStructFinder prefixWith(PrefixPath prefix) {
+
+			final Ref arrayRef = this.arrayRef.prefixWith(prefix);
+
+			if (this.arrayRef == arrayRef) {
+				return this;
+			}
+
+			return new ArrayStructByItems(arrayRef);
+		}
+
+		@Override
 		public ValueStruct<?, ?> valueStructBy(
-				Ref ref,
 				ValueStruct<?, ?> defaultStruct) {
 			return this.arrayRef.valueStruct(this.arrayRef.getScope());
 		}
 
 		@Override
-		public ValueStruct<?, ?> toValueStruct() {
-			return null;
+		public ValueStructFinder reproduce(Reproducer reproducer) {
+
+			final Ref arrayRef = this.arrayRef.reproduce(reproducer);
+
+			if (arrayRef == null) {
+				return null;
+			}
+
+			return new ArrayStructByItems(arrayRef);
 		}
 
 	}

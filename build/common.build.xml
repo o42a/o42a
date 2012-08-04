@@ -81,7 +81,6 @@
 			implicit="true"
 			description="Nested elements of javac task"/>
 		<sequential>
-			<echo message="${project.classpath}"/>
 			<javac
 				srcdir="@{srcdir}" 
 				destdir="@{destdir}"

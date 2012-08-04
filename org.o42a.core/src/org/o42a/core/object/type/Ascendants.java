@@ -20,6 +20,9 @@
 package org.o42a.core.object.type;
 
 import static org.o42a.analysis.use.User.dummyUser;
+import static org.o42a.core.member.field.DefinitionTarget.defaultDefinition;
+import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
+import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.ref.RefUsage.TYPE_REF_USAGE;
 
 import java.util.Arrays;
@@ -28,6 +31,7 @@ import org.o42a.analysis.use.UserInfo;
 import org.o42a.core.Scope;
 import org.o42a.core.member.AdapterId;
 import org.o42a.core.member.Member;
+import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.object.*;
 import org.o42a.core.object.type.impl.ExplicitSample;
 import org.o42a.core.object.type.impl.ImplicitSample;
@@ -158,7 +162,10 @@ public class Ascendants
 		return getSamples().length == 0;
 	}
 
-	public final int getLinkDepth() {
+	public final DefinitionTarget getDefinitionTarget() {
+		if (isEmpty()) {
+			return defaultDefinition();
+		}
 
 		final TypeRef ancestor = getExplicitAncestor();
 
@@ -167,7 +174,7 @@ public class Ascendants
 			final ValueStruct<?, ?> valueStruct = ancestor.getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return ancestor.getValueStruct().getLinkDepth();
+				return definitionTarget(ancestor.getValueStruct());
 			}
 		}
 
@@ -177,11 +184,11 @@ public class Ascendants
 					sample.getObject().value().getValueStruct();
 
 			if (!valueStruct.isVoid()) {
-				return valueStruct.getLinkDepth();
+				return definitionTarget(valueStruct);
 			}
 		}
 
-		return 0;
+		return objectDefinition();
 	}
 
 	@Override
@@ -195,13 +202,16 @@ public class Ascendants
 	}
 
 	@Override
-	public Ascendants addImplicitSample(StaticTypeRef implicitAscendant) {
+	public Ascendants addImplicitSample(
+			StaticTypeRef implicitAscendant,
+			TypeRef overriddenAncestor) {
 
 		final Scope enclosingScope = getScope().getEnclosingScope();
 
 		implicitAscendant.assertCompatible(enclosingScope);
 
-		return addSample(new ImplicitSample(implicitAscendant, this));
+		return addSample(
+				new ImplicitSample(this, implicitAscendant, overriddenAncestor));
 	}
 
 	@Override
@@ -218,6 +228,7 @@ public class Ascendants
 
 	public void resolveAll() {
 		validate();
+		validateOverriddenAncestors();
 
 		final UserInfo user = getObject().type();
 		final TypeRef ancestor = getExplicitAncestor();
@@ -314,7 +325,14 @@ public class Ascendants
 	@Override
 	protected Ascendants clone() {
 		try {
-			return (Ascendants) super.clone();
+
+			final Ascendants clone = (Ascendants) super.clone();
+
+			clone.ancestor = null;
+			clone.validated = false;
+			clone.discardedSamples = NO_SAMPLES;
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
@@ -423,6 +441,18 @@ public class Ascendants
 		return result;
 	}
 
+	private void validateOverriddenAncestors() {
+
+		final TypeRef ancestor = getAncestor();
+
+		if (ancestor == null) {
+			return;
+		}
+		for (Sample sample : getSamples()) {
+			validateSampleAncestor(sample, ancestor, true);
+		}
+	}
+
 	private boolean validateSample(Sample sample, int index) {
 		if (!sample.getTypeRef().isValid()) {
 			return false;
@@ -457,57 +487,15 @@ public class Ascendants
 			}
 		}
 
-		final TypeRef sampleAncestor = sample.getAncestor();
-
-		if (!sampleAncestor.isValid()) {
+		if (!sample.getAncestor().isValid()) {
 			return false;
-		}
-
-		final boolean explicit = sample.isExplicit();
-		final TypeRef ancestor = getExplicitAncestor();
-
-		if (ancestor != null) {
-
-			final TypeRef first;
-			final TypeRef second;
-
-			if (explicit) {
-				first = ancestor;
-				second = sampleAncestor;
-			} else {
-				first = sampleAncestor;
-				second = ancestor;
-			}
-
-			final TypeRelation relation =
-					first.relationTo(second)
-					.revert(!explicit)
-					.check(getScope().getLogger());
-
-			if (!relation.isDerivative()) {
-				if (!relation.isError()) {
-					ancestor.relationTo(sampleAncestor)
-					.check(getScope().getLogger());
-					getScope().getLogger().error(
-							"unexpected_ancestor",
-							sample,
-							"Wrong ancestor: %s, but expected: %s",
-							second,
-							first);
-				}
-				if (explicit) {
-					return discardSample(sample);
-				}
-				this.explicitAncestor = null;
-				return true;
-			}
 		}
 
 		for (int i = index + 1; i < this.samples.length; ++i) {
 
 			final Sample s = this.samples[i];
 
-			if (!explicit) {
+			if (!sample.isExplicit()) {
 
 				final TypeRelation relation =
 						sample.getTypeRef().relationTo(s.getTypeRef());
@@ -534,6 +522,52 @@ public class Ascendants
 		}
 
 		return true;
+	}
+
+	private int validateSampleAncestor(
+			Sample sample,
+			TypeRef ancestor,
+			boolean overriddenAncestor) {
+
+		final TypeRef sampleAncestor =
+				overriddenAncestor
+				? sample.overriddenAncestor() : sample.getAncestor();
+		final boolean explicit = sample.isExplicit();
+		final TypeRef first;
+		final TypeRef second;
+
+		if (explicit) {
+			first = ancestor;
+			second = sampleAncestor;
+		} else {
+			first = sampleAncestor;
+			second = ancestor;
+		}
+
+		final TypeRelation relation =
+				first.relationTo(second)
+				.revert(!explicit)
+				.check(getScope().getLogger());
+
+		if (!relation.isDerivative()) {
+			if (!relation.isError()) {
+				ancestor.relationTo(sampleAncestor)
+				.check(getScope().getLogger());
+				getScope().getLogger().error(
+						"unexpected_ancestor",
+						sample,
+						"Wrong ancestor: %s, but expected: %s",
+						second,
+						first);
+			}
+			if (explicit) {
+				return -1;
+			}
+			this.explicitAncestor = null;
+			return 1;
+		}
+
+		return 0;
 	}
 
 	private boolean discardSample(Sample sample) {
