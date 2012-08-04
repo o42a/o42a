@@ -23,17 +23,15 @@ import org.o42a.core.object.Meta;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.meta.MetaDep;
 import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.PathTemplate;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.TypeParameters;
 import org.o42a.core.value.ValueStruct;
-import org.o42a.util.Label;
 
 
-final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
+final class TypeParamMetaDep extends MetaDep {
 
 	private final Ref macroRef;
 	private final TypeParamMacroDep macroDep;
@@ -73,15 +71,6 @@ final class TypeParamMetaDep extends MetaDep implements Label<Void>, Consumer {
 				nesting.findObjectIn(getDeclaredIn().getObject().getScope());
 
 		return this.nestedDep = new ValueStructUpdate(this, nested.meta());
-	}
-
-	@Override
-	public Ref expandMacro(
-			Ref macroRef,
-			Ref macroExpansion,
-			PathTemplate template) {
-		// Label the expansion to recognize it.
-		return macroExpansion.label(this);
 	}
 
 	@Override
