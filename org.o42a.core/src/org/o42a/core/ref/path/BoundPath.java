@@ -275,7 +275,7 @@ public class BoundPath extends RefPath {
 
 		if (oldPath.isAbsolute()
 				&& oldPath.getTemplate() == null
-				&& prefix.getBoundPath().getLabels().isEmpty()) {
+				&& prefix.getBoundPath().getRawPath().getLabels().isEmpty()) {
 			if (prefix.getStart().is(getOrigin())) {
 				return this;
 			}

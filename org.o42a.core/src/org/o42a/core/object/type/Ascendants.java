@@ -325,7 +325,14 @@ public class Ascendants
 	@Override
 	protected Ascendants clone() {
 		try {
-			return (Ascendants) super.clone();
+
+			final Ascendants clone = (Ascendants) super.clone();
+
+			clone.ancestor = null;
+			clone.validated = false;
+			clone.discardedSamples = NO_SAMPLES;
+
+			return clone;
 		} catch (CloneNotSupportedException e) {
 			return null;
 		}
@@ -482,22 +489,6 @@ public class Ascendants
 
 		if (!sample.getAncestor().isValid()) {
 			return false;
-		}
-
-		final TypeRef ancestor = getExplicitAncestor();
-
-		if (ancestor != null) {
-
-			final int validation =
-					validateSampleAncestor(sample, ancestor, false);
-
-			if (validation != 0) {
-				if (validation < 0) {
-					return discardSample(sample);
-				}
-				this.explicitAncestor = null;
-				return true;
-			}
 		}
 
 		for (int i = index + 1; i < this.samples.length; ++i) {
