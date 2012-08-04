@@ -199,6 +199,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 		return toScoped() != null;
 	}
 
+	@Override
 	public abstract S prefixWith(PrefixPath prefix);
 
 	public abstract S upgradeScope(Scope toScope);
@@ -206,13 +207,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 	public abstract S rebuildIn(Scope scope);
 
 	@Override
-	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
-		return toValueStruct();
-	}
-
 	@SuppressWarnings("unchecked")
-	@Override
-	public final S toValueStruct() {
+	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return (S) this;
 	}
 
@@ -222,6 +218,7 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract ArrayValueStruct toArrayStruct();
 
+	@Override
 	public abstract S reproduce(Reproducer reproducer);
 
 	public abstract void resolveAll(FullResolver resolver);

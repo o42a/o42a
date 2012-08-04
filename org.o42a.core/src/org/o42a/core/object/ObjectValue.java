@@ -119,6 +119,9 @@ public final class ObjectValue extends ObjectValueParts {
 
 		object.resolve();
 
+		if (object.toString().equals("Propagated[<[Call propagation: a: foo] <Call propagation: a: foo>/(PhraseConstructor[Call propagation: a: foo@Call propagation]:[Call propagation:4,7(60)..4,14(67)])> / Call propagation: b: foo {clone of: call propagation: a: foo}]")) {
+			System.err.println("(!)");
+		}
 		final Definitions definitions = object.overrideDefinitions(
 				object.getScope(),
 				getOverriddenDefinitions())
