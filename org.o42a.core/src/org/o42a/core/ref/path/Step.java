@@ -20,7 +20,6 @@
 package org.o42a.core.ref.path;
 
 import static org.o42a.core.ref.path.impl.AncestorFragment.ANCESTOR_FRAGMENT;
-import static org.o42a.util.Labels.NO_LABELS;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
@@ -65,7 +64,7 @@ public abstract class Step {
 	}
 
 	public Path toPath() {
-		return new Path(getPathKind(), false, null, NO_LABELS, this);
+		return new Path(getPathKind(), false, null, this);
 	}
 
 	@Override

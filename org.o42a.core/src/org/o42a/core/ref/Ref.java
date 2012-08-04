@@ -45,7 +45,6 @@ import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
 import org.o42a.core.value.*;
-import org.o42a.util.Label;
 import org.o42a.util.fn.Cancelable;
 
 
@@ -139,14 +138,6 @@ public class Ref extends Statement {
 	public final Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return new Resolution(this, resolver);
-	}
-
-	public final Ref label(Label<?> label) {
-		return getPath().label(label).target(distribute());
-	}
-
-	public final <L extends Label<T>, T> Ref label(L label, T value) {
-		return getPath().label(label, value).target(distribute());
 	}
 
 	public final Ref expandMacro() {
