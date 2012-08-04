@@ -172,20 +172,33 @@ public final class ArrayValueStruct
 
 	@Override
 	public ArrayValueStruct prefixWith(PrefixPath prefix) {
-		if (prefix.emptyFor(toScoped())) {
+
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+		final TypeRef newItemTypeRef = oldItemTypeRef.prefixWith(prefix);
+
+		if (oldItemTypeRef == newItemTypeRef) {
 			return this;
 		}
-		return new ArrayValueStruct(
-				getValueType(),
-				getItemTypeRef().prefixWith(prefix));
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override
 	public ArrayValueStruct upgradeScope(Scope toScope) {
-		if (toScoped().getScope().is(toScope)) {
+		return prefixWith(upgradePrefix(toScoped(), toScope));
+	}
+
+	@Override
+	public ArrayValueStruct rebuildIn(Scope scope) {
+
+		final TypeRef oldItemTypeRef = getItemTypeRef();
+		final TypeRef newItemTypeRef = oldItemTypeRef.rebuildIn(scope);
+
+		if (oldItemTypeRef == newItemTypeRef) {
 			return this;
 		}
-		return prefixWith(upgradePrefix(toScoped(), toScope));
+
+		return new ArrayValueStruct(getValueType(), newItemTypeRef);
 	}
 
 	@Override

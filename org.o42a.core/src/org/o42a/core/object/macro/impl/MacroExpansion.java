@@ -36,7 +36,6 @@ import org.o42a.core.value.ValueType;
 public class MacroExpansion extends PathFragment {
 
 	private final Ref macroRef;
-	private final BoundPath path;
 	private Scope origin;
 	private Path initialExpansion;
 	private IdentityHashMap<Scope, Path> expansions;
@@ -46,22 +45,17 @@ public class MacroExpansion extends PathFragment {
 	public MacroExpansion(Ref macroRef, boolean reexpansion) {
 		this.macroRef = macroRef;
 		this.reexpansion = reexpansion;
-		this.path = toPath().bind(macroRef, macroRef.getScope());
 	}
 
 	public final Ref getMacroRef() {
 		return this.macroRef;
 	}
 
-	public final BoundPath getPath() {
-		return this.path;
-	}
-
 	public final Scope getOrigin() {
 		if (this.origin == null) {
 			// Initiate the expansion in the original scope.
 			this.init = -1;
-			getPath().rebuild();
+			path(getMacroRef().getScope()).rebuild();
 			// This may be not updated due to resolution errors.
 			this.init = 1;
 		}
@@ -76,7 +70,7 @@ public class MacroExpansion extends PathFragment {
 		}
 		if (this.init == 0) {
 			// Expansion not initiated yet.
-			if (expander.getPath() != getPath()) {
+			if (!start.is(getMacroRef().getScope())) {
 				// Build an initial expansion
 				// and return the (re-)expansion in the given one.
 				return expandInScope(expander, start);
@@ -105,10 +99,10 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
-	final Ref expandMacro(Consumer consumer) {
+	final Ref expandMacro(Consumer consumer, Scope scope) {
 
 		final Ref macroRef = getMacroRef();
-		final Ref macroExpansion = getPath().target(macroRef.distribute());
+		final Ref macroExpansion = path(scope).target(macroRef.distribute());
 		final Ref consumption = consumer.expandMacro(macroRef, macroExpansion);
 
 		if (consumption == null) {
@@ -118,6 +112,10 @@ public class MacroExpansion extends PathFragment {
 		consumption.assertSameScope(macroRef);
 
 		return consumption;
+	}
+
+	private BoundPath path(Scope scope) {
+		return toPath().bind(getMacroRef(), scope);
 	}
 
 	private Path expandInScope(PathExpander expander, Scope start) {

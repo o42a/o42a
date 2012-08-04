@@ -79,7 +79,7 @@ public final class StaticTypeRef extends TypeRef {
 	}
 
 	@Override
-	public StaticTypeRef reproduce(Reproducer reproducer) {
+	public final StaticTypeRef reproduce(Reproducer reproducer) {
 		return (StaticTypeRef) super.reproduce(reproducer);
 	}
 

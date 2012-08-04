@@ -275,6 +275,15 @@ public final class Path {
 		return new Path(getKind(), isStatic(), null, getLabels(), newSteps);
 	}
 
+	public final Path removeTemplate() {
+		if (getTemplate() == null) {
+			return this;
+		}
+		assert !isTemplate() :
+			this + " is template path";
+		return new Path(getKind(), isStatic(), null, getLabels(), getSteps());
+	}
+
 	public final BoundPath bind(LocationInfo location, Scope origin) {
 		return new BoundPath(location, origin, this);
 	}

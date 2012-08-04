@@ -72,8 +72,12 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 	}
 
 	@Override
-	public ObjectDefiner addImplicitSample(StaticTypeRef implicitAscendant) {
-		this.ascendants = this.ascendants.addImplicitSample(implicitAscendant);
+	public ObjectDefiner addImplicitSample(
+			StaticTypeRef implicitAscendant,
+			TypeRef overriddenAncestor) {
+		this.ascendants = this.ascendants.addImplicitSample(
+				implicitAscendant,
+				overriddenAncestor);
 		return this;
 	}
 

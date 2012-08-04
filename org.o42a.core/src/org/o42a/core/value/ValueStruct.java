@@ -203,6 +203,8 @@ public abstract class ValueStruct<S extends ValueStruct<S, T>, T>
 
 	public abstract S upgradeScope(Scope toScope);
 
+	public abstract S rebuildIn(Scope scope);
+
 	@Override
 	public final S valueStructBy(ValueStruct<?, ?> defaultStruct) {
 		return toValueStruct();

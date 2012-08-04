@@ -33,7 +33,9 @@ public interface AscendantsBuilder<A extends AscendantsBuilder<A>> {
 
 	A addExplicitSample(StaticTypeRef explicitAscendant);
 
-	A addImplicitSample(StaticTypeRef implicitAscendant);
+	A addImplicitSample(
+			StaticTypeRef implicitAscendant,
+			TypeRef overriddenAncestor);
 
 	A addMemberOverride(Member overriddenMember);
 

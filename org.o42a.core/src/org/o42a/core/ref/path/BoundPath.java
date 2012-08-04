@@ -293,6 +293,17 @@ public class BoundPath extends RefPath {
 		return newPath.bind(this, prefix.getStart());
 	}
 
+	public final BoundPath upgradeScope(Scope toScope) {
+		if (toScope.is(getOrigin())) {
+			return this;
+		}
+		return getRawPath().bind(this, toScope);
+	}
+
+	public final BoundPath rebuildIn(Scope scope) {
+		return upgradeScope(scope).getPath().removeTemplate().bind(this, scope);
+	}
+
 	public final BoundPath cut(int stepsToCut) {
 		return getRawPath().cut(stepsToCut).bind(this, this.origin);
 	}
