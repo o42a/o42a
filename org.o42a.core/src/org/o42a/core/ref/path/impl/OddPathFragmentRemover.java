@@ -147,14 +147,25 @@ public class OddPathFragmentRemover implements PathWalker {
 			final int removeUpto = this.entries.get(i).removeUpTo;
 
 			if (removeUpto <= 0) {
+				// No odd fragment starts at this step.
+				++i;
+				continue;
+			}
+			if (removeUpto >= steps.length) {
+				// The odd fragment includes non-existing steps.
+				// This is possible for template.
 				++i;
 				continue;
 			}
 
 			final int nextIdx = removeUpto + 1;
 
+			// Remove the odd fragment.
 			result = ArrayUtil.remove(result, i - delta, nextIdx - delta);
+			// Increase the delta between the original path step index
+			// and modified one.
 			delta += nextIdx - i;
+			// Continue from the first not removed step.
 			i = nextIdx;
 		}
 
