@@ -28,7 +28,7 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.value.ValueType;
 
 
-public class MacroOverrideTest extends CompilerTestCase {
+public class MacroDerivationTest extends CompilerTestCase {
 
 	@Test
 	public void overrideMacro() {
@@ -42,10 +42,53 @@ public class MacroOverrideTest extends CompilerTestCase {
 				")");
 
 		final Obj afTarget = linkTarget(field("a", "f"));
-		final Obj bfTarget = linkTarget(field("b", "f"));
+		final Obj bf = field("b", "f").toObject();
+		final Obj bfTarget = linkTarget(bf);
 
 		assertTrueVoid(afTarget);
 		assertThat(definiteValue(bfTarget, ValueType.INTEGER), is(1L));
+
+		assertThat(bf.meta().isUpdated(), is(true));
+	}
+
+	@Test
+	public void propagateMacro() {
+		compile(
+				"A := void (",
+				"  #T := void",
+				"  F := (`#t) 1",
+				")",
+				"B := a");
+
+		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj bf = field("b", "f").toObject();
+		final Obj bfTarget = linkTarget(bf);
+
+		assertTrueVoid(afTarget);
+		assertTrueVoid(bfTarget);
+
+		assertThat(bf.meta().isUpdated(), is(false));
+	}
+
+	@Test
+	public void propagateDeepMacro() {
+		compile(
+				"A := void (",
+				"  Inner := void (",
+				"    #T := void",
+				"  )",
+				"  F := (`#inner: t) 1",
+				")",
+				"B := a");
+
+		final Obj afTarget = linkTarget(field("a", "f"));
+		final Obj bf = field("b", "f").toObject();
+		final Obj bfTarget = linkTarget(bf);
+
+		assertTrueVoid(afTarget);
+		assertTrueVoid(bfTarget);
+
+		assertThat(bf.meta().isUpdated(), is(false));
 	}
 
 }
