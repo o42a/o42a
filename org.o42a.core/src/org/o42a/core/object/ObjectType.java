@@ -186,7 +186,7 @@ public final class ObjectType implements UserInfo {
 
 		final ValueType<?> valueType = getObject().value().getValueType();
 
-		if (!valueType.isLink() && !valueType.isMacro()) {
+		if (!valueType.isLink()) {
 			return null;
 		}
 
