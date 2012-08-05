@@ -88,7 +88,8 @@ public final class Path {
 		this.template = template;
 		this.isStatic = kind.isAbsolute() ? true : isStatic;
 		this.steps = steps;
-		assert assertStepsNotNull(steps);
+		assert stepsNotNull(steps);
+		assert validTemplate();
 	}
 
 	public final PathKind getKind() {
@@ -361,10 +362,18 @@ public final class Path {
 		return out.toString();
 	}
 
-	private static boolean assertStepsNotNull(Step[] steps) {
+	private static final boolean stepsNotNull(Step[] steps) {
 		for (Step step : steps) {
 			assert step != null :
 				"Path step is null";
+		}
+		return true;
+	}
+
+	private final boolean validTemplate() {
+		if (this.template != null) {
+			assert !isTemplate() :
+				"Template path can not be templated";
 		}
 		return true;
 	}
