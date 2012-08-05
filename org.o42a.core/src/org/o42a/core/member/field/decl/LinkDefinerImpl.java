@@ -19,6 +19,8 @@
 */
 package org.o42a.core.member.field.decl;
 
+import static org.o42a.core.value.TypeParameters.typeMutability;
+
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.object.link.LinkValueType;
@@ -66,38 +68,29 @@ final class LinkDefinerImpl implements LinkDefiner {
 		if (this.targetRef == null) {
 			return this.ascendants;
 		}
+
+		final TypeRef targetType = this.targetRef.getTypeRef();
+		final FieldDeclaration declaration = getField().getDeclaration();
+		final LinkValueType linkType = declaration.getLinkType();
+
+		if (!this.ascendants.isEmpty()) {
+			return this.ascendants.setTypeParameters(
+					typeMutability(
+							targetType,
+							targetType.getRef().distribute(),
+							linkType)
+					.setTypeRef(targetType));
+		}
+
 		return this.ascendants.setAncestor(
-				ancestor(this.targetRef.getTypeRef()));
+				linkType.typeRef(
+						declaration,
+						declaration.getScope(),
+						linkType.linkStruct(targetType)));
 	}
 
 	private TypeRef explicitTypeRef() {
 		return this.field.getDeclaration().getType();
-	}
-
-	private TypeRef ancestor(TypeRef targetType) {
-		if (this.ascendants != null) {
-
-			final TypeRef ancestor = this.ascendants.getAncestor();
-
-			if (ancestor != null && ancestor.getValueType().isLink()) {
-
-				final LinkValueType linkType =
-						ancestor.getValueType().toLinkType();
-				final TypeRef newAncestor = ancestor.setValueStruct(
-						linkType.linkStruct(targetType));
-
-				return newAncestor;
-			}
-		}
-
-		final LinkValueType linkType =
-				this.field.getDeclaration().getLinkType();
-		final FieldDeclaration declaration = this.field.getDeclaration();
-
-		return linkType.typeRef(
-				declaration,
-				declaration.getScope(),
-				linkType.linkStruct(targetType));
 	}
 
 }
