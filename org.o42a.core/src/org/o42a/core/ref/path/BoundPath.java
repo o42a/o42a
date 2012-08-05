@@ -315,7 +315,6 @@ public class BoundPath extends RefPath {
 	}
 
 	public final FieldDefinition fieldDefinition(Distributor distributor) {
-
 		// It is essential to use the last unresolved step,
 		// as it can be an unexpanded path fragment,
 		// which field definition can perform additional tasks.
@@ -670,55 +669,111 @@ public class BoundPath extends RefPath {
 
 	private Path rebuildPath() {
 
-		final Path rawPath;
+		final Path path;
 		final Path template = getTemplate();
 
 		if (template != null) {
-			rawPath = template;
+			path = template;
 		} else {
-			rawPath = getRawPath();
+			path = getRawPath();
 		}
 
-		final Step[] rawSteps = rawPath.getSteps();
+		removeOddFragments(path);
 
-		if (rawSteps.length == 0) {
-			return rawPath;
-		}
-
-		final Step[] steps = removeOddFragments(rawPath);
-
-		if (steps.length <= 1) {
-			return new Path(getKind(), isStatic(), getTemplate(), steps);
-		}
-
-		final Step[] rebuilt = rebuild(steps);
-
-		if (rebuilt == rawSteps) {
-			return rawPath;
-		}
-
-		return new Path(getKind(), isStatic(), getTemplate(), rebuilt);
+		return this.path = combineSteps();
 	}
 
-	private Step[] removeOddFragments(Path rawPath) {
+	private Path removeOddFragments(Path path) {
+		if (path.getSteps().length == 0) {
+			return this.path = path;
+		}
 
 		final OddPathFragmentRemover remover =
-				new OddPathFragmentRemover(rawPath.getSteps().length);
+				new OddPathFragmentRemover(path.getSteps().length);
 
 		walkPath(
-				rawPath,
+				path,
 				pathResolver(getOrigin(), dummyUser()),
 				remover,
 				true);
 
-		return remover.removeOddFragments(getSteps());
+		final Step[] oldSteps = getSteps();
+		final Step[] newSteps = remover.removeOddFragments(oldSteps);
+
+		if (oldSteps == newSteps) {
+			return path;
+		}
+
+		return new Path(
+				getKind(),
+				isStatic(),
+				removeOddFragmentsFromTemplate(remover),
+				newSteps);
 	}
 
-	private Step[] rebuild(Step[] steps) {
-		if (steps.length <= 1) {
-			return steps;
+	private Path removeOddFragmentsFromTemplate(
+			OddPathFragmentRemover remover) {
+
+		final Path oldTemplate = getPath().getTemplate();
+
+		if (oldTemplate == null) {
+			return null;
 		}
-		return new PathRebuilder(this, steps).rebuild();
+		// Up to this point the path and its template has the same prefix.
+		final Step[] oldTemplateSteps = oldTemplate.getSteps();
+		final Step[] newTamplateSteps =
+				remover.removeOddFragments(oldTemplateSteps);
+
+		if (oldTemplateSteps == newTamplateSteps) {
+			return oldTemplate;
+		}
+
+		return new Path(
+				oldTemplate.getKind(),
+				oldTemplate.isStatic(),
+				null,
+				newTamplateSteps);
+	}
+
+	private Path combineSteps() {
+
+		final Path path = getPath();
+		final Step[] steps = path.getSteps();
+
+		if (steps.length <= 1) {
+			return path;
+		}
+
+		final Step[] combined = new PathRebuilder(this, steps).rebuild();
+
+		if (steps == combined) {
+			return path;
+		}
+
+		return new Path(
+				getKind(),
+				isStatic(),
+				combineTemplateSteps(path, combined),
+				combined);
+	}
+
+	private static Path combineTemplateSteps(Path path, Step[] combined) {
+		if (combined.length == 0) {
+			// Rebuilt path is empty.
+			// Leave the template intact.
+			return path.getTemplate();
+		}
+
+		final AbstractPathFragment lastFragment =
+				combined[combined.length - 1].getPathFragment();
+
+		if (lastFragment != null && lastFragment.isTemplate()) {
+			// Rebuilt path is template.
+			return null;
+		}
+
+		// Otherwise, leave the template intact.
+		return path.getTemplate();
 	}
 
 	private final PathOp staticOp(CodeDirs dirs, HostOp start) {
