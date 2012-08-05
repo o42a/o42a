@@ -532,6 +532,7 @@ public class BoundPath extends RefPath {
 		Container result = start.getContainer();
 		Scope prev = start;
 		int i = 0;
+		boolean templateReached = false;
 
 		while (i < steps.length) {
 
@@ -560,6 +561,25 @@ public class BoundPath extends RefPath {
 				}
 
 				final Step[] replacementSteps = replacement.getSteps();
+				final Path template;
+
+				if (fragment.isTemplate()) {
+					templateReached = true;
+					// Do not expand the template fragment
+					// for the template path.
+					template = this.path.getTemplate();
+				} else if (templateReached) {
+					// Template expansion resulted to another path fragment.
+					// The template should remain intact.
+					template = this.path.getTemplate();
+				} else {
+					// The path is either template itself, or isn't templated.
+					// In either case the new template is not needed.
+					assert (this.path.isTemplate()
+							|| this.path.getTemplate() == null) :
+						"Template lost";
+					template = null;
+				}
 
 				if (replacement.isAbsolute()) {
 					// Replacement is an absolute path.
@@ -569,10 +589,11 @@ public class BoundPath extends RefPath {
 							0,
 							i + 1,
 							replacementSteps);
+
 					this.path = new Path(
 							PathKind.ABSOLUTE_PATH,
 							true,
-							this.path.getTemplate(),
+							template,
 							steps);
 					// Continue from the ROOT.
 					prev = root();
@@ -590,7 +611,7 @@ public class BoundPath extends RefPath {
 					this.path = new Path(
 							this.path.getKind(),
 							this.path.isStatic() || replacement.isStatic(),
-							this.path.getTemplate(),
+							template,
 							steps);
 				}
 				// Do not change the current index.
