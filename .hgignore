@@ -17,8 +17,3 @@ syntax: regexp
 ^build/rt\.mk$
 syntax: regexp
 ^build/o42a\.properties$
-
-syntax: regexp
-^org\.o42a\.helloworld/hello_world$
-syntax: regexp
-^org\.o42a\.helloworld/debug_hello_world$
