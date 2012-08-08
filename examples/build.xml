@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.helloworld" default="compile">
+<project name="org.o42a.examples" default="compile">
 
 	<import file="../build/build.setup.xml"/>
 
@@ -50,9 +50,9 @@
 		</antcall>
 	</target>
 
-	<target name="exec" depends="compile">
+	<target name="hello-world" depends="compile">
 		<exec
-			executable="hello_world"
+			executable="bin/hello_world"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="exec"
@@ -60,9 +60,9 @@
 		</exec>
 	</target>
 	
-	<target name="debug" depends="compile-debug">
+	<target name="debug-hello-world" depends="compile-debug">
 		<exec
-			executable="debug_hello_world"
+			executable="bin/debug_hello_world"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="debug"
@@ -71,7 +71,7 @@
 		</exec>
 	</target>
 	
-	<target name="jdwp" depends="package-deps">
+	<target name="jdwp-hello-world" depends="package-deps">
 		<java
 			jar="${root.dir}/target/org.o42a.cl-${o42a_release}.jar"
 			fork="true">
@@ -84,11 +84,11 @@
 	</target>
 
 	<target name="clean">
-		<delete file="hello_world"/>
-		<delete file="debug_hello_world"/>
+		<delete dir="bin"/>
 	</target>
 
 	<target name="_compile">
+		<mkdir taskname="${ant.project.name}" dir="bin"/>
 		<exec
 			executable="${root.dir}/o42ac"
 			searchpath="false"
@@ -96,7 +96,7 @@
 			failonerror="true">
 			<arg line="-rt-debug=${_compile.debug}"/>
 			<arg line="o42a/hello_world.o42a"/>
-			<arg line="-o ${_compile.name}"/>
+			<arg line="-o bin/${_compile.name}"/>
 			
 			<arg line="--vmargs"/>
 			<arg line="-ea:org.o42a..."/>
