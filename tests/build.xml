@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<project name="org.o42a.test" default="compile">
+<project name="org.o42a.tests" default="compile">
 
 	<import file="../build/build.setup.xml"/>
 
