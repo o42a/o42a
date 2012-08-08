@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# See org.o42a.rt.default.mk for customization options.
+# See rt.default.mk for customization options.
 #
 
 CFLAGS += $(shell $(icu_config) --cflags-dynamic)

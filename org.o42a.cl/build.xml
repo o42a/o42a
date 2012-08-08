@@ -27,7 +27,7 @@
 		<file name="org.o42a.backend.constant"/>
 		<file name="org.o42a.backend.llvm"/>
 		<file name="org.o42a.backend.llvm.jni"/>
-		<file name="org.o42a.rt"/>
+		<file name="runtime"/>
 	</filelist>
 
 	<filelist id="package.deps" dir="..">
