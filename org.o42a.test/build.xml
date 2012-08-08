@@ -26,7 +26,7 @@
 	<target name="auto-package-deps" if="auto-build">
 		<subant target="package" inheritall="false" inheritrefs="false">
 			<filelist dir=".." files="org.o42a.backend.llvm.jni"/>
-			<filelist dir=".." files="org.o42a.rt"/>
+			<filelist dir=".." files="runtime"/>
 		</subant>
 	</target>
 

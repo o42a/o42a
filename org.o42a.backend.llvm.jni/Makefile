@@ -21,7 +21,7 @@
 #
 
 headersdir = include/o42ac/llvm
-o42a_include_dir = ../org.o42a.rt/include
+o42a_include_dir = ../runtime/include
 srcdir = src
 java_classes_dir = ../org.o42a.backend.llvm/bin
 java_package_dir = $(java_classes_dir)/org/o42a/backend/llvm
