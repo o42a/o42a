@@ -38,21 +38,21 @@
 
 	<target name="compile" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="all_tests"/>
+			<param name="_compile.name" value="tests"/>
 			<param name="_compile.debug" value="0"/>
 		</antcall>
 	</target>
 	
 	<target name="compile-debug" depends="package-deps">
 		<antcall target="_compile" inheritall="true" inheritrefs="true">
-			<param name="_compile.name" value="debug_all_tests"/>
+			<param name="_compile.name" value="debug_tests"/>
 			<param name="_compile.debug" value="1"/>
 		</antcall>
 	</target>
 
 	<target name="exec" depends="compile">
 		<exec
-			executable="all_tests"
+			executable="bin/tests"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="exec"
@@ -62,7 +62,7 @@
 	
 	<target name="debug" depends="compile-debug">
 		<exec
-			executable="debug_all_tests"
+			executable="bin/debug_tests"
 			searchpath="false"
 			resolveexecutable="true"
 			taskname="debug"
@@ -79,24 +79,24 @@
 			<jvmarg line="-ea:org.o42a..."/>
 			<jvmarg line="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"/>
 			<arg line="-o/dev/null"/>
-			<arg line="o42a/all_tests.o42a"/>
+			<arg line="o42a/tests.o42a"/>
 		</java>
 	</target>
 
 	<target name="clean">
-		<delete file="all_tests"/>
-		<delete file="debug_all_tests"/>
+		<delete dir="bin"/>
 	</target>
 
 	<target name="_compile">
+		<mkdir taskname="${ant.project.name}" dir="bin"/>
 		<exec
 			executable="${root.dir}/o42ac"
 			searchpath="false"
 			taskname="o42ac"
 			failonerror="true">
 			<arg line="-rt-debug=${_compile.debug}"/>
-			<arg line="o42a/all_tests.o42a"/>
-			<arg line="-o ${_compile.name}"/>
+			<arg line="o42a/tests.o42a"/>
+			<arg line="-o bin/${_compile.name}"/>
 
 			<arg line="--vmargs"/>
 			<arg line="-ea:org.o42a..."/>
