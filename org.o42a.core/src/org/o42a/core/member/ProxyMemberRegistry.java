@@ -75,6 +75,11 @@ public abstract class ProxyMemberRegistry extends MemberRegistry {
 	}
 
 	@Override
+	public MemberId tempMemberId() {
+		return registry().tempMemberId();
+	}
+
+	@Override
 	public Name anonymousBlockName() {
 		return registry().anonymousBlockName();
 	}

@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,17 +17,24 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.compiler.ip.type.macro;
 
-import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.object.meta.Nesting;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueStructFinder;
 
 
-public interface Consumer {
+public abstract class TypeConsumer {
 
-	MacroConsumer expandMacro(
-			Ref macroRef,
-			PathTemplate template,
-			Ref expansion);
+	public static final TypeConsumer NO_TYPE_CONSUMER = NoTypeConsumer.INSTANCE;
+
+	public static TypeConsumer typeConsumer(Nesting nesting) {
+		return new DefaultTypeConsumer(nesting);
+	}
+
+	public abstract TypeConsumer paramConsumer();
+
+	public abstract TypeRef consumeType(Ref ref, ValueStructFinder valueStruct);
 
 }

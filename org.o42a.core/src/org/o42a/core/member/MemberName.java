@@ -26,6 +26,7 @@ import org.o42a.util.string.SubID;
 
 public final class MemberName extends MemberId {
 
+	private static final ID TEMP_PREFIX_ID = ID.id("T");
 	private static final ID CLAUSE_PREFIX_ID = ID.id("C");
 	private static final ID LOCAL_PREFIX_ID = ID.id("L");
 
@@ -40,6 +41,12 @@ public final class MemberName extends MemberId {
 		assert name != null :
 			"Field name not specified";
 		return new MemberName(MemberName.MemberKind.FIELD, name);
+	}
+
+	public static MemberName tempName(Name name) {
+		assert name != null :
+			"Temporary field name not specified";
+		return new MemberName(MemberName.MemberKind.TEMP, name);
 	}
 
 	public static MemberName clauseName(Name name) {
@@ -106,6 +113,8 @@ public final class MemberName extends MemberId {
 		final Name name = getName();
 
 		switch (getKind()) {
+		case TEMP :
+			return TEMP_PREFIX_ID.suffix(name);
 		case CLAUSE:
 			return CLAUSE_PREFIX_ID.suffix(name);
 		case LOCAL:
@@ -132,6 +141,7 @@ public final class MemberName extends MemberId {
 			return CLAUSE_DISPLAY_PREFIX.suffix(name).suffix(DISPLAY_SUFFIX);
 		case LOCAL:
 			return LOCAL_DISPLAY_PREFIX.suffix(name).suffix(DISPLAY_SUFFIX);
+		case TEMP:
 		case FIELD :
 			return name.toID();
 		}
@@ -175,6 +185,7 @@ public final class MemberName extends MemberId {
 
 	public enum MemberKind {
 
+		TEMP,
 		FIELD,
 		CLAUSE,
 		LOCAL;

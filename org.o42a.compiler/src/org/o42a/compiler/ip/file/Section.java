@@ -31,7 +31,7 @@ import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
 import org.o42a.compiler.ip.member.FieldNesting;
 import org.o42a.compiler.ip.st.DefaultStatementVisitor;
-import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;
 import org.o42a.core.member.field.*;

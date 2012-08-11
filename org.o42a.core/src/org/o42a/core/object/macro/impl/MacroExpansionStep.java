@@ -80,11 +80,15 @@ public class MacroExpansionStep extends Step {
 				new MacroExpansion(macroRef, this.reexpansion);
 
 		if (!this.reexpansion) {
-			return new MacroExpansionTemplate(expansion, consumer).toRef();
+			return new MacroExpansionTemplate(expansion).toRef(consumer);
 		}
 
 		final MacroConsumer macroConsumer =
-				consumer.expandMacro(macroRef, null);
+				consumer.expandMacro(macroRef, null, null);
+
+		if (macroConsumer == null) {
+			return null;
+		}
 
 		return expansion.expandMacro(macroConsumer, ref.getScope());
 	}

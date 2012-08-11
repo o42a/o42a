@@ -34,7 +34,10 @@ import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
+import org.o42a.compiler.ip.st.macro.StatementConsumer;
 import org.o42a.core.Distributor;
+import org.o42a.core.Scope;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -209,11 +212,43 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			Statements<?, ?> statements,
 			LocationInfo location,
 			Ref value) {
-		statements.selfAssign(location, value);
+		statements.selfAssign(
+				location,
+				consume(statements, location, value, false));
 	}
 
 	protected void addCondition(Statements<?, ?> statements, Ref condition) {
-		statements.expression(condition);
+		statements.expression(consume(statements, condition, condition, true));
+	}
+
+	private Ref consume(
+			Statements<?, ?> statements,
+			LocationInfo location,
+			Ref ref,
+			boolean condition) {
+
+		final Scope scope = statements.getScope();
+		final Ref rescoped = ref.rescope(scope);
+
+		if (!statements.getSentenceFactory().isDeclarative()) {
+			return rescoped;
+		}
+
+		final StatementConsumer consumer =
+				new StatementConsumer(statements, condition);
+
+		rescoped.consume(consumer);
+
+		final MemberField tempField = consumer.getTempField();
+
+		if (tempField == null) {
+			return rescoped;
+		}
+
+		return tempField.getMemberKey()
+				.toPath()
+				.bind(location, scope)
+				.target(rescoped.distribute());
 	}
 
 }

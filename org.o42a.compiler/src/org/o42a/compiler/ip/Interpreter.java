@@ -23,7 +23,7 @@ import static org.o42a.compiler.ip.UnwrapVisitor.UNWRAP_VISITOR;
 import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
-import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
+import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
 
 import org.o42a.ast.Node;
 import org.o42a.ast.expression.BlockNode;
@@ -37,8 +37,8 @@ import org.o42a.compiler.ip.member.DefinitionVisitor;
 import org.o42a.compiler.ip.phrase.PhraseInterpreter;
 import org.o42a.compiler.ip.ref.ExpressionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
-import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.TypeInterpreter;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;

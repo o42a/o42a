@@ -106,8 +106,7 @@ public abstract class ValueType<S extends ValueStruct<?, ?>> {
 			ValueStructFinder valueStructFinder) {
 		return path(location.getContext().getIntrinsics())
 				.bind(location, scope)
-				.staticTypeRef(scope.distribute(),
-				valueStructFinder);
+				.staticTypeRef(scope.distribute(), valueStructFinder);
 	}
 
 	public abstract LinkValueType toLinkType();

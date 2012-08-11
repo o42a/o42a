@@ -19,13 +19,12 @@
 */
 package org.o42a.core.object.common;
 
+import static org.o42a.core.member.MemberName.tempName;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
 
 import java.util.ArrayList;
 
-import org.o42a.core.member.Inclusions;
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.*;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
@@ -37,8 +36,9 @@ import org.o42a.util.string.Name;
 
 public class ObjectMemberRegistry extends MemberRegistry {
 
-	private int localScopeIndex;
 	private Obj owner;
+	private int tempMemberIndex;
+	private int localScopeIndex;
 
 	private final ArrayList<Member> pending = new ArrayList<Member>();
 	private ObjectMembers members;
@@ -103,6 +103,12 @@ public class ObjectMemberRegistry extends MemberRegistry {
 			members.addMember(member);
 		}
 		this.pending.clear();
+	}
+
+	@Override
+	public MemberId tempMemberId() {
+		return tempName(CASE_SENSITIVE.canonicalName(
+				Integer.toString(++this.tempMemberIndex)));
 	}
 
 	@Override

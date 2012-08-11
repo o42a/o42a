@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.type.TypeConsumer.typeConsumer;
+import static org.o42a.compiler.ip.type.macro.TypeConsumer.typeConsumer;
 
-import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.object.Obj;

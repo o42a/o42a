@@ -17,24 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type;
+package org.o42a.compiler.ip.st.macro;
 
-import org.o42a.core.object.meta.Nesting;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.object.Meta;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.object.meta.NestedMetaDep;
 
 
-public abstract class TypeConsumer {
+final class TempFieldUpdate extends NestedMetaDep {
 
-	public static final TypeConsumer NO_TYPE_CONSUMER = NoTypeConsumer.INSTANCE;
-
-	public static TypeConsumer typeConsumer(Nesting nesting) {
-		return new DefaultTypeConsumer(nesting);
+	TempFieldUpdate(TempMetaDep parent, Meta declaredIn) {
+		super(parent, declaredIn);
 	}
 
-	public abstract TypeConsumer paramConsumer();
-
-	public abstract TypeRef consumeType(Ref ref, ValueStructFinder valueStruct);
+	@Override
+	public MetaDep nestedDep() {
+		return null;
+	}
 
 }

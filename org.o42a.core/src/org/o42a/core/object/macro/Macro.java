@@ -37,7 +37,7 @@ public interface Macro {
 	 *
 	 * <p>This is called when whe path contains a {@link Path#expandMacro()
 	 * macro expansion} and a macro expansion
-	 * {@link Consumer#expandMacro(Ref, PathTemplate) requested by
+	 * {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested by
 	 * consumer}.</p>
 	 *
 	 * <p>This method should register the {@link MetaDep meta-dependencies}
@@ -54,7 +54,7 @@ public interface Macro {
 	 *
 	 * <p>This is called when whe path contains a {@link Path#reexpandMacro()
 	 * macro re-expansion} and a macro expansion
-	 * {@link Consumer#expandMacro(Ref, PathTemplate) requested again}
+	 * {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested again}
 	 * for already expanded macro, but in another scope. The re-expansion may
 	 * lead to a different result.</p>
 	 *

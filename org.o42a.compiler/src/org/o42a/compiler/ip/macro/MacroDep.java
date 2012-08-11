@@ -38,7 +38,7 @@ public abstract class MacroDep<D extends MetaDep> {
 		return builder.buildDep();
 	}
 
-	public abstract D newDep(Meta meta, Ref ref, PathTemplate template);
+	public abstract D newDep(Meta meta, Ref macroRef, PathTemplate template);
 
 	public abstract void setParentDep(D dep, MetaDep parentDep);
 

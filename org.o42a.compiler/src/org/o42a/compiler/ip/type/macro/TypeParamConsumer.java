@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type;
+package org.o42a.compiler.ip.type.macro;
 
 import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.object.meta.Nesting;
@@ -60,7 +60,10 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public MacroConsumer expandMacro(Ref macroRef, PathTemplate template) {
+	public MacroConsumer expandMacro(
+			Ref macroRef,
+			PathTemplate template,
+			Ref expansion) {
 		return new TypeParamMacroConsumer(this.macroDep, macroRef, template);
 	}
 
