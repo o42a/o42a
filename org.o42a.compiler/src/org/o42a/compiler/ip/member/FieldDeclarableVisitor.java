@@ -19,9 +19,9 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.Interpreter.definitionLinkType;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.ref.RefInterpreter.ADAPTER_FIELD_REF_IP;
+import static org.o42a.compiler.ip.type.TypeInterpreter.definitionLinkType;
 import static org.o42a.core.member.AdapterId.adapterId;
 import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
@@ -64,6 +64,10 @@ public final class FieldDeclarableVisitor
 		this.ip = ip;
 		this.context = context;
 		this.declarator = declarator;
+	}
+
+	public final Interpreter ip() {
+		return this.ip;
 	}
 
 	@Override
@@ -220,7 +224,7 @@ public final class FieldDeclarableVisitor
 		} else {
 
 			final TypeRef type = typeNode.accept(
-					this.ip.typeVisitor(
+					ip().typeIp().typeVisitor(
 							new FieldNesting(declaration)
 							.toTypeConsumer()
 							.paramConsumer()),

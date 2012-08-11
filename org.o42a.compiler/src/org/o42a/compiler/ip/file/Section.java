@@ -21,17 +21,16 @@ package org.o42a.compiler.ip.file;
 
 import static org.o42a.ast.sentence.SentenceType.PROPOSITION;
 import static org.o42a.compiler.ip.Interpreter.PLAIN_IP;
-import static org.o42a.compiler.ip.Interpreter.addContent;
-import static org.o42a.compiler.ip.Interpreter.addSentence;
+import static org.o42a.compiler.ip.st.StInterpreter.addContent;
+import static org.o42a.compiler.ip.st.StInterpreter.addSentence;
 import static org.o42a.core.source.SectionTag.IMPLICIT_SECTION_TAG;
 
 import org.o42a.ast.file.SectionNode;
 import org.o42a.ast.file.SubTitleNode;
 import org.o42a.ast.ref.MemberRefNode;
 import org.o42a.ast.sentence.SentenceNode;
-import org.o42a.compiler.ip.DefaultStatementVisitor;
-import org.o42a.compiler.ip.OtherContextDistributor;
 import org.o42a.compiler.ip.member.FieldNesting;
+import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.Namespace;

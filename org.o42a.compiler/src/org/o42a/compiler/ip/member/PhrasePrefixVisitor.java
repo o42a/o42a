@@ -21,7 +21,6 @@ package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
@@ -61,7 +60,7 @@ final class PhrasePrefixVisitor
 
 		final Distributor distributor = p.distribute();
 		final AscendantsDefinition ascendantsDefinition =
-				parseAscendants(CLAUSE_DEF_IP, ascendants, distributor);
+				CLAUSE_DEF_IP.typeIp().parseAscendants(ascendants, distributor);
 
 		if (ascendantsDefinition == null) {
 			return p.setAscendants(new AscendantsDefinition(

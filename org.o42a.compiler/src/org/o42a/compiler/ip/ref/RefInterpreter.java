@@ -29,7 +29,10 @@ import static org.o42a.core.member.MemberName.fieldName;
 import static org.o42a.core.ref.Ref.errorRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.value.ValueType.INTEGER;
 
+import org.o42a.ast.Node;
+import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.IntrinsicRefNode;
@@ -102,6 +105,22 @@ public abstract class RefInterpreter {
 
 	public static boolean isRootRef(ExpressionNode node) {
 		return node.accept(RootVisitor.ROOT_VISITOR, null) != null;
+	}
+
+	public static Ref integer(DecimalNode decimal, Distributor distributor) {
+
+		final long value;
+
+		try {
+			value = Long.parseLong(decimal.getNumber());
+		} catch (NumberFormatException e) {
+			distributor.getContext().getLogger().notInteger(
+					decimal,
+					decimal.getNumber());
+			return integer(distributor, 0L, decimal);
+		}
+
+		return integer(distributor, value, decimal);
 	}
 
 	private static boolean match(Name name, Container container) {
@@ -254,6 +273,13 @@ public abstract class RefInterpreter {
 		// Top-level expression clause
 		// shouldn't have access to enclosing prototype.
 		return prototypeExpressionClause(nested);
+	}
+
+	private static final Ref integer(Distributor p, long value, Node node) {
+
+		final Location location = location(p, node);
+
+		return INTEGER.constantRef(location, p, value);
 	}
 
 	private static final class PlainRefIp extends RefInterpreter {

@@ -24,36 +24,27 @@ import static org.o42a.compiler.ip.ref.RefInterpreter.*;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
-import static org.o42a.core.value.TypeParameters.typeMutability;
-import static org.o42a.core.value.ValueType.INTEGER;
 
 import org.o42a.ast.Node;
-import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.expression.BlockNode;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
-import org.o42a.ast.sentence.*;
-import org.o42a.ast.statement.StatementNode;
-import org.o42a.ast.type.DefinitionKind;
-import org.o42a.ast.type.InterfaceNode;
-import org.o42a.ast.type.TypeNodeVisitor;
+import org.o42a.ast.sentence.AlternativeNode;
+import org.o42a.ast.sentence.SentenceNode;
+import org.o42a.ast.sentence.SerialNode;
 import org.o42a.compiler.ip.member.DefinitionVisitor;
+import org.o42a.compiler.ip.phrase.PhraseInterpreter;
+import org.o42a.compiler.ip.ref.ExpressionVisitor;
 import org.o42a.compiler.ip.ref.RefInterpreter;
-import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.TypeConsumer;
-import org.o42a.compiler.ip.type.TypeVisitor;
+import org.o42a.compiler.ip.type.TypeInterpreter;
 import org.o42a.core.Distributor;
 import org.o42a.core.ScopeInfo;
 import org.o42a.core.member.field.FieldDeclaration;
 import org.o42a.core.member.field.FieldDefinition;
-import org.o42a.core.object.link.LinkValueType;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.Location;
-import org.o42a.core.st.sentence.*;
-import org.o42a.core.value.TypeParameters;
-import org.o42a.core.value.ValueStructFinder;
 
 
 public enum Interpreter {
@@ -63,50 +54,28 @@ public enum Interpreter {
 	CLAUSE_DEF_IP(CLAUSE_DEF_REF_IP),
 	CLAUSE_DECL_IP(CLAUSE_DECL_REF_IP);
 
-	public static Ref integer(DecimalNode decimal, Distributor distributor) {
-
-		final long value;
-
-		try {
-			value = Long.parseLong(decimal.getNumber());
-		} catch (NumberFormatException e) {
-			distributor.getContext().getLogger().notInteger(
-					decimal,
-					decimal.getNumber());
-			return integer(distributor, 0L, decimal);
-		}
-
-		return integer(distributor, value, decimal);
-	}
-
-	private final RefInterpreter refInterpreter;
+	private final RefInterpreter refIp;
+	private final TypeInterpreter typeIp = new TypeInterpreter(this);
+	private final PhraseInterpreter phraseIp = new PhraseInterpreter(this);
 	private final ExpressionNodeVisitor<Ref, Distributor> targetExVisitor;
 	private final ExpressionVisitor bodyExVisitor;
-	private final ExpressionNodeVisitor<
-			AncestorTypeRef,
-			Distributor> ancestorVisitor;
-	private final ExpressionNodeVisitor<
-			AncestorTypeRef,
-			Distributor> staticAncestorVisitor;
 
 	Interpreter(RefInterpreter refInterpreter) {
-		this.refInterpreter = refInterpreter;
+		this.refIp = refInterpreter;
 		this.targetExVisitor = new ExpressionVisitor(this, TARGET_REFERRAL);
 		this.bodyExVisitor = new ExpressionVisitor(this, BODY_REFERRAL);
-		this.ancestorVisitor = new AncestorVisitor(
-				this,
-				null,
-				TARGET_REFERRAL,
-				NO_TYPE_CONSUMER);
-		this.staticAncestorVisitor = new StaticAncestorVisitor(
-				this,
-				null,
-				TARGET_REFERRAL,
-				NO_TYPE_CONSUMER);
 	}
 
 	public final RefInterpreter refIp() {
-		return this.refInterpreter;
+		return this.refIp;
+	}
+
+	public final TypeInterpreter typeIp() {
+		return this.typeIp;
+	}
+
+	public final PhraseInterpreter phraseIp() {
+		return this.phraseIp;
 	}
 
 	public final RefNodeVisitor<Ref, Distributor> targetRefVisitor() {
@@ -147,128 +116,6 @@ public enum Interpreter {
 		return new DefinitionVisitor(this, typeConsumer);
 	}
 
-	public final ExpressionNodeVisitor<
-			AncestorTypeRef,
-			Distributor> ancestorVisitor(
-					ValueStructFinder valueStruct,
-					Referral referral,
-					TypeConsumer typeConsumer) {
-		if (valueStruct == null
-				&& referral == TARGET_REFERRAL
-				&& typeConsumer == NO_TYPE_CONSUMER) {
-			return this.ancestorVisitor;
-		}
-		return new AncestorVisitor(
-				this,
-				valueStruct,
-				referral,
-				typeConsumer);
-	}
-
-	public final ExpressionNodeVisitor<
-			AncestorTypeRef,
-			Distributor> staticAncestorVisitor(
-					ValueStructFinder valueStruct,
-					Referral referral,
-					TypeConsumer typeConsumer) {
-		if (valueStruct == null
-				&& referral == TARGET_REFERRAL
-				&& typeConsumer == NO_TYPE_CONSUMER) {
-			return this.staticAncestorVisitor;
-		}
-		return new StaticAncestorVisitor(
-				this,
-				valueStruct,
-				referral,
-				typeConsumer);
-	}
-
-	public final TypeNodeVisitor<TypeRef, Distributor> typeVisitor(
-			TypeConsumer consumer) {
-		return new TypeVisitor(this, consumer);
-	}
-
-	public static LinkValueType definitionLinkType(
-			DefinitionKind definitionKind) {
-		switch (definitionKind) {
-		case LINK:
-			return LinkValueType.LINK;
-		case VARIABLE:
-			return LinkValueType.VARIABLE;
-		case GETTER:
-			return LinkValueType.GETTER;
-		}
-		throw new IllegalArgumentException(
-				"Unknwon definition kind: " + definitionKind);
-	}
-
-	public final TypeParameters typeParameters(
-			InterfaceNode ifaceNode,
-			Distributor p,
-			TypeConsumer consumer) {
-
-		final TypeRef paramTypeRef =
-				ifaceNode.getType().accept(typeVisitor(consumer), p);
-
-		if (paramTypeRef == null) {
-			return null;
-		}
-
-		final TypeParameters.Mutability mutability = typeMutability(
-				location(p, ifaceNode),
-				p,
-				definitionLinkType(ifaceNode.getKind().getType()));
-
-		return mutability.setTypeRef(paramTypeRef);
-	}
-
-	public static BlockBuilder contentBuilder(
-			StatementVisitor statementVisitor,
-			BlockNode<?> node) {
-		return new ContentBuilder(statementVisitor, node);
-	}
-
-	public static void addContent(
-			StatementVisitor statementVisitor,
-			Block<?, ?> block,
-			BlockNode<?> blockNode) {
-		for (SentenceNode sentence : blockNode.getContent()) {
-			addSentence(statementVisitor, block, sentence, sentence.getType());
-		}
-	}
-
-	public static Sentence<?, ?> addSentence(
-			StatementVisitor statementVisitor,
-			Block<?, ?> block,
-			SentenceNode node,
-			SentenceType type) {
-
-		final Location location =
-				new Location(statementVisitor.getContext(), node);
-		final Sentence<?, ?> sentence;
-
-		switch (type) {
-		case PROPOSITION:
-			sentence = block.propose(location);
-			break;
-		case CLAIM:
-			sentence = block.claim(location);
-			break;
-		case ISSUE:
-			sentence = block.issue(location);
-			break;
-		default:
-			block.getLogger().invalidExpression(node);
-			return null;
-		}
-
-		if (sentence != null) {
-			fillSentence(statementVisitor, sentence, node);
-		}
-
-		return sentence;
-	}
-
 	public static Location location(ScopeInfo p, Node node) {
 		return new Location(p.getContext(), node);
 	}
@@ -300,51 +147,6 @@ public enum Interpreter {
 		}
 
 		return conjunction[0].getStatement().accept(UNWRAP_VISITOR, null);
-	}
-
-	private static final Ref integer(Distributor p, long value, Node node) {
-
-		final Location location = location(p, node);
-
-		return INTEGER.constantRef(location, p, value);
-	}
-
-	private static void fillSentence(
-			final StatementVisitor statementVisitor,
-			final Sentence<?, ?> sentence,
-			final SentenceNode node) {
-
-		int i = 0;
-		final AlternativeNode[] disjunction = node.getDisjunction();
-
-		while (i < disjunction.length) {
-
-			final int next = i + 1;
-			final AlternativeNode altNode = disjunction[i];
-			final Location location =
-					new Location(statementVisitor.getContext(), altNode);
-			final Statements<?, ?> alt =
-					sentence.alternative(location);
-
-			if (alt != null) {
-				fillStatements(statementVisitor, altNode, alt);
-			}
-			i = next;
-		}
-	}
-
-	private static void fillStatements(
-			final StatementVisitor statementVisitor,
-			final AlternativeNode altNode,
-			final Statements<?, ?> alt) {
-		for (SerialNode stat : altNode.getConjunction()) {
-
-			final StatementNode st = stat.getStatement();
-
-			if (st != null) {
-				st.accept(statementVisitor, alt);
-			}
-		}
 	}
 
 }

@@ -19,11 +19,11 @@
 */
 package org.o42a.compiler.ip.member;
 
-import static org.o42a.compiler.ip.Interpreter.addContent;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseExpressionVisitor.CLAUSE_EXPRESSION_VISITOR;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.buildOverrider;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.invalidClauseContent;
+import static org.o42a.compiler.ip.st.StInterpreter.addContent;
 
 import org.o42a.ast.clause.ClauseDeclaratorNode;
 import org.o42a.ast.expression.BracesNode;

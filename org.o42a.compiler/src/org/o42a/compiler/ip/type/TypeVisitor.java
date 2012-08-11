@@ -19,7 +19,6 @@
 */
 package org.o42a.compiler.ip.type;
 
-import static org.o42a.compiler.ip.AncestorSpecVisitor.parseAncestor;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.type.TypeConsumer.NO_TYPE_CONSUMER;
 
@@ -28,8 +27,8 @@ import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.*;
-import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
@@ -39,27 +38,31 @@ import org.o42a.core.value.ValueStructFinder;
 public final class TypeVisitor
 		extends AbstractTypeVisitor<TypeRef, Distributor> {
 
-	private final Interpreter ip;
+	private final TypeInterpreter typeIp;
 	private final TypeConsumer consumer;
 	private final ValueStructFinder valueStruct;
 
-	public TypeVisitor(Interpreter ip, TypeConsumer consumer) {
-		this.ip = ip;
+	public TypeVisitor(TypeInterpreter ip, TypeConsumer consumer) {
+		this.typeIp = ip;
 		this.valueStruct = null;
 		this.consumer = consumer;
 	}
 
 	private TypeVisitor(
-			Interpreter ip,
+			TypeInterpreter ip,
 			TypeConsumer consumer,
 			ValueStructFinder valueStruct) {
-		this.ip = ip;
+		this.typeIp = ip;
 		this.valueStruct = valueStruct;
 		this.consumer = consumer;
 	}
 
 	public final Interpreter ip() {
-		return this.ip;
+		return typeIp().ip();
+	}
+
+	public final TypeInterpreter typeIp() {
+		return this.typeIp;
 	}
 
 	@Override
@@ -68,8 +71,7 @@ public final class TypeVisitor
 			return super.visitAscendants(ascendants, p);
 		}
 
-		final AncestorTypeRef ancestor = parseAncestor(
-				ip(),
+		final AncestorTypeRef ancestor = typeIp().parseAncestor(
 				p,
 				ascendants.getAncestor(),
 				this.valueStruct,
@@ -101,7 +103,7 @@ public final class TypeVisitor
 					"Redundant value type");
 			vsFinder = this.valueStruct;
 		} else {
-			vsFinder = ip().typeParameters(
+			vsFinder = typeIp().typeParameters(
 					ifaceNode,
 					p,
 					this.consumer.paramConsumer());
@@ -111,7 +113,7 @@ public final class TypeVisitor
 		}
 
 		return ascendantNode.accept(
-				new TypeVisitor(ip(), NO_TYPE_CONSUMER, vsFinder),
+				new TypeVisitor(typeIp(), NO_TYPE_CONSUMER, vsFinder),
 				p);
 	}
 
