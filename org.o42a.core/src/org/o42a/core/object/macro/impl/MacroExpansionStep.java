@@ -27,6 +27,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
@@ -82,7 +83,10 @@ public class MacroExpansionStep extends Step {
 			return new MacroExpansionTemplate(expansion, consumer).toRef();
 		}
 
-		return expansion.expandMacro(consumer, ref.getScope(), null);
+		final MacroConsumer macroConsumer =
+				consumer.expandMacro(macroRef, null);
+
+		return expansion.expandMacro(macroConsumer, ref.getScope());
 	}
 
 	@Override

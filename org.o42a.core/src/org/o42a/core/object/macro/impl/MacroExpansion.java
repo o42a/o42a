@@ -24,7 +24,7 @@ import java.util.IdentityHashMap;
 import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.Macro;
-import org.o42a.core.ref.Consumer;
+import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.Resolution;
 import org.o42a.core.ref.path.*;
@@ -99,15 +99,11 @@ public class MacroExpansion extends PathFragment {
 		return '#' + this.macroRef.toString();
 	}
 
-	final Ref expandMacro(
-			Consumer consumer,
-			Scope scope,
-			PathTemplate template) {
+	final Ref expandMacro(MacroConsumer consumer, Scope scope) {
 
 		final Ref macroRef = getMacroRef();
 		final Ref macroExpansion = path(scope).target(macroRef.distribute());
-		final Ref consumption =
-				consumer.expandMacro(macroRef, macroExpansion, template);
+		final Ref consumption = consumer.expandMacro(macroExpansion);
 
 		if (consumption == null) {
 			return null;

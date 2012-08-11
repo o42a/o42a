@@ -17,14 +17,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.core.object.macro;
 
-import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.ref.Ref;
 
 
-public interface Consumer {
+public interface MacroConsumer {
 
-	MacroConsumer expandMacro(Ref macroRef, PathTemplate template);
+	Ref expandMacro(Ref macroExpansion);
 
 }
