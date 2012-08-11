@@ -19,18 +19,18 @@
 */
 package org.o42a.compiler.ip.phrase;
 
-import static org.o42a.compiler.ip.Interpreter.contentBuilder;
-import static org.o42a.compiler.ip.Interpreter.integer;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.phrase.ArgumentVisitor.ARGUMENT_VISITOR;
+import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
+import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 
 import org.o42a.ast.atom.DecimalNode;
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.AbstractClauseVisitor;
 import org.o42a.ast.clause.ClauseNode;
 import org.o42a.ast.expression.*;
-import org.o42a.compiler.ip.DefaultStatementVisitor;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
+import org.o42a.compiler.ip.st.DefaultStatementVisitor;
 import org.o42a.core.ref.Ref;
 
 

@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.file.HeaderStatement.notDirective;
 
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.statement.StatementNode;
-import org.o42a.compiler.ip.StatementVisitor;
+import org.o42a.compiler.ip.st.StatementVisitor;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;

@@ -20,14 +20,14 @@
 package org.o42a.compiler.ip.phrase.part;
 
 import static org.o42a.compiler.ip.Interpreter.location;
-import static org.o42a.compiler.ip.operator.ComparisonOperator.comparisonOperator;
-import static org.o42a.compiler.ip.operator.ComparisonOperator.equalityOperator;
 import static org.o42a.compiler.ip.phrase.part.NextClause.errorClause;
+import static org.o42a.compiler.ip.ref.operator.ComparisonOperator.comparisonOperator;
+import static org.o42a.compiler.ip.ref.operator.ComparisonOperator.equalityOperator;
 
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.BinaryOperator;
-import org.o42a.compiler.ip.operator.ComparisonOperator;
 import org.o42a.compiler.ip.phrase.ref.PhraseContext;
+import org.o42a.compiler.ip.ref.operator.ComparisonOperator;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseId;
 import org.o42a.core.ref.Ref;

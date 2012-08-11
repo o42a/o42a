@@ -20,10 +20,9 @@
 package org.o42a.compiler.ip.member;
 
 import static org.o42a.compiler.ip.Interpreter.CLAUSE_DEF_IP;
-import static org.o42a.compiler.ip.Interpreter.contentBuilder;
-import static org.o42a.compiler.ip.SampleSpecVisitor.parseAscendants;
 import static org.o42a.compiler.ip.member.ParenthesesVisitor.extractParentheses;
 import static org.o42a.compiler.ip.member.PhrasePrefixVisitor.PHRASE_PREFIX_VISITOR;
+import static org.o42a.compiler.ip.st.StInterpreter.contentBuilder;
 import static org.o42a.core.member.clause.ClauseSubstitution.PREFIX_SUBSITUTION;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
@@ -63,7 +62,9 @@ class ClauseExpressionVisitor
 			ClauseBuilder p) {
 
 		final AscendantsDefinition ascendantsDefinition =
-				parseAscendants(CLAUSE_DEF_IP, ascendants, p.distribute());
+				CLAUSE_DEF_IP.typeIp().parseAscendants(
+						ascendants,
+						p.distribute());
 
 		if (ascendantsDefinition == null) {
 			return null;

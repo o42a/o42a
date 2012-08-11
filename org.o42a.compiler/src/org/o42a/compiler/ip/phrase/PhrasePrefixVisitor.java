@@ -27,9 +27,9 @@ import static org.o42a.compiler.ip.ref.owner.Referral.TARGET_REFERRAL;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
-import org.o42a.compiler.ip.AncestorTypeRef;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.TypeParameters;
 
@@ -61,7 +61,7 @@ final class PhrasePrefixVisitor
 		final Distributor distributor = p.distribute();
 		final AncestorTypeRef ancestor =
 				expression.accept(
-						p.ip().ancestorVisitor(
+						p.ip().typeIp().ancestorVisitor(
 								this.typeParameters,
 								this.typeParameters == null
 								? TARGET_REFERRAL : BODY_REFERRAL,
