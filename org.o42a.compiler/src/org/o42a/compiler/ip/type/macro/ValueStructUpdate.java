@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,17 +17,31 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.ref;
+package org.o42a.compiler.ip.type.macro;
 
-import org.o42a.core.object.macro.MacroConsumer;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.object.Meta;
+import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.object.meta.NestedMetaDep;
 
 
-public interface Consumer {
+final class ValueStructUpdate extends NestedMetaDep {
 
-	MacroConsumer expandMacro(
-			Ref macroRef,
-			PathTemplate template,
-			Ref expansion);
+	ValueStructUpdate(TypeParamMetaDep parent, Meta declaredIn) {
+		super(parent, declaredIn);
+	}
+
+	@Override
+	public MetaDep nestedDep() {
+		return null;
+	}
+
+	@Override
+	protected boolean changed(Meta meta) {
+
+		final TypeParamMetaDep parent =
+				(TypeParamMetaDep) parentDep();
+
+		return parent.typeParamChanged(meta);
+	}
 
 }

@@ -31,7 +31,7 @@ import org.o42a.ast.ref.ScopeType;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
 import org.o42a.ast.type.ValueTypeNode;
-import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.ref.Ref;

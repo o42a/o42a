@@ -20,6 +20,7 @@
 package org.o42a.core.member;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
+import static org.o42a.core.member.MemberId.BROKEN_MEMBER_ID;
 
 import org.o42a.core.Distributor;
 import org.o42a.core.member.clause.ClauseBuilder;
@@ -94,6 +95,8 @@ public abstract class MemberRegistry {
 
 	public abstract void declareMember(Member member);
 
+	public abstract MemberId tempMemberId();
+
 	public abstract Name anonymousBlockName();
 
 	protected final ClauseFactory clauseFactory() {
@@ -129,7 +132,9 @@ public abstract class MemberRegistry {
 		}
 
 		@Override
-		public ClauseBuilder newClause(Statements<?, ?> statements, ClauseDeclaration declaration) {
+		public ClauseBuilder newClause(
+				Statements<?, ?> statements,
+				ClauseDeclaration declaration) {
 			reportDeclaration(declaration);
 			return null;
 		}
@@ -137,6 +142,11 @@ public abstract class MemberRegistry {
 		@Override
 		public void declareMember(Member member) {
 			reportDeclaration(member);
+		}
+
+		@Override
+		public MemberId tempMemberId() {
+			return BROKEN_MEMBER_ID;
 		}
 
 		@Override

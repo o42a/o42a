@@ -17,31 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type;
+package org.o42a.compiler.ip.st.macro;
 
+import org.o42a.compiler.ip.macro.MacroDep;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.NestedMetaDep;
+import org.o42a.core.object.meta.MetaKey;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PathTemplate;
 
 
-final class ValueStructUpdate extends NestedMetaDep {
+final class TempMacroDep extends MacroDep<TempMetaDep> implements MetaKey {
 
-	ValueStructUpdate(TypeParamMetaDep parent, Meta declaredIn) {
-		super(parent, declaredIn);
+	private final MemberField tempField;
+
+	TempMacroDep(MemberField tempField) {
+		this.tempField = tempField;
+	}
+
+	public final MemberField getTempField() {
+		return this.tempField;
 	}
 
 	@Override
-	public MetaDep nestedDep() {
-		return null;
+	public TempMetaDep newDep(Meta meta, Ref macroRef, PathTemplate template) {
+		return new TempMetaDep(meta, this, macroRef);
 	}
 
 	@Override
-	protected boolean changed(Meta meta) {
-
-		final TypeParamMetaDep parent =
-				(TypeParamMetaDep) parentDep();
-
-		return parent.typeParamChanged(meta);
+	public void setParentDep(TempMetaDep dep, MetaDep parentDep) {
+		dep.setParentDep(parentDep);
 	}
 
 }

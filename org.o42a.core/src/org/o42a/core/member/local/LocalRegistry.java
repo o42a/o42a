@@ -21,9 +21,7 @@ package org.o42a.core.member.local;
 
 import static org.o42a.core.member.Inclusions.noInclusions;
 
-import org.o42a.core.member.Member;
-import org.o42a.core.member.MemberOwner;
-import org.o42a.core.member.MemberRegistry;
+import org.o42a.core.member.*;
 import org.o42a.core.member.clause.ClauseBuilder;
 import org.o42a.core.member.clause.ClauseDeclaration;
 import org.o42a.core.member.field.FieldBuilder;
@@ -78,6 +76,11 @@ public class LocalRegistry extends MemberRegistry {
 	public void declareMember(Member member) {
 		member.assertScopeIs(this.scope);
 		this.scope.addMember(member);
+	}
+
+	@Override
+	public MemberId tempMemberId() {
+		return this.ownerRegistry.tempMemberId();
 	}
 
 	@Override

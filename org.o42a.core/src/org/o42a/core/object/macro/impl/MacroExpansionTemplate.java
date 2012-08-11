@@ -31,11 +31,10 @@ import org.o42a.core.ref.path.PathTemplate;
 final class MacroExpansionTemplate extends PathTemplate {
 
 	private final MacroExpansion expansion;
-	private final MacroConsumer consumer;
+	private MacroConsumer consumer;
 
-	MacroExpansionTemplate(MacroExpansion expansion, Consumer consumer) {
+	MacroExpansionTemplate(MacroExpansion expansion) {
 		this.expansion = expansion;
-		this.consumer = consumer.expandMacro(expansion.getMacroRef(), this);
 	}
 
 	@Override
@@ -60,13 +59,22 @@ final class MacroExpansionTemplate extends PathTemplate {
 		return this.expansion.toString();
 	}
 
-	final Ref toRef() {
+	final Ref toRef(Consumer consumer) {
 
 		final Ref macroRef = this.expansion.getMacroRef();
-
-		return toPath()
+		final Ref expansion = toPath()
 				.bind(macroRef, macroRef.getScope())
 				.target(macroRef.distribute());
+
+		this.consumer = consumer.expandMacro(
+				this.expansion.getMacroRef(),
+				this,
+				expansion);
+		if (this.consumer == null) {
+			return null;
+		}
+
+		return expansion;
 	}
 
 }

@@ -28,8 +28,8 @@ import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
-import org.o42a.compiler.ip.type.TypeConsumer;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.value.TypeParameters;
 

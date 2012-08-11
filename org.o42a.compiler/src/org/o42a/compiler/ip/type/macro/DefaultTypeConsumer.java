@@ -17,45 +17,30 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.type;
+package org.o42a.compiler.ip.type.macro;
 
-import org.o42a.compiler.ip.macro.MacroDep;
-import org.o42a.core.object.Meta;
-import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.value.ValueStructFinder;
 
 
-final class TypeParamMacroDep
-		extends MacroDep<TypeParamMetaDep>
-		implements MetaKey {
+final class DefaultTypeConsumer extends TypeConsumer {
 
 	private final Nesting nesting;
-	private final int depth;
 
-	TypeParamMacroDep(Nesting nesting, int depth) {
+	public DefaultTypeConsumer(Nesting nesting) {
 		this.nesting = nesting;
-		this.depth = depth;
-	}
-
-	public final Nesting getNesting() {
-		return this.nesting;
-	}
-
-	public final int getDepth() {
-		return this.depth;
 	}
 
 	@Override
-	public TypeParamMetaDep newDep(Meta meta, Ref ref, PathTemplate template) {
-		return new TypeParamMetaDep(meta, this, ref, template);
+	public TypeParamConsumer paramConsumer() {
+		return new TypeParamConsumer(this.nesting);
 	}
 
 	@Override
-	public void setParentDep(TypeParamMetaDep dep, MetaDep parentDep) {
-		dep.setParentDep(parentDep);
+	public TypeRef consumeType(Ref ref, ValueStructFinder valueStruct) {
+		return ref.toTypeRef(valueStruct);
 	}
 
 }

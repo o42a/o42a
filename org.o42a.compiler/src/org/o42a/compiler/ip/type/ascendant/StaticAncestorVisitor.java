@@ -24,7 +24,7 @@ import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRe
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.ref.owner.Referral;
-import org.o42a.compiler.ip.type.TypeConsumer;
+import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.value.ValueStructFinder;
