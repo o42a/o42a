@@ -37,6 +37,7 @@ import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
@@ -144,11 +145,9 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Distributor distributor = p.nextDistributor();
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
-		if (value == null) {
-			return null;
+		if (value != null) {
+			addSelfAssignment(p, location(p, assignment.getPrefix()), value);
 		}
-
-		p.selfAssign(location(p, assignment.getPrefix()), value);
 
 		return null;
 	}
@@ -200,10 +199,21 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {
-			p.expression(ref);
+			addCondition(p, ref);
 		}
 
 		return null;
+	}
+
+	protected void addSelfAssignment(
+			Statements<?, ?> statements,
+			LocationInfo location,
+			Ref value) {
+		statements.selfAssign(location, value);
+	}
+
+	protected void addCondition(Statements<?, ?> statements, Ref condition) {
+		statements.expression(condition);
 	}
 
 }

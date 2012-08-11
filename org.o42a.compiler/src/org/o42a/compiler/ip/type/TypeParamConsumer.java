@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.type;
 
+import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
@@ -59,20 +60,38 @@ final class TypeParamConsumer extends TypeConsumer implements Consumer {
 	}
 
 	@Override
-	public Ref expandMacro(
-			Ref macroRef,
-			Ref macroExpansion,
-			PathTemplate template) {
+	public MacroConsumer expandMacro(Ref macroRef, PathTemplate template) {
+		return new TypeParamMacroConsumer(this.macroDep, macroRef, template);
+	}
 
-		final TypeParamMetaDep dep = this.macroDep.buildDep(macroRef, template);
+	private static final class TypeParamMacroConsumer implements MacroConsumer {
 
-		if (dep == null) {
+		private final TypeParamMacroDep macroDep;
+		private final Ref macroRef;
+		private final PathTemplate template;
+
+		TypeParamMacroConsumer(
+				TypeParamMacroDep macroDep,
+				Ref macroRef,
+				PathTemplate template) {
+			this.macroDep = macroDep;
+			this.macroRef = macroRef;
+			this.template = template;
+		}
+
+		@Override
+		public Ref expandMacro(Ref macroExpansion) {
+
+			final TypeParamMetaDep dep =
+					this.macroDep.buildDep(this.macroRef, this.template);
+
+			if (dep != null) {
+				dep.register();
+			}
+
 			return macroExpansion;
 		}
 
-		dep.register();
-
-		return macroExpansion;
 	}
 
 }

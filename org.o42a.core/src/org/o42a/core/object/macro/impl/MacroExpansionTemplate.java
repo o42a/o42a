@@ -20,6 +20,7 @@
 package org.o42a.core.object.macro.impl;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
@@ -30,11 +31,11 @@ import org.o42a.core.ref.path.PathTemplate;
 final class MacroExpansionTemplate extends PathTemplate {
 
 	private final MacroExpansion expansion;
-	private final Consumer consumer;
+	private final MacroConsumer consumer;
 
 	MacroExpansionTemplate(MacroExpansion expansion, Consumer consumer) {
 		this.expansion = expansion;
-		this.consumer = consumer;
+		this.consumer = consumer.expandMacro(expansion.getMacroRef(), this);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ final class MacroExpansionTemplate extends PathTemplate {
 		this.expansion.getMacroRef().assertCompatible(start);
 
 		final Ref consumption =
-				this.expansion.expandMacro(this.consumer, start, this);
+				this.expansion.expandMacro(this.consumer, start);
 
 		if (consumption == null) {
 			return null;
