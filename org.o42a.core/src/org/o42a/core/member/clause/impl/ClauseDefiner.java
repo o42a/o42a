@@ -57,13 +57,13 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public DefTarget toTarget() {
-		return definer().toTarget();
+	public DefTarget toTarget(Scope origin) {
+		return definer().toTarget(origin);
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
-		definer().resolveTargets(resolver);
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+		definer().resolveTargets(resolver, origin);
 	}
 
 	@Override
@@ -77,9 +77,9 @@ final class ClauseDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return definer().eval(builder);
+		return definer().eval(builder, origin);
 	}
 
 	@Override
@@ -157,12 +157,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override
@@ -176,7 +176,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder) {
+		public Eval eval(CodeBuilder builder, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -210,12 +210,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override
@@ -229,7 +229,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder) {
+		public Eval eval(CodeBuilder builder, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -266,12 +266,12 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override
@@ -285,7 +285,7 @@ final class ClauseDefiner extends Definer {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder) {
+		public Eval eval(CodeBuilder builder, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

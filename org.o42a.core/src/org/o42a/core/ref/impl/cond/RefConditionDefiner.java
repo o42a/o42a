@@ -83,7 +83,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
 	}
 
@@ -96,7 +96,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override
@@ -119,7 +119,7 @@ final class RefConditionDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new CondEval(getRefCondition());
 	}

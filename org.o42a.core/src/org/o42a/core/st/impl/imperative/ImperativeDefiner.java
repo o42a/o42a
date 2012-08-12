@@ -84,9 +84,10 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 
-		final DefTarget target = getCommand().toTarget();
+		final Scope localScope = getLocalPrefix().rescope(origin);
+		final DefTarget target = getCommand().toTarget(localScope);
 
 		if (target == null) {
 			return null;
@@ -133,8 +134,11 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
-		getCommand().resolveTargets(resolver);
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+
+		final Scope localScope = getLocalPrefix().rescope(origin);
+
+		getCommand().resolveTargets(resolver, localScope);
 	}
 
 	@Override
@@ -168,7 +172,7 @@ public final class ImperativeDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return new LocalEval(getBlock(), getCommand());
 	}

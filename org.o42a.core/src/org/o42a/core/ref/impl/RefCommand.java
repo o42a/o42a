@@ -104,7 +104,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		getValueAdapter().resolveTargets(resolver);
 	}
 
@@ -121,7 +121,7 @@ public final class RefCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 
 		final Ref target = getValueAdapter().toTarget();
 

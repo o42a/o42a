@@ -52,9 +52,6 @@ public abstract class ObjectMeta {
 	}
 
 	final void addDep(MetaDep dep) {
-		if (this.deps == null) {
-			this.deps = new HashMap<MetaKey, MetaDep>();
-		}
 
 		final MetaKey key = dep.getKey();
 
@@ -65,6 +62,9 @@ public abstract class ObjectMeta {
 
 			final ObjectMeta objectMeta = currentMeta;
 
+			if (objectMeta.deps == null) {
+				objectMeta.deps = new HashMap<MetaKey, MetaDep>();
+			}
 			objectMeta.deps.put(key, currentDep);
 
 			final MetaDep parentDep = currentDep.parentDep();

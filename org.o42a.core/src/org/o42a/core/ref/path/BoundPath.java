@@ -84,13 +84,6 @@ public class BoundPath extends RefPath {
 		this.path = prototype.path;
 	}
 
-	private BoundPath(BoundPath prototype, Path rawPath, Path path) {
-		super(prototype);
-		this.origin = prototype.origin;
-		this.rawPath = rawPath;
-		this.path = path;
-	}
-
 	public final Scope getOrigin() {
 		return this.origin;
 	}

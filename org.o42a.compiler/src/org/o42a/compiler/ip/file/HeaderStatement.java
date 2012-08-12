@@ -114,12 +114,12 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return null;
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -139,7 +139,7 @@ class HeaderStatement extends Statement {
 		}
 
 		@Override
-		public Eval eval(CodeBuilder builder) {
+		public Eval eval(CodeBuilder builder, Scope origin) {
 			throw new UnsupportedOperationException();
 		}
 

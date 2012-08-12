@@ -242,6 +242,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		return tempField.getMemberKey()
 				.toPath()
+				.dereference()
 				.bind(location, scope)
 				.target(rescoped.distribute());
 	}

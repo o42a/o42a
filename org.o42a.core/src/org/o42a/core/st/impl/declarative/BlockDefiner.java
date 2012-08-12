@@ -63,7 +63,9 @@ public final class BlockDefiner
 		return TRUE_DEF_VALUE;
 	}
 
-	static DefTarget sentencesTargets(DeclarativeSentences sentences) {
+	static DefTarget sentencesTargets(
+			Scope origin,
+			DeclarativeSentences sentences) {
 
 		final DefTargets defTargets = sentences.getDefTargets();
 
@@ -76,7 +78,7 @@ public final class BlockDefiner
 
 		for (DeclarativeSentence sentence : sentences.getSentences()) {
 
-			final DefTarget sentenceTarget = sentenceTarget(sentence);
+			final DefTarget sentenceTarget = sentenceTarget(origin, sentence);
 
 			if (sentenceTarget != null) {
 				return sentenceTarget;
@@ -96,12 +98,13 @@ public final class BlockDefiner
 
 	static void resolveSentencesTargets(
 			TargetResolver resolver,
+			Scope scope,
 			DeclarativeSentences sentences) {
 		if (!sentences.getDefTargets().haveValue()) {
 			return;
 		}
 		for (DeclarativeSentence sentence : sentences.getSentences()) {
-			resolveSentenceTargets(resolver, sentence);
+			resolveSentenceTargets(resolver, scope, sentence);
 		}
 	}
 
@@ -127,8 +130,8 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public DefTarget toTarget() {
-		return sentencesTargets(this);
+	public DefTarget toTarget(Scope origin) {
+		return sentencesTargets(origin, this);
 	}
 
 	@Override
@@ -142,8 +145,8 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
-		resolveSentencesTargets(resolver, this);
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+		resolveSentencesTargets(resolver, origin, this);
 	}
 
 	@Override
@@ -157,9 +160,9 @@ public final class BlockDefiner
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
-		return new BlockEval(this);
+		return new BlockEval(this, origin);
 	}
 
 	@Override
@@ -175,7 +178,9 @@ public final class BlockDefiner
 		return this.blockDefinitions = new BlockDefinitions(this);
 	}
 
-	private static DefTarget sentenceTarget(DeclarativeSentence sentence) {
+	private static DefTarget sentenceTarget(
+			Scope origin,
+			DeclarativeSentence sentence) {
 
 		final DefTargets defTargets = sentence.getDefTargets();
 
@@ -196,10 +201,12 @@ public final class BlockDefiner
 			return NO_DEF_TARGET;
 		}
 
-		return statementsTarget(alts.get(0));
+		return statementsTarget(origin, alts.get(0));
 	}
 
-	private static DefTarget statementsTarget(Declaratives statements) {
+	private static DefTarget statementsTarget(
+			Scope origin,
+			Declaratives statements) {
 
 		final DefTargets defTargets = statements.getDefTargets();
 
@@ -220,7 +227,7 @@ public final class BlockDefiner
 			return NO_DEF_TARGET;
 		}
 
-		return definers.get(0).toTarget();
+		return definers.get(0).toTarget(origin);
 	}
 
 	private static void resolveSentence(
@@ -248,35 +255,39 @@ public final class BlockDefiner
 
 	private static void resolveSentenceTargets(
 			TargetResolver resolver,
+			Scope scope,
 			DeclarativeSentence sentence) {
 		if (!sentence.getDefTargets().haveValue()) {
 			return;
 		}
 		for (Declaratives alt : sentence.getAlternatives()) {
-			resolveStatementsTargets(resolver, alt);
+			resolveStatementsTargets(resolver, scope, alt);
 		}
 	}
 
 	private static void resolveStatementsTargets(
 			TargetResolver resolver,
+			Scope scope,
 			Declaratives statements) {
 		assert statements.assertInstructionsExecuted();
 		for (Definer definer : statements.getImplications()) {
-			definer.resolveTargets(resolver);
+			definer.resolveTargets(resolver, scope);
 		}
 	}
 
 	private static final class BlockEval implements Eval {
 
 		private final BlockDefiner definer;
+		private final Scope origin;
 
-		BlockEval(BlockDefiner definer) {
+		BlockEval(BlockDefiner definer, Scope origin) {
 			this.definer = definer;
+			this.origin = origin;
 		}
 
 		@Override
 		public void write(DefDirs dirs, HostOp host) {
-			writeSentences(dirs, host, this.definer, null);
+			writeSentences(dirs, host, this.origin, this.definer, null);
 		}
 
 		@Override

@@ -19,8 +19,13 @@
 */
 package org.o42a.compiler.ip.st.macro;
 
+import static org.o42a.core.object.link.LinkValueType.GETTER;
+
 import org.o42a.core.Scope;
+import org.o42a.core.object.Obj;
+import org.o42a.core.object.link.LinkValueStruct;
 import org.o42a.core.ref.path.PrefixPath;
+import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
@@ -51,7 +56,31 @@ final class ParentValueStructFinder implements ValueStructFinder {
 	}
 
 	private ValueStruct<?, ?> valueStruct() {
-		return this.scope.toObject().value().getValueStruct();
+
+		final Obj parent = this.scope.toObject();
+		final ValueStruct<?, ?> parentValueStruct =
+				parent.value().getValueStruct();
+		final LinkValueStruct parentLinkStruct =
+				parentValueStruct.toLinkStruct();
+
+		if (parentLinkStruct != null) {
+			// Parent object is link.
+			if (parentLinkStruct.getValueType().isStateless()) {
+				// Parent object is getter.
+				return parentLinkStruct;
+			}
+			// Construct a getter with the same interface.
+			return GETTER.linkStruct(parentLinkStruct.getTypeRef());
+		}
+
+		final StaticTypeRef parentValueTypeRef =
+				parentValueStruct.getValueType()
+				.typeRef(this.scope, this.scope.getEnclosingScope())
+				.setValueStruct(parentValueStruct)
+				.rescope(this.scope);
+
+		// Construct a getter.
+		return GETTER.linkStruct(parentValueTypeRef);
 	}
 
 }
