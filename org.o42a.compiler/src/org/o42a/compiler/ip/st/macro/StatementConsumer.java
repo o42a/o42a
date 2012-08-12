@@ -107,7 +107,7 @@ public final class StatementConsumer implements Consumer {
 			return null;
 		}
 
-		this.statements.statement(statement);
+		statements.statement(statement);
 
 		return statement.toMember().toField();
 	}

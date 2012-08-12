@@ -21,15 +21,14 @@ package org.o42a.compiler.ip.st.macro;
 
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 import static org.o42a.core.object.link.LinkValueType.GETTER;
-import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
 
 
@@ -55,21 +54,8 @@ final class TempFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-
-		final ValueStructFinder valueStruct;
-
-		if (this.condition) {
-			valueStruct = ValueStruct.VOID;
-		} else {
-			valueStruct = new ParentValueStructFinder(
-					definer.getField().getEnclosingScope());
-		}
-
-		final StaticTypeRef ancestor =
-				GETTER.typeRef(this, getScope(), valueStruct);
-
-		definer.setAncestor(ancestor);
-		definer.define(valueBlock(expansion()));
+		definer.setAncestor(ancestor(definer.getField().getEnclosingScope()));
+		definer.define(new ExpandMacroBlock(expansion()));
 	}
 
 	@Override
@@ -96,6 +82,17 @@ final class TempFieldDefinition extends FieldDefinition {
 			return this.expansion.toString();
 		}
 		return '=' + this.expansion.toString();
+	}
+
+	private StaticTypeRef ancestor(Scope scope) {
+		if (this.condition) {
+			return GETTER.typeRef(this.expansion, scope);
+		}
+
+		final ValueStructFinder valueStruct =
+				new ParentValueStructFinder(scope);
+
+		return GETTER.typeRef(this, getScope(), valueStruct);
 	}
 
 	private Ref expansion() {
