@@ -75,12 +75,12 @@ final class AssignmentCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override

@@ -76,7 +76,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
 	}
 
@@ -93,7 +93,7 @@ final class RefConditionCommand extends Command {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override

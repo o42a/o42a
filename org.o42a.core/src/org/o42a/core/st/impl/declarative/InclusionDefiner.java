@@ -63,7 +63,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return DefTarget.NO_DEF_TARGET;
 	}
 
@@ -78,7 +78,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -98,7 +98,7 @@ abstract class InclusionDefiner<I extends Inclusion>
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		throw new UnsupportedOperationException();
 	}
 

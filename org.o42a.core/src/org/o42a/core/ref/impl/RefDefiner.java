@@ -77,7 +77,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		getValueAdapter().resolveTargets(resolver);
 	}
 
@@ -87,7 +87,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 
 		final Ref target = getValueAdapter().toTarget();
 
@@ -116,7 +116,7 @@ public final class RefDefiner extends Definer {
 	}
 
 	@Override
-	public final Eval eval(CodeBuilder builder) {
+	public final Eval eval(CodeBuilder builder, Scope origin) {
 		assert getStatement().assertFullyResolved();
 		return getValueAdapter().eval();
 	}

@@ -161,7 +161,7 @@ public class MacroExpansion extends PathFragment {
 		final MacroExpanderImpl macroExpander =
 				new MacroExpanderImpl(this, expander);
 
-		return macro.expand(macroExpander);
+		return prefixExpansion(macro.expand(macroExpander));
 	}
 
 	private Path reexpand(PathExpander expander, Macro macro) {
@@ -169,7 +169,11 @@ public class MacroExpansion extends PathFragment {
 		final MacroExpanderImpl macroExpander =
 				new MacroExpanderImpl(this, expander);
 
-		return macro.reexpand(macroExpander);
+		return prefixExpansion(macro.reexpand(macroExpander));
+	}
+
+	private Path prefixExpansion(Path path) {
+		return getMacroRef().getPath().getPath().append(path);
 	}
 
 	private Macro macro(PathExpander expander, Scope start) {

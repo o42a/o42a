@@ -22,6 +22,7 @@ package org.o42a.core.member.field.decl;
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.LocalFieldCmd;
 import org.o42a.core.member.*;
@@ -158,7 +159,7 @@ public final class FieldDeclarationStatement extends DeclarationStatement {
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override

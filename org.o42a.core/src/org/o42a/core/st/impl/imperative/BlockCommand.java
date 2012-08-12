@@ -67,7 +67,7 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 
 		final CommandTargets targets = getCommandTargets();
 
@@ -86,7 +86,7 @@ public final class BlockCommand extends Command {
 
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
 
-			final DefTarget target = sentenceTarget(sentence);
+			final DefTarget target = sentenceTarget(origin, sentence);
 
 			if (target != null) {
 				return target;
@@ -131,12 +131,12 @@ public final class BlockCommand extends Command {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 		if (!getCommandTargets().haveValue()) {
 			return;
 		}
 		for (ImperativeSentence sentence : getBlock().getSentences()) {
-			resolveSentenceTargets(resolver, sentence);
+			resolveSentenceTargets(resolver, origin, sentence);
 		}
 	}
 
@@ -299,7 +299,9 @@ public final class BlockCommand extends Command {
 		return new ExecuteCommand(alt, Condition.TRUE);
 	}
 
-	private static DefTarget sentenceTarget(ImperativeSentence sentence) {
+	private static DefTarget sentenceTarget(
+			Scope origin,
+			ImperativeSentence sentence) {
 
 		final CommandTargets targets = sentence.getCommandTargets();
 
@@ -326,10 +328,12 @@ public final class BlockCommand extends Command {
 			return NO_DEF_TARGET;
 		}
 
-		return statementsTarget(alts.get(0));
+		return statementsTarget(origin, alts.get(0));
 	}
 
-	private static DefTarget statementsTarget(Imperatives statements) {
+	private static DefTarget statementsTarget(
+			Scope origin,
+			Imperatives statements) {
 
 		final CommandTargets targets = statements.getCommandTargets();
 
@@ -353,7 +357,7 @@ public final class BlockCommand extends Command {
 			if (size == 0) {
 				return null;
 			}
-			return commands.get(0).toTarget();
+			return commands.get(0).toTarget(origin);
 		}
 
 		return NO_DEF_TARGET;
@@ -384,21 +388,23 @@ public final class BlockCommand extends Command {
 
 	private static void resolveSentenceTargets(
 			TargetResolver resolver,
+			Scope origin,
 			ImperativeSentence sentence) {
 		if (!sentence.getCommandTargets().haveValue()) {
 			return;
 		}
 		for (Imperatives alt : sentence.getAlternatives()) {
-			resolveStatementsTargets(resolver, alt);
+			resolveStatementsTargets(resolver, origin, alt);
 		}
 	}
 
 	private static void resolveStatementsTargets(
 			TargetResolver resolver,
+			Scope origin,
 			Imperatives statements) {
 		assert statements.assertInstructionsExecuted();
 		for (Command command : statements.getImplications()) {
-			command.resolveTargets(resolver);
+			command.resolveTargets(resolver, origin);
 		}
 	}
 

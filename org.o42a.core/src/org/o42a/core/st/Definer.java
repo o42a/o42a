@@ -26,7 +26,6 @@ import org.o42a.core.Scope;
 import org.o42a.core.ir.CodeBuilder;
 import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 
 
@@ -61,15 +60,13 @@ public abstract class Definer extends Implication<Definer> {
 		}
 	}
 
-	public abstract void resolveTargets(TargetResolver resolver);
-
 	public abstract InlineEval inline(Normalizer normalizer, Scope origin);
 
 	public abstract InlineEval normalize(
 			RootNormalizer normalizer,
 			Scope origin);
 
-	public abstract Eval eval(CodeBuilder builder);
+	public abstract Eval eval(CodeBuilder builder, Scope origin);
 
 	protected final DefTargets expressionDef() {
 		return new DefTargets(this, PRECONDITION_MASK | NON_CONSTANT_MASK);

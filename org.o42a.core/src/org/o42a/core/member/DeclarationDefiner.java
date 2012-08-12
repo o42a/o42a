@@ -49,7 +49,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return null;
 	}
 
@@ -59,7 +59,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public abstract class DeclarationDefiner extends Definer {
 	}
 
 	@Override
-	public Eval eval(CodeBuilder builder) {
+	public Eval eval(CodeBuilder builder, Scope origin) {
 		return null;
 	}
 

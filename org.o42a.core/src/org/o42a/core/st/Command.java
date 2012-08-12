@@ -27,7 +27,6 @@ import org.o42a.core.ir.local.Cmd;
 import org.o42a.core.ir.local.InlineCmd;
 import org.o42a.core.member.local.FullLocalResolver;
 import org.o42a.core.member.local.LocalResolver;
-import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Normalizer;
 import org.o42a.core.ref.RootNormalizer;
 import org.o42a.core.st.action.Action;
@@ -70,8 +69,6 @@ public abstract class Command extends Implication<Command> {
 			getContext().fullResolution().end();
 		}
 	}
-
-	public abstract void resolveTargets(TargetResolver resolver);
 
 	public abstract InlineCmd inline(Normalizer normalizer, Scope origin);
 

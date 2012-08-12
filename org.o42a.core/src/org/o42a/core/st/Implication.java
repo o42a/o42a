@@ -21,6 +21,7 @@ package org.o42a.core.st;
 
 import org.o42a.core.*;
 import org.o42a.core.object.def.DefTarget;
+import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.Resolver;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.CompilerLogger;
@@ -84,7 +85,9 @@ public abstract class Implication<L extends Implication<L>>
 
 	public abstract Instruction toInstruction(Resolver resolver);
 
-	public abstract DefTarget toTarget();
+	public abstract DefTarget toTarget(Scope origin);
+
+	public abstract void resolveTargets(TargetResolver resolver, Scope origin);
 
 	@Override
 	public final Distributor distribute() {

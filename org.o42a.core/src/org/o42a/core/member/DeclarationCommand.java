@@ -44,7 +44,7 @@ public abstract class DeclarationCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
+	public DefTarget toTarget(Scope origin) {
 		return null;
 	}
 

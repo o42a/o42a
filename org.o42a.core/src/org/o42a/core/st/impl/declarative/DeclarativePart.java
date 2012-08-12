@@ -26,6 +26,7 @@ import static org.o42a.core.st.impl.declarative.InlineDeclarativeSentences.inlin
 
 import java.util.List;
 
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
@@ -108,7 +109,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			return this.defTarget.get();
 		}
 
-		final DefTarget defTarget = sentencesTargets(this);
+		final DefTarget defTarget = sentencesTargets(getScope(), this);
 
 		this.defTarget = Holder.holder(defTarget);
 
@@ -133,12 +134,12 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			return null;
 		}
 
-		return new DeclarativePartEval(this, inline);
+		return new DeclarativePartEval(this, getScope(), inline);
 	}
 
 	@Override
 	public Eval eval() {
-		return new DeclarativePartEval(this, this.normal);
+		return new DeclarativePartEval(this, getScope(), this.normal);
 	}
 
 	@Override
@@ -181,7 +182,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 
 	@Override
 	protected void resolveTarget(TargetResolver resolver) {
-		resolveSentencesTargets(resolver, this);
+		resolveSentencesTargets(resolver, getScope(), this);
 	}
 
 	@Override
@@ -199,13 +200,16 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 	private static final class DeclarativePartEval extends InlineEval {
 
 		private final DeclarativePart part;
+		private final Scope origin;
 		private final InlineDeclarativeSentences inlineSentences;
 
 		DeclarativePartEval(
 				DeclarativePart part,
+				Scope origin,
 				InlineDeclarativeSentences inlineSentences) {
 			super(null);
 			this.part = part;
+			this.origin = origin;
 			this.inlineSentences = inlineSentences;
 		}
 
@@ -214,6 +218,7 @@ final class DeclarativePart extends Def implements DeclarativeSentences {
 			writeSentences(
 					dirs,
 					host,
+					this.origin,
 					this.part,
 					this.inlineSentences);
 		}

@@ -60,8 +60,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public void resolveTargets(TargetResolver resolver) {
-		command().resolveTargets(resolver);
+	public void resolveTargets(TargetResolver resolver, Scope origin) {
+		command().resolveTargets(resolver, origin);
 	}
 
 	@Override
@@ -91,8 +91,8 @@ final class ClauseCommand extends Command {
 	}
 
 	@Override
-	public DefTarget toTarget() {
-		return command().toTarget();
+	public DefTarget toTarget(Scope origin) {
+		return command().toTarget(origin);
 	}
 
 	private final ClauseDeclarationStatement declaration() {
@@ -149,7 +149,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override
@@ -177,7 +177,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
 		}
 
@@ -210,7 +210,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public void resolveTargets(TargetResolver resolver) {
+		public void resolveTargets(TargetResolver resolver, Scope origin) {
 		}
 
 		@Override
@@ -239,7 +239,7 @@ final class ClauseCommand extends Command {
 		}
 
 		@Override
-		public DefTarget toTarget() {
+		public DefTarget toTarget(Scope origin) {
 			return DefTarget.NO_DEF_TARGET;
 		}
 

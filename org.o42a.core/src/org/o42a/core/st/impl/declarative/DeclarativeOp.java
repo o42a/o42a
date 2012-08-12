@@ -22,6 +22,7 @@ package org.o42a.core.st.impl.declarative;
 import java.util.List;
 
 import org.o42a.codegen.code.Block;
+import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.InlineEval;
@@ -36,6 +37,7 @@ final class DeclarativeOp {
 	public static void writeSentences(
 			DefDirs dirs,
 			HostOp host,
+			Scope origin,
 			DeclarativeSentences block,
 			InlineDeclarativeSentences inline) {
 
@@ -51,6 +53,7 @@ final class DeclarativeOp {
 					ID.id((i + 1) + "_sent"),
 					dirs,
 					host,
+					origin,
 					sentences.get(i),
 					inline != null ? inline.get(i) : null);
 		}
@@ -60,6 +63,7 @@ final class DeclarativeOp {
 			ID prefix,
 			DefDirs dirs,
 			HostOp host,
+			Scope origin,
 			DeclarativeSentence sentence,
 			InlineDeclarativeSentence inline) {
 
@@ -77,6 +81,7 @@ final class DeclarativeOp {
 					prefix.sub("prereq"),
 					prereqDirs,
 					host,
+					origin,
 					prerequisite,
 					inline != null ? inline.getPrerequisite() : null);
 
@@ -93,6 +98,7 @@ final class DeclarativeOp {
 			writeStatements(
 					dirs,
 					host,
+					origin,
 					alts.get(0),
 					inline != null ? inline.get(0) : null);
 			return;
@@ -119,6 +125,7 @@ final class DeclarativeOp {
 			writeStatements(
 					altDirs,
 					host,
+					origin,
 					alts.get(i),
 					inline != null ? inline.get(i) : null);
 
@@ -148,6 +155,7 @@ final class DeclarativeOp {
 	private static void writeStatements(
 			DefDirs dirs,
 			HostOp host,
+			Scope origin,
 			Declaratives statements,
 			InlineDefiners inline) {
 
@@ -165,7 +173,7 @@ final class DeclarativeOp {
 				}
 			}
 
-			definers.get(i).eval(dirs.getBuilder()).write(dirs, host);
+			definers.get(i).eval(dirs.getBuilder(), origin).write(dirs, host);
 		}
 	}
 

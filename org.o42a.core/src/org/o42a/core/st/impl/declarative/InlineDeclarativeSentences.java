@@ -58,17 +58,20 @@ public class InlineDeclarativeSentences extends InlineEval {
 			return null;
 		}
 
-		return new InlineDeclarativeSentences(block, inlines);
+		return new InlineDeclarativeSentences(block, origin, inlines);
 	}
 
 	private final DeclarativeSentences block;
+	private final Scope origin;
 	private final InlineDeclarativeSentence[] sentences;
 
 	private InlineDeclarativeSentences(
 			DeclarativeSentences block,
+			Scope origin,
 			InlineDeclarativeSentence[] sentences) {
 		super(null);
 		this.block = block;
+		this.origin = origin;
 		this.sentences = sentences;
 	}
 
@@ -78,7 +81,7 @@ public class InlineDeclarativeSentences extends InlineEval {
 
 	@Override
 	public void write(DefDirs dirs, HostOp host) {
-		writeSentences(dirs, host, this.block, this);
+		writeSentences(dirs, host, this.origin, this.block, this);
 	}
 
 	@Override
