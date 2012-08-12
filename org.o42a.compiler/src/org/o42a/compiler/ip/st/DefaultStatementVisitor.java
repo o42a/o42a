@@ -229,11 +229,6 @@ public class DefaultStatementVisitor extends StatementVisitor {
 
 		final Scope scope = statements.getScope();
 		final Ref rescoped = ref.rescope(scope);
-
-		if (!statements.getSentenceFactory().isDeclarative()) {
-			return rescoped;
-		}
-
 		final StatementConsumer consumer =
 				new StatementConsumer(statements, condition);
 
