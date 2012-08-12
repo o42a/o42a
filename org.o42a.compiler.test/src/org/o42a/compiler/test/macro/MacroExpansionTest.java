@@ -52,4 +52,40 @@ public class MacroExpansionTest extends CompilerTestCase {
 		assertThat(definiteValue(linkTarget(b), ValueType.INTEGER), is(123L));
 	}
 
+	@Test
+	public void trueCondition() {
+		compile(
+				"#A := 5",
+				"B := void (#A)");
+
+		assertTrueVoid(field("b"));
+	}
+
+	@Test
+	public void falseCondition() {
+		compile(
+				"#A := false",
+				"B := void (#A)");
+
+		assertFalseVoid(field("b"));
+	}
+
+	@Test
+	public void selfAssignment() {
+		compile(
+				"#A := 5",
+				"B := integer (= #A)");
+
+		assertThat(definiteValue(field("b"), ValueType.INTEGER), is(5L));
+	}
+
+	@Test
+	public void selfAssignmentWithAdapter() {
+		compile(
+				"#A := 5",
+				"B := float (= #A)");
+
+		assertThat(definiteValue(field("b"), ValueType.FLOAT), is(5.0));
+	}
+
 }
