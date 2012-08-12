@@ -24,8 +24,10 @@ import static org.o42a.core.object.link.LinkValueType.GETTER;
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
 import org.o42a.core.member.field.*;
+import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueStructFinder;
@@ -67,7 +69,7 @@ final class TempFieldDefinition extends FieldDefinition {
 				GETTER.typeRef(this, getScope(), valueStruct);
 
 		definer.setAncestor(ancestor);
-		definer.define(valueBlock(this.expansion));
+		definer.define(valueBlock(expansion()));
 	}
 
 	@Override
@@ -94,6 +96,21 @@ final class TempFieldDefinition extends FieldDefinition {
 			return this.expansion.toString();
 		}
 		return '=' + this.expansion.toString();
+	}
+
+	private Ref expansion() {
+
+		final LocalScope local = this.expansion.getScope().toLocal();
+
+		if (local == null) {
+			return this.expansion;
+		}
+
+		final PrefixPath prefix =
+				local.toMember().getMemberKey().toPath().toPrefix(
+						local.getEnclosingScope());
+
+		return this.expansion.prefixWith(prefix);
 	}
 
 }

@@ -92,6 +92,9 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		if (container.toObject() == null) {
 			return invalidMacroRef();
 		}
+		if (member.toField() == null) {
+			return invalidMacroRef();
+		}
 		return appendDepStep(step);
 	}
 

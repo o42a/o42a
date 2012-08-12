@@ -22,7 +22,6 @@ package org.o42a.compiler.ip.st.macro;
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
 import org.o42a.core.member.DeclarationStatement;
-import org.o42a.core.member.MemberRegistry;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
 import org.o42a.core.member.field.FieldDeclaration;
@@ -31,6 +30,7 @@ import org.o42a.core.object.macro.MacroConsumer;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.Statements;
 
@@ -56,14 +56,44 @@ public final class StatementConsumer implements Consumer {
 			PathTemplate template,
 			Ref expansion) {
 
-		final MemberRegistry memberRegistry =
-				topMemberRegistry(this.statements);
+		final Statements<?, ?> statements = createTopLevelSentence(macroRef);
+
+		this.tempField = createTempField(macroRef, expansion, statements);
+		if (this.tempField == null) {
+			return null;
+		}
+
+		return new StatementMacroConsumer(macroRef, template, this.tempField);
+	}
+
+	private Statements<?, ?> createTopLevelSentence(LocationInfo location) {
+
+		Statements<?, ?> st = this.statements;
+
+		for (;;) {
+
+			final Block<?, ?> block = st.getSentence().getBlock();
+			final Statements<?, ?> enclosing = block.getEnclosing();
+
+			if (enclosing == null) {
+				return block.propose(location).alternative(location);
+			}
+
+			st = enclosing;
+		}
+	}
+
+	private MemberField createTempField(
+			Ref macroRef,
+			Ref expansion,
+			Statements<?, ?> statements) {
+
 		final FieldDeclaration declaration = fieldDeclaration(
 				macroRef,
-				macroRef.distribute(),
-				memberRegistry.tempMemberId())
+				statements.nextDistributor(),
+				statements.getMemberRegistry().tempMemberId())
 				.setVisibility(Visibility.PROTECTED);
-		final FieldBuilder field = memberRegistry.newField(
+		final FieldBuilder field = statements.field(
 				declaration,
 				new TempFieldDefinition(expansion, this.condition));
 
@@ -77,28 +107,9 @@ public final class StatementConsumer implements Consumer {
 			return null;
 		}
 
-		this.tempField = statement.toMember().toField();
 		this.statements.statement(statement);
 
-		return new StatementMacroConsumer(macroRef, template, this.tempField);
-	}
-
-	private static MemberRegistry topMemberRegistry(
-			Statements<?, ?> statements) {
-
-		Statements<?, ?> st = statements;
-
-		for (;;) {
-
-			final Block<?, ?> block = st.getSentence().getBlock();
-			final Statements<?, ?> enclosing = block.getEnclosing();
-
-			if (enclosing == null) {
-				return block.getMemberRegistry();
-			}
-
-			st = enclosing;
-		}
+		return statement.toMember().toField();
 	}
 
 	private static final class StatementMacroConsumer implements MacroConsumer {
