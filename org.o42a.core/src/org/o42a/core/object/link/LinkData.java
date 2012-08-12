@@ -97,9 +97,6 @@ public abstract class LinkData<L extends Link> implements PlaceInfo {
 	}
 
 	public final ValueKnowledge getKnowledge() {
-		if (this.link.getValueType().isStateless()) {
-			return RUNTIME_CONSTRUCTED_VALUE;
-		}
 
 		final TargetRef targetRef = getTargetRef();
 		final Resolution resolution =

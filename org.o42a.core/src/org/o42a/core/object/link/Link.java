@@ -84,7 +84,7 @@ public abstract class Link extends AbstractContainer implements PlaceInfo {
 	public abstract boolean isSynthetic();
 
 	public boolean isRuntime() {
-		return (getValueType().isRuntimeConstructed()
+		return (getValueType().isVariable()
 				|| getScope().getConstructionMode().isRuntime());
 	}
 
