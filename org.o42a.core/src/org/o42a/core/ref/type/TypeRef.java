@@ -336,9 +336,6 @@ public abstract class TypeRef implements ScopeInfo {
 		if (this.type != null) {
 			return this.type;
 		}
-		if (toString().equals("<[Call propagation: a: foo] Call propagation: a: foo: S/Call propagation: a: value>")) {
-			System.err.println("(!)");
-		}
 
 		final Resolution resolution = resolve(getScope().resolver());
 

@@ -19,8 +19,6 @@
 */
 package org.o42a.backend.llvm.id;
 
-import java.util.Arrays;
-
 import org.o42a.backend.llvm.data.LLVMModule;
 
 
@@ -75,9 +73,6 @@ final class NestedId extends LLVMId {
 		assert indices != null :
 			"Top-level native pointer missing: " + this;
 
-		if (toString().equals("getElementPtr(o42a_gc_block_t, 7)")) {
-			System.err.println("(!) " + this + ": " + Arrays.toString(indices));
-		}
 		return this.typePtr = expression(
 				module.getNativePtr(),
 				topLevel().typeExpression(module),
