@@ -19,12 +19,8 @@
 */
 package org.o42a.util.string;
 
-import static java.lang.Character.*;
-import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
+import static java.lang.Character.charCount;
 import static org.o42a.util.string.Capitalization.CASE_SENSITIVE;
-import static org.o42a.util.string.Capitalization.PRESERVE_CAPITAL;
-import static org.o42a.util.string.Characters.HYPHEN;
-import static org.o42a.util.string.Characters.NON_BREAKING_HYPHEN;
 
 
 
@@ -62,187 +58,20 @@ public final class Name implements SubID, CharSequence, Comparable<Name> {
 	/**
 	 * Constructs a new name.
 	 *
-	 * <p>This method removes extra word separators and validates the name.</p>
-	 *
-	 * <p>If {@code capitalization} is omitted, then it is considered case
-	 * insensitive, i.e. either {@link Capitalization#CASE_INSENSITIVE} or
-	 * {@link Capitalization#PRESERVE_CAPITAL} depending on name.</p>
-	 *
 	 * @param string name string.
 	 * @param capitalization name capitalization or <code>null</code>
 	 * to determine it automatically.
 	 *
 	 * @return new name, possibly invalid.
+	 *
+	 * @see NameBuilder for name construction details.
 	 */
 	public static Name newName(String string, Capitalization capitalization) {
 
-		boolean preserveCapital = capitalization != null;
-		final StringBuilder out = new StringBuilder(string.length());
-		final int len = string.length();
-		boolean prevDigit = false;
-		boolean prevLetter = false;
-		boolean prevHyphen = false;
-		boolean prevSeparator = false;
-		boolean firstWord = true;
-		boolean wordCapital = false;
-		boolean wordAbbr = false;
-		int i = 0;
-		boolean valid = true;
+		final NameBuilder out =
+				new NameBuilder(capitalization, string.length());
 
-		while (i < len) {
-
-			final int c = string.codePointAt(i);
-
-			i += charCount(c);
-
-			final boolean separator;
-
-			if (Character.getType(c) == SPACE_SEPARATOR || c == '_') {
-				separator = true;
-			} else if (isWhitespace(c) || isISOControl(c)) {
-				separator = true;
-				valid = false;
-			} else {
-				separator = false;
-			}
-
-			if (separator) {
-				if (prevSeparator) {
-					continue;
-				}
-				if (out.length() == 0) {
-					continue;
-				}
-				if (!preserveCapital
-						&& !firstWord
-						&& wordCapital
-						&& !wordAbbr) {
-					preserveCapital = true;
-				}
-				firstWord = false;
-				wordCapital = false;
-				wordAbbr = false;
-				prevSeparator = true;
-				continue;
-			}
-			if (isDigit(c)) {
-				if (out.length() == 0) {
-					// Name begins with digit.
-					valid = false;
-				}
-				if (prevSeparator) {
-					if (prevDigit) {
-						out.append(' ');
-					}
-					prevSeparator = false;
-				}
-				if (!preserveCapital
-						&& !firstWord
-						&& wordCapital
-						&& !wordAbbr) {
-					preserveCapital = true;
-				}
-				firstWord = false;
-				wordCapital = false;
-				wordAbbr = false;
-				prevDigit = true;
-				prevLetter = false;
-				prevHyphen = false;
-				out.appendCodePoint(c);
-				continue;
-			}
-			if (isLetter(c)) {
-				if (!preserveCapital) {
-					if (prevSeparator || !prevLetter) {
-						if (isUpperCase(c)) {
-							// Word starts with capital letter.
-							// Proper noun.
-							wordCapital = true;
-						} else if (firstWord) {
-							// First word starts with non-capital.
-							// Preserve it.
-							preserveCapital = true;
-						}
-					} else if (prevLetter && isUpperCase(c)) {
-						// Abbreviation.
-						if (firstWord) {
-							// First word is abbreviation.
-							// Preserve capital.
-							preserveCapital = true;
-						} else {
-							wordAbbr = true;
-						}
-					}
-				}
-				if (prevSeparator) {
-					if (prevLetter) {
-						out.append(' ');
-					}
-					prevSeparator = false;
-				}
-				prevDigit = false;
-				prevLetter = true;
-				prevHyphen = false;
-				out.appendCodePoint(c);
-				continue;
-			}
-			if (c == '-' || c == HYPHEN || c == NON_BREAKING_HYPHEN) {
-				if (prevHyphen) {
-					// Double hyphen.
-					valid = false;
-					continue;
-				}
-				if (out.length() == 0) {
-					// Name begins with hyphen.
-					valid = false;
-				}
-				if (prevSeparator) {
-					// Separator before hyphen.
-					valid = false;
-				}
-				if (!preserveCapital
-						&& !firstWord
-						&& wordCapital
-						&& !wordAbbr) {
-					preserveCapital = true;
-				}
-				firstWord = false;
-				wordCapital = false;
-				wordAbbr = false;
-				prevDigit = false;
-				prevLetter = false;
-				prevHyphen = true;
-				prevSeparator = false;
-				out.appendCodePoint('-');
-				continue;
-			}
-			valid = false;
-			prevDigit = false;
-			prevLetter = false;
-			prevHyphen = false;
-			prevSeparator = false;
-			out.appendCodePoint(c);
-		}
-
-		final Capitalization cap;
-
-		if (capitalization != null) {
-			cap = capitalization;
-		} else {
-			if (!preserveCapital
-					&& !firstWord
-					&& wordCapital
-					&& !wordAbbr) {
-				preserveCapital = true;
-			}
-			cap = preserveCapital ? PRESERVE_CAPITAL : CASE_INSENSITIVE;
-		}
-
-		return new Name(
-				cap,
-				out.toString(),
-				valid && !prevHyphen && !prevSeparator,
-				cap.isCaseSensitive());
+		return out.append(string).toName();
 	}
 
 	private final Capitalization capitalization;
