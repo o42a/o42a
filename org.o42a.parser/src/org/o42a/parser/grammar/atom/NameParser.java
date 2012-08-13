@@ -20,7 +20,6 @@
 package org.o42a.parser.grammar.atom;
 
 import static java.lang.Character.isLetter;
-import static java.lang.Character.isUpperCase;
 import static org.o42a.parser.Grammar.isDigit;
 import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.util.string.Characters.HYPHEN;
@@ -31,7 +30,7 @@ import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 import org.o42a.util.io.SourcePosition;
 import org.o42a.util.io.SourceRange;
-import org.o42a.util.string.Capitalization;
+import org.o42a.util.string.NameBuilder;
 
 
 public class NameParser implements Parser<NameNode> {
@@ -48,10 +47,9 @@ public class NameParser implements Parser<NameNode> {
 	public NameNode parse(ParserContext context) {
 
 		final SourcePosition start = context.current().fix();
-		final StringBuilder name = new StringBuilder();
+		final NameBuilder name = new NameBuilder();
 		SourcePosition whitespace = null;
 		int hyphen = 0;
-		Capitalization capitalization = Capitalization.CASE_INSENSITIVE;
 
 		for (;;) {
 
@@ -111,25 +109,12 @@ public class NameParser implements Parser<NameNode> {
 				break;
 			}
 
-			final Word word = context.push(parser);
+			final String word = context.push(parser);
 
 			if (word == null) {
 				break;
 			}
-			if (len == 0) {
-				if (word.abbreviation()) {
-					// Preserve capital if the first word contains
-					// a capital letter not at the beginning.
-					// This is for abbreviations like "URL".
-					capitalization = Capitalization.PRESERVE_CAPITAL;
-				}
-			} else {
-				if (word.firstCapital() && !word.abbreviation()) {
-					// Preserve capital if a not first word starts with
-					// a capital letter and has no more capitals.
-					// This is for proper nouns like "John Smith".
-					capitalization = Capitalization.PRESERVE_CAPITAL;
-				}
+			if (len != 0) {
 				if (hyphen != 0) {
 					name.append('-');
 					hyphen = 0;
@@ -145,7 +130,7 @@ public class NameParser implements Parser<NameNode> {
 			}
 
 			context.acceptAll();
-			name.append(word.getWord());
+			name.append(word);
 			if (context.isEOF()) {
 				break;
 			}
@@ -158,48 +143,15 @@ public class NameParser implements Parser<NameNode> {
 		return new NameNode(
 				start,
 				context.firstUnaccepted().fix(),
-				capitalization.name(name.toString()));
+				name.toName());
 	}
 
-	private static final class Word {
-
-		private final CharSequence word;
-		private final boolean abbreviation;
-		private final boolean firstCapital;
-
-		Word(CharSequence word, boolean firstCapital, boolean abbreviation) {
-			this.word = word;
-			this.firstCapital = firstCapital;
-			this.abbreviation = abbreviation;
-		}
-
-		public final CharSequence getWord() {
-			return this.word;
-		}
-
-		public final boolean firstCapital() {
-			return this.firstCapital;
-		}
-
-		public final boolean abbreviation() {
-			return this.abbreviation;
-		}
+	private static class WordParser implements Parser<String> {
 
 		@Override
-		public String toString() {
-			return String.valueOf(this.word);
-		}
-
-	}
-
-	private static class WordParser implements Parser<Word> {
-
-		@Override
-		public Word parse(ParserContext context) {
+		public String parse(ParserContext context) {
 
 			final StringBuilder word = new StringBuilder();
-			boolean firstCapital = false;
-			boolean abbreviation = false;
 
 			for (;;) {
 
@@ -207,11 +159,6 @@ public class NameParser implements Parser<NameNode> {
 
 				if (!isNamePart(c)) {
 					break;
-				}
-				if (word.length() == 0) {
-					firstCapital |= isUpperCase(c);
-				} else {
-					abbreviation |= isUpperCase(c);
 				}
 				word.appendCodePoint(c);
 			}
@@ -225,7 +172,7 @@ public class NameParser implements Parser<NameNode> {
 				return null;
 			}
 
-			return new Word(word, firstCapital, abbreviation);
+			return word.toString();
 		}
 
 		protected boolean isNamePart(int c) {
