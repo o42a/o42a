@@ -310,7 +310,8 @@ public class Ref extends Statement {
 	}
 
 	public final Ref rebuildIn(Scope scope) {
-		return getPath().rebuildIn(scope).target(distribute());
+		return getPath().rebuildIn(scope).target(
+				distributeIn(scope.getContainer()));
 	}
 
 	public final TypeRef toTypeRef() {
