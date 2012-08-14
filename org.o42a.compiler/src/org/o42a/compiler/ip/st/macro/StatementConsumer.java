@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.st.macro;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 
+import org.o42a.core.Scope;
 import org.o42a.core.member.DeclarationStatement;
 import org.o42a.core.member.Visibility;
 import org.o42a.core.member.field.FieldBuilder;
@@ -36,6 +37,45 @@ import org.o42a.core.st.sentence.Statements;
 
 
 public final class StatementConsumer implements Consumer {
+
+	public static Ref consumeCondition(
+			Statements<?, ?> statements,
+			Ref value) {
+		return consumeStatement(statements, value, value, true);
+	}
+
+	public static Ref consumeSelfAssignment(
+			Statements<?, ?> statements,
+			LocationInfo location,
+			Ref condition) {
+		return consumeStatement(statements, location, condition, false);
+	}
+
+	private static Ref consumeStatement(
+			Statements<?, ?> statements,
+			LocationInfo location,
+			Ref ref,
+			boolean condition) {
+
+		final Scope scope = statements.getScope();
+		final Ref rescoped = ref.rescope(scope);
+		final StatementConsumer consumer =
+				new StatementConsumer(statements, condition);
+
+		rescoped.consume(consumer);
+
+		final MemberField tempField = consumer.getTempField();
+
+		if (tempField == null) {
+			return rescoped;
+		}
+
+		return tempField.getMemberKey()
+				.toPath()
+				.dereference()
+				.bind(location, scope)
+				.target(rescoped.distribute());
+	}
 
 	private final Statements<?, ?> statements;
 	private final boolean condition;

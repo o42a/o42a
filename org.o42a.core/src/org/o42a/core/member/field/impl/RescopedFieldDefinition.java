@@ -189,6 +189,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		}
 
 		@Override
+		public void define(BlockBuilder definitions) {
+			this.definer.define(definitions);
+		}
+
+		@Override
 		public String toString() {
 			if (this.definer == null) {
 				return super.toString();
@@ -214,6 +219,11 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 		@Override
 		public void setRef(Ref ref) {
 			this.definer.setRef(ref.prefixWith(getPrefix()));
+		}
+
+		@Override
+		public void define(BlockBuilder definitions) {
+			this.definer.define(definitions);
 		}
 
 		@Override

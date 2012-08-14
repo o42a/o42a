@@ -89,7 +89,7 @@ final class ObjectDefinerImpl implements ObjectDefiner {
 
 	@Override
 	public void define(BlockBuilder definitions) {
-		definitions.buildBlock(this.field.getContent());
+		definitions.buildBlock(getField().getContent());
 	}
 
 	@Override
