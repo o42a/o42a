@@ -88,4 +88,30 @@ public class MacroExpansionTest extends CompilerTestCase {
 		assertThat(definiteValue(field("b"), ValueType.FLOAT), is(5.0));
 	}
 
+	@Test
+	public void macroExpansionAsLinkTarget() {
+		compile(
+				"#A := 5",
+				"B := (`float) #a");
+
+		assertThat(
+				definiteValue(linkTarget(field("b")), ValueType.FLOAT),
+				is(5.0));
+	}
+
+	@Test
+	public void overrideByMacroExpansion() {
+		compile(
+				"A := void (" +
+				"  F := 1",
+				")",
+				"#T := 2",
+				"B := a (",
+				"  F = #t",
+				")");
+
+		assertThat(definiteValue(field("a", "f"), ValueType.INTEGER), is(1L));
+		assertThat(definiteValue(field("b", "f"), ValueType.INTEGER), is(2L));
+	}
+
 }

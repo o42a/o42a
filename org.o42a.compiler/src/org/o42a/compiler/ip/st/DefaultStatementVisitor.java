@@ -23,6 +23,8 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
+import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeCondition;
+import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeSelfAssignment;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -34,10 +36,7 @@ import org.o42a.ast.file.InclusionNode;
 import org.o42a.ast.statement.*;
 import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
-import org.o42a.compiler.ip.st.macro.StatementConsumer;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.LocationInfo;
@@ -214,37 +213,11 @@ public class DefaultStatementVisitor extends StatementVisitor {
 			Ref value) {
 		statements.selfAssign(
 				location,
-				consume(statements, location, value, false));
+				consumeSelfAssignment(statements, location, value));
 	}
 
 	protected void addCondition(Statements<?, ?> statements, Ref condition) {
-		statements.expression(consume(statements, condition, condition, true));
-	}
-
-	private Ref consume(
-			Statements<?, ?> statements,
-			LocationInfo location,
-			Ref ref,
-			boolean condition) {
-
-		final Scope scope = statements.getScope();
-		final Ref rescoped = ref.rescope(scope);
-		final StatementConsumer consumer =
-				new StatementConsumer(statements, condition);
-
-		rescoped.consume(consumer);
-
-		final MemberField tempField = consumer.getTempField();
-
-		if (tempField == null) {
-			return rescoped;
-		}
-
-		return tempField.getMemberKey()
-				.toPath()
-				.dereference()
-				.bind(location, scope)
-				.target(rescoped.distribute());
+		statements.expression(consumeCondition(statements, condition));
 	}
 
 }

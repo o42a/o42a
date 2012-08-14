@@ -28,6 +28,7 @@ import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
+import org.o42a.core.st.sentence.BlockBuilder;
 
 
 final class LinkDefinerImpl implements LinkDefiner {
@@ -42,7 +43,7 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	@Override
-	public DeclaredField getField() {
+	public final DeclaredField getField() {
 		return this.field;
 	}
 
@@ -57,6 +58,11 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	@Override
+	public void define(BlockBuilder definitions) {
+		definitions.buildBlock(getField().getContent());
+	}
+
+	@Override
 	public String toString() {
 		if (this.field == null) {
 			return super.toString();
@@ -65,11 +71,22 @@ final class LinkDefinerImpl implements LinkDefiner {
 	}
 
 	final Ascendants getAscendants() {
+
+		final TypeRef targetType;
+
 		if (this.targetRef == null) {
-			return this.ascendants;
+
+			final TypeRef explicitTypeRef = explicitTypeRef();
+
+			if (explicitTypeRef == null) {
+				return this.ascendants;
+			}
+
+			targetType = explicitTypeRef;
+		} else {
+			targetType = this.targetRef.getTypeRef();
 		}
 
-		final TypeRef targetType = this.targetRef.getTypeRef();
 		final FieldDeclaration declaration = getField().getDeclaration();
 		final LinkValueType linkType = declaration.getLinkType();
 

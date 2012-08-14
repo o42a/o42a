@@ -19,9 +19,13 @@
 */
 package org.o42a.core.member.field;
 
+import org.o42a.core.st.sentence.BlockBuilder;
+
 
 public interface FieldDefiner {
 
 	Field getField();
+
+	void define(BlockBuilder definitions);
 
 }

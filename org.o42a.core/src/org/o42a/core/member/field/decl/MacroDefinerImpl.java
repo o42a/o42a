@@ -21,6 +21,7 @@ package org.o42a.core.member.field.decl;
 
 import org.o42a.core.member.field.MacroDefiner;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.st.sentence.BlockBuilder;
 
 
 final class MacroDefinerImpl implements MacroDefiner {
@@ -32,13 +33,18 @@ final class MacroDefinerImpl implements MacroDefiner {
 	}
 
 	@Override
-	public DeclaredField getField() {
+	public final DeclaredField getField() {
 		return this.field;
 	}
 
 	@Override
 	public void setRef(Ref ref) {
 		this.field.getContent().propose(ref).alternative(ref).selfAssign(ref);
+	}
+
+	@Override
+	public void define(BlockBuilder definitions) {
+		definitions.buildBlock(getField().getContent());
 	}
 
 	@Override
