@@ -115,9 +115,7 @@ public class Call extends ObjectConstructor {
 
 		private final Call call;
 
-		CallObject(
-				Call call,
-				Distributor enclosing) {
+		CallObject(Call call, Distributor enclosing) {
 			super(call, enclosing);
 			this.call = call;
 		}
