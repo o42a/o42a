@@ -22,10 +22,9 @@ package org.o42a.common.object;
 import org.o42a.common.def.Builtin;
 import org.o42a.common.def.BuiltinDef;
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
-import org.o42a.core.object.common.StandaloneObjectScope;
+import org.o42a.core.object.ObjectScope;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.path.PrefixPath;
@@ -43,12 +42,7 @@ public abstract class BuiltinObject extends Obj implements Builtin {
 		setValueStruct(valueStruct);
 	}
 
-	protected BuiltinObject(StandaloneObjectScope scope, ValueStruct<?, ?> valueStruct) {
-		super(scope);
-		setValueStruct(valueStruct);
-	}
-
-	protected BuiltinObject(Scope scope, ValueStruct<?, ?> valueStruct) {
+	protected BuiltinObject(ObjectScope scope, ValueStruct<?, ?> valueStruct) {
 		super(scope);
 		setValueStruct(valueStruct);
 	}
