@@ -37,13 +37,13 @@ import org.o42a.core.object.link.TargetRef;
 import org.o42a.core.ref.impl.Adapter;
 import org.o42a.core.ref.impl.RefCommand;
 import org.o42a.core.ref.impl.RefDefiner;
-import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.path.impl.ErrorStep;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.*;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.*;
 import org.o42a.util.fn.Cancelable;
 
@@ -138,13 +138,6 @@ public class Ref extends Statement {
 	public final Resolution resolve(Resolver resolver) {
 		assertCompatible(resolver.getScope());
 		return new Resolution(this, resolver);
-	}
-
-	public final Ref consume(Consumer consumer) {
-
-		final RefPath path = getPath();
-
-		return path.consume(this, consumer);
 	}
 
 	public final Resolution resolveAll(FullResolver resolver) {
@@ -330,12 +323,31 @@ public class Ref extends Statement {
 		return targetRef(this, typeRef);
 	}
 
-	public final Statement toCondition() {
-		return new RefCondition(this);
+	public final Statement toCondition(Statements<?, ?> statements) {
+
+		final RefPath path = getPath();
+
+		return path.toCondition(this, statements);
+	}
+
+	public final Statement toValue(
+			LocationInfo location,
+			Statements<?, ?> statements) {
+
+		final RefPath path = getPath();
+
+		return path.toValue(location, this, statements);
 	}
 
 	public final FieldDefinition toFieldDefinition() {
 		return getPath().fieldDefinition(distribute());
+	}
+
+	public final Ref consume(Consumer consumer) {
+
+		final RefPath path = getPath();
+
+		return path.consume(this, consumer);
 	}
 
 	public final RefOp op(HostOp host) {

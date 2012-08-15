@@ -43,12 +43,15 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.array.impl.ArrayIndexStep;
 import org.o42a.core.ref.*;
+import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.impl.normalizer.UnNormalizedPath;
 import org.o42a.core.ref.path.impl.*;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.Reproducer;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueStructFinder;
 import org.o42a.util.ArrayUtil;
 
@@ -398,16 +401,42 @@ public class BoundPath extends RefPath {
 	}
 
 	@Override
+	protected Statement toCondition(Ref condition, Statements<?, ?> statements) {
+
+		final Step lastStep = lastRawStep();
+
+		if (lastStep == null) {
+			return new RefCondition(condition);
+		}
+
+		return lastStep.condition(condition, statements);
+	}
+
+	@Override
+	protected Statement toValue(
+			LocationInfo location,
+			Ref value,
+			Statements<?, ?> statements) {
+
+		final Step lastStep = lastRawStep();
+
+		if (lastStep == null) {
+			return value;
+		}
+
+		return lastStep.value(location, value, statements);
+	}
+
+	@Override
 	protected Ref consume(Ref ref, Consumer consumer) {
 
-		final Step[] rawSteps = getRawSteps();
-		final int length = rawSteps.length;
+		final Step lastStep = lastRawStep();
 
-		if (length == 0) {
+		if (lastStep == null) {
 			return ref;
 		}
 
-		final Ref consumption = rawSteps[length - 1].consume(ref, consumer);
+		final Ref consumption = lastStep.consume(ref, consumer);
 
 		if (consumption != null) {
 			consumption.assertSameScope(ref);
@@ -448,6 +477,17 @@ public class BoundPath extends RefPath {
 
 	private final Step[] getRawSteps() {
 		return getRawPath().getSteps();
+	}
+
+	private final Step lastRawStep() {
+
+		final Step[] steps = getRawPath().getSteps();
+
+		if (steps.length == 0) {
+			return null;
+		}
+
+		return steps[steps.length - 1];
 	}
 
 	private PathResolution walkPath(
