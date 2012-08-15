@@ -19,6 +19,7 @@
 */
 package org.o42a.core.st.sentence;
 
+import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueAssignment;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueBraces;
 import static org.o42a.core.st.impl.SentenceErrors.prohibitedIssueField;
 
@@ -40,7 +41,6 @@ import org.o42a.core.st.Implication;
 import org.o42a.core.st.Reproducer;
 import org.o42a.core.st.Statement;
 import org.o42a.core.st.impl.NextDistributor;
-import org.o42a.core.st.impl.SentenceErrors;
 import org.o42a.core.st.impl.StatementsDistributor;
 import org.o42a.core.st.impl.imperative.Locals;
 import org.o42a.util.Place.Trace;
@@ -92,23 +92,23 @@ public abstract class Statements<
 		assert expression.getContext() == getContext() :
 			expression + " has wrong context: " + expression.getContext()
 			+ ", but " + getContext() + " expected";
-		statement(expression.rescope(getScope()).toCondition());
+		statement(expression.rescope(getScope()).toCondition(this));
 	}
 
 	public final void selfAssign(Ref value) {
 		selfAssign(value, value);
 	}
 
-	public void selfAssign(LocationInfo location, Ref value) {
+	public final void selfAssign(LocationInfo location, Ref value) {
 		assert value.getContext() == getContext() :
 			value + " has wrong context: " + value.getContext()
 			+ ", but " + getContext() + " expected";
 		if (isInsideIssue()) {
-			SentenceErrors.prohibitedIssueAssignment(location);
+			prohibitedIssueAssignment(location);
 			dropStatement();
 			return;
 		}
-		statement(value.rescope(getScope()));
+		statement(value.rescope(getScope()).toValue(location, this));
 	}
 
 	public FieldBuilder field(

@@ -22,6 +22,8 @@ package org.o42a.core.ref;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.util.log.LogInfo;
 
 
@@ -34,6 +36,15 @@ public abstract class RefPath extends Location {
 	public RefPath(CompilerContext context, LogInfo logInfo) {
 		super(context, logInfo);
 	}
+
+	protected abstract Statement toCondition(
+			Ref condition,
+			Statements<?, ?> statements);
+
+	protected abstract Statement toValue(
+			LocationInfo location,
+			Ref value,
+			Statements<?, ?> statements);
 
 	protected abstract Ref consume(Ref ref, Consumer consumer);
 

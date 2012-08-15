@@ -30,9 +30,12 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.ref.Consumer;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
+import org.o42a.core.ref.impl.cond.RefCondition;
 import org.o42a.core.ref.path.impl.PathFieldDefinition;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
+import org.o42a.core.st.Statement;
+import org.o42a.core.st.sentence.Statements;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueStruct;
 
@@ -72,6 +75,51 @@ public abstract class Step {
 		return getClass().getSimpleName();
 	}
 
+	protected AbstractPathFragment getPathFragment() {
+		return null;
+	}
+
+	/**
+	 * Converts a reference to condition statement.
+	 *
+	 * <p>This method is called for the last step of the reference path when
+	 * the reference is used as an {@link Statements#expression(Ref) expression
+	 * statement}.</p>
+	 *
+	 * <p>By default the logical value of {@code condition} is used as condition.
+	 * </p>
+	 *
+	 * @param condition the reference to convert to condition statement.
+	 * @param statements the statements this reference is added to.
+	 *
+	 * @return the conditional statement.
+	 */
+	protected Statement condition(Ref condition, Statements<?, ?> statements) {
+		return new RefCondition(condition);
+	}
+
+	/**
+	 * Converts a reference to value statement.
+	 *
+	 * <p>This method is called for the last step of the reference path when
+	 * the reference is used as a {@link Statements#selfAssign(Ref)
+	 * self-assignment statement}.</p>
+	 *
+	 * <p>By default this method returns the reference itself.</p>
+	 *
+	 * @param location a self-assignment statement location.
+	 * @param value the reference to convert to value statement.
+	 * @param statements the statements this reference is added to.
+	 *
+	 * @return the value statement.
+	 */
+	protected Statement value(
+			LocationInfo location,
+			Ref value,
+			Statements<?, ?> statements) {
+		return value;
+	}
+
 	/**
 	 * This is ivoked by {@link Ref#consume(Consumer)} for the last step
 	 * of the path to optionally {@link Consumer consume} the reference.
@@ -88,10 +136,6 @@ public abstract class Step {
 	 */
 	protected Ref consume(Ref ref, Consumer consumer) {
 		return ref;
-	}
-
-	protected AbstractPathFragment getPathFragment() {
-		return null;
 	}
 
 	/**
