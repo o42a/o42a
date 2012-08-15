@@ -23,8 +23,6 @@ import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.member.ClauseInterpreter.clause;
 import static org.o42a.compiler.ip.member.FieldInterpreter.field;
 import static org.o42a.compiler.ip.st.StInterpreter.addContent;
-import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeCondition;
-import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeSelfAssignment;
 
 import org.o42a.ast.atom.NameNode;
 import org.o42a.ast.clause.ClauseDeclaratorNode;
@@ -39,7 +37,6 @@ import org.o42a.compiler.ip.st.assignment.AssignmentStatement;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.CompilerContext;
-import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.Block;
 import org.o42a.core.st.sentence.ImperativeBlock;
 import org.o42a.core.st.sentence.Statements;
@@ -148,7 +145,7 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Ref value = valueNode.accept(expressionVisitor(), distributor);
 
 		if (value != null) {
-			addSelfAssignment(p, location(p, assignment.getPrefix()), value);
+			p.selfAssign(location(p, assignment.getPrefix()), value);
 		}
 
 		return null;
@@ -201,23 +198,10 @@ public class DefaultStatementVisitor extends StatementVisitor {
 		final Ref ref = expression.accept(expressionVisitor(), distributor);
 
 		if (ref != null) {
-			addCondition(p, ref);
+			p.expression(ref);
 		}
 
 		return null;
-	}
-
-	protected void addSelfAssignment(
-			Statements<?, ?> statements,
-			LocationInfo location,
-			Ref value) {
-		statements.selfAssign(
-				location,
-				consumeSelfAssignment(statements, location, value));
-	}
-
-	protected void addCondition(Statements<?, ?> statements, Ref condition) {
-		statements.expression(consumeCondition(statements, condition));
 	}
 
 }
