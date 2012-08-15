@@ -22,7 +22,6 @@ package org.o42a.core.object.impl;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectOp;
@@ -107,10 +106,8 @@ public final class ParentLocalStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override

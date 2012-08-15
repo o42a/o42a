@@ -129,12 +129,15 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		return this.content;
 	}
 
-	final void initDefinitions(Obj object) {
+	final boolean initDefinition(Obj object) {
 
 		final Ascendants ascendants =
 				new Ascendants(object).declareField(NO_FIELD_ASCENDANTS);
+		final FieldDefinition definition = getDefinition();
 
-		getDefinition().setImplicitAscendants(ascendants);
+		definition.init(this, ascendants);
+
+		return definition.isValid();
 	}
 
 	final ObjectMemberRegistry getMemberRegistry() {
@@ -224,7 +227,6 @@ public final class DeclaredField extends Field implements FieldAscendants {
 		final ObjectDefinerImpl definer =
 				new ObjectDefinerImpl(this, implicitAscendants);
 
-		getDefinition().setImplicitAscendants(implicitAscendants);
 		if (isOverride()) {
 			getDefinition().overrideObject(definer);
 		} else {

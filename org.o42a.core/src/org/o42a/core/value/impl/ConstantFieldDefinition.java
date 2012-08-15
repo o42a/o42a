@@ -21,28 +21,25 @@ package org.o42a.core.value.impl;
 
 import static org.o42a.core.member.field.DefinitionTarget.definitionTarget;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.DefinitionTarget;
+import org.o42a.core.member.field.Field;
 import org.o42a.core.member.field.ObjectDefiner;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
-import org.o42a.core.ref.path.BoundPath;
 
 
 final class ConstantFieldDefinition extends DefaultFieldDefinition {
 
 	private final Constant<?> constant;
 
-	ConstantFieldDefinition(
-			BoundPath path,
-			Distributor distributor,
-			Constant<?> constant) {
-		super(path, distributor);
+	ConstantFieldDefinition(Ref ref, Constant<?> constant) {
+		super(ref);
 		this.constant = constant;
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
+	public void init(Field field, Ascendants implicitAscendants) {
 	}
 
 	@Override
@@ -52,9 +49,8 @@ final class ConstantFieldDefinition extends DefaultFieldDefinition {
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAncestor(this.constant.getValueType().typeRef(
-				path(),
-				getScope()));
+		definer.setAncestor(
+				this.constant.getValueType().typeRef(this, getScope()));
 		pathAsValue(definer);
 	}
 

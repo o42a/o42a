@@ -34,8 +34,8 @@ final class PhraseFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
-		getDefinition().setImplicitAscendants(ascendants);
+	public void init(Field field, Ascendants implicitAscendants) {
+		getDefinition().init(field, implicitAscendants);
 	}
 
 	@Override

@@ -21,29 +21,26 @@ package org.o42a.core.ref.common;
 
 import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.Ref;
 
 
 public abstract class DefaultFieldDefinition extends FieldDefinition {
 
-	private final BoundPath path;
+	private final Ref ref;
 
-	public DefaultFieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		super(path, distributor);
-		this.path = path;
+	public DefaultFieldDefinition(Ref ref) {
+		super(ref);
+		this.ref = ref;
 	}
 
-	public final BoundPath path() {
-		return this.path;
+	public final Ref getRef() {
+		return this.ref;
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
+	public void init(Field field, Ascendants implicitAscendants) {
 	}
 
 	@Override
@@ -61,26 +58,24 @@ public abstract class DefaultFieldDefinition extends FieldDefinition {
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		definer.setTargetRef(path().target(distribute()), null);
+		definer.setTargetRef(getRef(), null);
 	}
 
 	@Override
 	public void defineMacro(MacroDefiner definer) {
-		definer.setRef(path().target(distribute()));
+		definer.setRef(getRef());
 	}
 
 	@Override
 	public String toString() {
-		if (this.path == null) {
+		if (this.ref == null) {
 			return super.toString();
 		}
-		return this.path.toString();
+		return this.ref.toString();
 	}
 
 	protected void pathAsValue(ObjectDefiner definer) {
-		definer.define(valueBlock(path().target(
-				definer.getField().distributeIn(
-						path().getOrigin().getContainer()))));
+		definer.define(valueBlock(getRef()));
 	}
 
 }

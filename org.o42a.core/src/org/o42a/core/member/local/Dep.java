@@ -25,7 +25,6 @@ import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.analysis.Analyzer;
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.op.CodeDirs;
@@ -110,18 +109,16 @@ public final class Dep extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
+	protected FieldDefinition fieldDefinition(Ref ref) {
 
 		final PrefixPath prefix =
-				path.cut(1)
+				ref.getPath().cut(1)
 				.append(getObject().getScope().getEnclosingScopePath())
-				.toPrefix(distributor.getScope());
+				.toPrefix(ref.getScope());
 
 		return getDepRef().toFieldDefinition()
 				.prefixWith(prefix)
-				.upgradeScope(distributor.getScope());
+				.upgradeScope(ref.getScope());
 	}
 
 	@Override

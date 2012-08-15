@@ -302,36 +302,6 @@ public class BoundPath extends RefPath {
 		return target(distributor).toStaticTypeRef(valueStructFinder);
 	}
 
-	public final FieldDefinition fieldDefinition(Distributor distributor) {
-		// It is essential to use the last unresolved step,
-		// as it can be an unexpanded path fragment,
-		// which field definition can perform additional tasks.
-		// One example is phrase.
-		final Step[] steps = this.rawPath.getSteps();
-
-		if (steps.length == 0) {
-			return new PathFieldDefinition(this, distributor);
-		}
-
-		final Step lastStep = steps[steps.length - 1];
-
-		return lastStep.fieldDefinition(this, distributor);
-	}
-
-	public final FieldDefinition rebuiltFieldDefinition(
-			Distributor distributor) {
-
-		final Step[] steps = getSteps();
-
-		if (steps.length == 0) {
-			return new PathFieldDefinition(this, distributor);
-		}
-
-		final Step lastStep = steps[steps.length - 1];
-
-		return lastStep.fieldDefinition(this, distributor);
-	}
-
 	public final NormalPath normalize(Normalizer normalizer, Scope origin) {
 		origin.assertDerivedFrom(getOrigin());
 
@@ -425,6 +395,28 @@ public class BoundPath extends RefPath {
 		}
 
 		return lastStep.value(location, value, statements);
+	}
+
+	@Override
+	protected FieldDefinition toFieldDefinition(Ref ref, boolean rebuilt) {
+
+		final Step lastStep;
+
+		if (rebuilt) {
+			lastStep = lastStep();
+		} else {
+			// It is essential to use the last unresolved step,
+			// as it can be an unexpanded path fragment,
+			// which field definition can perform additional tasks.
+			// One example is phrase.
+			lastStep = lastRawStep();
+		}
+
+		if (lastStep == null) {
+			return new PathFieldDefinition(ref);
+		}
+
+		return lastStep.fieldDefinition(ref);
 	}
 
 	@Override

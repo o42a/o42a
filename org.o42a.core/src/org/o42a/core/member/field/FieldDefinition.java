@@ -33,6 +33,7 @@ import org.o42a.core.member.field.impl.InvalidFieldDefinition;
 import org.o42a.core.member.field.impl.RescopedFieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathResolution;
 import org.o42a.core.ref.path.PrefixPath;
@@ -73,6 +74,10 @@ public abstract class FieldDefinition extends Placed {
 		return objectDefinition();
 	}
 
+	public static DefinitionTarget refDefinitionTarget(Ref ref) {
+		return pathDefinitionTarget(ref.getPath());
+	}
+
 	public static DefinitionTarget pathDefinitionTarget(BoundPath path) {
 
 		final PathResolution resolution = path.resolve(
@@ -91,11 +96,15 @@ public abstract class FieldDefinition extends Placed {
 		return definitionTarget(object.value().getValueStruct());
 	}
 
+	public FieldDefinition(Ref ref) {
+		super(ref, ref.distribute());
+	}
+
 	public FieldDefinition(LocationInfo location, Distributor distributor) {
 		super(location, distributor);
 	}
 
-	public abstract void setImplicitAscendants(Ascendants ascendants);
+	public abstract void init(Field field, Ascendants implicitAscendants);
 
 	public boolean isValid() {
 		return true;

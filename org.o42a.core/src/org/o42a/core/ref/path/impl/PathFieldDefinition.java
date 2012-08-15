@@ -19,7 +19,6 @@
 */
 package org.o42a.core.ref.path.impl;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.LinkDefiner;
 import org.o42a.core.member.field.ObjectDefiner;
@@ -27,31 +26,29 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.link.Link;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.TypeRef;
 
 
 public final class PathFieldDefinition extends DefaultFieldDefinition {
 
-	public PathFieldDefinition(BoundPath path, Distributor distributor) {
-		super(path, distributor);
+	public PathFieldDefinition(Ref ref) {
+		super(ref);
 	}
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-		return pathDefinitionTarget(path());
+		return refDefinitionTarget(getRef());
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAncestor(path().typeRef(distribute()));
+		definer.setAncestor(getRef().toTypeRef());
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
 
-		final Distributor distributor = distribute();
-		final Ref target = path().target(distributor);
+		final Ref target = getRef();
 		final Obj object = target.getResolution().toObject();
 		final Link dereferencedLink = object.getDereferencedLink();
 		final TypeRef typeRef;
@@ -59,7 +56,7 @@ public final class PathFieldDefinition extends DefaultFieldDefinition {
 		if (dereferencedLink == null) {
 			typeRef = target.toTypeRef();
 		} else {
-			typeRef = path().ancestor(this, distribute());
+			typeRef = target.ancestor(this);
 		}
 
 		definer.setTargetRef(target, typeRef);

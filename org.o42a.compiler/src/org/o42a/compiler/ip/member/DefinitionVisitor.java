@@ -22,7 +22,8 @@ package org.o42a.compiler.ip.member;
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.core.member.field.FieldDefinition.impliedDefinition;
 
-import org.o42a.ast.expression.*;
+import org.o42a.ast.expression.AbstractExpressionVisitor;
+import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
@@ -56,16 +57,6 @@ public final class DefinitionVisitor
 	}
 
 	@Override
-	public FieldDefinition visitUnary(
-			UnaryNode expression,
-			FieldDeclaration p) {
-		if (expression.getOperator() == UnaryOperator.MACRO_EXPANSION) {
-			return defineByMacroExpansion(expression, p);
-		}
-		return super.visitUnary(expression, p);
-	}
-
-	@Override
 	protected FieldDefinition visitExpression(
 			ExpressionNode expression,
 			FieldDeclaration p) {
@@ -79,29 +70,6 @@ public final class DefinitionVisitor
 		}
 
 		return definition.toFieldDefinition();
-	}
-
-	private FieldDefinition defineByMacroExpansion(
-			UnaryNode expression,
-			FieldDeclaration p) {
-		if (p.isMacro()) {
-			// Macro can not be defined by macro expansion.
-			return super.visitUnary(expression, p);
-		}
-		if (p.getLinkType() != null && p.getType() == null) {
-			// Link without interface can not be defined by macro expansion.
-			return super.visitUnary(expression, p);
-		}
-
-		final Ref expansion = expression.accept(
-				ip().targetExVisitor(this.typeConsumer),
-				p.distribute());
-
-		if (expansion == null) {
-			return null;
-		}
-
-		return new FieldDefinitionByMacroExpansion(p, expansion);
 	}
 
 }

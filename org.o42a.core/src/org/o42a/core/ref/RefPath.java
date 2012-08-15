@@ -19,6 +19,7 @@
 */
 package org.o42a.core.ref;
 
+import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
 import org.o42a.core.source.LocationInfo;
@@ -45,6 +46,10 @@ public abstract class RefPath extends Location {
 			LocationInfo location,
 			Ref value,
 			Statements<?, ?> statements);
+
+	protected abstract FieldDefinition toFieldDefinition(
+			Ref ref,
+			boolean rebuilt);
 
 	protected abstract Ref consume(Ref ref, Consumer consumer);
 

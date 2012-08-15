@@ -87,10 +87,8 @@ public class ObjectConstructorStep extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return this.constructor.fieldDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return this.constructor.fieldDefinition(ref);
 	}
 
 	@Override

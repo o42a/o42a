@@ -46,8 +46,8 @@ public final class RescopedFieldDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
-		this.definition.setImplicitAscendants(ascendants);
+	public void init(Field field, Ascendants implicitAscendants) {
+		this.definition.init(field, implicitAscendants);
 	}
 
 	@Override

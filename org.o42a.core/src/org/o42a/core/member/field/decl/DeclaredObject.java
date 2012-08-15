@@ -52,7 +52,7 @@ class DeclaredObject extends Obj {
 
 	@Override
 	protected Ascendants buildAscendants() {
-		this.field.initDefinitions(this);
+		this.field.initDefinition(this);
 		return new Ascendants(this).declareField(this.field);
 	}
 

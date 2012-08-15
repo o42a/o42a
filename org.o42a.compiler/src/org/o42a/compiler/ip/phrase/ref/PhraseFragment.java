@@ -21,12 +21,13 @@ package org.o42a.compiler.ip.phrase.ref;
 
 import org.o42a.compiler.ip.phrase.part.PhraseContinuation;
 import org.o42a.compiler.ip.phrase.part.PhraseTerminator;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.Path;
+import org.o42a.core.ref.path.PathExpander;
+import org.o42a.core.ref.path.PathFragment;
 
 
 class PhraseFragment extends PathFragment {
@@ -42,13 +43,9 @@ class PhraseFragment extends PathFragment {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
+	public FieldDefinition fieldDefinition(Ref ref) {
 		// This is called before path resolution.
-		return new Definition(
-				this.phrase,
-				super.fieldDefinition(path, distributor));
+		return new Definition(this.phrase, super.fieldDefinition(ref));
 	}
 
 	@Override
@@ -106,8 +103,8 @@ class PhraseFragment extends PathFragment {
 		}
 
 		@Override
-		public void setImplicitAscendants(Ascendants ascendants) {
-			this.phrase.getMainContext().setImplicitAscendants(ascendants);
+		public void init(Field field, Ascendants implicitAscendants) {
+			this.phrase.getMainContext().setImplicitAscendants(implicitAscendants);
 		}
 
 		@Override
