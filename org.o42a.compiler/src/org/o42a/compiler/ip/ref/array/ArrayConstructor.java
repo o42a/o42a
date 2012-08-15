@@ -30,7 +30,9 @@ import org.o42a.core.object.array.ArrayValueStruct;
 import org.o42a.core.object.array.ArrayValueType;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.CompilerContext;
 import org.o42a.core.source.Location;
@@ -106,10 +108,8 @@ public class ArrayConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new ValueFieldDefinition(path, distributor);
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return new ValueFieldDefinition(ref);
 	}
 
 	@Override

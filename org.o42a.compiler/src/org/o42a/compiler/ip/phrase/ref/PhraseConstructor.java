@@ -26,7 +26,10 @@ import org.o42a.core.object.Obj;
 import org.o42a.core.object.common.DefinedObject;
 import org.o42a.core.object.meta.Nesting;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.path.*;
+import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.ObjectConstructor;
+import org.o42a.core.ref.path.PathReproducer;
+import org.o42a.core.ref.path.PrefixPath;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.sentence.BlockBuilder;
@@ -63,13 +66,12 @@ class PhraseConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
+	public FieldDefinition fieldDefinition(Ref ref) {
 
 		final PhraseFieldDefinition definition =
 				new PhraseFieldDefinition(this.phrase);
-		final PrefixPath prefix = path.cut(1).toPrefix(distributor.getScope());
+		final PrefixPath prefix =
+				ref.getPath().cut(1).toPrefix(ref.getScope());
 
 		return definition.prefixWith(prefix);
 	}

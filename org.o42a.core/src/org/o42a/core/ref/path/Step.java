@@ -120,6 +120,8 @@ public abstract class Step {
 		return value;
 	}
 
+	protected abstract FieldDefinition fieldDefinition(Ref ref);
+
 	/**
 	 * This is ivoked by {@link Ref#consume(Consumer)} for the last step
 	 * of the path to optionally {@link Consumer consume} the reference.
@@ -181,10 +183,6 @@ public abstract class Step {
 		return path.append(ANCESTOR_FRAGMENT).typeRef(distributor);
 	}
 
-	protected abstract FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor);
-
 	protected abstract Container resolve(
 			PathResolver resolver,
 			BoundPath path,
@@ -226,10 +224,8 @@ public abstract class Step {
 			LocationInfo location,
 			PathReproducer reproducer);
 
-	protected final FieldDefinition defaultFieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new PathFieldDefinition(path, distributor);
+	protected final FieldDefinition defaultFieldDefinition(Ref ref) {
+		return new PathFieldDefinition(ref);
 	}
 
 	protected abstract PathOp op(PathOp start);

@@ -19,13 +19,14 @@
 */
 package org.o42a.core.ref.path.impl;
 
+import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -65,10 +66,8 @@ public class ErrorStep extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return FieldDefinition.invalidDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return invalidDefinition(ref, ref.distribute());
 	}
 
 	@Override

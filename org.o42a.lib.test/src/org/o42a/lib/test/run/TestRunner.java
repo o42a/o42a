@@ -35,6 +35,7 @@ import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.ObjectType;
 import org.o42a.core.object.def.Definitions;
 import org.o42a.core.object.type.Ascendants;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -191,9 +192,7 @@ final class TestRunner extends ConstructedObject {
 		}
 
 		@Override
-		public FieldDefinition fieldDefinition(
-				BoundPath path,
-				Distributor distributor) {
+		public FieldDefinition fieldDefinition(Ref ref) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -20,10 +20,10 @@
 package org.o42a.core.ref.path.impl;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -68,9 +68,7 @@ public class Wrapper extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
+	protected FieldDefinition fieldDefinition(Ref ref) {
 		throw new UnsupportedOperationException();
 	}
 

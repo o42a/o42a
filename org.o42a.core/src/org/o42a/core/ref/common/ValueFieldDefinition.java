@@ -21,17 +21,16 @@ package org.o42a.core.ref.common;
 
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.ObjectDefiner;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.type.TypeRef;
 
 
 public class ValueFieldDefinition extends DefaultFieldDefinition {
 
-	public ValueFieldDefinition(BoundPath path, Distributor distributor) {
-		super(path, distributor);
+	public ValueFieldDefinition(Ref ref) {
+		super(ref);
 	}
 
 	@Override
@@ -46,7 +45,7 @@ public class ValueFieldDefinition extends DefaultFieldDefinition {
 	}
 
 	protected TypeRef ancestor() {
-		return path().ancestor(path(), distribute());
+		return getRef().ancestor(this);
 	}
 
 }

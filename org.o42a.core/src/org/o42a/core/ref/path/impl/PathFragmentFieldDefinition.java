@@ -19,27 +19,24 @@
 */
 package org.o42a.core.ref.path.impl;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.*;
 import org.o42a.core.object.type.Ascendants;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.Ref;
 
 
 public final class PathFragmentFieldDefinition extends FieldDefinition {
 
-	private final BoundPath path;
+	private final Ref ref;
 	private FieldDefinition definition;
 
-	public PathFragmentFieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		super(path, distributor);
-		this.path = path;
+	public PathFragmentFieldDefinition(Ref ref) {
+		super(ref);
+		this.ref = ref;
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
-		getDefinition().setImplicitAscendants(ascendants);
+	public void init(Field field, Ascendants implicitAscendants) {
+		getDefinition().init(field, implicitAscendants);
 	}
 
 	@Override
@@ -79,10 +76,7 @@ public final class PathFragmentFieldDefinition extends FieldDefinition {
 		if (this.definition != null) {
 			return this.definition;
 		}
-
-		this.path.rebuild();
-
-		return this.definition = this.path.rebuiltFieldDefinition(distribute());
+		return this.definition = this.ref.rebuiltFieldDefinition();
 	}
 
 }

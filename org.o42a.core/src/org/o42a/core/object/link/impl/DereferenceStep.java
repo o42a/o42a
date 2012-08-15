@@ -75,10 +75,8 @@ public class DereferenceStep extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override

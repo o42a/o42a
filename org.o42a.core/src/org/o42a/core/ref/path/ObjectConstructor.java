@@ -90,9 +90,7 @@ public abstract class ObjectConstructor extends Placed {
 				adapt);
 	}
 
-	public abstract FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor);
+	public abstract FieldDefinition fieldDefinition(Ref ref);
 
 	public final Step toStep() {
 		return new ObjectConstructorStep(this);

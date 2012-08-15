@@ -33,7 +33,6 @@ import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.ValueFieldDefinition;
-import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -83,10 +82,8 @@ public class LogicalExpression extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new ValueFieldDefinition(path, distributor);
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return new ValueFieldDefinition(ref);
 	}
 
 	@Override

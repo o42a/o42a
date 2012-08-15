@@ -340,7 +340,17 @@ public class Ref extends Statement {
 	}
 
 	public final FieldDefinition toFieldDefinition() {
-		return getPath().fieldDefinition(distribute());
+
+		final RefPath path = getPath();
+
+		return path.toFieldDefinition(this, false);
+	}
+
+	public final FieldDefinition rebuiltFieldDefinition() {
+
+		final RefPath path = getPath();
+
+		return path.toFieldDefinition(this, true);
 	}
 
 	public final Ref consume(Consumer consumer) {

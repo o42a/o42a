@@ -22,7 +22,6 @@ package org.o42a.core.ref.path.impl;
 import static org.o42a.core.ref.path.PathReproduction.unchangedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.object.ObjectIR;
@@ -31,6 +30,7 @@ import org.o42a.core.ir.op.PathOp;
 import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.LocationInfo;
@@ -63,10 +63,8 @@ public class StaticObjectStep extends Step {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override

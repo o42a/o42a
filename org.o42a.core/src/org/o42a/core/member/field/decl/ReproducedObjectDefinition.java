@@ -45,7 +45,7 @@ final class ReproducedObjectDefinition extends FieldDefinition {
 	}
 
 	@Override
-	public void setImplicitAscendants(Ascendants ascendants) {
+	public void init(Field field, Ascendants implicitAscendants) {
 	}
 
 	@Override

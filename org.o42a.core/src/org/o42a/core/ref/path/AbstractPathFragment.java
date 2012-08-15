@@ -19,9 +19,9 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.member.field.FieldDefinition;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.impl.PathFragmentFieldDefinition;
 import org.o42a.core.ref.path.impl.PathFragmentStep;
 
@@ -45,10 +45,8 @@ public abstract class AbstractPathFragment {
 	 */
 	public abstract boolean isTemplate();
 
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new PathFragmentFieldDefinition(path, distributor);
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return new PathFragmentFieldDefinition(ref);
 	}
 
 	public final Step toStep() {

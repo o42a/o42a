@@ -19,11 +19,10 @@
 */
 package org.o42a.compiler.ip.phrase.ref;
 
-import org.o42a.core.Distributor;
 import org.o42a.core.member.field.DefinitionTarget;
 import org.o42a.core.member.field.ObjectDefiner;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.common.DefaultFieldDefinition;
-import org.o42a.core.ref.path.BoundPath;
 
 
 final class ClauseInstanceFieldDefinition extends DefaultFieldDefinition {
@@ -31,16 +30,15 @@ final class ClauseInstanceFieldDefinition extends DefaultFieldDefinition {
 	private final ClauseInstanceConstructor constructor;
 
 	ClauseInstanceFieldDefinition(
-			BoundPath path,
-			Distributor distributor,
+			Ref ref,
 			ClauseInstanceConstructor constructor) {
-		super(path, distributor);
+		super(ref);
 		this.constructor = constructor;
 	}
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-		return pathDefinitionTarget(path());
+		return refDefinitionTarget(getRef());
 	}
 
 	@Override

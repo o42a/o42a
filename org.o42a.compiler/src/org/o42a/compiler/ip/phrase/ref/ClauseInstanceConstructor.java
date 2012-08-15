@@ -23,7 +23,7 @@ import org.o42a.core.Distributor;
 import org.o42a.core.member.field.AscendantsDefinition;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.object.Obj;
-import org.o42a.core.ref.path.BoundPath;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.ObjectConstructor;
 import org.o42a.core.ref.path.PathReproducer;
 import org.o42a.core.ref.type.TypeRef;
@@ -66,10 +66,8 @@ final class ClauseInstanceConstructor extends ObjectConstructor {
 	}
 
 	@Override
-	public FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return new ClauseInstanceFieldDefinition(path, distributor, this);
+	public FieldDefinition fieldDefinition(Ref ref) {
+		return new ClauseInstanceFieldDefinition(ref, this);
 	}
 
 	@Override

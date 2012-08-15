@@ -22,7 +22,6 @@ package org.o42a.core.member.local.impl;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
 
 import org.o42a.core.Container;
-import org.o42a.core.Distributor;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.local.LocalOp;
@@ -32,6 +31,7 @@ import org.o42a.core.ir.op.StepOp;
 import org.o42a.core.member.field.FieldDefinition;
 import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.Obj;
+import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.RefUsage;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
@@ -68,10 +68,8 @@ public final class LocalOwnerStep extends Step implements ReversePath {
 	}
 
 	@Override
-	protected FieldDefinition fieldDefinition(
-			BoundPath path,
-			Distributor distributor) {
-		return defaultFieldDefinition(path, distributor);
+	protected FieldDefinition fieldDefinition(Ref ref) {
+		return defaultFieldDefinition(ref);
 	}
 
 	@Override
