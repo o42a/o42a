@@ -35,10 +35,9 @@ public interface Macro {
 	/**
 	 * Expands the macro.
 	 *
-	 * <p>This is called when whe path contains a {@link Path#expandMacro()
-	 * macro expansion} and a macro expansion
-	 * {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested by
-	 * consumer}.</p>
+	 * <p>This is called when whe path contains a macro expansion and a macro
+	 * expansion {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested
+	 * by consumer}.</p>
 	 *
 	 * <p>This method should register the {@link MetaDep meta-dependencies}
 	 * apart from dependency on the macro itself.<p>
@@ -52,11 +51,10 @@ public interface Macro {
 	/**
 	 * Re-expands the macro.
 	 *
-	 * <p>This is called when whe path contains a {@link Path#reexpandMacro()
-	 * macro re-expansion} and a macro expansion
-	 * {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested again}
-	 * for already expanded macro, but in another scope. The re-expansion may
-	 * lead to a different result.</p>
+	 * <p>This is called when whe path contains a macro re-expansion and a macro
+	 * expansion {@link Consumer#expandMacro(Ref, PathTemplate, Ref) requested
+	 * again} for already expanded macro, but in another scope. The re-expansion
+	 * may lead to the different result.</p>
 	 *
 	 * <p>In contrast to {@link #expand(MacroExpander)} method, this one should
 	 * not register any new dependencies, as they should be registered already

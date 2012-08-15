@@ -21,8 +21,6 @@ package org.o42a.core.ref.path;
 
 import static org.o42a.analysis.use.User.dummyUser;
 import static org.o42a.core.member.MemberName.fieldName;
-import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_EXPANSION_STEP;
-import static org.o42a.core.object.macro.impl.MacroExpansionStep.MACRO_REEXPANSION_STEP;
 import static org.o42a.core.ref.path.PathKind.ABSOLUTE_PATH;
 import static org.o42a.core.ref.path.PathKind.RELATIVE_PATH;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
@@ -207,14 +205,6 @@ public final class Path {
 
 	public final Path newObject(ObjectConstructor constructor) {
 		return append(constructor.toStep());
-	}
-
-	public final Path expandMacro() {
-		return append(MACRO_EXPANSION_STEP);
-	}
-
-	public final Path reexpandMacro() {
-		return append(MACRO_REEXPANSION_STEP);
 	}
 
 	public Path append(Path path) {

@@ -21,6 +21,7 @@ package org.o42a.compiler.ip.ref;
 
 import static org.o42a.compiler.ip.Interpreter.location;
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.macro.MacroExpansionStep.expandMacro;
 import static org.o42a.compiler.ip.ref.RefInterpreter.integer;
 import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
 import static org.o42a.core.ref.Ref.errorRef;
@@ -120,7 +121,7 @@ public final class ExpressionVisitor
 				return null;
 			}
 
-			return operand.expandMacro();
+			return expandMacro(operand);
 		}
 
 		return super.visitUnary(expression, p);
