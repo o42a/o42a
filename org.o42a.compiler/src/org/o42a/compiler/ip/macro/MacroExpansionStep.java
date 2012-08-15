@@ -1,5 +1,5 @@
 /*
-    Compiler Core
+    Compiler
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.core.object.macro.impl;
+package org.o42a.compiler.ip.macro;
 
 import static org.o42a.core.member.field.FieldDefinition.invalidDefinition;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -39,10 +39,22 @@ import org.o42a.util.log.LogInfo;
 
 public class MacroExpansionStep extends Step {
 
-	public static final MacroExpansionStep MACRO_EXPANSION_STEP =
+	private static final MacroExpansionStep MACRO_EXPANSION_STEP =
 			new MacroExpansionStep(false);
-	public static final MacroExpansionStep MACRO_REEXPANSION_STEP =
+	private static final MacroExpansionStep MACRO_REEXPANSION_STEP =
 			new MacroExpansionStep(true);
+
+	public static Ref expandMacro(Ref ref) {
+		return ref.getPath()
+				.append(MACRO_EXPANSION_STEP)
+				.target(ref.distribute());
+	}
+
+	public static Ref reexpandMacro(Ref ref) {
+		return ref.getPath()
+				.append(MACRO_REEXPANSION_STEP)
+				.target(ref.distribute());
+	}
 
 	static void prohibitedExpansion(CompilerLogger logger, LogInfo location) {
 		logger.error(
