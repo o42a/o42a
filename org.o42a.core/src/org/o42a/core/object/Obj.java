@@ -112,17 +112,17 @@ public abstract class Obj
 		this.propagatedFrom = sample;
 	}
 
+	public Obj(LocationInfo location, Distributor enclosing) {
+		this(new ObjScope(location, enclosing));
+	}
+
 	protected Obj(ObjectScope scope, Obj sample) {
 		super(scope, new ObjectDistributor(scope, sample));
 		this.propagatedFrom = sample;
 		scope.setScopeObject(this);
 	}
 
-	public Obj(LocationInfo location, Distributor enclosing) {
-		this(new ObjScope(location, enclosing));
-	}
-
-	public Obj(Distributor enclosing, Obj sample) {
+	protected Obj(Distributor enclosing, Obj sample) {
 		this(new ObjScope(sample, enclosing), sample);
 	}
 

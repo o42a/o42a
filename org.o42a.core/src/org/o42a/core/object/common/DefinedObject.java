@@ -22,7 +22,6 @@ package org.o42a.core.object.common;
 import static org.o42a.core.member.Inclusions.noInclusions;
 
 import org.o42a.core.Distributor;
-import org.o42a.core.Scope;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.ObjectMembers;
 import org.o42a.core.object.def.Definitions;
@@ -40,18 +39,6 @@ public abstract class DefinedObject extends Obj {
 
 	public DefinedObject(LocationInfo location, Distributor enclosing) {
 		super(location, enclosing);
-	}
-
-	public DefinedObject(StandaloneObjectScope scope) {
-		super(scope);
-	}
-
-	public DefinedObject(Scope scope) {
-		super(scope);
-	}
-
-	protected DefinedObject(Scope scope, Obj sample) {
-		super(scope, sample);
 	}
 
 	public DeclarativeBlock getDefinition() {
