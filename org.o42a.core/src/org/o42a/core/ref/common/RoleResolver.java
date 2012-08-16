@@ -35,7 +35,6 @@ import org.o42a.core.ref.*;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.util.log.LogRecord;
 
 
 public class RoleResolver implements PathWalker {
@@ -190,11 +189,6 @@ public class RoleResolver implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return mayProceedInsidePrototype();
-	}
-
-	@Override
-	public void error(LogRecord message) {
-		this.insidePrototype = false;
 	}
 
 	@Override

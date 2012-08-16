@@ -35,7 +35,6 @@ import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.util.ArrayUtil;
-import org.o42a.util.log.LogRecord;
 
 
 final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
@@ -141,10 +140,6 @@ final class MacroDepBuilder<D extends MetaDep> implements PathWalker {
 		}
 
 		return appendDepStep(step);
-	}
-
-	@Override
-	public void error(LogRecord message) {
 	}
 
 	@Override

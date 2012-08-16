@@ -30,7 +30,6 @@ import org.o42a.core.source.CompilerContext;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueStruct;
 import org.o42a.core.value.ValueType;
-import org.o42a.util.log.LogRecord;
 import org.o42a.util.log.Loggable;
 
 
@@ -39,7 +38,6 @@ public final class Resolution implements ScopeInfo {
 	private final Ref ref;
 	private final Resolver resolver;
 	private Container resolved;
-	private LogRecord errorMessage;
 	private boolean error;
 
 	Resolution(Ref ref, Resolver resolver) {
@@ -72,10 +70,6 @@ public final class Resolution implements ScopeInfo {
 
 	public final boolean isError() {
 		return this.error;
-	}
-
-	public final LogRecord getErrorMessage() {
-		return this.errorMessage;
 	}
 
 	public final boolean isResolved() {
@@ -179,7 +173,6 @@ public final class Resolution implements ScopeInfo {
 		if (!pathResolution.isResolved()) {
 			if (pathResolution.isError()) {
 				this.error = true;
-				this.errorMessage = pathResolution.getErrorMessage();
 			}
 			return getContext().getNone();
 		}

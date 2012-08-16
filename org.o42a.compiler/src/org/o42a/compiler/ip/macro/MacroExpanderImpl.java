@@ -62,7 +62,7 @@ final class MacroExpanderImpl implements MacroExpander {
 
 	@Override
 	public void error(LogRecord message) {
-		this.pathExpander.error(message);
+		getLogger().log(message);
 	}
 
 }

@@ -644,7 +644,7 @@ public class BoundPath extends RefPath {
 			}
 			if (result == null) {
 				tracker.abortedAt(prev, step);
-				return pathResolutionError(this, tracker.getErrorMessage());
+				return pathResolutionError(this);
 			}
 			++i;
 			prev = result.getScope();
@@ -657,7 +657,7 @@ public class BoundPath extends RefPath {
 			return pathResolution(this, result);
 		}
 
-		return pathResolutionError(this, tracker.getErrorMessage());
+		return pathResolutionError(this);
 	}
 
 	private PathResolution noResolution(
@@ -668,7 +668,7 @@ public class BoundPath extends RefPath {
 			if (brokenStep != null) {
 				tracker.abortedAt(last, brokenStep);
 			}
-			return pathResolutionError(this, tracker.getErrorMessage());
+			return pathResolutionError(this);
 		}
 		return noPathResolutionError(this);
 	}
