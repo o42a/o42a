@@ -34,7 +34,6 @@ import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
 import org.o42a.core.ref.type.TypeRef;
-import org.o42a.util.log.LogRecord;
 
 
 public final class ResolutionRootFinder implements PathWalker {
@@ -169,10 +168,6 @@ public final class ResolutionRootFinder implements PathWalker {
 				ancestor.getRef().resolve(ancestorResolver);
 
 		return !ancestorResolution.isNone();
-	}
-
-	@Override
-	public void error(LogRecord message) {
 	}
 
 	@Override

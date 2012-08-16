@@ -19,15 +19,11 @@
 */
 package org.o42a.core.ref.path;
 
-import org.o42a.util.log.LogRecord;
-
 
 public interface PathExpander {
 
 	BoundPath getPath();
 
 	boolean replay(PathWalker pathWalker);
-
-	void error(LogRecord message);
 
 }

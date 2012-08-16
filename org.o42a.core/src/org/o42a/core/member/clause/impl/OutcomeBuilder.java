@@ -37,7 +37,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogRecord;
 
 
 public class OutcomeBuilder implements PathWalker {
@@ -107,7 +106,8 @@ public class OutcomeBuilder implements PathWalker {
 
 		if (containerClause != null) {
 
-			final MemberKey containerKey = containerClause.toMember().getMemberKey();
+			final MemberKey containerKey =
+					containerClause.toMember().getMemberKey();
 			final MemberKey key = member.getMemberKey();
 
 			if (containerKey.startsWith(key)) {
@@ -170,10 +170,6 @@ public class OutcomeBuilder implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return invalidOutcome();
-	}
-
-	@Override
-	public void error(LogRecord message) {
 	}
 
 	@Override

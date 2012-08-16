@@ -33,7 +33,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.util.log.LogRecord;
 
 
 final class AccessorResolver implements PathWalker {
@@ -140,10 +139,6 @@ final class AccessorResolver implements PathWalker {
 		this.enclosed = false;
 		this.inheritant = false;
 		return true;
-	}
-
-	@Override
-	public void error(LogRecord message) {
 	}
 
 	@Override

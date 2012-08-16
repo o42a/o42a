@@ -217,10 +217,10 @@ public class MacroExpansion extends PathFragment {
 	}
 
 	private Macro unresolvedMacro(PathExpander expander) {
-		expander.error(expander.getPath().getLogger().errorRecord(
+		expander.getPath().getLogger().error(
 				"unresolved_macro",
 				getMacroRef(),
-				"Macro can not be resolved"));
+				"Macro can not be resolved at compile time");
 		return null;
 	}
 

@@ -30,7 +30,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.path.PathWalker;
 import org.o42a.core.ref.path.Step;
-import org.o42a.util.log.LogRecord;
 
 
 public class CompoundPathWalker implements PathWalker {
@@ -176,13 +175,6 @@ public class CompoundPathWalker implements PathWalker {
 		}
 
 		return proceed;
-	}
-
-	@Override
-	public void error(LogRecord message) {
-		for (PathWalker walker : getWalkers()) {
-			walker.error(message);
-		}
 	}
 
 	@Override

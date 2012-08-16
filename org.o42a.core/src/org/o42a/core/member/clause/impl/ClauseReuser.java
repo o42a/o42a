@@ -38,7 +38,6 @@ import org.o42a.core.ref.ReversePath;
 import org.o42a.core.ref.path.*;
 import org.o42a.core.source.CompilerLogger;
 import org.o42a.core.source.LocationInfo;
-import org.o42a.util.log.LogRecord;
 
 
 final class ClauseReuser implements PathWalker {
@@ -110,7 +109,8 @@ final class ClauseReuser implements PathWalker {
 
 		if (containerClause != null) {
 
-			final MemberKey containerKey = containerClause.toMember().getMemberKey();
+			final MemberKey containerKey =
+					containerClause.toMember().getMemberKey();
 			final MemberKey key = member.getMemberKey();
 
 			if (containerKey.startsWith(key)) {
@@ -184,10 +184,6 @@ final class ClauseReuser implements PathWalker {
 	@Override
 	public boolean object(Step step, Obj object) {
 		return notClause();
-	}
-
-	@Override
-	public void error(LogRecord message) {
 	}
 
 	@Override
