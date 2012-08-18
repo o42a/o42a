@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-    Intrinsics Build Script
-    Copyright (C) 2010-2012 Ruslan Lopatin
+/*
+    Standard Macros
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,26 +16,4 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
-
-<project name="org.o42a.intrinsic" default="package">
-
-	<filelist id="project.deps" dir="..">
-		<file name="org.o42a.lib.console"/>
-		<file name="org.o42a.lib.macros"/>
-		<file name="org.o42a.lib.test"/>
-	</filelist>
-
-	<property
-		name="compile.deps"
-		value="org.o42a.util,org.o42a.analysis,org.o42a.codegen,org.o42a.core,org.o42a.common"/>
-
-	<import file="../build/module.build.xml" />
-
-	<target name="copy-resources">
-		<copy todir="${output..}" taskname="${ant.project.name}">
-			<fileset dir="o42a"/>
-		</copy>
-	</target>
-
-</project>
+*/

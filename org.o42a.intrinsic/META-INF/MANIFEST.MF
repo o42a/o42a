@@ -6,6 +6,7 @@ Bundle-Version: 0.2.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.o42a.common;bundle-version="0.2.2",
  org.o42a.lib.console;bundle-version="0.2.2",
+ org.o42a.lib.macros;bundle-version="0.2.2",
  org.o42a.lib.test;bundle-version="0.2.2"
 Export-Package: org.o42a.intrinsic
 Bundle-ActivationPolicy: lazy

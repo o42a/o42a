@@ -31,6 +31,7 @@
 		<file name="org.o42a.common"/>
 		<file name="org.o42a.tools"/>
 		<file name="org.o42a.lib.console"/>
+		<file name="org.o42a.lib.macros"/>
 		<file name="org.o42a.lib.test"/>
 		<file name="org.o42a.intrinsic"/>
 		<file name="org.o42a.compiler"/>
@@ -44,6 +45,7 @@
 	<filelist id="modules" dir=".">
 		<file name="org.o42a.intrinsic"/>
 		<file name="org.o42a.lib.console"/>
+		<file name="org.o42a.lib.macros"/>
 		<file name="org.o42a.lib.test"/>
 	</filelist>
 

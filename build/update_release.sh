@@ -28,6 +28,7 @@ update_mf compiler.test
 update_mf core
 update_mf intrinsic
 update_mf lib.console
+update_mf lib.macros
 update_mf lib.test
 update_mf parser
 update_mf parser.test
