@@ -35,8 +35,7 @@ import org.o42a.util.io.SourcePosition;
 
 public class MemberRefParser implements Parser<MemberRefNode> {
 
-	private static final QualifierParser QUALIFIER =
-			new QualifierParser();
+	private static final QualifierParser QUALIFIER = new QualifierParser();
 
 	private final ExpressionNode owner;
 	private final boolean qualifierExpected;
@@ -51,7 +50,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 
 		final SignNode<Qualifier> qualifier;
 
-		if (this.qualifierExpected) {
+		if (qualifierExpected(context)) {
 			qualifier = context.push(QUALIFIER);
 			if (qualifier == null) {
 				return null;
@@ -72,12 +71,29 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 		return new MemberRefNode(this.owner, qualifier, name, membership);
 	}
 
+	private boolean qualifierExpected(ParserContext context) {
+		if (this.qualifierExpected) {
+			return true;
+		}
+		return this.owner != null && context.next() == '#';
+	}
+
 	private static final class QualifierParser
 			implements Parser<SignNode<Qualifier>> {
 
 		@Override
 		public SignNode<Qualifier> parse(ParserContext context) {
-			if (context.next() != ':') {
+
+			final Qualifier qualifier;
+
+			switch (context.next()) {
+			case ':':
+				qualifier = Qualifier.MEMBER;
+				break;
+			case '#':
+				qualifier = Qualifier.MACRO;
+				break;
+			default:
 				return null;
 			}
 
@@ -90,7 +106,7 @@ public class MemberRefParser implements Parser<MemberRefNode> {
 					new SignNode<Qualifier>(
 							start,
 							context.current().fix(),
-							Qualifier.MEMBER_NAME));
+							qualifier));
 		}
 
 	}

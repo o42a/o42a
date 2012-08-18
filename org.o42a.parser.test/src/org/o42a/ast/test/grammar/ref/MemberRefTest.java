@@ -52,7 +52,23 @@ public class MemberRefTest extends GrammarTestCase {
 		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
 
 		assertName("foo", owner);
-		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER));
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(this.worker.position().offset(), is(7L));
+		assertRange(0, 7, ref);
+		assertRange(3, 4, ref.getQualifier());
+		assertRange(4, 7, ref.getName());
+		assertRange(0, 3, owner);
+	}
+
+	@Test
+	public void qualifiedMacro() {
+
+		final MemberRefNode ref = parse("foo#bar");
+		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
+
+		assertName("foo", owner);
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MACRO));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(this.worker.position().offset(), is(7L));
 		assertRange(0, 7, ref);
@@ -86,7 +102,23 @@ public class MemberRefTest extends GrammarTestCase {
 		final MembershipNode membership = ref.getMembership();
 
 		assertName("foo", owner);
-		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER_NAME));
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MEMBER));
+		assertThat(canonicalName(ref.getName()), is("bar"));
+		assertThat(membership.getPrefix().getType(), is(DECLARED_IN));
+		assertThat(membership.getOpening().getType(), is(OPENING_PARENTHESIS));
+		assertName("baz", membership.getDeclaredIn());
+		assertThat(membership.getClosing().getType(), is(CLOSING_PARENTHESIS));
+	}
+
+	@Test
+	public void macroMembership() {
+
+		final MemberRefNode ref = parse("foo# bar @(\n baz \n)");
+		final MemberRefNode owner = to(MemberRefNode.class, ref.getOwner());
+		final MembershipNode membership = ref.getMembership();
+
+		assertName("foo", owner);
+		assertThat(ref.getQualifier().getType(), is(Qualifier.MACRO));
 		assertThat(canonicalName(ref.getName()), is("bar"));
 		assertThat(membership.getPrefix().getType(), is(DECLARED_IN));
 		assertThat(membership.getOpening().getType(), is(OPENING_PARENTHESIS));

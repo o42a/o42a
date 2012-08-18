@@ -44,6 +44,17 @@ public class SimpleExpressionTest extends GrammarTestCase {
 	}
 
 	@Test
+	public void macroRef() {
+		to(MemberRefNode.class, parse("foo#bar"));
+		to(MemberRefNode.class, parse("foo ()# bar"));
+		to(MemberRefNode.class, parse("(foo)# bar"));
+		to(MemberRefNode.class, parse("(foo)`# bar"));
+		to(MemberRefNode.class, parse("foo ()`# bar"));
+		to(MemberRefNode.class, parse("(foo) -># bar"));
+		to(MemberRefNode.class, parse("foo () -># bar"));
+	}
+
+	@Test
 	public void adapterRef() {
 		to(AdapterRefNode.class, parse("foo @@bar"));
 		to(AdapterRefNode.class, parse("foo () @@bar"));
@@ -84,6 +95,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(ScopeRefNode.class, parse("*"));
 		to(ScopeRefNode.class, parse(":"));
 		to(ScopeRefNode.class, parse("::"));
+		to(ScopeRefNode.class, parse("##"));
 		to(ScopeRefNode.class, parse("$"));
 		to(ScopeRefNode.class, parse("$$"));
 	}
@@ -115,6 +127,7 @@ public class SimpleExpressionTest extends GrammarTestCase {
 		to(MacroExpansionNode.class, parse("# ::"));
 		to(MacroExpansionNode.class, parse("#(abc)"));
 		to(MacroExpansionNode.class, parse("# abc ()"));
+		to(MacroExpansionNode.class, parse("# #foo"));
 	}
 
 	@Test

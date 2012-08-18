@@ -31,6 +31,16 @@ import org.o42a.parser.Grammar;
 public class ScopeRefTest extends GrammarTestCase {
 
 	@Test
+	public void implied() {
+
+		final ScopeRefNode ref = parse("* ");
+
+		assertEquals(ScopeType.IMPLIED, ref.getType());
+		assertRange(0, 1, ref);
+		assertEquals(2, this.worker.position().offset());
+	}
+
+	@Test
 	public void self() {
 
 		final ScopeRefNode ref = parse(": ");
@@ -50,7 +60,7 @@ public class ScopeRefTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void field() {
+	public void parent() {
 
 		final ScopeRefNode ref = parse(":: ");
 
@@ -60,13 +70,13 @@ public class ScopeRefTest extends GrammarTestCase {
 	}
 
 	@Test
-	public void implied() {
+	public void macros() {
 
-		final ScopeRefNode ref = parse("* ");
+		final ScopeRefNode ref = parse("## ");
 
-		assertEquals(ScopeType.IMPLIED, ref.getType());
-		assertRange(0, 1, ref);
-		assertEquals(2, this.worker.position().offset());
+		assertEquals(ScopeType.MACROS, ref.getType());
+		assertRange(0, 2, ref);
+		assertEquals(3, this.worker.position().offset());
 	}
 
 	@Test

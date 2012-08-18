@@ -44,6 +44,13 @@ public class ScopeRefParser implements Parser<ScopeRefNode> {
 			type = ScopeType.IMPLIED;
 			context.acceptAll();
 			break;
+		case '#':
+			if (context.next() == '#') {
+				type = ScopeType.MACROS;
+				context.acceptAll();
+				break;
+			}
+			return null;
 		case '$':
 			if (context.next() == '$') {
 				type = ScopeType.ROOT;
