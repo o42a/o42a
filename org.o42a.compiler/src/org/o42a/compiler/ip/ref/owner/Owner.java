@@ -42,7 +42,13 @@ public abstract class Owner {
 	protected final Ref ownerRef;
 
 	Owner(Ref ownerRef) {
+		assert ownerRef != null :
+			"Owner did not specified";
 		this.ownerRef = ownerRef;
+	}
+
+	public boolean isMacroExpanding() {
+		return false;
 	}
 
 	public abstract Ref targetRef();
@@ -53,7 +59,7 @@ public abstract class Owner {
 
 	public abstract Ref bodyRef();
 
-	public Owner member(
+	public final Owner member(
 			LocationInfo location,
 			MemberId memberId,
 			StaticTypeRef declaredIn) {
@@ -71,12 +77,20 @@ public abstract class Owner {
 		return memberOwner(ref);
 	}
 
+	public final Owner expandMacro(LogInfo expansion) {
+		return new MacroExpandingOwner(this, expansion);
+	}
+
+	public final Owner expandMemberMacro(LogInfo expansion) {
+		return new MacroExpandingOwner(this, expansion);
+	}
+
 	@Override
 	public String toString() {
 		return String.valueOf(this.ownerRef);
 	}
 
-	protected Owner memberOwner(final Ref ref) {
+	protected Owner memberOwner(Ref ref) {
 		return new DefaultOwner(ref);
 	}
 

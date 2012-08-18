@@ -20,7 +20,6 @@
 package org.o42a.ast.ref;
 
 
-
 public abstract class AbstractRefVisitor<R, P> implements RefNodeVisitor<R, P> {
 
 	@Override

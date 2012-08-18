@@ -28,21 +28,34 @@ public final class AncestorTypeRef {
 		if (ancestor == null) {
 			return null;
 		}
-		return new AncestorTypeRef(ancestor);
+		return new AncestorTypeRef(ancestor, false);
+	}
+
+	public static AncestorTypeRef macroAncestorTypeRef(TypeRef ancestor) {
+		if (ancestor == null) {
+			return null;
+		}
+		return new AncestorTypeRef(ancestor, true);
 	}
 
 	public static AncestorTypeRef impliedAncestorTypeRef() {
-		return new AncestorTypeRef(null);
+		return new AncestorTypeRef(null, false);
 	}
 
 	private final TypeRef ancestor;
+	private final boolean mactoExpanding;
 
-	private AncestorTypeRef(TypeRef ancestor) {
+	private AncestorTypeRef(TypeRef ancestor, boolean macroExpanding) {
 		this.ancestor = ancestor;
+		this.mactoExpanding = macroExpanding;
 	}
 
 	public final boolean isImplied() {
 		return this.ancestor == null;
+	}
+
+	public final boolean isMacroExpanding() {
+		return this.mactoExpanding;
 	}
 
 	public final TypeRef getAncestor() {

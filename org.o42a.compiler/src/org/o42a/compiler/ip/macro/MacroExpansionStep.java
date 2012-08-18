@@ -19,6 +19,7 @@
 */
 package org.o42a.compiler.ip.macro;
 
+import static org.o42a.compiler.ip.macro.RequireMacroStep.removeMacroRequirement;
 import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeCondition;
 import static org.o42a.compiler.ip.st.macro.StatementConsumer.consumeSelfAssignment;
 import static org.o42a.core.ref.path.PathReproduction.reproducedPath;
@@ -47,9 +48,14 @@ public class MacroExpansionStep extends Step {
 			new MacroExpansionStep(true);
 
 	public static Ref expandMacro(Ref ref) {
-		return ref.getPath()
-				.append(MACRO_EXPANSION_STEP)
-				.target(ref.distribute());
+
+		final BoundPath path = removeMacroRequirement(ref.getPath());
+
+		return expandMacro(path).target(ref.distribute());
+	}
+
+	public static BoundPath expandMacro(final BoundPath path) {
+		return path.append(MACRO_EXPANSION_STEP);
 	}
 
 	public static Ref reexpandMacro(Ref ref) {

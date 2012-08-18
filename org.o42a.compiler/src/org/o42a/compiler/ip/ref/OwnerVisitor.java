@@ -28,12 +28,15 @@ import static org.o42a.core.ref.Ref.falseRef;
 import static org.o42a.core.ref.Ref.voidRef;
 import static org.o42a.core.ref.path.Path.ROOT_PATH;
 import static org.o42a.core.ref.path.Path.SELF_PATH;
+import static org.o42a.core.ref.path.Path.modulePath;
 import static org.o42a.util.string.Capitalization.CASE_INSENSITIVE;
 
 import org.o42a.ast.atom.NameNode;
+import org.o42a.ast.atom.SignNode;
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.ref.*;
+import org.o42a.ast.ref.MemberRefNode.Qualifier;
 import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
@@ -45,12 +48,11 @@ import org.o42a.util.string.Name;
 
 final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 
-	private static final Name VOID_NAME =
-			CASE_INSENSITIVE.canonicalName("void");
-	private static final Name FALSE_NAME =
-			CASE_INSENSITIVE.canonicalName("false");
-	private static final Name OBJECT_NAME =
-			CASE_INSENSITIVE.canonicalName("object");
+	static final Path MACROS_PATH = modulePath(CASE_INSENSITIVE.name("Macros"));
+
+	private static final Name VOID_NAME = CASE_INSENSITIVE.name("Void");
+	private static final Name FALSE_NAME = CASE_INSENSITIVE.name("False");
+	private static final Name OBJECT_NAME = CASE_INSENSITIVE.name("Object");
 
 	private final RefInterpreter ip;
 
@@ -79,6 +81,9 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 					ip().parentPath(location, null, p.getContainer())
 					.bind(location, p.getScope())
 					.target(p));
+		case MACROS:
+			return owner(MACROS_PATH.bind(location, p.getScope()).target(p))
+					.expandMacro(ref);
 		case MODULE:
 			return nonLinkOwner(
 					enclosingModulePath(p.getContainer())
@@ -117,6 +122,57 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 	@Override
 	public Owner visitMemberRef(MemberRefNode ref, Distributor p) {
 
+		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
+
+		return ownerVisitor.expandMacro(memberRef(ref, p, ownerVisitor));
+	}
+
+	@Override
+	public Owner visitAdapterRef(AdapterRefNode ref, Distributor p) {
+
+		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
+
+		return ownerVisitor.expandMacro(adapterRef(ref, p, ownerVisitor));
+	}
+
+	@Override
+	public Owner visitBodyRef(BodyRefNode ref, Distributor p) {
+
+		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
+
+		return ownerVisitor.expandMacro(bodyRef(ref, p, ownerVisitor));
+	}
+
+	@Override
+	public Owner visitDeref(DerefNode ref, Distributor p) {
+
+		final MemberOwnerVisitor ownerVisitor = new MemberOwnerVisitor(this);
+
+		return ownerVisitor.expandMacro(deref(ref, p, ownerVisitor));
+	}
+
+	@Override
+	protected Owner visitRef(RefNode ref, Distributor p) {
+		p.getContext().getLogger().invalidReference(ref);
+		return nonLinkOwner(errorRef(location(p, ref), p));
+	}
+
+	@Override
+	protected Owner visitExpression(
+			ExpressionNode expression,
+			Distributor p) {
+		return owner(expression.accept(ip().ip().bodyExVisitor(), p));
+	}
+
+	final Owner owner(Ref ownerRef) {
+		return ip().ownerFactory().owner(ownerRef);
+	}
+
+	Owner memberRef(
+			MemberRefNode ref,
+			Distributor p,
+			MemberOwnerVisitor ownerVisitor) {
+
 		final RefNode declaredInNode = ref.getDeclaredIn();
 		final Owner owner;
 		final ExpressionNode ownerNode = ref.getOwner();
@@ -139,7 +195,7 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 				}
 			}
 
-			owner = ownerNode.accept(this, p);
+			owner = ownerNode.accept(ownerVisitor, p);
 			if (owner == null) {
 				return null;
 			}
@@ -150,10 +206,18 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 		final StaticTypeRef declaredIn = ip().declaredIn(declaredInNode, p);
 
 		if (owner != null) {
-			return owner.member(
+
+			final Owner result = owner.member(
 					location(p, ref),
 					ip().memberName(ref.getName().getName()),
 					declaredIn);
+			final SignNode<Qualifier> qualifier = ref.getQualifier();
+
+			if (qualifier != null && qualifier.getType() == Qualifier.MACRO) {
+				return result.expandMacro(ref.getQualifier());
+			}
+
+			return result;
 		}
 
 		return owner(new MemberById(
@@ -164,10 +228,12 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 				declaredIn).toRef());
 	}
 
-	@Override
-	public Owner visitAdapterRef(AdapterRefNode ref, Distributor p) {
+	Owner adapterRef(
+			AdapterRefNode ref,
+			Distributor p,
+			MemberOwnerVisitor ownerVisitor) {
 
-		final Owner owner = ref.getOwner().accept(this, p);
+		final Owner owner = ref.getOwner().accept(ownerVisitor, p);
 
 		if (owner == null) {
 			return null;
@@ -185,49 +251,32 @@ final class OwnerVisitor extends AbstractExpressionVisitor<Owner, Distributor> {
 				ip().declaredIn(ref.getDeclaredIn(), p));
 	}
 
-	@Override
-	public Owner visitBodyRef(BodyRefNode ref, Distributor p) {
+	Owner bodyRef(
+			BodyRefNode ref,
+			Distributor p,
+			MemberOwnerVisitor ownerVisitor) {
 
-		final Owner result = ref.getOwner().accept(this, p);
-
-		if (result == null) {
-			return null;
-		}
-
-		return result.body(
-				location(p, ref),
-				location(p, ref.getSuffix()));
-	}
-
-	@Override
-	public Owner visitDeref(DerefNode ref, Distributor p) {
-
-		final Owner result = ref.getOwner().accept(this, p);
+		final Owner result = ref.getOwner().accept(ownerVisitor, p);
 
 		if (result == null) {
 			return null;
 		}
 
-		return result.deref(
-				location(p, ref),
-				location(p, ref.getSuffix()));
+		return result.body(location(p, ref), location(p, ref.getSuffix()));
 	}
 
-	@Override
-	protected Owner visitRef(RefNode ref, Distributor p) {
-		p.getContext().getLogger().invalidReference(ref);
-		return nonLinkOwner(errorRef(location(p, ref), p));
-	}
+	Owner deref(
+			DerefNode ref,
+			Distributor p,
+			MemberOwnerVisitor ownerVisitor) {
 
-	@Override
-	protected Owner visitExpression(
-			ExpressionNode expression,
-			Distributor p) {
-		return owner(expression.accept(ip().ip().bodyExVisitor(), p));
-	}
+		final Owner result = ref.getOwner().accept(ownerVisitor, p);
 
-	private final Owner owner(Ref ownerRef) {
-		return this.ip.ownerFactory().owner(ownerRef);
+		if (result == null) {
+			return null;
+		}
+
+		return result.deref(location(p, ref), location(p, ref.getSuffix()));
 	}
 
 	private final Owner nonLinkOwner(Ref ownerRef) {
