@@ -100,10 +100,6 @@ public class Grammar {
 		return IntrinsicRefParser.INTRINSIC_REF;
 	}
 
-	public static Parser<MemberRefNode> memberRef(ExpressionNode owner) {
-		return new MemberRefParser(owner, true);
-	}
-
 	public static Parser<MemberRefNode> memberRef(
 			ExpressionNode owner,
 			boolean qualifierExpected) {

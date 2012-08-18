@@ -27,6 +27,7 @@ public enum ScopeType implements SignType {
 	IMPLIED("*"),
 	SELF(":"),
 	PARENT("::"),
+	MACROS("##"),
 	MODULE("$"),
 	ROOT("$$");
 

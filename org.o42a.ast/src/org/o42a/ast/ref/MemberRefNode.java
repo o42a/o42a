@@ -105,12 +105,23 @@ public class MemberRefNode
 
 	public enum Qualifier implements SignType {
 
-		MEMBER_NAME;
+		MEMBER() {
 
-		@Override
-		public String getSign() {
-			return ":";
-		}
+			@Override
+			public String getSign() {
+				return ":";
+			}
+
+		},
+
+		MACRO() {
+
+			@Override
+			public String getSign() {
+				return "#";
+			}
+
+		};
 
 	}
 

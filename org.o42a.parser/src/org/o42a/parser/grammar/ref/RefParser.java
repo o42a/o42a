@@ -43,9 +43,8 @@ public class RefParser implements Parser<RefNode> {
 
 		switch (context.next()) {
 		case '*':
-			owner = context.parse(scopeRef());
-			break;
 		case ':':
+		case '#':
 			owner = context.parse(scopeRef());
 			break;
 		case '$':

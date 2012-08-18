@@ -82,7 +82,15 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 		case '+':
 		case '-':
 		case MINUS:
+			return context.parse(unaryExpression());
 		case '#':
+
+			final ScopeRefNode macrosRef = context.parse(scopeRef());
+
+			if (macrosRef != null) {
+				return macrosRef;
+			}
+
 			return context.parse(unaryExpression());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
@@ -171,6 +179,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 
 			switch (next) {
 			case ':':
+			case '#':
 
 				final MemberRefNode memberRef =
 						context.parse(memberRef(expression, true));

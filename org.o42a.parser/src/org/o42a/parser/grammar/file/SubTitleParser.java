@@ -60,7 +60,7 @@ final class SubTitleParser implements Parser<SubTitleNode> {
 		final MemberRefNode owner = context.acceptComments(
 					false,
 					new MemberRefNode(null, null, tagFirstName, null));
-		final MemberRefNode memberRef = context.parse(memberRef(owner));
+		final MemberRefNode memberRef = context.parse(memberRef(owner, true));
 		final MemberRefNode tag = memberRef != null ? memberRef : owner;
 
 		final SignNode<DoubleLine> suffix = context.parse(SUFFIX);
