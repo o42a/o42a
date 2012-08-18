@@ -20,19 +20,24 @@
 package org.o42a.compiler.ip.type.ascendant;
 
 import static org.o42a.compiler.ip.Interpreter.unwrap;
+import static org.o42a.compiler.ip.macro.RequireMacroStep.removeMacroRequirement;
 import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.ancestorTypeRef;
 import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.impliedAncestorTypeRef;
+import static org.o42a.compiler.ip.type.ascendant.AncestorTypeRef.macroAncestorTypeRef;
 
 import org.o42a.ast.expression.AbstractExpressionVisitor;
 import org.o42a.ast.expression.ExpressionNode;
 import org.o42a.ast.expression.ParenthesesNode;
+import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.ref.ScopeRefNode;
 import org.o42a.ast.ref.ScopeType;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
 import org.o42a.core.Distributor;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.value.ValueStructFinder;
 
 
@@ -94,6 +99,28 @@ public class AncestorVisitor
 	}
 
 	@Override
+	protected AncestorTypeRef visitRef(RefNode ref, Distributor p) {
+		if (valueStruct() != null) {
+			return super.visitRef(ref, p);
+		}
+
+		final Owner owner = ref.accept(ip().refIp().ownerVisitor(), p);
+
+		if (owner == null) {
+			return null;
+		}
+		if (!owner.isMacroExpanding()) {
+			return ancestorTypeRef(toTypeRef(this.referral.refer(owner)));
+
+		}
+
+		final Ref result = this.referral.refer(owner);
+
+		return macroAncestorTypeRef(
+				toTypeRef(removeMacroRequirement(result)));
+	}
+
+	@Override
 	protected AncestorTypeRef visitExpression(
 			ExpressionNode expression,
 			Distributor p) {
@@ -106,7 +133,11 @@ public class AncestorVisitor
 			return null;
 		}
 
-		return ancestorTypeRef(ref.toTypeRef(valueStruct()));
+		return ancestorTypeRef(toTypeRef(ref));
+	}
+
+	protected TypeRef toTypeRef(Ref ref) {
+		return ref.toTypeRef(valueStruct());
 	}
 
 }

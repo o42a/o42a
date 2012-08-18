@@ -119,6 +119,9 @@ public final class Name implements SubID, CharSequence, Comparable<Name> {
 
 	@Override
 	public final Name subSequence(int start, int end) {
+		if (start == 0 && end == length()) {
+			return this;
+		}
 		if (isCanonical()) {
 			return new Name(
 					capitalization(),
@@ -127,9 +130,6 @@ public final class Name implements SubID, CharSequence, Comparable<Name> {
 					true);
 		}
 		if (start == 0) {
-			if (end == length()) {
-				return this;
-			}
 			return new Name(
 					capitalization(),
 					toString().substring(0, end),

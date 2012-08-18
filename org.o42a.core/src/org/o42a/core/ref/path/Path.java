@@ -236,6 +236,13 @@ public final class Path {
 				ArrayUtil.append(getSteps(), path.getSteps()));
 	}
 
+	public final Step lastStep() {
+		if (this.steps.length == 0) {
+			return null;
+		}
+		return this.steps[this.steps.length - 1];
+	}
+
 	public final Path cut(int stepsToCut) {
 
 		final Step[] newSteps =

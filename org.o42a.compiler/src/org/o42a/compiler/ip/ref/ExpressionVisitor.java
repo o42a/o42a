@@ -36,6 +36,7 @@ import org.o42a.compiler.ip.Interpreter;
 import org.o42a.compiler.ip.phrase.ref.Phrase;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.compiler.ip.ref.operator.LogicalExpression;
+import org.o42a.compiler.ip.ref.owner.Owner;
 import org.o42a.compiler.ip.ref.owner.Referral;
 import org.o42a.compiler.ip.type.ascendant.AncestorTypeRef;
 import org.o42a.compiler.ip.type.macro.TypeConsumer;
@@ -190,7 +191,14 @@ public final class ExpressionVisitor
 
 	@Override
 	protected Ref visitRef(RefNode ref, Distributor p) {
-		return ref.accept(this.referral.refVisitor(ip()), p);
+
+		final Owner owner = ref.accept(ip().refIp().ownerVisitor(), p);
+
+		if (owner == null) {
+			return null;
+		}
+
+		return this.referral.expandIfMacro(owner);
 	}
 
 	@Override

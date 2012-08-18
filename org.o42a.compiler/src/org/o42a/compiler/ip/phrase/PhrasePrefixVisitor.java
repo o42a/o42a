@@ -73,7 +73,13 @@ final class PhrasePrefixVisitor
 					.setTypeParameters(this.typeParameters);
 		}
 
-		return p.setAncestor(ancestor.getAncestor());
+		final Phrase result = p.setAncestor(ancestor.getAncestor());
+
+		if (!ancestor.isMacroExpanding()) {
+			return result;
+		}
+
+		return result.expandMacro();
 	}
 
 }

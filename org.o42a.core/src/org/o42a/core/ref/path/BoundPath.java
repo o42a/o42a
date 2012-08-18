@@ -157,14 +157,7 @@ public class BoundPath extends RefPath {
 	}
 
 	public final Step lastStep() {
-
-		final Step[] steps = getSteps();
-
-		if (steps.length == 0) {
-			return null;
-		}
-
-		return steps[steps.length - 1];
+		return getPath().lastStep();
 	}
 
 	public final BoundPath setLocation(LocationInfo location) {
@@ -472,14 +465,7 @@ public class BoundPath extends RefPath {
 	}
 
 	private final Step lastRawStep() {
-
-		final Step[] steps = getRawPath().getSteps();
-
-		if (steps.length == 0) {
-			return null;
-		}
-
-		return steps[steps.length - 1];
+		return getRawPath().lastStep();
 	}
 
 	private PathResolution walkPath(

@@ -23,12 +23,14 @@ import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.statement.AssignmentNode;
 import org.o42a.compiler.ip.Interpreter;
+import org.o42a.compiler.ip.macro.MacroExpansionStep;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
 import org.o42a.core.Placed;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
+import org.o42a.core.ref.path.BoundPath;
 import org.o42a.core.ref.type.StaticTypeRef;
 import org.o42a.core.ref.type.TypeRef;
 import org.o42a.core.source.LocationInfo;
@@ -43,6 +45,7 @@ public class Phrase extends Placed {
 	private PhrasePrefix prefix;
 	private PhrasePart last;
 	private MainPhraseContext mainContext;
+	private boolean macroExpansion;
 
 	public Phrase(
 			Interpreter ip,
@@ -104,6 +107,15 @@ public class Phrase extends Placed {
 		return getMainContext().getImplicitAscendants();
 	}
 
+	public final boolean isMacroExpansion() {
+		return this.macroExpansion;
+	}
+
+	public final Phrase expandMacro() {
+		this.macroExpansion = true;
+		return this;
+	}
+
 	public final PhraseName name(LocationInfo location, Name name) {
 		return append(this.last.name(location, name));
 	}
@@ -151,9 +163,15 @@ public class Phrase extends Placed {
 	}
 
 	public final Ref toRef() {
-		return new PhraseFragment(this).toPath()
-				.bind(this, getScope())
-				.target(distribute());
+
+		final BoundPath path =
+				new PhraseFragment(this).toPath().bind(this, getScope());
+
+		if (!isMacroExpansion()) {
+			return path.target(distribute());
+		}
+
+		return MacroExpansionStep.expandMacro(path).target(distribute());
 	}
 
 	public final void build() {

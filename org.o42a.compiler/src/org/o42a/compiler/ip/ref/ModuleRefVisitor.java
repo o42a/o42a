@@ -115,6 +115,9 @@ public class ModuleRefVisitor extends AbstractRefVisitor<Ref, Distributor> {
 			final StaticTypeRef declaredIn = declaredIn(ref.getDeclaredIn(), p);
 
 			if (owner != null) {
+				if (owner.isMacroExpanding()) {
+
+				}
 				return owner.member(
 						location(p, ref),
 						PATH_COMPILER_REF_IP.memberName(

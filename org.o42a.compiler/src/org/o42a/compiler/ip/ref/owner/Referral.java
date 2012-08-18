@@ -19,6 +19,8 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
+import static org.o42a.compiler.ip.macro.MacroExpansionStep.expandMacro;
+
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;
 import org.o42a.compiler.ip.Interpreter;
@@ -43,6 +45,17 @@ public abstract class Referral {
 	public abstract ExpressionNodeVisitor<Ref, Distributor> expressionVisitor(
 			Interpreter ip,
 			TypeConsumer typeConsumer);
+
+	public Ref expandIfMacro(Owner owner) {
+
+		final Ref result = refer(owner);
+
+		if (!owner.isMacroExpanding()) {
+			return result;
+		}
+
+		return expandMacro(result);
+	}
 
 	public abstract Ref refer(Owner owner);
 
