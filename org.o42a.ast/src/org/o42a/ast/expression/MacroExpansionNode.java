@@ -30,10 +30,15 @@ public class MacroExpansionNode
 		extends UnaryNode
 		implements DeclarableNode, TypeNode {
 
-	MacroExpansionNode(
+	public MacroExpansionNode(
 			SignNode<UnaryOperator> sign,
 			ExpressionNode operand) {
 		super(sign, operand);
+	}
+
+	@Override
+	public <R, P> R accept(ExpressionNodeVisitor<R, P> visitor, P p) {
+		return visitor.visitMacroExpansion(this, p);
 	}
 
 	@Override

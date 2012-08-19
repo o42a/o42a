@@ -21,7 +21,6 @@ package org.o42a.parser.grammar.type;
 
 import static org.o42a.parser.Grammar.*;
 
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.ref.RefNode;
 import org.o42a.ast.type.AscendantsNode;
 import org.o42a.ast.type.TypeNode;
@@ -51,7 +50,7 @@ public class TypeParser implements Parser<TypeNode> {
 			}
 			break;
 		case '#':
-			ancestor = (MacroExpansionNode) context.parse(unaryExpression());
+			ancestor = context.parse(macroExpansion());
 			if (ancestor == null) {
 				return null;
 			}
