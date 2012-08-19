@@ -59,7 +59,7 @@ public class SyntaxErrorTest extends GrammarTestCase {
 		expectError("syntax_error");
 
 		final ParenthesesNode result =
-				parse(ParenthesesNode.class, "(\u2055 /* comment */ \u2055)");
+				parse(ParenthesesNode.class, "(\u2055 ~~ comment ~~ \u2055)");
 		final SentenceNode[] content = result.getContent();
 
 		assertThat(content.length, is(0));

@@ -129,8 +129,7 @@ public final class ParserContext {
 		}
 		skip();
 
-		final UnacceptedChars unacceptedChars =
-				this.worker.unacceptedChars();
+		final UnacceptedChars unacceptedChars = this.worker.unacceptedChars();
 
 		for (;;) {
 
@@ -257,6 +256,10 @@ public final class ParserContext {
 
 	public final boolean isEOF() {
 		return isFailed() || this.current.charOffset() >= this.worker.eof();
+	}
+
+	public final boolean isLineStart() {
+		return this.current.isLineStart();
 	}
 
 	public final ParserLogger getLogger() {

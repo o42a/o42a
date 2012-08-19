@@ -20,6 +20,8 @@
 package org.o42a.parser.grammar.atom;
 
 import static org.o42a.parser.Grammar.whitespace;
+import static org.o42a.parser.grammar.atom.InlineCommentParser.INLINE_COMMENT;
+import static org.o42a.parser.grammar.atom.NewLineCommentParser.NL_COMMENT;
 
 import org.o42a.ast.atom.CommentNode;
 import org.o42a.parser.Parser;
@@ -40,7 +42,16 @@ public class CommentParser implements Parser<CommentNode> {
 
 	@Override
 	public CommentNode parse(ParserContext context) {
-		if (context.next() != '/') {
+
+		final int first = context.next();
+
+		if (first != '/') {
+			if (first == '~') {
+				if (!this.allowNewLine) {
+					return context.parse(INLINE_COMMENT);
+				}
+				return context.parse(NL_COMMENT);
+			}
 			return null;// not a first comment symbol
 		}
 
