@@ -37,7 +37,7 @@ public class DerefTest extends GrammarTestCase {
 
 		final DerefNode deref = to(
 				DerefNode.class,
-				parse("foo /*1*/ -> /*2*/"));
+				parse("foo ~~1~~ -> ~~2~~"));
 
 		assertName("foo", deref.getOwner());
 		assertThat(deref.getSuffix().getType(), is(ARROW));

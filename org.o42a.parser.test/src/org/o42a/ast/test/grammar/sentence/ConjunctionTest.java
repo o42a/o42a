@@ -35,7 +35,7 @@ public class ConjunctionTest extends GrammarTestCase {
 	@Test
 	public void oneStatement() {
 
-		final SerialNode[] result = parse("/* a */ foo // b ");
+		final SerialNode[] result = parse("~~ a ~~ foo ~~ b ");
 
 		assertNotNull(result);
 		assertEquals(1, result.length);
@@ -76,7 +76,7 @@ public class ConjunctionTest extends GrammarTestCase {
 	@Test
 	public void onlyComment() {
 
-		final SerialNode[] result = parse("/* comment */");
+		final SerialNode[] result = parse("~~ comment ~~");
 
 		assertThat(result, nullValue());
 	}

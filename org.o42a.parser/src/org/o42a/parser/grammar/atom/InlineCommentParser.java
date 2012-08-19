@@ -23,13 +23,13 @@ import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.parser.grammar.atom.CommentBoundParser.INLINE_BOUND;
 
 import org.o42a.ast.atom.CommentBound;
-import org.o42a.ast.atom.NewCommentNode;
+import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class InlineCommentParser implements Parser<NewCommentNode> {
+public class InlineCommentParser implements Parser<CommentNode> {
 
 	public static final InlineCommentParser INLINE_COMMENT =
 			new InlineCommentParser(null, false);
@@ -43,7 +43,7 @@ public class InlineCommentParser implements Parser<NewCommentNode> {
 	}
 
 	@Override
-	public NewCommentNode parse(ParserContext context) {
+	public CommentNode parse(ParserContext context) {
 
 		final SignNode<CommentBound> opening = opening(context);
 
@@ -69,7 +69,7 @@ public class InlineCommentParser implements Parser<NewCommentNode> {
 				if (closing != null) {
 					context.parse(whitespace(this.allowNewLine));
 					context.acceptAll();
-					return new NewCommentNode(
+					return new CommentNode(
 							opening,
 							text.toString(),
 							closing);
@@ -84,7 +84,7 @@ public class InlineCommentParser implements Parser<NewCommentNode> {
 
 		context.parse(whitespace(this.allowNewLine));
 
-		return new NewCommentNode(
+		return new CommentNode(
 				opening,
 				text.toString(),
 				context.firstUnaccepted().fix());

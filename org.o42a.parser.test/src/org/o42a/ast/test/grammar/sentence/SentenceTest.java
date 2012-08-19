@@ -113,7 +113,7 @@ public class SentenceTest extends GrammarTestCase {
 	@Test
 	public void commentSentence() {
 
-		final SentenceNode result = parse("/* hello */");
+		final SentenceNode result = parse("~~ hello ~~");
 
 		assertThat(result, nullValue());
 	}
@@ -129,7 +129,7 @@ public class SentenceTest extends GrammarTestCase {
 	@Test
 	public void commentProposition() {
 
-		final SentenceNode result = parse("/* comment */.");
+		final SentenceNode result = parse("~~ comment ~~.");
 
 		assertThat(result.getDisjunction().length, is(0));
 		assertThat(result.getComments().length, is(1));
