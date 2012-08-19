@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -20,16 +20,28 @@
 package org.o42a.ast.atom;
 
 
-public interface AtomNodeVisitor<R, P> {
+public enum CommentBound implements SignType {
 
-	<S extends SignType> R visitSign(SignNode<S> sign, P p);
+	INLINE_COMMENT() {
 
-	R visitComment(CommentNode comment, P p);
+		@Override
+		public String getSign() {
+			return "~~";
+		}
 
-	R visitName(NameNode name, P p);
+	},
 
-	R visitDecimal(DecimalNode decimal, P p);
+	BLOCK_COMMENT() {
 
-	R visitStringLiteral(StringNode string, P p);
+		@Override
+		public String getSign() {
+			return "~~~";
+		}
+
+	};
+
+	public final boolean isBlock() {
+		return this == BLOCK_COMMENT;
+	}
 
 }

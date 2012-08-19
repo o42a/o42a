@@ -19,6 +19,8 @@
 */
 package org.o42a.parser;
 
+import static java.lang.Character.isWhitespace;
+
 import org.o42a.ast.Position;
 import org.o42a.util.io.Source;
 
@@ -31,6 +33,7 @@ final class WorkerPos extends Position implements Cloneable {
 	private long offset;
 	private long charOffset;
 	private int lastChar;
+	private boolean lineStart = true;
 
 	WorkerPos(Source source) {
 		this.source = source;
@@ -76,6 +79,10 @@ final class WorkerPos extends Position implements Cloneable {
 		return this.lastChar;
 	}
 
+	final boolean isLineStart() {
+		return this.lineStart;
+	}
+
 	void set(WorkerPos position) {
 		this.source = position.source;
 		this.line = position.line;
@@ -83,6 +90,7 @@ final class WorkerPos extends Position implements Cloneable {
 		this.offset = position.offset;
 		this.charOffset = position.charOffset;
 		this.lastChar = position.lastChar;
+		this.lineStart = position.lineStart;
 	}
 
 	void move(long offset, int c) {
@@ -91,13 +99,18 @@ final class WorkerPos extends Position implements Cloneable {
 		if (c == '\r') {
 			this.line++;
 			this.column = 1;
+			this.lineStart = true;
 		} else if (c == '\n') {
 			if (this.lastChar != '\r') {
 				this.line++;
 				this.column = 1;
+				this.lineStart = true;
 			}
 		} else {
 			this.column++;
+			if (this.lineStart && !isWhitespace(c)) {
+				this.lineStart = false;
+			}
 		}
 		this.lastChar = c;
 	}
