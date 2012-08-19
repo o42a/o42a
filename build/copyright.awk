@@ -1,23 +1,31 @@
 function print_copyright() {
-	print "/*"
-	print "    " (progname ? progname : "o42a Programming Language")
-	print "    Copyright (C)", year, author
+	if (o42a) {
+		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	} else {
+		print "/*"
+	}
+	print indent (progname ? progname : "o42a Programming Language")
+	print indent "Copyright (C)", year, author
 	print ""
-	print "    This file is part of o42a."
+	print indent "This file is part of o42a."
 	print ""
-	print "    o42a is free software: you can redistribute it and/or modify"
-	print "    it under the terms of the GNU General Public License as published by"
-	print "    the Free Software Foundation, either version 3 of the License, or"
-	print "    (at your option) any later version."
+	print indent "o42a is free software: you can redistribute it and/or modify"
+	print indent "it under the terms of the GNU General Public License as published by"
+	print indent "the Free Software Foundation, either version 3 of the License, or"
+	print indent "(at your option) any later version."
 	print ""
-	print "    o42a is distributed in the hope that it will be useful,"
-	print "    but WITHOUT ANY WARRANTY; without even the implied warranty of"
-	print "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
-	print "    GNU General Public License for more details."
+	print indent "o42a is distributed in the hope that it will be useful,"
+	print indent "but WITHOUT ANY WARRANTY; without even the implied warranty of"
+	print indent "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the"
+	print indent "GNU General Public License for more details."
 	print ""
-	print "    You should have received a copy of the GNU General Public License"
-	print "    along with this program.  If not, see <http://www.gnu.org/licenses/>."
-	print "*/"
+	print indent "You should have received a copy of the GNU General Public License"
+	print indent "along with this program.  If not, see <http://www.gnu.org/licenses/>."
+	if (o42a) {
+		print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	} else {
+		print "*/"
+	}
 }
 
 
@@ -25,6 +33,8 @@ BEGIN {
 	buffer = ""
 	skip = 0
 	comment = 0
+	o42a = license ~ "-o42a$"
+	indent = o42a ? "" : "    "
 	year = "2012"
 	author = "Ruslan Lopatin"
 }
@@ -34,7 +44,7 @@ skip {
 	next
 }
 
-!comment && /^\/\*/ {
+!comment && (o42a && /^~~~/ || !o42a && /^\/\*/) {
 	comment = 1
 	buffer = buffer $0 "\n"
 	next
@@ -57,14 +67,14 @@ comment && /^[ \t]*Copyright/ {
 		year_str=$3 "," year
 	}
 	printf "%s", buffer
-	print "    Copyright (C)", year_str, author
+	print indent "Copyright (C)", year_str, author
 	comment = 0
 	buffer = ""
 	skip = 1
 	next
 }
 
-comment && /\*\// {
+comment && (o42a && /~~~/ || !o42a && /\*\//) {
 	print_copyright()
 	comment = 0
 	buffer = ""
