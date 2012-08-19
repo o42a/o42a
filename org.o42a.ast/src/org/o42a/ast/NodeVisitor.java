@@ -24,7 +24,6 @@ import org.o42a.ast.clause.ClauseIdNodeVisitor;
 import org.o42a.ast.clause.OutcomeNode;
 import org.o42a.ast.clause.ReusedClauseNode;
 import org.o42a.ast.expression.ArgumentNode;
-import org.o42a.ast.expression.MacroExpansionNode;
 import org.o42a.ast.field.DeclarableAdapterNode;
 import org.o42a.ast.field.DeclarableNode;
 import org.o42a.ast.field.DeclarableNodeVisitor;
@@ -81,11 +80,6 @@ public abstract class NodeVisitor<R, P>
 	@Override
 	public R visitDeclarableAdapter(DeclarableAdapterNode adapter, P p) {
 		return visitDeclarable(adapter, p);
-	}
-
-	@Override
-	public R visitMacroExpansion(MacroExpansionNode expansion, P p) {
-		return visitUnary(expansion, p);
 	}
 
 	public R visitInterface(InterfaceNode iface, P p) {

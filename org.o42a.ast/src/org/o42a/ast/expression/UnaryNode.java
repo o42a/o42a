@@ -24,16 +24,10 @@ import org.o42a.ast.atom.SignNode;
 
 public class UnaryNode extends AbstractExpressionNode {
 
-	public static UnaryNode unaryNode(
-			SignNode<UnaryOperator> sign,
-			ExpressionNode operand) {
-		return sign.getType().unaryNode(sign, operand);
-	}
-
 	private final SignNode<UnaryOperator> sign;
 	private final ExpressionNode operand;
 
-	UnaryNode(SignNode<UnaryOperator> sign, ExpressionNode operand) {
+	public UnaryNode(SignNode<UnaryOperator> sign, ExpressionNode operand) {
 		super(sign.getStart(), end(sign, operand));
 		this.sign = sign;
 		this.operand = operand;

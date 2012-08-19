@@ -184,6 +184,10 @@ public class Grammar {
 		return UnaryExpressionParser.UNARY_EXPRESSION;
 	}
 
+	public static final Parser<MacroExpansionNode> macroExpansion() {
+		return MacroExpansionParser.MACRO_EXPANSION;
+	}
+
 	public static final Parser<BinaryNode> binaryExpression(
 			ExpressionNode leftOperand) {
 		return new BinaryExpressionParser(leftOperand);

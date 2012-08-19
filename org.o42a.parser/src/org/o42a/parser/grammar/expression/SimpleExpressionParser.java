@@ -91,7 +91,7 @@ public class SimpleExpressionParser implements Parser<ExpressionNode> {
 				return macrosRef;
 			}
 
-			return context.parse(unaryExpression());
+			return context.parse(macroExpansion());
 		case '(':
 			return context.parse(DECLARATIVE.parentheses());
 		case '&':
