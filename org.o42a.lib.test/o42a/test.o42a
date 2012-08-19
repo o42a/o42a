@@ -21,13 +21,13 @@ Use object 'Print error' from 'Console'
 
 Test :=> void (
 ~~~~~~~~~~~~~~~
-  Test signature.
+Test signature.
 
-  Inherit this object or create an adapter to it in public field. Then such
-  field will be recognized as test.
+Inherit this object or create an adapter to it in public field. Then such
+field will be recognized as test.
 
-  The `run tests` directive searches for all tests in enclosing object
-  and executes them.
+The `run tests` directive searches for all tests in enclosing object
+and executes them.
 ~~~
 
   Name := string (False)
