@@ -26,7 +26,7 @@ import static org.o42a.ast.atom.CommentBound.BLOCK_COMMENT;
 import static org.o42a.parser.Grammar.comment;
 
 import org.junit.Test;
-import org.o42a.ast.atom.NewCommentNode;
+import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -35,7 +35,7 @@ public class BlockCommentTest extends GrammarTestCase {
 	@Test
 	public void blockComment() {
 
-		final NewCommentNode comment = parse(
+		final CommentNode comment = parse(
 				"~~~",
 				" comment",
 				"  ~~~");
@@ -51,7 +51,7 @@ public class BlockCommentTest extends GrammarTestCase {
 	@Test
 	public void eof() {
 
-		final NewCommentNode comment = parse(
+		final CommentNode comment = parse(
 				"~~~",
 				"comment");
 
@@ -66,7 +66,7 @@ public class BlockCommentTest extends GrammarTestCase {
 	@Test
 	public void twoTildesInComment() {
 
-		final NewCommentNode comment = parse(
+		final CommentNode comment = parse(
 				"~~~",
 				"  ~~   ",
 				"    ~~~");
@@ -82,7 +82,7 @@ public class BlockCommentTest extends GrammarTestCase {
 	@Test
 	public void wordAfterTildesInsideComment() {
 
-		final NewCommentNode comment = parse(
+		final CommentNode comment = parse(
 				"~~~",
 				"~~~ comment",
 				"~~~");
@@ -98,7 +98,7 @@ public class BlockCommentTest extends GrammarTestCase {
 	@Test
 	public void wordBeforeTildesInsideComment() {
 
-		final NewCommentNode comment = parse(
+		final CommentNode comment = parse(
 				"~~~",
 				"comment ~~~",
 				"~~~");
@@ -111,8 +111,8 @@ public class BlockCommentTest extends GrammarTestCase {
 		assertThat(comment.getClosing().getType(), is(BLOCK_COMMENT));
 	}
 
-	private NewCommentNode parse(String... text) {
-		return to(NewCommentNode.class, parseLines(comment(true), text));
+	private CommentNode parse(String... text) {
+		return to(CommentNode.class, parseLines(comment(true), text));
 	}
 
 }

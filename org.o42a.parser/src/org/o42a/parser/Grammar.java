@@ -64,9 +64,9 @@ public class Grammar {
 
 	public static Parser<CommentNode> comment(boolean allowNewLine) {
 		if (!allowNewLine) {
-			return CommentParser.COMMENT;
+			return InlineCommentParser.INLINE_COMMENT;
 		}
-		return CommentParser.COMMENT_NL;
+		return NewLineCommentParser.NL_COMMENT;
 	}
 
 	public static Parser<SeparatorNodes> separator(boolean allowNewLine) {

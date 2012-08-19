@@ -26,7 +26,7 @@ import static org.o42a.ast.atom.CommentBound.INLINE_COMMENT;
 import static org.o42a.parser.Grammar.comment;
 
 import org.junit.Test;
-import org.o42a.ast.atom.NewCommentNode;
+import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.test.grammar.GrammarTestCase;
 
 
@@ -35,7 +35,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void inlineComment() {
 
-		final NewCommentNode comment = parseInline("~~comment\n");
+		final CommentNode comment = parseInline("~~comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(9L));
@@ -48,7 +48,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void nl() {
 
-		final NewCommentNode comment = parseNL("~~comment\n");
+		final CommentNode comment = parseNL("~~comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(10L));
@@ -61,7 +61,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void manyTildes() {
 
-		final NewCommentNode comment = parseInline("~~~~ comment\n");
+		final CommentNode comment = parseInline("~~~~ comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(12L));
@@ -74,7 +74,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void manyTildesNL() {
 
-		final NewCommentNode comment = parseNL("~~~~ comment\n");
+		final CommentNode comment = parseNL("~~~~ comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(13L));
@@ -87,7 +87,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void eof() {
 
-		final NewCommentNode comment = parseInline("~~comment");
+		final CommentNode comment = parseInline("~~comment");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(9L));
@@ -100,7 +100,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void closed() {
 
-		final NewCommentNode comment = parseInline("~~comment~~");
+		final CommentNode comment = parseInline("~~comment~~");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(11L));
@@ -113,7 +113,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void closedByManyTildes() {
 
-		final NewCommentNode comment = parseInline("~~comment~~~~");
+		final CommentNode comment = parseInline("~~comment~~~~");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(13L));
@@ -126,7 +126,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void notClosed() {
 
-		final NewCommentNode comment = parseInline("~~comment~\n");
+		final CommentNode comment = parseInline("~~comment~\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(10L));
@@ -139,7 +139,7 @@ public class InlineCommentTest extends GrammarTestCase {
 	@Test
 	public void notClosedNL() {
 
-		final NewCommentNode comment = parseNL("~~comment~\n");
+		final CommentNode comment = parseNL("~~comment~\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
 		assertThat(comment.getEnd().getOffset(), is(11L));
@@ -163,16 +163,16 @@ public class InlineCommentTest extends GrammarTestCase {
 		assertThat(this.worker.position().offset(), is(2L));
 	}
 
-	private NewCommentNode parseNL(String text) {
+	private CommentNode parseNL(String text) {
 		return parse(text, true);
 	}
 
-	private NewCommentNode parseInline(String text) {
+	private CommentNode parseInline(String text) {
 		return parse(text, false);
 	}
 
-	private NewCommentNode parse(String text, boolean allowNewLine) {
-		return to(NewCommentNode.class, parse(comment(allowNewLine), text));
+	private CommentNode parse(String text, boolean allowNewLine) {
+		return to(CommentNode.class, parse(comment(allowNewLine), text));
 	}
 
 }

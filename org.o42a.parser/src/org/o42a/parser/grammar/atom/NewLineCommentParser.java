@@ -23,13 +23,13 @@ import static org.o42a.ast.atom.CommentBound.INLINE_COMMENT;
 import static org.o42a.parser.grammar.atom.CommentBoundParser.COMMENT_BOUND;
 
 import org.o42a.ast.atom.CommentBound;
-import org.o42a.ast.atom.NewCommentNode;
+import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-public class NewLineCommentParser implements Parser<NewCommentNode> {
+public class NewLineCommentParser implements Parser<CommentNode> {
 
 	public static final NewLineCommentParser NL_COMMENT =
 			new NewLineCommentParser();
@@ -38,7 +38,7 @@ public class NewLineCommentParser implements Parser<NewCommentNode> {
 	}
 
 	@Override
-	public NewCommentNode parse(ParserContext context) {
+	public CommentNode parse(ParserContext context) {
 
 		final SignNode<CommentBound> opening = context.parse(COMMENT_BOUND);
 
@@ -46,7 +46,7 @@ public class NewLineCommentParser implements Parser<NewCommentNode> {
 			return null;
 		}
 		if (context.isEOF()) {
-			return new NewCommentNode(
+			return new CommentNode(
 					opening,
 					"",
 					context.firstUnaccepted().fix());
@@ -56,7 +56,7 @@ public class NewLineCommentParser implements Parser<NewCommentNode> {
 			return inlineComment(context, opening);
 		}
 
-		final NewCommentNode blockComment =
+		final CommentNode blockComment =
 				context.parse(new BlockCommentParser(opening));
 
 		if (blockComment != null) {
@@ -72,7 +72,7 @@ public class NewLineCommentParser implements Parser<NewCommentNode> {
 						INLINE_COMMENT));
 	}
 
-	private NewCommentNode inlineComment(
+	private CommentNode inlineComment(
 			ParserContext context,
 			SignNode<CommentBound> opening) {
 		return context.parse(new InlineCommentParser(opening, true));

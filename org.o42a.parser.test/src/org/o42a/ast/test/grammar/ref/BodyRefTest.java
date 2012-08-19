@@ -37,11 +37,11 @@ public class BodyRefTest extends GrammarTestCase {
 
 		final BodyRefNode bodyRef = to(
 				BodyRefNode.class,
-				parse("foo /*1*/ ` /*2*/"));
+				parse("foo ~~1~~ ` ~~2"));
 
 		assertName("foo", bodyRef.getOwner());
 		assertThat(bodyRef.getSuffix().getType(), is(BACKQUOTE));
-		assertThat(this.worker.position().offset(), is(17L));
+		assertThat(this.worker.position().offset(), is(15L));
 	}
 
 	@Test

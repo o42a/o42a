@@ -1,6 +1,6 @@
 /*
     Abstract Syntax Tree
-    Copyright (C) 2010-2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -19,32 +19,45 @@
 */
 package org.o42a.ast.atom;
 
-import static org.o42a.util.string.StringCodec.escapeControlChars;
-
 import org.o42a.util.io.SourcePosition;
 
 
 public class CommentNode extends AbstractAtomNode {
 
-	private final boolean multiline;
+	private final SignNode<CommentBound> opening;
+	private final SignNode<CommentBound> closing;
 	private final String text;
 
 	public CommentNode(
-			SourcePosition start,
-			SourcePosition end,
-			boolean multiline,
-			String text) {
-		super(start, end);
-		this.multiline = multiline;
+			SignNode<CommentBound> opening,
+			String text,
+			SignNode<CommentBound> closing) {
+		super(opening.getStart(), closing.getEnd());
+		this.opening = opening;
 		this.text = text;
+		this.closing = closing;
 	}
 
-	public boolean isMultiline() {
-		return this.multiline;
+	public CommentNode(
+			SignNode<CommentBound> opening,
+			String text,
+			SourcePosition end) {
+		super(opening.getStart(), end);
+		this.opening = opening;
+		this.text = text;
+		this.closing = null;
 	}
 
-	public String getText() {
+	public final SignNode<CommentBound> getOpening() {
+		return this.opening;
+	}
+
+	public final String getText() {
 		return this.text;
+	}
+
+	public final SignNode<CommentBound> getClosing() {
+		return this.closing;
 	}
 
 	@Override
@@ -54,10 +67,10 @@ public class CommentNode extends AbstractAtomNode {
 
 	@Override
 	public void printContent(StringBuilder out) {
-		out.append(this.multiline ? "/*" : "//");
-		escapeControlChars(out, this.text);
-		if (this.multiline) {
-			out.append("*/");
+		this.opening.printContent(out);
+		out.append(getText());
+		if (this.closing != null) {
+			this.closing.printContent(out);
 		}
 	}
 

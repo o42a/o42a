@@ -23,13 +23,13 @@ import static org.o42a.parser.Grammar.whitespace;
 import static org.o42a.parser.grammar.atom.CommentBoundParser.BLOCK_BOUND;
 
 import org.o42a.ast.atom.CommentBound;
-import org.o42a.ast.atom.NewCommentNode;
+import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
 
 
-final class BlockCommentParser implements Parser<NewCommentNode> {
+final class BlockCommentParser implements Parser<CommentNode> {
 
 	private final SignNode<CommentBound> opening;
 
@@ -38,7 +38,7 @@ final class BlockCommentParser implements Parser<NewCommentNode> {
 	}
 
 	@Override
-	public NewCommentNode parse(ParserContext context) {
+	public CommentNode parse(ParserContext context) {
 
 		final SignNode<CommentBound> opening = opening(context);
 
@@ -49,7 +49,7 @@ final class BlockCommentParser implements Parser<NewCommentNode> {
 			return null;
 		}
 		if (context.isEOF()) {
-			return new NewCommentNode(
+			return new CommentNode(
 					opening,
 					"",
 					context.firstUnaccepted().fix());
@@ -70,7 +70,7 @@ final class BlockCommentParser implements Parser<NewCommentNode> {
 
 					if (whitespaces < 0) {
 						context.parse(whitespace(true));
-						return new NewCommentNode(
+						return new CommentNode(
 								opening,
 								text.toString(),
 								closing);
@@ -84,7 +84,7 @@ final class BlockCommentParser implements Parser<NewCommentNode> {
 				}
 			} else if (next < 0) {
 				context.acceptAll();
-				return new NewCommentNode(
+				return new CommentNode(
 						opening,
 						text.toString(),
 						context.firstUnaccepted().fix());
