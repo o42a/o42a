@@ -1,73 +1,86 @@
-/*
-    Intrinsics
-    Copyright (C) 2010-2012 Ruslan Lopatin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Intrinsics
+Copyright (C) 2010-2012 Ruslan Lopatin
 
-    This file is part of o42a.
+This file is part of o42a.
 
-    o42a is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+o42a is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    o42a is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+o42a is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/* Clause identifier of unary plus ('+') operator. */
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Plus :=> void
+~~~~~~~~~~~~~
+Clause identifier of unary plus (`+`) operator.
+~~~
 
-/* Clause identifier of unary minus ('-') operator. */
 Minus :=> void
+~~~~~~~~~~~~~~
+Clause identifier of unary minus (`-`) operator.
+~~~
 
-/*
-  Clause identifier representing the right operand of binary operators.
-
-  The right operand is represented by binary operator's clause itself.
-*/ 
 Operand :=> void
+~~~~~~~~~~~~~~~~
+Clause identifier representing the right operand of binary operators.
 
-/* Clause identifier of addition ('+') operator. */
+The right operand is represented by binary operator's clause itself.
+~~~ 
+
 Add :=> void
+~~~~~~~~~~~~
+Clause identifier of addition (`+`) operator.
+~~~
 
-/* Clause identifier of subtraction ('-') operator. */
 Subtract :=> void
+~~~~~~~~~~~~~~~~~
+Clause identifier of subtraction (`-`) operator.
+~~~
 
-/* Clause identifier of multiplication ('*') operator. */
 Multiply :=> void
+~~~~~~~~~~~~~~~~~
+Clause identifier of multiplication (`*`) operator.
+~~~
 
-/* Clause identifier of division ('/') operator. */
 Divide :=> void
+~~~~~~~~~~~~~~~
+Clause identifier of division (`/`) operator.
+~~~
 
-/*
-  Clause identifier of equality check operators.
-
-  The phrase result should be true if this clause content equals to operand.
-
-  Both equals ('==') and not equals ('<>') operators implemented by this clause.
-*/
 Equals :=> void
+~~~~~~~~~~~~~~~
+Clause identifier of equality check operators.
 
-/*
-  Clause identifier of comparison operators.
+The phrase result should be true if this clause content equals to operand.
 
-  The phrase should be integer. It's value interpreted as following:
-    - negative value if clause content is less than operand;
-    - positive value if clause content is greater than parameter;
-    - zero if clause content equals to operand.
+Both equals (`==`) and not equals (`<>`) operators implemented by this clause.
+~~~
 
-  Less ('<'), less or equal ('<='), greater ('>') and greater or equal ('>=')
-  operators implemented by this clause. Also, this clause implements equals
-  ('==') and not equals ('<>') operators, unless the equals clause present.
-*/
 Compare :=> void
+~~~~~~~~~~~~~~~~
+Clause identifier of comparison operators.
 
-/*
-  Clause identifier of assignment statement.
+The phrase should be integer. It's value interpreted as following:
+  - negative value if clause content is less than operand;
+  - positive value if clause content is greater than parameter;
+  - zero if clause content equals to operand.
 
-  Only meaningful within getter.
-*/
+Less (`<`), less or equal (`<=`), greater (`>`) and greater or equal (`>=`)
+operators implemented by this clause. Also, this clause implements equals
+(`==`) and not equals (`<>`) operators, unless the equals clause present.
+~~~
+
 Assign :=> void
+~~~~~~~~~~~~~~~
+Clause identifier of assignment statement.
+
+Meaningful only for getters.
+~~~
