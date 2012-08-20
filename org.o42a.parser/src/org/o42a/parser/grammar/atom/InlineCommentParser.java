@@ -27,6 +27,7 @@ import org.o42a.ast.atom.CommentNode;
 import org.o42a.ast.atom.SignNode;
 import org.o42a.parser.Parser;
 import org.o42a.parser.ParserContext;
+import org.o42a.util.io.SourcePosition;
 
 
 public class InlineCommentParser implements Parser<CommentNode> {
@@ -82,12 +83,14 @@ public class InlineCommentParser implements Parser<CommentNode> {
 			text.appendCodePoint(c);
 		}
 
+		final SourcePosition end = context.firstUnaccepted().fix();
+
 		context.parse(whitespace(this.allowNewLine));
 
 		return new CommentNode(
 				opening,
 				text.toString(),
-				context.firstUnaccepted().fix());
+				end);
 	}
 
 	private SignNode<CommentBound> opening(ParserContext context) {

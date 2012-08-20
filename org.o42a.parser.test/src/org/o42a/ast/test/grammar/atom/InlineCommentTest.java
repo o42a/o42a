@@ -51,7 +51,7 @@ public class InlineCommentTest extends GrammarTestCase {
 		final CommentNode comment = parseNL("~~comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
-		assertThat(comment.getEnd().getOffset(), is(10L));
+		assertThat(comment.getEnd().getOffset(), is(9L));
 		assertThat(this.worker.position().offset(), is(10L));
 		assertThat(comment.getText(), is("comment"));
 		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
@@ -77,7 +77,7 @@ public class InlineCommentTest extends GrammarTestCase {
 		final CommentNode comment = parseNL("~~~~ comment\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
-		assertThat(comment.getEnd().getOffset(), is(13L));
+		assertThat(comment.getEnd().getOffset(), is(12L));
 		assertThat(this.worker.position().offset(), is(13L));
 		assertThat(comment.getText(), is(" comment"));
 		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
@@ -142,7 +142,7 @@ public class InlineCommentTest extends GrammarTestCase {
 		final CommentNode comment = parseNL("~~comment~\n");
 
 		assertThat(comment.getStart().getOffset(), is(0L));
-		assertThat(comment.getEnd().getOffset(), is(11L));
+		assertThat(comment.getEnd().getOffset(), is(10L));
 		assertThat(this.worker.position().offset(), is(11L));
 		assertThat(comment.getText(), is("comment~"));
 		assertThat(comment.getOpening().getType(), is(INLINE_COMMENT));
