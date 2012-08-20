@@ -98,7 +98,7 @@ public class SeparatorsTest extends GrammarTestCase {
 		assertThat(comments[0].getText(), is("comment1"));
 		assertRange(0, 10, comments[0]);
 		assertThat(comments[1].getText(), is("comment2"));
-		assertRange(14, 27, comments[1]);
+		assertRange(14, 24, comments[1]);
 		assertThat(this.worker.position().offset(), is(27L));
 	}
 
@@ -115,7 +115,7 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(1));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 13, comments[0]);
+		assertRange(0, 10, comments[0]);
 		assertThat(this.worker.position().offset(), is(13L));
 	}
 
@@ -132,12 +132,13 @@ public class SeparatorsTest extends GrammarTestCase {
 
 		assertThat(comments.length, is(2));
 		assertThat(comments[0].getText(), is("comment1"));
-		assertRange(0, 13, comments[0]);
+		assertRange(0, 10, comments[0]);
 		assertThat(comments[1].getText(), is("comment2"));
-		assertRange(13, 26, comments[1]);
+		assertRange(13, 23, comments[1]);
 		assertThat(this.worker.position().offset(), is(26L));
 	}
 
+	@Test
 	public void blockComments() {
 
 		final SeparatorNodes result = parseLines(
@@ -155,11 +156,11 @@ public class SeparatorsTest extends GrammarTestCase {
 		final CommentNode[] comments = result.getComments();
 
 		assertThat(comments.length, is(2));
-		assertThat(comments[0].getText(), is("\ncomment1\n"));
-		assertRange(0, 14, comments[0]);
-		assertThat(comments[1].getText(), is("comment2"));
-		assertRange(15, 25, comments[1]);
-		assertThat(this.worker.position().offset(), is(28L));
+		assertThat(comments[0].getText(), is("comment1\n"));
+		assertRange(4, 23, comments[0]);
+		assertThat(comments[1].getText(), is(" comment2"));
+		assertRange(26, 38, comments[1]);
+		assertThat(this.worker.position().offset(), is(42L));
 	}
 
 	private SeparatorNodes parse(boolean allowNewLine, String text) {
