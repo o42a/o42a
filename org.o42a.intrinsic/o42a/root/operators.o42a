@@ -32,7 +32,7 @@ Operand :=> void
 ~~~~~~~~~~~~~~~~
 Clause identifier representing the right operand of binary operators.
 
-The right operand is represented by binary operator's clause itself.
+The left operand is represented by binary operator's clause itself.
 ~~~ 
 
 Add :=> void
@@ -61,7 +61,8 @@ Clause identifier of equality check operators.
 
 The phrase result should be true if this clause content equals to operand.
 
-Both equals (`==`) and not equals (`<>`) operators implemented by this clause.
+Both equals (`==`) and not equals (`<>`) operators are implemented by this
+clause.
 ~~~
 
 Compare :=> void
@@ -70,12 +71,12 @@ Clause identifier of comparison operators.
 
 The phrase should be integer. It's value interpreted as following:
   - negative value if clause content is less than operand;
-  - positive value if clause content is greater than parameter;
+  - positive value if clause content is greater than operand;
   - zero if clause content equals to operand.
 
 Less (`<`), less or equal (`<=`), greater (`>`) and greater or equal (`>=`)
 operators implemented by this clause. Also, this clause implements equals
-(`==`) and not equals (`<>`) operators, unless the equals clause present.
+(`==`) and not equals (`<>`) operators, unless the `equals` clause present.
 ~~~
 
 Assign :=> void
