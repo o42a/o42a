@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.common.macro.st;
 
 import static org.o42a.core.member.field.FieldDeclaration.fieldDeclaration;
 import static org.o42a.core.object.macro.MacroExpansionLogger.DEFAULT_MACRO_EXPANSION_LOGGER;
@@ -40,20 +40,7 @@ import org.o42a.core.st.sentence.Statements;
 
 public final class StatementConsumer implements Consumer {
 
-	public static Ref consumeCondition(
-			Statements<?, ?> statements,
-			Ref value) {
-		return consumeStatement(statements, value, value, true);
-	}
-
-	public static Ref consumeSelfAssignment(
-			Statements<?, ?> statements,
-			LocationInfo location,
-			Ref condition) {
-		return consumeStatement(statements, location, condition, false);
-	}
-
-	private static Ref consumeStatement(
+	public static Ref consumeStatement(
 			Statements<?, ?> statements,
 			LocationInfo location,
 			Ref ref,

@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.operator;
 
-import org.o42a.common.object.BuiltinObject;
+import org.o42a.common.builtin.BuiltinObject;
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
 import org.o42a.core.ir.def.DefDirs;

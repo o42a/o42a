@@ -30,7 +30,11 @@ public abstract class InlineEval extends Normal implements Eval {
 	}
 
 	public static InlineEval falseInlineEval() {
-		return FalseInlineEval.FALSE_INLINE_EVAL;
+		return FalseEval.INSTANCE;
+	}
+
+	public static InlineEval macroInlineEval() {
+		return MacroEval.INSTANCE;
 	}
 
 	public InlineEval(Normalizer normalizer) {

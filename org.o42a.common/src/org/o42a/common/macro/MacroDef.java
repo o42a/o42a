@@ -1,6 +1,6 @@
 /*
     Modules Commons
-    Copyright (C) 2011,2012 Ruslan Lopatin
+    Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
 
@@ -17,8 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.common.def;
+package org.o42a.common.macro;
 
+import static org.o42a.core.ir.def.InlineEval.macroInlineEval;
 import static org.o42a.core.ref.ScopeUpgrade.noScopeUpgrade;
 import static org.o42a.core.st.DefValue.defValue;
 
@@ -26,32 +27,30 @@ import org.o42a.core.ir.def.Eval;
 import org.o42a.core.ir.def.InlineEval;
 import org.o42a.core.object.Obj;
 import org.o42a.core.object.def.Def;
+import org.o42a.core.object.macro.Macro;
 import org.o42a.core.ref.*;
+import org.o42a.core.source.LocationInfo;
 import org.o42a.core.st.DefValue;
 import org.o42a.core.value.ValueStruct;
 
 
-public class BuiltinDef extends Def {
+public final class MacroDef extends Def {
 
-	private final Builtin builtin;
-	private InlineEval normal;
+	private final Macro macro;
 
-	public BuiltinDef(Builtin builtin) {
-		super(
-				builtin.toObject(),
-				builtin,
-				noScopeUpgrade(builtin.toObject().getScope()));
-		this.builtin = builtin;
+	public MacroDef(Obj source, LocationInfo location, Macro macro) {
+		super(source, location, noScopeUpgrade(source.getScope()));
+		this.macro = macro;
 	}
 
-	private BuiltinDef(BuiltinDef prototype, ScopeUpgrade scopeUpgrade) {
+	private MacroDef(MacroDef prototype, ScopeUpgrade scopeUpgrade) {
 		super(prototype, scopeUpgrade);
-		this.builtin = prototype.builtin;
+		this.macro = prototype.macro;
 	}
 
 	@Override
 	public ValueStruct<?, ?> getValueStruct() {
-		return this.builtin.toObject().value().getValueStruct();
+		return ValueStruct.MACRO;
 	}
 
 	@Override
@@ -61,50 +60,35 @@ public class BuiltinDef extends Def {
 
 	@Override
 	public InlineEval inline(Normalizer normalizer) {
-		return this.builtin.inlineBuiltin(normalizer, getScope());
+		return macroInlineEval();
 	}
 
 	@Override
 	public void normalize(RootNormalizer normalizer) {
-		this.normal = inline(normalizer.newNormalizer());
 	}
 
 	@Override
 	public Eval eval() {
-		if (this.normal != null) {
-			return this.normal;
-		}
-		return this.builtin.evalBuiltin();
+		return Eval.MACRO_EVAL;
+	}
+
+	@Override
+	protected Def create(ScopeUpgrade upgrade, ScopeUpgrade additionalUpgrade) {
+		return new MacroDef(this, upgrade);
 	}
 
 	@Override
 	protected boolean hasConstantValue() {
-		return this.builtin.isConstantBuiltin();
-	}
-
-	@Override
-	protected BuiltinDef create(
-			ScopeUpgrade upgrade,
-			ScopeUpgrade additionalUpgrade) {
-		return new BuiltinDef(this, upgrade);
+		return true;
 	}
 
 	@Override
 	protected DefValue calculateValue(Resolver resolver) {
-		return defValue(this.builtin.calculateBuiltin(resolver));
+		return defValue(ValueStruct.MACRO.compilerValue(this.macro));
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
-
-		final Obj object = resolver.getContainer().toObject();
-		final Obj builtin = this.builtin.toObject();
-
-		if (builtin != object) {
-			builtin.value().resolveAll(resolver);
-		}
-		object.resolveAll();
-		this.builtin.resolveBuiltin(object.value().part(isClaim()).fullResolver());
 	}
 
 }

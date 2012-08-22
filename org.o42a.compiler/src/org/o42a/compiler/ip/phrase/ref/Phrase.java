@@ -22,8 +22,8 @@ package org.o42a.compiler.ip.phrase.ref;
 import org.o42a.ast.expression.BinaryNode;
 import org.o42a.ast.expression.UnaryNode;
 import org.o42a.ast.statement.AssignmentNode;
+import org.o42a.common.macro.Macros;
 import org.o42a.compiler.ip.Interpreter;
-import org.o42a.compiler.ip.macro.MacroExpansionStep;
 import org.o42a.compiler.ip.phrase.part.*;
 import org.o42a.compiler.ip.ref.array.ArrayConstructor;
 import org.o42a.core.Distributor;
@@ -171,7 +171,7 @@ public class Phrase extends Placed {
 			return path.target(distribute());
 		}
 
-		return MacroExpansionStep.expandMacro(path).target(distribute());
+		return Macros.expandMacro(path).target(distribute());
 	}
 
 	public final void build() {

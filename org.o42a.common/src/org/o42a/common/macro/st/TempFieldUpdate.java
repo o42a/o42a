@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,37 +17,22 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.common.macro.st;
 
-import org.o42a.compiler.ip.macro.MacroDep;
-import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
-import org.o42a.core.object.meta.MetaKey;
-import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PathTemplate;
+import org.o42a.core.object.meta.NestedMetaDep;
 
 
-final class TempMacroDep extends MacroDep<TempMetaDep> implements MetaKey {
+final class TempFieldUpdate extends NestedMetaDep {
 
-	private final MemberField tempField;
-
-	TempMacroDep(MemberField tempField) {
-		this.tempField = tempField;
-	}
-
-	public final MemberField getTempField() {
-		return this.tempField;
+	TempFieldUpdate(TempMetaDep parent, Meta declaredIn) {
+		super(parent, declaredIn);
 	}
 
 	@Override
-	public TempMetaDep newDep(Meta meta, Ref macroRef, PathTemplate template) {
-		return new TempMetaDep(meta, this, macroRef);
-	}
-
-	@Override
-	public void setParentDep(TempMetaDep dep, MetaDep parentDep) {
-		dep.setParentDep(parentDep);
+	public MetaDep nestedDep() {
+		return null;
 	}
 
 }

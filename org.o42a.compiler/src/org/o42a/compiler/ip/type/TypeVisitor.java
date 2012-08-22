@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.type;
 
-import static org.o42a.compiler.ip.macro.MacroExpansionStep.expandMacro;
+import static org.o42a.common.macro.Macros.expandMacro;
 import static org.o42a.compiler.ip.ref.owner.Referral.BODY_REFERRAL;
 import static org.o42a.compiler.ip.type.macro.TypeConsumer.NO_TYPE_CONSUMER;
 

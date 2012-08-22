@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.macro.RequireMacroStep.requireMacro;
+import static org.o42a.common.macro.Macros.requireMacro;
 
 import org.o42a.core.ref.Ref;
 import org.o42a.core.source.LocationInfo;

@@ -19,23 +19,28 @@
 */
 package org.o42a.core.object.macro.impl;
 
+
 import static org.o42a.core.object.macro.impl.EmptyMacro.EMPTY_MACRO;
 
 import org.o42a.core.Scope;
 import org.o42a.core.ir.HostOp;
-import org.o42a.core.ir.def.DefDirs;
 import org.o42a.core.ir.def.Eval;
+import org.o42a.core.ir.op.CodeDirs;
 import org.o42a.core.ir.op.InlineValue;
+import org.o42a.core.ir.op.ValDirs;
+import org.o42a.core.ir.value.ValOp;
 import org.o42a.core.object.link.TargetResolver;
 import org.o42a.core.ref.*;
 import org.o42a.core.value.Value;
 import org.o42a.core.value.ValueAdapter;
 import org.o42a.core.value.ValueType;
+import org.o42a.util.fn.Cancelable;
 
 
 public class MacroValueAdapter extends ValueAdapter {
 
-	private static final MacroEval MACRO_EVAL = new MacroEval();
+	private static final InlineMacroValue INLINE_MACRO_VALUE =
+			new InlineMacroValue();
 
 	public MacroValueAdapter(Ref adaptedRef) {
 		super(adaptedRef);
@@ -65,31 +70,43 @@ public class MacroValueAdapter extends ValueAdapter {
 
 	@Override
 	public InlineValue inline(Normalizer normalizer, Scope origin) {
-		return null;
+		return INLINE_MACRO_VALUE;
 	}
 
 	@Override
 	public Eval eval() {
-		return MACRO_EVAL;
+		return Eval.MACRO_EVAL;
 	}
 
 	@Override
 	protected void fullyResolve(FullResolver resolver) {
 	}
 
-	private static final class MacroEval implements Eval {
+	private static final class InlineMacroValue extends InlineValue {
+
+		InlineMacroValue() {
+			super(null);
+		}
 
 		@Override
-		public void write(DefDirs dirs, HostOp host) {
-			dirs.returnValue(
-					ValueType.MACRO
+		public void writeCond(CodeDirs dirs, HostOp host) {
+		}
+
+		@Override
+		public ValOp writeValue(ValDirs dirs, HostOp host) {
+			return ValueType.MACRO
 					.constantValue(EMPTY_MACRO)
-					.op(dirs.getBuilder(), dirs.code()));
+					.op(dirs.getBuilder(), dirs.code());
 		}
 
 		@Override
 		public String toString() {
 			return "MACRO";
+		}
+
+		@Override
+		protected Cancelable cancelable() {
+			return null;
 		}
 
 	}

@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.path;
 
 import java.util.IdentityHashMap;
 
@@ -83,7 +83,7 @@ public class MacroExpansion extends PathFragment {
 		// Expansion in the original scope.
 		this.origin = start;
 
-		final Macro macro = macro(expander, start);
+		final MacroObject macro = macro(expander, start);
 
 		if (macro != null) {
 			this.initialExpansion = expand(expander, start, macro);
@@ -147,7 +147,7 @@ public class MacroExpansion extends PathFragment {
 		}
 
 		final Path reexpansion;
-		final Macro macro = macro(expander, start);
+		final MacroObject macro = macro(expander, start);
 
 		if (macro == null) {
 			// Macro not found.
@@ -162,30 +162,33 @@ public class MacroExpansion extends PathFragment {
 		return reexpansion;
 	}
 
-	private Path expand(PathExpander expander, Scope scope, Macro macro) {
+	private Path expand(PathExpander expander, Scope scope, MacroObject macro) {
 		if (this.reexpansion) {
 			return reexpand(expander, scope, macro);
 		}
 
 		final MacroExpanderImpl macroExpander =
-				new MacroExpanderImpl(this, expander, scope);
+				new MacroExpanderImpl(this, expander, scope, macro.getObject());
 
-		return prefixExpansion(macro.expand(macroExpander));
+		return prefixExpansion(macro.getMacro().expand(macroExpander));
 	}
 
-	private Path reexpand(PathExpander expander, Scope scope, Macro macro) {
+	private Path reexpand(
+			PathExpander expander,
+			Scope scope,
+			MacroObject macro) {
 
 		final MacroExpanderImpl macroExpander =
-				new MacroExpanderImpl(this, expander, scope);
+				new MacroExpanderImpl(this, expander, scope, macro.getObject());
 
-		return prefixExpansion(macro.reexpand(macroExpander));
+		return prefixExpansion(macro.getMacro().reexpand(macroExpander));
 	}
 
 	private Path prefixExpansion(Path path) {
 		return getMacroRef().getPath().getPath().append(path);
 	}
 
-	private Macro macro(PathExpander expander, Scope start) {
+	private MacroObject macro(PathExpander expander, Scope start) {
 
 		final Resolution resolution = getMacroRef().resolve(start.resolver());
 
@@ -214,10 +217,10 @@ public class MacroExpansion extends PathFragment {
 			return unresolvedMacro(expander);
 		}
 
-		return macroValue.getCompilerValue();
+		return new MacroObject(object, macroValue.getCompilerValue());
 	}
 
-	private Macro notMacro(PathExpander expander) {
+	private MacroObject notMacro(PathExpander expander) {
 		expander.getPath().getLogger().error(
 				"not_macro",
 				getMacroRef(),
@@ -225,12 +228,40 @@ public class MacroExpansion extends PathFragment {
 		return null;
 	}
 
-	private Macro unresolvedMacro(PathExpander expander) {
+	private MacroObject unresolvedMacro(PathExpander expander) {
 		expander.getPath().getLogger().error(
 				"unresolved_macro",
 				getMacroRef(),
 				"Macro can not be resolved at compile time");
 		return null;
+	}
+
+	private static final class MacroObject {
+
+		private final Obj object;
+		private final Macro macro;
+
+		MacroObject(Obj object, Macro macro) {
+			this.object = object;
+			this.macro = macro;
+		}
+
+		public final Obj getObject() {
+			return this.object;
+		}
+
+		public final Macro getMacro() {
+			return this.macro;
+		}
+
+		@Override
+		public String toString() {
+			if (this.macro == null) {
+				return super.toString();
+			}
+			return this.macro.toString();
+		}
+
 	}
 
 }

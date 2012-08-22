@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,9 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.path;
 
 import org.o42a.core.Scope;
+import org.o42a.core.object.Obj;
 import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.object.macro.MacroExpansionLogger;
 import org.o42a.core.ref.Ref;
@@ -35,14 +36,17 @@ final class MacroExpanderImpl implements MacroExpander {
 	private final MacroExpansion expansion;
 	private final PathExpander pathExpander;
 	private final Scope scope;
+	private final Obj macroObject;
 
 	MacroExpanderImpl(
 			MacroExpansion expansion,
 			PathExpander pathExpander,
-			Scope scope) {
+			Scope scope,
+			Obj macroObject) {
 		this.expansion = expansion;
 		this.pathExpander = pathExpander;
 		this.scope = scope;
+		this.macroObject = macroObject;
 	}
 
 	@Override
@@ -56,8 +60,18 @@ final class MacroExpanderImpl implements MacroExpander {
 	}
 
 	@Override
+	public final Scope getScope() {
+		return this.scope;
+	}
+
+	@Override
 	public final Ref getMacroRef() {
 		return this.expansion.getMacroRef();
+	}
+
+	@Override
+	public final Obj getMacroObject() {
+		return this.macroObject;
 	}
 
 	@Override
@@ -71,7 +85,7 @@ final class MacroExpanderImpl implements MacroExpander {
 		final MacroExpansionLogger expansionLogger =
 				this.expansion.getExpansionLogger();
 
-		expansionLogger.logExpansionError(this.scope, getLogger(), message);
+		expansionLogger.logExpansionError(getScope(), getLogger(), message);
 	}
 
 }

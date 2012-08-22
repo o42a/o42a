@@ -236,6 +236,16 @@ public final class Path {
 				ArrayUtil.append(getSteps(), path.getSteps()));
 	}
 
+	public Path prefixWith(PrefixPath prefix) {
+		if (prefix.isEmpty()) {
+			return this;
+		}
+		if (isAbsolute() && getTemplate() == null) {
+			return this;
+		}
+		return prefix.getBoundPath().getRawPath().append(this);
+	}
+
 	public final Step lastStep() {
 		if (this.steps.length == 0) {
 			return null;
@@ -314,13 +324,6 @@ public final class Path {
 
 	public String toString(int length) {
 		return toString(null, length);
-	}
-
-	Path prefixWith(PrefixPath prefix) {
-		if (prefix.isEmpty()) {
-			return this;
-		}
-		return prefix.getBoundPath().getRawPath().append(this);
 	}
 
 	String toString(Object origin, int length) {

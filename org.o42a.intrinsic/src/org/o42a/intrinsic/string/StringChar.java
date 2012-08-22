@@ -30,7 +30,7 @@ import org.o42a.codegen.code.Block;
 import org.o42a.codegen.code.op.AnyOp;
 import org.o42a.codegen.code.op.Int32op;
 import org.o42a.codegen.code.op.Int64op;
-import org.o42a.common.object.AnnotatedBuiltin;
+import org.o42a.common.builtin.AnnotatedBuiltin;
 import org.o42a.common.object.AnnotatedSources;
 import org.o42a.common.object.SourcePath;
 import org.o42a.core.Scope;

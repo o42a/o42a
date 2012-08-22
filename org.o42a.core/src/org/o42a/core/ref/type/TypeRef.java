@@ -112,7 +112,11 @@ public abstract class TypeRef implements ScopeInfo {
 		final ValueStruct<?, ?> valueStruct =
 				this.valueStructFinder.valueStructBy(defaultValueStruct);
 
-		assert defaultValueStruct.assertAssignableFrom(valueStruct);
+		if (valueStruct == null || valueStruct.isNone()) {
+			this.valueStruct = defaultValueStruct;
+		} else {
+			assert defaultValueStruct.assertAssignableFrom(valueStruct);
+		}
 
 		return this.valueStruct = valueStruct;
 	}

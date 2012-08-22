@@ -19,7 +19,7 @@
 */
 package org.o42a.compiler.ip.ref.owner;
 
-import static org.o42a.compiler.ip.macro.MacroExpansionStep.expandMacro;
+import static org.o42a.common.macro.Macros.expandMacro;
 
 import org.o42a.ast.expression.ExpressionNodeVisitor;
 import org.o42a.ast.ref.RefNodeVisitor;

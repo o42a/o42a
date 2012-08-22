@@ -19,6 +19,8 @@
 */
 package org.o42a.core.object.macro.impl;
 
+import static org.o42a.core.object.macro.impl.PrefixedMacro.prefixMacro;
+
 import org.o42a.codegen.Generator;
 import org.o42a.codegen.data.Ptr;
 import org.o42a.core.ir.object.ObjectIR;
@@ -50,7 +52,7 @@ public class MacroValueStruct extends SingleValueStruct<Macro> {
 		}
 
 		final Macro oldMacro = value.getCompilerValue();
-		final Macro newMacro = oldMacro.prefixWith(prefix);
+		final Macro newMacro = prefixMacro(prefix, oldMacro);
 
 		if (oldMacro == newMacro) {
 			return value;

@@ -22,7 +22,6 @@ package org.o42a.core.object.macro.impl;
 import org.o42a.core.object.macro.Macro;
 import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PrefixPath;
 
 
 public class EmptyMacro implements Macro {
@@ -40,11 +39,6 @@ public class EmptyMacro implements Macro {
 	@Override
 	public Path reexpand(MacroExpander expander) {
 		return null;
-	}
-
-	@Override
-	public Macro prefixWith(PrefixPath prefix) {
-		return this;
 	}
 
 	@Override

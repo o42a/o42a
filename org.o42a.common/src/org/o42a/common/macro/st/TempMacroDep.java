@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,29 +17,37 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.macro;
+package org.o42a.common.macro.st;
 
+import org.o42a.common.macro.MacroDep;
+import org.o42a.core.member.field.MemberField;
 import org.o42a.core.object.Meta;
 import org.o42a.core.object.meta.MetaDep;
+import org.o42a.core.object.meta.MetaKey;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.PathTemplate;
 
 
-public abstract class MacroDep<D extends MetaDep> {
+final class TempMacroDep extends MacroDep<TempMetaDep> implements MetaKey {
 
-	public final D buildDep(Ref macroRef, PathTemplate template) {
-		if (macroRef.isStatic()) {
-			return null;
-		}
+	private final MemberField tempField;
 
-		final MacroDepBuilder<D> builder =
-				new MacroDepBuilder<D>(this, macroRef, template);
-
-		return builder.buildDep();
+	TempMacroDep(MemberField tempField) {
+		this.tempField = tempField;
 	}
 
-	public abstract D newDep(Meta meta, Ref macroRef, PathTemplate template);
+	public final MemberField getTempField() {
+		return this.tempField;
+	}
 
-	public abstract void setParentDep(D dep, MetaDep parentDep);
+	@Override
+	public TempMetaDep newDep(Meta meta, Ref macroRef, PathTemplate template) {
+		return new TempMetaDep(meta, this, macroRef);
+	}
+
+	@Override
+	public void setParentDep(TempMetaDep dep, MetaDep parentDep) {
+		dep.setParentDep(parentDep);
+	}
 
 }

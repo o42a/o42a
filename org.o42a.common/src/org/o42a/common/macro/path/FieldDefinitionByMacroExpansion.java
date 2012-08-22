@@ -1,5 +1,5 @@
 /*
-    Compiler
+    Modules Commons
     Copyright (C) 2012 Ruslan Lopatin
 
     This file is part of o42a.
@@ -17,55 +17,66 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package org.o42a.compiler.ip.st.macro;
+package org.o42a.common.macro.path;
 
+import static org.o42a.common.macro.path.MacroExpansionStep.prohibitedExpansion;
+import static org.o42a.core.member.field.DefinitionTarget.linkDefinition;
 import static org.o42a.core.member.field.DefinitionTarget.objectDefinition;
-import static org.o42a.core.object.link.LinkValueType.GETTER;
+import static org.o42a.core.st.sentence.BlockBuilder.valueBlock;
 
-import org.o42a.core.Scope;
 import org.o42a.core.member.field.*;
-import org.o42a.core.member.local.LocalScope;
 import org.o42a.core.object.type.Ascendants;
 import org.o42a.core.ref.Ref;
-import org.o42a.core.ref.path.PrefixPath;
-import org.o42a.core.ref.type.StaticTypeRef;
-import org.o42a.core.value.ValueStructFinder;
+import org.o42a.core.ref.type.TypeRef;
 
 
-final class TempFieldDefinition extends FieldDefinition {
+final class FieldDefinitionByMacroExpansion extends FieldDefinition {
 
 	private final Ref expansion;
-	private final boolean condition;
+	private Field field;
+	private boolean invalid;
 
-	TempFieldDefinition(Ref expansion, boolean condition) {
+	FieldDefinitionByMacroExpansion(Ref expansion) {
 		super(expansion, expansion.distribute());
 		this.expansion = expansion;
-		this.condition = condition;
+	}
+
+	@Override
+	public boolean isValid() {
+		return !this.invalid && super.isValid();
 	}
 
 	@Override
 	public void init(Field field, Ascendants implicitAscendants) {
+		this.field = field;
+		validate();
 	}
 
 	@Override
 	public DefinitionTarget getDefinitionTarget() {
-		return objectDefinition();
+
+		final TypeRef type = this.field.getDeclaration().getType();
+
+		if (type == null) {
+			return objectDefinition();
+		}
+
+		return linkDefinition(type.getValueStruct().getLinkDepth());
 	}
 
 	@Override
 	public void defineObject(ObjectDefiner definer) {
-		definer.setAncestor(ancestor(definer.getField().getEnclosingScope()));
-		definer.define(new ExpandMacroBlock(expansion()));
+		define(definer);
 	}
 
 	@Override
 	public void overrideObject(ObjectDefiner definer) {
-		throw new UnsupportedOperationException();
+		define(definer);
 	}
 
 	@Override
 	public void defineLink(LinkDefiner definer) {
-		throw new UnsupportedOperationException();
+		define(definer);
 	}
 
 	@Override
@@ -78,36 +89,30 @@ final class TempFieldDefinition extends FieldDefinition {
 		if (this.expansion == null) {
 			return super.toString();
 		}
-		if (this.condition) {
-			return this.expansion.toString();
-		}
-		return '=' + this.expansion.toString();
+		return this.expansion.toString();
 	}
 
-	private StaticTypeRef ancestor(Scope scope) {
-		if (this.condition) {
-			return GETTER.typeRef(this.expansion, scope);
+	private void validate() {
+
+		final FieldDeclaration declaration = this.field.getDeclaration();
+
+		if (declaration.isMacro()) {
+			// Macro can not be defined by macro expansion.
+			prohibitedExpansion(getLogger(), declaration);
+			this.invalid = true;
+			return;
 		}
-
-		final ValueStructFinder valueStruct =
-				new ParentValueStructFinder(scope);
-
-		return GETTER.typeRef(this, getScope(), valueStruct);
+		if (declaration.getLinkType() != null
+				&& declaration.getType() == null) {
+			// Link without interface can not be defined by macro expansion.
+			prohibitedExpansion(getLogger(), declaration);
+			this.invalid = true;
+			return;
+		}
 	}
 
-	private Ref expansion() {
-
-		final LocalScope local = this.expansion.getScope().toLocal();
-
-		if (local == null) {
-			return this.expansion;
-		}
-
-		final PrefixPath prefix =
-				local.toMember().getMemberKey().toPath().toPrefix(
-						local.getEnclosingScope());
-
-		return this.expansion.prefixWith(prefix);
+	private void define(FieldDefiner definer) {
+		definer.define(valueBlock(this.expansion));
 	}
 
 }

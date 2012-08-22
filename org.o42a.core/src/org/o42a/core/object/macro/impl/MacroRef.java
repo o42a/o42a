@@ -23,7 +23,6 @@ import org.o42a.core.object.macro.Macro;
 import org.o42a.core.object.macro.MacroExpander;
 import org.o42a.core.ref.Ref;
 import org.o42a.core.ref.path.Path;
-import org.o42a.core.ref.path.PrefixPath;
 
 
 public class MacroRef implements Macro {
@@ -42,18 +41,6 @@ public class MacroRef implements Macro {
 	@Override
 	public Path reexpand(MacroExpander expander) {
 		return this.ref.getPath().getPath();
-	}
-
-	@Override
-	public Macro prefixWith(PrefixPath prefix) {
-
-		final Ref prefixedRef = this.ref.prefixWith(prefix);
-
-		if (prefixedRef == this.ref) {
-			return this;
-		}
-
-		return new MacroRef(prefixedRef);
 	}
 
 	@Override
